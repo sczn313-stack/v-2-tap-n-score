@@ -1,22 +1,9 @@
 /* ============================================================
-   docs/index.js — ORIGINAL ENGINE (RESTORED) + FIXES
-   FIXES:
-   - Baker opens directly (no panel intercept)
-   - Photo upload does NOT reset page
-   - Full SCZN3 engine preserved
+   docs/index.js — FINAL STABLE BUILD
 ============================================================ */
 
 (() => {
   const $ = (id) => document.getElementById(id);
-
-  function getParam(name) {
-    const u = new URL(window.location.href);
-    return u.searchParams.get(name) || "";
-  }
-
-  function isBakerMode() {
-    return getParam("v").toLowerCase() === "baker";
-  }
 
   const elPhotoBtn = $("photoBtn");
   const elFile = $("photoInput");
@@ -32,6 +19,59 @@
   let objectUrl = null;
   let aim = null;
   let hits = [];
+
+  function getParam(name) {
+    const u = new URL(window.location.href);
+    return u.searchParams.get(name) || "";
+  }
+
+  function isBakerMode() {
+    return getParam("v").toLowerCase() === "baker";
+  }
+
+  // 🔥 VENDOR FIX (NO PANEL)
+  function hydrateVendor() {
+    if (isBakerMode()) {
+      localStorage.setItem(KEY_VENDOR_URL, "https://baker-targets.com/");
+    }
+
+    const v = localStorage.getItem(KEY_VENDOR_URL) || "";
+
+    if (elVendorPanelLink && v) {
+      elVendorPanelLink.href = v;
+      elVendorPanelLink.target = "_blank";
+    }
+
+    if (elVendorBox && v) {
+      elVendorBox.href = v;
+      elVendorBox.target = "_blank";
+      elVendorBox.rel = "noopener";
+
+      // 🔥 REMOVE ALL INTERCEPTS
+      elVendorBox.onclick = null;
+    }
+  }
+
+  // 🔥 PHOTO FIX (NO RESET)
+  function hydratePhoto() {
+    if (!elPhotoBtn || !elFile) return;
+
+    elPhotoBtn.onclick = () => elFile.click();
+
+    elFile.onchange = () => {
+      const f = elFile.files?.[0];
+      if (!f) return;
+
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(f);
+
+      // 🔥 CRITICAL — NO RESET
+      elImg.src = objectUrl;
+
+      // prevents reload behavior
+      elFile.value = "";
+    };
+  }
 
   function clamp01(v) {
     return Math.max(0, Math.min(1, v));
@@ -55,7 +95,7 @@
   }
 
   function acceptTap(x, y) {
-    if (!elImg.src) return;
+    if (!elImg?.src) return;
 
     const { x01, y01 } = getRelative01(x, y);
 
@@ -67,53 +107,6 @@
 
     hits.push({ x01, y01 });
     addDot(x01, y01, "hit");
-  }
-
-  function hydrateVendor() {
-    if (isBakerMode()) {
-      localStorage.setItem(KEY_VENDOR_URL, "https://baker-targets.com/");
-    }
-
-    const v = localStorage.getItem(KEY_VENDOR_URL) || "";
-
-    if (elVendorPanelLink && v) {
-      elVendorPanelLink.href = v;
-      elVendorPanelLink.target = "_blank";
-      elVendorPanelLink.rel = "noopener";
-    }
-
-    if (elVendorBox) {
-      if (v) {
-        // 🔥 FIX — DIRECT NAVIGATION
-        elVendorBox.href = v;
-        elVendorBox.target = "_blank";
-        elVendorBox.rel = "noopener";
-        elVendorBox.onclick = null;
-      } else {
-        elVendorBox.href = "#";
-      }
-    }
-  }
-
-  function hydratePhoto() {
-    if (!elPhotoBtn || !elFile) return;
-
-    elPhotoBtn.addEventListener("click", () => {
-      elFile.click();
-    });
-
-    elFile.addEventListener("change", () => {
-      const f = elFile.files?.[0];
-      if (!f) return;
-
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      objectUrl = URL.createObjectURL(f);
-
-      elImg.src = objectUrl;
-
-      // 🔥 FIX — prevent reset
-      elFile.value = "";
-    });
   }
 
   if (elWrap) {
