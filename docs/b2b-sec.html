@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SEC — Shooter Experience Card</title>
+  <link rel="stylesheet" href="./b2b-sec.css">
+</head>
+<body>
+  <div class="appShell">
+
+    <div class="topHeader">
+      <button id="backBtn" class="miniBtn backBtn" aria-label="Back">‹</button>
+
+      <div class="secMark">
+        <span class="secR">S</span><span class="secW">E</span><span class="secB">C</span>
+      </div>
+
+      <div id="levelChip" class="levelChip">LEVEL 1</div>
+    </div>
+
+    <div class="subHeader">
+      <div class="drillPill">
+        <div id="drillTitle" class="drillTitleMain">Back to Basics</div>
+        <div class="drillTitleSub">
+          <span class="subR">S</span><span class="subW">hooter </span>
+          <span class="subW">E</span><span class="subW">xperience </span>
+          <span class="subB">C</span><span class="subW">ard</span>
+        </div>
+      </div>
+
+      <button id="historyBtn" class="historyBtn">HISTORY</button>
+    </div>
+
+    <div class="matrixCard">
+      <div id="matrixHeader" class="matrixHeader"></div>
+      <div id="matrixBody" class="matrixBody"></div>
+    </div>
+
+    <div class="summaryRow">
+      <div class="summaryCard">
+        <div class="summaryLabel">LIFETIME BEST SCORE</div>
+
+        <div class="summaryValueWrap">
+          <div id="lifetimeBest" class="summaryValue">0/10</div>
+          <div id="bestBadge" class="bestBadge hidden">NEW BEST</div>
+        </div>
+
+        <div id="timeStamp" class="timeStamp">—</div>
+      </div>
+
+      <div class="summaryCard">
+        <div id="levelLabel" class="summaryLabel">LEVEL 1</div>
+
+        <div id="levelStars" class="stars">★☆☆☆☆</div>
+
+        <div id="nextReq" class="nextReq">Complete 1 verified session</div>
+        <div id="nextHint" class="nextHint">One more strong session moves you up.</div>
+      </div>
+    </div>
+
+    <div class="actions actions3">
+      <button id="newScanBtn" class="actionBtn">NEW SCAN</button>
+      <button id="vendorBtn" class="actionBtn">BUY MORE TARGETS LIKE THIS</button>
+      <button id="surveyBtn" class="actionBtn">DO SURVEY</button>
+    </div>
+
+  </div>
+
+  <script src="./drills.js"></script>
+  <script src="./b2b-sec.js"></script>
+</body>
+</html>
