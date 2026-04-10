@@ -1,78 +1,81 @@
-// 🔥 BAKER WIRING + EXISTING LOGIC (MINIMAL PATCH)
+/* ============================================================
+   docs/index.js (FULL REPLACEMENT)
+   FIXES:
+   - Photo button unfreezes (proper file input trigger)
+   - Baker link opens real site (no panel trap)
+============================================================ */
 
 (() => {
   const $ = (id) => document.getElementById(id);
+
+  const elPhotoBtn = $("photoBtn");
+  const elFile = $("photoInput");
+
+  const elVendorBox = $("vendorBox");
+  const elVendorPanelLink = $("vendorPanelLink");
+
+  const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
 
   function getParam(name) {
     const u = new URL(window.location.href);
     return u.searchParams.get(name) || "";
   }
 
-  function getVendor() {
-    return getParam("v").toLowerCase();
-  }
-
   function isBakerMode() {
-    return getVendor() === "baker";
+    return getParam("v").toLowerCase() === "baker";
   }
 
-  const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
-
-  const elVendorBox = $("vendorBox");
-  const elVendorLabel = $("vendorLabel");
-  const elVendorPanel = $("vendorPanel");
-  const elVendorPanelLink = $("vendorPanelLink");
-
-  function toggleVendorPanel() {
-    if (!elVendorPanel) return;
-    elVendorPanel.classList.toggle("vendorOpen");
-  }
-
-  function hydrateVendorBox() {
-    // 🔥 FORCE BAKER URL
+  // 🔥 FIX 1 — ALWAYS SET BAKER URL
+  function setVendor() {
     if (isBakerMode()) {
       localStorage.setItem(KEY_VENDOR_URL, "https://baker-targets.com/");
     }
+  }
 
-    if (elVendorLabel) elVendorLabel.textContent = "BUY MORE TARGETS LIKE THIS";
-
-    // Flip animation
-    if (isBakerMode() && elVendorLabel) {
-      const a = "BUY MORE TARGETS LIKE THIS";
-      const b = "BAKER • SMART TARGET™";
-      let flip = false;
-      setInterval(() => {
-        flip = !flip;
-        elVendorLabel.textContent = flip ? b : a;
-      }, 1200);
-    }
-
-    // Apply URL
+  // 🔥 FIX 2 — DIRECT LINK (NO PANEL BLOCKING)
+  function wireVendor() {
     const v = localStorage.getItem(KEY_VENDOR_URL) || "";
-    const ok = v.startsWith("http");
 
     if (elVendorPanelLink) {
-      if (ok) {
-        elVendorPanelLink.href = v;
-        elVendorPanelLink.style.pointerEvents = "auto";
-        elVendorPanelLink.style.opacity = "1";
-      } else {
-        elVendorPanelLink.href = "#";
-        elVendorPanelLink.style.pointerEvents = "none";
-        elVendorPanelLink.style.opacity = ".65";
-      }
+      elVendorPanelLink.href = v;
+      elVendorPanelLink.target = "_blank";
     }
 
     if (elVendorBox) {
-      elVendorBox.href = "#";
+      elVendorBox.href = v;
+      elVendorBox.target = "_blank";
+
       elVendorBox.addEventListener("click", (e) => {
-        e.preventDefault();
-        toggleVendorPanel();
+        if (!v) {
+          e.preventDefault();
+        }
       });
     }
   }
 
+  // 🔥 FIX 3 — PHOTO BUTTON UNLOCK
+  function wirePhoto() {
+    if (!elPhotoBtn || !elFile) return;
+
+    elPhotoBtn.addEventListener("click", () => {
+      elFile.click(); // direct trigger
+    });
+
+    elFile.addEventListener("change", () => {
+      const f = elFile.files?.[0];
+      if (!f) return;
+
+      const img = document.getElementById("targetImg");
+      if (!img) return;
+
+      const url = URL.createObjectURL(f);
+      img.src = url;
+    });
+  }
+
   // 🔥 INIT
-  hydrateVendorBox();
+  setVendor();
+  wireVendor();
+  wirePhoto();
 
 })();
