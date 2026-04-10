@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/index.js — FINAL STABLE BUILD
+   docs/index.js — FINAL STABLE BUILD (FIXED VENDOR LINK)
 ============================================================ */
 
 (() => {
@@ -29,10 +29,10 @@
     return getParam("v").toLowerCase() === "baker";
   }
 
-  // 🔥 VENDOR FIX (NO PANEL)
+  // 🔥 VENDOR FIX (CORRECT URL)
   function hydrateVendor() {
     if (isBakerMode()) {
-      localStorage.setItem(KEY_VENDOR_URL, "https://baker-targets.com/");
+      localStorage.setItem(KEY_VENDOR_URL, "https://bakertargets.com/");
     }
 
     const v = localStorage.getItem(KEY_VENDOR_URL) || "";
@@ -65,7 +65,6 @@
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       objectUrl = URL.createObjectURL(f);
 
-      // 🔥 CRITICAL — NO RESET
       elImg.src = objectUrl;
 
       // prevents reload behavior
