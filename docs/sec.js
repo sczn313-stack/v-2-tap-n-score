@@ -1,25 +1,32 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
-   Reads target-page results and renders SEC
+   Matches current sec.html IDs
 ============================================================ */
 
 (() => {
   const $ = (id) => document.getElementById(id);
 
   const scoreValue = $("scoreValue");
-  const scoreSub = $("scoreSub");
+  const scoreBand = $("scoreBand");
+  const scoreTip = $("scoreTip");
 
-  const windageValue = $("windageValue");
-  const windageSub = $("windageSub");
+  const windageBig = $("windageBig");
+  const windageDir = $("windageDir");
 
-  const elevationValue = $("elevationValue");
-  const elevationSub = $("elevationSub");
+  const elevationBig = $("elevationBig");
+  const elevationDir = $("elevationDir");
 
-  const chip1 = $("chip1");
-  const chip2 = $("chip2");
-  const chip3 = $("chip3");
+  const runDistance = $("runDistance");
+  const runHits = $("runHits");
+  const runTime = $("runTime");
 
+  const toReportBtn = $("toReportBtn");
+  const backBtn = $("backBtn");
+  const goHomeBtn = $("goHomeBtn");
   const vendorBtn = $("vendorBtn");
+
+  const viewPrecision = $("viewPrecision");
+  const viewReport = $("viewReport");
 
   const KEY_RESULTS = "sczn3_results";
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
@@ -47,7 +54,6 @@
   function compute(payload) {
     const aim = payload?.aim;
     const hits = payload?.hits || [];
-
     if (!aim || hits.length < 3) return null;
 
     const poib = {
@@ -58,11 +64,11 @@
     const dx = poib.x01 - aim.x01;
     const dy = poib.y01 - aim.y01;
 
-    const windageDir = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "—";
-    const elevationDir = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "—";
+    const windageClicks = Math.round(Math.abs(dx) * 100);
+    const elevationClicks = Math.round(Math.abs(dy) * 100);
 
-    const windageClicks = Math.max(0, Math.round(Math.abs(dx) * 100));
-    const elevationClicks = Math.max(0, Math.round(Math.abs(dy) * 100));
+    const windageDirection = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "CENTERED";
+    const elevationDirection = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "CENTERED";
 
     const meanRadius =
       hits.reduce((sum, p) => sum + distance(p, poib), 0) / hits.length;
@@ -77,12 +83,10 @@
     return {
       score,
       windageClicks,
-      windageDir,
+      windageDirection,
       elevationClicks,
-      elevationDir,
-      shotCount: hits.length,
-      meanRadius,
-      aimOffset
+      elevationDirection,
+      shotCount: hits.length
     };
   }
 
@@ -103,7 +107,7 @@
       vendorBtn.style.opacity = "1";
     } else {
       vendorBtn.href = "#";
-      vendorBtn.textContent = "Vendor";
+      vendorBtn.textContent = "Visit Vendor";
       vendorBtn.style.pointerEvents = "none";
       vendorBtn.style.opacity = ".6";
     }
@@ -118,29 +122,58 @@
     if (!result) return;
 
     if (scoreValue) scoreValue.textContent = String(result.score);
-    if (scoreSub) scoreSub.textContent = "Tight cluster + closer to the aim point = higher score.";
 
-    if (windageValue) {
-      windageValue.textContent =
-        result.windageDir === "—" ? "0" : String(result.windageClicks);
-    }
-    if (windageSub) {
-      windageSub.textContent =
-        result.windageDir === "—" ? "CENTERED" : result.windageDir;
-    }
-
-    if (elevationValue) {
-      elevationValue.textContent =
-        result.elevationDir === "—" ? "0" : String(result.elevationClicks);
-    }
-    if (elevationSub) {
-      elevationSub.textContent =
-        result.elevationDir === "—" ? "CENTERED" : result.elevationDir;
+    if (scoreBand) {
+      if (result.score >= 85) {
+        scoreBand.textContent = "EXCELLENT";
+        scoreBand.className = "scoreBand";
+      } else if (result.score >= 70) {
+        scoreBand.textContent = "GOOD";
+        scoreBand.className = "scoreBand";
+      } else if (result.score >= 50) {
+        scoreBand.textContent = "FAIR";
+        scoreBand.className = "scoreBand";
+      } else {
+        scoreBand.textContent = "ADJUST";
+        scoreBand.className = "scoreBand";
+      }
     }
 
-    if (chip1) chip1.textContent = `${result.shotCount} SHOTS`;
-    if (chip2) chip2.textContent = `OFFSET ${result.aimOffset.toFixed(3)}`;
-    if (chip3) chip3.textContent = `GROUP ${result.meanRadius.toFixed(3)}`;
+    if (scoreTip) {
+      scoreTip.textContent = "Tight cluster + closer to the aim point = higher score.";
+    }
+
+    if (windageBig) windageBig.textContent = String(result.windageClicks);
+    if (windageDir) windageDir.textContent = result.windageDirection;
+
+    if (elevationBig) elevationBig.textContent = String(result.elevationClicks);
+    if (elevationDir) elevationDir.textContent = result.elevationDirection;
+
+    if (runDistance) runDistance.textContent = "100 yds";
+    if (runHits) runHits.textContent = `${result.shotCount} hits`;
+    if (runTime) runTime.textContent = "Session ready";
+  }
+
+  if (toReportBtn && viewPrecision && viewReport) {
+    toReportBtn.onclick = () => {
+      viewPrecision.classList.remove("viewOn");
+      viewReport.classList.add("viewOn");
+    };
+  }
+
+  if (backBtn && viewPrecision && viewReport) {
+    backBtn.onclick = () => {
+      viewReport.classList.remove("viewOn");
+      viewPrecision.classList.add("viewOn");
+    };
+  }
+
+  if (goHomeBtn) {
+    goHomeBtn.onclick = () => {
+      const params = new URLSearchParams(window.location.search);
+      const qs = params.toString();
+      window.location.href = qs ? `index.html?${qs}` : "index.html";
+    };
   }
 
   render();
