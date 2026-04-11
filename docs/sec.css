@@ -1,40 +1,40 @@
 /* ============================================================
-   docs/sec.css (FULL REPLACEMENT) — TWO-PAGE SEC (POLISH PASS)
+   docs/sec.css (FULL REPLACEMENT) — TWO-PAGE SEC (NEXT POLISH)
    POLISH:
-   ✅ Better screen fit on small devices
-   ✅ Cleaner spacing + stronger hierarchy
-   ✅ More consistent button treatment
-   ✅ Better report card image fit
+   ✅ Cleaner spacing + hierarchy
+   ✅ Stronger premium feel
+   ✅ Better fit on smaller screens
+   ✅ Better button consistency
+   ✅ Better report card presentation
    ✅ No wire changes
 ============================================================ */
 
 :root{
   --bg:#06070a;
-  --bg-2:#0b1020;
-  --fg:rgba(238,242,247,.92);
-  --muted:rgba(238,242,247,.70);
+  --bg-top:#0a1224;
+  --bg-bottom:#06070a;
+
+  --fg:rgba(238,242,247,.94);
+  --muted:rgba(238,242,247,.72);
   --soft:rgba(238,242,247,.56);
-  --shadow:rgba(0,0,0,.45);
+
+  --shadow:rgba(0,0,0,.46);
+  --line:rgba(255,255,255,.10);
+  --line-2:rgba(255,255,255,.14);
 
   --red:#ff4d4d;
   --white:#eef2f7;
   --blue:#2f66ff;
-
   --green:#48ff8b;
   --yellow:#ffe85a;
   --amber:#ffd24a;
-
-  --card-bg-top:rgba(255,255,255,.065);
-  --card-bg-bot:rgba(255,255,255,.03);
-  --line:rgba(255,255,255,.10);
-  --line-2:rgba(255,255,255,.14);
 
   --safe-top:env(safe-area-inset-top, 0px);
   --safe-right:env(safe-area-inset-right, 0px);
   --safe-bottom:env(safe-area-inset-bottom, 0px);
   --safe-left:env(safe-area-inset-left, 0px);
 
-  --page-max:680px;
+  --page-max:700px;
 }
 
 *{ box-sizing:border-box; }
@@ -49,14 +49,13 @@ body{
   margin:0;
   min-height:100%;
   background:
-    radial-gradient(circle at top center, rgba(47,102,255,.12), transparent 30%),
-    linear-gradient(180deg, #07080c 0%, #06070a 42%, #05060a 100%);
+    radial-gradient(circle at top center, rgba(47,102,255,.14), transparent 30%),
+    linear-gradient(180deg, var(--bg-top) 0%, #09101c 22%, var(--bg-bottom) 100%);
   color:var(--fg);
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   overflow-x:hidden;
 }
 
-/* Page shell */
 .secPage{
   width:100%;
   max-width:var(--page-max);
@@ -116,9 +115,9 @@ body{
 
 /* Card */
 .card{
-  background:linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
+  background:linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.028));
   border:1px solid var(--line);
-  border-radius:22px;
+  border-radius:24px;
   padding:14px;
   box-shadow:
     0 18px 40px var(--shadow),
@@ -126,7 +125,7 @@ body{
   backdrop-filter:blur(10px);
 }
 
-/* Score block */
+/* Score */
 .scoreWrap{
   text-align:center;
   padding:12px 10px 14px;
@@ -144,15 +143,14 @@ body{
 
 .scoreValue{
   font-weight:1000;
-  font-size:86px;
-  line-height:.95;
+  font-size:88px;
+  line-height:.94;
   margin-top:8px;
   margin-bottom:12px;
-  color:rgba(238,242,247,.92);
+  color:rgba(238,242,247,.94);
   text-shadow:0 8px 20px rgba(0,0,0,.25);
 }
 
-/* score number banding */
 .scoreGood{ color:rgba(72,255,139,.96); }
 .scoreMid{ color:rgba(255,232,90,.96); }
 .scoreLow{ color:rgba(255,77,77,.96); }
@@ -176,17 +174,17 @@ body{
 }
 
 .scoreBandGreen{
-  background:rgba(72,255,139,.92);
+  background:rgba(72,255,139,.94);
   color:#031009;
   border-color:rgba(255,255,255,.12);
 }
 .scoreBandYellow{
-  background:rgba(255,232,90,.92);
+  background:rgba(255,232,90,.94);
   color:#191300;
   border-color:rgba(255,255,255,.12);
 }
 .scoreBandRed{
-  background:rgba(255,77,77,.92);
+  background:rgba(255,77,77,.94);
   color:#1b0000;
   border-color:rgba(255,255,255,.12);
 }
@@ -203,7 +201,7 @@ body{
   color:rgba(238,242,247,.66);
 }
 
-/* Big clicks */
+/* Click boxes */
 .clicksBig{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -212,12 +210,12 @@ body{
 }
 
 .clickBox{
+  min-width:0;
   border-radius:18px;
   background:rgba(255,255,255,.04);
   border:1px solid var(--line);
   padding:12px;
   text-align:center;
-  min-width:0;
 }
 
 .clickHdr{
@@ -229,7 +227,7 @@ body{
 
 .clickVal{
   font-weight:1000;
-  font-size:56px;
+  font-size:58px;
   line-height:1;
   margin-top:10px;
   text-shadow:0 8px 18px rgba(0,0,0,.22);
@@ -240,11 +238,11 @@ body{
   font-weight:1000;
   letter-spacing:.10em;
   font-size:14px;
-  color:rgba(238,242,247,.86);
   line-height:1.2;
+  color:rgba(238,242,247,.88);
 }
 
-/* Run mini pills */
+/* Pills */
 .miniLine{
   display:flex;
   gap:8px;
@@ -265,12 +263,12 @@ body{
   letter-spacing:.05em;
   background:rgba(255,255,255,.05);
   border:1px solid var(--line-2);
-  color:rgba(238,242,247,.78);
+  color:rgba(238,242,247,.80);
   box-shadow:0 10px 26px rgba(0,0,0,.35);
   text-align:center;
 }
 
-/* Actions */
+/* Buttons */
 .primaryActions{
   margin-top:14px;
   display:flex;
@@ -285,9 +283,18 @@ body{
 .surveyBtn{
   appearance:none;
   -webkit-appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
   text-decoration:none;
   cursor:pointer;
   min-height:48px;
+  padding:12px 14px;
+  border-radius:18px;
+  font-weight:1000;
+  letter-spacing:.05em;
+  font-size:14px;
   transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
   -webkit-tap-highlight-color:transparent;
 }
@@ -303,13 +310,8 @@ body{
 .primaryBtn{
   width:100%;
   border:0;
-  border-radius:18px;
-  padding:14px 14px;
-  font-weight:1000;
-  letter-spacing:.06em;
-  font-size:14px;
   color:#f4f8ff;
-  background:linear-gradient(180deg, rgba(47,102,255,.96), rgba(47,102,255,.72));
+  background:linear-gradient(180deg, rgba(47,102,255,.98), rgba(47,102,255,.74));
   box-shadow:
     0 16px 36px rgba(0,0,0,.45),
     0 0 0 1px rgba(255,255,255,.05) inset;
@@ -318,13 +320,8 @@ body{
 .secondaryGlowBtn{
   width:100%;
   border:1px solid rgba(255,255,255,.16);
-  border-radius:18px;
-  padding:13px 14px;
-  font-weight:1000;
-  letter-spacing:.06em;
-  font-size:14px;
   background:rgba(255,255,255,.05);
-  color:rgba(238,242,247,.88);
+  color:rgba(238,242,247,.90);
   box-shadow:
     0 0 0 1px rgba(255,255,255,.05) inset,
     0 14px 34px rgba(0,0,0,.42);
@@ -339,7 +336,7 @@ body{
   padding-inline:4px;
 }
 
-/* Page 2 */
+/* Report page */
 .reportCard{
   padding-top:12px;
 }
@@ -349,7 +346,7 @@ body{
   font-weight:900;
   font-size:12px;
   line-height:1.4;
-  color:rgba(238,242,247,.70);
+  color:rgba(238,242,247,.72);
   margin-bottom:10px;
 }
 
@@ -358,7 +355,9 @@ body{
   overflow:hidden;
   border:1px solid rgba(255,255,255,.12);
   background:rgba(0,0,0,.35);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.03),
+    0 12px 28px rgba(0,0,0,.24);
 }
 
 #secCardImg{
@@ -378,15 +377,6 @@ body{
 .btnSecondary,
 .vendorBtn,
 .surveyBtn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  border-radius:14px;
-  padding:10px 12px;
-  font-weight:1000;
-  letter-spacing:.05em;
-  font-size:13px;
   border:1px solid rgba(255,255,255,.14);
   background:rgba(255,255,255,.05);
   color:rgba(238,242,247,.92);
@@ -425,7 +415,7 @@ body{
   }
 
   .card{
-    border-radius:20px;
+    border-radius:22px;
     padding:12px;
   }
 
@@ -438,7 +428,7 @@ body{
   }
 
   .scoreValue{
-    font-size:74px;
+    font-size:76px;
   }
 
   .clickVal{
@@ -535,7 +525,10 @@ body{
   }
 
   .primaryBtn,
-  .secondaryGlowBtn{
+  .secondaryGlowBtn,
+  .btnSecondary,
+  .vendorBtn,
+  .surveyBtn{
     min-height:46px;
     font-size:13px;
     padding:12px 12px;
@@ -553,7 +546,7 @@ body{
   }
 }
 
-@media (min-width: 681px){
+@media (min-width: 701px){
   .secPage{
     padding-top:max(16px, var(--safe-top));
   }
