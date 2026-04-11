@@ -1,6 +1,11 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
-   Stable loop + payload compatibility + SEC2 report image
+   POLISH PASS:
+   - keeps current 2-page SEC flow
+   - preserves payload compatibility
+   - improves fallbacks + labels + vendor handling
+   - cleaner report image generation
+   - no wire changes
 ============================================================ */
 
 (() => {
@@ -33,6 +38,7 @@
   // Keys
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
+  const DEFAULT_SURVEY_URL = "https://forms.gle/uCSDTk5BwT4euLYeA";
 
   function getParam(name) {
     const u = new URL(window.location.href);
@@ -40,32 +46,32 @@
   }
 
   function safeJsonParse(s) {
-    try { return JSON.parse(s); } catch { return null; }
+    try {
+      return JSON.parse(s);
+    } catch {
+      return null;
+    }
   }
 
   function loadPayload() {
-    // Newer test key
     let s = sessionStorage.getItem("sczn3_results");
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // Main app key
     s = sessionStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // Older/local fallback
     s = localStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // URL payload fallback
     const fromUrl = getParam("payload");
     if (fromUrl) {
       try {
@@ -91,7 +97,6 @@
   function normalizePayload(payload) {
     if (!payload) return null;
 
-    // Direct target-page shape
     if (payload.aim && Array.isArray(payload.hits)) {
       return {
         aim: payload.aim,
@@ -103,7 +108,6 @@
       };
     }
 
-    // SEC payload shape from older app versions
     if (payload.aimPoint && Array.isArray(payload.shots)) {
       return {
         aim: payload.aimPoint,
@@ -179,10 +183,21 @@
     return "#ef4444";
   }
 
-  function renderVendor(result) {
-    if (!vendorBtn) return;
+  function scoreBandClass(score) {
+    if (score >= 90) return "scoreBandGreen";
+    if (score >= 60) return "scoreBandYellow";
+    return "scoreBandRed";
+  }
 
+  function scoreValueClass(score) {
+    if (score >= 90) return "scoreGood";
+    if (score >= 60) return "scoreMid";
+    return "scoreLow";
+  }
+
+  function getVendorUrl(result) {
     const vParam = getParam("v").toLowerCase();
+
     let vendorUrl =
       result?.vendorUrl ||
       localStorage.getItem(KEY_VENDOR_URL) ||
@@ -192,6 +207,10 @@
       vendorUrl = "https://bakertargets.com/";
     }
 
+    return vendorUrl;
+  }
+
+  function getVendorName(result, vendorUrl) {
     let vendorName =
       result?.vendorName ||
       localStorage.getItem(KEY_VENDOR_NAME) ||
@@ -201,9 +220,18 @@
       vendorName = "Visit Baker";
     }
 
+    return vendorName || "Visit Vendor";
+  }
+
+  function renderVendor(result) {
+    if (!vendorBtn) return;
+
+    const vendorUrl = getVendorUrl(result);
+    const vendorName = getVendorName(result, vendorUrl);
+
     if (vendorUrl) {
       vendorBtn.href = vendorUrl;
-      vendorBtn.textContent = vendorName || "Visit Vendor";
+      vendorBtn.textContent = vendorName;
       vendorBtn.style.pointerEvents = "auto";
       vendorBtn.style.opacity = "1";
     } else {
@@ -213,16 +241,31 @@
       vendorBtn.style.opacity = ".6";
     }
 
-    if (surveyBtn && !surveyBtn.href) {
-      surveyBtn.href = "https://forms.gle/uCSDTk5BwT4euLYeA";
+    if (surveyBtn) {
+      surveyBtn.href = DEFAULT_SURVEY_URL;
+      surveyBtn.target = "_blank";
+      surveyBtn.rel = "noopener";
     }
+
+    result.vendorUrl = vendorUrl;
+    result.vendorName = vendorName;
   }
 
   function renderPrecision(result) {
     if (!result) return;
 
-    if (scoreValue) scoreValue.textContent = String(result.score);
-    if (scoreBand) scoreBand.textContent = scoreLabel(result.score);
+    if (scoreValue) {
+      scoreValue.textContent = String(result.score);
+      scoreValue.classList.remove("scoreGood", "scoreMid", "scoreLow");
+      scoreValue.classList.add(scoreValueClass(result.score));
+    }
+
+    if (scoreBand) {
+      scoreBand.textContent = scoreLabel(result.score);
+      scoreBand.classList.remove("scoreBandGreen", "scoreBandYellow", "scoreBandRed", "scoreBandNeutral");
+      scoreBand.classList.add(scoreBandClass(result.score));
+    }
+
     if (scoreTip) {
       scoreTip.textContent = "Tight cluster + closer to the aim point = higher score.";
     }
@@ -231,13 +274,19 @@
       windageBig.textContent =
         result.windageDirection === "CENTERED" ? "0" : String(result.windageClicks);
     }
-    if (windageDir) windageDir.textContent = result.windageDirection;
+
+    if (windageDir) {
+      windageDir.textContent = result.windageDirection;
+    }
 
     if (elevationBig) {
       elevationBig.textContent =
         result.elevationDirection === "CENTERED" ? "0" : String(result.elevationClicks);
     }
-    if (elevationDir) elevationDir.textContent = result.elevationDirection;
+
+    if (elevationDir) {
+      elevationDir.textContent = result.elevationDirection;
+    }
 
     if (runDistance) runDistance.textContent = result.distanceLabel;
     if (runHits) runHits.textContent = `${result.shotCount} hits`;
@@ -336,6 +385,7 @@
     canvas.height = 1800;
 
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const bgTop = "#07111f";
     const bgBottom = "#0f1b2d";
@@ -344,6 +394,7 @@
     const white = "#f8fafc";
     const muted = "#94a3b8";
     const accent = scoreColor(result.score);
+    const scoreText = scoreLabel(result.score);
 
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
     grad.addColorStop(0, bgTop);
@@ -363,6 +414,7 @@
 
     ctx.fillStyle = white;
     ctx.font = "600 34px Arial";
+    ctx.textAlign = "left";
     ctx.fillText("SHOOTER EXPERIENCE CARD", 90, 90);
 
     ctx.fillStyle = muted;
@@ -384,7 +436,7 @@
     fillRoundRect(ctx, 420, 500, 560, 90, 45, accent);
     ctx.fillStyle = "#0b1220";
     ctx.font = "bold 38px Arial";
-    ctx.fillText(scoreLabel(result.score), 700, 558);
+    ctx.fillText(scoreText, 700, 558);
 
     ctx.fillStyle = muted;
     ctx.font = "24px Arial";
@@ -452,7 +504,7 @@
     ctx.fillStyle = muted;
     ctx.fillText(result.offset.toFixed(3), 760, 1325);
     ctx.fillText(result.meanRadius.toFixed(3), 760, 1410);
-    ctx.fillText(result.vendorName || "Baker Targets", 760, 1495);
+    ctx.fillText(result.vendorName || "Tap-n-Score", 760, 1495);
 
     ctx.fillStyle = white;
     ctx.font = "bold 26px Arial";
@@ -495,9 +547,6 @@
     alert("SEC data not found. Go back and run a target first.");
     return;
   }
-
-  result.vendorUrl = norm.vendorUrl || "";
-  result.vendorName = norm.vendorName || "";
 
   renderVendor(result);
   renderPrecision(result);
