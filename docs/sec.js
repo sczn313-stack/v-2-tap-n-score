@@ -1,239 +1,129 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT
-   SEC rendering + report image generation + smoother scoring
+   docs/sec.js — FULL REPLACEMENT (VISUAL REPORT CARD UPGRADE)
 ============================================================ */
 
 (() => {
   const $ = (id) => document.getElementById(id);
 
-  const scoreValue = $("scoreValue");
-  const scoreBand = $("scoreBand");
-  const scoreTip = $("scoreTip");
-
-  const windageBig = $("windageBig");
-  const windageDir = $("windageDir");
-
-  const elevationBig = $("elevationBig");
-  const elevationDir = $("elevationDir");
-
-  const runDistance = $("runDistance");
-  const runHits = $("runHits");
-  const runTime = $("runTime");
-
-  const toReportBtn = $("toReportBtn");
-  const backBtn = $("backBtn");
-  const goHomeBtn = $("goHomeBtn");
-
   const viewPrecision = $("viewPrecision");
   const viewReport = $("viewReport");
 
+  const toReportBtn = $("toReportBtn");
+  const backBtn = $("backBtn");
   const secCardImg = $("secCardImg");
-  const vendorBtn = $("vendorBtn");
-
-  const KEY_RESULTS = "sczn3_results";
-  const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
-
-  function getParam(name) {
-    const u = new URL(window.location.href);
-    return u.searchParams.get(name) || "";
-  }
 
   function loadPayload() {
-    const s = sessionStorage.getItem(KEY_RESULTS) || "";
+    const s = sessionStorage.getItem("sczn3_results") || "";
     try { return JSON.parse(s); } catch { return null; }
   }
 
-  function avg(points, key) {
-    return points.reduce((sum, p) => sum + Number(p[key] || 0), 0) / points.length;
-  }
+  function computeMetrics(payload) {
+    const aim = payload.aim;
+    const hits = payload.hits;
 
-  function distance(a, b) {
-    const dx = a.x01 - b.x01;
-    const dy = a.y01 - b.y01;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
+    if (!aim || !hits?.length) return null;
 
-  function compute(payload) {
-    const aim = payload?.aim;
-    const hits = payload?.hits || [];
-    if (!aim || hits.length < 3) return null;
+    let cx = 0, cy = 0;
+    hits.forEach(h => {
+      cx += h.x01;
+      cy += h.y01;
+    });
 
-    const poib = {
-      x01: avg(hits, "x01"),
-      y01: avg(hits, "y01")
-    };
+    cx /= hits.length;
+    cy /= hits.length;
 
-    const dx = poib.x01 - aim.x01;
-    const dy = poib.y01 - aim.y01;
+    const dx = cx - aim.x01;
+    const dy = cy - aim.y01;
 
-    const windageClicks = Math.round(Math.abs(dx) * 100);
-    const elevationClicks = Math.round(Math.abs(dy) * 100);
+    const dist = Math.sqrt(dx*dx + dy*dy);
 
-    const windageDirection = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "CENTERED";
-    const elevationDirection = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "CENTERED";
-
-    const meanRadius =
-      hits.reduce((sum, p) => sum + distance(p, poib), 0) / hits.length;
-
-    const offset = Math.sqrt(dx * dx + dy * dy);
-
-    const score = Math.max(
-      0,
-      Math.min(100, Math.round(100 - (offset * 120)))
-    );
+    const score = Math.max(0, Math.round(100 - (dist * 200)));
 
     return {
       score,
-      windageClicks,
-      windageDirection,
-      elevationClicks,
-      elevationDirection,
-      shotCount: hits.length,
-      meanRadius,
-      offset
+      windage: Math.abs(dx * 100).toFixed(2),
+      windageDir: dx > 0 ? "RIGHT" : "LEFT",
+      elevation: Math.abs(dy * 100).toFixed(2),
+      elevationDir: dy > 0 ? "DOWN" : "UP",
+      hits: hits.length
     };
   }
 
-  function renderVendor() {
-    if (!vendorBtn) return;
-
-    const vParam = getParam("v").toLowerCase();
-    let vendorUrl = localStorage.getItem(KEY_VENDOR_URL) || "";
-
-    if (!vendorUrl && vParam === "baker") {
-      vendorUrl = "https://bakertargets.com/";
-    }
-
-    if (vendorUrl) {
-      vendorBtn.href = vendorUrl;
-      vendorBtn.textContent = "Visit Baker";
-      vendorBtn.style.pointerEvents = "auto";
-      vendorBtn.style.opacity = "1";
-    } else {
-      vendorBtn.href = "#";
-      vendorBtn.textContent = "Visit Vendor";
-      vendorBtn.style.pointerEvents = "none";
-      vendorBtn.style.opacity = ".6";
-    }
-  }
-
-  function render(result) {
-    renderVendor();
-    if (!result) return;
-
-    if (scoreValue) scoreValue.textContent = String(result.score);
-
-    if (scoreBand) {
-      if (result.score >= 90) {
-        scoreBand.textContent = "EXCELLENT";
-      } else if (result.score >= 75) {
-        scoreBand.textContent = "GOOD";
-      } else if (result.score >= 60) {
-        scoreBand.textContent = "FAIR";
-      } else {
-        scoreBand.textContent = "ADJUST";
-      }
-    }
-
-    if (scoreTip) {
-      scoreTip.textContent = "Tight cluster + closer to the aim point = higher score.";
-    }
-
-    if (windageBig) {
-      windageBig.textContent =
-        result.windageDirection === "CENTERED" ? "0" : String(result.windageClicks);
-    }
-    if (windageDir) {
-      windageDir.textContent = result.windageDirection;
-    }
-
-    if (elevationBig) {
-      elevationBig.textContent =
-        result.elevationDirection === "CENTERED" ? "0" : String(result.elevationClicks);
-    }
-    if (elevationDir) {
-      elevationDir.textContent = result.elevationDirection;
-    }
-
-    if (runDistance) runDistance.textContent = "100 yds";
-    if (runHits) runHits.textContent = `${result.shotCount} hits`;
-    if (runTime) runTime.textContent = "Session ready";
-  }
-
-  function generateCard(result) {
-    if (!secCardImg || !result) return;
+  function buildCard(metrics) {
+    const { score, windage, windageDir, elevation, elevationDir, hits } = metrics;
 
     const canvas = document.createElement("canvas");
-    canvas.width = 1200;
-    canvas.height = 675;
+    canvas.width = 900;
+    canvas.height = 600;
 
     const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#08101f";
+    // background
+    ctx.fillStyle = "#0b1220";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // title
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 72px Arial";
-    ctx.fillText(`Score: ${result.score}`, 80, 120);
+    ctx.font = "bold 36px Arial";
+    ctx.fillText("SEC REPORT", 40, 60);
 
-    ctx.font = "42px Arial";
-    ctx.fillText(
-      `Windage: ${result.windageDirection === "CENTERED" ? 0 : result.windageClicks} ${result.windageDirection}`,
-      80,
-      260
-    );
-    ctx.fillText(
-      `Elevation: ${result.elevationDirection === "CENTERED" ? 0 : result.elevationClicks} ${result.elevationDirection}`,
-      80,
-      340
-    );
+    // score
+    ctx.font = "bold 120px Arial";
+    ctx.fillStyle = "#ff3b3b";
+    ctx.fillText(score, 380, 200);
 
-    ctx.font = "32px Arial";
-    ctx.fillText(`Shots: ${result.shotCount}`, 80, 450);
-    ctx.fillText(`Offset: ${result.offset.toFixed(3)}`, 80, 500);
-    ctx.fillText(`Group: ${result.meanRadius.toFixed(3)}`, 80, 550);
+    // status
+    ctx.font = "bold 28px Arial";
+    ctx.fillStyle = "#ff3b3b";
+    ctx.fillText(score < 60 ? "NEEDS WORK" : "GOOD", 380, 250);
 
+    // windage
     ctx.font = "28px Arial";
-    ctx.fillText("SCZN3", 80, 620);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(`Windage: ${windage} ${windageDir}`, 100, 350);
 
-    secCardImg.src = canvas.toDataURL("image/png");
+    // elevation
+    ctx.fillText(`Elevation: ${elevation} ${elevationDir}`, 100, 400);
+
+    // hits
+    ctx.fillText(`Hits: ${hits}`, 100, 450);
+
+    // footer
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#aaa";
+    ctx.fillText("SCZN3", 40, 560);
+
+    return canvas.toDataURL("image/png");
   }
 
-  function showReport(result) {
-    if (!viewPrecision || !viewReport) return;
+  function goToReport() {
+    const payload = loadPayload();
+    if (!payload) return;
+
+    const metrics = computeMetrics(payload);
+    if (!metrics) return;
+
+    const img = buildCard(metrics);
+
+    if (secCardImg) {
+      secCardImg.src = img;
+    }
 
     viewPrecision.classList.remove("viewOn");
     viewReport.classList.add("viewOn");
-    generateCard(result);
   }
 
-  function showPrecision() {
-    if (!viewPrecision || !viewReport) return;
-
+  function goBack() {
     viewReport.classList.remove("viewOn");
     viewPrecision.classList.add("viewOn");
   }
 
-  function goHome() {
-    const params = new URLSearchParams(window.location.search);
-    const qs = params.toString();
-    window.location.href = qs ? `index.html?${qs}` : "index.html";
-  }
-
-  const payload = loadPayload();
-  const result = compute(payload);
-
-  render(result);
-
   if (toReportBtn) {
-    toReportBtn.onclick = () => showReport(result);
+    toReportBtn.onclick = goToReport;
   }
 
   if (backBtn) {
-    backBtn.onclick = showPrecision;
+    backBtn.onclick = goBack;
   }
 
-  if (goHomeBtn) {
-    goHomeBtn.onclick = goHome;
-  }
 })();
