@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/index.js — FULL REPLACEMENT
+    docs/index.js — FULL REPLACEMENT
    Restores target-page taps + show-results handoff
 ============================================================ */
 
