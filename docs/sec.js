@@ -1,7 +1,6 @@
 /* ============================================================
-   docs/sec.js (FULL REPLACEMENT) — TWO-PAGE SEC
-   FIX: Vendor partner is ALWAYS sourced (payload OR localStorage)
-   + Vendor square shows Baker Targets name (and logo if available)
+   docs/sec.js — FULL REPLACEMENT
+   Stable loop + payload compatibility + SEC2 report image
 ============================================================ */
 
 (() => {
@@ -12,10 +11,12 @@
   const viewReport = $("viewReport");
   const toReportBtn = $("toReportBtn");
   const backBtn = $("backBtn");
+  const goHomeBtn = $("goHomeBtn");
 
-  // Page 1 elements
+  // Page 1
   const scoreValue = $("scoreValue");
   const scoreBand = $("scoreBand");
+  const scoreTip = $("scoreTip");
   const runDistance = $("runDistance");
   const runHits = $("runHits");
   const runTime = $("runTime");
@@ -23,593 +24,493 @@
   const windageDir = $("windageDir");
   const elevationBig = $("elevationBig");
   const elevationDir = $("elevationDir");
-  const goHomeBtn = $("goHomeBtn");
 
-  // Page 2 elements
+  // Page 2
   const secCardImg = $("secCardImg");
   const vendorBtn = $("vendorBtn");
   const surveyBtn = $("surveyBtn");
 
-  // Storage keys
-  const KEY_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
-  const KEY_TARGET_IMG_DATA = "SCZN3_TARGET_IMG_DATAURL_V1";
-  const KEY_TARGET_IMG_BLOB = "SCZN3_TARGET_IMG_BLOBURL_V1";
-
-  // ✅ Vendor keys (MUST match index.js)
-  const KEY_VENDOR_URL  = "SCZN3_VENDOR_URL_V1";
+  // Keys
+  const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
 
-  // History
-  const KEY_HISTORY = "SCZN3_SEC_HISTORY_V1";
-  const KEEP_N = 10;
-
-  // Survey default
-  const DEFAULT_SURVEY_URL = "https://forms.gle/uCSDTk5BwT4euLYeA";
-
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-  function safeJsonParse(s) { try { return JSON.parse(s); } catch { return null; } }
-
-  function getQueryParam(name) {
+  function getParam(name) {
     const u = new URL(window.location.href);
-    return u.searchParams.get(name);
+    return u.searchParams.get(name) || "";
   }
 
-  function b64ToObj(b64) {
-    try {
-      const json = decodeURIComponent(escape(atob(String(b64 || ""))));
-      return JSON.parse(json);
-    } catch {
-      return null;
-    }
+  function safeJsonParse(s) {
+    try { return JSON.parse(s); } catch { return null; }
   }
 
-  function nowStamp() {
-    const d = new Date();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    const yy = d.getFullYear();
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mi = String(d.getMinutes()).padStart(2, "0");
-    return `${mm}/${dd}/${yy} ${hh}:${mi}`;
-  }
-
-  function fmt2(n) {
-    const x = Number(n);
-    if (!Number.isFinite(x)) return "0.00";
-    return x.toFixed(2);
-  }
-
-  function avg2(arr) {
-    const a = arr.map(Number).filter(Number.isFinite);
-    if (!a.length) return "0.00";
-    const s = a.reduce((p,c)=>p+c,0) / a.length;
-    return s.toFixed(2);
-  }
-
-  function domainFromUrl(u) {
-    try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; }
-  }
-
-  function isBaker(url) {
-    const d = domainFromUrl(url || "");
-    return d.includes("bakertargets.com") || d.includes("baker");
-  }
-
-  function resolveVendor(payload) {
-    const fromPayloadUrl = String(payload?.vendorUrl || "");
-    const fromStorageUrl = String(localStorage.getItem(KEY_VENDOR_URL) || "");
-    const vendorUrl = (fromPayloadUrl.startsWith("http") ? fromPayloadUrl : fromStorageUrl);
-
-    const fromPayloadName = String(payload?.vendorName || "");
-    const fromStorageName = String(localStorage.getItem(KEY_VENDOR_NAME) || "");
-    let vendorName = (fromPayloadName || fromStorageName || "");
-
-    if (!vendorName) vendorName = isBaker(vendorUrl) ? "BAKER TARGETS" : (domainFromUrl(vendorUrl) || "VENDOR");
-
-    // keep payload consistent going forward
-    payload.vendorUrl = vendorUrl;
-    payload.vendorName = vendorName;
-
-    return { vendorUrl, vendorName };
-  }
-
-  function loadTargetImageUrl() {
-    const d = localStorage.getItem(KEY_TARGET_IMG_DATA) || "";
-    if (d.startsWith("data:image/")) return d;
-
-    const b = localStorage.getItem(KEY_TARGET_IMG_BLOB) || "";
-    if (b.startsWith("blob:")) return b;
-
-    return "";
-  }
-
-  function scoreBandInfo(score) {
-    const s = Number(score);
-    if (!Number.isFinite(s)) return { cls: "scoreBandNeutral", text: "—", scoreCls: "" };
-
-    if (s >= 90) return { cls: "scoreBandGreen", text: "STRONG / EXCELLENT", scoreCls: "scoreGood" };
-    if (s >= 60) return { cls: "scoreBandYellow", text: "IMPROVING / SOLID", scoreCls: "scoreMid" };
-    return { cls: "scoreBandRed", text: "NEEDS WORK", scoreCls: "scoreLow" };
-  }
-
-  // -----------------------------
-  // History
-  // -----------------------------
-  function loadHistory() {
-    const arr = safeJsonParse(localStorage.getItem(KEY_HISTORY) || "[]");
-    return Array.isArray(arr) ? arr : [];
-  }
-
-  function saveHistory(arr) {
-    try { localStorage.setItem(KEY_HISTORY, JSON.stringify(arr)); } catch {}
-  }
-
-  function pushHistory(payload) {
-    const hist = loadHistory();
-    const row = {
-      t: Date.now(),
-      score: Number(payload?.score ?? 0),
-      dist: Number(payload?.debug?.distanceYds ?? payload?.distanceYds ?? 0),
-      hits: Number(payload?.shots ?? 0),
-      vendor: domainFromUrl(payload?.vendorUrl || "")
-    };
-
-    hist.unshift(row);
-    const trimmed = hist.slice(0, KEEP_N);
-    saveHistory(trimmed);
-    return trimmed;
-  }
-
-  function computeStats(hist) {
-    const scores = hist.map(h => Number(h.score)).filter(Number.isFinite);
-    const sessions = scores.length;
-    const highest = sessions ? Math.max(...scores) : 0;
-    const avg10 = avg2(scores.slice(0, KEEP_N));
-    return { sessions, highest, avg10 };
-  }
-
-  // -----------------------------
-  // Report Card image (Canvas -> <img>)
-  // -----------------------------
-  async function drawReportCardImage(payload, hist) {
-    const stats = computeStats(hist);
-    const { vendorUrl, vendorName } = resolveVendor(payload);
-
-    const W = 1080;
-    const H = 1920;
-    const pad = 60;
-
-    const c = document.createElement("canvas");
-    c.width = W;
-    c.height = H;
-    const ctx = c.getContext("2d");
-
-    ctx.fillStyle = "#06070a";
-    ctx.fillRect(0, 0, W, H);
-
-    function roundedRect(x, y, w, h, r) {
-      const rr = Math.max(0, Math.min(Number(r || 0), w / 2, h / 2));
-      ctx.beginPath();
-      ctx.moveTo(x + rr, y);
-      ctx.arcTo(x + w, y, x + w, y + h, rr);
-      ctx.arcTo(x + w, y + h, x, y + h, rr);
-      ctx.arcTo(x, y + h, x, y, rr);
-      ctx.arcTo(x, y, x + w, y, rr);
-      ctx.closePath();
-    }
-
-    function panel(x, y, w, h) {
-      ctx.save();
-      ctx.globalAlpha = 0.18;
-      ctx.fillStyle = "#ffffff";
-      roundedRect(x, y, w, h, 28);
-      ctx.fill();
-
-      ctx.globalAlpha = 0.20;
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 2;
-      roundedRect(x, y, w, h, 28);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // Header
-    const secY = 120;
-    ctx.font = "900 92px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.textAlign = "center";
-
-    const parts = ["S", "E", "C"];
-    const colors = ["#ff4d4d", "#eef2f7", "#2f66ff"];
-    const spacing = 90;
-    const midX = W / 2;
-    const startX = midX - spacing;
-
-    for (let i = 0; i < 3; i++) {
-      ctx.fillStyle = colors[i];
-      ctx.fillText(parts[i], startX + spacing * i, secY);
-    }
-
-    ctx.fillStyle = "rgba(238,242,247,.75)";
-    ctx.font = "700 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("Shooter Experience Card", W/2, secY + 42);
-
-    // Score block
-    panel(pad, 220, W - pad*2, 220);
-
-    const score = Number(payload?.score ?? 0);
-    const band = scoreBandInfo(score);
-
-    ctx.font = "800 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillStyle = "rgba(238,242,247,.70)";
-    ctx.fillText("SCORE", W/2, 285);
-
-    ctx.font = "900 120px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillStyle = "rgba(238,242,247,.94)";
-    ctx.fillText(String(Math.round(score)), W/2, 405);
-
-    // Band pill
-    const pillW = 720, pillH = 64;
-    const pillX = (W - pillW)/2;
-    const pillY = 430;
-    roundedRect(pillX, pillY, pillW, pillH, 999);
-
-    let pillFill = "rgba(255,255,255,.08)";
-    let pillTextColor = "rgba(238,242,247,.75)";
-    if (band.cls === "scoreBandGreen"){ pillFill = "rgba(72,255,139,.92)"; pillTextColor="#031009"; }
-    if (band.cls === "scoreBandYellow"){ pillFill = "rgba(255,232,90,.92)"; pillTextColor="#191300"; }
-    if (band.cls === "scoreBandRed"){ pillFill = "rgba(255,77,77,.92)"; pillTextColor="#1b0000"; }
-
-    ctx.fillStyle = pillFill;
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,.18)";
-    ctx.lineWidth = 2;
-    roundedRect(pillX, pillY, pillW, pillH, 999);
-    ctx.stroke();
-
-    ctx.fillStyle = pillTextColor;
-    ctx.font = "900 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText(band.text, W/2, pillY + 44);
-
-    // One-line identity
-    const dist = Number(payload?.debug?.distanceYds ?? payload?.distanceYds ?? 0);
-    const hitsN = Number(payload?.shots ?? 0);
-
-    const wdir = String(payload?.windage?.dir || "");
-    const edir = String(payload?.elevation?.dir || "");
-    const wclick = fmt2(payload?.windage?.clicks ?? 0);
-    const eclick = fmt2(payload?.elevation?.clicks ?? 0);
-
-    ctx.fillStyle = "rgba(238,242,247,.78)";
-    ctx.font = "800 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText(`${dist || 100} yds  |  ${hitsN} hits  |  ${wclick} ${wdir}  |  ${eclick} ${edir}`, W/2, 560);
-
-    // Squares
-    const sq = 360;
-    const gap = 60;
-    const total = sq*2 + gap;
-    const start = (W - total)/2;
-    const ySq = 620;
-
-    panel(start, ySq, sq, sq);
-    panel(start + sq + gap, ySq, sq, sq);
-
-    ctx.fillStyle = "rgba(238,242,247,.72)";
-    ctx.font = "900 22px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("TARGET USED", start + sq/2, ySq - 16);
-    ctx.fillText("OFFICIAL TARGET PARTNER", start + sq + gap + sq/2, ySq - 16);
-
-    // Thumbnail + markers
-    const imgUrl = loadTargetImageUrl();
-    const aim = payload?.debug?.aim || null;
-    const hitArr = Array.isArray(payload?.debug?.hits) ? payload.debug.hits : [];
-
-    if (imgUrl) {
-      try {
-        const img = await new Promise((resolve, reject) => {
-          const im = new Image();
-          im.crossOrigin = "anonymous";
-          im.onload = () => resolve(im);
-          im.onerror = reject;
-          im.src = imgUrl;
-        });
-
-        const innerX = start + 10;
-        const innerY = ySq + 10;
-        const innerW = sq - 20;
-        const innerH = sq - 20;
-
-        const scale = Math.max(innerW / img.width, innerH / img.height);
-        const dw = img.width * scale;
-        const dh = img.height * scale;
-        const dx = innerX + (innerW - dw)/2;
-        const dy = innerY + (innerH - dh)/2;
-
-        ctx.save();
-        roundedRect(innerX, innerY, innerW, innerH, 22);
-        ctx.clip();
-        ctx.drawImage(img, dx, dy, dw, dh);
-
-        function map01(p){
-          const x = dx + (Number(p?.x01 ?? 0) * dw);
-          const y = dy + (Number(p?.y01 ?? 0) * dh);
-          return { x, y };
-        }
-
-        for (const h of hitArr) {
-          const m = map01(h);
-          ctx.beginPath();
-          ctx.arc(m.x, m.y, 10, 0, Math.PI*2);
-          ctx.fillStyle = "rgba(183,255,60,.95)";
-          ctx.fill();
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = "rgba(0,0,0,.55)";
-          ctx.stroke();
-        }
-
-        if (aim) {
-          const m = map01(aim);
-          ctx.beginPath();
-          ctx.arc(m.x, m.y, 12, 0, Math.PI*2);
-          ctx.fillStyle = "rgba(103,243,164,.95)";
-          ctx.fill();
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = "rgba(0,0,0,.55)";
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.arc(m.x, m.y, 22, 0, Math.PI*2);
-          ctx.strokeStyle = "rgba(238,242,247,.85)";
-          ctx.lineWidth = 3;
-          ctx.stroke();
-        }
-
-        ctx.restore();
-      } catch {}
-    } else {
-      ctx.fillStyle = "rgba(238,242,247,.25)";
-      ctx.font = "900 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("No Image", start + sq/2, ySq + sq/2);
-    }
-
-    // ✅ Vendor square: logo (if present) + name
-    const vendorX = start + sq + gap;
-    const vendorY = ySq;
-    const innerVX = vendorX + 10;
-    const innerVY = vendorY + 10;
-    const innerVW = sq - 20;
-    const innerVH = sq - 20;
-
-    let drewLogo = false;
-    if (isBaker(vendorUrl)) {
-      try {
-        const logo = await new Promise((resolve, reject) => {
-          const im = new Image();
-          im.onload = () => resolve(im);
-          im.onerror = reject;
-          im.src = "./assets/vendor-baker-logo.png";
-        });
-
-        ctx.save();
-        roundedRect(innerVX, innerVY, innerVW, innerVH, 22);
-        ctx.clip();
-
-        // fit inside top half
-        const maxW = innerVW * 0.78;
-        const maxH = innerVH * 0.40;
-        const s = Math.min(maxW / logo.width, maxH / logo.height);
-        const lw = logo.width * s;
-        const lh = logo.height * s;
-        const lx = innerVX + (innerVW - lw)/2;
-        const ly = innerVY + 48;
-
-        ctx.drawImage(logo, lx, ly, lw, lh);
-        ctx.restore();
-        drewLogo = true;
-      } catch {}
-    }
-
-    ctx.fillStyle = "rgba(238,242,247,.92)";
-    ctx.font = "900 44px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.textAlign = "center";
-
-    const nameText = String(vendorName || (isBaker(vendorUrl) ? "BAKER TARGETS" : "Vendor Partner"));
-    ctx.fillText(nameText, vendorX + sq/2, drewLogo ? (vendorY + sq/2 + 40) : (vendorY + sq/2 - 10));
-
-    ctx.fillStyle = "rgba(238,242,247,.62)";
-    ctx.font = "800 22px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("After-Shot Intelligence", vendorX + sq/2, drewLogo ? (vendorY + sq/2 + 84) : (vendorY + sq/2 + 34));
-
-    // Stats
-    panel(pad, 1040, W - pad*2, 200);
-    ctx.fillStyle = "rgba(238,242,247,.70)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("SESSION SUMMARY (LAST 10)", W/2, 1090);
-
-    ctx.fillStyle = "rgba(238,242,247,.92)";
-    ctx.font = "900 44px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-
-    const leftX = pad + 200;
-    const rightX = W - pad - 200;
-    const row1 = 1160;
-
-    ctx.fillText(`${Math.round(stats.highest)}`, leftX, row1);
-    ctx.fillText(`${stats.avg10}`, rightX, row1);
-
-    ctx.fillStyle = "rgba(238,242,247,.70)";
-    ctx.font = "900 20px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("Highest (10)", leftX, row1 + 40);
-    ctx.fillText("Average (10)", rightX, row1 + 40);
-
-    // Top 10
-    panel(pad, 1260, W - pad*2, 540);
-    ctx.fillStyle = "rgba(238,242,247,.75)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("LAST 10 — SCORE / YDS / HITS (NEWEST TOP)", W/2, 1315);
-
-    const top10 = hist.slice(0, KEEP_N);
-    ctx.textAlign = "left";
-    ctx.font = "900 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-
-    const startY = 1370;
-    const lineH = 44;
-    const colX = pad + 60;
-
-    for (let i = 0; i < top10.length; i++) {
-      const h = top10[i];
-      const rowY = startY + i * lineH;
-
-      if (i === 0) {
-        ctx.save();
-        ctx.globalAlpha = 0.12;
-        ctx.fillStyle = "#2f66ff";
-        roundedRect(pad + 30, rowY - 32, W - pad*2 - 60, 42, 12);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      ctx.fillStyle = "rgba(238,242,247,.92)";
-      const s = Math.round(Number(h.score || 0));
-      const yd = Math.round(Number(h.dist || 0));
-      const ht = Math.round(Number(h.hits || 0));
-      ctx.fillText(`${String(i+1).padStart(2,"0")}.  ${s}   |   ${yd} yds   |   ${ht} hits`, colX, rowY);
-    }
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "rgba(238,242,247,.45)";
-    ctx.font = "800 20px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText(`Generated ${nowStamp()}`, W/2, 1875);
-
-    return c.toDataURL("image/png");
-  }
-
-  // -----------------------------
-  // Payload
-  // -----------------------------
   function loadPayload() {
-    const qp = getQueryParam("payload");
-    if (qp) {
-      const obj = b64ToObj(qp);
-      if (obj) return obj;
+    // Newer test key
+    let s = sessionStorage.getItem("sczn3_results");
+    if (s) {
+      const p = safeJsonParse(s);
+      if (p) return p;
     }
 
-    const s = localStorage.getItem(KEY_PAYLOAD) || "";
-    const j = safeJsonParse(s);
-    if (j) return j;
+    // Main app key
+    s = sessionStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
+    if (s) {
+      const p = safeJsonParse(s);
+      if (p) return p;
+    }
+
+    // Older/local fallback
+    s = localStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
+    if (s) {
+      const p = safeJsonParse(s);
+      if (p) return p;
+    }
+
+    // URL payload fallback
+    const fromUrl = getParam("payload");
+    if (fromUrl) {
+      try {
+        const decoded = atob(fromUrl);
+        const p = safeJsonParse(decoded);
+        if (p) return p;
+      } catch {}
+    }
 
     return null;
   }
 
-  // -----------------------------
-  // View switching
-  // -----------------------------
-  function showPrecision() {
-    viewPrecision.classList.add("viewOn");
-    viewReport.classList.remove("viewOn");
-    try { window.scrollTo(0, 0); } catch {}
+  function avg(points, key) {
+    return points.reduce((sum, p) => sum + Number(p[key] || 0), 0) / points.length;
   }
 
-  function showReport() {
-    viewPrecision.classList.remove("viewOn");
-    viewReport.classList.add("viewOn");
-    try { window.scrollTo(0, 0); } catch {}
+  function distance(a, b) {
+    const dx = Number(a.x01 || 0) - Number(b.x01 || 0);
+    const dy = Number(a.y01 || 0) - Number(b.y01 || 0);
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
-  // -----------------------------
-  // Render Page 1
-  // -----------------------------
-  function renderPrecision(payload) {
-    const score = Number(payload?.score ?? 0);
-    const band = scoreBandInfo(score);
+  function normalizePayload(payload) {
+    if (!payload) return null;
 
-    scoreValue.textContent = Number.isFinite(score) ? String(Math.round(score)) : "—";
+    // Direct target-page shape
+    if (payload.aim && Array.isArray(payload.hits)) {
+      return {
+        aim: payload.aim,
+        hits: payload.hits,
+        vendorUrl: payload.vendorUrl || "",
+        vendorName: payload.vendorName || "",
+        distanceLabel: payload.distanceLabel || "100 yds",
+        timeLabel: payload.timeLabel || "Session ready"
+      };
+    }
 
-    scoreBand.classList.remove("scoreBandNeutral", "scoreBandGreen", "scoreBandYellow", "scoreBandRed");
-    scoreBand.classList.add(band.cls);
-    scoreBand.textContent = band.text;
+    // SEC payload shape from older app versions
+    if (payload.aimPoint && Array.isArray(payload.shots)) {
+      return {
+        aim: payload.aimPoint,
+        hits: payload.shots,
+        vendorUrl: payload.vendorUrl || "",
+        vendorName: payload.vendorName || "",
+        distanceLabel: payload.distanceLabel || "100 yds",
+        timeLabel: payload.timeLabel || "Session ready"
+      };
+    }
 
-    scoreValue.classList.remove("scoreGood","scoreMid","scoreLow");
-    if (band.scoreCls) scoreValue.classList.add(band.scoreCls);
-
-    windageBig.textContent = fmt2(payload?.windage?.clicks ?? 0);
-    windageDir.textContent = String(payload?.windage?.dir || "—");
-
-    elevationBig.textContent = fmt2(payload?.elevation?.clicks ?? 0);
-    elevationDir.textContent = String(payload?.elevation?.dir || "—");
-
-    const dist = Number(payload?.debug?.distanceYds ?? payload?.distanceYds ?? 100);
-    const shots = Number(payload?.shots ?? 0);
-
-    runDistance.textContent = `${Math.round(dist)} yds`;
-    runHits.textContent = `${shots} hits`;
-    runTime.textContent = nowStamp();
+    return null;
   }
 
-  // -----------------------------
-  // Render Page 2
-  // -----------------------------
-  async function renderReport(payload) {
-    const { vendorUrl } = resolveVendor(payload);
-    const surveyUrl = String(payload?.surveyUrl || "") || DEFAULT_SURVEY_URL;
+  function compute(norm) {
+    if (!norm?.aim || !norm?.hits || norm.hits.length < 3) return null;
 
-    if (vendorUrl && vendorUrl.startsWith("http")) {
+    const poib = {
+      x01: avg(norm.hits, "x01"),
+      y01: avg(norm.hits, "y01")
+    };
+
+    const dx = poib.x01 - norm.aim.x01;
+    const dy = poib.y01 - norm.aim.y01;
+
+    const windageClicks = Math.round(Math.abs(dx) * 100);
+    const elevationClicks = Math.round(Math.abs(dy) * 100);
+
+    const windageDirection =
+      dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "CENTERED";
+
+    const elevationDirection =
+      dy > 0 ? "UP" : dy < 0 ? "DOWN" : "CENTERED";
+
+    const meanRadius =
+      norm.hits.reduce((sum, p) => sum + distance(p, poib), 0) / norm.hits.length;
+
+    const offset = Math.sqrt(dx * dx + dy * dy);
+
+    const score = Math.max(
+      0,
+      Math.min(100, Math.round(100 - offset * 120))
+    );
+
+    return {
+      score,
+      poib,
+      offset,
+      meanRadius,
+      windageClicks,
+      elevationClicks,
+      windageDirection,
+      elevationDirection,
+      shotCount: norm.hits.length,
+      distanceLabel: norm.distanceLabel || "100 yds",
+      timeLabel: norm.timeLabel || "Session ready",
+      vendorUrl: norm.vendorUrl || "",
+      vendorName: norm.vendorName || ""
+    };
+  }
+
+  function scoreLabel(score) {
+    if (score >= 90) return "EXCELLENT";
+    if (score >= 75) return "GOOD";
+    if (score >= 60) return "FAIR";
+    return "ADJUST";
+  }
+
+  function scoreColor(score) {
+    if (score >= 90) return "#22c55e";
+    if (score >= 75) return "#3b82f6";
+    if (score >= 60) return "#f59e0b";
+    return "#ef4444";
+  }
+
+  function renderVendor(result) {
+    if (!vendorBtn) return;
+
+    const vParam = getParam("v").toLowerCase();
+    let vendorUrl =
+      result?.vendorUrl ||
+      localStorage.getItem(KEY_VENDOR_URL) ||
+      "";
+
+    if (!vendorUrl && vParam === "baker") {
+      vendorUrl = "https://bakertargets.com/";
+    }
+
+    let vendorName =
+      result?.vendorName ||
+      localStorage.getItem(KEY_VENDOR_NAME) ||
+      "";
+
+    if (!vendorName && vendorUrl.toLowerCase().includes("baker")) {
+      vendorName = "Visit Baker";
+    }
+
+    if (vendorUrl) {
       vendorBtn.href = vendorUrl;
-      vendorBtn.style.opacity = "1";
+      vendorBtn.textContent = vendorName || "Visit Vendor";
       vendorBtn.style.pointerEvents = "auto";
-      vendorBtn.textContent = isBaker(vendorUrl) ? "Baker Targets — Shop Targets" : "Visit Vendor";
+      vendorBtn.style.opacity = "1";
     } else {
       vendorBtn.href = "#";
-      vendorBtn.style.opacity = ".65";
+      vendorBtn.textContent = "Visit Vendor";
       vendorBtn.style.pointerEvents = "none";
-      vendorBtn.textContent = "Vendor (Not Set)";
+      vendorBtn.style.opacity = ".6";
     }
 
-    if (surveyUrl && surveyUrl.startsWith("http")) {
-      surveyBtn.href = surveyUrl;
-      surveyBtn.style.opacity = "1";
-      surveyBtn.style.pointerEvents = "auto";
-    } else {
-      surveyBtn.href = "#";
-      surveyBtn.style.opacity = ".65";
-      surveyBtn.style.pointerEvents = "none";
+    if (surveyBtn && !surveyBtn.href) {
+      surveyBtn.href = "https://forms.gle/uCSDTk5BwT4euLYeA";
     }
-
-    const hist = loadHistory();
-    const dataUrl = await drawReportCardImage(payload, hist);
-    secCardImg.src = dataUrl;
   }
 
-  // -----------------------------
-  // Boot
-  // -----------------------------
-  const payload = loadPayload();
-  if (!payload) {
+  function renderPrecision(result) {
+    if (!result) return;
+
+    if (scoreValue) scoreValue.textContent = String(result.score);
+    if (scoreBand) scoreBand.textContent = scoreLabel(result.score);
+    if (scoreTip) {
+      scoreTip.textContent = "Tight cluster + closer to the aim point = higher score.";
+    }
+
+    if (windageBig) {
+      windageBig.textContent =
+        result.windageDirection === "CENTERED" ? "0" : String(result.windageClicks);
+    }
+    if (windageDir) windageDir.textContent = result.windageDirection;
+
+    if (elevationBig) {
+      elevationBig.textContent =
+        result.elevationDirection === "CENTERED" ? "0" : String(result.elevationClicks);
+    }
+    if (elevationDir) elevationDir.textContent = result.elevationDirection;
+
+    if (runDistance) runDistance.textContent = result.distanceLabel;
+    if (runHits) runHits.textContent = `${result.shotCount} hits`;
+    if (runTime) runTime.textContent = result.timeLabel;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function fillRoundRect(ctx, x, y, w, h, r, fill) {
+    roundRect(ctx, x, y, w, h, r);
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+
+  function strokeRoundRect(ctx, x, y, w, h, r, stroke, lineWidth = 1) {
+    roundRect(ctx, x, y, w, h, r);
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+  }
+
+  function drawMiniTarget(ctx, x, y, w, h, result) {
+    fillRoundRect(ctx, x, y, w, h, 22, "#f3f4f6");
+    strokeRoundRect(ctx, x, y, w, h, 22, "rgba(15,23,42,.12)", 2);
+
+    ctx.strokeStyle = "rgba(15,23,42,.15)";
+    ctx.lineWidth = 1;
+
+    const cols = 8;
+    const rows = 5;
+
+    for (let i = 1; i < cols; i++) {
+      const gx = x + (w / cols) * i;
+      ctx.beginPath();
+      ctx.moveTo(gx, y + 8);
+      ctx.lineTo(gx, y + h - 8);
+      ctx.stroke();
+    }
+
+    for (let j = 1; j < rows; j++) {
+      const gy = y + (h / rows) * j;
+      ctx.beginPath();
+      ctx.moveTo(x + 8, gy);
+      ctx.lineTo(x + w - 8, gy);
+      ctx.stroke();
+    }
+
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 20, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(cx - 28, cy);
+    ctx.lineTo(cx + 28, cy);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 28);
+    ctx.lineTo(cx, cy + 28);
+    ctx.stroke();
+
+    const poibX = cx + (result.poib.x01 - 0.5) * (w * 0.7);
+    const poibY = cy + (result.poib.y01 - 0.5) * (h * 0.7);
+
+    ctx.strokeStyle = "#ef4444";
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(poibX - 10, poibY - 10);
+    ctx.lineTo(poibX + 10, poibY + 10);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(poibX - 10, poibY + 10);
+    ctx.lineTo(poibX + 10, poibY - 10);
+    ctx.stroke();
+  }
+
+  function generateFancyCard(result) {
+    if (!secCardImg || !result) return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1400;
+    canvas.height = 1800;
+
+    const ctx = canvas.getContext("2d");
+
+    const bgTop = "#07111f";
+    const bgBottom = "#0f1b2d";
+    const card = "rgba(255,255,255,.06)";
+    const cardBorder = "rgba(255,255,255,.10)";
+    const white = "#f8fafc";
+    const muted = "#94a3b8";
+    const accent = scoreColor(result.score);
+
+    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, bgTop);
+    grad.addColorStop(1, bgBottom);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "rgba(59,130,246,.10)";
+    ctx.beginPath();
+    ctx.arc(1180, 180, 220, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(239,68,68,.08)";
+    ctx.beginPath();
+    ctx.arc(170, 1500, 260, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = white;
+    ctx.font = "600 34px Arial";
+    ctx.fillText("SHOOTER EXPERIENCE CARD", 90, 90);
+
+    ctx.fillStyle = muted;
+    ctx.font = "24px Arial";
+    ctx.fillText("After-Shot Intelligence", 90, 126);
+
+    fillRoundRect(ctx, 70, 170, 1260, 560, 36, card);
+    strokeRoundRect(ctx, 70, 170, 1260, 560, 36, cardBorder, 2);
+
+    ctx.fillStyle = muted;
+    ctx.font = "bold 28px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("SCORE", 700, 250);
+
+    ctx.fillStyle = white;
+    ctx.font = "bold 220px Arial";
+    ctx.fillText(String(result.score), 700, 470);
+
+    fillRoundRect(ctx, 420, 500, 560, 90, 45, accent);
+    ctx.fillStyle = "#0b1220";
+    ctx.font = "bold 38px Arial";
+    ctx.fillText(scoreLabel(result.score), 700, 558);
+
+    ctx.fillStyle = muted;
+    ctx.font = "24px Arial";
+    ctx.fillText("Distance", 250, 650);
+    ctx.fillText("Hits", 700, 650);
+    ctx.fillText("Status", 1080, 650);
+
+    ctx.fillStyle = white;
+    ctx.font = "bold 34px Arial";
+    ctx.fillText(result.distanceLabel, 250, 695);
+    ctx.fillText(`${result.shotCount}`, 700, 695);
+    ctx.fillText(result.timeLabel, 1080, 695);
+
+    ctx.textAlign = "left";
+
+    fillRoundRect(ctx, 70, 780, 610, 300, 30, card);
+    strokeRoundRect(ctx, 70, 780, 610, 300, 30, cardBorder, 2);
+
+    fillRoundRect(ctx, 720, 780, 610, 300, 30, card);
+    strokeRoundRect(ctx, 720, 780, 610, 300, 30, cardBorder, 2);
+
+    ctx.fillStyle = muted;
+    ctx.font = "bold 24px Arial";
+    ctx.fillText("WINDAGE", 110, 835);
+    ctx.fillText("ELEVATION", 760, 835);
+
+    ctx.fillStyle = white;
+    ctx.font = "bold 130px Arial";
+    ctx.fillText(
+      result.windageDirection === "CENTERED" ? "0" : String(result.windageClicks),
+      110,
+      965
+    );
+    ctx.fillText(
+      result.elevationDirection === "CENTERED" ? "0" : String(result.elevationClicks),
+      760,
+      965
+    );
+
+    ctx.fillStyle = accent;
+    ctx.font = "bold 42px Arial";
+    ctx.fillText(result.windageDirection, 118, 1025);
+    ctx.fillText(result.elevationDirection, 768, 1025);
+
+    fillRoundRect(ctx, 70, 1130, 610, 420, 30, card);
+    strokeRoundRect(ctx, 70, 1130, 610, 420, 30, cardBorder, 2);
+
+    fillRoundRect(ctx, 720, 1130, 610, 420, 30, card);
+    strokeRoundRect(ctx, 720, 1130, 610, 420, 30, cardBorder, 2);
+
+    ctx.fillStyle = muted;
+    ctx.font = "bold 24px Arial";
+    ctx.fillText("TARGET SNAPSHOT", 110, 1188);
+    ctx.fillText("SESSION DETAILS", 760, 1188);
+
+    drawMiniTarget(ctx, 110, 1225, 530, 250, result);
+
+    ctx.fillStyle = white;
+    ctx.font = "bold 28px Arial";
+    ctx.fillText("Offset", 760, 1285);
+    ctx.fillText("Group", 760, 1370);
+    ctx.fillText("Partner", 760, 1455);
+
+    ctx.font = "24px Arial";
+    ctx.fillStyle = muted;
+    ctx.fillText(result.offset.toFixed(3), 760, 1325);
+    ctx.fillText(result.meanRadius.toFixed(3), 760, 1410);
+    ctx.fillText(result.vendorName || "Baker Targets", 760, 1495);
+
+    ctx.fillStyle = white;
+    ctx.font = "bold 26px Arial";
+    ctx.fillText("Powered by SCZN3", 90, 1690);
+
+    ctx.fillStyle = muted;
+    ctx.font = "22px Arial";
+    ctx.fillText("Faith • Order • Precision", 90, 1730);
+
+    ctx.textAlign = "right";
+    ctx.fillText("Report Card", 1310, 1730);
+
+    secCardImg.src = canvas.toDataURL("image/png");
+  }
+
+  function showReport(result) {
+    if (!viewPrecision || !viewReport) return;
+    generateFancyCard(result);
+    viewPrecision.classList.remove("viewOn");
+    viewReport.classList.add("viewOn");
+  }
+
+  function showPrecision() {
+    if (!viewPrecision || !viewReport) return;
+    viewReport.classList.remove("viewOn");
+    viewPrecision.classList.add("viewOn");
+  }
+
+  function goHome() {
+    const params = new URLSearchParams(window.location.search);
+    const qs = params.toString();
+    window.location.href = qs ? `index.html?${qs}` : "index.html";
+  }
+
+  const rawPayload = loadPayload();
+  const norm = normalizePayload(rawPayload);
+  const result = compute(norm);
+
+  if (!result) {
     alert("SEC data not found. Go back and run a target first.");
-    showPrecision();
     return;
   }
 
-  // ✅ Force vendor resolution immediately (so history/vendor is correct)
-  resolveVendor(payload);
+  result.vendorUrl = norm.vendorUrl || "";
+  result.vendorName = norm.vendorName || "";
 
-  pushHistory(payload);
+  renderVendor(result);
+  renderPrecision(result);
 
-  renderPrecision(payload);
-  showPrecision();
+  if (toReportBtn) {
+    toReportBtn.onclick = () => showReport(result);
+  }
 
-  toReportBtn.addEventListener("click", async () => {
-    showReport();
-    await renderReport(payload);
-  });
-
-  backBtn.addEventListener("click", () => {
-    showPrecision();
-  });
+  if (backBtn) {
+    backBtn.onclick = showPrecision;
+  }
 
   if (goHomeBtn) {
-    goHomeBtn.addEventListener("click", () => {
-      window.location.href = "./index.html?from=sec&fresh=" + Date.now();
-    });
+    goHomeBtn.onclick = goHome;
   }
 })();
