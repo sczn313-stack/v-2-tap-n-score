@@ -1,6 +1,6 @@
-<!-- docs/sec.html (FULL REPLACEMENT) — TWO-PAGE SEC FLOW (NO “TROPHY”) -->
+<!-- docs/sec.html (FULL REPLACEMENT — POLISH PASS / TWO-PAGE SEC FLOW / NO WIRE CHANGES) -->
 <!doctype html>
-<html lang="en">
+<html lang="en" data-env="PROD" data-build="SEC-2P-REV-B">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -11,9 +11,12 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
+  <meta name="sczn3-env" content="PROD" />
+  <meta name="sczn3-build" content="SEC-2P-REV-B" />
+
   <title>SEC — Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./sec.css?v=SEC-2P-REV-A" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-2P-REV-B" />
 </head>
 
 <body>
@@ -32,7 +35,7 @@
         </div>
       </header>
 
-      <section class="card">
+      <section class="card" aria-label="Precision results">
         <div class="scoreWrap">
           <div class="scoreLabel">SCORE</div>
           <div id="scoreValue" class="scoreValue">—</div>
@@ -43,7 +46,7 @@
           </div>
         </div>
 
-        <div class="clicksBig">
+        <div class="clicksBig" aria-label="Scope adjustments">
           <div class="clickBox">
             <div class="clickHdr">WINDAGE</div>
             <div id="windageBig" class="clickVal">—</div>
@@ -63,18 +66,17 @@
           <span id="runTime" class="miniPill">—</span>
         </div>
 
-        <div class="primaryActions">
+        <div class="primaryActions" aria-label="Primary actions">
           <button id="toReportBtn" class="primaryBtn" type="button">
             Save SEC + Shooter History
           </button>
 
-          <!-- ✅ NEW: Exit back to landing -->
           <button id="goHomeBtn" class="secondaryGlowBtn" type="button">
             Zero another target / Score another
           </button>
 
           <div class="microNote">
-            Next screen creates a “Report Card” image you can save to Photos.
+            Next screen creates a report card image you can save to Photos.
           </div>
         </div>
       </section>
@@ -97,7 +99,7 @@
         </div>
       </header>
 
-      <section class="card reportCard">
+      <section class="card reportCard" aria-label="Report card save view">
         <div class="saveHint">
           Tap &amp; hold the card to save to Photos.
         </div>
@@ -106,7 +108,7 @@
           <img id="secCardImg" alt="SEC report card image" />
         </div>
 
-        <div class="reportActions">
+        <div class="reportActions" aria-label="Report actions">
           <button id="backBtn" class="btnSecondary" type="button">Back</button>
 
           <a id="vendorBtn" class="vendorBtn" href="#" target="_blank" rel="noopener">
@@ -119,7 +121,7 @@
         </div>
 
         <div class="reportMicro">
-          Vendor link is only live here (after you complete the loop).
+          Vendor link is only live here after you complete the loop.
         </div>
       </section>
 
@@ -130,6 +132,6 @@
 
   </main>
 
-  <script defer src="./sec.js?v=SEC-2P-REV-A"></script>
+  <script defer src="./sec.js?v=SEC-2P-REV-B"></script>
 </body>
 </html>
