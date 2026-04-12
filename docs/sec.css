@@ -551,3 +551,71 @@ body{
     padding-top:max(16px, var(--safe-top));
   }
 }
+/* =========================
+   PERFORMANCE PANEL
+========================= */
+
+.perfPanel{
+  margin-top:14px;
+  padding:14px;
+  border-radius:20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.perfTitle{
+  font-weight:1000;
+  letter-spacing:.12em;
+  font-size:12px;
+  text-align:center;
+  color:rgba(238,242,247,.70);
+  margin-bottom:10px;
+}
+
+.perfStats{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.perfStat{
+  text-align:center;
+  flex:1;
+}
+
+.perfValue{
+  font-size:36px;
+  font-weight:1000;
+}
+
+.perfLabel{
+  font-size:12px;
+  color:rgba(238,242,247,.60);
+}
+
+.perfListTitle{
+  font-size:12px;
+  letter-spacing:.12em;
+  color:rgba(238,242,247,.60);
+  margin-bottom:8px;
+}
+
+.perfList{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.perfRow{
+  display:grid;
+  grid-template-columns:40px 1fr 1fr 1fr;
+  padding:10px;
+  border-radius:10px;
+  background:rgba(255,255,255,.05);
+  font-weight:900;
+  font-size:13px;
+}
+
+.perfRow.highlight{
+  background:rgba(47,102,255,.25);
+}
