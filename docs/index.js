@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/index.js — FINAL STABLE BUILD
+   docs/index.js — FINAL STABLE BUILD + SEC HANDOFF (COMPLETE)
 ============================================================ */
 
 (() => {
@@ -11,10 +11,11 @@
   const elWrap = $("targetWrap");
   const elDots = $("dotsLayer");
 
-  const elVendorBox = $("vendorBox");
-  const elVendorPanelLink = $("vendorPanelLink");
+  const elShowResultsBtn = $("showResultsBtn");
+  const elStickyResultsBtn = $("stickyResultsBtn");
 
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
+  const KEY_SEC_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
 
   let objectUrl = null;
   let aim = null;
@@ -29,30 +30,12 @@
     return getParam("v").toLowerCase() === "baker";
   }
 
-  // 🔥 VENDOR FIX (NO PANEL)
   function hydrateVendor() {
     if (isBakerMode()) {
-      localStorage.setItem(KEY_VENDOR_URL, "https://baker-targets.com/");
-    }
-
-    const v = localStorage.getItem(KEY_VENDOR_URL) || "";
-
-    if (elVendorPanelLink && v) {
-      elVendorPanelLink.href = v;
-      elVendorPanelLink.target = "_blank";
-    }
-
-    if (elVendorBox && v) {
-      elVendorBox.href = v;
-      elVendorBox.target = "_blank";
-      elVendorBox.rel = "noopener";
-
-      // 🔥 REMOVE ALL INTERCEPTS
-      elVendorBox.onclick = null;
+      localStorage.setItem(KEY_VENDOR_URL, "https://bakertargets.com/");
     }
   }
 
-  // 🔥 PHOTO FIX (NO RESET)
   function hydratePhoto() {
     if (!elPhotoBtn || !elFile) return;
 
@@ -64,11 +47,8 @@
 
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       objectUrl = URL.createObjectURL(f);
-
-      // 🔥 CRITICAL — NO RESET
       elImg.src = objectUrl;
 
-      // prevents reload behavior
       elFile.value = "";
     };
   }
@@ -115,7 +95,45 @@
     });
   }
 
+  /* ============================================================
+     🔥 SEC HANDOFF (THIS FIXES YOUR PROBLEM)
+  ============================================================ */
+
+  function goToSEC() {
+    if (!aim || hits.length < 3) {
+      alert("Take at least 3 shots first");
+      return;
+    }
+
+    const payload = {
+      aim,
+      hits,
+      distanceLabel: "100 yds",
+      timeLabel: "Session ready",
+      vendorUrl: localStorage.getItem(KEY_VENDOR_URL) || "",
+      vendorName: ""
+    };
+
+    sessionStorage.setItem(
+      KEY_SEC_PAYLOAD,
+      JSON.stringify(payload)
+    );
+
+    window.location.href = "sec.html?v=" + Date.now();
+  }
+
+  function hookResultsButtons() {
+    if (elShowResultsBtn) {
+      elShowResultsBtn.onclick = goToSEC;
+    }
+
+    if (elStickyResultsBtn) {
+      elStickyResultsBtn.onclick = goToSEC;
+    }
+  }
+
   hydrateVendor();
   hydratePhoto();
+  hookResultsButtons();
 
 })();
