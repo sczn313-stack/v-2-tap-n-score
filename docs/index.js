@@ -48,7 +48,6 @@
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       objectUrl = URL.createObjectURL(f);
       elImg.src = objectUrl;
-
       elFile.value = "";
     };
   }
@@ -89,16 +88,6 @@
     addDot(x01, y01, "hit");
   }
 
-  if (elWrap) {
-    elWrap.addEventListener("click", (e) => {
-      acceptTap(e.clientX, e.clientY);
-    });
-  }
-
-  /* ============================================================
-     🔥 SEC HANDOFF (THIS FIXES YOUR PROBLEM)
-  ============================================================ */
-
   function goToSEC() {
     if (!aim || hits.length < 3) {
       alert("Take at least 3 shots first");
@@ -114,26 +103,22 @@
       vendorName: ""
     };
 
-    sessionStorage.setItem(
-      KEY_SEC_PAYLOAD,
-      JSON.stringify(payload)
-    );
-
+    sessionStorage.setItem(KEY_SEC_PAYLOAD, JSON.stringify(payload));
     window.location.href = "sec.html?v=" + Date.now();
   }
 
   function hookResultsButtons() {
-    if (elShowResultsBtn) {
-      elShowResultsBtn.onclick = goToSEC;
-    }
+    if (elShowResultsBtn) elShowResultsBtn.onclick = goToSEC;
+    if (elStickyResultsBtn) elStickyResultsBtn.onclick = goToSEC;
+  }
 
-    if (elStickyResultsBtn) {
-      elStickyResultsBtn.onclick = goToSEC;
-    }
+  if (elWrap) {
+    elWrap.addEventListener("click", (e) => {
+      acceptTap(e.clientX, e.clientY);
+    });
   }
 
   hydrateVendor();
   hydratePhoto();
   hookResultsButtons();
-
 })();
