@@ -1,137 +1,117 @@
-<!-- docs/sec.html (FULL REPLACEMENT — POLISH PASS / TWO-PAGE SEC FLOW / NO WIRE CHANGES) -->
+<!-- docs/sec.html (FULL REPLACEMENT — PERFORMANCE UPGRADE) -->
 <!doctype html>
-<html lang="en" data-env="PROD" data-build="SEC-2P-REV-B">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#06070a" />
 
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-
-  <meta name="sczn3-env" content="PROD" />
-  <meta name="sczn3-build" content="SEC-2P-REV-B" />
-
   <title>SEC — Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./sec.css?v=SEC-2P-REV-B" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-PERF-UPGRADE-A" />
 </head>
 
 <body>
   <main class="secPage">
 
     <!-- =========================
-         PAGE 1 — PRECISION (SEC)
+         PAGE 2 — REPORT CARD
     ========================== -->
-    <section id="viewPrecision" class="view viewOn" aria-label="SEC Precision View">
-      <header class="secHeader">
-        <div class="secHeaderTop">
-          <div class="secRWB" aria-label="SEC">
-            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-          </div>
-          <div class="secSub">Shooter Experience Card</div>
-        </div>
-      </header>
+    <section id="viewReport" class="view viewOn">
 
-      <section class="card" aria-label="Precision results">
-        <div class="scoreWrap">
-          <div class="scoreLabel">SCORE</div>
-          <div id="scoreValue" class="scoreValue">—</div>
-          <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
-
-          <div id="scoreTip" class="scoreTip">
-            Tight cluster + closer to the aim point = higher score.
-          </div>
-        </div>
-
-        <div class="clicksBig" aria-label="Scope adjustments">
-          <div class="clickBox">
-            <div class="clickHdr">WINDAGE</div>
-            <div id="windageBig" class="clickVal">—</div>
-            <div id="windageDir" class="clickDir">—</div>
-          </div>
-
-          <div class="clickBox">
-            <div class="clickHdr">ELEVATION</div>
-            <div id="elevationBig" class="clickVal">—</div>
-            <div id="elevationDir" class="clickDir">—</div>
-          </div>
-        </div>
-
-        <div class="miniLine" aria-label="Run details">
-          <span id="runDistance" class="miniPill">—</span>
-          <span id="runHits" class="miniPill">—</span>
-          <span id="runTime" class="miniPill">—</span>
-        </div>
-
-        <div class="primaryActions" aria-label="Primary actions">
-          <button id="toReportBtn" class="primaryBtn" type="button">
-            Save SEC + Shooter History
-          </button>
-
-          <button id="goHomeBtn" class="secondaryGlowBtn" type="button">
-            Zero another target / Score another
-          </button>
-
-          <div class="microNote">
-            Next screen creates a report card image you can save to Photos.
-          </div>
-        </div>
-      </section>
-
-      <footer class="secFooter">
-        <span class="footerMark">SCZN3</span>
-      </footer>
-    </section>
-
-    <!-- =========================
-         PAGE 2 — REPORT CARD (SAVE)
-    ========================== -->
-    <section id="viewReport" class="view" aria-label="SEC Report Card View">
       <header class="secHeader secHeaderTight">
         <div class="secHeaderTop">
-          <div class="secRWB bigSEC" aria-label="SEC">
+          <div class="secRWB bigSEC">
             <span class="r">S</span><span class="w">E</span><span class="b">C</span>
           </div>
           <div class="secSub">Shooter Experience Card</div>
         </div>
       </header>
 
-      <section class="card reportCard" aria-label="Report card save view">
+      <section class="card reportCard">
+
         <div class="saveHint">
-          Tap &amp; hold the card to save to Photos.
+          Tap & hold the card to save to Photos.
         </div>
 
         <div class="cardImgShell">
-          <img id="secCardImg" alt="SEC report card image" />
+          <img id="secCardImg" />
         </div>
 
-        <div class="reportActions" aria-label="Report actions">
-          <button id="backBtn" class="btnSecondary" type="button">Back</button>
+        <!-- 🔥 NEW PERFORMANCE PANEL -->
+        <div class="perfPanel">
 
-          <a id="vendorBtn" class="vendorBtn" href="#" target="_blank" rel="noopener">
-            Visit Vendor
-          </a>
+          <div class="perfTitle">
+            PERFORMANCE TREND
+          </div>
 
-          <a id="surveyBtn" class="surveyBtn" href="#" target="_blank" rel="noopener">
-            Quick Survey (30 seconds)
-          </a>
+          <div class="perfStats">
+
+            <div class="perfStat">
+              <div class="perfValue">50</div>
+              <div class="perfLabel">Best (Last 10)</div>
+            </div>
+
+            <div class="perfStat">
+              <div class="perfValue">50.00</div>
+              <div class="perfLabel">Average</div>
+            </div>
+
+          </div>
+
+          <div class="perfListTitle">
+            LAST 10 RESULTS
+          </div>
+
+          <div class="perfList">
+
+            <div class="perfRow highlight">
+              <span>01</span>
+              <span>50</span>
+              <span>273 yds</span>
+              <span>10 hits</span>
+            </div>
+
+            <div class="perfRow">
+              <span>02</span>
+              <span>50</span>
+              <span>273 yds</span>
+              <span>10 hits</span>
+            </div>
+
+            <div class="perfRow">
+              <span>03</span>
+              <span>50</span>
+              <span>273 yds</span>
+              <span>—</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="reportActions">
+          <button id="backBtn" class="btnSecondary">Back</button>
+          <a id="vendorBtn" class="vendorBtn">Visit Vendor</a>
+          <a id="surveyBtn" class="surveyBtn">Quick Survey (30 seconds)</a>
         </div>
 
         <div class="reportMicro">
-          Vendor link is only live here after you complete the loop.
+          Vendor link is only live here (after you complete the loop).
         </div>
+
       </section>
 
       <footer class="secFooter">
         <span class="footerMark">SCZN3</span>
       </footer>
+
     </section>
 
   </main>
 
-  <script defer src="./sec.js?v=SEC-2P-REV-B"></script>
+  <script src="./sec.js?v=SEC-PERF-UPGRADE-A"></script>
 </body>
 </html>
