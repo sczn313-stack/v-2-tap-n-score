@@ -1,9 +1,11 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
-   FIX:
-   ✅ Correctly decodes payload from URL
+   MATCHED HANDOFF VERSION
+   FIXES:
+   ✅ Correctly decodes URL payload from index.js
    ✅ Falls back to sessionStorage / localStorage
    ✅ Restores full SEC rendering flow
+   ✅ Keeps page 1 + page 2 flow working
 ============================================================ */
 
 (() => {
@@ -56,13 +58,10 @@
   function decodePayloadFromUrl(value) {
     if (!value) return null;
 
-    // Matches index.js encoder:
-    // btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
     try {
       const json = decodeURIComponent(escape(atob(value)));
       return safeJsonParse(json);
     } catch {
-      // Fallback for plain btoa(JSON.stringify(...))
       try {
         return safeJsonParse(atob(value));
       } catch {
@@ -72,28 +71,24 @@
   }
 
   function loadPayload() {
-    // 1) URL payload
     const fromUrl = getParam("payload");
     if (fromUrl) {
       const p = decodePayloadFromUrl(fromUrl);
       if (p) return p;
     }
 
-    // 2) sessionStorage primary
     let s = sessionStorage.getItem(KEY_RESULTS);
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // 3) sessionStorage secondary
     s = sessionStorage.getItem(KEY_SEC_PAYLOAD);
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // 4) localStorage fallback
     s = localStorage.getItem(KEY_SEC_PAYLOAD);
     if (s) {
       const p = safeJsonParse(s);
