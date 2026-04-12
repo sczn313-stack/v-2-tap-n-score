@@ -1,11 +1,10 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   NEXT LEVEL:
-   ✅ Touch-first precision
-   ✅ Larger aim dot / smaller shot dots
-   ✅ Light magnet snap for cleaner placement
-   ✅ Duplicate-tap guard
-   ✅ Same sec.html handoff
+   TOUCH REPAIR:
+   ✅ Uses pointerup for accurate mobile taps
+   ✅ Removes ghost-click / double-fire problems
+   ✅ Keeps same sec.html handoff
+   ✅ Keeps same IDs and overall flow
 ============================================================ */
 
 (() => {
@@ -34,15 +33,11 @@
 
   const MIN_HITS_FOR_RESULTS = 3;
   const MAX_HITS = 25;
-
-  // Small snap feel without hard-locking to a grid.
-  const SNAP_STEP = 0.005; // 0.5% of target size
-  const DUPLICATE_THRESHOLD = 0.012;
+  const DUPLICATE_THRESHOLD = 0.01;
 
   let objectUrl = null;
   let aim = null;
   let hits = [];
-  let lastTouchTime = 0;
 
   function getParam(name) {
     const u = new URL(window.location.href);
@@ -140,7 +135,9 @@
     }
 
     if (elDots) {
-      hits.forEach((p) => elDots.appendChild(makeDot("hit", p.x01, p.y01)));
+      for (const p of hits) {
+        elDots.appendChild(makeDot("hit", p.x01, p.y01));
+      }
     }
 
     refreshUiState();
@@ -156,20 +153,14 @@
     return Math.max(0, Math.min(1, v));
   }
 
-  function snap(v, step = SNAP_STEP) {
-    return Math.round(v / step) * step;
-  }
-
   function getRelative01(clientX, clientY) {
     if (!elWrap) return { x01: 0, y01: 0 };
 
     const rect = elWrap.getBoundingClientRect();
-    const rawX = clamp01((clientX - rect.left) / rect.width);
-    const rawY = clamp01((clientY - rect.top) / rect.height);
 
     return {
-      x01: clamp01(snap(rawX)),
-      y01: clamp01(snap(rawY))
+      x01: clamp01((clientX - rect.left) / rect.width),
+      y01: clamp01((clientY - rect.top) / rect.height)
     };
   }
 
@@ -179,13 +170,9 @@
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  function isDuplicateHit(candidate) {
+  function isDuplicate(candidate) {
+    if (aim && normalizedDistance(candidate, aim) <= DUPLICATE_THRESHOLD) return true;
     return hits.some((p) => normalizedDistance(candidate, p) <= DUPLICATE_THRESHOLD);
-  }
-
-  function isDuplicateAim(candidate) {
-    if (!aim) return false;
-    return normalizedDistance(candidate, aim) <= DUPLICATE_THRESHOLD;
   }
 
   function canAcceptTap() {
@@ -203,9 +190,7 @@
       return;
     }
 
-    if (isDuplicateAim(point) || isDuplicateHit(point)) {
-      return;
-    }
+    if (isDuplicate(point)) return;
 
     if (hits.length >= MAX_HITS) {
       setStatus(`Maximum of ${MAX_HITS} shots reached.`);
@@ -214,39 +199,6 @@
 
     hits.push(point);
     redrawDots();
-  }
-
-  function extractClientPoint(evt) {
-    if (!evt) return null;
-
-    if (evt.touches && evt.touches[0]) {
-      return {
-        clientX: evt.touches[0].clientX,
-        clientY: evt.touches[0].clientY
-      };
-    }
-
-    if (evt.changedTouches && evt.changedTouches[0]) {
-      return {
-        clientX: evt.changedTouches[0].clientX,
-        clientY: evt.changedTouches[0].clientY
-      };
-    }
-
-    if (typeof evt.clientX === "number" && typeof evt.clientY === "number") {
-      return {
-        clientX: evt.clientX,
-        clientY: evt.clientY
-      };
-    }
-
-    return null;
-  }
-
-  function handlePointerLikeTap(evt) {
-    const pt = extractClientPoint(evt);
-    if (!pt) return;
-    acceptTap(pt.clientX, pt.clientY);
   }
 
   function hydrateVendor() {
@@ -326,27 +278,17 @@
   function bindTargetTapEvents() {
     if (!elWrap) return;
 
-    elWrap.addEventListener(
-      "touchstart",
-      (e) => {
-        lastTouchTime = Date.now();
-        e.preventDefault();
-        handlePointerLikeTap(e);
-      },
-      { passive: false }
-    );
+    elWrap.style.touchAction = "manipulation";
 
-    elWrap.addEventListener("click", (e) => {
-      if (Date.now() - lastTouchTime < 500) return;
-      handlePointerLikeTap(e);
+    elWrap.addEventListener("pointerup", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      acceptTap(e.clientX, e.clientY);
     });
   }
 
   function bindButtons() {
     if (elClearTapsBtn) {
-      elClearTapsBtn.onclick = () => {
-        resetTaps();
-      };
+      elClearTapsBtn.onclick = () => resetTaps();
     }
 
     if (elShowResultsBtn) {
@@ -371,4 +313,4 @@
   });
 
   init();
-})();
+})();i
