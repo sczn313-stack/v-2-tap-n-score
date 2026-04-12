@@ -1,12 +1,11 @@
 /* ============================================================
-   docs/sec.css (FULL REPLACEMENT) — TWO-PAGE SEC (NEXT POLISH)
+   docs/sec.css (FULL REPLACEMENT) — NEXT LEVEL SEC
    POLISH:
-   ✅ Cleaner spacing + hierarchy
-   ✅ Stronger premium feel
-   ✅ Better fit on smaller screens
-   ✅ Better button consistency
-   ✅ Better report card presentation
-   ✅ No wire changes
+   ✅ tighter viewport fit
+   ✅ cleaner page 1 compression
+   ✅ stronger page 2 card presentation
+   ✅ performance intelligence shell
+   ✅ no wire changes
 ============================================================ */
 
 :root{
@@ -62,9 +61,9 @@ body{
   min-height:100vh;
   margin:0 auto;
   padding:
-    max(12px, var(--safe-top))
+    max(10px, var(--safe-top))
     max(12px, var(--safe-right))
-    calc(18px + var(--safe-bottom))
+    calc(14px + var(--safe-bottom))
     max(12px, var(--safe-left));
 }
 
@@ -73,11 +72,11 @@ body{
 
 /* Header */
 .secHeader{
-  padding:8px 2px 10px;
+  padding:6px 2px 8px;
 }
 
 .secHeader.secHeaderTight{
-  padding:4px 2px 8px;
+  padding:2px 2px 6px;
 }
 
 .secHeaderTop{
@@ -90,13 +89,13 @@ body{
 .secRWB{
   font-weight:1000;
   letter-spacing:.10em;
-  font-size:44px;
+  font-size:42px;
   line-height:1;
   text-shadow:0 8px 22px rgba(0,0,0,.28);
 }
 
 .bigSEC{
-  font-size:46px;
+  font-size:44px;
 }
 
 .secRWB .r{ color:var(--red); }
@@ -105,11 +104,11 @@ body{
 
 .secSub{
   font-weight:900;
-  font-size:12px;
+  font-size:11px;
   letter-spacing:.12em;
   color:rgba(238,242,247,.62);
   text-transform:uppercase;
-  margin-bottom:6px;
+  margin-bottom:5px;
   text-align:right;
 }
 
@@ -118,7 +117,7 @@ body{
   background:linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.028));
   border:1px solid var(--line);
   border-radius:24px;
-  padding:14px;
+  padding:12px;
   box-shadow:
     0 18px 40px var(--shadow),
     inset 0 1px 0 rgba(255,255,255,.04);
@@ -128,7 +127,7 @@ body{
 /* Score */
 .scoreWrap{
   text-align:center;
-  padding:12px 10px 14px;
+  padding:10px 10px 12px;
   border-radius:18px;
   background:rgba(255,255,255,.04);
   border:1px solid var(--line);
@@ -137,16 +136,16 @@ body{
 .scoreLabel{
   font-weight:1000;
   letter-spacing:.14em;
-  font-size:13px;
+  font-size:12px;
   color:rgba(238,242,247,.70);
 }
 
 .scoreValue{
   font-weight:1000;
-  font-size:88px;
+  font-size:82px;
   line-height:.94;
-  margin-top:8px;
-  margin-bottom:12px;
+  margin-top:6px;
+  margin-bottom:10px;
   color:rgba(238,242,247,.94);
   text-shadow:0 8px 20px rgba(0,0,0,.25);
 }
@@ -159,7 +158,7 @@ body{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height:40px;
+  min-height:38px;
   padding:10px 16px;
   border-radius:999px;
   font-weight:1000;
@@ -194,10 +193,10 @@ body{
 }
 
 .scoreTip{
-  margin-top:12px;
+  margin-top:10px;
   font-weight:800;
   font-size:12px;
-  line-height:1.45;
+  line-height:1.4;
   color:rgba(238,242,247,.66);
 }
 
@@ -205,8 +204,8 @@ body{
 .clicksBig{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:12px;
+  gap:10px;
+  margin-top:10px;
 }
 
 .clickBox{
@@ -214,7 +213,7 @@ body{
   border-radius:18px;
   background:rgba(255,255,255,.04);
   border:1px solid var(--line);
-  padding:12px;
+  padding:12px 10px;
   text-align:center;
 }
 
@@ -227,14 +226,14 @@ body{
 
 .clickVal{
   font-weight:1000;
-  font-size:58px;
+  font-size:54px;
   line-height:1;
-  margin-top:10px;
+  margin-top:8px;
   text-shadow:0 8px 18px rgba(0,0,0,.22);
 }
 
 .clickDir{
-  margin-top:8px;
+  margin-top:6px;
   font-weight:1000;
   letter-spacing:.10em;
   font-size:14px;
@@ -248,14 +247,14 @@ body{
   gap:8px;
   flex-wrap:wrap;
   justify-content:center;
-  margin-top:12px;
+  margin-top:10px;
 }
 
 .miniPill{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height:36px;
+  min-height:34px;
   padding:8px 12px;
   border-radius:999px;
   font-weight:900;
@@ -270,10 +269,10 @@ body{
 
 /* Buttons */
 .primaryActions{
-  margin-top:14px;
+  margin-top:12px;
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:9px;
 }
 
 .primaryBtn,
@@ -289,7 +288,7 @@ body{
   text-align:center;
   text-decoration:none;
   cursor:pointer;
-  min-height:48px;
+  min-height:46px;
   padding:12px 14px;
   border-radius:18px;
   font-weight:1000;
@@ -331,21 +330,21 @@ body{
   text-align:center;
   font-weight:800;
   font-size:12px;
-  line-height:1.4;
+  line-height:1.35;
   color:rgba(238,242,247,.60);
   padding-inline:4px;
 }
 
 /* Report page */
 .reportCard{
-  padding-top:12px;
+  padding-top:10px;
 }
 
 .saveHint{
   text-align:center;
   font-weight:900;
   font-size:12px;
-  line-height:1.4;
+  line-height:1.35;
   color:rgba(238,242,247,.72);
   margin-bottom:10px;
 }
@@ -367,6 +366,65 @@ body{
   object-fit:contain;
 }
 
+/* Performance intelligence */
+.intelPanel{
+  margin-top:12px;
+  padding:12px;
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.intelHdr{
+  text-align:center;
+  font-weight:1000;
+  font-size:12px;
+  letter-spacing:.14em;
+  color:rgba(238,242,247,.72);
+}
+
+.intelStats{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+
+.intelStat{
+  padding:12px 8px;
+  border-radius:16px;
+  text-align:center;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.intelValue{
+  font-size:28px;
+  font-weight:1000;
+  line-height:1;
+  color:rgba(238,242,247,.94);
+}
+
+.intelLabel{
+  margin-top:6px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.06em;
+  color:rgba(238,242,247,.62);
+  text-transform:uppercase;
+}
+
+.intelNote{
+  margin-top:10px;
+  text-align:center;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.4;
+  color:rgba(238,242,247,.56);
+}
+
+/* Report actions */
 .reportActions{
   display:grid;
   grid-template-columns:repeat(3, minmax(0,1fr));
@@ -390,13 +448,13 @@ body{
   text-align:center;
   font-weight:800;
   font-size:12px;
-  line-height:1.4;
+  line-height:1.35;
   color:rgba(238,242,247,.55);
 }
 
 /* Footer */
 .secFooter{
-  padding:12px 4px 0;
+  padding:10px 4px 0;
   text-align:center;
 }
 
@@ -420,21 +478,22 @@ body{
   }
 
   .secRWB{
-    font-size:40px;
+    font-size:38px;
   }
 
   .bigSEC{
-    font-size:42px;
+    font-size:40px;
   }
 
   .scoreValue{
-    font-size:76px;
+    font-size:72px;
   }
 
   .clickVal{
-    font-size:50px;
+    font-size:48px;
   }
 
+  .intelStats,
   .reportActions{
     grid-template-columns:1fr;
   }
@@ -449,24 +508,24 @@ body{
 @media (max-width: 480px){
   .secPage{
     padding:
-      max(10px, var(--safe-top))
+      max(8px, var(--safe-top))
       max(10px, var(--safe-right))
-      calc(16px + var(--safe-bottom))
+      calc(14px + var(--safe-bottom))
       max(10px, var(--safe-left));
   }
 
   .secHeader{
-    padding:6px 2px 8px;
+    padding:4px 2px 6px;
   }
 
   .secHeader.secHeaderTight{
-    padding:3px 2px 6px;
+    padding:2px 2px 5px;
   }
 
   .secHeaderTop{
     align-items:flex-start;
     flex-direction:column;
-    gap:6px;
+    gap:5px;
   }
 
   .secSub{
@@ -477,11 +536,11 @@ body{
   }
 
   .secRWB{
-    font-size:36px;
+    font-size:34px;
   }
 
   .bigSEC{
-    font-size:38px;
+    font-size:36px;
   }
 
   .scoreWrap{
@@ -489,7 +548,7 @@ body{
   }
 
   .scoreValue{
-    font-size:64px;
+    font-size:60px;
     margin-bottom:10px;
   }
 
@@ -504,20 +563,12 @@ body{
     gap:10px;
   }
 
-  .clickBox{
-    padding:12px 10px;
-  }
-
   .clickVal{
-    font-size:44px;
+    font-size:42px;
   }
 
   .clickDir{
     font-size:13px;
-  }
-
-  .miniLine{
-    gap:7px;
   }
 
   .miniPill{
@@ -529,15 +580,16 @@ body{
   .btnSecondary,
   .vendorBtn,
   .surveyBtn{
-    min-height:46px;
+    min-height:44px;
     font-size:13px;
-    padding:12px 12px;
+    padding:11px 12px;
   }
 
   .microNote,
   .saveHint,
   .reportMicro,
-  .scoreTip{
+  .scoreTip,
+  .intelNote{
     font-size:11px;
   }
 
@@ -548,74 +600,6 @@ body{
 
 @media (min-width: 701px){
   .secPage{
-    padding-top:max(16px, var(--safe-top));
+    padding-top:max(14px, var(--safe-top));
   }
-}
-/* =========================
-   PERFORMANCE PANEL
-========================= */
-
-.perfPanel{
-  margin-top:14px;
-  padding:14px;
-  border-radius:20px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.perfTitle{
-  font-weight:1000;
-  letter-spacing:.12em;
-  font-size:12px;
-  text-align:center;
-  color:rgba(238,242,247,.70);
-  margin-bottom:10px;
-}
-
-.perfStats{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:14px;
-}
-
-.perfStat{
-  text-align:center;
-  flex:1;
-}
-
-.perfValue{
-  font-size:36px;
-  font-weight:1000;
-}
-
-.perfLabel{
-  font-size:12px;
-  color:rgba(238,242,247,.60);
-}
-
-.perfListTitle{
-  font-size:12px;
-  letter-spacing:.12em;
-  color:rgba(238,242,247,.60);
-  margin-bottom:8px;
-}
-
-.perfList{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.perfRow{
-  display:grid;
-  grid-template-columns:40px 1fr 1fr 1fr;
-  padding:10px;
-  border-radius:10px;
-  background:rgba(255,255,255,.05);
-  font-weight:900;
-  font-size:13px;
-}
-
-.perfRow.highlight{
-  background:rgba(47,102,255,.25);
 }
