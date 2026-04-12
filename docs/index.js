@@ -1,10 +1,11 @@
 /* ============================================================
-   docs/index.js — FULL REPLACEMENT (TOUCH PRECISION FIX)
-   FIXES:
-   ✅ True touch support (mobile-first)
-   ✅ No ghost clicks
-   ✅ Better tap accuracy
-   ✅ Cleaner dot placement
+   docs/index.js — FULL REPLACEMENT
+   NEXT LEVEL:
+   ✅ Touch-first precision
+   ✅ Larger aim dot / smaller shot dots
+   ✅ Light magnet snap for cleaner placement
+   ✅ Duplicate-tap guard
+   ✅ Same sec.html handoff
 ============================================================ */
 
 (() => {
@@ -16,6 +17,9 @@
   const elWrap = $("targetWrap");
   const elDots = $("dotsLayer");
 
+  const elVendorBox = $("vendorBox");
+  const elVendorPanelLink = $("vendorPanelLink");
+
   const elTapCount = $("tapCount");
   const elClearTapsBtn = $("clearTapsBtn");
   const elShowResultsBtn = $("showResultsBtn");
@@ -25,15 +29,29 @@
   const elStickyBar = $("stickyBar");
   const elStickyResultsBtn = $("stickyResultsBtn");
 
+  const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_RESULTS = "sczn3_results";
+
+  const MIN_HITS_FOR_RESULTS = 3;
+  const MAX_HITS = 25;
+
+  // Small snap feel without hard-locking to a grid.
+  const SNAP_STEP = 0.005; // 0.5% of target size
+  const DUPLICATE_THRESHOLD = 0.012;
 
   let objectUrl = null;
   let aim = null;
   let hits = [];
+  let lastTouchTime = 0;
 
-  /* =========================
-     UI HELPERS
-  ========================== */
+  function getParam(name) {
+    const u = new URL(window.location.href);
+    return u.searchParams.get(name) || "";
+  }
+
+  function isBakerMode() {
+    return getParam("v").toLowerCase() === "baker";
+  }
 
   function setInstruction(text) {
     if (elInstructionLine) elInstructionLine.textContent = text;
@@ -51,13 +69,14 @@
     if (!elStickyBar) return;
     const show = !!aim && hits.length >= 1;
     elStickyBar.classList.toggle("stickyHidden", !show);
+    elStickyBar.setAttribute("aria-hidden", show ? "false" : "true");
   }
 
   function refreshUiState() {
     updateTapCount();
     updateStickyBar();
 
-    if (!elImg?.src) {
+    if (!elImg || !elImg.src) {
       setInstruction("");
       setStatus("Add a target photo to begin.");
       return;
@@ -69,9 +88,10 @@
       return;
     }
 
-    if (hits.length < 3) {
+    if (hits.length < MIN_HITS_FOR_RESULTS) {
+      const remaining = MIN_HITS_FOR_RESULTS - hits.length;
       setInstruction("Tap bullet holes.");
-      setStatus(`Add ${3 - hits.length} more shots.`);
+      setStatus(`Add ${remaining} more shot${remaining === 1 ? "" : "s"} to enable results.`);
       return;
     }
 
@@ -79,33 +99,50 @@
     setStatus("Ready. Tap Show results.");
   }
 
-  /* =========================
-     DOT RENDER
-  ========================== */
-
   function clearDots() {
-    elDots.innerHTML = "";
+    if (elDots) elDots.innerHTML = "";
   }
 
-  function addDot(x01, y01, type) {
+  function makeDot(kind, x01, y01) {
     const d = document.createElement("div");
-    d.className = "tapDot";
-
-    // ✅ tighter placement (centered correctly)
+    d.className = kind === "aim" ? "aimDot" : "shotDot";
+    d.style.position = "absolute";
     d.style.left = `${x01 * 100}%`;
     d.style.top = `${y01 * 100}%`;
     d.style.transform = "translate(-50%, -50%)";
+    d.style.borderRadius = "50%";
+    d.style.pointerEvents = "none";
 
-    d.style.background =
-      type === "aim" ? "#4ade80" : "#facc15";
+    if (kind === "aim") {
+      d.style.width = "20px";
+      d.style.height = "20px";
+      d.style.background = "radial-gradient(circle at 35% 35%, #d7ffe9 0%, #73f3a8 38%, #2fce75 70%, #179b53 100%)";
+      d.style.border = "2px solid rgba(255,255,255,.96)";
+      d.style.boxShadow = "0 0 0 2px rgba(0,0,0,.18), 0 0 16px rgba(103,243,164,.34)";
+      d.style.zIndex = "6";
+    } else {
+      d.style.width = "13px";
+      d.style.height = "13px";
+      d.style.background = "radial-gradient(circle at 35% 35%, #fff7c4 0%, #ffe361 35%, #facc15 68%, #d6a800 100%)";
+      d.style.border = "2px solid rgba(255,255,255,.94)";
+      d.style.boxShadow = "0 0 0 2px rgba(0,0,0,.16), 0 0 10px rgba(250,204,21,.28)";
+      d.style.zIndex = "5";
+    }
 
-    elDots.appendChild(d);
+    return d;
   }
 
   function redrawDots() {
     clearDots();
-    if (aim) addDot(aim.x01, aim.y01, "aim");
-    hits.forEach((p) => addDot(p.x01, p.y01, "hit"));
+
+    if (aim && elDots) {
+      elDots.appendChild(makeDot("aim", aim.x01, aim.y01));
+    }
+
+    if (elDots) {
+      hits.forEach((p) => elDots.appendChild(makeDot("hit", p.x01, p.y01)));
+    }
+
     refreshUiState();
   }
 
@@ -115,117 +152,223 @@
     redrawDots();
   }
 
-  /* =========================
-     COORDINATES (IMPROVED)
-  ========================== */
-
   function clamp01(v) {
     return Math.max(0, Math.min(1, v));
   }
 
-  function getRelative01(clientX, clientY) {
-    const rect = elWrap.getBoundingClientRect();
+  function snap(v, step = SNAP_STEP) {
+    return Math.round(v / step) * step;
+  }
 
-    // ✅ accounts for scroll + precision
-    const x = (clientX - rect.left) / rect.width;
-    const y = (clientY - rect.top) / rect.height;
+  function getRelative01(clientX, clientY) {
+    if (!elWrap) return { x01: 0, y01: 0 };
+
+    const rect = elWrap.getBoundingClientRect();
+    const rawX = clamp01((clientX - rect.left) / rect.width);
+    const rawY = clamp01((clientY - rect.top) / rect.height);
 
     return {
-      x01: clamp01(x),
-      y01: clamp01(y)
+      x01: clamp01(snap(rawX)),
+      y01: clamp01(snap(rawY))
     };
   }
 
-  /* =========================
-     TAP HANDLER
-  ========================== */
+  function normalizedDistance(a, b) {
+    const dx = a.x01 - b.x01;
+    const dy = a.y01 - b.y01;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 
-  function handleTap(clientX, clientY) {
-    if (!elImg?.src) return;
+  function isDuplicateHit(candidate) {
+    return hits.some((p) => normalizedDistance(candidate, p) <= DUPLICATE_THRESHOLD);
+  }
 
-    const { x01, y01 } = getRelative01(clientX, clientY);
+  function isDuplicateAim(candidate) {
+    if (!aim) return false;
+    return normalizedDistance(candidate, aim) <= DUPLICATE_THRESHOLD;
+  }
+
+  function canAcceptTap() {
+    return !!(elImg && elImg.src && elWrap);
+  }
+
+  function acceptTap(clientX, clientY) {
+    if (!canAcceptTap()) return;
+
+    const point = getRelative01(clientX, clientY);
 
     if (!aim) {
-      aim = { x01, y01 };
-    } else {
-      hits.push({ x01, y01 });
+      aim = point;
+      redrawDots();
+      return;
     }
 
+    if (isDuplicateAim(point) || isDuplicateHit(point)) {
+      return;
+    }
+
+    if (hits.length >= MAX_HITS) {
+      setStatus(`Maximum of ${MAX_HITS} shots reached.`);
+      return;
+    }
+
+    hits.push(point);
     redrawDots();
   }
 
-  /* =========================
-     TOUCH + CLICK FIX
-  ========================== */
+  function extractClientPoint(evt) {
+    if (!evt) return null;
 
-  let lastTouchTime = 0;
+    if (evt.touches && evt.touches[0]) {
+      return {
+        clientX: evt.touches[0].clientX,
+        clientY: evt.touches[0].clientY
+      };
+    }
 
-  // ✅ TOUCH (primary)
-  elWrap.addEventListener("touchstart", (e) => {
-    const t = e.touches[0];
-    if (!t) return;
+    if (evt.changedTouches && evt.changedTouches[0]) {
+      return {
+        clientX: evt.changedTouches[0].clientX,
+        clientY: evt.changedTouches[0].clientY
+      };
+    }
 
-    lastTouchTime = Date.now();
+    if (typeof evt.clientX === "number" && typeof evt.clientY === "number") {
+      return {
+        clientX: evt.clientX,
+        clientY: evt.clientY
+      };
+    }
 
-    handleTap(t.clientX, t.clientY);
-  }, { passive: true });
+    return null;
+  }
 
-  // ❌ CLICK (fallback only, prevents double fire)
-  elWrap.addEventListener("click", (e) => {
-    if (Date.now() - lastTouchTime < 500) return;
-    handleTap(e.clientX, e.clientY);
-  });
+  function handlePointerLikeTap(evt) {
+    const pt = extractClientPoint(evt);
+    if (!pt) return;
+    acceptTap(pt.clientX, pt.clientY);
+  }
 
-  /* =========================
-     PHOTO LOAD
-  ========================== */
+  function hydrateVendor() {
+    if (isBakerMode()) {
+      localStorage.setItem(KEY_VENDOR_URL, "https://bakertargets.com/");
+    }
 
-  elPhotoBtn.onclick = () => elFile.click();
+    const v = localStorage.getItem(KEY_VENDOR_URL) || "";
 
-  elFile.onchange = () => {
-    const f = elFile.files?.[0];
-    if (!f) return;
+    if (elVendorPanelLink && v) {
+      elVendorPanelLink.href = v;
+      elVendorPanelLink.target = "_blank";
+      elVendorPanelLink.rel = "noopener";
+    }
 
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
-    objectUrl = URL.createObjectURL(f);
+    if (elVendorBox && v) {
+      elVendorBox.href = v;
+      elVendorBox.target = "_blank";
+      elVendorBox.rel = "noopener";
+      elVendorBox.onclick = null;
+    }
+  }
 
-    elImg.src = objectUrl;
+  function releaseObjectUrl() {
+    if (!objectUrl) return;
+    URL.revokeObjectURL(objectUrl);
+    objectUrl = null;
+  }
 
-    elScoreSection.classList.remove("scoreHidden");
+  function hydratePhoto() {
+    if (!elPhotoBtn || !elFile || !elImg) return;
 
-    resetTaps();
+    elPhotoBtn.onclick = () => elFile.click();
 
-    setInstruction("Tap aim point.");
-    setStatus("Aim point first, then tap 3+ shots.");
+    elFile.onchange = () => {
+      const f = elFile.files?.[0];
+      if (!f) return;
 
-    elFile.value = "";
-  };
+      releaseObjectUrl();
+      objectUrl = URL.createObjectURL(f);
 
-  /* =========================
-     RESULTS
-  ========================== */
+      elImg.onload = () => {
+        if (elScoreSection) {
+          elScoreSection.classList.remove("scoreHidden");
+        }
+
+        resetTaps();
+        setInstruction("Tap aim point.");
+        setStatus("Aim point first, then tap 3+ bullet holes.");
+      };
+
+      elImg.src = objectUrl;
+      elFile.value = "";
+    };
+  }
 
   function goToResults() {
-    if (!aim || hits.length < 3) {
-      alert("Add 1 aim point and at least 3 shots.");
+    if (!aim || hits.length < MIN_HITS_FOR_RESULTS) {
+      alert(`Add 1 aim point and at least ${MIN_HITS_FOR_RESULTS} shots.`);
       return;
     }
 
     const payload = {
       aim,
       hits,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      source: "index"
     };
 
     sessionStorage.setItem(KEY_RESULTS, JSON.stringify(payload));
 
-    window.location.href = "sec.html";
+    const params = new URLSearchParams(window.location.search);
+    const qs = params.toString();
+    window.location.href = qs ? `sec.html?${qs}` : "sec.html";
   }
 
-  elShowResultsBtn.onclick = goToResults;
-  elStickyResultsBtn.onclick = goToResults;
+  function bindTargetTapEvents() {
+    if (!elWrap) return;
 
-  elClearTapsBtn.onclick = resetTaps;
+    elWrap.addEventListener(
+      "touchstart",
+      (e) => {
+        lastTouchTime = Date.now();
+        e.preventDefault();
+        handlePointerLikeTap(e);
+      },
+      { passive: false }
+    );
 
-  refreshUiState();
+    elWrap.addEventListener("click", (e) => {
+      if (Date.now() - lastTouchTime < 500) return;
+      handlePointerLikeTap(e);
+    });
+  }
+
+  function bindButtons() {
+    if (elClearTapsBtn) {
+      elClearTapsBtn.onclick = () => {
+        resetTaps();
+      };
+    }
+
+    if (elShowResultsBtn) {
+      elShowResultsBtn.onclick = goToResults;
+    }
+
+    if (elStickyResultsBtn) {
+      elStickyResultsBtn.onclick = goToResults;
+    }
+  }
+
+  function init() {
+    bindTargetTapEvents();
+    bindButtons();
+    hydrateVendor();
+    hydratePhoto();
+    refreshUiState();
+  }
+
+  window.addEventListener("beforeunload", () => {
+    releaseObjectUrl();
+  });
+
+  init();
 })();
