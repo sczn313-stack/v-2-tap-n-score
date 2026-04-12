@@ -1,11 +1,6 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
-   MATCHED HANDOFF VERSION
-   FIXES:
-   ✅ Correctly decodes URL payload from index.js
-   ✅ Falls back to sessionStorage / localStorage
-   ✅ Restores full SEC rendering flow
-   ✅ Keeps page 1 + page 2 flow working
+   Stable loop + payload compatibility + SEC2 report image
 ============================================================ */
 
 (() => {
@@ -38,9 +33,6 @@
   // Keys
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
-  const KEY_RESULTS = "sczn3_results";
-  const KEY_SEC_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
-  const DEFAULT_SURVEY_URL = "https://forms.gle/uCSDTk5BwT4euLYeA";
 
   function getParam(name) {
     const u = new URL(window.location.href);
@@ -48,51 +40,39 @@
   }
 
   function safeJsonParse(s) {
-    try {
-      return JSON.parse(s);
-    } catch {
-      return null;
-    }
-  }
-
-  function decodePayloadFromUrl(value) {
-    if (!value) return null;
-
-    try {
-      const json = decodeURIComponent(escape(atob(value)));
-      return safeJsonParse(json);
-    } catch {
-      try {
-        return safeJsonParse(atob(value));
-      } catch {
-        return null;
-      }
-    }
+    try { return JSON.parse(s); } catch { return null; }
   }
 
   function loadPayload() {
+    // Newer test key
+    let s = sessionStorage.getItem("sczn3_results");
+    if (s) {
+      const p = safeJsonParse(s);
+      if (p) return p;
+    }
+
+    // Main app key
+    s = sessionStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
+    if (s) {
+      const p = safeJsonParse(s);
+      if (p) return p;
+    }
+
+    // Older/local fallback
+    s = localStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
+    if (s) {
+      const p = safeJsonParse(s);
+      if (p) return p;
+    }
+
+    // URL payload fallback
     const fromUrl = getParam("payload");
     if (fromUrl) {
-      const p = decodePayloadFromUrl(fromUrl);
-      if (p) return p;
-    }
-
-    let s = sessionStorage.getItem(KEY_RESULTS);
-    if (s) {
-      const p = safeJsonParse(s);
-      if (p) return p;
-    }
-
-    s = sessionStorage.getItem(KEY_SEC_PAYLOAD);
-    if (s) {
-      const p = safeJsonParse(s);
-      if (p) return p;
-    }
-
-    s = localStorage.getItem(KEY_SEC_PAYLOAD);
-    if (s) {
-      const p = safeJsonParse(s);
-      if (p) return p;
+      try {
+        const decoded = atob(fromUrl);
+        const p = safeJsonParse(decoded);
+        if (p) return p;
+      } catch {}
     }
 
     return null;
@@ -111,6 +91,7 @@
   function normalizePayload(payload) {
     if (!payload) return null;
 
+    // Direct target-page shape
     if (payload.aim && Array.isArray(payload.hits)) {
       return {
         aim: payload.aim,
@@ -118,10 +99,11 @@
         vendorUrl: payload.vendorUrl || "",
         vendorName: payload.vendorName || "",
         distanceLabel: payload.distanceLabel || "100 yds",
-        timeLabel: payload.timeLabel || "Results ready"
+        timeLabel: payload.timeLabel || "Session ready"
       };
     }
 
+    // SEC payload shape from older app versions
     if (payload.aimPoint && Array.isArray(payload.shots)) {
       return {
         aim: payload.aimPoint,
@@ -129,7 +111,7 @@
         vendorUrl: payload.vendorUrl || "",
         vendorName: payload.vendorName || "",
         distanceLabel: payload.distanceLabel || "100 yds",
-        timeLabel: payload.timeLabel || "Results ready"
+        timeLabel: payload.timeLabel || "Session ready"
       };
     }
 
@@ -177,7 +159,7 @@
       elevationDirection,
       shotCount: norm.hits.length,
       distanceLabel: norm.distanceLabel || "100 yds",
-      timeLabel: norm.timeLabel || "Results ready",
+      timeLabel: norm.timeLabel || "Session ready",
       vendorUrl: norm.vendorUrl || "",
       vendorName: norm.vendorName || ""
     };
@@ -190,11 +172,17 @@
     return "ADJUST";
   }
 
+  function scoreColor(score) {
+    if (score >= 90) return "#22c55e";
+    if (score >= 75) return "#3b82f6";
+    if (score >= 60) return "#f59e0b";
+    return "#ef4444";
+  }
+
   function renderVendor(result) {
     if (!vendorBtn) return;
 
     const vParam = getParam("v").toLowerCase();
-
     let vendorUrl =
       result?.vendorUrl ||
       localStorage.getItem(KEY_VENDOR_URL) ||
@@ -225,10 +213,8 @@
       vendorBtn.style.opacity = ".6";
     }
 
-    if (surveyBtn) {
-      surveyBtn.href = DEFAULT_SURVEY_URL;
-      surveyBtn.target = "_blank";
-      surveyBtn.rel = "noopener";
+    if (surveyBtn && !surveyBtn.href) {
+      surveyBtn.href = "https://forms.gle/uCSDTk5BwT4euLYeA";
     }
   }
 
@@ -350,7 +336,6 @@
     canvas.height = 1800;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
 
     const bgTop = "#07111f";
     const bgBottom = "#0f1b2d";
@@ -358,7 +343,7 @@
     const cardBorder = "rgba(255,255,255,.10)";
     const white = "#f8fafc";
     const muted = "#94a3b8";
-    const accent = result.score >= 90 ? "#22c55e" : result.score >= 75 ? "#3b82f6" : result.score >= 60 ? "#f59e0b" : "#ef4444";
+    const accent = scoreColor(result.score);
 
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
     grad.addColorStop(0, bgTop);
@@ -498,7 +483,6 @@
 
   function goHome() {
     const params = new URLSearchParams(window.location.search);
-    params.delete("payload");
     const qs = params.toString();
     window.location.href = qs ? `index.html?${qs}` : "index.html";
   }
