@@ -1,20 +1,38 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
-   FIXES:
-   - Read SEC payload from URL param OR localStorage
-   - Persist payload back to localStorage
-   - Render score / shots / windage / elevation / dial
-   - Keep Baker vendor button working
+   Purpose:
+   - Read payload from URL or localStorage
+   - Render SEC page 1 with correct existing HTML ids
+   - Support page 2 report view buttons
+   - Keep Baker vendor wiring working
 ============================================================ */
 
 (() => {
   const $ = (id) => document.getElementById(id);
 
-  const vendorBtn = $("vendorBtn");
-
-  const KEY_PAYLOAD     = "SCZN3_SEC_PAYLOAD_V1";
-  const KEY_VENDOR_URL  = "SCZN3_VENDOR_URL_V1";
+  const KEY_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
+  const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
+
+  const viewPrecision = $("viewPrecision");
+  const viewReport = $("viewReport");
+
+  const scoreValue = $("scoreValue");
+  const scoreBand = $("scoreBand");
+  const windageBig = $("windageBig");
+  const windageDir = $("windageDir");
+  const elevationBig = $("elevationBig");
+  const elevationDir = $("elevationDir");
+  const runDistance = $("runDistance");
+  const runHits = $("runHits");
+  const runTime = $("runTime");
+
+  const toReportBtn = $("toReportBtn");
+  const goHomeBtn = $("goHomeBtn");
+  const backBtn = $("backBtn");
+  const vendorBtn = $("vendorBtn");
+  const surveyBtn = $("surveyBtn");
+  const secCardImg = $("secCardImg");
 
   function getUrl() {
     try {
@@ -75,7 +93,6 @@
 
   function resolveVendor(payload) {
     let vendorUrl = String(payload?.vendorUrl || "");
-
     const vParam = getParam("v").toLowerCase();
 
     if (!vendorUrl && vParam === "baker") {
@@ -104,151 +121,210 @@
     return { vendorUrl, vendorName };
   }
 
-  function setTextByIds(ids, value) {
-    const text = String(value ?? "");
-    ids.forEach((id) => {
-      const el = $(id);
-      if (el) el.textContent = text;
-    });
+  function showPrecision() {
+    viewPrecision?.classList.add("viewOn");
+    viewReport?.classList.remove("viewOn");
   }
 
-  function setHrefByIds(ids, href) {
-    ids.forEach((id) => {
-      const el = $(id);
-      if (el) el.href = href;
-    });
+  function showReport() {
+    viewReport?.classList.add("viewOn");
+    viewPrecision?.classList.remove("viewOn");
   }
 
-  function fmtClicks(obj) {
-    if (!obj) return "—";
-    const dir = String(obj.dir || "").trim();
-    const clicks = Number(obj.clicks);
-    if (!Number.isFinite(clicks)) return "—";
-    return `${clicks.toFixed(2)} ${dir}`;
+  function formatClicks(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "—";
+    return n.toFixed(2);
   }
 
-  function fmtDial(dial) {
-    if (!dial) return "—";
-    const unit = String(dial.unit || "");
-    const clickValue = Number(dial.clickValue);
-    if (!unit || !Number.isFinite(clickValue)) return "—";
-    return `${clickValue.toFixed(2)} ${unit}`;
-  }
-
-  function getScoreBand(score) {
+  function getBand(score) {
     const n = Number(score);
-    if (!Number.isFinite(n)) return "";
+    if (!Number.isFinite(n)) return "—";
     if (n >= 90) return "STRONG";
     if (n >= 60) return "SOLID";
     return "NEEDS WORK";
   }
 
+  function setBandClass(score) {
+    if (!scoreBand) return;
+    scoreBand.classList.remove("scoreBandNeutral", "scoreBandGood", "scoreBandMid", "scoreBandLow");
+
+    const n = Number(score);
+    if (!Number.isFinite(n)) {
+      scoreBand.classList.add("scoreBandNeutral");
+      return;
+    }
+    if (n >= 90) {
+      scoreBand.classList.add("scoreBandGood");
+      return;
+    }
+    if (n >= 60) {
+      scoreBand.classList.add("scoreBandMid");
+      return;
+    }
+    scoreBand.classList.add("scoreBandLow");
+  }
+
   function renderNoData() {
-    setTextByIds(
-      [
-        "scoreValue", "scoreNumber", "score", "secScore",
-        "shotsValue", "shotCount", "shots",
-        "windageValue", "windageText",
-        "elevationValue", "elevationText",
-        "dialValue", "dialText",
-        "bandLabel", "scoreBand"
-      ],
-      "—"
-    );
-
-    setTextByIds(
-      ["statusText", "secStatus", "emptyState", "reportStatus"],
-      "SEC data not found"
-    );
-
-    document.body?.setAttribute("data-sec-state", "empty");
+    if (scoreValue) scoreValue.textContent = "—";
+    if (scoreBand) scoreBand.textContent = "SEC data not found";
+    if (windageBig) windageBig.textContent = "—";
+    if (windageDir) windageDir.textContent = "—";
+    if (elevationBig) elevationBig.textContent = "—";
+    if (elevationDir) elevationDir.textContent = "—";
+    if (runDistance) runDistance.textContent = "—";
+    if (runHits) runHits.textContent = "—";
+    if (runTime) runTime.textContent = "—";
   }
 
   function renderPayload(payload) {
     const score = Number(payload?.score);
     const shots = Number(payload?.shots);
+    const windage = payload?.windage || {};
+    const elevation = payload?.elevation || {};
+    const dial = payload?.dial || {};
+    const distanceYds = Number(payload?.debug?.distanceYds);
 
-    const windageText = fmtClicks(payload?.windage);
-    const elevationText = fmtClicks(payload?.elevation);
-    const dialText = fmtDial(payload?.dial);
-    const band = getScoreBand(score);
-
-    if (Number.isFinite(score)) {
-      setTextByIds(
-        ["scoreValue", "scoreNumber", "score", "secScore"],
-        String(Math.round(score))
-      );
+    if (scoreValue) {
+      scoreValue.textContent = Number.isFinite(score) ? String(Math.round(score)) : "—";
     }
 
-    if (Number.isFinite(shots)) {
-      setTextByIds(
-        ["shotsValue", "shotCount", "shots"],
-        String(shots)
-      );
+    if (scoreBand) {
+      scoreBand.textContent = getBand(score);
+      setBandClass(score);
     }
 
-    setTextByIds(
-      ["windageValue", "windageText"],
-      windageText
-    );
+    if (windageBig) {
+      windageBig.textContent = formatClicks(windage.clicks);
+    }
 
-    setTextByIds(
-      ["elevationValue", "elevationText"],
-      elevationText
-    );
+    if (windageDir) {
+      windageDir.textContent = windage.dir || "—";
+    }
 
-    setTextByIds(
-      ["dialValue", "dialText"],
-      dialText
-    );
+    if (elevationBig) {
+      elevationBig.textContent = formatClicks(elevation.clicks);
+    }
 
-    setTextByIds(
-      ["bandLabel", "scoreBand"],
-      band
-    );
+    if (elevationDir) {
+      elevationDir.textContent = elevation.dir || "—";
+    }
 
-    setTextByIds(
-      ["statusText", "secStatus", "emptyState", "reportStatus"],
-      "Results loaded"
-    );
+    if (runDistance) {
+      runDistance.textContent = Number.isFinite(distanceYds) ? `${distanceYds} yds` : "—";
+    }
 
-    document.body?.setAttribute("data-sec-state", "ready");
+    if (runHits) {
+      runHits.textContent = Number.isFinite(shots) ? `${shots} hits` : "—";
+    }
+
+    if (runTime) {
+      const unit = String(dial.unit || "");
+      const clickValue = Number(dial.clickValue);
+      runTime.textContent =
+        unit && Number.isFinite(clickValue)
+          ? `${clickValue.toFixed(2)} ${unit}`
+          : "—";
+    }
   }
 
   function wireVendor(payload) {
     const { vendorUrl, vendorName } = resolveVendor(payload);
 
-    const vendorIds = ["vendorBtn", "vendorLink", "buyBtn"];
-    const buttonText = isBaker(vendorUrl) ? "Visit Baker" : `Visit ${vendorName}`;
+    if (!vendorBtn) return;
 
     if (vendorUrl && vendorUrl.startsWith("http")) {
-      setHrefByIds(vendorIds, vendorUrl);
-
-      vendorIds.forEach((id) => {
-        const el = $(id);
-        if (!el) return;
-        el.textContent = buttonText;
-        el.style.pointerEvents = "auto";
-        el.style.opacity = "1";
-      });
+      vendorBtn.href = vendorUrl;
+      vendorBtn.textContent = isBaker(vendorUrl) ? "Visit Baker" : `Visit ${vendorName}`;
+      vendorBtn.style.pointerEvents = "auto";
+      vendorBtn.style.opacity = "1";
     } else {
-      vendorIds.forEach((id) => {
-        const el = $(id);
-        if (!el) return;
-        el.href = "#";
-        el.textContent = "Vendor Not Set";
-        el.style.pointerEvents = "none";
-        el.style.opacity = ".6";
-      });
-    }
-
-    if (vendorBtn && !vendorBtn.getAttribute("target")) {
-      vendorBtn.setAttribute("target", "_blank");
-      vendorBtn.setAttribute("rel", "noopener noreferrer");
+      vendorBtn.href = "#";
+      vendorBtn.textContent = "Vendor Not Set";
+      vendorBtn.style.pointerEvents = "none";
+      vendorBtn.style.opacity = ".6";
     }
   }
 
-  function render() {
+  function buildReportCard(payload) {
+    if (!secCardImg) return;
+
+    const score = Number(payload?.score);
+    const windage = payload?.windage || {};
+    const elevation = payload?.elevation || {};
+    const shots = Number(payload?.shots);
+    const distanceYds = Number(payload?.debug?.distanceYds);
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+        <rect width="1200" height="1600" fill="#0b0f14"/>
+        <text x="600" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="72" fill="#ffffff">SEC</text>
+        <text x="600" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#b8c2cf">Shooter Experience Card</text>
+
+        <rect x="120" y="270" width="960" height="220" rx="28" fill="#131a22" stroke="#243140"/>
+        <text x="600" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#8fa3b8">SCORE</text>
+        <text x="600" y="435" text-anchor="middle" font-family="Arial, sans-serif" font-size="120" font-weight="700" fill="#ffffff">${Number.isFinite(score) ? Math.round(score) : "—"}</text>
+
+        <rect x="120" y="550" width="450" height="240" rx="28" fill="#131a22" stroke="#243140"/>
+        <text x="345" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="#8fa3b8">WINDAGE</text>
+        <text x="345" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="76" font-weight="700" fill="#ffffff">${formatClicks(windage.clicks)}</text>
+        <text x="345" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#d6dfeb">${windage.dir || "—"}</text>
+
+        <rect x="630" y="550" width="450" height="240" rx="28" fill="#131a22" stroke="#243140"/>
+        <text x="855" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="#8fa3b8">ELEVATION</text>
+        <text x="855" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="76" font-weight="700" fill="#ffffff">${formatClicks(elevation.clicks)}</text>
+        <text x="855" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#d6dfeb">${elevation.dir || "—"}</text>
+
+        <rect x="120" y="860" width="960" height="220" rx="28" fill="#131a22" stroke="#243140"/>
+        <text x="240" y="940" font-family="Arial, sans-serif" font-size="32" fill="#8fa3b8">DISTANCE</text>
+        <text x="240" y="1010" font-family="Arial, sans-serif" font-size="54" fill="#ffffff">${Number.isFinite(distanceYds) ? `${distanceYds} yds` : "—"}</text>
+
+        <text x="540" y="940" font-family="Arial, sans-serif" font-size="32" fill="#8fa3b8">HITS</text>
+        <text x="540" y="1010" font-family="Arial, sans-serif" font-size="54" fill="#ffffff">${Number.isFinite(shots) ? shots : "—"}</text>
+
+        <text x="810" y="940" font-family="Arial, sans-serif" font-size="32" fill="#8fa3b8">DIAL</text>
+        <text x="810" y="1010" font-family="Arial, sans-serif" font-size="54" fill="#ffffff">${
+          dial.unit && Number.isFinite(Number(dial.clickValue))
+            ? `${Number(dial.clickValue).toFixed(2)} ${dial.unit}`
+            : "—"
+        }</text>
+
+        <text x="600" y="1450" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#7f91a5">SCZN3 • Tap-n-Score</text>
+      </svg>
+    `.trim();
+
+    secCardImg.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  }
+
+  function wireActions(payload) {
+    toReportBtn?.addEventListener("click", () => {
+      buildReportCard(payload);
+      showReport();
+    });
+
+    backBtn?.addEventListener("click", () => {
+      showPrecision();
+    });
+
+    goHomeBtn?.addEventListener("click", () => {
+      window.location.href = "./?v=baker&fresh=" + Date.now();
+    });
+
+    if (surveyBtn) {
+      const surveyUrl = String(payload?.surveyUrl || "");
+      if (surveyUrl && surveyUrl.startsWith("http")) {
+        surveyBtn.href = surveyUrl;
+        surveyBtn.style.pointerEvents = "auto";
+        surveyBtn.style.opacity = "1";
+      } else {
+        surveyBtn.href = "#";
+        surveyBtn.style.pointerEvents = "none";
+        surveyBtn.style.opacity = ".6";
+      }
+    }
+  }
+
+  function init() {
     const payload = loadPayload();
 
     if (!payload) {
@@ -256,9 +332,11 @@
       return;
     }
 
-    wireVendor(payload);
     renderPayload(payload);
+    wireVendor(payload);
+    wireActions(payload);
+    showPrecision();
   }
 
-  render();
+  init();
 })();
