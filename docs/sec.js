@@ -3,8 +3,9 @@
    Stable loop + payload compatibility + SEC report image
    FIXES:
    ✅ Reads sessionStorage payload
+   ✅ Reads localStorage fallback
    ✅ Reads URL payload fallback
-   ✅ Handles refresh / cross-domain cases better
+   ✅ Handles refresh / cross-domain cases
 ============================================================ */
 
 (() => {
@@ -37,6 +38,8 @@
   // Keys
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
+  const KEY_RESULTS = "sczn3_results";
+  const KEY_SEC_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
 
   function getParam(name) {
     const u = new URL(window.location.href);
@@ -44,11 +47,16 @@
   }
 
   function safeJsonParse(s) {
-    try { return JSON.parse(s); } catch { return null; }
+    try {
+      return JSON.parse(s);
+    } catch {
+      return null;
+    }
   }
 
   function decodePayloadFromUrl(value) {
     if (!value) return null;
+
     try {
       return safeJsonParse(decodeURIComponent(escape(atob(value))));
     } catch {
@@ -61,28 +69,26 @@
   }
 
   function loadPayload() {
-    // Newer test key
-    let s = sessionStorage.getItem("sczn3_results");
+    let s = "";
+
+    s = sessionStorage.getItem(KEY_RESULTS);
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // Main app key
-    s = sessionStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
+    s = sessionStorage.getItem(KEY_SEC_PAYLOAD);
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // Older/local fallback
-    s = localStorage.getItem("SCZN3_SEC_PAYLOAD_V1");
+    s = localStorage.getItem(KEY_SEC_PAYLOAD);
     if (s) {
       const p = safeJsonParse(s);
       if (p) return p;
     }
 
-    // URL payload fallback
     const fromUrl = getParam("payload");
     if (fromUrl) {
       const p = decodePayloadFromUrl(fromUrl);
@@ -105,7 +111,6 @@
   function normalizePayload(payload) {
     if (!payload) return null;
 
-    // Direct target-page shape
     if (payload.aim && Array.isArray(payload.hits)) {
       return {
         aim: payload.aim,
@@ -117,7 +122,6 @@
       };
     }
 
-    // SEC payload shape from older app versions
     if (payload.aimPoint && Array.isArray(payload.shots)) {
       return {
         aim: payload.aimPoint,
@@ -350,6 +354,7 @@
     canvas.height = 1800;
 
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const bgTop = "#07111f";
     const bgBottom = "#0f1b2d";
