@@ -1,9 +1,10 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   Stable target-page taps + robust sec handoff
+   Stable target-page taps + bulletproof SEC handoff
    FIXES:
    ✅ Writes payload to sessionStorage
-   ✅ Adds URL payload fallback for cross-domain / refresh safety
+   ✅ Writes payload to localStorage
+   ✅ Adds URL payload fallback
    ✅ Keeps existing target tap flow
 ============================================================ */
 
@@ -30,6 +31,7 @@
 
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_RESULTS = "sczn3_results";
+  const KEY_SEC_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
 
   let objectUrl = null;
   let aim = null;
@@ -80,8 +82,9 @@
     }
 
     if (hits.length < 3) {
+      const remaining = 3 - hits.length;
       setInstruction("Tap bullet holes.");
-      setStatus(`Add ${3 - hits.length} more shot${3 - hits.length === 1 ? "" : "s"} to enable results.`);
+      setStatus(`Add ${remaining} more shot${remaining === 1 ? "" : "s"} to enable results.`);
       return;
     }
 
@@ -166,7 +169,8 @@
 
   function safeBase64Encode(obj) {
     try {
-      return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+      const json = JSON.stringify(obj);
+      return btoa(unescape(encodeURIComponent(json)));
     } catch {
       return "";
     }
@@ -193,7 +197,7 @@
   }
 
   function hydratePhoto() {
-    if (!elPhotoBtn || !elFile) return;
+    if (!elPhotoBtn || !elFile || !elImg) return;
 
     elPhotoBtn.onclick = () => elFile.click();
 
@@ -204,17 +208,29 @@
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       objectUrl = URL.createObjectURL(f);
 
+      elImg.onload = () => {
+        if (elScoreSection) {
+          elScoreSection.classList.remove("scoreHidden");
+        }
+
+        resetTaps();
+        setInstruction("Tap aim point.");
+        setStatus("Aim point first, then tap 3+ bullet holes.");
+      };
+
       elImg.src = objectUrl;
-
-      if (elScoreSection) {
-        elScoreSection.classList.remove("scoreHidden");
-      }
-
-      resetTaps();
-      setInstruction("Tap aim point.");
-      setStatus("Aim point first, then tap 3+ bullet holes.");
-
       elFile.value = "";
+    };
+  }
+
+  function buildPayload() {
+    return {
+      aim,
+      hits,
+      createdAt: Date.now(),
+      source: "index",
+      distanceLabel: "100 yds",
+      timeLabel: "Results ready"
     };
   }
 
@@ -224,19 +240,24 @@
       return;
     }
 
-    const payload = {
-      aim,
-      hits,
-      createdAt: Date.now(),
-      source: "index"
-    };
+    const payload = buildPayload();
+    const payloadJson = JSON.stringify(payload);
 
-    // Primary storage path
-    sessionStorage.setItem(KEY_RESULTS, JSON.stringify(payload));
+    try {
+      sessionStorage.setItem(KEY_RESULTS, payloadJson);
+    } catch {}
 
-    // Cross-domain / refresh-safe fallback
+    try {
+      sessionStorage.setItem(KEY_SEC_PAYLOAD, payloadJson);
+    } catch {}
+
+    try {
+      localStorage.setItem(KEY_SEC_PAYLOAD, payloadJson);
+    } catch {}
+
     const params = new URLSearchParams(window.location.search);
     const encoded = safeBase64Encode(payload);
+
     if (encoded) {
       params.set("payload", encoded);
     }
