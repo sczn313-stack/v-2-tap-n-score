@@ -11,7 +11,7 @@
   <meta http-equiv="Expires" content="0" />
 
   <title>SEC — Tap-n-Score™</title>
-  <link rel="stylesheet" href="./sec.css?v=SEC-SPLIT-LAYER-20260413-02" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-SPLIT-LAYER-20260413-03" />
 </head>
 <body>
   <main class="secPage">
@@ -45,16 +45,8 @@
     <section class="card correctionCard" aria-label="Scope correction">
       <div class="eyebrow correctionEyebrow">Correction</div>
 
-      <div class="correctionRows">
-        <div class="correctionRow">
-          <div class="correctionLabel">Elevation</div>
-          <div id="corrElevation" class="correctionValue">—</div>
-        </div>
-
-        <div class="correctionRow">
-          <div class="correctionLabel">Windage</div>
-          <div id="corrWindage" class="correctionValue">—</div>
-        </div>
+      <div class="correctionInlineWrap">
+        <div id="corrClicksInline" class="correctionInlineValue">—</div>
       </div>
 
       <div class="correctionMicro">Apply scope clicks as shown</div>
@@ -66,8 +58,14 @@
 
     <section class="card historyCard" aria-label="Session history">
       <div class="historyHeader">Session History</div>
+
+      <div class="historyColumnsHead">
+        <div class="historyColHead">01–05</div>
+        <div class="historyColHead">06–10</div>
+      </div>
+
       <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
-      <div id="historyList" class="historyList"></div>
+      <div id="historyGrid" class="historyGrid"></div>
     </section>
 
     <section class="compactActions" aria-label="Secondary actions">
@@ -91,6 +89,6 @@
     </section>
   </main>
 
-  <script src="./sec.js?v=SEC-SPLIT-LAYER-20260413-02"></script>
+  <script src="./sec.js?v=SEC-SPLIT-LAYER-20260413-03"></script>
 </body>
 </html>
