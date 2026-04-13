@@ -11,93 +11,86 @@
   <meta http-equiv="Expires" content="0" />
 
   <title>SEC — Tap-n-Score™</title>
-  <link rel="stylesheet" href="./sec.css?v=SEC-PAIR-20260412-01" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-SPLIT-LAYER-20260412-01" />
 </head>
 <body>
   <main class="secPage">
+    <header class="secHeader">
+      <div class="secMark" aria-label="SEC logo">
+        <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+      </div>
+      <div class="secTitle">Shooter Experience Card</div>
+    </header>
 
-    <!-- PAGE 1 -->
-    <section id="viewPrecision" class="view viewOn" aria-label="SEC Precision View">
-      <header class="secHeader">
-        <div class="secHeaderTop">
-          <div class="secRWB">
-            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-          </div>
-          <div class="secSub">Shooter Experience Card</div>
-        </div>
-      </header>
+    <section class="topRow" aria-label="SEC top row">
+      <article class="card scoreCard">
+        <div class="eyebrow">Smart Score</div>
+        <div id="scoreValue" class="scoreValue">—</div>
+        <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
+      </article>
 
-      <section class="card heroCard">
-        <div class="scoreWrap">
-          <div class="scoreLabel">SMART SCORE</div>
-          <div id="scoreValue" class="scoreValue">—</div>
-          <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
-        </div>
-
-        <div class="clicksBig">
-          <article class="clickBox">
-            <div class="clickHdr">WINDAGE</div>
-            <div id="windageBig" class="clickVal">—</div>
-            <div id="windageDir" class="clickDir">—</div>
-          </article>
-
-          <article class="clickBox">
-            <div class="clickHdr">ELEVATION</div>
-            <div id="elevationBig" class="clickVal">—</div>
-            <div id="elevationDir" class="clickDir">—</div>
-          </article>
-        </div>
-
-        <div class="miniLine">
-          <div id="runDistance" class="miniPill">—</div>
-          <div id="runHits" class="miniPill">—</div>
-          <div id="runTime" class="miniPill">—</div>
-        </div>
-      </section>
-
-      <section class="card historyWrap">
-        <div class="historyTitle">Session History</div>
-        <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
-        <div id="historyList" class="historyList"></div>
-      </section>
-
-      <section class="primaryActions">
-        <button id="toReportBtn" class="primaryBtn" type="button">Create Report Card</button>
-      </section>
+      <a
+        id="vendorBtn"
+        class="card vendorCard vendorDisabled"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit vendor"
+      >
+        <div class="eyebrow">Official Target Partner</div>
+        <div id="vendorText" class="vendorText">Vendor Not Set</div>
+      </a>
     </section>
 
-    <!-- PAGE 2 -->
-    <section id="viewReport" class="view" aria-label="SEC Report View">
-      <header class="secHeader secHeaderTight">
-        <div class="secHeaderTop">
-          <div class="secRWB bigSEC">
-            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-          </div>
-          <div class="secSub">Shooter Experience Card</div>
+    <section class="card correctionCard" aria-label="Scope correction">
+      <div class="eyebrow correctionEyebrow">Correction</div>
+
+      <div class="correctionRows">
+        <div class="correctionRow">
+          <div class="correctionLabel">Elevation</div>
+          <div id="corrElevation" class="correctionValue">—</div>
         </div>
-      </header>
 
-      <section class="card reportCard">
-        <div class="saveHint">Tap and hold to save to Photos</div>
-
-        <div class="cardImgShell">
-          <img id="secCardImg" alt="Shooter Experience Card report" />
+        <div class="correctionRow">
+          <div class="correctionLabel">Windage</div>
+          <div id="corrWindage" class="correctionValue">—</div>
         </div>
-      </section>
+      </div>
 
-      <section class="reportActions">
-        <button id="backBtn" class="btnSecondary" type="button">Back</button>
-        <a id="surveyBtn" class="surveyBtn" href="#" target="_blank" rel="noopener noreferrer">Survey</a>
-        <a id="vendorBtn" class="vendorBtn" href="#" target="_blank" rel="noopener noreferrer">Vendor</a>
-      </section>
-
-      <section class="primaryActions">
-        <button id="goHomeBtn" class="primaryBtn" type="button">Zero Another Target</button>
-      </section>
+      <div class="correctionMicro">Apply scope clicks as shown</div>
     </section>
 
+    <section class="card metaCard" aria-label="Session meta">
+      <div id="sessionMeta" class="metaLine">—</div>
+    </section>
+
+    <section class="card historyCard" aria-label="Session history">
+      <div class="historyHeader">Session History</div>
+      <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
+      <div id="historyList" class="historyList"></div>
+    </section>
+
+    <section class="compactActions" aria-label="Secondary actions">
+      <a
+        id="surveyBtn"
+        class="miniAction"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Survey
+      </a>
+
+      <button id="saveSecBtn" class="miniAction miniActionPrimary" type="button">
+        Save SEC
+      </button>
+    </section>
+
+    <section class="finalAction" aria-label="Primary next action">
+      <button id="goHomeBtn" class="primaryBtn" type="button">Zero Another Target</button>
+    </section>
   </main>
 
-  <script src="./sec.js?v=SEC-PAIR-20260412-01"></script>
+  <script src="./sec.js?v=SEC-SPLIT-LAYER-20260412-01"></script>
 </body>
 </html>
