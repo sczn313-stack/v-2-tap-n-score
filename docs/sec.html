@@ -1,4 +1,4 @@
-<!-- docs/sec.html (FULL REPLACEMENT — FIXED IMAGE RENDER) -->
+<!-- docs/sec.html — FULL REPLACEMENT -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,81 +13,93 @@
 
   <title>SEC — Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./sec.css?v=SEC-2P-REV-FIX" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-HISTORY-01" />
 </head>
-
 <body>
   <main class="secPage">
 
     <!-- =========================
-         PAGE 1 — PRECISION
+         PAGE 1 — PRECISION VIEW
     ========================== -->
-    <section id="viewPrecision" class="view viewOn">
+    <section id="viewPrecision" class="view viewOn" aria-label="SEC Precision View">
+      <header class="secHeader">
+        <div class="secEyebrow">Tap-n-Score™</div>
+        <h1 class="secTitle">Shooter Experience Card</h1>
+        <p class="secSub">Understand and act on your performance</p>
+      </header>
 
-      <section class="card">
-        <div class="scoreWrap">
-          <div class="scoreLabel">SCORE</div>
-          <div id="scoreValue" class="scoreValue">—</div>
-          <div id="scoreBand" class="scoreBand">—</div>
-        </div>
-
-        <div class="clicksBig">
-          <div>
-            <div>WINDAGE</div>
-            <div id="windageBig">—</div>
-            <div id="windageDir">—</div>
-          </div>
-
-          <div>
-            <div>ELEVATION</div>
-            <div id="elevationBig">—</div>
-            <div id="elevationDir">—</div>
-          </div>
-        </div>
-
-        <div class="miniLine">
-          <span id="runDistance">—</span>
-          <span id="runHits">—</span>
-          <span id="runTime">—</span>
-        </div>
-
-        <button id="toReportBtn"
-          onclick="window.__SEC_GO_REPORT && window.__SEC_GO_REPORT()">
-          Save SEC + Shooter History
-        </button>
-
-        <button id="goHomeBtn">Zero another target</button>
+      <section class="scoreHero" aria-label="Score Summary">
+        <div class="scoreHeroLabel">SMART SCORE</div>
+        <div id="scoreValue" class="scoreHeroValue">—</div>
+        <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
       </section>
 
+      <section class="adjustGrid" aria-label="Adjustments">
+        <article class="adjustCard">
+          <div class="adjustLabel">WINDAGE</div>
+          <div id="windageBig" class="adjustValue">—</div>
+          <div id="windageDir" class="adjustDir">—</div>
+        </article>
+
+        <article class="adjustCard">
+          <div class="adjustLabel">ELEVATION</div>
+          <div id="elevationBig" class="adjustValue">—</div>
+          <div id="elevationDir" class="adjustDir">—</div>
+        </article>
+      </section>
+
+      <section class="runStats" aria-label="Run Details">
+        <article class="statCard">
+          <div class="statLabel">DISTANCE</div>
+          <div id="runDistance" class="statValue">—</div>
+        </article>
+
+        <article class="statCard">
+          <div class="statLabel">HITS</div>
+          <div id="runHits" class="statValue">—</div>
+        </article>
+
+        <article class="statCard">
+          <div class="statLabel">DIAL</div>
+          <div id="runTime" class="statValue">—</div>
+        </article>
+      </section>
+
+      <section class="historyWrap" aria-label="Shooter History">
+        <div class="sectionTitle">Shooter History</div>
+        <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
+        <div id="historyList" class="historyList"></div>
+      </section>
+
+      <section class="actionRow">
+        <button id="toReportBtn" class="primaryBtn" type="button">Open Report Card</button>
+        <a id="vendorBtn" class="secondaryBtn" href="#">Vendor Not Set</a>
+      </section>
     </section>
 
     <!-- =========================
-         PAGE 2 — REPORT CARD
+         PAGE 2 — REPORT VIEW
     ========================== -->
-    <section id="viewReport" class="view">
+    <section id="viewReport" class="view" aria-label="SEC Report View">
+      <header class="secHeader">
+        <div class="secEyebrow">Tap-n-Score™</div>
+        <h2 class="secTitle">Report Card</h2>
+        <p class="secSub">Tap and hold to save to Photos</p>
+      </header>
 
-      <section class="card">
-
-        <div>Tap & hold image to save</div>
-
-        <div>
-          <img id="secCardImg"
-               alt="SEC report card image"
-               style="display:block; width:100%; max-width:420px; height:auto; min-height:560px; margin:0 auto;" />
-        </div>
-
-        <button id="backBtn">Back</button>
-
-        <a id="vendorBtn" href="#" target="_blank">Visit Vendor</a>
-
-        <a id="surveyBtn" href="#" target="_blank">Survey</a>
-
+      <section class="reportWrap">
+        <img id="secCardImg" class="secCardImg" alt="Shooter Experience Card Report" />
       </section>
 
+      <section class="actionStack">
+        <button id="backBtn" class="secondaryBtn" type="button">Back to Precision</button>
+        <a id="surveyBtn" class="secondaryBtn" href="#">Take Survey</a>
+        <button id="goHomeBtn" class="primaryBtn" type="button">Zero Another Target</button>
+      </section>
     </section>
 
   </main>
 
-  <script defer src="./sec.js?v=SEC-2P-REV-FIX"></script>
+  <script src="./sec.js?v=SEC-HISTORY-01"></script>
 </body>
 </html>
