@@ -25,7 +25,6 @@
   --low:#ff6e64;
 
   --button:#2f66ff;
-  --button-2:#2958db;
 
   --safe-top:env(safe-area-inset-top, 0px);
   --safe-right:env(safe-area-inset-right, 0px);
@@ -231,33 +230,18 @@ body{
   margin-bottom:12px;
 }
 
-.correctionRows{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.correctionRow{
+.correctionInlineWrap{
   border-radius:18px;
   background:rgba(255,255,255,.04);
   border:1px solid var(--line);
-  padding:16px 14px;
+  padding:18px 16px;
   text-align:center;
 }
 
-.correctionLabel{
+.correctionInlineValue{
   font-weight:1000;
-  letter-spacing:.12em;
-  font-size:12px;
-  color:rgba(238,242,247,.70);
-  text-transform:uppercase;
-  margin-bottom:10px;
-}
-
-.correctionValue{
-  font-weight:1000;
-  font-size:34px;
-  line-height:1.12;
+  font-size:40px;
+  line-height:1.1;
   color:rgba(238,242,247,.96);
   text-shadow:0 8px 20px rgba(0,0,0,.20);
 }
@@ -299,6 +283,23 @@ body{
   margin-bottom:12px;
 }
 
+.historyColumnsHead{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.historyColHead{
+  text-align:center;
+  font-weight:1000;
+  font-size:12px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  color:rgba(238,242,247,.64);
+  padding-bottom:2px;
+}
+
 .historyEmpty{
   text-align:center;
   font-weight:800;
@@ -307,24 +308,25 @@ body{
   padding:8px 0 2px;
 }
 
-.historyList{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.historyGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px 12px;
 }
 
-.historyRow{
+.historyCell{
   border-radius:18px;
   background:rgba(255,255,255,.035);
   border:1px solid rgba(255,255,255,.08);
   padding:12px 14px;
   box-shadow:0 10px 24px rgba(0,0,0,.16);
+  min-height:82px;
 }
 
 .historyTop{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
+  gap:6px;
   align-items:center;
   font-weight:900;
   font-size:13px;
@@ -334,7 +336,7 @@ body{
 .historyBottom{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
+  gap:6px;
   align-items:center;
   margin-top:6px;
   font-weight:800;
@@ -345,6 +347,7 @@ body{
 .historyIndex{
   min-width:34px;
   font-weight:1000;
+  color:var(--blue);
 }
 
 .historySep{
@@ -449,6 +452,11 @@ body{
   .scoreCard{
     min-height:auto;
   }
+
+  .historyGrid,
+  .historyColumnsHead{
+    grid-template-columns:1fr;
+  }
 }
 
 @media (max-width: 520px){
@@ -478,12 +486,8 @@ body{
     font-size:74px;
   }
 
-  .correctionRows{
-    grid-template-columns:1fr;
-  }
-
-  .correctionValue{
-    font-size:30px;
+  .correctionInlineValue{
+    font-size:32px;
   }
 
   .metaLine{
