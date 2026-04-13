@@ -1,105 +1,106 @@
-<!-- docs/sec.html — FULL REPLACEMENT -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#06070a" />
+  <meta name="theme-color" content="#05070b" />
 
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
   <title>SEC — Tap-n-Score™</title>
-
-  <link rel="stylesheet" href="./sec.css?v=SEC-HISTORY-01" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-CLEANUP-01" />
 </head>
 <body>
   <main class="secPage">
 
-    <!-- =========================
-         PAGE 1 — PRECISION VIEW
-    ========================== -->
+    <!-- PAGE 1 -->
     <section id="viewPrecision" class="view viewOn" aria-label="SEC Precision View">
       <header class="secHeader">
-        <div class="secEyebrow">Tap-n-Score™</div>
+        <div class="eyebrow">Tap-n-Score™</div>
         <h1 class="secTitle">Shooter Experience Card</h1>
-        <p class="secSub">Understand and act on your performance</p>
+        <div class="secTagline">UNDERSTAND AND ACT ON YOUR PERFORMANCE</div>
       </header>
 
-      <section class="scoreHero" aria-label="Score Summary">
-        <div class="scoreHeroLabel">SMART SCORE</div>
-        <div id="scoreValue" class="scoreHeroValue">—</div>
-        <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
-      </section>
-
-      <section class="adjustGrid" aria-label="Adjustments">
-        <article class="adjustCard">
-          <div class="adjustLabel">WINDAGE</div>
-          <div id="windageBig" class="adjustValue">—</div>
-          <div id="windageDir" class="adjustDir">—</div>
+      <section class="precisionGrid">
+        <article class="statCard statScore">
+          <div class="statLabel">SMART SCORE</div>
+          <div id="scoreValue" class="scoreValue">—</div>
+          <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
         </article>
 
-        <article class="adjustCard">
-          <div class="adjustLabel">ELEVATION</div>
-          <div id="elevationBig" class="adjustValue">—</div>
-          <div id="elevationDir" class="adjustDir">—</div>
-        </article>
-      </section>
-
-      <section class="runStats" aria-label="Run Details">
         <article class="statCard">
+          <div class="statLabel">WINDAGE</div>
+          <div id="windageBig" class="bigValue">—</div>
+          <div id="windageDir" class="dirValue">—</div>
+        </article>
+
+        <article class="statCard">
+          <div class="statLabel">ELEVATION</div>
+          <div id="elevationBig" class="bigValue">—</div>
+          <div id="elevationDir" class="dirValue">—</div>
+        </article>
+
+        <article class="statCard statMini">
           <div class="statLabel">DISTANCE</div>
-          <div id="runDistance" class="statValue">—</div>
+          <div id="runDistance" class="miniValue">—</div>
         </article>
 
-        <article class="statCard">
+        <article class="statCard statMini">
           <div class="statLabel">HITS</div>
-          <div id="runHits" class="statValue">—</div>
+          <div id="runHits" class="miniValue">—</div>
         </article>
 
-        <article class="statCard">
+        <article class="statCard statMini">
           <div class="statLabel">DIAL</div>
-          <div id="runTime" class="statValue">—</div>
+          <div id="runTime" class="miniValue">—</div>
         </article>
       </section>
 
-      <section class="historyWrap" aria-label="Shooter History">
-        <div class="sectionTitle">Shooter History</div>
+      <section class="historyWrap">
+        <div class="historyTitle">Session History</div>
         <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
         <div id="historyList" class="historyList"></div>
       </section>
 
       <section class="actionRow">
-        <button id="toReportBtn" class="primaryBtn" type="button">Open Report Card</button>
-        <a id="vendorBtn" class="secondaryBtn" href="#">Vendor Not Set</a>
+        <button id="toReportBtn" class="btn btnPrimary" type="button">Create Report Card</button>
       </section>
     </section>
 
-    <!-- =========================
-         PAGE 2 — REPORT VIEW
-    ========================== -->
+    <!-- PAGE 2 -->
     <section id="viewReport" class="view" aria-label="SEC Report View">
       <header class="secHeader">
-        <div class="secEyebrow">Tap-n-Score™</div>
-        <h2 class="secTitle">Report Card</h2>
-        <p class="secSub">Tap and hold to save to Photos</p>
+        <div class="eyebrow">Tap-n-Score™</div>
+        <h2 class="secTitle secTitleSm">Report Card</h2>
+        <div class="secTagline">TAP AND HOLD TO SAVE TO PHOTOS</div>
       </header>
 
-      <section class="reportWrap">
+      <section class="reportFrame">
         <img id="secCardImg" class="secCardImg" alt="Shooter Experience Card Report" />
       </section>
 
-      <section class="actionStack">
-        <button id="backBtn" class="secondaryBtn" type="button">Back to Precision</button>
-        <a id="surveyBtn" class="secondaryBtn" href="#">Take Survey</a>
-        <button id="goHomeBtn" class="primaryBtn" type="button">Zero Another Target</button>
+      <section class="reportActions">
+        <button id="backBtn" class="btn btnGhost" type="button">Back to Precision</button>
+        <a id="surveyBtn" class="btn btnText" href="#" target="_blank" rel="noopener noreferrer">Take Survey</a>
+      </section>
+
+      <section class="footerAction">
+        <a id="vendorBtn" class="btn btnPrimary btnBlock" href="#" target="_blank" rel="noopener noreferrer">Visit Vendor</a>
+      </section>
+
+      <section class="footerAction">
+        <button id="goHomeBtn" class="btn btnPrimary btnBlock" type="button">Zero Another Target</button>
       </section>
     </section>
 
   </main>
 
-  <script src="./sec.js?v=SEC-HISTORY-01"></script>
+  <script src="./sec.js?v=SEC-CLEANUP-01"></script>
 </body>
 </html>
