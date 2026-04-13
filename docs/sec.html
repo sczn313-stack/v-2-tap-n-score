@@ -1,106 +1,57 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#05070b" />
+<section id="viewPrecision" class="view viewOn">
 
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <header class="secHeader">
+    <div class="secHeaderTop">
+      <div class="secRWB">
+        <span class="r">S</span><span class="w">C</span><span class="b">Z</span><span class="w">N</span><span class="r">3</span>
+      </div>
+      <div class="secSub">Shooter Experience Card</div>
+    </div>
+  </header>
 
-  <title>SEC — Tap-n-Score™</title>
-  <link rel="stylesheet" href="./sec.css?v=SEC-CLEANUP-01" />
-</head>
-<body>
-  <main class="secPage">
+  <div class="card">
 
-    <!-- PAGE 1 -->
-    <section id="viewPrecision" class="view viewOn" aria-label="SEC Precision View">
-      <header class="secHeader">
-        <div class="eyebrow">Tap-n-Score™</div>
-        <h1 class="secTitle">Shooter Experience Card</h1>
-        <div class="secTagline">UNDERSTAND AND ACT ON YOUR PERFORMANCE</div>
-      </header>
+    <!-- SCORE -->
+    <div class="scoreWrap">
+      <div class="scoreLabel">SMART SCORE</div>
+      <div id="scoreValue" class="scoreValue">—</div>
+      <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
+    </div>
 
-      <section class="precisionGrid">
-        <article class="statCard statScore">
-          <div class="statLabel">SMART SCORE</div>
-          <div id="scoreValue" class="scoreValue">—</div>
-          <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
-        </article>
+    <!-- WINDAGE / ELEVATION -->
+    <div class="clicksBig">
+      <div class="clickBox">
+        <div class="clickHdr">WINDAGE</div>
+        <div id="windageBig" class="clickVal">—</div>
+        <div id="windageDir" class="clickDir">—</div>
+      </div>
 
-        <article class="statCard">
-          <div class="statLabel">WINDAGE</div>
-          <div id="windageBig" class="bigValue">—</div>
-          <div id="windageDir" class="dirValue">—</div>
-        </article>
+      <div class="clickBox">
+        <div class="clickHdr">ELEVATION</div>
+        <div id="elevationBig" class="clickVal">—</div>
+        <div id="elevationDir" class="clickDir">—</div>
+      </div>
+    </div>
 
-        <article class="statCard">
-          <div class="statLabel">ELEVATION</div>
-          <div id="elevationBig" class="bigValue">—</div>
-          <div id="elevationDir" class="dirValue">—</div>
-        </article>
+    <!-- PILLS -->
+    <div class="miniLine">
+      <div id="runDistance" class="miniPill">—</div>
+      <div id="runHits" class="miniPill">—</div>
+      <div id="runTime" class="miniPill">—</div>
+    </div>
 
-        <article class="statCard statMini">
-          <div class="statLabel">DISTANCE</div>
-          <div id="runDistance" class="miniValue">—</div>
-        </article>
+  </div>
 
-        <article class="statCard statMini">
-          <div class="statLabel">HITS</div>
-          <div id="runHits" class="miniValue">—</div>
-        </article>
+  <!-- HISTORY -->
+  <section class="historyWrap">
+    <div class="historyTitle">Session History</div>
+    <div id="historyEmpty">No shooter history yet.</div>
+    <div id="historyList"></div>
+  </section>
 
-        <article class="statCard statMini">
-          <div class="statLabel">DIAL</div>
-          <div id="runTime" class="miniValue">—</div>
-        </article>
-      </section>
+  <!-- ACTION -->
+  <div class="primaryActions">
+    <button id="toReportBtn" class="primaryBtn">Create Report Card</button>
+  </div>
 
-      <section class="historyWrap">
-        <div class="historyTitle">Session History</div>
-        <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
-        <div id="historyList" class="historyList"></div>
-      </section>
-
-      <section class="actionRow">
-        <button id="toReportBtn" class="btn btnPrimary" type="button">Create Report Card</button>
-      </section>
-    </section>
-
-    <!-- PAGE 2 -->
-    <section id="viewReport" class="view" aria-label="SEC Report View">
-      <header class="secHeader">
-        <div class="eyebrow">Tap-n-Score™</div>
-        <h2 class="secTitle secTitleSm">Report Card</h2>
-        <div class="secTagline">TAP AND HOLD TO SAVE TO PHOTOS</div>
-      </header>
-
-      <section class="reportFrame">
-        <img id="secCardImg" class="secCardImg" alt="Shooter Experience Card Report" />
-      </section>
-
-      <section class="reportActions">
-        <button id="backBtn" class="btn btnGhost" type="button">Back to Precision</button>
-        <a id="surveyBtn" class="btn btnText" href="#" target="_blank" rel="noopener noreferrer">Take Survey</a>
-      </section>
-
-      <section class="footerAction">
-        <a id="vendorBtn" class="btn btnPrimary btnBlock" href="#" target="_blank" rel="noopener noreferrer">Visit Vendor</a>
-      </section>
-
-      <section class="footerAction">
-        <button id="goHomeBtn" class="btn btnPrimary btnBlock" type="button">Zero Another Target</button>
-      </section>
-    </section>
-
-  </main>
-
-  <script src="./sec.js?v=SEC-CLEANUP-01"></script>
-</body>
-</html>
+</section>
