@@ -2,8 +2,7 @@
    docs/sec.js — FULL REPLACEMENT
    SCZN3 SEC Split-Layer Protocol™
    - One live SEC page
-   - Clean export card save
-   - No second SEC page
+   - Save/export uses same SEC data
 ============================================================ */
 
 (() => {
@@ -78,7 +77,6 @@
         savePayload(fromQuery);
         return fromQuery;
       }
-
       return loadPayloadFromStorage();
     }
 
@@ -90,6 +88,11 @@
       return String(text || "")
         .toLowerCase()
         .replace(/\b[a-z]/g, (m) => m.toUpperCase());
+    }
+
+    function displayScore(score) {
+      const n = Number(score);
+      return Number.isFinite(n) ? Math.round(n) : null;
     }
 
     function getBand(score) {
@@ -145,6 +148,10 @@
       const arrow = dirArrow(dir);
       const amount = roundedClicks(clicks);
       return `${arrow} ${amount} clicks`;
+    }
+
+    function compactClicksText(elevationClicks, elevationDir, windageClicks, windageDir) {
+      return `Clicks ${roundedClicks(elevationClicks)}${dirArrow(elevationDir)}, ${roundedClicks(windageClicks)}${dirArrow(windageDir)}`;
     }
 
     function resolveDistance(payload) {
@@ -239,19 +246,20 @@
     }
 
     function renderPayload(payload) {
-      const score = Number(payload?.score);
+      const rawScore = Number(payload?.score);
+      const shownScore = displayScore(rawScore);
       const elevation = payload?.elevation || {};
       const windage = payload?.windage || {};
       const distance = resolveDistance(payload);
       const hits = resolveHits(payload);
 
       if (scoreValue) {
-        scoreValue.textContent = Number.isFinite(score) ? String(Math.round(score)) : "—";
+        scoreValue.textContent = shownScore != null ? String(shownScore) : "—";
       }
 
       if (scoreBand) {
-        scoreBand.textContent = getBand(score);
-        setBandClass(score);
+        scoreBand.textContent = getBand(shownScore);
+        setBandClass(shownScore);
       }
 
       if (corrElevation) {
@@ -268,12 +276,13 @@
     }
 
     function normalizeHistoryEntry(payload) {
-      const score = Number(payload?.score);
+      const rawScore = Number(payload?.score);
+      const shownScore = displayScore(rawScore);
       const distance = resolveDistance(payload);
       const hits = resolveHits(payload);
 
       return {
-        score: Number.isFinite(score) ? Math.round(score) : 0,
+        score: shownScore != null ? shownScore : 0,
         distance,
         hits,
         elevationClicks: roundedClicks(payload?.elevation?.clicks),
@@ -311,7 +320,16 @@
     function saveToHistory(payload) {
       try {
         const entry = normalizeHistoryEntry(payload);
-        const history = loadHistory().filter((item) => item && typeof item === "object");
+        const history = loadHistory()
+          .filter((item) => {
+            return (
+              item &&
+              typeof item === "object" &&
+              Number.isFinite(Number(item.score)) &&
+              Number.isFinite(Number(item.distance)) &&
+              Number.isFinite(Number(item.hits))
+            );
+          });
 
         if (history.length && isSameHistoryEntry(history[0], entry)) {
           return;
@@ -322,29 +340,30 @@
       } catch {}
     }
 
-    function formatHistoryTime(ts) {
+    function formatHistoryTime24(ts) {
       try {
-        return new Date(ts).toLocaleString([], {
-          month: "numeric",
-          day: "numeric",
-          hour: "numeric",
-          minute: "2-digit"
+        return new Date(ts).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
         });
       } catch {
         return "";
       }
     }
 
-    function historyCorrectionLine(item) {
-      const elevationText = `${dirArrow(item.elevationDir)} ${item.elevationClicks} clicks`;
-      const windageText = `${dirArrow(item.windageDir)} ${item.windageClicks} clicks`;
-      return `${elevationText} • ${windageText}`;
+    function getScoreClass(score) {
+      if (score >= 90) return "historyScoreHigh";
+      if (score >= 60) return "historyScoreMid";
+      return "historyScoreLow";
     }
 
     function renderHistory() {
       if (!historyList) return;
 
-      const history = loadHistory().filter((item) => item && typeof item === "object");
+      const history = loadHistory().filter((item) => {
+        return item && typeof item === "object";
+      });
 
       if (!history.length) {
         historyList.innerHTML = "";
@@ -356,22 +375,25 @@
 
       historyList.innerHTML = history
         .map((item, index) => {
-          const stamp = item.ts ? formatHistoryTime(item.ts) : "";
+          const stamp = item.ts ? formatHistoryTime24(item.ts) : "";
+          const scoreClass = getScoreClass(Number(item.score));
 
           return `
             <div class="historyRow">
               <div class="historyTop">
-                <span class="historyIndex">${String(index + 1).padStart(2, "0")}.</span>
-                <span>${item.score}</span>
-                <span class="historySep">|</span>
-                <span>${item.distance} yds</span>
-                <span class="historySep">|</span>
-                <span>${item.hits} hits</span>
+                <span class="historyIndex historyValue">${String(index + 1).padStart(2, "0")}.</span>
+                <span class="${scoreClass}">${item.score}</span>
+                <span class="historySoft">|</span>
+                <span class="historyValue">${item.distance}</span>
+                <span class="historySoft">yds</span>
+                <span class="historySoft">|</span>
+                <span class="historyHits">${item.hits}</span>
+                <span class="historySoft">hits</span>
               </div>
               <div class="historyBottom">
-                <span>${historyCorrectionLine(item)}</span>
-                <span class="historySep">•</span>
-                <span>${stamp}</span>
+                <span class="historyValue">${compactClicksText(item.elevationClicks, item.elevationDir, item.windageClicks, item.windageDir)}</span>
+                <span class="historySoft">•</span>
+                <span class="historySoft">${stamp}</span>
               </div>
             </div>
           `;
@@ -421,7 +443,8 @@
     }
 
     async function buildExportImage(payload) {
-      const score = Number(payload?.score);
+      const rawScore = Number(payload?.score);
+      const score = displayScore(rawScore);
       const band = getBand(score);
       const distance = resolveDistance(payload);
       const hits = resolveHits(payload);
@@ -435,9 +458,7 @@
       canvas.height = 1600;
 
       const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        throw new Error("Canvas not available");
-      }
+      if (!ctx) throw new Error("Canvas not available");
 
       const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
       bg.addColorStop(0, "#0a1224");
@@ -452,24 +473,29 @@
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.textAlign = "center";
+      ctx.textAlign = "left";
+      ctx.font = "1000 72px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillStyle = "#ff5a58";
+      ctx.fillText("S", 120, 132);
       ctx.fillStyle = "#eef2f7";
+      ctx.fillText("E", 180, 132);
+      ctx.fillStyle = "#3b6cff";
+      ctx.fillText("C", 236, 132);
 
-      ctx.font = "900 74px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("SEC", 600, 138);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(238,242,247,.72)";
+      ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText("SHOOTER EXPERIENCE CARD", 1080, 132);
 
-      ctx.font = "500 30px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillStyle = "rgba(238,242,247,.82)";
-      ctx.fillText("Shooter Experience Card", 600, 196);
-
-      drawRoundRect(ctx, 150, 280, 900, 250, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
+      drawRoundRect(ctx, 120, 210, 960, 280, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
+      ctx.textAlign = "center";
       ctx.fillStyle = "rgba(238,242,247,.72)";
       ctx.font = "900 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("SMART SCORE", 600, 352);
+      ctx.fillText("SMART SCORE", 600, 286);
 
       ctx.fillStyle = "#eef2f7";
-      ctx.font = "1000 150px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText(Number.isFinite(score) ? String(Math.round(score)) : "—", 600, 472);
+      ctx.font = "1000 160px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText(score != null ? String(score) : "—", 600, 416);
 
       let bandFill = "rgba(255,255,255,.08)";
       let bandText = "#eef2f7";
@@ -485,27 +511,47 @@
         bandText = "#220504";
       }
 
-      drawRoundRect(ctx, 430, 548, 340, 64, 32, bandFill, null);
+      drawRoundRect(ctx, 420, 438, 360, 68, 34, bandFill, null);
       ctx.fillStyle = bandText;
       ctx.font = "1000 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText(band.toUpperCase(), 600, 592);
+      ctx.fillText(band.toUpperCase(), 600, 482);
 
-      drawRoundRect(ctx, 150, 680, 900, 340, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
-
-      drawRoundRect(ctx, 190, 748, 820, 96, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
+      drawRoundRect(ctx, 120, 540, 960, 240, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
       ctx.fillStyle = "rgba(238,242,247,.72)";
-      ctx.font = "900 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("CORRECTION", 600, 808);
+      ctx.font = "900 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText("CORRECTION", 600, 610);
+
+      drawRoundRect(ctx, 160, 636, 400, 96, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
+      drawRoundRect(ctx, 640, 636, 400, 96, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
+
+      ctx.fillStyle = "rgba(238,242,247,.72)";
+      ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText("ELEVATION", 360, 678);
+      ctx.fillText("WINDAGE", 840, 678);
 
       ctx.fillStyle = "#eef2f7";
       ctx.font = "1000 56px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText(elevationText, 600, 908);
-      ctx.fillText(windageText, 600, 982);
+      ctx.fillText(elevationText, 360, 716);
+      ctx.fillText(windageText, 840, 716);
 
-      drawRoundRect(ctx, 290, 1072, 620, 84, 22, "rgba(255,255,255,.045)", "rgba(255,255,255,.08)");
+      ctx.fillStyle = "rgba(238,242,247,.58)";
+      ctx.font = "800 22px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText("Apply scope clicks as shown", 600, 760);
+
+      drawRoundRect(ctx, 270, 830, 660, 84, 22, "rgba(255,255,255,.045)", "rgba(255,255,255,.08)");
       ctx.fillStyle = "#eef2f7";
       ctx.font = "1000 34px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText(metaText, 600, 1128);
+      ctx.fillText(metaText, 600, 886);
+
+      drawRoundRect(ctx, 120, 968, 960, 190, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
+      ctx.fillStyle = "rgba(238,242,247,.72)";
+      ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText("OFFICIAL TARGET PARTNER", 600, 1038);
+
+      drawRoundRect(ctx, 270, 1068, 660, 64, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
+      ctx.fillStyle = "rgba(238,242,247,.78)";
+      ctx.font = "1000 30px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText("Official Target Partner", 600, 1110);
 
       ctx.fillStyle = "rgba(238,242,247,.46)";
       ctx.font = "900 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
@@ -536,7 +582,6 @@
           document.body.appendChild(a);
           a.click();
           a.remove();
-
           setTimeout(() => URL.revokeObjectURL(url), 1500);
         } else {
           const a = document.createElement("a");
@@ -547,7 +592,6 @@
           a.remove();
         }
 
-        // iPad/Safari fallback: open the image in a new tab so the user can save it.
         const ua = navigator.userAgent || "";
         const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
         if (isIOS) {
