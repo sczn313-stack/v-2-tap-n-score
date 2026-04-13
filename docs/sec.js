@@ -1,8 +1,6 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
    SCZN3 SEC Split-Layer Protocol™
-   - One live SEC page
-   - Save/export uses same SEC data
 ============================================================ */
 
 (() => {
@@ -20,11 +18,10 @@
     const vendorBtn = $("vendorBtn");
     const vendorText = $("vendorText");
 
-    const corrElevation = $("corrElevation");
-    const corrWindage = $("corrWindage");
+    const corrClicksInline = $("corrClicksInline");
     const sessionMeta = $("sessionMeta");
 
-    const historyList = $("historyList");
+    const historyGrid = $("historyGrid");
     const historyEmpty = $("historyEmpty");
 
     const surveyBtn = $("surveyBtn");
@@ -151,7 +148,7 @@
     }
 
     function compactClicksText(elevationClicks, elevationDir, windageClicks, windageDir) {
-      return `Clicks ${roundedClicks(elevationClicks)}${dirArrow(elevationDir)}, ${roundedClicks(windageClicks)}${dirArrow(windageDir)}`;
+      return `Clicks ${roundedClicks(elevationClicks)}${dirArrow(elevationDir)} • ${roundedClicks(windageClicks)}${dirArrow(windageDir)}`;
     }
 
     function resolveDistance(payload) {
@@ -165,12 +162,12 @@
     }
 
     function resolveHits(payload) {
-      const hits =
-        Number(payload?.shots) ||
-        Number(payload?.hits) ||
-        0;
+      const shots = Number(payload?.shots);
+      const hits = Number(payload?.hits);
 
-      return Number.isFinite(hits) && hits >= 0 ? Math.round(hits) : 0;
+      if (Number.isFinite(shots) && shots >= 0) return Math.round(shots);
+      if (Number.isFinite(hits) && hits >= 0) return Math.round(hits);
+      return 0;
     }
 
     function resolveVendor(payload) {
@@ -210,8 +207,7 @@
         setBandClass(null);
       }
 
-      if (corrElevation) corrElevation.textContent = "—";
-      if (corrWindage) corrWindage.textContent = "—";
+      if (corrClicksInline) corrClicksInline.textContent = "—";
       if (sessionMeta) sessionMeta.textContent = "—";
 
       if (vendorText) vendorText.textContent = "Vendor Not Set";
@@ -262,12 +258,13 @@
         setBandClass(shownScore);
       }
 
-      if (corrElevation) {
-        corrElevation.textContent = correctionText(elevation.clicks, elevation.dir);
-      }
-
-      if (corrWindage) {
-        corrWindage.textContent = correctionText(windage.clicks, windage.dir);
+      if (corrClicksInline) {
+        corrClicksInline.textContent = compactClicksText(
+          elevation.clicks,
+          elevation.dir,
+          windage.clicks,
+          windage.dir
+        );
       }
 
       if (sessionMeta) {
@@ -320,16 +317,15 @@
     function saveToHistory(payload) {
       try {
         const entry = normalizeHistoryEntry(payload);
-        const history = loadHistory()
-          .filter((item) => {
-            return (
-              item &&
-              typeof item === "object" &&
-              Number.isFinite(Number(item.score)) &&
-              Number.isFinite(Number(item.distance)) &&
-              Number.isFinite(Number(item.hits))
-            );
-          });
+        const history = loadHistory().filter((item) => {
+          return (
+            item &&
+            typeof item === "object" &&
+            Number.isFinite(Number(item.score)) &&
+            Number.isFinite(Number(item.distance)) &&
+            Number.isFinite(Number(item.hits))
+          );
+        });
 
         if (history.length && isSameHistoryEntry(history[0], entry)) {
           return;
@@ -358,47 +354,54 @@
       return "historyScoreLow";
     }
 
-    function renderHistory() {
-      if (!historyList) return;
+    function historyCellHtml(item, index) {
+      if (!item) return `<div class="historyCell"></div>`;
 
-      const history = loadHistory().filter((item) => {
-        return item && typeof item === "object";
-      });
+      const stamp = item.ts ? formatHistoryTime24(item.ts) : "";
+      const scoreClass = getScoreClass(Number(item.score));
+
+      return `
+        <div class="historyCell">
+          <div class="historyTop">
+            <span class="historyIndex">${String(index + 1).padStart(2, "0")}.</span>
+            <span class="${scoreClass}">${item.score}</span>
+            <span class="historySoft">|</span>
+            <span class="historyValue">${item.distance}</span>
+            <span class="historySoft">|</span>
+            <span class="historyHits">${item.hits}</span>
+          </div>
+          <div class="historyBottom">
+            <span class="historyValue">${roundedClicks(item.elevationClicks)}${dirArrow(item.elevationDir)}, ${roundedClicks(item.windageClicks)}${dirArrow(item.windageDir)}</span>
+            <span class="historySoft">•</span>
+            <span class="historySoft">${stamp}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHistory() {
+      if (!historyGrid) return;
+
+      const history = loadHistory().filter((item) => item && typeof item === "object");
 
       if (!history.length) {
-        historyList.innerHTML = "";
+        historyGrid.innerHTML = "";
         if (historyEmpty) historyEmpty.style.display = "";
         return;
       }
 
       if (historyEmpty) historyEmpty.style.display = "none";
 
-      historyList.innerHTML = history
-        .map((item, index) => {
-          const stamp = item.ts ? formatHistoryTime24(item.ts) : "";
-          const scoreClass = getScoreClass(Number(item.score));
+      const left = history.slice(0, 5);
+      const right = history.slice(5, 10);
 
-          return `
-            <div class="historyRow">
-              <div class="historyTop">
-                <span class="historyIndex historyValue">${String(index + 1).padStart(2, "0")}.</span>
-                <span class="${scoreClass}">${item.score}</span>
-                <span class="historySoft">|</span>
-                <span class="historyValue">${item.distance}</span>
-                <span class="historySoft">yds</span>
-                <span class="historySoft">|</span>
-                <span class="historyHits">${item.hits}</span>
-                <span class="historySoft">hits</span>
-              </div>
-              <div class="historyBottom">
-                <span class="historyValue">${compactClicksText(item.elevationClicks, item.elevationDir, item.windageClicks, item.windageDir)}</span>
-                <span class="historySoft">•</span>
-                <span class="historySoft">${stamp}</span>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
+      const rows = [];
+      for (let i = 0; i < 5; i += 1) {
+        rows.push(historyCellHtml(left[i], i));
+        rows.push(historyCellHtml(right[i], i + 5));
+      }
+
+      historyGrid.innerHTML = rows.join("");
     }
 
     function drawRoundRect(ctx, x, y, w, h, r, fillStyle, strokeStyle) {
@@ -451,6 +454,12 @@
 
       const elevationText = correctionText(payload?.elevation?.clicks, payload?.elevation?.dir);
       const windageText = correctionText(payload?.windage?.clicks, payload?.windage?.dir);
+      const compactText = compactClicksText(
+        payload?.elevation?.clicks,
+        payload?.elevation?.dir,
+        payload?.windage?.clicks,
+        payload?.windage?.dir
+      );
       const metaText = `${distance || "—"} yds • ${hits} hits`;
 
       const canvas = document.createElement("canvas");
@@ -516,42 +525,34 @@
       ctx.font = "1000 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
       ctx.fillText(band.toUpperCase(), 600, 482);
 
-      drawRoundRect(ctx, 120, 540, 960, 240, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
+      drawRoundRect(ctx, 120, 540, 960, 220, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
       ctx.fillStyle = "rgba(238,242,247,.72)";
       ctx.font = "900 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
       ctx.fillText("CORRECTION", 600, 610);
 
-      drawRoundRect(ctx, 160, 636, 400, 96, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
-      drawRoundRect(ctx, 640, 636, 400, 96, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
-
-      ctx.fillStyle = "rgba(238,242,247,.72)";
-      ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("ELEVATION", 360, 678);
-      ctx.fillText("WINDAGE", 840, 678);
-
+      drawRoundRect(ctx, 160, 646, 880, 92, 22, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
       ctx.fillStyle = "#eef2f7";
-      ctx.font = "1000 56px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText(elevationText, 360, 716);
-      ctx.fillText(windageText, 840, 716);
+      ctx.font = "1000 54px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      ctx.fillText(compactText, 600, 704);
 
       ctx.fillStyle = "rgba(238,242,247,.58)";
       ctx.font = "800 22px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("Apply scope clicks as shown", 600, 760);
+      ctx.fillText("Apply scope clicks as shown", 600, 744);
 
-      drawRoundRect(ctx, 270, 830, 660, 84, 22, "rgba(255,255,255,.045)", "rgba(255,255,255,.08)");
+      drawRoundRect(ctx, 270, 810, 660, 84, 22, "rgba(255,255,255,.045)", "rgba(255,255,255,.08)");
       ctx.fillStyle = "#eef2f7";
       ctx.font = "1000 34px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText(metaText, 600, 886);
+      ctx.fillText(metaText, 600, 866);
 
-      drawRoundRect(ctx, 120, 968, 960, 190, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
+      drawRoundRect(ctx, 120, 948, 960, 190, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)");
       ctx.fillStyle = "rgba(238,242,247,.72)";
       ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("OFFICIAL TARGET PARTNER", 600, 1038);
+      ctx.fillText("OFFICIAL TARGET PARTNER", 600, 1018);
 
-      drawRoundRect(ctx, 270, 1068, 660, 64, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
+      drawRoundRect(ctx, 270, 1048, 660, 64, 20, "rgba(255,255,255,.04)", "rgba(255,255,255,.08)");
       ctx.fillStyle = "rgba(238,242,247,.78)";
       ctx.font = "1000 30px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("Official Target Partner", 600, 1110);
+      ctx.fillText("Official Target Partner", 600, 1090);
 
       ctx.fillStyle = "rgba(238,242,247,.46)";
       ctx.font = "900 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
