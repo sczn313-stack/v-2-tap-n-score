@@ -136,15 +136,18 @@
       return "•";
     }
 
+    function dirWordAbbr(dir) {
+      const d = normalizeDir(dir);
+      if (d === "UP") return "UP";
+      if (d === "DOWN") return "DN";
+      if (d === "LEFT") return "LT";
+      if (d === "RIGHT") return "RT";
+      return "";
+    }
+
     function roundedClicks(value) {
       const n = Number(value);
       return Number.isFinite(n) ? Math.round(n) : 0;
-    }
-
-    function correctionText(clicks, dir) {
-      const arrow = dirArrow(dir);
-      const amount = roundedClicks(clicks);
-      return `${arrow} ${amount} clicks`;
     }
 
     function compactClicksText(elevationClicks, elevationDir, windageClicks, windageDir) {
@@ -198,6 +201,22 @@
       payload.vendorName = vendorName;
 
       return { vendorUrl, vendorName };
+    }
+
+    function tutorialText(score, elevationDir, windageDir) {
+      const dirs = [dirWordAbbr(elevationDir), dirWordAbbr(windageDir)].filter(Boolean);
+      const dirPhrase = dirs.length === 2 ? `${dirs[0]} and ${dirs[1]}` : (dirs[0] || "");
+
+      if (score >= 99) {
+        return "Zero confirmed — maintain hold";
+      }
+      if (score >= 90) {
+        return dirPhrase ? `Hold steady, fine-tune ${dirPhrase}` : "Hold steady and confirm zero";
+      }
+      if (score >= 60) {
+        return dirPhrase ? `Refine aim, adjust ${dirPhrase}` : "Refine aim and tighten group";
+      }
+      return dirPhrase ? `Shift impacts ${dirPhrase} toward center` : "Shift impacts toward center";
     }
 
     function renderNoData() {
@@ -359,6 +378,7 @@
 
       const stamp = item.ts ? formatHistoryTime24(item.ts) : "";
       const scoreClass = getScoreClass(Number(item.score));
+      const tutorial = tutorialText(item.score, item.elevationDir, item.windageDir);
 
       return `
         <div class="historyCell">
@@ -371,10 +391,10 @@
             <span class="historyHits">${item.hits}</span>
           </div>
           <div class="historyBottom">
-            <span class="historyValue">${roundedClicks(item.elevationClicks)}${dirArrow(item.elevationDir)}, ${roundedClicks(item.windageClicks)}${dirArrow(item.windageDir)}</span>
-            <span class="historySoft">•</span>
+            <span class="historyValue">${item.elevationClicks}${dirArrow(item.elevationDir)} ${item.windageClicks}${dirArrow(item.windageDir)}</span>
             <span class="historySoft">${stamp}</span>
           </div>
+          <div class="historyTutorial">${tutorial}</div>
         </div>
       `;
     }
@@ -449,17 +469,14 @@
       const rawScore = Number(payload?.score);
       const score = displayScore(rawScore);
       const band = getBand(score);
-      const distance = resolveDistance(payload);
-      const hits = resolveHits(payload);
-
-      const elevationText = correctionText(payload?.elevation?.clicks, payload?.elevation?.dir);
-      const windageText = correctionText(payload?.windage?.clicks, payload?.windage?.dir);
       const compactText = compactClicksText(
         payload?.elevation?.clicks,
         payload?.elevation?.dir,
         payload?.windage?.clicks,
         payload?.windage?.dir
       );
+      const distance = resolveDistance(payload);
+      const hits = resolveHits(payload);
       const metaText = `${distance || "—"} yds • ${hits} hits`;
 
       const canvas = document.createElement("canvas");
@@ -534,10 +551,6 @@
       ctx.fillStyle = "#eef2f7";
       ctx.font = "1000 54px system-ui, -apple-system, Segoe UI, Roboto, Arial";
       ctx.fillText(compactText, 600, 704);
-
-      ctx.fillStyle = "rgba(238,242,247,.58)";
-      ctx.font = "800 22px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      ctx.fillText("Apply scope clicks as shown", 600, 744);
 
       drawRoundRect(ctx, 270, 810, 660, 84, 22, "rgba(255,255,255,.045)", "rgba(255,255,255,.08)");
       ctx.fillStyle = "#eef2f7";
