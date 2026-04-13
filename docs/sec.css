@@ -1,11 +1,6 @@
 /* ============================================================
-   docs/sec.css (FULL REPLACEMENT) — NEXT LEVEL SEC
-   POLISH:
-   ✅ tighter viewport fit
-   ✅ cleaner page 1 compression
-   ✅ stronger page 2 card presentation
-   ✅ performance intelligence shell
-   ✅ no wire changes
+   docs/sec.css — FULL REPLACEMENT
+   Matched to sec.html / sec.js current SEC pair
 ============================================================ */
 
 :root{
@@ -24,6 +19,7 @@
   --red:#ff4d4d;
   --white:#eef2f7;
   --blue:#2f66ff;
+
   --green:#48ff8b;
   --yellow:#ffe85a;
   --amber:#ffd24a;
@@ -63,7 +59,7 @@ body{
   padding:
     max(10px, var(--safe-top))
     max(12px, var(--safe-right))
-    calc(14px + var(--safe-bottom))
+    calc(16px + var(--safe-bottom))
     max(12px, var(--safe-left));
 }
 
@@ -73,9 +69,10 @@ body{
 /* Header */
 .secHeader{
   padding:6px 2px 8px;
+  margin-bottom:10px;
 }
 
-.secHeader.secHeaderTight{
+.secHeaderTight{
   padding:2px 2px 6px;
 }
 
@@ -112,7 +109,7 @@ body{
   text-align:right;
 }
 
-/* Card */
+/* Card shell */
 .card{
   background:linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.028));
   border:1px solid var(--line);
@@ -122,6 +119,10 @@ body{
     0 18px 40px var(--shadow),
     inset 0 1px 0 rgba(255,255,255,.04);
   backdrop-filter:blur(10px);
+}
+
+.heroCard{
+  margin-bottom:12px;
 }
 
 /* Score */
@@ -150,10 +151,6 @@ body{
   text-shadow:0 8px 20px rgba(0,0,0,.25);
 }
 
-.scoreGood{ color:rgba(72,255,139,.96); }
-.scoreMid{ color:rgba(255,232,90,.96); }
-.scoreLow{ color:rgba(255,77,77,.96); }
-
 .scoreBand{
   display:inline-flex;
   align-items:center;
@@ -172,32 +169,27 @@ body{
   text-align:center;
 }
 
-.scoreBandGreen{
-  background:rgba(72,255,139,.94);
-  color:#031009;
-  border-color:rgba(255,255,255,.12);
-}
-.scoreBandYellow{
-  background:rgba(255,232,90,.94);
-  color:#191300;
-  border-color:rgba(255,255,255,.12);
-}
-.scoreBandRed{
-  background:rgba(255,77,77,.94);
-  color:#1b0000;
-  border-color:rgba(255,255,255,.12);
-}
 .scoreBandNeutral{
   background:rgba(255,255,255,.06);
   color:rgba(238,242,247,.82);
 }
 
-.scoreTip{
-  margin-top:10px;
-  font-weight:800;
-  font-size:12px;
-  line-height:1.4;
-  color:rgba(238,242,247,.66);
+.scoreBandGood{
+  background:rgba(72,255,139,.94);
+  color:#031009;
+  border-color:rgba(255,255,255,.12);
+}
+
+.scoreBandMid{
+  background:rgba(255,232,90,.94);
+  color:#191300;
+  border-color:rgba(255,255,255,.12);
+}
+
+.scoreBandLow{
+  background:rgba(255,77,77,.94);
+  color:#1b0000;
+  border-color:rgba(255,255,255,.12);
 }
 
 /* Click boxes */
@@ -267,6 +259,86 @@ body{
   text-align:center;
 }
 
+/* History */
+.historyWrap{
+  margin-bottom:12px;
+}
+
+.historyTitle{
+  font-weight:1000;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(238,242,247,.72);
+  margin-bottom:10px;
+  text-align:center;
+}
+
+.historyEmpty{
+  text-align:center;
+  font-weight:800;
+  font-size:12px;
+  color:rgba(238,242,247,.58);
+  padding:8px 0 2px;
+}
+
+.historyList{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.historyRow{
+  border-radius:16px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08);
+  padding:10px 12px;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+.historyLeft{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+
+.historyIndex{
+  min-width:32px;
+  font-weight:1000;
+  font-size:14px;
+  color:rgba(238,242,247,.92);
+}
+
+.historyMain{
+  min-width:0;
+  flex:1;
+}
+
+.historyTop{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+  font-weight:900;
+  font-size:13px;
+  color:rgba(238,242,247,.92);
+}
+
+.historyBottom{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+  margin-top:6px;
+  font-weight:800;
+  font-size:11px;
+  color:rgba(238,242,247,.60);
+}
+
+.historySep{
+  opacity:.55;
+}
+
 /* Buttons */
 .primaryActions{
   margin-top:12px;
@@ -276,7 +348,6 @@ body{
 }
 
 .primaryBtn,
-.secondaryGlowBtn,
 .btnSecondary,
 .vendorBtn,
 .surveyBtn{
@@ -299,7 +370,6 @@ body{
 }
 
 .primaryBtn:active,
-.secondaryGlowBtn:active,
 .btnSecondary:active,
 .vendorBtn:active,
 .surveyBtn:active{
@@ -316,23 +386,15 @@ body{
     0 0 0 1px rgba(255,255,255,.05) inset;
 }
 
-.secondaryGlowBtn{
-  width:100%;
-  border:1px solid rgba(255,255,255,.16);
+.btnSecondary,
+.vendorBtn,
+.surveyBtn{
+  border:1px solid rgba(255,255,255,.14);
   background:rgba(255,255,255,.05);
-  color:rgba(238,242,247,.90);
+  color:rgba(238,242,247,.92);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.05) inset,
-    0 14px 34px rgba(0,0,0,.42);
-}
-
-.microNote{
-  text-align:center;
-  font-weight:800;
-  font-size:12px;
-  line-height:1.35;
-  color:rgba(238,242,247,.60);
-  padding-inline:4px;
+    0 0 0 1px rgba(255,255,255,.03) inset,
+    0 10px 26px rgba(0,0,0,.24);
 }
 
 /* Report page */
@@ -366,103 +428,11 @@ body{
   object-fit:contain;
 }
 
-/* Performance intelligence */
-.intelPanel{
-  margin-top:12px;
-  padding:12px;
-  border-radius:18px;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--line);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
-}
-
-.intelHdr{
-  text-align:center;
-  font-weight:1000;
-  font-size:12px;
-  letter-spacing:.14em;
-  color:rgba(238,242,247,.72);
-}
-
-.intelStats{
-  display:grid;
-  grid-template-columns:repeat(3, minmax(0,1fr));
-  gap:10px;
-  margin-top:10px;
-}
-
-.intelStat{
-  padding:12px 8px;
-  border-radius:16px;
-  text-align:center;
-  background:rgba(255,255,255,.035);
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.intelValue{
-  font-size:28px;
-  font-weight:1000;
-  line-height:1;
-  color:rgba(238,242,247,.94);
-}
-
-.intelLabel{
-  margin-top:6px;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.06em;
-  color:rgba(238,242,247,.62);
-  text-transform:uppercase;
-}
-
-.intelNote{
-  margin-top:10px;
-  text-align:center;
-  font-size:11px;
-  font-weight:800;
-  line-height:1.4;
-  color:rgba(238,242,247,.56);
-}
-
-/* Report actions */
 .reportActions{
   display:grid;
   grid-template-columns:repeat(3, minmax(0,1fr));
   gap:10px;
   margin-top:12px;
-}
-
-.btnSecondary,
-.vendorBtn,
-.surveyBtn{
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.05);
-  color:rgba(238,242,247,.92);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.03) inset,
-    0 10px 26px rgba(0,0,0,.24);
-}
-
-.reportMicro{
-  margin-top:10px;
-  text-align:center;
-  font-weight:800;
-  font-size:12px;
-  line-height:1.35;
-  color:rgba(238,242,247,.55);
-}
-
-/* Footer */
-.secFooter{
-  padding:10px 4px 0;
-  text-align:center;
-}
-
-.footerMark{
-  font-weight:1000;
-  letter-spacing:.18em;
-  font-size:12px;
-  color:rgba(238,242,247,.40);
 }
 
 /* Responsive */
@@ -493,7 +463,6 @@ body{
     font-size:48px;
   }
 
-  .intelStats,
   .reportActions{
     grid-template-columns:1fr;
   }
@@ -518,7 +487,7 @@ body{
     padding:4px 2px 6px;
   }
 
-  .secHeader.secHeaderTight{
+  .secHeaderTight{
     padding:2px 2px 5px;
   }
 
@@ -576,7 +545,6 @@ body{
   }
 
   .primaryBtn,
-  .secondaryGlowBtn,
   .btnSecondary,
   .vendorBtn,
   .surveyBtn{
@@ -585,11 +553,7 @@ body{
     padding:11px 12px;
   }
 
-  .microNote,
-  .saveHint,
-  .reportMicro,
-  .scoreTip,
-  .intelNote{
+  .saveHint{
     font-size:11px;
   }
 
