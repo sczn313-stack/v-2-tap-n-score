@@ -3,79 +3,57 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#06070a" />
-
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-
-  <title>SEC — Tap-n-Score™</title>
-  <link rel="stylesheet" href="./sec.css?v=SEC-FINAL-06" />
+  <title>SEC</title>
+  <link rel="stylesheet" href="./sec.css?v=THUMB-01" />
 </head>
 <body>
-  <main class="secPage">
+<main class="secPage">
 
-    <header class="secHeader">
-      <div class="secMark">
-        <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-      </div>
-      <div class="secTitle">Shooter Experience Card</div>
-    </header>
+<header class="secHeader">
+  <div class="secMark"><span class="r">S</span><span class="w">E</span><span class="b">C</span></div>
+  <div class="secTitle">Shooter Experience Card</div>
+</header>
 
-    <!-- TOP -->
-    <section class="topRow">
+<section class="topRow">
+  <div class="card">
+    <div class="eyebrow">Smart Score</div>
+    <div id="scoreValue" class="scoreValue">—</div>
+  </div>
 
-      <article class="card scoreCard">
-        <div class="eyebrow">Smart Score</div>
-        <div id="scoreValue" class="scoreValue">—</div>
-        <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
-      </article>
+  <a id="vendorBtn" class="card vendorCard" href="#">
+    <div class="eyebrow">Official Target Partner</div>
+    <div id="vendorText" class="vendorText">Vendor</div>
+  </a>
+</section>
 
-      <a id="vendorBtn" class="card vendorCard vendorDisabled" href="#" target="_blank">
-        <div class="eyebrow">Official Target Partner</div>
-        <div id="vendorText" class="vendorText">Vendor Not Set</div>
-      </a>
+<section class="card">
+  <div class="eyebrow">Correction</div>
+  <div id="corrClicksInline" class="correctionInlineValue">—</div>
+</section>
 
-    </section>
+<section class="card">
+  <div id="sessionMeta" class="metaLine">—</div>
+</section>
 
-    <!-- CORRECTION -->
-    <section class="card correctionCard">
-      <div class="eyebrow">Correction</div>
-      <div id="corrClicksInline" class="correctionInlineValue">—</div>
-    </section>
+<!-- ✅ THUMBNAIL (NEW) -->
+<section id="thumbWrap" class="card thumbWrap hidden">
+  <img id="thumbImg" class="thumbImg" />
+</section>
 
-    <!-- META -->
-    <section class="card metaCard">
-      <div id="sessionMeta" class="metaLine">—</div>
-    </section>
+<section class="card">
+  <div class="historyHeader">Session History</div>
+  <div id="historyGrid" class="historyGrid"></div>
+</section>
 
-    <!-- HISTORY -->
-    <section class="card historyCard">
+<section class="compactActions">
+  <a id="surveyBtn" class="miniAction">Survey</a>
+  <button id="saveSecBtn" class="miniAction miniActionPrimary">Save SEC</button>
+</section>
 
-      <div class="historyHeader">Session History</div>
+<button id="goHomeBtn" class="primaryBtn">Zero Another Target</button>
 
-      <div class="historyHead">
-        <div></div>
-        <div>SCORE</div>
-        <div>YARDS</div>
-        <div>HITS</div>
-      </div>
+</main>
 
-      <div id="historyGrid" class="historyGrid"></div>
-
-    </section>
-
-    <!-- ACTIONS -->
-    <section class="compactActions">
-      <a id="surveyBtn" class="miniAction" href="#">Survey</a>
-      <button id="saveSecBtn" class="miniAction miniActionPrimary">Save SEC</button>
-    </section>
-
-    <button id="goHomeBtn" class="primaryBtn">Zero Another Target</button>
-
-  </main>
-
-  <script src="./sec.js?v=SEC-FINAL-06"></script>
+<script src="./sec.js?v=THUMB-01"></script>
 </body>
 </html>
