@@ -6,6 +6,7 @@
    - Support page 2 report view buttons
    - Keep Baker vendor wiring working
    - Bind after DOM is ready
+   - Save and render Shooter History
 ============================================================ */
 
 (() => {
@@ -15,6 +16,8 @@
     const KEY_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
     const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
     const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
+    const HISTORY_KEY = "SCZN3_SEC_HISTORY_V1";
+    const HISTORY_LIMIT = 10;
 
     const viewPrecision = $("viewPrecision");
     const viewReport = $("viewReport");
@@ -35,6 +38,10 @@
     const vendorBtn = $("vendorBtn");
     const surveyBtn = $("surveyBtn");
     const secCardImg = $("secCardImg");
+
+    // Optional history containers in sec.html
+    const historyList = $("historyList");
+    const historyEmpty = $("historyEmpty");
 
     function getUrl() {
       try {
@@ -149,7 +156,12 @@
 
     function setBandClass(score) {
       if (!scoreBand) return;
-      scoreBand.classList.remove("scoreBandNeutral", "scoreBandGood", "scoreBandMid", "scoreBandLow");
+      scoreBand.classList.remove(
+        "scoreBandNeutral",
+        "scoreBandGood",
+        "scoreBandMid",
+        "scoreBandLow"
+      );
 
       const n = Number(score);
       if (!Number.isFinite(n)) {
@@ -185,7 +197,10 @@
       const windage = payload?.windage || {};
       const elevation = payload?.elevation || {};
       const dial = payload?.dial || {};
-      const distanceYds = Number(payload?.debug?.distanceYds);
+      const distanceYds =
+        Number(payload?.debug?.distanceYds) ||
+        Number(payload?.distanceYds) ||
+        Number(payload?.distance);
 
       if (scoreValue) {
         scoreValue.textContent = Number.isFinite(score) ? String(Math.round(score)) : "—";
@@ -255,7 +270,10 @@
       const windage = payload?.windage || {};
       const elevation = payload?.elevation || {};
       const shots = Number(payload?.shots);
-      const distanceYds = Number(payload?.debug?.distanceYds);
+      const distanceYds =
+        Number(payload?.debug?.distanceYds) ||
+        Number(payload?.distanceYds) ||
+        Number(payload?.distance);
       const dial = payload?.dial || {};
 
       const svg = `
@@ -299,6 +317,118 @@
       secCardImg.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     }
 
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY) || "[]";
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function historyEntryFromPayload(payload) {
+      const score = Number(payload?.score);
+      const shots = Number(payload?.shots);
+      const distanceYds =
+        Number(payload?.debug?.distanceYds) ||
+        Number(payload?.distanceYds) ||
+        Number(payload?.distance);
+
+      return {
+        score: Number.isFinite(score) ? Math.round(score) : null,
+        shots: Number.isFinite(shots) ? shots : null,
+        distanceYds: Number.isFinite(distanceYds) ? distanceYds : null,
+        windageClicks: Number.isFinite(Number(payload?.windage?.clicks))
+          ? Number(payload.windage.clicks).toFixed(2)
+          : "—",
+        windageDir: String(payload?.windage?.dir || "—"),
+        elevationClicks: Number.isFinite(Number(payload?.elevation?.clicks))
+          ? Number(payload.elevation.clicks).toFixed(2)
+          : "—",
+        elevationDir: String(payload?.elevation?.dir || "—"),
+        vendorName: String(payload?.vendorName || ""),
+        ts: Date.now()
+      };
+    }
+
+    function isSameHistoryEntry(a, b) {
+      if (!a || !b) return false;
+      return (
+        String(a.score) === String(b.score) &&
+        String(a.shots) === String(b.shots) &&
+        String(a.distanceYds) === String(b.distanceYds) &&
+        String(a.windageClicks) === String(b.windageClicks) &&
+        String(a.windageDir) === String(b.windageDir) &&
+        String(a.elevationClicks) === String(b.elevationClicks) &&
+        String(a.elevationDir) === String(b.elevationDir)
+      );
+    }
+
+    function saveToHistory(payload) {
+      try {
+        const entry = historyEntryFromPayload(payload);
+        const history = loadHistory();
+
+        if (history.length && isSameHistoryEntry(history[0], entry)) {
+          return;
+        }
+
+        history.unshift(entry);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, HISTORY_LIMIT)));
+      } catch {}
+    }
+
+    function formatHistoryTime(ts) {
+      try {
+        return new Date(ts).toLocaleString([], {
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      } catch {
+        return "";
+      }
+    }
+
+    function renderHistory() {
+      if (!historyList) return;
+
+      const history = loadHistory();
+
+      if (!history.length) {
+        historyList.innerHTML = "";
+        if (historyEmpty) historyEmpty.style.display = "";
+        return;
+      }
+
+      if (historyEmpty) historyEmpty.style.display = "none";
+
+      historyList.innerHTML = history
+        .map((item, index) => {
+          const scoreText = item.score != null ? item.score : "—";
+          const shotsText = item.shots != null ? `${item.shots} hits` : "—";
+          const distanceText = item.distanceYds != null ? `${item.distanceYds} yds` : "—";
+          const stampText = item.ts ? formatHistoryTime(item.ts) : "";
+
+          return `
+            <div class="historyRow" data-history-index="${index}">
+              <div class="historyMain">
+                <div class="historyScore">Score ${scoreText}</div>
+                <div class="historyMeta">${shotsText} • ${distanceText}</div>
+              </div>
+              <div class="historyAdjust">
+                <div>${item.windageClicks} ${item.windageDir}</div>
+                <div>${item.elevationClicks} ${item.elevationDir}</div>
+              </div>
+              <div class="historyStamp">${stampText}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
     function wireActions(payload) {
       toReportBtn?.addEventListener("click", () => {
         buildReportCard(payload);
@@ -331,12 +461,15 @@
 
     if (!payload) {
       renderNoData();
+      renderHistory();
       return;
     }
 
     renderPayload(payload);
     wireVendor(payload);
     wireActions(payload);
+    saveToHistory(payload);
+    renderHistory();
     showPrecision();
   }
 
