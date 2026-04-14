@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT (IMAGE + HISTORY + TIMESTAMP)
+   docs/sec.js — FULL REPLACEMENT (IMAGE EXPORT + HISTORY SAFE)
 ============================================================ */
 
 (() => {
@@ -9,9 +9,6 @@
   const KEY_IMG = "SCZN3_TARGET_IMG_DATAURL_V1";
   const KEY_HISTORY = "SCZN3_SEC_HISTORY_V1";
 
-  // ------------------------------------------------------------
-  // LOAD
-  // ------------------------------------------------------------
   function loadPayload() {
     try {
       const raw = localStorage.getItem(KEY_PAYLOAD);
@@ -24,48 +21,21 @@
   function loadHistory() {
     try {
       const raw = localStorage.getItem(KEY_HISTORY);
-      return raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   }
 
-  function saveHistory(history) {
-    try {
-      localStorage.setItem(KEY_HISTORY, JSON.stringify(history));
-    } catch {}
-  }
-
-  // ------------------------------------------------------------
-  // TIME FORMAT
-  // ------------------------------------------------------------
-  function formatTimestamp(ts) {
+  function formatDate(ts) {
     try {
       const d = new Date(ts);
-      const date = d.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      });
-      const time = d.toLocaleTimeString(undefined, {
-        hour: "numeric",
-        minute: "2-digit"
-      });
-      return `${date} • ${time}`;
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleString();
     } catch {
       return "";
     }
-  }
-
-  // ------------------------------------------------------------
-  // NO DATA
-  // ------------------------------------------------------------
-  function renderNoData() {
-    $("scoreValue").textContent = "—";
-    $("scoreBand").textContent = "NO DATA";
-    $("scoreBand").className = "scoreBand scoreBandNeutral";
-    $("corrClicksInline").textContent = "—";
-    $("sessionMeta").textContent = "No session data";
   }
 
   function directionArrow(dir) {
@@ -77,9 +47,6 @@
     return "";
   }
 
-  // ------------------------------------------------------------
-  // RENDER PAYLOAD
-  // ------------------------------------------------------------
   function renderPayload(p) {
     if (!p) return;
 
@@ -95,196 +62,205 @@
       band.className = "scoreBand scoreBandMid";
     } else {
       band.textContent = "NEEDS WORK";
-      band.className = "scoreBand scoreBandBad";
+      band.className = "scoreBand scoreBandLow";
     }
 
-    const elev = p?.elevation || {};
-    const wind = p?.windage || {};
+    const elev = Math.round(Number(p?.elevation?.clicks ?? 0));
+    const wind = Math.round(Number(p?.windage?.clicks ?? 0));
 
-    const elevText = `${Math.round(elev.clicks || 0)}${directionArrow(elev.dir)}`;
-    const windText = `${Math.round(wind.clicks || 0)}${directionArrow(wind.dir)}`;
+    const elevDir = directionArrow(p?.elevation?.dir);
+    const windDir = directionArrow(p?.windage?.dir);
 
-    $("corrClicksInline").textContent = `Clicks ${elevText} • ${windText}`;
+    $("corrClicksInline").textContent = `Clicks ${elev}${elevDir} • ${wind}${windDir}`;
 
-    const distanceYds = p?.debug?.distanceYds ?? "—";
+    const distance = p?.debug?.distanceYds ?? "—";
     const hits = p?.shots ?? "—";
-    const ts = formatTimestamp(p.timestamp);
+    const time = formatDate(p?.ts);
 
-    $("sessionMeta").textContent = `${distanceYds} yds • ${hits} hits • ${ts}`;
+    $("sessionMeta").textContent = `${distance} yds • ${hits} hits${time ? " • " + time : ""}`;
   }
 
-  // ------------------------------------------------------------
-  // THUMBNAIL
-  // ------------------------------------------------------------
   function renderThumbnail() {
     const img = $("reportThumb");
     if (!img) return;
 
     const dataUrl = localStorage.getItem(KEY_IMG);
-
     if (dataUrl) {
       img.src = dataUrl;
       img.style.display = "block";
     } else {
-      img.removeAttribute("src");
       img.style.display = "none";
     }
   }
 
-  // ------------------------------------------------------------
-  // HISTORY (NEWEST = TOP, COUNT 01 TOP)
-  // ------------------------------------------------------------
-  function updateHistory(payload) {
-    if (!payload) return;
-
-    let history = loadHistory();
-
-    const entry = {
-      score: payload.score,
-      hits: payload.shots,
-      timestamp: payload.timestamp
-    };
-
-    // add newest to FRONT
-    history.unshift(entry);
-
-    // cap at 10
-    if (history.length > 10) {
-      history = history.slice(0, 10);
-    }
-
-    saveHistory(history);
-    return history;
-  }
-
-  function renderHistory(history) {
-    const grid = $("historyGrid");
-    const empty = $("historyEmpty");
-
-    if (!grid || !empty) return;
-
-    grid.innerHTML = "";
-
-    if (!history || history.length === 0) {
-      empty.style.display = "block";
-      return;
-    }
-
-    empty.style.display = "none";
-
-    history.forEach((item, index) => {
-      const displayIndex = String(index + 1).padStart(2, "0");
-      const ts = formatTimestamp(item.timestamp);
-
-      const cell = document.createElement("div");
-      cell.className = "historyCell";
-
-      cell.innerHTML = `
-        <div class="historyTop">
-          <span class="historyIndex">${displayIndex}</span>
-          <span class="historyValue">${item.score}</span>
-          <span class="historyHits">${item.hits}</span>
-        </div>
-        <div class="historyBottom">
-          <span class="historySoft">${ts}</span>
-        </div>
-      `;
-
-      grid.appendChild(cell);
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
     });
   }
 
-  // ------------------------------------------------------------
-  // IMAGE EXPORT (UNCHANGED CORE)
-  // ------------------------------------------------------------
-  async function buildSECImageBlob() {
-    const thumbSrc = localStorage.getItem(KEY_IMG);
+  function roundedRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+
+  function fillRoundedRect(ctx, x, y, w, h, r, fill, stroke = null) {
+    roundedRect(ctx, x, y, w, h, r);
+    ctx.fillStyle = fill;
+    ctx.fill();
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.stroke();
+    }
+  }
+
+  async function buildSECImageBlob(payload) {
+    const history = loadHistory().slice(0, 6); // max 6 rows
+
+    const width = 1400;
+    const padding = 40;
+    const innerWidth = width - padding * 2;
+
+    const height =
+      padding +
+      100 +
+      260 +
+      180 +
+      100 +
+      820 +
+      (history.length ? 260 : 0) +
+      80;
 
     const canvas = document.createElement("canvas");
-    canvas.width = 1200;
-    canvas.height = 1600;
-
+    canvas.width = width;
+    canvas.height = height;
     const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#06070a";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // background
+    const bg = ctx.createLinearGradient(0, 0, 0, height);
+    bg.addColorStop(0, "#0a1224");
+    bg.addColorStop(1, "#06070a");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
 
-    // simple export (uses existing UI text)
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 48px Arial";
-    ctx.fillText($("scoreValue").textContent, 100, 120);
+    let y = padding;
 
-    ctx.font = "28px Arial";
-    ctx.fillText($("corrClicksInline").textContent, 100, 200);
-    ctx.fillText($("sessionMeta").textContent, 100, 260);
+    // HEADER
+    ctx.font = "900 60px system-ui";
+    ctx.fillStyle = "#ff5a58";
+    ctx.fillText("S", padding, y);
+    ctx.fillStyle = "#eef2f7";
+    ctx.fillText("E", padding + 36, y);
+    ctx.fillStyle = "#3b6cff";
+    ctx.fillText("C", padding + 72, y);
 
+    ctx.font = "900 24px system-ui";
+    ctx.fillStyle = "#aaa";
+    ctx.fillText("SHOOTER EXPERIENCE CARD", width - 420, y + 10);
+
+    y += 100;
+
+    // SCORE CARD
+    fillRoundedRect(ctx, padding, y, innerWidth, 260, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
+
+    ctx.font = "900 140px system-ui";
+    ctx.fillStyle = "#eef2f7";
+    ctx.textAlign = "center";
+    ctx.fillText(payload.score ?? "—", width / 2, y + 160);
+
+    y += 280;
+
+    // CORRECTION
+    fillRoundedRect(ctx, padding, y, innerWidth, 180, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
+
+    ctx.font = "900 60px system-ui";
+    ctx.fillStyle = "#eef2f7";
+    ctx.fillText($("corrClicksInline").textContent, width / 2, y + 110);
+
+    y += 200;
+
+    // META
+    fillRoundedRect(ctx, padding, y, innerWidth, 100, 24, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
+
+    ctx.font = "900 36px system-ui";
+    ctx.fillText($("sessionMeta").textContent, width / 2, y + 60);
+
+    y += 120;
+
+    // THUMBNAIL
+    fillRoundedRect(ctx, padding, y, innerWidth, 820, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
+
+    const thumbSrc = localStorage.getItem(KEY_IMG);
     if (thumbSrc) {
-      const img = new Image();
-      await new Promise((res) => {
-        img.onload = res;
-        img.src = thumbSrc;
-      });
-      ctx.drawImage(img, 100, 320, 1000, 900);
+      try {
+        const img = await loadImage(thumbSrc);
+        ctx.drawImage(img, padding + 20, y + 20, innerWidth - 40, 780);
+      } catch {}
     }
 
+    y += 840;
+
+    // HISTORY (NEW)
+    if (history.length) {
+      ctx.font = "900 22px system-ui";
+      ctx.fillStyle = "#aaa";
+      ctx.fillText("SHOOTER HISTORY", width / 2, y);
+
+      y += 40;
+
+      ctx.textAlign = "left";
+
+      history.forEach((h, i) => {
+        const line = `${String(i + 1).padStart(2, "0")}   ${h.score ?? "-"}   ${h.hits ?? "-"}   ${formatDate(h.ts)}`;
+        ctx.fillText(line, padding + 20, y);
+        y += 34;
+      });
+
+      ctx.textAlign = "center";
+    }
+
+    // EXPORT
     return await new Promise((resolve) =>
-      canvas.toBlob(resolve, "image/png")
+      canvas.toBlob((b) => resolve(b), "image/png")
     );
   }
 
-  async function saveSEC() {
-    try {
-      const blob = await buildSECImageBlob();
-      const url = URL.createObjectURL(blob);
+  async function saveSEC(payload) {
+    const blob = await buildSECImageBlob(payload);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "SEC-Card.png";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch {
-      alert("Save failed.");
-    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "SEC-Card.png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function goHome() {
-    window.location.href = "./?fresh=" + Date.now();
-  }
-
-  // ------------------------------------------------------------
-  // INIT
-  // ------------------------------------------------------------
   function init() {
     const payload = loadPayload();
-
-    if (!payload) {
-      renderNoData();
-      renderThumbnail();
-      renderHistory([]);
-      return;
-    }
-
-    // ensure timestamp exists
-    if (!payload.timestamp) {
-      payload.timestamp = new Date().toISOString();
-    }
+    if (!payload) return;
 
     renderPayload(payload);
     renderThumbnail();
 
-    const history = updateHistory(payload);
-    renderHistory(history);
+    $("saveSecBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      saveSEC(payload);
+    });
 
-    $("saveSecBtn")?.addEventListener("click", saveSEC);
-    $("goHomeBtn")?.addEventListener("click", goHome);
+    $("goHomeBtn")?.addEventListener("click", () => {
+      window.location.href = "./";
+    });
   }
 
-  if (document.readyState === "loading") {
-    window.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  document.addEventListener("DOMContentLoaded", init);
 })();
