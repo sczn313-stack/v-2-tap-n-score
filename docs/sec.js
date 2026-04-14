@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT (THUMB FIX)
+   docs/sec.js — FULL REPLACEMENT (THUMB + META FIX)
 ============================================================ */
 
 (() => {
@@ -20,6 +20,7 @@
   function renderNoData() {
     $("scoreValue").textContent = "—";
     $("scoreBand").textContent = "NO DATA";
+    $("scoreBand").className = "scoreBand scoreBandNeutral";
     $("corrClicksInline").textContent = "—";
     $("sessionMeta").textContent = "No session data";
   }
@@ -27,13 +28,14 @@
   function renderPayload(p) {
     if (!p) return;
 
+    const score = Number(p.score ?? 0);
     $("scoreValue").textContent = p.score ?? "—";
 
     const band = $("scoreBand");
-    if (p.score >= 90) {
-      band.textContent = "EXCELLENT";
+    if (score >= 90) {
+      band.textContent = "STRONG";
       band.className = "scoreBand scoreBandGood";
-    } else if (p.score >= 60) {
+    } else if (score >= 60) {
       band.textContent = "SOLID";
       band.className = "scoreBand scoreBandMid";
     } else {
@@ -41,15 +43,32 @@
       band.className = "scoreBand scoreBandBad";
     }
 
-    $("corrClicksInline").textContent =
-      `Clicks ${p.elevationClicks || 0}${p.elevationDir || ""} • ${p.windageClicks || 0}${p.windageDir || ""}`;
+    const elevationClicks = Number(p?.elevation?.clicks ?? 0);
+    const elevationDir = String(p?.elevation?.dir ?? "");
+    const windageClicks = Number(p?.windage?.clicks ?? 0);
+    const windageDir = String(p?.windage?.dir ?? "");
 
-    $("sessionMeta").textContent =
-      `${p.distanceYards || "—"} yds • ${p.hits || "—"} hits`;
+    const elevText = `${elevationClicks % 1 === 0 ? elevationClicks : elevationClicks.toFixed(2)}${elevationDir ? directionArrow(elevationDir) : ""}`;
+    const windText = `${windageClicks % 1 === 0 ? windageClicks : windageClicks.toFixed(2)}${windageDir ? directionArrow(windageDir) : ""}`;
+
+    $("corrClicksInline").textContent = `Clicks ${elevText} • ${windText}`;
+
+    const distanceYds = p?.debug?.distanceYds ?? "—";
+    const hits = p?.shots ?? "—";
+    $("sessionMeta").textContent = `${distanceYds} yds • ${hits} hits`;
+  }
+
+  function directionArrow(dir) {
+    const d = String(dir || "").toUpperCase();
+    if (d === "UP") return "↑";
+    if (d === "DOWN") return "↓";
+    if (d === "LEFT") return "←";
+    if (d === "RIGHT") return "→";
+    return "";
   }
 
   function renderThumbnail() {
-    const img = $( "reportThumb" );
+    const img = $("reportThumb");
     if (!img) return;
 
     const dataUrl = localStorage.getItem(KEY_IMG);
@@ -58,6 +77,7 @@
       img.src = dataUrl;
       img.style.display = "block";
     } else {
+      img.removeAttribute("src");
       img.style.display = "none";
     }
   }
