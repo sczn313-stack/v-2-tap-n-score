@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT (IMAGE EXPORT)
+   docs/sec.js — FULL REPLACEMENT (IMAGE EXPORT TIGHTENED)
 ============================================================ */
 
 (() => {
@@ -164,27 +164,27 @@
 
   async function buildSECImageBlob(payload) {
     const width = 1400;
-    const padding = 42;
+    const padding = 34;
     const innerWidth = width - padding * 2;
 
-    const topRowHeight = 250;
-    const correctionHeight = 170;
-    const metaHeight = 90;
-    const thumbHeight = 820;
-    const footerHeight = 44;
+    const topRowHeight = 220;
+    const correctionHeight = 150;
+    const metaHeight = 80;
+    const thumbHeight = 720;
+    const footerHeight = 34;
 
     const height =
       padding +
-      72 +
-      28 +
+      68 +
+      18 +
       topRowHeight +
-      20 +
+      14 +
       correctionHeight +
-      20 +
+      14 +
       metaHeight +
-      20 +
+      14 +
       thumbHeight +
-      24 +
+      16 +
       footerHeight +
       padding;
 
@@ -195,6 +195,9 @@
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas unavailable");
 
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+
     const bg = ctx.createLinearGradient(0, 0, 0, height);
     bg.addColorStop(0, "#0a1224");
     bg.addColorStop(0.22, "#09101b");
@@ -203,7 +206,7 @@
     ctx.fillRect(0, 0, width, height);
 
     const glow = ctx.createRadialGradient(width / 2, 0, 0, width / 2, 0, 520);
-    glow.addColorStop(0, "rgba(47,102,255,.20)");
+    glow.addColorStop(0, "rgba(47,102,255,.18)");
     glow.addColorStop(1, "rgba(47,102,255,0)");
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, width, 520);
@@ -211,115 +214,138 @@
     let y = padding;
 
     // Header
-    ctx.textBaseline = "top";
-    ctx.font = "900 62px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.font = "900 58px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "#ff5a58";
     ctx.fillText("S", padding, y);
     const sw = ctx.measureText("S").width;
+
     ctx.fillStyle = "#eef2f7";
     ctx.fillText("E", padding + sw, y);
     const sew = ctx.measureText("SE").width;
+
     ctx.fillStyle = "#3b6cff";
     ctx.fillText("C", padding + sew, y);
 
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.font = "900 22px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "rgba(238,242,247,.76)";
     const title = "SHOOTER EXPERIENCE CARD";
     const titleWidth = ctx.measureText(title).width;
-    ctx.fillText(title, width - padding - titleWidth, y + 16);
+    ctx.fillText(title, width - padding - titleWidth, y + 14);
 
-    y += 100;
+    y += 86;
 
     // Top row
-    const gap = 18;
+    const gap = 16;
     const leftW = Math.round(innerWidth * 0.55);
     const rightW = innerWidth - leftW - gap;
 
-    fillRoundedRect(ctx, padding, y, leftW, topRowHeight, 32, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
-    fillRoundedRect(ctx, padding + leftW + gap, y, rightW, topRowHeight, 32, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+    fillRoundedRect(ctx, padding, y, leftW, topRowHeight, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+    fillRoundedRect(ctx, padding + leftW + gap, y, rightW, topRowHeight, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
 
-    ctx.font = "900 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
-    ctx.fillStyle = "rgba(238,242,247,.74)";
     ctx.textAlign = "center";
-    ctx.fillText("SMART SCORE", padding + leftW / 2, y + 28);
+    ctx.font = "900 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.fillStyle = "rgba(238,242,247,.74)";
+    ctx.fillText("SMART SCORE", padding + leftW / 2, y + 24);
 
     const score = Number(payload?.score ?? 0);
-    ctx.font = "900 150px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.font = "900 136px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "#eef2f7";
-    ctx.fillText(String(payload?.score ?? "—"), padding + leftW / 2, y + 62);
+    ctx.fillText(String(payload?.score ?? "—"), padding + leftW / 2, y + 54);
 
     const band = scoreBandColors(score);
-    const pillW = band.text === "NEEDS WORK" ? 220 : 150;
-    const pillH = 56;
+    const pillW = band.text === "NEEDS WORK" ? 208 : 146;
+    const pillH = 54;
     const pillX = padding + (leftW - pillW) / 2;
-    const pillY = y + topRowHeight - 78;
+    const pillY = y + topRowHeight - 72;
+
     fillRoundedRect(ctx, pillX, pillY, pillW, pillH, 999, band.bg);
+
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = band.fg;
     ctx.fillText(band.text, pillX + pillW / 2, pillY + 14);
 
-    ctx.font = "900 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.font = "900 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "rgba(238,242,247,.74)";
-    ctx.fillText("OFFICIAL TARGET PARTNER", padding + leftW + gap + rightW / 2, y + 76);
+    ctx.fillText("OFFICIAL TARGET PARTNER", padding + leftW + gap + rightW / 2, y + 64);
 
-    ctx.font = "900 60px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.font = "900 58px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "#eef2f7";
-    ctx.fillText(String($("vendorText")?.textContent || "Vendor Not Set"), padding + leftW + gap + rightW / 2, y + 118);
+    ctx.fillText(String($("vendorText")?.textContent || "Vendor Not Set"), padding + leftW + gap + rightW / 2, y + 106);
 
-    y += topRowHeight + 20;
+    y += topRowHeight + 14;
 
     // Correction
-    fillRoundedRect(ctx, padding, y, innerWidth, correctionHeight, 32, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
-    ctx.font = "900 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    fillRoundedRect(ctx, padding, y, innerWidth, correctionHeight, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+
+    ctx.font = "900 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "rgba(238,242,247,.74)";
-    ctx.fillText("CORRECTION", width / 2, y + 22);
+    ctx.fillText("CORRECTION", width / 2, y + 18);
 
-    fillRoundedRect(ctx, padding + 20, y + 56, innerWidth - 40, 86, 24, "rgba(255,255,255,.04)", "rgba(255,255,255,.10)", 2);
-    ctx.font = "1000 68px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    fillRoundedRect(ctx, padding + 18, y + 46, innerWidth - 36, 78, 22, "rgba(255,255,255,.04)", "rgba(255,255,255,.10)", 2);
+
+    ctx.font = "1000 64px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "#eef2f7";
-    ctx.fillText(String($("corrClicksInline")?.textContent || "—"), width / 2, y + 74);
+    ctx.fillText(String($("corrClicksInline")?.textContent || "—"), width / 2, y + 60);
 
-    y += correctionHeight + 20;
+    y += correctionHeight + 14;
 
     // Meta
-    fillRoundedRect(ctx, padding, y, innerWidth, metaHeight, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
-    ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    fillRoundedRect(ctx, padding, y, innerWidth, metaHeight, 24, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+
+    ctx.font = "900 38px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "#eef2f7";
-    ctx.fillText(String($("sessionMeta")?.textContent || "—"), width / 2, y + 22);
+    ctx.fillText(String($("sessionMeta")?.textContent || "—"), width / 2, y + 18);
 
-    y += metaHeight + 20;
+    y += metaHeight + 14;
 
-    // Thumbnail card
-    fillRoundedRect(ctx, padding, y, innerWidth, thumbHeight, 32, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
-    ctx.font = "900 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    // Thumbnail
+    fillRoundedRect(ctx, padding, y, innerWidth, thumbHeight, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+
+    ctx.font = "900 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "rgba(238,242,247,.74)";
-    ctx.fillText("TARGET THUMBNAIL", width / 2, y + 22);
+    ctx.fillText("TARGET THUMBNAIL", width / 2, y + 18);
 
     const thumbSrc = localStorage.getItem(KEY_IMG) || "";
     if (thumbSrc) {
       try {
         const thumb = await loadImage(thumbSrc);
-        const boxX = padding + 24;
-        const boxY = y + 60;
-        const boxW = innerWidth - 48;
-        const boxH = thumbHeight - 84;
 
-        const scale = Math.min(boxW / thumb.width, boxH / thumb.height);
-        const drawW = Math.round(thumb.width * scale);
-        const drawH = Math.round(thumb.height * scale);
-        const drawX = boxX + Math.round((boxW - drawW) / 2);
-        const drawY = boxY + Math.round((boxH - drawH) / 2);
+        const boxX = padding + 18;
+        const boxY = y + 46;
+        const boxW = innerWidth - 36;
+        const boxH = thumbHeight - 64;
 
-        fillRoundedRect(ctx, boxX, boxY, boxW, boxH, 24, "rgba(255,255,255,.03)", "rgba(255,255,255,.08)", 2);
+        const imgRatio = thumb.width / thumb.height;
+        const boxRatio = boxW / boxH;
+
+        let drawW;
+        let drawH;
+        let drawX;
+        let drawY;
+
+        if (imgRatio > boxRatio) {
+          drawH = boxH;
+          drawW = Math.round(drawH * imgRatio);
+          drawX = boxX + Math.round((boxW - drawW) / 2);
+          drawY = boxY;
+        } else {
+          drawW = boxW;
+          drawH = Math.round(drawW / imgRatio);
+          drawX = boxX;
+          drawY = boxY + Math.round((boxH - drawH) / 2);
+        }
+
+        fillRoundedRect(ctx, boxX, boxY, boxW, boxH, 22, "rgba(255,255,255,.03)", "rgba(255,255,255,.08)", 2);
+
         ctx.save();
-        roundedRect(ctx, boxX, boxY, boxW, boxH, 24);
+        roundedRect(ctx, boxX, boxY, boxW, boxH, 22);
         ctx.clip();
         ctx.drawImage(thumb, drawX, drawY, drawW, drawH);
         ctx.restore();
       } catch {}
     }
 
-    y += thumbHeight + 24;
+    y += thumbHeight + 16;
 
     // Footer
     ctx.font = "800 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
