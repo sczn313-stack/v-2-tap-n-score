@@ -824,6 +824,8 @@
       return;
     }
 
+    if (hits.length >= 10) return;
+
     hits.push({ x01, y01 });
     addDot(x01, y01, "hit");
     setTapCount();
