@@ -1,6 +1,6 @@
 /* ============================================================
-   docs/index.js — Annotated Thumbnail Build
-   Adds: capture target + dots into stored thumbnail
+   docs/index.js — Annotated Thumbnail Build v2
+   Adds: capture target + visible dots into stored thumbnail
 ============================================================ */
 
 (() => {
@@ -17,6 +17,7 @@
   const elImg = $("targetImg");
   const elWrap = $("targetWrap");
   const elDots = $("dotsLayer");
+  const elShowResultsBtn = $("showResultsBtn");
 
   function clamp01(v) {
     return Math.max(0, Math.min(1, v));
@@ -40,61 +41,61 @@
   function resetAll() {
     aim = null;
     hits = [];
-    elDots.innerHTML = "";
+    if (elDots) elDots.innerHTML = "";
   }
 
-  // ------------------------------------------------------------
-  // 🔥 NEW: BUILD ANNOTATED THUMBNAIL
-  // ------------------------------------------------------------
-  async function buildAnnotatedThumbnail() {
-    const rect = elWrap.getBoundingClientRect();
-
-    const canvas = document.createElement("canvas");
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-
-    const ctx = canvas.getContext("2d");
-
-    // draw base image
-    await new Promise((res) => {
+  async function loadCurrentImage() {
+    return await new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        res();
-      };
+      img.onload = () => resolve(img);
+      img.onerror = reject;
       img.src = elImg.src;
     });
+  }
 
-    // draw aim + hits
-    const drawDot = (x01, y01, color) => {
-      const x = x01 * canvas.width;
-      const y = y01 * canvas.height;
+  async function buildAnnotatedThumbnail() {
+    if (!elWrap || !elImg?.src) return;
+
+    const wrapRect = elWrap.getBoundingClientRect();
+    const width = Math.max(1, Math.round(wrapRect.width));
+    const height = Math.max(1, Math.round(wrapRect.height));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const baseImg = await loadCurrentImage();
+    ctx.drawImage(baseImg, 0, 0, width, height);
+
+    const dotEls = Array.from(elDots?.querySelectorAll(".tapDot") || []);
+
+    dotEls.forEach((dot) => {
+      const leftPct = parseFloat(dot.style.left || "0") / 100;
+      const topPct = parseFloat(dot.style.top || "0") / 100;
+
+      const x = leftPct * width;
+      const y = topPct * height;
+
+      const isAim = dot.classList.contains("tapDotAim");
+      const radius = 10;
 
       ctx.beginPath();
-      ctx.arc(x, y, 8, 0, Math.PI * 2);
-      ctx.fillStyle = color;
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = isAim ? "#67f3a4" : "#b7ff3c";
       ctx.fill();
 
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "#000";
+      ctx.strokeStyle = "#000000";
       ctx.stroke();
-    };
-
-    if (aim) {
-      drawDot(aim.x01, aim.y01, "#67f3a4"); // green aim
-    }
-
-    hits.forEach(h => {
-      drawDot(h.x01, h.y01, "#b7ff3c"); // yellow hits
     });
 
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.78);
     localStorage.setItem(KEY_TARGET_IMG_DATA, dataUrl);
   }
 
-  // ------------------------------------------------------------
-  // FILE LOAD
-  // ------------------------------------------------------------
   elFile?.addEventListener("change", async () => {
     const f = elFile.files?.[0];
     if (!f) return;
@@ -108,10 +109,7 @@
     elFile.value = "";
   });
 
-  // ------------------------------------------------------------
-  // TAP HANDLING
-  // ------------------------------------------------------------
-  elWrap?.addEventListener("click", async (e) => {
+  elWrap?.addEventListener("click", (e) => {
     if (!elImg?.src) return;
 
     const { x01, y01 } = getRelative01(e.clientX, e.clientY);
@@ -126,23 +124,18 @@
     addDot(x01, y01, "hit");
   });
 
-  // ------------------------------------------------------------
-  // SHOW RESULTS → SAVE ANNOTATED IMAGE
-  // ------------------------------------------------------------
-  $("showResultsBtn")?.addEventListener("click", async () => {
+  elShowResultsBtn?.addEventListener("click", async () => {
     await buildAnnotatedThumbnail();
 
     const payload = {
       score: 85,
       shots: hits.length,
-      elevation: { dir: "UP", clicks: 1 },
-      windage: { dir: "RIGHT", clicks: 1 },
-      debug: { distanceYds: 100 }
+      elevation: { dir: "DOWN", clicks: 0 },
+      windage: { dir: "LEFT", clicks: 1 },
+      debug: { distanceYds: 350 }
     };
 
     localStorage.setItem(KEY_PAYLOAD, JSON.stringify(payload));
-
     window.location.href = "./sec.html?fresh=" + Date.now();
   });
-
 })();
