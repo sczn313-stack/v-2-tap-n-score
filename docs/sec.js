@@ -28,11 +28,37 @@
     }
   }
 
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(KEY_HISTORY, JSON.stringify(history));
+    } catch {}
+  }
+
+  function normalizeTs(value) {
+    if (!value) return "";
+
+    try {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toISOString();
+    } catch {
+      return "";
+    }
+  }
+
   function formatDate(ts) {
+    if (!ts) return "";
+
     try {
       const d = new Date(ts);
-      if (isNaN(d.getTime())) return "";
-      return d.toLocaleString();
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
     } catch {
       return "";
     }
@@ -45,6 +71,14 @@
     if (d === "LEFT") return "←";
     if (d === "RIGHT") return "→";
     return "";
+  }
+
+  function renderNoData() {
+    $("scoreValue").textContent = "—";
+    $("scoreBand").textContent = "NO DATA";
+    $("scoreBand").className = "scoreBand scoreBandNeutral";
+    $("corrClicksInline").textContent = "—";
+    $("sessionMeta").textContent = "No session data";
   }
 
   function renderPayload(p) {
@@ -67,7 +101,6 @@
 
     const elev = Math.round(Number(p?.elevation?.clicks ?? 0));
     const wind = Math.round(Number(p?.windage?.clicks ?? 0));
-
     const elevDir = directionArrow(p?.elevation?.dir);
     const windDir = directionArrow(p?.windage?.dir);
 
@@ -89,8 +122,87 @@
       img.src = dataUrl;
       img.style.display = "block";
     } else {
+      img.removeAttribute("src");
       img.style.display = "none";
     }
+  }
+
+  function scoreClass(score) {
+    const n = Number(score ?? 0);
+    if (n >= 90) return "historyScoreHigh";
+    if (n >= 60) return "historyScoreMid";
+    return "historyScoreLow";
+  }
+
+  function migrateHistory(history) {
+    if (!Array.isArray(history)) return [];
+
+    let changed = false;
+
+    const migrated = history.map((item) => {
+      const ts = normalizeTs(item?.ts || item?.timestamp || item?.date || "");
+      if (ts !== (item?.ts || "")) changed = true;
+
+      return {
+        score: Number(item?.score ?? 0),
+        hits: Number(item?.hits ?? item?.shots ?? 0),
+        ts
+      };
+    });
+
+    if (changed) saveHistory(migrated);
+    return migrated;
+  }
+
+  function updateHistory(payload) {
+    if (!payload) return migrateHistory(loadHistory());
+
+    let history = migrateHistory(loadHistory());
+
+    const entry = {
+      score: Number(payload.score ?? 0),
+      hits: Number(payload.shots ?? 0),
+      ts: normalizeTs(payload.ts) || new Date().toISOString()
+    };
+
+    history.unshift(entry);
+    history = history.slice(0, 10);
+    saveHistory(history);
+    return history;
+  }
+
+  function renderHistory(history) {
+    const grid = $("historyGrid");
+    const empty = $("historyEmpty");
+    if (!grid || !empty) return;
+
+    grid.innerHTML = "";
+
+    if (!Array.isArray(history) || history.length === 0) {
+      empty.style.display = "block";
+      return;
+    }
+
+    empty.style.display = "none";
+
+    history.forEach((item, index) => {
+      const displayIndex = String(index + 1).padStart(2, "0");
+      const ts = formatDate(item.ts);
+
+      const cell = document.createElement("div");
+      cell.className = "historyCell";
+      cell.innerHTML = `
+        <div class="historyTop">
+          <span class="historyIndex">${displayIndex}</span>
+          <span class="${scoreClass(item.score)}">${item.score}</span>
+          <span class="historyHits">${item.hits}</span>
+        </div>
+        <div class="historyBottom">
+          <span class="historySoft">${ts || "—"}</span>
+        </div>
+      `;
+      grid.appendChild(cell);
+    });
   }
 
   function loadImage(src) {
@@ -113,39 +225,44 @@
     ctx.closePath();
   }
 
-  function fillRoundedRect(ctx, x, y, w, h, r, fill, stroke = null) {
+  function fillRoundedRect(ctx, x, y, w, h, r, fill, stroke = null, lineWidth = 1) {
     roundedRect(ctx, x, y, w, h, r);
     ctx.fillStyle = fill;
     ctx.fill();
     if (stroke) {
+      ctx.lineWidth = lineWidth;
       ctx.strokeStyle = stroke;
       ctx.stroke();
     }
   }
 
-  async function buildSECImageBlob(payload) {
-    const history = loadHistory().slice(0, 6); // max 6 rows
+  async function buildSECImageBlob(payload, history) {
+    const exportHistory = Array.isArray(history) ? history.slice(0, 6) : [];
 
     const width = 1400;
     const padding = 40;
     const innerWidth = width - padding * 2;
 
+    const historyHeight = exportHistory.length ? 300 : 120;
+
     const height =
       padding +
-      100 +
-      260 +
-      180 +
-      100 +
-      820 +
-      (history.length ? 260 : 0) +
-      80;
+      90 +   // header
+      240 +  // score
+      180 +  // correction
+      90 +   // meta
+      820 +  // thumbnail
+      historyHeight +
+      60;    // footer
 
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas unavailable");
 
-    // background
+    ctx.textBaseline = "top";
+
     const bg = ctx.createLinearGradient(0, 0, 0, height);
     bg.addColorStop(0, "#0a1224");
     bg.addColorStop(1, "#06070a");
@@ -154,113 +271,200 @@
 
     let y = padding;
 
-    // HEADER
-    ctx.font = "900 60px system-ui";
+    // Header
+    ctx.textAlign = "left";
+    ctx.font = "900 58px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
     ctx.fillStyle = "#ff5a58";
     ctx.fillText("S", padding, y);
     ctx.fillStyle = "#eef2f7";
-    ctx.fillText("E", padding + 36, y);
+    ctx.fillText("E", padding + 35, y);
     ctx.fillStyle = "#3b6cff";
-    ctx.fillText("C", padding + 72, y);
+    ctx.fillText("C", padding + 70, y);
 
-    ctx.font = "900 24px system-ui";
-    ctx.fillStyle = "#aaa";
-    ctx.fillText("SHOOTER EXPERIENCE CARD", width - 420, y + 10);
+    ctx.textAlign = "right";
+    ctx.font = "900 22px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
+    ctx.fillStyle = "rgba(238,242,247,.76)";
+    ctx.fillText("SHOOTER EXPERIENCE CARD", width - padding, y + 10);
 
-    y += 100;
+    y += 90;
 
-    // SCORE CARD
-    fillRoundedRect(ctx, padding, y, innerWidth, 260, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
-
-    ctx.font = "900 140px system-ui";
-    ctx.fillStyle = "#eef2f7";
+    // Score
+    fillRoundedRect(ctx, padding, y, innerWidth, 220, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
     ctx.textAlign = "center";
-    ctx.fillText(payload.score ?? "—", width / 2, y + 160);
-
-    y += 280;
-
-    // CORRECTION
-    fillRoundedRect(ctx, padding, y, innerWidth, 180, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
-
-    ctx.font = "900 60px system-ui";
+    ctx.font = "900 130px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
     ctx.fillStyle = "#eef2f7";
-    ctx.fillText($("corrClicksInline").textContent, width / 2, y + 110);
+    ctx.fillText(String(payload?.score ?? "—"), width / 2, y + 42);
 
-    y += 200;
+    y += 240;
 
-    // META
-    fillRoundedRect(ctx, padding, y, innerWidth, 100, 24, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
+    // Correction
+    fillRoundedRect(ctx, padding, y, innerWidth, 160, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+    ctx.font = "1000 60px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
+    ctx.fillStyle = "#eef2f7";
+    ctx.fillText(String($("corrClicksInline")?.textContent || "—"), width / 2, y + 50);
 
-    ctx.font = "900 36px system-ui";
-    ctx.fillText($("sessionMeta").textContent, width / 2, y + 60);
+    y += 180;
 
-    y += 120;
+    // Meta
+    fillRoundedRect(ctx, padding, y, innerWidth, 70, 24, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+    ctx.font = "900 34px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
+    ctx.fillText(String($("sessionMeta")?.textContent || "—"), width / 2, y + 16);
 
-    // THUMBNAIL
-    fillRoundedRect(ctx, padding, y, innerWidth, 820, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.1)");
+    y += 90;
 
-    const thumbSrc = localStorage.getItem(KEY_IMG);
+    // Thumbnail
+    fillRoundedRect(ctx, padding, y, innerWidth, 800, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+
+    const thumbSrc = localStorage.getItem(KEY_IMG) || "";
     if (thumbSrc) {
       try {
         const img = await loadImage(thumbSrc);
-        ctx.drawImage(img, padding + 20, y + 20, innerWidth - 40, 780);
+        const boxX = padding + 20;
+        const boxY = y + 20;
+        const boxW = innerWidth - 40;
+        const boxH = 760;
+
+        ctx.drawImage(img, boxX, boxY, boxW, boxH);
       } catch {}
     }
 
-    y += 840;
+    y += 820;
 
-    // HISTORY (NEW)
-    if (history.length) {
-      ctx.font = "900 22px system-ui";
-      ctx.fillStyle = "#aaa";
-      ctx.fillText("SHOOTER HISTORY", width / 2, y);
+    // History
+    fillRoundedRect(ctx, padding, y, innerWidth, historyHeight - 20, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+    ctx.textAlign = "center";
+    ctx.font = "900 18px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
+    ctx.fillStyle = "rgba(238,242,247,.74)";
+    ctx.fillText("SHOOTER HISTORY", width / 2, y + 16);
 
-      y += 40;
+    const startY = y + 54;
+    ctx.textAlign = "left";
+    ctx.font = "900 16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
 
-      ctx.textAlign = "left";
+    if (exportHistory.length) {
+      exportHistory.forEach((h, i) => {
+        const rowY = startY + (i * 34);
 
-      history.forEach((h, i) => {
-        const line = `${String(i + 1).padStart(2, "0")}   ${h.score ?? "-"}   ${h.hits ?? "-"}   ${formatDate(h.ts)}`;
-        ctx.fillText(line, padding + 20, y);
-        y += 34;
+        const index = String(i + 1).padStart(2, "0");
+        const score = Number(h?.score ?? 0);
+        const hits = Number(h?.hits ?? 0);
+        const dateText = formatDate(h?.ts);
+
+        ctx.fillStyle = "#3b6cff";
+        ctx.fillText(index, padding + 24, rowY);
+
+        ctx.fillStyle = score >= 90 ? "#48ff8b" : score >= 60 ? "#ffe466" : "#ff6e64";
+        ctx.fillText(String(score), padding + 90, rowY);
+
+        ctx.fillStyle = "#48ff8b";
+        ctx.fillText(String(hits), padding + 170, rowY);
+
+        if (dateText) {
+          ctx.fillStyle = "rgba(238,242,247,.70)";
+          ctx.fillText(dateText, padding + 240, rowY);
+        }
       });
-
+    } else {
       ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(238,242,247,.58)";
+      ctx.fillText("No shooter history yet.", width / 2, startY + 10);
     }
 
-    // EXPORT
-    return await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b), "image/png")
-    );
+    y += historyHeight;
+
+    // Footer
+    ctx.textAlign = "center";
+    ctx.font = "800 18px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif";
+    ctx.fillStyle = "rgba(238,242,247,.62)";
+    ctx.fillText("Tap-n-Score™ • Shooter Experience Card", width / 2, y);
+
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!blob) throw new Error("Could not create SEC image");
+    return blob;
   }
 
-  async function saveSEC(payload) {
-    const blob = await buildSECImageBlob(payload);
+  async function saveSEC(payload, history) {
+    try {
+      const blob = await buildSECImageBlob(payload, history);
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "SEC-Card.png";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+      if (navigator.share && navigator.canShare) {
+        const file = new File([blob], "SEC-Card.png", { type: "image/png" });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: "SEC Card",
+            text: "Shooter Experience Card"
+          });
+          return;
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "SEC-Card.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      console.error(err);
+      alert("Save SEC could not complete on this device.");
+    }
+  }
+
+  function goHome() {
+    try {
+      window.location.href = "./?fresh=" + Date.now();
+    } catch {
+      window.location.href = "./";
+    }
+  }
+
+  function wireActions(payload, history) {
+    $("saveSecBtn")?.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await saveSEC(payload, history);
+    });
+
+    $("goHomeBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      goHome();
+    });
   }
 
   function init() {
     const payload = loadPayload();
-    if (!payload) return;
+
+    if (!payload) {
+      renderNoData();
+      renderThumbnail();
+      renderHistory(migrateHistory(loadHistory()));
+      wireActions(null, []);
+      return;
+    }
+
+    if (!payload.ts) {
+      payload.ts = new Date().toISOString();
+      try {
+        localStorage.setItem(KEY_PAYLOAD, JSON.stringify(payload));
+      } catch {}
+    } else {
+      payload.ts = normalizeTs(payload.ts) || new Date().toISOString();
+    }
 
     renderPayload(payload);
     renderThumbnail();
 
-    $("saveSecBtn")?.addEventListener("click", (e) => {
-      e.preventDefault();
-      saveSEC(payload);
-    });
+    const history = updateHistory(payload);
+    renderHistory(history);
 
-    $("goHomeBtn")?.addEventListener("click", () => {
-      window.location.href = "./";
-    });
+    wireActions(payload, history);
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
