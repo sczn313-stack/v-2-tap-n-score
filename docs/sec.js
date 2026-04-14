@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT (IMAGE EXPORT TIGHTENED)
+   docs/sec.js — FULL REPLACEMENT (IMAGE EXPORT + HISTORY)
 ============================================================ */
 
 (() => {
@@ -7,6 +7,7 @@
 
   const KEY_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
   const KEY_IMG = "SCZN3_TARGET_IMG_DATAURL_V1";
+  const KEY_HISTORY = "SCZN3_SEC_HISTORY_V1";
 
   function loadPayload() {
     try {
@@ -14,6 +15,16 @@
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
+    }
+  }
+
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(KEY_HISTORY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
     }
   }
 
@@ -83,6 +94,56 @@
       img.removeAttribute("src");
       img.style.display = "none";
     }
+  }
+
+  function scoreClass(score) {
+    const n = Number(score ?? 0);
+    if (n >= 90) return "historyScoreHigh";
+    if (n >= 60) return "historyScoreMid";
+    return "historyScoreLow";
+  }
+
+  function renderHistory(history) {
+    const empty = $("historyEmpty");
+    const grid = $("historyGrid");
+    if (!grid || !empty) return;
+
+    const rows = Array.isArray(history) ? history.slice(0, 6) : [];
+    grid.innerHTML = "";
+
+    if (!rows.length) {
+      empty.style.display = "block";
+      return;
+    }
+
+    empty.style.display = "none";
+
+    rows.forEach((item, idx) => {
+      const score = Number(item?.score ?? 0);
+      const distance =
+        item?.distanceYds ??
+        item?.debug?.distanceYds ??
+        item?.yards ??
+        "—";
+      const hits =
+        item?.shots ??
+        item?.hits ??
+        "—";
+
+      const cell = document.createElement("div");
+      cell.className = "historyCell";
+      cell.innerHTML = `
+        <div class="historyTop">
+          <span class="historyIndex">${String(idx + 1).padStart(2, "0")}.</span>
+          <span class="${scoreClass(score)}">${score}</span>
+          <span class="historySoft">|</span>
+          <span class="historyValue">${distance}</span>
+          <span class="historySoft">|</span>
+          <span class="historyHits">${hits}</span>
+        </div>
+      `;
+      grid.appendChild(cell);
+    });
   }
 
   function wireVendor(payload) {
@@ -162,7 +223,16 @@
     return { bg: "#ff6e64", fg: "#220504", text: "NEEDS WORK" };
   }
 
-  async function buildSECImageBlob(payload) {
+  function normalizeHistoryRows(history) {
+    return (Array.isArray(history) ? history : []).slice(0, 6).map((item, idx) => ({
+      idx: idx + 1,
+      score: Number(item?.score ?? 0),
+      distance: item?.distanceYds ?? item?.debug?.distanceYds ?? item?.yards ?? "—",
+      hits: item?.shots ?? item?.hits ?? "—"
+    }));
+  }
+
+  async function buildSECImageBlob(payload, history) {
     const width = 1400;
     const padding = 34;
     const innerWidth = width - padding * 2;
@@ -171,6 +241,24 @@
     const correctionHeight = 150;
     const metaHeight = 80;
     const thumbHeight = 720;
+
+    const historyRows = normalizeHistoryRows(history);
+    const historyHeaderHeight = 58;
+    const historyColHeadHeight = 34;
+    const historyGridGap = 12;
+    const historyRowHeight = 62;
+    const historyEmptyHeight = 34;
+
+    const historyBodyHeight = historyRows.length
+      ? (historyRows.length * historyRowHeight) + ((historyRows.length - 1) * historyGridGap)
+      : historyEmptyHeight;
+
+    const historyHeight =
+      historyHeaderHeight +
+      historyColHeadHeight +
+      historyBodyHeight +
+      26;
+
     const footerHeight = 34;
 
     const height =
@@ -184,6 +272,8 @@
       metaHeight +
       14 +
       thumbHeight +
+      14 +
+      historyHeight +
       16 +
       footerHeight +
       padding;
@@ -345,9 +435,67 @@
       } catch {}
     }
 
-    y += thumbHeight + 16;
+    y += thumbHeight + 14;
+
+    // History
+    fillRoundedRect(ctx, padding, y, innerWidth, historyHeight, 28, "rgba(255,255,255,.05)", "rgba(255,255,255,.10)", 2);
+
+    ctx.font = "900 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.fillStyle = "rgba(238,242,247,.74)";
+    ctx.fillText("SHOOTER HISTORY", width / 2, y + 18);
+
+    const colY = y + 54;
+    ctx.font = "900 14px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    ctx.fillStyle = "rgba(238,242,247,.64)";
+
+    const col1 = padding + 34;
+    const col2 = padding + 260;
+    const col3 = padding + 500;
+
+    ctx.textAlign = "left";
+    ctx.fillText("SCORE", col1, colY);
+    ctx.fillText("YARDS", col2, colY);
+    ctx.fillText("HITS", col3, colY);
+
+    const rowStartY = colY + 28;
+
+    if (!historyRows.length) {
+      ctx.textAlign = "center";
+      ctx.font = "800 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+      ctx.fillStyle = "rgba(238,242,247,.58)";
+      ctx.fillText("No shooter history yet.", width / 2, rowStartY + 6);
+    } else {
+      historyRows.forEach((row, idx) => {
+        const rowY = rowStartY + idx * (historyRowHeight + historyGridGap);
+
+        fillRoundedRect(
+          ctx,
+          padding + 20,
+          rowY,
+          innerWidth - 40,
+          historyRowHeight,
+          18,
+          "rgba(255,255,255,.035)",
+          "rgba(255,255,255,.08)",
+          2
+        );
+
+        ctx.font = "1000 16px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+        ctx.fillStyle = row.score >= 90 ? "#48ff8b" : row.score >= 60 ? "#ffe85a" : "#ff4d4d";
+        ctx.fillText(`${String(row.idx).padStart(2, "0")}. ${row.score}`, col1, rowY + 20);
+
+        ctx.fillStyle = "#eef2f7";
+        ctx.fillText(String(row.distance), col2, rowY + 20);
+
+        ctx.fillStyle = "#48ff8b";
+        ctx.fillText(String(row.hits), col3, rowY + 20);
+      });
+    }
+
+    y += historyHeight + 16;
 
     // Footer
+    ctx.textAlign = "center";
     ctx.font = "800 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
     ctx.fillStyle = "rgba(238,242,247,.62)";
     ctx.fillText("Tap-n-Score™ • Shooter Experience Card", width / 2, y);
@@ -359,7 +507,8 @@
 
   async function saveSEC(payload) {
     try {
-      const blob = await buildSECImageBlob(payload);
+      const history = loadHistory();
+      const blob = await buildSECImageBlob(payload, history);
       const file = new File([blob], "SEC-Card.png", { type: "image/png" });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -413,16 +562,19 @@
 
   function init() {
     const payload = loadPayload();
+    const history = loadHistory();
 
     if (!payload) {
       renderNoData();
       renderThumbnail();
+      renderHistory(history);
       wireActions(null);
       return;
     }
 
     renderPayload(payload);
     renderThumbnail();
+    renderHistory(history);
     wireActions(payload);
   }
 
