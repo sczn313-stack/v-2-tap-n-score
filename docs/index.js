@@ -1,9 +1,10 @@
 /* ============================================================
-   docs/index.js — B2B Go-Live Router v1
+   docs/index.js — B2B Go-Live Router v2
    Purpose:
    - Keep printed QR URL permanent
    - Route B2B target into B2B engine
    - Leave all other targets on normal landing flow
+   - Store a SAFE thumbnail for SEC (instead of oversized full image)
 ============================================================ */
 
 (() => {
@@ -283,18 +284,67 @@
     }
   }
 
+  function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result || ""));
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  async function buildThumbnailDataUrl(file) {
+    const sourceDataUrl = await fileToDataUrl(file);
+    const img = await loadImage(sourceDataUrl);
+
+    const maxDim = 900;
+    const w = img.naturalWidth || img.width || 1;
+    const h = img.naturalHeight || img.height || 1;
+    const scale = Math.min(1, maxDim / Math.max(w, h));
+    const outW = Math.max(1, Math.round(w * scale));
+    const outH = Math.max(1, Math.round(h * scale));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = outW;
+    canvas.height = outH;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas unavailable");
+
+    ctx.drawImage(img, 0, 0, outW, outH);
+
+    const jpg = canvas.toDataURL("image/jpeg", 0.72);
+    if (typeof jpg === "string" && jpg.startsWith("data:image/")) {
+      return jpg;
+    }
+
+    return sourceDataUrl;
+  }
+
   async function storeTargetPhotoForSEC(file, blobUrl) {
-    try { localStorage.setItem(KEY_TARGET_IMG_BLOB, blobUrl); } catch {}
     try {
-      const dataUrl = await new Promise((resolve, reject) => {
-        const r = new FileReader();
-        r.onload = () => resolve(String(r.result || ""));
-        r.onerror = reject;
-        r.readAsDataURL(file);
-      });
-      if (dataUrl && dataUrl.startsWith("data:image/")) {
-        localStorage.setItem(KEY_TARGET_IMG_DATA, dataUrl);
+      localStorage.setItem(KEY_TARGET_IMG_BLOB, blobUrl);
+    } catch {}
+
+    try {
+      const thumbDataUrl = await buildThumbnailDataUrl(file);
+      if (thumbDataUrl && thumbDataUrl.startsWith("data:image/")) {
+        localStorage.setItem(KEY_TARGET_IMG_DATA, thumbDataUrl);
+        return;
       }
+    } catch {}
+
+    try {
+      localStorage.removeItem(KEY_TARGET_IMG_DATA);
     } catch {}
   }
 
