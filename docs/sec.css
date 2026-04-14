@@ -527,3 +527,25 @@ body{
     min-height:112px;
   }
 }
+/* ===== ALIGNMENT FIX (NON-DESTRUCTIVE) ===== */
+/* (your existing block stays exactly as is) */
+
+...your code...
+
+/* ===== FINAL TOUCH — STABILITY + POLISH ===== */
+.secPage {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.secGridCell,
+.secHistoryRow {
+  transition: transform 0.05s ease;
+}
+
+.secGridCell:active {
+  transform: scale(0.98);
+}
+
+.secHistoryRow:active {
+  transform: scale(0.99);
+}
