@@ -1,5 +1,5 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT (THUMB + META FIX)
+   docs/sec.js — FULL REPLACEMENT (THUMB + META + ACTION FIX)
 ============================================================ */
 
 (() => {
@@ -25,11 +25,20 @@
     $("sessionMeta").textContent = "No session data";
   }
 
+  function directionArrow(dir) {
+    const d = String(dir || "").toUpperCase();
+    if (d === "UP") return "↑";
+    if (d === "DOWN") return "↓";
+    if (d === "LEFT") return "←";
+    if (d === "RIGHT") return "→";
+    return "";
+  }
+
   function renderPayload(p) {
     if (!p) return;
 
     const score = Number(p.score ?? 0);
-    $("scoreValue").textContent = p.score ?? "—";
+    $("scoreValue").textContent = String(p.score ?? "—");
 
     const band = $("scoreBand");
     if (score >= 90) {
@@ -48,23 +57,17 @@
     const windageClicks = Number(p?.windage?.clicks ?? 0);
     const windageDir = String(p?.windage?.dir ?? "");
 
-    const elevText = `${elevationClicks % 1 === 0 ? elevationClicks : elevationClicks.toFixed(2)}${elevationDir ? directionArrow(elevationDir) : ""}`;
-    const windText = `${windageClicks % 1 === 0 ? windageClicks : windageClicks.toFixed(2)}${windageDir ? directionArrow(windageDir) : ""}`;
+    const elevRounded = Math.round(elevationClicks);
+    const windRounded = Math.round(windageClicks);
+
+    const elevText = `${elevRounded}${elevationDir ? directionArrow(elevationDir) : ""}`;
+    const windText = `${windRounded}${windageDir ? directionArrow(windageDir) : ""}`;
 
     $("corrClicksInline").textContent = `Clicks ${elevText} • ${windText}`;
 
     const distanceYds = p?.debug?.distanceYds ?? "—";
     const hits = p?.shots ?? "—";
     $("sessionMeta").textContent = `${distanceYds} yds • ${hits} hits`;
-  }
-
-  function directionArrow(dir) {
-    const d = String(dir || "").toUpperCase();
-    if (d === "UP") return "↑";
-    if (d === "DOWN") return "↓";
-    if (d === "LEFT") return "←";
-    if (d === "RIGHT") return "→";
-    return "";
   }
 
   function renderThumbnail() {
@@ -82,16 +85,85 @@
     }
   }
 
+  function wireVendor(payload) {
+    const btn = $("vendorBtn");
+    const text = $("vendorText");
+    if (!btn || !text) return;
+
+    const url = String(payload?.vendorUrl || "").trim();
+
+    if (url && /^https?:\/\//i.test(url)) {
+      btn.href = url;
+      btn.classList.remove("vendorDisabled");
+      text.textContent = "Visit Partner";
+    } else {
+      btn.href = "#";
+      btn.classList.add("vendorDisabled");
+      text.textContent = "Vendor Not Set";
+      btn.addEventListener("click", (e) => e.preventDefault(), { once: true });
+    }
+  }
+
+  function wireSurvey(payload) {
+    const btn = $("surveyBtn");
+    if (!btn) return;
+
+    const url = String(payload?.surveyUrl || "").trim();
+
+    if (url && /^https?:\/\//i.test(url)) {
+      btn.href = url;
+      btn.style.pointerEvents = "auto";
+      btn.style.opacity = "1";
+    } else {
+      btn.href = "#";
+      btn.style.pointerEvents = "none";
+      btn.style.opacity = ".55";
+    }
+  }
+
+  function saveSEC() {
+    window.print();
+  }
+
+  function goHome() {
+    try {
+      window.location.href = "./?fresh=" + Date.now();
+    } catch {
+      window.location.href = "./";
+    }
+  }
+
+  function wireActions(payload) {
+    const saveBtn = $("saveSecBtn");
+    const homeBtn = $("goHomeBtn");
+
+    saveBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      saveSEC();
+    });
+
+    homeBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      goHome();
+    });
+
+    wireVendor(payload);
+    wireSurvey(payload);
+  }
+
   function init() {
     const payload = loadPayload();
 
     if (!payload) {
       renderNoData();
-    } else {
-      renderPayload(payload);
+      renderThumbnail();
+      wireActions(null);
+      return;
     }
 
+    renderPayload(payload);
     renderThumbnail();
+    wireActions(payload);
   }
 
   if (document.readyState === "loading") {
