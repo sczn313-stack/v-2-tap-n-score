@@ -1,6 +1,5 @@
 /* ============================================================
-   docs/index.js — Annotated Thumbnail Build v2
-   Adds: capture target + visible dots into stored thumbnail
+   docs/index.js — Annotated Thumbnail Build v3 (LOCKED)
 ============================================================ */
 
 (() => {
@@ -25,9 +24,10 @@
 
   function getRelative01(clientX, clientY) {
     const r = elWrap.getBoundingClientRect();
-    const x = (clientX - r.left) / r.width;
-    const y = (clientY - r.top) / r.height;
-    return { x01: clamp01(x), y01: clamp01(y) };
+    return {
+      x01: clamp01((clientX - r.left) / r.width),
+      y01: clamp01((clientY - r.top) / r.height)
+    };
   }
 
   function addDot(x01, y01, kind) {
@@ -57,42 +57,38 @@
     if (!elWrap || !elImg?.src) return;
 
     const wrapRect = elWrap.getBoundingClientRect();
-    const width = Math.max(1, Math.round(wrapRect.width));
-    const height = Math.max(1, Math.round(wrapRect.height));
 
     const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = wrapRect.width;
+    canvas.height = wrapRect.height;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const baseImg = await loadCurrentImage();
-    ctx.drawImage(baseImg, 0, 0, width, height);
+    ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
 
-    const dotEls = Array.from(elDots?.querySelectorAll(".tapDot") || []);
+    const dots = elDots.querySelectorAll(".tapDot");
 
-    dotEls.forEach((dot) => {
-      const leftPct = parseFloat(dot.style.left || "0") / 100;
-      const topPct = parseFloat(dot.style.top || "0") / 100;
+    dots.forEach(dot => {
+      const dotRect = dot.getBoundingClientRect();
 
-      const x = leftPct * width;
-      const y = topPct * height;
+      const x = dotRect.left - wrapRect.left + dotRect.width / 2;
+      const y = dotRect.top - wrapRect.top + dotRect.height / 2;
 
       const isAim = dot.classList.contains("tapDotAim");
-      const radius = 10;
 
       ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.arc(x, y, 12, 0, Math.PI * 2);
       ctx.fillStyle = isAim ? "#67f3a4" : "#b7ff3c";
       ctx.fill();
 
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000";
       ctx.stroke();
     });
 
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.78);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
     localStorage.setItem(KEY_TARGET_IMG_DATA, dataUrl);
   }
 
