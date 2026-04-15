@@ -514,3 +514,33 @@ body{
     font-size:11px;
   }
 }
+/* ===== HISTORY NUMBER EMPHASIS ===== */
+
+.hIndex{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:40px;
+  height:40px;
+  padding:0 10px;
+  border-radius:999px;
+  background:rgba(59,108,255,.16);
+  border:1px solid rgba(59,108,255,.34);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.03) inset,
+    0 8px 18px rgba(0,0,0,.20);
+  color:#5f86ff;
+  font-weight:1000;
+  font-size:24px;
+  line-height:1;
+  letter-spacing:.02em;
+}
+
+@media (max-width: 520px){
+  .hIndex{
+    min-width:36px;
+    height:36px;
+    font-size:21px;
+    padding:0 8px;
+  }
+}
