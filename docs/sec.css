@@ -24,7 +24,7 @@
   --safe-bottom:env(safe-area-inset-bottom, 0px);
   --safe-left:env(safe-area-inset-left, 0px);
 
-  --page-max:900px;
+  --page-max:980px;
 }
 
 *{ box-sizing:border-box; }
@@ -64,7 +64,7 @@ body{
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  margin-bottom:14px;
+  margin-bottom:12px;
 }
 
 .secMark{
@@ -103,13 +103,13 @@ body{
 .topRow{
   display:grid;
   grid-template-columns:1.15fr .95fr;
-  gap:12px;
-  margin-bottom:12px;
+  gap:10px;
+  margin-bottom:10px;
 }
 
 .scoreCard,
 .vendorCard{
-  min-height:154px;
+  min-height:150px;
 }
 
 .eyebrow{
@@ -125,8 +125,8 @@ body{
   font-weight:1000;
   font-size:92px;
   line-height:.94;
-  margin-top:10px;
-  margin-bottom:12px;
+  margin-top:8px;
+  margin-bottom:10px;
   color:rgba(238,242,247,.96);
   text-align:center;
   text-shadow:0 8px 20px rgba(0,0,0,.24);
@@ -215,20 +215,20 @@ body{
 }
 
 .correctionCard{
-  margin-bottom:12px;
-  padding-top:16px;
-  padding-bottom:16px;
+  margin-bottom:10px;
+  padding-top:14px;
+  padding-bottom:14px;
 }
 
 .correctionEyebrow{
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .correctionInlineWrap{
   border-radius:18px;
   background:rgba(255,255,255,.04);
   border:1px solid var(--line);
-  padding:18px 16px;
+  padding:16px 14px;
   text-align:center;
 }
 
@@ -282,7 +282,7 @@ body{
 }
 
 .metaCard{
-  margin-bottom:12px;
+  margin-bottom:10px;
   padding-top:12px;
   padding-bottom:12px;
 }
@@ -297,15 +297,17 @@ body{
 }
 
 .thumbCard{
-  margin-bottom:12px;
+  margin-bottom:10px;
   overflow:hidden;
 }
 
 #reportThumb{
   display:block;
   width:100%;
+  max-height:220px;
+  object-fit:contain;
   height:auto;
-  margin-top:12px;
+  margin-top:10px;
   border-radius:18px;
   border:1px solid rgba(255,255,255,.10);
   background:rgba(255,255,255,.03);
@@ -313,7 +315,7 @@ body{
 }
 
 .historyShell{
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .historyHeader{
@@ -323,14 +325,14 @@ body{
   letter-spacing:.14em;
   color:rgba(238,242,247,.72);
   text-transform:uppercase;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .historyColumnsHead{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
-  margin-bottom:10px;
+  gap:14px;
+  margin-bottom:8px;
 }
 
 .historyColHead{
@@ -358,16 +360,18 @@ body{
 .historyGrid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:14px 16px;
+  grid-template-rows:repeat(5, auto);
+  grid-auto-flow:column;
+  gap:12px 14px;
 }
 
 .historyCard{
   border-radius:18px;
   background:rgba(255,255,255,.035);
   border:1px solid rgba(255,255,255,.08);
-  padding:16px 16px 15px;
+  padding:14px 16px 13px;
   box-shadow:0 10px 24px rgba(0,0,0,.16);
-  min-height:118px;
+  min-height:104px;
   overflow:hidden;
   transition:transform 0.05s ease;
 }
@@ -436,8 +440,8 @@ body{
 .compactActions{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:12px;
-  margin-bottom:12px;
+  gap:10px;
+  margin-bottom:10px;
 }
 
 .miniAction,
@@ -507,10 +511,16 @@ body{
   .historyGrid,
   .historyColumnsHead{
     grid-template-columns:1fr;
+    grid-template-rows:none;
+    grid-auto-flow:row;
   }
 
   .compactActions{
     grid-template-columns:1fr;
+  }
+
+  #reportThumb{
+    max-height:260px;
   }
 }
 
@@ -566,7 +576,7 @@ body{
   }
 
   .historyCard{
-    min-height:112px;
+    min-height:100px;
   }
 
   .historyColHead,
@@ -585,5 +595,9 @@ body{
 
   .hDate{
     font-size:11px;
+  }
+
+  #reportThumb{
+    max-height:220px;
   }
 }
