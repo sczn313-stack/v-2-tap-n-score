@@ -1,74 +1,20 @@
 /* ============================================================
-   docs/index.js — FULL REPLACEMENT (VERIFIED)
-   3-page flow update:
-   - NO live SEC webpage stop
-   - Show Results builds final SEC image behind the scenes
-   - Auto opens share/save flow directly
-   - History remains silent in localStorage and is rendered only inside export
+   docs/index.js — FULL REPLACEMENT (LEAN VERSION)
+   Flow:
+   - landing page
+   - add target photo
+   - target workspace becomes active
+   - tap aim + shots
+   - Show Results builds final SEC image directly
+   - silent history stored only for export image
 ============================================================ */
 
 (() => {
   const $ = (id) => document.getElementById(id);
 
-  function getUrl() {
-    try {
-      return new URL(window.location.href);
-    } catch {
-      return null;
-    }
-  }
-
-  function getParam(name) {
-    const u = getUrl();
-    return u ? (u.searchParams.get(name) || "") : "";
-  }
-
-  function getVendor() {
-    return getParam("v").toLowerCase();
-  }
-
-  function getSku() {
-    return getParam("sku").toLowerCase();
-  }
-
-  function isB2B() {
-    return getVendor() === "baker" && getSku() === "bkr-b2b";
-  }
-
-  function alreadyOnB2BPage() {
-    const u = getUrl();
-    if (!u) return false;
-    return /\/docs\/b2b-sec\.html$/i.test(u.pathname) || /\/b2b-sec\.html$/i.test(u.pathname);
-  }
-
-  function routeTargetIfNeeded() {
-    if (!isB2B()) return false;
-    if (alreadyOnB2BPage()) return false;
-
-    const u = getUrl();
-    if (!u) return false;
-
-    const qs = u.searchParams.toString();
-    const next = `./b2b-sec.html${qs ? `?${qs}` : ""}`;
-    window.location.replace(next);
-    return true;
-  }
-
-  // ------------------------------------------------------------
-  // HARD ROUTE B2B BEFORE ANY OTHER LOGIC RUNS
-  // ------------------------------------------------------------
-  // TEMP DISABLE B2B ROUTER
-  // if (routeTargetIfNeeded()) return;
-
-  // ------------------------------------------------------------
-  // PAGE ELEMENTS
-  // ------------------------------------------------------------
   const elPhotoBtn = $("photoBtn");
   const elFile = $("photoInput");
-  const elVendorBox = $("vendorBox");
   const elVendorLabel = $("vendorLabel");
-  const elVendorPanel = $("vendorPanel");
-  const elVendorPanelLink = $("vendorPanelLink");
   const elScoreSection = $("scoreSection");
   const elImg = $("targetImg");
   const elDots = $("dotsLayer");
@@ -77,8 +23,6 @@
   const elClear = $("clearTapsBtn");
   const elInstruction = $("instructionLine");
   const elStatus = $("statusLine");
-  const elStickyBar = $("stickyBar");
-  const elStickyBtn = $("stickyResultsBtn");
   const elShowResultsBtn = $("showResultsBtn");
   const elLiveDistance = $("liveDistance");
   const elLiveDial = $("liveDial");
@@ -99,12 +43,7 @@
   const elSizeChipRow = $("sizeChipRow");
   const elSwapSizeBtn = $("swapSizeBtn");
 
-  // ------------------------------------------------------------
-  // STORAGE KEYS
-  // ------------------------------------------------------------
-  const KEY_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
   const KEY_TARGET_IMG_DATA = "SCZN3_TARGET_IMG_DATAURL_V1";
-  const KEY_TARGET_IMG_BLOB = "SCZN3_TARGET_IMG_BLOBURL_V1";
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
   const KEY_DIST_UNIT = "SCZN3_RANGE_UNIT_V1";
@@ -120,7 +59,6 @@
   let hits = [];
   let lastTouchTapAt = 0;
   let touchStart = null;
-  let pauseTimer = null;
   let dialUnit = "MOA";
   let rangeUnit = "YDS";
   let rangeYds = 100;
@@ -130,32 +68,52 @@
 
   const DEFAULTS = { MOA: 0.25, MRAD: 0.10 };
 
-  try { history.scrollRestoration = "manual"; } catch {}
-
-  function forceTop() {
-    try { window.scrollTo(0, 0); } catch {}
+  function getUrl() {
+    try {
+      return new URL(window.location.href);
+    } catch {
+      return null;
+    }
   }
 
-  function hardHideScoringUI() {
-    elScoreSection?.classList.add("scoreHidden");
+  function getParam(name) {
+    const u = getUrl();
+    return u ? (u.searchParams.get(name) || "") : "";
   }
 
-  window.addEventListener("pageshow", () => {
-    forceTop();
-    hardHideScoringUI();
-    hideSticky();
-    closeMatrix();
-    closeVendorPanel();
-  });
+  function getVendor() {
+    return getParam("v").toLowerCase();
+  }
 
-  window.addEventListener("load", () => forceTop());
+  function isBakerMode() {
+    return getVendor() === "baker";
+  }
+
+  function getVendorName() {
+    const stored = String(localStorage.getItem(KEY_VENDOR_NAME) || "").trim();
+    if (stored) return stored;
+    if (isBakerMode()) return "BAKER TARGETS";
+    return "Vendor Not Set";
+  }
 
   function clamp01(v) {
     return Math.max(0, Math.min(1, v));
   }
 
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
   function setText(el, t) {
     if (el) el.textContent = String(t ?? "");
+  }
+
+  function round2(n) {
+    return Math.round(n * 100) / 100;
+  }
+
+  function forceTop() {
+    try { window.scrollTo(0, 0); } catch {}
   }
 
   function revealScoringUI() {
@@ -169,32 +127,12 @@
     if (elTapCount) elTapCount.textContent = String(hits.length);
   }
 
-  function hideSticky() {
-    if (!elStickyBar) return;
-    elStickyBar.classList.add("stickyHidden");
-    elStickyBar.setAttribute("aria-hidden", "true");
-  }
-
-  function showSticky() {
-    if (!elStickyBar) return;
-    elStickyBar.classList.remove("stickyHidden");
-    elStickyBar.setAttribute("aria-hidden", "false");
-  }
-
-  function scheduleStickyMagic() {
-    clearTimeout(pauseTimer);
-    pauseTimer = setTimeout(() => {
-      if (hits.length >= 1) showSticky();
-    }, 650);
-  }
-
   function setInstruction(text, kind) {
     if (!elInstruction) return;
 
     const color =
       kind === "aim"   ? "rgba(103,243,164,.95)" :
       kind === "holes" ? "rgba(183,255,60,.95)"  :
-      kind === "go"    ? "rgba(47,102,255,.92)"  :
                          "rgba(238,242,247,.70)";
 
     elInstruction.style.transition = "opacity 180ms ease, transform 180ms ease, color 120ms ease";
@@ -227,78 +165,22 @@
     touchStart = null;
     if (elDots) elDots.innerHTML = "";
     setTapCount();
-    hideSticky();
     syncInstruction();
     setText(elStatus, elImg?.src ? "Tap Aim Point." : "Add a target photo to begin.");
-    closeMatrix();
-    closeVendorPanel();
   }
 
-  function isBakerMode() {
-    return getVendor() === "baker";
-  }
-
-  function getVendorName() {
-    const stored = String(localStorage.getItem(KEY_VENDOR_NAME) || "").trim();
-    if (stored) return stored;
-    if (isBakerMode()) return "BAKER TARGETS";
-    return "Vendor Not Set";
-  }
-
-  function closeVendorPanel() {
-    if (!elVendorPanel) return;
-    elVendorPanel.classList.remove("vendorOpen");
-  }
-
-  function toggleVendorPanel() {
-    if (!elVendorPanel) return;
-    elVendorPanel.classList.toggle("vendorOpen");
-  }
-
-  function hydrateVendorBox() {
-    if (elVendorLabel) elVendorLabel.textContent = "BUY MORE TARGETS LIKE THIS";
-
+  function hydrateVendorLabel() {
     if (isBakerMode()) {
-      try { localStorage.setItem(KEY_VENDOR_NAME, "BAKER TARGETS"); } catch {}
-
-      if (elVendorLabel) {
-        const a = "BUY MORE TARGETS LIKE THIS";
-        const b = "BAKER • SMART TARGET™";
-        let flip = false;
-        setInterval(() => {
-          flip = !flip;
-          elVendorLabel.textContent = flip ? b : a;
-        }, 1200);
-      }
+      try {
+        localStorage.setItem(KEY_VENDOR_NAME, "BAKER TARGETS");
+        if (!localStorage.getItem(KEY_VENDOR_URL)) {
+          localStorage.setItem(KEY_VENDOR_URL, "https://bakertargets.com");
+        }
+      } catch {}
     }
 
-    const v = localStorage.getItem(KEY_VENDOR_URL) || "";
-    const ok = typeof v === "string" && v.startsWith("http");
-
-    if (elVendorPanelLink) {
-      if (ok) {
-        elVendorPanelLink.href = v;
-        elVendorPanelLink.style.pointerEvents = "auto";
-        elVendorPanelLink.style.opacity = "1";
-      } else {
-        elVendorPanelLink.href = "#";
-        elVendorPanelLink.style.pointerEvents = "none";
-        elVendorPanelLink.style.opacity = ".65";
-      }
-    }
-
-    if (elVendorBox) {
-      elVendorBox.removeAttribute("target");
-      elVendorBox.removeAttribute("rel");
-      elVendorBox.href = "#";
-      elVendorBox.style.pointerEvents = "auto";
-      elVendorBox.style.opacity = "1";
-
-      elVendorBox.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleVendorPanel();
-      });
+    if (elVendorLabel) {
+      elVendorLabel.textContent = "BUY MORE TARGETS LIKE THIS";
     }
   }
 
@@ -339,26 +221,18 @@
     if (!ctx) throw new Error("Canvas unavailable");
 
     ctx.drawImage(img, 0, 0, outW, outH);
-
     return canvas.toDataURL("image/jpeg", 0.72);
   }
 
-  async function storeBaseTargetPhotoForSEC(file, blobUrl) {
-    try {
-      localStorage.setItem(KEY_TARGET_IMG_BLOB, blobUrl);
-    } catch {}
-
+  async function storeBaseTargetPhotoForSEC(file) {
     try {
       const baseDataUrl = await buildBaseThumbnailDataUrl(file);
       if (baseDataUrl && baseDataUrl.startsWith("data:image/")) {
         localStorage.setItem(KEY_TARGET_IMG_DATA, baseDataUrl);
-        return;
       }
-    } catch {}
-
-    try {
-      localStorage.removeItem(KEY_TARGET_IMG_DATA);
-    } catch {}
+    } catch {
+      try { localStorage.removeItem(KEY_TARGET_IMG_DATA); } catch {}
+    }
   }
 
   async function loadCurrentDisplayedImage() {
@@ -384,7 +258,6 @@
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -652,12 +525,9 @@
     elMatrixPanel.setAttribute("aria-hidden", "true");
   }
 
-  function isMatrixOpen() {
-    return !!elMatrixPanel && !elMatrixPanel.classList.contains("matrixHidden");
-  }
-
   function toggleMatrix() {
-    isMatrixOpen() ? closeMatrix() : openMatrix();
+    if (!elMatrixPanel) return;
+    elMatrixPanel.classList.contains("matrixHidden") ? openMatrix() : closeMatrix();
   }
 
   function applyPreset(unit, clickVal) {
@@ -683,14 +553,6 @@
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeMatrix();
   });
-
-  document.addEventListener("click", (e) => {
-    if (!isMatrixOpen()) return;
-    if (!elMatrixPanel) return;
-    const inside = elMatrixPanel.contains(e.target);
-    const isBtn = (e.target === elMatrixBtn) || e.target.closest?.("#matrixBtn");
-    if (!inside && !isBtn) closeMatrix();
-  }, { capture: true });
 
   function scoreFromRadiusInches(rIn) {
     if (rIn <= 0.25) return 100;
@@ -811,9 +673,7 @@
     const signature = getSessionSignature(payload);
     const lastSignature = localStorage.getItem(KEY_HISTORY_LAST) || "";
 
-    if (signature && signature === lastSignature) {
-      return;
-    }
+    if (signature && signature === lastSignature) return;
 
     const history = loadHistory();
     history.unshift({
@@ -872,10 +732,7 @@
 
   async function loadDataImage(src) {
     return new Promise((resolve) => {
-      if (!src) {
-        resolve(null);
-        return;
-      }
+      if (!src) return resolve(null);
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = () => resolve(null);
@@ -889,7 +746,6 @@
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas unavailable");
 
@@ -1108,29 +964,27 @@
         });
         return;
       } catch (err) {
-        if (err && err.name === "AbortError") {
-          return;
-        }
+        if (err && err.name === "AbortError") return;
       }
     }
 
-    const objectUrl = URL.createObjectURL(blob);
+    const objectUrl2 = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
-    a.href = objectUrl;
+    a.href = objectUrl2;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
 
-    const win = window.open(objectUrl, "_blank", "noopener,noreferrer");
+    const win = window.open(objectUrl2, "_blank", "noopener,noreferrer");
     if (win) {
       setTimeout(() => {
         try { win.focus(); } catch {}
       }, 120);
     }
 
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+    setTimeout(() => URL.revokeObjectURL(objectUrl2), 60000);
   }
 
   async function onShowResults() {
@@ -1168,8 +1022,6 @@
       }
     };
 
-    try { localStorage.setItem(KEY_PAYLOAD, JSON.stringify(payload)); } catch {}
-
     updateSilentHistory(payload);
 
     const blob = await buildSecBlob(payload);
@@ -1177,9 +1029,6 @@
     await shareOrSaveBlob(blob, `SEC-${stamp}.png`);
   }
 
-  // ------------------------------------------------------------
-  // PHOTO LOAD
-  // ------------------------------------------------------------
   elPhotoBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     elFile?.click();
@@ -1194,7 +1043,7 @@
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = URL.createObjectURL(f);
 
-    await storeBaseTargetPhotoForSEC(f, objectUrl);
+    await storeBaseTargetPhotoForSEC(f);
 
     elImg.onload = () => {
       setText(elStatus, "Tap Aim Point.");
@@ -1212,9 +1061,6 @@
     elFile.value = "";
   });
 
-  // ------------------------------------------------------------
-  // TAP HANDLING
-  // ------------------------------------------------------------
   function acceptTap(clientX, clientY) {
     if (!elImg?.src) return;
     const { x01, y01 } = getRelative01(clientX, clientY);
@@ -1223,7 +1069,6 @@
       aim = { x01, y01 };
       addDot(x01, y01, "aim");
       setText(elStatus, "Tap Bullet Holes.");
-      hideSticky();
       syncInstruction();
       return;
     }
@@ -1233,9 +1078,7 @@
     hits.push({ x01, y01 });
     addDot(x01, y01, "hit");
     setTapCount();
-    hideSticky();
     syncInstruction();
-    scheduleStickyMagic();
   }
 
   if (elWrap) {
@@ -1249,7 +1092,7 @@
         return;
       }
       const t = e.touches[0];
-      touchStart = { x: t.clientX, y: t.clientY, t: Date.now() };
+      touchStart = { x: t.clientX, y: t.clientY };
     }, { passive: true });
 
     elWrap.addEventListener("touchend", (e) => {
@@ -1275,20 +1118,15 @@
     }, { passive: true });
   }
 
-  // ------------------------------------------------------------
-  // OTHER CONTROLS
-  // ------------------------------------------------------------
   elClear?.addEventListener("click", () => {
     resetAll();
     if (elImg?.src) setText(elStatus, "Tap Aim Point.");
   });
 
-  [elStickyBtn, elShowResultsBtn].filter(Boolean).forEach((b) => {
-    b.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      onShowResults();
-    });
+  elShowResultsBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onShowResults();
   });
 
   elDistUp?.addEventListener("click", () => bumpRange(5));
@@ -1309,22 +1147,11 @@
   elMatrixBtn?.addEventListener("click", toggleMatrix);
   elMatrixClose?.addEventListener("click", closeMatrix);
 
-  document.addEventListener("click", (e) => {
-    if (!elVendorPanel || !elVendorBox) return;
-    const inPanel = elVendorPanel.contains(e.target);
-    const inPill = elVendorBox.contains(e.target);
-    if (!inPanel && !inPill) closeVendorPanel();
-  }, { capture: true });
-
-  // ------------------------------------------------------------
-  // INIT
-  // ------------------------------------------------------------
   setUnit("MOA");
   closeMatrix();
-  hideSticky();
   resetAll();
 
-  hydrateVendorBox();
+  hydrateVendorLabel();
   hydrateRange();
   hydrateTargetSize();
 
@@ -1334,7 +1161,6 @@
 
   highlightSizeChip();
   syncLiveTop();
-
   hardHideScoringUI();
   forceTop();
 })();
