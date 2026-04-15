@@ -1,46 +1,65 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   Behind-the-scenes SEC image flow
+   Matched to current target-page HTML
+   - Target page loads normally
+   - Add photo -> tap aim -> tap shots
+   - Show Results builds SEC image behind the scenes
    - No live SEC page handoff
-   - Show Results builds final SEC image silently
-   - Auto opens share/save flow directly
-   - History stays in localStorage only
 ============================================================ */
 
 (() => {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
-  const byIds = (...ids) => ids.map((id) => $(id)).find(Boolean) || null;
 
   const els = {
-    photoBtn: byIds("photoBtn"),
-    photoInput: byIds("photoInput"),
-    targetImg: byIds("targetImg"),
-    targetWrap: byIds("targetWrap"),
-    dotsLayer: byIds("dotsLayer"),
-    instruction: byIds("instruction", "topInstruction", "tapInstruction"),
-    status: byIds("status", "statusText", "liveStatus"),
-    tapCount: byIds("tapCount", "shotCount", "hitsCount"),
-    showResultsBtn: byIds("showResultsBtn", "resultsBtn", "showResults"),
-    resetBtn: byIds("resetBtn", "clearBtn"),
-    vendorPanel: byIds("vendorPanel", "vendorBox"),
-    vendorPanelLink: byIds("vendorPanelLink", "vendorLink"),
-    vendorName: byIds("vendorName"),
-    matrix: byIds("settingsMatrix"),
-    stickyBar: byIds("stickyResults", "stickyBar"),
-    stickyText: byIds("stickyResultsText", "stickyText"),
-    yardInput: byIds("yardageInput", "distanceInput", "yardsInput"),
-    unitToggle: byIds("unitToggle", "dialUnitToggle"),
-    clickInput: byIds("clickValueInput", "clickInput"),
-    rangeUnitSelect: byIds("rangeUnit", "distanceUnit"),
-    targetSizeSelect: byIds("targetSize", "targetSizeSelect"),
+    photoBtn: $("photoBtn"),
+    photoInput: $("photoInput"),
+    vendorBox: $("vendorBox"),
+    vendorLabel: $("vendorLabel"),
+    vendorPanel: $("vendorPanel"),
+    vendorPanelLink: $("vendorPanelLink"),
+    vendorName: $("vendorName"),
+
+    scoreSection: $("scoreSection"),
+    targetWrap: $("targetWrap"),
+    targetImg: $("targetImg"),
+    dotsLayer: $("dotsLayer"),
+
+    tapCount: $("tapCount"),
+    clearTapsBtn: $("clearTapsBtn"),
+    showResultsBtn: $("showResultsBtn"),
+    instructionLine: $("instructionLine"),
+    statusLine: $("statusLine"),
+
+    liveDistance: $("liveDistance"),
+    liveDial: $("liveDial"),
+    liveTarget: $("liveTarget"),
+
+    matrixBtn: $("matrixBtn"),
+    matrixPanel: $("matrixPanel"),
+    matrixCloseBtn: $("matrixCloseBtn"),
+
+    distanceYds: $("distanceYds"),
+    distDown: $("distDown"),
+    distUp: $("distUp"),
+    distUnitYd: $("distUnitYd"),
+    distUnitM: $("distUnitM"),
+    distUnitLabel: $("distUnitLabel"),
+
+    unitMoa: $("unitMoa"),
+    unitMrad: $("unitMrad"),
+    clickValue: $("clickValue"),
+    clickUnitLabel: $("clickUnitLabel"),
+
+    sizeChipRow: $("sizeChipRow"),
+    presetChipRow: $("presetChipRow"),
+    swapSizeBtn: $("swapSizeBtn")
   };
 
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
   const KEY_TARGET_IMG_DATAURL = "SCZN3_TARGET_IMG_DATAURL_V1";
-  const KEY_TARGET_IMG_BLOBURL = "SCZN3_TARGET_IMG_BLOBURL_V1";
   const KEY_SEC_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
   const KEY_SEC_HISTORY = "SCZN3_SEC_HISTORY_V1";
   const KEY_RANGE_YDS = "SCZN3_RANGE_YDS_V1";
@@ -56,9 +75,9 @@
     rangeUnit: "yd",
     dialUnit: "MOA",
     clickValue: 0.25,
-    targetWIn: 8.5,
-    targetHIn: 11,
-    shotGoal: 5
+    targetWIn: 23,
+    targetHIn: 35,
+    targetSizeKey: "23x35"
   };
 
   let objectUrl = null;
@@ -101,11 +120,7 @@
   }
 
   function isB2B() {
-    return getVendor() === "baker" && getSku() === "bkr-b2b";
-  }
-
-  function setText(el, text) {
-    if (el) el.textContent = text || "";
+    return isBakerMode() && getSku() === "bkr-b2b";
   }
 
   function safeNumber(value, fallback) {
@@ -113,55 +128,39 @@
     return Number.isFinite(n) ? n : fallback;
   }
 
-  function clamp(n, min, max) {
-    return Math.min(max, Math.max(min, n));
-  }
-
   function round2(n) {
     return Math.round(n * 100) / 100;
   }
 
+  function clamp(n, min, max) {
+    return Math.min(max, Math.max(min, n));
+  }
+
+  function setText(el, text) {
+    if (el) el.textContent = text;
+  }
+
   function getRangeYds() {
-    const urlVal = safeNumber(getParam("yds"), NaN);
-    const stored = safeNumber(localStorage.getItem(KEY_RANGE_YDS), DEFAULTS.rangeYds);
-    const domVal = els.yardInput ? safeNumber(els.yardInput.value, NaN) : NaN;
-    return safeNumber(domVal, safeNumber(urlVal, stored));
+    return safeNumber(els.distanceYds?.value, safeNumber(localStorage.getItem(KEY_RANGE_YDS), DEFAULTS.rangeYds));
   }
 
   function getRangeUnit() {
-    const stored = (localStorage.getItem(KEY_RANGE_UNIT) || "").trim();
-    const domVal = els.rangeUnitSelect ? String(els.rangeUnitSelect.value || "").trim() : "";
-    const value = domVal || stored || DEFAULTS.rangeUnit;
-    return value.toLowerCase() === "m" ? "m" : "yd";
+    return (localStorage.getItem(KEY_RANGE_UNIT) || DEFAULTS.rangeUnit).toLowerCase() === "m" ? "m" : "yd";
   }
 
   function getDialUnit() {
-    const stored = (localStorage.getItem(KEY_DIAL_UNIT) || "").trim();
-    const domVal = els.unitToggle ? String(els.unitToggle.value || "").trim() : "";
-    const value = (domVal || stored || DEFAULTS.dialUnit).toUpperCase();
-    return value === "MRAD" ? "MRAD" : "MOA";
+    return (localStorage.getItem(KEY_DIAL_UNIT) || DEFAULTS.dialUnit).toUpperCase() === "MRAD" ? "MRAD" : "MOA";
   }
 
   function getClickValue() {
-    const stored = safeNumber(localStorage.getItem(KEY_CLICK_VALUE), DEFAULTS.clickValue);
-    const domVal = els.clickInput ? safeNumber(els.clickInput.value, NaN) : NaN;
-    const dialUnit = getDialUnit();
-    const fallback = dialUnit === "MRAD" ? 0.1 : 0.25;
-    return safeNumber(domVal, safeNumber(stored, fallback));
+    const fallback = getDialUnit() === "MRAD" ? 0.1 : 0.25;
+    return safeNumber(els.clickValue?.value, safeNumber(localStorage.getItem(KEY_CLICK_VALUE), fallback));
   }
 
   function getTargetDimsInches() {
-    const urlW = safeNumber(getParam("wIn"), NaN);
-    const urlH = safeNumber(getParam("hIn"), NaN);
-    const storedW = safeNumber(localStorage.getItem(KEY_TARGET_W_IN), DEFAULTS.targetWIn);
-    const storedH = safeNumber(localStorage.getItem(KEY_TARGET_H_IN), DEFAULTS.targetHIn);
-
-    const w = safeNumber(urlW, storedW);
-    const h = safeNumber(urlH, storedH);
-
     return {
-      w: w > 0 ? w : DEFAULTS.targetWIn,
-      h: h > 0 ? h : DEFAULTS.targetHIn
+      w: safeNumber(localStorage.getItem(KEY_TARGET_W_IN), DEFAULTS.targetWIn),
+      h: safeNumber(localStorage.getItem(KEY_TARGET_H_IN), DEFAULTS.targetHIn)
     };
   }
 
@@ -171,13 +170,38 @@
       localStorage.setItem(KEY_RANGE_UNIT, getRangeUnit());
       localStorage.setItem(KEY_DIAL_UNIT, getDialUnit());
       localStorage.setItem(KEY_CLICK_VALUE, String(getClickValue()));
-      const dims = getTargetDimsInches();
-      localStorage.setItem(KEY_TARGET_W_IN, String(dims.w));
-      localStorage.setItem(KEY_TARGET_H_IN, String(dims.h));
-      if (els.targetSizeSelect?.value) {
-        localStorage.setItem(KEY_TARGET_SIZE_KEY, String(els.targetSizeSelect.value));
-      }
     } catch {}
+    updateLiveBar();
+  }
+
+  function setRangeUnit(unit) {
+    const next = unit === "m" ? "m" : "yd";
+    try {
+      localStorage.setItem(KEY_RANGE_UNIT, next);
+    } catch {}
+    syncMatrixUI();
+    updateLiveBar();
+  }
+
+  function setDialUnit(unit) {
+    const next = unit === "MRAD" ? "MRAD" : "MOA";
+    try {
+      localStorage.setItem(KEY_DIAL_UNIT, next);
+      if (next === "MOA" && !els.clickValue.value) els.clickValue.value = "0.25";
+      if (next === "MRAD" && !els.clickValue.value) els.clickValue.value = "0.10";
+    } catch {}
+    syncMatrixUI();
+    updateLiveBar();
+  }
+
+  function setTargetSize(sizeKey, w, h) {
+    try {
+      localStorage.setItem(KEY_TARGET_SIZE_KEY, sizeKey);
+      localStorage.setItem(KEY_TARGET_W_IN, String(w));
+      localStorage.setItem(KEY_TARGET_H_IN, String(h));
+    } catch {}
+    syncSizeChips();
+    updateLiveBar();
   }
 
   function hydrateVendor() {
@@ -187,92 +211,100 @@
         localStorage.setItem(KEY_VENDOR_NAME, "BAKER TARGETS");
       }
 
-      const storedUrl = String(localStorage.getItem(KEY_VENDOR_URL) || "").trim();
-      const storedName = String(localStorage.getItem(KEY_VENDOR_NAME) || "").trim();
+      const vendorUrl = String(localStorage.getItem(KEY_VENDOR_URL) || "").trim();
+      const vendorName = String(localStorage.getItem(KEY_VENDOR_NAME) || "").trim();
 
-      if (els.vendorPanelLink && storedUrl) {
-        els.vendorPanelLink.href = storedUrl;
-      }
+      if (els.vendorPanelLink && vendorUrl) els.vendorPanelLink.href = vendorUrl;
+      if (els.vendorBox && vendorUrl) els.vendorBox.href = vendorUrl;
 
       if (els.vendorName) {
-        els.vendorName.textContent = storedName || (isBakerMode() ? "BAKER TARGETS" : "Vendor Not Set");
+        els.vendorName.textContent = vendorName || "OFFICIAL TARGET PARTNER";
+      }
+
+      if (els.vendorLabel && isBakerMode()) {
+        els.vendorLabel.textContent = "BUY MORE TARGETS LIKE THIS";
       }
     } catch {}
   }
 
   function openVendorPanel() {
     if (!els.vendorPanel) return;
-    els.vendorPanel.classList.add("open", "show", "is-open");
+    els.vendorPanel.classList.remove("vendorHidden");
+    els.vendorPanel.classList.add("show", "open", "is-open");
+    els.vendorPanel.setAttribute("aria-hidden", "false");
   }
 
   function closeVendorPanel() {
     if (!els.vendorPanel) return;
-    els.vendorPanel.classList.remove("open", "show", "is-open");
+    els.vendorPanel.classList.add("vendorHidden");
+    els.vendorPanel.classList.remove("show", "open", "is-open");
+    els.vendorPanel.setAttribute("aria-hidden", "true");
   }
 
-  function setInstruction(text) {
-    if (!els.instruction) return;
-    void els.instruction.offsetHeight;
-    els.instruction.textContent = text || "";
-    els.instruction.style.opacity = "1";
-    els.instruction.style.transform = "translateY(0px)";
-  }
-
-  function syncInstruction() {
+  function updateInstruction() {
     if (!els.targetImg?.src) {
-      setInstruction("Add a target photo.");
+      setText(els.instructionLine, "Add a target photo.");
       return;
     }
     if (!aim) {
-      setInstruction("Tap Aim Point.");
+      setText(els.instructionLine, "Tap Aim Point.");
       return;
     }
-    setInstruction("Tap Bullet Holes.");
-  }
-
-  function setTapCount() {
-    setText(els.tapCount, `${hits.length}`);
-  }
-
-  function showSticky(text) {
-    if (els.stickyText) els.stickyText.textContent = text || "";
-    if (els.stickyBar) els.stickyBar.classList.add("show", "is-visible");
-  }
-
-  function hideSticky() {
-    if (els.stickyBar) els.stickyBar.classList.remove("show", "is-visible");
+    setText(els.instructionLine, "Tap Bullet Holes.");
   }
 
   function updateStatus() {
-    if (!els.status) return;
-
     if (!els.targetImg?.src) {
-      setText(els.status, "Add a target photo.");
-      hideSticky();
+      setText(els.statusLine, "Add a target photo to begin.");
       return;
     }
 
     if (!aim) {
-      setText(els.status, "Tap Aim Point.");
-      hideSticky();
+      setText(els.statusLine, "Tap the point you were aiming at.");
       return;
     }
 
     if (hits.length < 3) {
-      setText(els.status, `Tap Bullet Holes. ${hits.length}/3 minimum`);
-      showSticky(`Results ready at 3+ shots • ${hits.length} recorded`);
+      setText(els.statusLine, `Tap Bullet Holes. ${hits.length}/3 minimum`);
       return;
     }
 
-    setText(els.status, `Ready • ${hits.length} shot${hits.length === 1 ? "" : "s"} recorded`);
-    showSticky(`Show Results • ${hits.length} shot${hits.length === 1 ? "" : "s"} recorded`);
+    setText(els.statusLine, `Ready • ${hits.length} shots recorded`);
   }
 
-  function releaseObjectUrl() {
-    if (objectUrl) {
-      URL.revokeObjectURL(objectUrl);
-      objectUrl = null;
-    }
+  function updateTapCount() {
+    setText(els.tapCount, String(hits.length));
+  }
+
+  function updateLiveBar() {
+    const rangeVal = getRangeYds();
+    const rangeUnit = getRangeUnit();
+    const dialUnit = getDialUnit();
+    const clickValue = getClickValue();
+    const dims = getTargetDimsInches();
+
+    setText(els.liveDistance, `${rangeVal} ${rangeUnit === "m" ? "m" : "yds"}`);
+    setText(els.liveDial, `${clickValue} ${dialUnit}`);
+    setText(els.liveTarget, `${dims.w}×${dims.h}`);
+  }
+
+  function syncMatrixUI() {
+    const rangeUnit = getRangeUnit();
+    const dialUnit = getDialUnit();
+
+    els.distUnitYd?.classList.toggle("segOn", rangeUnit === "yd");
+    els.distUnitM?.classList.toggle("segOn", rangeUnit === "m");
+    setText(els.distUnitLabel, rangeUnit === "m" ? "m" : "yds");
+
+    els.unitMoa?.classList.toggle("segOn", dialUnit === "MOA");
+    els.unitMrad?.classList.toggle("segOn", dialUnit === "MRAD");
+    setText(els.clickUnitLabel, dialUnit === "MRAD" ? "MRAD/click" : "MOA/click");
+  }
+
+  function syncSizeChips() {
+    const active = localStorage.getItem(KEY_TARGET_SIZE_KEY) || DEFAULTS.targetSizeKey;
+    const chips = els.sizeChipRow ? [...els.sizeChipRow.querySelectorAll(".chipSize")] : [];
+    chips.forEach((chip) => chip.classList.toggle("segOn", chip.dataset.size === active));
   }
 
   function readFileAsDataURL(file) {
@@ -284,31 +316,38 @@
     });
   }
 
+  function releaseObjectUrl() {
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = null;
+    }
+  }
+
   async function handlePhotoFile(file) {
     if (!file || !els.targetImg) return;
 
     releaseObjectUrl();
     objectUrl = URL.createObjectURL(file);
+
+    const dataUrl = await readFileAsDataURL(file);
+    localStorage.setItem(KEY_TARGET_IMG_DATAURL, dataUrl);
+
+    resetTapsOnly();
     els.targetImg.src = objectUrl;
 
-    try {
-      const dataUrl = await readFileAsDataURL(file);
-      localStorage.setItem(KEY_TARGET_IMG_DATAURL, dataUrl);
-      localStorage.setItem(KEY_TARGET_IMG_BLOBURL, objectUrl);
-    } catch {}
+    if (els.scoreSection) {
+      els.scoreSection.classList.remove("scoreHidden");
+      els.scoreSection.classList.add("workspaceVisible");
+    }
 
-    resetAll(false);
-    syncInstruction();
+    updateInstruction();
     updateStatus();
   }
 
   function restorePhoto() {
-    if (!els.targetImg) return;
     const dataUrl = String(localStorage.getItem(KEY_TARGET_IMG_DATAURL) || "");
-    if (!dataUrl) return;
+    if (!dataUrl || !els.targetImg) return;
     els.targetImg.src = dataUrl;
-    syncInstruction();
-    updateStatus();
   }
 
   function getWrapRect() {
@@ -325,79 +364,6 @@
     return { x: evt.clientX, y: evt.clientY };
   }
 
-  function eventToPercent(evt) {
-    const rect = getWrapRect();
-    if (!rect) return null;
-
-    const pt = clientPointFromEvent(evt);
-    const x = clamp((pt.x - rect.left) / rect.width, 0, 1);
-    const y = clamp((pt.y - rect.top) / rect.height, 0, 1);
-
-    return {
-      xPct: x,
-      yPct: y,
-      xPx: x * rect.width,
-      yPx: y * rect.height
-    };
-  }
-
-  function createDot(className, xPct, yPct, label) {
-    if (!els.dotsLayer) return;
-    const dot = document.createElement("button");
-    dot.type = "button";
-    dot.className = `shotDot ${className}`.trim();
-    dot.style.left = `${xPct * 100}%`;
-    dot.style.top = `${yPct * 100}%`;
-    dot.setAttribute("aria-label", label || className);
-    if (className === "hitDot") {
-      dot.textContent = String(hits.length);
-    }
-    els.dotsLayer.appendChild(dot);
-  }
-
-  function renderDots() {
-    if (!els.dotsLayer) return;
-    els.dotsLayer.innerHTML = "";
-
-    if (aim) {
-      createDot("aimDot", aim.xPct, aim.yPct, "Aim Point");
-    }
-
-    hits.forEach((hit, idx) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "shotDot hitDot";
-      dot.style.left = `${hit.xPct * 100}%`;
-      dot.style.top = `${hit.yPct * 100}%`;
-      dot.setAttribute("aria-label", `Shot ${idx + 1}`);
-      dot.textContent = String(idx + 1);
-      els.dotsLayer.appendChild(dot);
-    });
-  }
-
-  function resetAll(clearImage = false) {
-    aim = null;
-    hits = [];
-    touchStart = null;
-
-    if (els.dotsLayer) els.dotsLayer.innerHTML = "";
-    setTapCount();
-    hideSticky();
-    closeVendorPanel();
-
-    if (clearImage && els.targetImg) {
-      els.targetImg.removeAttribute("src");
-      try {
-        localStorage.removeItem(KEY_TARGET_IMG_DATAURL);
-        localStorage.removeItem(KEY_TARGET_IMG_BLOBURL);
-      } catch {}
-      releaseObjectUrl();
-    }
-
-    syncInstruction();
-    updateStatus();
-  }
-
   function maybeTrackStart(evt) {
     touchStart = clientPointFromEvent(evt);
   }
@@ -405,9 +371,51 @@
   function movementTooLarge(evt) {
     if (!touchStart) return false;
     const now = clientPointFromEvent(evt);
-    const dx = Math.abs(now.x - touchStart.x);
-    const dy = Math.abs(now.y - touchStart.y);
-    return dx > 12 || dy > 12;
+    return Math.abs(now.x - touchStart.x) > 12 || Math.abs(now.y - touchStart.y) > 12;
+  }
+
+  function eventToPercent(evt) {
+    const rect = getWrapRect();
+    if (!rect) return null;
+
+    const pt = clientPointFromEvent(evt);
+    return {
+      xPct: clamp((pt.x - rect.left) / rect.width, 0, 1),
+      yPct: clamp((pt.y - rect.top) / rect.height, 0, 1)
+    };
+  }
+
+  function renderDots() {
+    if (!els.dotsLayer) return;
+    els.dotsLayer.innerHTML = "";
+
+    if (aim) {
+      const dot = document.createElement("div");
+      dot.className = "shotDot aimDot";
+      dot.style.left = `${aim.xPct * 100}%`;
+      dot.style.top = `${aim.yPct * 100}%`;
+      els.dotsLayer.appendChild(dot);
+    }
+
+    hits.forEach((hit, idx) => {
+      const dot = document.createElement("div");
+      dot.className = "shotDot hitDot";
+      dot.style.left = `${hit.xPct * 100}%`;
+      dot.style.top = `${hit.yPct * 100}%`;
+      dot.textContent = String(idx + 1);
+      els.dotsLayer.appendChild(dot);
+    });
+  }
+
+  function resetTapsOnly() {
+    aim = null;
+    hits = [];
+    touchStart = null;
+    renderDots();
+    updateTapCount();
+    closeVendorPanel();
+    updateInstruction();
+    updateStatus();
   }
 
   function onTargetTap(evt) {
@@ -420,101 +428,23 @@
     if (!point) return;
 
     if (!aim) {
-      aim = {
-        xPct: point.xPct,
-        yPct: point.yPct
-      };
+      aim = point;
       renderDots();
-      syncInstruction();
+      updateInstruction();
       updateStatus();
       return;
     }
 
-    hits.push({
-      xPct: point.xPct,
-      yPct: point.yPct
-    });
-
+    hits.push(point);
     renderDots();
-    setTapCount();
-    syncInstruction();
+    updateTapCount();
+    updateInstruction();
     updateStatus();
   }
 
   function avg(list, key) {
     if (!list.length) return 0;
     return list.reduce((sum, item) => sum + item[key], 0) / list.length;
-  }
-
-  function computeGroupMetrics() {
-    if (!aim || hits.length === 0) return null;
-
-    const centroidXPct = avg(hits, "xPct");
-    const centroidYPct = avg(hits, "yPct");
-
-    const dims = getTargetDimsInches();
-    const dxInches = round2((centroidXPct - aim.xPct) * dims.w);
-    const dyInches = round2((centroidYPct - aim.yPct) * dims.h);
-
-    const rangeYds = getRangeUnit() === "m"
-      ? round2(getRangeYds() * 1.09361)
-      : getRangeYds();
-
-    const dialUnit = getDialUnit();
-    const clickValue = getClickValue();
-
-    let windageUnitValue = 0;
-    let elevationUnitValue = 0;
-    let windageClicks = 0;
-    let elevationClicks = 0;
-
-    if (dialUnit === "MRAD") {
-      const meters = rangeYds * 0.9144;
-      const inchesPerMrad = meters * 39.3701 * 0.001;
-      windageUnitValue = inchesPerMrad ? round2(Math.abs(dxInches) / inchesPerMrad) : 0;
-      elevationUnitValue = inchesPerMrad ? round2(Math.abs(dyInches) / inchesPerMrad) : 0;
-      windageClicks = clickValue ? round2(windageUnitValue / clickValue) : 0;
-      elevationClicks = clickValue ? round2(elevationUnitValue / clickValue) : 0;
-    } else {
-      const inchesPerMoa = (rangeYds / 100) * 1.047;
-      windageUnitValue = inchesPerMoa ? round2(Math.abs(dxInches) / inchesPerMoa) : 0;
-      elevationUnitValue = inchesPerMoa ? round2(Math.abs(dyInches) / inchesPerMoa) : 0;
-      windageClicks = clickValue ? round2(windageUnitValue / clickValue) : 0;
-      elevationClicks = clickValue ? round2(elevationUnitValue / clickValue) : 0;
-    }
-
-    const windageDir = dxInches > 0 ? "LEFT" : dxInches < 0 ? "RIGHT" : "—";
-    const elevationDir = dyInches > 0 ? "UP" : dyInches < 0 ? "DOWN" : "—";
-
-    const groupSizeInches = computeMaxSpreadInches(hits, dims);
-
-    return {
-      aim,
-      hits: [...hits],
-      shotCount: hits.length,
-      centroidXPct: round2(centroidXPct),
-      centroidYPct: round2(centroidYPct),
-      dxInches,
-      dyInches,
-      windageUnitValue,
-      elevationUnitValue,
-      windageClicks,
-      elevationClicks,
-      windageDir,
-      elevationDir,
-      dialUnit,
-      clickValue,
-      rangeYds: round2(rangeYds),
-      groupSizeInches,
-      vendor: getVendor() || "",
-      sku: getSku() || "",
-      batch: getBatch() || "",
-      mode: getMode(),
-      isB2B: isB2B(),
-      targetWIn: dims.w,
-      targetHIn: dims.h,
-      createdAt: new Date().toISOString()
-    };
   }
 
   function computeMaxSpreadInches(points, dims) {
@@ -529,6 +459,69 @@
       }
     }
     return round2(max);
+  }
+
+  function computeGroupMetrics() {
+    if (!aim || hits.length === 0) return null;
+
+    const centroidXPct = avg(hits, "xPct");
+    const centroidYPct = avg(hits, "yPct");
+    const dims = getTargetDimsInches();
+
+    const dxInches = round2((centroidXPct - aim.xPct) * dims.w);
+    const dyInches = round2((centroidYPct - aim.yPct) * dims.h);
+
+    const rangeYds = getRangeUnit() === "m"
+      ? round2(getRangeYds() * 1.09361)
+      : getRangeYds();
+
+    const dialUnit = getDialUnit();
+    const clickValue = getClickValue();
+
+    let windageUnitValue = 0;
+    let elevationUnitValue = 0;
+
+    if (dialUnit === "MRAD") {
+      const meters = rangeYds * 0.9144;
+      const inchesPerMrad = meters * 39.3701 * 0.001;
+      windageUnitValue = inchesPerMrad ? round2(Math.abs(dxInches) / inchesPerMrad) : 0;
+      elevationUnitValue = inchesPerMrad ? round2(Math.abs(dyInches) / inchesPerMrad) : 0;
+    } else {
+      const inchesPerMoa = (rangeYds / 100) * 1.047;
+      windageUnitValue = inchesPerMoa ? round2(Math.abs(dxInches) / inchesPerMoa) : 0;
+      elevationUnitValue = inchesPerMoa ? round2(Math.abs(dyInches) / inchesPerMoa) : 0;
+    }
+
+    const windageClicks = clickValue ? round2(windageUnitValue / clickValue) : 0;
+    const elevationClicks = clickValue ? round2(elevationUnitValue / clickValue) : 0;
+
+    return {
+      aim,
+      hits: [...hits],
+      shotCount: hits.length,
+      centroidXPct: round2(centroidXPct),
+      centroidYPct: round2(centroidYPct),
+      dxInches,
+      dyInches,
+      windageUnitValue,
+      elevationUnitValue,
+      windageClicks,
+      elevationClicks,
+      windageDir: dxInches > 0 ? "LEFT" : dxInches < 0 ? "RIGHT" : "—",
+      elevationDir: dyInches > 0 ? "UP" : dyInches < 0 ? "DOWN" : "—",
+      dialUnit,
+      clickValue,
+      rangeYds: round2(rangeYds),
+      groupSizeInches: computeMaxSpreadInches(hits, dims),
+      vendor: getVendor(),
+      sku: getSku(),
+      batch: getBatch(),
+      mode: getMode(),
+      isB2B: isB2B(),
+      targetWIn: dims.w,
+      targetHIn: dims.h,
+      createdAt: new Date().toISOString()
+    };
   }
 
   function computeScore(metrics) {
@@ -550,7 +543,8 @@
 
     const score = computeScore(metrics);
     const band = getScoreBand(score);
-    const payload = {
+
+    return {
       ...metrics,
       score,
       scoreBand: band.label,
@@ -558,18 +552,20 @@
       sessionStartedAt,
       sessionDurationMs: Date.now() - sessionStartedAt
     };
-
-    return payload;
   }
 
   function persistPayload(payload) {
     if (!payload) return;
-
     try {
       localStorage.setItem(KEY_SEC_PAYLOAD, JSON.stringify(payload));
-
       const raw = localStorage.getItem(KEY_SEC_HISTORY);
-      const history = Array.isArray(JSON.parse(raw || "[]")) ? JSON.parse(raw || "[]") : [];
+      let history = [];
+      try {
+        history = JSON.parse(raw || "[]");
+        if (!Array.isArray(history)) history = [];
+      } catch {
+        history = [];
+      }
       history.unshift(payload);
       localStorage.setItem(KEY_SEC_HISTORY, JSON.stringify(history.slice(0, 10)));
     } catch {}
@@ -769,7 +765,7 @@
 
     const payload = buildPayload();
     if (!payload || payload.shotCount < 3) {
-      setText(els.status, "Need at least 3 shots.");
+      setText(els.statusLine, "Need at least 3 shots.");
       return;
     }
 
@@ -778,12 +774,63 @@
     try {
       const blob = await buildSecImageBlob(payload);
       await shareBlob(blob, `SCZN3_SEC_${Date.now()}.png`);
-      setText(els.status, "SEC image ready.");
+      setText(els.statusLine, "SEC image ready.");
       openVendorPanel();
     } catch (err) {
       console.error(err);
-      setText(els.status, "Could not build SEC image.");
+      setText(els.statusLine, "Could not build SEC image.");
     }
+  }
+
+  function bindMatrix() {
+    els.matrixBtn?.addEventListener("click", () => {
+      els.matrixPanel?.classList.toggle("matrixHidden");
+    });
+
+    els.matrixCloseBtn?.addEventListener("click", () => {
+      els.matrixPanel?.classList.add("matrixHidden");
+    });
+
+    els.distDown?.addEventListener("click", () => {
+      els.distanceYds.value = String(Math.max(1, safeNumber(els.distanceYds.value, 100) - 1));
+      persistSettings();
+    });
+
+    els.distUp?.addEventListener("click", () => {
+      els.distanceYds.value = String(safeNumber(els.distanceYds.value, 100) + 1);
+      persistSettings();
+    });
+
+    els.distanceYds?.addEventListener("change", persistSettings);
+
+    els.distUnitYd?.addEventListener("click", () => setRangeUnit("yd"));
+    els.distUnitM?.addEventListener("click", () => setRangeUnit("m"));
+
+    els.unitMoa?.addEventListener("click", () => setDialUnit("MOA"));
+    els.unitMrad?.addEventListener("click", () => setDialUnit("MRAD"));
+
+    els.clickValue?.addEventListener("change", persistSettings);
+
+    els.presetChipRow?.addEventListener("click", (evt) => {
+      const btn = evt.target.closest("[data-click]");
+      if (!btn) return;
+      els.clickValue.value = btn.dataset.click;
+      setDialUnit(btn.dataset.unit);
+      persistSettings();
+    });
+
+    els.sizeChipRow?.addEventListener("click", (evt) => {
+      const btn = evt.target.closest(".chipSize");
+      if (!btn) return;
+      const size = btn.dataset.size;
+      if (size === "custom") return;
+      setTargetSize(size, safeNumber(btn.dataset.w, 23), safeNumber(btn.dataset.h, 35));
+    });
+
+    els.swapSizeBtn?.addEventListener("click", () => {
+      const dims = getTargetDimsInches();
+      setTargetSize("custom", dims.h, dims.w);
+    });
   }
 
   function bindEvents() {
@@ -795,15 +842,15 @@
       evt.target.value = "";
     });
 
-    ["pointerdown", "touchstart", "mousedown"].forEach((name) => {
-      els.targetWrap?.addEventListener(name, maybeTrackStart, { passive: true });
+    ["pointerdown", "touchstart", "mousedown"].forEach((eventName) => {
+      els.targetWrap?.addEventListener(eventName, maybeTrackStart, { passive: true });
     });
 
-    ["click", "touchend"].forEach((name) => {
-      els.targetWrap?.addEventListener(name, onTargetTap, { passive: false });
+    ["click", "touchend"].forEach((eventName) => {
+      els.targetWrap?.addEventListener(eventName, onTargetTap, { passive: false });
     });
 
-    els.resetBtn?.addEventListener("click", () => resetAll(false));
+    els.clearTapsBtn?.addEventListener("click", () => resetTapsOnly());
     els.showResultsBtn?.addEventListener("click", onShowResults);
 
     els.vendorPanelLink?.addEventListener("click", () => {
@@ -813,31 +860,37 @@
       } catch {}
     });
 
-    [
-      els.yardInput,
-      els.unitToggle,
-      els.clickInput,
-      els.rangeUnitSelect,
-      els.targetSizeSelect
-    ].filter(Boolean).forEach((el) => {
-      el.addEventListener("change", persistSettings);
-    });
+    bindMatrix();
+  }
+
+  function initDefaults() {
+    if (!localStorage.getItem(KEY_RANGE_YDS)) localStorage.setItem(KEY_RANGE_YDS, String(DEFAULTS.rangeYds));
+    if (!localStorage.getItem(KEY_RANGE_UNIT)) localStorage.setItem(KEY_RANGE_UNIT, DEFAULTS.rangeUnit);
+    if (!localStorage.getItem(KEY_DIAL_UNIT)) localStorage.setItem(KEY_DIAL_UNIT, DEFAULTS.dialUnit);
+    if (!localStorage.getItem(KEY_CLICK_VALUE)) localStorage.setItem(KEY_CLICK_VALUE, String(DEFAULTS.clickValue));
+    if (!localStorage.getItem(KEY_TARGET_W_IN)) localStorage.setItem(KEY_TARGET_W_IN, String(DEFAULTS.targetWIn));
+    if (!localStorage.getItem(KEY_TARGET_H_IN)) localStorage.setItem(KEY_TARGET_H_IN, String(DEFAULTS.targetHIn));
+    if (!localStorage.getItem(KEY_TARGET_SIZE_KEY)) localStorage.setItem(KEY_TARGET_SIZE_KEY, DEFAULTS.targetSizeKey);
   }
 
   function init() {
+    initDefaults();
     hydrateVendor();
     restorePhoto();
-    bindEvents();
-    syncInstruction();
+
+    if (els.distanceYds) els.distanceYds.value = String(getRangeYds());
+    if (els.clickValue) els.clickValue.value = String(getClickValue());
+
+    syncMatrixUI();
+    syncSizeChips();
+    updateLiveBar();
+    updateTapCount();
+    updateInstruction();
     updateStatus();
-    setTapCount();
+    bindEvents();
 
     if (isBakerMode() && els.vendorPanelLink && !els.vendorPanelLink.href) {
       els.vendorPanelLink.href = "https://bakertargets.com";
-    }
-
-    if (els.status && !els.targetImg?.src) {
-      els.status.textContent = "Add a target photo.";
     }
   }
 
