@@ -12,15 +12,114 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=TARGET-TOP-001" />
-  <link rel="stylesheet" href="./sizechips.css?v=TARGET-TOP-001" />
-  <link rel="stylesheet" href="./livebar_fix.css?v=TARGET-TOP-001" />
+  <link rel="stylesheet" href="./styles.css?v=TARGET-FIX-0415A" />
+  <link rel="stylesheet" href="./sizechips.css?v=TARGET-FIX-0415A" />
+  <link rel="stylesheet" href="./livebar_fix.css?v=TARGET-FIX-0415A" />
+
+  <style>
+    .vendorHidden { display: none !important; }
+    .scoreHidden { display: none !important; }
+    .workspaceVisible { display: block !important; }
+
+    .vendorPanel {
+      margin-top: 10px;
+    }
+
+    .vendorPanel.show,
+    .vendorPanel.open,
+    .vendorPanel.is-open {
+      display: block !important;
+    }
+
+    .instructionLine,
+    .hint {
+      min-height: 22px;
+    }
+
+    .targetWrap {
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .targetWrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    .dotsLayer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .shotDot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      display: grid;
+      place-items: center;
+      font: 700 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,.28);
+      pointer-events: none;
+    }
+
+    .aimDot {
+      width: 24px;
+      height: 24px;
+      background: #2f66ff;
+      border-radius: 999px;
+    }
+
+    .aimDot::before,
+    .aimDot::after {
+      content: "";
+      position: absolute;
+      background: #fff;
+      border-radius: 999px;
+    }
+
+    .aimDot::before {
+      width: 16px;
+      height: 2px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .aimDot::after {
+      width: 2px;
+      height: 16px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .hitDot {
+      background: #ff4d5d;
+    }
+
+    .matrixHidden {
+      display: none !important;
+    }
+
+    .segOn {
+      outline: 2px solid rgba(255,255,255,.3);
+    }
+  </style>
 </head>
 
 <body>
   <main class="page">
 
-    <!-- HERO / ENTRY -->
     <section class="hero" aria-label="Tap-n-Score landing">
       <div class="brandRow">
         <div class="brandTitle">
@@ -55,7 +154,7 @@
 
           <div id="vendorPanel" class="vendorPanel vendorHidden" aria-hidden="true">
             <div class="vendorPanelInner">
-              <div class="vendorPanelTitle">BAKER • SMART TARGET™</div>
+              <div class="vendorPanelTitle" id="vendorName">BAKER • SMART TARGET™</div>
               <div class="vendorPanelSub">You’re still in the Tap-n-Score™ flow.</div>
               <a id="vendorPanelLink" class="vendorPanelBtn" href="#" target="_blank" rel="noopener">Visit Baker</a>
             </div>
@@ -66,9 +165,7 @@
       <input id="photoInput" class="fileHidden" type="file" accept="image/*" />
     </section>
 
-    <!-- TARGET WORKSPACE -->
-    <section id="scoreSection" class="workspace scoreHidden" aria-label="Target workspace">
-
+    <section id="scoreSection" class="workspace workspaceVisible" aria-label="Target workspace">
       <div class="workspaceTop card">
         <div class="cardTitle cardTitleSEC">
           <div class="secTitle">
@@ -101,11 +198,10 @@
           <button id="showResultsBtn" class="btnPrimaryTop" type="button">Show Results</button>
         </div>
 
-        <p id="instructionLine" class="instructionLine"></p>
+        <p id="instructionLine" class="instructionLine">Add a target photo.</p>
         <p id="statusLine" class="hint">Add a target photo to begin.</p>
       </div>
 
-      <!-- MATRIX PANEL -->
       <div id="matrixPanel" class="matrixPanel matrixHidden" aria-hidden="true">
         <div class="matrixTitle">SETTINGS MATRIX</div>
 
@@ -167,18 +263,16 @@
         </div>
       </div>
 
-      <!-- FULL TARGET AREA -->
       <div class="targetStage">
         <div id="targetWrap" class="targetWrap targetWrapFull" aria-label="Target image area">
           <img id="targetImg" alt="Target" draggable="false" />
           <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
         </div>
       </div>
-
     </section>
 
   </main>
 
-  <script src="./index.js?v=TARGET-TOP-001"></script>
+  <script src="./index.js?v=TARGET-FIX-0415A"></script>
 </body>
 </html>
