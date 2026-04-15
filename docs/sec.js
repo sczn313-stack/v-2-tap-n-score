@@ -1,7 +1,7 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT (VERIFIED)
    Fixes:
-   - history render target mismatch (historyGrid vs historyWrap)
+   - history render target mismatch
    - empty-state visibility
    - duplicate history entries on refresh
    - keeps score / yards / hits / thumbnail flow intact
