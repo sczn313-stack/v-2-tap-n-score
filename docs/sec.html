@@ -11,7 +11,7 @@
   <meta http-equiv="Expires" content="0" />
 
   <title>SEC — Tap-n-Score™</title>
-  <link rel="stylesheet" href="./sec.css?v=SEC-SAVE-ALIGN-003" />
+  <link rel="stylesheet" href="./sec.css?v=SEC-3PAGE-001" />
 </head>
 <body>
   <main id="secPage" class="secPage">
@@ -24,7 +24,7 @@
 
     <section class="topRow" aria-label="SEC top row">
       <article class="card scoreCard">
-        <div class="eyebrow">Smart Score</div>
+        <div class="eyebrow">Your Score</div>
         <div id="scoreValue" class="scoreValue">—</div>
         <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
       </article>
@@ -43,7 +43,7 @@
     </section>
 
     <section class="card correctionCard" aria-label="Scope correction">
-      <div class="eyebrow correctionEyebrow">Correction</div>
+      <div class="eyebrow correctionEyebrow">Scope Correction</div>
       <div class="correctionInlineWrap">
         <div id="corrClicksInline" class="correctionInlineValue">—</div>
       </div>
@@ -81,6 +81,19 @@
     </section>
 
     <section class="compactActions" aria-label="Secondary actions">
+      <button
+        id="saveFallbackBtn"
+        class="miniAction miniActionPrimary"
+        type="button"
+        style="display:none;"
+      >
+        Save as Picture
+      </button>
+
+      <button id="backBtn" class="miniAction" type="button">
+        Back
+      </button>
+
       <a
         id="surveyBtn"
         class="miniAction"
@@ -90,10 +103,6 @@
       >
         Survey
       </a>
-
-      <button id="saveSecBtn" class="miniAction miniActionPrimary" type="button">
-        Save SEC
-      </button>
     </section>
 
     <section class="finalAction" aria-label="Primary next action">
@@ -101,6 +110,6 @@
     </section>
   </main>
 
-  <script src="./sec.js?v=SEC-SAVE-ALIGN-003"></script>
+  <script src="./sec.js?v=SEC-3PAGE-001"></script>
 </body>
 </html>
