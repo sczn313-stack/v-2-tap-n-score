@@ -1,11 +1,13 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   Matched to current target-page HTML
-   - Landing hides after photo load
-   - Target workspace becomes primary view
-   - Add photo -> tap aim -> tap shots
-   - Show Results builds SEC image behind the scenes
-   - No live SEC page handoff
+   LIVE SEC HANDOFF BUILD
+   Flow:
+   - landing page
+   - add target photo
+   - landing hides / target workspace becomes active
+   - tap aim + shots
+   - Show Results stores payload
+   - handoff goes to live sec.html
 ============================================================ */
 
 (() => {
@@ -141,8 +143,43 @@
     if (el) el.textContent = text;
   }
 
+  function getLandingEl() {
+    return document.getElementById("landingPage") || document.querySelector(".hero");
+  }
+
+  function showLandingPage() {
+    const landing = getLandingEl();
+    if (landing) {
+      landing.style.display = "";
+      landing.removeAttribute("aria-hidden");
+    }
+  }
+
+  function hideLandingPage() {
+    const landing = getLandingEl();
+    if (landing) {
+      landing.style.display = "none";
+      landing.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  function showWorkspace() {
+    if (!els.scoreSection) return;
+    els.scoreSection.classList.remove("scoreHidden");
+    els.scoreSection.classList.add("workspaceVisible");
+  }
+
+  function hideWorkspace() {
+    if (!els.scoreSection) return;
+    els.scoreSection.classList.add("scoreHidden");
+    els.scoreSection.classList.remove("workspaceVisible");
+  }
+
   function getRangeYds() {
-    return safeNumber(els.distanceYds?.value, safeNumber(localStorage.getItem(KEY_RANGE_YDS), DEFAULTS.rangeYds));
+    return safeNumber(
+      els.distanceYds?.value,
+      safeNumber(localStorage.getItem(KEY_RANGE_YDS), DEFAULTS.rangeYds)
+    );
   }
 
   function getRangeUnit() {
@@ -155,7 +192,10 @@
 
   function getClickValue() {
     const fallback = getDialUnit() === "MRAD" ? 0.1 : 0.25;
-    return safeNumber(els.clickValue?.value, safeNumber(localStorage.getItem(KEY_CLICK_VALUE), fallback));
+    return safeNumber(
+      els.clickValue?.value,
+      safeNumber(localStorage.getItem(KEY_CLICK_VALUE), fallback)
+    );
   }
 
   function getTargetDimsInches() {
@@ -240,28 +280,6 @@
     els.vendorPanel.classList.add("vendorHidden");
     els.vendorPanel.classList.remove("show", "open", "is-open");
     els.vendorPanel.setAttribute("aria-hidden", "true");
-  }
-
-  function hideLandingPage() {
-    const landing =
-      document.getElementById("landingPage") ||
-      document.querySelector(".hero");
-
-    if (landing) {
-      landing.style.display = "none";
-      landing.setAttribute("aria-hidden", "true");
-    }
-  }
-
-  function showLandingPage() {
-    const landing =
-      document.getElementById("landingPage") ||
-      document.querySelector(".hero");
-
-    if (landing) {
-      landing.style.display = "";
-      landing.removeAttribute("aria-hidden");
-    }
   }
 
   function updateInstruction() {
@@ -358,11 +376,7 @@
     resetTapsOnly();
     els.targetImg.src = objectUrl;
 
-    if (els.scoreSection) {
-      els.scoreSection.classList.remove("scoreHidden");
-      els.scoreSection.classList.add("workspaceVisible");
-    }
-
+    showWorkspace();
     hideLandingPage();
 
     updateInstruction();
@@ -373,13 +387,6 @@
     const dataUrl = String(localStorage.getItem(KEY_TARGET_IMG_DATAURL) || "");
     if (!dataUrl || !els.targetImg) return;
     els.targetImg.src = dataUrl;
-
-    if (els.scoreSection) {
-      els.scoreSection.classList.remove("scoreHidden");
-      els.scoreSection.classList.add("workspaceVisible");
-    }
-
-    hideLandingPage();
   }
 
   function getWrapRect() {
@@ -588,8 +595,10 @@
 
   function persistPayload(payload) {
     if (!payload) return;
+
     try {
       localStorage.setItem(KEY_SEC_PAYLOAD, JSON.stringify(payload));
+
       const raw = localStorage.getItem(KEY_SEC_HISTORY);
       let history = [];
       try {
@@ -598,198 +607,14 @@
       } catch {
         history = [];
       }
+
       history.unshift(payload);
       localStorage.setItem(KEY_SEC_HISTORY, JSON.stringify(history.slice(0, 10)));
     } catch {}
   }
 
-  function bgForScore(ctx, width, height, score) {
-    const g = ctx.createLinearGradient(0, 0, width, height);
-    if (score >= 90) {
-      g.addColorStop(0, "#0c2d18");
-      g.addColorStop(1, "#102418");
-    } else if (score >= 60) {
-      g.addColorStop(0, "#3b2d0f");
-      g.addColorStop(1, "#231c0d");
-    } else {
-      g.addColorStop(0, "#381315");
-      g.addColorStop(1, "#200d0f");
-    }
-    return g;
-  }
-
-  function drawRoundedRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-  }
-
-  function loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
-  }
-
-  async function buildSecImageBlob(payload) {
-    const width = 1400;
-    const height = 2200;
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-
-    ctx.fillStyle = bgForScore(ctx, width, height, payload.score);
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
-    for (let i = 0; i < 24; i++) {
-      const y = 120 + i * 84;
-      ctx.fillRect(70, y, width - 140, 1);
-    }
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "700 54px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("SCZN3 • Shooter Experience Card", 80, 110);
-
-    ctx.font = "700 165px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText(String(payload.score), 80, 280);
-
-    ctx.font = "700 52px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText(payload.scoreBand, 320, 220);
-    ctx.font = "400 36px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText(payload.scoreDetail, 320, 275);
-
-    drawRoundedRect(ctx, 80, 340, width - 160, 640, 32);
-    ctx.fillStyle = "rgba(255,255,255,0.08)";
-    ctx.fill();
-
-    const imageSrc = String(localStorage.getItem(KEY_TARGET_IMG_DATAURL) || els.targetImg?.src || "");
-    if (imageSrc) {
-      try {
-        const shotImg = await loadImage(imageSrc);
-        const boxX = 110;
-        const boxY = 375;
-        const boxW = width - 220;
-        const boxH = 570;
-
-        const scale = Math.min(boxW / shotImg.width, boxH / shotImg.height);
-        const drawW = shotImg.width * scale;
-        const drawH = shotImg.height * scale;
-        const drawX = boxX + (boxW - drawW) / 2;
-        const drawY = boxY + (boxH - drawH) / 2;
-
-        ctx.drawImage(shotImg, drawX, drawY, drawW, drawH);
-
-        const px = (pctX, pctY) => ({
-          x: drawX + pctX * drawW,
-          y: drawY + pctY * drawH
-        });
-
-        if (payload.aim) {
-          const a = px(payload.aim.xPct, payload.aim.yPct);
-          ctx.strokeStyle = "#69b7ff";
-          ctx.lineWidth = 5;
-          ctx.beginPath();
-          ctx.moveTo(a.x - 18, a.y);
-          ctx.lineTo(a.x + 18, a.y);
-          ctx.moveTo(a.x, a.y - 18);
-          ctx.lineTo(a.x, a.y + 18);
-          ctx.stroke();
-        }
-
-        payload.hits.forEach((hit, idx) => {
-          const p = px(hit.xPct, hit.yPct);
-          ctx.fillStyle = "#ff4d5d";
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = "#ffffff";
-          ctx.font = "700 22px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-          ctx.fillText(String(idx + 1), p.x + 16, p.y + 8);
-        });
-
-        const c = px(payload.centroidXPct, payload.centroidYPct);
-        ctx.strokeStyle = "#ffd34d";
-        ctx.lineWidth = 6;
-        ctx.beginPath();
-        ctx.moveTo(c.x - 20, c.y - 20);
-        ctx.lineTo(c.x + 20, c.y + 20);
-        ctx.moveTo(c.x + 20, c.y - 20);
-        ctx.lineTo(c.x - 20, c.y + 20);
-        ctx.stroke();
-      } catch {}
-    }
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "700 46px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Scope Adjustments", 80, 1060);
-
-    const lines = [
-      `Windage: ${payload.windageClicks.toFixed(2)} clicks ${payload.windageDir}`,
-      `Elevation: ${payload.elevationClicks.toFixed(2)} clicks ${payload.elevationDir}`,
-      `Offset: ${Math.abs(payload.dxInches).toFixed(2)}" ${payload.dxInches > 0 ? "right" : payload.dxInches < 0 ? "left" : "center"} • ${Math.abs(payload.dyInches).toFixed(2)}" ${payload.dyInches > 0 ? "low" : payload.dyInches < 0 ? "high" : "center"}`,
-      `${payload.dialUnit}: ${payload.windageUnitValue.toFixed(2)} / ${payload.elevationUnitValue.toFixed(2)} • Click value ${payload.clickValue.toFixed(2)}`,
-      `Distance: ${payload.rangeYds.toFixed(2)} yd • Shots: ${payload.shotCount}`,
-      `Group Size: ${payload.groupSizeInches.toFixed(2)}"`
-    ];
-
-    ctx.font = "500 40px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    lines.forEach((line, idx) => {
-      ctx.fillText(line, 80, 1140 + idx * 76);
-    });
-
-    drawRoundedRect(ctx, 80, 1640, width - 160, 260, 28);
-    ctx.fillStyle = "rgba(255,255,255,0.08)";
-    ctx.fill();
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "700 40px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Confirmation", 110, 1710);
-    ctx.font = "500 34px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Adjust scope as indicated, then re-fire to confirm zero.", 110, 1775);
-    ctx.fillText(`Vendor: ${(localStorage.getItem(KEY_VENDOR_NAME) || "Official Target Partner").trim()}`, 110, 1840);
-
-    ctx.font = "400 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillStyle = "rgba(255,255,255,0.82)";
-    ctx.fillText(`Generated ${new Date(payload.createdAt).toLocaleString()}`, 80, 2060);
-    ctx.fillText("Faith • Order • Precision", 80, 2110);
-
-    return await new Promise((resolve) => {
-      canvas.toBlob((blob) => resolve(blob), "image/png", 1);
-    });
-  }
-
-  async function shareBlob(blob, filename) {
-    if (!blob) return false;
-
-    const file = new File([blob], filename, { type: "image/png" });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: "SCZN3 SEC",
-        text: "Shooter Experience Card"
-      });
-      return true;
-    }
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
-    return true;
+  function goToLiveSEC() {
+    window.location.href = `./sec.html?cb=${Date.now()}`;
   }
 
   async function onShowResults() {
@@ -802,16 +627,7 @@
     }
 
     persistPayload(payload);
-
-    try {
-      const blob = await buildSecImageBlob(payload);
-      await shareBlob(blob, `SCZN3_SEC_${Date.now()}.png`);
-      setText(els.statusLine, "SEC image ready.");
-      openVendorPanel();
-    } catch (err) {
-      console.error(err);
-      setText(els.statusLine, "Could not build SEC image.");
-    }
+    goToLiveSEC();
   }
 
   function bindMatrix() {
@@ -925,7 +741,11 @@
       els.vendorPanelLink.href = "https://bakertargets.com";
     }
 
-    if (!els.targetImg?.src) {
+    if (els.targetImg?.src) {
+      showWorkspace();
+      hideLandingPage();
+    } else {
+      hideWorkspace();
       showLandingPage();
     }
   }
