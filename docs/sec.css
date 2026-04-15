@@ -56,6 +56,7 @@ body{
     max(14px, var(--safe-right))
     calc(18px + var(--safe-bottom))
     max(14px, var(--safe-left));
+  -webkit-tap-highlight-color:transparent;
 }
 
 .secHeader{
@@ -270,7 +271,7 @@ body{
   box-shadow:0 12px 28px rgba(0,0,0,.22);
 }
 
-.historyCard{
+.historyShell{
   margin-bottom:12px;
 }
 
@@ -319,7 +320,7 @@ body{
   gap:14px 16px;
 }
 
-.historyCell{
+.historyCard{
   border-radius:18px;
   background:rgba(255,255,255,.035);
   border:1px solid rgba(255,255,255,.08);
@@ -327,78 +328,41 @@ body{
   box-shadow:0 10px 24px rgba(0,0,0,.16);
   min-height:118px;
   overflow:hidden;
+  transition:transform 0.05s ease;
 }
 
-.historyTop,
-.historyBottom,
-.historyTutorial{
-  font-size:13px;
-  line-height:1.35;
+.historyCard:active{
+  transform:scale(0.99);
 }
 
-.historyTop{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  align-items:center;
-  font-weight:900;
-  color:rgba(238,242,247,.94);
-}
-
-.historyBottom{
-  display:flex;
-  flex-wrap:wrap;
+.historyRow{
+  display:grid;
+  grid-template-columns:44px 1fr 1fr 1fr;
   gap:10px;
   align-items:center;
-  margin-top:8px;
-  font-weight:800;
-  color:rgba(238,242,247,.62);
+  font-weight:900;
+  font-size:15px;
+  color:rgba(238,242,247,.96);
 }
 
-.historyTutorial{
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  margin-top:8px;
-  font-weight:800;
-  color:rgba(238,242,247,.74);
-  word-break:break-word;
-}
-
-.historyIndex{
-  min-width:34px;
-  font-weight:1000;
+.hIndex{
   color:var(--blue);
+  font-weight:1000;
 }
 
-.historyScoreHigh {
-  color: #48ff8b;
-  font-weight: 1000;
+.hScore,
+.hYds,
+.hHits{
+  color:rgba(238,242,247,.96);
+  font-weight:1000;
 }
 
-.historyScoreMid {
-  color: #ffe85a;
-  font-weight: 1000;
-}
-
-.historyScoreLow {
-  color: #ff4d4d;
-  font-weight: 1000;
-}
-
-.historyHits {
-  color: #48ff8b;
-  font-weight: 1000;
-}
-
-.historyValue {
-  color: rgba(238,242,247,.96);
-  font-weight: 1000;
-}
-
-.historySoft {
-  color: rgba(238,242,247,.58);
+.hDate{
+  margin-top:8px;
+  font-size:12px;
+  line-height:1.35;
+  color:rgba(238,242,247,.62);
+  font-weight:800;
 }
 
 .compactActions{
@@ -523,52 +487,17 @@ body{
     font-size:14px;
   }
 
-  .historyCell{
+  .historyCard{
     min-height:112px;
   }
-}
-/* ===== ALIGNMENT FIX (NON-DESTRUCTIVE) ===== */
-/* (your existing block stays exactly as is) */
 
-...your code...
+  .historyRow{
+    grid-template-columns:40px 1fr 1fr 1fr;
+    gap:8px;
+    font-size:14px;
+  }
 
-/* ===== FINAL TOUCH — STABILITY + POLISH ===== */
-.secPage {
-  -webkit-tap-highlight-color: transparent;
-}
-
-.secGridCell,
-.secHistoryRow {
-  transition: transform 0.05s ease;
-}
-
-.secGridCell:active {
-  transform: scale(0.98);
-}
-
-.secHistoryRow:active {
-  transform: scale(0.99);
-}
-/* ===== HISTORY POLISH — CLEAN + BALANCED ===== */
-
-.secHistoryRow {
-  gap: 10px !important;
-  padding: 8px 0 !important;
-}
-
-.secHistoryIndex {
-  font-size: 12px;
-  opacity: 0.45;
-  letter-spacing: 0.5px;
-}
-
-.secHistoryValue {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-@media (max-width: 520px) {
-  .secHistoryValue {
-    font-size: 14px;
+  .hDate{
+    font-size:11px;
   }
 }
