@@ -1,7 +1,8 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    Matched to current target-page HTML
-   - Target page loads normally
+   - Landing hides after photo load
+   - Target workspace becomes primary view
    - Add photo -> tap aim -> tap shots
    - Show Results builds SEC image behind the scenes
    - No live SEC page handoff
@@ -241,6 +242,28 @@
     els.vendorPanel.setAttribute("aria-hidden", "true");
   }
 
+  function hideLandingPage() {
+    const landing =
+      document.getElementById("landingPage") ||
+      document.querySelector(".hero");
+
+    if (landing) {
+      landing.style.display = "none";
+      landing.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  function showLandingPage() {
+    const landing =
+      document.getElementById("landingPage") ||
+      document.querySelector(".hero");
+
+    if (landing) {
+      landing.style.display = "";
+      landing.removeAttribute("aria-hidden");
+    }
+  }
+
   function updateInstruction() {
     if (!els.targetImg?.src) {
       setText(els.instructionLine, "Add a target photo.");
@@ -340,6 +363,8 @@
       els.scoreSection.classList.add("workspaceVisible");
     }
 
+    hideLandingPage();
+
     updateInstruction();
     updateStatus();
   }
@@ -348,6 +373,13 @@
     const dataUrl = String(localStorage.getItem(KEY_TARGET_IMG_DATAURL) || "");
     if (!dataUrl || !els.targetImg) return;
     els.targetImg.src = dataUrl;
+
+    if (els.scoreSection) {
+      els.scoreSection.classList.remove("scoreHidden");
+      els.scoreSection.classList.add("workspaceVisible");
+    }
+
+    hideLandingPage();
   }
 
   function getWrapRect() {
@@ -706,7 +738,7 @@
       `Offset: ${Math.abs(payload.dxInches).toFixed(2)}" ${payload.dxInches > 0 ? "right" : payload.dxInches < 0 ? "left" : "center"} • ${Math.abs(payload.dyInches).toFixed(2)}" ${payload.dyInches > 0 ? "low" : payload.dyInches < 0 ? "high" : "center"}`,
       `${payload.dialUnit}: ${payload.windageUnitValue.toFixed(2)} / ${payload.elevationUnitValue.toFixed(2)} • Click value ${payload.clickValue.toFixed(2)}`,
       `Distance: ${payload.rangeYds.toFixed(2)} yd • Shots: ${payload.shotCount}`,
-      `Group Size: ${payload.groupSizeInches.toFixed(2)}`
+      `Group Size: ${payload.groupSizeInches.toFixed(2)}"`
     ];
 
     ctx.font = "500 40px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
@@ -891,6 +923,10 @@
 
     if (isBakerMode() && els.vendorPanelLink && !els.vendorPanelLink.href) {
       els.vendorPanelLink.href = "https://bakertargets.com";
+    }
+
+    if (!els.targetImg?.src) {
+      showLandingPage();
     }
   }
 
