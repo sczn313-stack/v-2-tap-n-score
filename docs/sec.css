@@ -288,14 +288,14 @@ body{
 .historyColumnsHead{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:16px;
   margin-bottom:10px;
 }
 
 .historyColHead{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
+  grid-template-columns:52px 1fr 1fr 1fr;
+  gap:12px;
   align-items:center;
   text-align:left;
   font-weight:1000;
@@ -303,7 +303,7 @@ body{
   letter-spacing:.08em;
   text-transform:uppercase;
   color:rgba(238,242,247,.64);
-  padding:0 12px 2px;
+  padding:0 16px 2px;
 }
 
 .historyEmpty{
@@ -337,8 +337,8 @@ body{
 
 .historyRow{
   display:grid;
-  grid-template-columns:44px 1fr 1fr 1fr;
-  gap:10px;
+  grid-template-columns:52px 1fr 1fr 1fr;
+  gap:12px;
   align-items:center;
   font-weight:900;
   font-size:15px;
@@ -355,6 +355,18 @@ body{
 .hHits{
   color:rgba(238,242,247,.96);
   font-weight:1000;
+}
+
+.hScore.scoreHigh{
+  color:var(--green);
+}
+
+.hScore.scoreMid{
+  color:var(--yellow);
+}
+
+.hScore.scoreLow{
+  color:var(--low);
 }
 
 .hDate{
@@ -491,9 +503,10 @@ body{
     min-height:112px;
   }
 
+  .historyColHead,
   .historyRow{
-    grid-template-columns:40px 1fr 1fr 1fr;
-    gap:8px;
+    grid-template-columns:44px 1fr 1fr 1fr;
+    gap:10px;
     font-size:14px;
   }
 
