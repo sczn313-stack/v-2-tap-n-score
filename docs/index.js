@@ -706,7 +706,7 @@
       `Offset: ${Math.abs(payload.dxInches).toFixed(2)}" ${payload.dxInches > 0 ? "right" : payload.dxInches < 0 ? "left" : "center"} • ${Math.abs(payload.dyInches).toFixed(2)}" ${payload.dyInches > 0 ? "low" : payload.dyInches < 0 ? "high" : "center"}`,
       `${payload.dialUnit}: ${payload.windageUnitValue.toFixed(2)} / ${payload.elevationUnitValue.toFixed(2)} • Click value ${payload.clickValue.toFixed(2)}`,
       `Distance: ${payload.rangeYds.toFixed(2)} yd • Shots: ${payload.shotCount}`,
-      `Group Size: ${payload.groupSizeInches.toFixed(2)}"`
+      `Group Size: ${payload.groupSizeInches.toFixed(2)}`
     ];
 
     ctx.font = "500 40px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
