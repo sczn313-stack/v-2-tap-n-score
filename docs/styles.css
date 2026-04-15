@@ -1,5 +1,3 @@
-/* docs/styles.css (FULL REPLACEMENT — NEXT POLISH / RESPONSIVE / DOT SIZE PASS) */
-
 :root {
   --bg-top: #0a1b4e;
   --bg-mid: #112c6e;
@@ -28,20 +26,18 @@
   --radius-md: 14px;
   --radius-sm: 12px;
 
-  --maxw: 760px;
+  --maxw: 860px;
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
 
-  /* dot sizing */
-  --aim-dot-size: 20px;
-  --shot-dot-size: 14px;
+  --aim-dot-size: 18px;
+  --shot-dot-size: 11px;
   --dot-ring: 2px;
 }
 
-/* ===== RESET ===== */
 * {
   box-sizing: border-box;
 }
@@ -68,7 +64,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ===== GLOBAL PAGE ===== */
 .page {
   width: 100%;
   max-width: var(--maxw);
@@ -76,7 +71,7 @@ body {
   padding:
     max(12px, var(--safe-top))
     max(14px, var(--safe-right))
-    calc(120px + var(--safe-bottom))
+    calc(28px + var(--safe-bottom))
     max(14px, var(--safe-left));
 }
 
@@ -94,7 +89,7 @@ body {
 /* ===== HERO ===== */
 .hero {
   position: relative;
-  padding: 10px 0 12px;
+  padding: 10px 0 10px;
   text-align: center;
 }
 
@@ -283,15 +278,23 @@ body {
   pointer-events: none !important;
 }
 
-/* ===== SCORE CARD ===== */
-.card {
-  margin-top: 14px;
+/* ===== WORKSPACE ===== */
+.workspace {
+  margin-top: 12px;
+}
+
+.card,
+.workspaceTop {
   padding: 14px;
   border-radius: var(--radius-xl);
   background: var(--panel);
   border: 1px solid var(--panel-border);
   box-shadow: var(--shadow);
   backdrop-filter: blur(12px);
+}
+
+.workspaceTop {
+  margin-bottom: 12px;
 }
 
 .cardTitle {
@@ -325,11 +328,14 @@ body {
 
 /* ===== LIVE BAR ===== */
 .liveBar {
-  margin-bottom: 12px;
   padding: 10px 12px;
   border-radius: 16px;
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.08);
+}
+
+.liveBarTop {
+  margin-bottom: 12px;
 }
 
 .liveRow {
@@ -359,14 +365,83 @@ body {
   font-weight: 800;
 }
 
+/* ===== TOP ACTIONS ===== */
+.topActionRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.pill {
+  min-height: 40px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.08);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.btnSecondary,
+.btnPrimaryTop {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btnSecondary {
+  background: rgba(255,255,255,.10);
+}
+
+.btnPrimaryTop {
+  background: linear-gradient(135deg, #ff3c4f 0%, #ff6676 100%);
+  box-shadow: 0 10px 24px rgba(255, 60, 79, 0.22);
+}
+
+.btnSecondary:active,
+.btnPrimaryTop:active,
+.matrixBtn:active,
+.segBtn:active,
+.chip:active,
+.miniBtn:active,
+.matrixCloseBtn:active {
+  transform: translateY(1px) scale(.985);
+}
+
+/* ===== INSTRUCTION ===== */
+.instructionLine {
+  margin: 12px 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.hint,
+#statusLine {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 /* ===== MATRIX ===== */
 .matrixBtn,
 .matrixCloseBtn,
 .miniBtn,
 .segBtn,
-.chip,
-.btnSecondary,
-.stickyBtn {
+.chip {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -427,8 +502,7 @@ body {
 
 .miniBtn,
 .segBtn,
-.matrixCloseBtn,
-.btnSecondary {
+.matrixCloseBtn {
   min-height: 40px;
   border: 0;
   border-radius: 999px;
@@ -535,11 +609,14 @@ body {
 }
 
 /* ===== TARGET AREA ===== */
+.targetStage {
+  width: 100%;
+}
+
 .targetWrap {
   position: relative;
   width: 100%;
-  margin-top: 12px;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   background: rgba(255,255,255,.03);
   border: 1px solid rgba(255,255,255,.08);
@@ -547,6 +624,10 @@ body {
     inset 0 0 0 1px rgba(255,255,255,.04),
     0 10px 22px rgba(0,0,0,.20);
   touch-action: manipulation;
+}
+
+.targetWrapFull {
+  min-height: 52vh;
 }
 
 #targetImg {
@@ -567,7 +648,6 @@ body {
 }
 
 /* ===== DOTS ===== */
-/* This catches the most likely dot classes without touching JS */
 .dot,
 .tapDot,
 .shotDot,
@@ -586,12 +666,13 @@ body {
   animation: dotPop .14s ease;
 }
 
-/* Aim point — larger, clear, blue */
+.tapDotAim,
 .aimDot,
 .apDot {
   width: var(--aim-dot-size) !important;
   height: var(--aim-dot-size) !important;
-  background: radial-gradient(circle at 35% 35%, #bfe0ff 0%, #67b2ff 35%, #2f84ff 70%, #1457d1 100%) !important;
+  background:
+    radial-gradient(circle at 35% 35%, #d7ecff 0%, #8bc3ff 32%, #4d97ff 70%, #1f63dc 100%) !important;
   border: var(--dot-ring) solid rgba(255,255,255,.92) !important;
   box-shadow:
     0 0 0 2px rgba(12, 29, 80, 0.45),
@@ -599,23 +680,23 @@ body {
   z-index: 6 !important;
 }
 
-/* Shot dots — slightly smaller, red, crisp */
+.tapDotHit,
 .dot,
-.tapDot,
 .shotDot,
 .impactDot,
 .hitDot {
   width: var(--shot-dot-size) !important;
   height: var(--shot-dot-size) !important;
-  background: radial-gradient(circle at 35% 35%, #ffd2d7 0%, #ff8a97 28%, #ff5c6a 62%, #da243d 100%) !important;
-  border: var(--dot-ring) solid rgba(255,255,255,.88) !important;
+  border-radius: 47% 53% 51% 49% / 46% 51% 49% 54% !important;
+  background:
+    radial-gradient(circle at 40% 38%, #3d0b10 0%, #1d0508 40%, #000000 72%, #000000 100%) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
   box-shadow:
-    0 0 0 2px rgba(56, 10, 16, 0.35),
-    0 0 14px rgba(255, 103, 116, 0.34) !important;
+    0 0 0 1px rgba(74, 16, 22, 0.42),
+    0 1px 8px rgba(0,0,0,.42) !important;
   z-index: 5 !important;
 }
 
-/* Optional POI marker if used */
 .poiDot,
 .poiMarker {
   width: 18px !important;
@@ -639,151 +720,6 @@ body {
   }
 }
 
-/* ===== CONTROLS ===== */
-.row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.rowTight {
-  margin-top: 12px;
-}
-
-.pill {
-  min-height: 38px;
-  padding: 8px 12px;
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.08);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-}
-
-.btnSecondary {
-  padding: 0 14px;
-  background: rgba(255,255,255,.10);
-  font-size: 12px;
-  letter-spacing: 0.05em;
-}
-
-.btnSecondary:active,
-.matrixBtn:active,
-.segBtn:active,
-.chip:active,
-.miniBtn:active,
-.matrixCloseBtn:active,
-.stickyBtn:active {
-  transform: translateY(1px) scale(.985);
-}
-
-.instructionLine {
-  margin: 12px 0 4px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #fff;
-}
-
-.hint,
-#statusLine {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-/* ===== STICKY BAR ===== */
-.stickyBar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  padding:
-    10px
-    max(14px, var(--safe-right))
-    calc(10px + var(--safe-bottom))
-    max(14px, var(--safe-left));
-  background:
-    linear-gradient(180deg, rgba(5,8,18,0) 0%, rgba(5,8,18,.55) 34%, rgba(5,8,18,.88) 100%);
-  backdrop-filter: blur(10px);
-}
-
-.stickyBtn {
-  width: 100%;
-  min-height: 54px;
-  padding: 14px 18px;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #ff3c4f 0%, #ff6676 100%);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  box-shadow: 0 10px 24px rgba(255, 60, 79, 0.26);
-  cursor: pointer;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-  margin-top: 18px;
-  padding-bottom: 10px;
-  text-align: center;
-}
-
-.footerMark {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: rgba(255,255,255,.78);
-}
-
-.footerVersion {
-  margin-top: 8px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  color: rgba(255,255,255,.62);
-}
-
-/* ===== ENV BANNER / BUILD STAMP SUPPORT ===== */
-.envBanner {
-  position: sticky;
-  top: 0;
-  z-index: 100000;
-  width: 100%;
-  padding: 10px 14px;
-  text-align: center;
-  font: 800 13px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  letter-spacing: 0.08em;
-  color: #ffffff;
-  background: linear-gradient(90deg, #8b0000 0%, #c1121f 50%, #8b0000 100%);
-  border-bottom: 2px solid rgba(255,255,255,.18);
-  box-shadow: 0 8px 20px rgba(0,0,0,.28);
-}
-
-.buildStamp {
-  position: fixed;
-  right: 12px;
-  bottom: calc(74px + var(--safe-bottom));
-  z-index: 100000;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.78);
-  border: 1px solid rgba(255,255,255,.16);
-  color: #ffffff;
-  font: 700 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  letter-spacing: 0.03em;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* ===== ANIMATIONS ===== */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -800,10 +736,12 @@ body {
   .page {
     padding-left: max(12px, var(--safe-left));
     padding-right: max(12px, var(--safe-right));
-    padding-bottom: calc(116px + var(--safe-bottom));
+    padding-bottom: calc(24px + var(--safe-bottom));
   }
 
-  .card {
+  .workspaceTop,
+  .card,
+  .matrixPanel {
     padding: 12px;
     border-radius: 18px;
   }
@@ -842,27 +780,24 @@ body {
     width: 100%;
   }
 
-  .row {
+  .topActionRow {
     justify-content: stretch;
   }
 
-  .row .pill,
-  .row .btnSecondary {
+  .topActionRow .pill,
+  .topActionRow .btnSecondary,
+  .topActionRow .btnPrimaryTop {
     flex: 1 1 calc(50% - 4px);
     justify-content: center;
   }
 
-  .buildStamp {
-    right: 10px;
-    left: auto;
-    bottom: calc(76px + var(--safe-bottom));
-    font-size: 11px;
-    padding: 7px 10px;
+  .targetWrapFull {
+    min-height: 48vh;
   }
 
   :root {
-    --aim-dot-size: 18px;
-    --shot-dot-size: 13px;
+    --aim-dot-size: 16px;
+    --shot-dot-size: 10px;
   }
 }
 
@@ -912,29 +847,19 @@ body {
     align-self: flex-start;
   }
 
-  .row .pill,
-  .row .btnSecondary {
+  .topActionRow .pill,
+  .topActionRow .btnSecondary,
+  .topActionRow .btnPrimaryTop {
     flex: 1 1 100%;
   }
 
-  .stickyBtn {
-    min-height: 52px;
-    font-size: 13px;
-  }
-
-  .envBanner {
-    font-size: 11px;
-    padding: 9px 10px;
-  }
-
-  .buildStamp {
-    font-size: 10px;
-    padding: 6px 9px;
+  .targetWrapFull {
+    min-height: 44vh;
   }
 
   :root {
-    --aim-dot-size: 16px;
-    --shot-dot-size: 12px;
+    --aim-dot-size: 15px;
+    --shot-dot-size: 9px;
   }
 }
 
@@ -947,7 +872,12 @@ body {
     padding-top: 12px;
   }
 
+  .workspaceTop,
   .card {
     padding: 16px;
+  }
+
+  .targetWrapFull {
+    min-height: 58vh;
   }
 }
