@@ -1,19 +1,11 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
-   MATCHED TO CURRENT index.js PAYLOAD CONTRACT
-   Source-of-truth fields used:
-   - score
-   - scoreBand
-   - scoreDetail
-   - shotCount
-   - rangeYds
-   - windageClicks / windageDir
-   - elevationClicks / elevationDir
-   - windageUnitValue / elevationUnitValue
-   - dialUnit / clickValue
-   - dxInches / dyInches
-   - groupSizeInches
-   - createdAt
+   LIVE SEC PAGE
+   - reads current payload from localStorage
+   - renders live SEC page
+   - Save as Picture creates SEC image on demand
+   - Back returns to prior page
+   - Zero Another Target clears payload + target image and returns home
 ============================================================ */
 
 (() => {
@@ -27,11 +19,6 @@
   const KEY_HISTORY_LAST = "SCZN3_SEC_HISTORY_LAST_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
-
-  const AUTO_SAVE_DELAY_MS = 5000;
-
-  let autoSaveTimer = null;
-  let autoSaveAttempted = false;
 
   function loadPayload() {
     try {
@@ -94,7 +81,7 @@
 
   function getScoreBand(score) {
     if (score >= 90) return { label: "STRONG", className: "scoreBand scoreBandGood" };
-    if (score >= 60) return { label: "SOLID", className: "scoreBand scoreBandMid" };
+    if (score >= 60) return { label: "IMPROVING", className: "scoreBand scoreBandMid" };
     return { label: "NEEDS WORK", className: "scoreBand scoreBandBad" };
   }
 
@@ -111,7 +98,9 @@
     const url = urlFromStorage || "";
     const name =
       nameFromStorage ||
-      (String(payload?.vendor || "").trim() ? String(payload.vendor).trim().toUpperCase() : "Vendor Not Set");
+      (String(payload?.vendor || "").trim()
+        ? String(payload.vendor).trim().toUpperCase()
+        : "Vendor Not Set");
 
     return { url, name };
   }
@@ -158,24 +147,20 @@
     const corrEl = $("corrClicksInline");
     const metaEl = $("sessionMeta");
 
-    if (scoreEl) {
-      scoreEl.textContent = String(score);
-    }
+    if (scoreEl) scoreEl.textContent = String(score);
 
     if (bandEl) {
-      const band =
-        payload.scoreBand
-          ? {
-              label: String(payload.scoreBand || "—"),
-              className:
-                String(payload.scoreBand).toUpperCase() === "STRONG"
-                  ? "scoreBand scoreBandGood"
-                  : String(payload.scoreBand).toUpperCase() === "IMPROVING" ||
-                    String(payload.scoreBand).toUpperCase() === "SOLID"
-                  ? "scoreBand scoreBandMid"
-                  : "scoreBand scoreBandBad"
-            }
-          : getScoreBand(score);
+      const band = payload.scoreBand
+        ? {
+            label: String(payload.scoreBand || "—"),
+            className:
+              String(payload.scoreBand).toUpperCase() === "STRONG"
+                ? "scoreBand scoreBandGood"
+                : String(payload.scoreBand).toUpperCase() === "IMPROVING"
+                ? "scoreBand scoreBandMid"
+                : "scoreBand scoreBandBad"
+          }
+        : getScoreBand(score);
 
       bandEl.textContent = band.label;
       bandEl.className = band.className;
@@ -199,12 +184,11 @@
     }
 
     if (metaEl) {
-      const parts = [
+      metaEl.textContent = [
         `${round2(safeNumber(payload.rangeYds, 0))} yds`,
         `${safeNumber(payload.shotCount, 0)} hits`,
         `${round2(safeNumber(payload.groupSizeInches, 0))}" group`
-      ];
-      metaEl.textContent = parts.join(" • ");
+      ].join(" • ");
     }
   }
 
@@ -213,7 +197,6 @@
     if (!img) return;
 
     const dataUrl = localStorage.getItem(KEY_IMG);
-
     if (dataUrl) {
       img.src = dataUrl;
       img.style.display = "block";
@@ -228,26 +211,18 @@
 
     const signature = getSessionSignature(payload);
     const lastSignature = localStorage.getItem(KEY_HISTORY_LAST) || "";
-
-    if (signature && signature === lastSignature) {
-      return;
-    }
+    if (signature && signature === lastSignature) return;
 
     const history = loadHistory();
-
-    const entry = {
+    history.unshift({
       score: safeNumber(payload.score, 0),
       hits: safeNumber(payload.shotCount, 0),
       yds: round2(safeNumber(payload.rangeYds, 0)),
       ts: Date.now()
-    };
+    });
 
-    history.unshift(entry);
     saveHistory(history.slice(0, 10));
-
-    if (signature) {
-      localStorage.setItem(KEY_HISTORY_LAST, signature);
-    }
+    if (signature) localStorage.setItem(KEY_HISTORY_LAST, signature);
   }
 
   function renderHistory() {
@@ -267,9 +242,7 @@
     if (empty) empty.style.display = "none";
     grid.style.display = "grid";
 
-    const ordered = history.slice(0, 10);
-
-    ordered.forEach((h, i) => {
+    history.slice(0, 10).forEach((h, i) => {
       const card = document.createElement("div");
       card.className = "historyCard";
 
@@ -289,28 +262,6 @@
     });
   }
 
-  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = String(text || "").split(/\s+/);
-    let line = "";
-    const lines = [];
-
-    for (const word of words) {
-      const test = line ? `${line} ${word}` : word;
-      if (ctx.measureText(test).width > maxWidth && line) {
-        lines.push(line);
-        line = word;
-      } else {
-        line = test;
-      }
-    }
-
-    if (line) lines.push(line);
-
-    lines.forEach((ln, i) => {
-      ctx.fillText(ln, x, y + i * lineHeight);
-    });
-  }
-
   function loadImage(src) {
     return new Promise((resolve) => {
       if (!src) {
@@ -325,369 +276,231 @@
     });
   }
 
-  function containRect(srcW, srcH, maxW, maxH) {
-    const ratio = Math.min(maxW / srcW, maxH / srcH);
-    return {
-      w: Math.max(1, Math.round(srcW * ratio)),
-      h: Math.max(1, Math.round(srcH * ratio))
-    };
-  }
-
-  function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-    const r = Math.min(radius, width / 2, height / 2);
+  function drawRoundedRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
-    ctx.arcTo(x + width, y, x + width, y + height, r);
-    ctx.arcTo(x + width, y + height, x, y + height, r);
-    ctx.arcTo(x, y + height, x, y, r);
-    ctx.arcTo(x, y, x + width, y, r);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
-    if (fill) ctx.fill();
-    if (stroke) ctx.stroke();
   }
 
-  async function buildSecBlob(payload) {
+  function bgForScore(ctx, width, height, score) {
+    const g = ctx.createLinearGradient(0, 0, width, height);
+    if (score >= 90) {
+      g.addColorStop(0, "#0c2d18");
+      g.addColorStop(1, "#102418");
+    } else if (score >= 60) {
+      g.addColorStop(0, "#3b2d0f");
+      g.addColorStop(1, "#231c0d");
+    } else {
+      g.addColorStop(0, "#381315");
+      g.addColorStop(1, "#200d0f");
+    }
+    return g;
+  }
+
+  async function buildSecImageBlob(payload) {
     const width = 1400;
-    const height = 1800;
+    const height = 2200;
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-
     const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Canvas unavailable");
 
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, "#0a1224");
-    bgGrad.addColorStop(0.25, "#09101b");
-    bgGrad.addColorStop(1, "#06070a");
-    ctx.fillStyle = bgGrad;
+    ctx.fillStyle = bgForScore(ctx, width, height, payload.score);
     ctx.fillRect(0, 0, width, height);
-
-    const radial = ctx.createRadialGradient(width / 2, 120, 80, width / 2, 120, 620);
-    radial.addColorStop(0, "rgba(47,102,255,0.22)");
-    radial.addColorStop(1, "rgba(47,102,255,0)");
-    ctx.fillStyle = radial;
-    ctx.fillRect(0, 0, width, height);
-
-    const pad = 72;
-    const cardX = pad;
-    const cardY = 120;
-    const cardW = width - pad * 2;
-    const cardH = height - 220;
 
     ctx.fillStyle = "rgba(255,255,255,0.06)";
-    roundRect(ctx, cardX, cardY, cardW, cardH, 34, true, false);
-
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
-    ctx.lineWidth = 2;
-    roundRect(ctx, cardX, cardY, cardW, cardH, 34, false, true);
-
-    ctx.fillStyle = "#eef2f7";
-    ctx.font = "900 70px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("SEC", cardX + 50, cardY + 92);
-
-    ctx.fillStyle = "rgba(238,242,247,0.76)";
-    ctx.font = "900 28px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.textAlign = "right";
-    ctx.fillText("Shooter Experience Card", cardX + cardW - 50, cardY + 88);
-    ctx.textAlign = "left";
-
-    const score = safeNumber(payload?.score, 0);
-    const band = payload?.scoreBand
-      ? getScoreBand(
-          String(payload.scoreBand).toUpperCase() === "STRONG"
-            ? 95
-            : String(payload.scoreBand).toUpperCase() === "IMPROVING" ||
-              String(payload.scoreBand).toUpperCase() === "SOLID"
-            ? 70
-            : 30
-        )
-      : getScoreBand(score);
-    const history = loadHistory();
-    const vendor = getVendorState(payload);
-
-    ctx.fillStyle = "rgba(238,242,247,0.72)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("YOUR SCORE", cardX + 54, cardY + 155);
-
-    ctx.fillStyle = "#eef2f7";
-    ctx.font = "900 150px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(String(score), cardX + 54, cardY + 305);
-
-    const pillX = cardX + 54;
-    const pillY = cardY + 332;
-    const pillW = 240;
-    const pillH = 56;
-    const bandFill =
-      safeNumber(score, 0) >= 90 ? "#48ff8b" :
-      safeNumber(score, 0) >= 60 ? "#ffe466" :
-      "#ff6e64";
-
-    ctx.fillStyle = bandFill;
-    roundRect(ctx, pillX, pillY, pillW, pillH, 28, true, false);
-
-    ctx.fillStyle =
-      safeNumber(score, 0) >= 90 ? "#06140b" :
-      safeNumber(score, 0) >= 60 ? "#191300" :
-      "#220504";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(String(payload?.scoreBand || band.label), pillX + pillW / 2, pillY + 37);
-    ctx.textAlign = "left";
-
-    ctx.fillStyle = "rgba(238,242,247,0.72)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("SCOPE CORRECTION", cardX + 54, cardY + 455);
-
-    ctx.fillStyle = "rgba(255,255,255,0.05)";
-    ctx.strokeStyle = "rgba(255,255,255,0.10)";
-    roundRect(ctx, cardX + 54, cardY + 480, 540, 98, 20, true, true);
-
-    const elev = round2(safeNumber(payload?.elevationClicks, 0));
-    const wind = round2(safeNumber(payload?.windageClicks, 0));
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "900 54px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(String(elev), cardX + 84, cardY + 544);
-
-    ctx.fillStyle = "#5ca8ff";
-    ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(directionWord(payload?.elevationDir), cardX + 152, cardY + 544);
-
-    ctx.fillStyle = "rgba(238,242,247,0.58)";
-    ctx.font = "900 34px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("•", cardX + 304, cardY + 544);
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "900 54px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(String(wind), cardX + 360, cardY + 544);
-
-    ctx.fillStyle = "#ff8b96";
-    ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(directionWord(payload?.windageDir), cardX + 428, cardY + 544);
-
-    ctx.fillStyle = "rgba(238,242,247,0.72)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("SESSION", cardX + 54, cardY + 655);
-
-    ctx.fillStyle = "#eef2f7";
-    ctx.font = "900 36px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(
-      `${round2(safeNumber(payload?.rangeYds, 0))} yds • ${safeNumber(payload?.shotCount, 0)} hits`,
-      cardX + 54,
-      cardY + 708
-    );
-
-    ctx.fillStyle = "rgba(238,242,247,0.72)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("OFFICIAL TARGET PARTNER", cardX + 660, cardY + 155);
-
-    ctx.fillStyle = "#eef2f7";
-    ctx.font = "900 40px system-ui, -apple-system, Segoe UI, Arial";
-    wrapText(ctx, vendor.name || "Vendor Not Set", cardX + 660, cardY + 210, 500, 48);
-
-    ctx.fillStyle = "rgba(238,242,247,0.72)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("TARGET THUMBNAIL", cardX + 660, cardY + 340);
-
-    const thumbX = cardX + 660;
-    const thumbY = cardY + 370;
-    const thumbW = 490;
-    const thumbH = 370;
-
-    ctx.fillStyle = "rgba(255,255,255,0.04)";
-    ctx.strokeStyle = "rgba(255,255,255,0.10)";
-    roundRect(ctx, thumbX, thumbY, thumbW, thumbH, 22, true, true);
-
-    const thumbSrc = localStorage.getItem(KEY_IMG) || "";
-    const thumbImg = await loadImage(thumbSrc);
-
-    if (thumbImg) {
-      const fit = containRect(thumbImg.width, thumbImg.height, thumbW - 24, thumbH - 24);
-      const dx = thumbX + 12 + (thumbW - 24 - fit.w) / 2;
-      const dy = thumbY + 12 + (thumbH - 24 - fit.h) / 2;
-      ctx.drawImage(thumbImg, dx, dy, fit.w, fit.h);
-    } else {
-      ctx.fillStyle = "rgba(238,242,247,0.36)";
-      ctx.font = "800 28px system-ui, -apple-system, Segoe UI, Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("No thumbnail available", thumbX + thumbW / 2, thumbY + thumbH / 2);
-      ctx.textAlign = "left";
+    for (let i = 0; i < 24; i++) {
+      const y = 120 + i * 84;
+      ctx.fillRect(70, y, width - 140, 1);
     }
 
-    ctx.fillStyle = "rgba(238,242,247,0.72)";
-    ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("SESSION HISTORY", cardX + 54, cardY + 840);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 54px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("SCZN3 • Shooter Experience Card", 80, 110);
 
-    const histBoxX = cardX + 54;
-    const histBoxY = cardY + 870;
-    const histBoxW = cardW - 108;
-    const histBoxH = 520;
+    ctx.font = "700 165px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(String(payload.score), 80, 280);
 
-    ctx.fillStyle = "rgba(255,255,255,0.04)";
-    ctx.strokeStyle = "rgba(255,255,255,0.10)";
-    roundRect(ctx, histBoxX, histBoxY, histBoxW, histBoxH, 22, true, true);
+    ctx.font = "700 52px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(payload.scoreBand, 320, 220);
+    ctx.font = "400 36px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(payload.scoreDetail, 320, 275);
 
-    ctx.fillStyle = "rgba(238,242,247,0.62)";
-    ctx.font = "900 20px system-ui, -apple-system, Segoe UI, Arial";
-    const leftX = histBoxX + 28;
-    const rightX = histBoxX + histBoxW / 2 + 14;
+    drawRoundedRect(ctx, 80, 340, width - 160, 640, 32);
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    ctx.fill();
 
-    ctx.fillText("#", leftX, histBoxY + 40);
-    ctx.fillText("SCORE", leftX + 52, histBoxY + 40);
-    ctx.fillText("YARDS", leftX + 190, histBoxY + 40);
-    ctx.fillText("HITS", leftX + 325, histBoxY + 40);
+    const imageSrc = String(localStorage.getItem(KEY_IMG) || "");
+    if (imageSrc) {
+      try {
+        const shotImg = await loadImage(imageSrc);
+        if (shotImg) {
+          const boxX = 110;
+          const boxY = 375;
+          const boxW = width - 220;
+          const boxH = 570;
 
-    ctx.fillText("#", rightX, histBoxY + 40);
-    ctx.fillText("SCORE", rightX + 52, histBoxY + 40);
-    ctx.fillText("YARDS", rightX + 190, histBoxY + 40);
-    ctx.fillText("HITS", rightX + 325, histBoxY + 40);
+          const scale = Math.min(boxW / shotImg.width, boxH / shotImg.height);
+          const drawW = shotImg.width * scale;
+          const drawH = shotImg.height * scale;
+          const drawX = boxX + (boxW - drawW) / 2;
+          const drawY = boxY + (boxH - drawH) / 2;
 
-    const recent = history.slice(0, 10);
+          ctx.drawImage(shotImg, drawX, drawY, drawW, drawH);
 
-    recent.forEach((item, idx) => {
-      const col = idx < 5 ? 0 : 1;
-      const row = idx < 5 ? idx : idx - 5;
-      const x = col === 0 ? leftX : rightX;
-      const y = histBoxY + 94 + row * 86;
+          const px = (pctX, pctY) => ({
+            x: drawX + pctX * drawW,
+            y: drawY + pctY * drawH
+          });
 
-      ctx.fillStyle = "#5f86ff";
-      ctx.font = "900 34px system-ui, -apple-system, Segoe UI, Arial";
-      ctx.fillText(String(idx + 1), x, y);
+          if (payload.aim) {
+            const a = px(payload.aim.xPct, payload.aim.yPct);
+            ctx.strokeStyle = "#69b7ff";
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(a.x - 18, a.y);
+            ctx.lineTo(a.x + 18, a.y);
+            ctx.moveTo(a.x, a.y - 18);
+            ctx.lineTo(a.x, a.y + 18);
+            ctx.stroke();
+          }
 
-      const scoreClass = getHistoryScoreClass(safeNumber(item.score, 0));
-      ctx.fillStyle =
-        scoreClass === "scoreHigh" ? "#48ff8b" :
-        scoreClass === "scoreMid" ? "#ffe466" :
-        "#ff6e64";
-      ctx.fillText(String(safeNumber(item.score, 0)), x + 52, y);
+          payload.hits.forEach((hit, idx) => {
+            const p = px(hit.xPct, hit.yPct);
+            ctx.fillStyle = "#ff4d5d";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
+            ctx.fill();
 
-      ctx.fillStyle = "#eef2f7";
-      ctx.fillText(String(item.yds ?? "—"), x + 190, y);
-      ctx.fillText(String(item.hits ?? "—"), x + 325, y);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "700 22px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+            ctx.fillText(String(idx + 1), p.x + 16, p.y + 8);
+          });
 
-      ctx.fillStyle = "rgba(238,242,247,0.62)";
-      ctx.font = "800 20px system-ui, -apple-system, Segoe UI, Arial";
-      ctx.fillText(formatDate(item.ts), x, y + 32);
+          const c = px(payload.centroidXPct, payload.centroidYPct);
+          ctx.strokeStyle = "#ffd34d";
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(c.x - 20, c.y - 20);
+          ctx.lineTo(c.x + 20, c.y + 20);
+          ctx.moveTo(c.x + 20, c.y - 20);
+          ctx.lineTo(c.x - 20, c.y + 20);
+          ctx.stroke();
+        }
+      } catch {}
+    }
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 46px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("Scope Adjustments", 80, 1060);
+
+    const lines = [
+      `Windage: ${payload.windageClicks.toFixed(2)} clicks ${payload.windageDir}`,
+      `Elevation: ${payload.elevationClicks.toFixed(2)} clicks ${payload.elevationDir}`,
+      `Offset: ${Math.abs(payload.dxInches).toFixed(2)}" ${payload.dxInches > 0 ? "right" : payload.dxInches < 0 ? "left" : "center"} • ${Math.abs(payload.dyInches).toFixed(2)}" ${payload.dyInches > 0 ? "low" : payload.dyInches < 0 ? "high" : "center"}`,
+      `${payload.dialUnit}: ${payload.windageUnitValue.toFixed(2)} / ${payload.elevationUnitValue.toFixed(2)} • Click value ${payload.clickValue.toFixed(2)}`,
+      `Distance: ${payload.rangeYds.toFixed(2)} yd • Shots: ${payload.shotCount}`,
+      `Group Size: ${payload.groupSizeInches.toFixed(2)}"`
+    ];
+
+    ctx.font = "500 40px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    lines.forEach((line, idx) => {
+      ctx.fillText(line, 80, 1140 + idx * 76);
     });
 
-    ctx.fillStyle = "rgba(238,242,247,0.46)";
-    ctx.font = "800 18px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("Faith • Order • Precision", width / 2, height - 48);
+    drawRoundedRect(ctx, 80, 1640, width - 160, 260, 28);
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    ctx.fill();
 
-    const blob = await new Promise((resolve) => {
-      canvas.toBlob(resolve, "image/png");
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 40px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("Confirmation", 110, 1710);
+    ctx.font = "500 34px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("Adjust scope as indicated, then re-fire to confirm zero.", 110, 1775);
+    ctx.fillText(`Vendor: ${(localStorage.getItem(KEY_VENDOR_NAME) || "Official Target Partner").trim()}`, 110, 1840);
+
+    ctx.font = "400 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillStyle = "rgba(255,255,255,0.82)";
+    ctx.fillText(`Generated ${new Date(payload.createdAt).toLocaleString()}`, 80, 2060);
+    ctx.fillText("Faith • Order • Precision", 80, 2110);
+
+    return await new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), "image/png", 1);
     });
-
-    if (!blob) throw new Error("PNG export failed");
-    return blob;
   }
 
-  async function shareOrSaveBlob(blob, filename) {
-    const file = new File([blob], filename, { type: "image/png" });
+  async function saveSECImage(payload) {
+    try {
+      const blob = await buildSecImageBlob(payload);
+      if (!blob) return false;
 
-    if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
-      try {
+      const file = new File([blob], `SCZN3_SEC_${Date.now()}.png`, { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
-          title: "SEC Export",
-          text: "Save SEC to Photos or Files"
+          title: "SCZN3 SEC",
+          text: "Shooter Experience Card"
         });
-        return { ok: true, mode: "share" };
-      } catch (err) {
-        if (err && err.name === "AbortError") {
-          return { ok: false, canceled: true };
-        }
+        return true;
       }
-    }
 
-    try {
-      const objectUrl = URL.createObjectURL(blob);
-
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = objectUrl;
-      a.download = filename;
+      a.href = url;
+      a.download = `SCZN3_SEC_${Date.now()}.png`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-
-      const win = window.open(objectUrl, "_blank", "noopener,noreferrer");
-      if (win) {
-        setTimeout(() => {
-          try { win.focus(); } catch {}
-        }, 120);
-      }
-
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-      return { ok: false, fallback: true };
-    } catch {
-      return { ok: false };
-    }
-  }
-
-  async function handleSaveSec(payload) {
-    try {
-      const blob = await buildSecBlob(payload);
-      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const filename = `SEC-${stamp}.png`;
-      return await shareOrSaveBlob(blob, filename);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      return true;
     } catch (err) {
       console.error(err);
-      return { ok: false };
+      return false;
     }
   }
 
-  function showSaveFallback() {
-    const btn = $("saveFallbackBtn");
-    if (!btn) return;
-    btn.style.display = "inline-flex";
-  }
-
-  function scheduleAutoSave(payload) {
-    if (!payload || autoSaveAttempted) return;
-    autoSaveTimer = window.setTimeout(async () => {
-      autoSaveAttempted = true;
-      const result = await handleSaveSec(payload);
-      if (!result || !result.ok) {
-        showSaveFallback();
-      }
-    }, AUTO_SAVE_DELAY_MS);
-  }
-
-  function clearAutoSaveTimer() {
-    if (autoSaveTimer) {
-      clearTimeout(autoSaveTimer);
-      autoSaveTimer = null;
-    }
+  function clearForNewTarget() {
+    try {
+      localStorage.removeItem(KEY_PAYLOAD);
+      localStorage.removeItem(KEY_IMG);
+      localStorage.removeItem(KEY_HISTORY_LAST);
+    } catch {}
   }
 
   function wireActions(payload) {
-    $("saveFallbackBtn")?.addEventListener("click", async (e) => {
-      e.preventDefault();
-      const result = await handleSaveSec(payload);
-      if (!result || !result.ok) {
-        showSaveFallback();
-      }
-    });
+    const saveBtn = $("saveFallbackBtn");
+    const backBtn = $("backBtn");
+    const goHomeBtn = $("goHomeBtn");
+    const surveyBtn = $("surveyBtn");
 
-    $("backBtn")?.addEventListener("click", (e) => {
+    if (saveBtn) {
+      saveBtn.style.display = "inline-flex";
+      saveBtn.textContent = "Save as Picture";
+      saveBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await saveSECImage(payload);
+      });
+    }
+
+    backBtn?.addEventListener("click", (e) => {
       e.preventDefault();
-      clearAutoSaveTimer();
       window.history.back();
     });
 
-    $("goHomeBtn")?.addEventListener("click", (e) => {
+    goHomeBtn?.addEventListener("click", (e) => {
       e.preventDefault();
-      clearAutoSaveTimer();
-      window.location.href = "./?fresh=" + Date.now();
+      clearForNewTarget();
+      window.location.href = `./?cb=${Date.now()}`;
     });
 
-    $("surveyBtn")?.addEventListener("click", (e) => {
+    surveyBtn?.addEventListener("click", (e) => {
       const href = String(e.currentTarget.getAttribute("href") || "").trim();
-      if (!href || href === "#") {
-        e.preventDefault();
-      }
+      if (!href || href === "#") e.preventDefault();
     });
   }
 
@@ -700,10 +513,7 @@
     updateHistory(payload);
     renderHistory();
     wireActions(payload);
-    scheduleAutoSave(payload);
   }
-
-  window.addEventListener("beforeunload", clearAutoSaveTimer);
 
   if (document.readyState === "loading") {
     window.addEventListener("DOMContentLoaded", init);
