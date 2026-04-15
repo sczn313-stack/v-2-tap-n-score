@@ -1,15 +1,24 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT (SEC 3-PAGE FLOW)
-   - Your Score / Scope Correction labels supported by HTML
-   - auto Save as Picture after ~5 seconds
-   - if canceled or share unavailable, show fallback button
-   - Back returns to target page with current shots preserved
-   - Zero Another Target returns clean
-   - history is SEC-only and renders 1–5 left, 6–10 right
-   - history score colors applied
+   docs/sec.js — FULL REPLACEMENT
+   MATCHED TO CURRENT index.js PAYLOAD CONTRACT
+   Source-of-truth fields used:
+   - score
+   - scoreBand
+   - scoreDetail
+   - shotCount
+   - rangeYds
+   - windageClicks / windageDir
+   - elevationClicks / elevationDir
+   - windageUnitValue / elevationUnitValue
+   - dialUnit / clickValue
+   - dxInches / dyInches
+   - groupSizeInches
+   - createdAt
 ============================================================ */
 
 (() => {
+  "use strict";
+
   const $ = (id) => document.getElementById(id);
 
   const KEY_PAYLOAD = "SCZN3_SEC_PAYLOAD_V1";
@@ -44,7 +53,9 @@
   }
 
   function saveHistory(history) {
-    localStorage.setItem(KEY_HISTORY, JSON.stringify(history));
+    try {
+      localStorage.setItem(KEY_HISTORY, JSON.stringify(history));
+    } catch {}
   }
 
   function formatDate(ts) {
@@ -72,17 +83,13 @@
     return "—";
   }
 
-  function getSessionSignature(payload) {
-    if (!payload) return "";
-    const score = Number(payload?.score ?? 0);
-    const hits = Number(payload?.shots ?? 0);
-    const yds = String(payload?.debug?.distanceYds ?? "—");
-    const elevClicks = Math.round(Number(payload?.elevation?.clicks ?? 0));
-    const elevDir = String(payload?.elevation?.dir ?? "");
-    const windClicks = Math.round(Number(payload?.windage?.clicks ?? 0));
-    const windDir = String(payload?.windage?.dir ?? "");
+  function safeNumber(value, fallback = 0) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  }
 
-    return [score, hits, yds, elevClicks, elevDir, windClicks, windDir].join("|");
+  function round2(n) {
+    return Math.round(n * 100) / 100;
   }
 
   function getScoreBand(score) {
@@ -98,16 +105,31 @@
   }
 
   function getVendorState(payload) {
-    const urlFromPayload = String(payload?.vendorUrl || "").trim();
-    const nameFromPayload = String(payload?.vendorName || "").trim();
-
     const urlFromStorage = String(localStorage.getItem(KEY_VENDOR_URL) || "").trim();
     const nameFromStorage = String(localStorage.getItem(KEY_VENDOR_NAME) || "").trim();
 
-    const url = urlFromPayload || urlFromStorage || "";
-    const name = nameFromPayload || nameFromStorage || "Vendor Not Set";
+    const url = urlFromStorage || "";
+    const name =
+      nameFromStorage ||
+      (String(payload?.vendor || "").trim() ? String(payload.vendor).trim().toUpperCase() : "Vendor Not Set");
 
     return { url, name };
+  }
+
+  function getSessionSignature(payload) {
+    if (!payload) return "";
+
+    return [
+      safeNumber(payload.score, 0),
+      safeNumber(payload.shotCount, 0),
+      round2(safeNumber(payload.rangeYds, 0)),
+      round2(safeNumber(payload.elevationClicks, 0)),
+      String(payload.elevationDir || ""),
+      round2(safeNumber(payload.windageClicks, 0)),
+      String(payload.windageDir || ""),
+      round2(safeNumber(payload.dxInches, 0)),
+      round2(safeNumber(payload.dyInches, 0))
+    ].join("|");
   }
 
   function renderVendor(payload) {
@@ -127,10 +149,10 @@
     }
   }
 
-  function renderPayload(p) {
-    if (!p) return;
+  function renderPayload(payload) {
+    if (!payload) return;
 
-    const score = Number(p.score ?? 0);
+    const score = safeNumber(payload.score, 0);
     const scoreEl = $("scoreValue");
     const bandEl = $("scoreBand");
     const corrEl = $("corrClicksInline");
@@ -141,33 +163,48 @@
     }
 
     if (bandEl) {
-      const band = getScoreBand(score);
+      const band =
+        payload.scoreBand
+          ? {
+              label: String(payload.scoreBand || "—"),
+              className:
+                String(payload.scoreBand).toUpperCase() === "STRONG"
+                  ? "scoreBand scoreBandGood"
+                  : String(payload.scoreBand).toUpperCase() === "IMPROVING" ||
+                    String(payload.scoreBand).toUpperCase() === "SOLID"
+                  ? "scoreBand scoreBandMid"
+                  : "scoreBand scoreBandBad"
+            }
+          : getScoreBand(score);
+
       bandEl.textContent = band.label;
       bandEl.className = band.className;
     }
 
-    const elev = Math.round(Number(p?.elevation?.clicks ?? 0));
-    const wind = Math.round(Number(p?.windage?.clicks ?? 0));
+    const elevClicks = round2(safeNumber(payload.elevationClicks, 0));
+    const windClicks = round2(safeNumber(payload.windageClicks, 0));
 
     if (corrEl) {
       corrEl.innerHTML = `
         <span class="corrGroup">
-          <span class="corrNum">${elev}</span>
-          <span class="corrDir corrDirVertical">${directionWord(p?.elevation?.dir)}</span>
+          <span class="corrNum">${elevClicks}</span>
+          <span class="corrDir corrDirVertical">${directionWord(payload.elevationDir)}</span>
         </span>
         <span class="corrDivider">•</span>
         <span class="corrGroup">
-          <span class="corrNum">${wind}</span>
-          <span class="corrDir corrDirHorizontal">${directionWord(p?.windage?.dir)}</span>
+          <span class="corrNum">${windClicks}</span>
+          <span class="corrDir corrDirHorizontal">${directionWord(payload.windageDir)}</span>
         </span>
       `;
     }
 
-    const yds = p?.debug?.distanceYds ?? "—";
-    const hits = p?.shots ?? "—";
-
     if (metaEl) {
-      metaEl.textContent = `${yds} yds • ${hits} hits`;
+      const parts = [
+        `${round2(safeNumber(payload.rangeYds, 0))} yds`,
+        `${safeNumber(payload.shotCount, 0)} hits`,
+        `${round2(safeNumber(payload.groupSizeInches, 0))}" group`
+      ];
+      metaEl.textContent = parts.join(" • ");
     }
   }
 
@@ -199,9 +236,9 @@
     const history = loadHistory();
 
     const entry = {
-      score: Number(payload?.score ?? 0),
-      hits: Number(payload?.shots ?? 0),
-      yds: payload?.debug?.distanceYds ?? "—",
+      score: safeNumber(payload.score, 0),
+      hits: safeNumber(payload.shotCount, 0),
+      yds: round2(safeNumber(payload.rangeYds, 0)),
       ts: Date.now()
     };
 
@@ -236,14 +273,14 @@
       const card = document.createElement("div");
       card.className = "historyCard";
 
-      const scoreClass = getHistoryScoreClass(Number(h.score ?? 0));
+      const scoreClass = getHistoryScoreClass(safeNumber(h.score, 0));
 
       card.innerHTML = `
         <div class="historyRow">
           <span class="hIndex">${String(i + 1)}</span>
-          <span class="hScore ${scoreClass}">${h.score}</span>
-          <span class="hYds">${h.yds}</span>
-          <span class="hHits">${h.hits}</span>
+          <span class="hScore ${scoreClass}">${safeNumber(h.score, 0)}</span>
+          <span class="hYds">${h.yds ?? "—"}</span>
+          <span class="hHits">${h.hits ?? "—"}</span>
         </div>
         <div class="hDate">${formatDate(h.ts)}</div>
       `;
@@ -355,8 +392,17 @@
     ctx.fillText("Shooter Experience Card", cardX + cardW - 50, cardY + 88);
     ctx.textAlign = "left";
 
-    const score = Number(payload?.score ?? 0);
-    const band = getScoreBand(score);
+    const score = safeNumber(payload?.score, 0);
+    const band = payload?.scoreBand
+      ? getScoreBand(
+          String(payload.scoreBand).toUpperCase() === "STRONG"
+            ? 95
+            : String(payload.scoreBand).toUpperCase() === "IMPROVING" ||
+              String(payload.scoreBand).toUpperCase() === "SOLID"
+            ? 70
+            : 30
+        )
+      : getScoreBand(score);
     const history = loadHistory();
     const vendor = getVendorState(payload);
 
@@ -372,15 +418,21 @@
     const pillY = cardY + 332;
     const pillW = 240;
     const pillH = 56;
-    const bandFill = band.label === "STRONG" ? "#48ff8b" : band.label === "SOLID" ? "#ffe466" : "#ff6e64";
+    const bandFill =
+      safeNumber(score, 0) >= 90 ? "#48ff8b" :
+      safeNumber(score, 0) >= 60 ? "#ffe466" :
+      "#ff6e64";
 
     ctx.fillStyle = bandFill;
     roundRect(ctx, pillX, pillY, pillW, pillH, 28, true, false);
 
-    ctx.fillStyle = band.label === "STRONG" ? "#06140b" : band.label === "SOLID" ? "#191300" : "#220504";
+    ctx.fillStyle =
+      safeNumber(score, 0) >= 90 ? "#06140b" :
+      safeNumber(score, 0) >= 60 ? "#191300" :
+      "#220504";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
     ctx.textAlign = "center";
-    ctx.fillText(band.label, pillX + pillW / 2, pillY + 37);
+    ctx.fillText(String(payload?.scoreBand || band.label), pillX + pillW / 2, pillY + 37);
     ctx.textAlign = "left";
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
@@ -391,8 +443,8 @@
     ctx.strokeStyle = "rgba(255,255,255,0.10)";
     roundRect(ctx, cardX + 54, cardY + 480, 540, 98, 20, true, true);
 
-    const elev = Math.round(Number(payload?.elevation?.clicks ?? 0));
-    const wind = Math.round(Number(payload?.windage?.clicks ?? 0));
+    const elev = round2(safeNumber(payload?.elevationClicks, 0));
+    const wind = round2(safeNumber(payload?.windageClicks, 0));
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "900 54px system-ui, -apple-system, Segoe UI, Arial";
@@ -400,7 +452,7 @@
 
     ctx.fillStyle = "#5ca8ff";
     ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(directionWord(payload?.elevation?.dir), cardX + 152, cardY + 544);
+    ctx.fillText(directionWord(payload?.elevationDir), cardX + 152, cardY + 544);
 
     ctx.fillStyle = "rgba(238,242,247,0.58)";
     ctx.font = "900 34px system-ui, -apple-system, Segoe UI, Arial";
@@ -412,7 +464,7 @@
 
     ctx.fillStyle = "#ff8b96";
     ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(directionWord(payload?.windage?.dir), cardX + 428, cardY + 544);
+    ctx.fillText(directionWord(payload?.windageDir), cardX + 428, cardY + 544);
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
@@ -420,7 +472,11 @@
 
     ctx.fillStyle = "#eef2f7";
     ctx.font = "900 36px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(`${payload?.debug?.distanceYds ?? "—"} yds • ${payload?.shots ?? "—"} hits`, cardX + 54, cardY + 708);
+    ctx.fillText(
+      `${round2(safeNumber(payload?.rangeYds, 0))} yds • ${safeNumber(payload?.shotCount, 0)} hits`,
+      cardX + 54,
+      cardY + 708
+    );
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
@@ -499,9 +555,12 @@
       ctx.font = "900 34px system-ui, -apple-system, Segoe UI, Arial";
       ctx.fillText(String(idx + 1), x, y);
 
-      const scoreClass = getHistoryScoreClass(Number(item.score ?? 0));
-      ctx.fillStyle = scoreClass === "scoreHigh" ? "#48ff8b" : scoreClass === "scoreMid" ? "#ffe466" : "#ff6e64";
-      ctx.fillText(String(item.score ?? "—"), x + 52, y);
+      const scoreClass = getHistoryScoreClass(safeNumber(item.score, 0));
+      ctx.fillStyle =
+        scoreClass === "scoreHigh" ? "#48ff8b" :
+        scoreClass === "scoreMid" ? "#ffe466" :
+        "#ff6e64";
+      ctx.fillText(String(safeNumber(item.score, 0)), x + 52, y);
 
       ctx.fillStyle = "#eef2f7";
       ctx.fillText(String(item.yds ?? "—"), x + 190, y);
@@ -622,6 +681,13 @@
       e.preventDefault();
       clearAutoSaveTimer();
       window.location.href = "./?fresh=" + Date.now();
+    });
+
+    $("surveyBtn")?.addEventListener("click", (e) => {
+      const href = String(e.currentTarget.getAttribute("href") || "").trim();
+      if (!href || href === "#") {
+        e.preventDefault();
+      }
     });
   }
 
