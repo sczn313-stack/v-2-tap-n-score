@@ -1,10 +1,12 @@
 /* ============================================================
-   docs/sec.js — FULL REPLACEMENT
-   - real Save SEC export flow
-   - share sheet first when available
-   - fallback open image tab + download
-   - history alignment + score colors
-   - duplicate refresh protection
+   docs/sec.js — FULL REPLACEMENT (SEC 3-PAGE FLOW)
+   - Your Score / Scope Correction labels supported by HTML
+   - auto Save as Picture after ~5 seconds
+   - if canceled or share unavailable, show fallback button
+   - Back returns to target page with current shots preserved
+   - Zero Another Target returns clean
+   - history is SEC-only and renders 1–5 left, 6–10 right
+   - history score colors applied
 ============================================================ */
 
 (() => {
@@ -16,6 +18,11 @@
   const KEY_HISTORY_LAST = "SCZN3_SEC_HISTORY_LAST_V1";
   const KEY_VENDOR_NAME = "SCZN3_VENDOR_NAME_V1";
   const KEY_VENDOR_URL = "SCZN3_VENDOR_URL_V1";
+
+  const AUTO_SAVE_DELAY_MS = 5000;
+
+  let autoSaveTimer = null;
+  let autoSaveAttempted = false;
 
   function loadPayload() {
     try {
@@ -56,13 +63,13 @@
     }
   }
 
-  function directionArrow(dir) {
+  function directionWord(dir) {
     const d = String(dir || "").toUpperCase();
-    if (d === "UP") return "↑";
-    if (d === "DOWN") return "↓";
-    if (d === "LEFT") return "←";
-    if (d === "RIGHT") return "→";
-    return "";
+    if (d === "UP") return "UP";
+    if (d === "DOWN") return "DOWN";
+    if (d === "LEFT") return "LEFT";
+    if (d === "RIGHT") return "RIGHT";
+    return "—";
   }
 
   function getSessionSignature(payload) {
@@ -143,7 +150,17 @@
     const wind = Math.round(Number(p?.windage?.clicks ?? 0));
 
     if (corrEl) {
-      corrEl.textContent = `Clicks ${elev}${directionArrow(p?.elevation?.dir)} • ${wind}${directionArrow(p?.windage?.dir)}`;
+      corrEl.innerHTML = `
+        <span class="corrGroup">
+          <span class="corrNum">${elev}</span>
+          <span class="corrDir corrDirVertical">${directionWord(p?.elevation?.dir)}</span>
+        </span>
+        <span class="corrDivider">•</span>
+        <span class="corrGroup">
+          <span class="corrNum">${wind}</span>
+          <span class="corrDir corrDirHorizontal">${directionWord(p?.windage?.dir)}</span>
+        </span>
+      `;
     }
 
     const yds = p?.debug?.distanceYds ?? "—";
@@ -213,7 +230,9 @@
     if (empty) empty.style.display = "none";
     grid.style.display = "grid";
 
-    history.forEach((h, i) => {
+    const ordered = history.slice(0, 10);
+
+    ordered.forEach((h, i) => {
       const card = document.createElement("div");
       card.className = "historyCard";
 
@@ -221,7 +240,7 @@
 
       card.innerHTML = `
         <div class="historyRow">
-          <span class="hIndex">${String(i + 1).padStart(2, "0")}</span>
+          <span class="hIndex">${String(i + 1)}</span>
           <span class="hScore ${scoreClass}">${h.score}</span>
           <span class="hYds">${h.yds}</span>
           <span class="hHits">${h.hits}</span>
@@ -267,6 +286,27 @@
       img.onerror = () => resolve(null);
       img.src = src;
     });
+  }
+
+  function containRect(srcW, srcH, maxW, maxH) {
+    const ratio = Math.min(maxW / srcW, maxH / srcH);
+    return {
+      w: Math.max(1, Math.round(srcW * ratio)),
+      h: Math.max(1, Math.round(srcH * ratio))
+    };
+  }
+
+  function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
   }
 
   async function buildSecBlob(payload) {
@@ -322,7 +362,7 @@
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("SMART SCORE", cardX + 54, cardY + 155);
+    ctx.fillText("YOUR SCORE", cardX + 54, cardY + 155);
 
     ctx.fillStyle = "#eef2f7";
     ctx.font = "900 150px system-ui, -apple-system, Segoe UI, Arial";
@@ -345,7 +385,7 @@
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("CORRECTION", cardX + 54, cardY + 455);
+    ctx.fillText("SCOPE CORRECTION", cardX + 54, cardY + 455);
 
     ctx.fillStyle = "rgba(255,255,255,0.05)";
     ctx.strokeStyle = "rgba(255,255,255,0.10)";
@@ -353,11 +393,26 @@
 
     const elev = Math.round(Number(payload?.elevation?.clicks ?? 0));
     const wind = Math.round(Number(payload?.windage?.clicks ?? 0));
-    const corrText = `Clicks ${elev}${directionArrow(payload?.elevation?.dir)} • ${wind}${directionArrow(payload?.windage?.dir)}`;
 
-    ctx.fillStyle = "#eef2f7";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 54px system-ui, -apple-system, Segoe UI, Arial";
+    ctx.fillText(String(elev), cardX + 84, cardY + 544);
+
+    ctx.fillStyle = "#5ca8ff";
     ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText(corrText, cardX + 82, cardY + 542);
+    ctx.fillText(directionWord(payload?.elevation?.dir), cardX + 152, cardY + 544);
+
+    ctx.fillStyle = "rgba(238,242,247,0.58)";
+    ctx.font = "900 34px system-ui, -apple-system, Segoe UI, Arial";
+    ctx.fillText("•", cardX + 304, cardY + 544);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 54px system-ui, -apple-system, Segoe UI, Arial";
+    ctx.fillText(String(wind), cardX + 360, cardY + 544);
+
+    ctx.fillStyle = "#ff8b96";
+    ctx.font = "900 42px system-ui, -apple-system, Segoe UI, Arial";
+    ctx.fillText(directionWord(payload?.windage?.dir), cardX + 428, cardY + 544);
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
@@ -406,7 +461,7 @@
 
     ctx.fillStyle = "rgba(238,242,247,0.72)";
     ctx.font = "900 24px system-ui, -apple-system, Segoe UI, Arial";
-    ctx.fillText("RECENT HISTORY", cardX + 54, cardY + 840);
+    ctx.fillText("SESSION HISTORY", cardX + 54, cardY + 840);
 
     const histBoxX = cardX + 54;
     const histBoxY = cardY + 870;
@@ -421,6 +476,7 @@
     ctx.font = "900 20px system-ui, -apple-system, Segoe UI, Arial";
     const leftX = histBoxX + 28;
     const rightX = histBoxX + histBoxW / 2 + 14;
+
     ctx.fillText("#", leftX, histBoxY + 40);
     ctx.fillText("SCORE", leftX + 52, histBoxY + 40);
     ctx.fillText("YARDS", leftX + 190, histBoxY + 40);
@@ -432,18 +488,16 @@
     ctx.fillText("HITS", rightX + 325, histBoxY + 40);
 
     const recent = history.slice(0, 10);
-    const rowStartY = histBoxY + 92;
-    const rowGap = 86;
 
     recent.forEach((item, idx) => {
-      const col = idx % 2;
-      const row = Math.floor(idx / 2);
+      const col = idx < 5 ? 0 : 1;
+      const row = idx < 5 ? idx : idx - 5;
       const x = col === 0 ? leftX : rightX;
-      const y = rowStartY + row * rowGap;
+      const y = histBoxY + 94 + row * 86;
 
-      ctx.fillStyle = "#3b6cff";
+      ctx.fillStyle = "#5f86ff";
       ctx.font = "900 34px system-ui, -apple-system, Segoe UI, Arial";
-      ctx.fillText(String(idx + 1).padStart(2, "0"), x, y);
+      ctx.fillText(String(idx + 1), x, y);
 
       const scoreClass = getHistoryScoreClass(Number(item.score ?? 0));
       ctx.fillStyle = scoreClass === "scoreHigh" ? "#48ff8b" : scoreClass === "scoreMid" ? "#ffe466" : "#ff6e64";
@@ -471,63 +525,46 @@
     return blob;
   }
 
-  function containRect(srcW, srcH, maxW, maxH) {
-    const ratio = Math.min(maxW / srcW, maxH / srcH);
-    return {
-      w: Math.max(1, Math.round(srcW * ratio)),
-      h: Math.max(1, Math.round(srcH * ratio))
-    };
-  }
-
-  function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-    const r = Math.min(radius, width / 2, height / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + width, y, x + width, y + height, r);
-    ctx.arcTo(x + width, y + height, x, y + height, r);
-    ctx.arcTo(x, y + height, x, y, r);
-    ctx.arcTo(x, y, x + width, y, r);
-    ctx.closePath();
-    if (fill) ctx.fill();
-    if (stroke) ctx.stroke();
-  }
-
   async function shareOrSaveBlob(blob, filename) {
     const file = new File([blob], filename, { type: "image/png" });
 
-    if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+    if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
           files: [file],
           title: "SEC Export",
           text: "Save SEC to Photos or Files"
         });
-        return;
+        return { ok: true, mode: "share" };
       } catch (err) {
-        if (err && err.name === "AbortError") return;
+        if (err && err.name === "AbortError") {
+          return { ok: false, canceled: true };
+        }
       }
     }
 
-    const objectUrl = URL.createObjectURL(blob);
+    try {
+      const objectUrl = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
-    const win = window.open(objectUrl, "_blank", "noopener,noreferrer");
-    if (win) {
-      setTimeout(() => {
-        try {
-          win.focus();
-        } catch {}
-      }, 120);
+      const win = window.open(objectUrl, "_blank", "noopener,noreferrer");
+      if (win) {
+        setTimeout(() => {
+          try { win.focus(); } catch {}
+        }, 120);
+      }
+
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+      return { ok: false, fallback: true };
+    } catch {
+      return { ok: false };
     }
-
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-    alert("SEC export opened. Use Share to save to Photos or Save to Files.");
   }
 
   async function handleSaveSec(payload) {
@@ -535,21 +572,55 @@
       const blob = await buildSecBlob(payload);
       const stamp = new Date().toISOString().replace(/[:.]/g, "-");
       const filename = `SEC-${stamp}.png`;
-      await shareOrSaveBlob(blob, filename);
+      return await shareOrSaveBlob(blob, filename);
     } catch (err) {
       console.error(err);
-      alert("SEC export failed.");
+      return { ok: false };
+    }
+  }
+
+  function showSaveFallback() {
+    const btn = $("saveFallbackBtn");
+    if (!btn) return;
+    btn.style.display = "inline-flex";
+  }
+
+  function scheduleAutoSave(payload) {
+    if (!payload || autoSaveAttempted) return;
+    autoSaveTimer = window.setTimeout(async () => {
+      autoSaveAttempted = true;
+      const result = await handleSaveSec(payload);
+      if (!result || !result.ok) {
+        showSaveFallback();
+      }
+    }, AUTO_SAVE_DELAY_MS);
+  }
+
+  function clearAutoSaveTimer() {
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = null;
     }
   }
 
   function wireActions(payload) {
-    $("saveSecBtn")?.addEventListener("click", async (e) => {
+    $("saveFallbackBtn")?.addEventListener("click", async (e) => {
       e.preventDefault();
-      await handleSaveSec(payload);
+      const result = await handleSaveSec(payload);
+      if (!result || !result.ok) {
+        showSaveFallback();
+      }
+    });
+
+    $("backBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      clearAutoSaveTimer();
+      window.history.back();
     });
 
     $("goHomeBtn")?.addEventListener("click", (e) => {
       e.preventDefault();
+      clearAutoSaveTimer();
       window.location.href = "./?fresh=" + Date.now();
     });
   }
@@ -563,7 +634,10 @@
     updateHistory(payload);
     renderHistory();
     wireActions(payload);
+    scheduleAutoSave(payload);
   }
+
+  window.addEventListener("beforeunload", clearAutoSaveTimer);
 
   if (document.readyState === "loading") {
     window.addEventListener("DOMContentLoaded", init);
