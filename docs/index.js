@@ -371,7 +371,14 @@
       fr.readAsDataURL(file);
     });
   }
-
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Image load failed"));
+    img.src = src;
+  });
+}
   async function buildBaseThumbnailDataUrl(file) {
     const sourceDataUrl = await readFileAsDataURL(file);
     const img = await loadImage(sourceDataUrl);
