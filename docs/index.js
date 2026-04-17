@@ -1,4 +1,4 @@
-Here is the full replacement for docs/index.js:
+
 
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
