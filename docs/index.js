@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   HISTORY V1 — LAST 10 RESULTS
+   SEC = HISTORY + LAST 10 + TREND
 ============================================================ */
 
 (() => {
@@ -41,13 +41,14 @@
     secWindage: $("secWindage"),
     secElevation: $("secElevation"),
 
-    historyOverlay: $("historyOverlay"),
-    historyBackBtn: $("historyBackBtn"),
+    historyAvg: $("historyAvg"),
+    historyBest: $("historyBest"),
+    historyTrend: $("historyTrend"),
     historyList: $("historyList"),
     historyEmpty: $("historyEmpty")
   };
 
-  const HISTORY_KEY = "SCZN3_HISTORY_V1";
+  const HISTORY_KEY = "SCZN3_HISTORY_V2";
   const HISTORY_LIMIT = 10;
 
   let objectUrl = null;
@@ -90,16 +91,11 @@
   function hideOverlay() {
     els.freezeScrim?.classList.add("isHidden");
     els.secOverlay?.classList.add("isHidden");
-    els.historyOverlay?.classList.add("isHidden");
   }
 
   function showSECOverlay() {
     els.freezeScrim?.classList.remove("isHidden");
     els.secOverlay?.classList.remove("isHidden");
-  }
-
-  function showHistoryOverlay() {
-    els.historyOverlay?.classList.remove("isHidden");
   }
 
   function clearImageElement() {
@@ -132,7 +128,6 @@
 
   function hardResetSession() {
     try { sessionStorage.clear(); } catch {}
-
     resetSession();
     setView("landing", false);
     renderAll();
@@ -317,6 +312,10 @@
     return `${shotCount} ${noun} RECORDED`;
   }
 
+  function scoreFromCounts(windageCount, elevationCount) {
+    return Math.max(0, 100 - (windageCount + elevationCount));
+  }
+
   function computeSECValues() {
     if (!state.aim || state.shots.length === 0) return null;
 
@@ -329,13 +328,17 @@
     const windageDir = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "HOLD";
     const elevationDir = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "HOLD";
 
-    const windage = Math.round(Math.abs(dx) * 100);
-    const elevation = Math.round(Math.abs(dy) * 100);
+    const windageCount = Math.round(Math.abs(dx) * 100);
+    const elevationCount = Math.round(Math.abs(dy) * 100);
+    const score = scoreFromCounts(windageCount, elevationCount);
 
     return {
       statusText: formatStatusText(state.shots.length),
-      windageText: formatClicksText(windageDir, windage),
-      elevationText: formatClicksText(elevationDir, elevation)
+      windageText: formatClicksText(windageDir, windageCount),
+      elevationText: formatClicksText(elevationDir, elevationCount),
+      windageCount,
+      elevationCount,
+      score
     };
   }
 
@@ -375,7 +378,21 @@
     }
   }
 
-  function renderHistory() {
+  function computeTrend(items) {
+    if (items.length < 6) return "→";
+
+    const recent = items.slice(0, 3).map((i) => i.score || 0);
+    const prior = items.slice(3, 6).map((i) => i.score || 0);
+
+    const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
+    const priorAvg = prior.reduce((a, b) => a + b, 0) / prior.length;
+
+    if (recentAvg > priorAvg + 1) return "↑";
+    if (recentAvg < priorAvg - 1) return "↓";
+    return "→";
+  }
+
+  function renderHistoryInSEC() {
     const items = loadHistory();
 
     if (els.historyList) {
@@ -384,6 +401,28 @@
 
     if (els.historyEmpty) {
       els.historyEmpty.classList.toggle("isHidden", items.length > 0);
+    }
+
+    if (els.historyAvg) {
+      if (items.length) {
+        const avg = Math.round(items.reduce((sum, item) => sum + (item.score || 0), 0) / items.length);
+        els.historyAvg.textContent = String(avg);
+      } else {
+        els.historyAvg.textContent = "—";
+      }
+    }
+
+    if (els.historyBest) {
+      if (items.length) {
+        const best = Math.max(...items.map((item) => item.score || 0));
+        els.historyBest.textContent = String(best);
+      } else {
+        els.historyBest.textContent = "—";
+      }
+    }
+
+    if (els.historyTrend) {
+      els.historyTrend.textContent = items.length ? computeTrend(items) : "—";
     }
 
     if (!els.historyList) return;
@@ -411,7 +450,7 @@
 
       const line1 = document.createElement("div");
       line1.className = "historyLine";
-      line1.textContent = `${item.shots} SHOTS • ${item.status}`;
+      line1.textContent = `Score: ${item.score} • ${item.shots} SHOTS`;
 
       const line2 = document.createElement("div");
       line2.className = "historyLine";
@@ -446,7 +485,10 @@
       shots: state.shots.length,
       status: values.statusText,
       windage: values.windageText,
-      elevation: values.elevationText
+      elevation: values.elevationText,
+      windageCount: values.windageCount,
+      elevationCount: values.elevationCount,
+      score: values.score
     });
 
     showSECOverlay();
@@ -455,6 +497,8 @@
     if (els.secStatus) els.secStatus.textContent = values.statusText;
     if (els.secWindage) els.secWindage.textContent = values.windageText;
     if (els.secElevation) els.secElevation.textContent = values.elevationText;
+
+    renderHistoryInSEC();
   }
 
   function closeSEC(push = false) {
@@ -463,13 +507,19 @@
     setView("workspace", push);
   }
 
-  function openHistory() {
-    renderHistory();
-    showHistoryOverlay();
-  }
+  function openHistoryShortcut() {
+    if (!loadHistory().length) return;
 
-  function closeHistory() {
-    els.historyOverlay?.classList.add("isHidden");
+    state.frozen = true;
+    setView("results", true);
+    showSECOverlay();
+
+    if (els.secShotCount) els.secShotCount.textContent = "—";
+    if (els.secStatus) els.secStatus.textContent = "HISTORY VIEW";
+    if (els.secWindage) els.secWindage.textContent = "—";
+    if (els.secElevation) els.secElevation.textContent = "—";
+
+    renderHistoryInSEC();
   }
 
   function goBack(push = false) {
@@ -553,9 +603,12 @@
     const status = String(els.secStatus?.textContent || formatStatusText(state.shots.length));
     const windage = String(els.secWindage?.textContent || "HOLD");
     const elevation = String(els.secElevation?.textContent || "HOLD");
+    const avg = String(els.historyAvg?.textContent || "—");
+    const best = String(els.historyBest?.textContent || "—");
+    const trend = String(els.historyTrend?.textContent || "—");
 
     const width = 1400;
-    const height = 1800;
+    const height = 2200;
 
     const canvas = document.createElement("canvas");
     canvas.width = width;
@@ -620,6 +673,50 @@
     drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage, 42, 24);
     drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation, 42, 24);
 
+    const summaryY = row1Y + smallBlockH + rowGap + wideBlockH + rowGap + wideBlockH + rowGap;
+
+    roundRect(ctx, bodyX + pad, summaryY, bodyW - pad * 2, 124, 20);
+    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(184,197,234,1)";
+    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("LAST 10 SESSIONS", bodyX + pad + 24, summaryY + 38);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 30px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(`Avg: ${avg}`, bodyX + pad + 24, summaryY + 86);
+    ctx.fillText(`Best: ${best}`, bodyX + pad + 250, summaryY + 86);
+    ctx.fillText(`Trend: ${trend}`, bodyX + pad + 500, summaryY + 86);
+
+    const items = loadHistory();
+    let listY = summaryY + 124 + 20;
+
+    items.forEach((item, i) => {
+      roundRect(ctx, bodyX + pad, listY, bodyW - pad * 2, 116, 18);
+      ctx.fillStyle = "rgba(255,255,255,0.06)";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(184,197,234,1)";
+      ctx.font = "900 16px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+      ctx.fillText(`#${i + 1}`, bodyX + pad + 20, listY + 34);
+      ctx.fillText(formatHistoryTime(item.createdAt), bodyX + bodyW - pad - 210, listY + 34);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 22px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+      ctx.fillText(`Score: ${item.score} • ${item.shots} SHOTS`, bodyX + pad + 20, listY + 66);
+      ctx.fillText(`WINDAGE: ${item.windage}`, bodyX + pad + 20, listY + 92);
+      ctx.fillText(`ELEVATION: ${item.elevation}`, bodyX + pad + 20, listY + 118);
+
+      listY += 132;
+    });
+
     ctx.fillStyle = "rgba(184,197,234,0.72)";
     ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
     ctx.fillText("Tap-n-Score™", bodyX + pad, bodyY + bodyH - 26);
@@ -671,7 +768,7 @@
     els.targetWrap?.addEventListener("pointerup", onPointerUp);
     els.targetWrap?.addEventListener("pointercancel", onPointerCancel);
 
-    els.historyBtn?.addEventListener("click", openHistory);
+    els.historyBtn?.addEventListener("click", openHistoryShortcut);
     els.backBtn?.addEventListener("click", () => goBack(true));
     els.undoBtn?.addEventListener("click", undo);
     els.clearBtn?.addEventListener("click", clearAll);
@@ -680,19 +777,12 @@
     els.secBackBtn?.addEventListener("click", () => closeSEC(false));
     els.saveSecBtn?.addEventListener("click", save);
 
-    els.historyBackBtn?.addEventListener("click", closeHistory);
-
     window.addEventListener("pageshow", (e) => {
       if (e.persisted) window.location.reload();
     });
 
     window.addEventListener("popstate", () => {
       if (suppressNextPop) return;
-
-      if (!els.historyOverlay?.classList.contains("isHidden")) {
-        closeHistory();
-        return;
-      }
 
       if (state.view === "results") {
         closeSEC(false);
@@ -710,9 +800,9 @@
   function init() {
     bind();
     history.replaceState({ view: "landing" }, "", window.location.href);
-    renderHistory();
+    renderHistoryInSEC();
     hardResetSession();
-    console.log("HISTORY V1 ACTIVE");
+    console.log("SEC HISTORY TREND LOCK ACTIVE");
   }
 
   init();
