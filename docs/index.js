@@ -778,4 +778,4 @@ Here is the full replacement for docs/index.js:
   }
 
   init();
-})();cd
+})();
