@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   CLEAN START + NO AUTO RELOAD / NO SESSION RESTORE
+   CLEAN START + SEC OVERLAY + NO GHOST IMAGE RESTORE
 ============================================================ */
 
 (() => {
@@ -39,6 +39,7 @@
   };
 
   let objectUrl = null;
+  let userLoadedImage = false;
 
   const state = {
     imageSrc: "",
@@ -67,11 +68,15 @@
       els.targetImg.removeAttribute("src");
       els.targetImg.src = "";
     }
+
     if (els.photoInput) {
       els.photoInput.value = "";
     }
+
     if (objectUrl) {
-      try { URL.revokeObjectURL(objectUrl); } catch {}
+      try {
+        URL.revokeObjectURL(objectUrl);
+      } catch {}
       objectUrl = null;
     }
   }
@@ -84,6 +89,7 @@
     state.aim = null;
     state.shots = [];
     state.frozen = false;
+    userLoadedImage = false;
 
     clearImageElement();
     hideOverlay();
@@ -119,12 +125,17 @@
       return;
     }
 
-    if (els.instructionLine) els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
-    if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
+    if (els.instructionLine) {
+      els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
+    }
+    if (els.statusLine) {
+      els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
+    }
   }
 
   function renderDots() {
     if (!els.dotsLayer) return;
+
     els.dotsLayer.innerHTML = "";
 
     if (state.aim) {
@@ -152,8 +163,10 @@
 
   function getPoint(e) {
     const rect = els.targetWrap.getBoundingClientRect();
-    const clientX = e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+    const clientX =
+      e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+    const clientY =
+      e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
 
     return {
       x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
@@ -183,6 +196,7 @@
     } else {
       state.aim = null;
     }
+
     renderAll();
   }
 
@@ -191,6 +205,7 @@
 
     state.aim = null;
     state.shots = [];
+
     renderAll();
   }
 
@@ -216,8 +231,12 @@
 
     if (els.secShotCount) els.secShotCount.textContent = String(state.shots.length);
     if (els.secStatus) els.secStatus.textContent = "Results Ready";
-    if (els.secWindage) els.secWindage.textContent = windage === 0 ? "HOLD" : `${windageDir} ${windage}`;
-    if (els.secElevation) els.secElevation.textContent = elevation === 0 ? "HOLD" : `${elevationDir} ${elevation}`;
+    if (els.secWindage) {
+      els.secWindage.textContent = windage === 0 ? "HOLD" : `${windageDir} ${windage}`;
+    }
+    if (els.secElevation) {
+      els.secElevation.textContent = elevation === 0 ? "HOLD" : `${elevationDir} ${elevation}`;
+    }
   }
 
   function closeSEC() {
@@ -232,9 +251,12 @@
   function loadImage(file) {
     if (!file) return;
 
+    userLoadedImage = true;
+
     clearImageElement();
 
     objectUrl = URL.createObjectURL(file);
+
     state.imageSrc = objectUrl;
     state.aim = null;
     state.shots = [];
@@ -259,10 +281,15 @@
     });
 
     els.targetWrap?.addEventListener("click", handleTap);
-    els.targetWrap?.addEventListener("touchend", (e) => {
-      e.preventDefault();
-      handleTap(e.changedTouches ? e.changedTouches[0] : e);
-    }, { passive: false });
+
+    els.targetWrap?.addEventListener(
+      "touchend",
+      (e) => {
+        e.preventDefault();
+        handleTap(e.changedTouches ? e.changedTouches[0] : e);
+      },
+      { passive: false }
+    );
 
     els.undoBtn?.addEventListener("click", undo);
     els.clearBtn?.addEventListener("click", clearAll);
@@ -271,7 +298,11 @@
     els.closeSecBtn?.addEventListener("click", closeSEC);
     els.saveSecBtn?.addEventListener("click", save);
 
-    window.addEventListener("pageshow", () => {
+    window.addEventListener("pageshow", (e) => {
+      if (e.persisted) {
+        window.location.reload();
+        return;
+      }
       hardResetSession();
     });
 
@@ -283,6 +314,12 @@
   function init() {
     bind();
     hardResetSession();
+
+    if (!userLoadedImage && els.targetImg) {
+      els.targetImg.removeAttribute("src");
+      els.targetImg.src = "";
+    }
+
     console.log("CLEAN START ACTIVE");
   }
 
