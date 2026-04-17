@@ -12,9 +12,8 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=history-10-v1" />
+  <link rel="stylesheet" href="./styles.css?v=sec-history-trend-lock-1" />
 </head>
-
 <body>
   <main class="page">
 
@@ -112,21 +111,16 @@
               <div id="secElevation" class="secValue secValueSm">—</div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="historyOverlay" class="secOverlay isHidden" aria-label="History overlay">
-      <div class="secShell">
-        <div class="secShellHeader">
-          <div class="secCardTitle">History</div>
-
-          <div class="secHeaderActions">
-            <button id="historyBackBtn" class="secBackBtn" type="button">Back</button>
+          <div class="historySummary">
+            <div class="historySummaryTitle">LAST 10 SESSIONS</div>
+            <div class="historySummaryStats">
+              <span>Avg: <strong id="historyAvg">—</strong></span>
+              <span>Best: <strong id="historyBest">—</strong></span>
+              <span>Trend: <strong id="historyTrend">—</strong></span>
+            </div>
           </div>
-        </div>
 
-        <div class="secShellBody">
           <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
           <div id="historyList" class="historyList"></div>
         </div>
@@ -135,6 +129,6 @@
 
   </main>
 
-  <script src="./index.js?v=history-10-v1"></script>
+  <script src="./index.js?v=sec-history-trend-lock-1"></script>
 </body>
 </html>
