@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + DOT OVERLAP POLISH
+   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + CLEANER RESULT WORDING
 ============================================================ */
 
 (() => {
@@ -349,6 +349,17 @@
     renderAll();
   }
 
+  function formatClicksText(dir, count) {
+    if (count === 0 || dir === "HOLD") return "HOLD";
+    const noun = count === 1 ? "CLICK" : "CLICKS";
+    return `${count} ${noun} ${dir}`;
+  }
+
+  function formatStatusText(shotCount) {
+    const noun = shotCount === 1 ? "SHOT" : "SHOTS";
+    return `${shotCount} ${noun} RECORDED`;
+  }
+
   function computeSECValues() {
     if (!state.aim || state.shots.length === 0) return null;
 
@@ -365,8 +376,9 @@
     const elevation = Math.round(Math.abs(dy) * 100);
 
     return {
-      windageText: windage === 0 ? "HOLD" : `${windageDir} ${windage}`,
-      elevationText: elevation === 0 ? "HOLD" : `${elevationDir} ${elevation}`
+      statusText: formatStatusText(state.shots.length),
+      windageText: formatClicksText(windageDir, windage),
+      elevationText: formatClicksText(elevationDir, elevation)
     };
   }
 
@@ -382,7 +394,7 @@
     showOverlay();
 
     if (els.secShotCount) els.secShotCount.textContent = String(state.shots.length);
-    if (els.secStatus) els.secStatus.textContent = "Results Ready";
+    if (els.secStatus) els.secStatus.textContent = values.statusText;
     if (els.secWindage) els.secWindage.textContent = values.windageText;
     if (els.secElevation) els.secElevation.textContent = values.elevationText;
   }
@@ -438,7 +450,7 @@
     ctx.fillRect(0, 0, width, height);
   }
 
-  function drawInfoBlock(ctx, x, y, w, h, label, value) {
+  function drawInfoBlock(ctx, x, y, w, h, label, value, valueSize = 44) {
     roundRect(ctx, x, y, w, h, 18);
     ctx.fillStyle = "rgba(255,255,255,0.06)";
     ctx.fill();
@@ -453,13 +465,13 @@
     ctx.fillText(label, x + 22, y + 34);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "900 44px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.font = `900 ${valueSize}px -apple-system, BlinkMacSystemFont, Segoe UI, Arial`;
     ctx.fillText(value, x + 22, y + 88);
   }
 
   function save() {
     const shots = String(els.secShotCount?.textContent || state.shots.length || 0);
-    const status = String(els.secStatus?.textContent || "Results Ready");
+    const status = String(els.secStatus?.textContent || formatStatusText(state.shots.length));
     const windage = String(els.secWindage?.textContent || "HOLD");
     const elevation = String(els.secElevation?.textContent || "HOLD");
 
@@ -546,10 +558,10 @@
     const row1Y = bodyY + pad;
 
     drawInfoBlock(ctx, bodyX + pad, row1Y, halfW, smallBlockH, "SHOTS", shots);
-    drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status);
+    drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status, 30);
 
-    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage);
-    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation);
+    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage, 36);
+    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation, 36);
 
     const link = document.createElement("a");
     link.download = `sczn3-sec-${Date.now()}.png`;
@@ -634,7 +646,7 @@
     bind();
     history.replaceState({ view: "landing" }, "", window.location.href);
     hardResetSession();
-    console.log("SEC LOCK ACTIVE");
+    console.log("SEC WORDING POLISH ACTIVE");
   }
 
   init();
