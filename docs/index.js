@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   CONTINUOUS BACK SYSTEM + IPAD FIT + FULL-PAGE SEC + SEC-ONLY SAVE
+   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE
 ============================================================ */
 
 (() => {
@@ -133,22 +133,20 @@
     renderAll();
   }
 
+  function updateButtons() {
+    const hasWork = !!state.aim || state.shots.length > 0;
+
+    if (els.undoBtn) els.undoBtn.disabled = !hasWork;
+    if (els.clearBtn) els.clearBtn.disabled = !hasWork;
+    if (els.showResultsBtn) els.showResultsBtn.disabled = !(state.aim && state.shots.length > 0);
+  }
+
   function updateUI() {
     if (els.shotCount) {
       els.shotCount.textContent = String(state.shots.length);
     }
 
-    if (els.undoBtn) {
-      els.undoBtn.disabled = !(state.aim || state.shots.length > 0);
-    }
-
-    if (els.clearBtn) {
-      els.clearBtn.disabled = !(state.aim || state.shots.length > 0);
-    }
-
-    if (els.showResultsBtn) {
-      els.showResultsBtn.disabled = !(state.aim && state.shots.length > 0);
-    }
+    updateButtons();
 
     if (!state.imageSrc) {
       if (els.instructionLine) els.instructionLine.textContent = "Add a target photo.";
@@ -277,9 +275,7 @@
   }
 
   function computeSECValues() {
-    if (!state.aim || state.shots.length === 0) {
-      return null;
-    }
+    if (!state.aim || state.shots.length === 0) return null;
 
     const avgX = state.shots.reduce((sum, p) => sum + p.x, 0) / state.shots.length;
     const avgY = state.shots.reduce((sum, p) => sum + p.y, 0) / state.shots.length;
@@ -477,25 +473,8 @@
     drawInfoBlock(ctx, bodyX + pad, row1Y, halfW, smallBlockH, "SHOTS", shots);
     drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status);
 
-    drawInfoBlock(
-      ctx,
-      bodyX + pad,
-      row1Y + smallBlockH + rowGap,
-      bodyW - pad * 2,
-      wideBlockH,
-      "WINDAGE",
-      windage
-    );
-
-    drawInfoBlock(
-      ctx,
-      bodyX + pad,
-      row1Y + smallBlockH + rowGap + wideBlockH + rowGap,
-      bodyW - pad * 2,
-      wideBlockH,
-      "ELEVATION",
-      elevation
-    );
+    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage);
+    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation);
 
     const link = document.createElement("a");
     link.download = `sczn3-sec-${Date.now()}.png`;
@@ -533,7 +512,9 @@
   }
 
   function bind() {
-    els.photoBtn?.addEventListener("click", () => els.photoInput?.click());
+    els.photoBtn?.addEventListener("click", () => {
+      els.photoInput?.click();
+    });
 
     els.photoInput?.addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
@@ -578,7 +559,7 @@
     bind();
     history.replaceState({ view: "landing" }, "", window.location.href);
     hardResetSession();
-    console.log("BACK SYSTEM ACTIVE");
+    console.log("SEC LOCK ACTIVE");
   }
 
   init();
