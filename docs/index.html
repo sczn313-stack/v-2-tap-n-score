@@ -12,7 +12,7 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=SEC-LOCK-1" />
+  <link rel="stylesheet" href="./styles.css?v=history-10-v1" />
 </head>
 
 <body>
@@ -57,6 +57,7 @@
 
         <div class="topActionRow" aria-label="Target controls">
           <div class="pill">Shots: <span id="shotCount">0</span>/7</div>
+          <button id="historyBtn" class="btnSecondary" type="button">History</button>
           <button id="backBtn" class="btnSecondary" type="button">Back</button>
           <button id="undoBtn" class="btnSecondary" type="button">Undo</button>
           <button id="clearBtn" class="btnSecondary" type="button">Clear</button>
@@ -115,8 +116,25 @@
       </div>
     </section>
 
+    <section id="historyOverlay" class="secOverlay isHidden" aria-label="History overlay">
+      <div class="secShell">
+        <div class="secShellHeader">
+          <div class="secCardTitle">History</div>
+
+          <div class="secHeaderActions">
+            <button id="historyBackBtn" class="secBackBtn" type="button">Back</button>
+          </div>
+        </div>
+
+        <div class="secShellBody">
+          <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
+          <div id="historyList" class="historyList"></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <script src="./index.js?v=SEC-LOCK-1"></script>
+  <script src="./index.js?v=history-10-v1"></script>
 </body>
 </html>
