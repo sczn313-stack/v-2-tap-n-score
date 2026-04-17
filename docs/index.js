@@ -1,16 +1,7 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    SINGLE-SCREEN SEC OVERLAY BUILD
-   Flow:
-   - landing
-   - add target photo
-   - workspace
-   - first tap = aim
-   - next taps = shots (max 7)
-   - undo = last tap
-   - clear = all taps
-   - show results = freeze target + SEC overlay
-   - save = export visible composition
+   FIX: PHOTO RESTORE FROM STORAGE
 ============================================================ */
 
 (() => {
@@ -52,8 +43,8 @@
 
   const state = {
     imageSrc: "",
-    aim: null,        // { x:0..1, y:0..1 }
-    shots: [],        // [{ x:0..1, y:0..1 }]
+    aim: null,
+    shots: [],
     frozen: false,
     pointerStart: null
   };
@@ -122,11 +113,17 @@
     }
 
     if (state.frozen) {
-      setText(els.statusLine, `SEC open • ${state.shots.length} shot${state.shots.length === 1 ? "" : "s"} recorded`);
+      setText(
+        els.statusLine,
+        `SEC open • ${state.shots.length} shot${state.shots.length === 1 ? "" : "s"} recorded`
+      );
       return;
     }
 
-    setText(els.statusLine, `Ready • ${state.shots.length} shot${state.shots.length === 1 ? "" : "s"} recorded`);
+    setText(
+      els.statusLine,
+      `Ready • ${state.shots.length} shot${state.shots.length === 1 ? "" : "s"} recorded`
+    );
   }
 
   function updateButtons() {
@@ -286,8 +283,51 @@
     });
   }
 
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Image load failed"));
+      img.src = src;
+    });
+  }
+
+  async function setWorkingImage(src) {
+    if (!src || !els.targetImg) return false;
+
+    try {
+      await loadImage(src);
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+
+    state.imageSrc = src;
+
+    return await new Promise((resolve) => {
+      els.targetImg.onload = () => {
+        showWorkspace();
+        closeOverlay();
+        renderAll();
+        window.scrollTo(0, 0);
+        resolve(true);
+      };
+
+      els.targetImg.onerror = () => {
+        setText(els.statusLine, "Photo failed to load.");
+        resolve(false);
+      };
+
+      els.targetImg.src = src;
+
+      if (els.targetImg.complete) {
+        els.targetImg.onload?.();
+      }
+    });
+  }
+
   async function handlePhotoFile(file) {
-    if (!file || !els.targetImg) return;
+    if (!file) return;
 
     closeOverlay();
 
@@ -298,35 +338,36 @@
 
     objectUrl = URL.createObjectURL(file);
 
+    state.aim = null;
+    state.shots = [];
+
     try {
       const dataUrl = await readFileAsDataURL(file);
       localStorage.setItem(KEY_TARGET_IMG_DATAURL, dataUrl);
-    } catch {}
+    } catch (err) {
+      console.error(err);
+    }
+
+    await setWorkingImage(objectUrl);
+  }
+
+  async function restorePhotoFromStorage() {
+    const stored = String(localStorage.getItem(KEY_TARGET_IMG_DATAURL) || "").trim();
+    if (!stored) return false;
 
     state.aim = null;
     state.shots = [];
-    state.imageSrc = objectUrl;
 
-    els.targetImg.onload = () => {
-      showWorkspace();
-      renderAll();
-      window.scrollTo(0, 0);
-    };
+    const ok = await setWorkingImage(stored);
+    if (!ok) {
+      try {
+        localStorage.removeItem(KEY_TARGET_IMG_DATAURL);
+      } catch {}
+      state.imageSrc = "";
+      return false;
+    }
 
-    els.targetImg.onerror = () => {
-      setText(els.statusLine, "Photo failed to load.");
-    };
-
-    els.targetImg.src = objectUrl;
-  }
-
-  function restorePhoto() {
-    const dataUrl = String(localStorage.getItem(KEY_TARGET_IMG_DATAURL) || "");
-    if (!dataUrl || !els.targetImg) return;
-
-    state.imageSrc = dataUrl;
-    els.targetImg.src = dataUrl;
-    showWorkspace();
+    return true;
   }
 
   function buildSummary() {
@@ -348,19 +389,8 @@
       shotCount: state.shots.length,
       statusText: state.shots.length >= 3 ? "Results Ready" : "Quick Read",
       windageText: windageMagnitude === 0 ? "HOLD" : `${windageDir} ${windageMagnitude}`,
-      elevationText: elevationMagnitude === 0 ? "HOLD" : `${elevationDir} ${elevationMagnitude}`,
-      avgX,
-      avgY
+      elevationText: elevationMagnitude === 0 ? "HOLD" : `${elevationDir} ${elevationMagnitude}`
     };
-  }
-
-  function loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error("Image load failed"));
-      img.src = src;
-    });
   }
 
   function drawRoundedRect(ctx, x, y, w, h, r) {
@@ -389,108 +419,110 @@
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    loadImage(els.targetImg.src).then((img) => {
-      ctx.drawImage(img, 0, 0, width, height);
+    loadImage(els.targetImg.src)
+      .then((img) => {
+        ctx.drawImage(img, 0, 0, width, height);
 
-      if (state.aim) {
-        const ax = state.aim.x * width;
-        const ay = state.aim.y * height;
+        if (state.aim) {
+          const ax = state.aim.x * width;
+          const ay = state.aim.y * height;
 
-        ctx.beginPath();
-        ctx.arc(ax, ay, 11, 0, Math.PI * 2);
-        ctx.fillStyle = "#2f66ff";
+          ctx.beginPath();
+          ctx.arc(ax, ay, 11, 0, Math.PI * 2);
+          ctx.fillStyle = "#2f66ff";
+          ctx.fill();
+
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#ffffff";
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(ax - 8, ay);
+          ctx.lineTo(ax + 8, ay);
+          ctx.moveTo(ax, ay - 8);
+          ctx.lineTo(ax, ay + 8);
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#ffffff";
+          ctx.stroke();
+        }
+
+        state.shots.forEach((shot, idx) => {
+          const x = shot.x * width;
+          const y = shot.y * height;
+          const r = 13;
+
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fillStyle = "#ff4d5d";
+          ctx.fill();
+
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#ffffff";
+          ctx.stroke();
+
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 12px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(String(idx + 1), x, y + 0.5);
+        });
+
+        ctx.fillStyle = "rgba(5, 9, 20, 0.58)";
+        ctx.fillRect(0, 0, width, height);
+
+        const cardW = Math.min(width - 24, 540);
+        const cardH = Math.min(Math.round(height * 0.42), 260);
+        const cardX = Math.round((width - cardW) / 2);
+        const cardY = height - cardH - 14;
+
+        drawRoundedRect(ctx, cardX, cardY, cardW, cardH, 22);
+        ctx.fillStyle = "rgba(8, 20, 52, 0.94)";
         ctx.fill();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffffff";
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(ax - 8, ay);
-        ctx.lineTo(ax + 8, ay);
-        ctx.moveTo(ax, ay - 8);
-        ctx.lineTo(ax, ay + 8);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffffff";
-        ctx.stroke();
-      }
-
-      state.shots.forEach((shot, idx) => {
-        const x = shot.x * width;
-        const y = shot.y * height;
-        const r = 13;
-
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fillStyle = "#ff4d5d";
-        ctx.fill();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffffff";
+        ctx.strokeStyle = "rgba(255,255,255,.12)";
+        ctx.lineWidth = 1;
         ctx.stroke();
 
         ctx.fillStyle = "#ffffff";
-        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(String(idx + 1), x, y + 0.5);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+
+        ctx.font = "900 24px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+        ctx.fillText("SEC", cardX + 16, cardY + 32);
+
+        ctx.font = "900 11px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+        ctx.fillStyle = "rgba(184,197,234,1)";
+        ctx.fillText("SHOTS", cardX + 16, cardY + 58);
+        ctx.fillText("STATUS", cardX + 120, cardY + 58);
+        ctx.fillText("WINDAGE", cardX + 16, cardY + 122);
+        ctx.fillText("ELEVATION", cardX + 16, cardY + 184);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "900 32px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+        ctx.fillText(String(summary.shotCount), cardX + 16, cardY + 92);
+
+        ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+        ctx.fillText(summary.statusText, cardX + 120, cardY + 92);
+        ctx.fillText(summary.windageText, cardX + 16, cardY + 154);
+        ctx.fillText(summary.elevationText, cardX + 16, cardY + 216);
+
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `SEC-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          setTimeout(() => URL.revokeObjectURL(url), 60000);
+        }, "image/png");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Save failed.");
       });
-
-      ctx.fillStyle = "rgba(5, 9, 20, 0.58)";
-      ctx.fillRect(0, 0, width, height);
-
-      const cardW = Math.min(width - 24, 540);
-      const cardH = Math.min(Math.round(height * 0.42), 260);
-      const cardX = Math.round((width - cardW) / 2);
-      const cardY = height - cardH - 14;
-
-      drawRoundedRect(ctx, cardX, cardY, cardW, cardH, 22);
-      ctx.fillStyle = "rgba(8, 20, 52, 0.94)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,.12)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      ctx.fillStyle = "#ffffff";
-      ctx.textAlign = "left";
-      ctx.textBaseline = "alphabetic";
-
-      ctx.font = "900 24px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-      ctx.fillText("SEC", cardX + 16, cardY + 32);
-
-      ctx.font = "900 11px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-      ctx.fillStyle = "rgba(184,197,234,1)";
-      ctx.fillText("SHOTS", cardX + 16, cardY + 58);
-      ctx.fillText("STATUS", cardX + 120, cardY + 58);
-      ctx.fillText("WINDAGE", cardX + 16, cardY + 122);
-      ctx.fillText("ELEVATION", cardX + 16, cardY + 184);
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "900 32px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-      ctx.fillText(String(summary.shotCount), cardX + 16, cardY + 92);
-
-      ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-      ctx.fillText(summary.statusText, cardX + 120, cardY + 92);
-      ctx.fillText(summary.windageText, cardX + 16, cardY + 154);
-      ctx.fillText(summary.elevationText, cardX + 16, cardY + 216);
-
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `SEC-${Date.now()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-      }, "image/png");
-    }).catch((err) => {
-      console.error(err);
-      alert("Save failed.");
-    });
   }
 
   function bindEvents() {
@@ -517,15 +549,17 @@
     els.saveSecBtn?.addEventListener("click", exportVisibleResult);
   }
 
-  function init() {
+  async function init() {
     bindEvents();
-    restorePhoto();
     renderAll();
 
-    if (state.imageSrc) {
+    const restored = await restorePhotoFromStorage();
+
+    if (restored) {
       showWorkspace();
     } else {
       showLanding();
+      renderAll();
     }
   }
 
