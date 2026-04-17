@@ -1,7 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + PREMIUM EXPORT
-   SAVED SEC DOES NOT SHOW BACK / SAVE BUTTONS
+   HISTORY V1 — LAST 10 RESULTS
 ============================================================ */
 
 (() => {
@@ -13,6 +12,7 @@
     landingView: $("landingView"),
     workspaceView: $("workspaceView"),
 
+    historyBtn: $("historyBtn"),
     backBtn: $("backBtn"),
 
     photoBtn: $("photoBtn"),
@@ -31,6 +31,7 @@
     statusLine: $("statusLine"),
 
     freezeScrim: $("freezeScrim"),
+
     secOverlay: $("secOverlay"),
     secBackBtn: $("secBackBtn"),
     saveSecBtn: $("saveSecBtn"),
@@ -38,8 +39,16 @@
     secShotCount: $("secShotCount"),
     secStatus: $("secStatus"),
     secWindage: $("secWindage"),
-    secElevation: $("secElevation")
+    secElevation: $("secElevation"),
+
+    historyOverlay: $("historyOverlay"),
+    historyBackBtn: $("historyBackBtn"),
+    historyList: $("historyList"),
+    historyEmpty: $("historyEmpty")
   };
+
+  const HISTORY_KEY = "SCZN3_HISTORY_V1";
+  const HISTORY_LIMIT = 10;
 
   let objectUrl = null;
   let suppressNextPop = false;
@@ -81,11 +90,16 @@
   function hideOverlay() {
     els.freezeScrim?.classList.add("isHidden");
     els.secOverlay?.classList.add("isHidden");
+    els.historyOverlay?.classList.add("isHidden");
   }
 
-  function showOverlay() {
+  function showSECOverlay() {
     els.freezeScrim?.classList.remove("isHidden");
     els.secOverlay?.classList.remove("isHidden");
+  }
+
+  function showHistoryOverlay() {
+    els.historyOverlay?.classList.remove("isHidden");
   }
 
   function clearImageElement() {
@@ -117,7 +131,6 @@
   }
 
   function hardResetSession() {
-    try { localStorage.clear(); } catch {}
     try { sessionStorage.clear(); } catch {}
 
     resetSession();
@@ -227,7 +240,6 @@
       d.style.left = `${pos.x * 100}%`;
       d.style.top = `${pos.y * 100}%`;
       d.textContent = String(i + 1);
-      d.title = `Shot ${i + 1}`;
       els.dotsLayer.appendChild(d);
     });
   }
@@ -327,6 +339,99 @@
     };
   }
 
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const parsed = JSON.parse(raw || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(items) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(items));
+    } catch {}
+  }
+
+  function addHistoryEntry(entry) {
+    const items = loadHistory();
+    items.unshift(entry);
+    saveHistory(items.slice(0, HISTORY_LIMIT));
+  }
+
+  function formatHistoryTime(ts) {
+    try {
+      const d = new Date(ts);
+      return d.toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    } catch {
+      return "";
+    }
+  }
+
+  function renderHistory() {
+    const items = loadHistory();
+
+    if (els.historyList) {
+      els.historyList.innerHTML = "";
+    }
+
+    if (els.historyEmpty) {
+      els.historyEmpty.classList.toggle("isHidden", items.length > 0);
+    }
+
+    if (!els.historyList) return;
+
+    items.forEach((item, index) => {
+      const card = document.createElement("div");
+      card.className = "historyCard";
+
+      const top = document.createElement("div");
+      top.className = "historyRowTop";
+
+      const idx = document.createElement("div");
+      idx.className = "historyIndex";
+      idx.textContent = `#${index + 1}`;
+
+      const time = document.createElement("div");
+      time.className = "historyTime";
+      time.textContent = formatHistoryTime(item.createdAt);
+
+      top.appendChild(idx);
+      top.appendChild(time);
+
+      const main = document.createElement("div");
+      main.className = "historyMain";
+
+      const line1 = document.createElement("div");
+      line1.className = "historyLine";
+      line1.textContent = `${item.shots} SHOTS • ${item.status}`;
+
+      const line2 = document.createElement("div");
+      line2.className = "historyLine";
+      line2.textContent = `WINDAGE: ${item.windage}`;
+
+      const line3 = document.createElement("div");
+      line3.className = "historyLine";
+      line3.textContent = `ELEVATION: ${item.elevation}`;
+
+      main.appendChild(line1);
+      main.appendChild(line2);
+      main.appendChild(line3);
+
+      card.appendChild(top);
+      card.appendChild(main);
+
+      els.historyList.appendChild(card);
+    });
+  }
+
   function openSEC(push = true) {
     if (!state.aim || state.shots.length === 0) return;
 
@@ -336,7 +441,15 @@
     const values = computeSECValues();
     if (!values) return;
 
-    showOverlay();
+    addHistoryEntry({
+      createdAt: new Date().toISOString(),
+      shots: state.shots.length,
+      status: values.statusText,
+      windage: values.windageText,
+      elevation: values.elevationText
+    });
+
+    showSECOverlay();
 
     if (els.secShotCount) els.secShotCount.textContent = String(state.shots.length);
     if (els.secStatus) els.secStatus.textContent = values.statusText;
@@ -348,6 +461,15 @@
     state.frozen = false;
     hideOverlay();
     setView("workspace", push);
+  }
+
+  function openHistory() {
+    renderHistory();
+    showHistoryOverlay();
+  }
+
+  function closeHistory() {
+    els.historyOverlay?.classList.add("isHidden");
   }
 
   function goBack(push = false) {
@@ -450,7 +572,6 @@
     const shellW = width - 88;
     const headerH = 138;
 
-    // Header without buttons
     roundRect(ctx, shellX, shellY, shellW, headerH, 30);
     ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
     ctx.fill();
@@ -496,29 +617,8 @@
     drawInfoBlock(ctx, bodyX + pad, row1Y, halfW, smallBlockH, "SHOTS", shots, 50, 28);
     drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status, 32, 20);
 
-    drawInfoBlock(
-      ctx,
-      bodyX + pad,
-      row1Y + smallBlockH + rowGap,
-      bodyW - pad * 2,
-      wideBlockH,
-      "WINDAGE",
-      windage,
-      42,
-      24
-    );
-
-    drawInfoBlock(
-      ctx,
-      bodyX + pad,
-      row1Y + smallBlockH + rowGap + wideBlockH + rowGap,
-      bodyW - pad * 2,
-      wideBlockH,
-      "ELEVATION",
-      elevation,
-      42,
-      24
-    );
+    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage, 42, 24);
+    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation, 42, 24);
 
     ctx.fillStyle = "rgba(184,197,234,0.72)";
     ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
@@ -571,6 +671,7 @@
     els.targetWrap?.addEventListener("pointerup", onPointerUp);
     els.targetWrap?.addEventListener("pointercancel", onPointerCancel);
 
+    els.historyBtn?.addEventListener("click", openHistory);
     els.backBtn?.addEventListener("click", () => goBack(true));
     els.undoBtn?.addEventListener("click", undo);
     els.clearBtn?.addEventListener("click", clearAll);
@@ -579,12 +680,19 @@
     els.secBackBtn?.addEventListener("click", () => closeSEC(false));
     els.saveSecBtn?.addEventListener("click", save);
 
+    els.historyBackBtn?.addEventListener("click", closeHistory);
+
     window.addEventListener("pageshow", (e) => {
       if (e.persisted) window.location.reload();
     });
 
     window.addEventListener("popstate", () => {
       if (suppressNextPop) return;
+
+      if (!els.historyOverlay?.classList.contains("isHidden")) {
+        closeHistory();
+        return;
+      }
 
       if (state.view === "results") {
         closeSEC(false);
@@ -602,8 +710,9 @@
   function init() {
     bind();
     history.replaceState({ view: "landing" }, "", window.location.href);
+    renderHistory();
     hardResetSession();
-    console.log("PREMIUM EXPORT POLISH ACTIVE");
+    console.log("HISTORY V1 ACTIVE");
   }
 
   init();
