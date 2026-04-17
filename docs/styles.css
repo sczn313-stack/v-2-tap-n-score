@@ -51,10 +51,11 @@ body {
   width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
+  min-height: 100dvh;
   padding:
     max(12px, var(--safe-top))
     max(14px, var(--safe-right))
-    calc(28px + var(--safe-bottom))
+    calc(20px + var(--safe-bottom))
     max(14px, var(--safe-left));
 }
 
@@ -69,8 +70,12 @@ body {
 
 .hero {
   position: relative;
-  padding: 10px 0 10px;
+  min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
+  padding: 10px 0 10px;
 }
 
 .brandRow {
@@ -167,7 +172,10 @@ body {
 }
 
 .workspace {
-  margin-top: 12px;
+  margin-top: 0;
+  min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
+  display: flex;
+  flex-direction: column;
 }
 
 .card,
@@ -182,6 +190,7 @@ body {
 
 .workspaceTop {
   margin-bottom: 12px;
+  flex: 0 0 auto;
 }
 
 .cardTitle {
@@ -274,11 +283,16 @@ body {
 
 .targetStage {
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
 }
 
 .targetWrap {
   position: relative;
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   border-radius: 18px;
   overflow: hidden;
   background: rgba(255,255,255,.03);
@@ -286,18 +300,22 @@ body {
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.04),
     0 10px 22px rgba(0,0,0,.20);
-  touch-action: manipulation;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .targetWrapFull {
-  min-height: 52vh;
+  min-height: clamp(380px, 62dvh, 760px);
 }
 
 #targetImg {
   display: block;
-  width: 100%;
-  height: auto;
   max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
@@ -380,23 +398,19 @@ body {
   z-index: 8;
 }
 
-/* ===== FIXED iPAD / MOBILE OVERLAY ===== */
 .secOverlay {
   position: absolute;
   inset: 0;
   z-index: 9;
   pointer-events: none;
-
   display: flex;
   align-items: flex-end;
   justify-content: center;
-
   padding:
     12px
     12px
     max(12px, var(--safe-bottom))
     12px;
-
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -405,7 +419,6 @@ body {
   width: min(100%, 540px);
   max-height: calc(100% - 24px);
   overflow: auto;
-
   border-radius: 22px;
   padding: 16px;
   background: rgba(8, 20, 52, 0.94);
@@ -531,7 +544,7 @@ body {
   .page {
     padding-left: max(12px, var(--safe-left));
     padding-right: max(12px, var(--safe-right));
-    padding-bottom: calc(24px + var(--safe-bottom));
+    padding-bottom: calc(20px + var(--safe-bottom));
   }
 
   .workspaceTop,
@@ -569,7 +582,7 @@ body {
   }
 
   .targetWrapFull {
-    min-height: 48vh;
+    min-height: clamp(320px, 56dvh, 620px);
   }
 
   .secGrid {
@@ -614,7 +627,7 @@ body {
   }
 
   .targetWrapFull {
-    min-height: 44vh;
+    min-height: clamp(300px, 52dvh, 560px);
   }
 
   .secCard {
