@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   SEC = HISTORY + LAST 10 + TREND
+   DASHBOARD SEC
 ============================================================ */
 
 (() => {
@@ -41,6 +41,17 @@
     secWindage: $("secWindage"),
     secElevation: $("secElevation"),
 
+    secScore: $("secScore"),
+    secScoreBand: $("secScoreBand"),
+    secElevationCount: $("secElevationCount"),
+    secElevationDir: $("secElevationDir"),
+    secWindageCount: $("secWindageCount"),
+    secWindageDir: $("secWindageDir"),
+    secSessionLine: $("secSessionLine"),
+    secVendorName: $("secVendorName"),
+    secThumbImg: $("secThumbImg"),
+    secThumbFallback: $("secThumbFallback"),
+
     historyAvg: $("historyAvg"),
     historyBest: $("historyBest"),
     historyTrend: $("historyTrend"),
@@ -48,7 +59,7 @@
     historyEmpty: $("historyEmpty")
   };
 
-  const HISTORY_KEY = "SCZN3_HISTORY_V2";
+  const HISTORY_KEY = "SCZN3_HISTORY_V3";
   const HISTORY_LIMIT = 10;
 
   let objectUrl = null;
@@ -116,13 +127,10 @@
     state.aim = null;
     state.shots = [];
     state.frozen = false;
-
     pointerStart = null;
     activePointerId = null;
-
     clearImageElement();
     hideOverlay();
-
     if (els.dotsLayer) els.dotsLayer.innerHTML = "";
   }
 
@@ -177,21 +185,10 @@
 
     const placed = [];
     const offsets = [
-      { x: 0, y: 0 },
-      { x: 14, y: 0 },
-      { x: -14, y: 0 },
-      { x: 0, y: -14 },
-      { x: 0, y: 14 },
-      { x: 12, y: -12 },
-      { x: -12, y: -12 },
-      { x: 12, y: 12 },
-      { x: -12, y: 12 },
-      { x: 20, y: 0 },
-      { x: -20, y: 0 },
-      { x: 0, y: -20 },
-      { x: 0, y: 20 }
+      { x: 0, y: 0 }, { x: 14, y: 0 }, { x: -14, y: 0 }, { x: 0, y: -14 },
+      { x: 0, y: 14 }, { x: 12, y: -12 }, { x: -12, y: -12 }, { x: 12, y: 12 },
+      { x: -12, y: 12 }, { x: 20, y: 0 }, { x: -20, y: 0 }, { x: 0, y: -20 }, { x: 0, y: 20 }
     ];
-
     const minDist = 24;
 
     state.shots.forEach((shot) => {
@@ -255,7 +252,6 @@
   function onPointerDown(e) {
     if (!state.imageSrc || state.frozen) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
-
     activePointerId = e.pointerId;
     pointerStart = { x: e.clientX, y: e.clientY };
   }
@@ -304,12 +300,18 @@
   function formatClicksText(dir, count) {
     if (count === 0 || dir === "HOLD") return "HOLD";
     const noun = count === 1 ? "CLICK" : "CLICKS";
-    return `${count} ${noun} ${dir}`;
+    return `${count} CLICKS ${dir}`.replace("1 CLICKS", "1 CLICK");
   }
 
   function formatStatusText(shotCount) {
-    const noun = shotCount === 1 ? "SHOT" : "SHOTS";
-    return `${shotCount} ${noun} RECORDED`;
+    return `${shotCount} SHOTS RECORDED`;
+  }
+
+  function getScoreBand(score) {
+    if (score >= 90) return { text: "EXCELLENT", bg: "#6cf08e", fg: "#0b2013" };
+    if (score >= 75) return { text: "SOLID", bg: "#f0da62", fg: "#15130a" };
+    if (score >= 60) return { text: "IMPROVING", bg: "#ffb761", fg: "#201307" };
+    return { text: "NEEDS WORK", bg: "#ff7b7b", fg: "#280d0d" };
   }
 
   function scoreFromCounts(windageCount, elevationCount) {
@@ -333,9 +335,12 @@
     const score = scoreFromCounts(windageCount, elevationCount);
 
     return {
+      shotCount: state.shots.length,
       statusText: formatStatusText(state.shots.length),
       windageText: formatClicksText(windageDir, windageCount),
       elevationText: formatClicksText(elevationDir, elevationCount),
+      windageDir,
+      elevationDir,
       windageCount,
       elevationCount,
       score
@@ -380,13 +385,10 @@
 
   function computeTrend(items) {
     if (items.length < 6) return "→";
-
     const recent = items.slice(0, 3).map((i) => i.score || 0);
     const prior = items.slice(3, 6).map((i) => i.score || 0);
-
     const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
     const priorAvg = prior.reduce((a, b) => a + b, 0) / prior.length;
-
     if (recentAvg > priorAvg + 1) return "↑";
     if (recentAvg < priorAvg - 1) return "↓";
     return "→";
@@ -395,30 +397,19 @@
   function renderHistoryInSEC() {
     const items = loadHistory();
 
-    if (els.historyList) {
-      els.historyList.innerHTML = "";
-    }
-
-    if (els.historyEmpty) {
-      els.historyEmpty.classList.toggle("isHidden", items.length > 0);
-    }
+    if (els.historyList) els.historyList.innerHTML = "";
+    if (els.historyEmpty) els.historyEmpty.classList.toggle("isHidden", items.length > 0);
 
     if (els.historyAvg) {
-      if (items.length) {
-        const avg = Math.round(items.reduce((sum, item) => sum + (item.score || 0), 0) / items.length);
-        els.historyAvg.textContent = String(avg);
-      } else {
-        els.historyAvg.textContent = "—";
-      }
+      els.historyAvg.textContent = items.length
+        ? String(Math.round(items.reduce((sum, item) => sum + (item.score || 0), 0) / items.length))
+        : "—";
     }
 
     if (els.historyBest) {
-      if (items.length) {
-        const best = Math.max(...items.map((item) => item.score || 0));
-        els.historyBest.textContent = String(best);
-      } else {
-        els.historyBest.textContent = "—";
-      }
+      els.historyBest.textContent = items.length
+        ? String(Math.max(...items.map((item) => item.score || 0)))
+        : "—";
     }
 
     if (els.historyTrend) {
@@ -466,9 +457,30 @@
 
       card.appendChild(top);
       card.appendChild(main);
-
       els.historyList.appendChild(card);
     });
+  }
+
+  function hydrateThumb() {
+    if (!els.secThumbImg || !els.secThumbFallback) return;
+
+    if (state.imageSrc) {
+      els.secThumbImg.src = state.imageSrc;
+      els.secThumbImg.classList.remove("isHidden");
+      els.secThumbFallback.classList.add("isHidden");
+    } else {
+      els.secThumbImg.removeAttribute("src");
+      els.secThumbImg.classList.add("isHidden");
+      els.secThumbFallback.classList.remove("isHidden");
+    }
+  }
+
+  function applyBand(score) {
+    if (!els.secScoreBand) return;
+    const band = getScoreBand(score);
+    els.secScoreBand.textContent = band.text;
+    els.secScoreBand.style.background = band.bg;
+    els.secScoreBand.style.color = band.fg;
   }
 
   function openSEC(push = true) {
@@ -482,8 +494,7 @@
 
     addHistoryEntry({
       createdAt: new Date().toISOString(),
-      shots: state.shots.length,
-      status: values.statusText,
+      shots: values.shotCount,
       windage: values.windageText,
       elevation: values.elevationText,
       windageCount: values.windageCount,
@@ -493,11 +504,22 @@
 
     showSECOverlay();
 
-    if (els.secShotCount) els.secShotCount.textContent = String(state.shots.length);
+    if (els.secShotCount) els.secShotCount.textContent = String(values.shotCount);
     if (els.secStatus) els.secStatus.textContent = values.statusText;
     if (els.secWindage) els.secWindage.textContent = values.windageText;
     if (els.secElevation) els.secElevation.textContent = values.elevationText;
 
+    if (els.secScore) els.secScore.textContent = String(values.score);
+    if (els.secElevationCount) els.secElevationCount.textContent = String(values.elevationCount);
+    if (els.secWindageCount) els.secWindageCount.textContent = String(values.windageCount);
+    if (els.secElevationDir) els.secElevationDir.textContent = values.elevationDir;
+    if (els.secWindageDir) els.secWindageDir.textContent = values.windageDir;
+    if (els.secSessionLine) els.secSessionLine.textContent = `${values.shotCount} hits`;
+
+    if (els.secVendorName) els.secVendorName.textContent = "Vendor Not Set";
+
+    applyBand(values.score);
+    hydrateThumb();
     renderHistoryInSEC();
   }
 
@@ -518,7 +540,16 @@
     if (els.secStatus) els.secStatus.textContent = "HISTORY VIEW";
     if (els.secWindage) els.secWindage.textContent = "—";
     if (els.secElevation) els.secElevation.textContent = "—";
+    if (els.secScore) els.secScore.textContent = "—";
+    if (els.secElevationCount) els.secElevationCount.textContent = "0";
+    if (els.secWindageCount) els.secWindageCount.textContent = "0";
+    if (els.secElevationDir) els.secElevationDir.textContent = "UP";
+    if (els.secWindageDir) els.secWindageDir.textContent = "RIGHT";
+    if (els.secSessionLine) els.secSessionLine.textContent = "History only";
+    if (els.secVendorName) els.secVendorName.textContent = "Vendor Not Set";
 
+    applyBand(75);
+    hydrateThumb();
     renderHistoryInSEC();
   }
 
@@ -558,15 +589,6 @@
     ctx.fillRect(0, 0, width, height);
   }
 
-  function fillSoftGlow(ctx, width, height) {
-    const glow = ctx.createRadialGradient(width * 0.5, height * 0.12, 10, width * 0.5, height * 0.12, width * 0.48);
-    glow.addColorStop(0, "rgba(255, 76, 94, 0.14)");
-    glow.addColorStop(0.28, "rgba(54, 117, 255, 0.10)");
-    glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, width, height);
-  }
-
   function fitValueText(ctx, text, maxWidth, startSize, minSize) {
     let size = startSize;
     while (size > minSize) {
@@ -577,39 +599,23 @@
     return minSize;
   }
 
-  function drawInfoBlock(ctx, x, y, w, h, label, value, startSize = 44, minSize = 22) {
-    roundRect(ctx, x, y, w, h, 20);
-    ctx.fillStyle = "rgba(255,255,255,0.065)";
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.09)";
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(184,197,234,1)";
-    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
-    ctx.fillText(label, x + 24, y + 36);
-
-    const valueWidth = w - 48;
-    const fitted = fitValueText(ctx, value, valueWidth, startSize, minSize);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = `900 ${fitted}px -apple-system, BlinkMacSystemFont, Segoe UI, Arial`;
-    ctx.fillText(value, x + 24, y + 96);
-  }
-
   function save() {
-    const shots = String(els.secShotCount?.textContent || state.shots.length || 0);
-    const status = String(els.secStatus?.textContent || formatStatusText(state.shots.length));
-    const windage = String(els.secWindage?.textContent || "HOLD");
-    const elevation = String(els.secElevation?.textContent || "HOLD");
-    const avg = String(els.historyAvg?.textContent || "—");
-    const best = String(els.historyBest?.textContent || "—");
-    const trend = String(els.historyTrend?.textContent || "—");
+    const values = {
+      score: String(els.secScore?.textContent || "0"),
+      band: String(els.secScoreBand?.textContent || "SOLID"),
+      elevCount: String(els.secElevationCount?.textContent || "0"),
+      elevDir: String(els.secElevationDir?.textContent || "UP"),
+      windCount: String(els.secWindageCount?.textContent || "0"),
+      windDir: String(els.secWindageDir?.textContent || "RIGHT"),
+      session: String(els.secSessionLine?.textContent || "—"),
+      vendor: String(els.secVendorName?.textContent || "Vendor Not Set"),
+      avg: String(els.historyAvg?.textContent || "—"),
+      best: String(els.historyBest?.textContent || "—"),
+      trend: String(els.historyTrend?.textContent || "—")
+    };
 
-    const width = 1400;
+    const width = 1600;
     const height = 2200;
-
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
@@ -618,108 +624,166 @@
     if (!ctx) return;
 
     fillVerticalGradient(ctx, width, height);
-    fillSoftGlow(ctx, width, height);
 
-    const shellX = 44;
-    const shellY = 44;
-    const shellW = width - 88;
-    const headerH = 138;
-
-    roundRect(ctx, shellX, shellY, shellW, headerH, 30);
-    ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
+    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    roundRect(ctx, 40, 40, width - 80, height - 80, 32);
     ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
-    ctx.stroke();
 
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
-    ctx.font = "900 70px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillStyle = "#ff5a66";
-    ctx.fillText("S", shellX + 28, shellY + 88);
+    ctx.font = "900 76px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText("E", shellX + 76, shellY + 88);
-    ctx.fillStyle = "#61a7ff";
-    ctx.fillText("C", shellX + 128, shellY + 88);
+    ctx.fillText("SEC", 80, 110);
 
-    ctx.fillStyle = "rgba(184,197,234,0.95)";
-    ctx.font = "900 22px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Shooter Experience Card", shellX + 210, shellY + 88);
+    ctx.font = "800 32px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillStyle = "rgba(255,255,255,.92)";
+    ctx.fillText("Shooter Experience Card", width - 520, 110);
 
-    const bodyX = 44;
-    const bodyY = shellY + headerH + 20;
-    const bodyW = width - 88;
-    const bodyH = height - bodyY - 44;
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillStyle = "rgba(255,255,255,.72)";
+    ctx.fillText("YOUR SCORE", 80, 210);
 
-    roundRect(ctx, bodyX, bodyY, bodyW, bodyH, 30);
-    ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
+    ctx.font = "900 160px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(values.score, 80, 360);
+
+    const band = getScoreBand(Number(values.score) || 0);
+    roundRect(ctx, 80, 395, 250, 70, 35);
+    ctx.fillStyle = band.bg;
     ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.fillStyle = band.fg;
+    ctx.font = "900 34px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.band, 130, 442);
+
+    ctx.fillStyle = "rgba(255,255,255,.72)";
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("OFFICIAL TARGET PARTNER", 840, 210);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 58px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.vendor, 840, 280);
+
+    ctx.fillStyle = "rgba(255,255,255,.72)";
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("TARGET THUMBNAIL", 840, 420);
+
+    roundRect(ctx, 840, 460, 620, 360, 28);
+    ctx.fillStyle = "rgba(255,255,255,.05)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,.08)";
+    ctx.lineWidth = 2;
     ctx.stroke();
 
-    const pad = 32;
-    const colGap = 20;
-    const rowGap = 20;
-    const smallBlockH = 162;
-    const wideBlockH = 184;
-    const halfW = Math.floor((bodyW - pad * 2 - colGap) / 2);
+    if (state.imageSrc) {
+      const img = new Image();
+      img.onload = () => {
+        const boxX = 840;
+        const boxY = 460;
+        const boxW = 620;
+        const boxH = 360;
 
-    const row1Y = bodyY + pad;
+        const scale = Math.min((boxW - 40) / img.width, (boxH - 40) / img.height);
+        const drawW = img.width * scale;
+        const drawH = img.height * scale;
+        const drawX = boxX + (boxW - drawW) / 2;
+        const drawY = boxY + (boxH - drawH) / 2;
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        finishSaveCanvas(ctx, canvas, values);
+      };
+      img.src = state.imageSrc;
+      return;
+    }
 
-    drawInfoBlock(ctx, bodyX + pad, row1Y, halfW, smallBlockH, "SHOTS", shots, 50, 28);
-    drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status, 32, 20);
+    finishSaveCanvas(ctx, canvas, values);
+  }
 
-    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage, 42, 24);
-    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation, 42, 24);
+  function finishSaveCanvas(ctx, canvas, values) {
+    ctx.fillStyle = "rgba(255,255,255,.72)";
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("SCOPE CORRECTION", 80, 560);
 
-    const summaryY = row1Y + smallBlockH + rowGap + wideBlockH + rowGap + wideBlockH + rowGap;
-
-    roundRect(ctx, bodyX + pad, summaryY, bodyW - pad * 2, 124, 20);
-    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    roundRect(ctx, 80, 600, 700, 130, 24);
+    ctx.fillStyle = "rgba(255,255,255,.06)";
     ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.strokeStyle = "rgba(255,255,255,.08)";
+    ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.fillStyle = "rgba(184,197,234,1)";
-    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("LAST 10 SESSIONS", bodyX + pad + 24, summaryY + 38);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 70px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.elevCount, 120, 685);
+
+    ctx.fillStyle = "#69a8ff";
+    ctx.font = "900 62px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.elevDir, 180, 685);
+
+    ctx.fillStyle = "rgba(255,255,255,.6)";
+    ctx.font = "900 50px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("•", 420, 680);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 70px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.windCount, 500, 685);
+
+    ctx.fillStyle = "#ff7987";
+    ctx.font = "900 62px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.windDir, 560, 685);
+
+    ctx.fillStyle = "rgba(255,255,255,.72)";
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("SESSION", 80, 850);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 58px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(values.session, 80, 920);
+
+    ctx.fillStyle = "rgba(255,255,255,.72)";
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("SESSION HISTORY", 80, 1100);
+
+    roundRect(ctx, 80, 1140, 1440, 90, 18);
+    ctx.fillStyle = "rgba(255,255,255,.05)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,.08)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "900 30px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText(`Avg: ${avg}`, bodyX + pad + 24, summaryY + 86);
-    ctx.fillText(`Best: ${best}`, bodyX + pad + 250, summaryY + 86);
-    ctx.fillText(`Trend: ${trend}`, bodyX + pad + 500, summaryY + 86);
+    ctx.fillText(`Avg: ${values.avg}`, 110, 1198);
+    ctx.fillText(`Best: ${values.best}`, 320, 1198);
+    ctx.fillText(`Trend: ${values.trend}`, 560, 1198);
 
     const items = loadHistory();
-    let listY = summaryY + 124 + 20;
+    let y = 1260;
+    const col1X = 80;
+    const col2X = 805;
+    const cardW = 635;
+    const cardH = 145;
 
-    items.forEach((item, i) => {
-      roundRect(ctx, bodyX + pad, listY, bodyW - pad * 2, 116, 18);
-      ctx.fillStyle = "rgba(255,255,255,0.06)";
+    items.slice(0, 10).forEach((item, i) => {
+      const colX = i < 5 ? col1X : col2X;
+      const rowIndex = i < 5 ? i : i - 5;
+      const cardY = y + rowIndex * (cardH + 20);
+
+      roundRect(ctx, colX, cardY, cardW, cardH, 18);
+      ctx.fillStyle = "rgba(255,255,255,.06)";
       ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.strokeStyle = "rgba(255,255,255,.08)";
+      ctx.lineWidth = 2;
       ctx.stroke();
 
       ctx.fillStyle = "rgba(184,197,234,1)";
-      ctx.font = "900 16px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-      ctx.fillText(`#${i + 1}`, bodyX + pad + 20, listY + 34);
-      ctx.fillText(formatHistoryTime(item.createdAt), bodyX + bodyW - pad - 210, listY + 34);
+      ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+      ctx.fillText(`#${i + 1}`, colX + 20, cardY + 30);
 
       ctx.fillStyle = "#ffffff";
-      ctx.font = "900 22px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-      ctx.fillText(`Score: ${item.score} • ${item.shots} SHOTS`, bodyX + pad + 20, listY + 66);
-      ctx.fillText(`WINDAGE: ${item.windage}`, bodyX + pad + 20, listY + 92);
-      ctx.fillText(`ELEVATION: ${item.elevation}`, bodyX + pad + 20, listY + 118);
-
-      listY += 132;
+      ctx.font = "900 24px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+      ctx.fillText(`Score ${item.score}`, colX + 20, cardY + 66);
+      ctx.fillText(`${item.shots} Hits`, colX + 220, cardY + 66);
+      ctx.fillText(item.windage, colX + 20, cardY + 102);
+      ctx.fillText(item.elevation, colX + 20, cardY + 132);
     });
-
-    ctx.fillStyle = "rgba(184,197,234,0.72)";
-    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Tap-n-Score™", bodyX + pad, bodyY + bodyH - 26);
 
     const link = document.createElement("a");
     link.download = `sczn3-sec-${Date.now()}.png`;
@@ -802,7 +866,7 @@
     history.replaceState({ view: "landing" }, "", window.location.href);
     renderHistoryInSEC();
     hardResetSession();
-    console.log("SEC HISTORY TREND LOCK ACTIVE");
+    console.log("SEC DASHBOARD ACTIVE");
   }
 
   init();
