@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + CLEANER RESULT WORDING
+   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + PREMIUM EXPORT POLISH
 ============================================================ */
 
 (() => {
@@ -74,9 +74,7 @@
       window.scrollTo(0, 0);
     }
 
-    if (pushHistory) {
-      pushHistoryForView(view);
-    }
+    if (pushHistory) pushHistoryForView(view);
   }
 
   function hideOverlay() {
@@ -94,15 +92,10 @@
       els.targetImg.removeAttribute("src");
       els.targetImg.src = "";
     }
-
-    if (els.photoInput) {
-      els.photoInput.value = "";
-    }
+    if (els.photoInput) els.photoInput.value = "";
 
     if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
+      try { URL.revokeObjectURL(objectUrl); } catch {}
       objectUrl = null;
     }
   }
@@ -119,9 +112,7 @@
     clearImageElement();
     hideOverlay();
 
-    if (els.dotsLayer) {
-      els.dotsLayer.innerHTML = "";
-    }
+    if (els.dotsLayer) els.dotsLayer.innerHTML = "";
   }
 
   function hardResetSession() {
@@ -135,17 +126,13 @@
 
   function updateButtons() {
     const hasWork = !!state.aim || state.shots.length > 0;
-
     if (els.undoBtn) els.undoBtn.disabled = !hasWork;
     if (els.clearBtn) els.clearBtn.disabled = !hasWork;
     if (els.showResultsBtn) els.showResultsBtn.disabled = !(state.aim && state.shots.length > 0);
   }
 
   function updateUI() {
-    if (els.shotCount) {
-      els.shotCount.textContent = String(state.shots.length);
-    }
-
+    if (els.shotCount) els.shotCount.textContent = String(state.shots.length);
     updateButtons();
 
     if (!state.imageSrc) {
@@ -166,27 +153,18 @@
       return;
     }
 
-    if (els.instructionLine) {
-      els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
-    }
-    if (els.statusLine) {
-      els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-    }
+    if (els.instructionLine) els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
+    if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
   }
 
   function getWrapSize() {
     const rect = els.targetWrap?.getBoundingClientRect();
-    return {
-      width: rect?.width || 0,
-      height: rect?.height || 0
-    };
+    return { width: rect?.width || 0, height: rect?.height || 0 };
   }
 
   function getShotDisplayPositions() {
     const { width, height } = getWrapSize();
-    if (!width || !height) {
-      return state.shots.map((shot) => ({ x: shot.x, y: shot.y }));
-    }
+    if (!width || !height) return state.shots.map((shot) => ({ x: shot.x, y: shot.y }));
 
     const placed = [];
     const offsets = [
@@ -208,25 +186,12 @@
     const minDist = 24;
 
     state.shots.forEach((shot) => {
-      const basePx = {
-        x: shot.x * width,
-        y: shot.y * height
-      };
-
+      const basePx = { x: shot.x * width, y: shot.y * height };
       let chosen = { ...basePx };
 
       for (const off of offsets) {
-        const candidate = {
-          x: basePx.x + off.x,
-          y: basePx.y + off.y
-        };
-
-        const overlaps = placed.some((p) => {
-          const dx = candidate.x - p.x;
-          const dy = candidate.y - p.y;
-          return Math.hypot(dx, dy) < minDist;
-        });
-
+        const candidate = { x: basePx.x + off.x, y: basePx.y + off.y };
+        const overlaps = placed.some((p) => Math.hypot(candidate.x - p.x, candidate.y - p.y) < minDist);
         if (!overlaps) {
           chosen = candidate;
           break;
@@ -235,19 +200,14 @@
 
       chosen.x = Math.max(14, Math.min(width - 14, chosen.x));
       chosen.y = Math.max(14, Math.min(height - 14, chosen.y));
-
       placed.push(chosen);
     });
 
-    return placed.map((p) => ({
-      x: p.x / width,
-      y: p.y / height
-    }));
+    return placed.map((p) => ({ x: p.x / width, y: p.y / height }));
   }
 
   function renderDots() {
     if (!els.dotsLayer) return;
-
     els.dotsLayer.innerHTML = "";
 
     if (state.aim) {
@@ -259,7 +219,6 @@
     }
 
     const displayPositions = getShotDisplayPositions();
-
     state.shots.forEach((shot, i) => {
       const pos = displayPositions[i] || shot;
       const d = document.createElement("div");
@@ -290,10 +249,7 @@
     if (e.pointerType === "mouse" && e.button !== 0) return;
 
     activePointerId = e.pointerId;
-    pointerStart = {
-      x: e.clientX,
-      y: e.clientY
-    };
+    pointerStart = { x: e.clientX, y: e.clientY };
   }
 
   function onPointerUp(e) {
@@ -301,10 +257,7 @@
     if (activePointerId !== null && e.pointerId !== activePointerId) return;
     if (!pointerStart) return;
 
-    const dx = e.clientX - pointerStart.x;
-    const dy = e.clientY - pointerStart.y;
-    const moved = Math.hypot(dx, dy);
-
+    const moved = Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y);
     activePointerId = null;
 
     if (moved > 12) {
@@ -314,11 +267,8 @@
 
     const p = getPointFromClient(e.clientX, e.clientY);
 
-    if (!state.aim) {
-      state.aim = p;
-    } else if (state.shots.length < 7) {
-      state.shots.push(p);
-    }
+    if (!state.aim) state.aim = p;
+    else if (state.shots.length < 7) state.shots.push(p);
 
     pointerStart = null;
     renderAll();
@@ -331,19 +281,13 @@
 
   function undo() {
     if (state.frozen) return;
-
-    if (state.shots.length > 0) {
-      state.shots.pop();
-    } else {
-      state.aim = null;
-    }
-
+    if (state.shots.length > 0) state.shots.pop();
+    else state.aim = null;
     renderAll();
   }
 
   function clearAll() {
     if (state.frozen) return;
-
     state.aim = null;
     state.shots = [];
     renderAll();
@@ -435,38 +379,50 @@
   function fillVerticalGradient(ctx, width, height) {
     const grad = ctx.createLinearGradient(0, 0, 0, height);
     grad.addColorStop(0, "#071743");
-    grad.addColorStop(0.45, "#03124a");
-    grad.addColorStop(1, "#01103f");
+    grad.addColorStop(0.42, "#041652");
+    grad.addColorStop(1, "#02103d");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
   }
 
   function fillSoftGlow(ctx, width, height) {
-    const glow = ctx.createRadialGradient(width * 0.5, height * 0.16, 10, width * 0.5, height * 0.16, width * 0.42);
-    glow.addColorStop(0, "rgba(255, 76, 94, 0.12)");
-    glow.addColorStop(0.35, "rgba(54, 117, 255, 0.08)");
+    const glow = ctx.createRadialGradient(width * 0.5, height * 0.12, 10, width * 0.5, height * 0.12, width * 0.48);
+    glow.addColorStop(0, "rgba(255, 76, 94, 0.14)");
+    glow.addColorStop(0.28, "rgba(54, 117, 255, 0.10)");
     glow.addColorStop(1, "rgba(0, 0, 0, 0)");
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, width, height);
   }
 
-  function drawInfoBlock(ctx, x, y, w, h, label, value, valueSize = 44) {
-    roundRect(ctx, x, y, w, h, 18);
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
+  function fitValueText(ctx, text, maxWidth, startSize, minSize) {
+    let size = startSize;
+    while (size > minSize) {
+      ctx.font = `900 ${size}px -apple-system, BlinkMacSystemFont, Segoe UI, Arial`;
+      if (ctx.measureText(text).width <= maxWidth) return size;
+      size -= 2;
+    }
+    return minSize;
+  }
+
+  function drawInfoBlock(ctx, x, y, w, h, label, value, startSize = 44, minSize = 22) {
+    roundRect(ctx, x, y, w, h, 20);
+    ctx.fillStyle = "rgba(255,255,255,0.065)";
     ctx.fill();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.strokeStyle = "rgba(255,255,255,0.09)";
     ctx.stroke();
 
     ctx.fillStyle = "rgba(184,197,234,1)";
     ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
-    ctx.fillText(label, x + 22, y + 34);
+    ctx.fillText(label, x + 24, y + 36);
 
+    const valueWidth = w - 48;
+    const fitted = fitValueText(ctx, value, valueWidth, startSize, minSize);
     ctx.fillStyle = "#ffffff";
-    ctx.font = `900 ${valueSize}px -apple-system, BlinkMacSystemFont, Segoe UI, Arial`;
-    ctx.fillText(value, x + 22, y + 88);
+    ctx.font = `900 ${fitted}px -apple-system, BlinkMacSystemFont, Segoe UI, Arial`;
+    ctx.fillText(value, x + 24, y + 96);
   }
 
   function save() {
@@ -488,43 +444,45 @@
     fillVerticalGradient(ctx, width, height);
     fillSoftGlow(ctx, width, height);
 
-    const shellX = 40;
-    const shellY = 40;
-    const shellW = width - 80;
-    const headerH = 130;
+    const shellX = 44;
+    const shellY = 44;
+    const shellW = width - 88;
+    const headerH = 138;
 
-    roundRect(ctx, shellX, shellY, shellW, headerH, 28);
+    roundRect(ctx, shellX, shellY, shellW, headerH, 30);
     ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "rgba(255,255,255,0.12)";
     ctx.stroke();
 
-    ctx.fillStyle = "#ff5a66";
-    ctx.font = "900 68px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
-    ctx.fillText("S", shellX + 26, shellY + 84);
-
+    ctx.font = "900 70px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillStyle = "#ff5a66";
+    ctx.fillText("S", shellX + 28, shellY + 88);
     ctx.fillStyle = "#ffffff";
-    ctx.fillText("E", shellX + 72, shellY + 84);
-
+    ctx.fillText("E", shellX + 76, shellY + 88);
     ctx.fillStyle = "#61a7ff";
-    ctx.fillText("C", shellX + 122, shellY + 84);
+    ctx.fillText("C", shellX + 128, shellY + 88);
 
-    const btnY = shellY + 24;
-    const btnH = 78;
-    const saveBtnW = 144;
-    const backBtnW = 144;
+    ctx.fillStyle = "rgba(184,197,234,0.95)";
+    ctx.font = "900 20px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("Shooter Experience Card", shellX + 206, shellY + 88);
+
+    const btnY = shellY + 26;
+    const btnH = 80;
+    const saveBtnW = 148;
+    const backBtnW = 148;
     const gap = 16;
-    const saveBtnX = shellX + shellW - 24 - saveBtnW;
+    const saveBtnX = shellX + shellW - 28 - saveBtnW;
     const backBtnX = saveBtnX - gap - backBtnW;
 
-    roundRect(ctx, backBtnX, btnY, backBtnW, btnH, 39);
+    roundRect(ctx, backBtnX, btnY, backBtnW, btnH, 40);
     ctx.fillStyle = "rgba(255,255,255,0.10)";
     ctx.fill();
 
-    roundRect(ctx, saveBtnX, btnY, saveBtnW, btnH, 39);
+    roundRect(ctx, saveBtnX, btnY, saveBtnW, btnH, 40);
     const btnGrad = ctx.createLinearGradient(saveBtnX, btnY, saveBtnX + saveBtnW, btnY + btnH);
     btnGrad.addColorStop(0, "#2f66ff");
     btnGrad.addColorStop(1, "#5d8cff");
@@ -533,35 +491,60 @@
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "900 30px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Back", backBtnX + 38, btnY + 49);
-    ctx.fillText("Save", saveBtnX + 38, btnY + 49);
+    ctx.fillText("Back", backBtnX + 40, btnY + 51);
+    ctx.fillText("Save", saveBtnX + 40, btnY + 51);
 
-    const bodyX = 40;
-    const bodyY = shellY + headerH + 18;
-    const bodyW = width - 80;
-    const bodyH = height - bodyY - 40;
+    const bodyX = 44;
+    const bodyY = shellY + headerH + 20;
+    const bodyW = width - 88;
+    const bodyH = height - bodyY - 44;
 
-    roundRect(ctx, bodyX, bodyY, bodyW, bodyH, 28);
+    roundRect(ctx, bodyX, bodyY, bodyW, bodyH, 30);
     ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "rgba(255,255,255,0.12)";
     ctx.stroke();
 
-    const pad = 28;
-    const colGap = 18;
-    const rowGap = 18;
-    const smallBlockH = 150;
-    const wideBlockH = 170;
+    const pad = 32;
+    const colGap = 20;
+    const rowGap = 20;
+    const smallBlockH = 162;
+    const wideBlockH = 184;
     const halfW = Math.floor((bodyW - pad * 2 - colGap) / 2);
 
     const row1Y = bodyY + pad;
 
-    drawInfoBlock(ctx, bodyX + pad, row1Y, halfW, smallBlockH, "SHOTS", shots);
-    drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status, 30);
+    drawInfoBlock(ctx, bodyX + pad, row1Y, halfW, smallBlockH, "SHOTS", shots, 50, 28);
+    drawInfoBlock(ctx, bodyX + pad + halfW + colGap, row1Y, halfW, smallBlockH, "STATUS", status, 32, 20);
 
-    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap, bodyW - pad * 2, wideBlockH, "WINDAGE", windage, 36);
-    drawInfoBlock(ctx, bodyX + pad, row1Y + smallBlockH + rowGap + wideBlockH + rowGap, bodyW - pad * 2, wideBlockH, "ELEVATION", elevation, 36);
+    drawInfoBlock(
+      ctx,
+      bodyX + pad,
+      row1Y + smallBlockH + rowGap,
+      bodyW - pad * 2,
+      wideBlockH,
+      "WINDAGE",
+      windage,
+      42,
+      24
+    );
+
+    drawInfoBlock(
+      ctx,
+      bodyX + pad,
+      row1Y + smallBlockH + rowGap + wideBlockH + rowGap,
+      bodyW - pad * 2,
+      wideBlockH,
+      "ELEVATION",
+      elevation,
+      42,
+      24
+    );
+
+    ctx.fillStyle = "rgba(184,197,234,0.72)";
+    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("Tap-n-Score™", bodyX + pad, bodyY + bodyH - 26);
 
     const link = document.createElement("a");
     link.download = `sczn3-sec-${Date.now()}.png`;
@@ -573,9 +556,7 @@
     if (!file) return;
 
     if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
+      try { URL.revokeObjectURL(objectUrl); } catch {}
     }
 
     objectUrl = URL.createObjectURL(file);
@@ -621,9 +602,7 @@
     els.saveSecBtn?.addEventListener("click", save);
 
     window.addEventListener("pageshow", (e) => {
-      if (e.persisted) {
-        window.location.reload();
-      }
+      if (e.persisted) window.location.reload();
     });
 
     window.addEventListener("popstate", () => {
@@ -646,7 +625,7 @@
     bind();
     history.replaceState({ view: "landing" }, "", window.location.href);
     hardResetSession();
-    console.log("SEC WORDING POLISH ACTIVE");
+    console.log("PREMIUM EXPORT POLISH ACTIVE");
   }
 
   init();
