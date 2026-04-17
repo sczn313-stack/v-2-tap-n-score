@@ -11,11 +11,6 @@
   --white: #ffffff;
 
   --shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
-  --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.22);
-
-  --radius-xl: 22px;
-  --radius-lg: 18px;
-
   --maxw: 860px;
 
   --safe-top: env(safe-area-inset-top, 0px);
@@ -31,16 +26,16 @@
   box-sizing: border-box;
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
 html,
 body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -72,7 +67,6 @@ body {
 .w { color: #ffffff; }
 .b { color: #61a7ff; }
 
-/* HERO */
 .hero {
   position: relative;
   padding: 10px 0 10px;
@@ -159,13 +153,8 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.heroBtn:hover {
-  filter: brightness(1.04);
-}
-
 .heroBtn:active {
   transform: translateY(1px) scale(0.985);
-  box-shadow: 0 6px 16px rgba(47, 102, 255, 0.32);
 }
 
 .fileHidden {
@@ -177,7 +166,6 @@ body {
   pointer-events: none !important;
 }
 
-/* WORKSPACE */
 .workspace {
   margin-top: 12px;
 }
@@ -185,7 +173,7 @@ body {
 .card,
 .workspaceTop {
   padding: 14px;
-  border-radius: var(--radius-xl);
+  border-radius: 22px;
   background: var(--panel);
   border: 1px solid var(--panel-border);
   box-shadow: var(--shadow);
@@ -269,13 +257,6 @@ body {
   box-shadow: 0 10px 24px rgba(255, 60, 79, 0.22);
 }
 
-.btnSecondary:active,
-.btnPrimaryTop:active,
-.secCloseBtn:active,
-.secSaveBtn:active {
-  transform: translateY(1px) scale(.985);
-}
-
 .instructionLine {
   margin: 12px 0 4px;
   font-size: 13px;
@@ -291,7 +272,6 @@ body {
   line-height: 1.45;
 }
 
-/* TARGET */
 .targetStage {
   width: 100%;
 }
@@ -390,7 +370,6 @@ body {
   z-index: 5;
 }
 
-/* FREEZE / OVERLAY */
 .freezeScrim {
   position: absolute;
   inset: 0;
@@ -401,19 +380,32 @@ body {
   z-index: 8;
 }
 
+/* ===== FIXED iPAD / MOBILE OVERLAY ===== */
 .secOverlay {
   position: absolute;
   inset: 0;
+  z-index: 9;
+  pointer-events: none;
+
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 14px;
-  z-index: 9;
-  pointer-events: none;
+
+  padding:
+    12px
+    12px
+    max(12px, var(--safe-bottom))
+    12px;
+
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .secCard {
   width: min(100%, 540px);
+  max-height: calc(100% - 24px);
+  overflow: auto;
+
   border-radius: 22px;
   padding: 16px;
   background: rgba(8, 20, 52, 0.94);
@@ -586,6 +578,11 @@ body {
 
   .secBlockWide {
     grid-column: auto;
+  }
+
+  .secCard {
+    width: min(100%, 94vw);
+    max-height: calc(100% - 18px);
   }
 
   :root {
