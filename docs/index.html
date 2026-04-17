@@ -12,115 +12,13 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=TARGET-FIX-0415A" />
-  <link rel="stylesheet" href="./sizechips.css?v=TARGET-FIX-0415A" />
-  <link rel="stylesheet" href="./livebar_fix.css?v=TARGET-FIX-0415A" />
-
-  <style>
-    .vendorHidden { display: none !important; }
-    .scoreHidden { display: none !important; }
-    .workspaceVisible { display: block !important; }
-
-    .vendorPanel {
-      margin-top: 10px;
-    }
-
-    .vendorPanel.show,
-    .vendorPanel.open,
-    .vendorPanel.is-open {
-      display: block !important;
-    }
-
-    .instructionLine,
-    .hint {
-      min-height: 22px;
-    }
-
-    .targetWrap {
-      position: relative;
-      overflow: hidden;
-      touch-action: manipulation;
-    }
-
-    .targetWrap img {
-      display: block;
-      width: 100%;
-      height: auto;
-      user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
-    }
-
-    .dotsLayer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .shotDot {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      border: 2px solid #fff;
-      display: grid;
-      place-items: center;
-      font: 700 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,.28);
-      pointer-events: none;
-    }
-
-    .aimDot {
-      width: 24px;
-      height: 24px;
-      background: #2f66ff;
-      border-radius: 999px;
-    }
-
-    .aimDot::before,
-    .aimDot::after {
-      content: "";
-      position: absolute;
-      background: #fff;
-      border-radius: 999px;
-    }
-
-    .aimDot::before {
-      width: 16px;
-      height: 2px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .aimDot::after {
-      width: 2px;
-      height: 16px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .hitDot {
-      background: #ff4d5d;
-    }
-
-    .matrixHidden {
-      display: none !important;
-    }
-
-    .segOn {
-      outline: 2px solid rgba(255,255,255,.3);
-    }
-  </style>
+  <link rel="stylesheet" href="./styles.css?v=SEC-OVERLAY-B1" />
 </head>
 
 <body>
   <main class="page">
 
-    <section class="hero" aria-label="Tap-n-Score landing">
+    <section id="landingView" class="hero" aria-label="Tap-n-Score landing">
       <div class="brandRow">
         <div class="brandTitle">
           <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE</span><span class="w">™</span>
@@ -141,31 +39,12 @@
 
       <div class="heroMid">
         <button id="photoBtn" class="heroBtn" type="button">📷 TAP TO ADD TARGET PHOTO</button>
-
-        <div class="vendorCenterRow" aria-label="Vendor / Buy more targets">
-          <a id="vendorBox" class="vendorBox vendorBoxFlow" href="#" aria-label="Vendor">
-            <span id="vendorLabel" class="vendorPillText">BUY MORE TARGETS LIKE THIS</span>
-          </a>
-
-          <svg class="vendorWireFlow" viewBox="0 0 220 36" aria-hidden="true">
-            <path d="M10 10 C 58 33, 162 33, 210 10" fill="none" stroke="rgba(255,255,255,.26)" stroke-width="3" stroke-linecap="round"/>
-            <path d="M10 16 C 68 35, 152 35, 210 16" fill="none" stroke="rgba(47,102,255,.18)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-
-          <div id="vendorPanel" class="vendorPanel vendorHidden" aria-hidden="true">
-            <div class="vendorPanelInner">
-              <div class="vendorPanelTitle" id="vendorName">BAKER • SMART TARGET™</div>
-              <div class="vendorPanelSub">You’re still in the Tap-n-Score™ flow.</div>
-              <a id="vendorPanelLink" class="vendorPanelBtn" href="#" target="_blank" rel="noopener">Visit Baker</a>
-            </div>
-          </div>
-        </div>
       </div>
 
       <input id="photoInput" class="fileHidden" type="file" accept="image/*" />
     </section>
 
-    <section id="scoreSection" class="workspace workspaceVisible" aria-label="Target workspace">
+    <section id="workspaceView" class="workspace scoreHidden" aria-label="Target workspace">
       <div class="workspaceTop card">
         <div class="cardTitle cardTitleSEC">
           <div class="secTitle">
@@ -176,25 +55,10 @@
           <div class="secTag">LIVE</div>
         </div>
 
-        <div class="liveBar liveBarTop">
-          <div class="liveRow liveRowOneLine">
-            <div class="liveLine" aria-label="Live settings">
-              <div class="liveLinePrimary" id="liveDistance">100 yds</div>
-              <div class="liveSep">•</div>
-              <div class="liveLinePrimary" id="liveDial">0.25 MOA</div>
-              <div class="liveSep">•</div>
-              <div class="liveLinePrimary" id="liveTarget">23×35</div>
-            </div>
-
-            <button id="matrixBtn" class="matrixBtn matrixBtnTight" type="button" aria-label="Open matrix">
-              MATRIX
-            </button>
-          </div>
-        </div>
-
         <div class="topActionRow" aria-label="Target controls">
-          <div class="pill">Taps: <span id="tapCount">0</span></div>
-          <button id="clearTapsBtn" class="btnSecondary" type="button">Clear</button>
+          <div class="pill">Shots: <span id="shotCount">0</span>/7</div>
+          <button id="undoBtn" class="btnSecondary" type="button">Undo</button>
+          <button id="clearBtn" class="btnSecondary" type="button">Clear</button>
           <button id="showResultsBtn" class="btnPrimaryTop" type="button">Show Results</button>
         </div>
 
@@ -202,77 +66,55 @@
         <p id="statusLine" class="hint">Add a target photo to begin.</p>
       </div>
 
-      <div id="matrixPanel" class="matrixPanel matrixHidden" aria-hidden="true">
-        <div class="matrixTitle">SETTINGS MATRIX</div>
-
-        <div class="matrixGroup">
-          <div class="matrixLabel">DISTANCE</div>
-          <div class="matrixRow">
-            <button id="distDown" class="miniBtn" type="button" aria-label="Distance down">−</button>
-            <input id="distanceYds" class="miniInput" inputmode="numeric" value="100" aria-label="Distance value" />
-            <button id="distUp" class="miniBtn" type="button" aria-label="Distance up">+</button>
-
-            <div class="unitToggle">
-              <button id="distUnitYd" class="segBtn segBtnTiny segOn" type="button">YDS</button>
-              <button id="distUnitM" class="segBtn segBtnTiny" type="button">M</button>
-              <span id="distUnitLabel" class="miniUnit">yds</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="matrixGroup">
-          <div class="matrixLabel">DIAL</div>
-          <div class="matrixRow">
-            <button id="unitMoa" class="segBtn segOn" type="button">MOA</button>
-            <button id="unitMrad" class="segBtn" type="button">MRAD</button>
-
-            <input id="clickValue" class="miniInputWide" inputmode="decimal" value="0.25" aria-label="Click value" />
-            <span id="clickUnitLabel" class="miniUnit">MOA/click</span>
-          </div>
-
-          <div class="chipRow chipRowTight mt12" id="presetChipRow" aria-label="Presets">
-            <button class="chip" type="button" data-unit="MOA" data-click="0.25">.25</button>
-            <button class="chip" type="button" data-unit="MOA" data-click="0.50">.50</button>
-            <button class="chip" type="button" data-unit="MRAD" data-click="0.10">.10</button>
-            <button class="chip" type="button" data-unit="MRAD" data-click="0.20">.20</button>
-            <button class="chip" type="button" data-unit="MOA" data-click="0.125">.125</button>
-            <button class="chip" type="button" data-unit="MRAD" data-click="0.05">.05</button>
-          </div>
-        </div>
-
-        <div class="matrixGroup">
-          <div class="matrixLabel">TARGET SIZE</div>
-
-          <div id="sizeChipRow" class="chipRow" aria-label="Target size chips">
-            <button class="chip chipSize" type="button" data-size="8.5x11" data-w="8.5" data-h="11">8.5×11</button>
-            <button class="chip chipSize" type="button" data-size="11x17" data-w="11" data-h="17">11×17</button>
-            <button class="chip chipSize" type="button" data-size="12x18" data-w="12" data-h="18">12×18</button>
-            <button class="chip chipSize" type="button" data-size="18x24" data-w="18" data-h="24">18×24</button>
-            <button class="chip chipSize" type="button" data-size="23x35" data-w="23" data-h="35">23×35</button>
-            <button class="chip chipSize" type="button" data-size="24x36" data-w="24" data-h="36">24×36</button>
-            <button class="chip chipSize" type="button" data-size="custom">CUSTOM</button>
-          </div>
-
-          <div class="matrixRow mt12">
-            <button id="swapSizeBtn" class="segBtn segBtnTiny" type="button">SWAP W/H</button>
-          </div>
-        </div>
-
-        <div class="matrixFoot">
-          <button id="matrixCloseBtn" class="matrixCloseBtn" type="button">CLOSE</button>
-        </div>
-      </div>
-
-      <div class="targetStage">
+      <div id="resultsStage" class="targetStage">
         <div id="targetWrap" class="targetWrap targetWrapFull" aria-label="Target image area">
           <img id="targetImg" alt="Target" draggable="false" />
           <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
+
+          <div id="freezeScrim" class="freezeScrim isHidden" aria-hidden="true"></div>
+
+          <section id="secOverlay" class="secOverlay isHidden" aria-label="SEC overlay">
+            <div class="secCard">
+              <div class="secCardHeader">
+                <div class="secCardTitle">
+                  <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+                </div>
+                <button id="closeSecBtn" class="secCloseBtn" type="button" aria-label="Close SEC">Close</button>
+              </div>
+
+              <div class="secGrid">
+                <div class="secBlock">
+                  <div class="secLabel">Shots</div>
+                  <div id="secShotCount" class="secValue">0</div>
+                </div>
+
+                <div class="secBlock">
+                  <div class="secLabel">Status</div>
+                  <div id="secStatus" class="secValue secValueSm">Ready</div>
+                </div>
+
+                <div class="secBlock secBlockWide">
+                  <div class="secLabel">Windage</div>
+                  <div id="secWindage" class="secValue secValueSm">—</div>
+                </div>
+
+                <div class="secBlock secBlockWide">
+                  <div class="secLabel">Elevation</div>
+                  <div id="secElevation" class="secValue secValueSm">—</div>
+                </div>
+              </div>
+
+              <div class="secActions">
+                <button id="saveSecBtn" class="secSaveBtn" type="button">Save</button>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </section>
 
   </main>
 
-  <script src="./index.js?v=TARGET-FIX-0415A"></script>
+  <script src="./index.js?v=SEC-OVERLAY-B1"></script>
 </body>
 </html>
