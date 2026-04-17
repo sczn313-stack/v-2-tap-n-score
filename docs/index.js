@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   CONTINUOUS BACK SYSTEM + SEC OVERLAY + CLEAN START + SAVE
+   CONTINUOUS BACK SYSTEM + SCREEN FIT + TAP ON RELEASE
 ============================================================ */
 
 (() => {
@@ -42,9 +42,11 @@
 
   let objectUrl = null;
   let suppressNextPop = false;
+  let pointerStart = null;
+  let activePointerId = null;
 
   const state = {
-    view: "landing", // landing | workspace | results
+    view: "landing",
     imageSrc: "",
     aim: null,
     shots: [],
@@ -65,9 +67,11 @@
     if (view === "landing") {
       els.landingView?.classList.remove("scoreHidden");
       els.workspaceView?.classList.add("scoreHidden");
+      window.scrollTo(0, 0);
     } else {
       els.landingView?.classList.add("scoreHidden");
       els.workspaceView?.classList.remove("scoreHidden");
+      window.scrollTo(0, 0);
     }
 
     if (pushHistory) {
@@ -108,6 +112,9 @@
     state.aim = null;
     state.shots = [];
     state.frozen = false;
+
+    pointerStart = null;
+    activePointerId = null;
 
     clearImageElement();
     hideOverlay();
@@ -185,24 +192,42 @@
     renderDots();
   }
 
-  function getPoint(e) {
+  function getPointFromClient(clientX, clientY) {
     const rect = els.targetWrap.getBoundingClientRect();
-
-    const clientX =
-      e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    const clientY =
-      e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-
     return {
       x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
       y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
     };
   }
 
-  function handleTap(e) {
+  function onPointerDown(e) {
     if (!state.imageSrc || state.frozen) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
-    const p = getPoint(e);
+    activePointerId = e.pointerId;
+    pointerStart = {
+      x: e.clientX,
+      y: e.clientY
+    };
+  }
+
+  function onPointerUp(e) {
+    if (!state.imageSrc || state.frozen) return;
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    if (!pointerStart) return;
+
+    const dx = e.clientX - pointerStart.x;
+    const dy = e.clientY - pointerStart.y;
+    const moved = Math.hypot(dx, dy);
+
+    activePointerId = null;
+
+    if (moved > 12) {
+      pointerStart = null;
+      return;
+    }
+
+    const p = getPointFromClient(e.clientX, e.clientY);
 
     if (!state.aim) {
       state.aim = p;
@@ -210,7 +235,13 @@
       state.shots.push(p);
     }
 
+    pointerStart = null;
     renderAll();
+  }
+
+  function onPointerCancel() {
+    pointerStart = null;
+    activePointerId = null;
   }
 
   function undo() {
@@ -497,6 +528,9 @@
     hideOverlay();
 
     if (els.targetImg) {
+      els.targetImg.onload = () => {
+        window.scrollTo(0, 0);
+      };
       els.targetImg.src = objectUrl;
     }
 
@@ -512,16 +546,9 @@
       if (file) loadImage(file);
     });
 
-    els.targetWrap?.addEventListener("click", handleTap);
-
-    els.targetWrap?.addEventListener(
-      "touchend",
-      (e) => {
-        e.preventDefault();
-        handleTap(e.changedTouches ? e.changedTouches[0] : e);
-      },
-      { passive: false }
-    );
+    els.targetWrap?.addEventListener("pointerdown", onPointerDown);
+    els.targetWrap?.addEventListener("pointerup", onPointerUp);
+    els.targetWrap?.addEventListener("pointercancel", onPointerCancel);
 
     els.backBtn?.addEventListener("click", () => goBack(true));
     els.undoBtn?.addEventListener("click", undo);
