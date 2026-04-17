@@ -11,7 +11,7 @@
   --white: #ffffff;
 
   --shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
-  --maxw: 860px;
+  --maxw: 980px;
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -75,7 +75,7 @@ body {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  padding: 10px 0 10px;
+  padding: 10px 0;
 }
 
 .brandRow {
@@ -154,7 +154,6 @@ body {
   text-align: center;
   box-shadow: 0 10px 24px rgba(47, 102, 255, 0.34);
   cursor: pointer;
-  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -189,7 +188,7 @@ body {
 }
 
 .workspaceTop {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   flex: 0 0 auto;
 }
 
@@ -307,7 +306,7 @@ body {
 }
 
 .targetWrapFull {
-  min-height: clamp(380px, 62dvh, 760px);
+  min-height: clamp(300px, 54dvh, 620px);
 }
 
 #targetImg {
@@ -398,55 +397,61 @@ body {
   z-index: 8;
 }
 
+/* FULL-PAGE SEC */
 .secOverlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 9;
-  pointer-events: none;
+  z-index: 1000;
+  background: rgba(5, 9, 20, 0.72);
+  backdrop-filter: blur(6px);
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
   padding:
-    12px
-    12px
-    max(12px, var(--safe-bottom))
-    12px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+    max(12px, var(--safe-top))
+    max(14px, var(--safe-right))
+    calc(20px + var(--safe-bottom))
+    max(14px, var(--safe-left));
 }
 
-.secCard {
-  width: min(100%, 540px);
-  max-height: calc(100% - 24px);
-  overflow: auto;
-  border-radius: 22px;
-  padding: 16px;
-  background: rgba(8, 20, 52, 0.94);
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(14px);
-  animation: fadeUp .18s ease;
-  pointer-events: auto;
+.secShell {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.secCardHeader {
+.secShellHeader {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(8, 20, 52, 0.96);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow);
 }
 
 .secCardTitle {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   letter-spacing: 0.12em;
 }
 
-.secCloseBtn,
+.secHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.secBackBtn,
 .secSaveBtn {
   min-height: 42px;
-  padding: 0 14px;
+  padding: 0 16px;
   border: 0;
   border-radius: 999px;
   color: #fff;
@@ -456,7 +461,7 @@ body {
   cursor: pointer;
 }
 
-.secCloseBtn {
+.secBackBtn {
   background: rgba(255,255,255,.10);
 }
 
@@ -465,14 +470,25 @@ body {
   box-shadow: 0 10px 24px rgba(47, 102, 255, 0.22);
 }
 
+.secShellBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  border-radius: 22px;
+  padding: 16px;
+  background: rgba(8, 20, 52, 0.96);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow);
+}
+
 .secGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .secBlock {
-  padding: 12px;
+  padding: 14px;
   border-radius: 16px;
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.08);
@@ -488,29 +504,19 @@ body {
   letter-spacing: 0.08em;
   color: var(--muted);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .secValue {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: #fff;
   line-height: 1.05;
 }
 
 .secValueSm {
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.2;
-}
-
-.secActions {
-  margin-top: 14px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.isFrozen {
-  pointer-events: none;
 }
 
 @keyframes dotPop {
@@ -524,50 +530,27 @@ body {
   }
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .targetWrapFull {
+    min-height: clamp(280px, 50dvh, 560px);
+  }
 }
 
 @media (max-width: 640px) {
   .page {
     padding-left: max(12px, var(--safe-left));
     padding-right: max(12px, var(--safe-right));
-    padding-bottom: calc(20px + var(--safe-bottom));
   }
 
   .workspaceTop,
   .card {
     padding: 12px;
     border-radius: 18px;
-  }
-
-  .brandTitle {
-    letter-spacing: 0.06em;
-  }
-
-  .heroSEC {
-    font-size: 30px;
-  }
-
-  .secTitle {
-    font-size: 15px;
-  }
-
-  .secTag {
-    padding: 6px 9px;
-    font-size: 12px;
   }
 
   .topActionRow {
@@ -581,10 +564,6 @@ body {
     justify-content: center;
   }
 
-  .targetWrapFull {
-    min-height: clamp(320px, 56dvh, 620px);
-  }
-
   .secGrid {
     grid-template-columns: 1fr;
   }
@@ -593,9 +572,22 @@ body {
     grid-column: auto;
   }
 
-  .secCard {
-    width: min(100%, 94vw);
-    max-height: calc(100% - 18px);
+  .secShellHeader,
+  .secShellBody {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .secCardTitle {
+    font-size: 24px;
+  }
+
+  .secValue {
+    font-size: 26px;
+  }
+
+  .secValueSm {
+    font-size: 18px;
   }
 
   :root {
@@ -605,46 +597,10 @@ body {
 }
 
 @media (max-width: 420px) {
-  .page {
-    padding-left: max(10px, var(--safe-left));
-    padding-right: max(10px, var(--safe-right));
-  }
-
-  .brandTitle {
-    font-size: 26px;
-  }
-
-  .heroBtn {
-    min-height: 54px;
-    font-size: 14px;
-    padding: 13px 14px;
-  }
-
   .topActionRow .pill,
   .topActionRow .btnSecondary,
   .topActionRow .btnPrimaryTop {
     flex: 1 1 100%;
-  }
-
-  .targetWrapFull {
-    min-height: clamp(300px, 52dvh, 560px);
-  }
-
-  .secCard {
-    padding: 14px;
-    border-radius: 18px;
-  }
-
-  .secCardTitle {
-    font-size: 23px;
-  }
-
-  .secValue {
-    font-size: 24px;
-  }
-
-  .secValueSm {
-    font-size: 16px;
   }
 
   :root {
