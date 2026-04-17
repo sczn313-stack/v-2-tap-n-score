@@ -12,7 +12,7 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=sec-history-trend-lock-1" />
+  <link rel="stylesheet" href="./styles.css?v=sec-dashboard-v1" />
 </head>
 <body>
   <main class="page">
@@ -77,58 +77,84 @@
     </section>
 
     <section id="secOverlay" class="secOverlay isHidden" aria-label="SEC overlay">
-      <div class="secShell">
-        <div class="secShellHeader">
-          <div class="secCardTitle">
+      <div class="secDashShell">
+        <div class="secDashHeader">
+          <div class="secDashLogo">
             <span class="r">S</span><span class="w">E</span><span class="b">C</span>
           </div>
-
-          <div class="secHeaderActions">
+          <div class="secDashHeaderTitle">Shooter Experience Card</div>
+          <div class="secDashActions">
             <button id="secBackBtn" class="secBackBtn" type="button">Back</button>
             <button id="saveSecBtn" class="secSaveBtn" type="button">Save</button>
           </div>
         </div>
 
-        <div class="secShellBody">
-          <div class="secGrid">
-            <div class="secBlock">
-              <div class="secLabel">Shots</div>
-              <div id="secShotCount" class="secValue">0</div>
+        <div class="secDashBody">
+
+          <div class="secTopGrid">
+            <div class="secLeftCol">
+              <div class="secDashLabel">YOUR SCORE</div>
+              <div id="secScore" class="secScoreNumber">0</div>
+              <div id="secScoreBand" class="secScoreBand">SOLID</div>
+
+              <div class="secSectionBlock">
+                <div class="secDashLabel">SCOPE CORRECTION</div>
+                <div class="correctionBar">
+                  <div class="correctionHalf">
+                    <div id="secElevationCount" class="correctionCount">0</div>
+                    <div id="secElevationDir" class="correctionDir correctionBlue">UP</div>
+                  </div>
+
+                  <div class="correctionDivider">•</div>
+
+                  <div class="correctionHalf">
+                    <div id="secWindageCount" class="correctionCount">0</div>
+                    <div id="secWindageDir" class="correctionDir correctionRed">RIGHT</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="secSectionBlock">
+                <div class="secDashLabel">SESSION</div>
+                <div id="secSessionLine" class="sessionLine">—</div>
+              </div>
             </div>
 
-            <div class="secBlock">
-              <div class="secLabel">Status</div>
-              <div id="secStatus" class="secValue secValueSm">Ready</div>
-            </div>
+            <div class="secRightCol">
+              <div class="secSectionBlock">
+                <div class="secDashLabel">OFFICIAL TARGET PARTNER</div>
+                <div id="secVendorName" class="vendorName">Vendor Not Set</div>
+              </div>
 
-            <div class="secBlock secBlockWide">
-              <div class="secLabel">Windage</div>
-              <div id="secWindage" class="secValue secValueSm">—</div>
-            </div>
-
-            <div class="secBlock secBlockWide">
-              <div class="secLabel">Elevation</div>
-              <div id="secElevation" class="secValue secValueSm">—</div>
+              <div class="secSectionBlock">
+                <div class="secDashLabel">TARGET THUMBNAIL</div>
+                <div class="thumbCard">
+                  <img id="secThumbImg" class="thumbImg" alt="Target thumbnail" />
+                  <div id="secThumbFallback" class="thumbFallback">No target loaded</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="historySummary">
-            <div class="historySummaryTitle">LAST 10 SESSIONS</div>
-            <div class="historySummaryStats">
+          <div class="secHistoryBlock">
+            <div class="secDashLabel">SESSION HISTORY</div>
+
+            <div class="historySummaryLine">
               <span>Avg: <strong id="historyAvg">—</strong></span>
               <span>Best: <strong id="historyBest">—</strong></span>
               <span>Trend: <strong id="historyTrend">—</strong></span>
             </div>
+
+            <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
+            <div id="historyList" class="historyGrid"></div>
           </div>
 
-          <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
-          <div id="historyList" class="historyList"></div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <script src="./index.js?v=sec-history-trend-lock-1"></script>
+  <script src="./index.js?v=sec-dashboard-v1"></script>
 </body>
 </html>
