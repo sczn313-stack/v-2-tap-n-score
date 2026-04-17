@@ -1,14 +1,4 @@
-Perfect. A is the right call.
 
-We’re locking in:
-
-👉 Save = SEC-only clean report card
-
-Below is the full replacement docs/index.js. It keeps your current flow and changes Save so it exports a polished SEC-only PNG.
-
-⸻
-
-docs/index.js — FULL REPLACEMENT
 
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
