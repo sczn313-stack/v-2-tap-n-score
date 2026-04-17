@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE
+   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + DOT OVERLAP POLISH
 ============================================================ */
 
 (() => {
@@ -174,6 +174,77 @@
     }
   }
 
+  function getWrapSize() {
+    const rect = els.targetWrap?.getBoundingClientRect();
+    return {
+      width: rect?.width || 0,
+      height: rect?.height || 0
+    };
+  }
+
+  function getShotDisplayPositions() {
+    const { width, height } = getWrapSize();
+    if (!width || !height) {
+      return state.shots.map((shot) => ({ x: shot.x, y: shot.y }));
+    }
+
+    const placed = [];
+    const offsets = [
+      { x: 0, y: 0 },
+      { x: 14, y: 0 },
+      { x: -14, y: 0 },
+      { x: 0, y: -14 },
+      { x: 0, y: 14 },
+      { x: 12, y: -12 },
+      { x: -12, y: -12 },
+      { x: 12, y: 12 },
+      { x: -12, y: 12 },
+      { x: 20, y: 0 },
+      { x: -20, y: 0 },
+      { x: 0, y: -20 },
+      { x: 0, y: 20 }
+    ];
+
+    const minDist = 24;
+
+    state.shots.forEach((shot) => {
+      const basePx = {
+        x: shot.x * width,
+        y: shot.y * height
+      };
+
+      let chosen = { ...basePx };
+
+      for (const off of offsets) {
+        const candidate = {
+          x: basePx.x + off.x,
+          y: basePx.y + off.y
+        };
+
+        const overlaps = placed.some((p) => {
+          const dx = candidate.x - p.x;
+          const dy = candidate.y - p.y;
+          return Math.hypot(dx, dy) < minDist;
+        });
+
+        if (!overlaps) {
+          chosen = candidate;
+          break;
+        }
+      }
+
+      chosen.x = Math.max(14, Math.min(width - 14, chosen.x));
+      chosen.y = Math.max(14, Math.min(height - 14, chosen.y));
+
+      placed.push(chosen);
+    });
+
+    return placed.map((p) => ({
+      x: p.x / width,
+      y: p.y / height
+    }));
+  }
+
   function renderDots() {
     if (!els.dotsLayer) return;
 
@@ -187,12 +258,16 @@
       els.dotsLayer.appendChild(d);
     }
 
+    const displayPositions = getShotDisplayPositions();
+
     state.shots.forEach((shot, i) => {
+      const pos = displayPositions[i] || shot;
       const d = document.createElement("div");
       d.className = "hitDot";
-      d.style.left = `${shot.x * 100}%`;
-      d.style.top = `${shot.y * 100}%`;
+      d.style.left = `${pos.x * 100}%`;
+      d.style.top = `${pos.y * 100}%`;
       d.textContent = String(i + 1);
+      d.title = `Shot ${i + 1}`;
       els.dotsLayer.appendChild(d);
     });
   }
