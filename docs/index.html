@@ -12,7 +12,7 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=BACK-SYSTEM-1" />
+  <link rel="stylesheet" href="./styles.css?v=IPAD-FIT-SEC-FULL-1" />
 </head>
 
 <body>
@@ -71,51 +71,52 @@
         <div id="targetWrap" class="targetWrap targetWrapFull" aria-label="Target image area">
           <img id="targetImg" alt="Target" draggable="false" />
           <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
-
           <div id="freezeScrim" class="freezeScrim isHidden" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
 
-          <section id="secOverlay" class="secOverlay isHidden" aria-label="SEC overlay">
-            <div class="secCard">
-              <div class="secCardHeader">
-                <div class="secCardTitle">
-                  <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-                </div>
-                <button id="closeSecBtn" class="secCloseBtn" type="button" aria-label="Close SEC">Close</button>
-              </div>
+    <section id="secOverlay" class="secOverlay isHidden" aria-label="SEC overlay">
+      <div class="secShell">
+        <div class="secShellHeader">
+          <div class="secCardTitle">
+            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+          </div>
 
-              <div class="secGrid">
-                <div class="secBlock">
-                  <div class="secLabel">Shots</div>
-                  <div id="secShotCount" class="secValue">0</div>
-                </div>
+          <div class="secHeaderActions">
+            <button id="secBackBtn" class="secBackBtn" type="button">Back</button>
+            <button id="saveSecBtn" class="secSaveBtn" type="button">Save</button>
+          </div>
+        </div>
 
-                <div class="secBlock">
-                  <div class="secLabel">Status</div>
-                  <div id="secStatus" class="secValue secValueSm">Ready</div>
-                </div>
-
-                <div class="secBlock secBlockWide">
-                  <div class="secLabel">Windage</div>
-                  <div id="secWindage" class="secValue secValueSm">—</div>
-                </div>
-
-                <div class="secBlock secBlockWide">
-                  <div class="secLabel">Elevation</div>
-                  <div id="secElevation" class="secValue secValueSm">—</div>
-                </div>
-              </div>
-
-              <div class="secActions">
-                <button id="saveSecBtn" class="secSaveBtn" type="button">Save</button>
-              </div>
+        <div class="secShellBody">
+          <div class="secGrid">
+            <div class="secBlock">
+              <div class="secLabel">Shots</div>
+              <div id="secShotCount" class="secValue">0</div>
             </div>
-          </section>
+
+            <div class="secBlock">
+              <div class="secLabel">Status</div>
+              <div id="secStatus" class="secValue secValueSm">Ready</div>
+            </div>
+
+            <div class="secBlock secBlockWide">
+              <div class="secLabel">Windage</div>
+              <div id="secWindage" class="secValue secValueSm">—</div>
+            </div>
+
+            <div class="secBlock secBlockWide">
+              <div class="secLabel">Elevation</div>
+              <div id="secElevation" class="secValue secValueSm">—</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <script src="./index.js?v=BACK-SYSTEM-1"></script>
+  <script src="./index.js?v=IPAD-FIT-SEC-FULL-1"></script>
 </body>
 </html>
