@@ -1,6 +1,7 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + PREMIUM EXPORT POLISH
+   LOCKED BUILD + FULL PAGE SEC + SEC-ONLY SAVE + PREMIUM EXPORT
+   SAVED SEC DOES NOT SHOW BACK / SAVE BUTTONS
 ============================================================ */
 
 (() => {
@@ -449,6 +450,7 @@
     const shellW = width - 88;
     const headerH = 138;
 
+    // Header without buttons
     roundRect(ctx, shellX, shellY, shellW, headerH, 30);
     ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
     ctx.fill();
@@ -467,32 +469,8 @@
     ctx.fillText("C", shellX + 128, shellY + 88);
 
     ctx.fillStyle = "rgba(184,197,234,0.95)";
-    ctx.font = "900 20px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Shooter Experience Card", shellX + 206, shellY + 88);
-
-    const btnY = shellY + 26;
-    const btnH = 80;
-    const saveBtnW = 148;
-    const backBtnW = 148;
-    const gap = 16;
-    const saveBtnX = shellX + shellW - 28 - saveBtnW;
-    const backBtnX = saveBtnX - gap - backBtnW;
-
-    roundRect(ctx, backBtnX, btnY, backBtnW, btnH, 40);
-    ctx.fillStyle = "rgba(255,255,255,0.10)";
-    ctx.fill();
-
-    roundRect(ctx, saveBtnX, btnY, saveBtnW, btnH, 40);
-    const btnGrad = ctx.createLinearGradient(saveBtnX, btnY, saveBtnX + saveBtnW, btnY + btnH);
-    btnGrad.addColorStop(0, "#2f66ff");
-    btnGrad.addColorStop(1, "#5d8cff");
-    ctx.fillStyle = btnGrad;
-    ctx.fill();
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "900 30px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText("Back", backBtnX + 40, btnY + 51);
-    ctx.fillText("Save", saveBtnX + 40, btnY + 51);
+    ctx.font = "900 22px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText("Shooter Experience Card", shellX + 210, shellY + 88);
 
     const bodyX = 44;
     const bodyY = shellY + headerH + 20;
