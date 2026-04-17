@@ -1,5 +1,3 @@
-Here is the full replacement for docs/styles.css:
-
 :root {
   --bg-top: #0a1b4e;
   --bg-mid: #112c6e;
@@ -71,7 +69,6 @@ body {
 .b { color: #61a7ff; }
 
 .hero {
-  position: relative;
   min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
   display: flex;
   flex-direction: column;
@@ -117,7 +114,6 @@ body {
   line-height: 1;
   font-weight: 900;
   letter-spacing: 0.12em;
-  text-shadow: 0 4px 16px rgba(0,0,0,.22);
 }
 
 .heroSECSub {
@@ -128,15 +124,12 @@ body {
   font-size: 12px;
   font-weight: 700;
   color: var(--muted);
-  letter-spacing: 0.03em;
 }
 
 .heroMid {
   margin-top: 18px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  justify-content: center;
 }
 
 .heroBtn {
@@ -159,10 +152,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.heroBtn:active {
-  transform: translateY(1px) scale(0.985);
-}
-
 .fileHidden {
   position: absolute !important;
   left: -9999px !important;
@@ -173,7 +162,6 @@ body {
 }
 
 .workspace {
-  margin-top: 0;
   min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
   display: flex;
   flex-direction: column;
@@ -213,7 +201,6 @@ body {
 }
 
 .secTag {
-  flex: 0 0 auto;
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(255,255,255,.08);
@@ -267,6 +254,13 @@ body {
   box-shadow: 0 10px 24px rgba(255, 60, 79, 0.22);
 }
 
+.btnSecondary:disabled,
+.btnPrimaryTop:disabled {
+  opacity: 0.45;
+  cursor: default;
+  box-shadow: none;
+}
+
 .instructionLine {
   margin: 12px 0 4px;
   font-size: 13px;
@@ -301,7 +295,7 @@ body {
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.04),
     0 10px 22px rgba(0,0,0,.20);
-  touch-action: auto;
+  touch-action: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -329,16 +323,13 @@ body {
   pointer-events: none;
 }
 
-.shotDot,
 .aimDot,
-.hitDot,
-.poibDot {
+.hitDot {
   position: absolute;
   transform: translate(-50%, -50%);
   border-radius: 999px;
   pointer-events: none;
   user-select: none;
-  animation: dotPop .14s ease;
 }
 
 .aimDot {
@@ -390,26 +381,10 @@ body {
   z-index: 5;
 }
 
-.poibDot {
-  width: 28px;
-  height: 28px;
-  background: #ff5d5d;
-  border: 2px solid rgba(255,255,255,.95);
-  box-shadow: 0 4px 16px rgba(0,0,0,.28);
-  display: grid;
-  place-items: center;
-  font: 900 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  color: #fff;
-  z-index: 7;
-}
-
 .freezeScrim {
   position: absolute;
   inset: 0;
   background: rgba(5, 9, 20, 0.58);
-  opacity: 0;
-  animation: fadeIn .18s ease forwards;
-  pointer-events: none;
   z-index: 8;
 }
 
@@ -439,7 +414,6 @@ body {
 }
 
 .secShellHeader {
-  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -474,7 +448,6 @@ body {
   font-weight: 900;
   letter-spacing: 0.06em;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .secBackBtn {
@@ -495,7 +468,6 @@ body {
   background: rgba(8, 20, 52, 0.96);
   border: 1px solid rgba(255,255,255,.12);
   box-shadow: var(--shadow);
-  -webkit-overflow-scrolling: touch;
 }
 
 .secGrid {
@@ -536,22 +508,6 @@ body {
   line-height: 1.2;
 }
 
-@keyframes dotPop {
-  0% {
-    transform: translate(-50%, -50%) scale(.84);
-    opacity: .7;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 @media (max-width: 900px) {
   .targetWrapFull {
     min-height: clamp(280px, 50dvh, 560px);
@@ -559,21 +515,6 @@ body {
 }
 
 @media (max-width: 640px) {
-  .page {
-    padding-left: max(12px, var(--safe-left));
-    padding-right: max(12px, var(--safe-right));
-  }
-
-  .workspaceTop,
-  .card {
-    padding: 12px;
-    border-radius: 18px;
-  }
-
-  .topActionRow {
-    justify-content: stretch;
-  }
-
   .topActionRow .pill,
   .topActionRow .btnSecondary,
   .topActionRow .btnPrimaryTop {
