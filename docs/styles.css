@@ -2,32 +2,23 @@
   --bg-top: #0a1b4e;
   --bg-mid: #112c6e;
   --bg-bottom: #06122f;
-
   --panel: rgba(8, 20, 52, 0.82);
   --panel-border: rgba(255, 215, 84, 0.28);
-
   --text: #f4f7ff;
   --muted: #b8c5ea;
-  --white: #ffffff;
-
   --shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
   --maxw: 980px;
-
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
-
   --aim-dot-size: 22px;
   --shot-dot-size: 26px;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;
@@ -508,15 +499,44 @@ body {
   line-height: 1.2;
 }
 
+.historySummary {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.historySummaryTitle {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.historySummaryStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.historySummaryStats strong {
+  color: #fff;
+}
+
 .historyEmpty {
   font-size: 16px;
   color: var(--muted);
-  padding: 12px 4px;
+  padding: 14px 4px 4px;
 }
 
 .historyList {
   display: grid;
   gap: 12px;
+  margin-top: 14px;
 }
 
 .historyCard {
@@ -595,6 +615,11 @@ body {
 
   .secValueSm {
     font-size: 18px;
+  }
+
+  .historySummaryStats {
+    font-size: 15px;
+    gap: 10px 16px;
   }
 
   :root {
