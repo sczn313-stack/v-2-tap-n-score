@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   CLEAN START + SEC OVERLAY + NO GHOST IMAGE RESTORE
+   CLEAN START + SEC OVERLAY + REAL SAVE
 ============================================================ */
 
 (() => {
@@ -205,7 +205,6 @@
 
     state.aim = null;
     state.shots = [];
-
     renderAll();
   }
 
@@ -245,7 +244,187 @@
   }
 
   function save() {
-    alert("Save wired next step");
+    if (!els.targetWrap || !els.targetImg || !state.imageSrc) return;
+
+    const rect = els.targetWrap.getBoundingClientRect();
+    const width = Math.max(1, Math.round(rect.width));
+    const height = Math.max(1, Math.round(rect.height));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, width, height);
+
+      if (state.frozen) {
+        ctx.fillStyle = "rgba(5, 9, 20, 0.58)";
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      if (state.aim) {
+        const x = state.aim.x * width;
+        const y = state.aim.y * height;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 11, 0, Math.PI * 2);
+        ctx.fillStyle = "#2f66ff";
+        ctx.fill();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - 8, y);
+        ctx.lineTo(x + 8, y);
+        ctx.moveTo(x, y - 8);
+        ctx.lineTo(x, y + 8);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+      }
+
+      state.shots.forEach((shot, i) => {
+        const x = shot.x * width;
+        const y = shot.y * height;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 13, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff4d5d";
+        ctx.fill();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(i + 1), x, y);
+      });
+
+      if (state.frozen) {
+        const cardWidth = Math.min(width - 32, 680);
+        const cardX = Math.round((width - cardWidth) / 2);
+        const cardY = Math.round(height * 0.68);
+        const cardHeight = Math.min(height - cardY - 16, 250);
+        const radius = 22;
+
+        roundRect(ctx, cardX, cardY, cardWidth, cardHeight, radius);
+        ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(255,255,255,0.12)";
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.font = "900 24px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+        ctx.fillText("SEC", cardX + 18, cardY + 34);
+
+        const labelColor = "rgba(184,197,234,1)";
+        const valueColor = "#ffffff";
+
+        const blockGap = 10;
+        const innerPad = 18;
+        const row1Y = cardY + 54;
+        const smallBlockH = 72;
+        const wideBlockH = 62;
+        const halfW = Math.floor((cardWidth - innerPad * 2 - blockGap) / 2);
+
+        drawInfoBlock(
+          ctx,
+          cardX + innerPad,
+          row1Y,
+          halfW,
+          smallBlockH,
+          "SHOTS",
+          String(state.shots.length),
+          labelColor,
+          valueColor
+        );
+
+        drawInfoBlock(
+          ctx,
+          cardX + innerPad + halfW + blockGap,
+          row1Y,
+          halfW,
+          smallBlockH,
+          "STATUS",
+          "Results Ready",
+          labelColor,
+          valueColor
+        );
+
+        drawInfoBlock(
+          ctx,
+          cardX + innerPad,
+          row1Y + smallBlockH + 12,
+          cardWidth - innerPad * 2,
+          wideBlockH,
+          "WINDAGE",
+          els.secWindage?.textContent || "HOLD",
+          labelColor,
+          valueColor
+        );
+
+        drawInfoBlock(
+          ctx,
+          cardX + innerPad,
+          row1Y + smallBlockH + 12 + wideBlockH + 12,
+          cardWidth - innerPad * 2,
+          wideBlockH,
+          "ELEVATION",
+          els.secElevation?.textContent || "HOLD",
+          labelColor,
+          valueColor
+        );
+      }
+
+      const link = document.createElement("a");
+      link.download = `sczn3-result-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+
+    img.src = els.targetImg.src;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    const radius = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  }
+
+  function drawInfoBlock(ctx, x, y, w, h, label, value, labelColor, valueColor) {
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.stroke();
+
+    ctx.fillStyle = labelColor;
+    ctx.font = "900 11px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(label, x + 18, y + 26);
+
+    ctx.fillStyle = valueColor;
+    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
+    ctx.fillText(value, x + 18, y + 50);
   }
 
   function loadImage(file) {
