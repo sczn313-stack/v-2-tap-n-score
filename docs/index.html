@@ -12,7 +12,7 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=sec-dashboard-v1" />
+  <link rel="stylesheet" href="./styles.css?v=sec-dashboard-split-1" />
 </head>
 <body>
   <main class="page">
@@ -90,7 +90,6 @@
         </div>
 
         <div class="secDashBody">
-
           <div class="secTopGrid">
             <div class="secLeftCol">
               <div class="secDashLabel">YOUR SCORE</div>
@@ -129,7 +128,7 @@
               <div class="secSectionBlock">
                 <div class="secDashLabel">TARGET THUMBNAIL</div>
                 <div class="thumbCard">
-                  <img id="secThumbImg" class="thumbImg" alt="Target thumbnail" />
+                  <img id="secThumbImg" class="thumbImg isHidden" alt="Target thumbnail" />
                   <div id="secThumbFallback" class="thumbFallback">No target loaded</div>
                 </div>
               </div>
@@ -148,13 +147,14 @@
             <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
             <div id="historyList" class="historyGrid"></div>
           </div>
-
         </div>
       </div>
     </section>
 
   </main>
 
-  <script src="./index.js?v=sec-dashboard-v1"></script>
+  <script src="./sec.js?v=sec-dashboard-split-1"></script>
+  <script src="./save.js?v=sec-dashboard-split-1"></script>
+  <script src="./index.js?v=sec-dashboard-split-1"></script>
 </body>
 </html>
