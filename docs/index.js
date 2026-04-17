@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   CLEAN START + SEC OVERLAY + REAL SAVE
+   CONTINUOUS BACK SYSTEM + SEC OVERLAY + CLEAN STATE
 ============================================================ */
 
 (() => {
@@ -11,6 +11,8 @@
   const els = {
     landingView: $("landingView"),
     workspaceView: $("workspaceView"),
+
+    backBtn: $("backBtn"), // 🔥 NEW
 
     photoBtn: $("photoBtn"),
     photoInput: $("photoInput"),
@@ -39,103 +41,77 @@
   };
 
   let objectUrl = null;
-  let userLoadedImage = false;
 
   const state = {
+    view: "landing", // 🔥 landing | workspace | results
     imageSrc: "",
     aim: null,
     shots: [],
     frozen: false
   };
 
-  function showLanding() {
-    els.landingView?.classList.remove("scoreHidden");
-    els.workspaceView?.classList.add("scoreHidden");
-  }
+  /* ======================
+     VIEW CONTROL
+  ====================== */
 
-  function showWorkspace() {
-    els.landingView?.classList.add("scoreHidden");
-    els.workspaceView?.classList.remove("scoreHidden");
-  }
+  function setView(v) {
+    state.view = v;
 
-  function hideOverlay() {
-    els.freezeScrim?.classList.add("isHidden");
-    els.secOverlay?.classList.add("isHidden");
-  }
-
-  function clearImageElement() {
-    if (els.targetImg) {
-      els.targetImg.removeAttribute("src");
-      els.targetImg.src = "";
+    if (v === "landing") {
+      els.landingView.classList.remove("scoreHidden");
+      els.workspaceView.classList.add("scoreHidden");
     }
 
-    if (els.photoInput) {
-      els.photoInput.value = "";
+    if (v === "workspace" || v === "results") {
+      els.landingView.classList.add("scoreHidden");
+      els.workspaceView.classList.remove("scoreHidden");
     }
 
-    if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
-      objectUrl = null;
-    }
+    // 🔥 push browser state
+    history.pushState({ view: v }, "");
   }
 
-  function hardResetSession() {
-    try { localStorage.clear(); } catch {}
-    try { sessionStorage.clear(); } catch {}
-
+  function resetSession() {
     state.imageSrc = "";
     state.aim = null;
     state.shots = [];
     state.frozen = false;
-    userLoadedImage = false;
 
-    clearImageElement();
-    hideOverlay();
-
-    if (els.dotsLayer) {
-      els.dotsLayer.innerHTML = "";
+    if (objectUrl) {
+      try { URL.revokeObjectURL(objectUrl); } catch {}
+      objectUrl = null;
     }
 
-    showLanding();
-    renderAll();
+    els.targetImg.src = "";
+    els.dotsLayer.innerHTML = "";
+
+    hideOverlay();
   }
 
+  /* ======================
+     UI
+  ====================== */
+
   function updateUI() {
-    if (els.shotCount) {
-      els.shotCount.textContent = String(state.shots.length);
-    }
+    els.shotCount.textContent = state.shots.length;
 
     if (!state.imageSrc) {
-      if (els.instructionLine) els.instructionLine.textContent = "Add a target photo.";
-      if (els.statusLine) els.statusLine.textContent = "Tap to begin.";
+      els.instructionLine.textContent = "Add a target photo.";
+      els.statusLine.textContent = "Tap to begin.";
       return;
     }
 
     if (!state.aim) {
-      if (els.instructionLine) els.instructionLine.textContent = "Tap aim point.";
-      if (els.statusLine) els.statusLine.textContent = "First tap sets aim.";
+      els.instructionLine.textContent = "Tap aim point.";
+      els.statusLine.textContent = "First tap sets aim.";
       return;
     }
 
-    if (state.shots.length >= 7) {
-      if (els.instructionLine) els.instructionLine.textContent = "Maximum 7 shots reached.";
-      if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-      return;
-    }
-
-    if (els.instructionLine) {
-      els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
-    }
-    if (els.statusLine) {
-      els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-    }
+    els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
+    els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
   }
 
   function renderDots() {
-    if (!els.dotsLayer) return;
-
     els.dotsLayer.innerHTML = "";
 
     if (state.aim) {
@@ -146,12 +122,12 @@
       els.dotsLayer.appendChild(d);
     }
 
-    state.shots.forEach((shot, i) => {
+    state.shots.forEach((s, i) => {
       const d = document.createElement("div");
       d.className = "hitDot";
-      d.style.left = `${shot.x * 100}%`;
-      d.style.top = `${shot.y * 100}%`;
-      d.textContent = String(i + 1);
+      d.style.left = `${s.x * 100}%`;
+      d.style.top = `${s.y * 100}%`;
+      d.textContent = i + 1;
       els.dotsLayer.appendChild(d);
     });
   }
@@ -161,16 +137,15 @@
     renderDots();
   }
 
+  /* ======================
+     TAP
+  ====================== */
+
   function getPoint(e) {
     const rect = els.targetWrap.getBoundingClientRect();
-    const clientX =
-      e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    const clientY =
-      e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-
     return {
-      x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
-      y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height
     };
   }
 
@@ -188,30 +163,34 @@
     renderAll();
   }
 
-  function undo() {
-    if (state.frozen) return;
+  /* ======================
+     ACTIONS
+  ====================== */
 
+  function undo() {
     if (state.shots.length) {
       state.shots.pop();
     } else {
       state.aim = null;
     }
-
     renderAll();
   }
 
   function clearAll() {
-    if (state.frozen) return;
-
     state.aim = null;
     state.shots = [];
     renderAll();
   }
 
+  /* ======================
+     SEC
+  ====================== */
+
   function openSEC() {
-    if (!state.aim || state.shots.length === 0) return;
+    if (!state.aim || !state.shots.length) return;
 
     state.frozen = true;
+    setView("results");
 
     const avgX = state.shots.reduce((s, p) => s + p.x, 0) / state.shots.length;
     const avgY = state.shots.reduce((s, p) => s + p.y, 0) / state.shots.length;
@@ -219,288 +198,109 @@
     const dx = avgX - state.aim.x;
     const dy = avgY - state.aim.y;
 
-    const windageDir = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "HOLD";
-    const elevationDir = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "HOLD";
+    const wDir = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "HOLD";
+    const eDir = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "HOLD";
 
-    const windage = Math.round(Math.abs(dx) * 100);
-    const elevation = Math.round(Math.abs(dy) * 100);
+    const w = Math.round(Math.abs(dx) * 100);
+    const e = Math.round(Math.abs(dy) * 100);
 
-    els.freezeScrim?.classList.remove("isHidden");
-    els.secOverlay?.classList.remove("isHidden");
+    els.freezeScrim.classList.remove("isHidden");
+    els.secOverlay.classList.remove("isHidden");
 
-    if (els.secShotCount) els.secShotCount.textContent = String(state.shots.length);
-    if (els.secStatus) els.secStatus.textContent = "Results Ready";
-    if (els.secWindage) {
-      els.secWindage.textContent = windage === 0 ? "HOLD" : `${windageDir} ${windage}`;
-    }
-    if (els.secElevation) {
-      els.secElevation.textContent = elevation === 0 ? "HOLD" : `${elevationDir} ${elevation}`;
-    }
+    els.secShotCount.textContent = state.shots.length;
+    els.secStatus.textContent = "Results Ready";
+    els.secWindage.textContent = w === 0 ? "HOLD" : `${wDir} ${w}`;
+    els.secElevation.textContent = e === 0 ? "HOLD" : `${eDir} ${e}`;
   }
 
   function closeSEC() {
     state.frozen = false;
+    setView("workspace");
     hideOverlay();
   }
 
-  function save() {
-    if (!els.targetWrap || !els.targetImg || !state.imageSrc) return;
-
-    const rect = els.targetWrap.getBoundingClientRect();
-    const width = Math.max(1, Math.round(rect.width));
-    const height = Math.max(1, Math.round(rect.height));
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const img = new Image();
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, width, height);
-
-      if (state.frozen) {
-        ctx.fillStyle = "rgba(5, 9, 20, 0.58)";
-        ctx.fillRect(0, 0, width, height);
-      }
-
-      if (state.aim) {
-        const x = state.aim.x * width;
-        const y = state.aim.y * height;
-
-        ctx.beginPath();
-        ctx.arc(x, y, 11, 0, Math.PI * 2);
-        ctx.fillStyle = "#2f66ff";
-        ctx.fill();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffffff";
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x - 8, y);
-        ctx.lineTo(x + 8, y);
-        ctx.moveTo(x, y - 8);
-        ctx.lineTo(x, y + 8);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffffff";
-        ctx.stroke();
-      }
-
-      state.shots.forEach((shot, i) => {
-        const x = shot.x * width;
-        const y = shot.y * height;
-
-        ctx.beginPath();
-        ctx.arc(x, y, 13, 0, Math.PI * 2);
-        ctx.fillStyle = "#ff4d5d";
-        ctx.fill();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffffff";
-        ctx.stroke();
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(String(i + 1), x, y);
-      });
-
-      if (state.frozen) {
-        const cardWidth = Math.min(width - 32, 680);
-        const cardX = Math.round((width - cardWidth) / 2);
-        const cardY = Math.round(height * 0.68);
-        const cardHeight = Math.min(height - cardY - 16, 250);
-        const radius = 22;
-
-        roundRect(ctx, cardX, cardY, cardWidth, cardHeight, radius);
-        ctx.fillStyle = "rgba(8, 20, 52, 0.96)";
-        ctx.fill();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "rgba(255,255,255,0.12)";
-        ctx.stroke();
-
-        ctx.fillStyle = "#ffffff";
-        ctx.textAlign = "left";
-        ctx.textBaseline = "alphabetic";
-        ctx.font = "900 24px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-        ctx.fillText("SEC", cardX + 18, cardY + 34);
-
-        const labelColor = "rgba(184,197,234,1)";
-        const valueColor = "#ffffff";
-
-        const blockGap = 10;
-        const innerPad = 18;
-        const row1Y = cardY + 54;
-        const smallBlockH = 72;
-        const wideBlockH = 62;
-        const halfW = Math.floor((cardWidth - innerPad * 2 - blockGap) / 2);
-
-        drawInfoBlock(
-          ctx,
-          cardX + innerPad,
-          row1Y,
-          halfW,
-          smallBlockH,
-          "SHOTS",
-          String(state.shots.length),
-          labelColor,
-          valueColor
-        );
-
-        drawInfoBlock(
-          ctx,
-          cardX + innerPad + halfW + blockGap,
-          row1Y,
-          halfW,
-          smallBlockH,
-          "STATUS",
-          "Results Ready",
-          labelColor,
-          valueColor
-        );
-
-        drawInfoBlock(
-          ctx,
-          cardX + innerPad,
-          row1Y + smallBlockH + 12,
-          cardWidth - innerPad * 2,
-          wideBlockH,
-          "WINDAGE",
-          els.secWindage?.textContent || "HOLD",
-          labelColor,
-          valueColor
-        );
-
-        drawInfoBlock(
-          ctx,
-          cardX + innerPad,
-          row1Y + smallBlockH + 12 + wideBlockH + 12,
-          cardWidth - innerPad * 2,
-          wideBlockH,
-          "ELEVATION",
-          els.secElevation?.textContent || "HOLD",
-          labelColor,
-          valueColor
-        );
-      }
-
-      const link = document.createElement("a");
-      link.download = `sczn3-result-${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    };
-
-    img.src = els.targetImg.src;
+  function hideOverlay() {
+    els.freezeScrim.classList.add("isHidden");
+    els.secOverlay.classList.add("isHidden");
   }
 
-  function roundRect(ctx, x, y, w, h, r) {
-    const radius = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.arcTo(x + w, y, x + w, y + h, radius);
-    ctx.arcTo(x + w, y + h, x, y + h, radius);
-    ctx.arcTo(x, y + h, x, y, radius);
-    ctx.arcTo(x, y, x + w, y, radius);
-    ctx.closePath();
+  /* ======================
+     BACK SYSTEM 🔥
+  ====================== */
+
+  function goBack() {
+    if (state.view === "results") {
+      closeSEC();
+      return;
+    }
+
+    if (state.view === "workspace") {
+      resetSession();
+      setView("landing");
+      return;
+    }
+
+    // landing → normal browser back
+    history.back();
   }
 
-  function drawInfoBlock(ctx, x, y, w, h, label, value, labelColor, valueColor) {
-    roundRect(ctx, x, y, w, h, 16);
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
-    ctx.stroke();
+  window.onpopstate = () => {
+    goBack();
+  };
 
-    ctx.fillStyle = labelColor;
-    ctx.font = "900 11px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
-    ctx.fillText(label, x + 18, y + 26);
-
-    ctx.fillStyle = valueColor;
-    ctx.font = "900 18px -apple-system, BlinkMacSystemFont, Segoe UI, Arial";
-    ctx.fillText(value, x + 18, y + 50);
-  }
+  /* ======================
+     IMAGE
+  ====================== */
 
   function loadImage(file) {
-    if (!file) return;
-
-    userLoadedImage = true;
-
-    clearImageElement();
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
 
     objectUrl = URL.createObjectURL(file);
 
     state.imageSrc = objectUrl;
     state.aim = null;
     state.shots = [];
-    state.frozen = false;
 
-    hideOverlay();
+    els.targetImg.src = objectUrl;
 
-    if (els.targetImg) {
-      els.targetImg.src = objectUrl;
-    }
-
-    showWorkspace();
+    setView("workspace");
     renderAll();
   }
 
+  /* ======================
+     EVENTS
+  ====================== */
+
   function bind() {
-    els.photoBtn?.addEventListener("click", () => els.photoInput?.click());
+    els.photoBtn.onclick = () => els.photoInput.click();
 
-    els.photoInput?.addEventListener("change", (e) => {
-      const file = e.target.files && e.target.files[0];
+    els.photoInput.onchange = (e) => {
+      const file = e.target.files[0];
       if (file) loadImage(file);
-    });
+    };
 
-    els.targetWrap?.addEventListener("click", handleTap);
+    els.targetWrap.onclick = handleTap;
 
-    els.targetWrap?.addEventListener(
-      "touchend",
-      (e) => {
-        e.preventDefault();
-        handleTap(e.changedTouches ? e.changedTouches[0] : e);
-      },
-      { passive: false }
-    );
+    els.undoBtn.onclick = undo;
+    els.clearBtn.onclick = clearAll;
+    els.showResultsBtn.onclick = openSEC;
 
-    els.undoBtn?.addEventListener("click", undo);
-    els.clearBtn?.addEventListener("click", clearAll);
-    els.showResultsBtn?.addEventListener("click", openSEC);
+    els.closeSecBtn.onclick = closeSEC;
 
-    els.closeSecBtn?.addEventListener("click", closeSEC);
-    els.saveSecBtn?.addEventListener("click", save);
-
-    window.addEventListener("pageshow", (e) => {
-      if (e.persisted) {
-        window.location.reload();
-        return;
-      }
-      hardResetSession();
-    });
-
-    window.addEventListener("load", () => {
-      hardResetSession();
-    });
+    els.backBtn.onclick = goBack; // 🔥
   }
+
+  /* ======================
+     INIT
+  ====================== */
 
   function init() {
     bind();
-    hardResetSession();
-
-    if (!userLoadedImage && els.targetImg) {
-      els.targetImg.removeAttribute("src");
-      els.targetImg.src = "";
-    }
-
-    console.log("CLEAN START ACTIVE");
+    resetSession();
+    setView("landing");
+    console.log("BACK SYSTEM ACTIVE");
   }
 
   init();
+
 })();
