@@ -1,6 +1,7 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    APP FLOW / STATE / TAPS / WIRING
+   AIM BLINK + TAP CLARITY
 ============================================================ */
 
 (() => {
@@ -160,6 +161,12 @@
       return;
     }
 
+    if (state.shots.length === 0) {
+      if (els.instructionLine) els.instructionLine.textContent = "Tap shot 1";
+      if (els.statusLine) els.statusLine.textContent = "Aim point blinks until first hit.";
+      return;
+    }
+
     if (state.shots.length >= 7) {
       if (els.instructionLine) els.instructionLine.textContent = "Maximum 7 shots reached.";
       if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
@@ -181,11 +188,21 @@
 
     const placed = [];
     const offsets = [
-      { x: 0, y: 0 }, { x: 14, y: 0 }, { x: -14, y: 0 }, { x: 0, y: -14 },
-      { x: 0, y: 14 }, { x: 12, y: -12 }, { x: -12, y: -12 }, { x: 12, y: 12 },
-      { x: -12, y: 12 }, { x: 20, y: 0 }, { x: -20, y: 0 }, { x: 0, y: -20 }, { x: 0, y: 20 }
+      { x: 0, y: 0 },
+      { x: 16, y: 0 },
+      { x: -16, y: 0 },
+      { x: 0, y: -16 },
+      { x: 0, y: 16 },
+      { x: 14, y: -14 },
+      { x: -14, y: -14 },
+      { x: 14, y: 14 },
+      { x: -14, y: 14 },
+      { x: 22, y: 0 },
+      { x: -22, y: 0 },
+      { x: 0, y: -22 },
+      { x: 0, y: 22 }
     ];
-    const minDist = 24;
+    const minDist = 28;
 
     state.shots.forEach((shot) => {
       const basePx = { x: shot.x * width, y: shot.y * height };
@@ -200,8 +217,8 @@
         }
       }
 
-      chosen.x = Math.max(14, Math.min(width - 14, chosen.x));
-      chosen.y = Math.max(14, Math.min(height - 14, chosen.y));
+      chosen.x = Math.max(16, Math.min(width - 16, chosen.x));
+      chosen.y = Math.max(16, Math.min(height - 16, chosen.y));
       placed.push(chosen);
     });
 
@@ -215,6 +232,7 @@
     if (state.aim) {
       const d = document.createElement("div");
       d.className = "aimDot";
+      if (state.shots.length === 0) d.classList.add("blinking");
       d.style.left = `${state.aim.x * 100}%`;
       d.style.top = `${state.aim.y * 100}%`;
       els.dotsLayer.appendChild(d);
@@ -239,6 +257,7 @@
 
   function getPointFromClient(clientX, clientY) {
     const rect = els.targetWrap.getBoundingClientRect();
+
     return {
       x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
       y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
@@ -260,15 +279,18 @@
     const moved = Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y);
     activePointerId = null;
 
-    if (moved > 12) {
+    if (moved > 14) {
       pointerStart = null;
       return;
     }
 
     const p = getPointFromClient(e.clientX, e.clientY);
 
-    if (!state.aim) state.aim = p;
-    else if (state.shots.length < 7) state.shots.push(p);
+    if (!state.aim) {
+      state.aim = p;
+    } else if (state.shots.length < 7) {
+      state.shots.push(p);
+    }
 
     pointerStart = null;
     renderAll();
@@ -281,8 +303,11 @@
 
   function undo() {
     if (state.frozen) return;
-    if (state.shots.length > 0) state.shots.pop();
-    else state.aim = null;
+    if (state.shots.length > 0) {
+      state.shots.pop();
+    } else {
+      state.aim = null;
+    }
     renderAll();
   }
 
@@ -384,7 +409,7 @@
     history.replaceState({ view: "landing" }, "", window.location.href);
     window.SCZN3.sec.renderHistoryInSEC();
     hardResetSession();
-    console.log("SEC DASHBOARD SPLIT ACTIVE");
+    console.log("AIM BLINK + TAP CLARITY ACTIVE");
   }
 
   window.SCZN3.app = {
