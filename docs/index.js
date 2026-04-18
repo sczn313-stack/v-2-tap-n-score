@@ -1,7 +1,7 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    APP FLOW / STATE / TAPS / WIRING
-   AIM BLINK + TAP CLARITY
+   POLISH TRUTH PASS
 ============================================================ */
 
 (() => {
@@ -111,10 +111,13 @@
       els.targetImg.removeAttribute("src");
       els.targetImg.src = "";
     }
+
     if (els.photoInput) els.photoInput.value = "";
 
     if (objectUrl) {
-      try { URL.revokeObjectURL(objectUrl); } catch {}
+      try {
+        URL.revokeObjectURL(objectUrl);
+      } catch {}
       objectUrl = null;
     }
   }
@@ -128,11 +131,15 @@
     activePointerId = null;
     clearImageElement();
     hideOverlay();
+
     if (els.dotsLayer) els.dotsLayer.innerHTML = "";
   }
 
   function hardResetSession() {
-    try { sessionStorage.clear(); } catch {}
+    try {
+      sessionStorage.clear();
+    } catch {}
+
     resetSession();
     setView("landing", false);
     renderAll();
@@ -140,6 +147,7 @@
 
   function updateButtons() {
     const hasWork = !!state.aim || state.shots.length > 0;
+
     if (els.undoBtn) els.undoBtn.disabled = !hasWork;
     if (els.clearBtn) els.clearBtn.disabled = !hasWork;
     if (els.showResultsBtn) els.showResultsBtn.disabled = !(state.aim && state.shots.length > 0);
@@ -177,54 +185,6 @@
     if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
   }
 
-  function getWrapSize() {
-    const rect = els.targetWrap?.getBoundingClientRect();
-    return { width: rect?.width || 0, height: rect?.height || 0 };
-  }
-
-  function getShotDisplayPositions() {
-    const { width, height } = getWrapSize();
-    if (!width || !height) return state.shots.map((shot) => ({ x: shot.x, y: shot.y }));
-
-    const placed = [];
-    const offsets = [
-      { x: 0, y: 0 },
-      { x: 16, y: 0 },
-      { x: -16, y: 0 },
-      { x: 0, y: -16 },
-      { x: 0, y: 16 },
-      { x: 14, y: -14 },
-      { x: -14, y: -14 },
-      { x: 14, y: 14 },
-      { x: -14, y: 14 },
-      { x: 22, y: 0 },
-      { x: -22, y: 0 },
-      { x: 0, y: -22 },
-      { x: 0, y: 22 }
-    ];
-    const minDist = 28;
-
-    state.shots.forEach((shot) => {
-      const basePx = { x: shot.x * width, y: shot.y * height };
-      let chosen = { ...basePx };
-
-      for (const off of offsets) {
-        const candidate = { x: basePx.x + off.x, y: basePx.y + off.y };
-        const overlaps = placed.some((p) => Math.hypot(candidate.x - p.x, candidate.y - p.y) < minDist);
-        if (!overlaps) {
-          chosen = candidate;
-          break;
-        }
-      }
-
-      chosen.x = Math.max(16, Math.min(width - 16, chosen.x));
-      chosen.y = Math.max(16, Math.min(height - 16, chosen.y));
-      placed.push(chosen);
-    });
-
-    return placed.map((p) => ({ x: p.x / width, y: p.y / height }));
-  }
-
   function renderDots() {
     if (!els.dotsLayer) return;
     els.dotsLayer.innerHTML = "";
@@ -238,13 +198,11 @@
       els.dotsLayer.appendChild(d);
     }
 
-    const displayPositions = getShotDisplayPositions();
     state.shots.forEach((shot, i) => {
-      const pos = displayPositions[i] || shot;
       const d = document.createElement("div");
       d.className = "hitDot";
-      d.style.left = `${pos.x * 100}%`;
-      d.style.top = `${pos.y * 100}%`;
+      d.style.left = `${shot.x * 100}%`;
+      d.style.top = `${shot.y * 100}%`;
       d.textContent = String(i + 1);
       els.dotsLayer.appendChild(d);
     });
@@ -255,18 +213,67 @@
     renderDots();
   }
 
-  function getPointFromClient(clientX, clientY) {
-    const rect = els.targetWrap.getBoundingClientRect();
+  function getRenderedImageRect() {
+    const img = els.targetImg;
+    const wrap = els.targetWrap;
+
+    if (!img || !wrap) return null;
+
+    const wrapRect = wrap.getBoundingClientRect();
+    const naturalW = img.naturalWidth || 0;
+    const naturalH = img.naturalHeight || 0;
+
+    if (!wrapRect.width || !wrapRect.height || !naturalW || !naturalH) {
+      return null;
+    }
+
+    const imageAspect = naturalW / naturalH;
+    const wrapAspect = wrapRect.width / wrapRect.height;
+
+    let renderedWidth = 0;
+    let renderedHeight = 0;
+    let left = wrapRect.left;
+    let top = wrapRect.top;
+
+    if (imageAspect > wrapAspect) {
+      renderedWidth = wrapRect.width;
+      renderedHeight = renderedWidth / imageAspect;
+      top = wrapRect.top + (wrapRect.height - renderedHeight) / 2;
+    } else {
+      renderedHeight = wrapRect.height;
+      renderedWidth = renderedHeight * imageAspect;
+      left = wrapRect.left + (wrapRect.width - renderedWidth) / 2;
+    }
 
     return {
-      x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
-      y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
+      left,
+      top,
+      width: renderedWidth,
+      height: renderedHeight,
+      right: left + renderedWidth,
+      bottom: top + renderedHeight
+    };
+  }
+
+  function getPointFromClient(clientX, clientY) {
+    const rect = getRenderedImageRect();
+    if (!rect) return null;
+
+    const insideX = clientX >= rect.left && clientX <= rect.right;
+    const insideY = clientY >= rect.top && clientY <= rect.bottom;
+
+    if (!insideX || !insideY) return null;
+
+    return {
+      x: (clientX - rect.left) / rect.width,
+      y: (clientY - rect.top) / rect.height
     };
   }
 
   function onPointerDown(e) {
     if (!state.imageSrc || state.frozen) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
+
     activePointerId = e.pointerId;
     pointerStart = { x: e.clientX, y: e.clientY };
   }
@@ -285,6 +292,9 @@
     }
 
     const p = getPointFromClient(e.clientX, e.clientY);
+    pointerStart = null;
+
+    if (!p) return;
 
     if (!state.aim) {
       state.aim = p;
@@ -292,7 +302,6 @@
       state.shots.push(p);
     }
 
-    pointerStart = null;
     renderAll();
   }
 
@@ -303,11 +312,13 @@
 
   function undo() {
     if (state.frozen) return;
+
     if (state.shots.length > 0) {
       state.shots.pop();
     } else {
       state.aim = null;
     }
+
     renderAll();
   }
 
@@ -322,7 +333,9 @@
     if (!file) return;
 
     if (objectUrl) {
-      try { URL.revokeObjectURL(objectUrl); } catch {}
+      try {
+        URL.revokeObjectURL(objectUrl);
+      } catch {}
     }
 
     objectUrl = URL.createObjectURL(file);
@@ -337,6 +350,7 @@
     if (els.targetImg) {
       els.targetImg.onload = () => {
         window.scrollTo(0, 0);
+        renderAll();
       };
       els.targetImg.src = objectUrl;
     }
@@ -409,7 +423,7 @@
     history.replaceState({ view: "landing" }, "", window.location.href);
     window.SCZN3.sec.renderHistoryInSEC();
     hardResetSession();
-    console.log("AIM BLINK + TAP CLARITY ACTIVE");
+    console.log("POLISH TRUTH PASS ACTIVE");
   }
 
   window.SCZN3.app = {
