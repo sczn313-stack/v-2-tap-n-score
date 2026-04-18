@@ -1,7 +1,5 @@
 /* ============================================================
-   docs/index.js — FULL REPLACEMENT
-   APP FLOW / STATE / TAPS / WIRING
-   POLISH TRUTH PASS
+   FINAL FIX — TRUE IMAGE LOCK + REAL TAP SYSTEM
 ============================================================ */
 
 (() => {
@@ -12,9 +10,6 @@
   const els = {
     landingView: $("landingView"),
     workspaceView: $("workspaceView"),
-
-    historyBtn: $("historyBtn"),
-    backBtn: $("backBtn"),
 
     photoBtn: $("photoBtn"),
     photoInput: $("photoInput"),
@@ -29,271 +24,177 @@
     showResultsBtn: $("showResultsBtn"),
 
     instructionLine: $("instructionLine"),
-    statusLine: $("statusLine"),
-
-    freezeScrim: $("freezeScrim"),
-
-    secOverlay: $("secOverlay"),
-    secBackBtn: $("secBackBtn"),
-    saveSecBtn: $("saveSecBtn"),
-
-    secShotCount: $("secShotCount"),
-    secStatus: $("secStatus"),
-    secWindage: $("secWindage"),
-    secElevation: $("secElevation"),
-
-    secScore: $("secScore"),
-    secScoreBand: $("secScoreBand"),
-    secElevationCount: $("secElevationCount"),
-    secElevationDir: $("secElevationDir"),
-    secWindageCount: $("secWindageCount"),
-    secWindageDir: $("secWindageDir"),
-    secSessionLine: $("secSessionLine"),
-    secVendorName: $("secVendorName"),
-    secThumbImg: $("secThumbImg"),
-    secThumbFallback: $("secThumbFallback"),
-
-    historyAvg: $("historyAvg"),
-    historyBest: $("historyBest"),
-    historyTrend: $("historyTrend"),
-    historyList: $("historyList"),
-    historyEmpty: $("historyEmpty")
+    statusLine: $("statusLine")
   };
 
   let objectUrl = null;
-  let suppressNextPop = false;
-  let pointerStart = null;
-  let activePointerId = null;
 
   const state = {
-    view: "landing",
     imageSrc: "",
     aim: null,
-    shots: [],
-    frozen: false
+    shots: []
   };
 
-  window.SCZN3 = window.SCZN3 || {};
-  window.SCZN3.els = els;
-  window.SCZN3.state = state;
+  /* ===============================
+     VIEW
+  =============================== */
 
-  function pushHistoryForView(view) {
-    suppressNextPop = true;
-    history.pushState({ view }, "", window.location.href);
-    setTimeout(() => {
-      suppressNextPop = false;
-    }, 0);
+  function showWorkspace() {
+    els.landingView.classList.add("scoreHidden");
+    els.workspaceView.classList.remove("scoreHidden");
   }
 
-  function setView(view, pushHistory = false) {
-    state.view = view;
-
-    if (view === "landing") {
-      els.landingView?.classList.remove("scoreHidden");
-      els.workspaceView?.classList.add("scoreHidden");
-      window.scrollTo(0, 0);
-    } else {
-      els.landingView?.classList.add("scoreHidden");
-      els.workspaceView?.classList.remove("scoreHidden");
-      window.scrollTo(0, 0);
-    }
-
-    if (pushHistory) pushHistoryForView(view);
-  }
-
-  function hideOverlay() {
-    els.freezeScrim?.classList.add("isHidden");
-    els.secOverlay?.classList.add("isHidden");
-  }
-
-  function clearImageElement() {
-    if (els.targetImg) {
-      els.targetImg.removeAttribute("src");
-      els.targetImg.src = "";
-    }
-
-    if (els.photoInput) els.photoInput.value = "";
-
-    if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
-      objectUrl = null;
-    }
-  }
-
-  function resetSession() {
+  function reset() {
     state.imageSrc = "";
     state.aim = null;
     state.shots = [];
-    state.frozen = false;
-    pointerStart = null;
-    activePointerId = null;
-    clearImageElement();
-    hideOverlay();
-
-    if (els.dotsLayer) els.dotsLayer.innerHTML = "";
-  }
-
-  function hardResetSession() {
-    try {
-      sessionStorage.clear();
-    } catch {}
-
-    resetSession();
-    setView("landing", false);
-    renderAll();
-  }
-
-  function updateButtons() {
-    const hasWork = !!state.aim || state.shots.length > 0;
-
-    if (els.undoBtn) els.undoBtn.disabled = !hasWork;
-    if (els.clearBtn) els.clearBtn.disabled = !hasWork;
-    if (els.showResultsBtn) els.showResultsBtn.disabled = !(state.aim && state.shots.length > 0);
-  }
-
-  function updateUI() {
-    if (els.shotCount) els.shotCount.textContent = String(state.shots.length);
-    updateButtons();
-
-    if (!state.imageSrc) {
-      if (els.instructionLine) els.instructionLine.textContent = "Add a target photo.";
-      if (els.statusLine) els.statusLine.textContent = "Tap to begin.";
-      return;
-    }
-
-    if (!state.aim) {
-      if (els.instructionLine) els.instructionLine.textContent = "Tap aim point.";
-      if (els.statusLine) els.statusLine.textContent = "First tap sets aim.";
-      return;
-    }
-
-    if (state.shots.length === 0) {
-      if (els.instructionLine) els.instructionLine.textContent = "Tap shot 1";
-      if (els.statusLine) els.statusLine.textContent = "Aim point blinks until first hit.";
-      return;
-    }
-
-    if (state.shots.length >= 7) {
-      if (els.instructionLine) els.instructionLine.textContent = "Maximum 7 shots reached.";
-      if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-      return;
-    }
-
-    if (els.instructionLine) els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
-    if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-  }
-
-  function renderDots() {
-    if (!els.dotsLayer) return;
     els.dotsLayer.innerHTML = "";
-
-    if (state.aim) {
-      const d = document.createElement("div");
-      d.className = "aimDot";
-      if (state.shots.length === 0) d.classList.add("blinking");
-      d.style.left = `${state.aim.x * 100}%`;
-      d.style.top = `${state.aim.y * 100}%`;
-      els.dotsLayer.appendChild(d);
-    }
-
-    state.shots.forEach((shot, i) => {
-      const d = document.createElement("div");
-      d.className = "hitDot";
-      d.style.left = `${shot.x * 100}%`;
-      d.style.top = `${shot.y * 100}%`;
-      d.textContent = String(i + 1);
-      els.dotsLayer.appendChild(d);
-    });
+    els.shotCount.textContent = "0";
   }
 
-  function renderAll() {
-    updateUI();
-    renderDots();
+  /* ===============================
+     IMAGE LOAD
+  =============================== */
+
+  function loadImage(file) {
+    if (!file) return;
+
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+
+    els.targetImg.onload = () => {
+      render();
+    };
+
+    els.targetImg.src = objectUrl;
+
+    state.imageSrc = objectUrl;
+    state.aim = null;
+    state.shots = [];
+
+    showWorkspace();
+    render();
   }
 
-  function getRenderedImageRect() {
+  /* ===============================
+     IMAGE RECT (CRITICAL)
+  =============================== */
+
+  function getImageRect() {
+    const wrapRect = els.targetWrap.getBoundingClientRect();
     const img = els.targetImg;
-    const wrap = els.targetWrap;
 
-    if (!img || !wrap) return null;
+    const naturalW = img.naturalWidth;
+    const naturalH = img.naturalHeight;
 
-    const wrapRect = wrap.getBoundingClientRect();
-    const naturalW = img.naturalWidth || 0;
-    const naturalH = img.naturalHeight || 0;
+    if (!naturalW || !naturalH) return null;
 
-    if (!wrapRect.width || !wrapRect.height || !naturalW || !naturalH) {
-      return null;
-    }
+    const imgRatio = naturalW / naturalH;
+    const wrapRatio = wrapRect.width / wrapRect.height;
 
-    const imageAspect = naturalW / naturalH;
-    const wrapAspect = wrapRect.width / wrapRect.height;
+    let width, height, left, top;
 
-    let renderedWidth = 0;
-    let renderedHeight = 0;
-    let left = wrapRect.left;
-    let top = wrapRect.top;
-
-    if (imageAspect > wrapAspect) {
-      renderedWidth = wrapRect.width;
-      renderedHeight = renderedWidth / imageAspect;
-      top = wrapRect.top + (wrapRect.height - renderedHeight) / 2;
+    if (imgRatio > wrapRatio) {
+      width = wrapRect.width;
+      height = width / imgRatio;
+      left = 0;
+      top = (wrapRect.height - height) / 2;
     } else {
-      renderedHeight = wrapRect.height;
-      renderedWidth = renderedHeight * imageAspect;
-      left = wrapRect.left + (wrapRect.width - renderedWidth) / 2;
+      height = wrapRect.height;
+      width = height * imgRatio;
+      top = 0;
+      left = (wrapRect.width - width) / 2;
     }
 
     return {
       left,
       top,
-      width: renderedWidth,
-      height: renderedHeight,
-      right: left + renderedWidth,
-      bottom: top + renderedHeight
+      width,
+      height
     };
   }
 
-  function getPointFromClient(clientX, clientY) {
-    const rect = getRenderedImageRect();
+  /* ===============================
+     TAP → NORMALIZED POINT
+  =============================== */
+
+  function getPoint(e) {
+    const rect = getImageRect();
     if (!rect) return null;
 
-    const insideX = clientX >= rect.left && clientX <= rect.right;
-    const insideY = clientY >= rect.top && clientY <= rect.bottom;
+    const wrapRect = els.targetWrap.getBoundingClientRect();
 
-    if (!insideX || !insideY) return null;
+    const x = e.clientX - wrapRect.left;
+    const y = e.clientY - wrapRect.top;
+
+    if (
+      x < rect.left ||
+      x > rect.left + rect.width ||
+      y < rect.top ||
+      y > rect.top + rect.height
+    ) return null;
 
     return {
-      x: (clientX - rect.left) / rect.width,
-      y: (clientY - rect.top) / rect.height
+      x: (x - rect.left) / rect.width,
+      y: (y - rect.top) / rect.height
     };
   }
 
-  function onPointerDown(e) {
-    if (!state.imageSrc || state.frozen) return;
-    if (e.pointerType === "mouse" && e.button !== 0) return;
+  /* ===============================
+     DOT RENDER
+  =============================== */
 
-    activePointerId = e.pointerId;
-    pointerStart = { x: e.clientX, y: e.clientY };
-  }
+  function render() {
+    els.dotsLayer.innerHTML = "";
 
-  function onPointerUp(e) {
-    if (!state.imageSrc || state.frozen) return;
-    if (activePointerId !== null && e.pointerId !== activePointerId) return;
-    if (!pointerStart) return;
+    const rect = getImageRect();
+    if (!rect) return;
 
-    const moved = Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y);
-    activePointerId = null;
+    // lock dots layer to image
+    els.dotsLayer.style.left = rect.left + "px";
+    els.dotsLayer.style.top = rect.top + "px";
+    els.dotsLayer.style.width = rect.width + "px";
+    els.dotsLayer.style.height = rect.height + "px";
 
-    if (moved > 14) {
-      pointerStart = null;
-      return;
+    // AIM
+    if (state.aim) {
+      const d = document.createElement("div");
+      d.className = "aimDot blinking";
+
+      if (state.shots.length > 0) {
+        d.classList.remove("blinking");
+      }
+
+      d.style.left = state.aim.x * 100 + "%";
+      d.style.top = state.aim.y * 100 + "%";
+
+      els.dotsLayer.appendChild(d);
     }
 
-    const p = getPointFromClient(e.clientX, e.clientY);
-    pointerStart = null;
+    // SHOTS
+    state.shots.forEach((s, i) => {
+      const d = document.createElement("div");
+      d.className = "hitDot";
 
+      d.style.left = s.x * 100 + "%";
+      d.style.top = s.y * 100 + "%";
+
+      d.textContent = i + 1;
+
+      els.dotsLayer.appendChild(d);
+    });
+
+    els.shotCount.textContent = state.shots.length;
+  }
+
+  /* ===============================
+     TAP HANDLER
+  =============================== */
+
+  function handleTap(e) {
+    if (!state.imageSrc) return;
+
+    const p = getPoint(e);
     if (!p) return;
 
     if (!state.aim) {
@@ -302,143 +203,47 @@
       state.shots.push(p);
     }
 
-    renderAll();
+    render();
   }
 
-  function onPointerCancel() {
-    pointerStart = null;
-    activePointerId = null;
-  }
+  /* ===============================
+     ACTIONS
+  =============================== */
 
   function undo() {
-    if (state.frozen) return;
-
     if (state.shots.length > 0) {
       state.shots.pop();
     } else {
       state.aim = null;
     }
-
-    renderAll();
+    render();
   }
 
   function clearAll() {
-    if (state.frozen) return;
     state.aim = null;
     state.shots = [];
-    renderAll();
+    render();
   }
 
-  function loadImage(file) {
-    if (!file) return;
-
-    if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
-    }
-
-    objectUrl = URL.createObjectURL(file);
-
-    state.imageSrc = objectUrl;
-    state.aim = null;
-    state.shots = [];
-    state.frozen = false;
-
-    hideOverlay();
-
-    if (els.targetImg) {
-      els.targetImg.onload = () => {
-        window.scrollTo(0, 0);
-        renderAll();
-      };
-      els.targetImg.src = objectUrl;
-    }
-
-    setView("workspace", true);
-    renderAll();
-  }
-
-  function goBack(push = false) {
-    if (state.view === "results") {
-      window.SCZN3.sec.closeSEC(push);
-      return;
-    }
-
-    if (state.view === "workspace") {
-      resetSession();
-      setView("landing", push);
-      renderAll();
-      return;
-    }
-
-    history.back();
-  }
+  /* ===============================
+     BIND
+  =============================== */
 
   function bind() {
-    els.photoBtn?.addEventListener("click", () => {
-      els.photoInput?.click();
+    els.photoBtn.addEventListener("click", () => {
+      els.photoInput.click();
     });
 
-    els.photoInput?.addEventListener("change", (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (file) loadImage(file);
+    els.photoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      loadImage(file);
     });
 
-    els.targetWrap?.addEventListener("pointerdown", onPointerDown);
-    els.targetWrap?.addEventListener("pointerup", onPointerUp);
-    els.targetWrap?.addEventListener("pointercancel", onPointerCancel);
+    els.targetWrap.addEventListener("click", handleTap);
 
-    els.historyBtn?.addEventListener("click", () => window.SCZN3.sec.openHistoryShortcut());
-    els.backBtn?.addEventListener("click", () => goBack(true));
-    els.undoBtn?.addEventListener("click", undo);
-    els.clearBtn?.addEventListener("click", clearAll);
-    els.showResultsBtn?.addEventListener("click", () => window.SCZN3.sec.openSEC(true));
-
-    els.secBackBtn?.addEventListener("click", () => window.SCZN3.sec.closeSEC(false));
-    els.saveSecBtn?.addEventListener("click", () => window.SCZN3.save.save());
-
-    window.addEventListener("pageshow", (e) => {
-      if (e.persisted) window.location.reload();
-    });
-
-    window.addEventListener("popstate", () => {
-      if (suppressNextPop) return;
-
-      if (state.view === "results") {
-        window.SCZN3.sec.closeSEC(false);
-        return;
-      }
-
-      if (state.view === "workspace") {
-        resetSession();
-        setView("landing", false);
-        renderAll();
-      }
-    });
+    els.undoBtn.addEventListener("click", undo);
+    els.clearBtn.addEventListener("click", clearAll);
   }
 
-  function init() {
-    bind();
-    history.replaceState({ view: "landing" }, "", window.location.href);
-    window.SCZN3.sec.renderHistoryInSEC();
-    hardResetSession();
-    console.log("POLISH TRUTH PASS ACTIVE");
-  }
-
-  window.SCZN3.app = {
-    els,
-    state,
-    setView,
-    hideOverlay,
-    showSECOverlay: () => {
-      els.freezeScrim?.classList.remove("isHidden");
-      els.secOverlay?.classList.remove("isHidden");
-    },
-    renderAll,
-    resetSession,
-    goBack
-  };
-
-  init();
+  bind();
 })();
