@@ -1,678 +1,160 @@
-:root {
-  --bg-top: #0a1b4e;
-  --bg-mid: #112c6e;
-  --bg-bottom: #06122f;
-  --panel: rgba(8, 20, 52, 0.82);
-  --panel-border: rgba(255, 215, 84, 0.28);
-  --text: #f4f7ff;
-  --muted: #b8c5ea;
-  --shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
-  --maxw: 1180px;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --aim-dot-size: 22px;
-  --shot-dot-size: 26px;
-}
-
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; min-height: 100%; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-
-body {
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  background:
-    radial-gradient(circle at top center, rgba(85, 130, 255, 0.18), transparent 30%),
-    linear-gradient(180deg, var(--bg-top), var(--bg-mid), var(--bg-bottom));
-  overflow-x: hidden;
-}
-
-.page {
-  width: 100%;
-  max-width: var(--maxw);
-  margin: 0 auto;
-  min-height: 100dvh;
-  padding:
-    max(12px, var(--safe-top))
-    max(14px, var(--safe-right))
-    calc(20px + var(--safe-bottom))
-    max(14px, var(--safe-left));
-}
-
-.scoreHidden,
-.isHidden { display: none !important; }
-
-.r { color: #ff5a66; }
-.w { color: #ffffff; }
-.b { color: #61a7ff; }
-
-.hero {
-  min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  padding: 10px 0;
-}
-
-.brandRow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.brandTitle {
-  font-weight: 900;
-  font-size: clamp(28px, 7vw, 40px);
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-shadow: 0 4px 16px rgba(0,0,0,.22);
-}
-
-.brandSub {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.heroSECSeal {
-  margin: 14px auto 0;
-  width: fit-content;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.heroSEC {
-  font-size: 34px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-}
-
-.heroSECSub {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.heroMid {
-  margin-top: 18px;
-  display: flex;
-  justify-content: center;
-}
-
-.heroBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: min(100%, 460px);
-  min-height: 56px;
-  padding: 14px 18px;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #2f66ff 0%, #5d8cff 100%);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  text-align: center;
-  box-shadow: 0 10px 24px rgba(47, 102, 255, 0.34);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.fileHidden {
-  position: absolute !important;
-  left: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-.workspace {
-  min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
-  display: flex;
-  flex-direction: column;
-}
-
-.card,
-.workspaceTop {
-  padding: 14px;
-  border-radius: 22px;
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-
-.workspaceTop {
-  margin-bottom: 10px;
-  flex: 0 0 auto;
-}
-
-.cardTitle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.cardTitleSEC { margin-bottom: 12px; }
-
-.secTitle {
-  font-size: clamp(16px, 4vw, 21px);
-  line-height: 1.05;
-  font-weight: 900;
-  letter-spacing: 0.035em;
-}
-
-.secTag {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.10);
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-}
-
-.topActionRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 2px;
-}
-
-.pill {
-  min-height: 40px;
-  padding: 8px 12px;
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.08);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-}
-
-.btnSecondary,
-.btnPrimaryTop {
-  min-height: 40px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 999px;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btnSecondary { background: rgba(255,255,255,.10); }
-
-.btnPrimaryTop {
-  background: linear-gradient(135deg, #ff3c4f 0%, #ff6676 100%);
-  box-shadow: 0 10px 24px rgba(255, 60, 79, 0.22);
-}
-
-.btnSecondary:disabled,
-.btnPrimaryTop:disabled {
-  opacity: 0.45;
-  cursor: default;
-  box-shadow: none;
-}
-
-.instructionLine {
-  margin: 12px 0 4px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #fff;
-}
-
-.hint,
-#statusLine {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-.targetStage {
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-}
-
-.targetWrap {
-  position: relative;
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
-  border-radius: 18px;
-  overflow: hidden;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.04),
-    0 10px 22px rgba(0,0,0,.20);
-  touch-action: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.targetWrapFull { min-height: clamp(300px, 54dvh, 620px); }
-
-#targetImg {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  user-select: none;
-  -webkit-user-drag: none;
-  pointer-events: none;
-}
-
-.dotsLayer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.aimDot,
-.hitDot {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  border-radius: 999px;
-  pointer-events: none;
-  user-select: none;
-}
-
-.aimDot {
-  width: var(--aim-dot-size);
-  height: var(--aim-dot-size);
-  background: radial-gradient(circle at 35% 35%, #d7ecff 0%, #8bc3ff 32%, #4d97ff 70%, #1f63dc 100%);
-  border: 2px solid rgba(255,255,255,.92);
-  box-shadow: 0 0 0 2px rgba(12,29,80,.45), 0 0 18px rgba(92,168,255,.45);
-  z-index: 6;
-}
-
-.aimDot::before,
-.aimDot::after {
-  content: "";
-  position: absolute;
-  background: #fff;
-  border-radius: 999px;
-}
-
-.aimDot::before {
-  width: 16px;
-  height: 2px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.aimDot::after {
-  width: 2px;
-  height: 16px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.hitDot {
-  width: var(--shot-dot-size);
-  height: var(--shot-dot-size);
-  background: #ff4d5d;
-  border: 2px solid rgba(255,255,255,.92);
-  box-shadow: 0 4px 16px rgba(0,0,0,.28);
-  display: grid;
-  place-items: center;
-  font: 700 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  color: #fff;
-  z-index: 5;
-}
-
-.freezeScrim {
-  position: absolute;
-  inset: 0;
-  background: rgba(5, 9, 20, 0.58);
-  z-index: 8;
-}
-
-.secOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(5, 9, 20, 0.72);
-  backdrop-filter: blur(6px);
-  padding:
-    max(12px, var(--safe-top))
-    max(14px, var(--safe-right))
-    calc(20px + var(--safe-bottom))
-    max(14px, var(--safe-left));
-  overflow: auto;
-}
-
-.secDashShell {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-  border-radius: 28px;
-  padding: 18px;
-  background:
-    radial-gradient(circle at top center, rgba(65, 111, 255, 0.09), transparent 38%),
-    linear-gradient(180deg, rgba(3,18,74,.97), rgba(6,18,67,.97));
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 18px 40px rgba(0,0,0,.30);
-}
-
-.secDashHeader {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-.secDashLogo {
-  font-size: clamp(34px, 7vw, 62px);
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.secDashHeaderTitle {
-  justify-self: end;
-  font-size: clamp(18px, 3vw, 26px);
-  font-weight: 800;
-  color: rgba(255,255,255,.95);
-}
-
-.secDashActions {
-  display: flex;
-  gap: 10px;
-}
-
-.secBackBtn,
-.secSaveBtn {
-  min-height: 46px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: 999px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-}
-
-.secBackBtn { background: rgba(255,255,255,.10); }
-.secSaveBtn {
-  background: linear-gradient(135deg, #2f66ff 0%, #5d8cff 100%);
-  box-shadow: 0 10px 24px rgba(47, 102, 255, 0.22);
-}
-
-.secDashBody { display: grid; gap: 22px; }
-
-.secTopGrid {
-  display: grid;
-  grid-template-columns: 1fr 0.9fr;
-  gap: 24px;
-}
-
-.secLeftCol,
-.secRightCol,
-.secHistoryBlock {
-  display: grid;
-  gap: 18px;
-}
-
-.secDashLabel {
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  color: rgba(255,255,255,.72);
-  text-transform: uppercase;
-}
-
-.secScoreNumber {
-  font-size: clamp(72px, 16vw, 138px);
-  line-height: 0.9;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 6px 18px rgba(0,0,0,.18);
-}
-
-.secScoreBand {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 170px;
-  padding: 12px 22px;
-  border-radius: 999px;
-  font-size: 22px;
-  font-weight: 900;
-  color: #0d0d12;
-  background: #f0da62;
-}
-
-.secSectionBlock {
-  display: grid;
-  gap: 10px;
-}
-
-.correctionBar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 22px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.09);
-}
-
-.correctionHalf {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
-}
-
-.correctionCount {
-  font-size: clamp(40px, 7vw, 64px);
-  line-height: 1;
-  font-weight: 900;
-  color: #fff;
-}
-
-.correctionDir {
-  font-size: clamp(28px, 5vw, 52px);
-  line-height: 1;
-  font-weight: 900;
-}
-
-.correctionBlue { color: #69a8ff; }
-.correctionRed { color: #ff7987; }
-
-.correctionDivider {
-  font-size: 34px;
-  font-weight: 900;
-  color: rgba(255,255,255,.55);
-}
-
-.sessionLine {
-  font-size: clamp(28px, 5vw, 50px);
-  font-weight: 900;
-  color: #fff;
-}
-
-.vendorName {
-  font-size: clamp(26px, 4vw, 52px);
-  font-weight: 900;
-  color: #fff;
-}
-
-.thumbCard {
-  position: relative;
-  min-height: 300px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.thumbImg {
-  display: block;
-  max-width: 100%;
-  max-height: 280px;
-  object-fit: contain;
-}
-
-.thumbFallback {
-  color: rgba(255,255,255,.55);
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.secHistoryBlock {
-  padding: 0;
-}
-
-.historySummaryLine {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 28px;
-  font-size: 18px;
-  font-weight: 800;
-  color: rgba(255,255,255,.92);
-}
-
-.historySummaryLine strong { color: #fff; }
-
-.historyEmpty {
-  font-size: 16px;
-  color: var(--muted);
-  padding: 8px 0;
-}
-
-.historyGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 18px;
-}
-
-.historyCard {
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.08);
-}
-
-.historyRowTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.historyIndex {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-}
-
-.historyTime {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.historyMain {
-  display: grid;
-  gap: 8px;
-}
-
-.historyLine {
-  font-size: 15px;
-  font-weight: 800;
-  color: #fff;
-}
-
-@media (max-width: 980px) {
-  .secTopGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .historyGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .topActionRow .pill,
-  .topActionRow .btnSecondary,
-  .topActionRow .btnPrimaryTop {
-    flex: 1 1 calc(50% - 4px);
-    justify-content: center;
-  }
-
-  .targetWrapFull { min-height: clamp(280px, 50dvh, 560px); }
-
-  .secDashHeader {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .secDashHeaderTitle {
-    justify-self: start;
-  }
-
-  .correctionBar {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .correctionDivider { display: none; }
-
-  :root {
-    --aim-dot-size: 20px;
-    --shot-dot-size: 24px;
-  }
-}
-
-@media (max-width: 420px) {
-  .topActionRow .pill,
-  .topActionRow .btnSecondary,
-  .topActionRow .btnPrimaryTop {
-    flex: 1 1 100%;
-  }
-
-  :root {
-    --aim-dot-size: 18px;
-    --shot-dot-size: 22px;
-  }
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#06070a" />
+
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <title>Tap-n-Score™</title>
+
+  <link rel="stylesheet" href="./styles.css?v=sec-dashboard-mobile-fit-1" />
+</head>
+<body>
+  <main class="page">
+
+    <section id="landingView" class="hero" aria-label="Tap-n-Score landing">
+      <div class="brandRow">
+        <div class="brandTitle">
+          <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE</span><span class="w">™</span>
+        </div>
+        <div class="brandSub">After-Shot Intelligence</div>
+      </div>
+
+      <div class="heroSECSeal">
+        <div class="heroSEC">
+          <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+        </div>
+        <div class="heroSECSub">
+          <span><span class="r">S</span>hooter</span>
+          <span><span class="w">E</span>xperience</span>
+          <span><span class="b">C</span>ard</span>
+        </div>
+      </div>
+
+      <div class="heroMid">
+        <button id="photoBtn" class="heroBtn" type="button">📷 TAP TO ADD TARGET PHOTO</button>
+      </div>
+
+      <input id="photoInput" class="fileHidden" type="file" accept="image/*" />
+    </section>
+
+    <section id="workspaceView" class="workspace scoreHidden" aria-label="Target workspace">
+      <div class="workspaceTop card">
+        <div class="cardTitle cardTitleSEC">
+          <div class="secTitle">
+            <span class="r">T</span><span class="w">ARGET</span>
+            <span class="w"> </span>
+            <span class="b">WORKSPACE</span>
+          </div>
+          <div class="secTag">LIVE</div>
+        </div>
+
+        <div class="topActionRow" aria-label="Target controls">
+          <div class="pill">Shots: <span id="shotCount">0</span>/7</div>
+          <button id="historyBtn" class="btnSecondary" type="button">History</button>
+          <button id="backBtn" class="btnSecondary" type="button">Back</button>
+          <button id="undoBtn" class="btnSecondary" type="button">Undo</button>
+          <button id="clearBtn" class="btnSecondary" type="button">Clear</button>
+          <button id="showResultsBtn" class="btnPrimaryTop" type="button">Show Results</button>
+        </div>
+
+        <p id="instructionLine" class="instructionLine">Add a target photo.</p>
+        <p id="statusLine" class="hint">Add a target photo to begin.</p>
+      </div>
+
+      <div class="targetStage">
+        <div id="targetWrap" class="targetWrap targetWrapFull" aria-label="Target image area">
+          <img id="targetImg" alt="Target" draggable="false" />
+          <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
+          <div id="freezeScrim" class="freezeScrim isHidden" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="secOverlay" class="secOverlay isHidden" aria-label="SEC overlay">
+      <div class="secDashShell">
+        <div class="secDashHeader">
+          <div class="secDashLogo">
+            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+          </div>
+          <div class="secDashHeaderTitle">Shooter Experience Card</div>
+          <div class="secDashActions">
+            <button id="secBackBtn" class="secBackBtn" type="button">Back</button>
+            <button id="saveSecBtn" class="secSaveBtn" type="button">Save</button>
+          </div>
+        </div>
+
+        <div class="secDashBody">
+          <div class="secTopGrid">
+            <div class="secLeftCol">
+              <div class="secDashLabel">YOUR SCORE</div>
+              <div id="secScore" class="secScoreNumber">0</div>
+              <div id="secScoreBand" class="secScoreBand">SOLID</div>
+
+              <div class="secSectionBlock">
+                <div class="secDashLabel">SCOPE CORRECTION</div>
+                <div class="correctionBar">
+                  <div class="correctionHalf">
+                    <div id="secElevationCount" class="correctionCount">0</div>
+                    <div id="secElevationDir" class="correctionDir correctionBlue">UP</div>
+                  </div>
+
+                  <div class="correctionDivider">•</div>
+
+                  <div class="correctionHalf">
+                    <div id="secWindageCount" class="correctionCount">0</div>
+                    <div id="secWindageDir" class="correctionDir correctionRed">RIGHT</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="secSectionBlock">
+                <div class="secDashLabel">SESSION</div>
+                <div id="secSessionLine" class="sessionLine">—</div>
+              </div>
+            </div>
+
+            <div class="secRightCol">
+              <div class="secSectionBlock">
+                <div class="secDashLabel">OFFICIAL TARGET PARTNER</div>
+                <div id="secVendorName" class="vendorName">Vendor Not Set</div>
+              </div>
+
+              <div class="secSectionBlock">
+                <div class="secDashLabel">TARGET THUMBNAIL</div>
+                <div class="thumbCard">
+                  <img id="secThumbImg" class="thumbImg isHidden" alt="Target thumbnail" />
+                  <div id="secThumbFallback" class="thumbFallback">No target loaded</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="secHistoryBlock">
+            <div class="secDashLabel">SESSION HISTORY</div>
+
+            <div class="historySummaryLine">
+              <span>Avg: <strong id="historyAvg">—</strong></span>
+              <span>Best: <strong id="historyBest">—</strong></span>
+              <span>Trend: <strong id="historyTrend">—</strong></span>
+            </div>
+
+            <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
+            <div id="historyList" class="historyGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="./sec.js?v=sec-dashboard-mobile-fit-1"></script>
+  <script src="./save.js?v=sec-dashboard-mobile-fit-1"></script>
+  <script src="./index.js?v=sec-dashboard-mobile-fit-1"></script>
+</body>
+</html>
