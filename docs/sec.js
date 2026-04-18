@@ -1,6 +1,7 @@
 /* ============================================================
-   docs/sec.js — NEW FILE
+   docs/sec.js — FULL REPLACEMENT
    SEC / HISTORY / SCORE LOGIC
+   REAL WORLD LAYER
 ============================================================ */
 
 (() => {
@@ -8,14 +9,42 @@
 
   window.SCZN3 = window.SCZN3 || {};
 
-  const HISTORY_KEY = "SCZN3_HISTORY_V3";
+  const HISTORY_KEY = "SCZN3_HISTORY_V4";
   const HISTORY_LIMIT = 10;
+
+  // ===============================
+  // REAL-WORLD DEFAULTS
+  // ===============================
+  const DEFAULTS = {
+    targetWIn: 8.5,
+    targetHIn: 11,
+    rangeYds: 100,
+    dialUnit: "MOA",
+    clickValue: 0.25
+  };
 
   function getCtx() {
     return {
       els: window.SCZN3.els,
       state: window.SCZN3.state,
       app: window.SCZN3.app
+    };
+  }
+
+  function clampNumber(value, fallback) {
+    const n = Number(value);
+    return Number.isFinite(n) && n > 0 ? n : fallback;
+  }
+
+  function getRealWorldConfig() {
+    const state = getCtx().state || {};
+
+    return {
+      targetWIn: clampNumber(state.targetWIn, DEFAULTS.targetWIn),
+      targetHIn: clampNumber(state.targetHIn, DEFAULTS.targetHIn),
+      rangeYds: clampNumber(state.rangeYds, DEFAULTS.rangeYds),
+      dialUnit: (state.dialUnit || DEFAULTS.dialUnit).toUpperCase(),
+      clickValue: clampNumber(state.clickValue, DEFAULTS.clickValue)
     };
   }
 
@@ -35,37 +64,82 @@
     return { text: "NEEDS WORK", bg: "#ff7b7b", fg: "#280d0d" };
   }
 
-  function scoreFromCounts(windageCount, elevationCount) {
-    return Math.max(0, 100 - (windageCount + elevationCount));
+  function round2(n) {
+    return Math.round(n * 100) / 100;
+  }
+
+  function getInchesPerUnit(rangeYds, dialUnit) {
+    if (dialUnit === "MRAD") {
+      return 3.6 * (rangeYds / 100);
+    }
+    return 1.047 * (rangeYds / 100);
+  }
+
+  function scoreFromPhysicalOffset(dxInches, dyInches) {
+    const distance = Math.sqrt((dxInches * dxInches) + (dyInches * dyInches));
+    const raw = 100 - (distance * 10);
+    return Math.max(0, Math.min(100, Math.round(raw)));
   }
 
   function computeSECValues() {
     const { state } = getCtx();
     if (!state.aim || state.shots.length === 0) return null;
 
+    const cfg = getRealWorldConfig();
+
     const avgX = state.shots.reduce((sum, p) => sum + p.x, 0) / state.shots.length;
     const avgY = state.shots.reduce((sum, p) => sum + p.y, 0) / state.shots.length;
 
+    // normalized offsets
     const dx = avgX - state.aim.x;
     const dy = avgY - state.aim.y;
 
-    const windageDir = dx > 0 ? "LEFT" : dx < 0 ? "RIGHT" : "HOLD";
-    const elevationDir = dy > 0 ? "UP" : dy < 0 ? "DOWN" : "HOLD";
+    // convert normalized space -> physical inches
+    const dxInches = dx * cfg.targetWIn;
+    const dyInches = dy * cfg.targetHIn;
 
-    const windageCount = Math.round(Math.abs(dx) * 100);
-    const elevationCount = Math.round(Math.abs(dy) * 100);
-    const score = scoreFromCounts(windageCount, elevationCount);
+    // move POI back to aim
+    const windageDir = dxInches > 0 ? "LEFT" : dxInches < 0 ? "RIGHT" : "HOLD";
+    const elevationDir = dyInches > 0 ? "UP" : dyInches < 0 ? "DOWN" : "HOLD";
+
+    const inchesPerUnit = getInchesPerUnit(cfg.rangeYds, cfg.dialUnit);
+
+    // physical angular correction
+    const windageAngular = Math.abs(dxInches) / inchesPerUnit;
+    const elevationAngular = Math.abs(dyInches) / inchesPerUnit;
+
+    const windageCount = Math.round(windageAngular / cfg.clickValue);
+    const elevationCount = Math.round(elevationAngular / cfg.clickValue);
+
+    const score = scoreFromPhysicalOffset(dxInches, dyInches);
 
     return {
       shotCount: state.shots.length,
       statusText: formatStatusText(state.shots.length),
+
       windageText: formatClicksText(windageDir, windageCount),
       elevationText: formatClicksText(elevationDir, elevationCount),
+
       windageDir,
       elevationDir,
       windageCount,
       elevationCount,
-      score
+
+      score,
+
+      // debug / future display fields
+      dx,
+      dy,
+      dxInches: round2(dxInches),
+      dyInches: round2(dyInches),
+      windageAngular: round2(windageAngular),
+      elevationAngular: round2(elevationAngular),
+
+      rangeYds: cfg.rangeYds,
+      dialUnit: cfg.dialUnit,
+      clickValue: cfg.clickValue,
+      targetWIn: cfg.targetWIn,
+      targetHIn: cfg.targetHIn
     };
   }
 
@@ -209,11 +283,11 @@
   }
 
   function openSEC(push = true) {
-    const { els, app } = getCtx();
+    const { els, app, state } = getCtx();
     const values = computeSECValues();
     if (!values) return;
 
-    getCtx().state.frozen = true;
+    state.frozen = true;
     app.setView("results", push);
 
     addHistoryEntry({
@@ -223,7 +297,12 @@
       elevation: values.elevationText,
       windageCount: values.windageCount,
       elevationCount: values.elevationCount,
-      score: values.score
+      score: values.score,
+      dxInches: values.dxInches,
+      dyInches: values.dyInches,
+      rangeYds: values.rangeYds,
+      dialUnit: values.dialUnit,
+      clickValue: values.clickValue
     });
 
     app.showSECOverlay();
@@ -281,6 +360,7 @@
   window.SCZN3.sec = {
     HISTORY_KEY,
     HISTORY_LIMIT,
+    DEFAULTS,
     computeSECValues,
     loadHistory,
     saveHistory,
