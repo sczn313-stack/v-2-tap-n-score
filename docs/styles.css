@@ -326,7 +326,6 @@ body {
   user-select: none;
 }
 
-/* AIM DOT */
 .aimDot {
   width: var(--aim-dot-size);
   height: var(--aim-dot-size);
@@ -338,7 +337,6 @@ body {
   z-index: 10;
 }
 
-/* CROSSHAIR */
 .aimDot::before,
 .aimDot::after {
   content: "";
@@ -363,7 +361,6 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* STRONGER BLINK */
 .aimDot.blinking {
   animation: aimPulseStrong 0.9s ease-in-out infinite;
 }
@@ -392,7 +389,6 @@ body {
   }
 }
 
-/* HIT DOTS */
 .hitDot {
   width: var(--shot-dot-size);
   height: var(--shot-dot-size);
@@ -710,10 +706,32 @@ body {
 }
 
 @media (max-width: 640px) {
+  .page {
+    padding:
+      max(8px, var(--safe-top))
+      max(8px, var(--safe-right))
+      calc(12px + var(--safe-bottom))
+      max(8px, var(--safe-left));
+  }
+
+  .workspaceTop {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 20px;
+  }
+
+  .cardTitleSEC {
+    margin-bottom: 8px;
+  }
+
+  .secTitle {
+    font-size: 17px;
+  }
+
   .topActionRow {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    gap: 6px;
   }
 
   .topActionRow .pill,
@@ -721,20 +739,36 @@ body {
   .topActionRow .btnPrimaryTop {
     width: 100%;
     min-width: 0;
-    min-height: 38px;
-    padding: 0 10px;
+    min-height: 36px;
+    padding: 0 8px;
     justify-content: center;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .instructionLine {
+    margin: 10px 0 2px;
+    font-size: 12px;
+  }
+
+  .hint,
+  #statusLine {
     font-size: 11px;
-    letter-spacing: 0.03em;
+    line-height: 1.35;
   }
 
   .targetStage {
-    height: calc(100dvh - 245px);
+    height: calc(100dvh - 185px);
+    align-items: stretch;
   }
 
+  .targetWrap,
   .targetWrapFull {
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
+    border-radius: 16px;
   }
 
   .secDashHeader {
@@ -767,20 +801,58 @@ body {
 }
 
 @media (max-width: 420px) {
+  .page {
+    padding:
+      max(6px, var(--safe-top))
+      max(6px, var(--safe-right))
+      calc(10px + var(--safe-bottom))
+      max(6px, var(--safe-left));
+  }
+
+  .workspaceTop {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 18px;
+  }
+
+  .cardTitleSEC {
+    margin-bottom: 6px;
+  }
+
+  .secTitle {
+    font-size: 16px;
+  }
+
   .topActionRow {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .topActionRow .pill,
   .topActionRow .btnSecondary,
   .topActionRow .btnPrimaryTop {
-    min-height: 36px;
-    padding: 0 8px;
+    min-height: 34px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  .instructionLine {
+    margin: 8px 0 2px;
+    font-size: 11px;
+  }
+
+  .hint,
+  #statusLine {
     font-size: 10px;
   }
 
   .targetStage {
-    height: calc(100dvh - 235px);
+    height: calc(100dvh - 165px);
+  }
+
+  .targetWrap,
+  .targetWrapFull {
+    border-radius: 14px;
   }
 
   :root {
