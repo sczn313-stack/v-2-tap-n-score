@@ -1,6 +1,7 @@
 /* ============================================================
    docs/styles.css — FULL REPLACEMENT
    LOCKED LIVE SEC ARCHITECTURE
+   POLISH PASS 1 — THUMBNAIL DOMINANCE
    - index.html overlay is the real SEC
    - target image remains primary evidence
    - saved = live
@@ -570,8 +571,8 @@ a{
 
 .secBody{
   display:grid;
-  grid-template-columns:minmax(0, 1.12fr) minmax(320px, 0.88fr);
-  gap:18px;
+  grid-template-columns:minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap:20px;
   align-items:start;
   min-width:0;
 }
@@ -598,17 +599,22 @@ a{
 .secThumbFrame{
   position:relative;
   width:100%;
-  height:clamp(220px, 35vw, 430px);
-  min-height:220px;
-  max-height:430px;
-  border-radius:22px;
+  height:clamp(260px, 40vw, 500px);
+  min-height:260px;
+  max-height:500px;
+  border-radius:24px;
   overflow:hidden;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.10);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02)),
+    #090b10;
+  border:1px solid rgba(255,255,255,0.11);
   display:flex;
   align-items:center;
   justify-content:center;
   box-sizing:border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 14px 30px rgba(0,0,0,0.28);
 }
 
 .secThumbFrame img,
@@ -627,7 +633,7 @@ a{
 .secThumbMeta{
   width:100%;
   min-width:0;
-  margin-top:10px;
+  margin-top:12px;
   display:flex;
   flex-direction:column;
   gap:8px;
@@ -648,25 +654,25 @@ a{
   display:flex;
   flex-direction:column;
   gap:4px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
+  padding:9px 11px;
+  border-radius:13px;
+  background:rgba(255,255,255,0.028);
+  border:1px solid rgba(255,255,255,0.06);
 }
 
 .secThumbMetaLabel{
-  font-size:11px;
+  font-size:10px;
   line-height:1.1;
   letter-spacing:0.08em;
   text-transform:uppercase;
-  opacity:0.72;
+  opacity:0.64;
   font-weight:800;
 }
 
 .secThumbMetaValue{
-  font-size:15px;
+  font-size:14px;
   line-height:1.2;
-  font-weight:900;
+  font-weight:850;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -675,12 +681,12 @@ a{
 .secThumbTutorLine{
   min-height:20px;
   padding:10px 12px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.035);
-  border:1px solid rgba(255,255,255,0.07);
-  font-size:13px;
+  border-radius:13px;
+  background:rgba(255,255,255,0.026);
+  border:1px solid rgba(255,255,255,0.055);
+  font-size:12px;
   line-height:1.35;
-  color:var(--text);
+  color:var(--muted);
 }
 
 /* ============================================================
@@ -955,8 +961,9 @@ a{
   }
 
   .secThumbFrame{
-    height:clamp(220px, 44vw, 360px);
-    max-height:360px;
+    height:clamp(240px, 52vw, 390px);
+    min-height:240px;
+    max-height:390px;
   }
 }
 
@@ -1071,9 +1078,9 @@ a{
   }
 
   .secThumbFrame{
-    height:210px;
-    min-height:210px;
-    max-height:210px;
+    height:230px;
+    min-height:230px;
+    max-height:230px;
     border-radius:16px;
   }
 
