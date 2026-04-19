@@ -1,7 +1,7 @@
 /* ============================================================
    docs/sec.js — FULL REPLACEMENT
    SEC / HISTORY / SCORE LOGIC
-   REAL WORLD LAYER
+   REAL WORLD LAYER + 0/0 PRESENT-STATE MESSAGING
 ============================================================ */
 
 (() => {
@@ -9,12 +9,9 @@
 
   window.SCZN3 = window.SCZN3 || {};
 
-  const HISTORY_KEY = "SCZN3_HISTORY_V4";
+  const HISTORY_KEY = "SCZN3_HISTORY_V5";
   const HISTORY_LIMIT = 10;
 
-  // ===============================
-  // REAL-WORLD DEFAULTS
-  // ===============================
   const DEFAULTS = {
     targetWIn: 8.5,
     targetHIn: 11,
@@ -48,13 +45,13 @@
     };
   }
 
+  function round2(n) {
+    return Math.round(n * 100) / 100;
+  }
+
   function formatClicksText(dir, count) {
     if (count === 0 || dir === "HOLD") return "HOLD";
     return `${count} CLICKS ${dir}`.replace("1 CLICKS", "1 CLICK");
-  }
-
-  function formatStatusText(shotCount) {
-    return `${shotCount} SHOTS RECORDED`;
   }
 
   function getScoreBand(score) {
@@ -62,10 +59,6 @@
     if (score >= 75) return { text: "SOLID", bg: "#f0da62", fg: "#15130a" };
     if (score >= 60) return { text: "IMPROVING", bg: "#ffb761", fg: "#201307" };
     return { text: "NEEDS WORK", bg: "#ff7b7b", fg: "#280d0d" };
-  }
-
-  function round2(n) {
-    return Math.round(n * 100) / 100;
   }
 
   function getInchesPerUnit(rangeYds, dialUnit) {
@@ -81,6 +74,20 @@
     return Math.max(0, Math.min(100, Math.round(raw)));
   }
 
+  function isPerfectCorrection(values) {
+    return values.windageCount === 0 && values.elevationCount === 0;
+  }
+
+  function formatStatusText(shotCount, perfect) {
+    if (perfect) return "ZERO CONFIRMED";
+    return `${shotCount} SHOTS RECORDED`;
+  }
+
+  function formatSessionLine(values) {
+    const base = `${values.rangeYds} yds • ${values.shotCount} hits`;
+    return values.perfect ? `${base} • Zero confirmed` : base;
+  }
+
   function computeSECValues() {
     const { state } = getCtx();
     if (!state.aim || state.shots.length === 0) return null;
@@ -90,21 +97,17 @@
     const avgX = state.shots.reduce((sum, p) => sum + p.x, 0) / state.shots.length;
     const avgY = state.shots.reduce((sum, p) => sum + p.y, 0) / state.shots.length;
 
-    // normalized offsets
     const dx = avgX - state.aim.x;
     const dy = avgY - state.aim.y;
 
-    // convert normalized space -> physical inches
     const dxInches = dx * cfg.targetWIn;
     const dyInches = dy * cfg.targetHIn;
 
-    // move POI back to aim
     const windageDir = dxInches > 0 ? "LEFT" : dxInches < 0 ? "RIGHT" : "HOLD";
     const elevationDir = dyInches > 0 ? "UP" : dyInches < 0 ? "DOWN" : "HOLD";
 
     const inchesPerUnit = getInchesPerUnit(cfg.rangeYds, cfg.dialUnit);
 
-    // physical angular correction
     const windageAngular = Math.abs(dxInches) / inchesPerUnit;
     const elevationAngular = Math.abs(dyInches) / inchesPerUnit;
 
@@ -113,9 +116,8 @@
 
     const score = scoreFromPhysicalOffset(dxInches, dyInches);
 
-    return {
+    const values = {
       shotCount: state.shots.length,
-      statusText: formatStatusText(state.shots.length),
 
       windageText: formatClicksText(windageDir, windageCount),
       elevationText: formatClicksText(elevationDir, elevationCount),
@@ -127,7 +129,6 @@
 
       score,
 
-      // debug / future display fields
       dx,
       dy,
       dxInches: round2(dxInches),
@@ -141,6 +142,12 @@
       targetWIn: cfg.targetWIn,
       targetHIn: cfg.targetHIn
     };
+
+    values.perfect = isPerfectCorrection(values);
+    values.statusText = formatStatusText(values.shotCount, values.perfect);
+    values.sessionLine = formatSessionLine(values);
+
+    return values;
   }
 
   function loadHistory() {
@@ -276,6 +283,7 @@
   function applyBand(score) {
     const { els } = getCtx();
     if (!els.secScoreBand) return;
+
     const band = getScoreBand(score);
     els.secScoreBand.textContent = band.text;
     els.secScoreBand.style.background = band.bg;
@@ -302,7 +310,8 @@
       dyInches: values.dyInches,
       rangeYds: values.rangeYds,
       dialUnit: values.dialUnit,
-      clickValue: values.clickValue
+      clickValue: values.clickValue,
+      perfect: values.perfect
     });
 
     app.showSECOverlay();
@@ -315,9 +324,9 @@
     if (els.secScore) els.secScore.textContent = String(values.score);
     if (els.secElevationCount) els.secElevationCount.textContent = String(values.elevationCount);
     if (els.secWindageCount) els.secWindageCount.textContent = String(values.windageCount);
-    if (els.secElevationDir) els.secElevationDir.textContent = values.elevationDir;
-    if (els.secWindageDir) els.secWindageDir.textContent = values.windageDir;
-    if (els.secSessionLine) els.secSessionLine.textContent = `${values.shotCount} hits`;
+    if (els.secElevationDir) els.secElevationDir.textContent = values.elevationDir === "HOLD" ? "UP" : values.elevationDir;
+    if (els.secWindageDir) els.secWindageDir.textContent = values.windageDir === "HOLD" ? "RIGHT" : values.windageDir;
+    if (els.secSessionLine) els.secSessionLine.textContent = values.sessionLine;
     if (els.secVendorName) els.secVendorName.textContent = "Vendor Not Set";
 
     applyBand(values.score);
