@@ -3,6 +3,7 @@
    LOCKED FLOW + LIVE SEC OVERLAY
    POLISH PASS 2 — SCORE HIERARCHY / BAND STYLING
    POLISH PASS 3 — HISTORY ALIGNMENT / 10 SESSION COMPRESSION
+   POLISH PASS 4 — VENDOR ATTRIBUTION LOGIC
 ============================================================ */
 
 (() => {
@@ -36,10 +37,20 @@
 
     freezeScrim: $("freezeScrim"),
 
+    vendorBox: $("vendorBox"),
+    vendorPanelLink: $("vendorPanelLink"),
+    vendorLabel: $("vendorLabel"),
+    vendorName: $("vendorName"),
+
     secOverlay: $("secOverlay"),
     secBackBtn: $("secBackBtn"),
     saveSecBtn: $("saveSecBtn"),
     scoreAnotherBtn: $("scoreAnotherBtn"),
+
+    secVendorSlot: $("secVendorSlot"),
+    secVendorLink: $("secVendorLink"),
+    secVendorLinkLabel: $("secVendorLinkLabel"),
+    secVendorLinkName: $("secVendorLinkName"),
 
     secTargetThumb: $("secTargetThumb"),
     secScore: $("secScore"),
@@ -64,10 +75,76 @@
     secHistoryList: $("secHistoryList")
   };
 
+  const VENDOR_CONFIG = {
+    baker: {
+      key: "baker",
+      name: "Baker",
+      label: "BUY MORE TARGETS LIKE THIS",
+      secLabel: "Vendor",
+      url: "https://bakertargets.com"
+    }
+  };
+
   let aim = null;
   let hits = [];
   let targetImage = null;
   let currentObjectUrl = null;
+  let activeVendor = null;
+
+  /* ============================================================
+     VENDOR ATTRIBUTION
+  ============================================================= */
+
+  function getParam(name) {
+    const url = new URL(window.location.href);
+    return (url.searchParams.get(name) || "").trim();
+  }
+
+  function resolveVendorFromRoute() {
+    const v = getParam("v").toLowerCase();
+    const vendor = getParam("vendor").toLowerCase();
+
+    const routeKey = v || vendor || "";
+
+    if (!routeKey) return null;
+    if (!Object.prototype.hasOwnProperty.call(VENDOR_CONFIG, routeKey)) return null;
+
+    return VENDOR_CONFIG[routeKey];
+  }
+
+  function hydrateVendor() {
+    activeVendor = resolveVendorFromRoute();
+
+    const hasVendor = !!activeVendor;
+
+    if (els.vendorBox) {
+      els.vendorBox.hidden = !hasVendor;
+    }
+
+    if (hasVendor) {
+      if (els.vendorPanelLink) els.vendorPanelLink.href = activeVendor.url;
+      if (els.vendorLabel) els.vendorLabel.textContent = activeVendor.label;
+      if (els.vendorName) els.vendorName.textContent = activeVendor.name;
+    } else {
+      if (els.vendorPanelLink) els.vendorPanelLink.removeAttribute("href");
+      if (els.vendorLabel) els.vendorLabel.textContent = "";
+      if (els.vendorName) els.vendorName.textContent = "";
+    }
+
+    if (els.secVendorSlot) {
+      els.secVendorSlot.hidden = !hasVendor;
+    }
+
+    if (hasVendor) {
+      if (els.secVendorLink) els.secVendorLink.href = activeVendor.url;
+      if (els.secVendorLinkLabel) els.secVendorLinkLabel.textContent = activeVendor.secLabel;
+      if (els.secVendorLinkName) els.secVendorLinkName.textContent = activeVendor.name;
+    } else {
+      if (els.secVendorLink) els.secVendorLink.removeAttribute("href");
+      if (els.secVendorLinkLabel) els.secVendorLinkLabel.textContent = "";
+      if (els.secVendorLinkName) els.secVendorLinkName.textContent = "";
+    }
+  }
 
   /* ============================================================
      VIEW CONTROL
@@ -510,6 +587,7 @@
      INIT
   ============================================================= */
 
+  hydrateVendor();
   showLanding();
   updateUI();
   renderHistory();
