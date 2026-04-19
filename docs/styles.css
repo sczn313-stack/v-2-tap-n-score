@@ -2,9 +2,7 @@
    docs/styles.css — FULL REPLACEMENT
    LOCKED LIVE SEC ARCHITECTURE
    POLISH PASS 1 — THUMBNAIL DOMINANCE
-   - index.html overlay is the real SEC
-   - target image remains primary evidence
-   - saved = live
+   POLISH PASS 2 — SCORE HIERARCHY / BAND STYLING
 ============================================================ */
 
 :root{
@@ -700,34 +698,51 @@ a{
 }
 
 .secScoreHero{
-  border-radius:22px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.045);
-  padding:18px;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.045), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.03));
+  padding:20px 20px 18px;
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 10px 24px rgba(0,0,0,0.18);
 }
 
 .secScoreLabel{
   font-size:11px;
   text-transform:uppercase;
-  letter-spacing:0.10em;
+  letter-spacing:0.12em;
   color:var(--soft);
   font-weight:900;
 }
 
 .secScoreValue{
-  font-size:clamp(48px, 7vw, 78px);
-  line-height:0.9;
+  font-size:clamp(58px, 8vw, 92px);
+  line-height:0.88;
   font-weight:1000;
   color:#fff;
+  letter-spacing:-0.03em;
+  text-shadow:0 0 18px rgba(255,255,255,0.04);
 }
 
 .secScoreBand{
-  font-size:15px;
-  line-height:1.2;
-  font-weight:900;
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:13px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.04);
   color:var(--muted);
 }
 
@@ -923,6 +938,21 @@ a{
   color:#ff8f8f !important;
 }
 
+.bandGreen{
+  background:rgba(54,211,153,0.11) !important;
+  border-color:rgba(54,211,153,0.32) !important;
+}
+
+.bandYellow{
+  background:rgba(244,201,93,0.11) !important;
+  border-color:rgba(244,201,93,0.32) !important;
+}
+
+.bandRed{
+  background:rgba(255,93,93,0.11) !important;
+  border-color:rgba(255,93,93,0.30) !important;
+}
+
 /* ============================================================
    SAFETY / STRETCH GUARDS
 ============================================================ */
@@ -1085,7 +1115,12 @@ a{
   }
 
   .secScoreValue{
-    font-size:56px;
+    font-size:64px;
+  }
+
+  .secScoreBand{
+    font-size:12px;
+    padding:6px 10px;
   }
 
   .secDataGrid{
