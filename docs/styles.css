@@ -3,6 +3,7 @@
    LOCKED LIVE SEC ARCHITECTURE
    POLISH PASS 1 — THUMBNAIL DOMINANCE
    POLISH PASS 2 — SCORE HIERARCHY / BAND STYLING
+   POLISH PASS 3 — HISTORY ALIGNMENT / 10 SESSION COMPRESSION
 ============================================================ */
 
 :root{
@@ -855,10 +856,10 @@ a{
 ============================================================ */
 
 .secHistorySection{
-  margin-top:18px;
+  margin-top:16px;
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:8px;
 }
 
 .secSectionTitle{
@@ -871,12 +872,12 @@ a{
 
 .secHistoryHead{
   display:grid;
-  grid-template-columns:92px 72px 170px minmax(0, 1fr);
-  gap:10px;
+  grid-template-columns:82px 62px 154px minmax(0, 1fr);
+  gap:8px;
   padding:0 10px;
-  font-size:11px;
+  font-size:10px;
   text-transform:uppercase;
-  letter-spacing:0.08em;
+  letter-spacing:0.09em;
   color:var(--soft);
   font-weight:900;
 }
@@ -884,26 +885,29 @@ a{
 .secHistoryList{
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:6px;
 }
 
 .secHistoryRow{
   display:grid;
-  grid-template-columns:92px 72px 170px minmax(0, 1fr);
-  gap:10px;
+  grid-template-columns:82px 62px 154px minmax(0, 1fr);
+  gap:8px;
   align-items:center;
-  padding:12px 10px;
-  border-radius:16px;
+  padding:10px 10px;
+  border-radius:14px;
   border:1px solid var(--line2);
-  background:rgba(255,255,255,0.03);
+  background:rgba(255,255,255,0.028);
 }
 
 .secHistoryCell{
   min-width:0;
-  font-size:14px;
-  line-height:1.25;
+  font-size:13px;
+  line-height:1.2;
   color:#fff;
   font-weight:700;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .secHistoryCell.tut{
@@ -1053,7 +1057,7 @@ a{
 
   .secHistoryHead,
   .secHistoryRow{
-    grid-template-columns:78px 58px 132px minmax(0, 1fr);
+    grid-template-columns:74px 54px 126px minmax(0, 1fr);
   }
 }
 
@@ -1133,11 +1137,13 @@ a{
 
   .secHistoryRow{
     grid-template-columns:1fr;
-    gap:6px;
+    gap:5px;
+    padding:9px 10px;
   }
 
   .secHistoryCell{
-    font-size:13px;
+    font-size:12px;
+    white-space:normal;
   }
 
   .secFooter{
