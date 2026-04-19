@@ -206,8 +206,8 @@ body {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.06);
   font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -225,15 +225,16 @@ body {
   letter-spacing: 0.05em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .btnSecondary {
-  background: rgba(255,255,255,.10);
+  background: rgba(255,255,255,.08);
 }
 
 .btnPrimaryTop {
-  background: linear-gradient(135deg, #ff3c4f 0%, #ff6676 100%);
-  box-shadow: 0 10px 24px rgba(255, 60, 79, 0.22);
+  background: linear-gradient(135deg, #ff4b5e 0%, #ff6c7a 100%);
+  box-shadow: 0 8px 18px rgba(255, 60, 79, 0.18);
 }
 
 .btnSecondary:disabled,
@@ -254,7 +255,7 @@ body {
 #statusLine {
   margin: 0;
   font-size: 12px;
-  color: var(--muted);
+  color: rgba(184, 197, 234, 0.82);
   line-height: 1.45;
 }
 
@@ -278,11 +279,11 @@ body {
   aspect-ratio: 1 / 1;
   border-radius: 18px;
   overflow: hidden;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.04),
-    0 10px 22px rgba(0,0,0,.20);
+    inset 0 0 0 1px rgba(255,255,255,.03),
+    0 8px 18px rgba(0,0,0,.16);
   touch-action: manipulation;
   display: flex;
   align-items: center;
@@ -312,10 +313,6 @@ body {
   inset: 0;
   pointer-events: none;
 }
-
-/* ===============================
-   VISUAL POLISH — DOT SYSTEM
-=============================== */
 
 .aimDot,
 .hitDot {
@@ -708,31 +705,33 @@ body {
 @media (max-width: 640px) {
   .page {
     padding:
-      max(4px, var(--safe-top))
-      max(4px, var(--safe-right))
-      calc(8px + var(--safe-bottom))
-      max(4px, var(--safe-left));
+      max(2px, var(--safe-top))
+      max(2px, var(--safe-right))
+      calc(6px + var(--safe-bottom))
+      max(2px, var(--safe-left));
   }
 
   .workspaceTop {
-    padding: 8px 10px 10px;
-    margin-bottom: 4px;
-    border-radius: 18px;
+    padding: 7px 8px 8px;
+    margin-bottom: 2px;
+    border-radius: 16px;
+    background: rgba(8, 20, 52, 0.72);
   }
 
   .cardTitleSEC {
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
 
   .secTitle {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1;
+    letter-spacing: 0.02em;
   }
 
   .topActionRow {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 5px;
+    gap: 4px;
   }
 
   .topActionRow .pill,
@@ -740,26 +739,42 @@ body {
   .topActionRow .btnPrimaryTop {
     width: 100%;
     min-width: 0;
-    min-height: 32px;
-    padding: 0 6px;
+    min-height: 30px;
+    padding: 0 5px;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.01em;
+    border-radius: 999px;
+  }
+
+  .topActionRow .pill {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.05);
+  }
+
+  .topActionRow .btnSecondary {
+    background: rgba(255,255,255,.06);
+  }
+
+  .topActionRow .btnPrimaryTop {
+    box-shadow: 0 6px 12px rgba(255, 60, 79, 0.14);
   }
 
   .instructionLine {
-    margin: 6px 0 1px;
-    font-size: 11px;
+    margin: 4px 0 1px;
+    font-size: 10px;
+    font-weight: 700;
   }
 
   .hint,
   #statusLine {
-    font-size: 10px;
-    line-height: 1.2;
+    font-size: 9px;
+    line-height: 1.15;
+    color: rgba(184, 197, 234, 0.7);
   }
 
   .targetStage {
-    height: calc(100dvh - 145px);
+    height: calc(100dvh - 118px);
     align-items: stretch;
     justify-content: stretch;
   }
@@ -770,7 +785,12 @@ body {
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    border-radius: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.015);
+    border: 1px solid rgba(255,255,255,.04);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.02),
+      0 6px 14px rgba(0,0,0,.12);
   }
 
   .secDashHeader {
@@ -805,56 +825,56 @@ body {
 @media (max-width: 420px) {
   .page {
     padding:
-      max(2px, var(--safe-top))
-      max(2px, var(--safe-right))
-      calc(6px + var(--safe-bottom))
-      max(2px, var(--safe-left));
+      max(1px, var(--safe-top))
+      max(1px, var(--safe-right))
+      calc(4px + var(--safe-bottom))
+      max(1px, var(--safe-left));
   }
 
   .workspaceTop {
-    padding: 7px 8px 8px;
-    margin-bottom: 3px;
-    border-radius: 16px;
+    padding: 6px 7px 7px;
+    margin-bottom: 1px;
+    border-radius: 14px;
   }
 
   .cardTitleSEC {
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
 
   .secTitle {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .topActionRow {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 4px;
+    gap: 3px;
   }
 
   .topActionRow .pill,
   .topActionRow .btnSecondary,
   .topActionRow .btnPrimaryTop {
-    min-height: 30px;
-    padding: 0 5px;
-    font-size: 9px;
+    min-height: 28px;
+    padding: 0 4px;
+    font-size: 8px;
   }
 
   .instructionLine {
-    margin: 5px 0 1px;
-    font-size: 10px;
+    margin: 3px 0 1px;
+    font-size: 9px;
   }
 
   .hint,
   #statusLine {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .targetStage {
-    height: calc(100dvh - 132px);
+    height: calc(100dvh - 108px);
   }
 
   .targetWrap,
   .targetWrapFull {
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   :root {
