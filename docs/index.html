@@ -15,14 +15,11 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=sec-locked-full-index-1" />
+  <link rel="stylesheet" href="./styles.css?v=sec-user-language-pass-1" />
 </head>
 <body>
   <main class="page">
 
-    <!-- =========================================
-         LANDING VIEW
-    ========================================== -->
     <section id="landingView" class="hero viewOn" aria-label="Tap-n-Score landing">
       <div class="heroShell">
 
@@ -77,9 +74,6 @@
       </div>
     </section>
 
-    <!-- =========================================
-         WORKSPACE VIEW
-    ========================================== -->
     <section id="workspaceView" class="workspace" aria-label="Tap workspace" hidden>
       <div class="workspaceShell">
 
@@ -124,10 +118,6 @@
       </div>
     </section>
 
-    <!-- =========================================
-         LIVE SEC OVERLAY
-         SINGLE SOURCE OF TRUTH
-    ========================================== -->
     <section
       id="secOverlay"
       class="secOverlay"
@@ -182,11 +172,7 @@
 
           <div class="secBody">
 
-            <!-- =========================
-                 LEFT / PRIMARY EVIDENCE
-            ========================== -->
             <section class="secLeft">
-
               <div class="secThumbCard">
                 <div class="secThumbFrame">
                   <img id="secTargetThumb" alt="Target thumbnail" />
@@ -213,12 +199,8 @@
                   <div id="secThumbTutorLine" class="secThumbTutorLine"></div>
                 </div>
               </div>
-
             </section>
 
-            <!-- =========================
-                 RIGHT / RESULTS
-            ========================== -->
             <section class="secRight">
 
               <div class="secScoreHero">
@@ -228,62 +210,35 @@
               </div>
 
               <div class="secAdjustGrid">
-
                 <div class="secAdjustCard">
                   <div class="secAdjustLabel">Windage</div>
                   <div class="secAdjustMain">
+                    <span id="secWindageDir">--</span>
                     <span id="secWindageClicks">--</span>
-                    <span class="secAdjustUnit">clicks</span>
                   </div>
-                  <div id="secWindageDir" class="secAdjustDir">--</div>
+                  <div class="secAdjustDir">clicks</div>
                 </div>
 
                 <div class="secAdjustCard">
                   <div class="secAdjustLabel">Elevation</div>
                   <div class="secAdjustMain">
+                    <span id="secElevationDir">--</span>
                     <span id="secElevationClicks">--</span>
-                    <span class="secAdjustUnit">clicks</span>
                   </div>
-                  <div id="secElevationDir" class="secAdjustDir">--</div>
-                </div>
-
-              </div>
-
-              <div class="secDataGrid">
-                <div class="secDataItem">
-                  <span class="secDataLabel">Shot Count</span>
-                  <span id="secShotCount" class="secDataValue">--</span>
-                </div>
-
-                <div class="secDataItem">
-                  <span class="secDataLabel">Group Size</span>
-                  <span id="secGroupSize" class="secDataValue">--</span>
-                </div>
-
-                <div class="secDataItem">
-                  <span class="secDataLabel">DX</span>
-                  <span id="secDxInches" class="secDataValue">--</span>
-                </div>
-
-                <div class="secDataItem">
-                  <span class="secDataLabel">DY</span>
-                  <span id="secDyInches" class="secDataValue">--</span>
+                  <div class="secAdjustDir">clicks</div>
                 </div>
               </div>
 
               <div class="secHowScore">
-                <div class="secHowScoreTitle">How higher scores happen</div>
+                <div class="secHowScoreTitle">What helps your score</div>
                 <p id="secHowScoreText" class="secHowScoreText">
-                  Higher scores come from tighter groups that finish closer to the aim point.
+                  Higher scores come from tighter groups finishing closer to the aim point.
                 </p>
               </div>
 
             </section>
           </div>
 
-          <!-- =========================
-               HISTORY
-          ========================== -->
           <section class="secHistorySection" aria-label="Recent sessions">
             <div class="secSectionTitle">Recent Sessions</div>
 
@@ -297,9 +252,6 @@
             <div id="secHistoryList" class="secHistoryList"></div>
           </section>
 
-          <!-- =========================
-               BOTTOM ACTIONS
-          ========================== -->
           <footer class="secFooter">
             <button id="scoreAnotherBtn" class="secondaryBtn" type="button">
               Score Another
@@ -311,8 +263,7 @@
     </section>
   </main>
 
-  <script src="./index.js?v=sec-locked-full-index-1"></script>
-  <script src="./sec.js?v=sec-locked-full-index-1"></script>
-  <script src="./save.js?v=sec-locked-full-index-1"></script>
+  <script src="./index.js?v=sec-user-language-pass-1"></script>
+  <script src="./save.js?v=sec-user-language-pass-1"></script>
 </body>
 </html>
