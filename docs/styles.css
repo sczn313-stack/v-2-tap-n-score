@@ -28,6 +28,8 @@ body {
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-behavior: auto !important;
+  overscroll-behavior-y: auto;
 }
 
 body {
@@ -37,13 +39,14 @@ body {
     radial-gradient(circle at top center, rgba(85, 130, 255, 0.18), transparent 30%),
     linear-gradient(180deg, var(--bg-top), var(--bg-mid), var(--bg-bottom));
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .page {
   width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
-  min-height: 100dvh;
+  min-height: 100%;
   padding:
     max(12px, var(--safe-top))
     max(14px, var(--safe-right))
@@ -61,12 +64,12 @@ body {
 .b { color: #61a7ff; }
 
 .hero {
-  min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  padding: 10px 0;
+  padding: 18px 0 28px;
 }
 
 .brandRow {
@@ -154,9 +157,10 @@ body {
 }
 
 .workspace {
-  min-height: calc(100dvh - max(12px, var(--safe-top)) - calc(20px + var(--safe-bottom)));
+  min-height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .card,
@@ -170,7 +174,7 @@ body {
 }
 
 .workspaceTop {
-  margin-bottom: 10px;
+  margin-bottom: 0;
   flex: 0 0 auto;
 }
 
@@ -261,22 +265,19 @@ body {
 
 .targetStage {
   width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: calc(100dvh - 250px);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .targetWrap {
   position: relative;
   width: 100%;
-  height: 100%;
   max-width: 900px;
-  max-height: 100%;
   aspect-ratio: 1 / 1;
+  min-height: 320px;
+  max-height: none;
   border-radius: 18px;
   overflow: hidden;
   background: rgba(255,255,255,.02);
@@ -292,9 +293,7 @@ body {
 
 .targetWrapFull {
   width: 100%;
-  height: 100%;
   max-width: 900px;
-  max-height: 100%;
   aspect-ratio: 1 / 1;
 }
 
@@ -426,7 +425,9 @@ body {
     max(14px, var(--safe-right))
     calc(20px + var(--safe-bottom))
     max(14px, var(--safe-left));
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .secDashShell {
@@ -705,21 +706,25 @@ body {
 @media (max-width: 640px) {
   .page {
     padding:
-      max(2px, var(--safe-top))
-      max(2px, var(--safe-right))
-      calc(6px + var(--safe-bottom))
-      max(2px, var(--safe-left));
+      max(6px, var(--safe-top))
+      max(6px, var(--safe-right))
+      calc(10px + var(--safe-bottom))
+      max(6px, var(--safe-left));
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 28px 0 18px;
   }
 
   .workspaceTop {
-    padding: 7px 8px 8px;
-    margin-bottom: 2px;
+    padding: 10px 10px 10px;
     border-radius: 16px;
     background: rgba(8, 20, 52, 0.72);
   }
 
   .cardTitleSEC {
-    margin-bottom: 3px;
+    margin-bottom: 6px;
   }
 
   .secTitle {
@@ -739,8 +744,8 @@ body {
   .topActionRow .btnPrimaryTop {
     width: 100%;
     min-width: 0;
-    min-height: 30px;
-    padding: 0 5px;
+    min-height: 34px;
+    padding: 0 6px;
     justify-content: center;
     font-size: 9px;
     letter-spacing: 0.01em;
@@ -761,7 +766,7 @@ body {
   }
 
   .instructionLine {
-    margin: 4px 0 1px;
+    margin: 6px 0 2px;
     font-size: 10px;
     font-weight: 700;
   }
@@ -769,23 +774,16 @@ body {
   .hint,
   #statusLine {
     font-size: 9px;
-    line-height: 1.15;
+    line-height: 1.2;
     color: rgba(184, 197, 234, 0.7);
-  }
-
-  .targetStage {
-    height: calc(100dvh - 118px);
-    align-items: stretch;
-    justify-content: stretch;
   }
 
   .targetWrap,
   .targetWrapFull {
     width: 100%;
-    height: 100%;
     max-width: 100%;
-    max-height: 100%;
-    border-radius: 10px;
+    min-height: 280px;
+    border-radius: 12px;
     background: rgba(255,255,255,.015);
     border: 1px solid rgba(255,255,255,.04);
     box-shadow:
@@ -793,9 +791,15 @@ body {
       0 6px 14px rgba(0,0,0,.12);
   }
 
+  .secDashShell {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
   .secDashHeader {
     grid-template-columns: 1fr;
     justify-items: start;
+    gap: 10px;
   }
 
   .secDashHeaderTitle {
@@ -825,20 +829,19 @@ body {
 @media (max-width: 420px) {
   .page {
     padding:
-      max(1px, var(--safe-top))
-      max(1px, var(--safe-right))
-      calc(4px + var(--safe-bottom))
-      max(1px, var(--safe-left));
+      max(4px, var(--safe-top))
+      max(4px, var(--safe-right))
+      calc(8px + var(--safe-bottom))
+      max(4px, var(--safe-left));
   }
 
   .workspaceTop {
-    padding: 6px 7px 7px;
-    margin-bottom: 1px;
+    padding: 8px 8px 9px;
     border-radius: 14px;
   }
 
   .cardTitleSEC {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   .secTitle {
@@ -853,13 +856,13 @@ body {
   .topActionRow .pill,
   .topActionRow .btnSecondary,
   .topActionRow .btnPrimaryTop {
-    min-height: 28px;
+    min-height: 30px;
     padding: 0 4px;
     font-size: 8px;
   }
 
   .instructionLine {
-    margin: 3px 0 1px;
+    margin: 4px 0 2px;
     font-size: 9px;
   }
 
@@ -868,17 +871,22 @@ body {
     font-size: 8px;
   }
 
-  .targetStage {
-    height: calc(100dvh - 108px);
-  }
-
   .targetWrap,
   .targetWrapFull {
-    border-radius: 8px;
+    min-height: 250px;
+    border-radius: 10px;
   }
 
   :root {
     --aim-dot-size: 18px;
     --shot-dot-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }
