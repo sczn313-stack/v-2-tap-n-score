@@ -1,7 +1,8 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   LOCKED FLOW + LIVE SEC OVERLAY
-   TRUE SCZN3 MATH SWAP-IN
+   USER-LANGUAGE SEC
+   - hide unfamiliar tech terms
+   - keep only user-facing correction output
 ============================================================ */
 
 (() => {
@@ -67,11 +68,6 @@
     secElevationClicks: $("secElevationClicks"),
     secElevationDir: $("secElevationDir"),
 
-    secShotCount: $("secShotCount"),
-    secGroupSize: $("secGroupSize"),
-    secDx: $("secDxInches"),
-    secDy: $("secDyInches"),
-
     secThumbScore: $("secThumbScore"),
     secThumbHits: $("secThumbHits"),
     secThumbWhen: $("secThumbWhen"),
@@ -97,10 +93,6 @@
   let currentObjectUrl = null;
   let activeVendor = null;
 
-  /* ============================================================
-     CONFIG
-  ============================================================= */
-
   function clampPositiveNumber(value, fallback) {
     const n = Number(value);
     return Number.isFinite(n) && n > 0 ? n : fallback;
@@ -113,9 +105,7 @@
         if (raw == null || raw === "") continue;
         const n = Number(raw);
         if (Number.isFinite(n) && n > 0) return n;
-      } catch (err) {
-        // ignore individual key failures
-      }
+      } catch (err) {}
     }
     return fallback;
   }
@@ -125,9 +115,7 @@
       try {
         const raw = (localStorage.getItem(key) || "").trim();
         if (raw) return raw;
-      } catch (err) {
-        // ignore individual key failures
-      }
+      } catch (err) {}
     }
     return fallback;
   }
@@ -167,18 +155,8 @@
       DEFAULTS.clickValue
     );
 
-    return {
-      targetWIn,
-      targetHIn,
-      rangeYds,
-      dialUnit,
-      clickValue
-    };
+    return { targetWIn, targetHIn, rangeYds, dialUnit, clickValue };
   }
-
-  /* ============================================================
-     VENDOR ATTRIBUTION
-  ============================================================= */
 
   function resolveVendorFromRoute() {
     const v = getParam("v").toLowerCase();
@@ -193,12 +171,9 @@
 
   function hydrateVendor() {
     activeVendor = resolveVendorFromRoute();
-
     const hasVendor = !!activeVendor;
 
-    if (els.vendorBox) {
-      els.vendorBox.hidden = !hasVendor;
-    }
+    if (els.vendorBox) els.vendorBox.hidden = !hasVendor;
 
     if (hasVendor) {
       if (els.vendorPanelLink) els.vendorPanelLink.href = activeVendor.url;
@@ -210,9 +185,7 @@
       if (els.vendorName) els.vendorName.textContent = "";
     }
 
-    if (els.secVendorSlot) {
-      els.secVendorSlot.hidden = !hasVendor;
-    }
+    if (els.secVendorSlot) els.secVendorSlot.hidden = !hasVendor;
 
     if (hasVendor) {
       if (els.secVendorLink) els.secVendorLink.href = activeVendor.url;
@@ -224,10 +197,6 @@
       if (els.secVendorLinkName) els.secVendorLinkName.textContent = "";
     }
   }
-
-  /* ============================================================
-     VIEW CONTROL
-  ============================================================= */
 
   function showLanding() {
     if (els.landingView) els.landingView.hidden = false;
@@ -250,9 +219,14 @@
     if (els.freezeScrim) els.freezeScrim.hidden = true;
   }
 
-  /* ============================================================
-     HISTORY
-  ============================================================= */
+  function escapeHtml(value) {
+    return value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
 
   function loadHistory() {
     try {
@@ -260,7 +234,6 @@
       const parsed = raw ? JSON.parse(raw) : [];
       return Array.isArray(parsed) ? parsed : [];
     } catch (err) {
-      console.warn("History load failed:", err);
       return [];
     }
   }
@@ -268,9 +241,7 @@
   function saveHistory(rows) {
     try {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(rows.slice(0, HISTORY_LIMIT)));
-    } catch (err) {
-      console.warn("History save failed:", err);
-    }
+    } catch (err) {}
   }
 
   function formatHistoryDate(raw) {
@@ -284,15 +255,6 @@
       hour: "numeric",
       minute: "2-digit"
     });
-  }
-
-  function escapeHtml(value) {
-    return value
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
   }
 
   function renderHistory() {
@@ -334,10 +296,6 @@
     renderHistory();
   }
 
-  /* ============================================================
-     IMAGE LOAD
-  ============================================================= */
-
   if (els.photoBtn && els.photoInput) {
     els.photoBtn.addEventListener("click", () => {
       els.photoInput.click();
@@ -365,10 +323,6 @@
       showWorkspace();
     });
   }
-
-  /* ============================================================
-     TAP LOGIC
-  ============================================================= */
 
   function getPoint(e) {
     if (!els.targetWrap) return { x: 0, y: 0 };
@@ -401,10 +355,6 @@
     });
   }
 
-  /* ============================================================
-     DOT RENDER
-  ============================================================= */
-
   function renderDots() {
     if (!els.dotsLayer) return;
 
@@ -427,10 +377,6 @@
       els.dotsLayer.appendChild(d);
     });
   }
-
-  /* ============================================================
-     UI STATE
-  ============================================================= */
 
   function updateUI() {
     if (els.shotCount) {
@@ -455,10 +401,6 @@
     if (els.statusLine) els.statusLine.textContent = `${hits.length} shots captured.`;
     if (els.showResultsBtn) els.showResultsBtn.disabled = false;
   }
-
-  /* ============================================================
-     CONTROLS
-  ============================================================= */
 
   if (els.undoBtn) {
     els.undoBtn.addEventListener("click", () => {
@@ -497,10 +439,6 @@
       showLanding();
     });
   }
-
-  /* ============================================================
-     TRUE SCZN3 MATH
-  ============================================================= */
 
   function meanPoint(points) {
     const avgX = points.reduce((sum, p) => sum + p.x, 0) / points.length;
@@ -554,7 +492,6 @@
     const distancePenalty = distanceInches * 18;
     const groupPenalty = groupSizeInches * 11;
     const shotCountBonus = Math.min(shotCount, 5) * 1.5;
-
     const raw = 100 - distancePenalty - groupPenalty + shotCountBonus;
     return Math.max(0, Math.min(100, Math.round(raw)));
   }
@@ -566,7 +503,7 @@
         bandClass: "bandGreen",
         bandText: "EXCELLENT",
         tutor: "Tight group. Stay centered and confirm with another clean session.",
-        howText: "Higher scores come from tighter groups finishing very close to the aim point."
+        howText: "Higher scores come from tighter groups finishing closer to the aim point."
       };
     }
 
@@ -576,7 +513,7 @@
         bandClass: "bandYellow",
         bandText: "SOLID",
         tutor: "You are on track. Tighten the group and keep moving closer to center.",
-        howText: "A solid score means the group is usable, but a tighter cluster nearer center raises it fast."
+        howText: "A tighter group closer to center raises your score fast."
       };
     }
 
@@ -584,8 +521,8 @@
       scoreClass: "scoreRed",
       bandClass: "bandRed",
       bandText: "NEEDS WORK",
-      tutor: "Focus on consistency first. Tighten the group, then bring it toward center.",
-      howText: "Lower scores usually mean the group is wide, off-center, or both. Tightness plus centering drives improvement."
+      tutor: "Focus on consistency first, then move the group toward center.",
+      howText: "Lower scores usually mean the group is wide, off-center, or both."
     };
   }
 
@@ -618,11 +555,6 @@
     const aimIn = normalizedToInches(aim, config);
     const poibIn = normalizedToInches(poibNorm, config);
 
-    // canonical rule: correction = bull - POIB
-    // x+: right, y+: down in DOM space
-    // for shooter display, dy positive means UP correction when aim is below POIB? No:
-    // using inches on target: if POIB is below bull, bullY - poibY is negative in DOM coordinates.
-    // Convert to shooter-friendly sign where positive Y means UP correction.
     const dxInches = aimIn.x - poibIn.x;
     const dyDom = aimIn.y - poibIn.y;
     const dyInches = -dyDom;
@@ -640,20 +572,12 @@
     return {
       score,
       config,
-      poibNorm,
       dxInches,
       dyInches,
-      groupSizeInches,
       windageClicks,
-      elevationClicks,
-      windageUnits,
-      elevationUnits
+      elevationClicks
     };
   }
-
-  /* ============================================================
-     SHOW RESULTS → LIVE SEC
-  ============================================================= */
 
   if (els.showResultsBtn) {
     els.showResultsBtn.addEventListener("click", () => {
@@ -663,9 +587,7 @@
       const scoreState = getScoreState(r.score);
       const createdAt = new Date().toISOString();
 
-      if (els.freezeScrim) {
-        els.freezeScrim.hidden = false;
-      }
+      if (els.freezeScrim) els.freezeScrim.hidden = false;
 
       if (els.secTargetThumb) {
         els.secTargetThumb.removeAttribute("width");
@@ -677,27 +599,22 @@
       if (els.secScoreBand) els.secScoreBand.textContent = scoreState.bandText;
       applyScoreClasses(scoreState);
 
-      if (els.secWindageClicks) els.secWindageClicks.textContent = r.windageClicks.toFixed(2);
       if (els.secWindageDir) els.secWindageDir.textContent = getDirectionX(r.dxInches);
+      if (els.secWindageClicks) els.secWindageClicks.textContent = r.windageClicks.toFixed(2);
 
-      if (els.secElevationClicks) els.secElevationClicks.textContent = r.elevationClicks.toFixed(2);
       if (els.secElevationDir) els.secElevationDir.textContent = getDirectionY(r.dyInches);
-
-      if (els.secShotCount) els.secShotCount.textContent = String(hits.length);
-      if (els.secGroupSize) els.secGroupSize.textContent = `${r.groupSizeInches.toFixed(2)} in`;
-      if (els.secDx) els.secDx.textContent = `${r.dxInches.toFixed(2)} in`;
-      if (els.secDy) els.secDy.textContent = `${r.dyInches.toFixed(2)} in`;
+      if (els.secElevationClicks) els.secElevationClicks.textContent = r.elevationClicks.toFixed(2);
 
       if (els.secThumbScore) els.secThumbScore.textContent = String(r.score);
       if (els.secThumbHits) els.secThumbHits.textContent = String(hits.length);
       if (els.secThumbWhen) els.secThumbWhen.textContent = formatHistoryDate(createdAt);
       if (els.secThumbTutorLine) {
         els.secThumbTutorLine.textContent =
-          `${scoreState.tutor} ${getDirectionX(r.dxInches)} ${r.windageClicks.toFixed(2)}, ${getDirectionY(r.dyInches)} ${r.elevationClicks.toFixed(2)}.`;
+          `${getDirectionX(r.dxInches)} ${r.windageClicks.toFixed(2)} • ${getDirectionY(r.dyInches)} ${r.elevationClicks.toFixed(2)}`;
       }
+
       if (els.secHowScoreText) {
-        els.secHowScoreText.textContent =
-          `${scoreState.howText} ${r.config.dialUnit} @ ${r.config.rangeYds} yds, ${r.config.clickValue.toFixed(2)} per click.`;
+        els.secHowScoreText.textContent = scoreState.howText;
       }
 
       pushHistory({
@@ -711,10 +628,6 @@
     });
   }
 
-  /* ============================================================
-     SEC CONTROLS
-  ============================================================= */
-
   if (els.secBackBtn) {
     els.secBackBtn.addEventListener("click", hideSEC);
   }
@@ -724,10 +637,6 @@
       document.dispatchEvent(new Event("SCZN3_SAVE_SEC"));
     });
   }
-
-  /* ============================================================
-     INIT
-  ============================================================= */
 
   hydrateVendor();
   showLanding();
