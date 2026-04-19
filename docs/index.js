@@ -2,10 +2,14 @@
    docs/index.js — FULL REPLACEMENT
    LOCKED FLOW + LIVE SEC OVERLAY
    POLISH PASS 2 — SCORE HIERARCHY / BAND STYLING
+   POLISH PASS 3 — HISTORY ALIGNMENT / 10 SESSION COMPRESSION
 ============================================================ */
 
 (() => {
   "use strict";
+
+  const HISTORY_KEY = "SCZN3_SEC_HISTORY_V1";
+  const HISTORY_LIMIT = 10;
 
   const $ = (id) => document.getElementById(id);
 
@@ -35,6 +39,7 @@
     secOverlay: $("secOverlay"),
     secBackBtn: $("secBackBtn"),
     saveSecBtn: $("saveSecBtn"),
+    scoreAnotherBtn: $("scoreAnotherBtn"),
 
     secTargetThumb: $("secTargetThumb"),
     secScore: $("secScore"),
@@ -55,7 +60,8 @@
     secThumbWhen: $("secThumbWhen"),
     secThumbTutorLine: $("secThumbTutorLine"),
 
-    secHowScoreText: $("secHowScoreText")
+    secHowScoreText: $("secHowScoreText"),
+    secHistoryList: $("secHistoryList")
   };
 
   let aim = null;
@@ -86,6 +92,90 @@
   function hideSEC() {
     if (els.secOverlay) els.secOverlay.hidden = true;
     if (els.freezeScrim) els.freezeScrim.hidden = true;
+  }
+
+  /* ============================================================
+     HISTORY
+  ============================================================= */
+
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      console.warn("History load failed:", err);
+      return [];
+    }
+  }
+
+  function saveHistory(rows) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(rows.slice(0, HISTORY_LIMIT)));
+    } catch (err) {
+      console.warn("History save failed:", err);
+    }
+  }
+
+  function formatHistoryDate(raw) {
+    const d = new Date(raw);
+    if (Number.isNaN(d.getTime())) return "--";
+
+    return d.toLocaleString([], {
+      month: "numeric",
+      day: "numeric",
+      year: "2-digit",
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  }
+
+  function renderHistory() {
+    if (!els.secHistoryList) return;
+
+    const rows = loadHistory();
+    els.secHistoryList.innerHTML = "";
+
+    if (!rows.length) {
+      const empty = document.createElement("div");
+      empty.className = "secHistoryRow";
+      empty.innerHTML = `
+        <div class="secHistoryCell">--</div>
+        <div class="secHistoryCell">--</div>
+        <div class="secHistoryCell">No sessions yet</div>
+        <div class="secHistoryCell tut">Run a scored session to populate history.</div>
+      `;
+      els.secHistoryList.appendChild(empty);
+      return;
+    }
+
+    rows.slice(0, HISTORY_LIMIT).forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "secHistoryRow";
+      item.innerHTML = `
+        <div class="secHistoryCell">${escapeHtml(String(row.score ?? "--"))}</div>
+        <div class="secHistoryCell">${escapeHtml(String(row.hits ?? "--"))}</div>
+        <div class="secHistoryCell">${escapeHtml(formatHistoryDate(row.createdAt))}</div>
+        <div class="secHistoryCell tut">${escapeHtml(String(row.tutLine ?? ""))}</div>
+      `;
+      els.secHistoryList.appendChild(item);
+    });
+  }
+
+  function pushHistory(entry) {
+    const current = loadHistory();
+    const next = [entry, ...current].slice(0, HISTORY_LIMIT);
+    saveHistory(next);
+    renderHistory();
+  }
+
+  function escapeHtml(value) {
+    return value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   /* ============================================================
@@ -241,6 +331,17 @@
     });
   }
 
+  if (els.scoreAnotherBtn) {
+    els.scoreAnotherBtn.addEventListener("click", () => {
+      hideSEC();
+      aim = null;
+      hits = [];
+      renderDots();
+      updateUI();
+      showLanding();
+    });
+  }
+
   /* ============================================================
      RESULTS (PLACEHOLDER CALC UNTIL TRUE SCZN3 MATH SWAP-IN)
   ============================================================= */
@@ -346,6 +447,7 @@
 
       const r = computeResults();
       const scoreState = getScoreState(r.score);
+      const createdAt = new Date().toISOString();
 
       if (els.freezeScrim) {
         els.freezeScrim.hidden = false;
@@ -375,17 +477,16 @@
 
       if (els.secThumbScore) els.secThumbScore.textContent = String(r.score);
       if (els.secThumbHits) els.secThumbHits.textContent = String(hits.length);
-      if (els.secThumbWhen) {
-        els.secThumbWhen.textContent = new Date().toLocaleString([], {
-          month: "numeric",
-          day: "numeric",
-          year: "2-digit",
-          hour: "numeric",
-          minute: "2-digit"
-        });
-      }
+      if (els.secThumbWhen) els.secThumbWhen.textContent = formatHistoryDate(createdAt);
       if (els.secThumbTutorLine) els.secThumbTutorLine.textContent = scoreState.tutor;
       if (els.secHowScoreText) els.secHowScoreText.textContent = scoreState.howText;
+
+      pushHistory({
+        score: r.score,
+        hits: hits.length,
+        createdAt,
+        tutLine: scoreState.tutor
+      });
 
       showSEC();
     });
@@ -411,4 +512,5 @@
 
   showLanding();
   updateUI();
+  renderHistory();
 })();
