@@ -1,9 +1,7 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    LOCKED FLOW + LIVE SEC OVERLAY
-   POLISH PASS 2 — SCORE HIERARCHY / BAND STYLING
-   POLISH PASS 3 — HISTORY ALIGNMENT / 10 SESSION COMPRESSION
-   POLISH PASS 4 — VENDOR ATTRIBUTION LOGIC
+   TRUE SCZN3 MATH SWAP-IN
 ============================================================ */
 
 (() => {
@@ -11,6 +9,14 @@
 
   const HISTORY_KEY = "SCZN3_SEC_HISTORY_V1";
   const HISTORY_LIMIT = 10;
+
+  const DEFAULTS = {
+    targetWIn: 8.5,
+    targetHIn: 11,
+    rangeYds: 100,
+    dialUnit: "MOA",
+    clickValue: 0.25
+  };
 
   const $ = (id) => document.getElementById(id);
 
@@ -92,18 +98,91 @@
   let activeVendor = null;
 
   /* ============================================================
-     VENDOR ATTRIBUTION
+     CONFIG
   ============================================================= */
+
+  function clampPositiveNumber(value, fallback) {
+    const n = Number(value);
+    return Number.isFinite(n) && n > 0 ? n : fallback;
+  }
+
+  function getStoredNumber(keys, fallback) {
+    for (const key of keys) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw == null || raw === "") continue;
+        const n = Number(raw);
+        if (Number.isFinite(n) && n > 0) return n;
+      } catch (err) {
+        // ignore individual key failures
+      }
+    }
+    return fallback;
+  }
+
+  function getStoredText(keys, fallback) {
+    for (const key of keys) {
+      try {
+        const raw = (localStorage.getItem(key) || "").trim();
+        if (raw) return raw;
+      } catch (err) {
+        // ignore individual key failures
+      }
+    }
+    return fallback;
+  }
 
   function getParam(name) {
     const url = new URL(window.location.href);
     return (url.searchParams.get(name) || "").trim();
   }
 
+  function getRangeConfig() {
+    const targetWIn = clampPositiveNumber(
+      getParam("wIn") || getStoredNumber(["SCZN3_TARGET_W_IN_V1"], DEFAULTS.targetWIn),
+      DEFAULTS.targetWIn
+    );
+
+    const targetHIn = clampPositiveNumber(
+      getParam("hIn") || getStoredNumber(["SCZN3_TARGET_H_IN_V1"], DEFAULTS.targetHIn),
+      DEFAULTS.targetHIn
+    );
+
+    const rangeYds = clampPositiveNumber(
+      getParam("rangeYds") || getStoredNumber(["SCZN3_RANGE_YDS_V1"], DEFAULTS.rangeYds),
+      DEFAULTS.rangeYds
+    );
+
+    let dialUnit = (
+      getParam("dialUnit") ||
+      getStoredText(["SCZN3_DIAL_UNIT_V1", "SCZN3_RANGE_UNIT_V1"], DEFAULTS.dialUnit)
+    ).toUpperCase();
+
+    if (dialUnit !== "MOA" && dialUnit !== "MRAD") {
+      dialUnit = DEFAULTS.dialUnit;
+    }
+
+    const clickValue = clampPositiveNumber(
+      getParam("clickValue") || getStoredNumber(["SCZN3_CLICK_VALUE_V1"], DEFAULTS.clickValue),
+      DEFAULTS.clickValue
+    );
+
+    return {
+      targetWIn,
+      targetHIn,
+      rangeYds,
+      dialUnit,
+      clickValue
+    };
+  }
+
+  /* ============================================================
+     VENDOR ATTRIBUTION
+  ============================================================= */
+
   function resolveVendorFromRoute() {
     const v = getParam("v").toLowerCase();
     const vendor = getParam("vendor").toLowerCase();
-
     const routeKey = v || vendor || "";
 
     if (!routeKey) return null;
@@ -207,6 +286,15 @@
     });
   }
 
+  function escapeHtml(value) {
+    return value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
   function renderHistory() {
     if (!els.secHistoryList) return;
 
@@ -244,15 +332,6 @@
     const next = [entry, ...current].slice(0, HISTORY_LIMIT);
     saveHistory(next);
     renderHistory();
-  }
-
-  function escapeHtml(value) {
-    return value
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
   }
 
   /* ============================================================
@@ -420,46 +499,64 @@
   }
 
   /* ============================================================
-     RESULTS (PLACEHOLDER CALC UNTIL TRUE SCZN3 MATH SWAP-IN)
+     TRUE SCZN3 MATH
   ============================================================= */
 
-  function computeGroupCenter(points) {
+  function meanPoint(points) {
     const avgX = points.reduce((sum, p) => sum + p.x, 0) / points.length;
     const avgY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
     return { x: avgX, y: avgY };
   }
 
-  function computeGroupSize(points) {
+  function normalizedToInches(point, config) {
+    return {
+      x: point.x * config.targetWIn,
+      y: point.y * config.targetHIn
+    };
+  }
+
+  function computeGroupSizeInches(points, config) {
     if (points.length < 2) return 0;
 
+    const inchPoints = points.map((p) => normalizedToInches(p, config));
     let maxDist = 0;
-    for (let i = 0; i < points.length; i += 1) {
-      for (let j = i + 1; j < points.length; j += 1) {
-        const dx = points[i].x - points[j].x;
-        const dy = points[i].y - points[j].y;
+
+    for (let i = 0; i < inchPoints.length; i += 1) {
+      for (let j = i + 1; j < inchPoints.length; j += 1) {
+        const dx = inchPoints[i].x - inchPoints[j].x;
+        const dy = inchPoints[i].y - inchPoints[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist > maxDist) maxDist = dist;
       }
     }
-    return maxDist * 10;
+
+    return maxDist;
   }
 
-  function computeResults() {
-    const center = computeGroupCenter(hits);
-    const dx = (center.x - aim.x) * 10;
-    const dy = (center.y - aim.y) * 10;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const groupSize = computeGroupSize(hits);
+  function inchesToMOA(inches, rangeYds) {
+    const moaInchesAtRange = 1.047 * (rangeYds / 100);
+    return inches / moaInchesAtRange;
+  }
 
-    const scoreRaw = 100 - (distance * 11 + groupSize * 5);
-    const scoreNum = Math.max(0, Math.min(100, Math.round(scoreRaw)));
+  function inchesToMRAD(inches, rangeYds) {
+    const mradInchesAtRange = 3.6 * (rangeYds / 100);
+    return inches / mradInchesAtRange;
+  }
 
-    return {
-      score: scoreNum,
-      dx,
-      dy,
-      groupSize
-    };
+  function unitFromInches(inches, config) {
+    if (config.dialUnit === "MRAD") {
+      return inchesToMRAD(inches, config.rangeYds);
+    }
+    return inchesToMOA(inches, config.rangeYds);
+  }
+
+  function computeScore(distanceInches, groupSizeInches, shotCount) {
+    const distancePenalty = distanceInches * 18;
+    const groupPenalty = groupSizeInches * 11;
+    const shotCountBonus = Math.min(shotCount, 5) * 1.5;
+
+    const raw = 100 - distancePenalty - groupPenalty + shotCountBonus;
+    return Math.max(0, Math.min(100, Math.round(raw)));
   }
 
   function getScoreState(score) {
@@ -504,14 +601,54 @@
     }
   }
 
-  function getDirectionX(dx) {
-    if (Math.abs(dx) < 0.005) return "CENTERED";
-    return dx > 0 ? "RIGHT" : "LEFT";
+  function getDirectionX(dxInches) {
+    if (Math.abs(dxInches) < 0.005) return "CENTERED";
+    return dxInches > 0 ? "RIGHT" : "LEFT";
   }
 
-  function getDirectionY(dy) {
-    if (Math.abs(dy) < 0.005) return "CENTERED";
-    return dy > 0 ? "DOWN" : "UP";
+  function getDirectionY(dyInches) {
+    if (Math.abs(dyInches) < 0.005) return "CENTERED";
+    return dyInches > 0 ? "UP" : "DOWN";
+  }
+
+  function computeResults() {
+    const config = getRangeConfig();
+
+    const poibNorm = meanPoint(hits);
+    const aimIn = normalizedToInches(aim, config);
+    const poibIn = normalizedToInches(poibNorm, config);
+
+    // canonical rule: correction = bull - POIB
+    // x+: right, y+: down in DOM space
+    // for shooter display, dy positive means UP correction when aim is below POIB? No:
+    // using inches on target: if POIB is below bull, bullY - poibY is negative in DOM coordinates.
+    // Convert to shooter-friendly sign where positive Y means UP correction.
+    const dxInches = aimIn.x - poibIn.x;
+    const dyDom = aimIn.y - poibIn.y;
+    const dyInches = -dyDom;
+
+    const windageUnits = unitFromInches(Math.abs(dxInches), config);
+    const elevationUnits = unitFromInches(Math.abs(dyInches), config);
+
+    const windageClicks = windageUnits / config.clickValue;
+    const elevationClicks = elevationUnits / config.clickValue;
+
+    const groupSizeInches = computeGroupSizeInches(hits, config);
+    const distanceFromCenter = Math.sqrt(dxInches * dxInches + dyInches * dyInches);
+    const score = computeScore(distanceFromCenter, groupSizeInches, hits.length);
+
+    return {
+      score,
+      config,
+      poibNorm,
+      dxInches,
+      dyInches,
+      groupSizeInches,
+      windageClicks,
+      elevationClicks,
+      windageUnits,
+      elevationUnits
+    };
   }
 
   /* ============================================================
@@ -538,31 +675,36 @@
 
       if (els.secScore) els.secScore.textContent = String(r.score);
       if (els.secScoreBand) els.secScoreBand.textContent = scoreState.bandText;
-
       applyScoreClasses(scoreState);
 
-      if (els.secWindageClicks) els.secWindageClicks.textContent = Math.abs(r.dx).toFixed(2);
-      if (els.secWindageDir) els.secWindageDir.textContent = getDirectionX(r.dx);
+      if (els.secWindageClicks) els.secWindageClicks.textContent = r.windageClicks.toFixed(2);
+      if (els.secWindageDir) els.secWindageDir.textContent = getDirectionX(r.dxInches);
 
-      if (els.secElevationClicks) els.secElevationClicks.textContent = Math.abs(r.dy).toFixed(2);
-      if (els.secElevationDir) els.secElevationDir.textContent = getDirectionY(r.dy);
+      if (els.secElevationClicks) els.secElevationClicks.textContent = r.elevationClicks.toFixed(2);
+      if (els.secElevationDir) els.secElevationDir.textContent = getDirectionY(r.dyInches);
 
       if (els.secShotCount) els.secShotCount.textContent = String(hits.length);
-      if (els.secGroupSize) els.secGroupSize.textContent = `${r.groupSize.toFixed(2)} in`;
-      if (els.secDx) els.secDx.textContent = `${r.dx.toFixed(2)} in`;
-      if (els.secDy) els.secDy.textContent = `${r.dy.toFixed(2)} in`;
+      if (els.secGroupSize) els.secGroupSize.textContent = `${r.groupSizeInches.toFixed(2)} in`;
+      if (els.secDx) els.secDx.textContent = `${r.dxInches.toFixed(2)} in`;
+      if (els.secDy) els.secDy.textContent = `${r.dyInches.toFixed(2)} in`;
 
       if (els.secThumbScore) els.secThumbScore.textContent = String(r.score);
       if (els.secThumbHits) els.secThumbHits.textContent = String(hits.length);
       if (els.secThumbWhen) els.secThumbWhen.textContent = formatHistoryDate(createdAt);
-      if (els.secThumbTutorLine) els.secThumbTutorLine.textContent = scoreState.tutor;
-      if (els.secHowScoreText) els.secHowScoreText.textContent = scoreState.howText;
+      if (els.secThumbTutorLine) {
+        els.secThumbTutorLine.textContent =
+          `${scoreState.tutor} ${getDirectionX(r.dxInches)} ${r.windageClicks.toFixed(2)}, ${getDirectionY(r.dyInches)} ${r.elevationClicks.toFixed(2)}.`;
+      }
+      if (els.secHowScoreText) {
+        els.secHowScoreText.textContent =
+          `${scoreState.howText} ${r.config.dialUnit} @ ${r.config.rangeYds} yds, ${r.config.clickValue.toFixed(2)} per click.`;
+      }
 
       pushHistory({
         score: r.score,
         hits: hits.length,
         createdAt,
-        tutLine: scoreState.tutor
+        tutLine: `${getDirectionX(r.dxInches)} ${r.windageClicks.toFixed(2)} • ${getDirectionY(r.dyInches)} ${r.elevationClicks.toFixed(2)}`
       });
 
       showSEC();
