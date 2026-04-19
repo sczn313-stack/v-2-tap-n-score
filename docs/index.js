@@ -1,6 +1,6 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
-   RESTORE SHOW RESULTS + TRUE IMAGE LOCK
+   LOCKED FLOW + LIVE SEC OVERLAY
 ============================================================ */
 
 (() => {
@@ -12,11 +12,10 @@
     landingView: $("landingView"),
     workspaceView: $("workspaceView"),
 
-    historyBtn: $("historyBtn"),
-    backBtn: $("backBtn"),
-
     photoBtn: $("photoBtn"),
     photoInput: $("photoInput"),
+
+    backBtn: $("backBtn"),
 
     targetWrap: $("targetWrap"),
     targetImg: $("targetImg"),
@@ -36,444 +35,257 @@
     secBackBtn: $("secBackBtn"),
     saveSecBtn: $("saveSecBtn"),
 
+    // SEC fields
+    secTargetThumb: $("secTargetThumb"),
     secScore: $("secScore"),
     secScoreBand: $("secScoreBand"),
-    secElevationCount: $("secElevationCount"),
-    secElevationDir: $("secElevationDir"),
-    secWindageCount: $("secWindageCount"),
+
+    secWindageClicks: $("secWindageClicks"),
     secWindageDir: $("secWindageDir"),
-    secSessionLine: $("secSessionLine"),
-    secVendorName: $("secVendorName"),
-    secThumbImg: $("secThumbImg"),
-    secThumbFallback: $("secThumbFallback"),
+    secElevationClicks: $("secElevationClicks"),
+    secElevationDir: $("secElevationDir"),
 
-    historyAvg: $("historyAvg"),
-    historyBest: $("historyBest"),
-    historyTrend: $("historyTrend"),
-    historyList: $("historyList"),
-    historyEmpty: $("historyEmpty")
+    secShotCount: $("secShotCount"),
+    secGroupSize: $("secGroupSize"),
+    secDx: $("secDxInches"),
+    secDy: $("secDyInches"),
+
+    secThumbScore: $("secThumbScore"),
+    secThumbHits: $("secThumbHits"),
+    secThumbWhen: $("secThumbWhen"),
+    secThumbTutorLine: $("secThumbTutorLine")
   };
 
-  let objectUrl = null;
-  let suppressNextPop = false;
-  let pointerStart = null;
-  let activePointerId = null;
+  let aim = null;
+  let hits = [];
+  let targetImage = null;
 
-  const state = {
-    view: "landing",
-    imageSrc: "",
-    aim: null,
-    shots: [],
-    frozen: false
-  };
+  /* ============================================================
+     VIEW CONTROL
+  ============================================================= */
 
-  window.SCZN3 = window.SCZN3 || {};
-  window.SCZN3.els = els;
-  window.SCZN3.state = state;
-
-  function pushHistoryForView(view) {
-    suppressNextPop = true;
-    history.pushState({ view }, "", window.location.href);
-    setTimeout(() => {
-      suppressNextPop = false;
-    }, 0);
+  function showLanding() {
+    els.landingView.hidden = false;
+    els.workspaceView.hidden = true;
+    els.secOverlay.hidden = true;
   }
 
-  function setView(view, pushHistory = false) {
-    state.view = view;
-
-    if (view === "landing") {
-      els.landingView?.classList.remove("scoreHidden");
-      els.workspaceView?.classList.add("scoreHidden");
-      window.scrollTo(0, 0);
-    } else {
-      els.landingView?.classList.add("scoreHidden");
-      els.workspaceView?.classList.remove("scoreHidden");
-      window.scrollTo(0, 0);
-    }
-
-    if (pushHistory) pushHistoryForView(view);
+  function showWorkspace() {
+    els.landingView.hidden = true;
+    els.workspaceView.hidden = false;
   }
 
-  function hideOverlay() {
-    els.freezeScrim?.classList.add("isHidden");
-    els.secOverlay?.classList.add("isHidden");
+  function showSEC() {
+    els.secOverlay.hidden = false;
   }
 
-  function clearImageElement() {
-    if (els.targetImg) {
-      els.targetImg.removeAttribute("src");
-      els.targetImg.src = "";
-    }
-
-    if (els.photoInput) els.photoInput.value = "";
-
-    if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
-      objectUrl = null;
-    }
+  function hideSEC() {
+    els.secOverlay.hidden = true;
+    els.freezeScrim.hidden = true;
   }
 
-  function resetDotsLayerBox() {
-    if (!els.dotsLayer) return;
-    els.dotsLayer.style.left = "0px";
-    els.dotsLayer.style.top = "0px";
-    els.dotsLayer.style.width = "100%";
-    els.dotsLayer.style.height = "100%";
-  }
+  /* ============================================================
+     IMAGE LOAD
+  ============================================================= */
 
-  function resetSession() {
-    state.imageSrc = "";
-    state.aim = null;
-    state.shots = [];
-    state.frozen = false;
-    pointerStart = null;
-    activePointerId = null;
+  els.photoBtn.addEventListener("click", () => {
+    els.photoInput.click();
+  });
 
-    clearImageElement();
-    hideOverlay();
-
-    if (els.dotsLayer) els.dotsLayer.innerHTML = "";
-    resetDotsLayerBox();
-  }
-
-  function hardResetSession() {
-    try {
-      sessionStorage.clear();
-    } catch {}
-
-    resetSession();
-    setView("landing", false);
-    renderAll();
-  }
-
-  function updateButtons() {
-    const hasWork = !!state.aim || state.shots.length > 0;
-
-    if (els.undoBtn) els.undoBtn.disabled = !hasWork;
-    if (els.clearBtn) els.clearBtn.disabled = !hasWork;
-    if (els.showResultsBtn) els.showResultsBtn.disabled = !(state.aim && state.shots.length > 0);
-  }
-
-  function updateUI() {
-    if (els.shotCount) els.shotCount.textContent = String(state.shots.length);
-    updateButtons();
-
-    if (!state.imageSrc) {
-      if (els.instructionLine) els.instructionLine.textContent = "Add a target photo.";
-      if (els.statusLine) els.statusLine.textContent = "Tap to begin.";
-      return;
-    }
-
-    if (!state.aim) {
-      if (els.instructionLine) els.instructionLine.textContent = "Tap aim point.";
-      if (els.statusLine) els.statusLine.textContent = "First tap sets aim.";
-      return;
-    }
-
-    if (state.shots.length === 0) {
-      if (els.instructionLine) els.instructionLine.textContent = "Tap shot 1";
-      if (els.statusLine) els.statusLine.textContent = "Aim point blinks until first hit.";
-      return;
-    }
-
-    if (state.shots.length >= 7) {
-      if (els.instructionLine) els.instructionLine.textContent = "Maximum 7 shots reached.";
-      if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-      return;
-    }
-
-    if (els.instructionLine) els.instructionLine.textContent = `Tap shot ${state.shots.length + 1}`;
-    if (els.statusLine) els.statusLine.textContent = `${state.shots.length} shot(s) recorded`;
-  }
-
-  function getRenderedImageRectInWrap() {
-    const img = els.targetImg;
-    const wrap = els.targetWrap;
-    if (!img || !wrap) return null;
-
-    const wrapRect = wrap.getBoundingClientRect();
-    const naturalW = img.naturalWidth || 0;
-    const naturalH = img.naturalHeight || 0;
-
-    if (!wrapRect.width || !wrapRect.height || !naturalW || !naturalH) return null;
-
-    const imageAspect = naturalW / naturalH;
-    const wrapAspect = wrapRect.width / wrapRect.height;
-
-    let width = 0;
-    let height = 0;
-    let left = 0;
-    let top = 0;
-
-    if (imageAspect > wrapAspect) {
-      width = wrapRect.width;
-      height = width / imageAspect;
-      left = 0;
-      top = (wrapRect.height - height) / 2;
-    } else {
-      height = wrapRect.height;
-      width = height * imageAspect;
-      top = 0;
-      left = (wrapRect.width - width) / 2;
-    }
-
-    return {
-      left,
-      top,
-      width,
-      height,
-      right: left + width,
-      bottom: top + height
-    };
-  }
-
-  function syncDotsLayerToImage() {
-    if (!els.dotsLayer) return;
-
-    const rect = getRenderedImageRectInWrap();
-    if (!rect) {
-      resetDotsLayerBox();
-      return;
-    }
-
-    els.dotsLayer.style.left = `${rect.left}px`;
-    els.dotsLayer.style.top = `${rect.top}px`;
-    els.dotsLayer.style.width = `${rect.width}px`;
-    els.dotsLayer.style.height = `${rect.height}px`;
-  }
-
-  function renderDots() {
-    if (!els.dotsLayer) return;
-
-    syncDotsLayerToImage();
-    els.dotsLayer.innerHTML = "";
-
-    if (state.aim) {
-      const d = document.createElement("div");
-      d.className = "aimDot";
-      if (state.shots.length === 0) d.classList.add("blinking");
-      d.style.left = `${state.aim.x * 100}%`;
-      d.style.top = `${state.aim.y * 100}%`;
-      els.dotsLayer.appendChild(d);
-    }
-
-    state.shots.forEach((shot, i) => {
-      const d = document.createElement("div");
-      d.className = "hitDot";
-      d.style.left = `${shot.x * 100}%`;
-      d.style.top = `${shot.y * 100}%`;
-      d.textContent = String(i + 1);
-      els.dotsLayer.appendChild(d);
-    });
-  }
-
-  function renderAll() {
-    updateUI();
-    renderDots();
-  }
-
-  function getPointFromClient(clientX, clientY) {
-    const imageRect = getRenderedImageRectInWrap();
-    const wrapRect = els.targetWrap?.getBoundingClientRect();
-
-    if (!imageRect || !wrapRect) return null;
-
-    const localX = clientX - wrapRect.left;
-    const localY = clientY - wrapRect.top;
-
-    const insideX = localX >= imageRect.left && localX <= imageRect.right;
-    const insideY = localY >= imageRect.top && localY <= imageRect.bottom;
-
-    if (!insideX || !insideY) return null;
-
-    return {
-      x: (localX - imageRect.left) / imageRect.width,
-      y: (localY - imageRect.top) / imageRect.height
-    };
-  }
-
-  function onPointerDown(e) {
-    if (!state.imageSrc || state.frozen) return;
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-
-    activePointerId = e.pointerId;
-    pointerStart = { x: e.clientX, y: e.clientY };
-  }
-
-  function onPointerUp(e) {
-    if (!state.imageSrc || state.frozen) return;
-    if (activePointerId !== null && e.pointerId !== activePointerId) return;
-    if (!pointerStart) return;
-
-    const moved = Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y);
-    activePointerId = null;
-
-    if (moved > 14) {
-      pointerStart = null;
-      return;
-    }
-
-    const p = getPointFromClient(e.clientX, e.clientY);
-    pointerStart = null;
-
-    if (!p) return;
-
-    if (!state.aim) {
-      state.aim = p;
-    } else if (state.shots.length < 7) {
-      state.shots.push(p);
-    }
-
-    renderAll();
-  }
-
-  function onPointerCancel() {
-    pointerStart = null;
-    activePointerId = null;
-  }
-
-  function undo() {
-    if (state.frozen) return;
-
-    if (state.shots.length > 0) {
-      state.shots.pop();
-    } else {
-      state.aim = null;
-    }
-
-    renderAll();
-  }
-
-  function clearAll() {
-    if (state.frozen) return;
-    state.aim = null;
-    state.shots = [];
-    renderAll();
-  }
-
-  function loadImage(file) {
+  els.photoInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
     if (!file) return;
 
-    if (objectUrl) {
-      try {
-        URL.revokeObjectURL(objectUrl);
-      } catch {}
-    }
+    const url = URL.createObjectURL(file);
+    targetImage = url;
 
-    objectUrl = URL.createObjectURL(file);
+    els.targetImg.src = url;
 
-    state.imageSrc = objectUrl;
-    state.aim = null;
-    state.shots = [];
-    state.frozen = false;
+    aim = null;
+    hits = [];
+    renderDots();
+    updateUI();
 
-    hideOverlay();
+    showWorkspace();
+  });
 
-    if (els.targetImg) {
-      els.targetImg.onload = () => {
-        window.scrollTo(0, 0);
-        renderAll();
-      };
-      els.targetImg.src = objectUrl;
-    }
+  /* ============================================================
+     TAP LOGIC
+  ============================================================= */
 
-    setView("workspace", true);
-    renderAll();
+  function getPoint(e) {
+    const rect = els.targetWrap.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    return {
+      x: Math.max(0, Math.min(1, x)),
+      y: Math.max(0, Math.min(1, y))
+    };
   }
 
-  function goBack(push = false) {
-    if (state.view === "results") {
-      window.SCZN3.sec?.closeSEC(push);
+  els.targetWrap.addEventListener("pointerdown", (e) => {
+    if (!targetImage) return;
+
+    const p = getPoint(e);
+
+    if (!aim) {
+      aim = p;
+    } else if (hits.length < 7) {
+      hits.push(p);
+    }
+
+    renderDots();
+    updateUI();
+  });
+
+  /* ============================================================
+     DOT RENDER
+  ============================================================= */
+
+  function renderDots() {
+    els.dotsLayer.innerHTML = "";
+
+    if (aim) {
+      const d = document.createElement("div");
+      d.className = "shotDot aimDot";
+      d.style.left = `${aim.x * 100}%`;
+      d.style.top = `${aim.y * 100}%`;
+      els.dotsLayer.appendChild(d);
+    }
+
+    hits.forEach((h, i) => {
+      const d = document.createElement("div");
+      d.className = "shotDot hitDot";
+      d.style.left = `${h.x * 100}%`;
+      d.style.top = `${h.y * 100}%`;
+      d.textContent = i + 1;
+      els.dotsLayer.appendChild(d);
+    });
+  }
+
+  /* ============================================================
+     UI STATE
+  ============================================================= */
+
+  function updateUI() {
+    els.shotCount.textContent = hits.length;
+
+    if (!aim) {
+      els.instructionLine.textContent = "Tap aim point to begin.";
+      els.statusLine.textContent = "No aim point set.";
+      els.showResultsBtn.disabled = true;
       return;
     }
 
-    if (state.view === "workspace") {
-      resetSession();
-      setView("landing", push);
-      renderAll();
+    if (hits.length < 3) {
+      els.instructionLine.textContent = "Tap 3–7 shots.";
+      els.statusLine.textContent = `${hits.length} shot(s) placed.`;
+      els.showResultsBtn.disabled = true;
       return;
     }
 
-    history.back();
+    els.instructionLine.textContent = "Ready for results.";
+    els.statusLine.textContent = `${hits.length} shots captured.`;
+    els.showResultsBtn.disabled = false;
   }
 
-  function bind() {
-    els.photoBtn?.addEventListener("click", () => {
-      els.photoInput?.click();
-    });
+  /* ============================================================
+     CONTROLS
+  ============================================================= */
 
-    els.photoInput?.addEventListener("change", (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (file) loadImage(file);
-    });
+  els.undoBtn.addEventListener("click", () => {
+    if (hits.length > 0) {
+      hits.pop();
+    } else {
+      aim = null;
+    }
+    renderDots();
+    updateUI();
+  });
 
-    els.targetWrap?.addEventListener("pointerdown", onPointerDown);
-    els.targetWrap?.addEventListener("pointerup", onPointerUp);
-    els.targetWrap?.addEventListener("pointercancel", onPointerCancel);
+  els.clearBtn.addEventListener("click", () => {
+    aim = null;
+    hits = [];
+    renderDots();
+    updateUI();
+  });
 
-    els.historyBtn?.addEventListener("click", () => window.SCZN3.sec?.openHistoryShortcut());
-    els.backBtn?.addEventListener("click", () => goBack(true));
-    els.undoBtn?.addEventListener("click", undo);
-    els.clearBtn?.addEventListener("click", clearAll);
-    els.showResultsBtn?.addEventListener("click", () => window.SCZN3.sec?.openSEC(true));
+  els.backBtn.addEventListener("click", () => {
+    showLanding();
+  });
 
-    els.secBackBtn?.addEventListener("click", () => window.SCZN3.sec?.closeSEC(false));
-    els.saveSecBtn?.addEventListener("click", () => window.SCZN3.save?.save());
+  /* ============================================================
+     RESULTS (SIMPLIFIED CALC FOR NOW)
+  ============================================================= */
 
-    window.addEventListener("resize", () => {
-      if (state.imageSrc) renderDots();
-    });
+  function computeResults() {
+    const avgX = hits.reduce((s, p) => s + p.x, 0) / hits.length;
+    const avgY = hits.reduce((s, p) => s + p.y, 0) / hits.length;
 
-    window.addEventListener("orientationchange", () => {
-      setTimeout(() => {
-        if (state.imageSrc) renderDots();
-      }, 50);
-    });
+    const dx = (avgX - aim.x) * 10;
+    const dy = (avgY - aim.y) * 10;
 
-    window.addEventListener("pageshow", (e) => {
-      if (e.persisted) window.location.reload();
-    });
-
-    window.addEventListener("popstate", () => {
-      if (suppressNextPop) return;
-
-      if (state.view === "results") {
-        window.SCZN3.sec?.closeSEC(false);
-        return;
-      }
-
-      if (state.view === "workspace") {
-        resetSession();
-        setView("landing", false);
-        renderAll();
-      }
-    });
+    return {
+      score: Math.max(0, 100 - Math.sqrt(dx * dx + dy * dy) * 10).toFixed(0),
+      dx,
+      dy
+    };
   }
 
-  function init() {
-    bind();
-    history.replaceState({ view: "landing" }, "", window.location.href);
-    window.SCZN3.sec?.renderHistoryInSEC();
-    hardResetSession();
-    console.log("SHOW RESULTS + TRUE IMAGE LOCK ACTIVE");
-  }
+  /* ============================================================
+     SHOW RESULTS → LIVE SEC
+  ============================================================= */
 
-  window.SCZN3.app = {
-    els,
-    state,
-    setView,
-    hideOverlay,
-    showSECOverlay: () => {
-      els.freezeScrim?.classList.remove("isHidden");
-      els.secOverlay?.classList.remove("isHidden");
-    },
-    renderAll,
-    resetSession,
-    goBack
-  };
+  els.showResultsBtn.addEventListener("click", () => {
+    const r = computeResults();
 
-  init();
+    // freeze background
+    els.freezeScrim.hidden = false;
+
+    // populate SEC
+    els.secTargetThumb.src = targetImage;
+
+    els.secScore.textContent = r.score;
+    els.secScoreBand.textContent =
+      r.score >= 90 ? "EXCELLENT" :
+      r.score >= 60 ? "SOLID" : "NEEDS WORK";
+
+    els.secWindageClicks.textContent = Math.abs(r.dx).toFixed(2);
+    els.secWindageDir.textContent = r.dx > 0 ? "RIGHT" : "LEFT";
+
+    els.secElevationClicks.textContent = Math.abs(r.dy).toFixed(2);
+    els.secElevationDir.textContent = r.dy > 0 ? "DOWN" : "UP";
+
+    els.secShotCount.textContent = hits.length;
+    els.secGroupSize.textContent = "--";
+    els.secDx.textContent = r.dx.toFixed(2);
+    els.secDy.textContent = r.dy.toFixed(2);
+
+    // thumbnail meta
+    els.secThumbScore.textContent = r.score;
+    els.secThumbHits.textContent = hits.length;
+    els.secThumbWhen.textContent = new Date().toLocaleString();
+    els.secThumbTutorLine.textContent =
+      "Tighten your group and move toward center.";
+
+    showSEC();
+  });
+
+  /* ============================================================
+     SEC CONTROLS
+  ============================================================= */
+
+  els.secBackBtn.addEventListener("click", hideSEC);
+
+  els.saveSecBtn.addEventListener("click", () => {
+    // handled in save.js (capture live)
+    document.dispatchEvent(new Event("SCZN3_SAVE_SEC"));
+  });
+
+  /* ============================================================
+     INIT
+  ============================================================= */
+
+  showLanding();
 })();
