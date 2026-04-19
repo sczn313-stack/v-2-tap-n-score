@@ -1,6 +1,7 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    LOCKED FLOW + LIVE SEC OVERLAY
+   POLISH PASS 2 — SCORE HIERARCHY / BAND STYLING
 ============================================================ */
 
 (() => {
@@ -35,7 +36,6 @@
     secBackBtn: $("secBackBtn"),
     saveSecBtn: $("saveSecBtn"),
 
-    // SEC fields
     secTargetThumb: $("secTargetThumb"),
     secScore: $("secScore"),
     secScoreBand: $("secScoreBand"),
@@ -53,67 +53,80 @@
     secThumbScore: $("secThumbScore"),
     secThumbHits: $("secThumbHits"),
     secThumbWhen: $("secThumbWhen"),
-    secThumbTutorLine: $("secThumbTutorLine")
+    secThumbTutorLine: $("secThumbTutorLine"),
+
+    secHowScoreText: $("secHowScoreText")
   };
 
   let aim = null;
   let hits = [];
   let targetImage = null;
+  let currentObjectUrl = null;
 
   /* ============================================================
      VIEW CONTROL
   ============================================================= */
 
   function showLanding() {
-    els.landingView.hidden = false;
-    els.workspaceView.hidden = true;
-    els.secOverlay.hidden = true;
+    if (els.landingView) els.landingView.hidden = false;
+    if (els.workspaceView) els.workspaceView.hidden = true;
+    if (els.secOverlay) els.secOverlay.hidden = true;
+    if (els.freezeScrim) els.freezeScrim.hidden = true;
   }
 
   function showWorkspace() {
-    els.landingView.hidden = true;
-    els.workspaceView.hidden = false;
+    if (els.landingView) els.landingView.hidden = true;
+    if (els.workspaceView) els.workspaceView.hidden = false;
   }
 
   function showSEC() {
-    els.secOverlay.hidden = false;
+    if (els.secOverlay) els.secOverlay.hidden = false;
   }
 
   function hideSEC() {
-    els.secOverlay.hidden = true;
-    els.freezeScrim.hidden = true;
+    if (els.secOverlay) els.secOverlay.hidden = true;
+    if (els.freezeScrim) els.freezeScrim.hidden = true;
   }
 
   /* ============================================================
      IMAGE LOAD
   ============================================================= */
 
-  els.photoBtn.addEventListener("click", () => {
-    els.photoInput.click();
-  });
+  if (els.photoBtn && els.photoInput) {
+    els.photoBtn.addEventListener("click", () => {
+      els.photoInput.click();
+    });
 
-  els.photoInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    els.photoInput.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
 
-    const url = URL.createObjectURL(file);
-    targetImage = url;
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+      }
 
-    els.targetImg.src = url;
+      currentObjectUrl = URL.createObjectURL(file);
+      targetImage = currentObjectUrl;
 
-    aim = null;
-    hits = [];
-    renderDots();
-    updateUI();
+      if (els.targetImg) {
+        els.targetImg.src = targetImage;
+      }
 
-    showWorkspace();
-  });
+      aim = null;
+      hits = [];
+      renderDots();
+      updateUI();
+      showWorkspace();
+    });
+  }
 
   /* ============================================================
      TAP LOGIC
   ============================================================= */
 
   function getPoint(e) {
+    if (!els.targetWrap) return { x: 0, y: 0 };
+
     const rect = els.targetWrap.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
@@ -124,26 +137,31 @@
     };
   }
 
-  els.targetWrap.addEventListener("pointerdown", (e) => {
-    if (!targetImage) return;
+  if (els.targetWrap) {
+    els.targetWrap.addEventListener("pointerdown", (e) => {
+      if (!targetImage) return;
+      if (!els.secOverlay?.hidden) return;
 
-    const p = getPoint(e);
+      const p = getPoint(e);
 
-    if (!aim) {
-      aim = p;
-    } else if (hits.length < 7) {
-      hits.push(p);
-    }
+      if (!aim) {
+        aim = p;
+      } else if (hits.length < 7) {
+        hits.push(p);
+      }
 
-    renderDots();
-    updateUI();
-  });
+      renderDots();
+      updateUI();
+    });
+  }
 
   /* ============================================================
      DOT RENDER
   ============================================================= */
 
   function renderDots() {
+    if (!els.dotsLayer) return;
+
     els.dotsLayer.innerHTML = "";
 
     if (aim) {
@@ -159,7 +177,7 @@
       d.className = "shotDot hitDot";
       d.style.left = `${h.x * 100}%`;
       d.style.top = `${h.y * 100}%`;
-      d.textContent = i + 1;
+      d.textContent = String(i + 1);
       els.dotsLayer.appendChild(d);
     });
   }
@@ -169,123 +187,228 @@
   ============================================================= */
 
   function updateUI() {
-    els.shotCount.textContent = hits.length;
+    if (els.shotCount) {
+      els.shotCount.textContent = String(hits.length);
+    }
 
     if (!aim) {
-      els.instructionLine.textContent = "Tap aim point to begin.";
-      els.statusLine.textContent = "No aim point set.";
-      els.showResultsBtn.disabled = true;
+      if (els.instructionLine) els.instructionLine.textContent = "Tap aim point to begin.";
+      if (els.statusLine) els.statusLine.textContent = "No aim point set.";
+      if (els.showResultsBtn) els.showResultsBtn.disabled = true;
       return;
     }
 
     if (hits.length < 3) {
-      els.instructionLine.textContent = "Tap 3–7 shots.";
-      els.statusLine.textContent = `${hits.length} shot(s) placed.`;
-      els.showResultsBtn.disabled = true;
+      if (els.instructionLine) els.instructionLine.textContent = "Tap 3–7 shots.";
+      if (els.statusLine) els.statusLine.textContent = `${hits.length} shot(s) placed.`;
+      if (els.showResultsBtn) els.showResultsBtn.disabled = true;
       return;
     }
 
-    els.instructionLine.textContent = "Ready for results.";
-    els.statusLine.textContent = `${hits.length} shots captured.`;
-    els.showResultsBtn.disabled = false;
+    if (els.instructionLine) els.instructionLine.textContent = "Ready for results.";
+    if (els.statusLine) els.statusLine.textContent = `${hits.length} shots captured.`;
+    if (els.showResultsBtn) els.showResultsBtn.disabled = false;
   }
 
   /* ============================================================
      CONTROLS
   ============================================================= */
 
-  els.undoBtn.addEventListener("click", () => {
-    if (hits.length > 0) {
-      hits.pop();
-    } else {
+  if (els.undoBtn) {
+    els.undoBtn.addEventListener("click", () => {
+      if (hits.length > 0) {
+        hits.pop();
+      } else {
+        aim = null;
+      }
+      renderDots();
+      updateUI();
+    });
+  }
+
+  if (els.clearBtn) {
+    els.clearBtn.addEventListener("click", () => {
       aim = null;
-    }
-    renderDots();
-    updateUI();
-  });
+      hits = [];
+      renderDots();
+      updateUI();
+    });
+  }
 
-  els.clearBtn.addEventListener("click", () => {
-    aim = null;
-    hits = [];
-    renderDots();
-    updateUI();
-  });
-
-  els.backBtn.addEventListener("click", () => {
-    showLanding();
-  });
+  if (els.backBtn) {
+    els.backBtn.addEventListener("click", () => {
+      showLanding();
+    });
+  }
 
   /* ============================================================
-     RESULTS (SIMPLIFIED CALC FOR NOW)
+     RESULTS (PLACEHOLDER CALC UNTIL TRUE SCZN3 MATH SWAP-IN)
   ============================================================= */
 
-  function computeResults() {
-    const avgX = hits.reduce((s, p) => s + p.x, 0) / hits.length;
-    const avgY = hits.reduce((s, p) => s + p.y, 0) / hits.length;
+  function computeGroupCenter(points) {
+    const avgX = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+    const avgY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+    return { x: avgX, y: avgY };
+  }
 
-    const dx = (avgX - aim.x) * 10;
-    const dy = (avgY - aim.y) * 10;
+  function computeGroupSize(points) {
+    if (points.length < 2) return 0;
+
+    let maxDist = 0;
+    for (let i = 0; i < points.length; i += 1) {
+      for (let j = i + 1; j < points.length; j += 1) {
+        const dx = points[i].x - points[j].x;
+        const dy = points[i].y - points[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > maxDist) maxDist = dist;
+      }
+    }
+    return maxDist * 10;
+  }
+
+  function computeResults() {
+    const center = computeGroupCenter(hits);
+    const dx = (center.x - aim.x) * 10;
+    const dy = (center.y - aim.y) * 10;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const groupSize = computeGroupSize(hits);
+
+    const scoreRaw = 100 - (distance * 11 + groupSize * 5);
+    const scoreNum = Math.max(0, Math.min(100, Math.round(scoreRaw)));
 
     return {
-      score: Math.max(0, 100 - Math.sqrt(dx * dx + dy * dy) * 10).toFixed(0),
+      score: scoreNum,
       dx,
-      dy
+      dy,
+      groupSize
     };
+  }
+
+  function getScoreState(score) {
+    if (score >= 90) {
+      return {
+        scoreClass: "scoreGreen",
+        bandClass: "bandGreen",
+        bandText: "EXCELLENT",
+        tutor: "Tight group. Stay centered and confirm with another clean session.",
+        howText: "Higher scores come from tighter groups finishing very close to the aim point."
+      };
+    }
+
+    if (score >= 60) {
+      return {
+        scoreClass: "scoreYellow",
+        bandClass: "bandYellow",
+        bandText: "SOLID",
+        tutor: "You are on track. Tighten the group and keep moving closer to center.",
+        howText: "A solid score means the group is usable, but a tighter cluster nearer center raises it fast."
+      };
+    }
+
+    return {
+      scoreClass: "scoreRed",
+      bandClass: "bandRed",
+      bandText: "NEEDS WORK",
+      tutor: "Focus on consistency first. Tighten the group, then bring it toward center.",
+      howText: "Lower scores usually mean the group is wide, off-center, or both. Tightness plus centering drives improvement."
+    };
+  }
+
+  function applyScoreClasses(scoreState) {
+    if (els.secScore) {
+      els.secScore.classList.remove("scoreGreen", "scoreYellow", "scoreRed");
+      els.secScore.classList.add(scoreState.scoreClass);
+    }
+
+    if (els.secScoreBand) {
+      els.secScoreBand.classList.remove("bandGreen", "bandYellow", "bandRed");
+      els.secScoreBand.classList.add(scoreState.bandClass);
+    }
+  }
+
+  function getDirectionX(dx) {
+    if (Math.abs(dx) < 0.005) return "CENTERED";
+    return dx > 0 ? "RIGHT" : "LEFT";
+  }
+
+  function getDirectionY(dy) {
+    if (Math.abs(dy) < 0.005) return "CENTERED";
+    return dy > 0 ? "DOWN" : "UP";
   }
 
   /* ============================================================
      SHOW RESULTS → LIVE SEC
   ============================================================= */
 
-  els.showResultsBtn.addEventListener("click", () => {
-    const r = computeResults();
+  if (els.showResultsBtn) {
+    els.showResultsBtn.addEventListener("click", () => {
+      if (!aim || hits.length < 3 || !targetImage) return;
 
-    // freeze background
-    els.freezeScrim.hidden = false;
+      const r = computeResults();
+      const scoreState = getScoreState(r.score);
 
-    // populate SEC
-    els.secTargetThumb.src = targetImage;
+      if (els.freezeScrim) {
+        els.freezeScrim.hidden = false;
+      }
 
-    els.secScore.textContent = r.score;
-    els.secScoreBand.textContent =
-      r.score >= 90 ? "EXCELLENT" :
-      r.score >= 60 ? "SOLID" : "NEEDS WORK";
+      if (els.secTargetThumb) {
+        els.secTargetThumb.removeAttribute("width");
+        els.secTargetThumb.removeAttribute("height");
+        els.secTargetThumb.src = targetImage;
+      }
 
-    els.secWindageClicks.textContent = Math.abs(r.dx).toFixed(2);
-    els.secWindageDir.textContent = r.dx > 0 ? "RIGHT" : "LEFT";
+      if (els.secScore) els.secScore.textContent = String(r.score);
+      if (els.secScoreBand) els.secScoreBand.textContent = scoreState.bandText;
 
-    els.secElevationClicks.textContent = Math.abs(r.dy).toFixed(2);
-    els.secElevationDir.textContent = r.dy > 0 ? "DOWN" : "UP";
+      applyScoreClasses(scoreState);
 
-    els.secShotCount.textContent = hits.length;
-    els.secGroupSize.textContent = "--";
-    els.secDx.textContent = r.dx.toFixed(2);
-    els.secDy.textContent = r.dy.toFixed(2);
+      if (els.secWindageClicks) els.secWindageClicks.textContent = Math.abs(r.dx).toFixed(2);
+      if (els.secWindageDir) els.secWindageDir.textContent = getDirectionX(r.dx);
 
-    // thumbnail meta
-    els.secThumbScore.textContent = r.score;
-    els.secThumbHits.textContent = hits.length;
-    els.secThumbWhen.textContent = new Date().toLocaleString();
-    els.secThumbTutorLine.textContent =
-      "Tighten your group and move toward center.";
+      if (els.secElevationClicks) els.secElevationClicks.textContent = Math.abs(r.dy).toFixed(2);
+      if (els.secElevationDir) els.secElevationDir.textContent = getDirectionY(r.dy);
 
-    showSEC();
-  });
+      if (els.secShotCount) els.secShotCount.textContent = String(hits.length);
+      if (els.secGroupSize) els.secGroupSize.textContent = `${r.groupSize.toFixed(2)} in`;
+      if (els.secDx) els.secDx.textContent = `${r.dx.toFixed(2)} in`;
+      if (els.secDy) els.secDy.textContent = `${r.dy.toFixed(2)} in`;
+
+      if (els.secThumbScore) els.secThumbScore.textContent = String(r.score);
+      if (els.secThumbHits) els.secThumbHits.textContent = String(hits.length);
+      if (els.secThumbWhen) {
+        els.secThumbWhen.textContent = new Date().toLocaleString([], {
+          month: "numeric",
+          day: "numeric",
+          year: "2-digit",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      }
+      if (els.secThumbTutorLine) els.secThumbTutorLine.textContent = scoreState.tutor;
+      if (els.secHowScoreText) els.secHowScoreText.textContent = scoreState.howText;
+
+      showSEC();
+    });
+  }
 
   /* ============================================================
      SEC CONTROLS
   ============================================================= */
 
-  els.secBackBtn.addEventListener("click", hideSEC);
+  if (els.secBackBtn) {
+    els.secBackBtn.addEventListener("click", hideSEC);
+  }
 
-  els.saveSecBtn.addEventListener("click", () => {
-    // handled in save.js (capture live)
-    document.dispatchEvent(new Event("SCZN3_SAVE_SEC"));
-  });
+  if (els.saveSecBtn) {
+    els.saveSecBtn.addEventListener("click", () => {
+      document.dispatchEvent(new Event("SCZN3_SAVE_SEC"));
+    });
+  }
 
   /* ============================================================
      INIT
   ============================================================= */
 
   showLanding();
+  updateUI();
 })();
