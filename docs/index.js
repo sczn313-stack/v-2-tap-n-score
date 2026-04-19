@@ -1,8 +1,9 @@
 /* ============================================================
    docs/index.js — FULL REPLACEMENT
    USER-LANGUAGE SEC
-   - hide unfamiliar tech terms
-   - keep only user-facing correction output
+   - LEFT / RIGHT and UP / DOWN labels
+   - rounded clicks for display
+   - hidden engine precision
 ============================================================ */
 
 (() => {
@@ -571,7 +572,6 @@
 
     return {
       score,
-      config,
       dxInches,
       dyInches,
       windageClicks,
@@ -587,6 +587,9 @@
       const scoreState = getScoreState(r.score);
       const createdAt = new Date().toISOString();
 
+      const windageRounded = Math.round(r.windageClicks);
+      const elevationRounded = Math.round(r.elevationClicks);
+
       if (els.freezeScrim) els.freezeScrim.hidden = false;
 
       if (els.secTargetThumb) {
@@ -600,17 +603,17 @@
       applyScoreClasses(scoreState);
 
       if (els.secWindageDir) els.secWindageDir.textContent = getDirectionX(r.dxInches);
-      if (els.secWindageClicks) els.secWindageClicks.textContent = r.windageClicks.toFixed(2);
+      if (els.secWindageClicks) els.secWindageClicks.textContent = String(windageRounded);
 
       if (els.secElevationDir) els.secElevationDir.textContent = getDirectionY(r.dyInches);
-      if (els.secElevationClicks) els.secElevationClicks.textContent = r.elevationClicks.toFixed(2);
+      if (els.secElevationClicks) els.secElevationClicks.textContent = String(elevationRounded);
 
       if (els.secThumbScore) els.secThumbScore.textContent = String(r.score);
       if (els.secThumbHits) els.secThumbHits.textContent = String(hits.length);
       if (els.secThumbWhen) els.secThumbWhen.textContent = formatHistoryDate(createdAt);
       if (els.secThumbTutorLine) {
         els.secThumbTutorLine.textContent =
-          `${getDirectionX(r.dxInches)} ${r.windageClicks.toFixed(2)} • ${getDirectionY(r.dyInches)} ${r.elevationClicks.toFixed(2)}`;
+          `${getDirectionX(r.dxInches)} ${windageRounded} • ${getDirectionY(r.dyInches)} ${elevationRounded}`;
       }
 
       if (els.secHowScoreText) {
@@ -621,7 +624,7 @@
         score: r.score,
         hits: hits.length,
         createdAt,
-        tutLine: `${getDirectionX(r.dxInches)} ${r.windageClicks.toFixed(2)} • ${getDirectionY(r.dyInches)} ${r.elevationClicks.toFixed(2)}`
+        tutLine: `${getDirectionX(r.dxInches)} ${windageRounded} • ${getDirectionY(r.dyInches)} ${elevationRounded}`
       });
 
       showSEC();
