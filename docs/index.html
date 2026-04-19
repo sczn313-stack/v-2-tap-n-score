@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#06070a" />
 
@@ -12,147 +15,304 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=polish-truth-pass-1" />
+  <link rel="stylesheet" href="./styles.css?v=sec-locked-full-index-1" />
 </head>
 <body>
   <main class="page">
 
-    <section id="landingView" class="hero" aria-label="Tap-n-Score landing">
-      <div class="brandRow">
-        <div class="brandTitle">
-          <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE</span><span class="w">™</span>
-        </div>
-        <div class="brandSub">After-Shot Intelligence</div>
-      </div>
+    <!-- =========================================
+         LANDING VIEW
+    ========================================== -->
+    <section id="landingView" class="hero viewOn" aria-label="Tap-n-Score landing">
+      <div class="heroShell">
 
-      <div class="heroSECSeal">
-        <div class="heroSEC">
-          <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-        </div>
-        <div class="heroSECSub">
-          <span><span class="r">S</span>hooter</span>
-          <span><span class="w">E</span>xperience</span>
-          <span><span class="b">C</span>ard</span>
-        </div>
-      </div>
+        <header class="brandRow">
+          <div class="brandTitle" aria-label="Tap-n-Score">
+            <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE</span>
+          </div>
 
-      <div class="heroMid">
-        <button id="photoBtn" class="heroBtn" type="button">📷 TAP TO ADD TARGET PHOTO</button>
-      </div>
+          <div id="vendorBox" class="vendorBox" hidden>
+            <a
+              id="vendorPanelLink"
+              class="vendorPanelLink"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span id="vendorLabel">BUY MORE TARGETS LIKE THIS</span>
+              <span id="vendorName"></span>
+            </a>
+          </div>
+        </header>
 
-      <input id="photoInput" class="fileHidden" type="file" accept="image/*" />
+        <section class="heroCard">
+          <div class="heroCopy">
+            <h1 class="heroHeadline">Understand and act on your performance</h1>
+            <p class="heroSubhead">
+              Upload a target photo, tap your aim point, tap your shots, then get your live SEC.
+            </p>
+          </div>
+
+          <div class="heroActions">
+            <button id="photoBtn" class="ctaBtn primaryBtn" type="button">
+              Add Target Photo
+            </button>
+            <input
+              id="photoInput"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              hidden
+            />
+          </div>
+
+          <div class="heroSteps" aria-label="How it works">
+            <div class="stepChip">1. Add Photo</div>
+            <div class="stepChip">2. Tap Aim Point</div>
+            <div class="stepChip">3. Tap 3–7 Shots</div>
+            <div class="stepChip">4. Get Results</div>
+          </div>
+        </section>
+
+      </div>
     </section>
 
-    <section id="workspaceView" class="workspace scoreHidden" aria-label="Target workspace">
-      <div class="workspaceTop card">
-        <div class="cardTitle cardTitleSEC">
-          <div class="secTitle">
-            <span class="r">T</span><span class="w">ARGET</span>
+    <!-- =========================================
+         WORKSPACE VIEW
+    ========================================== -->
+    <section id="workspaceView" class="workspace" aria-label="Tap workspace" hidden>
+      <div class="workspaceShell">
+
+        <header class="workspaceTopbar">
+          <button id="backBtn" class="ghostBtn" type="button" aria-label="Back">
+            Back
+          </button>
+
+          <div class="workspaceTopText">
+            <div id="instructionLine" class="instructionLine">
+              Tap aim point to begin.
+            </div>
+            <div id="statusLine" class="statusLine">
+              No aim point yet.
+            </div>
           </div>
-        </div>
+        </header>
 
-        <div class="topActionRow" aria-label="Target controls">
-          <div class="pill">Shots: <span id="shotCount">0</span>/7</div>
-          <button id="historyBtn" class="btnSecondary" type="button">History</button>
-          <button id="backBtn" class="btnSecondary" type="button">Back</button>
-          <button id="undoBtn" class="btnSecondary" type="button">Undo</button>
-          <button id="clearBtn" class="btnSecondary" type="button">Clear</button>
-          <button id="showResultsBtn" class="btnPrimaryTop" type="button">Show Results</button>
-        </div>
+        <section class="workspaceBoard">
+          <div id="targetWrap" class="targetWrap" aria-label="Target workspace">
+            <img id="targetImg" class="targetImg" alt="Selected target" />
+            <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
+            <div id="freezeScrim" class="freezeScrim" hidden></div>
+          </div>
+        </section>
 
-        <p id="instructionLine" class="instructionLine">Add a target photo.</p>
-        <p id="statusLine" class="hint">Tap to begin.</p>
-      </div>
+        <footer class="workspaceControls">
+          <div class="metricPill">
+            <span class="metricLabel">Shots</span>
+            <span id="shotCount" class="metricValue">0</span>
+          </div>
 
-      <div class="targetStage">
-        <div id="targetWrap" class="targetWrap targetWrapFull" aria-label="Target image area">
-          <img id="targetImg" alt="Target" draggable="false" />
-          <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
-          <div id="freezeScrim" class="freezeScrim isHidden" aria-hidden="true"></div>
-        </div>
+          <div class="controlRow">
+            <button id="undoBtn" class="secondaryBtn" type="button">Undo</button>
+            <button id="clearBtn" class="secondaryBtn" type="button">Clear</button>
+            <button id="showResultsBtn" class="primaryBtn" type="button" disabled>
+              Show Results
+            </button>
+          </div>
+        </footer>
+
       </div>
     </section>
 
-    <section id="secOverlay" class="secOverlay isHidden" aria-label="SEC overlay">
-      <div class="secDashShell">
-        <div class="secDashHeader">
-          <div class="secDashLogo">
-            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
-          </div>
-          <div class="secDashHeaderTitle">Shooter Experience Card</div>
-          <div class="secDashActions">
-            <button id="secBackBtn" class="secBackBtn" type="button">Back</button>
-            <button id="saveSecBtn" class="secSaveBtn" type="button">Save</button>
-          </div>
-        </div>
+    <!-- =========================================
+         LIVE SEC OVERLAY
+         SINGLE SOURCE OF TRUTH
+    ========================================== -->
+    <section
+      id="secOverlay"
+      class="secOverlay"
+      aria-label="Shooter Experience Card"
+      hidden
+    >
+      <div class="secBackdrop"></div>
 
-        <div class="secDashBody">
-          <div class="secTopGrid">
-            <div class="secLeftCol">
-              <div class="secDashLabel">YOUR SCORE</div>
-              <div id="secScore" class="secScoreNumber">0</div>
-              <div id="secScoreBand" class="secScoreBand">SOLID</div>
-              <div class="scoreDefinition">Higher score = tighter hits closer to aim</div>
+      <div class="secShell">
 
-              <div class="secSectionBlock">
-                <div class="secDashLabel">SCOPE CORRECTION</div>
-                <div class="correctionBar">
-                  <div class="correctionHalf">
-                    <div id="secElevationCount" class="correctionCount">0</div>
-                    <div id="secElevationDir" class="correctionDir correctionBlue">UP</div>
+        <header class="secTopbar">
+          <button id="secBackBtn" class="ghostBtn" type="button" aria-label="Close SEC">
+            Back
+          </button>
+
+          <div class="secTopbarActions">
+            <button id="saveSecBtn" class="primaryBtn" type="button">
+              Save SEC
+            </button>
+          </div>
+        </header>
+
+        <article id="secCard" class="secCard">
+
+          <header class="secHeader">
+            <div class="secHeaderCopy">
+              <div class="secEyebrow">Shooter Experience Card</div>
+              <h2 class="secTitle">Live SEC</h2>
+              <p class="secSubtitle">
+                Every session turns performance into understanding—and understanding into action.
+              </p>
+            </div>
+
+            <div
+              id="secVendorSlot"
+              class="secVendorSlot"
+              hidden
+              aria-label="Vendor attribution"
+            >
+              <a
+                id="secVendorLink"
+                class="secVendorLink"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span id="secVendorLinkLabel">Vendor</span>
+                <span id="secVendorLinkName"></span>
+              </a>
+            </div>
+          </header>
+
+          <div class="secBody">
+
+            <!-- =========================
+                 LEFT / PRIMARY EVIDENCE
+            ========================== -->
+            <section class="secLeft">
+
+              <div class="secThumbCard">
+                <div class="secThumbFrame">
+                  <img id="secTargetThumb" alt="Target thumbnail" />
+                </div>
+
+                <div class="secThumbMeta">
+                  <div class="secThumbMetaRow">
+                    <div class="secThumbMetaItem">
+                      <span class="secThumbMetaLabel">Score</span>
+                      <span id="secThumbScore" class="secThumbMetaValue">--</span>
+                    </div>
+
+                    <div class="secThumbMetaItem">
+                      <span class="secThumbMetaLabel">Hits</span>
+                      <span id="secThumbHits" class="secThumbMetaValue">--</span>
+                    </div>
+
+                    <div class="secThumbMetaItem">
+                      <span class="secThumbMetaLabel">Session</span>
+                      <span id="secThumbWhen" class="secThumbMetaValue">--</span>
+                    </div>
                   </div>
 
-                  <div class="correctionDivider">•</div>
-
-                  <div class="correctionHalf">
-                    <div id="secWindageCount" class="correctionCount">0</div>
-                    <div id="secWindageDir" class="correctionDir correctionRed">RIGHT</div>
-                  </div>
+                  <div id="secThumbTutorLine" class="secThumbTutorLine"></div>
                 </div>
               </div>
 
-              <div class="secSectionBlock">
-                <div class="secDashLabel">SESSION</div>
-                <div id="secSessionLine" class="sessionLine">—</div>
-              </div>
-            </div>
+            </section>
 
-            <div class="secRightCol">
-              <div class="secSectionBlock">
-                <div class="secDashLabel">OFFICIAL TARGET PARTNER</div>
-                <div id="secVendorName" class="vendorName">Vendor Not Set</div>
+            <!-- =========================
+                 RIGHT / RESULTS
+            ========================== -->
+            <section class="secRight">
+
+              <div class="secScoreHero">
+                <div class="secScoreLabel">Smart Score</div>
+                <div id="secScore" class="secScoreValue">--</div>
+                <div id="secScoreBand" class="secScoreBand">--</div>
               </div>
 
-              <div class="secSectionBlock">
-                <div class="secDashLabel">TARGET THUMBNAIL</div>
-                <div class="thumbCard">
-                  <img id="secThumbImg" class="thumbImg isHidden" alt="Target thumbnail" />
-                  <div id="secThumbFallback" class="thumbFallback">No target loaded</div>
+              <div class="secAdjustGrid">
+
+                <div class="secAdjustCard">
+                  <div class="secAdjustLabel">Windage</div>
+                  <div class="secAdjustMain">
+                    <span id="secWindageClicks">--</span>
+                    <span class="secAdjustUnit">clicks</span>
+                  </div>
+                  <div id="secWindageDir" class="secAdjustDir">--</div>
+                </div>
+
+                <div class="secAdjustCard">
+                  <div class="secAdjustLabel">Elevation</div>
+                  <div class="secAdjustMain">
+                    <span id="secElevationClicks">--</span>
+                    <span class="secAdjustUnit">clicks</span>
+                  </div>
+                  <div id="secElevationDir" class="secAdjustDir">--</div>
+                </div>
+
+              </div>
+
+              <div class="secDataGrid">
+                <div class="secDataItem">
+                  <span class="secDataLabel">Shot Count</span>
+                  <span id="secShotCount" class="secDataValue">--</span>
+                </div>
+
+                <div class="secDataItem">
+                  <span class="secDataLabel">Group Size</span>
+                  <span id="secGroupSize" class="secDataValue">--</span>
+                </div>
+
+                <div class="secDataItem">
+                  <span class="secDataLabel">DX</span>
+                  <span id="secDxInches" class="secDataValue">--</span>
+                </div>
+
+                <div class="secDataItem">
+                  <span class="secDataLabel">DY</span>
+                  <span id="secDyInches" class="secDataValue">--</span>
                 </div>
               </div>
-            </div>
+
+              <div class="secHowScore">
+                <div class="secHowScoreTitle">How higher scores happen</div>
+                <p id="secHowScoreText" class="secHowScoreText">
+                  Higher scores come from tighter groups that finish closer to the aim point.
+                </p>
+              </div>
+
+            </section>
           </div>
 
-          <div class="secHistoryBlock">
-            <div class="secDashLabel">SESSION HISTORY</div>
+          <!-- =========================
+               HISTORY
+          ========================== -->
+          <section class="secHistorySection" aria-label="Recent sessions">
+            <div class="secSectionTitle">Recent Sessions</div>
 
-            <div class="historySummaryLine">
-              <span>Avg: <strong id="historyAvg">—</strong></span>
-              <span>Best: <strong id="historyBest">—</strong></span>
-              <span>Trend: <strong id="historyTrend">—</strong></span>
+            <div class="secHistoryHead">
+              <div>Score</div>
+              <div>Hits</div>
+              <div>Date / Time</div>
+              <div>Coaching</div>
             </div>
 
-            <div id="historyEmpty" class="historyEmpty isHidden">No history yet.</div>
-            <div id="historyList" class="historyGrid"></div>
-          </div>
-        </div>
+            <div id="secHistoryList" class="secHistoryList"></div>
+          </section>
+
+          <!-- =========================
+               BOTTOM ACTIONS
+          ========================== -->
+          <footer class="secFooter">
+            <button id="scoreAnotherBtn" class="secondaryBtn" type="button">
+              Score Another
+            </button>
+          </footer>
+
+        </article>
       </div>
     </section>
-
   </main>
 
-  <script src="./sec.js?v=polish-truth-pass-1"></script>
-  <script src="./save.js?v=polish-truth-pass-1"></script>
-  <script src="./index.js?v=polish-truth-pass-1"></script>
+  <script src="./index.js?v=sec-locked-full-index-1"></script>
+  <script src="./sec.js?v=sec-locked-full-index-1"></script>
+  <script src="./save.js?v=sec-locked-full-index-1"></script>
 </body>
 </html>
