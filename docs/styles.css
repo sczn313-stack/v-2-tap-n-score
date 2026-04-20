@@ -1123,3 +1123,50 @@ a{
     width:100%;
   }
 }
+/* ============================================================
+   🔥 INTERACTION HARD FIX (iOS + overlay conflict)
+============================================================ */
+
+/* Force UI above everything */
+.heroCard,
+.heroActions,
+.heroSteps,
+.workspaceTopbar,
+.workspaceControls {
+  position: relative;
+  z-index: 5;
+}
+
+/* Make sure NOTHING blocks taps */
+.secOverlay,
+.secBackdrop,
+.freezeScrim {
+  pointer-events: none !important;
+}
+
+/* Fix iOS dropdown + tap delay */
+button,
+select,
+input {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+/* Critical for dropdowns */
+select {
+  appearance: auto !important;
+  -webkit-appearance: menulist !important;
+  background: #111;
+  color: #fff;
+}
+
+/* Fix Safari touch weirdness */
+.targetWrap {
+  touch-action: manipulation;
+}
+
+/* Prevent invisible overlays from hijacking taps */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
