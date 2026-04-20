@@ -15,65 +15,76 @@
 
   <title>Tap-n-Score™</title>
 
-  <link rel="stylesheet" href="./styles.css?v=sec-user-language-pass-2" />
+  <link rel="stylesheet" href="./styles.css?v=landing-v3-full" />
 </head>
 <body>
   <main class="page">
 
+    <!-- ===== LANDING ===== -->
     <section id="landingView" class="hero viewOn" aria-label="Tap-n-Score landing">
-      <div class="heroShell">
+      <div class="landingCore">
 
-        <header class="brandRow">
-          <div class="brandTitle" aria-label="Tap-n-Score">
-            <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE</span>
+        <h1 class="landingTitle" aria-label="Tap-n-Score">
+          <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE™</span>
+        </h1>
+
+        <div class="landingSub">AFTER-SHOT INTELLIGENCE</div>
+
+        <div class="landingSEC" aria-label="Shooter Experience Card">
+          <div class="landingSECWord">
+            <span class="r">S</span><span class="w">E</span><span class="b">C</span>
           </div>
+          <div class="landingSECExpand">
+            <span><span class="r">S</span>hooter</span>
+            <span><span class="w">E</span>xperience</span>
+            <span><span class="b">C</span>ard</span>
+          </div>
+        </div>
 
-          <div id="vendorBox" class="vendorBox" hidden>
+        <div class="landingActions">
+          <button id="photoBtn" class="landingPrimary" type="button">
+            📸 TAP TO ADD TARGET PHOTO
+          </button>
+
+          <input
+            id="photoInput"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+          />
+
+          <div id="vendorBox" class="landingVendorWrap" hidden>
             <a
               id="vendorPanelLink"
-              class="vendorPanelLink"
+              class="landingSecondary"
               href="#"
               target="_blank"
               rel="noopener noreferrer"
             >
               <span id="vendorLabel">BUY MORE TARGETS LIKE THIS</span>
-              <span id="vendorName"></span>
+              <span id="vendorName" hidden></span>
             </a>
           </div>
-        </header>
 
-        <section class="heroCard">
-          <div class="heroCopy">
-            <h1 class="heroHeadline">Understand and act on your performance</h1>
-            <p class="heroSubhead">
-              Upload a target photo, tap your aim point, tap your shots, then get your live SEC.
-            </p>
-          </div>
+          <a
+            id="vendorPanelLinkFallback"
+            class="landingSecondary"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            BUY MORE TARGETS LIKE THIS
+          </a>
+        </div>
 
-          <div class="heroActions">
-            <button id="photoBtn" class="ctaBtn primaryBtn" type="button">
-              Add Target Photo
-            </button>
-            <input
-              id="photoInput"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              hidden
-            />
-          </div>
+        <div class="landingCurve" aria-hidden="true"></div>
 
-          <div class="heroSteps" aria-label="How it works">
-            <div class="stepChip">1. Add Photo</div>
-            <div class="stepChip">2. Tap Aim Point</div>
-            <div class="stepChip">3. Tap 3–7 Shots</div>
-            <div class="stepChip">4. Get Results</div>
-          </div>
-        </section>
-
+        <div class="landingFooter">Faith • Order • Precision</div>
       </div>
     </section>
 
+    <!-- ===== WORKSPACE ===== -->
     <section id="workspaceView" class="workspace" aria-label="Tap workspace" hidden>
       <div class="workspaceShell">
 
@@ -118,6 +129,7 @@
       </div>
     </section>
 
+    <!-- ===== SEC OVERLAY ===== -->
     <section
       id="secOverlay"
       class="secOverlay"
@@ -263,7 +275,7 @@
     </section>
   </main>
 
-  <script src="./index.js?v=sec-user-language-pass-2"></script>
-  <script src="./save.js?v=sec-user-language-pass-2"></script>
+  <script src="./index.js?v=landing-v3-full"></script>
+  <script src="./save.js?v=landing-v3-full"></script>
 </body>
 </html>
