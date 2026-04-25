@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#06070a" />
+
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <title>SEC — Tap-n-Score™</title>
+  <link rel="stylesheet" href="./sec.css?v=SEC-3PAGE-001" />
+</head>
+<body>
+  <main id="secPage" class="secPage">
+    <header class="secHeader">
+      <div class="secMark" aria-label="SEC logo">
+        <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+      </div>
+      <div class="secTitle">Shooter Experience Card</div>
+    </header>
+
+    <section class="topRow" aria-label="SEC top row">
+      <article class="card scoreCard">
+        <div class="eyebrow">Your Score</div>
+        <div id="scoreValue" class="scoreValue">—</div>
+        <div id="scoreBand" class="scoreBand scoreBandNeutral">—</div>
+      </article>
+
+      <a
+        id="vendorBtn"
+        class="card vendorCard vendorDisabled"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit vendor"
+      >
+        <div class="eyebrow">Official Target Partner</div>
+        <div id="vendorText" class="vendorText">Vendor Not Set</div>
+      </a>
+    </section>
+
+    <section class="card correctionCard" aria-label="Scope correction">
+      <div class="eyebrow correctionEyebrow">Scope Correction</div>
+      <div class="correctionInlineWrap">
+        <div id="corrClicksInline" class="correctionInlineValue">—</div>
+      </div>
+    </section>
+
+    <section class="card metaCard" aria-label="Session meta">
+      <div id="sessionMeta" class="metaLine">—</div>
+    </section>
+
+    <section class="card thumbCard" aria-label="Target thumbnail">
+      <div class="eyebrow">Target Thumbnail</div>
+      <img id="reportThumb" alt="Target thumbnail" />
+    </section>
+
+    <section class="card historyShell" aria-label="Session history">
+      <div class="historyHeader">Session History</div>
+
+      <div class="historyColumnsHead">
+        <div class="historyColHead">
+          <span>#</span>
+          <span>SCORE</span>
+          <span>YARDS</span>
+          <span>HITS</span>
+        </div>
+        <div class="historyColHead">
+          <span>#</span>
+          <span>SCORE</span>
+          <span>YARDS</span>
+          <span>HITS</span>
+        </div>
+      </div>
+
+      <div id="historyEmpty" class="historyEmpty">No shooter history yet.</div>
+      <div id="historyGrid" class="historyGrid"></div>
+    </section>
+
+    <section class="compactActions" aria-label="Secondary actions">
+      <button
+        id="saveFallbackBtn"
+        class="miniAction miniActionPrimary"
+        type="button"
+        style="display:none;"
+      >
+        Save as Picture
+      </button>
+
+      <button id="backBtn" class="miniAction" type="button">
+        Back
+      </button>
+
+      <a
+        id="surveyBtn"
+        class="miniAction"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Survey
+      </a>
+    </section>
+
+    <section class="finalAction" aria-label="Primary next action">
+      <button id="goHomeBtn" class="primaryBtn" type="button">Zero Another Target</button>
+    </section>
+  </main>
+
+  <script src="./sec.js?v=SEC-3PAGE-001"></script>
+</body>
+</html>

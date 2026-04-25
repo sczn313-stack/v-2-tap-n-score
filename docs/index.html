@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#06070a" />
+
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <title>Tap-n-Score™</title>
+
+  <link rel="stylesheet" href="./styles.css?v=target-matrix-0423c" />
+</head>
+<body>
+  <main class="page">
+
+    <!-- =========================================================
+         LANDING VIEW
+    ========================================================== -->
+    <section id="landingView" class="hero viewActive" aria-label="Tap-n-Score landing">
+      <div class="heroInner">
+
+        <div class="derbyLanding">
+          <div class="derbyBrand">
+            <div class="brandTitle" aria-label="Tap-n-Score">
+              <span class="r">TAP</span><span class="w">-N-</span><span class="b">SCORE™</span>
+            </div>
+
+            <div class="derbyAfterShot">AFTER-SHOT INTELLIGENCE</div>
+
+            <div class="derbySECWord" aria-label="SEC">
+              <span class="r">S</span><span class="w">E</span><span class="b">C</span>
+            </div>
+
+            <div class="derbySECExpand">
+              <span>Shooter</span>
+              <span>Experience</span>
+              <span>Card</span>
+            </div>
+          </div>
+
+          <div class="derbyActions">
+            <label
+              id="photoBtn"
+              class="primaryBtn derbyPrimaryBtn"
+              style="position:relative; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;"
+            >
+              📸 TAP TO ADD TARGET PHOTO
+
+              <input
+                id="photoInput"
+                type="file"
+                accept="image/*"
+                aria-label="Add target photo"
+                style="
+                  position:absolute;
+                  inset:0;
+                  width:100%;
+                  height:100%;
+                  opacity:0;
+                  cursor:pointer;
+                  border:0;
+                  margin:0;
+                  padding:0;
+                "
+              />
+            </label>
+
+            <a
+              id="vendorPanelLink"
+              class="secondaryBtn derbySecondaryBtn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              BUY MORE TARGETS LIKE THIS
+            </a>
+          </div>
+
+          <div class="derbyCurve" aria-hidden="true"></div>
+
+          <div class="derbyFooter">
+            Faith • Order • Precision
+          </div>
+        </div>
+
+        <!-- compatibility nodes retained for JS contract -->
+        <div id="vendorBox" hidden></div>
+        <div id="vendorPanel" hidden></div>
+        <div id="vendorLabel" hidden></div>
+        <div id="vendorName" hidden></div>
+        <p id="instructionLine" hidden></p>
+        <p id="statusLine" hidden aria-live="polite"></p>
+
+        <!-- hidden config controls retained -->
+        <div hidden aria-hidden="true">
+          <input id="distanceInput" type="number" value="100" />
+          <select id="distanceUnitSelect">
+            <option value="yds" selected>yds</option>
+            <option value="m">m</option>
+          </select>
+
+          <select id="targetSizeSelect">
+            <option value="8.5x11" selected>8.5 × 11</option>
+            <option value="11x17">11 × 17</option>
+            <option value="12x18">12 × 18</option>
+            <option value="18x24">18 × 24</option>
+            <option value="23x35">23 × 35</option>
+            <option value="24x36">24 × 36</option>
+          </select>
+
+          <select id="dialUnitSelect">
+            <option value="MOA" selected>MOA</option>
+            <option value="MRAD">MRAD</option>
+          </select>
+
+          <input id="clickValueInput" type="number" value="0.25" step="0.01" />
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         WORKSPACE VIEW
+    ========================================================== -->
+    <section id="workspaceView" class="workspace" aria-label="Your target workspace" hidden>
+      <div class="workspaceTopBar">
+        <button id="backBtn" class="ghostBtn" type="button">Back</button>
+
+        <div class="workspaceStatus">
+          <div class="workspaceStepChips">
+            <span class="stepChip">Tap Aim Point</span>
+            <span class="stepChip">Tap 3–5 Shots</span>
+            <span class="stepChip">Get Clicks</span>
+          </div>
+          <p class="workspaceHint">Tap once for aim, then tap your bullet holes.</p>
+        </div>
+      </div>
+
+      <section class="targetStage">
+        <div id="targetWrap" class="targetWrap" aria-label="Interactive target area">
+          <img id="targetImg" class="targetImg" alt="Uploaded target" />
+          
+          <div id="dotsLayer" class="dotsLayer" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section id="scoreSection" class="scoreSection">
+        <div class="scoreRow">
+          <div class="scoreStat">
+            <span class="scoreLabel">Shots</span>
+            <span id="shotCount" class="scoreValue">0</span>
+          </div>
+
+          <div class="scoreActions">
+            <button id="undoBtn" class="secondaryBtn" type="button">Undo</button>
+            <button id="clearBtn" class="secondaryBtn" type="button">Clear</button>
+            <button id="showResultsBtn" class="primaryBtn" type="button">Show Results</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- =========================================================
+         FREEZE SCRIM
+    ========================================================== -->
+    <div id="freezeScrim" class="freezeScrim" hidden></div>
+
+    <!-- =========================================================
+         SEC OVERLAY
+    ========================================================== -->
+    <section
+      id="secOverlay"
+      class="secOverlay"
+      aria-label="Shooter Experience Card"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="secShell">
+        <article id="secCard" class="secCard">
+
+          <header class="secTopSummary">
+            <div class="secTopMain">
+              <div class="secScoreBlock">
+                <div class="secKicker">Score</div>
+                <div id="secScoreValue" class="secScoreValue">--</div>
+                <div id="secScoreBand" class="secScoreBand">Results Ready</div>
+              </div>
+
+              <div class="secSummaryWrap">
+                <div class="secSummaryGrid">
+                  <div class="secMiniStat">
+                    <span class="secMiniLabel">Hits</span>
+                    <span id="secHitsValue" class="secMiniValue">0</span>
+                  </div>
+                  <div class="secMiniStat">
+                    <span class="secMiniLabel">Distance</span>
+                    <span id="secDistanceValue" class="secMiniValue">100 yds</span>
+                  </div>
+                  <div class="secMiniStat">
+                    <span class="secMiniLabel">Windage Clicks</span>
+                    <span id="secWindageValue" class="secMiniValue">--</span>
+                  </div>
+                  <div class="secMiniStat">
+                    <span class="secMiniLabel">Elevation Clicks</span>
+                    <span id="secElevationValue" class="secMiniValue">--</span>
+                  </div>
+                </div>
+
+                <div class="secHeaderMetaStrip" aria-label="Session metadata">
+                  <div class="secMetaItem">
+                    <span class="secMetaLabel">Date</span>
+                    <span id="secMetaDate" class="secMetaValue">--</span>
+                  </div>
+                  <div class="secMetaItem">
+                    <span class="secMetaLabel">Time</span>
+                    <span id="secMetaTime" class="secMetaValue">--</span>
+                  </div>
+                  <div class="secMetaItem">
+                    <span class="secMetaLabel">Unit</span>
+                    <span id="secMetaUnit" class="secMetaValue">MOA</span>
+                  </div>
+                  <div class="secMetaItem">
+                    <span class="secMetaLabel">Vendor</span>
+                    <span id="secMetaVendor" class="secMetaValue">Tap-n-Score</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <section class="secTargetBlock" aria-label="Target proof image">
+            <div class="secSectionTitle">Your Target</div>
+            <div class="secTargetFrame">
+              <img id="secTargetImage" class="secTargetImage" alt="Analyzed target" />
+            </div>
+          </section>
+
+          <section class="secHistoryBlock" aria-label="Recent sessions">
+            <div class="secHistoryHead">
+              <div class="secSectionTitle">Recent sessions</div>
+            </div>
+
+            <div id="secHistoryGrid" class="secHistoryGrid">
+              <article class="secHistoryTile isEmpty">
+                <div class="secHistoryThumbWrap">
+                  <div class="secHistoryThumbPlaceholder">No session</div>
+                </div>
+              </article>
+              <article class="secHistoryTile isEmpty">
+                <div class="secHistoryThumbWrap">
+                  <div class="secHistoryThumbPlaceholder">No session</div>
+                </div>
+              </article>
+              <article class="secHistoryTile isEmpty">
+                <div class="secHistoryThumbWrap">
+                  <div class="secHistoryThumbPlaceholder">No session</div>
+                </div>
+              </article>
+              <article class="secHistoryTile isEmpty">
+                <div class="secHistoryThumbWrap">
+                  <div class="secHistoryThumbPlaceholder">No session</div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <footer class="secFooter">
+            <div class="secFooterActions">
+              <button id="secBackBtn" class="secondaryBtn" type="button">Back to Target</button>
+              <button id="saveBtn" class="primaryBtn" type="button">Save SEC</button>
+            </div>
+
+            <div class="secFooterLower">
+              <a
+                id="secVendorBtn"
+                class="vendorActionBtn"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+              >
+                Buy More Targets
+              </a>
+
+              <button id="scoreAnotherBtn" class="ghostBtn" type="button">
+                Score Another
+              </button>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="./index.js?v=target-matrix-0423c"></script>
+  <script src="./save.js?v=target-matrix-0423c"></script>
+</body>
+</html>
