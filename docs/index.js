@@ -85,6 +85,14 @@
   };
 
   const state = {
+const params = new URLSearchParams(window.location.search);
+const vendorParam = (params.get("v") || "").toLowerCase();
+
+if (vendorParam === "baker") {
+  state.vendorName = "BAKER TARGETS";
+  state.vendorUrl = "https://bakertargets.com";
+}
+
     imageSrc: "",
     imageReady: false,
     aim: null,
