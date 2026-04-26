@@ -137,7 +137,23 @@
   applyTargetFromPath();
   init();
 
+
+  function loadMatrixSettings() {
+    try {
+      const dist = localStorage.getItem("SCZN3_MATRIX_DISTANCE");
+      const unit = localStorage.getItem("SCZN3_MATRIX_DISTANCE_UNIT");
+      const dial = localStorage.getItem("SCZN3_MATRIX_DIAL_UNIT");
+      const click = localStorage.getItem("SCZN3_MATRIX_CLICK_VALUE");
+
+      if (dist && els.distanceInput) els.distanceInput.value = dist;
+      if (unit && els.distanceUnitSelect) els.distanceUnitSelect.value = unit === "yd" ? "yds" : unit;
+      if (dial && els.dialUnitSelect) els.dialUnitSelect.value = dial;
+      if (click && els.clickValueInput) els.clickValueInput.value = click;
+    } catch {}
+  }
+
   function init() {
+    loadMatrixSettings();
     syncControls();
     resolveVendor();
     loadHistory();

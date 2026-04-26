@@ -477,7 +477,18 @@
   updateClickOptions();
 
   resultsBtn.addEventListener('click', showResults);
+
+  function saveMatrixSettings() {
+    try {
+      localStorage.setItem("SCZN3_MATRIX_DISTANCE", String(distanceYardsEl.value || "100"));
+      localStorage.setItem("SCZN3_MATRIX_DISTANCE_UNIT", distanceUnitEl ? distanceUnitEl.value : "yd");
+      localStorage.setItem("SCZN3_MATRIX_DIAL_UNIT", dialUnitEl ? dialUnitEl.value : "MOA");
+      localStorage.setItem("SCZN3_MATRIX_CLICK_VALUE", String(clickValueMOAEl.value || "0.25"));
+    } catch {}
+  }
+
   function refreshAll() {
+    saveMatrixSettings();
     renderRings();
 
     if (state.aimPoint && state.shots.length >= 1) {
