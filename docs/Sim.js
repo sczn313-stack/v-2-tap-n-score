@@ -406,3 +406,13 @@
   renderRings();
   resetSimulator();
 })();
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const backBtn = document.getElementById("matrixBackBtn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      window.history.back();
+    });
+  }
+});
