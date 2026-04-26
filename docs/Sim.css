@@ -283,3 +283,33 @@ button:hover { transform: translateY(-1px); }
   margin-top: 2px;
   opacity: 0.8;
 }
+
+
+/* MATRIX STRIP TIGHTEN */
+.mode-strip,
+.results-strip {
+  margin: 6px 0 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+/* reduce gap under header */
+.sim-header + .mode-strip,
+.sim-header + .results-strip {
+  margin-top: 4px;
+}
+
+/* tighten text spacing inside */
+.mode-strip div,
+.results-strip div {
+  margin: 2px 0;
+}
+
+/* keep it compact but readable */
+.mode-strip button,
+.results-strip button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
