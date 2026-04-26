@@ -325,7 +325,32 @@
     };
   }
 
+
+  function renderScopeCorrection(results) {
+    const panel = document.getElementById("scopeCorrectionPanel");
+    const text = document.getElementById("scopeCorrectionText");
+    if (!panel || !text) return;
+
+    const windage =
+      results.clickDirections.windage === "NONE"
+        ? "No windage correction"
+        : `${results.windageClicks} clicks ${results.clickDirections.windage}`;
+
+    const elevation =
+      results.clickDirections.elevation === "NONE"
+        ? "No elevation correction"
+        : `${results.elevationClicks} clicks ${results.clickDirections.elevation}`;
+
+    text.innerHTML = `
+      <div>${windage}</div>
+      <div>${elevation}</div>
+    `;
+
+    panel.hidden = false;
+  }
+
   function renderSec(results) {
+    renderScopeCorrection(results);
     const windageSummary =
       results.clickDirections.windage === 'NONE'
         ? 'No windage correction'
