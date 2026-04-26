@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tap-n-Score™ v3</title>
+
+  <style>
+    :root {
+      --bg: #06070a;
+      --panel: #0d1117;
+      --accent: #00e0ff;
+      --text: #e6edf3;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    #statusBar {
+      padding: 6px 10px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    #app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #targetArea {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 1px dashed rgba(255,255,255,0.1);
+      margin: 10px;
+      border-radius: 12px;
+    }
+
+    #matrixBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,224,255,0.15);
+      border: 1px solid rgba(0,224,255,0.5);
+      color: var(--accent);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #matrixPanel {
+      position: absolute;
+      inset: 0;
+      background: rgba(6,7,10,0.95);
+      display: none;
+      flex-direction: column;
+      padding: 20px;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    input, select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: #0d1117;
+      color: white;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: black;
+    }
+
+    .chip {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(0,224,255,0.2);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>TAP-N-SCORE™</h1>
+  <p>The Smart Target™ powered by SCZN3</p>
+</header>
+
+<div id="statusBar">Ready</div>
+
+<div id="app">
+
+  <div id="targetArea">
+    <button id="matrixBtn">MATRIX</button>
+
+    <div id="matrixPanel">
+      <div class="field">
+        <label>Distance</label>
+        <input id="distance" type="number" value="100">
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Unit</label>
+          <select id="unit">
+            <option value="yd">Yards</option>
+            <option value="m">Meters</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Dial</label>
+          <select id="dial">
+            <option value="MOA">MOA</option>
+            <option value="MRAD">MRAD</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Click Value</label>
+        <input id="click" type="number" step="0.01" value="0.25">
+      </div>
+
+      <button id="closeMatrix" class="btn btn-primary">Apply</button>
+    </div>
+
+    <div class="chip" id="distanceChip">100 yd • MOA • 0.25</div>
+  </div>
+
+</div>
+
+<script>
+const state = {
+  distance: 100,
+  unit: "yd",
+  dial: "MOA",
+  click: 0.25
+};
+
+const matrixBtn = document.getElementById("matrixBtn");
+const panel = document.getElementById("matrixPanel");
+const closeBtn = document.getElementById("closeMatrix");
+
+const distanceInput = document.getElementById("distance");
+const unitSelect = document.getElementById("unit");
+const dialSelect = document.getElementById("dial");
+const clickInput = document.getElementById("click");
+
+const chip = document.getElementById("distanceChip");
+
+matrixBtn.onclick = () => panel.style.display = "flex";
+
+closeBtn.onclick = () => {
+  state.distance = Number(distanceInput.value);
+  state.unit = unitSelect.value;
+  state.dial = dialSelect.value;
+  state.click = Number(clickInput.value);
+
+  chip.textContent = `${state.distance} ${state.unit} • ${state.dial} • ${state.click}`;
+
+  panel.style.display = "none";
+};
+</script>
+
+</body>
+</html>nano index.html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tap-n-Score™ v3</title>
+
+  <style>
+    :root {
+      --bg: #06070a;
+      --panel: #0d1117;
+      --accent: #00e0ff;
+      --text: #e6edf3;
+      --good: #26ff8a;
+      --shot: #ff3b3b;
+      --aim: #00ff99;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    header h1 { font-size: 1.2rem; letter-spacing: 1px; }
+    header p { font-size: 0.8rem; opacity: 0.7; }
+
+    #statusBar {
+      padding: 7px 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--accent);
+      min-height: 32px;
+    }
+
+    #app { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    #targetArea {
+      flex: 1;
+      position: relative;
+      margin: 10px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,0.14);
+      background:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      overflow: hidden;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .bull {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #f4f4f4;
+      border: 3px solid #111;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .dot {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.55);
+    }
+
+    .dot.aim {
+      background: var(--aim);
+      border: 2px solid #001f12;
+      box-shadow: 0 0 14px rgba(0,255,153,0.8);
+    }
+
+    .dot.shot {
+      background: var(--shot);
+      border: 2px solid #320000;
+      box-shadow: 0 0 14px rgba(255,59,59,0.8);
+    }
+
+    .shotLabel {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      font-size: 0.65rem;
+      font-weight: 900;
+      color: #fff;
+      pointer-events: none;
+    }
+
+    #matrixBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,224,255,0.18);
+      border: 1px solid rgba(0,224,255,0.6);
+      color: var(--accent);
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    #matrixPanel {
+      position: absolute;
+      inset: 0;
+      background: rgba(6,7,10,0.96);
+      display: none;
+      flex-direction: column;
+      padding: 20px;
+      gap: 14px;
+      z-index: 40;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 0.8rem; opacity: 0.8; }
+
+    input, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: #0d1117;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .btn {
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .btn-primary { background: var(--accent); color: black; }
+    .btn-ghost { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15); }
+
+    .chip {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(0,224,255,0.18);
+      border: 1px solid rgba(0,224,255,0.55);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-shadow: 0 0 4px rgba(0,224,255,0.6);
+      z-index: 20;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(13,17,23,0.95);
+    }
+
+    #resultsBtn {
+      grid-column: span 3;
+      background: var(--good);
+      color: #001b0c;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>TAP-N-SCORE™</h1>
+  <p>The Smart Target™ powered by SCZN3</p>
+</header>
+
+<div id="statusBar">Tap aim point</div>
+
+<div id="app">
+  <div id="targetArea">
+    <button id="matrixBtn">MATRIX</button>
+
+    <div class="bull"></div>
+
+    <div id="matrixPanel">
+      <div class="field">
+        <label>Distance</label>
+        <input id="distance" type="number" value="100" min="1" />
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Unit</label>
+          <select id="unit">
+            <option value="yd">Yards</option>
+            <option value="m">Meters</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Dial</label>
+          <select id="dial">
+            <option value="MOA">MOA</option>
+            <option value="MRAD">MRAD</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Click Value</label>
+        <input id="click" type="number" step="0.01" value="0.25" />
+      </div>
+
+      <button id="closeMatrix" class="btn btn-primary">Apply</button>
+    </div>
+
+    <div class="chip" id="distanceChip">100 yd • MOA • 0.25</div>
+  </div>
+
+  <div class="controls">
+    <button id="undoBtn" class="btn btn-ghost">Undo</button>
+    <button id="resetBtn" class="btn btn-ghost">Reset</button>
+    <button id="modeBtn" class="btn btn-ghost">Mode: Aim</button>
+    <button id="resultsBtn" class="btn">Show Results</button>
+  </div>
+</div>
+
+<script>
+const state = {
+  distance: 100,
+  unit: "yd",
+  dial: "MOA",
+  click: 0.25,
+  aim: null,
+  shots: [],
+  mode: "aim"
+};
+
+const targetArea = document.getElementById("targetArea");
+const statusBar = document.getElementById("statusBar");
+const matrixBtn = document.getElementById("matrixBtn");
+const panel = document.getElementById("matrixPanel");
+const closeBtn = document.getElementById("closeMatrix");
+const undoBtn = document.getElementById("undoBtn");
+const resetBtn = document.getElementById("resetBtn");
+const modeBtn = document.getElementById("modeBtn");
+const resultsBtn = document.getElementById("resultsBtn");
+
+const distanceInput = document.getElementById("distance");
+const unitSelect = document.getElementById("unit");
+const dialSelect = document.getElementById("dial");
+const clickInput = document.getElementById("click");
+const chip = document.getElementById("distanceChip");
+
+function updateChip() {
+  chip.textContent = `${state.distance} ${state.unit} • ${state.dial} • ${state.click}`;
+}
+
+function updateStatus(text) {
+  statusBar.textContent = text;
+}
+
+function updateModeButton() {
+  modeBtn.textContent = state.mode === "aim" ? "Mode: Aim" : "Mode: Impacts";
+}
+
+function getPoint(e) {
+  const rect = targetArea.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+}
+
+function addDot(point, type, label = "") {
+  const dot = document.createElement("div");
+  dot.className = `dot ${type}`;
+  dot.style.left = `${point.x}px`;
+  dot.style.top = `${point.y}px`;
+  targetArea.appendChild(dot);
+
+  if (label) {
+    const lbl = document.createElement("div");
+    lbl.className = "shotLabel";
+    lbl.textContent = label;
+    lbl.style.left = `${point.x}px`;
+    lbl.style.top = `${point.y}px`;
+    targetArea.appendChild(lbl);
+  }
+}
+
+function redraw() {
+  targetArea.querySelectorAll(".dot, .shotLabel").forEach(el => el.remove());
+
+  if (state.aim) addDot(state.aim, "aim");
+
+  state.shots.forEach((shot, i) => {
+    addDot(shot, "shot", String(i + 1));
+  });
+}
+
+function handleTargetTap(e) {
+  if (panel.style.display === "flex") return;
+
+  const point = getPoint(e);
+
+  if (state.mode === "aim" || !state.aim) {
+    state.aim = point;
+    state.mode = "shots";
+    updateStatus("Aim point set. Tap 3–5 bullet holes.");
+  } else {
+    if (state.shots.length >= 7) {
+      updateStatus("Maximum 7 shots recorded. Show results or reset.");
+      return;
+    }
+
+    state.shots.push(point);
+
+    if (state.shots.length < 3) {
+      updateStatus(`${state.shots.length} shot(s) recorded. Add at least 3.`);
+    } else {
+      updateStatus(`${state.shots.length} shots recorded. Ready for results.`);
+    }
+  }
+
+  redraw();
+  updateModeButton();
+}
+
+function undoLast() {
+  if (state.shots.length > 0) {
+    state.shots.pop();
+    updateStatus("Last shot removed.");
+  } else if (state.aim) {
+    state.aim = null;
+    state.mode = "aim";
+    updateStatus("Aim point removed. Tap aim point.");
+  }
+
+  redraw();
+  updateModeButton();
+}
+
+function resetAll() {
+  state.aim = null;
+  state.shots = [];
+  state.mode = "aim";
+  redraw();
+  updateStatus("Reset. Tap aim point.");
+  updateModeButton();
+}
+
+function showResults() {
+  if (!state.aim) {
+    updateStatus("Set aim point first.");
+    return;
+  }
+
+  if (state.shots.length < 3) {
+    updateStatus("Add at least 3 shots before results.");
+    return;
+  }
+
+  updateStatus("Results engine next: POIB + clicks will render here.");
+}
+
+matrixBtn.onclick = () => {
+  panel.style.display = "flex";
+};
+
+closeBtn.onclick = () => {
+  state.distance = Number(distanceInput.value) || 100;
+  state.unit = unitSelect.value;
+  state.dial = dialSelect.value;
+  state.click = Number(clickInput.value) || (state.dial === "MRAD" ? 0.1 : 0.25);
+
+  updateChip();
+  panel.style.display = "none";
+  updateStatus(`Matrix applied: ${state.distance} ${state.unit} • ${state.dial}`);
+};
+
+dialSelect.addEventListener("change", () => {
+  clickInput.value = dialSelect.value === "MRAD" ? "0.10" : "0.25";
+});
+
+targetArea.addEventListener("click", handleTargetTap);
+undoBtn.addEventListener("click", undoLast);
+resetBtn.addEventListener("click", resetAll);
+resultsBtn.addEventListener("click", showResults);
+
+updateChip();
+updateModeButton();
+</script>
+
+</body>
+</html>
