@@ -419,12 +419,29 @@
 
   resetBtn.addEventListener('click', resetSimulator);
   resultsBtn.addEventListener('click', showResults);
+  function refreshAll() {
+    renderRings();
+
+    if (state.aimPoint && state.shots.length >= 1) {
+      const results = calculateResults();
+      renderSec(results);
+    }
+  }
+
   distanceYardsEl.addEventListener('change', () => {
     if (customDistanceEl) customDistanceEl.value = "";
+    refreshAll();
   });
-  if (customDistanceEl) customDistanceEl.addEventListener('input', () => {});
-  if (distanceUnitEl) distanceUnitEl.addEventListener('change', () => {});
-  ringSpacingInchesEl.addEventListener('change', renderRings);
+
+  if (customDistanceEl) {
+    customDistanceEl.addEventListener('input', refreshAll);
+  }
+
+  if (distanceUnitEl) {
+    distanceUnitEl.addEventListener('change', refreshAll);
+  }
+
+  ringSpacingInchesEl.addEventListener('change', refreshAll);
   shotGoalEl.addEventListener('change', () => {
     if (state.mode === 'shots') setMode('shots');
   });
