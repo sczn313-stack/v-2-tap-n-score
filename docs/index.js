@@ -165,6 +165,7 @@
     updateButtons();
     updateShotCount();
     updateTargetVisualState();
+    openTargetIfRequested();
   }
 
   function wireEvents() {
@@ -394,6 +395,22 @@
     }
 
     updateTargetVisualState();
+  }
+
+
+  function openTargetIfRequested() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("open") === "target") {
+        if (els.landingView) els.landingView.hidden = true;
+        if (els.workspaceView) els.workspaceView.hidden = false;
+
+        updateInstruction();
+        updateStatus("Matrix settings applied. Add or continue target photo.");
+        updateButtons();
+        updateTargetVisualState();
+      }
+    } catch {}
   }
 
   function enterWorkspace() {
