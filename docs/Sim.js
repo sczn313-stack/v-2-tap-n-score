@@ -14,6 +14,7 @@
   const distanceUnitEl = document.getElementById('distanceUnit');
   const distancePresetBtns = document.querySelectorAll('.distancePreset');
   const clickValueMOAEl = document.getElementById('clickValueMOA');
+  const dialUnitEl = document.getElementById('dialUnit');
   const shotGoalEl = document.getElementById('shotGoal');
   const ringSpacingInchesEl = document.getElementById('ringSpacingInches');
   const undoBtn = document.getElementById('undoBtn');
@@ -25,6 +26,25 @@
     shots: [],
     mode: 'aim'
   };
+
+
+  function updateClickOptions() {
+    if (!dialUnitEl || !clickValueMOAEl) return;
+
+    const unit = dialUnitEl.value;
+    if (unit === "MRAD") {
+      clickValueMOAEl.innerHTML = `
+        <option value="0.1" selected>0.10 MRAD</option>
+        <option value="0.2">0.20 MRAD</option>
+      `;
+    } else {
+      clickValueMOAEl.innerHTML = `
+        <option value="0.25" selected>0.25 MOA</option>
+        <option value="0.5">0.50 MOA</option>
+        <option value="1">1.00 MOA</option>
+      `;
+    }
+  }
 
   function getPixelsPerInch() {
     return DEFAULT_PIXELS_PER_INCH;
@@ -297,14 +317,18 @@
     const offsetYInches = pxToInches(offsetYPx);
 
     const yards = getEffectiveDistanceYards();
+    const dialUnit = dialUnitEl ? dialUnitEl.value : "MOA";
     const inchesPerMOA = yardsToInchesPerMOA(yards);
+    const inchesPerMRAD = 3.6 * (yards / 100);
 
     const windageMOA = offsetXInches / inchesPerMOA;
     const elevationMOA = offsetYInches / inchesPerMOA;
+    const windageMRAD = offsetXInches / inchesPerMRAD;
+    const elevationMRAD = offsetYInches / inchesPerMRAD;
 
     const clickValue = Number(clickValueMOAEl.value);
-    const windageClicks = Math.round(Math.abs(windageMOA / clickValue));
-    const elevationClicks = Math.round(Math.abs(elevationMOA / clickValue));
+    const windageClicks = Math.round(Math.abs((dialUnit === "MRAD" ? windageMRAD : windageMOA) / clickValue));
+    const elevationClicks = Math.round(Math.abs((dialUnit === "MRAD" ? elevationMRAD : elevationMOA) / clickValue));
 
     const groupSizeInches = calculateGroupSize(state.shots);
 
@@ -321,7 +345,10 @@
       directions: directionWords(offsetXInches, offsetYInches),
       clickDirections: clickDirection(offsetXInches, offsetYInches),
       distanceYards: yards,
-      clickValue
+      clickValue,
+      dialUnit,
+      windageMRAD: round2(windageMRAD),
+      elevationMRAD: round2(elevationMRAD)
     };
   }
 
@@ -440,6 +467,15 @@
   });
 
   resetBtn.addEventListener('click', resetSimulator);
+  if (dialUnitEl) {
+    dialUnitEl.addEventListener('change', () => {
+      updateClickOptions();
+      refreshAll();
+    });
+  }
+
+  updateClickOptions();
+
   resultsBtn.addEventListener('click', showResults);
   function refreshAll() {
     renderRings();
