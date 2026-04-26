@@ -107,6 +107,34 @@
   let dotQuietTimer = null;
   let lastShowResultsAt = 0;
 
+  
+  function applyTargetFromPath() {
+    try {
+      const path = window.location.pathname.toLowerCase();
+
+      // match /t/bkr-st100
+      const match = path.match(/\/t\/([a-z0-9\-]+)/);
+
+      if (!match) return;
+
+      const code = match[1]; // bkr-st100
+
+      if (code.startsWith("bkr-")) {
+        state.vendorName = "Baker Targets";
+        state.vendorUrl = "https://bakertargets.com";
+
+        const sku = code.replace("bkr-", "");
+
+        // OPTIONAL: map specific SKUs later
+        if (sku === "st100") {
+          state.vendorUrl = "https://bakertargets.com"; // replace with real product page later
+        }
+      }
+
+    } catch {}
+  }
+
+  applyTargetFromPath();
   init();
 
   function init() {
