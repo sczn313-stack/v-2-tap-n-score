@@ -154,6 +154,7 @@
 
   function init() {
     loadMatrixSettings();
+    updateDistanceChip();
     syncControls();
     resolveVendor();
     loadHistory();
@@ -246,6 +247,7 @@
     }
 
     onConfigChanged();
+    updateDistanceChip();
   }
 
   function softenTouchBehavior() {
@@ -687,6 +689,19 @@
     if (els.statusLine) {
       els.statusLine.textContent = message;
     }
+  }
+
+
+  function updateDistanceChip() {
+    const chip = document.getElementById("distanceChip");
+    if (!chip) return;
+
+    const dist = els.distanceInput?.value || "100";
+    const unit = els.distanceUnitSelect?.value === "m" ? "m" : "yd";
+    const dial = els.dialUnitSelect?.value || "MOA";
+    const click = els.clickValueInput?.value || "0.25";
+
+    chip.textContent = `${dist} ${unit} • ${dial} • ${click}`;
   }
 
   function updateButtons() {
