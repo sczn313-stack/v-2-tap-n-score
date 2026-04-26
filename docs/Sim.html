@@ -24,30 +24,24 @@
         <h2>Simulator Setup</h2>
 
         <label>
-          Preset Distance
-          <select id="distanceYards">
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="75">75</option>
-            <option value="100" selected>100</option>
-            <option value="150">150</option>
-            <option value="200">200</option>
-            <option value="300">300</option>
-          </select>
+          Distance
+          <div class="distance-control">
+            <input id="distanceYards" type="number" min="1" step="1" value="100" />
+            <select id="distanceUnit">
+              <option value="yd" selected>Yards</option>
+              <option value="m">Meters</option>
+            </select>
+          </div>
         </label>
 
-        <label>
-          Custom Distance
-          <input id="customDistance" type="number" min="1" step="1" placeholder="Enter distance" />
-        </label>
-
-        <label>
-          Distance Unit
-          <select id="distanceUnit">
-            <option value="yd" selected>Yards</option>
-            <option value="m">Meters</option>
-          </select>
-        </label>
+        <div class="distance-presets" aria-label="Distance presets">
+          <button type="button" class="distancePreset" data-distance="25">25</button>
+          <button type="button" class="distancePreset" data-distance="50">50</button>
+          <button type="button" class="distancePreset" data-distance="75">75</button>
+          <button type="button" class="distancePreset" data-distance="100">100</button>
+          <button type="button" class="distancePreset" data-distance="200">200</button>
+          <button type="button" class="distancePreset" data-distance="300">300</button>
+        </div>
 
         <label>
           Click Value

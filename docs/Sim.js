@@ -11,8 +11,8 @@
   const modePill = document.getElementById('modePill');
   const statusText = document.getElementById('statusText');
   const distanceYardsEl = document.getElementById('distanceYards');
-  const customDistanceEl = document.getElementById('customDistance');
   const distanceUnitEl = document.getElementById('distanceUnit');
+  const distancePresetBtns = document.querySelectorAll('.distancePreset');
   const clickValueMOAEl = document.getElementById('clickValueMOA');
   const shotGoalEl = document.getElementById('shotGoal');
   const ringSpacingInchesEl = document.getElementById('ringSpacingInches');
@@ -58,22 +58,19 @@
 
 
   function getEffectiveDistanceYards() {
-    const custom = Number(customDistanceEl && customDistanceEl.value);
-    const preset = Number(distanceYardsEl.value);
-    const rawDistance = custom > 0 ? custom : preset;
+    const rawDistance = Number(distanceYardsEl.value) || 100;
     const unit = distanceUnitEl ? distanceUnitEl.value : "yd";
 
     return unit === "m" ? rawDistance * 1.09361 : rawDistance;
   }
 
   function getDistanceDisplayLabel() {
-    const custom = Number(customDistanceEl && customDistanceEl.value);
-    const preset = Number(distanceYardsEl.value);
-    const rawDistance = custom > 0 ? custom : preset;
+    const rawDistance = Number(distanceYardsEl.value) || 100;
     const unit = distanceUnitEl && distanceUnitEl.value === "m" ? "m" : "yd";
 
     return `${rawDistance} ${unit}`;
   }
+
 
   function renderRings() {
     clearChildren(ringLayer);
@@ -428,18 +425,14 @@
     }
   }
 
-  distanceYardsEl.addEventListener('change', () => {
-    if (customDistanceEl) customDistanceEl.value = distanceYardsEl.value;
-    refreshAll();
-  });
+  distanceYardsEl.addEventListener('input', refreshAll);
 
-  if (customDistanceEl) {
-    if (!customDistanceEl.value) customDistanceEl.value = distanceYardsEl.value;
-
-    customDistanceEl.addEventListener('input', () => {
+  distancePresetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      distanceYardsEl.value = btn.dataset.distance;
       refreshAll();
     });
-  }
+  });
 
   if (distanceUnitEl) {
     distanceUnitEl.addEventListener('change', refreshAll);

@@ -204,3 +204,38 @@ button:hover { transform: translateY(-1px); }
 .matrix-back-btn:hover {
   background: rgba(0,0,0,0.9);
 }
+
+
+/* MATRIX DISTANCE CONTROL */
+.distance-control {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  gap: 10px;
+  align-items: center;
+}
+
+.distance-control input,
+.distance-control select {
+  width: 100%;
+}
+
+.distance-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 10px 0 18px;
+}
+
+.distancePreset {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.06);
+  color: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.distancePreset:hover {
+  background: rgba(255,255,255,0.12);
+}
