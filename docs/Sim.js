@@ -11,6 +11,8 @@
   const modePill = document.getElementById('modePill');
   const statusText = document.getElementById('statusText');
   const distanceYardsEl = document.getElementById('distanceYards');
+  const customDistanceEl = document.getElementById('customDistance');
+  const distanceUnitEl = document.getElementById('distanceUnit');
   const clickValueMOAEl = document.getElementById('clickValueMOA');
   const shotGoalEl = document.getElementById('shotGoal');
   const ringSpacingInchesEl = document.getElementById('ringSpacingInches');
@@ -52,6 +54,25 @@
 
   function clearChildren(node) {
     while (node.firstChild) node.removeChild(node.firstChild);
+  }
+
+
+  function getEffectiveDistanceYards() {
+    const custom = Number(customDistanceEl && customDistanceEl.value);
+    const preset = Number(distanceYardsEl.value);
+    const rawDistance = custom > 0 ? custom : preset;
+    const unit = distanceUnitEl ? distanceUnitEl.value : "yd";
+
+    return unit === "m" ? rawDistance * 1.09361 : rawDistance;
+  }
+
+  function getDistanceDisplayLabel() {
+    const custom = Number(customDistanceEl && customDistanceEl.value);
+    const preset = Number(distanceYardsEl.value);
+    const rawDistance = custom > 0 ? custom : preset;
+    const unit = distanceUnitEl && distanceUnitEl.value === "m" ? "m" : "yd";
+
+    return `${rawDistance} ${unit}`;
   }
 
   function renderRings() {
@@ -278,7 +299,7 @@
     const offsetXInches = pxToInches(offsetXPx);
     const offsetYInches = pxToInches(offsetYPx);
 
-    const yards = Number(distanceYardsEl.value);
+    const yards = getEffectiveDistanceYards();
     const inchesPerMOA = yardsToInchesPerMOA(yards);
 
     const windageMOA = offsetXInches / inchesPerMOA;
@@ -323,7 +344,7 @@
       <div class="sec-brand">Shooter Experience Card</div>
       <div class="metric-grid">
         <div class="metric"><div class="metric-label">Shot count</div><div class="metric-value">${results.shots}</div></div>
-        <div class="metric"><div class="metric-label">Distance</div><div class="metric-value">${results.distanceYards} yd</div></div>
+        <div class="metric"><div class="metric-label">Distance</div><div class="metric-value">${getDistanceDisplayLabel()}</div></div>
         <div class="metric"><div class="metric-label">Group size</div><div class="metric-value">${results.groupSizeInches}&quot;</div></div>
         <div class="metric"><div class="metric-label">POIB X / Y</div><div class="metric-value">${results.poib.x}, ${results.poib.y}</div></div>
         <div class="metric"><div class="metric-label">Windage offset</div><div class="metric-value">${Math.abs(results.offsetXInches)}&quot; ${results.directions.horizontal}</div></div>
@@ -398,6 +419,11 @@
 
   resetBtn.addEventListener('click', resetSimulator);
   resultsBtn.addEventListener('click', showResults);
+  distanceYardsEl.addEventListener('change', () => {
+    if (customDistanceEl) customDistanceEl.value = "";
+  });
+  if (customDistanceEl) customDistanceEl.addEventListener('input', () => {});
+  if (distanceUnitEl) distanceUnitEl.addEventListener('change', () => {});
   ringSpacingInchesEl.addEventListener('change', renderRings);
   shotGoalEl.addEventListener('change', () => {
     if (state.mode === 'shots') setMode('shots');
