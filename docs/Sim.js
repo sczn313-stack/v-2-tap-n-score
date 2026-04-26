@@ -429,12 +429,16 @@
   }
 
   distanceYardsEl.addEventListener('change', () => {
-    if (customDistanceEl) customDistanceEl.value = "";
+    if (customDistanceEl) customDistanceEl.value = distanceYardsEl.value;
     refreshAll();
   });
 
   if (customDistanceEl) {
-    customDistanceEl.addEventListener('input', refreshAll);
+    if (!customDistanceEl.value) customDistanceEl.value = distanceYardsEl.value;
+
+    customDistanceEl.addEventListener('input', () => {
+      refreshAll();
+    });
   }
 
   if (distanceUnitEl) {
