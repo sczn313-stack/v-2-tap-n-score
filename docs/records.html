@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SEC - Shooter Experience Card</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main class="shell">
+  <header class="m4-header">
+    <div class="vendor-slot">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target thumbnail" />
+      <div class="brand-lockup">
+        <a class="vendor-name" href="index.html">Baker Smart Targets</a>
+      </div>
+    </div>
+    <nav class="locked-nav" aria-label="Baker workflow navigation">
+      <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
+      <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Setup</span></a>
+      <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
+      <a class="locked-nav-item is-active" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
+    </nav>
+  </header>
+  <section class="panel history-panel">
+    <div class="section-heading sec-heading">
+      <div>
+        <h1>SEC</h1>
+        <h2>Shooter Experience Card</h2>
+      </div>
+      <a class="vendor-pill" href="buy-targets.html" aria-label="Open vendor page">
+        <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="" />
+        <span>Vendor</span>
+      </a>
+      <button class="vendor-pill save-page-button" type="button" id="saveSecPage">Save This Page</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </section>
+</main>
+<script src="app_state.js"></script>
+<script>
+const historyList = document.getElementById("historyList");
+
+function cleanDateTime(value) {
+  const date = value ? new Date(value) : new Date();
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function cleanSetupValue(value) {
+  return /^(Select Manufacturer|Select Model Type|Select Model Caliber|Select Caliber|Select Load|Select Grain)$/i.test(value || "") ? "" : value;
+}
+
+function compactClick(value, axis) {
+  if (!value) return "--";
+  const amount = String(value).match(/\d+/)?.[0] || "0";
+  const upper = String(value).toUpperCase();
+  if (axis === "elevation") {
+    if (upper.includes("UP")) return `${amount}↑`;
+    if (upper.includes("DOWN")) return `${amount}↓`;
+  }
+  if (axis === "windage") {
+    if (upper.includes("RIGHT")) return `${amount}→`;
+    if (upper.includes("LEFT")) return `${amount}←`;
+  }
+  return amount;
+}
+
+function distanceDisplay(session) {
+  if (session.targetDistanceValue) {
+    return `${session.targetDistanceValue} ${session.targetDistanceUnit === "M" ? "m" : "yds"}`;
+  }
+  return session.targetDistance || session.distance || "100 yds";
+}
+
+function scoreClass(score) {
+  const numeric = Number(score);
+  if (!Number.isFinite(numeric)) return "score-pending";
+  if (numeric >= 90) return "score-green";
+  if (numeric >= 80) return "score-yellow";
+  if (numeric >= 70) return "score-orange";
+  return "score-red";
+}
+
+function poibPoint(session) {
+  const poib = session.poib || session.shotData?.poib || session.clicks?.poib;
+  if (poib && Number.isFinite(Number(poib.xPercent)) && Number.isFinite(Number(poib.yPercent))) {
+    return {
+      x: Math.max(0, Math.min(100, Number(poib.xPercent))),
+      y: Math.max(0, Math.min(100, Number(poib.yPercent)))
+    };
+  }
+  return null;
+}
+
+function aimPoint(session) {
+  const aim = session.aimPoint || session.shotData?.aimPoint;
+  if (aim && Number.isFinite(Number(aim.xPercent)) && Number.isFinite(Number(aim.yPercent))) {
+    return {
+      x: Math.max(0, Math.min(100, Number(aim.xPercent))),
+      y: Math.max(0, Math.min(100, Number(aim.yPercent)))
+    };
+  }
+  return null;
+}
+
+function aimAngle(session) {
+  const poib = poibPoint(session);
+  const aim = aimPoint(session);
+  if (!poib || !aim) return -45;
+  return Math.atan2(aim.y - poib.y, aim.x - poib.x) * 180 / Math.PI;
+}
+
+function poibVisual(session) {
+  const poib = poibPoint(session);
+  const aim = aimPoint(session);
+  const poibStyle = poib ? `left:${poib.x}%;top:${poib.y}%` : "left:50%;top:50%";
+  const aimStyle = aim
+    ? `left:${aim.x}%;top:${aim.y}%;--aim-angle:${aimAngle(session)}deg`
+    : "left:50%;top:50%;--aim-angle:-45deg";
+  return `<span class="poib-dot" style="${poibStyle}"><span></span></span><span class="aim-arrow" style="${aimStyle}"></span>`;
+}
+
+function renderHistory() {
+  const sessions = SCZN3M4.getSessionHistory().slice().sort((a, b) => {
+    const timeDelta = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+    if (timeDelta) return timeDelta;
+    return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
+  }).slice(0, 10);
+  if (!sessions.length) {
+    historyList.innerHTML = `<article class="history-card empty-state"><strong>No sessions yet</strong><span>Create a session from Weapon Setup to start the Baker smart target record.</span></article>`;
+    return;
+  }
+
+  historyList.innerHTML = sessions.map((session, index) => {
+    const snapshot = session.matrixSnapshot || {};
+    const evidence = session.targetEvidenceImage;
+    const shotCount = Array.isArray(session.impactPoints) ? session.impactPoints.length : 0;
+    const score = Number.isFinite(Number(session.score)) ? Number(session.score) : shotCount;
+    const weapon = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
+    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const ammo = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const clicks = session.clicks || {};
+    const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : null;
+    return `
+      <article class="history-card${thumbnail ? "" : " no-thumb"}" data-session-id="${session.sessionId}">
+        ${thumbnail ? `
+          <div class="history-thumb">
+            <img src="${thumbnail}" alt="Uploaded target evidence thumbnail" />
+            ${poibVisual(session)}
+          </div>
+        ` : ""}
+        <div class="history-copy">
+          <div class="history-title">
+            <strong>Session #${index + 1}</strong>
+            <span>${cleanDateTime(session.timestamp)}</span>
+          </div>
+          <div class="sec-setup-line">${[weapon, optic, ammo].filter(Boolean).join(" | ") || "--"}</div>
+          <div class="sec-intel-pill">
+            <span>${distanceDisplay(session)}</span>
+            <span class="sec-score ${scoreClass(score)}">SCORE <strong>${score}</strong></span>
+            <span class="sec-clicks"><strong>${compactClick(clicks.elevation, "elevation")}</strong><em>CLICKS</em><strong>${compactClick(clicks.windage, "windage")}</strong></span>
+            <span>${shotCount} Hits</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+renderHistory();
+document.getElementById("saveSecPage").addEventListener("click", saveSecPageImage);
+
+function saveSecPageImage() {
+  const target = document.querySelector(".history-panel");
+  const width = Math.ceil(target.scrollWidth);
+  const height = Math.ceil(target.scrollHeight);
+  const styles = Array.from(document.styleSheets)
+    .map(sheet => {
+      try {
+        return Array.from(sheet.cssRules).map(rule => rule.cssText).join("\n");
+      } catch (error) {
+        return "";
+      }
+    })
+    .join("\n");
+  const clone = target.cloneNode(true);
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+      <foreignObject width="100%" height="100%">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <style>${styles}</style>
+          ${clone.outerHTML}
+        </div>
+      </foreignObject>
+    </svg>`;
+  const image = new Image();
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#eadbbd";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(image, 0, 0);
+    const link = document.createElement("a");
+    link.download = `SEC-${new Date().toISOString().slice(0, 10)}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    URL.revokeObjectURL(image.src);
+  };
+  image.src = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+}
+</script>
+</body>
+</html>

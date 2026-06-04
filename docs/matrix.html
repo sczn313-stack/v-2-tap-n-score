@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weapon Setup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main class="shell">
+  <header class="m4-header">
+    <div class="vendor-slot">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target thumbnail" />
+      <div class="brand-lockup">
+        <a class="vendor-name" href="index.html">Baker Smart Targets</a>
+      </div>
+    </div>
+    <nav class="locked-nav" aria-label="Baker workflow navigation">
+      <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
+      <a class="locked-nav-item is-active" href="matrix.html"><span class="nav-dot"></span><span>Weapon Setup</span></a>
+      <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
+      <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
+    </nav>
+  </header>
+  <section class="active-session-bar" id="activeSessionBar"></section>
+
+  <section class="matrix-only">
+    <form class="panel matrix-form" id="matrixForm">
+      <span class="kicker">Setup</span>
+      <h1>Weapon Setup</h1>
+      <p>Review your setup or start a new session.</p>
+
+      <div class="action-grid">
+        <button class="button" type="button" id="newSetup">New Setup</button>
+        <button class="button" type="button" id="saveSetup">Save Setup</button>
+        <button class="button primary" type="submit">Target</button>
+      </div>
+
+      <section class="form-section">
+        <h2>Weapon System</h2>
+        <div class="category-pill-row" role="group" aria-label="Weapon Category">
+          <button class="category-pill" type="button" data-weapon-category="Rifle">Rifle</button>
+          <button class="category-pill" type="button" data-weapon-category="Pistol">Pistol</button>
+          <button class="category-pill" type="button" data-weapon-category="Shotgun">Shotgun</button>
+        </div>
+        <input type="hidden" name="weaponCategory" id="weaponCategory" value="Rifle" />
+        <div class="matrix-grid">
+          <label>Manufacturer<select name="weaponManufacturer" id="weaponManufacturer">
+            <option>Select Manufacturer</option><option>Colt</option><option>FN</option><option>Daniel Defense</option><option>BCM</option><option>Aero Precision</option><option>Smith & Wesson</option><option>Ruger</option><option>Sig Sauer</option><option>Springfield Armory</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Manufacturer<input name="customWeaponManufacturer" id="customWeaponManufacturer" placeholder="Optional custom manufacturer" /></label>
+          <label>Model Type<select name="weaponModelType" id="weaponModelType">
+            <option>Select Model Type</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Model Type<input name="customWeaponModelType" id="customWeaponModelType" placeholder="Optional custom model type" /></label>
+          <label>Model Caliber<select name="weaponModelCaliber" id="weaponModelCaliber">
+            <option>Select Model Caliber</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Model Caliber<input name="customWeaponModelCaliber" id="customWeaponModelCaliber" placeholder="Optional custom model caliber" /></label>
+          <label>Barrel Length <span class="optional-label">Optional</span><input name="barrelLength" placeholder="Optional" /></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Optic System</h2>
+        <div class="matrix-grid">
+          <label>Optic Type<select name="opticType" id="opticType">
+            <option>Iron Sights</option><option>Red Dot</option><option>Holographic</option><option>Prism</option><option>LPVO</option><option>Scope</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Optic Type<input name="customOpticType" id="customOpticType" placeholder="Optional custom optic type" /></label>
+          <label>Manufacturer<select name="opticBrand" id="opticBrand">
+            <option>Iron Sights</option><option>Aimpoint</option><option>EOTech</option><option>Trijicon</option><option>Vortex</option><option>Leupold</option><option>Holosun</option><option>Primary Arms</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Manufacturer<input name="customOpticManufacturer" id="customOpticManufacturer" placeholder="Optional custom manufacturer" /></label>
+          <label>Model<select name="opticModel" id="opticModel">
+            <option>Iron Sights</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Model<input name="customOpticModel" id="customOpticModel" placeholder="Optional custom model" /></label>
+          <label>Magnification<select name="magnification" id="magnification">
+            <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Ammunition</h2>
+        <div class="matrix-grid">
+          <label>Caliber<select name="ammoCaliber" id="ammoCaliber">
+            <option>Select Caliber</option><option>5.56 NATO</option><option>.223 Rem</option><option>.308 Win</option><option>6.5 Creedmoor</option><option>9mm</option><option>.45 ACP</option><option>12 Gauge</option><option>20 Gauge</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Caliber<input name="customAmmoCaliber" id="customAmmoCaliber" placeholder="Optional custom caliber" /></label>
+          <label>Manufacturer<select name="ammoManufacturer" id="ammoManufacturer">
+            <option>Select Manufacturer</option><option>Lake City</option><option>Federal</option><option>Winchester</option><option>Hornady</option><option>Remington</option><option>PMC</option><option>IMI</option><option>Black Hills</option><option>Sig Sauer</option><option>Fiocchi</option><option>Sellier & Bellot</option><option>Prvi Partizan</option><option>Norma</option><option>Magtech</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Manufacturer<input name="customAmmoManufacturer" id="customAmmoManufacturer" placeholder="Optional custom manufacturer" /></label>
+          <label>Load / Model<select name="ammoLoad" id="ammoLoad">
+            <option>Select Load</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Load / Model<input name="customAmmoLoad" id="customAmmoLoad" placeholder="Optional custom load or model" /></label>
+          <label>Grain<select name="bulletWeight" id="bulletWeight">
+            <option>Select Grain</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Grain<input name="customBulletWeight" id="customBulletWeight" placeholder="Optional custom grain" /></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Distance</h2>
+        <div class="matrix-grid distance-setup-grid">
+          <label>Distance<select name="targetDistanceValue" id="matrixDistanceValue">
+            <option>25</option><option>50</option><option>75</option><option selected>100</option><option>150</option><option>175</option><option>200</option><option>250</option><option>300</option><option>400</option><option>500</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Distance<input name="customTargetDistanceValue" id="customTargetDistanceValue" inputmode="numeric" pattern="[0-9]*" /></label>
+          <label>Unit<select name="targetDistanceUnit" id="matrixDistanceUnit">
+            <option selected>YDS</option><option>M</option>
+          </select></label>
+        </div>
+      </section>
+
+      <section class="form-section attribution-banner">
+        <h2>Attribution</h2>
+        <div class="matrix-grid">
+          <label>Shooter<input name="shooterName" autocomplete="name" /></label>
+          <label>Unit<input name="unit" /></label>
+          <label>Agency<input name="agency" /></label>
+          <label>Instructor<input name="instructor" /></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Weather</h2>
+        <div class="matrix-grid">
+          <label>Temperature<input name="temperature" placeholder="72 F" /></label>
+          <label>Wind<input name="wind" placeholder="5 mph left to right" /></label>
+          <label>Conditions<input name="weather" placeholder="clear" /></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Saved Setups Library</h2>
+        <div class="matrix-grid">
+          <label>Saved Setup<select id="savedSetupSelect">
+            <option value="">Select Saved Setup</option>
+          </select></label>
+          <label>Setup Name<input id="setupName" placeholder="Optional setup name" /></label>
+        </div>
+      </section>
+    </form>
+  </section>
+</main>
+<script src="app_state.js"></script>
+<script>
+const form = document.getElementById("matrixForm");
+const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
+const MAX_SAVED_SETUPS = 12;
+const WEAPON_CATEGORY_MANUFACTURERS = {
+  Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
+  Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
+  Shotgun: ["Select Manufacturer", "Mossberg", "Remington", "Benelli", "Beretta", "Winchester", "Stoeger", "FN", "Other"]
+};
+const WEAPON_MODEL_TYPES = {
+  "Select Manufacturer": ["Select Model Type", "Other"],
+  Colt: ["AR Platform", "1911", "Revolver", "Other"],
+  FN: ["AR Platform", "SCAR Series", "Full Size", "Compact", "Semi-Auto", "Other"],
+  "Daniel Defense": ["AR Platform", "DD5 Series", "Other"],
+  BCM: ["AR Platform", "Other"],
+  "Aero Precision": ["AR Platform", "Bolt Action", "Other"],
+  "Smith & Wesson": ["AR Platform", "Rimfire", "Full Size", "Compact", "Subcompact", "Other"],
+  Ruger: ["Bolt Action", "AR Platform", "Rimfire", "Compact", "Subcompact", "Other"],
+  "Sig Sauer": ["MCX Series", "Cross Series", "Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
+  "Springfield Armory": ["AR Platform", "Full Size", "Compact", "Subcompact", "Micro Compact", "1911", "Other"],
+  Mossberg: ["Pump Action", "Semi-Auto", "Other"],
+  Remington: ["Bolt Action", "Pump Action", "Semi-Auto", "Other"],
+  Benelli: ["Semi-Auto", "Pump Action", "Other"],
+  Beretta: ["Semi-Auto", "Full Size", "Compact", "Other"],
+  Winchester: ["Pump Action", "Other"],
+  Stoeger: ["Semi-Auto", "Other"],
+  Savage: ["Bolt Action", "Rimfire", "Other"],
+  Glock: ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
+  "Heckler & Koch": ["MR Series", "Full Size", "Compact", "Other"],
+  Walther: ["Full Size", "Compact", "Other"],
+  CZ: ["Full Size", "Compact", "Competition", "Pistol Caliber Carbine", "Other"],
+  Other: ["Other"]
+};
+const WEAPON_MODEL_TYPE_FILTERS = {
+  Rifle: {
+    Colt: ["AR Platform", "Other"],
+    FN: ["AR Platform", "SCAR Series", "Other"],
+    "Daniel Defense": ["AR Platform", "Other"],
+    BCM: ["AR Platform", "Other"],
+    "Aero Precision": ["AR Platform", "Bolt Action", "Other"],
+    "Smith & Wesson": ["AR Platform", "Rimfire", "Other"],
+    Ruger: ["Bolt Action", "AR Platform", "Rimfire", "Other"],
+    "Sig Sauer": ["MCX Series", "Cross Series", "Other"],
+    "Springfield Armory": ["AR Platform", "Other"],
+    Remington: ["Bolt Action", "Other"],
+    Savage: ["Bolt Action", "Rimfire", "Other"],
+    "Heckler & Koch": ["MR Series", "Other"],
+    CZ: ["Pistol Caliber Carbine", "Other"]
+  },
+  Pistol: {
+    Colt: ["1911", "Revolver", "Other"],
+    FN: ["Full Size", "Compact", "Other"],
+    "Smith & Wesson": ["Full Size", "Compact", "Subcompact", "Other"],
+    Ruger: ["Compact", "Subcompact", "Other"],
+    "Sig Sauer": ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
+    "Springfield Armory": ["Full Size", "Compact", "Subcompact", "Micro Compact", "1911", "Other"],
+    Glock: ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
+    "Heckler & Koch": ["Full Size", "Compact", "Other"],
+    Walther: ["Full Size", "Compact", "Other"],
+    CZ: ["Full Size", "Compact", "Competition", "Other"],
+    Beretta: ["Full Size", "Compact", "Other"]
+  },
+  Shotgun: {
+    FN: ["Semi-Auto", "Other"],
+    Mossberg: ["Pump Action", "Semi-Auto", "Other"],
+    Remington: ["Pump Action", "Semi-Auto", "Other"],
+    Benelli: ["Semi-Auto", "Pump Action", "Other"],
+    Beretta: ["Semi-Auto", "Other"],
+    Winchester: ["Pump Action", "Other"],
+    Stoeger: ["Semi-Auto", "Other"]
+  }
+};
+const WEAPON_MODEL_CALIBERS = {
+  "Select Model Type": ["Select Model Caliber", "Other"],
+  "AR Platform": ["5.56 NATO", ".223 Rem", ".300 BLK", ".308 Win", "Other"],
+  "1911": ["1911 .45 ACP", "1911 9mm", "Other"],
+  Revolver: [".357 Magnum", ".38 Special", "Other"],
+  "SCAR Series": ["SCAR 16S 5.56 NATO", "SCAR 17S .308 Win", "Other"],
+  "Bolt Action": [".308 Win", "6.5 Creedmoor", ".223 Rem", "Other"],
+  Rimfire: [".22 LR", "Other"],
+  "MCX Series": ["MCX 5.56 NATO", "MCX .300 BLK", "Other"],
+  "Cross Series": ["Cross .308 Win", "Cross 6.5 Creedmoor", "Other"],
+  "Full Size": ["9mm", ".40 S&W", ".45 ACP", "Other"],
+  Compact: ["9mm", ".40 S&W", "Other"],
+  Subcompact: ["9mm", "Other"],
+  "Micro Compact": ["9mm", "Other"],
+  Competition: ["9mm", "Other"],
+  "Pump Action": ["12 Gauge", "20 Gauge", "Other"],
+  "Semi-Auto": ["12 Gauge", "20 Gauge", "Other"],
+  "MR Series": ["MR556 5.56 NATO", "MR762 .308 Win", "Other"],
+  "Pistol Caliber Carbine": ["9mm", "Other"],
+  Other: ["Other"]
+};
+const WEAPON_MODEL_CALIBER_FILTERS = {
+  Colt: {
+    "AR Platform": ["Colt LE6920 5.56 NATO", "Colt Carbine 5.56 NATO", "Colt CR6920 5.56 NATO", "Other"],
+    "1911": ["Colt Government .45 ACP", "Colt Competition 9mm", "Other"],
+    Revolver: ["Colt Python .357 Magnum", "Other"]
+  },
+  FN: {
+    "AR Platform": ["FN 15 5.56 NATO", "FN 15 Patrol Carbine 5.56 NATO", "Other"],
+    "SCAR Series": ["SCAR 16S 5.56 NATO", "SCAR 17S .308 Win", "SCAR 20S 6.5 Creedmoor", "Other"],
+    "Full Size": ["FN 509 9mm", "FNX-45 .45 ACP", "Other"],
+    Compact: ["FN 509 Compact 9mm", "Other"],
+    "Semi-Auto": ["FN SLP 12 Gauge", "Other"]
+  },
+  "Daniel Defense": {
+    "AR Platform": ["Daniel Defense V7 5.56 NATO", "Daniel Defense A1 5.56 NATO", "Daniel Defense PDW .300 BLK", "DD5 .308 Win", "Other"]
+  },
+  BCM: {
+    "AR Platform": ["BCM RECCE-16 5.56 NATO", "BCM RECCE-14 5.56 NATO", "Other"]
+  },
+  "Aero Precision": {
+    "AR Platform": ["Aero E1 5.56 NATO", "Aero M5 .308 Win", "Aero M5 6.5 Creedmoor", "Other"],
+    "Bolt Action": ["Aero Solus .308 Win", "Aero Solus 6.5 Creedmoor", "Other"]
+  },
+  "Smith & Wesson": {
+    "AR Platform": ["M&P15 Sport III 5.56 NATO", "M&P15-22 .22 LR", "Other"],
+    Rimfire: ["M&P15-22 .22 LR", "Other"],
+    "Full Size": ["M&P 9 9mm", "M&P 45 .45 ACP", "Other"],
+    Compact: ["M&P 9 Compact 9mm", "Other"],
+    Subcompact: ["Shield Plus 9mm", "Other"]
+  },
+  Ruger: {
+    "Bolt Action": ["Ruger American .308 Win", "Ruger American 6.5 Creedmoor", "Ruger American .223 Rem", "Other"],
+    "AR Platform": ["Ruger AR-556 5.56 NATO", "Ruger SFAR .308 Win", "Other"],
+    Rimfire: ["10/22 .22 LR", "Other"],
+    Compact: ["Security-9 9mm", "Other"],
+    Subcompact: ["MAX-9 9mm", "Other"]
+  },
+  "Sig Sauer": {
+    "MCX Series": ["MCX 5.56 NATO", "MCX .300 BLK", "Other"],
+    "Cross Series": ["Cross .308 Win", "Cross 6.5 Creedmoor", "Other"],
+    "Full Size": ["P320 Full Size 9mm", "P226 9mm", "Other"],
+    Compact: ["P320 Compact 9mm", "Other"],
+    Subcompact: ["P365 XL 9mm", "Other"],
+    "Micro Compact": ["P365 9mm", "P365 X-Macro 9mm", "Other"]
+  },
+  "Springfield Armory": {
+    "AR Platform": ["Saint 5.56 NATO", "Saint Victor 5.56 NATO", "Saint Victor .308 Win", "Other"],
+    "Full Size": ["Echelon 9mm", "XD-M Elite 9mm", "Other"],
+    Compact: ["XD-M Elite Compact 9mm", "Other"],
+    Subcompact: ["Hellcat Pro 9mm", "Other"],
+    "Micro Compact": ["Hellcat 9mm", "Hellcat RDP 9mm", "Other"],
+    "1911": ["1911 Garrison .45 ACP", "1911 Ronin 9mm", "Other"]
+  },
+  Glock: {
+    "Full Size": ["Glock 17 9mm", "Glock 22 .40 S&W", "Other"],
+    Compact: ["Glock 19 9mm", "Glock 23 .40 S&W", "Other"],
+    Subcompact: ["Glock 26 9mm", "Other"],
+    "Micro Compact": ["Glock 43 9mm", "Glock 43X 9mm", "Other"]
+  },
+  Mossberg: {
+    "Pump Action": ["Mossberg 500 12 Gauge", "Mossberg 590 12 Gauge", "Maverick 88 12 Gauge", "Other"],
+    "Semi-Auto": ["Mossberg 930 12 Gauge", "Mossberg 940 12 Gauge", "Other"]
+  },
+  Remington: {
+    "Bolt Action": ["Remington 700 .308 Win", "Remington 700 6.5 Creedmoor", "Other"],
+    "Pump Action": ["Remington 870 12 Gauge", "Remington 870 20 Gauge", "Other"],
+    "Semi-Auto": ["Remington V3 12 Gauge", "Other"]
+  },
+  Benelli: {
+    "Semi-Auto": ["Benelli Tactical 12 Gauge", "Benelli M2 12 Gauge", "Other"],
+    "Pump Action": ["SuperNova 12 Gauge", "Other"]
+  },
+  Beretta: {
+    "Semi-Auto": ["Beretta 1301 12 Gauge", "A300 Ultima Patrol 12 Gauge", "Other"],
+    "Full Size": ["Beretta 92 9mm", "Other"],
+    Compact: ["Beretta APX Compact 9mm", "Other"]
+  },
+  Winchester: {
+    "Pump Action": ["SXP 12 Gauge", "SXP 20 Gauge", "Other"]
+  },
+  Stoeger: {
+    "Semi-Auto": ["M3000 12 Gauge", "M3500 12 Gauge", "Other"]
+  },
+  Savage: {
+    "Bolt Action": ["Savage 110 .308 Win", "Savage 110 6.5 Creedmoor", "Axis .308 Win", "Axis .223 Rem", "Other"],
+    Rimfire: ["A22 .22 LR", "Other"]
+  },
+  "Heckler & Koch": {
+    "MR Series": ["MR556 5.56 NATO", "MR762 .308 Win", "Other"],
+    "Full Size": ["VP9 9mm", "USP .45 ACP", "Other"],
+    Compact: ["VP9SK 9mm", "Other"]
+  },
+  Walther: {
+    "Full Size": ["PDP Full Size 9mm", "Other"],
+    Compact: ["PDP Compact 9mm", "Other"]
+  },
+  CZ: {
+    "Full Size": ["P-10 F 9mm", "Shadow 2 9mm", "Other"],
+    Compact: ["P-10 C 9mm", "Other"],
+    Competition: ["Shadow 2 9mm", "Other"],
+    "Pistol Caliber Carbine": ["Scorpion 9mm", "Other"]
+  }
+};
+const OPTIC_MODELS = {
+  "Iron Sights": ["Iron Sights", "Other"],
+  Aimpoint: ["PRO", "Comp Series", "T-2", "Duty RDS", "ACO", "Other"],
+  EOTech: ["EXPS", "XPS", "HHS", "Vudu", "Other"],
+  Trijicon: ["ACOG TA31", "MRO", "RMR", "Credo", "VCOG", "Other"],
+  Vortex: ["Strike Eagle", "Razor", "Crossfire", "Sparc", "Venom", "Other"],
+  Leupold: ["Mark 3HD", "Mark 5HD", "VX-Freedom", "DeltaPoint Pro", "Other"],
+  Holosun: ["403", "503", "510C", "AEMS", "EPS", "Other"],
+  "Primary Arms": ["SLx", "GLx", "PLx", "MicroPrism", "Other"],
+  Other: ["Other"]
+};
+const OPTIC_TYPE_MANUFACTURERS = {
+  "Iron Sights": ["Iron Sights", "Other"],
+  "Red Dot": ["Select Manufacturer", "Aimpoint", "Trijicon", "Holosun", "Vortex", "Primary Arms", "Other"],
+  Holographic: ["Select Manufacturer", "EOTech", "Vortex", "Other"],
+  Prism: ["Select Manufacturer", "Trijicon", "Vortex", "Primary Arms", "Other"],
+  LPVO: ["Select Manufacturer", "Vortex", "Leupold", "Trijicon", "Primary Arms", "Other"],
+  Scope: ["Select Manufacturer", "Vortex", "Leupold", "Trijicon", "Primary Arms", "Other"],
+  Other: ["Other"]
+};
+const OPTIC_MODEL_FILTERS = {
+  "Red Dot": {
+    Aimpoint: ["PRO", "Comp Series", "T-2", "Duty RDS", "ACO", "Other"],
+    Trijicon: ["MRO", "RMR", "Other"],
+    Holosun: ["403", "503", "510C", "AEMS", "EPS", "Other"],
+    Vortex: ["Sparc", "Venom", "Other"],
+    "Primary Arms": ["SLx", "Other"]
+  },
+  Holographic: {
+    EOTech: ["EXPS", "XPS", "HHS", "Other"],
+    Vortex: ["Razor", "Other"]
+  },
+  Prism: {
+    Trijicon: ["ACOG TA31", "VCOG", "Other"],
+    Vortex: ["Spitfire", "Other"],
+    "Primary Arms": ["SLx", "GLx", "MicroPrism", "Other"]
+  },
+  LPVO: {
+    Vortex: ["Strike Eagle", "Razor", "Other"],
+    Leupold: ["Mark 3HD", "Mark 5HD", "Other"],
+    Trijicon: ["Credo", "VCOG", "Other"],
+    "Primary Arms": ["SLx", "GLx", "PLx", "Other"]
+  },
+  Scope: {
+    Vortex: ["Crossfire", "Razor", "Other"],
+    Leupold: ["Mark 3HD", "Mark 5HD", "VX-Freedom", "Other"],
+    Trijicon: ["Credo", "Other"],
+    "Primary Arms": ["SLx", "GLx", "PLx", "Other"]
+  }
+};
+const OPTIC_MAGNIFICATIONS = {
+  "Iron Sights": ["1x", "Other"],
+  PRO: ["1x", "Other"],
+  "Comp Series": ["1x", "Other"],
+  "T-2": ["1x", "Other"],
+  "Duty RDS": ["1x", "Other"],
+  ACO: ["1x", "Other"],
+  EXPS: ["1x", "Other"],
+  XPS: ["1x", "Other"],
+  HHS: ["1x", "3x", "Other"],
+  Vudu: ["1-6x", "1-8x", "Other"],
+  "ACOG TA31": ["4x", "Other"],
+  MRO: ["1x", "Other"],
+  RMR: ["1x", "Other"],
+  Credo: ["1-6x", "1-8x", "2-10x", "Other"],
+  VCOG: ["1-6x", "1-8x", "Other"],
+  "Strike Eagle": ["1-6x", "1-8x", "Other"],
+  Razor: ["1-6x", "1-10x", "Other"],
+  Crossfire: ["1x", "2-7x", "3-9x", "Other"],
+  Sparc: ["1x", "Other"],
+  Spitfire: ["1x", "3x", "Other"],
+  Venom: ["1x", "Other"],
+  "Mark 3HD": ["1.5-4x", "3-9x", "Other"],
+  "Mark 5HD": ["3.6-18x", "5-25x", "Other"],
+  "VX-Freedom": ["3-9x", "4-12x", "Other"],
+  "DeltaPoint Pro": ["1x", "Other"],
+  "403": ["1x", "Other"],
+  "503": ["1x", "Other"],
+  "510C": ["1x", "Other"],
+  AEMS: ["1x", "Other"],
+  EPS: ["1x", "Other"],
+  SLx: ["1x", "1-6x", "3x", "Other"],
+  GLx: ["1-6x", "2x", "Other"],
+  PLx: ["1-8x", "1-10x", "Other"],
+  MicroPrism: ["1x", "3x", "Other"],
+  Other: ["Other"]
+};
+const AMMO_CALIBER_MANUFACTURERS = {
+  "Select Caliber": ["Select Manufacturer", "Other"],
+  "5.56 NATO": ["Select Manufacturer", "Lake City", "Federal", "Winchester", "Hornady", "PMC", "IMI", "Black Hills", "Sig Sauer", "Fiocchi", "Other"],
+  ".223 Rem": ["Select Manufacturer", "Federal", "Winchester", "Hornady", "Remington", "PMC", "Norma", "Fiocchi", "Other"],
+  ".308 Win": ["Select Manufacturer", "Federal", "Winchester", "Hornady", "Remington", "Black Hills", "Norma", "Sig Sauer", "Other"],
+  "6.5 Creedmoor": ["Select Manufacturer", "Hornady", "Federal", "Winchester", "Norma", "Sig Sauer", "Other"],
+  "9mm": ["Select Manufacturer", "Federal", "Winchester", "Hornady", "Remington", "Fiocchi", "Sellier & Bellot", "Magtech", "Sig Sauer", "Other"],
+  ".45 ACP": ["Select Manufacturer", "Federal", "Winchester", "Hornady", "Remington", "Fiocchi", "Magtech", "Other"],
+  "12 Gauge": ["Select Manufacturer", "Federal", "Winchester", "Hornady", "Remington", "Fiocchi", "Other"],
+  "20 Gauge": ["Select Manufacturer", "Federal", "Winchester", "Remington", "Fiocchi", "Other"],
+  Other: ["Other"]
+};
+const AMMO_LOADS = {
+  "Select Manufacturer": ["Select Load", "Other"],
+  "Lake City": ["M855", "M193", "Other"],
+  Federal: ["XM193", "XM855", "Gold Medal", "Fusion", "Other"],
+  Winchester: ["M193", "M855", "USA Ready", "Other"],
+  Hornady: ["Frontier", "Black", "V-MAX", "BTHP", "Other"],
+  Remington: ["UMC", "Core-Lokt", "Other"],
+  PMC: ["Bronze", "X-TAC M193", "X-TAC M855", "Other"],
+  IMI: ["M193", "M855", "Razor Core", "Other"],
+  "Black Hills": ["MK262", "TMK", "Other"],
+  "Sig Sauer": ["Elite Performance", "Marksman", "Other"],
+  "Fiocchi": ["Range Dynamics", "Shooting Dynamics", "Other"],
+  "Sellier & Bellot": ["FMJ", "Soft Point", "Other"],
+  "Prvi Partizan": ["FMJ", "Match", "Other"],
+  Norma: ["Range & Training", "Tactical", "Other"],
+  Magtech: ["FMJ", "Other"],
+  Other: ["Other"]
+};
+const AMMO_LOAD_FILTERS = {
+  "5.56 NATO": {
+    "Lake City": ["M855", "M193", "Other"],
+    Federal: ["XM193", "XM855", "Fusion", "Gold Medal", "Other"],
+    Winchester: ["M193", "M855", "USA Ready", "Other"],
+    Hornady: ["Frontier", "Black", "V-MAX", "BTHP", "Other"],
+    PMC: ["Bronze", "X-TAC M193", "X-TAC M855", "Other"],
+    IMI: ["M193", "M855", "Razor Core", "Other"],
+    "Black Hills": ["MK262", "TMK", "Other"],
+    "Sig Sauer": ["Marksman", "Other"],
+    Fiocchi: ["Range Dynamics", "Other"]
+  },
+  ".223 Rem": {
+    Federal: ["Gold Medal", "Fusion", "Other"],
+    Winchester: ["USA Ready", "Other"],
+    Hornady: ["Frontier", "V-MAX", "BTHP", "Other"],
+    Remington: ["UMC", "Other"],
+    PMC: ["Bronze", "Other"],
+    Norma: ["Range & Training", "Tactical", "Other"],
+    Fiocchi: ["Range Dynamics", "Other"]
+  },
+  ".308 Win": {
+    Federal: ["Gold Medal", "Fusion", "Other"],
+    Winchester: ["USA Ready", "Other"],
+    Hornady: ["Black", "BTHP", "Other"],
+    Remington: ["Core-Lokt", "Other"],
+    "Black Hills": ["TMK", "Other"],
+    Norma: ["Tactical", "Other"],
+    "Sig Sauer": ["Elite Performance", "Other"]
+  },
+  "6.5 Creedmoor": {
+    Hornady: ["Black", "BTHP", "Other"],
+    Federal: ["Gold Medal", "Fusion", "Other"],
+    Winchester: ["USA Ready", "Other"],
+    Norma: ["Tactical", "Other"],
+    "Sig Sauer": ["Elite Performance", "Other"]
+  },
+  "9mm": {
+    Federal: ["American Eagle", "HST", "Syntech", "Other"],
+    Winchester: ["USA Ready", "White Box", "Other"],
+    Hornady: ["Critical Duty", "Critical Defense", "Other"],
+    Remington: ["UMC", "Other"],
+    Fiocchi: ["Range Dynamics", "Other"],
+    "Sellier & Bellot": ["FMJ", "Other"],
+    Magtech: ["FMJ", "Other"],
+    "Sig Sauer": ["Elite Performance", "Other"]
+  },
+  ".45 ACP": {
+    Federal: ["American Eagle", "HST", "Other"],
+    Winchester: ["White Box", "Other"],
+    Hornady: ["Critical Duty", "Other"],
+    Remington: ["UMC", "Other"],
+    Fiocchi: ["Range Dynamics", "Other"],
+    Magtech: ["FMJ", "Other"]
+  },
+  "12 Gauge": {
+    Federal: ["FlightControl Buckshot", "Top Gun", "Power-Shok Slug", "Other"],
+    Winchester: ["Super-X Buckshot", "AA Target", "Other"],
+    Hornady: ["Critical Defense Buckshot", "SST Slug", "Other"],
+    Remington: ["Express Buckshot", "Gun Club", "Other"],
+    Fiocchi: ["Defense Dynamics", "Target Load", "Other"]
+  },
+  "20 Gauge": {
+    Federal: ["Game Load", "Top Gun", "Other"],
+    Winchester: ["Super-X", "AA Target", "Other"],
+    Remington: ["Express", "Gun Club", "Other"],
+    Fiocchi: ["Target Load", "Other"]
+  }
+};
+const AMMO_GRAINS = {
+  M855: ["62 gr", "Other"],
+  M193: ["55 gr", "Other"],
+  XM193: ["55 gr", "Other"],
+  XM855: ["62 gr", "Other"],
+  "Gold Medal": ["69 gr", "77 gr", "168 gr", "175 gr", "Other"],
+  Fusion: ["62 gr", "150 gr", "Other"],
+  "USA Ready": ["62 gr", "Other"],
+  Frontier: ["55 gr", "62 gr", "75 gr", "Other"],
+  Black: ["62 gr", "75 gr", "Other"],
+  "V-MAX": ["55 gr", "Other"],
+  BTHP: ["68 gr", "75 gr", "Other"],
+  UMC: ["55 gr", "115 gr", "230 gr", "Other"],
+  "Core-Lokt": ["150 gr", "165 gr", "180 gr", "Other"],
+  Bronze: ["55 gr", "115 gr", "124 gr", "Other"],
+  "X-TAC M193": ["55 gr", "Other"],
+  "X-TAC M855": ["62 gr", "Other"],
+  "Razor Core": ["77 gr", "Other"],
+  MK262: ["77 gr", "Other"],
+  TMK: ["77 gr", "Other"],
+  "Elite Performance": ["124 gr", "147 gr", "168 gr", "Other"],
+  Marksman: ["77 gr", "Other"],
+  "Range Dynamics": ["55 gr", "115 gr", "124 gr", "Other"],
+  "Shooting Dynamics": ["55 gr", "115 gr", "124 gr", "Other"],
+  FMJ: ["55 gr", "115 gr", "124 gr", "230 gr", "Other"],
+  "Soft Point": ["55 gr", "150 gr", "Other"],
+  Match: ["69 gr", "77 gr", "168 gr", "Other"],
+  "Range & Training": ["115 gr", "124 gr", "Other"],
+  Tactical: ["62 gr", "124 gr", "Other"],
+  "American Eagle": ["115 gr", "124 gr", "230 gr", "Other"],
+  HST: ["124 gr", "147 gr", "230 gr", "Other"],
+  Syntech: ["115 gr", "124 gr", "150 gr", "Other"],
+  "White Box": ["115 gr", "230 gr", "Other"],
+  "Critical Duty": ["135 gr", "220 gr", "Other"],
+  "Critical Defense": ["115 gr", "Other"],
+  "FlightControl Buckshot": ["00 Buck", "Other"],
+  "Top Gun": ["1 oz", "1 1/8 oz", "Other"],
+  "Power-Shok Slug": ["1 oz slug", "Other"],
+  "Super-X Buckshot": ["00 Buck", "Other"],
+  "AA Target": ["1 oz", "1 1/8 oz", "Other"],
+  "Critical Defense Buckshot": ["00 Buck", "Other"],
+  "SST Slug": ["300 gr slug", "Other"],
+  Express: ["7/8 oz", "1 oz", "Other"],
+  "Express Buckshot": ["00 Buck", "Other"],
+  "Gun Club": ["1 oz", "Other"],
+  "Defense Dynamics": ["00 Buck", "Other"],
+  "Target Load": ["7/8 oz", "1 oz", "Other"],
+  "Game Load": ["7/8 oz", "Other"],
+  "Super-X": ["7/8 oz", "Other"],
+  Other: ["Other"]
+};
+
+function setOptions(select, options, selectedValue = "") {
+  const values = [...new Set(options)];
+  select.innerHTML = values.map(value => `<option>${value}</option>`).join("");
+  if (selectedValue && !values.includes(selectedValue)) {
+    select.insertAdjacentHTML("beforeend", `<option>${selectedValue}</option>`);
+  }
+  if (selectedValue) select.value = selectedValue;
+}
+
+function selectedWeaponCategory() {
+  return document.getElementById("weaponCategory").value || "Rifle";
+}
+
+function setWeaponCategory(category = "Rifle") {
+  const nextCategory = WEAPON_CATEGORY_MANUFACTURERS[category] ? category : "Rifle";
+  document.getElementById("weaponCategory").value = nextCategory;
+  document.querySelectorAll("[data-weapon-category]").forEach(button => {
+    button.classList.toggle("is-active", button.dataset.weaponCategory === nextCategory);
+  });
+}
+
+function inferWeaponCategory(values = {}) {
+  if (values.weaponCategory && WEAPON_CATEGORY_MANUFACTURERS[values.weaponCategory]) return values.weaponCategory;
+  const manufacturer = values.weaponManufacturer || "";
+  const model = `${values.weaponModelType || ""} ${values.weaponModelCaliber || ""}`;
+  if (["Mossberg", "Benelli", "Winchester", "Stoeger"].includes(manufacturer) || /12 Gauge|20 Gauge|Shotgun|Maverick|SuperNova|SXP/i.test(model)) return "Shotgun";
+  if (["Glock", "Walther"].includes(manufacturer) || /Hellcat|P320|P365|Echelon|Shield|Pistol|G17|G19|G43|VP9|USP|PDP|PPQ|Shadow|9mm|\\.45 ACP|\\.40 S&W/i.test(model)) return "Pistol";
+  return "Rifle";
+}
+
+function isSelectedPlaceholder(value) {
+  return /^(Select Manufacturer|Select Model Type|Select Model Caliber|Select Caliber|Select Load|Select Grain)$/i.test(value || "");
+}
+
+function toggleField(selectId, shouldShow) {
+  const field = document.getElementById(selectId);
+  if (!field) return;
+  field.closest("label").classList.toggle("is-hidden", !shouldShow);
+}
+
+function toggleCustom(inputId, shouldShow) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.closest("label").classList.toggle("is-hidden", !shouldShow);
+  if (shouldShow) input.focus();
+}
+
+function updateWeaponManufacturers(selectedValue = "") {
+  const options = WEAPON_CATEGORY_MANUFACTURERS[selectedWeaponCategory()] || WEAPON_CATEGORY_MANUFACTURERS.Rifle;
+  setOptions(document.getElementById("weaponManufacturer"), options, selectedValue);
+  toggleCustom("customWeaponManufacturer", document.getElementById("weaponManufacturer").value === "Other");
+  updateWeaponModelTypes();
+}
+
+function updateWeaponModelTypes(selectedValue = "") {
+  const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
+  const categoryModels = WEAPON_MODEL_TYPE_FILTERS[selectedWeaponCategory()] || {};
+  setOptions(document.getElementById("weaponModelType"), categoryModels[manufacturer] || WEAPON_MODEL_TYPES[manufacturer] || WEAPON_MODEL_TYPES.Other, selectedValue);
+  toggleField("weaponModelType", !isSelectedPlaceholder(manufacturer));
+  toggleCustom("customWeaponManufacturer", manufacturer === "Other");
+  updateWeaponModelCalibers();
+}
+
+function updateWeaponModelCalibers(selectedValue = "") {
+  const modelType = document.getElementById("weaponModelType").value || "Select Model Type";
+  const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
+  const manufacturerModels = WEAPON_MODEL_CALIBER_FILTERS[manufacturer] || {};
+  setOptions(document.getElementById("weaponModelCaliber"), manufacturerModels[modelType] || WEAPON_MODEL_CALIBERS[modelType] || WEAPON_MODEL_CALIBERS.Other, selectedValue);
+  toggleField("weaponModelCaliber", !isSelectedPlaceholder(modelType));
+  toggleCustom("customWeaponModelType", modelType === "Other");
+  toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
+}
+
+function updateOpticModels(selectedValue = "") {
+  const brand = document.getElementById("opticBrand").value || "Iron Sights";
+  const type = document.getElementById("opticType").value || "Iron Sights";
+  const typeModels = OPTIC_MODEL_FILTERS[type] || {};
+  setOptions(document.getElementById("opticModel"), typeModels[brand] || OPTIC_MODELS[brand] || OPTIC_MODELS.Other, selectedValue);
+  toggleField("opticModel", !isSelectedPlaceholder(brand));
+  toggleCustom("customOpticManufacturer", brand === "Other");
+  toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other");
+  updateMagnifications();
+}
+
+function updateOpticManufacturers(selectedValue = "") {
+  const type = document.getElementById("opticType").value || "Iron Sights";
+  setOptions(document.getElementById("opticBrand"), OPTIC_TYPE_MANUFACTURERS[type] || OPTIC_TYPE_MANUFACTURERS.Other, selectedValue);
+  toggleCustom("customOpticType", type === "Other");
+  toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other");
+  updateOpticModels();
+}
+
+function updateMagnifications(selectedValue = "") {
+  const model = document.getElementById("opticModel").value || "Iron Sights";
+  const type = document.getElementById("opticType").value || "Iron Sights";
+  const fallback = type === "Iron Sights" ? OPTIC_MAGNIFICATIONS["Iron Sights"] : ["1x", "1-4x", "1-6x", "1-8x", "2-10x", "3-9x", "4-12x", "Other"];
+  setOptions(document.getElementById("magnification"), OPTIC_MAGNIFICATIONS[model] || fallback, selectedValue);
+  toggleCustom("customOpticModel", model === "Other");
+  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other");
+  toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other");
+}
+
+function updateAmmoManufacturers(selectedValue = "") {
+  const caliber = document.getElementById("ammoCaliber").value || "Select Caliber";
+  setOptions(document.getElementById("ammoManufacturer"), AMMO_CALIBER_MANUFACTURERS[caliber] || AMMO_CALIBER_MANUFACTURERS.Other, selectedValue);
+  toggleCustom("customAmmoCaliber", caliber === "Other");
+  toggleCustom("customAmmoManufacturer", document.getElementById("ammoManufacturer").value === "Other");
+  updateAmmoLoads();
+}
+
+function updateAmmoLoads(selectedValue = "") {
+  const maker = document.getElementById("ammoManufacturer").value || "Select Manufacturer";
+  const caliber = document.getElementById("ammoCaliber").value || "Select Caliber";
+  const caliberLoads = AMMO_LOAD_FILTERS[caliber] || {};
+  setOptions(document.getElementById("ammoLoad"), caliberLoads[maker] || AMMO_LOADS[maker] || AMMO_LOADS.Other, selectedValue);
+  toggleField("ammoLoad", !isSelectedPlaceholder(maker));
+  toggleCustom("customAmmoManufacturer", maker === "Other");
+  toggleCustom("customAmmoLoad", document.getElementById("ammoLoad").value === "Other");
+  updateAmmoGrains();
+}
+
+function updateAmmoGrains(selectedValue = "") {
+  const load = document.getElementById("ammoLoad").value || "Select Load";
+  setOptions(document.getElementById("bulletWeight"), AMMO_GRAINS[load] || AMMO_GRAINS.Other, selectedValue);
+  toggleField("bulletWeight", !isSelectedPlaceholder(load));
+  toggleCustom("customAmmoLoad", load === "Other");
+  toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other");
+}
+
+function displayValue(value) {
+  return isSelectedPlaceholder(value) ? "" : value;
+}
+
+function readSavedSetups() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_SETUPS_KEY) || "[]");
+  } catch (error) {
+    console.warn("Saved setup read failed", error);
+    return [];
+  }
+}
+
+function writeSavedSetups(setups) {
+  localStorage.setItem(SAVED_SETUPS_KEY, JSON.stringify(setups.slice(0, MAX_SAVED_SETUPS)));
+}
+
+function setupLabel(snapshot) {
+  return document.getElementById("setupName").value.trim()
+    || [snapshot.weaponManufacturer, snapshot.weaponModelCaliber, snapshot.opticModel, snapshot.ammoLoad].filter(Boolean).join(" / ")
+    || "Saved Setup";
+}
+
+function setupPayload(snapshot) {
+  const allowed = [
+    "setupId",
+    "setupName",
+    "weaponCategory",
+    "weaponManufacturer",
+    "weaponModelType",
+    "weaponModelCaliber",
+    "barrelLength",
+    "rifle",
+    "caliber",
+    "opticType",
+    "opticBrand",
+    "opticModel",
+    "magnification",
+    "ammoCaliber",
+    "ammoManufacturer",
+    "ammoLoad",
+    "bulletWeight",
+    "targetDistanceValue",
+    "targetDistanceUnit",
+    "targetDistance",
+    "distance"
+  ];
+  return allowed.reduce((payload, key) => {
+    if (snapshot[key]) payload[key] = snapshot[key];
+    return payload;
+  }, {});
+}
+
+function renderSavedSetups(selectedId = "") {
+  const select = document.getElementById("savedSetupSelect");
+  const setups = readSavedSetups();
+  select.innerHTML = `<option value="">Select Saved Setup</option>` + setups
+    .map(setup => `<option value="${setup.setupId}">${setup.setupName}</option>`)
+    .join("");
+  select.value = selectedId;
+}
+
+function saveCurrentSetupToLibrary() {
+  const snapshot = collectForm();
+  const setupId = document.getElementById("savedSetupSelect").value || snapshot.setupId || `setup-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const savedSetup = {
+    ...setupPayload(snapshot),
+    setupId,
+    setupName: setupLabel(snapshot),
+    updatedAt: new Date().toISOString()
+  };
+  const existing = readSavedSetups().filter(setup => setup.setupId !== setupId);
+  writeSavedSetups([savedSetup, ...existing]);
+  document.getElementById("setupName").value = savedSetup.setupName;
+  renderSavedSetups(setupId);
+  SCZN3M4.saveMatrixSnapshot({ ...snapshot, setupId, setupName: savedSetup.setupName });
+  return savedSetup;
+}
+
+function loadSavedSetup(setupId) {
+  const setup = readSavedSetups().find(item => item.setupId === setupId);
+  if (!setup) return;
+  document.getElementById("setupName").value = setup.setupName || "";
+  setForm(setup);
+  SCZN3M4.saveMatrixSnapshot(setupPayload(setup));
+  renderSavedSetups(setupId);
+}
+
+function setForm(snapshot) {
+  const values = { ...SCZN3M4.TARGET_AUTHORITY, ...snapshot };
+  values.weaponCategory = inferWeaponCategory(values);
+  values.weaponModelType = values.weaponModelType || (/^(Rifle|Shotgun|Pistol)$/i.test(values.rifle || "") ? "" : values.rifle);
+  values.weaponModelCaliber = values.weaponModelCaliber || values.caliber;
+  setWeaponCategory(values.weaponCategory);
+  updateWeaponManufacturers(values.weaponManufacturer);
+  updateWeaponModelTypes(values.weaponModelType);
+  updateWeaponModelCalibers(values.weaponModelCaliber);
+  updateOpticManufacturers(values.opticBrand);
+  updateOpticModels(values.opticModel);
+  updateMagnifications(values.magnification);
+  setOptions(document.getElementById("ammoCaliber"), Object.keys(AMMO_CALIBER_MANUFACTURERS), values.ammoCaliber);
+  updateAmmoManufacturers(values.ammoManufacturer);
+  updateAmmoLoads(values.ammoLoad);
+  updateAmmoGrains(values.bulletWeight);
+  document.getElementById("setupName").value = values.setupName || "";
+  Array.from(form.elements).forEach(field => {
+    if (!field.name || field.type === "submit" || field.type === "button") return;
+    if (field.tagName === "SELECT" && values[field.name] && !Array.from(field.options).some(option => option.value === values[field.name])) {
+      field.insertAdjacentHTML("beforeend", `<option>${values[field.name]}</option>`);
+    }
+    field.value = values[field.name] || "";
+  });
+  toggleCustom("customWeaponManufacturer", document.getElementById("weaponManufacturer").value === "Other");
+  toggleCustom("customWeaponModelType", document.getElementById("weaponModelType").value === "Other");
+  toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
+  toggleCustom("customOpticType", document.getElementById("opticType").value === "Other");
+  toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other");
+  toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other");
+  toggleCustom("customAmmoCaliber", document.getElementById("ammoCaliber").value === "Other");
+  toggleCustom("customAmmoManufacturer", document.getElementById("ammoManufacturer").value === "Other");
+  toggleCustom("customAmmoLoad", document.getElementById("ammoLoad").value === "Other");
+  toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other");
+  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other");
+}
+
+function collectForm() {
+  const data = {};
+  Array.from(form.elements).forEach(field => {
+    if (!field.name || field.type === "submit" || field.type === "button") return;
+    data[field.name] = field.value.trim();
+  });
+  if (data.weaponManufacturer === "Other" && data.customWeaponManufacturer) data.weaponManufacturer = data.customWeaponManufacturer;
+  if (data.weaponModelType === "Other" && data.customWeaponModelType) data.weaponModelType = data.customWeaponModelType;
+  if (data.weaponModelCaliber === "Other" && data.customWeaponModelCaliber) data.weaponModelCaliber = data.customWeaponModelCaliber;
+  if (data.opticType === "Other" && data.customOpticType) data.opticType = data.customOpticType;
+  if (data.opticBrand === "Other" && data.customOpticManufacturer) data.opticBrand = data.customOpticManufacturer;
+  if (data.opticModel === "Other" && data.customOpticModel) data.opticModel = data.customOpticModel;
+  if (data.ammoCaliber === "Other" && data.customAmmoCaliber) data.ammoCaliber = data.customAmmoCaliber;
+  if (data.ammoManufacturer === "Other" && data.customAmmoManufacturer) data.ammoManufacturer = data.customAmmoManufacturer;
+  if (data.ammoLoad === "Other" && data.customAmmoLoad) data.ammoLoad = data.customAmmoLoad;
+  if (data.bulletWeight === "Other" && data.customBulletWeight) data.bulletWeight = data.customBulletWeight;
+  if (data.magnification === "Other" && data.customMagnification) data.magnification = data.customMagnification;
+  if (data.targetDistanceValue === "Other" && data.customTargetDistanceValue) data.targetDistanceValue = data.customTargetDistanceValue.replace(/\D/g, "");
+  data.weaponManufacturer = displayValue(data.weaponManufacturer);
+  data.weaponModelType = displayValue(data.weaponModelType);
+  data.weaponModelCaliber = displayValue(data.weaponModelCaliber);
+  data.ammoCaliber = displayValue(data.ammoCaliber);
+  data.ammoManufacturer = displayValue(data.ammoManufacturer);
+  data.ammoLoad = displayValue(data.ammoLoad);
+  data.bulletWeight = displayValue(data.bulletWeight);
+  data.targetDistanceValue = (data.targetDistanceValue || "100").replace(/\D/g, "") || "100";
+  data.targetDistanceUnit = data.targetDistanceUnit === "M" ? "M" : "YDS";
+  data.targetDistance = `${data.targetDistanceValue} ${data.targetDistanceUnit === "M" ? "m" : "yds"}`;
+  data.distance = data.targetDistance;
+  Object.keys(data).forEach(key => {
+    if (key.startsWith("custom")) delete data[key];
+  });
+  data.setupId = document.getElementById("savedSetupSelect").value || "";
+  data.setupName = document.getElementById("setupName").value.trim();
+  data.rifle = [data.weaponManufacturer, data.weaponModelType].filter(Boolean).join(" ");
+  data.caliber = data.weaponModelCaliber;
+  return data;
+}
+
+function clearSetupFields() {
+  Array.from(form.elements).forEach(field => {
+    if (!field.name || field.type === "submit" || field.type === "button") return;
+    if (field.readOnly) {
+      field.value = SCZN3M4.TARGET_AUTHORITY[field.name] || "";
+      return;
+    }
+    field.value = "";
+  });
+  document.getElementById("savedSetupSelect").value = "";
+  document.getElementById("setupName").value = "";
+  setWeaponCategory("Rifle");
+  updateWeaponManufacturers();
+  renderSessionBar();
+}
+
+function renderSessionBar() {
+  const snapshot = collectForm();
+  const setup = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber]
+    .map(displayValue)
+    .filter(Boolean)
+    .join(" / ");
+  const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel]
+    .map(displayValue)
+    .filter(Boolean)
+    .join(" / ");
+  document.getElementById("activeSessionBar").innerHTML = `<strong>${setup || "Weapon setup not selected"}</strong><span>${optic || "Setup"}</span>`;
+}
+
+function loadMatrix() {
+  const snapshot = SCZN3M4.getActiveMatrix() || {
+    weaponCategory: "Rifle",
+    weaponManufacturer: "Select Manufacturer",
+    weaponModelType: "Select Model Type",
+    weaponModelCaliber: "Select Model Caliber",
+    caliber: "",
+    opticBrand: "Iron Sights",
+    opticModel: "Iron Sights",
+    magnification: "1x",
+    ammoCaliber: "Select Caliber",
+    ammoManufacturer: "Select Manufacturer",
+    ammoLoad: "Select Load",
+    bulletWeight: "Select Grain",
+    targetDistanceValue: "100",
+    targetDistanceUnit: "YDS",
+    targetDistance: "100 yds",
+    distance: "100 yds"
+  };
+  setForm(snapshot);
+}
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  const session = SCZN3M4.createSession(collectForm());
+  window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}`;
+});
+
+document.getElementById("saveSetup").addEventListener("click", () => {
+  saveCurrentSetupToLibrary();
+});
+
+document.getElementById("newSetup").addEventListener("click", clearSetupFields);
+document.getElementById("savedSetupSelect").addEventListener("change", event => loadSavedSetup(event.target.value));
+document.querySelectorAll("[data-weapon-category]").forEach(button => {
+  button.addEventListener("click", () => {
+    setWeaponCategory(button.dataset.weaponCategory);
+    updateWeaponManufacturers();
+  });
+});
+document.getElementById("weaponManufacturer").addEventListener("change", () => updateWeaponModelTypes());
+document.getElementById("weaponModelType").addEventListener("change", () => updateWeaponModelCalibers());
+document.getElementById("weaponModelCaliber").addEventListener("change", () => toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other"));
+document.getElementById("opticType").addEventListener("change", () => updateOpticManufacturers());
+document.getElementById("opticBrand").addEventListener("change", () => updateOpticModels());
+document.getElementById("opticModel").addEventListener("change", () => updateMagnifications());
+document.getElementById("ammoCaliber").addEventListener("change", () => updateAmmoManufacturers());
+document.getElementById("ammoManufacturer").addEventListener("change", () => updateAmmoLoads());
+document.getElementById("ammoLoad").addEventListener("change", () => updateAmmoGrains());
+document.getElementById("bulletWeight").addEventListener("change", () => toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other"));
+document.getElementById("magnification").addEventListener("change", () => toggleCustom("customMagnification", document.getElementById("magnification").value === "Other"));
+document.getElementById("matrixDistanceValue").addEventListener("change", () => toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other"));
+document.getElementById("customTargetDistanceValue").addEventListener("input", event => { event.target.value = event.target.value.replace(/\D/g, ""); });
+form.addEventListener("input", renderSessionBar);
+form.addEventListener("change", renderSessionBar);
+
+loadMatrix();
+renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
+renderSessionBar();
+</script>
+</body>
+</html>

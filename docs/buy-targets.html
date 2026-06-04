@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Buy Baker Targets</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main class="shell">
+  <header class="m4-header">
+    <div class="brand-lockup">
+      <span class="kicker">Targets</span>
+      <strong>Buy More Baker Smart Targets</strong>
+    </div>
+    <nav class="nav">
+      <a class="button" href="index.html">Back To Home</a>
+      <a class="button primary" href="target-workflow.html">Target Information</a>
+      <a class="button" href="records.html">History</a>
+    </nav>
+  </header>
+  <section class="active-session-bar" id="activeSessionBar"></section>
+
+  <section class="page-layout">
+    <aside class="target-board"><img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target product preview" /></aside>
+    <div class="panel">
+      <span class="kicker">Target Supply</span>
+      <h1>Buy Targets</h1>
+      <p>This page is the future purchase path for QR-enabled Baker 100 Yard Smart Targets. For now, the live action returns the shooter to the Baker Home workflow.</p>
+      <div class="action-grid">
+        <a class="button primary" href="index.html">Back To Home</a>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="app_state.js"></script>
+<script>
+const active = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
+document.getElementById("activeSessionBar").innerHTML = active
+  ? `<strong>${active.sessionLabel}</strong><span>${SCZN3M4.display(active.confirmationStatus, "Pending")}</span>`
+  : `<strong>No Active Session</strong><span>Target supply</span>`;
+</script>
+</body>
+</html>
