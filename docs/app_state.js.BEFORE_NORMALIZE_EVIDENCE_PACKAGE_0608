@@ -260,48 +260,6 @@
       return gridCoordinateToImagePercent(imagePercentToGridCoordinate(point));
     }
 
-    function displayedImageContentBox(image, frame) {
-      if (!image || !frame) return null;
-      const imageRect = image.getBoundingClientRect();
-      const frameRect = frame.getBoundingClientRect();
-      if (!imageRect.width || !imageRect.height) return null;
-      const naturalWidth = image.naturalWidth || imageRect.width || 1;
-      const naturalHeight = image.naturalHeight || imageRect.height || 1;
-      const naturalRatio = naturalWidth / naturalHeight;
-      const elementRatio = imageRect.width / imageRect.height;
-      let width = imageRect.width;
-      let height = imageRect.height;
-      let left = imageRect.left;
-      let top = imageRect.top;
-      if (elementRatio > naturalRatio) {
-        width = imageRect.height * naturalRatio;
-        left = imageRect.left + ((imageRect.width - width) / 2);
-      } else {
-        height = imageRect.width / naturalRatio;
-        top = imageRect.top + ((imageRect.height - height) / 2);
-      }
-      return {
-        naturalWidth,
-        naturalHeight,
-        left: left - frameRect.left,
-        top: top - frameRect.top,
-        width,
-        height,
-        pageLeft: left,
-        pageTop: top
-      };
-    }
-
-    function syncEvidenceLayerToImage(layer, image, frame) {
-      const box = displayedImageContentBox(image, frame || (layer && layer.parentElement));
-      if (!layer || !box) return null;
-      layer.style.left = `${box.left}px`;
-      layer.style.top = `${box.top}px`;
-      layer.style.width = `${box.width}px`;
-      layer.style.height = `${box.height}px`;
-      return box;
-    }
-
     function pointStyle(point) {
       const safe = imagePointThroughGrid(point);
       return safe ? `left:${safe.xPercent}%;top:${safe.yPercent}%` : "";
@@ -344,68 +302,10 @@
       return Math.atan2(vector.end.yPercent - vector.start.yPercent, vector.end.xPercent - vector.start.xPercent) * 180 / Math.PI;
     }
 
-    function normalizeEvidencePackage(sessionOrEvidence) {
-      const source = sessionOrEvidence || {};
-      const session = source.session || (source.sessionId || source.matrixSnapshot || source.shotData || source.targetEvidenceImage ? source : null);
-      const snapshot = source.matrixSnapshot || (session && session.matrixSnapshot) || {};
-      const shotData = source.shotData || (session && session.shotData) || {};
-      const correctionSource = source.correction || source.clicks || source.correctionData?.clicks || (session && (session.clicks || session.correctionData?.clicks)) || null;
-      const targetEvidence = source.targetEvidenceImage || (session && session.targetEvidenceImage) || null;
-      const targetImage = source.targetImage || source.image || source.dataUrl || (targetEvidence && targetEvidence.dataUrl) || TARGET_AUTHORITY.asset;
-      const aim = normalizePoint(source.aim || source.aimPoint || shotData.aimPoint || (session && (session.aimPoint || session.shotData?.aimPoint)));
-      const impactsSource = Array.isArray(source.impacts) ? source.impacts
-        : Array.isArray(source.impactPoints) ? source.impactPoints
-          : Array.isArray(shotData.impactPoints) ? shotData.impactPoints
-            : Array.isArray(session && session.impactPoints) ? session.impactPoints
-              : Array.isArray(session && session.shotData && session.shotData.impactPoints) ? session.shotData.impactPoints
-                : [];
-      const impacts = impactsSource.map(normalizePoint).filter(Boolean);
-      const poib = normalizePoint(source.poib || correctionSource?.poib || shotData.poib || (session && (session.poib || session.shotData?.poib || session.clicks?.poib)));
-      const correction = correctionSource || (poib ? { poib } : null);
-      const vector = poib && aim ? vectorCoordinates(poib, aim) : null;
-      const distance = source.distance || source.targetDistance || source.display?.distance || (session && (session.targetDistance || session.distance)) || snapshot.targetDistance || snapshot.distance || null;
-      const hitCount = Number.isFinite(Number(source.hitCount)) ? Number(source.hitCount)
-        : Number.isFinite(Number(source.hits)) ? Number(source.hits)
-          : Number.isFinite(Number(session && session.hits)) ? Number(session.hits)
-            : Number.isFinite(Number(shotData.hits)) ? Number(shotData.hits)
-              : impacts.length;
-      const score = Number.isFinite(Number(source.score)) ? Number(source.score)
-        : Number.isFinite(Number(session && session.score)) ? Number(session.score)
-          : Number.isFinite(Number(shotData.score)) ? Number(shotData.score)
-            : null;
-      return {
-        session: session || source.session || null,
-        sessionId: source.sessionId || (session && session.sessionId) || null,
-        sessionNumber: source.sessionNumber || (session && session.sessionNumber) || null,
-        metadata: {
-          sessionId: source.sessionId || (session && session.sessionId) || null,
-          sessionNumber: source.sessionNumber || (session && session.sessionNumber) || null,
-          sessionLabel: source.sessionLabel || (session && session.sessionLabel) || null,
-          timestamp: source.timestamp || (session && (session.timestamp || session.createdAt)) || null
-        },
-        targetImage,
-        targetType: source.targetType || snapshot.targetType || snapshot.targetFamily || TARGET_AUTHORITY.targetFamily,
-        vendor: source.vendor || snapshot.vendor || "Baker Smart Targets",
-        targetName: source.targetName || snapshot.targetName || snapshot.targetFamily || TARGET_AUTHORITY.targetFamily,
-        distance,
-        aim,
-        impacts,
-        poib,
-        vector,
-        correction,
-        clicks: correction,
-        hitCount,
-        score,
-        display: source.display || null,
-        raw: source
-      };
-    }
-
     function evidenceCoordinates(evidence) {
-      const normalized = normalizeEvidencePackage(evidence);
-      const aim = normalized.aim;
-      const poib = normalized.poib;
-      const impacts = normalized.impacts;
+      const aim = normalizePoint(evidence && evidence.aim);
+      const poib = normalizePoint((evidence && evidence.poib) || (evidence && evidence.correction && evidence.correction.poib));
+      const impacts = Array.isArray(evidence && evidence.impacts) ? evidence.impacts.map(normalizePoint).filter(Boolean) : [];
       return {
         aim: aim ? imagePointThroughGrid(aim) : null,
         poib: poib ? imagePointThroughGrid(poib) : null,
@@ -438,10 +338,9 @@
     }
 
     function renderEvidenceUGEO(evidence, options = {}) {
-      const normalized = normalizeEvidencePackage(evidence);
-      const aim = normalized.aim;
-      const poib = normalized.poib;
-      const impacts = normalized.impacts;
+      const aim = normalizePoint(evidence && evidence.aim);
+      const poib = normalizePoint((evidence && evidence.poib) || (evidence && evidence.correction && evidence.correction.poib));
+      const impacts = Array.isArray(evidence && evidence.impacts) ? evidence.impacts.map(normalizePoint).filter(Boolean) : [];
       const parts = [];
       if (options.vector !== false && poib && aim) {
         parts.push(renderVector(poib, aim, {
@@ -479,8 +378,6 @@
       imagePercentToGridCoordinate,
       gridCoordinateToImagePercent,
       imagePointThroughGrid,
-      displayedImageContentBox,
-      syncEvidenceLayerToImage,
       pointStyle,
       renderPoint,
       renderImpacts,
@@ -490,7 +387,6 @@
       evidenceCoordinates,
       coordinateSignature,
       regressionCheck,
-      normalizeEvidencePackage,
       renderEvidenceUGEO
     };
   })();
@@ -555,8 +451,33 @@
     };
   }
 
-  function frontendScoreUnavailable() {
-    return { score: null, rawScore: null, qualityPossible: null, perShot: [], model: "backend-authority-required" };
+  function calculateImpactScore(aimPoint, impactPoints) {
+    const impacts = Array.isArray(impactPoints) ? impactPoints : [];
+    if (!aimPoint || !impacts.length) {
+      return { score: 0, rawScore: 0, qualityPossible: 0, perShot: [], model: "aim-distance-quality-v1" };
+    }
+    const perShot = impacts.map(point => {
+      const xOffset = Number(point.xPercent || 0) - Number(aimPoint.xPercent || 0);
+      const yOffset = Number(point.yPercent || 0) - Number(aimPoint.yPercent || 0);
+      const distance = Math.sqrt((xOffset * xOffset) + (yOffset * yOffset));
+      let points = 0;
+      if (distance <= 1.5) points = 10;
+      else if (distance <= 3) points = 8;
+      else if (distance <= 5) points = 6;
+      else if (distance <= 8) points = 4;
+      else if (distance <= 12) points = 2;
+      return {
+        xPercent: point.xPercent,
+        yPercent: point.yPercent,
+        distanceFromAim: Number(distance.toFixed(2)),
+        points
+      };
+    });
+    const rawScore = perShot.reduce((sum, shot) => sum + shot.points, 0);
+    const qualityPossible = impacts.length * 10;
+    // Score is calculated from shot quality, not copied from hit count.
+    const score = qualityPossible ? Math.round((rawScore / qualityPossible) * 100) : 0;
+    return { score, rawScore, qualityPossible, perShot, model: "aim-distance-quality-v1" };
   }
 
   function saveTargetMarks(aimPoint, impactPoints) {
@@ -565,7 +486,7 @@
     const impacts = Array.isArray(impactPoints) ? impactPoints : [];
     const hitCount = impacts.length;
     const correction = calculateTapCorrection(aimPoint, impacts);
-    const scoreResult = frontendScoreUnavailable();
+    const scoreResult = calculateImpactScore(aimPoint, impacts);
     const poib = correction ? correction.poib : null;
     const correctionStatus = correction ? "calculated" : "not-calculated";
     return replaceSession({
@@ -574,13 +495,13 @@
       impactPoints: impacts,
       poib,
       clicks: correction,
-      score: null,
+      score: scoreResult.score,
       rawScore: scoreResult.rawScore,
       qualityPossible: scoreResult.qualityPossible,
       scoreData: scoreResult,
       hits: hitCount,
       shotCount: hitCount,
-      scoreStatus: "Backend authority required",
+      scoreStatus: "Calculated",
       correctionStatus,
       shotData: {
         ...(active.shotData || {}),
@@ -588,12 +509,12 @@
         impactPoints: impacts,
         shotCount: hitCount,
         hits: hitCount,
-        score: null,
+        score: scoreResult.score,
         rawScore: scoreResult.rawScore,
         qualityPossible: scoreResult.qualityPossible,
         scoreData: scoreResult,
         poib,
-        scoreStatus: "Backend authority required",
+        scoreStatus: "Calculated",
         correctionStatus,
         status: "marks-saved",
         savedAt: nowStamp()
@@ -685,6 +606,7 @@
     saveTargetEvidenceImage,
     clearTargetEvidenceImage,
     calculateTapCorrection,
+    calculateImpactScore,
     saveTargetMarks,
     getSessionHistory,
     getLastSession,

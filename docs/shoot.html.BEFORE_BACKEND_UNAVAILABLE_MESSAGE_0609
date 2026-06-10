@@ -89,7 +89,6 @@ let currentClicks = backendAuthorityPackage ? {
 } : null;
 let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
-let authorityStatusMessage = "";
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
@@ -210,7 +209,6 @@ function targetIntelStackHtml() {
     <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
     <div class="target-intel-item"><strong id="windageValue">--</strong></div>
     <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
-    <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     ${guidanceCardHtml()}
   `;
 }
@@ -477,7 +475,6 @@ async function requestBackendAuthority() {
 }
 
 function applyBackendAuthorityPackage(authorityPackage) {
-  authorityStatusMessage = "";
   backendAuthorityPackage = authorityPackage;
   const correction = authorityPackage && authorityPackage.correction ? authorityPackage.correction : {};
   const clicks = authorityPackage && authorityPackage.clicks ? authorityPackage.clicks : {};
@@ -794,13 +791,6 @@ function renderResults() {
   document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
   document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
   document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
-  const message = document.getElementById("authorityStatusMessage");
-  if (message) {
-    message.innerHTML = authorityStatusMessage
-      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
-      : "";
-    message.classList.toggle("is-hidden", !authorityStatusMessage);
-  }
 }
 
 function hideShooterTip() {
@@ -836,7 +826,6 @@ function clearCalculatedResults() {
   currentScore = null;
   backendAuthorityPackage = null;
   resultsShown = false;
-  authorityStatusMessage = "";
   sessionSaved = false;
   hideShooterTip();
   renderResults();
@@ -981,8 +970,6 @@ document.getElementById("clearMarks").addEventListener("click", () => {
 });
 document.getElementById("showResults").addEventListener("click", async () => {
   if (!currentAimPoint || !currentImpactPoints.length) return;
-  authorityStatusMessage = "";
-  renderResults();
   try {
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
@@ -995,7 +982,6 @@ document.getElementById("showResults").addEventListener("click", async () => {
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = "Authority service unavailable. Please try again.";
     renderResults();
   }
   renderMarkStatus();

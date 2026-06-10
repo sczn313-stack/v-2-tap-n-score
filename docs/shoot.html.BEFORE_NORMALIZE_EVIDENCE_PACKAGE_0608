@@ -29,7 +29,7 @@
       <h1 class="target-work-heading"><span>🎯</span><span class="nav-separator">|</span><span>Target</span><span class="shooter-tip is-hidden" id="shooterTip"><span class="nav-separator">|</span><span class="tip-label">Tip:</span><span id="shooterTipText"></span></span></h1>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
         <div class="workflow-control-row" aria-label="SCZN3 shooting workflow controls">
-          <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
+          <button class="button neon-file-button next-step" type="button" id="chooseTargetButton">Choose Target</button>
           <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
           <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
           <button class="button" type="button" id="addImpactMode">Tap Bullet Holes</button>
@@ -53,43 +53,17 @@
 <script src="app_state.js"></script>
 <script>
 let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
-
-function isFinalizedSession(candidate) {
-  return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
-}
-
-if (isFinalizedSession(session)) {
-  session = null;
-}
-
 if (!session && SCZN3M4.getActiveMatrix()) {
   session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
 }
 let matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
-const BACKEND_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
 let pendingEvidence = null;
-let displayedEvidence = null;
-let backendAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
-  ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
-  : null;
 let markMode = "aim";
 let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
 let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
-function backendScoreValue(authorityPackage) {
-  const score = authorityPackage && authorityPackage.score;
-  const value = score && typeof score === "object" ? score.value : score;
-  return Number.isFinite(Number(value)) ? Number(value) : null;
-}
-let currentClicks = backendAuthorityPackage ? {
-  ...(backendAuthorityPackage.clicks || {}),
-  elevation: backendAuthorityPackage.correction && backendAuthorityPackage.correction.elevation,
-  windage: backendAuthorityPackage.correction && backendAuthorityPackage.correction.windage,
-  poib: backendAuthorityPackage.poib,
-  authorityPackage: backendAuthorityPackage
-} : null;
-let currentScore = backendScoreValue(backendAuthorityPackage);
-let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
-let authorityStatusMessage = "";
+let currentClicks = session && session.aimPoint && currentImpactPoints.length && session.clicks ? session.clicks : null;
+let currentScore = Number.isFinite(Number(session && session.score)) ? Number(session.score) : null;
+let resultsShown = !!currentClicks;
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
@@ -206,11 +180,10 @@ function targetIntelStackHtml() {
       <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
       <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
     </div>
-    <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
+    <div class="target-intel-score score-pending" id="scoreCell"><strong id="scoreValue">--</strong></div>
     <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
     <div class="target-intel-item"><strong id="windageValue">--</strong></div>
     <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
-    <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     ${guidanceCardHtml()}
   `;
 }
@@ -318,28 +291,26 @@ function bindGuidanceCard() {
       result.textContent = "Result:";
       return;
     }
-    // Non-authoritative distance guidance placeholder; backend owns click calculations.
-    result.textContent = "Backend authority required";
+    const clicks = Math.round(Math.abs(desired - current) / 6.25);
+    const direction = desired >= current ? "↑" : "↓";
+    result.textContent = `${direction} ${clicks} Clicks`;
     result.dataset.unit = selectedUnit;
   });
 }
 
 function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
-  const evidence = image && image.dataUrl ? image : null;
-  displayedEvidence = evidence;
-  if (!evidence) {
-    preview.innerHTML = `
-      <div class="evidence-meta evidence-status-stack empty-target-start">
-        <strong>Choose Target Photo To Begin</strong>
-      </div>
-    `;
+  if (!image || !image.dataUrl) {
+    preview.innerHTML = `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>`;
+    bindDistanceControl();
+    bindGuidanceCard();
+    renderResults();
     renderMarkStatus();
     return;
   }
   preview.innerHTML = `
     <div class="mark-surface" id="markSurface">
-      <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
+      <img src="${image.dataUrl}" alt="Uploaded target evidence preview" />
       <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
       <div class="marker-layer" id="markerLayer"></div>
     </div>
@@ -409,88 +380,11 @@ function safePoint(point) {
   return SCZN3M4.UGEO.normalizePoint(point);
 }
 
-// Non-authoritative display accessor. Backend calculates; frontend displays.
 function currentVisualCorrection() {
-  if (!resultsShown || !backendAuthorityPackage) return null;
-  const correction = backendAuthorityPackage.correction || {};
-  const clicks = backendAuthorityPackage.clicks || {};
-  return {
-    ...correction,
-    ...clicks,
-    poib: backendAuthorityPackage.poib,
-    authorityPackage: backendAuthorityPackage
-  };
-}
-
-function backendTargetGeometry() {
-  return {
-    imageWidth: BAKER_GRID_AUDIT.imageWidth,
-    imageHeight: BAKER_GRID_AUDIT.imageHeight,
-    gridLeftPx: BAKER_GRID_AUDIT.leftPx,
-    gridTopPx: BAKER_GRID_AUDIT.topPx,
-    gridRightPx: BAKER_GRID_AUDIT.rightPx,
-    gridBottomPx: BAKER_GRID_AUDIT.bottomPx,
-    gridSquarePx: BAKER_GRID_AUDIT.squarePx,
-    gridSquareInches: 1
-  };
-}
-
-function backendAuthorityRequest() {
-  const source = matrix || {};
-  const opticClickValue = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
-  return {
-    targetId: "BAKER_ST_100YD_SMART",
-    targetName: "Baker 100 Yard Smart Target",
-    vendor: "Baker Smart Targets",
-    targetAuthorityGeometry: backendTargetGeometry(),
-    aimCoordinate: safePoint(currentAimPoint),
-    impactCoordinates: currentImpactPoints.map(safePoint).filter(Boolean),
-    distance: {
-      value: Number(selectedDistanceValue || 100),
-      unit: selectedDistanceUnit === "M" ? "m" : "yds"
-    },
-    shooterSetup: {
-      ...source,
-      optic: {
-        type: source.opticType,
-        manufacturer: source.opticBrand,
-        model: source.opticModel,
-        clickValueMOA: opticClickValue
-      }
-    }
-  };
-}
-
-async function requestBackendAuthority() {
-  const requestPayload = backendAuthorityRequest();
-  const response = await fetch(BACKEND_AUTHORITY_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestPayload)
-  });
-  if (!response.ok) {
-    throw new Error(`Backend authority failed: ${response.status}`);
-  }
-  const authorityPackage = await response.json();
-  authorityPackage.frontendRequest = requestPayload;
-  return authorityPackage;
-}
-
-function applyBackendAuthorityPackage(authorityPackage) {
-  authorityStatusMessage = "";
-  backendAuthorityPackage = authorityPackage;
-  const correction = authorityPackage && authorityPackage.correction ? authorityPackage.correction : {};
-  const clicks = authorityPackage && authorityPackage.clicks ? authorityPackage.clicks : {};
-  currentClicks = authorityPackage ? {
-    ...clicks,
-    elevation: correction.elevation,
-    windage: correction.windage,
-    poib: authorityPackage.poib,
-    authorityPackage
-  } : null;
-  currentScore = backendScoreValue(authorityPackage);
-  resultsShown = !!(authorityPackage && authorityPackage.status && authorityPackage.status.hasCorrection);
-  sessionSaved = false;
+  const aim = safePoint(currentAimPoint);
+  const impacts = currentImpactPoints.map(safePoint).filter(Boolean);
+  if (!aim || !impacts.length) return null;
+  return SCZN3M4.calculateTapCorrection(aim, impacts);
 }
 
 function correctionCardDistance() {
@@ -500,9 +394,30 @@ function correctionCardDistance() {
 
 function renderCorrectionOverlay(correction) {
   if (!correction || !correction.poib || !currentAimPoint) return "";
+  const poib = safePoint(correction.poib);
+  const aim = safePoint(currentAimPoint);
+  if (!poib || !aim) return "";
   const elevation = compactClick(correction.elevation, "elevation");
   const windage = compactClick(correction.windage, "windage");
+  const markerDef = `<defs>
+        <marker id="targetCorrectionArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L8,4 L0,8 Z"></path>
+        </marker>
+      </defs>`;
   return `
+    ${SCZN3M4.UGEO.renderEvidenceUGEO({ aim, impacts: [], poib }, {
+      vectorClass: "target-correction-vector",
+      vectorMarkerId: "targetCorrectionArrowhead",
+      vectorMarkerDef: markerDef,
+      impacts: false,
+      aim: false,
+      poibClass: "target-marker poib-auto-marker",
+      poibAttributes: 'aria-label="Calculated POIB"',
+      extraPoints: [
+        { className: "debug-coordinate-dot debug-calculated-poib", point: "poib", attributes: 'title="Debug calculated POIB"' },
+        { className: "debug-coordinate-dot debug-arrow-start", point: "poib", attributes: 'title="Debug arrow start"' }
+      ]
+    })}
     <div class="target-correction-card" aria-label="Calculated correction summary">
       <strong>${correctionCardDistance()}</strong>
       <span>${elevation}</span>
@@ -511,26 +426,37 @@ function renderCorrectionOverlay(correction) {
     </div>`;
 }
 
-// Non-authoritative legacy adapter retained temporarily; do not use for POIB/click/vector truth.
-function targetEvidencePackage(correction) {
-  return SCZN3M4.UGEO.normalizeEvidencePackage({
-    session,
-    targetImage: activeEvidence() && activeEvidence().dataUrl,
-    distance: correctionCardDistance(),
-    aim: safePoint(currentAimPoint),
-    impacts: currentImpactPoints,
-    poib: correction && correction.poib,
-    correction,
-    clicks: correction,
-    hitCount: currentImpactPoints.length,
-    score: currentScore
-  });
-}
-
 function displayedImageBox() {
   const surface = document.getElementById("markSurface");
   const image = surface && surface.querySelector("img");
-  return SCZN3M4.UGEO.displayedImageContentBox(image, surface);
+  if (!surface || !image) return null;
+  const surfaceRect = surface.getBoundingClientRect();
+  const imageRect = image.getBoundingClientRect();
+  const naturalWidth = image.naturalWidth || imageRect.width || 1;
+  const naturalHeight = image.naturalHeight || imageRect.height || 1;
+  const naturalRatio = naturalWidth / naturalHeight;
+  const elementRatio = imageRect.width / imageRect.height;
+  let width = imageRect.width;
+  let height = imageRect.height;
+  let left = imageRect.left;
+  let top = imageRect.top;
+  if (elementRatio > naturalRatio) {
+    width = imageRect.height * naturalRatio;
+    left = imageRect.left + ((imageRect.width - width) / 2);
+  } else {
+    height = imageRect.width / naturalRatio;
+    top = imageRect.top + ((imageRect.height - height) / 2);
+  }
+  return {
+    naturalWidth,
+    naturalHeight,
+    left: left - surfaceRect.left,
+    top: top - surfaceRect.top,
+    width,
+    height,
+    pageLeft: left,
+    pageTop: top
+  };
 }
 
 function syncOverlayLayerToDisplayedImage() {
@@ -538,9 +464,10 @@ function syncOverlayLayerToDisplayedImage() {
   const coordinateLayer = document.getElementById("gridCoordinateLayer");
   const box = displayedImageBox();
   if (!layer || !box) return null;
-  const surface = document.getElementById("markSurface");
-  const image = surface && surface.querySelector("img");
-  SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, surface);
+  layer.style.left = `${box.left}px`;
+  layer.style.top = `${box.top}px`;
+  layer.style.width = `${box.width}px`;
+  layer.style.height = `${box.height}px`;
   if (coordinateLayer) {
     coordinateLayer.style.left = `${box.left}px`;
     coordinateLayer.style.top = `${box.top}px`;
@@ -702,62 +629,22 @@ function logRenderCoordinates(correction) {
   });
 }
 
-function markerPointHtml(className, point, content = "", attributes = "") {
-  const safe = safePoint(point);
-  if (!safe) return "";
-  return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attributes ? ` ${attributes}` : ""}>${content}</span>`;
-}
-
-function vectorHtmlFromBackend(vector) {
-  if (!vector || !vector.start || !vector.end) return "";
-  const start = safePoint(vector.start);
-  const end = safePoint(vector.end);
-  if (!start || !end) return "";
-  return `<svg class="target-correction-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <defs>
-      <marker id="targetCorrectionArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-        <path d="M0,0 L8,4 L0,8 Z"></path>
-      </marker>
-    </defs>
-    <line x1="${start.xPercent}" y1="${start.yPercent}" x2="${end.xPercent}" y2="${end.yPercent}" marker-end="url(#targetCorrectionArrowhead)"></line>
-  </svg>`;
-}
-
-function renderPendingInputMarkers() {
-  const parts = [];
-  currentImpactPoints.map(safePoint).filter(Boolean).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
-  });
-  if (currentAimPoint) {
-    parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "A"));
-  }
-  return parts.join("");
-}
-
-function renderBackendAuthorityMarkers(authorityPackage) {
-  const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
-  const parts = [];
-  parts.push(vectorHtmlFromBackend(render.vector));
-  (render.impacts || []).map(safePoint).filter(Boolean).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
-  });
-  if (render.aim) {
-    parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
-  }
-  if (render.poib) {
-    parts.push(markerPointHtml("target-marker poib-auto-marker", render.poib, "", 'aria-label="Backend authority POIB"'));
-  }
-  return parts.join("");
-}
-
 function renderMarkers() {
   const layer = document.getElementById("markerLayer");
   if (!layer) return;
   syncOverlayLayerToDisplayedImage();
+  const aimPoint = safePoint(currentAimPoint);
   const correction = currentVisualCorrection();
-  const authorityPackage = resultsShown ? backendAuthorityPackage : null;
-  layer.innerHTML = (authorityPackage ? renderBackendAuthorityMarkers(authorityPackage) : renderPendingInputMarkers()) + renderCorrectionOverlay(correction);
+  layer.innerHTML = renderCorrectionOverlay(correction) + SCZN3M4.UGEO.renderEvidenceUGEO({ aim: aimPoint, impacts: currentImpactPoints }, {
+    vector: false,
+    poib: false,
+    impactClass: "target-marker impact-marker",
+    impactNumbered: true,
+    aimClass: "target-marker aim-marker",
+    aimContent: "A"
+  });
   syncArrowLayerToMarkerLayer();
+  logRenderCoordinates(correction);
   renderResults();
 }
 
@@ -794,13 +681,6 @@ function renderResults() {
   document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
   document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
   document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
-  const message = document.getElementById("authorityStatusMessage");
-  if (message) {
-    message.innerHTML = authorityStatusMessage
-      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
-      : "";
-    message.classList.toggle("is-hidden", !authorityStatusMessage);
-  }
 }
 
 function hideShooterTip() {
@@ -834,9 +714,7 @@ function showShooterTip() {
 function clearCalculatedResults() {
   currentClicks = null;
   currentScore = null;
-  backendAuthorityPackage = null;
   resultsShown = false;
-  authorityStatusMessage = "";
   sessionSaved = false;
   hideShooterTip();
   renderResults();
@@ -901,16 +779,12 @@ function handleMarkPointer(event) {
 
 renderEvidencePreview(session && session.targetEvidenceImage);
 
+document.getElementById("chooseTargetButton").disabled = false;
 document.getElementById("chooseTargetButton").addEventListener("click", () => {
   ensureTargetSession();
   const input = document.getElementById("targetImageInput");
   input.value = "";
-});
-document.getElementById("chooseTargetButton").addEventListener("keydown", event => {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    event.currentTarget.click();
-  }
+  input.click();
 });
 
 document.getElementById("targetImageInput").addEventListener("change", event => {
@@ -961,87 +835,48 @@ document.getElementById("clearMarks").addEventListener("click", () => {
   SCZN3M4.updateActiveSession({
     aimPoint: null,
     impactPoints: [],
-    backendAuthorityPackage: null,
-    ugeoAuthorityPackage: null,
     poib: null,
-    groupCenter: null,
     clicks: null,
-    score: null,
-    rawScore: null,
-    qualityPossible: null,
+    score: 0,
+    rawScore: 0,
+    qualityPossible: 0,
     hits: 0,
     shotCount: 0,
     correctionStatus: "not-calculated",
-    shotData: { shotCount: 0, hits: 0, score: null, status: "marks-cleared" },
+    shotData: { shotCount: 0, hits: 0, score: 0, status: "marks-cleared" },
     correctionData: { status: "not-calculated", clicks: null, windage: null, elevation: null }
   });
   setMode("aim");
   renderMarkers();
   renderMarkStatus();
 });
-document.getElementById("showResults").addEventListener("click", async () => {
-  if (!currentAimPoint || !currentImpactPoints.length) return;
-  authorityStatusMessage = "";
-  renderResults();
-  try {
-    const authorityPackage = await requestBackendAuthority();
-    applyBackendAuthorityPackage(authorityPackage);
-    renderMarkers();
-    renderResults();
-    if (resultsShown) showShooterTip();
-  } catch (error) {
-    console.warn("Backend authority request failed", error);
-    currentClicks = null;
-    currentScore = null;
-    backendAuthorityPackage = null;
-    resultsShown = false;
-    authorityStatusMessage = "Authority service unavailable. Please try again.";
-    renderResults();
+document.getElementById("showResults").addEventListener("click", () => {
+  if (currentAimPoint && currentImpactPoints.length) {
+    const saved = SCZN3M4.saveTargetMarks(currentAimPoint, currentImpactPoints);
+    currentClicks = saved && saved.clicks ? saved.clicks : null;
+    currentScore = Number.isFinite(Number(saved && saved.score)) ? Number(saved.score) : null;
+    resultsShown = !!currentClicks;
+    sessionSaved = false;
   }
+  renderResults();
+  if (resultsShown) showShooterTip();
   renderMarkStatus();
 });
 document.getElementById("saveMarks").addEventListener("click", () => {
-  if (!session || !backendAuthorityPackage) return;
+  if (!session) return;
   let saved = null;
   if (pendingEvidence) {
     saved = SCZN3M4.saveTargetEvidenceImage(pendingEvidence);
     pendingEvidence = null;
   }
+  if (currentAimPoint) {
+    saved = SCZN3M4.saveTargetMarks(currentAimPoint, currentImpactPoints);
+    currentClicks = saved && saved.clicks ? saved.clicks : null;
+    currentScore = Number.isFinite(Number(saved && saved.score)) ? Number(saved.score) : null;
+  }
   lockDistanceForSession();
   const savedTimestamp = new Date().toISOString();
-  const authorityPackage = backendAuthorityPackage;
-  const authorityClicks = currentClicks;
   saved = SCZN3M4.updateActiveSession({
-    aimPoint: safePoint(currentAimPoint),
-    impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
-    backendAuthorityPackage: authorityPackage,
-    ugeoAuthorityPackage: authorityPackage,
-    score: authorityPackage.score || null,
-    scoreValue: backendScoreValue(authorityPackage),
-    poib: authorityPackage.poib || null,
-    groupCenter: authorityPackage.groupCenter || null,
-    clicks: authorityClicks,
-    correctionData: {
-      status: authorityPackage.status && authorityPackage.status.hasCorrection ? "backend-authority-calculated" : "not-calculated",
-      clicks: authorityClicks,
-      correction: authorityPackage.correction || null,
-      moa: authorityPackage.moa || null,
-      vectors: authorityPackage.vectors || null
-    },
-    shotData: {
-      aimPoint: safePoint(currentAimPoint),
-      impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
-      shotCount: currentImpactPoints.length,
-      hits: currentImpactPoints.length,
-      poib: authorityPackage.poib || null,
-      groupCenter: authorityPackage.groupCenter || null,
-      score: authorityPackage.score || null,
-      scoreValue: backendScoreValue(authorityPackage),
-      authoritySource: "backend"
-    },
-    hits: currentImpactPoints.length,
-    shotCount: currentImpactPoints.length,
-    correctionStatus: "backend-authority-calculated",
     savedToSEC: true,
     targetDistance: targetDistanceValue(),
     targetDistanceValue: selectedDistanceValue,

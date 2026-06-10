@@ -28,9 +28,9 @@
         <h1>SEC</h1>
         <h2>Shooter Experience Card</h2>
       </div>
-      <a class="vendor-pill vendor-site-link" href="https://BakerTarget.com" aria-label="Open BakerTarget.com">
+      <a class="vendor-pill" href="buy-targets.html" aria-label="Open vendor page">
         <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="" />
-        <span>BakerTarget.com</span>
+        <span>Vendor</span>
       </a>
       <button class="vendor-pill save-page-button" type="button" id="saveSecPage">Save This Page</button>
     </div>
@@ -87,37 +87,34 @@ function scoreClass(score) {
   return "score-red";
 }
 
-function authorityScoreValue(pkg) {
-  const score = pkg && pkg.score;
-  const value = score && typeof score === "object" ? score.value : score;
-  return Number.isFinite(Number(value)) ? Number(value) : null;
+function poibPoint(session) {
+  const poib = session.poib || session.shotData?.poib || session.clicks?.poib;
+  return SCZN3M4.UGEO.normalizePoint(poib);
 }
 
-function authorityPackage(session) {
-  return session && (session.ugeoAuthorityPackage || session.backendAuthorityPackage) || null;
+function aimPoint(session) {
+  const aim = session.aimPoint || session.shotData?.aimPoint;
+  return SCZN3M4.UGEO.normalizePoint(aim);
 }
 
-function authorityPoint(point) {
-  return SCZN3M4.UGEO.normalizePoint(point);
+function aimAngle(session) {
+  const poib = poibPoint(session);
+  const aim = aimPoint(session);
+  if (!poib || !aim) return -45;
+  return SCZN3M4.UGEO.vectorAngle(poib, aim);
 }
 
-function markerHtml(className, point, content = "", attrs = "") {
-  const safe = authorityPoint(point);
-  if (!safe) return "";
-  return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attrs ? ` ${attrs}` : ""}>${content}</span>`;
-}
-
-function authorityVisual(session) {
-  const pkg = authorityPackage(session);
-  if (!pkg || !pkg.renderCoordinates) return "";
-  const render = pkg.renderCoordinates;
-  const parts = [];
-  (render.impacts || []).forEach((point, index) => {
-    parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
+function poibVisual(session) {
+  const evidence = SCZN3M4.UGEO.normalizeEvidencePackage(session);
+  return SCZN3M4.UGEO.renderEvidenceUGEO(evidence, {
+    vectorClass: "history-thumb-vector",
+    impactClass: "history-thumb-impact",
+    impactNumbered: true,
+    aimClass: "aim-arrow",
+    aimStyleExtra: () => `--aim-angle:${aimAngle(session)}deg`,
+    poibClass: "poib-dot",
+    poibContent: "<span></span>"
   });
-  parts.push(markerHtml("aim-arrow", render.aim, ""));
-  parts.push(markerHtml("poib-dot", render.poib, "<span></span>"));
-  return parts.join("");
 }
 
 function syncSecEvidenceLayers() {
@@ -140,62 +137,32 @@ function attributionLine(snapshot) {
   return parts.length ? `<div class="sec-attribution-line">${parts.join(" | ")}</div>` : "";
 }
 
-function poibDisplay(pkg) {
-  const correction = pkg && pkg.correction;
-  if (!correction || !Number.isFinite(Number(correction.xInches)) || !Number.isFinite(Number(correction.yInches))) return "";
-  const x = Number(correction.xInches);
-  const y = Number(correction.yInches);
-  const windage = Math.abs(x) < 0.05 ? "Centered" : `${Math.abs(x).toFixed(1)}\" ${x > 0 ? "Right" : "Left"}`;
-  const elevation = Math.abs(y) < 0.05 ? "Centered" : `${Math.abs(y).toFixed(1)}\" ${y > 0 ? "Low" : "High"}`;
-  if (windage === "Centered" && elevation === "Centered") return "Centered";
-  if (windage === "Centered") return elevation;
-  if (elevation === "Centered") return windage;
-  return `${elevation}, ${windage}`;
-}
-
-function authorityDetailLine(pkg) {
-  if (!pkg) return "";
-  const parts = [];
-  if (pkg.group && pkg.group.display) parts.push(`Group: ${pkg.group.display}`);
-  const poib = poibDisplay(pkg);
-  if (poib) parts.push(`POIB: ${poib}`);
-  return parts.length ? `<div class="sec-authority-detail">${parts.join(" | ")}</div>` : "";
-}
-
 function renderHistory() {
-  const sessions = SCZN3M4.getSessionHistory().slice()
-    .filter(session => session && session.savedToSEC === true)
-    .sort((a, b) => {
-      const timeDelta = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
-      if (timeDelta) return timeDelta;
-      return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
-    }).slice(0, 10);
+  const sessions = SCZN3M4.getSessionHistory().slice().sort((a, b) => {
+    const timeDelta = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+    if (timeDelta) return timeDelta;
+    return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
+  }).slice(0, 10);
   if (!sessions.length) {
-    historyList.innerHTML = `<article class="history-card empty-state"><strong>No saved Shooter Experience Cards yet.</strong><span>Save a completed session from Target to create a Baker SEC record.</span></article>`;
+    historyList.innerHTML = `<article class="history-card empty-state"><strong>No sessions yet</strong><span>Create a session from Weapon Setup to start the Baker smart target record.</span></article>`;
     return;
   }
 
   historyList.innerHTML = sessions.map((session, index) => {
     const snapshot = session.matrixSnapshot || {};
     const evidence = session.targetEvidenceImage;
-    const pkg = authorityPackage(session);
-    const hasAuthority = !!(pkg && pkg.status);
-    const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;
-    const score = hasAuthority ? authorityScoreValue(pkg) : null;
+    const shotCount = Array.isArray(session.impactPoints) ? session.impactPoints.length : 0;
+    const score = Number.isFinite(Number(session.score)) ? Number(session.score) : shotCount;
     const weapon = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
     const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification].map(cleanSetupValue).filter(Boolean).join(" / ");
     const ammo = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
-    const correction = hasAuthority ? (pkg.correction || {}) : {};
-    const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
+    const clicks = session.clicks || {};
     const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
-    const scorePill = score !== null ? `<span class="sec-score ${scoreClass(score)}">SCORE <strong>${score}</strong></span>` : "";
-    const authorityMessage = hasAuthority ? "" : `<div class="sec-authority-missing">Backend authority package unavailable.</div>`;
-    const hashLine = hasAuthority && pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
     return `
       <article class="history-card" data-session-id="${session.sessionId}">
           <div class="history-thumb">
             <img src="${thumbnail}" alt="Uploaded target evidence thumbnail" />
-            <div class="history-evidence-layer">${authorityVisual(session)}</div>
+            <div class="history-evidence-layer">${poibVisual(session)}</div>
           </div>
         <div class="history-copy">
           <div class="history-title">
@@ -204,15 +171,12 @@ function renderHistory() {
           </div>
           <div class="sec-setup-line">${[weapon, optic, ammo].filter(Boolean).join(" | ") || "--"}</div>
           ${attributionLine(snapshot)}
-          ${authorityMessage}
-          ${hasAuthority ? authorityDetailLine(pkg) : ""}
           <div class="sec-intel-pill">
             <span>${distanceDisplay(session)}</span>
-            ${scorePill}
+            <span class="sec-score ${scoreClass(score)}">SCORE <strong>${score}</strong></span>
             <span class="sec-clicks"><strong>${compactClick(clicks.elevation, "elevation")}</strong><em>CLICKS</em><strong>${compactClick(clicks.windage, "windage")}</strong></span>
             <span>${shotCount} Hits</span>
           </div>
-          ${hashLine}
         </div>
       </article>
     `;

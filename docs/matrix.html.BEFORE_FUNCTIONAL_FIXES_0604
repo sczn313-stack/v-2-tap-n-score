@@ -758,11 +758,7 @@ function setupPayload(snapshot) {
     "targetDistanceValue",
     "targetDistanceUnit",
     "targetDistance",
-    "distance",
-    "shooterName",
-    "unit",
-    "agency",
-    "instructor"
+    "distance"
   ];
   return allowed.reduce((payload, key) => {
     if (snapshot[key]) payload[key] = snapshot[key];

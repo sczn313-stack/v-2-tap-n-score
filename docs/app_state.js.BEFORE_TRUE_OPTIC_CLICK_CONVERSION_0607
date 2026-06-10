@@ -1,0 +1,421 @@
+(function () {
+  "use strict";
+
+  const KEYS = {
+    targetAuthority: "SCZN3_BAKER_TARGET_AUTHORITY",
+    activeMatrix: "SCZN3_BAKER_ACTIVE_MATRIX",
+    activeSession: "SCZN3_BAKER_ACTIVE_SESSION",
+    sessionHistory: "SCZN3_BAKER_SESSION_HISTORY",
+    sessionCounter: "SCZN3_BAKER_SESSION_COUNTER",
+    activeZeroSession: "SCZN3_BAKER_ACTIVE_ZERO_SESSION"
+  };
+
+  const TARGET_AUTHORITY = {
+    targetFamily: "Baker 100 Yard Smart Target",
+    targetVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    doctrine: "Baker 100 yard smart target",
+    asset: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png"
+  };
+  const MAX_SESSION_HISTORY = 10;
+
+  function write(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+    return value;
+  }
+
+  function read(key, fallback = null) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (error) {
+      console.warn("SCZN3 Baker state read failed", key, error);
+      return fallback;
+    }
+  }
+
+  function display(value, fallback = "--") {
+    return value === undefined || value === null || value === "" ? fallback : value;
+  }
+
+  function formatSessionNumber(number) {
+    return `Session #${String(number || 0).padStart(3, "0")}`;
+  }
+
+  function nowStamp() {
+    return new Date().toISOString();
+  }
+
+  function getSessionHistory() {
+    return read(KEYS.sessionHistory, []);
+  }
+
+  function getLastSession() {
+    return getSessionHistory()[0] || read(KEYS.activeSession, null);
+  }
+
+  function getLastConfirmedZero() {
+    return getSessionHistory().find(session => session.confirmationStatus === "Confirmed") || null;
+  }
+
+  function getActiveMatrix() {
+    const active = read(KEYS.activeMatrix, null);
+    if (active) return active;
+    const last = getLastSession();
+    return last && last.matrixSnapshot ? last.matrixSnapshot : null;
+  }
+
+  function saveMatrixSnapshot(snapshot) {
+    return write(KEYS.activeMatrix, {
+      ...TARGET_AUTHORITY,
+      ...snapshot,
+      updatedAt: nowStamp()
+    });
+  }
+
+  function getNextSessionNumber() {
+    const next = Number(read(KEYS.sessionCounter, 0)) + 1;
+    write(KEYS.sessionCounter, next);
+    return next;
+  }
+
+  function buildSession(matrixSnapshot) {
+    const sessionNumber = getNextSessionNumber();
+    const timestamp = nowStamp();
+    return {
+      sessionId: `baker-session-${String(sessionNumber).padStart(3, "0")}-${Date.now()}`,
+      sessionNumber,
+      sessionLabel: formatSessionNumber(sessionNumber),
+      timestamp,
+      createdAt: timestamp,
+      matrixSnapshot: {
+        ...TARGET_AUTHORITY,
+        ...matrixSnapshot,
+        frozenAt: timestamp
+      },
+      targetAuthority: { ...TARGET_AUTHORITY },
+      shotData: {
+        status: "not-started",
+        group: [],
+        poib: null,
+        score: 0,
+        hits: 0,
+        shotCount: 0
+      },
+      correctionData: {
+        windage: null,
+        elevation: null,
+        clicks: null,
+        status: "pending"
+      },
+      confirmationStatus: "Pending",
+      distanceProgressionStatus: "25m zero session",
+      notes: matrixSnapshot.shooterNotes || matrixSnapshot.environmentalNotes || ""
+    };
+  }
+
+  function createSession(matrixSnapshot) {
+    const frozenMatrix = saveMatrixSnapshot(matrixSnapshot);
+    const session = buildSession(frozenMatrix);
+    const history = [session, ...getSessionHistory()].slice(0, MAX_SESSION_HISTORY);
+    write(KEYS.activeSession, session);
+    write(KEYS.activeZeroSession, session);
+    write(KEYS.sessionHistory, history);
+    return session;
+  }
+
+  function replaceSession(updatedSession) {
+    const history = getSessionHistory();
+    const nextHistory = history.some(session => session.sessionId === updatedSession.sessionId)
+      ? history.map(session => session.sessionId === updatedSession.sessionId ? updatedSession : session)
+      : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
+    write(KEYS.activeSession, updatedSession);
+    write(KEYS.activeZeroSession, updatedSession);
+    write(KEYS.sessionHistory, nextHistory);
+    return updatedSession;
+  }
+
+  function updateActiveSession(patch) {
+    const active = read(KEYS.activeSession, null);
+    if (!active) return null;
+    return replaceSession({
+      ...active,
+      ...patch,
+      updatedAt: nowStamp()
+    });
+  }
+
+  function attachCorrection(correctionData) {
+    const active = read(KEYS.activeSession, null);
+    if (!active) return null;
+    return replaceSession({
+      ...active,
+      correctionData: {
+        ...(active.correctionData || {}),
+        ...correctionData,
+        status: "saved",
+        savedAt: nowStamp()
+      },
+      updatedAt: nowStamp()
+    });
+  }
+
+  function confirmActiveZero(notes = "") {
+    const active = read(KEYS.activeSession, null);
+    if (!active) return null;
+    return replaceSession({
+      ...active,
+      confirmationStatus: "Confirmed",
+      confirmedAt: nowStamp(),
+      confirmationNotes: notes,
+      updatedAt: nowStamp()
+    });
+  }
+
+  function saveTargetEvidenceImage(imageData) {
+    const active = read(KEYS.activeSession, null);
+    if (!active) return null;
+    return replaceSession({
+      ...active,
+      targetEvidenceImage: {
+        ...imageData,
+        savedAt: nowStamp(),
+        evidenceType: "uploaded-target-image"
+      },
+      updatedAt: nowStamp()
+    });
+  }
+
+  function clearTargetEvidenceImage() {
+    const active = read(KEYS.activeSession, null);
+    if (!active) return null;
+    const next = { ...active, updatedAt: nowStamp() };
+    delete next.targetEvidenceImage;
+    next.aimPoint = null;
+    next.impactPoints = [];
+    next.shotData = {
+      ...(active.shotData || {}),
+      aimPoint: null,
+      impactPoints: [],
+      shotCount: 0,
+      hits: 0,
+      score: 0,
+      status: "evidence-cleared",
+      savedAt: nowStamp()
+    };
+    return replaceSession(next);
+  }
+
+  function calculateTapCorrection(aimPoint, impactPoints) {
+    const impacts = Array.isArray(impactPoints) ? impactPoints : [];
+    if (!aimPoint || !impacts.length) return null;
+    const bakerGrid = {
+      imageWidth: 1102,
+      imageHeight: 1713,
+      squarePx: 49
+    };
+    const toImagePx = (point) => ({
+      x: (Number(point.xPercent || 0) / 100) * bakerGrid.imageWidth,
+      y: (Number(point.yPercent || 0) / 100) * bakerGrid.imageHeight
+    });
+    const poib = {
+      xPercent: Number((impacts.reduce((sum, point) => sum + Number(point.xPercent || 0), 0) / impacts.length).toFixed(2)),
+      yPercent: Number((impacts.reduce((sum, point) => sum + Number(point.yPercent || 0), 0) / impacts.length).toFixed(2))
+    };
+    const xOffset = Number((poib.xPercent - Number(aimPoint.xPercent || 0)).toFixed(2));
+    const yOffset = Number((poib.yPercent - Number(aimPoint.yPercent || 0)).toFixed(2));
+    const poibPx = toImagePx(poib);
+    const aimPx = toImagePx(aimPoint);
+    const xGridOffset = Number(((poibPx.x - aimPx.x) / bakerGrid.squarePx).toFixed(2));
+    const yGridOffset = Number(((poibPx.y - aimPx.y) / bakerGrid.squarePx).toFixed(2));
+    const windageClicks = Math.round(Math.abs(xGridOffset));
+    const elevationClicks = Math.round(Math.abs(yGridOffset));
+    const windageDirection = xOffset > 0 ? "LEFT" : xOffset < 0 ? "RIGHT" : "CENTER";
+    const elevationDirection = yOffset > 0 ? "UP" : yOffset < 0 ? "DOWN" : "CENTER";
+    const windage = windageDirection === "CENTER"
+      ? "0 clicks CENTER"
+      : `${windageClicks} clicks ${windageDirection}`;
+    const elevation = elevationDirection === "CENTER"
+      ? "0 clicks CENTER"
+      : `${elevationClicks} clicks ${elevationDirection}`;
+    return {
+      poib,
+      xOffset,
+      yOffset,
+      xGridOffset,
+      yGridOffset,
+      windage,
+      elevation,
+      windageClicks,
+      elevationClicks,
+      windageDirection,
+      elevationDirection,
+      model: "baker-grid-calibrated-clicks-v1"
+    };
+  }
+
+  function calculateImpactScore(aimPoint, impactPoints) {
+    const impacts = Array.isArray(impactPoints) ? impactPoints : [];
+    if (!aimPoint || !impacts.length) {
+      return { score: 0, rawScore: 0, qualityPossible: 0, perShot: [], model: "aim-distance-quality-v1" };
+    }
+    const perShot = impacts.map(point => {
+      const xOffset = Number(point.xPercent || 0) - Number(aimPoint.xPercent || 0);
+      const yOffset = Number(point.yPercent || 0) - Number(aimPoint.yPercent || 0);
+      const distance = Math.sqrt((xOffset * xOffset) + (yOffset * yOffset));
+      let points = 0;
+      if (distance <= 1.5) points = 10;
+      else if (distance <= 3) points = 8;
+      else if (distance <= 5) points = 6;
+      else if (distance <= 8) points = 4;
+      else if (distance <= 12) points = 2;
+      return {
+        xPercent: point.xPercent,
+        yPercent: point.yPercent,
+        distanceFromAim: Number(distance.toFixed(2)),
+        points
+      };
+    });
+    const rawScore = perShot.reduce((sum, shot) => sum + shot.points, 0);
+    const qualityPossible = impacts.length * 10;
+    // Score is calculated from shot quality, not copied from hit count.
+    const score = qualityPossible ? Math.round((rawScore / qualityPossible) * 100) : 0;
+    return { score, rawScore, qualityPossible, perShot, model: "aim-distance-quality-v1" };
+  }
+
+  function saveTargetMarks(aimPoint, impactPoints) {
+    const active = read(KEYS.activeSession, null);
+    if (!active) return null;
+    const impacts = Array.isArray(impactPoints) ? impactPoints : [];
+    const hitCount = impacts.length;
+    const correction = calculateTapCorrection(aimPoint, impacts);
+    const scoreResult = calculateImpactScore(aimPoint, impacts);
+    const poib = correction ? correction.poib : null;
+    const correctionStatus = correction ? "calculated" : "not-calculated";
+    return replaceSession({
+      ...active,
+      aimPoint: aimPoint || null,
+      impactPoints: impacts,
+      poib,
+      clicks: correction,
+      score: scoreResult.score,
+      rawScore: scoreResult.rawScore,
+      qualityPossible: scoreResult.qualityPossible,
+      scoreData: scoreResult,
+      hits: hitCount,
+      shotCount: hitCount,
+      scoreStatus: "Calculated",
+      correctionStatus,
+      shotData: {
+        ...(active.shotData || {}),
+        aimPoint: aimPoint || null,
+        impactPoints: impacts,
+        shotCount: hitCount,
+        hits: hitCount,
+        score: scoreResult.score,
+        rawScore: scoreResult.rawScore,
+        qualityPossible: scoreResult.qualityPossible,
+        scoreData: scoreResult,
+        poib,
+        scoreStatus: "Calculated",
+        correctionStatus,
+        status: "marks-saved",
+        savedAt: nowStamp()
+      },
+      correctionData: {
+        ...(active.correctionData || {}),
+        clicks: correction,
+        windage: correction ? correction.windage : null,
+        elevation: correction ? correction.elevation : null,
+        status: correctionStatus,
+        savedAt: nowStamp()
+      },
+      updatedAt: nowStamp()
+    });
+  }
+
+  function loadSession(sessionId) {
+    const session = getSessionHistory().find(item => item.sessionId === sessionId);
+    if (!session) return null;
+    write(KEYS.activeSession, session);
+    write(KEYS.activeZeroSession, session);
+    if (session.matrixSnapshot) write(KEYS.activeMatrix, session.matrixSnapshot);
+    return session;
+  }
+
+  function usePreviousSetup() {
+    const last = getLastSession();
+    if (!last || !last.matrixSnapshot) return null;
+    return saveMatrixSnapshot({ ...last.matrixSnapshot, reloadedFromSessionId: last.sessionId });
+  }
+
+  function createSessionFromSession(sessionId) {
+    const session = getSessionHistory().find(item => item.sessionId === sessionId);
+    if (!session || !session.matrixSnapshot) return null;
+    return createSession({
+      ...session.matrixSnapshot,
+      clonedFromSessionId: session.sessionId
+    });
+  }
+
+  function registerTargetAuthority(authority) {
+    return write(KEYS.targetAuthority, {
+      ...TARGET_AUTHORITY,
+      ...authority,
+      platform: "docs-v4-baker",
+      registeredAt: nowStamp()
+    });
+  }
+
+  function sessionPills(session = read(KEYS.activeSession, null), matrix = getActiveMatrix()) {
+    const source = session && session.matrixSnapshot ? session.matrixSnapshot : matrix || {};
+    return [
+      display(source.rifle || source.rifleFamily, "Weapon"),
+      display(source.opticModel || source.opticBrand, "Optic"),
+      display(source.ammoLoad || source.ammoManufacturer, "Ammo"),
+      session ? session.sessionLabel : "No Session",
+      session ? display(session.confirmationStatus, "Pending") : "Matrix Ready"
+    ];
+  }
+
+  function startPlaceholderSession() {
+    return createSession({
+      rifle: "Baker ST-100YD-SMART",
+      rifleVariant: "Standard",
+      opticBrand: "Iron Sights",
+      opticModel: "Iron Sights",
+      ammoLoad: "M855",
+      missionProfile: "25m / 300m",
+      shooterNotes: "Placeholder session"
+    });
+  }
+
+  window.SCZN3M4 = {
+    KEYS,
+    TARGET_AUTHORITY,
+    read,
+    write,
+    display,
+    formatSessionNumber,
+    registerTargetAuthority,
+    getActiveMatrix,
+    saveMatrixSnapshot,
+    createSession,
+    replaceSession,
+    updateActiveSession,
+    attachCorrection,
+    confirmActiveZero,
+    saveTargetEvidenceImage,
+    clearTargetEvidenceImage,
+    calculateTapCorrection,
+    calculateImpactScore,
+    saveTargetMarks,
+    getSessionHistory,
+    getLastSession,
+    getLastConfirmedZero,
+    loadSession,
+    usePreviousSetup,
+    createSessionFromSession,
+    sessionPills,
+    startPlaceholderSession
+  };
+})();

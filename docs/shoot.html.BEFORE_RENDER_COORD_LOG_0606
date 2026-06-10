@@ -29,7 +29,7 @@
       <h1 class="target-work-heading"><span>🎯</span><span class="nav-separator">|</span><span>Target</span><span class="shooter-tip is-hidden" id="shooterTip"><span class="nav-separator">|</span><span class="tip-label">Tip:</span><span id="shooterTipText"></span></span></h1>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
         <div class="workflow-control-row" aria-label="SCZN3 shooting workflow controls">
-          <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
+          <button class="button neon-file-button next-step" type="button" id="chooseTargetButton">Choose Target</button>
           <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
           <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
           <button class="button" type="button" id="addImpactMode">Tap Bullet Holes</button>
@@ -37,7 +37,6 @@
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
-          <label class="grid-coordinate-toggle"><input id="showGridCoordinates" type="checkbox" /> Show Grid Coordinates</label>
         </div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
@@ -53,59 +52,22 @@
 <script src="app_state.js"></script>
 <script>
 let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
-
-function isFinalizedSession(candidate) {
-  return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
-}
-
-if (isFinalizedSession(session)) {
-  session = null;
-}
-
 if (!session && SCZN3M4.getActiveMatrix()) {
   session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
 }
 let matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
-const BACKEND_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
 let pendingEvidence = null;
-let displayedEvidence = null;
-let backendAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
-  ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
-  : null;
 let markMode = "aim";
 let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
 let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
-function backendScoreValue(authorityPackage) {
-  const score = authorityPackage && authorityPackage.score;
-  const value = score && typeof score === "object" ? score.value : score;
-  return Number.isFinite(Number(value)) ? Number(value) : null;
-}
-let currentClicks = backendAuthorityPackage ? {
-  ...(backendAuthorityPackage.clicks || {}),
-  elevation: backendAuthorityPackage.correction && backendAuthorityPackage.correction.elevation,
-  windage: backendAuthorityPackage.correction && backendAuthorityPackage.correction.windage,
-  poib: backendAuthorityPackage.poib,
-  authorityPackage: backendAuthorityPackage
-} : null;
-let currentScore = backendScoreValue(backendAuthorityPackage);
-let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
-let authorityStatusMessage = "";
+let currentClicks = session && session.aimPoint && currentImpactPoints.length && session.clicks ? session.clicks : null;
+let currentScore = Number.isFinite(Number(session && session.score)) ? Number(session.score) : null;
+let resultsShown = !!currentClicks;
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
 let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
 let distanceLocked = !!(session && session.targetDistanceLocked);
-let showGridCoordinates = false;
-const BAKER_GRID_AUDIT = {
-  imageWidth: 1102,
-  imageHeight: 1713,
-  leftPx: 68,
-  topPx: 282,
-  rightPx: 1047,
-  bottomPx: 1652,
-  squarePx: 49
-};
-
 function currentSetupName() {
   return matrix ? [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ") : "Create setup in Weapon Setup";
 }
@@ -206,11 +168,10 @@ function targetIntelStackHtml() {
       <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
       <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
     </div>
-    <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
+    <div class="target-intel-score score-pending" id="scoreCell"><strong id="scoreValue">--</strong></div>
     <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
     <div class="target-intel-item"><strong id="windageValue">--</strong></div>
     <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
-    <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     ${guidanceCardHtml()}
   `;
 }
@@ -318,29 +279,26 @@ function bindGuidanceCard() {
       result.textContent = "Result:";
       return;
     }
-    // Non-authoritative distance guidance placeholder; backend owns click calculations.
-    result.textContent = "Backend authority required";
+    const clicks = Math.round(Math.abs(desired - current) / 6.25);
+    const direction = desired >= current ? "↑" : "↓";
+    result.textContent = `${direction} ${clicks} Clicks`;
     result.dataset.unit = selectedUnit;
   });
 }
 
 function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
-  const evidence = image && image.dataUrl ? image : null;
-  displayedEvidence = evidence;
-  if (!evidence) {
-    preview.innerHTML = `
-      <div class="evidence-meta evidence-status-stack empty-target-start">
-        <strong>Choose Target Photo To Begin</strong>
-      </div>
-    `;
+  if (!image || !image.dataUrl) {
+    preview.innerHTML = `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>`;
+    bindDistanceControl();
+    bindGuidanceCard();
+    renderResults();
     renderMarkStatus();
     return;
   }
   preview.innerHTML = `
     <div class="mark-surface" id="markSurface">
-      <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
-      <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
+      <img src="${image.dataUrl}" alt="Uploaded target evidence preview" />
       <div class="marker-layer" id="markerLayer"></div>
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
@@ -348,18 +306,6 @@ function renderEvidencePreview(image) {
   bindDistanceControl();
   bindGuidanceCard();
   const markSurface = document.getElementById("markSurface");
-  const targetImage = markSurface.querySelector("img");
-  if (targetImage.complete) {
-    requestAnimationFrame(() => {
-      syncOverlayLayerToDisplayedImage();
-      renderMarkers();
-    });
-  } else {
-    targetImage.addEventListener("load", () => {
-      syncOverlayLayerToDisplayedImage();
-      renderMarkers();
-    }, { once: true });
-  }
   markSurface.addEventListener("pointerdown", handleMarkPointer, { passive: false });
   markSurface.addEventListener("contextmenu", event => event.preventDefault());
   renderMarkers();
@@ -406,91 +352,21 @@ function hasMarkableEvidence() {
 }
 
 function safePoint(point) {
-  return SCZN3M4.UGEO.normalizePoint(point);
+  if (!point) return null;
+  const x = Number(point.xPercent);
+  const y = Number(point.yPercent);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  return {
+    xPercent: Math.max(0, Math.min(100, x)),
+    yPercent: Math.max(0, Math.min(100, y))
+  };
 }
 
-// Non-authoritative display accessor. Backend calculates; frontend displays.
 function currentVisualCorrection() {
-  if (!resultsShown || !backendAuthorityPackage) return null;
-  const correction = backendAuthorityPackage.correction || {};
-  const clicks = backendAuthorityPackage.clicks || {};
-  return {
-    ...correction,
-    ...clicks,
-    poib: backendAuthorityPackage.poib,
-    authorityPackage: backendAuthorityPackage
-  };
-}
-
-function backendTargetGeometry() {
-  return {
-    imageWidth: BAKER_GRID_AUDIT.imageWidth,
-    imageHeight: BAKER_GRID_AUDIT.imageHeight,
-    gridLeftPx: BAKER_GRID_AUDIT.leftPx,
-    gridTopPx: BAKER_GRID_AUDIT.topPx,
-    gridRightPx: BAKER_GRID_AUDIT.rightPx,
-    gridBottomPx: BAKER_GRID_AUDIT.bottomPx,
-    gridSquarePx: BAKER_GRID_AUDIT.squarePx,
-    gridSquareInches: 1
-  };
-}
-
-function backendAuthorityRequest() {
-  const source = matrix || {};
-  const opticClickValue = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
-  return {
-    targetId: "BAKER_ST_100YD_SMART",
-    targetName: "Baker 100 Yard Smart Target",
-    vendor: "Baker Smart Targets",
-    targetAuthorityGeometry: backendTargetGeometry(),
-    aimCoordinate: safePoint(currentAimPoint),
-    impactCoordinates: currentImpactPoints.map(safePoint).filter(Boolean),
-    distance: {
-      value: Number(selectedDistanceValue || 100),
-      unit: selectedDistanceUnit === "M" ? "m" : "yds"
-    },
-    shooterSetup: {
-      ...source,
-      optic: {
-        type: source.opticType,
-        manufacturer: source.opticBrand,
-        model: source.opticModel,
-        clickValueMOA: opticClickValue
-      }
-    }
-  };
-}
-
-async function requestBackendAuthority() {
-  const requestPayload = backendAuthorityRequest();
-  const response = await fetch(BACKEND_AUTHORITY_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestPayload)
-  });
-  if (!response.ok) {
-    throw new Error(`Backend authority failed: ${response.status}`);
-  }
-  const authorityPackage = await response.json();
-  authorityPackage.frontendRequest = requestPayload;
-  return authorityPackage;
-}
-
-function applyBackendAuthorityPackage(authorityPackage) {
-  authorityStatusMessage = "";
-  backendAuthorityPackage = authorityPackage;
-  const correction = authorityPackage && authorityPackage.correction ? authorityPackage.correction : {};
-  const clicks = authorityPackage && authorityPackage.clicks ? authorityPackage.clicks : {};
-  currentClicks = authorityPackage ? {
-    ...clicks,
-    elevation: correction.elevation,
-    windage: correction.windage,
-    poib: authorityPackage.poib,
-    authorityPackage
-  } : null;
-  currentScore = backendScoreValue(authorityPackage);
-  resultsShown = !!(authorityPackage && authorityPackage.status && authorityPackage.status.hasCorrection);
-  sessionSaved = false;
+  const aim = safePoint(currentAimPoint);
+  const impacts = currentImpactPoints.map(safePoint).filter(Boolean);
+  if (!aim || !impacts.length) return null;
+  return SCZN3M4.calculateTapCorrection(aim, impacts);
 }
 
 function correctionCardDistance() {
@@ -500,9 +376,21 @@ function correctionCardDistance() {
 
 function renderCorrectionOverlay(correction) {
   if (!correction || !correction.poib || !currentAimPoint) return "";
+  const poib = safePoint(correction.poib);
+  const aim = safePoint(currentAimPoint);
+  if (!poib || !aim) return "";
   const elevation = compactClick(correction.elevation, "elevation");
   const windage = compactClick(correction.windage, "windage");
   return `
+    <svg class="target-correction-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <marker id="targetCorrectionArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L8,4 L0,8 Z"></path>
+        </marker>
+      </defs>
+      <line x1="${poib.xPercent}" y1="${poib.yPercent}" x2="${aim.xPercent}" y2="${aim.yPercent}" marker-end="url(#targetCorrectionArrowhead)"></line>
+    </svg>
+    <span class="target-marker poib-auto-marker" style="left:${poib.xPercent}%;top:${poib.yPercent}%" aria-label="Calculated POIB"></span>
     <div class="target-correction-card" aria-label="Calculated correction summary">
       <strong>${correctionCardDistance()}</strong>
       <span>${elevation}</span>
@@ -511,253 +399,17 @@ function renderCorrectionOverlay(correction) {
     </div>`;
 }
 
-// Non-authoritative legacy adapter retained temporarily; do not use for POIB/click/vector truth.
-function targetEvidencePackage(correction) {
-  return SCZN3M4.UGEO.normalizeEvidencePackage({
-    session,
-    targetImage: activeEvidence() && activeEvidence().dataUrl,
-    distance: correctionCardDistance(),
-    aim: safePoint(currentAimPoint),
-    impacts: currentImpactPoints,
-    poib: correction && correction.poib,
-    correction,
-    clicks: correction,
-    hitCount: currentImpactPoints.length,
-    score: currentScore
-  });
-}
-
-function displayedImageBox() {
-  const surface = document.getElementById("markSurface");
-  const image = surface && surface.querySelector("img");
-  return SCZN3M4.UGEO.displayedImageContentBox(image, surface);
-}
-
-function syncOverlayLayerToDisplayedImage() {
-  const layer = document.getElementById("markerLayer");
-  const coordinateLayer = document.getElementById("gridCoordinateLayer");
-  const box = displayedImageBox();
-  if (!layer || !box) return null;
-  const surface = document.getElementById("markSurface");
-  const image = surface && surface.querySelector("img");
-  SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, surface);
-  if (coordinateLayer) {
-    coordinateLayer.style.left = `${box.left}px`;
-    coordinateLayer.style.top = `${box.top}px`;
-    coordinateLayer.style.width = `${box.width}px`;
-    coordinateLayer.style.height = `${box.height}px`;
-    renderGridCoordinateOverlay();
-  }
-  return box;
-}
-
-function columnLabel(index) {
-  let value = index + 1;
-  let label = "";
-  while (value > 0) {
-    value -= 1;
-    label = String.fromCharCode(65 + (value % 26)) + label;
-    value = Math.floor(value / 26);
-  }
-  return label;
-}
-
-function renderGridCoordinateOverlay() {
-  const layer = document.getElementById("gridCoordinateLayer");
-  if (!layer) return;
-  if (!showGridCoordinates) {
-    layer.textContent = "";
-    layer.classList.remove("is-visible");
-    return;
-  }
-  const grid = BAKER_GRID_AUDIT;
-  const left = (grid.leftPx / grid.imageWidth) * 100;
-  const top = (grid.topPx / grid.imageHeight) * 100;
-  const width = ((grid.rightPx - grid.leftPx) / grid.imageWidth) * 100;
-  const height = ((grid.bottomPx - grid.topPx) / grid.imageHeight) * 100;
-  const columns = Math.round((grid.rightPx - grid.leftPx) / grid.squarePx);
-  const rows = Math.round((grid.bottomPx - grid.topPx) / grid.squarePx);
-  const columnLabels = Array.from({ length: columns }, (_, index) => {
-    const x = left + (((index + 0.5) / columns) * width);
-    return `<span class="grid-coordinate-label grid-column-label" style="left:${x}%;top:${top}%">${columnLabel(index)}</span>`;
-  }).join("");
-  const rowLabels = Array.from({ length: rows }, (_, index) => {
-    const y = top + (((index + 0.5) / rows) * height);
-    return `<span class="grid-coordinate-label grid-row-label" style="left:${left}%;top:${y}%">${index + 1}</span>`;
-  }).join("");
-  layer.classList.add("is-visible");
-  layer.innerHTML = `
-    <div class="grid-coordinate-box" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%"></div>
-    ${columnLabels}
-    ${rowLabels}`;
-}
-
-function syncArrowLayerToMarkerLayer() {
-  const layer = document.getElementById("markerLayer");
-  const arrowSvg = layer && layer.querySelector(".target-correction-vector");
-  if (!layer || !arrowSvg) return;
-  const layerRect = layer.getBoundingClientRect();
-  arrowSvg.style.left = "0px";
-  arrowSvg.style.top = "0px";
-  arrowSvg.style.width = `${layerRect.width}px`;
-  arrowSvg.style.height = `${layerRect.height}px`;
-}
-
-function renderedPercentFromRect(childRect, parentRect) {
-  if (!childRect || !parentRect || !parentRect.width || !parentRect.height) return null;
-  return {
-    xPercent: Number((((childRect.left + (childRect.width / 2) - parentRect.left) / parentRect.width) * 100).toFixed(2)),
-    yPercent: Number((((childRect.top + (childRect.height / 2) - parentRect.top) / parentRect.height) * 100).toFixed(2))
-  };
-}
-
-function logRenderCoordinates(correction) {
-  if (!correction || !correction.poib || !currentAimPoint) return;
-  requestAnimationFrame(() => {
-    const layer = document.getElementById("markerLayer");
-    const image = document.querySelector("#markSurface img");
-    const poibMarker = layer && layer.querySelector(".poib-auto-marker");
-    const calculatedPoibDot = layer && layer.querySelector(".debug-calculated-poib");
-    const arrowStartDot = layer && layer.querySelector(".debug-arrow-start");
-    const arrowSvg = layer && layer.querySelector(".target-correction-vector");
-    const arrowLine = arrowSvg && arrowSvg.querySelector("line");
-    if (!layer || !image || !poibMarker || !calculatedPoibDot || !arrowStartDot || !arrowSvg || !arrowLine) return;
-    const imageRect = image.getBoundingClientRect();
-    const imageBox = displayedImageBox();
-    const layerRect = layer.getBoundingClientRect();
-    const svgRect = arrowSvg.getBoundingClientRect();
-    const poibRect = poibMarker.getBoundingClientRect();
-    const renderedPoib = renderedPercentFromRect(poibRect, layerRect);
-    const renderedCalculatedPoibDot = renderedPercentFromRect(calculatedPoibDot.getBoundingClientRect(), layerRect);
-    const renderedArrowStartDot = renderedPercentFromRect(arrowStartDot.getBoundingClientRect(), layerRect);
-    const arrowStart = {
-      xPercent: Number(Number(arrowLine.getAttribute("x1")).toFixed(2)),
-      yPercent: Number(Number(arrowLine.getAttribute("y1")).toFixed(2))
-    };
-    const arrowEnd = {
-      xPercent: Number(Number(arrowLine.getAttribute("x2")).toFixed(2)),
-      yPercent: Number(Number(arrowLine.getAttribute("y2")).toFixed(2))
-    };
-    const calculatedPoib = safePoint(correction.poib);
-    const delta = (a, b) => {
-      if (!a || !b) return null;
-      return {
-        xDelta: Number((Number(a.xPercent) - Number(b.xPercent)).toFixed(2)),
-        yDelta: Number((Number(a.yPercent) - Number(b.yPercent)).toFixed(2))
-      };
-    };
-    const markerDelta = delta(renderedPoib, calculatedPoib);
-    const arrowStartDelta = delta(arrowStart, calculatedPoib);
-    console.groupCollapsed("SCZN3 render coordinate audit");
-    console.log("Target image natural size", {
-      naturalWidth: image.naturalWidth,
-      naturalHeight: image.naturalHeight
-    });
-    console.log("Target image element rect", {
-      width: Number(imageRect.width.toFixed(2)),
-      height: Number(imageRect.height.toFixed(2))
-    });
-    console.log("Displayed target image content box", imageBox && {
-      width: Number(imageBox.width.toFixed(2)),
-      height: Number(imageBox.height.toFixed(2)),
-      left: Number(imageBox.left.toFixed(2)),
-      top: Number(imageBox.top.toFixed(2))
-    });
-    console.log("Overlay container rect", {
-      width: Number(layerRect.width.toFixed(2)),
-      height: Number(layerRect.height.toFixed(2))
-    });
-    console.log("SVG arrow layer rect", {
-      width: Number(svgRect.width.toFixed(2)),
-      height: Number(svgRect.height.toFixed(2))
-    });
-    console.log("POIB marker parent layer rect", {
-      width: Number(layerRect.width.toFixed(2)),
-      height: Number(layerRect.height.toFixed(2))
-    });
-    console.log("1. Hole coordinates", currentImpactPoints.map(point => safePoint(point)));
-    console.log("2. Calculated POIB coordinates", calculatedPoib);
-    console.log("3. Rendered POIB marker coordinates", renderedPoib);
-    console.log("4. Arrow start coordinates", arrowStart);
-    console.log("5. Arrow end coordinates", arrowEnd);
-    console.log("Debug dot: calculated POIB rendered center", renderedCalculatedPoibDot);
-    console.log("Debug dot: arrow start rendered center", renderedArrowStartDot);
-    console.log("POIB marker delta from calculated POIB", markerDelta);
-    console.log("Arrow start delta from calculated POIB", arrowStartDelta);
-    if (markerDelta && (Math.abs(markerDelta.xDelta) > 0.25 || Math.abs(markerDelta.yDelta) > 0.25)) {
-      console.warn("POIB marker is not rendering at calculated POIB coordinates.");
-    }
-    if (arrowStartDelta && (Math.abs(arrowStartDelta.xDelta) > 0.25 || Math.abs(arrowStartDelta.yDelta) > 0.25)) {
-      console.warn("Arrow start is not using calculated POIB coordinates.");
-    }
-    console.table([
-      { item: "Calculated POIB", ...calculatedPoib },
-      { item: "Rendered POIB marker", ...renderedPoib },
-      { item: "Arrow start", ...arrowStart },
-      { item: "Arrow end", ...arrowEnd },
-      { item: "Debug calculated POIB dot", ...renderedCalculatedPoibDot },
-      { item: "Debug arrow start dot", ...renderedArrowStartDot }
-    ]);
-    console.groupEnd();
-  });
-}
-
-function markerPointHtml(className, point, content = "", attributes = "") {
-  const safe = safePoint(point);
-  if (!safe) return "";
-  return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attributes ? ` ${attributes}` : ""}>${content}</span>`;
-}
-
-function vectorHtmlFromBackend(vector) {
-  if (!vector || !vector.start || !vector.end) return "";
-  const start = safePoint(vector.start);
-  const end = safePoint(vector.end);
-  if (!start || !end) return "";
-  return `<svg class="target-correction-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <defs>
-      <marker id="targetCorrectionArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-        <path d="M0,0 L8,4 L0,8 Z"></path>
-      </marker>
-    </defs>
-    <line x1="${start.xPercent}" y1="${start.yPercent}" x2="${end.xPercent}" y2="${end.yPercent}" marker-end="url(#targetCorrectionArrowhead)"></line>
-  </svg>`;
-}
-
-function renderPendingInputMarkers() {
-  const parts = [];
-  currentImpactPoints.map(safePoint).filter(Boolean).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
-  });
-  if (currentAimPoint) {
-    parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "A"));
-  }
-  return parts.join("");
-}
-
-function renderBackendAuthorityMarkers(authorityPackage) {
-  const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
-  const parts = [];
-  parts.push(vectorHtmlFromBackend(render.vector));
-  (render.impacts || []).map(safePoint).filter(Boolean).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
-  });
-  if (render.aim) {
-    parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
-  }
-  if (render.poib) {
-    parts.push(markerPointHtml("target-marker poib-auto-marker", render.poib, "", 'aria-label="Backend authority POIB"'));
-  }
-  return parts.join("");
-}
-
 function renderMarkers() {
   const layer = document.getElementById("markerLayer");
   if (!layer) return;
-  syncOverlayLayerToDisplayedImage();
+  const aimPoint = safePoint(currentAimPoint);
+  const aim = aimPoint ? `<span class="target-marker aim-marker" style="left:${aimPoint.xPercent}%;top:${aimPoint.yPercent}%">A</span>` : "";
+  const impacts = currentImpactPoints.map((point, index) => {
+    const safe = safePoint(point);
+    return safe ? `<span class="target-marker impact-marker" style="left:${safe.xPercent}%;top:${safe.yPercent}%">${index + 1}</span>` : "";
+  }).join("");
   const correction = currentVisualCorrection();
-  const authorityPackage = resultsShown ? backendAuthorityPackage : null;
-  layer.innerHTML = (authorityPackage ? renderBackendAuthorityMarkers(authorityPackage) : renderPendingInputMarkers()) + renderCorrectionOverlay(correction);
-  syncArrowLayerToMarkerLayer();
+  layer.innerHTML = renderCorrectionOverlay(correction) + aim + impacts;
   renderResults();
 }
 
@@ -794,13 +446,6 @@ function renderResults() {
   document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
   document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
   document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
-  const message = document.getElementById("authorityStatusMessage");
-  if (message) {
-    message.innerHTML = authorityStatusMessage
-      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
-      : "";
-    message.classList.toggle("is-hidden", !authorityStatusMessage);
-  }
 }
 
 function hideShooterTip() {
@@ -834,9 +479,7 @@ function showShooterTip() {
 function clearCalculatedResults() {
   currentClicks = null;
   currentScore = null;
-  backendAuthorityPackage = null;
   resultsShown = false;
-  authorityStatusMessage = "";
   sessionSaved = false;
   hideShooterTip();
   renderResults();
@@ -873,9 +516,7 @@ function setMode(mode) {
 function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
   if (resultsShown) return;
-  syncOverlayLayerToDisplayedImage();
-  const layer = document.getElementById("markerLayer");
-  const rect = (layer || event.currentTarget).getBoundingClientRect();
+  const rect = event.currentTarget.getBoundingClientRect();
   const xPercent = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
   const yPercent = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
   const point = {
@@ -901,16 +542,12 @@ function handleMarkPointer(event) {
 
 renderEvidencePreview(session && session.targetEvidenceImage);
 
+document.getElementById("chooseTargetButton").disabled = false;
 document.getElementById("chooseTargetButton").addEventListener("click", () => {
   ensureTargetSession();
   const input = document.getElementById("targetImageInput");
   input.value = "";
-});
-document.getElementById("chooseTargetButton").addEventListener("keydown", event => {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    event.currentTarget.click();
-  }
+  input.click();
 });
 
 document.getElementById("targetImageInput").addEventListener("change", event => {
@@ -938,12 +575,6 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
   });
 });
 
-document.getElementById("showGridCoordinates").addEventListener("change", event => {
-  showGridCoordinates = event.target.checked;
-  syncOverlayLayerToDisplayedImage();
-  renderGridCoordinateOverlay();
-});
-
 document.getElementById("setAimMode").addEventListener("click", () => setMode("aim"));
 document.getElementById("addImpactMode").addEventListener("click", () => {
   if (currentAimPoint) setMode("impact");
@@ -961,87 +592,48 @@ document.getElementById("clearMarks").addEventListener("click", () => {
   SCZN3M4.updateActiveSession({
     aimPoint: null,
     impactPoints: [],
-    backendAuthorityPackage: null,
-    ugeoAuthorityPackage: null,
     poib: null,
-    groupCenter: null,
     clicks: null,
-    score: null,
-    rawScore: null,
-    qualityPossible: null,
+    score: 0,
+    rawScore: 0,
+    qualityPossible: 0,
     hits: 0,
     shotCount: 0,
     correctionStatus: "not-calculated",
-    shotData: { shotCount: 0, hits: 0, score: null, status: "marks-cleared" },
+    shotData: { shotCount: 0, hits: 0, score: 0, status: "marks-cleared" },
     correctionData: { status: "not-calculated", clicks: null, windage: null, elevation: null }
   });
   setMode("aim");
   renderMarkers();
   renderMarkStatus();
 });
-document.getElementById("showResults").addEventListener("click", async () => {
-  if (!currentAimPoint || !currentImpactPoints.length) return;
-  authorityStatusMessage = "";
-  renderResults();
-  try {
-    const authorityPackage = await requestBackendAuthority();
-    applyBackendAuthorityPackage(authorityPackage);
-    renderMarkers();
-    renderResults();
-    if (resultsShown) showShooterTip();
-  } catch (error) {
-    console.warn("Backend authority request failed", error);
-    currentClicks = null;
-    currentScore = null;
-    backendAuthorityPackage = null;
-    resultsShown = false;
-    authorityStatusMessage = "Authority service unavailable. Please try again.";
-    renderResults();
+document.getElementById("showResults").addEventListener("click", () => {
+  if (currentAimPoint && currentImpactPoints.length) {
+    const saved = SCZN3M4.saveTargetMarks(currentAimPoint, currentImpactPoints);
+    currentClicks = saved && saved.clicks ? saved.clicks : null;
+    currentScore = Number.isFinite(Number(saved && saved.score)) ? Number(saved.score) : null;
+    resultsShown = !!currentClicks;
+    sessionSaved = false;
   }
+  renderResults();
+  if (resultsShown) showShooterTip();
   renderMarkStatus();
 });
 document.getElementById("saveMarks").addEventListener("click", () => {
-  if (!session || !backendAuthorityPackage) return;
+  if (!session) return;
   let saved = null;
   if (pendingEvidence) {
     saved = SCZN3M4.saveTargetEvidenceImage(pendingEvidence);
     pendingEvidence = null;
   }
+  if (currentAimPoint) {
+    saved = SCZN3M4.saveTargetMarks(currentAimPoint, currentImpactPoints);
+    currentClicks = saved && saved.clicks ? saved.clicks : null;
+    currentScore = Number.isFinite(Number(saved && saved.score)) ? Number(saved.score) : null;
+  }
   lockDistanceForSession();
   const savedTimestamp = new Date().toISOString();
-  const authorityPackage = backendAuthorityPackage;
-  const authorityClicks = currentClicks;
   saved = SCZN3M4.updateActiveSession({
-    aimPoint: safePoint(currentAimPoint),
-    impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
-    backendAuthorityPackage: authorityPackage,
-    ugeoAuthorityPackage: authorityPackage,
-    score: authorityPackage.score || null,
-    scoreValue: backendScoreValue(authorityPackage),
-    poib: authorityPackage.poib || null,
-    groupCenter: authorityPackage.groupCenter || null,
-    clicks: authorityClicks,
-    correctionData: {
-      status: authorityPackage.status && authorityPackage.status.hasCorrection ? "backend-authority-calculated" : "not-calculated",
-      clicks: authorityClicks,
-      correction: authorityPackage.correction || null,
-      moa: authorityPackage.moa || null,
-      vectors: authorityPackage.vectors || null
-    },
-    shotData: {
-      aimPoint: safePoint(currentAimPoint),
-      impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
-      shotCount: currentImpactPoints.length,
-      hits: currentImpactPoints.length,
-      poib: authorityPackage.poib || null,
-      groupCenter: authorityPackage.groupCenter || null,
-      score: authorityPackage.score || null,
-      scoreValue: backendScoreValue(authorityPackage),
-      authoritySource: "backend"
-    },
-    hits: currentImpactPoints.length,
-    shotCount: currentImpactPoints.length,
-    correctionStatus: "backend-authority-calculated",
     savedToSEC: true,
     targetDistance: targetDistanceValue(),
     targetDistanceValue: selectedDistanceValue,
@@ -1058,11 +650,6 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   renderMarkStatus();
   renderResults();
   if (saved) window.location.href = "records.html";
-});
-
-window.addEventListener("resize", () => {
-  syncOverlayLayerToDisplayedImage();
-  renderMarkers();
 });
 
 setMode(currentAimPoint ? "impact" : "aim");

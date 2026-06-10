@@ -13,7 +13,7 @@
       <span class="home-brand-icon" aria-hidden="true"><span></span></span>
       <span class="home-brand-copy">
         <strong>Baker Smart Targets</strong>
-        <em>by Tap-N-Score.com</em>
+        <em>by Tap-N-Score</em>
       </span>
     </a>
     <a class="home-settings" href="matrix.html" aria-label="Open weapon setup">⚙</a>
@@ -22,7 +22,7 @@
   <section class="home-hero" aria-label="Tap-N-Score quick start">
     <div class="home-hero-copy">
       <h1>TAP-N-SCORE</h1>
-      <p class="home-tagline">SHOOT. SCAN. IMPROVE. SAVE.</p>
+      <p class="home-tagline">Shoot. Scan. Improve. Save.</p>
       <p class="home-intro">Analyze your target in seconds and save your results as evidence.</p>
       <div class="home-cta-row">
         <a class="home-cta home-cta-primary" href="matrix.html">
@@ -36,9 +36,9 @@
       </div>
     </div>
 
-    <div class="hero-target-card" aria-label="Baker target with example results">
+    <div class="hero-target-card" aria-label="Baker target preview with example results">
       <div class="hero-target-frame">
-        <img id="heroTargetImage" src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target" />
+        <img id="heroTargetImage" src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target preview" />
         <div class="hero-evidence-layer" id="heroEvidenceLayer" aria-hidden="true"></div>
         <div class="landing-correction-card is-hidden" id="landingCorrectionCard" aria-label="Evidence correction summary">
           <strong id="landingDistance">100 YDS</strong>
@@ -150,14 +150,10 @@ const HOME_CONFIG = {
   approvedFallbackEvidence: {
     distance: "150 YDS",
     hits: "5 HITS",
-    group: "1.12 MOA",
-    poibSummary: "0.6&quot; Low, 0.3&quot; Right",
+    group: "Approved Baker preview",
+    poibSummary: "Reference evidence preview",
     aim: { xPercent: 51.0, yPercent: 57.6 },
     poib: { xPercent: 21.6, yPercent: 28.4 },
-    correction: {
-      elevation: "29 clicks DOWN",
-      windage: "29 clicks RIGHT"
-    },
     impacts: [
       { xPercent: 15.3, yPercent: 23.2 },
       { xPercent: 15.5, yPercent: 34.3 },
@@ -165,7 +161,36 @@ const HOME_CONFIG = {
       { xPercent: 28.8, yPercent: 23.0 },
       { xPercent: 19.7, yPercent: 27.3 }
     ]
-  }
+  },
+  examples: [
+    {
+      title: "SCZN3 100YD Test",
+      date: "May 10, 2025 · 8:24 AM",
+      weapon: ".308 Win",
+      distance: "100 Yards",
+      shots: "5 Shots",
+      group: "0.82 MOA",
+      poib: "0.4&quot; High, 0.2&quot; Left"
+    },
+    {
+      title: "AR556 Zero Check",
+      date: "May 9, 2025 · 3:15 PM",
+      weapon: "5.56 NATO",
+      distance: "100 Yards",
+      shots: "5 Shots",
+      group: "1.12 MOA",
+      poib: "0.6&quot; Low, 0.3&quot; Right"
+    },
+    {
+      title: "6.5 Creedmoor",
+      date: "May 8, 2025 · 11:02 AM",
+      weapon: "6.5 Creedmoor",
+      distance: "300 Yards",
+      shots: "5 Shots",
+      group: "0.65 MOA",
+      poib: "0.2&quot; High, 0.1&quot; Left"
+    }
+  ]
 };
 
 function safePoint(point) {
@@ -190,22 +215,41 @@ function compactClick(value, axis) {
 function displayedHeroImageBox() {
   const frame = document.querySelector(".hero-target-frame");
   const image = document.getElementById("heroTargetImage");
-  return SCZN3M4.UGEO.displayedImageContentBox(image, frame);
+  if (!frame || !image) return null;
+  const frameRect = frame.getBoundingClientRect();
+  const imageRect = image.getBoundingClientRect();
+  const naturalWidth = image.naturalWidth || imageRect.width || 1;
+  const naturalHeight = image.naturalHeight || imageRect.height || 1;
+  const naturalRatio = naturalWidth / naturalHeight;
+  const elementRatio = imageRect.width / imageRect.height;
+  let width = imageRect.width;
+  let height = imageRect.height;
+  let left = imageRect.left;
+  let top = imageRect.top;
+  if (elementRatio > naturalRatio) {
+    width = imageRect.height * naturalRatio;
+    left = imageRect.left + ((imageRect.width - width) / 2);
+  } else {
+    height = imageRect.width / naturalRatio;
+    top = imageRect.top + ((imageRect.height - height) / 2);
+  }
+  return {
+    left: left - frameRect.left,
+    top: top - frameRect.top,
+    width,
+    height
+  };
 }
 
 function syncHeroEvidenceLayer() {
   const layer = document.getElementById("heroEvidenceLayer");
-  const frame = document.querySelector(".hero-target-frame");
-  const image = document.getElementById("heroTargetImage");
-  return SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, frame);
-}
-
-function syncRecentEvidenceLayers() {
-  document.querySelectorAll(".recent-thumb.has-session-evidence").forEach((frame) => {
-    const image = frame.querySelector("img");
-    const layer = frame.querySelector(".recent-evidence-layer");
-    SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, frame);
-  });
+  const box = displayedHeroImageBox();
+  if (!layer || !box) return null;
+  layer.style.left = `${box.left}px`;
+  layer.style.top = `${box.top}px`;
+  layer.style.width = `${box.width}px`;
+  layer.style.height = `${box.height}px`;
+  return box;
 }
 
 function sessionImpacts(session) {
@@ -219,40 +263,17 @@ function sessionAim(session) {
   return safePoint((session && session.aimPoint) || (session && session.shotData && session.shotData.aimPoint));
 }
 
-function authorityPackage(session) {
-  return session && (session.ugeoAuthorityPackage || session.backendAuthorityPackage) || null;
-}
-
-function authorityGroupSummary(pkg) {
-  if (!pkg || !pkg.group || pkg.group.status !== "calculated") return "";
-  if (pkg.group.display) return pkg.group.display;
-  return Number.isFinite(Number(pkg.group.valueMOA)) ? `${Number(pkg.group.valueMOA).toFixed(2)} MOA` : "";
-}
-
-function inchesSummary(value, positiveLabel, negativeLabel) {
-  const numeric = Number(value);
-  if (!Number.isFinite(numeric) || numeric === 0) return "";
-  return `${Math.abs(numeric).toFixed(1)}&quot; ${numeric > 0 ? positiveLabel : negativeLabel}`;
-}
-
-function authorityPoibSummary(pkg) {
-  if (!pkg || !pkg.correction) return "";
-  const vertical = inchesSummary(pkg.correction.yInches, "Low", "High");
-  const horizontal = inchesSummary(pkg.correction.xInches, "Right", "Left");
-  return [vertical, horizontal].filter(Boolean).join(", ") || "Centered";
-}
-
 function sessionCorrection(session, aim, impacts) {
-  const pkg = authorityPackage(session);
-  return pkg ? pkg.correction : null;
+  if (session && session.clicks && session.clicks.poib) return session.clicks;
+  if (aim && impacts.length) return SCZN3M4.calculateTapCorrection(aim, impacts);
+  return null;
 }
 
 function sessionEvidencePackage(session) {
-  const pkg = authorityPackage(session);
   const aim = sessionAim(session);
   const impacts = sessionImpacts(session);
-  const correction = pkg && pkg.correction;
-  const poib = safePoint(pkg && pkg.poib);
+  const correction = sessionCorrection(session, aim, impacts);
+  const poib = safePoint(correction && correction.poib);
   if (!session || !aim || !impacts.length || !correction || !poib) return null;
   return {
     session,
@@ -278,12 +299,12 @@ function approvedFallbackEvidencePackage() {
   if (!fallback) return null;
   const aim = safePoint(fallback.aim);
   const impacts = (fallback.impacts || []).map(safePoint).filter(Boolean);
-  const correction = fallback.correction;
-  const poib = safePoint(fallback.poib);
+  const correction = aim && impacts.length ? SCZN3M4.calculateTapCorrection(aim, impacts) : null;
+  const poib = safePoint(correction && correction.poib);
   if (!aim || !poib || !impacts.length || !correction) return null;
   return {
     session: {
-      sessionLabel: "Baker Authority Example",
+      sessionLabel: "Baker Preview",
       matrixSnapshot: {
         modelCaliber: "Baker ST-100YD-SMART",
         targetDistance: fallback.distance
@@ -328,28 +349,22 @@ function formatDate(value) {
   });
 }
 
-function isBackendAuthoritySession(session) {
-  const pkg = authorityPackage(session);
-  return !!(session && session.savedToSEC === true && pkg && pkg.status);
-}
-
-function sessionToCard(session) {
+function sessionToCard(session, index) {
   const snapshot = session && session.matrixSnapshot ? session.matrixSnapshot : {};
   const shotData = session && session.shotData ? session.shotData : {};
-  const pkg = authorityPackage(session);
-  const evidence = sessionEvidencePackage(session);
-  const group = authorityGroupSummary(pkg);
-  const poib = authorityPoibSummary(pkg);
+  const correction = session && session.correctionData ? session.correctionData : {};
+  const fallbackEvidence = index === 0 ? approvedFallbackEvidencePackage() : null;
+  const evidence = sessionEvidencePackage(session) || (!session ? fallbackEvidence : null);
   return {
     session,
     evidence,
-    title: session.sessionLabel || SCZN3M4.formatSessionNumber(session.sessionNumber),
-    date: formatDate(session.timestamp || session.createdAt),
-    weapon: snapshot.modelCaliber || snapshot.rifle || "--",
-    distance: snapshot.targetDistance || snapshot.distance || sessionDistance(session),
-    shots: `${(pkg.status && pkg.status.impactCount) || shotData.shotCount || shotData.hits || 0} Shots`,
-    group,
-    poib
+    title: session ? (session.sessionLabel || SCZN3M4.formatSessionNumber(session.sessionNumber)) : (fallbackEvidence ? "Baker Evidence Preview" : HOME_CONFIG.examples[index].title),
+    date: session ? formatDate(session.timestamp || session.createdAt) : (fallbackEvidence ? "Approved fallback evidence" : HOME_CONFIG.examples[index].date),
+    weapon: snapshot.modelCaliber || snapshot.rifle || (fallbackEvidence ? "Baker ST-100YD-SMART" : HOME_CONFIG.examples[index].weapon),
+    distance: snapshot.targetDistance || snapshot.distance || (fallbackEvidence ? HOME_CONFIG.approvedFallbackEvidence.distance : HOME_CONFIG.examples[index].distance),
+    shots: `${shotData.shotCount || shotData.hits || (fallbackEvidence ? fallbackEvidence.impacts.length : HOME_CONFIG.examples[index].shots.replace(/\D/g, "") || 5)} Shots`,
+    group: session && shotData.groupSize ? shotData.groupSize : (fallbackEvidence ? HOME_CONFIG.approvedFallbackEvidence.group : HOME_CONFIG.examples[index].group),
+    poib: session && shotData.poibSummary ? shotData.poibSummary : (fallbackEvidence ? HOME_CONFIG.approvedFallbackEvidence.poibSummary : HOME_CONFIG.examples[index].poib)
   };
 }
 
@@ -360,27 +375,26 @@ function renderLandingCorrectionCard() {
   const layer = document.getElementById("heroEvidenceLayer");
   if (!card || !image || !layer) return;
 
-  const normalizedEvidence = evidence ? SCZN3M4.UGEO.normalizeEvidencePackage(evidence) : null;
-  image.src = normalizedEvidence ? normalizedEvidence.targetImage : (HOME_CONFIG.fallbackEvidenceImage || HOME_CONFIG.targetImage);
+  image.src = evidence ? evidence.image : (HOME_CONFIG.fallbackEvidenceImage || HOME_CONFIG.targetImage);
   layer.textContent = "";
   card.classList.add("is-hidden");
 
-  const render = () => {
+    const render = () => {
     syncHeroEvidenceLayer();
-    if (!normalizedEvidence) return;
-    const { correction, impacts } = normalizedEvidence;
-    console.log("UGEO regression check", SCZN3M4.UGEO.regressionCheck(normalizedEvidence));
-    layer.innerHTML = SCZN3M4.UGEO.renderEvidenceUGEO(normalizedEvidence, {
+    if (!evidence) return;
+    const { aim, impacts, correction, poib } = evidence;
+    console.log("UGEO regression check", SCZN3M4.UGEO.regressionCheck({ aim, impacts, poib }));
+    layer.innerHTML = SCZN3M4.UGEO.renderEvidenceUGEO({ aim, impacts, poib }, {
       vectorClass: "hero-correction-vector",
       impactClass: "hero-impact-dot",
       impactNumbered: true,
       aimClass: "hero-aim-dot",
       poibClass: "hero-poib-dot"
     });
-    document.getElementById("landingDistance").textContent = normalizedEvidence.display ? normalizedEvidence.display.distance : (normalizedEvidence.distance || sessionDistance(normalizedEvidence.session));
-    document.getElementById("landingElevation").textContent = compactClick(correction && correction.elevation, "elevation");
-    document.getElementById("landingWindage").textContent = compactClick(correction && correction.windage, "windage");
-    document.getElementById("landingHits").textContent = normalizedEvidence.display ? normalizedEvidence.display.hits : `${impacts.length} Hits`;
+    document.getElementById("landingDistance").textContent = evidence.display ? evidence.display.distance : sessionDistance(evidence.session);
+    document.getElementById("landingElevation").textContent = compactClick(correction.elevation, "elevation");
+    document.getElementById("landingWindage").textContent = compactClick(correction.windage, "windage");
+    document.getElementById("landingHits").textContent = evidence.display ? evidence.display.hits : `${impacts.length} Hits`;
     card.classList.remove("is-hidden");
   };
 
@@ -398,43 +412,27 @@ function renderRecentThumb(card) {
         <img src="${HOME_CONFIG.targetImage}" alt="" />
       </div>`;
   }
-  const evidence = SCZN3M4.UGEO.normalizeEvidencePackage(card.evidence);
+  const evidence = card.evidence;
   return `
     <div class="recent-thumb has-session-evidence" aria-hidden="true">
-      <img src="${evidence.targetImage}" alt="" />
-      <div class="recent-evidence-layer">
-        ${SCZN3M4.UGEO.renderEvidenceUGEO(evidence, {
-          vectorClass: "recent-thumb-vector",
-          impactClass: "recent-thumb-hole is-real",
-          aimClass: "recent-thumb-aim",
-          poibClass: "recent-thumb-poib"
-        })}
-      </div>
+      <img src="${evidence.image}" alt="" />
+      ${SCZN3M4.UGEO.renderEvidenceUGEO(evidence, {
+        vectorClass: "recent-thumb-vector",
+        impactClass: "recent-thumb-hole is-real",
+        aimClass: "recent-thumb-aim",
+        poibClass: "recent-thumb-poib"
+      })}
     </div>`;
 }
 
 function renderRecentCards() {
-  const sessions = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [])
-    .filter(isBackendAuthoritySession)
-    .slice(0, 3);
+  const sessions = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : []).slice(0, 3);
+  const cards = [0, 1, 2].map(index => sessionToCard(sessions[index], index));
   const grid = document.getElementById("recentSecGrid");
   grid.textContent = "";
-  if (!sessions.length) {
-    grid.innerHTML = `
-      <article class="recent-empty-state">
-        <strong>No saved Shooter Experience Cards yet.</strong>
-        <span>Save a completed target session to display backend-authority Group and POIB values here.</span>
-      </article>`;
-    return;
-  }
-  const cards = sessions.map(sessionToCard);
   cards.forEach((card, index) => {
     const article = document.createElement("article");
     article.className = "recent-card";
-    const authorityLines = [
-      card.group ? `Group: <b>${card.group}</b>` : "",
-      card.poib ? `POIB: <b>${card.poib}</b>` : ""
-    ].filter(Boolean).join("<br />");
     article.innerHTML = `
       ${renderRecentThumb(card)}
       <div class="recent-copy">
@@ -443,20 +441,16 @@ function renderRecentCards() {
         <span>✦ ${card.weapon}</span>
         <span>◉ ${card.distance}</span>
         <span>● ${card.shots}</span>
-        ${authorityLines ? `<p>${authorityLines}</p>` : ""}
+        <p>Group: <b>${card.group}</b><br />POIB: <b>${card.poib}</b></p>
       </div>`;
     if (index === 0) article.classList.add("is-mirror");
     grid.append(article);
   });
-  requestAnimationFrame(syncRecentEvidenceLayers);
 }
 
 renderLandingCorrectionCard();
 renderRecentCards();
-window.addEventListener("resize", () => {
-  syncHeroEvidenceLayer();
-  syncRecentEvidenceLayers();
-});
+window.addEventListener("resize", () => syncHeroEvidenceLayer());
 </script>
 </body>
 </html>

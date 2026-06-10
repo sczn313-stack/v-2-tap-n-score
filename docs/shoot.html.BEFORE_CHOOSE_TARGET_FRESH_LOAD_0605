@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Target</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main class="shell">
+  <header class="m4-header">
+    <div class="vendor-slot">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target thumbnail" />
+      <div class="brand-lockup">
+        <span class="kicker">Target</span>
+        <a class="vendor-name" href="index.html">Baker Smart Targets</a>
+      </div>
+    </div>
+    <nav class="locked-nav" aria-label="Baker workflow navigation">
+      <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
+      <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Setup</span></a>
+      <a class="locked-nav-item is-active" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
+      <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
+    </nav>
+  </header>
+  <section class="active-session-bar" id="activeSessionBar"></section>
+  <section class="shoot-workflow">
+    <div class="panel">
+      <h1 class="target-work-heading"><span>🎯</span><span class="nav-separator">|</span><span>Target</span><span class="shooter-tip is-hidden" id="shooterTip"><span class="nav-separator">|</span><span class="tip-label">Tip:</span><span id="shooterTipText"></span></span></h1>
+      <section class="upload-panel" aria-label="Upload or capture target evidence">
+        <div class="workflow-control-row" aria-label="SCZN3 shooting workflow controls">
+          <button class="button neon-file-button next-step" type="button" id="chooseTargetButton">Choose Target</button>
+          <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
+          <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
+          <button class="button" type="button" id="addImpactMode">Tap Bullet Holes</button>
+          <button class="button" type="button" id="showResults">Show Results</button>
+          <button class="button" type="button" id="undoImpact">Undo</button>
+          <button class="button" type="button" id="clearMarks">Clear</button>
+          <button class="button" type="button" id="saveMarks">Save Session</button>
+        </div>
+        <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
+          <div class="evidence-meta evidence-status-stack">
+            <div class="target-intel-stack" id="resultsGrid"></div>
+            <strong>No target evidence uploaded</strong>
+            <span>Choose Target to begin</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+<script src="app_state.js"></script>
+<script>
+let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
+if (!session && SCZN3M4.getActiveMatrix()) {
+  session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
+}
+const matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
+let pendingEvidence = null;
+let markMode = "aim";
+let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
+let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
+let currentClicks = session && session.aimPoint && currentImpactPoints.length && session.clicks ? session.clicks : null;
+let currentScore = Number.isFinite(Number(session && session.score)) ? Number(session.score) : null;
+let resultsShown = !!currentClicks;
+let sessionSaved = false;
+const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
+let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
+let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
+let distanceLocked = !!(session && session.targetDistanceLocked);
+const setupName = matrix ? [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ") : "Create setup in Weapon Setup";
+document.getElementById("activeSessionBar").innerHTML = session
+  ? `<strong>${setupName}</strong><span></span>`
+  : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
+
+function cleanSetupValue(value) {
+  return /^(Select Manufacturer|Select Model Type|Select Model Caliber|Select Caliber|Select Load|Select Grain)$/i.test(value || "") ? "" : value;
+}
+
+function setupLine(label, value) {
+  return `<div class="metric"><span>${label}</span><strong>${value || "--"}</strong></div>`;
+}
+
+function renderSetupSummary() {
+  const setupSummaryGrid = document.getElementById("setupSummaryGrid");
+  if (!setupSummaryGrid) return;
+  const source = matrix || {};
+  const weapon = [source.weaponCategory, source.weaponManufacturer, source.weaponModelType, source.weaponModelCaliber]
+    .map(cleanSetupValue)
+    .filter(Boolean)
+    .join(" / ");
+  const optic = [source.opticType, source.opticBrand, source.opticModel, source.magnification]
+    .map(cleanSetupValue)
+    .filter(Boolean)
+    .join(" / ");
+  const ammo = [source.ammoCaliber, source.ammoManufacturer, source.ammoLoad, source.bulletWeight]
+    .map(cleanSetupValue)
+    .filter(Boolean)
+    .join(" / ");
+  setupSummaryGrid.innerHTML = [
+    setupLine("Weapon", weapon || source.rifle),
+    setupLine("Optic", optic),
+    setupLine("Ammunition", ammo)
+  ].join("");
+}
+
+function targetDistanceValue() {
+  syncDistanceFromControls();
+  return formatDistanceDisplay();
+}
+
+function parseDistanceValue(value) {
+  const match = String(value || "").match(/\d+/);
+  return match ? match[0] : "";
+}
+
+function distanceUnitLabel() {
+  return selectedDistanceUnit === "M" ? "m" : "yds";
+}
+
+function formatDistanceDisplay() {
+  return `${selectedDistanceValue || "100"} ${distanceUnitLabel()}`;
+}
+
+function distanceOptions() {
+  return ["25", "50", "75", "100", "150", "175", "200", "250", "300", "400", "500", "Other"]
+    .map(value => `<option${value === selectedDistanceValue || (value === "Other" && !["25", "50", "75", "100", "150", "175", "200", "250", "300", "400", "500"].includes(selectedDistanceValue)) ? " selected" : ""}>${value}</option>`)
+    .join("");
+}
+
+function targetIntelStackHtml() {
+  return `
+    <div class="target-intel-distance" aria-label="Distance">
+      <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
+      <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
+        <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
+        <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+      </div>
+      <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
+      <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+    </div>
+    <div class="target-intel-score score-pending" id="scoreCell"><strong id="scoreValue">--</strong></div>
+    <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
+    <div class="target-intel-item"><strong id="windageValue">--</strong></div>
+    <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
+    ${guidanceCardHtml()}
+  `;
+}
+
+function isPresetDistance(value) {
+  return ["25", "50", "75", "100", "150", "175", "200", "250", "300", "400", "500"].includes(String(value || ""));
+}
+
+function guidanceCardHtml() {
+  const presets = [100, 150, 200, 250, 300, 400, 500]
+    .map(distance => `<div>25m → ${distance}m ↑ X Clicks</div>`)
+    .join("");
+  return `
+    <details class="guidance-card" open>
+      <summary>Clicks to Next Distance</summary>
+      <div class="guidance-list">${presets}</div>
+      <details class="custom-distance-card">
+        <summary>Custom Distance</summary>
+        <label>Current Zero<input id="currentZeroDistance" inputmode="decimal" placeholder="" /></label>
+        <label>Desired Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
+        <div class="unit-toggle" role="group" aria-label="Distance units">
+          <button class="unit-button is-active" type="button" data-distance-unit="YDS">YDS</button>
+          <button class="unit-button" type="button" data-distance-unit="M">M</button>
+        </div>
+        <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
+        <div class="guidance-result" id="guidanceResult">Result:</div>
+      </details>
+    </details>
+  `;
+}
+
+function bindDistanceControl() {
+  const distanceInput = document.getElementById("targetDistance");
+  if (!distanceInput) return;
+  const otherInput = document.getElementById("targetDistanceOther");
+  distanceInput.addEventListener("change", () => {
+    if (distanceLocked) return;
+    if (distanceInput.value === "Other") {
+      selectedDistanceValue = "";
+      otherInput.classList.remove("is-hidden");
+      otherInput.value = "";
+      otherInput.focus();
+    } else {
+      selectedDistanceValue = distanceInput.value;
+      otherInput.classList.add("is-hidden");
+      otherInput.value = "";
+    }
+    updateDistanceDisplay();
+  });
+  if (otherInput) {
+    otherInput.addEventListener("input", () => {
+      otherInput.value = otherInput.value.replace(/\D/g, "");
+      selectedDistanceValue = otherInput.value;
+      updateDistanceDisplay();
+    });
+  }
+  document.querySelectorAll("[data-target-distance-unit]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (distanceLocked) return;
+      selectedDistanceUnit = button.dataset.targetDistanceUnit;
+      document.querySelectorAll("[data-target-distance-unit]").forEach(item => item.classList.toggle("is-active", item === button));
+      updateDistanceDisplay();
+    });
+  });
+  updateDistanceDisplay();
+}
+
+function syncDistanceFromControls() {
+  const distanceInput = document.getElementById("targetDistance");
+  const otherInput = document.getElementById("targetDistanceOther");
+  if (!distanceInput) return;
+  selectedDistanceValue = distanceInput.value === "Other" ? (otherInput.value || "100") : distanceInput.value;
+}
+
+function updateDistanceDisplay() {
+  const display = document.getElementById("distanceDisplay");
+  if (display) display.textContent = formatDistanceDisplay();
+}
+
+function unlockDistanceForNewTarget() {
+  distanceLocked = false;
+}
+
+function lockDistanceForSession() {
+  syncDistanceFromControls();
+  if (!selectedDistanceValue) selectedDistanceValue = "100";
+  distanceLocked = true;
+}
+
+function bindGuidanceCard() {
+  let selectedUnit = "YDS";
+  document.querySelectorAll("[data-distance-unit]").forEach(button => {
+    button.addEventListener("click", () => {
+      selectedUnit = button.dataset.distanceUnit;
+      document.querySelectorAll("[data-distance-unit]").forEach(item => item.classList.toggle("is-active", item === button));
+    });
+  });
+  const calculateButton = document.getElementById("calculateDistanceClicks");
+  if (!calculateButton) return;
+  calculateButton.addEventListener("click", () => {
+    const current = Number(document.getElementById("currentZeroDistance").value);
+    const desired = Number(document.getElementById("desiredZeroDistance").value);
+    const result = document.getElementById("guidanceResult");
+    if (!Number.isFinite(current) || !Number.isFinite(desired)) {
+      result.textContent = "Result:";
+      return;
+    }
+    const clicks = Math.round(Math.abs(desired - current) / 6.25);
+    const direction = desired >= current ? "↑" : "↓";
+    result.textContent = `${direction} ${clicks} Clicks`;
+    result.dataset.unit = selectedUnit;
+  });
+}
+
+function renderEvidencePreview(image) {
+  const preview = document.getElementById("targetEvidencePreview");
+  if (!image || !image.dataUrl) {
+    preview.innerHTML = `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>`;
+    bindDistanceControl();
+    bindGuidanceCard();
+    renderResults();
+    renderMarkStatus();
+    return;
+  }
+  preview.innerHTML = `
+    <div class="mark-surface" id="markSurface">
+      <img src="${image.dataUrl}" alt="Uploaded target evidence preview" />
+      <div class="marker-layer" id="markerLayer"></div>
+    </div>
+    <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
+  `;
+  bindDistanceControl();
+  bindGuidanceCard();
+  const markSurface = document.getElementById("markSurface");
+  markSurface.addEventListener("pointerdown", handleMarkPointer, { passive: false });
+  markSurface.addEventListener("contextmenu", event => event.preventDefault());
+  renderMarkers();
+  renderMarkStatus();
+}
+
+function activeEvidence() {
+  return pendingEvidence || (SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {}).targetEvidenceImage || null;
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function downsizeImageDataUrl(dataUrl, maxSize = 1200) {
+  return new Promise(resolve => {
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(image.naturalWidth || 1, image.naturalHeight || 1));
+      if (scale >= 1) {
+        resolve(dataUrl);
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const context = canvas.getContext("2d");
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.86));
+    };
+    image.onerror = () => resolve(dataUrl);
+    image.src = dataUrl;
+  });
+}
+
+function hasMarkableEvidence() {
+  const evidence = activeEvidence();
+  return !!(session && evidence && evidence.dataUrl);
+}
+
+function renderMarkers() {
+  const layer = document.getElementById("markerLayer");
+  if (!layer) return;
+  const aim = currentAimPoint ? `<span class="target-marker aim-marker" style="left:${currentAimPoint.xPercent}%;top:${currentAimPoint.yPercent}%">A</span>` : "";
+  const impacts = currentImpactPoints.map((point, index) => (
+    `<span class="target-marker impact-marker" style="left:${point.xPercent}%;top:${point.yPercent}%">${index + 1}</span>`
+  )).join("");
+  layer.innerHTML = aim + impacts;
+  renderResults();
+}
+
+function compactClick(value, axis) {
+  if (!value) return "Not calculated";
+  const amount = String(value).match(/\d+/)?.[0] || "0";
+  const upper = String(value).toUpperCase();
+  if (axis === "elevation") {
+    if (upper.includes("UP")) return `${amount} Clicks ↑`;
+    if (upper.includes("DOWN")) return `${amount} Clicks ↓`;
+  }
+  if (axis === "windage") {
+    if (upper.includes("RIGHT")) return `${amount} Clicks →`;
+    if (upper.includes("LEFT")) return `${amount} Clicks ←`;
+  }
+  return `${amount} Clicks`;
+}
+
+function scoreClass(score) {
+  if (!Number.isFinite(score)) return "score-pending";
+  if (score >= 90) return "score-green";
+  if (score >= 80) return "score-yellow";
+  if (score >= 70) return "score-orange";
+  return "score-red";
+}
+
+function renderResults() {
+  const impacts = currentImpactPoints;
+  const numericScore = currentScore === null ? NaN : Number(currentScore);
+  const scoreCell = document.getElementById("scoreCell");
+  if (!scoreCell) return;
+  scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
+  document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
+  document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
+  document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
+  document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
+}
+
+function hideShooterTip() {
+  const tip = document.getElementById("shooterTip");
+  const text = document.getElementById("shooterTipText");
+  if (tip) tip.classList.add("is-hidden");
+  if (text) text.textContent = "";
+}
+
+function shooterTipFromResults() {
+  if (!currentClicks || !currentImpactPoints.length) return "Record confirmed impacts before saving.";
+  if (currentImpactPoints.length < 3) return "Add more confirmed impacts for a stronger read.";
+  const windage = Number(currentClicks.windageClicks || 0);
+  const elevation = Number(currentClicks.elevationClicks || 0);
+  const windageDirection = String(currentClicks.windageDirection || "CENTER").toLowerCase();
+  const elevationDirection = String(currentClicks.elevationDirection || "CENTER").toLowerCase();
+  if (windage === 0 && elevation === 0) return "Group is centered; confirm with another string.";
+  if (elevation > windage) return "Apply elevation " + elevationDirection + ", then confirm.";
+  if (windage > elevation) return "Apply windage " + windageDirection + ", then confirm.";
+  return "Apply both corrections, then confirm.";
+}
+
+function showShooterTip() {
+  const tip = document.getElementById("shooterTip");
+  const text = document.getElementById("shooterTipText");
+  if (!tip || !text) return;
+  text.textContent = shooterTipFromResults();
+  tip.classList.remove("is-hidden");
+}
+
+function clearCalculatedResults() {
+  currentClicks = null;
+  currentScore = null;
+  resultsShown = false;
+  sessionSaved = false;
+  hideShooterTip();
+  renderResults();
+}
+
+function setNextStep(activeId) {
+  ["chooseTargetButton", "setAimMode", "addImpactMode", "showResults", "saveMarks"].forEach(id => {
+    document.getElementById(id).classList.toggle("next-step", !!activeId && id === activeId);
+  });
+}
+
+function renderMarkStatus() {
+  const canMark = hasMarkableEvidence();
+  document.getElementById("setAimMode").disabled = !canMark;
+  document.getElementById("addImpactMode").disabled = !canMark || !currentAimPoint;
+  document.getElementById("undoImpact").disabled = !canMark || currentImpactPoints.length === 0;
+  document.getElementById("clearMarks").disabled = !canMark || (!currentAimPoint && currentImpactPoints.length === 0);
+  document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
+  document.getElementById("showResults").disabled = !canMark || currentImpactPoints.length === 0;
+  let nextStep = "chooseTargetButton";
+  if (canMark && !currentAimPoint) nextStep = "setAimMode";
+  if (canMark && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (canMark && currentAimPoint && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
+  if (canMark && currentAimPoint && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
+  if (sessionSaved) nextStep = null;
+  setNextStep(nextStep);
+}
+
+function setMode(mode) {
+  markMode = mode;
+  renderMarkStatus();
+}
+
+function handleMarkTap(event) {
+  if (!hasMarkableEvidence()) return;
+  if (resultsShown) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  const xPercent = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+  const yPercent = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+  const point = {
+    xPercent: Number(xPercent.toFixed(2)),
+    yPercent: Number(yPercent.toFixed(2))
+  };
+  if (markMode === "aim" || !currentAimPoint) {
+    currentAimPoint = point;
+    markMode = "impact";
+  } else {
+    currentImpactPoints.push(point);
+  }
+  clearCalculatedResults();
+  setMode(markMode);
+  renderMarkers();
+  renderMarkStatus();
+}
+
+function handleMarkPointer(event) {
+  event.preventDefault();
+  handleMarkTap(event);
+}
+
+renderEvidencePreview(session && session.targetEvidenceImage);
+
+document.getElementById("chooseTargetButton").addEventListener("click", () => {
+  document.getElementById("targetImageInput").click();
+});
+
+document.getElementById("targetImageInput").addEventListener("change", event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  readFileAsDataUrl(file).then(dataUrl => downsizeImageDataUrl(dataUrl)).then(dataUrl => {
+    currentAimPoint = null;
+    currentImpactPoints = [];
+    sessionSaved = false;
+    unlockDistanceForNewTarget();
+    clearCalculatedResults();
+    pendingEvidence = {
+      dataUrl,
+      name: file.name,
+      type: file.type,
+      size: dataUrl.length,
+      originalSize: file.size
+    };
+    renderEvidencePreview(pendingEvidence);
+    setMode("aim");
+    renderMarkStatus();
+  }).catch(error => {
+    console.warn("Target image read failed", error);
+  });
+});
+
+document.getElementById("setAimMode").addEventListener("click", () => setMode("aim"));
+document.getElementById("addImpactMode").addEventListener("click", () => {
+  if (currentAimPoint) setMode("impact");
+});
+document.getElementById("undoImpact").addEventListener("click", () => {
+  currentImpactPoints.pop();
+  clearCalculatedResults();
+  renderMarkers();
+  renderMarkStatus();
+});
+document.getElementById("clearMarks").addEventListener("click", () => {
+  currentAimPoint = null;
+  currentImpactPoints = [];
+  clearCalculatedResults();
+  SCZN3M4.updateActiveSession({
+    aimPoint: null,
+    impactPoints: [],
+    poib: null,
+    clicks: null,
+    score: 0,
+    rawScore: 0,
+    qualityPossible: 0,
+    hits: 0,
+    shotCount: 0,
+    correctionStatus: "not-calculated",
+    shotData: { shotCount: 0, hits: 0, score: 0, status: "marks-cleared" },
+    correctionData: { status: "not-calculated", clicks: null, windage: null, elevation: null }
+  });
+  setMode("aim");
+  renderMarkers();
+  renderMarkStatus();
+});
+document.getElementById("showResults").addEventListener("click", () => {
+  if (currentAimPoint && currentImpactPoints.length) {
+    const saved = SCZN3M4.saveTargetMarks(currentAimPoint, currentImpactPoints);
+    currentClicks = saved && saved.clicks ? saved.clicks : null;
+    currentScore = Number.isFinite(Number(saved && saved.score)) ? Number(saved.score) : null;
+    resultsShown = !!currentClicks;
+    sessionSaved = false;
+  }
+  renderResults();
+  if (resultsShown) showShooterTip();
+  renderMarkStatus();
+});
+document.getElementById("saveMarks").addEventListener("click", () => {
+  if (!session) return;
+  let saved = null;
+  if (pendingEvidence) {
+    saved = SCZN3M4.saveTargetEvidenceImage(pendingEvidence);
+    pendingEvidence = null;
+  }
+  if (currentAimPoint) {
+    saved = SCZN3M4.saveTargetMarks(currentAimPoint, currentImpactPoints);
+    currentClicks = saved && saved.clicks ? saved.clicks : null;
+    currentScore = Number.isFinite(Number(saved && saved.score)) ? Number(saved.score) : null;
+  }
+  lockDistanceForSession();
+  const savedTimestamp = new Date().toISOString();
+  saved = SCZN3M4.updateActiveSession({
+    savedToSEC: true,
+    targetDistance: targetDistanceValue(),
+    targetDistanceValue: selectedDistanceValue,
+    targetDistanceUnit: selectedDistanceUnit,
+    targetDistanceLocked: true,
+    distance: targetDistanceValue(),
+    timestamp: savedTimestamp,
+    savedAt: savedTimestamp
+  });
+  if (saved && saved.targetEvidenceImage) {
+    renderEvidencePreview(saved.targetEvidenceImage);
+  }
+  sessionSaved = true;
+  renderMarkStatus();
+  renderResults();
+  if (saved) window.location.href = "records.html";
+});
+
+setMode(currentAimPoint ? "impact" : "aim");
+renderSetupSummary();
+renderResults();
+</script>
+</body>
+</html>

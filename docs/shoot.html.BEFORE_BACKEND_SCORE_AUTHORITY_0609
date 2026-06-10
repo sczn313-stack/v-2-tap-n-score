@@ -75,11 +75,6 @@ let backendAuthorityPackage = session && (session.backendAuthorityPackage || ses
 let markMode = "aim";
 let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
 let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
-function backendScoreValue(authorityPackage) {
-  const score = authorityPackage && authorityPackage.score;
-  const value = score && typeof score === "object" ? score.value : score;
-  return Number.isFinite(Number(value)) ? Number(value) : null;
-}
 let currentClicks = backendAuthorityPackage ? {
   ...(backendAuthorityPackage.clicks || {}),
   elevation: backendAuthorityPackage.correction && backendAuthorityPackage.correction.elevation,
@@ -87,9 +82,8 @@ let currentClicks = backendAuthorityPackage ? {
   poib: backendAuthorityPackage.poib,
   authorityPackage: backendAuthorityPackage
 } : null;
-let currentScore = backendScoreValue(backendAuthorityPackage);
+let currentScore = backendAuthorityPackage && Number.isFinite(Number(backendAuthorityPackage.score)) ? Number(backendAuthorityPackage.score) : null;
 let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
-let authorityStatusMessage = "";
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
@@ -210,7 +204,6 @@ function targetIntelStackHtml() {
     <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
     <div class="target-intel-item"><strong id="windageValue">--</strong></div>
     <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
-    <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     ${guidanceCardHtml()}
   `;
 }
@@ -477,7 +470,6 @@ async function requestBackendAuthority() {
 }
 
 function applyBackendAuthorityPackage(authorityPackage) {
-  authorityStatusMessage = "";
   backendAuthorityPackage = authorityPackage;
   const correction = authorityPackage && authorityPackage.correction ? authorityPackage.correction : {};
   const clicks = authorityPackage && authorityPackage.clicks ? authorityPackage.clicks : {};
@@ -488,7 +480,7 @@ function applyBackendAuthorityPackage(authorityPackage) {
     poib: authorityPackage.poib,
     authorityPackage
   } : null;
-  currentScore = backendScoreValue(authorityPackage);
+  currentScore = authorityPackage && Number.isFinite(Number(authorityPackage.score)) ? Number(authorityPackage.score) : null;
   resultsShown = !!(authorityPackage && authorityPackage.status && authorityPackage.status.hasCorrection);
   sessionSaved = false;
 }
@@ -794,13 +786,6 @@ function renderResults() {
   document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
   document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
   document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
-  const message = document.getElementById("authorityStatusMessage");
-  if (message) {
-    message.innerHTML = authorityStatusMessage
-      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
-      : "";
-    message.classList.toggle("is-hidden", !authorityStatusMessage);
-  }
 }
 
 function hideShooterTip() {
@@ -836,7 +821,6 @@ function clearCalculatedResults() {
   currentScore = null;
   backendAuthorityPackage = null;
   resultsShown = false;
-  authorityStatusMessage = "";
   sessionSaved = false;
   hideShooterTip();
   renderResults();
@@ -966,13 +950,13 @@ document.getElementById("clearMarks").addEventListener("click", () => {
     poib: null,
     groupCenter: null,
     clicks: null,
-    score: null,
-    rawScore: null,
-    qualityPossible: null,
+    score: 0,
+    rawScore: 0,
+    qualityPossible: 0,
     hits: 0,
     shotCount: 0,
     correctionStatus: "not-calculated",
-    shotData: { shotCount: 0, hits: 0, score: null, status: "marks-cleared" },
+    shotData: { shotCount: 0, hits: 0, score: 0, status: "marks-cleared" },
     correctionData: { status: "not-calculated", clicks: null, windage: null, elevation: null }
   });
   setMode("aim");
@@ -981,8 +965,6 @@ document.getElementById("clearMarks").addEventListener("click", () => {
 });
 document.getElementById("showResults").addEventListener("click", async () => {
   if (!currentAimPoint || !currentImpactPoints.length) return;
-  authorityStatusMessage = "";
-  renderResults();
   try {
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
@@ -995,7 +977,6 @@ document.getElementById("showResults").addEventListener("click", async () => {
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = "Authority service unavailable. Please try again.";
     renderResults();
   }
   renderMarkStatus();
@@ -1016,8 +997,6 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
     backendAuthorityPackage: authorityPackage,
     ugeoAuthorityPackage: authorityPackage,
-    score: authorityPackage.score || null,
-    scoreValue: backendScoreValue(authorityPackage),
     poib: authorityPackage.poib || null,
     groupCenter: authorityPackage.groupCenter || null,
     clicks: authorityClicks,
@@ -1035,8 +1014,6 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       hits: currentImpactPoints.length,
       poib: authorityPackage.poib || null,
       groupCenter: authorityPackage.groupCenter || null,
-      score: authorityPackage.score || null,
-      scoreValue: backendScoreValue(authorityPackage),
       authoritySource: "backend"
     },
     hits: currentImpactPoints.length,

@@ -555,8 +555,33 @@
     };
   }
 
-  function frontendScoreUnavailable() {
-    return { score: null, rawScore: null, qualityPossible: null, perShot: [], model: "backend-authority-required" };
+  function calculateImpactScore(aimPoint, impactPoints) {
+    const impacts = Array.isArray(impactPoints) ? impactPoints : [];
+    if (!aimPoint || !impacts.length) {
+      return { score: 0, rawScore: 0, qualityPossible: 0, perShot: [], model: "aim-distance-quality-v1" };
+    }
+    const perShot = impacts.map(point => {
+      const xOffset = Number(point.xPercent || 0) - Number(aimPoint.xPercent || 0);
+      const yOffset = Number(point.yPercent || 0) - Number(aimPoint.yPercent || 0);
+      const distance = Math.sqrt((xOffset * xOffset) + (yOffset * yOffset));
+      let points = 0;
+      if (distance <= 1.5) points = 10;
+      else if (distance <= 3) points = 8;
+      else if (distance <= 5) points = 6;
+      else if (distance <= 8) points = 4;
+      else if (distance <= 12) points = 2;
+      return {
+        xPercent: point.xPercent,
+        yPercent: point.yPercent,
+        distanceFromAim: Number(distance.toFixed(2)),
+        points
+      };
+    });
+    const rawScore = perShot.reduce((sum, shot) => sum + shot.points, 0);
+    const qualityPossible = impacts.length * 10;
+    // Score is calculated from shot quality, not copied from hit count.
+    const score = qualityPossible ? Math.round((rawScore / qualityPossible) * 100) : 0;
+    return { score, rawScore, qualityPossible, perShot, model: "aim-distance-quality-v1" };
   }
 
   function saveTargetMarks(aimPoint, impactPoints) {
@@ -565,7 +590,7 @@
     const impacts = Array.isArray(impactPoints) ? impactPoints : [];
     const hitCount = impacts.length;
     const correction = calculateTapCorrection(aimPoint, impacts);
-    const scoreResult = frontendScoreUnavailable();
+    const scoreResult = calculateImpactScore(aimPoint, impacts);
     const poib = correction ? correction.poib : null;
     const correctionStatus = correction ? "calculated" : "not-calculated";
     return replaceSession({
@@ -574,13 +599,13 @@
       impactPoints: impacts,
       poib,
       clicks: correction,
-      score: null,
+      score: scoreResult.score,
       rawScore: scoreResult.rawScore,
       qualityPossible: scoreResult.qualityPossible,
       scoreData: scoreResult,
       hits: hitCount,
       shotCount: hitCount,
-      scoreStatus: "Backend authority required",
+      scoreStatus: "Calculated",
       correctionStatus,
       shotData: {
         ...(active.shotData || {}),
@@ -588,12 +613,12 @@
         impactPoints: impacts,
         shotCount: hitCount,
         hits: hitCount,
-        score: null,
+        score: scoreResult.score,
         rawScore: scoreResult.rawScore,
         qualityPossible: scoreResult.qualityPossible,
         scoreData: scoreResult,
         poib,
-        scoreStatus: "Backend authority required",
+        scoreStatus: "Calculated",
         correctionStatus,
         status: "marks-saved",
         savedAt: nowStamp()
@@ -685,6 +710,7 @@
     saveTargetEvidenceImage,
     clearTargetEvidenceImage,
     calculateTapCorrection,
+    calculateImpactScore,
     saveTargetMarks,
     getSessionHistory,
     getLastSession,

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SCZN3 Backend Authority Proof</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .proof-shell{
+    max-width:1120px;
+    margin:0 auto;
+    padding:18px;
+  }
+  .proof-header{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:flex-start;
+    margin-bottom:12px;
+  }
+  .proof-header h1{
+    margin:0;
+    font-size:clamp(28px,5vw,52px);
+    line-height:0.95;
+  }
+  .proof-grid{
+    display:grid;
+    grid-template-columns:minmax(280px, 1fr) minmax(280px, 360px);
+    gap:14px;
+  }
+  .proof-target{
+    position:relative;
+    border:3px solid var(--ink);
+    border-radius:var(--radius);
+    background:#fff;
+    overflow:hidden;
+  }
+  .proof-target img{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .proof-layer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  .proof-point{
+    position:absolute;
+    transform:translate(-50%, -50%);
+    display:grid;
+    place-items:center;
+    border-radius:999px;
+    font-weight:900;
+  }
+  .proof-impact{
+    width:18px;
+    height:18px;
+    border:3px solid #111;
+    background:#d82616;
+    color:#111;
+    font-size:10px;
+  }
+  .proof-aim{
+    width:8px;
+    height:8px;
+    background:#111;
+    color:transparent;
+  }
+  .proof-poib{
+    width:16px;
+    height:16px;
+    border:3px solid #f28a1d;
+    background:#ff39d5;
+    box-shadow:0 0 0 2px #fff;
+  }
+  .proof-vector{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+  }
+  .proof-vector line{
+    stroke:#1f7a32;
+    stroke-width:0.55;
+    vector-effect:non-scaling-stroke;
+  }
+  .proof-panel{
+    border:3px solid var(--ink);
+    border-radius:var(--radius);
+    background:var(--panel);
+    padding:14px;
+  }
+  .proof-preset-row{
+    display:grid;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .proof-preset-row .button{
+    width:100%;
+  }
+  .proof-result{
+    display:grid;
+    gap:8px;
+    margin:12px 0;
+  }
+  .proof-pill{
+    border:2px solid var(--ink);
+    border-radius:var(--radius);
+    padding:8px 10px;
+    background:#fff;
+    font-weight:900;
+  }
+  .proof-json{
+    max-height:360px;
+    overflow:auto;
+    border:2px solid var(--ink);
+    border-radius:var(--radius);
+    background:#111;
+    color:#f7f0df;
+    padding:10px;
+    font-size:11px;
+    white-space:pre-wrap;
+  }
+  @media (max-width:780px){
+    .proof-grid{
+      grid-template-columns:1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="proof-shell">
+  <header class="proof-header">
+    <div>
+      <p class="eyebrow">Backend Authority Harness</p>
+      <h1>SCZN3 UGEO Proof</h1>
+      <p>Backend calculates. Frontend displays.</p>
+    </div>
+    <a class="button" href="shoot.html">Target</a>
+  </header>
+
+  <section class="proof-grid">
+    <div class="proof-target" id="proofTarget">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker ST-100YD-SMART target" />
+      <div class="proof-layer" id="proofLayer"></div>
+    </div>
+
+    <aside class="proof-panel">
+      <h2>Test Evidence</h2>
+      <div class="proof-preset-row">
+        <button class="button" type="button" data-preset="none">No Evidence</button>
+        <button class="button" type="button" data-preset="single">Single Hit</button>
+        <button class="button" type="button" data-preset="symmetric">Four Symmetric Hits</button>
+        <button class="button" type="button" data-preset="horizontal">Horizontal 10-Square</button>
+        <button class="button" type="button" data-preset="vertical">Vertical 10-Square</button>
+      </div>
+      <div class="proof-result" id="proofResult"></div>
+      <pre class="proof-json" id="proofJson">Select a test preset.</pre>
+    </aside>
+  </section>
+</main>
+
+<script>
+const BACKEND_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
+const BASE_REQUEST = {
+  targetId: "BAKER_ST_100YD_SMART",
+  targetName: "Baker 100 Yard Smart Target",
+  vendor: "Baker Smart Targets",
+  targetAuthorityGeometry: {
+    imageWidth: 1102,
+    imageHeight: 1713,
+    gridLeftPx: 68,
+    gridTopPx: 282,
+    gridRightPx: 1047,
+    gridBottomPx: 1652,
+    gridSquarePx: 49,
+    gridSquareInches: 1
+  },
+  distance: { value: 100, unit: "yds" },
+  shooterSetup: {
+    optic: { clickValueMOA: 0.25 },
+    source: "backend-authority-proof"
+  }
+};
+
+const PRESETS = {
+  none: {
+    label: "No Evidence",
+    aimCoordinate: null,
+    impactCoordinates: []
+  },
+  single: {
+    label: "Single Hit",
+    aimCoordinate: { xPercent: 50, yPercent: 50 },
+    impactCoordinates: [{ xPercent: 40, yPercent: 40 }]
+  },
+  symmetric: {
+    label: "Four Symmetric Hits",
+    aimCoordinate: { xPercent: 50, yPercent: 50 },
+    impactCoordinates: [
+      { xPercent: 45, yPercent: 45 },
+      { xPercent: 55, yPercent: 45 },
+      { xPercent: 45, yPercent: 55 },
+      { xPercent: 55, yPercent: 55 }
+    ]
+  },
+  horizontal: {
+    label: "Horizontal 10-Square",
+    aimCoordinate: { xPercent: 50, yPercent: 50 },
+    impactCoordinates: [{ xPercent: 5.54, yPercent: 50 }]
+  },
+  vertical: {
+    label: "Vertical 10-Square",
+    aimCoordinate: { xPercent: 50, yPercent: 50 },
+    impactCoordinates: [{ xPercent: 50, yPercent: 21.41 }]
+  }
+};
+
+function pointMarkup(className, point, content = "") {
+  if (!point || !Number.isFinite(Number(point.xPercent)) || !Number.isFinite(Number(point.yPercent))) return "";
+  return `<span class="proof-point ${className}" style="left:${point.xPercent}%;top:${point.yPercent}%">${content}</span>`;
+}
+
+function vectorMarkup(vector) {
+  if (!vector || !vector.start || !vector.end) return "";
+  return `<svg class="proof-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <marker id="proofArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,4 L0,8 Z" fill="#1f7a32"></path>
+      </marker>
+    </defs>
+    <line x1="${vector.start.xPercent}" y1="${vector.start.yPercent}" x2="${vector.end.xPercent}" y2="${vector.end.yPercent}" marker-end="url(#proofArrowhead)"></line>
+  </svg>`;
+}
+
+function renderBackendPackage(pkg) {
+  const render = pkg && pkg.renderCoordinates ? pkg.renderCoordinates : {};
+  const layer = document.getElementById("proofLayer");
+  const result = document.getElementById("proofResult");
+  const json = document.getElementById("proofJson");
+  const scoreValue = pkg.score && typeof pkg.score === "object" ? pkg.score.value : pkg.score;
+  const parts = [];
+  parts.push(vectorMarkup(render.vector));
+  (render.impacts || []).forEach((point, index) => {
+    parts.push(pointMarkup("proof-impact", point, String(index + 1)));
+  });
+  parts.push(pointMarkup("proof-aim", render.aim));
+  parts.push(pointMarkup("proof-poib", render.poib));
+  layer.innerHTML = parts.join("");
+  result.innerHTML = `
+    <div class="proof-pill">Status: ${pkg.status && pkg.status.hasCorrection ? "Correction returned" : "No correction"}</div>
+    <div class="proof-pill">Score: ${Number.isFinite(Number(scoreValue)) ? scoreValue : "None"}</div>
+    <div class="proof-pill">POIB: ${pkg.poib ? `${pkg.poib.xPercent}, ${pkg.poib.yPercent}` : "None"}</div>
+    <div class="proof-pill">Clicks: ${pkg.correction ? `${pkg.correction.elevation} | ${pkg.correction.windage}` : "None"}</div>
+    <div class="proof-pill">MOA: ${pkg.moa ? `${pkg.moa.elevationMOA} / ${pkg.moa.windageMOA}` : "None"}</div>
+    <div class="proof-pill">Hash: ${pkg.evidenceHash || "None"}</div>
+  `;
+  json.textContent = JSON.stringify(pkg, null, 2);
+}
+
+async function runPreset(name) {
+  const preset = PRESETS[name];
+  const payload = {
+    ...BASE_REQUEST,
+    aimCoordinate: preset.aimCoordinate,
+    impactCoordinates: preset.impactCoordinates
+  };
+  document.getElementById("proofJson").textContent = "Calling backend authority...";
+  const response = await fetch(BACKEND_AUTHORITY_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) throw new Error(`Backend authority failed: ${response.status}`);
+  const pkg = await response.json();
+  pkg.proofPreset = preset.label;
+  renderBackendPackage(pkg);
+}
+
+document.querySelectorAll("[data-preset]").forEach(button => {
+  button.addEventListener("click", () => runPreset(button.dataset.preset).catch(error => {
+    document.getElementById("proofJson").textContent = error.message;
+  }));
+});
+
+runPreset("none").catch(error => {
+  document.getElementById("proofJson").textContent = error.message;
+});
+</script>
+</body>
+</html>

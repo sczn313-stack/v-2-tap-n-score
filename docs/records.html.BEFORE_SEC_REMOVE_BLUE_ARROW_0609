@@ -28,9 +28,9 @@
         <h1>SEC</h1>
         <h2>Shooter Experience Card</h2>
       </div>
-      <a class="vendor-pill vendor-site-link" href="https://BakerTarget.com" aria-label="Open BakerTarget.com">
+      <a class="vendor-pill" href="buy-targets.html" aria-label="Open vendor page">
         <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="" />
-        <span>BakerTarget.com</span>
+        <span>Vendor</span>
       </a>
       <button class="vendor-pill save-page-button" type="button" id="saveSecPage">Save This Page</button>
     </div>
@@ -107,11 +107,27 @@ function markerHtml(className, point, content = "", attrs = "") {
   return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attrs ? ` ${attrs}` : ""}>${content}</span>`;
 }
 
+function vectorHtml(vector) {
+  if (!vector || !vector.start || !vector.end) return "";
+  const start = authorityPoint(vector.start);
+  const end = authorityPoint(vector.end);
+  if (!start || !end) return "";
+  return `<svg class="history-thumb-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <defs>
+      <marker id="secAuthorityArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,4 L0,8 Z"></path>
+      </marker>
+    </defs>
+    <line x1="${start.xPercent}" y1="${start.yPercent}" x2="${end.xPercent}" y2="${end.yPercent}" marker-end="url(#secAuthorityArrowhead)"></line>
+  </svg>`;
+}
+
 function authorityVisual(session) {
   const pkg = authorityPackage(session);
   if (!pkg || !pkg.renderCoordinates) return "";
   const render = pkg.renderCoordinates;
   const parts = [];
+  parts.push(vectorHtml(render.vector));
   (render.impacts || []).forEach((point, index) => {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
   });
@@ -138,28 +154,6 @@ function attributionLine(snapshot) {
     .filter(([, value]) => value)
     .map(([label, value]) => `${label}: ${value}`);
   return parts.length ? `<div class="sec-attribution-line">${parts.join(" | ")}</div>` : "";
-}
-
-function poibDisplay(pkg) {
-  const correction = pkg && pkg.correction;
-  if (!correction || !Number.isFinite(Number(correction.xInches)) || !Number.isFinite(Number(correction.yInches))) return "";
-  const x = Number(correction.xInches);
-  const y = Number(correction.yInches);
-  const windage = Math.abs(x) < 0.05 ? "Centered" : `${Math.abs(x).toFixed(1)}\" ${x > 0 ? "Right" : "Left"}`;
-  const elevation = Math.abs(y) < 0.05 ? "Centered" : `${Math.abs(y).toFixed(1)}\" ${y > 0 ? "Low" : "High"}`;
-  if (windage === "Centered" && elevation === "Centered") return "Centered";
-  if (windage === "Centered") return elevation;
-  if (elevation === "Centered") return windage;
-  return `${elevation}, ${windage}`;
-}
-
-function authorityDetailLine(pkg) {
-  if (!pkg) return "";
-  const parts = [];
-  if (pkg.group && pkg.group.display) parts.push(`Group: ${pkg.group.display}`);
-  const poib = poibDisplay(pkg);
-  if (poib) parts.push(`POIB: ${poib}`);
-  return parts.length ? `<div class="sec-authority-detail">${parts.join(" | ")}</div>` : "";
 }
 
 function renderHistory() {
@@ -205,7 +199,6 @@ function renderHistory() {
           <div class="sec-setup-line">${[weapon, optic, ammo].filter(Boolean).join(" | ") || "--"}</div>
           ${attributionLine(snapshot)}
           ${authorityMessage}
-          ${hasAuthority ? authorityDetailLine(pkg) : ""}
           <div class="sec-intel-pill">
             <span>${distanceDisplay(session)}</span>
             ${scorePill}

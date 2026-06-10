@@ -165,7 +165,36 @@ const HOME_CONFIG = {
       { xPercent: 28.8, yPercent: 23.0 },
       { xPercent: 19.7, yPercent: 27.3 }
     ]
-  }
+  },
+  examples: [
+    {
+      title: "SCZN3 100YD Test",
+      date: "May 10, 2025 · 8:24 AM",
+      weapon: ".308 Win",
+      distance: "100 Yards",
+      shots: "5 Shots",
+      group: "0.82 MOA",
+      poib: "0.4&quot; High, 0.2&quot; Left"
+    },
+    {
+      title: "AR556 Zero Check",
+      date: "May 9, 2025 · 3:15 PM",
+      weapon: "5.56 NATO",
+      distance: "100 Yards",
+      shots: "5 Shots",
+      group: "1.12 MOA",
+      poib: "0.6&quot; Low, 0.3&quot; Right"
+    },
+    {
+      title: "6.5 Creedmoor",
+      date: "May 8, 2025 · 11:02 AM",
+      weapon: "6.5 Creedmoor",
+      distance: "300 Yards",
+      shots: "5 Shots",
+      group: "0.65 MOA",
+      poib: "0.2&quot; High, 0.1&quot; Left"
+    }
+  ]
 };
 
 function safePoint(point) {
@@ -328,28 +357,22 @@ function formatDate(value) {
   });
 }
 
-function isBackendAuthoritySession(session) {
-  const pkg = authorityPackage(session);
-  return !!(session && session.savedToSEC === true && pkg && pkg.status);
-}
-
-function sessionToCard(session) {
+function sessionToCard(session, index) {
   const snapshot = session && session.matrixSnapshot ? session.matrixSnapshot : {};
   const shotData = session && session.shotData ? session.shotData : {};
-  const pkg = authorityPackage(session);
-  const evidence = sessionEvidencePackage(session);
-  const group = authorityGroupSummary(pkg);
-  const poib = authorityPoibSummary(pkg);
+  const correction = session && session.correctionData ? session.correctionData : {};
+  const fallbackEvidence = index === 0 ? approvedFallbackEvidencePackage() : null;
+  const evidence = sessionEvidencePackage(session) || (!session ? fallbackEvidence : null);
   return {
     session,
     evidence,
-    title: session.sessionLabel || SCZN3M4.formatSessionNumber(session.sessionNumber),
-    date: formatDate(session.timestamp || session.createdAt),
-    weapon: snapshot.modelCaliber || snapshot.rifle || "--",
-    distance: snapshot.targetDistance || snapshot.distance || sessionDistance(session),
-    shots: `${(pkg.status && pkg.status.impactCount) || shotData.shotCount || shotData.hits || 0} Shots`,
-    group,
-    poib
+    title: session ? (session.sessionLabel || SCZN3M4.formatSessionNumber(session.sessionNumber)) : (fallbackEvidence ? "Baker Evidence" : HOME_CONFIG.examples[index].title),
+    date: session ? formatDate(session.timestamp || session.createdAt) : (fallbackEvidence ? "Authority evidence" : HOME_CONFIG.examples[index].date),
+    weapon: snapshot.modelCaliber || snapshot.rifle || (fallbackEvidence ? "Baker ST-100YD-SMART" : HOME_CONFIG.examples[index].weapon),
+    distance: snapshot.targetDistance || snapshot.distance || (fallbackEvidence ? HOME_CONFIG.approvedFallbackEvidence.distance : HOME_CONFIG.examples[index].distance),
+    shots: `${shotData.shotCount || shotData.hits || (fallbackEvidence ? fallbackEvidence.impacts.length : HOME_CONFIG.examples[index].shots.replace(/\D/g, "") || 5)} Shots`,
+    group: session ? (authorityGroupSummary(authorityPackage(session)) || "--") : (fallbackEvidence ? HOME_CONFIG.approvedFallbackEvidence.group : HOME_CONFIG.examples[index].group),
+    poib: session ? (authorityPoibSummary(authorityPackage(session)) || "--") : (fallbackEvidence ? HOME_CONFIG.approvedFallbackEvidence.poibSummary : HOME_CONFIG.examples[index].poib)
   };
 }
 
@@ -414,27 +437,13 @@ function renderRecentThumb(card) {
 }
 
 function renderRecentCards() {
-  const sessions = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [])
-    .filter(isBackendAuthoritySession)
-    .slice(0, 3);
+  const sessions = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : []).slice(0, 3);
+  const cards = [0, 1, 2].map(index => sessionToCard(sessions[index], index));
   const grid = document.getElementById("recentSecGrid");
   grid.textContent = "";
-  if (!sessions.length) {
-    grid.innerHTML = `
-      <article class="recent-empty-state">
-        <strong>No saved Shooter Experience Cards yet.</strong>
-        <span>Save a completed target session to display backend-authority Group and POIB values here.</span>
-      </article>`;
-    return;
-  }
-  const cards = sessions.map(sessionToCard);
   cards.forEach((card, index) => {
     const article = document.createElement("article");
     article.className = "recent-card";
-    const authorityLines = [
-      card.group ? `Group: <b>${card.group}</b>` : "",
-      card.poib ? `POIB: <b>${card.poib}</b>` : ""
-    ].filter(Boolean).join("<br />");
     article.innerHTML = `
       ${renderRecentThumb(card)}
       <div class="recent-copy">
@@ -443,7 +452,7 @@ function renderRecentCards() {
         <span>✦ ${card.weapon}</span>
         <span>◉ ${card.distance}</span>
         <span>● ${card.shots}</span>
-        ${authorityLines ? `<p>${authorityLines}</p>` : ""}
+        <p>Group: <b>${card.group}</b><br />POIB: <b>${card.poib}</b></p>
       </div>`;
     if (index === 0) article.classList.add("is-mirror");
     grid.append(article);

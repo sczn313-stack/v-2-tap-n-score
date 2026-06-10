@@ -1,0 +1,108 @@
+from authority_service import build_authority_package
+
+
+def package(aim=None, impacts=None):
+    return build_authority_package({
+        "targetId": "BAKER_ST_100YD_SMART",
+        "aimCoordinate": aim,
+        "impactCoordinates": impacts or [],
+        "distance": {"value": 100, "unit": "yds"},
+        "shooterSetup": {"optic": {"clickValueMOA": 0.25}},
+    })
+
+
+def assert_equal(actual, expected, label):
+    if actual != expected:
+        raise AssertionError(f"{label}: expected {expected!r}, got {actual!r}")
+
+
+def assert_close(actual, expected, label, tolerance=0.0001):
+    if abs(actual - expected) > tolerance:
+        raise AssertionError(f"{label}: expected {expected!r}, got {actual!r}")
+
+
+def test_no_aim_returns_no_correction():
+    result = package(None, [{"xPercent": 20, "yPercent": 20}])
+    assert_equal(result["correction"], None, "correction without aim")
+    assert_equal(result["clicks"], None, "clicks without aim")
+
+
+def test_no_impacts_returns_no_poib():
+    result = package({"xPercent": 50, "yPercent": 50}, [])
+    assert_equal(result["poib"], None, "poib without impacts")
+    assert_equal(result["groupCenter"], None, "group center without impacts")
+
+
+def test_single_hit_poib_equals_hit():
+    hit = {"xPercent": 22.5, "yPercent": 31.25}
+    result = package({"xPercent": 50, "yPercent": 50}, [hit])
+    assert_close(result["poib"]["xPercent"], hit["xPercent"], "single-hit poib x")
+    assert_close(result["poib"]["yPercent"], hit["yPercent"], "single-hit poib y")
+
+
+def test_four_symmetric_hits_equal_center():
+    impacts = [
+        {"xPercent": 40, "yPercent": 40},
+        {"xPercent": 60, "yPercent": 40},
+        {"xPercent": 40, "yPercent": 60},
+        {"xPercent": 60, "yPercent": 60},
+    ]
+    result = package({"xPercent": 50, "yPercent": 50}, impacts)
+    assert_close(result["poib"]["xPercent"], 50, "symmetric poib x")
+    assert_close(result["poib"]["yPercent"], 50, "symmetric poib y")
+
+
+def point_from_grid(x_inches, y_inches):
+    geometry = {
+        "imageWidth": 1102,
+        "imageHeight": 1713,
+        "gridLeftPx": 68,
+        "gridTopPx": 282,
+        "gridSquarePx": 49,
+    }
+    return {
+        "xPercent": ((geometry["gridLeftPx"] + (x_inches * geometry["gridSquarePx"])) / geometry["imageWidth"]) * 100,
+        "yPercent": ((geometry["gridTopPx"] + (y_inches * geometry["gridSquarePx"])) / geometry["imageHeight"]) * 100,
+    }
+
+
+def test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude():
+    aim = point_from_grid(10, 10)
+    horizontal = package(aim, [point_from_grid(20, 10)])
+    vertical = package(aim, [point_from_grid(10, 20)])
+    assert_equal(horizontal["clicks"]["windageClicks"], vertical["clicks"]["elevationClicks"], "10-square click parity")
+
+
+def test_same_input_creates_same_evidence_hash():
+    payload = {"xPercent": 24, "yPercent": 42}
+    first = package({"xPercent": 50, "yPercent": 50}, [payload])
+    second = package({"xPercent": 50, "yPercent": 50}, [payload])
+    assert_equal(first["evidenceHash"], second["evidenceHash"], "stable evidence hash")
+
+
+def test_missing_evidence_creates_no_fake_coordinate():
+    result = package(None, [])
+    assert_equal(result["renderCoordinates"]["aim"], None, "fake aim")
+    assert_equal(result["renderCoordinates"]["poib"], None, "fake poib")
+    assert_equal(result["renderCoordinates"]["vector"], None, "fake vector")
+    assert_equal(result["renderCoordinates"]["impacts"], [], "fake impacts")
+
+
+def run():
+    tests = [
+        test_no_aim_returns_no_correction,
+        test_no_impacts_returns_no_poib,
+        test_single_hit_poib_equals_hit,
+        test_four_symmetric_hits_equal_center,
+        test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude,
+        test_same_input_creates_same_evidence_hash,
+        test_missing_evidence_creates_no_fake_coordinate,
+    ]
+    for test in tests:
+        test()
+        print(f"PASS {test.__name__}")
+    print(f"PASS {len(tests)} authority service tests")
+
+
+if __name__ == "__main__":
+    run()

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Home</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="home-page">
+<main class="shell">
+  <header class="m4-header">
+    <div class="vendor-slot">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target thumbnail" />
+      <div class="brand-lockup">
+        <a class="vendor-name" href="index.html">Baker Smart Targets</a>
+        <a class="vendor-minor-link" href="buy-targets.html">Buy More Targets</a>
+      </div>
+    </div>
+    <nav class="locked-nav" aria-label="Baker workflow navigation">
+      <a class="locked-nav-item is-active" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
+      <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Setup</span></a>
+      <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
+      <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
+    </nav>
+  </header>
+  <section class="active-session-bar" id="activeSessionBar"></section>
+
+  <section class="target-hero operational-home">
+    <aside class="target-board home-target-preview" aria-label="Baker 100 Yard Smart Target">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target with QR activation zone" />
+    </aside>
+
+    <div class="hero-copy home-control-panel" aria-label="Baker session controls">
+      <div class="mission-cards">
+        <article class="field-shell">
+          <span>Last Setup</span>
+          <div class="home-card-details" id="lastSetup">
+            <strong>No setup yet</strong>
+          </div>
+        </article>
+        <article class="field-shell">
+          <span>Last Session</span>
+          <div class="home-card-details" id="lastSession">
+            <strong>No session yet</strong>
+          </div>
+        </article>
+      </div>
+      <a class="button home-survey-button" href="survey.html">Survey</a>
+    </div>
+  </section>
+</main>
+<script src="app_state.js"></script>
+<script>
+fetch("assets/OET-M4-25-V1.json")
+  .then(response => response.json())
+  .then(authority => SCZN3M4.registerTargetAuthority(authority))
+  .catch(error => console.warn("Baker target authority unavailable", error));
+
+function formatSetup(snapshot) {
+  if (!snapshot) return "No setup yet";
+  return [snapshot.rifle, snapshot.opticModel || snapshot.opticBrand, snapshot.ammoLoad, snapshot.missionProfile]
+    .filter(Boolean)
+    .join(" / ") || "Setup pending";
+}
+
+function cleanDateTime(value) {
+  if (!value) return "--";
+  return new Date(value).toLocaleString(undefined, {
+    month: "numeric",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function setCardRows(element, rows) {
+  element.textContent = "";
+  rows.forEach(row => {
+    const line = document.createElement("div");
+    line.className = "home-detail-row";
+    const label = document.createElement("span");
+    label.textContent = row.label;
+    const value = document.createElement("strong");
+    value.textContent = row.value || "--";
+    line.append(label, value);
+    element.append(line);
+  });
+}
+
+function renderSetupCard(snapshot) {
+  const target = document.getElementById("lastSetup");
+  if (!snapshot) {
+    target.innerHTML = "<strong>No setup yet</strong>";
+    return;
+  }
+  setCardRows(target, [
+    { label: "Weapon", value: [snapshot.rifle, snapshot.rifleVariant].filter(Boolean).join(" / ") },
+    { label: "Optic", value: snapshot.opticModel || snapshot.opticBrand },
+    { label: "Ammo", value: [snapshot.ammoManufacturer, snapshot.ammoLoad].filter(Boolean).join(" / ") },
+    { label: "Distance", value: snapshot.targetDistance || snapshot.distance || snapshot.missionProfile }
+  ]);
+}
+
+function renderSessionCard(session) {
+  const target = document.getElementById("lastSession");
+  if (!session) {
+    target.innerHTML = "<strong>No session yet</strong>";
+    return;
+  }
+  setCardRows(target, [
+    { label: "Session", value: session.sessionLabel || SCZN3M4.formatSessionNumber(session.sessionNumber) },
+    { label: "Date", value: cleanDateTime(session.timestamp || session.createdAt) }
+  ]);
+}
+
+function renderHome() {
+  const matrix = SCZN3M4.getActiveMatrix();
+  const last = SCZN3M4.getLastSession();
+  renderSetupCard(matrix);
+  renderSessionCard(last);
+  document.getElementById("activeSessionBar").innerHTML = last
+    ? `<strong>${formatSetup(last.matrixSnapshot || matrix)}</strong><span>Ready</span>`
+    : `<strong>${formatSetup(matrix)}</strong><span>Start in Weapon Setup</span>`;
+}
+
+renderHome();
+</script>
+</body>
+</html>
