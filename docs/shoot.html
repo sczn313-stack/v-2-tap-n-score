@@ -66,7 +66,23 @@ if (!session && SCZN3M4.getActiveMatrix()) {
   session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
 }
 let matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
-const BACKEND_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
+function configuredAuthorityEndpoint() {
+  const metaEndpoint = document.querySelector('meta[name="sczn3-authority-endpoint"]')?.content;
+  const storedEndpoint = (() => {
+    try {
+      return localStorage.getItem("SCZN3_BACKEND_AUTHORITY_ENDPOINT");
+    } catch (_error) {
+      return "";
+    }
+  })();
+  const explicitEndpoint = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || metaEndpoint || storedEndpoint;
+  if (explicitEndpoint) return explicitEndpoint;
+  if (["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
+    return "http://127.0.0.1:8098/api/authority/ugeo";
+  }
+  return "/api/authority/ugeo";
+}
+const BACKEND_AUTHORITY_ENDPOINT = configuredAuthorityEndpoint();
 let pendingEvidence = null;
 let displayedEvidence = null;
 let backendAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
@@ -472,8 +488,49 @@ async function requestBackendAuthority() {
     throw new Error(`Backend authority failed: ${response.status}`);
   }
   const authorityPackage = await response.json();
+  validateBackendAuthorityPackage(authorityPackage);
   authorityPackage.frontendRequest = requestPayload;
   return authorityPackage;
+}
+
+function isAuthorityPoint(point) {
+  return !!(
+    point &&
+    Number.isFinite(Number(point.xPercent)) &&
+    Number.isFinite(Number(point.yPercent))
+  );
+}
+
+function validateBackendAuthorityPackage(authorityPackage) {
+  const status = authorityPackage && authorityPackage.status;
+  const render = authorityPackage && authorityPackage.renderCoordinates;
+  const correction = authorityPackage && authorityPackage.correction;
+  const clicks = authorityPackage && authorityPackage.clicks;
+  const hasValidImpacts = !!(render && Array.isArray(render.impacts) && render.impacts.length === currentImpactPoints.length);
+  const hasValidClicks = !!(
+    clicks &&
+    Number.isFinite(Number(clicks.elevationClicks)) &&
+    Number.isFinite(Number(clicks.windageClicks))
+  );
+  const valid = !!(
+    status &&
+    status.hasAim === true &&
+    status.hasPOIB === true &&
+    status.hasCorrection === true &&
+    Number(status.impactCount) === currentImpactPoints.length &&
+    isAuthorityPoint(authorityPackage.poib) &&
+    isAuthorityPoint(render && render.aim) &&
+    isAuthorityPoint(render && render.poib) &&
+    render.vector &&
+    isAuthorityPoint(render.vector.start) &&
+    isAuthorityPoint(render.vector.end) &&
+    correction &&
+    hasValidClicks &&
+    hasValidImpacts
+  );
+  if (!valid) {
+    throw new Error("Backend authority response incomplete");
+  }
 }
 
 function applyBackendAuthorityPackage(authorityPackage) {
@@ -995,7 +1052,9 @@ document.getElementById("showResults").addEventListener("click", async () => {
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = "Authority service unavailable. Please try again.";
+    authorityStatusMessage = error && String(error.message || "").includes("incomplete")
+      ? "Authority response incomplete. Please try again."
+      : "Authority service unavailable. Please try again.";
     renderResults();
   }
   renderMarkStatus();
