@@ -80,7 +80,7 @@ function configuredAuthorityEndpoint() {
   if (["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
     return "http://127.0.0.1:8098/api/authority/ugeo";
   }
-  return "/api/authority/ugeo";
+  return "";
 }
 const BACKEND_AUTHORITY_ENDPOINT = configuredAuthorityEndpoint();
 let pendingEvidence = null;
@@ -479,6 +479,9 @@ function backendAuthorityRequest() {
 
 async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
+  if (!BACKEND_AUTHORITY_ENDPOINT) {
+    throw new Error("Backend authority service is not configured");
+  }
   const response = await fetch(BACKEND_AUTHORITY_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
