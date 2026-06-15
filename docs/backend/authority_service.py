@@ -334,6 +334,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "gridSquarePx": geometry.get("gridSquarePx"),
         },
         "renderCoordinates": render_coordinates,
+        "hasCorrection": correction is not None,
         "status": {
             "hasAim": aim is not None,
             "impactCount": len(impacts),
