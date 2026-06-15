@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: sczn3-authority
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python docs/backend/server.py"
+    healthCheckPath: "/health"
+    envVars:
+      - key: HOST
+        value: "0.0.0.0"
+      - key: SCZN3_ALLOWED_ORIGINS
+        value: "https://tap-n-score.com,https://www.tap-n-score.com,https://BakerTargets.com,https://www.BakerTargets.com"
