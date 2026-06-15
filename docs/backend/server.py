@@ -24,6 +24,8 @@ ALLOWED_ORIGINS = {
 
 
 class AuthorityHandler(BaseHTTPRequestHandler):
+    AUTHORITY_PATHS = {"/api/authority/ugeo", "/api/authority/ugeo/"}
+
     def _cors_origin(self):
         origin = self.headers.get("Origin")
         return origin if origin in ALLOWED_ORIGINS else None
@@ -52,7 +54,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         self._send_json(200, {"ok": True, "service": "sczn3-authority"})
 
     def do_POST(self):
-        if self.path != "/api/authority/ugeo":
+        if self.path not in self.AUTHORITY_PATHS:
             self._send_json(404, {"error": "not found"})
             return
         try:
