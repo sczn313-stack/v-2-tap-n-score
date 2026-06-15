@@ -1050,7 +1050,6 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
     if (resultsShown) showShooterTip();
   } catch (error) {
-    console.warn("Backend authority request failed", error);
     currentClicks = null;
     currentScore = null;
     backendAuthorityPackage = null;
