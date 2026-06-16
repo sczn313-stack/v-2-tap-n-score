@@ -182,6 +182,10 @@ function renderSetupSummary() {
     .map(cleanSetupValue)
     .filter(Boolean)
     .join(" / ");
+  const adjustment = [source.opticAdjustmentUnit, source.opticClickValueLabel]
+    .map(cleanSetupValue)
+    .filter(Boolean)
+    .join(" / ");
   const ammo = [source.ammoCaliber, source.ammoManufacturer, source.ammoLoad, source.bulletWeight]
     .map(cleanSetupValue)
     .filter(Boolean)
@@ -189,6 +193,7 @@ function renderSetupSummary() {
   setupSummaryGrid.innerHTML = [
     setupLine("Weapon", weapon || source.rifle),
     setupLine("Optic", optic),
+    setupLine("Adjustment", adjustment),
     setupLine("Ammunition", ammo)
   ].join("");
 }
@@ -465,7 +470,20 @@ function backendTargetGeometry() {
 
 function backendAuthorityRequest() {
   const source = matrix || {};
-  const opticClickValue = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
+  const adjustment = opticAdjustmentConfig(source);
+  const optic = {
+    type: source.opticType,
+    manufacturer: source.opticBrand,
+    model: source.opticModel,
+    adjustmentUnit: adjustment.unit,
+    clickValue: adjustment.value,
+    clickValueLabel: adjustment.label
+  };
+  if (adjustment.unit === "MOA") {
+    optic.clickValueMOA = adjustment.value;
+  } else {
+    optic.clickValueMRAD = adjustment.value;
+  }
   return {
     targetId: "BAKER_ST_100YD_SMART",
     targetName: "Baker 100 Yard Smart Target",
@@ -479,14 +497,31 @@ function backendAuthorityRequest() {
     },
     shooterSetup: {
       ...source,
-      optic: {
-        type: source.opticType,
-        manufacturer: source.opticBrand,
-        model: source.opticModel,
-        clickValueMOA: opticClickValue
-      }
+      optic
     }
   };
+}
+
+function opticAdjustmentConfig(source) {
+  const unit = source.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
+  const rawValue = unit === "MRAD"
+    ? (source.opticClickValueMRAD || source.opticClickValue)
+    : (source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue);
+  const fallback = unit === "MRAD" ? 0.1 : 0.25;
+  const value = Math.max(0.0001, Number(String(rawValue || fallback).match(/[\d.]+/)?.[0] || fallback));
+  const label = source.opticClickValueLabel || `${value} ${unit}`;
+  return { unit, value, label };
+}
+
+function canRequestBackendAuthority() {
+  const adjustment = opticAdjustmentConfig(matrix || {});
+  if (adjustment.unit === "MRAD") {
+    authorityStatusMessage = "MRAD correction support requires backend authority update.";
+    renderResults();
+    renderMarkStatus();
+    return false;
+  }
+  return true;
 }
 
 async function requestBackendAuthority() {
@@ -984,6 +1019,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
   if (authorityRequestInFlight) return;
   if (resultsShown) return;
   if (!currentAimPoint || !currentImpactPoints.length) return;
+  if (!canRequestBackendAuthority()) return;
   authorityRequestInFlight = true;
   authorityStatusMessage = "";
   renderResults();

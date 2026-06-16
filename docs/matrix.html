@@ -81,6 +81,13 @@
             <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
+          <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
+            <option selected>MOA</option><option>MRAD</option>
+          </select></label>
+          <label>Click Value<select name="opticClickValueLabel" id="opticClickValueLabel">
+            <option selected>1/4 MOA</option><option>1/2 MOA</option><option>1 MOA</option><option>Custom</option>
+          </select></label>
+          <label class="is-hidden">Custom Click Value<input name="customOpticClickValue" id="customOpticClickValue" inputmode="decimal" placeholder="Optional click value" /></label>
         </div>
       </section>
 
@@ -687,6 +694,43 @@ function updateMagnifications(selectedValue = "") {
   toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other");
 }
 
+const OPTIC_CLICK_VALUE_OPTIONS = {
+  MOA: ["1/4 MOA", "1/2 MOA", "1 MOA", "Custom"],
+  MRAD: ["0.1 MRAD", "0.05 MRAD", "Custom"]
+};
+
+const OPTIC_CLICK_VALUE_NUMBERS = {
+  "1/4 MOA": 0.25,
+  "1/2 MOA": 0.5,
+  "1 MOA": 1,
+  "0.1 MRAD": 0.1,
+  "0.05 MRAD": 0.05
+};
+
+function selectedAdjustmentUnit() {
+  return document.getElementById("opticAdjustmentUnit").value === "MRAD" ? "MRAD" : "MOA";
+}
+
+function updateOpticClickValues(selectedValue = "") {
+  const unit = selectedAdjustmentUnit();
+  const select = document.getElementById("opticClickValueLabel");
+  setOptions(select, OPTIC_CLICK_VALUE_OPTIONS[unit], selectedValue);
+  if (!select.value || !OPTIC_CLICK_VALUE_OPTIONS[unit].includes(select.value)) {
+    select.value = OPTIC_CLICK_VALUE_OPTIONS[unit][0];
+  }
+  toggleCustom("customOpticClickValue", select.value === "Custom");
+}
+
+function cleanDecimal(value) {
+  const match = String(value || "").match(/\d+(?:\.\d+)?/);
+  return match ? match[0] : "";
+}
+
+function opticClickValueFromLabel(label, customValue) {
+  if (label === "Custom") return Number(cleanDecimal(customValue));
+  return OPTIC_CLICK_VALUE_NUMBERS[label] || 0;
+}
+
 function updateAmmoManufacturers(selectedValue = "") {
   const caliber = document.getElementById("ammoCaliber").value || "Select Caliber";
   setOptions(document.getElementById("ammoManufacturer"), AMMO_CALIBER_MANUFACTURERS[caliber] || AMMO_CALIBER_MANUFACTURERS.Other, selectedValue);
@@ -752,6 +796,11 @@ function setupPayload(snapshot) {
     "opticBrand",
     "opticModel",
     "magnification",
+    "opticAdjustmentUnit",
+    "opticClickValue",
+    "opticClickValueLabel",
+    "opticClickValueMOA",
+    "opticClickValueMRAD",
     "ammoCaliber",
     "ammoManufacturer",
     "ammoLoad",
@@ -811,6 +860,14 @@ function setForm(snapshot) {
   values.weaponCategory = inferWeaponCategory(values);
   values.weaponModelType = values.weaponModelType || (/^(Rifle|Shotgun|Pistol)$/i.test(values.rifle || "") ? "" : values.rifle);
   values.weaponModelCaliber = values.weaponModelCaliber || values.caliber;
+  values.opticAdjustmentUnit = values.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
+  if (!values.opticClickValueLabel && values.opticClickValue) {
+    values.opticClickValueLabel = `${values.opticClickValue} ${values.opticAdjustmentUnit}`;
+  }
+  if (values.opticClickValueLabel && !OPTIC_CLICK_VALUE_OPTIONS[values.opticAdjustmentUnit].includes(values.opticClickValueLabel)) {
+    values.customOpticClickValue = values.opticClickValue || cleanDecimal(values.opticClickValueLabel);
+    values.opticClickValueLabel = "Custom";
+  }
   setWeaponCategory(values.weaponCategory);
   updateWeaponManufacturers(values.weaponManufacturer);
   updateWeaponModelTypes(values.weaponModelType);
@@ -818,6 +875,7 @@ function setForm(snapshot) {
   updateOpticManufacturers(values.opticBrand);
   updateOpticModels(values.opticModel);
   updateMagnifications(values.magnification);
+  updateOpticClickValues(values.opticClickValueLabel);
   setOptions(document.getElementById("ammoCaliber"), Object.keys(AMMO_CALIBER_MANUFACTURERS), values.ammoCaliber);
   updateAmmoManufacturers(values.ammoManufacturer);
   updateAmmoLoads(values.ammoLoad);
@@ -836,6 +894,7 @@ function setForm(snapshot) {
   toggleCustom("customOpticType", document.getElementById("opticType").value === "Other");
   toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other");
   toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other");
+  toggleCustom("customOpticClickValue", document.getElementById("opticClickValueLabel").value === "Custom");
   toggleCustom("customAmmoCaliber", document.getElementById("ammoCaliber").value === "Other");
   toggleCustom("customAmmoManufacturer", document.getElementById("ammoManufacturer").value === "Other");
   toggleCustom("customAmmoLoad", document.getElementById("ammoLoad").value === "Other");
@@ -855,6 +914,25 @@ function collectForm() {
   if (data.opticType === "Other" && data.customOpticType) data.opticType = data.customOpticType;
   if (data.opticBrand === "Other" && data.customOpticManufacturer) data.opticBrand = data.customOpticManufacturer;
   if (data.opticModel === "Other" && data.customOpticModel) data.opticModel = data.customOpticModel;
+  data.opticAdjustmentUnit = data.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
+  if (!OPTIC_CLICK_VALUE_OPTIONS[data.opticAdjustmentUnit].includes(data.opticClickValueLabel)) {
+    data.opticClickValueLabel = OPTIC_CLICK_VALUE_OPTIONS[data.opticAdjustmentUnit][0];
+  }
+  data.opticClickValue = opticClickValueFromLabel(data.opticClickValueLabel, data.customOpticClickValue);
+  if (!Number.isFinite(data.opticClickValue) || data.opticClickValue <= 0) {
+    data.opticClickValue = OPTIC_CLICK_VALUE_NUMBERS[OPTIC_CLICK_VALUE_OPTIONS[data.opticAdjustmentUnit][0]];
+    data.opticClickValueLabel = OPTIC_CLICK_VALUE_OPTIONS[data.opticAdjustmentUnit][0];
+  }
+  if (data.opticClickValueLabel === "Custom") {
+    data.opticClickValueLabel = `${data.opticClickValue} ${data.opticAdjustmentUnit}`;
+  }
+  if (data.opticAdjustmentUnit === "MOA") {
+    data.opticClickValueMOA = data.opticClickValue;
+    delete data.opticClickValueMRAD;
+  } else {
+    data.opticClickValueMRAD = data.opticClickValue;
+    delete data.opticClickValueMOA;
+  }
   if (data.ammoCaliber === "Other" && data.customAmmoCaliber) data.ammoCaliber = data.customAmmoCaliber;
   if (data.ammoManufacturer === "Other" && data.customAmmoManufacturer) data.ammoManufacturer = data.customAmmoManufacturer;
   if (data.ammoLoad === "Other" && data.customAmmoLoad) data.ammoLoad = data.customAmmoLoad;
@@ -893,6 +971,8 @@ function clearSetupFields() {
   });
   document.getElementById("savedSetupSelect").value = "";
   document.getElementById("setupName").value = "";
+  document.getElementById("opticAdjustmentUnit").value = "MOA";
+  updateOpticClickValues("1/4 MOA");
   setWeaponCategory("Rifle");
   updateWeaponManufacturers();
   renderSessionBar();
@@ -904,7 +984,7 @@ function renderSessionBar() {
     .map(displayValue)
     .filter(Boolean)
     .join(" / ");
-  const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel]
+  const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.opticClickValueLabel]
     .map(displayValue)
     .filter(Boolean)
     .join(" / ");
@@ -921,6 +1001,10 @@ function loadMatrix() {
     opticBrand: "Iron Sights",
     opticModel: "Iron Sights",
     magnification: "1x",
+    opticAdjustmentUnit: "MOA",
+    opticClickValue: 0.25,
+    opticClickValueLabel: "1/4 MOA",
+    opticClickValueMOA: 0.25,
     ammoCaliber: "Select Caliber",
     ammoManufacturer: "Select Manufacturer",
     ammoLoad: "Select Load",
@@ -957,6 +1041,9 @@ document.getElementById("weaponModelCaliber").addEventListener("change", () => t
 document.getElementById("opticType").addEventListener("change", () => updateOpticManufacturers());
 document.getElementById("opticBrand").addEventListener("change", () => updateOpticModels());
 document.getElementById("opticModel").addEventListener("change", () => updateMagnifications());
+document.getElementById("opticAdjustmentUnit").addEventListener("change", () => updateOpticClickValues());
+document.getElementById("opticClickValueLabel").addEventListener("change", () => toggleCustom("customOpticClickValue", document.getElementById("opticClickValueLabel").value === "Custom"));
+document.getElementById("customOpticClickValue").addEventListener("input", event => { event.target.value = cleanDecimal(event.target.value); });
 document.getElementById("ammoCaliber").addEventListener("change", () => updateAmmoManufacturers());
 document.getElementById("ammoManufacturer").addEventListener("change", () => updateAmmoLoads());
 document.getElementById("ammoLoad").addEventListener("change", () => updateAmmoGrains());
