@@ -755,6 +755,16 @@ function showShooterTip() {
   tip.classList.remove("is-hidden");
 }
 
+function settleViewportAfterResults() {
+  if (!window.matchMedia("(max-width: 900px)").matches) return;
+  requestAnimationFrame(() => {
+    const saveButton = document.getElementById("saveMarks");
+    if (saveButton) {
+      saveButton.scrollIntoView({ block: "center", inline: "nearest" });
+    }
+  });
+}
+
 function clearCalculatedResults() {
   currentClicks = null;
   currentScore = null;
@@ -808,6 +818,7 @@ function renderMarkStatus() {
     uploadPanel.classList.toggle("target-first-mode", canMark);
     uploadPanel.classList.toggle("results-ready", !!resultsShown || !!authorityStatusMessage);
     uploadPanel.classList.toggle("workflow-actions-ready", canMark && (hasImpacts || resultsShown || !!authorityStatusMessage));
+    uploadPanel.classList.toggle("pre-results-actions", canMark && hasImpacts && !resultsShown && !authorityStatusMessage);
   }
   renderActiveSessionBar();
   if (!canMark) {
@@ -983,6 +994,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderMarkers();
     renderResults();
     if (resultsShown) showShooterTip();
+    if (resultsShown) settleViewportAfterResults();
   } catch (error) {
     currentClicks = null;
     currentScore = null;

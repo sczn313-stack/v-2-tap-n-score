@@ -1981,7 +1981,7 @@ input[readonly]{
     order:3;
   }
 
-  .upload-panel.target-first-mode.workflow-actions-ready .workflow-control-row{
+  .upload-panel.target-first-mode.pre-results-actions .workflow-control-row{
     position:fixed;
     left:8px;
     right:8px;
@@ -1991,6 +1991,19 @@ input[readonly]{
     border-color:var(--ink);
     background:rgba(247, 239, 218, .96);
     box-shadow:var(--shadow);
+  }
+
+  .upload-panel.target-first-mode.results-ready .workflow-control-row{
+    position:relative;
+    left:auto;
+    right:auto;
+    bottom:auto;
+    z-index:1;
+    width:100%;
+    margin-top:6px;
+    border-color:var(--ink);
+    background:var(--paper);
+    box-shadow:none;
   }
 
   .shoot-workflow:has(.upload-panel.target-first-mode){
