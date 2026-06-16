@@ -38,8 +38,8 @@
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
-          <label class="grid-coordinate-toggle"><input id="showGridCoordinates" type="checkbox" /> Show Grid Coordinates</label>
         </div>
+        <div class="shooter-step-prompt is-hidden" id="shooterStepPrompt" aria-live="polite"></div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
             <div class="target-intel-stack" id="resultsGrid"></div>
@@ -112,7 +112,6 @@ const savedDistance = session && (session.targetDistanceValue || session.targetD
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
 let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
 let distanceLocked = !!(session && session.targetDistanceLocked);
-let showGridCoordinates = false;
 const BAKER_GRID_AUDIT = {
   imageWidth: 1102,
   imageHeight: 1713,
@@ -357,7 +356,6 @@ function renderEvidencePreview(image) {
   preview.innerHTML = `
     <div class="mark-surface" id="markSurface">
       <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
-      <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
       <div class="marker-layer" id="markerLayer"></div>
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
@@ -596,61 +594,12 @@ function displayedImageBox() {
 
 function syncOverlayLayerToDisplayedImage() {
   const layer = document.getElementById("markerLayer");
-  const coordinateLayer = document.getElementById("gridCoordinateLayer");
   const box = displayedImageBox();
   if (!layer || !box) return null;
   const surface = document.getElementById("markSurface");
   const image = surface && surface.querySelector("img");
   SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, surface);
-  if (coordinateLayer) {
-    coordinateLayer.style.left = `${box.left}px`;
-    coordinateLayer.style.top = `${box.top}px`;
-    coordinateLayer.style.width = `${box.width}px`;
-    coordinateLayer.style.height = `${box.height}px`;
-    renderGridCoordinateOverlay();
-  }
   return box;
-}
-
-function columnLabel(index) {
-  let value = index + 1;
-  let label = "";
-  while (value > 0) {
-    value -= 1;
-    label = String.fromCharCode(65 + (value % 26)) + label;
-    value = Math.floor(value / 26);
-  }
-  return label;
-}
-
-function renderGridCoordinateOverlay() {
-  const layer = document.getElementById("gridCoordinateLayer");
-  if (!layer) return;
-  if (!showGridCoordinates) {
-    layer.textContent = "";
-    layer.classList.remove("is-visible");
-    return;
-  }
-  const grid = BAKER_GRID_AUDIT;
-  const left = (grid.leftPx / grid.imageWidth) * 100;
-  const top = (grid.topPx / grid.imageHeight) * 100;
-  const width = ((grid.rightPx - grid.leftPx) / grid.imageWidth) * 100;
-  const height = ((grid.bottomPx - grid.topPx) / grid.imageHeight) * 100;
-  const columns = Math.round((grid.rightPx - grid.leftPx) / grid.squarePx);
-  const rows = Math.round((grid.bottomPx - grid.topPx) / grid.squarePx);
-  const columnLabels = Array.from({ length: columns }, (_, index) => {
-    const x = left + (((index + 0.5) / columns) * width);
-    return `<span class="grid-coordinate-label grid-column-label" style="left:${x}%;top:${top}%">${columnLabel(index)}</span>`;
-  }).join("");
-  const rowLabels = Array.from({ length: rows }, (_, index) => {
-    const y = top + (((index + 0.5) / rows) * height);
-    return `<span class="grid-coordinate-label grid-row-label" style="left:${left}%;top:${y}%">${index + 1}</span>`;
-  }).join("");
-  layer.classList.add("is-visible");
-  layer.innerHTML = `
-    <div class="grid-coordinate-box" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%"></div>
-    ${columnLabels}
-    ${rowLabels}`;
 }
 
 function syncArrowLayerToMarkerLayer() {
@@ -662,105 +611,6 @@ function syncArrowLayerToMarkerLayer() {
   arrowSvg.style.top = "0px";
   arrowSvg.style.width = `${layerRect.width}px`;
   arrowSvg.style.height = `${layerRect.height}px`;
-}
-
-function renderedPercentFromRect(childRect, parentRect) {
-  if (!childRect || !parentRect || !parentRect.width || !parentRect.height) return null;
-  return {
-    xPercent: Number((((childRect.left + (childRect.width / 2) - parentRect.left) / parentRect.width) * 100).toFixed(2)),
-    yPercent: Number((((childRect.top + (childRect.height / 2) - parentRect.top) / parentRect.height) * 100).toFixed(2))
-  };
-}
-
-function logRenderCoordinates(correction) {
-  if (!correction || !correction.poib || !currentAimPoint) return;
-  requestAnimationFrame(() => {
-    const layer = document.getElementById("markerLayer");
-    const image = document.querySelector("#markSurface img");
-    const poibMarker = layer && layer.querySelector(".poib-auto-marker");
-    const calculatedPoibDot = layer && layer.querySelector(".debug-calculated-poib");
-    const arrowStartDot = layer && layer.querySelector(".debug-arrow-start");
-    const arrowSvg = layer && layer.querySelector(".target-correction-vector");
-    const arrowLine = arrowSvg && arrowSvg.querySelector("line");
-    if (!layer || !image || !poibMarker || !calculatedPoibDot || !arrowStartDot || !arrowSvg || !arrowLine) return;
-    const imageRect = image.getBoundingClientRect();
-    const imageBox = displayedImageBox();
-    const layerRect = layer.getBoundingClientRect();
-    const svgRect = arrowSvg.getBoundingClientRect();
-    const poibRect = poibMarker.getBoundingClientRect();
-    const renderedPoib = renderedPercentFromRect(poibRect, layerRect);
-    const renderedCalculatedPoibDot = renderedPercentFromRect(calculatedPoibDot.getBoundingClientRect(), layerRect);
-    const renderedArrowStartDot = renderedPercentFromRect(arrowStartDot.getBoundingClientRect(), layerRect);
-    const arrowStart = {
-      xPercent: Number(Number(arrowLine.getAttribute("x1")).toFixed(2)),
-      yPercent: Number(Number(arrowLine.getAttribute("y1")).toFixed(2))
-    };
-    const arrowEnd = {
-      xPercent: Number(Number(arrowLine.getAttribute("x2")).toFixed(2)),
-      yPercent: Number(Number(arrowLine.getAttribute("y2")).toFixed(2))
-    };
-    const calculatedPoib = safePoint(correction.poib);
-    const delta = (a, b) => {
-      if (!a || !b) return null;
-      return {
-        xDelta: Number((Number(a.xPercent) - Number(b.xPercent)).toFixed(2)),
-        yDelta: Number((Number(a.yPercent) - Number(b.yPercent)).toFixed(2))
-      };
-    };
-    const markerDelta = delta(renderedPoib, calculatedPoib);
-    const arrowStartDelta = delta(arrowStart, calculatedPoib);
-    console.groupCollapsed("SCZN3 render coordinate audit");
-    console.log("Target image natural size", {
-      naturalWidth: image.naturalWidth,
-      naturalHeight: image.naturalHeight
-    });
-    console.log("Target image element rect", {
-      width: Number(imageRect.width.toFixed(2)),
-      height: Number(imageRect.height.toFixed(2))
-    });
-    console.log("Displayed target image content box", imageBox && {
-      width: Number(imageBox.width.toFixed(2)),
-      height: Number(imageBox.height.toFixed(2)),
-      left: Number(imageBox.left.toFixed(2)),
-      top: Number(imageBox.top.toFixed(2))
-    });
-    console.log("Overlay container rect", {
-      width: Number(layerRect.width.toFixed(2)),
-      height: Number(layerRect.height.toFixed(2))
-    });
-    console.log("SVG arrow layer rect", {
-      width: Number(svgRect.width.toFixed(2)),
-      height: Number(svgRect.height.toFixed(2))
-    });
-    console.log("POIB marker parent layer rect", {
-      width: Number(layerRect.width.toFixed(2)),
-      height: Number(layerRect.height.toFixed(2))
-    });
-    console.log("1. Hole coordinates", currentImpactPoints.map(point => safePoint(point)));
-    console.log("2. Calculated POIB coordinates", calculatedPoib);
-    console.log("3. Rendered POIB marker coordinates", renderedPoib);
-    console.log("4. Arrow start coordinates", arrowStart);
-    console.log("5. Arrow end coordinates", arrowEnd);
-    console.log("Debug dot: calculated POIB rendered center", renderedCalculatedPoibDot);
-    console.log("Debug dot: arrow start rendered center", renderedArrowStartDot);
-    console.log("POIB marker delta from calculated POIB", markerDelta);
-    console.log("Arrow start delta from calculated POIB", arrowStartDelta);
-    if (markerDelta && (Math.abs(markerDelta.xDelta) > 0.25 || Math.abs(markerDelta.yDelta) > 0.25)) {
-      console.warn("POIB marker is not rendering at calculated POIB coordinates.");
-    }
-    if (arrowStartDelta && (Math.abs(arrowStartDelta.xDelta) > 0.25 || Math.abs(arrowStartDelta.yDelta) > 0.25)) {
-      console.warn("Arrow start is not using calculated POIB coordinates.");
-    }
-    console.table([
-      { item: "Calculated POIB", ...calculatedPoib },
-      { item: "Rendered POIB marker", ...renderedPoib },
-      { item: "Arrow start", ...arrowStart },
-      { item: "Arrow end", ...arrowEnd },
-      { item: "Debug calculated POIB dot", ...renderedCalculatedPoibDot },
-      { item: "Debug arrow start dot", ...renderedArrowStartDot }
-    ]);
-    console.groupEnd();
-  });
 }
 
 function markerPointHtml(className, point, content = "", attributes = "") {
@@ -909,19 +759,51 @@ function setNextStep(activeId) {
   });
 }
 
+function setControlVisibility(id, visible) {
+  const element = document.getElementById(id);
+  if (element) element.classList.toggle("is-hidden", !visible);
+}
+
+function setShooterPrompt(text) {
+  const prompt = document.getElementById("shooterStepPrompt");
+  if (!prompt) return;
+  prompt.textContent = text || "";
+  prompt.classList.toggle("is-hidden", !text);
+}
+
 function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
+  const hasAim = !!currentAimPoint;
+  const hasImpacts = currentImpactPoints.length > 0;
   document.getElementById("setAimMode").disabled = !canMark;
-  document.getElementById("addImpactMode").disabled = !canMark || !currentAimPoint;
-  document.getElementById("undoImpact").disabled = !canMark || currentImpactPoints.length === 0;
-  document.getElementById("clearMarks").disabled = !canMark || (!currentAimPoint && currentImpactPoints.length === 0);
+  document.getElementById("addImpactMode").disabled = !canMark || !hasAim;
+  document.getElementById("undoImpact").disabled = !canMark || !hasImpacts;
+  document.getElementById("clearMarks").disabled = !canMark || (!hasAim && !hasImpacts);
   document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
-  document.getElementById("showResults").disabled = !canMark || currentImpactPoints.length === 0;
+  document.getElementById("showResults").disabled = !canMark || !hasImpacts;
+  setControlVisibility("chooseTargetButton", !canMark);
+  setControlVisibility("setAimMode", canMark && !hasAim);
+  setControlVisibility("addImpactMode", canMark && hasAim && !hasImpacts);
+  setControlVisibility("showResults", canMark && hasImpacts && !resultsShown);
+  setControlVisibility("undoImpact", canMark && hasImpacts && !resultsShown);
+  setControlVisibility("clearMarks", canMark && (hasAim || hasImpacts) && !resultsShown);
+  setControlVisibility("saveMarks", canMark && resultsShown);
+  const uploadPanel = document.querySelector(".upload-panel");
+  if (uploadPanel) uploadPanel.classList.toggle("target-first-mode", canMark);
+  if (!canMark) {
+    setShooterPrompt("");
+  } else if (!hasAim) {
+    setShooterPrompt("Tap Aim Point");
+  } else if (!hasImpacts) {
+    setShooterPrompt("Tap Bullet Holes");
+  } else {
+    setShooterPrompt("");
+  }
   let nextStep = "chooseTargetButton";
-  if (canMark && !currentAimPoint) nextStep = "setAimMode";
-  if (canMark && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (canMark && currentAimPoint && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
-  if (canMark && currentAimPoint && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
+  if (canMark && !hasAim) nextStep = "setAimMode";
+  if (canMark && hasAim && !hasImpacts) nextStep = "addImpactMode";
+  if (canMark && hasAim && hasImpacts && !resultsShown) nextStep = "showResults";
+  if (canMark && hasAim && hasImpacts && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
 }
@@ -997,12 +879,6 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
   }).catch(error => {
     console.warn("Target image read failed", error);
   });
-});
-
-document.getElementById("showGridCoordinates").addEventListener("change", event => {
-  showGridCoordinates = event.target.checked;
-  syncOverlayLayerToDisplayedImage();
-  renderGridCoordinateOverlay();
 });
 
 document.getElementById("setAimMode").addEventListener("click", () => setMode("aim"));

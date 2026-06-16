@@ -286,6 +286,10 @@ button:active,
   white-space:normal;
 }
 
+.workflow-control-row .is-hidden{
+  display:none;
+}
+
 .workflow-control-row .button[disabled]{
   opacity:1;
 }
@@ -295,6 +299,26 @@ button:active,
   background:#39ff14;
   border-color:#173f12;
   color:#0c2608;
+}
+
+.shooter-step-prompt{
+  display:grid;
+  place-items:center;
+  min-height:44px;
+  padding:8px 12px;
+  border:2px solid var(--green-dark);
+  border-radius:var(--radius);
+  background:var(--green);
+  color:var(--white);
+  font-size:clamp(18px, 3vw, 28px);
+  font-weight:900;
+  line-height:1;
+  text-align:center;
+  text-transform:uppercase;
+}
+
+.shooter-step-prompt.is-hidden{
+  display:none;
 }
 
 .visually-hidden-file{
@@ -568,6 +592,23 @@ button:active,
   background:#fffaf0;
 }
 
+.upload-panel.target-first-mode{
+  gap:4px;
+  padding:6px;
+}
+
+.upload-panel.target-first-mode .workflow-control-row{
+  justify-content:center;
+  padding:4px;
+  border-color:transparent;
+  background:transparent;
+}
+
+.upload-panel.target-first-mode .workflow-control-row .button{
+  flex:0 1 min(220px, 100%);
+  min-width:150px;
+}
+
 .upload-panel h2{
   margin-bottom:4px;
 }
@@ -590,6 +631,12 @@ button:active,
   height:720px;
   min-height:720px;
   overflow:hidden;
+}
+
+.upload-panel.target-first-mode .evidence-preview.evidence-workspace{
+  grid-template-columns:minmax(360px, min(82vw, 900px)) minmax(190px, .85fr);
+  height:min(82vh, 840px);
+  min-height:640px;
 }
 
 .evidence-meta{
@@ -841,80 +888,6 @@ button:active,
   pointer-events:none;
 }
 
-.grid-coordinate-toggle{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  min-height:44px;
-  padding:8px 12px;
-  border:2px solid var(--ink);
-  border-radius:var(--radius);
-  background:var(--paper);
-  color:var(--ink);
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  user-select:none;
-  -webkit-user-select:none;
-  -webkit-touch-callout:none;
-}
-
-.grid-coordinate-toggle input{
-  width:18px;
-  height:18px;
-  accent-color:var(--confirmed);
-}
-
-.grid-coordinate-layer{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  z-index:1;
-  pointer-events:none;
-  opacity:0;
-}
-
-.grid-coordinate-layer.is-visible{
-  opacity:1;
-}
-
-.grid-coordinate-box{
-  position:absolute;
-  border:2px solid rgba(30,125,50,.48);
-  background:
-    repeating-linear-gradient(to right, rgba(30,125,50,.14) 0 1px, transparent 1px calc(100% / 20)),
-    repeating-linear-gradient(to bottom, rgba(30,125,50,.14) 0 1px, transparent 1px calc(100% / 28));
-}
-
-.grid-coordinate-label{
-  position:absolute;
-  display:grid;
-  place-items:center;
-  min-width:16px;
-  height:16px;
-  translate:-50% -50%;
-  border:1px solid rgba(16,16,14,.28);
-  border-radius:999px;
-  background:rgba(255,253,248,.76);
-  color:rgba(16,16,14,.72);
-  font-size:9px;
-  font-weight:900;
-  line-height:1;
-  text-transform:uppercase;
-  box-shadow:0 1px 3px rgba(255,255,255,.7);
-}
-
-.grid-column-label{
-  translate:-50% -135%;
-}
-
-.grid-row-label{
-  translate:-135% -50%;
-}
-
 .target-marker{
   position:absolute;
   display:grid;
@@ -1019,28 +992,6 @@ button:active,
 .target-correction-card span{
   color:var(--confirmed);
   font-size:12px;
-}
-
-.debug-coordinate-dot{
-  position:absolute;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  pointer-events:none;
-  translate:-50% -50%;
-  z-index:8;
-  box-shadow:0 0 0 2px rgba(255,255,255,.95), 0 0 0 4px rgba(16,16,14,.65);
-}
-
-.debug-calculated-poib{
-  background:#00d8ff;
-}
-
-.debug-arrow-start{
-  width:5px;
-  height:5px;
-  background:#ff00c8;
-  z-index:9;
 }
 
 .mark-status{
@@ -1789,10 +1740,6 @@ input[readonly]{
     min-height:38px;
   }
 
-  .grid-coordinate-toggle{
-    flex:1 1 100%;
-  }
-
   .m4-header,
   .target-hero,
   .page-layout{
@@ -1919,6 +1866,23 @@ input[readonly]{
     height:auto;
     min-height:0;
     overflow:visible;
+  }
+
+  .upload-panel.target-first-mode .evidence-preview.evidence-workspace{
+    grid-template-columns:1fr;
+    height:auto;
+    min-height:0;
+    padding:4px;
+    border-style:solid;
+  }
+
+  .upload-panel.target-first-mode .mark-surface{
+    min-height:calc(100dvh - 220px);
+    max-height:calc(100dvh - 150px);
+  }
+
+  .upload-panel.target-first-mode .evidence-meta{
+    max-height:36vh;
   }
 
   .mark-surface,
