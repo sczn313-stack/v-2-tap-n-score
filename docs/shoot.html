@@ -513,17 +513,6 @@ function opticAdjustmentConfig(source) {
   return { unit, value, label };
 }
 
-function canRequestBackendAuthority() {
-  const adjustment = opticAdjustmentConfig(matrix || {});
-  if (adjustment.unit === "MRAD") {
-    authorityStatusMessage = "MRAD correction support requires backend authority update.";
-    renderResults();
-    renderMarkStatus();
-    return false;
-  }
-  return true;
-}
-
 async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
   if (!BACKEND_AUTHORITY_ENDPOINT) {
@@ -1019,7 +1008,6 @@ document.getElementById("showResults").addEventListener("click", async () => {
   if (authorityRequestInFlight) return;
   if (resultsShown) return;
   if (!currentAimPoint || !currentImpactPoints.length) return;
-  if (!canRequestBackendAuthority()) return;
   authorityRequestInFlight = true;
   authorityStatusMessage = "";
   renderResults();

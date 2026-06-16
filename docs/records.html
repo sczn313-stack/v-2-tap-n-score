@@ -184,7 +184,7 @@ function renderHistory() {
     const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;
     const score = hasAuthority ? authorityScoreValue(pkg) : null;
     const weapon = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
-    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification, snapshot.opticClickValueLabel].map(cleanSetupValue).filter(Boolean).join(" / ");
     const ammo = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
     const correction = hasAuthority ? (pkg.correction || {}) : {};
     const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};

@@ -24,8 +24,8 @@ DEFAULT_TARGET_GEOMETRY = {
     "gridSquareInches": 1,
     "unit": "inch",
 }
-DEFAULT_OPTIC_CLICK_MOA = 0.25
 MOA_INCHES_AT_100_YARDS = 1.047
+MRAD_INCHES_AT_100_YARDS = 3.6
 
 
 def _num(value: Any, fallback: Optional[float] = None) -> Optional[float]:
@@ -83,17 +83,51 @@ def distance_yards(payload: Dict[str, Any]) -> float:
     return max(1, value)
 
 
-def optic_click_value(payload: Dict[str, Any]) -> float:
+def _first_present(*values: Any) -> Any:
+    for value in values:
+        if value is not None and value != "":
+            return value
+    return None
+
+
+def optic_adjustment(payload: Dict[str, Any]) -> Dict[str, Any]:
     setup = payload.get("shooterSetup") if isinstance(payload.get("shooterSetup"), dict) else {}
     optic = setup.get("optic") if isinstance(setup.get("optic"), dict) else {}
-    value = (
-        optic.get("clickValueMOA")
-        or optic.get("clickValue")
-        or setup.get("opticClickValueMOA")
-        or setup.get("clickValueMOA")
-        or DEFAULT_OPTIC_CLICK_MOA
-    )
-    return max(0.01, _num(value, DEFAULT_OPTIC_CLICK_MOA) or DEFAULT_OPTIC_CLICK_MOA)
+    unit = str(_first_present(
+        optic.get("adjustmentUnit"),
+        setup.get("opticAdjustmentUnit"),
+    ) or "").upper()
+    if unit not in {"MOA", "MRAD"}:
+        raise ValueError("invalid or missing optic adjustment unit")
+
+    if unit == "MOA":
+        raw_value = _first_present(
+            optic.get("clickValueMOA"),
+            setup.get("opticClickValueMOA"),
+            setup.get("clickValueMOA"),
+            optic.get("clickValue"),
+            setup.get("opticClickValue"),
+            setup.get("clickValue"),
+        )
+    else:
+        raw_value = _first_present(
+            optic.get("clickValueMRAD"),
+            setup.get("opticClickValueMRAD"),
+            optic.get("clickValue"),
+            setup.get("opticClickValue"),
+        )
+
+    value = _num(raw_value, None)
+    if value is None or value <= 0:
+        raise ValueError("invalid or missing optic click value")
+
+    return {
+        "unit": unit,
+        "clickValue": _round(value, 4),
+        "clickValueMOA": _round(value, 4) if unit == "MOA" else None,
+        "clickValueMRAD": _round(value, 4) if unit == "MRAD" else None,
+        "clickValueLabel": str(_first_present(optic.get("clickValueLabel"), setup.get("opticClickValueLabel"), f"{value} {unit}")),
+    }
 
 
 def image_percent_to_pixels(point: Dict[str, float], geometry: Dict[str, Any]) -> Dict[str, float]:
@@ -137,13 +171,29 @@ def average_point(points: List[Dict[str, float]]) -> Optional[Dict[str, float]]:
     }
 
 
-def clicks_for_inches(inches: float, yards: float, click_moa: float) -> int:
-    moa = abs(inches) / ((yards / 100) * MOA_INCHES_AT_100_YARDS)
-    return int(round(moa / click_moa))
-
-
 def moa_for_inches(inches: float, yards: float) -> float:
     return abs(inches) / ((yards / 100) * MOA_INCHES_AT_100_YARDS)
+
+
+def mrad_for_inches(inches: float, yards: float) -> float:
+    return abs(inches) / ((yards / 100) * MRAD_INCHES_AT_100_YARDS)
+
+
+def clicks_for_inches(inches: float, yards: float, adjustment: Dict[str, Any]) -> int:
+    if adjustment["unit"] == "MRAD":
+        angular_value = mrad_for_inches(inches, yards)
+        click_value = adjustment["clickValueMRAD"]
+    else:
+        angular_value = moa_for_inches(inches, yards)
+        click_value = adjustment["clickValueMOA"]
+    return int(round(angular_value / click_value))
+
+
+def angular_for_inches(inches: float, yards: float, adjustment: Dict[str, Any]) -> float:
+    if adjustment["unit"] == "MRAD":
+        return mrad_for_inches(inches, yards)
+    moa = abs(inches) / ((yards / 100) * MOA_INCHES_AT_100_YARDS)
+    return moa
 
 
 def direction_labels(x_inches: float, y_inches: float) -> Dict[str, str]:
@@ -255,7 +305,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     aim = normalize_point(payload.get("aimCoordinate") or payload.get("aim") or payload.get("aimPoint"))
     impacts = normalize_impacts(payload.get("impactCoordinates") or payload.get("impacts") or payload.get("impactPoints"))
     yards = distance_yards(payload)
-    click_moa = optic_click_value(payload)
+    adjustment = optic_adjustment(payload)
     poib = average_point(impacts)
     score = calculate_score(aim, impacts, geometry)
     group = calculate_group(impacts, geometry, yards)
@@ -271,11 +321,14 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         x_inches = _round(poib_grid["xInches"] - aim_grid["xInches"], 4)
         y_inches = _round(poib_grid["yInches"] - aim_grid["yInches"], 4)
         directions = direction_labels(x_inches, y_inches)
-        windage_clicks = clicks_for_inches(x_inches, yards, click_moa)
-        elevation_clicks = clicks_for_inches(y_inches, yards, click_moa)
+        windage_clicks = clicks_for_inches(x_inches, yards, adjustment)
+        elevation_clicks = clicks_for_inches(y_inches, yards, adjustment)
         correction = {
             "xInches": x_inches,
             "yInches": y_inches,
+            "adjustmentUnit": adjustment["unit"],
+            "clickValue": adjustment["clickValue"],
+            "clickValueLabel": adjustment["clickValueLabel"],
             "windageDirection": directions["windage"],
             "elevationDirection": directions["elevation"],
             "windage": "0 clicks CENTER" if directions["windage"] == "CENTER" else f"{windage_clicks} clicks {directions['windage']}",
@@ -286,11 +339,19 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "elevationClicks": elevation_clicks,
             "windageDirection": directions["windage"],
             "elevationDirection": directions["elevation"],
+            "adjustmentUnit": adjustment["unit"],
+            "clickValue": adjustment["clickValue"],
+            "clickValueLabel": adjustment["clickValueLabel"],
         }
         moa = {
             "windageMOA": _round(abs(x_inches) / ((yards / 100) * MOA_INCHES_AT_100_YARDS), 4),
             "elevationMOA": _round(abs(y_inches) / ((yards / 100) * MOA_INCHES_AT_100_YARDS), 4),
         }
+        if adjustment["unit"] == "MRAD":
+            moa.update({
+                "windageMRAD": _round(angular_for_inches(x_inches, yards, adjustment), 4),
+                "elevationMRAD": _round(angular_for_inches(y_inches, yards, adjustment), 4),
+            })
         vector = {
             "start": image_point_through_grid(poib, geometry),
             "end": image_point_through_grid(aim, geometry),
@@ -315,7 +376,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "aimCoordinate": aim,
             "impactCoordinates": impacts,
             "distanceYards": _round(yards, 4),
-            "opticClickValueMOA": _round(click_moa, 4),
+            "opticAdjustment": adjustment,
             "shooterSetup": payload.get("shooterSetup") or {},
         },
         "impacts": impacts,

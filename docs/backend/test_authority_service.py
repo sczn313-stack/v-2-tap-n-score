@@ -1,13 +1,13 @@
 from authority_service import build_authority_package
 
 
-def package(aim=None, impacts=None):
+def package(aim=None, impacts=None, optic=None):
     return build_authority_package({
         "targetId": "BAKER_ST_100YD_SMART",
         "aimCoordinate": aim,
         "impactCoordinates": impacts or [],
         "distance": {"value": 100, "unit": "yds"},
-        "shooterSetup": {"optic": {"clickValueMOA": 0.25}},
+        "shooterSetup": {"optic": optic or {"adjustmentUnit": "MOA", "clickValueMOA": 0.25}},
     })
 
 
@@ -73,6 +73,63 @@ def test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude():
     assert_equal(horizontal["clicks"]["windageClicks"], vertical["clicks"]["elevationClicks"], "10-square click parity")
 
 
+def test_quarter_moa_clicks():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MOA", "clickValueMOA": 0.25})
+    assert_equal(result["clicks"]["adjustmentUnit"], "MOA", "quarter moa unit")
+    assert_equal(result["clicks"]["windageClicks"], 38, "quarter moa 10-inch clicks")
+
+
+def test_half_moa_clicks():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MOA", "clickValueMOA": 0.5})
+    assert_equal(result["clicks"]["windageClicks"], 19, "half moa 10-inch clicks")
+
+
+def test_one_moa_clicks():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MOA", "clickValueMOA": 1})
+    assert_equal(result["clicks"]["windageClicks"], 10, "one moa 10-inch clicks")
+
+
+def test_point_one_mrad_clicks():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MRAD", "clickValueMRAD": 0.1})
+    assert_equal(result["clicks"]["adjustmentUnit"], "MRAD", "point one mrad unit")
+    assert_equal(result["clicks"]["windageClicks"], 28, "point one mrad 10-inch clicks")
+    assert_close(result["moa"]["windageMRAD"], 2.7778, "point one mrad angular value", tolerance=0.0001)
+
+
+def test_point_zero_five_mrad_clicks():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MRAD", "clickValueMRAD": 0.05})
+    assert_equal(result["clicks"]["windageClicks"], 56, "point zero five mrad 10-inch clicks")
+
+
+def assert_raises_value_error(callback, label):
+    try:
+        callback()
+    except ValueError:
+        return
+    raise AssertionError(f"{label}: expected ValueError")
+
+
+def test_invalid_unknown_unit_rejection():
+    aim = point_from_grid(10, 10)
+    assert_raises_value_error(
+        lambda: package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MIL", "clickValue": 0.1}),
+        "unknown unit",
+    )
+
+
+def test_missing_click_value_rejection():
+    aim = point_from_grid(10, 10)
+    assert_raises_value_error(
+        lambda: package(aim, [point_from_grid(20, 10)], {"adjustmentUnit": "MRAD"}),
+        "missing click value",
+    )
+
+
 def test_same_input_creates_same_evidence_hash():
     payload = {"xPercent": 24, "yPercent": 42}
     first = package({"xPercent": 50, "yPercent": 50}, [payload])
@@ -112,6 +169,13 @@ def run():
         test_single_hit_poib_equals_hit,
         test_four_symmetric_hits_equal_center,
         test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude,
+        test_quarter_moa_clicks,
+        test_half_moa_clicks,
+        test_one_moa_clicks,
+        test_point_one_mrad_clicks,
+        test_point_zero_five_mrad_clicks,
+        test_invalid_unknown_unit_rejection,
+        test_missing_click_value_rejection,
         test_same_input_creates_same_evidence_hash,
         test_missing_evidence_creates_no_fake_coordinate,
         test_backend_score_scores_close_hits_higher_than_far_hits,
