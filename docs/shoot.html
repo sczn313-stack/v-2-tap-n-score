@@ -123,6 +123,8 @@ const BAKER_GRID_AUDIT = {
   bottomPx: 1652,
   squarePx: 49
 };
+const MARK_TAP_MOVE_THRESHOLD_PX = 8;
+let markPointerCandidate = null;
 
 function currentSetupName() {
   return matrix ? [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ") : "Create setup in Weapon Setup";
@@ -382,7 +384,11 @@ function renderEvidencePreview(image) {
       renderMarkers();
     }, { once: true });
   }
-  markSurface.addEventListener("pointerdown", handleMarkPointer, { passive: false });
+  markSurface.addEventListener("pointerdown", handleMarkPointerDown, { passive: false });
+  markSurface.addEventListener("pointermove", handleMarkPointerMove, { passive: true });
+  markSurface.addEventListener("pointerup", handleMarkPointerUp, { passive: false });
+  markSurface.addEventListener("pointercancel", clearMarkPointerCandidate);
+  markSurface.addEventListener("pointerleave", clearMarkPointerCandidate);
   markSurface.addEventListener("contextmenu", event => event.preventDefault());
   renderMarkers();
   renderMarkStatus();
@@ -801,6 +807,7 @@ function renderMarkStatus() {
   if (uploadPanel) {
     uploadPanel.classList.toggle("target-first-mode", canMark);
     uploadPanel.classList.toggle("results-ready", !!resultsShown || !!authorityStatusMessage);
+    uploadPanel.classList.toggle("workflow-actions-ready", canMark && (hasImpacts || resultsShown || !!authorityStatusMessage));
   }
   renderActiveSessionBar();
   if (!canMark) {
@@ -851,8 +858,39 @@ function handleMarkTap(event) {
   renderMarkStatus();
 }
 
-function handleMarkPointer(event) {
+function clearMarkPointerCandidate() {
+  markPointerCandidate = null;
+}
+
+function handleMarkPointerDown(event) {
   if (event.button && event.button !== 0) return;
+  if (!hasMarkableEvidence() || authorityRequestInFlight || resultsShown) return;
+  if (event.target && event.target.closest("button,a,input,select,textarea,label,summary,details")) return;
+  markPointerCandidate = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    moved: false
+  };
+}
+
+function handleMarkPointerMove(event) {
+  if (!markPointerCandidate || markPointerCandidate.pointerId !== event.pointerId) return;
+  const dx = event.clientX - markPointerCandidate.startX;
+  const dy = event.clientY - markPointerCandidate.startY;
+  if (Math.hypot(dx, dy) > MARK_TAP_MOVE_THRESHOLD_PX) {
+    markPointerCandidate.moved = true;
+  }
+}
+
+function handleMarkPointerUp(event) {
+  if (!markPointerCandidate || markPointerCandidate.pointerId !== event.pointerId) return;
+  const candidate = markPointerCandidate;
+  clearMarkPointerCandidate();
+  const dx = event.clientX - candidate.startX;
+  const dy = event.clientY - candidate.startY;
+  if (candidate.moved || Math.hypot(dx, dy) > MARK_TAP_MOVE_THRESHOLD_PX) return;
+  if (event.target && event.target.closest("button,a,input,select,textarea,label,summary,details")) return;
   event.preventDefault();
   handleMarkTap(event);
 }

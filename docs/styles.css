@@ -273,9 +273,9 @@ button:active,
 }
 
 .button.primary{
-  background:var(--green);
-  border-color:var(--green-dark);
-  color:white;
+  background:#39ff14;
+  border-color:#173f12;
+  color:#0c2608;
 }
 
 .button.caution{background:var(--yellow)}
@@ -629,17 +629,21 @@ button:active,
 
 .upload-panel.target-first-mode{
   gap:4px;
-  padding:6px;
+  padding:2px 4px 4px;
 }
 
 .upload-panel.target-first-mode .workflow-control-row{
   position:relative;
   top:auto;
   justify-content:center;
-  min-height:54px;
-  padding:4px;
+  min-height:44px;
+  padding:2px;
   border-color:transparent;
   background:transparent;
+}
+
+.upload-panel.target-first-mode:not(.workflow-actions-ready) .workflow-control-row{
+  display:none;
 }
 
 .upload-panel.target-first-mode .workflow-control-row .button{
@@ -905,7 +909,7 @@ button:active,
   overflow:hidden;
   box-sizing:border-box;
   contain:layout paint;
-  touch-action:none;
+  touch-action:pan-y;
   user-select:none;
   -webkit-user-select:none;
   -webkit-touch-callout:none;
@@ -1955,9 +1959,58 @@ input[readonly]{
     grid-template-columns:1fr;
     height:auto;
     min-height:0;
-    padding:4px;
+    padding:0;
     border-style:solid;
     overflow:visible;
+  }
+
+  .upload-panel.target-first-mode{
+    display:flex;
+    flex-direction:column;
+  }
+
+  .upload-panel.target-first-mode .shooter-step-prompt{
+    order:1;
+  }
+
+  .upload-panel.target-first-mode .evidence-workspace{
+    order:2;
+  }
+
+  .upload-panel.target-first-mode .workflow-control-row{
+    order:3;
+  }
+
+  .upload-panel.target-first-mode.workflow-actions-ready .workflow-control-row{
+    position:fixed;
+    left:8px;
+    right:8px;
+    bottom:calc(8px + env(safe-area-inset-bottom, 0px));
+    z-index:80;
+    padding:6px;
+    border-color:var(--ink);
+    background:rgba(247, 239, 218, .96);
+    box-shadow:var(--shadow);
+  }
+
+  .shoot-workflow:has(.upload-panel.target-first-mode){
+    margin-top:2px;
+  }
+
+  .shoot-workflow:has(.upload-panel.target-first-mode) > .panel{
+    gap:3px;
+    padding:6px;
+  }
+
+  .shoot-workflow:has(.upload-panel.target-first-mode) .target-work-heading{
+    font-size:18px;
+    line-height:1;
+  }
+
+  .upload-panel.target-first-mode .shooter-step-prompt{
+    min-height:36px;
+    padding:5px 9px;
+    font-size:16px;
   }
 
   .upload-panel.target-first-mode .mark-surface{
@@ -2515,9 +2568,9 @@ input[readonly]{
 
 .home-cta-primary{
   min-width:284px;
-  background:linear-gradient(135deg,#0f6225,#247d32);
-  border-color:#0c4d1e;
-  color:#fff;
+  background:#39ff14;
+  border-color:#173f12;
+  color:#0c2608;
   animation:homePulse 2.8s ease-in-out infinite;
 }
 
