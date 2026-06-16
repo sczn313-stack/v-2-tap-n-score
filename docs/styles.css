@@ -263,6 +263,7 @@ button:active,
   flex-wrap:nowrap;
   gap:6px;
   align-items:center;
+  min-height:62px;
   padding:8px;
   border:2px solid var(--ink);
   border-radius:var(--radius);
@@ -598,7 +599,10 @@ button:active,
 }
 
 .upload-panel.target-first-mode .workflow-control-row{
+  position:relative;
+  top:auto;
   justify-content:center;
+  min-height:54px;
   padding:4px;
   border-color:transparent;
   background:transparent;
@@ -615,6 +619,9 @@ button:active,
 
 .evidence-preview{
   display:grid;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
   grid-template-columns:minmax(260px, min(72vw, 720px)) minmax(180px,1fr);
   gap:12px;
   align-items:center;
@@ -637,6 +644,7 @@ button:active,
   grid-template-columns:minmax(360px, min(82vw, 900px)) minmax(190px, .85fr);
   height:min(82vh, 840px);
   min-height:640px;
+  max-width:100%;
 }
 
 .evidence-meta{
@@ -859,6 +867,9 @@ button:active,
   max-width:820px;
   height:100%;
   min-height:0;
+  margin-inline:auto;
+  overflow:hidden;
+  box-sizing:border-box;
   contain:layout paint;
   touch-action:none;
   user-select:none;
@@ -1874,20 +1885,28 @@ input[readonly]{
     min-height:0;
     padding:4px;
     border-style:solid;
+    overflow:visible;
   }
 
   .upload-panel.target-first-mode .mark-surface{
-    min-height:calc(100dvh - 220px);
-    max-height:calc(100dvh - 150px);
+    width:100%;
+    max-width:min(100%, calc((100dvh - 164px) * .643));
+    height:auto;
+    min-height:0;
+    aspect-ratio:1102 / 1713;
   }
 
   .upload-panel.target-first-mode .evidence-meta{
-    max-height:36vh;
+    max-height:34vh;
   }
 
-  .mark-surface,
-  .mark-surface img{
+  .mark-surface{
     height:auto;
+    min-height:0;
+  }
+
+  .mark-surface img{
+    height:100%;
     min-height:0;
   }
 
