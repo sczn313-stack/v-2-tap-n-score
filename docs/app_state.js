@@ -666,6 +666,56 @@
     });
   }
 
+  function initMobileWorkflowNav() {
+    document.querySelectorAll(".m4-header").forEach((header, index) => {
+      const toggle = header.querySelector(".mobile-menu-toggle");
+      const nav = header.querySelector(".locked-nav");
+      if (!toggle || !nav) return;
+      const navId = nav.id || `workflowNav${index + 1}`;
+      nav.id = navId;
+      toggle.setAttribute("aria-controls", navId);
+      toggle.setAttribute("aria-expanded", "false");
+      header.classList.add("mobile-nav-ready");
+
+      const closeMenu = () => {
+        header.classList.remove("mobile-menu-open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open navigation menu");
+        toggle.textContent = "☰";
+      };
+
+      const openMenu = () => {
+        header.classList.add("mobile-menu-open");
+        toggle.setAttribute("aria-expanded", "true");
+        toggle.setAttribute("aria-label", "Close navigation menu");
+        toggle.textContent = "×";
+      };
+
+      toggle.addEventListener("click", event => {
+        event.stopPropagation();
+        header.classList.contains("mobile-menu-open") ? closeMenu() : openMenu();
+      });
+
+      nav.addEventListener("click", event => {
+        if (event.target.closest("a")) closeMenu();
+      });
+
+      document.addEventListener("click", event => {
+        if (!header.contains(event.target)) closeMenu();
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") closeMenu();
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMobileWorkflowNav);
+  } else {
+    initMobileWorkflowNav();
+  }
+
   window.SCZN3M4 = {
     KEYS,
     TARGET_AUTHORITY,
