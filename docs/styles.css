@@ -685,6 +685,98 @@ button:active,
   max-width:100%;
 }
 
+.upload-panel.target-first-mode.results-ready{
+  display:flex;
+  flex-direction:column;
+}
+
+.upload-panel.target-first-mode.results-ready .shooter-step-prompt{
+  order:1;
+}
+
+.upload-panel.target-first-mode.results-ready .evidence-workspace{
+  order:2;
+}
+
+.upload-panel.target-first-mode.results-ready .workflow-control-row{
+  order:3;
+}
+
+.upload-panel.target-first-mode.results-ready .adjusted-distance-panel{
+  order:4;
+}
+
+.upload-panel.target-first-mode.results-ready .evidence-preview.evidence-workspace{
+  grid-template-columns:1fr;
+  align-items:start;
+  height:auto;
+  min-height:0;
+  overflow:visible;
+}
+
+.upload-panel.target-first-mode.results-ready .mark-surface{
+  max-width:min(100%, 640px);
+  height:auto;
+  aspect-ratio:1102 / 1713;
+}
+
+.upload-panel.target-first-mode.results-ready .mark-surface img{
+  height:100%;
+}
+
+.upload-panel.target-first-mode.results-ready .evidence-meta{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  padding:0;
+  margin-top:4px;
+  overflow:visible;
+  max-height:none;
+}
+
+.upload-panel.target-first-mode.results-ready .target-intel-stack{
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  display:grid;
+  grid-template-columns:minmax(86px, .8fr) repeat(3, minmax(64px, 1fr));
+  gap:5px;
+  padding:5px;
+  border:2px solid var(--ink);
+  border-radius:var(--radius);
+  background:var(--paper);
+}
+
+.upload-panel.target-first-mode.results-ready .target-intel-score,
+.upload-panel.target-first-mode.results-ready .target-intel-item{
+  min-height:52px;
+  padding:5px 6px;
+}
+
+.upload-panel.target-first-mode.results-ready .target-intel-score{
+  gap:2px;
+}
+
+.upload-panel.target-first-mode.results-ready .target-score-label{
+  font-size:9px;
+}
+
+.upload-panel.target-first-mode.results-ready .target-intel-score strong{
+  font-size:clamp(28px, 9vw, 38px);
+}
+
+.upload-panel.target-first-mode.results-ready .target-intel-item strong{
+  font-size:12px;
+  line-height:1.05;
+  text-align:center;
+}
+
+.upload-panel.target-first-mode.results-ready .authority-status-message{
+  grid-column:1 / -1;
+  padding:7px 8px;
+}
+
 .evidence-meta{
   display:grid;
   align-content:start;
