@@ -878,6 +878,10 @@ button:active,
   overscroll-behavior:contain;
 }
 
+.mobile-distance-chip{
+  display:none;
+}
+
 .mark-surface img{
   display:block;
   width:100%;
@@ -1890,14 +1894,43 @@ input[readonly]{
 
   .upload-panel.target-first-mode .mark-surface{
     width:100%;
-    max-width:min(100%, calc((100dvh - 164px) * .643));
+    max-width:100%;
     height:auto;
     min-height:0;
     aspect-ratio:1102 / 1713;
   }
 
+  .upload-panel.target-first-mode:not(.results-ready) .evidence-meta{
+    display:none;
+  }
+
+  .upload-panel.target-first-mode.results-ready .evidence-meta{
+    display:block;
+    width:100%;
+  }
+
   .upload-panel.target-first-mode .evidence-meta{
     max-height:34vh;
+  }
+
+  .mobile-distance-chip{
+    position:absolute;
+    right:8px;
+    top:8px;
+    z-index:3;
+    display:inline-flex;
+    align-items:center;
+    min-height:30px;
+    padding:5px 9px;
+    border:2px solid var(--ink);
+    border-radius:999px;
+    background:rgba(255,253,248,.92);
+    color:var(--ink);
+    font-size:12px;
+    font-weight:900;
+    line-height:1;
+    text-transform:lowercase;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
   }
 
   .mark-surface{
