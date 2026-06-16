@@ -129,9 +129,11 @@ function currentSetupName() {
 }
 
 function renderActiveSessionBar() {
-  document.getElementById("activeSessionBar").innerHTML = session
+  const bar = document.getElementById("activeSessionBar");
+  bar.innerHTML = session
     ? `<strong>${currentSetupName()}</strong><span></span>`
     : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
+  bar.classList.toggle("target-loaded-collapse", !!displayedEvidence);
 }
 
 function defaultTargetMatrix() {
@@ -800,6 +802,7 @@ function renderMarkStatus() {
     uploadPanel.classList.toggle("target-first-mode", canMark);
     uploadPanel.classList.toggle("results-ready", !!resultsShown || !!authorityStatusMessage);
   }
+  renderActiveSessionBar();
   if (!canMark) {
     setShooterPrompt("");
   } else if (!hasAim) {
