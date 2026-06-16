@@ -815,8 +815,16 @@ button:active,
 .guidance-card{
   display:grid;
   gap:8px;
-  padding-top:10px;
-  border-top:2px solid var(--ink);
+  padding:8px;
+  border:2px solid var(--ink);
+  border-radius:var(--radius);
+  background:var(--paper);
+}
+
+.adjusted-distance-panel{
+  display:grid;
+  width:100%;
+  max-width:100%;
 }
 
 .guidance-card summary,
@@ -840,6 +848,19 @@ button:active,
   font-size:12px;
   font-weight:900;
   line-height:1.2;
+}
+
+.guidance-result.is-hidden{
+  display:none;
+}
+
+.guidance-result{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+  line-height:1.2;
+  text-transform:uppercase;
 }
 
 .custom-distance-card{
@@ -1981,6 +2002,10 @@ input[readonly]{
     order:3;
   }
 
+  .upload-panel.target-first-mode .adjusted-distance-panel{
+    order:4;
+  }
+
   .upload-panel.target-first-mode.pre-results-actions .workflow-control-row{
     position:fixed;
     left:8px;
@@ -2073,6 +2098,10 @@ input[readonly]{
     display:none;
   }
 
+  .upload-panel.target-first-mode:not(.results-ready) .adjusted-distance-panel{
+    display:none;
+  }
+
   .upload-panel.target-first-mode.results-ready .evidence-meta{
     display:block;
     box-sizing:border-box;
@@ -2135,6 +2164,43 @@ input[readonly]{
 
   .upload-panel.target-first-mode.results-ready .distance-other-input:not(.is-hidden){
     grid-column:1 / -1;
+  }
+
+  .upload-panel.target-first-mode.results-ready .adjusted-distance-panel{
+    margin-top:2px;
+  }
+
+  .upload-panel.target-first-mode.results-ready .guidance-card{
+    gap:5px;
+    padding:6px;
+  }
+
+  .upload-panel.target-first-mode.results-ready .guidance-card summary,
+  .upload-panel.target-first-mode.results-ready .custom-distance-card summary{
+    font-size:12px;
+    line-height:1.1;
+  }
+
+  .upload-panel.target-first-mode.results-ready .custom-distance-card{
+    gap:5px;
+    margin-top:6px;
+    padding-top:6px;
+  }
+
+  .upload-panel.target-first-mode.results-ready .custom-distance-card label{
+    margin-top:5px;
+  }
+
+  .upload-panel.target-first-mode.results-ready .custom-distance-card input{
+    min-height:32px;
+    padding:5px 7px;
+    font-size:12px;
+  }
+
+  .upload-panel.target-first-mode.results-ready .guidance-calc-button{
+    min-height:34px;
+    padding:6px 8px;
+    font-size:11px;
   }
 
   .mobile-distance-chip{

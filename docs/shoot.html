@@ -48,6 +48,7 @@
             <span>Choose Target to begin</span>
           </div>
         </div>
+        <div class="adjusted-distance-panel is-hidden" id="adjustedDistancePanel"></div>
       </section>
     </div>
   </section>
@@ -224,21 +225,11 @@ function distanceOptions() {
 
 function targetIntelStackHtml() {
   return `
-    <div class="target-intel-distance" aria-label="Distance">
-      <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
-      <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
-        <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
-        <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
-      </div>
-      <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
-      <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
-    </div>
     <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
     <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
     <div class="target-intel-item"><strong id="windageValue">--</strong></div>
     <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
     <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
-    ${guidanceCardHtml()}
   `;
 }
 
@@ -247,13 +238,18 @@ function isPresetDistance(value) {
 }
 
 function guidanceCardHtml() {
-  const presets = [100, 150, 200, 250, 300, 400, 500]
-    .map(distance => `<div>25m → ${distance}m ↑ X Clicks</div>`)
-    .join("");
   return `
-    <details class="guidance-card" open>
-      <summary>Clicks to Next Distance</summary>
-      <div class="guidance-list">${presets}</div>
+    <details class="guidance-card">
+      <summary>Adjusted Distance</summary>
+      <div class="target-intel-distance" aria-label="Distance">
+        <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
+        <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
+          <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
+          <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+        </div>
+        <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
+        <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+      </div>
       <details class="custom-distance-card">
         <summary>Custom Distance</summary>
         <label>Current Zero<input id="currentZeroDistance" inputmode="decimal" placeholder="" /></label>
@@ -263,7 +259,7 @@ function guidanceCardHtml() {
           <button class="unit-button" type="button" data-distance-unit="M">M</button>
         </div>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
-        <div class="guidance-result" id="guidanceResult">Result:</div>
+        <div class="guidance-result is-hidden" id="guidanceResult"></div>
       </details>
     </details>
   `;
@@ -344,11 +340,13 @@ function bindGuidanceCard() {
     const desired = Number(document.getElementById("desiredZeroDistance").value);
     const result = document.getElementById("guidanceResult");
     if (!Number.isFinite(current) || !Number.isFinite(desired)) {
-      result.textContent = "Result:";
+      result.textContent = "";
+      result.classList.add("is-hidden");
       return;
     }
     // Non-authoritative distance guidance placeholder; backend owns click calculations.
     result.textContent = "Backend authority required";
+    result.classList.remove("is-hidden");
     result.dataset.unit = selectedUnit;
   });
 }
@@ -358,6 +356,11 @@ function renderEvidencePreview(image) {
   const evidence = image && image.dataUrl ? image : null;
   displayedEvidence = evidence;
   if (!evidence) {
+    const adjustedPanel = document.getElementById("adjustedDistancePanel");
+    if (adjustedPanel) {
+      adjustedPanel.innerHTML = "";
+      adjustedPanel.classList.add("is-hidden");
+    }
     preview.innerHTML = `
       <div class="evidence-meta evidence-status-stack empty-target-start">
         <strong>Choose Target Photo To Begin</strong>
@@ -374,6 +377,11 @@ function renderEvidencePreview(image) {
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
   `;
+  const adjustedPanel = document.getElementById("adjustedDistancePanel");
+  if (adjustedPanel) {
+    adjustedPanel.innerHTML = guidanceCardHtml();
+    adjustedPanel.classList.remove("is-hidden");
+  }
   bindDistanceControl();
   bindGuidanceCard();
   const markSurface = document.getElementById("markSurface");
