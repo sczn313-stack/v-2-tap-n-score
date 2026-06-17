@@ -40,6 +40,10 @@
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
         </div>
+        <div class="secondary-score-panel score-pending" id="scoreCell" aria-label="Score">
+          <span class="target-score-label">Your Score:</span>
+          <strong id="scoreValue">--</strong>
+        </div>
         <div class="shooter-step-prompt is-hidden" id="shooterStepPrompt" aria-live="polite"></div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
@@ -225,10 +229,10 @@ function distanceOptions() {
 
 function targetIntelStackHtml() {
   return `
-    <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
-    <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
-    <div class="target-intel-item"><strong id="windageValue">--</strong></div>
-    <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
+    <div class="primary-correction-label">Correction</div>
+    <div class="target-intel-item correction-click"><strong id="elevationValue">--</strong></div>
+    <div class="target-intel-item correction-click"><strong id="windageValue">--</strong></div>
+    <div class="target-intel-item correction-hits"><strong id="hitsValue">0 Hits</strong></div>
     <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
   `;
 }
@@ -745,11 +749,14 @@ function renderResults() {
   const numericScore = currentScore === null ? NaN : Number(currentScore);
   const scoreCell = document.getElementById("scoreCell");
   if (!scoreCell) return;
-  scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
+  scoreCell.className = `secondary-score-panel ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
-  document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
-  document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
-  document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
+  const elevationValue = document.getElementById("elevationValue");
+  const windageValue = document.getElementById("windageValue");
+  const hitsValue = document.getElementById("hitsValue");
+  if (elevationValue) elevationValue.textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
+  if (windageValue) windageValue.textContent = compactClick(currentClicks && currentClicks.windage, "windage");
+  if (hitsValue) hitsValue.textContent = `${impacts.length} Hits`;
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
