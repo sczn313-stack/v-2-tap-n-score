@@ -635,9 +635,14 @@ button:active,
 .upload-panel.target-first-mode .workflow-control-row{
   position:relative;
   top:auto;
+  flex-direction:column;
+  align-items:stretch;
   justify-content:center;
+  gap:6px;
   min-height:44px;
-  padding:2px;
+  width:min(100%, 420px);
+  margin-inline:auto;
+  padding:4px;
   border-color:transparent;
   background:transparent;
 }
@@ -647,8 +652,12 @@ button:active,
 }
 
 .upload-panel.target-first-mode .workflow-control-row .button{
-  flex:0 1 min(220px, 100%);
-  min-width:150px;
+  flex:0 0 auto;
+  width:100%;
+  min-width:0;
+  min-height:38px;
+  padding:7px 12px;
+  border-radius:var(--radius);
 }
 
 .upload-panel h2{
@@ -700,14 +709,15 @@ button:active,
 
 .upload-panel.target-first-mode.results-ready .workflow-control-row{
   order:3;
+  width:min(100%, 420px);
   gap:6px;
   min-height:0;
   padding:5px;
 }
 
 .upload-panel.target-first-mode.results-ready .workflow-control-row .button{
-  min-height:34px;
-  padding:5px 10px;
+  min-height:38px;
+  padding:7px 12px;
   line-height:1;
 }
 
@@ -2205,19 +2215,24 @@ input[readonly]{
   }
 
   .upload-panel.target-first-mode.pre-results-actions .workflow-control-row{
-    position:fixed;
-    left:8px;
-    right:8px;
-    bottom:calc(8px + env(safe-area-inset-bottom, 0px));
-    z-index:80;
+    position:relative;
+    left:auto;
+    right:auto;
+    bottom:auto;
+    z-index:1;
     display:flex;
+    flex-direction:column;
     flex-wrap:nowrap;
-    gap:5px;
+    align-items:stretch;
+    gap:6px;
     min-height:0;
-    padding:5px;
+    width:min(100%, 420px);
+    max-width:100%;
+    margin:4px auto 0;
+    padding:6px;
     border-color:var(--ink);
-    background:rgba(247, 239, 218, .96);
-    box-shadow:var(--shadow);
+    background:var(--paper);
+    box-shadow:none;
   }
 
   .upload-panel.target-first-mode.results-ready .workflow-control-row{
@@ -2227,19 +2242,23 @@ input[readonly]{
     bottom:auto;
     z-index:1;
     box-sizing:border-box;
-    width:100%;
+    width:min(100%, 420px);
     max-width:100%;
     min-height:0;
-    margin-top:4px;
-    padding:3px;
+    margin:4px auto 0;
+    padding:5px;
     border-color:var(--ink);
     background:var(--paper);
     box-shadow:none;
   }
 
   .upload-panel.target-first-mode.workflow-actions-ready .workflow-control-row .button{
-    min-height:34px;
-    padding:5px 8px;
+    flex:0 0 auto;
+    width:100%;
+    min-width:0;
+    max-width:none;
+    min-height:38px;
+    padding:7px 12px;
     font-size:11px;
     line-height:1;
     white-space:nowrap;
@@ -2247,17 +2266,17 @@ input[readonly]{
 
   .upload-panel.target-first-mode.workflow-actions-ready #showResults,
   .upload-panel.target-first-mode.results-ready #saveMarks{
-    flex:1 1 auto;
-    min-width:120px;
+    flex:0 0 auto;
+    min-width:0;
   }
 
   .upload-panel.target-first-mode.workflow-actions-ready #undoImpact,
   .upload-panel.target-first-mode.workflow-actions-ready #clearMarks{
-    flex:0 0 58px;
-    min-width:58px;
-    max-width:66px;
-    padding-inline:6px;
-    font-size:10px;
+    flex:0 0 auto;
+    min-width:0;
+    max-width:none;
+    padding-inline:12px;
+    font-size:11px;
   }
 
   .upload-panel.target-first-mode.results-ready #saveMarks{
