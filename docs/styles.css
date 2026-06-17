@@ -706,8 +706,12 @@ button:active,
   order:4;
 }
 
-.upload-panel.target-first-mode.results-ready .adjusted-distance-panel{
+.upload-panel.target-first-mode.results-ready .session-distance-panel{
   order:5;
+}
+
+.upload-panel.target-first-mode.results-ready .adjusted-distance-panel{
+  order:6;
 }
 
 .upload-panel.target-first-mode.results-ready .evidence-preview.evidence-workspace{
@@ -793,6 +797,10 @@ button:active,
   display:none;
 }
 
+.session-distance-panel{
+  display:none;
+}
+
 .upload-panel.target-first-mode.results-ready .secondary-score-panel{
   display:flex;
   align-items:center;
@@ -824,6 +832,34 @@ button:active,
   color:var(--ink);
   font-size:20px;
   line-height:1;
+}
+
+.upload-panel.target-first-mode.results-ready .session-distance-panel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  box-sizing:border-box;
+  width:max-content;
+  max-width:100%;
+  margin:2px auto 0;
+  min-height:28px;
+  padding:4px 10px;
+  border:1px solid rgba(35, 35, 28, .38);
+  border-radius:999px;
+  background:rgba(255, 253, 247, .58);
+  color:#5f5548;
+  font-size:11px;
+  font-weight:900;
+  line-height:1;
+  text-align:center;
+  text-transform:uppercase;
+}
+
+.upload-panel.target-first-mode.results-ready .session-distance-panel strong{
+  color:var(--ink);
+  font-size:12px;
+  text-transform:lowercase;
 }
 
 .evidence-meta{
@@ -979,6 +1015,10 @@ button:active,
   user-select:none;
   -webkit-user-select:none;
   -webkit-touch-callout:none;
+}
+
+.zero-transition-helper{
+  display:none;
 }
 
 .guidance-list{
@@ -2147,8 +2187,12 @@ input[readonly]{
     order:4;
   }
 
-  .upload-panel.target-first-mode .adjusted-distance-panel{
+  .upload-panel.target-first-mode .session-distance-panel{
     order:5;
+  }
+
+  .upload-panel.target-first-mode .adjusted-distance-panel{
+    order:6;
   }
 
   .upload-panel.target-first-mode.pre-results-actions .workflow-control-row{
@@ -2248,6 +2292,10 @@ input[readonly]{
   }
 
   .upload-panel.target-first-mode:not(.results-ready) .secondary-score-panel{
+    display:none;
+  }
+
+  .upload-panel.target-first-mode:not(.results-ready) .session-distance-panel{
     display:none;
   }
 
@@ -2379,6 +2427,16 @@ input[readonly]{
     border-width:1px;
     border-radius:var(--radius);
     background:rgba(216, 195, 155, .58);
+  }
+
+  .upload-panel.target-first-mode.results-ready .guidance-card[open] .zero-transition-helper{
+    display:block;
+    color:#5f5548;
+    font-size:11px;
+    font-weight:900;
+    line-height:1.2;
+    text-align:center;
+    text-transform:none;
   }
 
   .upload-panel.target-first-mode.results-ready .custom-distance-card{

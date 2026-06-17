@@ -44,6 +44,10 @@
           <span class="target-score-label">Your Score:</span>
           <strong id="scoreValue">--</strong>
         </div>
+        <div class="session-distance-panel" id="sessionDistancePanel" aria-label="Session distance">
+          <span>Session Distance:</span>
+          <strong id="sessionDistanceDisplay">100 yds</strong>
+        </div>
         <div class="shooter-step-prompt is-hidden" id="shooterStepPrompt" aria-live="polite"></div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
@@ -244,18 +248,9 @@ function isPresetDistance(value) {
 function guidanceCardHtml() {
   return `
     <details class="guidance-card">
-      <summary>Adjusted Distance</summary>
-      <div class="target-intel-distance" aria-label="Distance">
-        <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
-        <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
-          <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
-          <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
-        </div>
-        <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
-        <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
-      </div>
-      <details class="custom-distance-card">
-        <summary>Custom Distance</summary>
+      <summary>Zero Transition Tool</summary>
+      <div class="zero-transition-helper">Plan a future zero change.</div>
+      <div class="custom-distance-card">
         <label>Current Zero<input id="currentZeroDistance" inputmode="decimal" placeholder="" /></label>
         <label>Desired Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
         <div class="unit-toggle" role="group" aria-label="Distance units">
@@ -264,7 +259,7 @@ function guidanceCardHtml() {
         </div>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
         <div class="guidance-result is-hidden" id="guidanceResult"></div>
-      </details>
+      </div>
     </details>
   `;
 }
@@ -315,8 +310,10 @@ function syncDistanceFromControls() {
 function updateDistanceDisplay() {
   const display = document.getElementById("distanceDisplay");
   const chip = document.getElementById("mobileDistanceChip");
+  const sessionDisplay = document.getElementById("sessionDistanceDisplay");
   if (display) display.textContent = formatDistanceDisplay();
   if (chip) chip.textContent = formatDistanceDisplay();
+  if (sessionDisplay) sessionDisplay.textContent = formatDistanceDisplay();
 }
 
 function unlockDistanceForNewTarget() {
@@ -387,6 +384,7 @@ function renderEvidencePreview(image) {
     adjustedPanel.classList.remove("is-hidden");
   }
   bindDistanceControl();
+  updateDistanceDisplay();
   bindGuidanceCard();
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");
