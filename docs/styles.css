@@ -797,23 +797,24 @@ button:active,
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
+  gap:7px;
   box-sizing:border-box;
-  width:100%;
+  width:max-content;
   max-width:100%;
   margin-top:4px;
-  min-height:42px;
-  padding:8px 10px;
-  border:2px solid var(--ink);
-  border-radius:var(--radius);
-  background:var(--panel);
+  margin-inline:auto;
+  min-height:34px;
+  padding:5px 12px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:rgba(255, 253, 247, .82);
   color:var(--ink);
   text-align:center;
 }
 
 .upload-panel.target-first-mode.results-ready .secondary-score-panel .target-score-label{
   color:var(--green);
-  font-size:12px;
+  font-size:11px;
   font-weight:900;
   line-height:1;
   text-transform:uppercase;
@@ -821,7 +822,7 @@ button:active,
 
 .upload-panel.target-first-mode.results-ready .secondary-score-panel strong{
   color:var(--ink);
-  font-size:24px;
+  font-size:20px;
   line-height:1;
 }
 
@@ -2352,18 +2353,32 @@ input[readonly]{
   }
 
   .upload-panel.target-first-mode.results-ready .adjusted-distance-panel{
-    margin-top:2px;
+    margin-top:4px;
+    justify-items:center;
   }
 
   .upload-panel.target-first-mode.results-ready .guidance-card{
-    gap:5px;
-    padding:6px;
+    width:min(100%, 300px);
+    gap:4px;
+    padding:4px 9px;
+    border-width:1px;
+    border-color:var(--line);
+    border-radius:999px;
+    background:rgba(216, 195, 155, .42);
   }
 
   .upload-panel.target-first-mode.results-ready .guidance-card summary,
   .upload-panel.target-first-mode.results-ready .custom-distance-card summary{
-    font-size:12px;
+    font-size:10px;
     line-height:1.1;
+  }
+
+  .upload-panel.target-first-mode.results-ready .guidance-card[open]{
+    width:100%;
+    padding:6px;
+    border-width:1px;
+    border-radius:var(--radius);
+    background:rgba(216, 195, 155, .58);
   }
 
   .upload-panel.target-first-mode.results-ready .custom-distance-card{
