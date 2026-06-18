@@ -776,12 +776,12 @@ function shooterTipFromResults() {
   if (currentImpactPoints.length < 3) return "Add more confirmed impacts for a stronger read.";
   const windage = Number(currentClicks.windageClicks || 0);
   const elevation = Number(currentClicks.elevationClicks || 0);
-  const windageDirection = String(currentClicks.windageDirection || "CENTER").toLowerCase();
-  const elevationDirection = String(currentClicks.elevationDirection || "CENTER").toLowerCase();
-  if (windage === 0 && elevation === 0) return "Group is centered; confirm with another string.";
-  if (elevation > windage) return "Apply elevation " + elevationDirection + ", then confirm.";
-  if (windage > elevation) return "Apply windage " + windageDirection + ", then confirm.";
-  return "Apply both corrections, then confirm.";
+  if (windage === 0 && elevation === 0) return "Confirm zero.";
+  const corrections = [];
+  if (elevation) corrections.push(String(currentClicks.elevation || "").trim());
+  if (windage) corrections.push(String(currentClicks.windage || "").trim());
+  const readable = corrections.filter(Boolean).join(" and ");
+  return readable ? `Apply ${readable}, then confirm.` : "Confirm zero.";
 }
 
 function showShooterTip() {
