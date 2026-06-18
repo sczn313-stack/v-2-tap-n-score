@@ -118,6 +118,7 @@ let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
 let authorityRequestInFlight = false;
 let authorityStatusMessage = "";
+let authorityWakeTimer = null;
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
@@ -599,6 +600,23 @@ function applyBackendAuthorityPackage(authorityPackage) {
   sessionSaved = false;
 }
 
+function clearAuthorityWakeTimer() {
+  if (!authorityWakeTimer) return;
+  clearTimeout(authorityWakeTimer);
+  authorityWakeTimer = null;
+}
+
+function scheduleAuthorityWakeMessage() {
+  clearAuthorityWakeTimer();
+  authorityWakeTimer = setTimeout(() => {
+    authorityWakeTimer = null;
+    if (!authorityRequestInFlight || resultsShown) return;
+    authorityStatusMessage = "Authority service waking up...";
+    renderResults();
+    renderMarkStatus();
+  }, 3000);
+}
+
 function correctionCardDistance() {
   syncDistanceFromControls();
   return formatDistanceDisplay().toUpperCase();
@@ -805,6 +823,7 @@ function settleViewportAfterResults() {
 }
 
 function clearCalculatedResults() {
+  clearAuthorityWakeTimer();
   currentClicks = null;
   currentScore = null;
   backendAuthorityPackage = null;
@@ -839,14 +858,17 @@ function renderMarkStatus() {
   const hasAim = !!currentAimPoint;
   const hasImpacts = currentImpactPoints.length > 0;
   const impactEntryActive = hasAim && (markMode === "impact" || hasImpacts);
-  document.getElementById("setAimMode").disabled = !canMark;
+  const aimButton = document.getElementById("setAimMode");
+  aimButton.textContent = hasAim ? "✓ Aim Point Set" : "Tap Aim Point";
+  aimButton.classList.toggle("workflow-complete", hasAim);
+  aimButton.disabled = !canMark || hasAim;
   document.getElementById("addImpactMode").disabled = !canMark || !hasAim || impactEntryActive;
   document.getElementById("undoImpact").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
   document.getElementById("clearMarks").disabled = authorityRequestInFlight || !canMark || (!hasAim && !hasImpacts);
   document.getElementById("saveMarks").disabled = authorityRequestInFlight || !session || sessionSaved || !resultsShown;
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
   setControlVisibility("chooseTargetButton", !canMark);
-  setControlVisibility("setAimMode", false);
+  setControlVisibility("setAimMode", canMark && hasAim && !resultsShown);
   setControlVisibility("addImpactMode", canMark && hasAim && !impactEntryActive && !resultsShown);
   setControlVisibility("showResults", canMark && impactEntryActive && !resultsShown);
   setControlVisibility("undoImpact", canMark && impactEntryActive && !resultsShown);
@@ -1026,16 +1048,19 @@ document.getElementById("showResults").addEventListener("click", async () => {
   if (!currentAimPoint || !currentImpactPoints.length) return;
   authorityRequestInFlight = true;
   authorityStatusMessage = "";
+  scheduleAuthorityWakeMessage();
   renderResults();
   renderMarkStatus();
   try {
     const authorityPackage = await requestBackendAuthority();
+    clearAuthorityWakeTimer();
     applyBackendAuthorityPackage(authorityPackage);
     renderMarkers();
     renderResults();
     if (resultsShown) showShooterTip();
     if (resultsShown) settleViewportAfterResults();
   } catch (error) {
+    clearAuthorityWakeTimer();
     currentClicks = null;
     currentScore = null;
     backendAuthorityPackage = null;
