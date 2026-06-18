@@ -292,6 +292,62 @@ def calculate_group(impacts: List[Dict[str, float]], geometry: Dict[str, Any], y
     return group
 
 
+def format_distance_yards(yards: float) -> str:
+    rounded = _round(yards, 1)
+    if rounded.is_integer():
+        return f"{int(rounded)} yds"
+    return f"{rounded} yds"
+
+
+def click_phrase(count: int, direction: str) -> Optional[str]:
+    if direction == "CENTER" or count == 0:
+        return None
+    label = "click" if count == 1 else "clicks"
+    return f"{count} {label} {direction}"
+
+
+def short_click_phrase(count: int, direction: str) -> Optional[str]:
+    if direction == "CENTER" or count == 0:
+        return None
+    return f"{count} {direction}"
+
+
+def build_shooter_guidance(correction: Optional[Dict[str, Any]], clicks: Optional[Dict[str, Any]], yards: float) -> Dict[str, Any]:
+    guidance = {
+        "status": "unavailable",
+        "primary": None,
+        "short": None,
+        "confirm": None,
+        "method": "authority-v1",
+    }
+    if not correction or not clicks:
+        guidance["reason"] = "missing correction authority"
+        return guidance
+
+    elevation = click_phrase(int(clicks.get("elevationClicks", 0)), str(clicks.get("elevationDirection", "CENTER")))
+    windage = click_phrase(int(clicks.get("windageClicks", 0)), str(clicks.get("windageDirection", "CENTER")))
+    short_elevation = short_click_phrase(int(clicks.get("elevationClicks", 0)), str(clicks.get("elevationDirection", "CENTER")))
+    short_windage = short_click_phrase(int(clicks.get("windageClicks", 0)), str(clicks.get("windageDirection", "CENTER")))
+    phrases = [phrase for phrase in (elevation, windage) if phrase]
+    short_phrases = [phrase for phrase in (short_elevation, short_windage) if phrase]
+    confirm = f"Confirm at {format_distance_yards(yards)}."
+
+    guidance.update({
+        "status": "calculated",
+        "confirm": confirm,
+    })
+    if not phrases:
+        guidance["primary"] = "Confirm zero."
+        guidance["short"] = "Confirm zero"
+        return guidance
+    if len(phrases) == 1:
+        guidance["primary"] = f"Apply {phrases[0]}, then confirm."
+    else:
+        guidance["primary"] = f"Apply {phrases[0]} and {phrases[1]}, then confirm."
+    guidance["short"] = " / ".join(short_phrases)
+    return guidance
+
+
 def stable_hash(payload: Dict[str, Any]) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
@@ -317,6 +373,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     clicks = None
     moa = None
     vector = None
+    shooter_guidance = None
     if aim_grid and poib_grid:
         x_inches = _round(poib_grid["xInches"] - aim_grid["xInches"], 4)
         y_inches = _round(poib_grid["yInches"] - aim_grid["yInches"], 4)
@@ -357,6 +414,9 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "end": image_point_through_grid(aim, geometry),
             "intent": "POIB_TO_AIM",
         }
+        shooter_guidance = build_shooter_guidance(correction, clicks, yards)
+    else:
+        shooter_guidance = build_shooter_guidance(correction, clicks, yards)
 
     render_coordinates = {
         "aim": image_point_through_grid(aim, geometry) if aim else None,
@@ -386,6 +446,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         "score": score,
         "correction": correction,
         "clicks": clicks,
+        "shooterGuidance": shooter_guidance,
         "moa": moa,
         "vectors": {"poibToAim": vector} if vector else {},
         "geometryMetadata": geometry,

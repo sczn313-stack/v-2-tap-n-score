@@ -772,6 +772,8 @@ function hideShooterTip() {
 }
 
 function shooterTipFromResults() {
+  const backendGuidance = backendAuthorityPackage && backendAuthorityPackage.shooterGuidance;
+  if (backendGuidance && backendGuidance.primary) return backendGuidance.primary;
   if (!currentClicks || !currentImpactPoints.length) return "Record confirmed impacts before saving.";
   if (currentImpactPoints.length < 3) return "Add more confirmed impacts for a stronger read.";
   const windage = Number(currentClicks.windageClicks || 0);

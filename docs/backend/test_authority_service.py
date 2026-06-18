@@ -106,6 +106,48 @@ def test_point_zero_five_mrad_clicks():
     assert_equal(result["clicks"]["windageClicks"], 56, "point zero five mrad 10-inch clicks")
 
 
+def test_guidance_elevation_only():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(10, 20)])
+    assert_equal(result["shooterGuidance"]["primary"], "Apply 38 clicks UP, then confirm.", "elevation-only guidance")
+    assert_equal(result["shooterGuidance"]["short"], "38 UP", "elevation-only short guidance")
+
+
+def test_guidance_windage_only():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 10)])
+    assert_equal(result["shooterGuidance"]["primary"], "Apply 38 clicks LEFT, then confirm.", "windage-only guidance")
+    assert_equal(result["shooterGuidance"]["short"], "38 LEFT", "windage-only short guidance")
+
+
+def test_guidance_both_axes():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 20)])
+    assert_equal(result["shooterGuidance"]["primary"], "Apply 38 clicks UP and 38 clicks LEFT, then confirm.", "both-axis guidance")
+    assert_equal(result["shooterGuidance"]["short"], "38 UP / 38 LEFT", "both-axis short guidance")
+
+
+def test_guidance_zero_correction():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(10, 10)])
+    assert_equal(result["shooterGuidance"]["primary"], "Confirm zero.", "zero correction guidance")
+    assert_equal(result["shooterGuidance"]["short"], "Confirm zero", "zero correction short guidance")
+
+
+def test_guidance_moa_workflow():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 20)], {"adjustmentUnit": "MOA", "clickValueMOA": 0.5})
+    assert_equal(result["clicks"]["adjustmentUnit"], "MOA", "guidance moa unit")
+    assert_equal(result["shooterGuidance"]["primary"], "Apply 19 clicks UP and 19 clicks LEFT, then confirm.", "moa guidance")
+
+
+def test_guidance_mrad_workflow():
+    aim = point_from_grid(10, 10)
+    result = package(aim, [point_from_grid(20, 20)], {"adjustmentUnit": "MRAD", "clickValueMRAD": 0.1})
+    assert_equal(result["clicks"]["adjustmentUnit"], "MRAD", "guidance mrad unit")
+    assert_equal(result["shooterGuidance"]["primary"], "Apply 28 clicks UP and 28 clicks LEFT, then confirm.", "mrad guidance")
+
+
 def assert_raises_value_error(callback, label):
     try:
         callback()
@@ -144,6 +186,8 @@ def test_missing_evidence_creates_no_fake_coordinate():
     assert_equal(result["renderCoordinates"]["vector"], None, "fake vector")
     assert_equal(result["renderCoordinates"]["impacts"], [], "fake impacts")
     assert_equal(result["score"]["value"], None, "fake score")
+    assert_equal(result["shooterGuidance"]["status"], "unavailable", "fake guidance status")
+    assert_equal(result["shooterGuidance"]["primary"], None, "fake guidance")
 
 
 def test_backend_score_scores_close_hits_higher_than_far_hits():
@@ -174,6 +218,12 @@ def run():
         test_one_moa_clicks,
         test_point_one_mrad_clicks,
         test_point_zero_five_mrad_clicks,
+        test_guidance_elevation_only,
+        test_guidance_windage_only,
+        test_guidance_both_axes,
+        test_guidance_zero_correction,
+        test_guidance_moa_workflow,
+        test_guidance_mrad_workflow,
         test_invalid_unknown_unit_rejection,
         test_missing_click_value_rejection,
         test_same_input_creates_same_evidence_hash,
