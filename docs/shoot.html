@@ -64,12 +64,34 @@
 <script src="app_state.js"></script>
 <script>
 let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
+const targetWorkspaceParams = new URLSearchParams(window.location.search);
+const explicitTargetWorkspaceRestore = (
+  targetWorkspaceParams.get("restoreTarget") === "1" ||
+  targetWorkspaceParams.get("resumeSession") === "1" ||
+  targetWorkspaceParams.has("restoreSessionId")
+);
+
+function explicitRestoreSession() {
+  const restoreId = targetWorkspaceParams.get("restoreSessionId");
+  if (!restoreId) return null;
+  return SCZN3M4.getSessionHistory().find(candidate => {
+    return candidate && (
+      candidate.sessionId === restoreId ||
+      String(candidate.sessionNumber) === restoreId ||
+      candidate.sessionLabel === restoreId
+    );
+  }) || null;
+}
+
+if (explicitTargetWorkspaceRestore) {
+  session = explicitRestoreSession() || session;
+}
 
 function isFinalizedSession(candidate) {
   return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
 }
 
-if (isFinalizedSession(session)) {
+if (isFinalizedSession(session) && !explicitTargetWorkspaceRestore) {
   session = null;
 }
 
@@ -96,12 +118,13 @@ function configuredAuthorityEndpoint() {
 const BACKEND_AUTHORITY_ENDPOINT = configuredAuthorityEndpoint();
 let pendingEvidence = null;
 let displayedEvidence = null;
-let backendAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
-  ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
+let restoredWorkspaceSession = explicitTargetWorkspaceRestore ? session : null;
+let backendAuthorityPackage = restoredWorkspaceSession && (restoredWorkspaceSession.backendAuthorityPackage || restoredWorkspaceSession.ugeoAuthorityPackage)
+  ? (restoredWorkspaceSession.backendAuthorityPackage || restoredWorkspaceSession.ugeoAuthorityPackage)
   : null;
 let markMode = "aim";
-let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
-let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
+let currentAimPoint = restoredWorkspaceSession && restoredWorkspaceSession.aimPoint ? restoredWorkspaceSession.aimPoint : null;
+let currentImpactPoints = restoredWorkspaceSession && Array.isArray(restoredWorkspaceSession.impactPoints) ? [...restoredWorkspaceSession.impactPoints] : [];
 function backendScoreValue(authorityPackage) {
   const score = authorityPackage && authorityPackage.score;
   const value = score && typeof score === "object" ? score.value : score;
@@ -411,7 +434,8 @@ function renderEvidencePreview(image) {
 }
 
 function activeEvidence() {
-  return pendingEvidence || (SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {}).targetEvidenceImage || null;
+  if (pendingEvidence) return pendingEvidence;
+  return restoredWorkspaceSession && restoredWorkspaceSession.targetEvidenceImage ? restoredWorkspaceSession.targetEvidenceImage : null;
 }
 
 function readFileAsDataUrl(file) {
@@ -968,7 +992,7 @@ function handleMarkPointerUp(event) {
   handleMarkTap(event);
 }
 
-renderEvidencePreview(session && session.targetEvidenceImage);
+renderEvidencePreview(restoredWorkspaceSession && restoredWorkspaceSession.targetEvidenceImage);
 
 document.getElementById("chooseTargetButton").addEventListener("click", () => {
   ensureTargetSession();
@@ -990,6 +1014,7 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
     currentAimPoint = null;
     currentImpactPoints = [];
     sessionSaved = false;
+    restoredWorkspaceSession = null;
     unlockDistanceForNewTarget();
     clearCalculatedResults();
     pendingEvidence = {
