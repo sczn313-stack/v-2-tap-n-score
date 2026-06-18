@@ -881,22 +881,21 @@ function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
   const hasAim = !!currentAimPoint;
   const hasImpacts = currentImpactPoints.length > 0;
-  const impactEntryActive = hasAim && (markMode === "impact" || hasImpacts);
   const aimButton = document.getElementById("setAimMode");
-  aimButton.textContent = hasAim ? "✓ Aim Point Set" : "Tap Aim Point";
-  aimButton.classList.toggle("workflow-complete", hasAim);
+  aimButton.textContent = "Tap Aim Point";
+  aimButton.classList.remove("workflow-complete");
   aimButton.disabled = !canMark || hasAim;
-  document.getElementById("addImpactMode").disabled = !canMark || !hasAim || impactEntryActive;
+  document.getElementById("addImpactMode").disabled = !canMark || !hasAim;
   document.getElementById("undoImpact").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
   document.getElementById("clearMarks").disabled = authorityRequestInFlight || !canMark || (!hasAim && !hasImpacts);
   document.getElementById("saveMarks").disabled = authorityRequestInFlight || !session || sessionSaved || !resultsShown;
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
   setControlVisibility("chooseTargetButton", !canMark);
-  setControlVisibility("setAimMode", canMark && hasAim && !resultsShown);
-  setControlVisibility("addImpactMode", canMark && hasAim && !impactEntryActive && !resultsShown);
-  setControlVisibility("showResults", canMark && impactEntryActive && !resultsShown);
-  setControlVisibility("undoImpact", canMark && impactEntryActive && !resultsShown);
-  setControlVisibility("clearMarks", canMark && impactEntryActive && !resultsShown);
+  setControlVisibility("setAimMode", false);
+  setControlVisibility("addImpactMode", canMark && hasAim && !hasImpacts && !resultsShown);
+  setControlVisibility("showResults", canMark && hasImpacts && !resultsShown);
+  setControlVisibility("undoImpact", canMark && hasImpacts && !resultsShown);
+  setControlVisibility("clearMarks", canMark && hasImpacts && !resultsShown);
   setControlVisibility("saveMarks", canMark && resultsShown);
   document.getElementById("showResults").textContent = authorityRequestInFlight ? "Working..." : "Show Results";
   const uploadPanel = document.querySelector(".upload-panel");
@@ -916,7 +915,7 @@ function renderMarkStatus() {
   }
   let nextStep = "chooseTargetButton";
   if (canMark && !hasAim) nextStep = "setAimMode";
-  if (canMark && hasAim && !impactEntryActive) nextStep = "addImpactMode";
+  if (canMark && hasAim && !hasImpacts) nextStep = "addImpactMode";
   if (canMark && hasAim && hasImpacts && !resultsShown) nextStep = "showResults";
   if (canMark && hasAim && hasImpacts && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
@@ -943,7 +942,7 @@ function handleMarkTap(event) {
   };
   if (markMode === "aim" || !currentAimPoint) {
     currentAimPoint = point;
-    markMode = "impact-ready";
+    markMode = "impact";
   } else if (markMode === "impact") {
     currentImpactPoints.push(point);
   } else {
