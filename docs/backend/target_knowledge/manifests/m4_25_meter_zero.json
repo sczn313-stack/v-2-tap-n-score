@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "M4_25M_ZERO",
+    "targetName": "M4 25 Meter Zeroing Target",
+    "targetFamily": "M4 25 Meter Zero",
+    "targetType": "rifle-zeroing",
+    "discipline": "carbine zeroing",
+    "guidanceMode": "rifle-zero-correction"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "instruction_authority",
+    "geometryAuthorityLevel": "partial-local-manifest",
+    "instructionAuthorityLevel": "printed-target-text-and-local-manifest",
+    "sourceConfidence": "medium"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [
+      "Preserve M4 25 meter zero doctrine and inject SCZN3 intelligence."
+    ],
+    "printedTargetText": [
+      "For zeroing at 25 meters, rotate the rear sight elevation knob to the 300 meter 6/3 setting.",
+      "Aim at target center.",
+      "Adjust sights to move shot group center as close as possible to the white dot in the center of the target.",
+      "After completing the 25 meter zero, the weapon will be zeroed for 300 meters."
+    ],
+    "officialRules": [
+      "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    ],
+    "courseOfFire": [
+      "Shoot at 25 meters.",
+      "Use shot group center to adjust sights toward center white dot."
+    ],
+    "intendedUse": "Establish a 25 meter zero that simulates a 300 meter M4 zero.",
+    "shotCount": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "distance": {
+      "required": "25 m",
+      "simulatedZero": "300 m"
+    },
+    "passFailOrScoringRules": [
+      "Success condition is shot group center as close as possible to the center white dot.",
+      "Formal pass/fail threshold is UNKNOWN / REQUIRES OFFICIAL SOURCE."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "paperWidthIn": 8.5,
+      "paperHeightIn": 11,
+      "orientation": "portrait",
+      "originName": "bullCenter",
+      "gridSpacingIn": 1,
+      "bullCenterIn": [4.25, 5.5],
+      "bullRadiusIn": 1
+    },
+    "gridSpacing": {
+      "value": 1,
+      "unit": "inch",
+      "authority": "local OET-M4-25-V1 manifest"
+    },
+    "bullCount": 1,
+    "zoneCount": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "aimPointRules": [
+      "Aim at target center.",
+      "Desired POIB is center white dot."
+    ],
+    "scoringZones": [],
+    "ringGeometry": "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": true,
+    "requiredImpactCount": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "requiredDistance": "25 m",
+    "requiredSetupFields": [
+      "weapon platform",
+      "sight or optic adjustment model",
+      "ammunition"
+    ],
+    "minimumConfidenceRequirements": [
+      "Target image aligned well enough to locate grid and center aim point.",
+      "Enough impacts to establish a shot group center."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "shotCount",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official M4 zeroing doctrine or target instructions specifying required group size or rounds."
+    },
+    {
+      "field": "formalPassFailThreshold",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official zeroing standard for acceptable group location or spread."
+    },
+    {
+      "field": "completeTargetGeometry",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official target dimensions or verified measurement for all rings, grid lines, and sight adjustment zones."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "local-manifest",
+      "source": "targets/OET-M4-25-V1.json",
+      "authorityType": "geometry_authority",
+      "notes": "Local prototype manifest defines paper, grid, coordinate system, and bull center."
+    },
+    {
+      "sourceType": "printed-target-text",
+      "source": "M4 25 Meter Zeroing Target authority image",
+      "authorityType": "instruction_authority",
+      "notes": "Printed text provides 25 meter / 300 meter zeroing instructions."
+    }
+  ]
+}

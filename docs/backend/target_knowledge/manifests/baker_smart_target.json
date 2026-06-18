@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "BAKER_ST_100YD_SMART",
+    "targetName": "Baker 100 Yard Smart Target",
+    "targetFamily": "Baker Smart Target",
+    "targetType": "smart-evidence-target",
+    "discipline": "rifle and pistol evidence scoring",
+    "guidanceMode": "backend-authority-correction"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "geometry_authority",
+    "geometryAuthorityLevel": "verified-local-measurement",
+    "instructionAuthorityLevel": "printed-target-text-and-local-build",
+    "sourceConfidence": "high-for-current-build-geometry"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [
+      "Shoot. Scan. Improve. Save.",
+      "Use uploaded target evidence, tapped aim point, and tapped impacts to generate backend authority package."
+    ],
+    "printedTargetText": [
+      "BakerTargets.com",
+      "ST-100YD-SMART",
+      "Shoot / Save / Scan / Improve QR instructions are printed on target."
+    ],
+    "officialRules": [
+      "Backend calculates. Frontend displays.",
+      "No evidence, no claim."
+    ],
+    "courseOfFire": [
+      "Choose target photo.",
+      "Tap aim point.",
+      "Tap bullet holes.",
+      "Show Results.",
+      "Save Session to SEC."
+    ],
+    "intendedUse": "Smart target evidence capture with score, POIB, correction clicks, group, evidence hash, and shooter guidance.",
+    "shotCount": "variable; current backend supports one or more impact points",
+    "distance": {
+      "default": "100 yds",
+      "supportedUnits": ["yds", "m"]
+    },
+    "passFailOrScoringRules": [
+      "Backend authority package provides score, group, POIB, correction, clicks, guidance, evidence hash, and validation status."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "imageWidth": 1102,
+      "imageHeight": 1713,
+      "gridLeftPx": 68,
+      "gridTopPx": 282,
+      "gridRightPx": 1047,
+      "gridBottomPx": 1652,
+      "gridSquarePx": 49,
+      "gridSquareInches": 1
+    },
+    "gridSpacing": {
+      "value": 1,
+      "unit": "inch",
+      "gridSquarePx": 49
+    },
+    "bullCount": 1,
+    "zoneCount": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "aimPointRules": [
+      "Shooter taps aim point.",
+      "Backend uses tapped aim coordinate and impact coordinates."
+    ],
+    "scoringZones": [
+      "Current backend score is authority-v1 distance-from-aim scoring, not official printed ring scoring."
+    ],
+    "ringGeometry": "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": true,
+    "requiredImpactCount": 1,
+    "requiredDistance": "session distance",
+    "requiredSetupFields": [
+      "optic adjustment unit",
+      "optic click value",
+      "distance"
+    ],
+    "minimumConfidenceRequirements": [
+      "Target image must be loaded.",
+      "Aim point must be tapped.",
+      "At least one impact must be tapped.",
+      "Backend authority response must validate before Save Session."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "officialRingGeometry",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official Baker target scoring ring/zone dimensions if different from current backend scoring model."
+    },
+    {
+      "field": "officialPassFailThresholds",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Designer scoring standard for pass/fail or proficiency levels."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "local-authority-asset",
+      "source": "docs/assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+      "authorityType": "geometry_authority",
+      "notes": "Current production target image and measured grid geometry."
+    },
+    {
+      "sourceType": "backend-code",
+      "source": "docs/backend/authority_service.py",
+      "authorityType": "geometry_authority",
+      "notes": "Current backend uses Baker grid geometry and authority-v1 score/correction/guidance package."
+    },
+    {
+      "sourceType": "printed-target-text",
+      "source": "Baker ST-100YD-SMART image",
+      "authorityType": "instruction_authority",
+      "notes": "Printed branding and QR workflow text."
+    }
+  ]
+}

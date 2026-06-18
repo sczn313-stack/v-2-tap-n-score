@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SCZN3 Target Knowledge Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "targetIdentity",
+    "authorityClassification",
+    "instructionAuthority",
+    "geometryAuthority",
+    "evidenceRequirements",
+    "unknowns",
+    "sourceAudit"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "targetIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetId",
+        "targetName",
+        "targetFamily",
+        "targetType",
+        "discipline",
+        "guidanceMode"
+      ],
+      "properties": {
+        "targetId": { "type": "string" },
+        "targetName": { "type": "string" },
+        "targetFamily": { "type": "string" },
+        "targetType": { "type": "string" },
+        "discipline": { "type": "string" },
+        "guidanceMode": { "type": "string" }
+      }
+    },
+    "authorityClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primaryAuthorityType",
+        "geometryAuthorityLevel",
+        "instructionAuthorityLevel",
+        "sourceConfidence"
+      ],
+      "properties": {
+        "primaryAuthorityType": { "type": "string" },
+        "geometryAuthorityLevel": { "type": "string" },
+        "instructionAuthorityLevel": { "type": "string" },
+        "sourceConfidence": { "type": "string" }
+      }
+    },
+    "instructionAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "designerInstructions",
+        "printedTargetText",
+        "officialRules",
+        "courseOfFire",
+        "intendedUse",
+        "shotCount",
+        "distance",
+        "passFailOrScoringRules"
+      ],
+      "properties": {
+        "designerInstructions": { "type": "array" },
+        "printedTargetText": { "type": "array" },
+        "officialRules": { "type": "array" },
+        "courseOfFire": { "type": "array" },
+        "intendedUse": { "type": "string" },
+        "shotCount": {},
+        "distance": {},
+        "passFailOrScoringRules": { "type": "array" }
+      }
+    },
+    "geometryAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "knownGeometryFields",
+        "gridSpacing",
+        "bullCount",
+        "zoneCount",
+        "aimPointRules",
+        "scoringZones",
+        "ringGeometry"
+      ],
+      "properties": {
+        "knownGeometryFields": { "type": "object" },
+        "gridSpacing": {},
+        "bullCount": {},
+        "zoneCount": {},
+        "aimPointRules": { "type": "array" },
+        "scoringZones": { "type": "array" },
+        "ringGeometry": {}
+      }
+    },
+    "evidenceRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredAimPoint",
+        "requiredImpactCount",
+        "requiredDistance",
+        "requiredSetupFields",
+        "minimumConfidenceRequirements"
+      ],
+      "properties": {
+        "requiredAimPoint": {},
+        "requiredImpactCount": {},
+        "requiredDistance": {},
+        "requiredSetupFields": { "type": "array" },
+        "minimumConfidenceRequirements": { "type": "array" }
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "status", "neededSource"],
+        "properties": {
+          "field": { "type": "string" },
+          "status": { "const": "UNKNOWN / REQUIRES OFFICIAL SOURCE" },
+          "neededSource": { "type": "string" }
+        }
+      }
+    },
+    "sourceAudit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceType", "source", "authorityType", "notes"],
+        "properties": {
+          "sourceType": { "type": "string" },
+          "source": { "type": "string" },
+          "authorityType": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

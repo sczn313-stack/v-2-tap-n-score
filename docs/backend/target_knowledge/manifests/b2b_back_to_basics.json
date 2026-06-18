@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "B2B_BACK_TO_BASICS",
+    "targetName": "Back to Basics",
+    "targetFamily": "B2B / Back to Basics",
+    "targetType": "training-drill",
+    "discipline": "pistol training",
+    "guidanceMode": "progression-training"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "instruction_authority",
+    "geometryAuthorityLevel": "unknown",
+    "instructionAuthorityLevel": "local-drill-engine",
+    "sourceConfidence": "partial"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [
+      "Level progression is based on verified session score history."
+    ],
+    "printedTargetText": [
+      "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    ],
+    "officialRules": [
+      "Local drill engine defines lane text, one-point-per-lane score mode, stars, and progression levels."
+    ],
+    "courseOfFire": [
+      "Lane 1: 1 slow, 5x.",
+      "Lane 2: 1 to 2.",
+      "Lane 3: 1 to 3, 4x.",
+      "Lane 4: 4 strong hand only, 5x.",
+      "Lane 5: 1 to 5.",
+      "Lane 6: 1 to 6, 4x.",
+      "Lane 7: 7 weak hand only, 5x.",
+      "Lane 8: 1 to 8.",
+      "Lane 9: 1 to 9, 4x.",
+      "Lane 10: 10 slow, 5x."
+    ],
+    "intendedUse": "Structured pistol fundamentals drill with lane progression, score tracking, and level progression.",
+    "shotCount": {
+      "laneSpecific": true,
+      "source": "local drills.js laneText"
+    },
+    "distance": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "passFailOrScoringRules": [
+      "Maximum score is 10.",
+      "One point per lane.",
+      "Center hit adds star.",
+      "Multiple hits on same lane count once.",
+      "Level 2 requires 7/10 once.",
+      "Level 3 requires 8/10 twice.",
+      "Level 4 requires 9/10 twice.",
+      "Level 5 requires clean 10/10."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "laneCount": 10,
+      "laneShapes": {
+        "1": "circle",
+        "2": "circle",
+        "3": "circle",
+        "4": "square",
+        "5": "circle",
+        "6": "square",
+        "7": "circle",
+        "8": "circle",
+        "9": "circle",
+        "10": "circle"
+      }
+    },
+    "gridSpacing": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "bullCount": 10,
+    "zoneCount": 10,
+    "aimPointRules": [
+      "Engage lanes according to local drill course of fire."
+    ],
+    "scoringZones": [
+      "Lane hit zones exist conceptually; exact geometry is UNKNOWN / REQUIRES OFFICIAL SOURCE."
+    ],
+    "ringGeometry": "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": "target/lane centers or lane geometry from official source",
+    "requiredImpactCount": "lane-specific",
+    "requiredDistance": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "requiredSetupFields": [
+      "firearm",
+      "ammunition",
+      "shooter",
+      "session date"
+    ],
+    "minimumConfidenceRequirements": [
+      "Image alignment must identify lane positions.",
+      "Impacts must be attributable to lanes before score is authoritative."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "officialTargetArtwork",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "B2B physical target or designer source."
+    },
+    {
+      "field": "laneGeometry",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official lane coordinates, dimensions, and center/star zones."
+    },
+    {
+      "field": "distance",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Designer instructions or printed target text specifying distance."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "local-code",
+      "source": "docs_LIVE_BACKUP_BEFORE_BAKER_SWAP_0604/drills.js",
+      "authorityType": "instruction_authority",
+      "notes": "Local drill engine defines Back to Basics lane rules, scoring, and progression."
+    },
+    {
+      "sourceType": "local-code",
+      "source": "docs_LIVE_BACKUP_BEFORE_BAKER_SWAP_0604/b2b-sec.js",
+      "authorityType": "shooter_continuity",
+      "notes": "Local SEC implementation defines session history, score summary, and progression display."
+    }
+  ]
+}

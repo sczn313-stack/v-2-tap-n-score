@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "SILHOUETTE_GENERIC",
+    "targetName": "Silhouette Target",
+    "targetFamily": "Metallic Silhouette",
+    "targetType": "hit-miss-qualification",
+    "discipline": "silhouette shooting",
+    "guidanceMode": "hit-miss-progression"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "instruction_authority",
+    "geometryAuthorityLevel": "generic-discipline-summary",
+    "instructionAuthorityLevel": "discipline-summary",
+    "sourceConfidence": "partial"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    ],
+    "officialRules": [
+      "Targets are chickens, pigs, turkeys, and rams.",
+      "Targets are set in groups of five.",
+      "Groups are engaged left to right.",
+      "Targets are engaged by distance order: chickens, pigs, turkeys, rams.",
+      "Target must be knocked down or pushed off stand to score."
+    ],
+    "courseOfFire": [
+      "Engage silhouette banks in the required order.",
+      "Move to the next target after a miss.",
+      "Out-of-order hit is considered a miss."
+    ],
+    "intendedUse": "Hit/miss silhouette competition or training with ordered animal targets at known distances.",
+    "shotCount": {
+      "minimumMatchShots": 40,
+      "shotsPerAnimalType": 10
+    },
+    "distance": {
+      "largeBoreRifle": {
+        "chicken": "200 m",
+        "pig": "300 m",
+        "turkey": "385 m",
+        "ram": "500 m"
+      },
+      "smallBoreRifle": {
+        "chicken": "40 m",
+        "pig": "60 m",
+        "turkey": "77 m",
+        "ram": "100 m"
+      },
+      "status": "variant-specific; confirm discipline before scoring"
+    },
+    "passFailOrScoringRules": [
+      "Score is number of hits per rounds fired.",
+      "Knockdown/off-stand is required to score on steel silhouette.",
+      "Tie-breakers may use reverse animal count or shoot-off depending on rule set."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "animalTypes": ["chicken", "pig", "turkey", "ram"],
+      "bankSize": 5
+    },
+    "gridSpacing": "not applicable unless paper target uses grid",
+    "bullCount": "not applicable",
+    "zoneCount": 4,
+    "aimPointRules": [
+      "Aim rules depend on animal target, distance, and firearm class."
+    ],
+    "scoringZones": [
+      "Hit/knockdown zone is the silhouette body for steel targets."
+    ],
+    "ringGeometry": "not applicable"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": "match/animal specific",
+    "requiredDistance": "variant-specific",
+    "requiredSetupFields": [
+      "firearm class",
+      "target animal",
+      "distance",
+      "position/rule set"
+    ],
+    "minimumConfidenceRequirements": [
+      "Backend must know silhouette variant before scoring.",
+      "Paper evidence requires geometry mapping for each animal target.",
+      "Steel knockdown scoring requires observed knockdown evidence or manual hit confirmation."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "specificSilhouetteVariant",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Target product or competition rule set specifying rifle/pistol/smallbore/airgun variant."
+    },
+    {
+      "field": "paperTargetGeometry",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "If supporting paper silhouette, official printed target dimensions and animal positions."
+    },
+    {
+      "field": "printedTargetText",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Physical target artwork."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "reference-summary",
+      "source": "https://en.wikipedia.org/wiki/Metallic_silhouette_shooting",
+      "authorityType": "instruction_authority",
+      "notes": "Used for general silhouette target family/course summary only; official rulebook needed before final authority scoring."
+    }
+  ]
+}

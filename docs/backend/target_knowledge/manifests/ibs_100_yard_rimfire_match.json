@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "IBS_100YD_RIMFIRE_MATCH",
+    "targetName": "IBS 100 Yard Rimfire Match",
+    "targetFamily": "IBS Benchrest",
+    "targetType": "precision-scoring",
+    "discipline": "benchrest score shooting",
+    "guidanceMode": "precision-score-and-group"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "instruction_authority",
+    "geometryAuthorityLevel": "unknown",
+    "instructionAuthorityLevel": "official-discipline-summary",
+    "sourceConfidence": "partial"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    ],
+    "officialRules": [
+      "IBS score shooting consists of five record targets and one sighter target.",
+      "Each record shot is scored separately.",
+      "The highest scoring ring touched determines shot value.",
+      "A center dot or X is scored as 10X.",
+      "Five record targets determine a match score with highest possible score 50-5X.",
+      "Five matches can total 250-25X."
+    ],
+    "courseOfFire": [
+      "Use the sighter target as needed.",
+      "Fire one scored shot on each record target."
+    ],
+    "intendedUse": "Benchrest precision score shooting, measuring accurate placement on individual bulls.",
+    "shotCount": {
+      "recordShotsPerTargetSheet": 5,
+      "sighterShots": "unlimited/as-needed per IBS discipline summary"
+    },
+    "distance": {
+      "required": "100 yd",
+      "status": "target-specific 100 yard manifest starter"
+    },
+    "passFailOrScoringRules": [
+      "Highest scoring ring touched counts.",
+      "Center dot / X counts as 10X.",
+      "Highest score wins in score shooting."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {},
+    "gridSpacing": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "bullCount": {
+      "recordBulls": 5,
+      "sighterBulls": 1
+    },
+    "zoneCount": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "aimPointRules": [
+      "Aim at each record bull for the scored shot.",
+      "Sighter target may be used as needed."
+    ],
+    "scoringZones": [
+      "Rings and center X are known conceptually; exact dimensions are UNKNOWN / REQUIRES OFFICIAL SOURCE."
+    ],
+    "ringGeometry": "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": "one per scored bull or derived from official bull centers",
+    "requiredImpactCount": 5,
+    "requiredDistance": "100 yd",
+    "requiredSetupFields": [
+      "rifle",
+      "optic",
+      "ammunition",
+      "benchrest class"
+    ],
+    "minimumConfidenceRequirements": [
+      "Official target geometry required before authoritative ring score.",
+      "Each impact must map to the correct record bull."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "rimfireSpecificIBSRuleSet",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official IBS 100 yard rimfire rulebook or target rule source."
+    },
+    {
+      "field": "ringGeometry",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official IBS target dimensions for rings, X dot, bull centers, and sheet layout."
+    },
+    {
+      "field": "printedTargetText",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Physical IBS 100 yard rimfire target artwork or official target supplier specification."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "official-website",
+      "source": "https://internationalbenchrest.com/about/disciplines",
+      "authorityType": "instruction_authority",
+      "notes": "IBS discipline summary describes group and score shooting formats."
+    },
+    {
+      "sourceType": "official-website",
+      "source": "https://internationalbenchrest.com/about/targets",
+      "authorityType": "instruction_authority",
+      "notes": "IBS identifies National Target Company as authorized supplier; detailed dimensions require supplier/official target source."
+    }
+  ]
+}
