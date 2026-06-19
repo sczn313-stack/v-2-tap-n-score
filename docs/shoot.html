@@ -638,6 +638,7 @@ function scheduleAuthorityWakeMessage() {
     authorityStatusMessage = "Authority service waking up...";
     renderResults();
     renderMarkStatus();
+    resyncOverlayFrame();
   }, 3000);
 }
 
@@ -840,12 +841,16 @@ function settleViewportAfterResults() {
   syncOverlayLayerToDisplayedImage();
 }
 
-function resyncOverlayAfterResultsLayout() {
-  if (!resultsShown) return;
+function resyncOverlayFrame() {
   requestAnimationFrame(() => {
     syncOverlayLayerToDisplayedImage();
     renderMarkers();
   });
+}
+
+function resyncOverlayAfterResultsLayout() {
+  if (!resultsShown) return;
+  resyncOverlayFrame();
 }
 
 function clearCalculatedResults() {
@@ -1074,6 +1079,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
   scheduleAuthorityWakeMessage();
   renderResults();
   renderMarkStatus();
+  resyncOverlayFrame();
   try {
     const authorityPackage = await requestBackendAuthority();
     clearAuthorityWakeTimer();
