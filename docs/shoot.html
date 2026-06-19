@@ -881,10 +881,7 @@ function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
   const hasAim = !!currentAimPoint;
   const hasImpacts = currentImpactPoints.length > 0;
-  const aimButton = document.getElementById("setAimMode");
-  aimButton.textContent = "Tap Aim Point";
-  aimButton.classList.remove("workflow-complete");
-  aimButton.disabled = !canMark || hasAim;
+  document.getElementById("setAimMode").disabled = !canMark;
   document.getElementById("addImpactMode").disabled = !canMark || !hasAim;
   document.getElementById("undoImpact").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
   document.getElementById("clearMarks").disabled = authorityRequestInFlight || !canMark || (!hasAim && !hasImpacts);
@@ -892,24 +889,26 @@ function renderMarkStatus() {
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
   setControlVisibility("chooseTargetButton", !canMark);
   setControlVisibility("setAimMode", false);
-  setControlVisibility("addImpactMode", canMark && hasAim && !hasImpacts && !resultsShown);
+  setControlVisibility("addImpactMode", false);
   setControlVisibility("showResults", canMark && hasImpacts && !resultsShown);
   setControlVisibility("undoImpact", canMark && hasImpacts && !resultsShown);
-  setControlVisibility("clearMarks", canMark && hasImpacts && !resultsShown);
+  setControlVisibility("clearMarks", canMark && (hasAim || hasImpacts) && !resultsShown);
   setControlVisibility("saveMarks", canMark && resultsShown);
   document.getElementById("showResults").textContent = authorityRequestInFlight ? "Working..." : "Show Results";
   const uploadPanel = document.querySelector(".upload-panel");
   if (uploadPanel) {
     uploadPanel.classList.toggle("target-first-mode", canMark);
     uploadPanel.classList.toggle("results-ready", !!resultsShown || !!authorityStatusMessage);
-    uploadPanel.classList.toggle("workflow-actions-ready", canMark && (hasAim || hasImpacts || resultsShown || !!authorityStatusMessage));
-    uploadPanel.classList.toggle("pre-results-actions", canMark && hasAim && !resultsShown && !authorityStatusMessage);
+    uploadPanel.classList.toggle("workflow-actions-ready", canMark && (hasImpacts || resultsShown || !!authorityStatusMessage));
+    uploadPanel.classList.toggle("pre-results-actions", canMark && hasImpacts && !resultsShown && !authorityStatusMessage);
   }
   renderActiveSessionBar();
   if (!canMark) {
     setShooterPrompt("");
   } else if (!hasAim) {
     setShooterPrompt("Tap Aim Point");
+  } else if (!hasImpacts) {
+    setShooterPrompt("Tap Bullet Holes");
   } else {
     setShooterPrompt("");
   }
@@ -943,10 +942,8 @@ function handleMarkTap(event) {
   if (markMode === "aim" || !currentAimPoint) {
     currentAimPoint = point;
     markMode = "impact";
-  } else if (markMode === "impact") {
-    currentImpactPoints.push(point);
   } else {
-    return;
+    currentImpactPoints.push(point);
   }
   clearCalculatedResults();
   setMode(markMode);
