@@ -748,7 +748,9 @@ button:active,
 }
 
 .upload-panel.target-first-mode.results-ready .mark-surface img{
+  width:100%;
   height:100%;
+  max-height:none;
 }
 
 .upload-panel.target-first-mode.results-ready .evidence-meta{
@@ -2785,6 +2787,40 @@ input[readonly]{
 #shooterTipText{
   color: var(--ink);
   font-weight: 900;
+}
+
+@media (max-width: 900px){
+  .target-work-heading{
+    position:relative;
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+
+  .target-work-heading .shooter-tip{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    z-index:3;
+    box-sizing:border-box;
+    display:flex;
+    padding:2px 0;
+    background:#fffaf0;
+    flex:1 1 100%;
+    min-width:0;
+    max-width:100%;
+    white-space:normal;
+  }
+
+  .target-work-heading .shooter-tip.is-hidden{
+    display:none;
+  }
+
+  .target-work-heading #shooterTipText{
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
 }
 
 .home-page .shell{

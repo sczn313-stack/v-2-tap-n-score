@@ -837,12 +837,14 @@ function showShooterTip() {
 }
 
 function settleViewportAfterResults() {
-  if (!window.matchMedia("(max-width: 900px)").matches) return;
+  syncOverlayLayerToDisplayedImage();
+}
+
+function resyncOverlayAfterResultsLayout() {
+  if (!resultsShown) return;
   requestAnimationFrame(() => {
-    const saveButton = document.getElementById("saveMarks");
-    if (saveButton) {
-      saveButton.scrollIntoView({ block: "center", inline: "nearest" });
-    }
+    syncOverlayLayerToDisplayedImage();
+    renderMarkers();
   });
 }
 
@@ -1094,6 +1096,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     authorityRequestInFlight = false;
   }
   renderMarkStatus();
+  resyncOverlayAfterResultsLayout();
 });
 document.getElementById("saveMarks").addEventListener("click", () => {
   if (!session || !backendAuthorityPackage) return;
