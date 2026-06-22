@@ -15,7 +15,6 @@
         <a class="vendor-name" href="index.html">Baker Smart Targets</a>
       </div>
     </div>
-    <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
     <nav class="locked-nav" aria-label="Baker workflow navigation">
       <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
       <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Setup</span></a>
@@ -157,47 +156,10 @@ function poibDisplay(pkg) {
 function authorityDetailLine(pkg) {
   if (!pkg) return "";
   const parts = [];
-  if (pkg.group && pkg.group.display) parts.push(`<span>Group: ${pkg.group.display}</span>`);
+  if (pkg.group && pkg.group.display) parts.push(`Group: ${pkg.group.display}`);
   const poib = poibDisplay(pkg);
-  if (poib) parts.push(`<span>POIB: ${poib}</span>`);
-  return parts.length ? `<div class="sec-authority-detail">${parts.join("")}</div>` : "";
-}
-
-function shortMaker(value) {
-  const clean = cleanSetupValue(value || "");
-  if (!clean) return "";
-  return clean
-    .replace(/\bArmory\b/gi, "")
-    .replace(/\bCorporation\b/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function shortModel(value, caliber = "") {
-  let clean = cleanSetupValue(value || "");
-  if (!clean) return "";
-  const calibers = [
-    caliber,
-    "5.56 NATO",
-    ".223 Rem",
-    ".308 Win",
-    "9mm",
-    "12 Gauge",
-    "300 BLK",
-    "6.5 Creedmoor"
-  ].filter(Boolean);
-  calibers.forEach(item => {
-    clean = clean.replace(new RegExp(`\\s*${item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "i"), "");
-  });
-  return clean.replace(/\s+/g, " ").trim();
-}
-
-function shooterSummary(snapshot) {
-  const weaponModel = shortModel(snapshot.weaponModelCaliber || snapshot.rifle, snapshot.ammoCaliber);
-  const weapon = [shortMaker(snapshot.weaponManufacturer), weaponModel].filter(Boolean).join(" ") || cleanSetupValue(snapshot.rifle);
-  const optic = [shortMaker(snapshot.opticBrand), cleanSetupValue(snapshot.opticModel)].filter(Boolean).join(" ");
-  const ammo = cleanSetupValue(snapshot.ammoLoad) || cleanSetupValue(snapshot.bulletWeight) || cleanSetupValue(snapshot.ammoCaliber);
-  return [weapon, optic, ammo].filter(Boolean).join(" | ") || "--";
+  if (poib) parts.push(`POIB: ${poib}`);
+  return parts.length ? `<div class="sec-authority-detail">${parts.join(" | ")}</div>` : "";
 }
 
 function renderHistory() {
@@ -220,13 +182,15 @@ function renderHistory() {
     const hasAuthority = !!(pkg && pkg.status);
     const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;
     const score = hasAuthority ? authorityScoreValue(pkg) : null;
-    const setupSummary = shooterSummary(snapshot);
+    const weapon = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
+    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const ammo = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
     const correction = hasAuthority ? (pkg.correction || {}) : {};
     const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
     const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
     const scorePill = score !== null ? `<span class="sec-score ${scoreClass(score)}">SCORE <strong>${score}</strong></span>` : "";
     const authorityMessage = hasAuthority ? "" : `<div class="sec-authority-missing">Backend authority package unavailable.</div>`;
-    const hashLine = hasAuthority && pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence ID: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
+    const hashLine = hasAuthority && pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
     return `
       <article class="history-card" data-session-id="${session.sessionId}">
           <div class="history-thumb">
@@ -238,16 +202,16 @@ function renderHistory() {
             <strong>Session #${index + 1}</strong>
             <span>${cleanDateTime(session.timestamp)}</span>
           </div>
+          <div class="sec-setup-line">${[weapon, optic, ammo].filter(Boolean).join(" | ") || "--"}</div>
+          ${attributionLine(snapshot)}
+          ${authorityMessage}
+          ${hasAuthority ? authorityDetailLine(pkg) : ""}
           <div class="sec-intel-pill">
             <span>${distanceDisplay(session)}</span>
             ${scorePill}
             <span class="sec-clicks"><strong>${compactClick(clicks.elevation, "elevation")}</strong><em>CLICKS</em><strong>${compactClick(clicks.windage, "windage")}</strong></span>
             <span>${shotCount} Hits</span>
           </div>
-          ${authorityMessage}
-          ${hasAuthority ? authorityDetailLine(pkg) : ""}
-          <div class="sec-setup-line">${setupSummary}</div>
-          ${attributionLine(snapshot)}
           ${hashLine}
         </div>
       </article>

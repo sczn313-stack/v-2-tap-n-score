@@ -3,460 +3,108 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Baker Smart Targets</title>
+<title>Tap-N-Score | Baker's Targets</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="home-page reference-home">
-<main class="app-home-shell">
-  <header class="home-app-header" aria-label="Baker Smart Targets header">
-    <a class="home-brand" href="index.html" aria-label="Baker Smart Targets home">
-      <span class="home-brand-icon" aria-hidden="true"><span></span></span>
-      <span class="home-brand-copy">
-        <strong>Baker Smart Targets</strong>
-        <em>by Tap-N-Score.com</em>
-      </span>
+<body class="package-landing-page">
+<main class="package-landing-shell">
+  <header class="package-header" aria-label="Tap-N-Score header">
+    <div class="package-brand-lockup">
+      <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
+      <div class="package-brand-copy">
+        <strong>Tap-<span>n</span>-Score</strong>
+        <em>SHOOT SMARTER. GET BETTER.</em>
+      </div>
+    </div>
+    <div class="package-divider" aria-hidden="true"></div>
+    <a class="package-partner-lockup" href="https://BakerTargets.com" aria-label="Open Baker's Targets website">
+      <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
+      <strong>Baker's Targets</strong>
     </a>
-    <a class="home-settings" href="matrix.html" aria-label="Open weapon setup">⚙</a>
+    <button class="package-menu" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
   </header>
 
-  <section class="home-hero" aria-label="Tap-N-Score quick start">
-    <div class="home-hero-copy">
-      <h1>TAP-N-SCORE</h1>
-      <p class="home-tagline">SHOOT. SCAN. IMPROVE. SAVE.</p>
-      <p class="home-intro">Analyze your target in seconds and save your results as evidence.</p>
-      <div class="home-cta-row">
-        <a class="home-cta home-cta-primary" href="matrix.html">
-          <span class="home-cta-icon camera-icon" aria-hidden="true"></span>
-          <span><strong>Start New Session</strong><em>Analyze a target</em></span>
-        </a>
-        <a class="home-cta home-cta-secondary" href="records.html">
-          <span class="home-cta-icon sec-folder-icon" aria-hidden="true"></span>
-          <span><strong>View SEC</strong><em>Shooter Experience Card</em></span>
-        </a>
+  <section class="package-hero" aria-label="Tap-N-Score start">
+    <div class="package-hero-copy">
+      <h1>ZERO FASTER.<br><span>SHOOT SMARTER.</span><br>KEEP GETTING BETTER.</h1>
+      <p>The smarter way to zero your rifles<br>and track every shot.</p>
+      <a class="package-start-button" href="matrix.html">START NEW SESSION <span>→</span></a>
+    </div>
+    <img class="package-hero-rifle" src="assets/landing-hero-visual-scene-img1429.jpeg" alt="" />
+  </section>
+
+  <section class="welcome-card" aria-labelledby="welcomeTitle">
+    <div class="welcome-card-top">
+      <div>
+        <p>Every shot tells a story. Let's keep building yours.</p>
+      </div>
+      <div class="today-chip">
+        <span aria-hidden="true">▣</span>
+        <small>TODAY IS</small>
+        <strong>JUNE 22, 2026</strong>
       </div>
     </div>
 
-    <div class="hero-target-card" aria-label="Baker target with example results">
-      <div class="hero-target-frame">
-        <img id="heroTargetImage" src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target" />
-        <div class="hero-evidence-layer" id="heroEvidenceLayer" aria-hidden="true"></div>
-        <div class="landing-correction-card is-hidden" id="landingCorrectionCard" aria-label="Evidence correction summary">
-          <strong id="landingDistance">100 YDS</strong>
-          <span id="landingElevation">23 Clicks ↓</span>
-          <span id="landingWindage">13 Clicks →</span>
-          <span id="landingHits">5 Hits</span>
+    <div class="last-range-panel">
+      <div class="last-range-photo">
+        <h2 id="welcomeTitle">WELCOME BACK, JAY!</h2>
+        <img src="assets/sarg-range-photo.png" alt="Sarg shooting from a range bench" />
+      </div>
+      <div class="last-range-detail">
+        <span class="last-range-label">LAST RANGE DAY</span>
+        <div class="last-meta">
+          <span>▦ June 21, 2026</span>
+          <span>◷ 9:42 AM</span>
+        </div>
+        <h3><span>↗</span> CZ 457</h3>
+        <p>.22 LR</p>
+        <div class="last-stats">
+          <div><em>LAST TARGET</em><strong>16</strong><small>Hits</small></div>
+          <div><em>TOTAL HITS</em><strong>62</strong></div>
+          <div><em>SAVED TARGETS</em><strong>4</strong></div>
         </div>
       </div>
     </div>
-  </section>
 
-  <section class="how-it-works" aria-labelledby="howItWorksTitle">
-    <h2 id="howItWorksTitle">How It Works</h2>
-    <div class="workflow-steps">
-      <article class="workflow-step">
-        <div class="step-icon camera-step" aria-hidden="true"></div>
-        <span class="step-number">1</span>
-        <h3>Photograph Target</h3>
-        <p>Snap a clear photo of your target.</p>
+    <div class="recent-header">
+      <h3>RECENT RANGE DAYS</h3>
+      <a href="records.html">VIEW ALL <span>→</span></a>
+    </div>
+
+    <div class="recent-range-grid">
+      <article class="range-day-card">
+        <img src="assets/landing-package-range-card-2.png" alt="" />
+        <span class="range-day-date">▦ June 14, 2026</span>
+        <strong><em>↗</em> CZ 457</strong>
+        <div class="range-day-stats"><span><b>⊙</b> 33 <small>HITS</small></span><span><b>☷</b> 2 <small>SESSIONS</small></span></div>
       </article>
-      <span class="step-arrow" aria-hidden="true">→</span>
-      <article class="workflow-step">
-        <div class="step-icon aim-step" aria-hidden="true"></div>
-        <span class="step-number">2</span>
-        <h3>Tap Aim Point</h3>
-        <p>Tap the center of your aim point.</p>
+      <article class="range-day-card">
+        <img src="assets/landing-package-range-card-3.png" alt="" />
+        <span class="range-day-date">▦ June 07, 2026</span>
+        <strong><em>↗</em> AR-15</strong>
+        <div class="range-day-stats"><span><b>⊙</b> 47 <small>HITS</small></span><span><b>☷</b> 3 <small>SESSIONS</small></span></div>
       </article>
-      <span class="step-arrow" aria-hidden="true">→</span>
-      <article class="workflow-step">
-        <div class="step-icon holes-step" aria-hidden="true"></div>
-        <span class="step-number">3</span>
-        <h3>Tap Shot Holes</h3>
-        <p>Tap each shot hole on the target.</p>
+      <article class="range-day-card">
+        <img src="assets/landing-package-range-card-4.png" alt="" />
+        <span class="range-day-date">▦ May 30, 2026</span>
+        <strong><em>↗</em> GLOCK 19</strong>
+        <div class="range-day-stats"><span><b>⊙</b> 25 <small>HITS</small></span><span><b>☷</b> 1 <small>SESSION</small></span></div>
       </article>
-      <span class="step-arrow" aria-hidden="true">→</span>
-      <article class="workflow-step">
-        <div class="step-icon results-step" aria-hidden="true"></div>
-        <span class="step-number">4</span>
-        <h3>See POIB, Group Size, And Scope Clicks</h3>
-        <p>See POIB, group size, and scope clicks.</p>
-      </article>
-      <span class="step-arrow" aria-hidden="true">→</span>
-      <article class="workflow-step">
-        <div class="step-icon save-step" aria-hidden="true"></div>
-        <span class="step-number">5</span>
-        <h3>Save Your Session</h3>
-        <p>Save your session as evidence in your SEC and to your phone.</p>
-      </article>
+    </div>
+
+    <div class="sec-strip">
+      <a class="sec-action sec-action-survey" href="survey.html">SURVEY</a>
+      <strong>SEC</strong>
+      <span><b>SHOOTER EXPERIENCE CARD</b><br>Your Shooting History, Saved To Your Phone</span>
+      <a class="sec-action" href="records.html">OPEN SEC <i>→</i></a>
     </div>
   </section>
 
-  <section class="recent-sec" aria-labelledby="recentSecTitle">
-    <div class="section-line-title">
-      <h2 id="recentSecTitle">Recent SEC Sessions</h2>
-      <a href="records.html">View All SEC ›</a>
-    </div>
-    <div class="recent-sec-grid" id="recentSecGrid"></div>
-  </section>
-
-  <section class="tools-resources" aria-labelledby="toolsTitle">
-    <div class="section-line-title">
-      <h2 id="toolsTitle">Tools &amp; Resources</h2>
-      <a class="survey-link" href="survey.html">Survey ▣</a>
-    </div>
-    <div class="resource-grid">
-      <a class="resource-card" href="matrix.html">
-        <span class="resource-icon rifle-resource" aria-hidden="true"></span>
-        <strong>Weapon Setup</strong>
-        <em>Manage your rifles and ammo</em>
-      </a>
-      <a class="resource-card" href="shoot.html">
-        <span class="resource-icon target-resource" aria-hidden="true"></span>
-        <strong>Target Library</strong>
-        <em>View and use target templates</em>
-      </a>
-      <a class="resource-card" href="buy-targets.html">
-        <span class="resource-icon baker-resource" aria-hidden="true"></span>
-        <strong>Baker Smart Targets</strong>
-        <em>Shop smart targets and accessories</em>
-      </a>
-      <a class="resource-card" href="survey.html">
-        <span class="resource-icon guide-resource" aria-hidden="true"></span>
-        <strong>How-To Guide</strong>
-        <em>Tips, tutorials and best practices</em>
-      </a>
-    </div>
-  </section>
-
-  <footer class="evidence-footer" aria-label="Evidence statement">
-    <div class="sec-shield" aria-hidden="true">SEC</div>
-    <div>
-      <strong>Evidence That Matters.</strong>
-      <p>Every shot. Every session. Every time.</p>
-    </div>
-    <ul>
-      <li>Tamper-proof records</li>
-      <li>Verified data</li>
-      <li>Your shooting legacy</li>
-    </ul>
+  <footer class="package-footer" aria-label="SCZN3 footer">
+    <strong>⊙ SCZN3</strong>
+    <span>FAITH • ORDER • PRECISION</span>
+    <em>BUILT FOR SHOOTERS, BY SHOOTERS.</em>
   </footer>
 </main>
-<script src="app_state.js"></script>
-<script>
-const HOME_CONFIG = {
-  vendorName: "Baker Smart Targets",
-  targetName: "Baker 100 Yard Smart Target",
-  targetImage: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
-  fallbackEvidenceImage: "",
-  approvedFallbackEvidence: {
-    distance: "150 YDS",
-    hits: "5 HITS",
-    group: "1.12 MOA",
-    poibSummary: "0.6&quot; Low, 0.3&quot; Right",
-    aim: { xPercent: 51.0, yPercent: 57.6 },
-    poib: { xPercent: 21.6, yPercent: 28.4 },
-    correction: {
-      elevation: "29 clicks DOWN",
-      windage: "29 clicks RIGHT"
-    },
-    impacts: [
-      { xPercent: 15.3, yPercent: 23.2 },
-      { xPercent: 15.5, yPercent: 34.3 },
-      { xPercent: 28.3, yPercent: 34.5 },
-      { xPercent: 28.8, yPercent: 23.0 },
-      { xPercent: 19.7, yPercent: 27.3 }
-    ]
-  }
-};
-
-function safePoint(point) {
-  return SCZN3M4.UGEO.normalizePoint(point);
-}
-
-function compactClick(value, axis) {
-  if (!value) return "Not calculated";
-  const amount = String(value).match(/\d+/)?.[0] || "0";
-  const upper = String(value).toUpperCase();
-  if (axis === "elevation") {
-    if (upper.includes("UP")) return `${amount} Clicks ↑`;
-    if (upper.includes("DOWN")) return `${amount} Clicks ↓`;
-  }
-  if (axis === "windage") {
-    if (upper.includes("RIGHT")) return `${amount} Clicks →`;
-    if (upper.includes("LEFT")) return `${amount} Clicks ←`;
-  }
-  return `${amount} Clicks`;
-}
-
-function displayedHeroImageBox() {
-  const frame = document.querySelector(".hero-target-frame");
-  const image = document.getElementById("heroTargetImage");
-  return SCZN3M4.UGEO.displayedImageContentBox(image, frame);
-}
-
-function syncHeroEvidenceLayer() {
-  const layer = document.getElementById("heroEvidenceLayer");
-  const frame = document.querySelector(".hero-target-frame");
-  const image = document.getElementById("heroTargetImage");
-  return SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, frame);
-}
-
-function syncRecentEvidenceLayers() {
-  document.querySelectorAll(".recent-thumb.has-session-evidence").forEach((frame) => {
-    const image = frame.querySelector("img");
-    const layer = frame.querySelector(".recent-evidence-layer");
-    SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, frame);
-  });
-}
-
-function sessionImpacts(session) {
-  const impacts = Array.isArray(session && session.impactPoints)
-    ? session.impactPoints
-    : (Array.isArray(session && session.shotData && session.shotData.impactPoints) ? session.shotData.impactPoints : []);
-  return impacts.map(safePoint).filter(Boolean);
-}
-
-function sessionAim(session) {
-  return safePoint((session && session.aimPoint) || (session && session.shotData && session.shotData.aimPoint));
-}
-
-function authorityPackage(session) {
-  return session && (session.ugeoAuthorityPackage || session.backendAuthorityPackage) || null;
-}
-
-function authorityGroupSummary(pkg) {
-  if (!pkg || !pkg.group || pkg.group.status !== "calculated") return "";
-  if (pkg.group.display) return pkg.group.display;
-  return Number.isFinite(Number(pkg.group.valueMOA)) ? `${Number(pkg.group.valueMOA).toFixed(2)} MOA` : "";
-}
-
-function inchesSummary(value, positiveLabel, negativeLabel) {
-  const numeric = Number(value);
-  if (!Number.isFinite(numeric) || numeric === 0) return "";
-  return `${Math.abs(numeric).toFixed(1)}&quot; ${numeric > 0 ? positiveLabel : negativeLabel}`;
-}
-
-function authorityPoibSummary(pkg) {
-  if (!pkg || !pkg.correction) return "";
-  const vertical = inchesSummary(pkg.correction.yInches, "Low", "High");
-  const horizontal = inchesSummary(pkg.correction.xInches, "Right", "Left");
-  return [vertical, horizontal].filter(Boolean).join(", ") || "Centered";
-}
-
-function sessionCorrection(session, aim, impacts) {
-  const pkg = authorityPackage(session);
-  return pkg ? pkg.correction : null;
-}
-
-function sessionEvidencePackage(session) {
-  const pkg = authorityPackage(session);
-  const aim = sessionAim(session);
-  const impacts = sessionImpacts(session);
-  const correction = pkg && pkg.correction;
-  const poib = safePoint(pkg && pkg.poib);
-  if (!session || !aim || !impacts.length || !correction || !poib) return null;
-  return {
-    session,
-    aim,
-    impacts,
-    correction,
-    poib,
-    image: (session.targetEvidenceImage && session.targetEvidenceImage.dataUrl) || HOME_CONFIG.targetImage
-  };
-}
-
-function latestEvidencePackage() {
-  const sessions = SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [];
-  for (const session of sessions) {
-    const evidence = sessionEvidencePackage(session);
-    if (evidence) return evidence;
-  }
-  return null;
-}
-
-function approvedFallbackEvidencePackage() {
-  const fallback = HOME_CONFIG.approvedFallbackEvidence;
-  if (!fallback) return null;
-  const aim = safePoint(fallback.aim);
-  const impacts = (fallback.impacts || []).map(safePoint).filter(Boolean);
-  const correction = fallback.correction;
-  const poib = safePoint(fallback.poib);
-  if (!aim || !poib || !impacts.length || !correction) return null;
-  return {
-    session: {
-      sessionLabel: "Baker Authority Example",
-      matrixSnapshot: {
-        modelCaliber: "Baker ST-100YD-SMART",
-        targetDistance: fallback.distance
-      },
-      shotData: {
-        shotCount: impacts.length,
-        hits: impacts.length,
-        groupSize: fallback.group,
-        poibSummary: fallback.poibSummary
-      }
-    },
-    isFallback: true,
-    aim,
-    impacts,
-    poib,
-    correction,
-    image: HOME_CONFIG.fallbackEvidenceImage || HOME_CONFIG.targetImage,
-    display: {
-      distance: fallback.distance,
-      hits: fallback.hits
-    }
-  };
-}
-
-function heroEvidencePackage() {
-  return latestEvidencePackage() || approvedFallbackEvidencePackage();
-}
-
-function sessionDistance(session) {
-  const snapshot = session && session.matrixSnapshot ? session.matrixSnapshot : {};
-  return String((session && (session.targetDistance || session.distance)) || snapshot.targetDistance || snapshot.distance || "100 yds").toUpperCase();
-}
-
-function formatDate(value) {
-  if (!value) return "Recent session";
-  return new Date(value).toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit"
-  });
-}
-
-function isBackendAuthoritySession(session) {
-  const pkg = authorityPackage(session);
-  return !!(session && session.savedToSEC === true && pkg && pkg.status);
-}
-
-function sessionToCard(session) {
-  const snapshot = session && session.matrixSnapshot ? session.matrixSnapshot : {};
-  const shotData = session && session.shotData ? session.shotData : {};
-  const pkg = authorityPackage(session);
-  const evidence = sessionEvidencePackage(session);
-  const group = authorityGroupSummary(pkg);
-  const poib = authorityPoibSummary(pkg);
-  return {
-    session,
-    evidence,
-    title: session.sessionLabel || SCZN3M4.formatSessionNumber(session.sessionNumber),
-    date: formatDate(session.timestamp || session.createdAt),
-    weapon: snapshot.modelCaliber || snapshot.rifle || "--",
-    distance: snapshot.targetDistance || snapshot.distance || sessionDistance(session),
-    shots: `${(pkg.status && pkg.status.impactCount) || shotData.shotCount || shotData.hits || 0} Shots`,
-    group,
-    poib
-  };
-}
-
-function renderLandingCorrectionCard() {
-  const evidence = heroEvidencePackage();
-  const card = document.getElementById("landingCorrectionCard");
-  const image = document.getElementById("heroTargetImage");
-  const layer = document.getElementById("heroEvidenceLayer");
-  if (!card || !image || !layer) return;
-
-  const normalizedEvidence = evidence ? SCZN3M4.UGEO.normalizeEvidencePackage(evidence) : null;
-  image.src = normalizedEvidence ? normalizedEvidence.targetImage : (HOME_CONFIG.fallbackEvidenceImage || HOME_CONFIG.targetImage);
-  layer.textContent = "";
-  card.classList.add("is-hidden");
-
-  const render = () => {
-    syncHeroEvidenceLayer();
-    if (!normalizedEvidence) return;
-    const { correction, impacts } = normalizedEvidence;
-    console.log("UGEO regression check", SCZN3M4.UGEO.regressionCheck(normalizedEvidence));
-    layer.innerHTML = SCZN3M4.UGEO.renderEvidenceUGEO(normalizedEvidence, {
-      vectorClass: "hero-correction-vector",
-      impactClass: "hero-impact-dot",
-      impactNumbered: true,
-      aimClass: "hero-aim-dot",
-      poibClass: "hero-poib-dot"
-    });
-    document.getElementById("landingDistance").textContent = normalizedEvidence.display ? normalizedEvidence.display.distance : (normalizedEvidence.distance || sessionDistance(normalizedEvidence.session));
-    document.getElementById("landingElevation").textContent = compactClick(correction && correction.elevation, "elevation");
-    document.getElementById("landingWindage").textContent = compactClick(correction && correction.windage, "windage");
-    document.getElementById("landingHits").textContent = normalizedEvidence.display ? normalizedEvidence.display.hits : `${impacts.length} Hits`;
-    card.classList.remove("is-hidden");
-  };
-
-  if (image.complete) {
-    requestAnimationFrame(render);
-  } else {
-    image.addEventListener("load", () => requestAnimationFrame(render), { once: true });
-  }
-}
-
-function renderRecentThumb(card) {
-  if (!card.evidence) {
-    return `
-      <div class="recent-thumb" aria-hidden="true">
-        <img src="${HOME_CONFIG.targetImage}" alt="" />
-      </div>`;
-  }
-  const evidence = SCZN3M4.UGEO.normalizeEvidencePackage(card.evidence);
-  return `
-    <div class="recent-thumb has-session-evidence" aria-hidden="true">
-      <img src="${evidence.targetImage}" alt="" />
-      <div class="recent-evidence-layer">
-        ${SCZN3M4.UGEO.renderEvidenceUGEO(evidence, {
-          vectorClass: "recent-thumb-vector",
-          impactClass: "recent-thumb-hole is-real",
-          aimClass: "recent-thumb-aim",
-          poibClass: "recent-thumb-poib"
-        })}
-      </div>
-    </div>`;
-}
-
-function renderRecentCards() {
-  const sessions = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [])
-    .filter(isBackendAuthoritySession)
-    .slice(0, 3);
-  const grid = document.getElementById("recentSecGrid");
-  grid.textContent = "";
-  if (!sessions.length) {
-    grid.innerHTML = `
-      <article class="recent-empty-state">
-        <strong>No saved Shooter Experience Cards yet.</strong>
-        <span>Save a completed target session to display backend-authority Group and POIB values here.</span>
-      </article>`;
-    return;
-  }
-  const cards = sessions.map(sessionToCard);
-  cards.forEach((card, index) => {
-    const article = document.createElement("article");
-    article.className = "recent-card";
-    const authorityLines = [
-      card.group ? `Group: <b>${card.group}</b>` : "",
-      card.poib ? `POIB: <b>${card.poib}</b>` : ""
-    ].filter(Boolean).join("<br />");
-    article.innerHTML = `
-      ${renderRecentThumb(card)}
-      <div class="recent-copy">
-        <strong>${card.title}</strong>
-        <span>${card.date}</span>
-        <span>✦ ${card.weapon}</span>
-        <span>◉ ${card.distance}</span>
-        <span>● ${card.shots}</span>
-        ${authorityLines ? `<p>${authorityLines}</p>` : ""}
-      </div>`;
-    if (index === 0) article.classList.add("is-mirror");
-    grid.append(article);
-  });
-  requestAnimationFrame(syncRecentEvidenceLayers);
-}
-
-renderLandingCorrectionCard();
-renderRecentCards();
-window.addEventListener("resize", () => {
-  syncHeroEvidenceLayer();
-  syncRecentEvidenceLayers();
-});
-</script>
 </body>
 </html>

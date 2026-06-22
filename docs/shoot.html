@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="sczn3-authority-endpoint" content="https://sczn3-authority.onrender.com/api/authority/ugeo/" />
+<meta name="sczn3-authority-endpoint" content="https://sczn3-authority.onrender.com/api/authority/ugeo" />
 <title>Target</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
@@ -17,7 +17,6 @@
         <a class="vendor-name" href="index.html">Baker Smart Targets</a>
       </div>
     </div>
-    <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
     <nav class="locked-nav" aria-label="Baker workflow navigation">
       <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
       <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Setup</span></a>
@@ -39,16 +38,8 @@
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
+          <label class="grid-coordinate-toggle"><input id="showGridCoordinates" type="checkbox" /> Show Grid Coordinates</label>
         </div>
-        <div class="secondary-score-panel score-pending" id="scoreCell" aria-label="Score">
-          <span class="target-score-label">Your Score:</span>
-          <strong id="scoreValue">--</strong>
-        </div>
-        <div class="session-distance-panel" id="sessionDistancePanel" aria-label="Session distance">
-          <span>Session Distance:</span>
-          <strong id="sessionDistanceDisplay">100 yds</strong>
-        </div>
-        <div class="shooter-step-prompt is-hidden" id="shooterStepPrompt" aria-live="polite"></div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
             <div class="target-intel-stack" id="resultsGrid"></div>
@@ -56,7 +47,6 @@
             <span>Choose Target to begin</span>
           </div>
         </div>
-        <div class="adjusted-distance-panel is-hidden" id="adjustedDistancePanel"></div>
       </section>
     </div>
   </section>
@@ -64,34 +54,12 @@
 <script src="app_state.js"></script>
 <script>
 let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
-const targetWorkspaceParams = new URLSearchParams(window.location.search);
-const explicitTargetWorkspaceRestore = (
-  targetWorkspaceParams.get("restoreTarget") === "1" ||
-  targetWorkspaceParams.get("resumeSession") === "1" ||
-  targetWorkspaceParams.has("restoreSessionId")
-);
-
-function explicitRestoreSession() {
-  const restoreId = targetWorkspaceParams.get("restoreSessionId");
-  if (!restoreId) return null;
-  return SCZN3M4.getSessionHistory().find(candidate => {
-    return candidate && (
-      candidate.sessionId === restoreId ||
-      String(candidate.sessionNumber) === restoreId ||
-      candidate.sessionLabel === restoreId
-    );
-  }) || null;
-}
-
-if (explicitTargetWorkspaceRestore) {
-  session = explicitRestoreSession() || session;
-}
 
 function isFinalizedSession(candidate) {
   return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
 }
 
-if (isFinalizedSession(session) && !explicitTargetWorkspaceRestore) {
+if (isFinalizedSession(session)) {
   session = null;
 }
 
@@ -99,32 +67,21 @@ if (!session && SCZN3M4.getActiveMatrix()) {
   session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
 }
 let matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
-function configuredAuthorityEndpoint() {
-  const metaEndpoint = document.querySelector('meta[name="sczn3-authority-endpoint"]')?.content;
-  const storedEndpoint = (() => {
-    try {
-      return localStorage.getItem("SCZN3_BACKEND_AUTHORITY_ENDPOINT");
-    } catch (_error) {
-      return "";
-    }
-  })();
-  const explicitEndpoint = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || metaEndpoint || storedEndpoint;
-  if (explicitEndpoint) return explicitEndpoint;
-  if (["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
-    return "http://127.0.0.1:8098/api/authority/ugeo";
-  }
-  return "";
-}
-const BACKEND_AUTHORITY_ENDPOINT = configuredAuthorityEndpoint();
+const AUTHORITY_ENDPOINT_META = document.querySelector('meta[name="sczn3-authority-endpoint"]');
+const PRODUCTION_AUTHORITY_ENDPOINT = AUTHORITY_ENDPOINT_META && AUTHORITY_ENDPOINT_META.content
+  ? AUTHORITY_ENDPOINT_META.content.trim()
+  : "https://sczn3-authority.onrender.com/api/authority/ugeo";
+const LOCAL_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
+const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
 let pendingEvidence = null;
 let displayedEvidence = null;
-let restoredWorkspaceSession = explicitTargetWorkspaceRestore ? session : null;
-let backendAuthorityPackage = restoredWorkspaceSession && (restoredWorkspaceSession.backendAuthorityPackage || restoredWorkspaceSession.ugeoAuthorityPackage)
-  ? (restoredWorkspaceSession.backendAuthorityPackage || restoredWorkspaceSession.ugeoAuthorityPackage)
+let backendAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
+  ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
   : null;
 let markMode = "aim";
-let currentAimPoint = restoredWorkspaceSession && restoredWorkspaceSession.aimPoint ? restoredWorkspaceSession.aimPoint : null;
-let currentImpactPoints = restoredWorkspaceSession && Array.isArray(restoredWorkspaceSession.impactPoints) ? [...restoredWorkspaceSession.impactPoints] : [];
+let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
+let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
 function backendScoreValue(authorityPackage) {
   const score = authorityPackage && authorityPackage.score;
   const value = score && typeof score === "object" ? score.value : score;
@@ -139,14 +96,13 @@ let currentClicks = backendAuthorityPackage ? {
 } : null;
 let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
-let authorityRequestInFlight = false;
 let authorityStatusMessage = "";
-let authorityWakeTimer = null;
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
 let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
 let distanceLocked = !!(session && session.targetDistanceLocked);
+let showGridCoordinates = false;
 const BAKER_GRID_AUDIT = {
   imageWidth: 1102,
   imageHeight: 1713,
@@ -156,19 +112,15 @@ const BAKER_GRID_AUDIT = {
   bottomPx: 1652,
   squarePx: 49
 };
-const MARK_TAP_MOVE_THRESHOLD_PX = 8;
-let markPointerCandidate = null;
 
 function currentSetupName() {
   return matrix ? [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ") : "Create setup in Weapon Setup";
 }
 
 function renderActiveSessionBar() {
-  const bar = document.getElementById("activeSessionBar");
-  bar.innerHTML = session
+  document.getElementById("activeSessionBar").innerHTML = session
     ? `<strong>${currentSetupName()}</strong><span></span>`
     : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
-  bar.classList.toggle("target-loaded-collapse", !!displayedEvidence);
 }
 
 function defaultTargetMatrix() {
@@ -215,10 +167,6 @@ function renderSetupSummary() {
     .map(cleanSetupValue)
     .filter(Boolean)
     .join(" / ");
-  const adjustment = [source.opticAdjustmentUnit, source.opticClickValueLabel]
-    .map(cleanSetupValue)
-    .filter(Boolean)
-    .join(" / ");
   const ammo = [source.ammoCaliber, source.ammoManufacturer, source.ammoLoad, source.bulletWeight]
     .map(cleanSetupValue)
     .filter(Boolean)
@@ -226,7 +174,6 @@ function renderSetupSummary() {
   setupSummaryGrid.innerHTML = [
     setupLine("Weapon", weapon || source.rifle),
     setupLine("Optic", optic),
-    setupLine("Adjustment", adjustment),
     setupLine("Ammunition", ammo)
   ].join("");
 }
@@ -257,11 +204,21 @@ function distanceOptions() {
 
 function targetIntelStackHtml() {
   return `
-    <div class="primary-correction-label">Correction</div>
-    <div class="target-intel-item correction-click"><strong id="elevationValue">--</strong></div>
-    <div class="target-intel-item correction-click"><strong id="windageValue">--</strong></div>
-    <div class="target-intel-item correction-hits"><strong id="hitsValue">0 Hits</strong></div>
+    <div class="target-intel-distance" aria-label="Distance">
+      <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
+      <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
+        <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
+        <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+      </div>
+      <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
+      <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+    </div>
+    <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
+    <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
+    <div class="target-intel-item"><strong id="windageValue">--</strong></div>
+    <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
     <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
+    ${guidanceCardHtml()}
   `;
 }
 
@@ -270,11 +227,15 @@ function isPresetDistance(value) {
 }
 
 function guidanceCardHtml() {
+  const presets = [100, 150, 200, 250, 300, 400, 500]
+    .map(distance => `<div>25m → ${distance}m ↑ X Clicks</div>`)
+    .join("");
   return `
-    <details class="guidance-card">
-      <summary>Zero Transition Tool</summary>
-      <div class="zero-transition-helper">Plan a future zero change.</div>
-      <div class="custom-distance-card">
+    <details class="guidance-card" open>
+      <summary>Clicks to Next Distance</summary>
+      <div class="guidance-list">${presets}</div>
+      <details class="custom-distance-card">
+        <summary>Custom Distance</summary>
         <label>Current Zero<input id="currentZeroDistance" inputmode="decimal" placeholder="" /></label>
         <label>Desired Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
         <div class="unit-toggle" role="group" aria-label="Distance units">
@@ -282,8 +243,8 @@ function guidanceCardHtml() {
           <button class="unit-button" type="button" data-distance-unit="M">M</button>
         </div>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
-        <div class="guidance-result is-hidden" id="guidanceResult"></div>
-      </div>
+        <div class="guidance-result" id="guidanceResult">Result:</div>
+      </details>
     </details>
   `;
 }
@@ -333,11 +294,7 @@ function syncDistanceFromControls() {
 
 function updateDistanceDisplay() {
   const display = document.getElementById("distanceDisplay");
-  const chip = document.getElementById("mobileDistanceChip");
-  const sessionDisplay = document.getElementById("sessionDistanceDisplay");
   if (display) display.textContent = formatDistanceDisplay();
-  if (chip) chip.textContent = formatDistanceDisplay();
-  if (sessionDisplay) sessionDisplay.textContent = formatDistanceDisplay();
 }
 
 function unlockDistanceForNewTarget() {
@@ -365,13 +322,11 @@ function bindGuidanceCard() {
     const desired = Number(document.getElementById("desiredZeroDistance").value);
     const result = document.getElementById("guidanceResult");
     if (!Number.isFinite(current) || !Number.isFinite(desired)) {
-      result.textContent = "";
-      result.classList.add("is-hidden");
+      result.textContent = "Result:";
       return;
     }
     // Non-authoritative distance guidance placeholder; backend owns click calculations.
     result.textContent = "Backend authority required";
-    result.classList.remove("is-hidden");
     result.dataset.unit = selectedUnit;
   });
 }
@@ -381,11 +336,6 @@ function renderEvidencePreview(image) {
   const evidence = image && image.dataUrl ? image : null;
   displayedEvidence = evidence;
   if (!evidence) {
-    const adjustedPanel = document.getElementById("adjustedDistancePanel");
-    if (adjustedPanel) {
-      adjustedPanel.innerHTML = "";
-      adjustedPanel.classList.add("is-hidden");
-    }
     preview.innerHTML = `
       <div class="evidence-meta evidence-status-stack empty-target-start">
         <strong>Choose Target Photo To Begin</strong>
@@ -397,18 +347,12 @@ function renderEvidencePreview(image) {
   preview.innerHTML = `
     <div class="mark-surface" id="markSurface">
       <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
-      <div class="mobile-distance-chip" id="mobileDistanceChip">${formatDistanceDisplay()}</div>
+      <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
       <div class="marker-layer" id="markerLayer"></div>
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
   `;
-  const adjustedPanel = document.getElementById("adjustedDistancePanel");
-  if (adjustedPanel) {
-    adjustedPanel.innerHTML = guidanceCardHtml();
-    adjustedPanel.classList.remove("is-hidden");
-  }
   bindDistanceControl();
-  updateDistanceDisplay();
   bindGuidanceCard();
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");
@@ -423,19 +367,14 @@ function renderEvidencePreview(image) {
       renderMarkers();
     }, { once: true });
   }
-  markSurface.addEventListener("pointerdown", handleMarkPointerDown, { passive: false });
-  markSurface.addEventListener("pointermove", handleMarkPointerMove, { passive: true });
-  markSurface.addEventListener("pointerup", handleMarkPointerUp, { passive: false });
-  markSurface.addEventListener("pointercancel", clearMarkPointerCandidate);
-  markSurface.addEventListener("pointerleave", clearMarkPointerCandidate);
+  markSurface.addEventListener("pointerdown", handleMarkPointer, { passive: false });
   markSurface.addEventListener("contextmenu", event => event.preventDefault());
   renderMarkers();
   renderMarkStatus();
 }
 
 function activeEvidence() {
-  if (pendingEvidence) return pendingEvidence;
-  return restoredWorkspaceSession && restoredWorkspaceSession.targetEvidenceImage ? restoredWorkspaceSession.targetEvidenceImage : null;
+  return pendingEvidence || (SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {}).targetEvidenceImage || null;
 }
 
 function readFileAsDataUrl(file) {
@@ -505,20 +444,11 @@ function backendTargetGeometry() {
 
 function backendAuthorityRequest() {
   const source = matrix || {};
-  const adjustment = opticAdjustmentConfig(source);
-  const optic = {
-    type: source.opticType,
-    manufacturer: source.opticBrand,
-    model: source.opticModel,
-    adjustmentUnit: adjustment.unit,
-    clickValue: adjustment.value,
-    clickValueLabel: adjustment.label
-  };
-  if (adjustment.unit === "MOA") {
-    optic.clickValueMOA = adjustment.value;
-  } else {
-    optic.clickValueMRAD = adjustment.value;
-  }
+  const opticAdjustmentUnit = String(source.opticAdjustmentUnit || source.adjustmentUnit || "MOA").toUpperCase();
+  const opticClickValueMOA = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
+  const opticClickValueMRAD = source.opticClickValueMRAD || source.clickValueMRAD || source.opticClickValue || source.clickValue || null;
+  const opticClickValue = opticAdjustmentUnit === "MRAD" ? opticClickValueMRAD : opticClickValueMOA;
+  const opticClickValueLabel = source.opticClickValueLabel || source.clickValueLabel || `${opticClickValue} ${opticAdjustmentUnit}`;
   return {
     targetId: "BAKER_ST_100YD_SMART",
     targetName: "Baker 100 Yard Smart Target",
@@ -532,27 +462,27 @@ function backendAuthorityRequest() {
     },
     shooterSetup: {
       ...source,
-      optic
+      opticAdjustmentUnit,
+      opticClickValue,
+      opticClickValueLabel,
+      opticClickValueMOA: opticAdjustmentUnit === "MOA" ? opticClickValue : source.opticClickValueMOA,
+      opticClickValueMRAD: opticAdjustmentUnit === "MRAD" ? opticClickValue : source.opticClickValueMRAD,
+      optic: {
+        type: source.opticType,
+        manufacturer: source.opticBrand,
+        model: source.opticModel,
+        adjustmentUnit: opticAdjustmentUnit,
+        clickValue: opticClickValue,
+        clickValueLabel: opticClickValueLabel,
+        clickValueMOA: opticAdjustmentUnit === "MOA" ? opticClickValue : source.opticClickValueMOA,
+        clickValueMRAD: opticAdjustmentUnit === "MRAD" ? opticClickValue : source.opticClickValueMRAD
+      }
     }
   };
 }
 
-function opticAdjustmentConfig(source) {
-  const unit = source.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
-  const rawValue = unit === "MRAD"
-    ? (source.opticClickValueMRAD || source.opticClickValue)
-    : (source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue);
-  const fallback = unit === "MRAD" ? 0.1 : 0.25;
-  const value = Math.max(0.0001, Number(String(rawValue || fallback).match(/[\d.]+/)?.[0] || fallback));
-  const label = source.opticClickValueLabel || `${value} ${unit}`;
-  return { unit, value, label };
-}
-
 async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
-  if (!BACKEND_AUTHORITY_ENDPOINT) {
-    throw new Error("Backend authority service is not configured");
-  }
   const response = await fetch(BACKEND_AUTHORITY_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -562,49 +492,8 @@ async function requestBackendAuthority() {
     throw new Error(`Backend authority failed: ${response.status}`);
   }
   const authorityPackage = await response.json();
-  validateBackendAuthorityPackage(authorityPackage);
   authorityPackage.frontendRequest = requestPayload;
   return authorityPackage;
-}
-
-function isAuthorityPoint(point) {
-  return !!(
-    point &&
-    Number.isFinite(Number(point.xPercent)) &&
-    Number.isFinite(Number(point.yPercent))
-  );
-}
-
-function validateBackendAuthorityPackage(authorityPackage) {
-  const status = authorityPackage && authorityPackage.status;
-  const render = authorityPackage && authorityPackage.renderCoordinates;
-  const correction = authorityPackage && authorityPackage.correction;
-  const clicks = authorityPackage && authorityPackage.clicks;
-  const hasValidImpacts = !!(render && Array.isArray(render.impacts) && render.impacts.length === currentImpactPoints.length);
-  const hasValidClicks = !!(
-    clicks &&
-    Number.isFinite(Number(clicks.elevationClicks)) &&
-    Number.isFinite(Number(clicks.windageClicks))
-  );
-  const valid = !!(
-    status &&
-    status.hasAim === true &&
-    status.hasPOIB === true &&
-    status.hasCorrection === true &&
-    Number(status.impactCount) === currentImpactPoints.length &&
-    isAuthorityPoint(authorityPackage.poib) &&
-    isAuthorityPoint(render && render.aim) &&
-    isAuthorityPoint(render && render.poib) &&
-    render.vector &&
-    isAuthorityPoint(render.vector.start) &&
-    isAuthorityPoint(render.vector.end) &&
-    correction &&
-    hasValidClicks &&
-    hasValidImpacts
-  );
-  if (!valid) {
-    throw new Error("Backend authority response incomplete");
-  }
 }
 
 function applyBackendAuthorityPackage(authorityPackage) {
@@ -622,24 +511,6 @@ function applyBackendAuthorityPackage(authorityPackage) {
   currentScore = backendScoreValue(authorityPackage);
   resultsShown = !!(authorityPackage && authorityPackage.status && authorityPackage.status.hasCorrection);
   sessionSaved = false;
-}
-
-function clearAuthorityWakeTimer() {
-  if (!authorityWakeTimer) return;
-  clearTimeout(authorityWakeTimer);
-  authorityWakeTimer = null;
-}
-
-function scheduleAuthorityWakeMessage() {
-  clearAuthorityWakeTimer();
-  authorityWakeTimer = setTimeout(() => {
-    authorityWakeTimer = null;
-    if (!authorityRequestInFlight || resultsShown) return;
-    authorityStatusMessage = "Authority service waking up...";
-    renderResults();
-    renderMarkStatus();
-    resyncOverlayFrame();
-  }, 3000);
 }
 
 function correctionCardDistance() {
@@ -684,12 +555,61 @@ function displayedImageBox() {
 
 function syncOverlayLayerToDisplayedImage() {
   const layer = document.getElementById("markerLayer");
+  const coordinateLayer = document.getElementById("gridCoordinateLayer");
   const box = displayedImageBox();
   if (!layer || !box) return null;
   const surface = document.getElementById("markSurface");
   const image = surface && surface.querySelector("img");
   SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, surface);
+  if (coordinateLayer) {
+    coordinateLayer.style.left = `${box.left}px`;
+    coordinateLayer.style.top = `${box.top}px`;
+    coordinateLayer.style.width = `${box.width}px`;
+    coordinateLayer.style.height = `${box.height}px`;
+    renderGridCoordinateOverlay();
+  }
   return box;
+}
+
+function columnLabel(index) {
+  let value = index + 1;
+  let label = "";
+  while (value > 0) {
+    value -= 1;
+    label = String.fromCharCode(65 + (value % 26)) + label;
+    value = Math.floor(value / 26);
+  }
+  return label;
+}
+
+function renderGridCoordinateOverlay() {
+  const layer = document.getElementById("gridCoordinateLayer");
+  if (!layer) return;
+  if (!showGridCoordinates) {
+    layer.textContent = "";
+    layer.classList.remove("is-visible");
+    return;
+  }
+  const grid = BAKER_GRID_AUDIT;
+  const left = (grid.leftPx / grid.imageWidth) * 100;
+  const top = (grid.topPx / grid.imageHeight) * 100;
+  const width = ((grid.rightPx - grid.leftPx) / grid.imageWidth) * 100;
+  const height = ((grid.bottomPx - grid.topPx) / grid.imageHeight) * 100;
+  const columns = Math.round((grid.rightPx - grid.leftPx) / grid.squarePx);
+  const rows = Math.round((grid.bottomPx - grid.topPx) / grid.squarePx);
+  const columnLabels = Array.from({ length: columns }, (_, index) => {
+    const x = left + (((index + 0.5) / columns) * width);
+    return `<span class="grid-coordinate-label grid-column-label" style="left:${x}%;top:${top}%">${columnLabel(index)}</span>`;
+  }).join("");
+  const rowLabels = Array.from({ length: rows }, (_, index) => {
+    const y = top + (((index + 0.5) / rows) * height);
+    return `<span class="grid-coordinate-label grid-row-label" style="left:${left}%;top:${y}%">${index + 1}</span>`;
+  }).join("");
+  layer.classList.add("is-visible");
+  layer.innerHTML = `
+    <div class="grid-coordinate-box" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%"></div>
+    ${columnLabels}
+    ${rowLabels}`;
 }
 
 function syncArrowLayerToMarkerLayer() {
@@ -701,6 +621,105 @@ function syncArrowLayerToMarkerLayer() {
   arrowSvg.style.top = "0px";
   arrowSvg.style.width = `${layerRect.width}px`;
   arrowSvg.style.height = `${layerRect.height}px`;
+}
+
+function renderedPercentFromRect(childRect, parentRect) {
+  if (!childRect || !parentRect || !parentRect.width || !parentRect.height) return null;
+  return {
+    xPercent: Number((((childRect.left + (childRect.width / 2) - parentRect.left) / parentRect.width) * 100).toFixed(2)),
+    yPercent: Number((((childRect.top + (childRect.height / 2) - parentRect.top) / parentRect.height) * 100).toFixed(2))
+  };
+}
+
+function logRenderCoordinates(correction) {
+  if (!correction || !correction.poib || !currentAimPoint) return;
+  requestAnimationFrame(() => {
+    const layer = document.getElementById("markerLayer");
+    const image = document.querySelector("#markSurface img");
+    const poibMarker = layer && layer.querySelector(".poib-auto-marker");
+    const calculatedPoibDot = layer && layer.querySelector(".debug-calculated-poib");
+    const arrowStartDot = layer && layer.querySelector(".debug-arrow-start");
+    const arrowSvg = layer && layer.querySelector(".target-correction-vector");
+    const arrowLine = arrowSvg && arrowSvg.querySelector("line");
+    if (!layer || !image || !poibMarker || !calculatedPoibDot || !arrowStartDot || !arrowSvg || !arrowLine) return;
+    const imageRect = image.getBoundingClientRect();
+    const imageBox = displayedImageBox();
+    const layerRect = layer.getBoundingClientRect();
+    const svgRect = arrowSvg.getBoundingClientRect();
+    const poibRect = poibMarker.getBoundingClientRect();
+    const renderedPoib = renderedPercentFromRect(poibRect, layerRect);
+    const renderedCalculatedPoibDot = renderedPercentFromRect(calculatedPoibDot.getBoundingClientRect(), layerRect);
+    const renderedArrowStartDot = renderedPercentFromRect(arrowStartDot.getBoundingClientRect(), layerRect);
+    const arrowStart = {
+      xPercent: Number(Number(arrowLine.getAttribute("x1")).toFixed(2)),
+      yPercent: Number(Number(arrowLine.getAttribute("y1")).toFixed(2))
+    };
+    const arrowEnd = {
+      xPercent: Number(Number(arrowLine.getAttribute("x2")).toFixed(2)),
+      yPercent: Number(Number(arrowLine.getAttribute("y2")).toFixed(2))
+    };
+    const calculatedPoib = safePoint(correction.poib);
+    const delta = (a, b) => {
+      if (!a || !b) return null;
+      return {
+        xDelta: Number((Number(a.xPercent) - Number(b.xPercent)).toFixed(2)),
+        yDelta: Number((Number(a.yPercent) - Number(b.yPercent)).toFixed(2))
+      };
+    };
+    const markerDelta = delta(renderedPoib, calculatedPoib);
+    const arrowStartDelta = delta(arrowStart, calculatedPoib);
+    console.groupCollapsed("SCZN3 render coordinate audit");
+    console.log("Target image natural size", {
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight
+    });
+    console.log("Target image element rect", {
+      width: Number(imageRect.width.toFixed(2)),
+      height: Number(imageRect.height.toFixed(2))
+    });
+    console.log("Displayed target image content box", imageBox && {
+      width: Number(imageBox.width.toFixed(2)),
+      height: Number(imageBox.height.toFixed(2)),
+      left: Number(imageBox.left.toFixed(2)),
+      top: Number(imageBox.top.toFixed(2))
+    });
+    console.log("Overlay container rect", {
+      width: Number(layerRect.width.toFixed(2)),
+      height: Number(layerRect.height.toFixed(2))
+    });
+    console.log("SVG arrow layer rect", {
+      width: Number(svgRect.width.toFixed(2)),
+      height: Number(svgRect.height.toFixed(2))
+    });
+    console.log("POIB marker parent layer rect", {
+      width: Number(layerRect.width.toFixed(2)),
+      height: Number(layerRect.height.toFixed(2))
+    });
+    console.log("1. Hole coordinates", currentImpactPoints.map(point => safePoint(point)));
+    console.log("2. Calculated POIB coordinates", calculatedPoib);
+    console.log("3. Rendered POIB marker coordinates", renderedPoib);
+    console.log("4. Arrow start coordinates", arrowStart);
+    console.log("5. Arrow end coordinates", arrowEnd);
+    console.log("Debug dot: calculated POIB rendered center", renderedCalculatedPoibDot);
+    console.log("Debug dot: arrow start rendered center", renderedArrowStartDot);
+    console.log("POIB marker delta from calculated POIB", markerDelta);
+    console.log("Arrow start delta from calculated POIB", arrowStartDelta);
+    if (markerDelta && (Math.abs(markerDelta.xDelta) > 0.25 || Math.abs(markerDelta.yDelta) > 0.25)) {
+      console.warn("POIB marker is not rendering at calculated POIB coordinates.");
+    }
+    if (arrowStartDelta && (Math.abs(arrowStartDelta.xDelta) > 0.25 || Math.abs(arrowStartDelta.yDelta) > 0.25)) {
+      console.warn("Arrow start is not using calculated POIB coordinates.");
+    }
+    console.table([
+      { item: "Calculated POIB", ...calculatedPoib },
+      { item: "Rendered POIB marker", ...renderedPoib },
+      { item: "Arrow start", ...arrowStart },
+      { item: "Arrow end", ...arrowEnd },
+      { item: "Debug calculated POIB dot", ...renderedCalculatedPoibDot },
+      { item: "Debug arrow start dot", ...renderedArrowStartDot }
+    ]);
+    console.groupEnd();
+  });
 }
 
 function markerPointHtml(className, point, content = "", attributes = "") {
@@ -790,14 +809,11 @@ function renderResults() {
   const numericScore = currentScore === null ? NaN : Number(currentScore);
   const scoreCell = document.getElementById("scoreCell");
   if (!scoreCell) return;
-  scoreCell.className = `secondary-score-panel ${scoreClass(numericScore)}`;
+  scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
-  const elevationValue = document.getElementById("elevationValue");
-  const windageValue = document.getElementById("windageValue");
-  const hitsValue = document.getElementById("hitsValue");
-  if (elevationValue) elevationValue.textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
-  if (windageValue) windageValue.textContent = compactClick(currentClicks && currentClicks.windage, "windage");
-  if (hitsValue) hitsValue.textContent = `${impacts.length} Hits`;
+  document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
+  document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
+  document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
@@ -815,18 +831,16 @@ function hideShooterTip() {
 }
 
 function shooterTipFromResults() {
-  const backendGuidance = backendAuthorityPackage && backendAuthorityPackage.shooterGuidance;
-  if (backendGuidance && backendGuidance.primary) return backendGuidance.primary;
   if (!currentClicks || !currentImpactPoints.length) return "Record confirmed impacts before saving.";
   if (currentImpactPoints.length < 3) return "Add more confirmed impacts for a stronger read.";
   const windage = Number(currentClicks.windageClicks || 0);
   const elevation = Number(currentClicks.elevationClicks || 0);
-  if (windage === 0 && elevation === 0) return "Confirm zero.";
-  const corrections = [];
-  if (elevation) corrections.push(String(currentClicks.elevation || "").trim());
-  if (windage) corrections.push(String(currentClicks.windage || "").trim());
-  const readable = corrections.filter(Boolean).join(" and ");
-  return readable ? `Apply ${readable}, then confirm.` : "Confirm zero.";
+  const windageDirection = String(currentClicks.windageDirection || "CENTER").toLowerCase();
+  const elevationDirection = String(currentClicks.elevationDirection || "CENTER").toLowerCase();
+  if (windage === 0 && elevation === 0) return "Group is centered; confirm with another string.";
+  if (elevation > windage) return "Apply elevation " + elevationDirection + ", then confirm.";
+  if (windage > elevation) return "Apply windage " + windageDirection + ", then confirm.";
+  return "Apply both corrections, then confirm.";
 }
 
 function showShooterTip() {
@@ -837,29 +851,11 @@ function showShooterTip() {
   tip.classList.remove("is-hidden");
 }
 
-function settleViewportAfterResults() {
-  syncOverlayLayerToDisplayedImage();
-}
-
-function resyncOverlayFrame() {
-  requestAnimationFrame(() => {
-    syncOverlayLayerToDisplayedImage();
-    renderMarkers();
-  });
-}
-
-function resyncOverlayAfterResultsLayout() {
-  if (!resultsShown) return;
-  resyncOverlayFrame();
-}
-
 function clearCalculatedResults() {
-  clearAuthorityWakeTimer();
   currentClicks = null;
   currentScore = null;
   backendAuthorityPackage = null;
   resultsShown = false;
-  authorityRequestInFlight = false;
   authorityStatusMessage = "";
   sessionSaved = false;
   hideShooterTip();
@@ -872,58 +868,19 @@ function setNextStep(activeId) {
   });
 }
 
-function setControlVisibility(id, visible) {
-  const element = document.getElementById(id);
-  if (element) element.classList.toggle("is-hidden", !visible);
-}
-
-function setShooterPrompt(text) {
-  const prompt = document.getElementById("shooterStepPrompt");
-  if (!prompt) return;
-  prompt.textContent = text || "";
-  prompt.classList.toggle("is-hidden", !text);
-}
-
 function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
-  const hasAim = !!currentAimPoint;
-  const hasImpacts = currentImpactPoints.length > 0;
   document.getElementById("setAimMode").disabled = !canMark;
-  document.getElementById("addImpactMode").disabled = !canMark || !hasAim;
-  document.getElementById("undoImpact").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
-  document.getElementById("clearMarks").disabled = authorityRequestInFlight || !canMark || (!hasAim && !hasImpacts);
-  document.getElementById("saveMarks").disabled = authorityRequestInFlight || !session || sessionSaved || !resultsShown;
-  document.getElementById("showResults").disabled = authorityRequestInFlight || !canMark || !hasImpacts;
-  setControlVisibility("chooseTargetButton", !canMark);
-  setControlVisibility("setAimMode", false);
-  setControlVisibility("addImpactMode", false);
-  setControlVisibility("showResults", canMark && hasImpacts && !resultsShown);
-  setControlVisibility("undoImpact", canMark && hasImpacts && !resultsShown);
-  setControlVisibility("clearMarks", canMark && (hasAim || hasImpacts) && !resultsShown);
-  setControlVisibility("saveMarks", canMark && resultsShown);
-  document.getElementById("showResults").textContent = authorityRequestInFlight ? "Working..." : "Show Results";
-  const uploadPanel = document.querySelector(".upload-panel");
-  if (uploadPanel) {
-    uploadPanel.classList.toggle("target-first-mode", canMark);
-    uploadPanel.classList.toggle("results-ready", !!resultsShown || !!authorityStatusMessage);
-    uploadPanel.classList.toggle("workflow-actions-ready", canMark && (hasImpacts || resultsShown || !!authorityStatusMessage));
-    uploadPanel.classList.toggle("pre-results-actions", canMark && hasImpacts && !resultsShown && !authorityStatusMessage);
-  }
-  renderActiveSessionBar();
-  if (!canMark) {
-    setShooterPrompt("");
-  } else if (!hasAim) {
-    setShooterPrompt("Tap Aim Point");
-  } else if (!hasImpacts) {
-    setShooterPrompt("Tap Bullet Holes");
-  } else {
-    setShooterPrompt("");
-  }
+  document.getElementById("addImpactMode").disabled = !canMark || !currentAimPoint;
+  document.getElementById("undoImpact").disabled = !canMark || currentImpactPoints.length === 0;
+  document.getElementById("clearMarks").disabled = !canMark || (!currentAimPoint && currentImpactPoints.length === 0);
+  document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
+  document.getElementById("showResults").disabled = !canMark || currentImpactPoints.length === 0;
   let nextStep = "chooseTargetButton";
-  if (canMark && !hasAim) nextStep = "setAimMode";
-  if (canMark && hasAim && !hasImpacts) nextStep = "addImpactMode";
-  if (canMark && hasAim && hasImpacts && !resultsShown) nextStep = "showResults";
-  if (canMark && hasAim && hasImpacts && resultsShown) nextStep = "saveMarks";
+  if (canMark && !currentAimPoint) nextStep = "setAimMode";
+  if (canMark && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (canMark && currentAimPoint && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
+  if (canMark && currentAimPoint && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
 }
@@ -935,7 +892,6 @@ function setMode(mode) {
 
 function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
-  if (authorityRequestInFlight) return;
   if (resultsShown) return;
   syncOverlayLayerToDisplayedImage();
   const layer = document.getElementById("markerLayer");
@@ -958,44 +914,12 @@ function handleMarkTap(event) {
   renderMarkStatus();
 }
 
-function clearMarkPointerCandidate() {
-  markPointerCandidate = null;
-}
-
-function handleMarkPointerDown(event) {
-  if (event.button && event.button !== 0) return;
-  if (!hasMarkableEvidence() || authorityRequestInFlight || resultsShown) return;
-  if (event.target && event.target.closest("button,a,input,select,textarea,label,summary,details")) return;
-  markPointerCandidate = {
-    pointerId: event.pointerId,
-    startX: event.clientX,
-    startY: event.clientY,
-    moved: false
-  };
-}
-
-function handleMarkPointerMove(event) {
-  if (!markPointerCandidate || markPointerCandidate.pointerId !== event.pointerId) return;
-  const dx = event.clientX - markPointerCandidate.startX;
-  const dy = event.clientY - markPointerCandidate.startY;
-  if (Math.hypot(dx, dy) > MARK_TAP_MOVE_THRESHOLD_PX) {
-    markPointerCandidate.moved = true;
-  }
-}
-
-function handleMarkPointerUp(event) {
-  if (!markPointerCandidate || markPointerCandidate.pointerId !== event.pointerId) return;
-  const candidate = markPointerCandidate;
-  clearMarkPointerCandidate();
-  const dx = event.clientX - candidate.startX;
-  const dy = event.clientY - candidate.startY;
-  if (candidate.moved || Math.hypot(dx, dy) > MARK_TAP_MOVE_THRESHOLD_PX) return;
-  if (event.target && event.target.closest("button,a,input,select,textarea,label,summary,details")) return;
+function handleMarkPointer(event) {
   event.preventDefault();
   handleMarkTap(event);
 }
 
-renderEvidencePreview(restoredWorkspaceSession && restoredWorkspaceSession.targetEvidenceImage);
+renderEvidencePreview(session && session.targetEvidenceImage);
 
 document.getElementById("chooseTargetButton").addEventListener("click", () => {
   ensureTargetSession();
@@ -1017,7 +941,6 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
     currentAimPoint = null;
     currentImpactPoints = [];
     sessionSaved = false;
-    restoredWorkspaceSession = null;
     unlockDistanceForNewTarget();
     clearCalculatedResults();
     pendingEvidence = {
@@ -1033,6 +956,12 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
   }).catch(error => {
     console.warn("Target image read failed", error);
   });
+});
+
+document.getElementById("showGridCoordinates").addEventListener("change", event => {
+  showGridCoordinates = event.target.checked;
+  syncOverlayLayerToDisplayedImage();
+  renderGridCoordinateOverlay();
 });
 
 document.getElementById("setAimMode").addEventListener("click", () => setMode("aim"));
@@ -1071,38 +1000,25 @@ document.getElementById("clearMarks").addEventListener("click", () => {
   renderMarkStatus();
 });
 document.getElementById("showResults").addEventListener("click", async () => {
-  if (authorityRequestInFlight) return;
-  if (resultsShown) return;
   if (!currentAimPoint || !currentImpactPoints.length) return;
-  authorityRequestInFlight = true;
   authorityStatusMessage = "";
-  scheduleAuthorityWakeMessage();
   renderResults();
-  renderMarkStatus();
-  resyncOverlayFrame();
   try {
     const authorityPackage = await requestBackendAuthority();
-    clearAuthorityWakeTimer();
     applyBackendAuthorityPackage(authorityPackage);
     renderMarkers();
     renderResults();
     if (resultsShown) showShooterTip();
-    if (resultsShown) settleViewportAfterResults();
   } catch (error) {
-    clearAuthorityWakeTimer();
+    console.warn("Backend authority request failed", error);
     currentClicks = null;
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = error && String(error.message || "").includes("incomplete")
-      ? "Authority response incomplete. Please try again."
-      : "Authority service unavailable. Please try again.";
+    authorityStatusMessage = "Authority service unavailable. Please try again.";
     renderResults();
-  } finally {
-    authorityRequestInFlight = false;
   }
   renderMarkStatus();
-  resyncOverlayAfterResultsLayout();
 });
 document.getElementById("saveMarks").addEventListener("click", () => {
   if (!session || !backendAuthorityPackage) return;
