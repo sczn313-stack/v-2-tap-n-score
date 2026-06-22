@@ -35,76 +35,58 @@
   <section class="package-hero" aria-label="Tap-N-Score start">
     <div class="package-hero-copy">
       <h1>ZERO FASTER.<br><span>SHOOT SMARTER.</span><br>KEEP GETTING BETTER.</h1>
-      <p>The smarter way to zero your rifles<br>and track every shot.</p>
+      <p><strong>THE BEGINNING OF YOUR SHOOTING HISTORY</strong><br><span>Shoot. Scan. Improve. Save.</span></p>
       <a class="package-start-button" href="matrix.html">START NEW SESSION <span>→</span></a>
     </div>
     <img class="package-hero-rifle" src="assets/landing-hero-visual-scene-img1429.jpeg" alt="" />
   </section>
 
   <section class="welcome-card" aria-labelledby="welcomeTitle">
-    <div class="welcome-card-top">
-      <div>
-        <p>Every shot tells a story. Let's keep building yours.</p>
+    <div class="welcome-progress-row">
+      <div class="sarg-support-photo" aria-label="Keep improving">
+        <img src="assets/sarg-range-photo.png" alt="Sarg shooting from a range bench" />
       </div>
-      <div class="today-chip">
-        <span aria-hidden="true">▣</span>
-        <small>TODAY IS</small>
-        <strong>JUNE 22, 2026</strong>
+
+      <div class="range-trends-block">
+        <h2 id="welcomeTitle">WELCOME BACK, <span data-shooter-name>JAY</span>!</h2>
+        <p>Every QRC target adds another chapter.</p>
+        <div class="range-trends-heading">
+          <span>RANGE TRENDS</span>
+          <small>See how your shooting journey is growing.</small>
+        </div>
+        <div class="range-trend-visual" aria-label="Range trend visualization">
+          <div class="trend-bars" data-trend-bars></div>
+          <div class="trend-baseline"></div>
+          <span class="trend-empty" data-trend-empty>Scan your first QRC target to begin your shooting history.</span>
+        </div>
       </div>
     </div>
 
-    <div class="last-range-panel">
-      <div class="last-range-photo">
-        <h2 id="welcomeTitle">WELCOME BACK, JAY!</h2>
-        <img src="assets/sarg-range-photo.png" alt="Sarg shooting from a range bench" />
-      </div>
-      <div class="last-range-detail">
-        <span class="last-range-label">LAST RANGE DAY</span>
-        <div class="last-meta">
-          <span>▦ June 21, 2026</span>
-          <span>◷ 9:42 AM</span>
-        </div>
-        <h3><span>↗</span> CZ 457</h3>
-        <p>.22 LR</p>
-        <div class="last-stats">
-          <div><em>LAST TARGET</em><strong>16</strong><small>Hits</small></div>
-          <div><em>TOTAL HITS</em><strong>62</strong></div>
-          <div><em>SAVED TARGETS</em><strong>4</strong></div>
-        </div>
-      </div>
+    <div class="range-metrics-strip" aria-label="Range trend metrics">
+      <div><em>Shooting Days</em><strong data-metric="shootingDays">0</strong></div>
+      <div><em>Targets Shot</em><strong data-metric="targetsShot">0</strong></div>
+      <div><em>Hits Recorded</em><strong data-metric="hitsRecorded">0</strong></div>
+      <div><em>Average Score</em><strong data-metric="averageScore">0</strong></div>
+      <div><em>Best Score</em><strong data-metric="bestScore">0</strong></div>
     </div>
 
     <div class="recent-header">
-      <h3>RECENT RANGE DAYS</h3>
-      <a href="records.html">VIEW ALL <span>→</span></a>
+      <h3>RECENT SEC</h3>
+      <a href="records.html">OPEN SEC <span>→</span></a>
     </div>
 
-    <div class="recent-range-grid">
-      <article class="range-day-card">
-        <img src="assets/landing-package-range-card-2.png" alt="" />
-        <span class="range-day-date">▦ June 14, 2026</span>
-        <strong><em>↗</em> CZ 457</strong>
-        <div class="range-day-stats"><span><b>⊙</b> 33 <small>HITS</small></span><span><b>☷</b> 2 <small>SESSIONS</small></span></div>
-      </article>
-      <article class="range-day-card">
-        <img src="assets/landing-package-range-card-3.png" alt="" />
-        <span class="range-day-date">▦ June 07, 2026</span>
-        <strong><em>↗</em> AR-15</strong>
-        <div class="range-day-stats"><span><b>⊙</b> 47 <small>HITS</small></span><span><b>☷</b> 3 <small>SESSIONS</small></span></div>
-      </article>
-      <article class="range-day-card">
-        <img src="assets/landing-package-range-card-4.png" alt="" />
-        <span class="range-day-date">▦ May 30, 2026</span>
-        <strong><em>↗</em> GLOCK 19</strong>
-        <div class="range-day-stats"><span><b>⊙</b> 25 <small>HITS</small></span><span><b>☷</b> 1 <small>SESSION</small></span></div>
+    <div class="recent-range-grid" data-recent-sec-list>
+      <article class="range-day-card range-day-empty">
+        <strong>Your first SEC starts here.</strong>
+        <span class="range-day-date">Save your first QRC target to begin your shooting history.</span>
       </article>
     </div>
 
     <div class="sec-strip">
-      <a class="sec-action sec-action-survey" href="survey.html">SURVEY</a>
       <strong>SEC</strong>
-      <span><b>SHOOTER EXPERIENCE CARD</b><br>Your Shooting History, Saved To Your Phone</span>
+      <span><b>SHOOTER EXPERIENCE CARD</b><br>Your Shooting History. Ready To Save.</span>
       <a class="sec-action" href="records.html">OPEN SEC <i>→</i></a>
+      <a class="sec-action sec-action-survey" href="survey.html">SURVEY</a>
     </div>
   </section>
 
@@ -144,6 +126,127 @@
   document.addEventListener("keydown", function(event){
     if(event.key === "Escape") setMenuOpen(false);
   });
+})();
+</script>
+<script>
+(function(){
+  const HISTORY_KEY = "SCZN3_BAKER_SESSION_HISTORY";
+
+  function readHistory(){
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter(session => session && session.savedToSEC === true) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function authorityPackage(session){
+    return session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage || session.authorityPackage || null);
+  }
+
+  function scoreValue(session){
+    const pkg = authorityPackage(session);
+    const value = pkg && pkg.score && typeof pkg.score === "object" ? pkg.score.value : pkg && pkg.score;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
+  function hitCount(session){
+    const pkg = authorityPackage(session);
+    const hits = pkg && pkg.status ? Number(pkg.status.impactCount || 0) : Number(session && session.shotData && session.shotData.hits || 0);
+    return Number.isFinite(hits) ? hits : 0;
+  }
+
+  function cleanSetupValue(value){
+    if (!value || value === "Other / Custom") return "";
+    return String(value).trim();
+  }
+
+  function shooterName(sessions){
+    const latest = sessions[0] || {};
+    const snapshot = latest.matrixSnapshot || {};
+    return cleanSetupValue(snapshot.shooterName) || cleanSetupValue(snapshot.shooter) || "JAY";
+  }
+
+  function dateLabel(timestamp){
+    if (!timestamp) return "Range day";
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return "Range day";
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function setMetric(name, value){
+    const node = document.querySelector(`[data-metric="${name}"]`);
+    if (node) node.textContent = String(value);
+  }
+
+  function renderMetrics(sessions){
+    const dayKeys = new Set(sessions.map(session => {
+      const date = new Date(session.timestamp || session.savedAt || session.createdAt || 0);
+      return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
+    }).filter(Boolean));
+    const scores = sessions.map(scoreValue).filter(value => value !== null);
+    const totalHits = sessions.reduce((sum, session) => sum + hitCount(session), 0);
+    setMetric("shootingDays", dayKeys.size);
+    setMetric("targetsShot", sessions.length);
+    setMetric("hitsRecorded", totalHits);
+    setMetric("averageScore", scores.length ? Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length) : 0);
+    setMetric("bestScore", scores.length ? Math.max(...scores) : 0);
+  }
+
+  function renderTrend(sessions){
+    const bars = document.querySelector("[data-trend-bars]");
+    const empty = document.querySelector("[data-trend-empty]");
+    if (!bars || !empty) return;
+    const recent = sessions.slice().reverse().slice(-5);
+    bars.innerHTML = "";
+    if (!recent.length) {
+      empty.hidden = false;
+      return;
+    }
+    empty.hidden = true;
+    recent.forEach((session, index) => {
+      const score = scoreValue(session);
+      const hits = hitCount(session);
+      const magnitude = score !== null ? score : Math.min(100, hits * 10);
+      const bar = document.createElement("span");
+      bar.style.setProperty("--trend-height", `${Math.max(12, Math.min(100, magnitude))}%`);
+      bar.setAttribute("aria-label", `Range trend ${index + 1}: ${score !== null ? `${score} score` : `${hits} hits`}`);
+      bars.appendChild(bar);
+    });
+  }
+
+  function renderRecentSec(sessions){
+    const list = document.querySelector("[data-recent-sec-list]");
+    if (!list) return;
+    const recent = sessions.slice(0, 3);
+    if (!recent.length) {
+      list.innerHTML = `<article class="range-day-card range-day-empty"><strong>Your first SEC starts here.</strong><span class="range-day-date">Save your first QRC target to begin your shooting history.</span></article>`;
+      return;
+    }
+    list.innerHTML = recent.map(session => {
+      const snapshot = session.matrixSnapshot || {};
+      const weapon = [snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.weaponModelType || snapshot.weaponCategory].map(cleanSetupValue).filter(Boolean).join(" ");
+      const thumbnail = session.targetEvidenceImage && session.targetEvidenceImage.dataUrl ? session.targetEvidenceImage.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
+      const score = scoreValue(session);
+      const hits = hitCount(session);
+      return `<article class="range-day-card">
+        <img src="${thumbnail}" alt="Saved target evidence" />
+        <span class="range-day-date">▦ ${dateLabel(session.timestamp || session.savedAt || session.createdAt)}</span>
+        <strong><em>↗</em> ${weapon || "Saved Target"}</strong>
+        <div class="range-day-stats"><span><b>⊙</b> ${hits} <small>HITS</small></span><span><b>☷</b> ${score !== null ? score : 0} <small>SCORE</small></span></div>
+      </article>`;
+    }).join("");
+  }
+
+  const sessions = readHistory().sort((a, b) => new Date(b.timestamp || b.savedAt || 0) - new Date(a.timestamp || a.savedAt || 0));
+  const nameNode = document.querySelector("[data-shooter-name]");
+  if (nameNode) nameNode.textContent = shooterName(sessions).toUpperCase();
+  renderMetrics(sessions);
+  renderTrend(sessions);
+  renderRecentSec(sessions);
 })();
 </script>
 </body>
