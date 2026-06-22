@@ -21,8 +21,16 @@
       <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
       <strong>Baker's Targets</strong>
     </a>
-    <button class="package-menu" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <button class="package-menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="packageMenuDrawer"><span></span><span></span><span></span></button>
   </header>
+
+  <nav class="package-menu-drawer" id="packageMenuDrawer" aria-label="Mobile menu" hidden>
+    <a href="index.html">Home</a>
+    <a href="matrix.html">Start New Session</a>
+    <a href="records.html">SEC</a>
+    <a href="survey.html">Survey</a>
+    <a href="https://BakerTargets.com">Baker's Targets</a>
+  </nav>
 
   <section class="package-hero" aria-label="Tap-N-Score start">
     <div class="package-hero-copy">
@@ -106,5 +114,37 @@
     <em>BUILT FOR SHOOTERS, BY SHOOTERS.</em>
   </footer>
 </main>
+<script>
+(function(){
+  const menuButton = document.querySelector(".package-menu");
+  const menuDrawer = document.getElementById("packageMenuDrawer");
+  if(!menuButton || !menuDrawer) return;
+
+  function setMenuOpen(isOpen){
+    menuButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    menuDrawer.hidden = !isOpen;
+    document.body.classList.toggle("package-menu-open", isOpen);
+  }
+
+  menuButton.addEventListener("click", function(event){
+    event.stopPropagation();
+    setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
+  });
+
+  menuDrawer.addEventListener("click", function(event){
+    if(event.target.closest("a")) setMenuOpen(false);
+  });
+
+  document.addEventListener("click", function(event){
+    if(menuDrawer.hidden) return;
+    if(menuDrawer.contains(event.target) || menuButton.contains(event.target)) return;
+    setMenuOpen(false);
+  });
+
+  document.addEventListener("keydown", function(event){
+    if(event.key === "Escape") setMenuOpen(false);
+  });
+})();
+</script>
 </body>
 </html>
