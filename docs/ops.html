@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SCZN3 Operations</title>
 <link rel="stylesheet" href="styles.css" />
-<script src="ops.js?v=ops-v1-0623"></script>
+<script src="ops.js?v=ops-v2-0623"></script>
 <style>
   body {
     min-height: 100vh;
@@ -67,6 +67,34 @@
     font-size: 13px;
     line-height: 1.4;
   }
+  .ops-details {
+    margin-top: 18px;
+    border: 1px solid rgba(217, 154, 25, 0.28);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(248, 241, 223, 0.82);
+    font-family: Arial, sans-serif;
+  }
+  .ops-details summary {
+    cursor: pointer;
+    padding: 12px 14px;
+    color: #d99a19;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .ops-detail-list {
+    display: grid;
+    gap: 8px;
+    padding: 0 14px 14px;
+    font-size: 14px;
+  }
+  .ops-detail-list div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid rgba(248, 241, 223, 0.1);
+    padding-top: 8px;
+  }
 </style>
 </head>
 <body>
@@ -74,13 +102,38 @@
   <h1 class="ops-title">SCZN3 Operations</h1>
   <p class="ops-subtitle">Internal dashboard. Passive counts only.</p>
   <section class="ops-panel" aria-label="Operations counters">
-    <div class="ops-row"><span>Link Opens</span><span class="ops-dots"></span><strong class="ops-value" id="opsLinkOpens">0</strong></div>
-    <div class="ops-row"><span>Sessions Started</span><span class="ops-dots"></span><strong class="ops-value" id="opsSessionsStarted">0</strong></div>
+    <div class="ops-row"><span>Arrivals</span><span class="ops-dots"></span><strong class="ops-value" id="opsArrivals">0</strong></div>
+    <div class="ops-row"><span>Session Starts</span><span class="ops-dots"></span><strong class="ops-value" id="opsSessionsStarted">0</strong></div>
     <div class="ops-row"><span>Show Results</span><span class="ops-dots"></span><strong class="ops-value" id="opsShowResults">0</strong></div>
     <div class="ops-row"><span>Sessions Saved</span><span class="ops-dots"></span><strong class="ops-value" id="opsSessionsSaved">0</strong></div>
     <div class="ops-row"><span>Return Shooters</span><span class="ops-dots"></span><strong class="ops-value" id="opsReturnShooters">0</strong></div>
-    <div class="ops-row"><span>Shooting Days</span><span class="ops-dots"></span><strong class="ops-value" id="opsShootingDays">0</strong></div>
   </section>
+  <details class="ops-details">
+    <summary>Referrals</summary>
+    <div class="ops-detail-list" id="opsReferrals"></div>
+  </details>
+  <details class="ops-details">
+    <summary>Targets</summary>
+    <div class="ops-detail-list" id="opsTargets"></div>
+  </details>
+  <details class="ops-details">
+    <summary>Regions</summary>
+    <div class="ops-detail-list" id="opsRegions"></div>
+  </details>
+  <details class="ops-details">
+    <summary>Engagement</summary>
+    <div class="ops-detail-list">
+      <div><span>Page Views</span><strong id="opsPageViews">0</strong></div>
+      <div><span>Legacy Page Views</span><strong id="opsLegacyPageViews">0</strong></div>
+      <div><span>Shooting Days</span><strong id="opsShootingDays">0</strong></div>
+    </div>
+  </details>
+  <details class="ops-details">
+    <summary>Retention</summary>
+    <div class="ops-detail-list">
+      <div><span>Return Shooters</span><strong id="opsReturnShootersDetail">0</strong></div>
+    </div>
+  </details>
   <p class="ops-note">If operations monitoring fails, shooter workflow continues. Counts are stored locally in this browser.</p>
 </main>
 <script>
@@ -90,12 +143,26 @@ function renderOps() {
     const node = document.getElementById(id);
     if (node) node.textContent = String(value || 0);
   };
-  setText("opsLinkOpens", ops.linkOpens);
+  const renderBucket = (id, bucket) => {
+    const node = document.getElementById(id);
+    if (!node) return;
+    const entries = Object.entries(bucket || {}).sort((a, b) => b[1] - a[1]);
+    node.innerHTML = entries.length
+      ? entries.map(([label, value]) => `<div><span>${label}</span><strong>${value}</strong></div>`).join("")
+      : `<div><span>None Yet</span><strong>0</strong></div>`;
+  };
+  setText("opsArrivals", ops.arrivals);
   setText("opsSessionsStarted", ops.sessionsStarted);
   setText("opsShowResults", ops.showResults);
   setText("opsSessionsSaved", ops.sessionsSaved);
   setText("opsReturnShooters", ops.returnShooters);
+  setText("opsReturnShootersDetail", ops.returnShooters);
   setText("opsShootingDays", ops.shootingDays);
+  setText("opsPageViews", ops.pageViews);
+  setText("opsLegacyPageViews", ops.legacyPageViews);
+  renderBucket("opsReferrals", ops.referrals);
+  renderBucket("opsTargets", ops.targets);
+  renderBucket("opsRegions", ops.regions);
 }
 renderOps();
 </script>
