@@ -238,7 +238,7 @@
       if (navigator.sendBeacon) {
         const sent = navigator.sendBeacon(
           OPS_V3_EVENT_ENDPOINT,
-          new Blob([body], { type: "application/json" })
+          new Blob([body], { type: "text/plain;charset=UTF-8" })
         );
         if (sent) return;
       }
