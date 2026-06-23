@@ -935,6 +935,9 @@ function loadMatrix() {
 form.addEventListener("submit", event => {
   event.preventDefault();
   const session = SCZN3M4.createSession(collectForm());
+  try {
+    if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
+  } catch (error) {}
   window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}`;
 });
 
@@ -970,5 +973,6 @@ loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
 renderSessionBar();
 </script>
+<script src="ops.js"></script>
 </body>
 </html>

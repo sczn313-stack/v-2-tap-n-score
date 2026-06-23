@@ -1006,6 +1006,9 @@ document.getElementById("showResults").addEventListener("click", async () => {
   try {
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
+    try {
+      if (window.SCZN3Ops) window.SCZN3Ops.recordShowResults(authorityPackage);
+    } catch (error) {}
     renderMarkers();
     renderResults();
     if (resultsShown) showShooterTip();
@@ -1031,6 +1034,8 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   const savedTimestamp = new Date().toISOString();
   const authorityPackage = backendAuthorityPackage;
   const authorityClicks = currentClicks;
+  const hadSavedHistoryBefore = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [])
+    .some(historySession => historySession && historySession.savedToSEC === true && historySession.sessionId !== session.sessionId);
   saved = SCZN3M4.updateActiveSession({
     aimPoint: safePoint(currentAimPoint),
     impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
@@ -1074,6 +1079,9 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   if (saved && saved.targetEvidenceImage) {
     renderEvidencePreview(saved.targetEvidenceImage);
   }
+  try {
+    if (window.SCZN3Ops) window.SCZN3Ops.recordSessionSaved(saved, { hadSavedHistoryBefore });
+  } catch (error) {}
   sessionSaved = true;
   renderMarkStatus();
   renderResults();
@@ -1089,5 +1097,6 @@ setMode(currentAimPoint ? "impact" : "aim");
 renderSetupSummary();
 renderResults();
 </script>
+<script src="ops.js"></script>
 </body>
 </html>

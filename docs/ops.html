@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SCZN3 Operations</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="ops.js"></script>
+<style>
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background: #080806;
+    color: #f8f1df;
+    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  }
+  .ops-shell {
+    width: min(720px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 36px 0;
+  }
+  .ops-title {
+    margin: 0 0 8px;
+    color: #d99a19;
+    font-size: clamp(32px, 8vw, 56px);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .ops-subtitle {
+    margin: 0 0 28px;
+    color: rgba(248, 241, 223, 0.74);
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+  }
+  .ops-panel {
+    border: 1px solid rgba(217, 154, 25, 0.42);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.045);
+    padding: 22px;
+  }
+  .ops-row {
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(248, 241, 223, 0.12);
+    font-size: clamp(22px, 6vw, 34px);
+    text-transform: uppercase;
+  }
+  .ops-row:last-child {
+    border-bottom: 0;
+  }
+  .ops-dots {
+    min-width: 24px;
+    border-bottom: 2px dotted rgba(248, 241, 223, 0.35);
+    transform: translateY(-0.25em);
+  }
+  .ops-value {
+    color: #d99a19;
+    font-variant-numeric: tabular-nums;
+  }
+  .ops-note {
+    margin-top: 18px;
+    color: rgba(248, 241, 223, 0.58);
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<main class="ops-shell">
+  <h1 class="ops-title">SCZN3 Operations</h1>
+  <p class="ops-subtitle">Internal dashboard. Passive counts only.</p>
+  <section class="ops-panel" aria-label="Operations counters">
+    <div class="ops-row"><span>Link Opens</span><span class="ops-dots"></span><strong class="ops-value" id="opsLinkOpens">0</strong></div>
+    <div class="ops-row"><span>Sessions Started</span><span class="ops-dots"></span><strong class="ops-value" id="opsSessionsStarted">0</strong></div>
+    <div class="ops-row"><span>Show Results</span><span class="ops-dots"></span><strong class="ops-value" id="opsShowResults">0</strong></div>
+    <div class="ops-row"><span>Sessions Saved</span><span class="ops-dots"></span><strong class="ops-value" id="opsSessionsSaved">0</strong></div>
+    <div class="ops-row"><span>Return Shooters</span><span class="ops-dots"></span><strong class="ops-value" id="opsReturnShooters">0</strong></div>
+    <div class="ops-row"><span>Shooting Days</span><span class="ops-dots"></span><strong class="ops-value" id="opsShootingDays">0</strong></div>
+  </section>
+  <p class="ops-note">If operations monitoring fails, shooter workflow continues. Counts are stored locally in this browser.</p>
+</main>
+<script>
+function renderOps() {
+  const ops = window.SCZN3Ops ? window.SCZN3Ops.snapshot() : {};
+  const setText = (id, value) => {
+    const node = document.getElementById(id);
+    if (node) node.textContent = String(value || 0);
+  };
+  setText("opsLinkOpens", ops.linkOpens);
+  setText("opsSessionsStarted", ops.sessionsStarted);
+  setText("opsShowResults", ops.showResults);
+  setText("opsSessionsSaved", ops.sessionsSaved);
+  setText("opsReturnShooters", ops.returnShooters);
+  setText("opsShootingDays", ops.shootingDays);
+}
+renderOps();
+</script>
+</body>
+</html>
