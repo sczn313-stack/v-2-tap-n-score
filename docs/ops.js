@@ -4,6 +4,7 @@
   const V1_STORAGE_KEY = "SCZN3_OPS_V1";
   const V2_STORAGE_KEY = "SCZN3_OPS_V2";
   const V2_ARRIVAL_SESSION_KEY = "SCZN3_OPS_V2_ARRIVAL_ID";
+  const OPS_V3_EVENT_ENDPOINT = "https://sczn3-authority.onrender.com/api/ops/event";
   const MAX_EVENTS = 500;
 
   const DEFAULT_V1_STATE = {
@@ -208,6 +209,52 @@
     return `arrival-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 
+  function currentArrivalId() {
+    try {
+      return window.sessionStorage.getItem(V2_ARRIVAL_SESSION_KEY) || "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function backendEventPayload(eventType, extra) {
+    const payload = {
+      event_type: eventType,
+      arrival_id: currentArrivalId() || undefined,
+      referral_source: referralSource(),
+      target_source: targetSource(),
+      region: regionSource(),
+      path: pagePath(),
+      metadata: {}
+    };
+    return { ...payload, ...(extra || {}) };
+  }
+
+  function reportBackendEvent(eventType, extra) {
+    try {
+      if (isOpsPage()) return;
+      const payload = backendEventPayload(eventType, extra);
+      const body = JSON.stringify(payload);
+      if (navigator.sendBeacon) {
+        const sent = navigator.sendBeacon(
+          OPS_V3_EVENT_ENDPOINT,
+          new Blob([body], { type: "application/json" })
+        );
+        if (sent) return;
+      }
+      if (window.fetch) {
+        window.fetch(OPS_V3_EVENT_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true
+        }).catch(() => {});
+      }
+    } catch (error) {
+      // Backend telemetry must never affect shooter workflow.
+    }
+  }
+
   function recordV1PageView() {
     if (isOpsPage()) return readV1State();
     return mutateV1(state => {
@@ -220,6 +267,8 @@
     const referral = referralSource();
     const target = targetSource();
     const region = regionSource();
+    let backendArrivalId = "";
+    let shouldReportArrival = false;
     return mutateV2(state => {
       incrementCounter(state, "pageViews");
       pushEvent(state, {
@@ -240,6 +289,8 @@
         try {
           window.sessionStorage.setItem(V2_ARRIVAL_SESSION_KEY, arrivalId);
         } catch (error) {}
+        backendArrivalId = arrivalId;
+        shouldReportArrival = true;
         incrementCounter(state, "arrivals");
         incrementSource(state.sources.referrals, referral);
         incrementSource(state.sources.targets, target);
@@ -251,6 +302,22 @@
           referralSource: referral,
           targetSource: target,
           region
+        });
+      }
+      reportBackendEvent("pageView", {
+        arrival_id: arrivalId || backendArrivalId || undefined,
+        referral_source: referral,
+        target_source: target,
+        region,
+        metadata: { source: "ops-v3" }
+      });
+      if (shouldReportArrival) {
+        reportBackendEvent("arrival", {
+          arrival_id: backendArrivalId,
+          referral_source: referral,
+          target_source: target,
+          region,
+          metadata: { source: "ops-v3", entry_path: pagePath() }
         });
       }
     });
@@ -265,20 +332,24 @@
     mutateV1(state => {
       incrementCounter(state, "sessionsStarted");
     });
-    return mutateV2(state => {
+    const state = mutateV2(state => {
       incrementCounter(state, "sessionsStarted");
       pushEvent(state, { type: "session_started", path: pagePath() });
     });
+    reportBackendEvent("sessionStart", { metadata: { source: "ops-v3" } });
+    return state;
   }
 
   function recordShowResults() {
     mutateV1(state => {
       incrementCounter(state, "showResults");
     });
-    return mutateV2(state => {
+    const state = mutateV2(state => {
       incrementCounter(state, "showResults");
       pushEvent(state, { type: "show_results", path: pagePath() });
     });
+    reportBackendEvent("showResults", { metadata: { source: "ops-v3" } });
+    return state;
   }
 
   function recordSessionSaved(session, options) {
@@ -289,7 +360,7 @@
       if (!state.shootingDays.includes(day)) state.shootingDays.push(day);
       state.shootingDays.sort();
     });
-    return mutateV2(state => {
+    const state = mutateV2(state => {
       incrementCounter(state, "sessionsSaved");
       if (options && options.hadSavedHistoryBefore) incrementCounter(state, "returnShooters");
       const day = dateKeyFromSession(session);
@@ -302,6 +373,18 @@
         returnShooter: !!(options && options.hadSavedHistoryBefore)
       });
     });
+    const sessionId = session && (session.id || session.sessionId || session.sessionNumber);
+    reportBackendEvent("sessionSaved", {
+      session_id: sessionId ? String(sessionId) : undefined,
+      metadata: { source: "ops-v3", date: dateKeyFromSession(session) }
+    });
+    if (options && options.hadSavedHistoryBefore) {
+      reportBackendEvent("returnShooter", {
+        session_id: sessionId ? String(sessionId) : undefined,
+        metadata: { source: "ops-v3", date: dateKeyFromSession(session) }
+      });
+    }
+    return state;
   }
 
   function snapshot() {
