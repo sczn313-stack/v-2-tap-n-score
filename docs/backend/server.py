@@ -5,6 +5,7 @@ import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from authority_service import build_authority_package
+from ops_store import record_event, summarize_events
 
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8098"))
@@ -25,10 +26,16 @@ ALLOWED_ORIGINS = {
 
 class AuthorityHandler(BaseHTTPRequestHandler):
     AUTHORITY_PATHS = {"/api/authority/ugeo", "/api/authority/ugeo/"}
+    OPS_EVENT_PATHS = {"/api/ops/event", "/api/ops/event/"}
+    OPS_SUMMARY_PATHS = {"/api/ops/summary", "/api/ops/summary/"}
+    OPS_HEALTH_PATHS = {"/api/ops/health", "/api/ops/health/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
         return origin if origin in ALLOWED_ORIGINS else None
+
+    def _request_path(self):
+        return self.path.split("?", 1)[0]
 
     def _send_json(self, status, payload):
         body = json.dumps(payload, sort_keys=True, indent=2).encode("utf-8")
@@ -39,28 +46,45 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         if cors_origin:
             self.send_header("Access-Control-Allow-Origin", cors_origin)
             self.send_header("Vary", "Origin")
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
         self.wfile.write(body)
+
+    def _read_json_body(self):
+        length = int(self.headers.get("Content-Length", "0"))
+        raw = self.rfile.read(length).decode("utf-8") if length else "{}"
+        return json.loads(raw or "{}")
 
     def do_OPTIONS(self):
         self._send_json(200, {"ok": True})
 
     def do_GET(self):
-        if self.path != "/health":
-            self._send_json(404, {"error": "not found"})
+        path = self._request_path()
+        if path == "/health":
+            self._send_json(200, {"ok": True, "service": "sczn3-authority"})
             return
-        self._send_json(200, {"ok": True, "service": "sczn3-authority"})
+        if path in self.OPS_HEALTH_PATHS:
+            self._send_json(200, {"ok": True, "service": "sczn3-ops"})
+            return
+        if path in self.OPS_SUMMARY_PATHS:
+            self._send_json(200, summarize_events())
+            return
+        self._send_json(404, {"error": "not found"})
 
     def do_POST(self):
-        if self.path not in self.AUTHORITY_PATHS:
+        path = self._request_path()
+        if path in self.OPS_EVENT_PATHS:
+            try:
+                self._send_json(200, record_event(self._read_json_body()))
+            except Exception as exc:  # pragma: no cover - defensive server boundary
+                self._send_json(400, {"error": str(exc)})
+            return
+        if path not in self.AUTHORITY_PATHS:
             self._send_json(404, {"error": "not found"})
             return
         try:
-            length = int(self.headers.get("Content-Length", "0"))
-            raw = self.rfile.read(length).decode("utf-8") if length else "{}"
-            payload = json.loads(raw or "{}")
+            payload = self._read_json_body()
             package = build_authority_package(payload)
             self._send_json(200, package)
         except Exception as exc:  # pragma: no cover - defensive server boundary
