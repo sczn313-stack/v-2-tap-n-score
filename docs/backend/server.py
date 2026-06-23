@@ -29,6 +29,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     OPS_EVENT_PATHS = {"/api/ops/event", "/api/ops/event/"}
     OPS_SUMMARY_PATHS = {"/api/ops/summary", "/api/ops/summary/"}
     OPS_HEALTH_PATHS = {"/api/ops/health", "/api/ops/health/"}
+    OPS_ENV_CHECK_PATHS = {"/api/ops/env-check", "/api/ops/env-check/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -66,6 +67,21 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             return
         if path in self.OPS_HEALTH_PATHS:
             self._send_json(200, {"ok": True, "service": "sczn3-ops"})
+            return
+        if path in self.OPS_ENV_CHECK_PATHS:
+            database_url = os.environ.get("DATABASE_URL", "")
+            self._send_json(
+                200,
+                {
+                    "ok": True,
+                    "databaseUrlPresent": bool(database_url),
+                    "databaseUrlLength": len(database_url),
+                    "databaseUrlPrefix": database_url[:12] if database_url else "",
+                    "envKeysContainingDatabase": sorted(
+                        key for key in os.environ.keys() if "DATABASE" in key.upper()
+                    ),
+                },
+            )
             return
         if path in self.OPS_SUMMARY_PATHS:
             self._send_json(200, summarize_events())
