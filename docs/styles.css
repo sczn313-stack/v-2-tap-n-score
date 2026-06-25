@@ -1230,6 +1230,104 @@ button:active,
   font-size:clamp(24px, 3.2vw, 40px);
 }
 
+.matrix-guidance{
+  margin:0;
+  color:var(--ink);
+  font-size:14px;
+  font-weight:900;
+  line-height:1.35;
+}
+
+.weapon-list-toggle{
+  justify-self:start;
+}
+
+.weapon-list-panel{
+  display:grid;
+  gap:10px;
+}
+
+.weapon-list-panel.is-collapsed{
+  display:none;
+}
+
+.weapon-list-grid{
+  display:grid;
+  gap:10px;
+}
+
+.weapon-category-group{
+  display:grid;
+  gap:8px;
+  padding:10px;
+  border:2px solid var(--ink);
+  border-radius:var(--radius);
+  background:#fffaf0;
+}
+
+.weapon-category-group h3{
+  margin:0;
+  color:var(--green);
+  font-size:13px;
+  font-weight:1000;
+  letter-spacing:.03em;
+}
+
+.weapon-card{
+  display:grid;
+  gap:8px;
+  padding:10px;
+  border:2px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--paper);
+}
+
+.weapon-card strong{
+  display:block;
+  color:var(--ink);
+  font-size:14px;
+  font-weight:1000;
+  line-height:1.2;
+}
+
+.weapon-card span,
+.weapon-list-empty{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+.weapon-card dl{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px;
+  margin:0;
+}
+
+.weapon-card dt{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.weapon-card dd{
+  margin:2px 0 0;
+  color:var(--ink);
+  font-size:12px;
+  font-weight:900;
+}
+
+.weapon-card-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.weapon-card-actions .button{
+  min-height:38px;
+}
+
 .form-section{
   display:grid;
   gap:10px;
@@ -2115,6 +2213,11 @@ input[readonly]{
   .matrix-grid{
     grid-template-columns:1fr;
     gap:8px;
+  }
+
+  .weapon-card dl,
+  .weapon-card-actions{
+    grid-template-columns:1fr;
   }
 
   input,

@@ -27,13 +27,17 @@
   <section class="matrix-only">
     <form class="panel matrix-form" id="matrixForm">
       <span class="kicker">Setup</span>
-      <h1>Weapon Setup</h1>
-      <p>Review your setup or start a new session.</p>
+      <p class="matrix-guidance">Review your setup • Save time at the range by setting up your weapon profile at home.</p>
+
+      <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon List</button>
+      <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon List">
+        <div class="weapon-list-grid" id="weaponListGrid"></div>
+      </section>
 
       <div class="action-grid">
-        <button class="button" type="button" id="newSetup">New Setup</button>
+        <button class="button primary" type="submit">Go to Targets</button>
         <button class="button" type="button" id="saveSetup">Save Setup</button>
-        <button class="button primary" type="submit">Start Session</button>
+        <button class="button" type="button" id="newSetup">New Setup</button>
       </div>
 
       <section class="form-section">
@@ -851,6 +855,16 @@ function writeSavedSetups(setups) {
   localStorage.setItem(SAVED_SETUPS_KEY, JSON.stringify(setups.slice(0, MAX_SAVED_SETUPS)));
 }
 
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  }[character]));
+}
+
 function setupLabel(snapshot) {
   return document.getElementById("setupName").value.trim()
     || [snapshot.weaponManufacturer, snapshot.weaponModelCaliber, snapshot.opticModel, snapshot.ammoLoad].filter(Boolean).join(" / ")
@@ -898,6 +912,72 @@ function renderSavedSetups(selectedId = "") {
     .map(setup => `<option value="${setup.setupId}">${setup.setupName}</option>`)
     .join("");
   select.value = selectedId;
+  renderWeaponList();
+}
+
+function weaponCardTitle(setup) {
+  return setup.setupName || [setup.weaponManufacturer, setup.weaponModelType].filter(Boolean).join(" ") || "Saved Weapon";
+}
+
+function weaponCaliber(setup) {
+  return setup.weaponModelCaliber || setup.ammoCaliber || setup.caliber || "Caliber not set";
+}
+
+function weaponDistance(setup) {
+  return setup.targetDistance || setup.distance || (setup.targetDistanceValue ? `${setup.targetDistanceValue} ${setup.targetDistanceUnit === "M" ? "m" : "yds"}` : "Distance not set");
+}
+
+function setupUsageStats(setup) {
+  const history = typeof SCZN3M4.getSessionHistory === "function" ? SCZN3M4.getSessionHistory() : [];
+  const sessions = history.filter(session => session.savedToSEC === true && session.matrixSnapshot && session.matrixSnapshot.setupId === setup.setupId);
+  const latest = sessions
+    .map(session => session.timestamp || session.createdAt || session.savedAt || "")
+    .filter(Boolean)
+    .sort()
+    .pop();
+  return {
+    sessionCount: sessions.length,
+    lastUsed: latest ? new Date(latest).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "Not yet recorded"
+  };
+}
+
+function renderWeaponList() {
+  const container = document.getElementById("weaponListGrid");
+  if (!container) return;
+  const setups = readSavedSetups();
+  const groups = {
+    Rifle: setups.filter(setup => inferWeaponCategory(setup) === "Rifle"),
+    Pistol: setups.filter(setup => inferWeaponCategory(setup) === "Pistol"),
+    Shotgun: setups.filter(setup => inferWeaponCategory(setup) === "Shotgun")
+  };
+  if (!setups.length) {
+    container.innerHTML = `<p class="weapon-list-empty">No saved weapons yet. Create and save a weapon profile below.</p>`;
+    return;
+  }
+  container.innerHTML = Object.entries(groups).map(([category, categorySetups]) => `
+    <section class="weapon-category-group" aria-label="${category}s">
+      <h3>${category.toUpperCase()}S</h3>
+      ${categorySetups.length ? categorySetups.map(setup => {
+        const usage = setupUsageStats(setup);
+        return `
+        <article class="weapon-card">
+          <div>
+            <strong>${escapeHtml(weaponCardTitle(setup))}</strong>
+            <span>${escapeHtml(weaponCaliber(setup))}</span>
+          </div>
+          <dl>
+            <div><dt>Session Distance</dt><dd>${escapeHtml(weaponDistance(setup))}</dd></div>
+            <div><dt>Last Used</dt><dd>${escapeHtml(usage.lastUsed)}</dd></div>
+            <div><dt>Sessions</dt><dd>${escapeHtml(usage.sessionCount)}</dd></div>
+          </dl>
+          <div class="weapon-card-actions">
+            <button class="button primary" type="button" data-setup-action="use" data-setup-id="${escapeHtml(setup.setupId)}">Use</button>
+            <button class="button" type="button" data-setup-action="edit" data-setup-id="${escapeHtml(setup.setupId)}">Edit</button>
+          </div>
+        </article>
+      `}).join("") : `<p class="weapon-list-empty">No saved ${category.toLowerCase()}s yet.</p>`}
+    </section>
+  `).join("");
 }
 
 function saveCurrentSetupToLibrary() {
@@ -924,6 +1004,19 @@ function loadSavedSetup(setupId) {
   setForm(setup);
   SCZN3M4.saveMatrixSnapshot(setupPayload(setup));
   renderSavedSetups(setupId);
+}
+
+function setWeaponListExpanded(isExpanded) {
+  const panel = document.getElementById("weaponListPanel");
+  const toggle = document.getElementById("weaponListToggle");
+  panel.classList.toggle("is-collapsed", !isExpanded);
+  toggle.setAttribute("aria-expanded", String(isExpanded));
+  toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon List`;
+}
+
+function selectWeaponFromList(setupId, shouldCollapse = false) {
+  loadSavedSetup(setupId);
+  if (shouldCollapse) setWeaponListExpanded(false);
 }
 
 function setForm(snapshot) {
@@ -1080,6 +1173,17 @@ document.getElementById("saveSetup").addEventListener("click", () => {
 
 document.getElementById("newSetup").addEventListener("click", clearSetupFields);
 document.getElementById("savedSetupSelect").addEventListener("change", event => loadSavedSetup(event.target.value));
+document.getElementById("weaponListToggle").addEventListener("click", () => {
+  const isExpanded = document.getElementById("weaponListToggle").getAttribute("aria-expanded") === "true";
+  setWeaponListExpanded(!isExpanded);
+});
+document.getElementById("weaponListPanel").addEventListener("click", event => {
+  const button = event.target.closest("[data-setup-action]");
+  if (!button) return;
+  const setupId = button.dataset.setupId;
+  if (!setupId) return;
+  selectWeaponFromList(setupId, button.dataset.setupAction === "use");
+});
 document.querySelectorAll("[data-weapon-category]").forEach(button => {
   button.addEventListener("click", () => {
     setWeaponCategory(button.dataset.weaponCategory);
@@ -1107,6 +1211,7 @@ form.addEventListener("change", renderSessionBar);
 
 loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
+renderWeaponList();
 renderSessionBar();
 </script>
 </body>
