@@ -29,8 +29,9 @@
       <span class="kicker">Setup</span>
       <p class="matrix-guidance">Review your setup • Save time at the range by setting up your weapon profile at home.</p>
 
-      <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon List</button>
-      <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon List">
+      <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
+      <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
+        <h2 class="weapon-library-title">MY WEAPON LIBRARY</h2>
         <div class="weapon-list-grid" id="weaponListGrid"></div>
       </section>
 
@@ -140,15 +141,12 @@
         </div>
       </section>
 
-      <section class="form-section">
-        <h2>Saved Setups Library</h2>
-        <div class="matrix-grid">
-          <label>Saved Setup<select id="savedSetupSelect">
-            <option value="">Select Saved Setup</option>
-          </select></label>
-          <label>Setup Name<input id="setupName" placeholder="Optional setup name" /></label>
-        </div>
-      </section>
+      <div hidden>
+        <select id="savedSetupSelect">
+          <option value="">Select Saved Setup</option>
+        </select>
+        <input id="setupName" />
+      </div>
 
       <div class="setup-save-row">
         <button class="button" type="button" id="saveSetup">Save Setup</button>
@@ -1018,7 +1016,7 @@ function setWeaponListExpanded(isExpanded) {
   const toggle = document.getElementById("weaponListToggle");
   panel.classList.toggle("is-collapsed", !isExpanded);
   toggle.setAttribute("aria-expanded", String(isExpanded));
-  toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon List`;
+  toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon Library`;
 }
 
 function selectWeaponFromList(setupId, shouldCollapse = false) {
