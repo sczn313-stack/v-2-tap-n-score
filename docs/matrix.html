@@ -1019,13 +1019,6 @@ function setWeaponListExpanded(isExpanded) {
   toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon Library`;
 }
 
-function openWeaponLibrary(shouldScroll = false) {
-  setWeaponListExpanded(true);
-  if (shouldScroll) {
-    document.getElementById("weaponListPanel").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
-
 function selectWeaponFromList(setupId, shouldCollapse = false) {
   loadSavedSetup(setupId);
   if (shouldCollapse) setWeaponListExpanded(false);
@@ -1226,7 +1219,6 @@ loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
 renderWeaponList();
 renderSessionBar();
-if (window.location.hash === "#weaponListPanel") openWeaponLibrary(true);
 </script>
 </body>
 </html>
