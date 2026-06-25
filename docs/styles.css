@@ -1437,6 +1437,185 @@ input[readonly]{
   background:var(--paper-light);
 }
 
+.platform-page{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(217,150,11,.12), transparent 28%),
+    linear-gradient(180deg,#050505 0%, #0d0d0d 48%, #15110a 100%);
+  color:#f5f1e8;
+}
+
+.platform-page .shell{
+  width:min(1220px, calc(100% - 28px));
+  padding-top:10px;
+}
+
+.platform-page .m4-header{
+  min-height:54px;
+  border-color:#b37b08;
+  background:#030303;
+  color:#f5f1e8;
+  box-shadow:0 14px 34px rgba(0,0,0,.32);
+}
+
+.platform-page .vendor-slot img{
+  border-color:#b37b08;
+  background:#050505;
+}
+
+.platform-page .kicker,
+.platform-page .vendor-minor-link{
+  color:#d9960b;
+}
+
+.platform-page .vendor-name{
+  color:#fff;
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-size:16px;
+  letter-spacing:0;
+}
+
+.platform-page .locked-nav-item{
+  border-color:rgba(179,123,8,.72);
+  background:#101010;
+  color:#f5f1e8;
+}
+
+.platform-page .locked-nav-item.is-active{
+  border-color:#d9960b;
+  background:#d9960b;
+  color:#0c0c0c;
+}
+
+.platform-page .nav-dot{
+  background:#5c564d;
+  box-shadow:0 0 0 2px rgba(217,150,11,.16);
+}
+
+.platform-page .locked-nav-item.is-active .nav-dot{
+  background:#0c0c0c;
+}
+
+.platform-page .active-session-bar{
+  border-color:rgba(179,123,8,.72);
+  background:linear-gradient(180deg,#151515,#080808);
+  color:#f5f1e8;
+  box-shadow:0 8px 22px rgba(0,0,0,.28);
+}
+
+.platform-page .active-session-bar span{
+  color:#d9960b;
+}
+
+.platform-page .panel,
+.platform-page .form-section,
+.platform-page .weapon-list-panel,
+.platform-page .target-board{
+  border-color:rgba(179,123,8,.62);
+  background:linear-gradient(180deg,#151515,#0a0a0a);
+  color:#f5f1e8;
+  box-shadow:0 14px 34px rgba(0,0,0,.30);
+}
+
+.platform-page .matrix-form,
+.platform-page .page-layout{
+  margin-top:8px;
+}
+
+.platform-page .matrix-form h1,
+.platform-page .form-section h2,
+.platform-page .weapon-library-title,
+.platform-page .panel h1,
+.platform-page .panel h2{
+  color:#fff;
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  letter-spacing:0;
+  text-transform:uppercase;
+}
+
+.platform-page .form-section h2,
+.platform-page .weapon-library-title{
+  color:#d9960b;
+}
+
+.platform-page label,
+.platform-page .optional-label,
+.platform-page p,
+.platform-page .matrix-guidance,
+.platform-page .weapon-card span,
+.platform-page .weapon-card dt{
+  color:#d7cdbb;
+}
+
+.platform-page input,
+.platform-page select,
+.platform-page textarea{
+  border-color:rgba(179,123,8,.72);
+  background:#fffdf8;
+  color:#10100e;
+}
+
+.platform-page .button,
+.platform-page button,
+.platform-page .category-pill{
+  border-color:rgba(179,123,8,.72);
+  background:#101010;
+  color:#f5f1e8;
+}
+
+.platform-page .button.primary,
+.platform-page .setup-save-row .button,
+.platform-page .weapon-top-row .button.primary,
+.platform-page .category-pill.is-active{
+  border-color:#d9960b;
+  background:#d9960b;
+  color:#0c0c0c;
+}
+
+.platform-page .weapon-card{
+  border-color:rgba(179,123,8,.58);
+  background:#111;
+  color:#f5f1e8;
+}
+
+.platform-page .weapon-card strong,
+.platform-page .weapon-card dd{
+  color:#fff;
+}
+
+.platform-page .weapon-card-actions .button{
+  min-height:38px;
+}
+
+.platform-page .target-board img{
+  border-color:#b37b08;
+  background:#f4ead5;
+}
+
+.platform-page .action-grid{
+  align-items:stretch;
+}
+
+@media (max-width:760px){
+  .platform-page .shell{
+    width:min(100%, 1220px);
+    padding-inline:7px;
+  }
+
+  .platform-page .m4-header{
+    gap:8px;
+  }
+
+  .platform-page .locked-nav{
+    justify-content:stretch;
+  }
+
+  .platform-page .locked-nav-item{
+    flex:1 1 calc(50% - 5px);
+    justify-content:center;
+  }
+}
+
 .history-panel{
   margin-top:6px;
 }
@@ -5200,6 +5379,8 @@ input[readonly]{
 }
 
 .records-page .history-card.empty-state{
+  grid-template-columns:1fr;
+  gap:6px;
   min-height:150px;
   align-content:center;
   border-style:dashed;
