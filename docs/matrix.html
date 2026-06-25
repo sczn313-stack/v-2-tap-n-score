@@ -36,7 +36,6 @@
 
       <div class="action-grid">
         <button class="button primary" type="submit">Go to Targets</button>
-        <button class="button" type="button" id="saveSetup">Save Setup</button>
         <button class="button" type="button" id="newSetup">New Setup</button>
       </div>
 
@@ -150,6 +149,10 @@
           <label>Setup Name<input id="setupName" placeholder="Optional setup name" /></label>
         </div>
       </section>
+
+      <div class="setup-save-row">
+        <button class="button" type="button" id="saveSetup">Save Setup</button>
+      </div>
     </form>
   </section>
 </main>
@@ -950,11 +953,15 @@ function renderWeaponList() {
     Pistol: setups.filter(setup => inferWeaponCategory(setup) === "Pistol"),
     Shotgun: setups.filter(setup => inferWeaponCategory(setup) === "Shotgun")
   };
+  const activeCategory = selectedWeaponCategory();
+  const categoryOrder = [activeCategory, "Rifle", "Pistol", "Shotgun"].filter((category, index, array) => array.indexOf(category) === index);
   if (!setups.length) {
     container.innerHTML = `<p class="weapon-list-empty">No saved weapons yet. Create and save a weapon profile below.</p>`;
     return;
   }
-  container.innerHTML = Object.entries(groups).map(([category, categorySetups]) => `
+  container.innerHTML = categoryOrder.map(category => {
+    const categorySetups = groups[category] || [];
+    return `
     <section class="weapon-category-group" aria-label="${category}s">
       <h3>${category.toUpperCase()}S</h3>
       ${categorySetups.length ? categorySetups.map(setup => {
@@ -977,7 +984,7 @@ function renderWeaponList() {
         </article>
       `}).join("") : `<p class="weapon-list-empty">No saved ${category.toLowerCase()}s yet.</p>`}
     </section>
-  `).join("");
+  `}).join("");
 }
 
 function saveCurrentSetupToLibrary() {
@@ -1191,6 +1198,7 @@ document.querySelectorAll("[data-weapon-category]").forEach(button => {
     updateOpticTypes();
     updateAmmoCalibers();
     updateDistanceOptions();
+    renderWeaponList();
   });
 });
 document.getElementById("weaponManufacturer").addEventListener("change", () => updateWeaponModelTypes());
