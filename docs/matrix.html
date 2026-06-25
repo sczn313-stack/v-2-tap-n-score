@@ -26,18 +26,19 @@
 
   <section class="matrix-only">
     <form class="panel matrix-form" id="matrixForm">
-      <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
+      <div class="weapon-top-row">
+        <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
+        <button class="button primary" type="submit">Go to Targets</button>
+      </div>
+
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
         <h2 class="weapon-library-title">MY WEAPON LIBRARY</h2>
         <div class="weapon-list-grid" id="weaponListGrid"></div>
       </section>
 
-      <div class="action-grid">
-        <button class="button primary" type="submit">Go to Targets</button>
+      <div class="weapon-profile-action-row">
         <button class="button" type="button" id="newSetup">New Weapon Profile</button>
       </div>
-
-      <p class="matrix-guidance">Save time at the range by building your Weapon Library <button class="matrix-guidance-link" type="button" id="weaponLibraryInlineTrigger">HERE</button> before your next range trip.</p>
 
       <section class="form-section">
         <h2>Weapon Profile</h2>
@@ -1188,7 +1189,6 @@ document.getElementById("weaponListToggle").addEventListener("click", () => {
   const isExpanded = document.getElementById("weaponListToggle").getAttribute("aria-expanded") === "true";
   setWeaponListExpanded(!isExpanded);
 });
-document.getElementById("weaponLibraryInlineTrigger").addEventListener("click", () => openWeaponLibrary(true));
 document.getElementById("weaponListPanel").addEventListener("click", event => {
   const button = event.target.closest("[data-setup-action]");
   if (!button) return;
@@ -1226,6 +1226,7 @@ loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
 renderWeaponList();
 renderSessionBar();
+if (window.location.hash === "#weaponListPanel") openWeaponLibrary(true);
 </script>
 </body>
 </html>

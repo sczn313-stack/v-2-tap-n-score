@@ -1238,22 +1238,24 @@ button:active,
   line-height:1.35;
 }
 
-.matrix-guidance-link{
-  display:inline;
-  margin:0;
-  padding:0;
-  border:0;
-  background:transparent;
-  color:var(--green);
-  font:inherit;
-  font-weight:1000;
-  text-decoration:underline;
-  text-underline-offset:2px;
-  cursor:pointer;
+.weapon-top-row{
+  display:grid;
+  grid-template-columns:minmax(220px, auto) minmax(220px, 1fr);
+  gap:10px;
+  align-items:stretch;
 }
 
-.weapon-list-toggle{
-  justify-self:start;
+.weapon-top-row .button{
+  width:100%;
+}
+
+.weapon-profile-action-row{
+  display:grid;
+  justify-items:start;
+}
+
+.weapon-profile-action-row .button{
+  min-width:min(100%, 260px);
 }
 
 .weapon-list-panel{
@@ -2245,6 +2247,10 @@ input[readonly]{
   .matrix-grid{
     grid-template-columns:1fr;
     gap:8px;
+  }
+
+  .weapon-top-row{
+    grid-template-columns:1fr;
   }
 
   .weapon-card dl,
@@ -4329,6 +4335,13 @@ input[readonly]{
   font-weight:800;
   line-height:1.35;
   text-transform:none;
+}
+
+.package-setup-reminder a{
+  color:#f1c15f;
+  font-weight:1000;
+  text-decoration:underline;
+  text-underline-offset:2px;
 }
 
 .package-hero-rifle{
