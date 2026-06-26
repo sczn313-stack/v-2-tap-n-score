@@ -23,7 +23,7 @@
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
     <details class="mobile-platform-menu">
-      <summary>Menu</summary>
+      <summary aria-label="Open navigation menu">☰</summary>
       <a href="index.html">Home</a>
       <a href="matrix.html" aria-current="page">Weapon Library</a>
       <a href="shoot.html">Target</a>
@@ -34,9 +34,10 @@
   <section class="active-session-bar" id="activeSessionBar"></section>
 
   <section class="matrix-only">
-    <form class="panel matrix-form" id="matrixForm">
+    <form class="panel matrix-form is-profile-collapsed" id="matrixForm">
       <div class="weapon-top-row">
-        <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
+        <button class="button primary weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
+        <button class="button primary" type="button" id="newSetup">New Weapon Setup</button>
         <button class="button primary" type="submit">Go To Target</button>
       </div>
 
@@ -45,12 +46,8 @@
         <div class="weapon-list-grid" id="weaponListGrid"></div>
       </section>
 
-      <div class="weapon-profile-action-row">
-        <button class="button" type="button" id="newSetup">New Weapon Profile</button>
-      </div>
-
       <section class="form-section primary-weapon-path">
-        <h2>New Weapon Profile</h2>
+        <h2>New Weapon Setup</h2>
         <div class="category-pill-row" role="group" aria-label="Weapon Category">
           <button class="category-pill" type="button" data-weapon-category="Rifle">Rifle</button>
           <button class="category-pill" type="button" data-weapon-category="Pistol">Pistol</button>
@@ -1076,6 +1073,10 @@ function loadSavedSetup(setupId) {
   renderSavedSetups(setupId);
 }
 
+function setProfileEditorVisible(isVisible = true) {
+  form.classList.toggle("is-profile-collapsed", !isVisible);
+}
+
 function setWeaponListExpanded(isExpanded) {
   const panel = document.getElementById("weaponListPanel");
   const toggle = document.getElementById("weaponListToggle");
@@ -1087,6 +1088,7 @@ function setWeaponListExpanded(isExpanded) {
 function selectWeaponFromList(setupId, shouldCollapse = false) {
   loadSavedSetup(setupId);
   if (shouldCollapse) setWeaponListExpanded(false);
+  if (!shouldCollapse) setProfileEditorVisible(true);
 }
 
 function setForm(snapshot) {
@@ -1256,7 +1258,10 @@ document.getElementById("saveSetup").addEventListener("click", () => {
   saveCurrentSetupToLibrary();
 });
 
-document.getElementById("newSetup").addEventListener("click", clearSetupFields);
+document.getElementById("newSetup").addEventListener("click", () => {
+  setProfileEditorVisible(true);
+  clearSetupFields();
+});
 document.getElementById("savedSetupSelect").addEventListener("change", event => loadSavedSetup(event.target.value));
 document.getElementById("weaponListToggle").addEventListener("click", () => {
   const isExpanded = document.getElementById("weaponListToggle").getAttribute("aria-expanded") === "true";

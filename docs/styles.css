@@ -1332,7 +1332,7 @@ button:active,
 
 .weapon-top-row{
   display:grid;
-  grid-template-columns:minmax(220px, auto) minmax(220px, 1fr);
+  grid-template-columns:repeat(3, minmax(0, 1fr));
   gap:10px;
   align-items:stretch;
 }
@@ -1341,21 +1341,18 @@ button:active,
   width:100%;
 }
 
-.weapon-profile-action-row{
-  display:grid;
-  justify-items:start;
-}
-
-.weapon-profile-action-row .button{
-  min-width:min(100%, 260px);
-}
-
 .weapon-list-panel{
   display:grid;
   gap:10px;
 }
 
 .weapon-list-panel.is-collapsed{
+  display:none;
+}
+
+.matrix-form.is-profile-collapsed > .form-section,
+.matrix-form.is-profile-collapsed > details.form-section,
+.matrix-form.is-profile-collapsed > .setup-save-row{
   display:none;
 }
 
@@ -1747,6 +1744,40 @@ input[readonly]{
   margin-top:10px;
 }
 
+.matrix-page .locked-nav,
+.matrix-page .active-session-bar{
+  display:none;
+}
+
+.matrix-page .m4-header{
+  flex-wrap:nowrap;
+}
+
+.matrix-page .mobile-platform-menu{
+  display:block;
+  flex:0 0 auto;
+  margin-left:auto;
+  position:relative;
+}
+
+.matrix-page .mobile-platform-menu summary{
+  display:grid;
+  place-items:center;
+  width:44px;
+  min-height:44px;
+  padding:0;
+  font-size:25px;
+  line-height:1;
+}
+
+.matrix-page .mobile-platform-menu[open]{
+  z-index:20;
+}
+
+.matrix-page .mobile-platform-menu[open] a{
+  min-width:190px;
+}
+
 @media (max-width:760px){
   .platform-page .shell{
     width:min(100%, 1220px);
@@ -1768,6 +1799,14 @@ input[readonly]{
 
   .platform-page .m4-header{
     align-items:flex-start;
+  }
+
+  .matrix-page .m4-header{
+    align-items:center;
+  }
+
+  .matrix-page .mobile-platform-menu{
+    flex:0 0 auto;
   }
 }
 
@@ -2585,6 +2624,19 @@ input[readonly]{
 
   .weapon-top-row{
     grid-template-columns:1fr;
+  }
+
+  .matrix-page .weapon-top-row{
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:6px;
+  }
+
+  .matrix-page .weapon-top-row .button{
+    min-height:38px;
+    padding:6px 5px;
+    font-size:10px;
+    line-height:1.08;
+    white-space:normal;
   }
 
   .primary-weapon-path,
