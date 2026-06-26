@@ -234,7 +234,7 @@ const WEAPON_MODEL_TYPE_FILTERS = {
   Rifle: {
     Colt: ["AR Platform", "Other"],
     FN: ["AR Platform", "SCAR Series", "Other"],
-    "Daniel Defense": ["AR Platform", "Other"],
+    "Daniel Defense": ["AR Platform", "DD5 Series", "Other"],
     BCM: ["AR Platform", "Other"],
     "Aero Precision": ["AR Platform", "Bolt Action", "Other"],
     "Smith & Wesson": ["AR Platform", "Rimfire", "Other"],
@@ -244,7 +244,7 @@ const WEAPON_MODEL_TYPE_FILTERS = {
     Remington: ["Bolt Action", "Other"],
     Savage: ["Bolt Action", "Rimfire", "Other"],
     "Heckler & Koch": ["MR Series", "Other"],
-    CZ: ["Pistol Caliber Carbine", "Other"]
+    CZ: ["Bolt Action", "Rimfire", "Other"]
   },
   Pistol: {
     Colt: ["1911", "Revolver", "Other"],
@@ -304,7 +304,8 @@ const WEAPON_MODEL_CALIBER_FILTERS = {
     "Semi-Auto": ["FN SLP 12 Gauge", "Other"]
   },
   "Daniel Defense": {
-    "AR Platform": ["Daniel Defense V7 5.56 NATO", "Daniel Defense A1 5.56 NATO", "Daniel Defense PDW .300 BLK", "DD5 .308 Win", "Other"]
+    "AR Platform": ["Daniel Defense V7 5.56 NATO", "Daniel Defense A1 5.56 NATO", "Daniel Defense PDW .300 BLK", "Other"],
+    "DD5 Series": ["DD5 .308 Win", "DD5 6.5 Creedmoor", "Other"]
   },
   BCM: {
     "AR Platform": ["BCM RECCE-16 5.56 NATO", "BCM RECCE-14 5.56 NATO", "Other"]
@@ -387,6 +388,8 @@ const WEAPON_MODEL_CALIBER_FILTERS = {
     Compact: ["PDP Compact 9mm", "Other"]
   },
   CZ: {
+    "Bolt Action": ["CZ 600 .223 Rem", "CZ 600 .308 Win", "CZ 600 6.5 Creedmoor", "Other"],
+    Rimfire: ["CZ 457 .22 LR", "CZ 457 .22 WMR", "Other"],
     "Full Size": ["P-10 F 9mm", "Shadow 2 9mm", "Other"],
     Compact: ["P-10 C 9mm", "Other"],
     Competition: ["Shadow 2 9mm", "Other"],
@@ -768,20 +771,36 @@ function updateWeaponManufacturers(selectedValue = "") {
 function updateWeaponModelTypes(selectedValue = "") {
   const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
   const categoryModels = WEAPON_MODEL_TYPE_FILTERS[selectedWeaponCategory()] || {};
-  setOptions(document.getElementById("weaponModelType"), categoryModels[manufacturer] || WEAPON_MODEL_TYPES[manufacturer] || WEAPON_MODEL_TYPES.Other, selectedValue);
+  setOptions(document.getElementById("weaponModelType"), categoryModels[manufacturer] || WEAPON_MODEL_TYPES[manufacturer] || WEAPON_MODEL_TYPES.Other, selectedValue, false);
   toggleField("weaponModelType", !isSelectedPlaceholder(manufacturer));
   toggleCustom("customWeaponManufacturer", manufacturer === "Other");
   updateWeaponModelCalibers();
+}
+
+function caliberFromModelLabel(label = "") {
+  const allowed = WEAPON_CATEGORY_AMMO_CALIBERS[selectedWeaponCategory()] || [];
+  return allowed.find(caliber => caliber !== "Other" && label.includes(caliber)) || "";
+}
+
+function syncAmmoCaliberFromWeaponModel() {
+  const modelCaliber = document.getElementById("weaponModelCaliber").value || "";
+  const caliber = caliberFromModelLabel(modelCaliber);
+  if (!caliber) return;
+  const ammoSelect = document.getElementById("ammoCaliber");
+  if (!Array.from(ammoSelect.options).some(option => option.value === caliber)) return;
+  ammoSelect.value = caliber;
+  updateAmmoManufacturers();
 }
 
 function updateWeaponModelCalibers(selectedValue = "") {
   const modelType = document.getElementById("weaponModelType").value || "Select Model Type";
   const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
   const manufacturerModels = WEAPON_MODEL_CALIBER_FILTERS[manufacturer] || {};
-  setOptions(document.getElementById("weaponModelCaliber"), manufacturerModels[modelType] || WEAPON_MODEL_CALIBERS[modelType] || WEAPON_MODEL_CALIBERS.Other, selectedValue);
+  setOptions(document.getElementById("weaponModelCaliber"), manufacturerModels[modelType] || WEAPON_MODEL_CALIBERS[modelType] || WEAPON_MODEL_CALIBERS.Other, selectedValue, false);
   toggleField("weaponModelCaliber", !isSelectedPlaceholder(modelType));
   toggleCustom("customWeaponModelType", modelType === "Other");
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
+  syncAmmoCaliberFromWeaponModel();
 }
 
 function updateOpticModels(selectedValue = "") {
@@ -1295,7 +1314,10 @@ document.querySelectorAll("[data-weapon-category]").forEach(button => {
 });
 document.getElementById("weaponManufacturer").addEventListener("change", () => updateWeaponModelTypes());
 document.getElementById("weaponModelType").addEventListener("change", () => updateWeaponModelCalibers());
-document.getElementById("weaponModelCaliber").addEventListener("change", () => toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other"));
+document.getElementById("weaponModelCaliber").addEventListener("change", () => {
+  toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
+  syncAmmoCaliberFromWeaponModel();
+});
 document.getElementById("opticType").addEventListener("change", () => updateOpticManufacturers());
 document.getElementById("opticBrand").addEventListener("change", () => updateOpticModels());
 document.getElementById("opticModel").addEventListener("change", () => updateMagnifications());
