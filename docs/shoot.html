@@ -24,6 +24,14 @@
       <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
+    <details class="mobile-platform-menu">
+      <summary>Menu</summary>
+      <a href="index.html">Home</a>
+      <a href="matrix.html">Weapon Library</a>
+      <a href="shoot.html" aria-current="page">Target</a>
+      <a href="records.html">SEC</a>
+      <a href="survey.html">Survey</a>
+    </details>
   </header>
   <section class="active-session-bar" id="activeSessionBar"></section>
   <section class="shoot-workflow">
@@ -39,7 +47,10 @@
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
-          <label class="grid-coordinate-toggle"><input id="showGridCoordinates" type="checkbox" /> Show Grid Coordinates</label>
+          <details class="target-advanced-tools">
+            <summary>Advanced</summary>
+            <label class="grid-coordinate-toggle"><input id="showGridCoordinates" type="checkbox" /> Show Grid Coordinates</label>
+          </details>
         </div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
@@ -820,6 +831,7 @@ function scoreClass(score) {
 function renderResults() {
   const impacts = currentImpactPoints;
   const numericScore = currentScore === null ? NaN : Number(currentScore);
+  document.body.dataset.authorityStatus = authorityStatusMessage ? "true" : "false";
   const scoreCell = document.getElementById("scoreCell");
   if (!scoreCell) return;
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
@@ -881,6 +893,15 @@ function setNextStep(activeId) {
   });
 }
 
+function rangeWorkflowState(canMark) {
+  if (!canMark) return "choose-target";
+  if (!currentAimPoint) return "tap-aim";
+  if (!currentImpactPoints.length) return "tap-holes";
+  if (!resultsShown) return "show-results";
+  if (!sessionSaved) return "save-session";
+  return "view-sec";
+}
+
 function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
   document.getElementById("setAimMode").disabled = !canMark;
@@ -896,6 +917,9 @@ function renderMarkStatus() {
   if (canMark && currentAimPoint && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
+  document.body.dataset.rangeState = rangeWorkflowState(canMark);
+  document.body.dataset.hasEvidence = canMark ? "true" : "false";
+  document.body.dataset.hasResults = resultsShown ? "true" : "false";
 }
 
 function setMode(mode) {

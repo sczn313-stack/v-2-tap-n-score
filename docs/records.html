@@ -22,6 +22,14 @@
       <a class="locked-nav-item is-active" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
+    <details class="mobile-platform-menu">
+      <summary>Menu</summary>
+      <a href="index.html">Home</a>
+      <a href="matrix.html">Weapon Library</a>
+      <a href="shoot.html">Target</a>
+      <a href="records.html" aria-current="page">SEC</a>
+      <a href="survey.html">Survey</a>
+    </details>
   </header>
   <section class="panel history-panel">
     <div class="section-heading sec-heading">
@@ -29,13 +37,15 @@
         <h1>SEC</h1>
         <h2>Shooter Experience Card</h2>
       </div>
+    </div>
+    <div class="history-list" id="historyList"></div>
+    <div class="sec-utility-row" aria-label="SEC utilities">
       <a class="vendor-pill vendor-site-link" href="https://BakerTargets.com" aria-label="Open BakerTargets.com">
         <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="" />
         <span>BakerTargets.com</span>
       </a>
       <button class="vendor-pill save-page-button" type="button" id="saveSecPage">Save This Page</button>
     </div>
-    <div class="history-list" id="historyList"></div>
   </section>
 </main>
 <script src="app_state.js"></script>

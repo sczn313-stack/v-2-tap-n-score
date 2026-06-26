@@ -1653,6 +1653,57 @@ input[readonly]{
   align-items:stretch;
 }
 
+.mobile-platform-menu{
+  display:none;
+}
+
+.mobile-platform-menu summary,
+.secondary-profile-section summary,
+.target-advanced-tools summary{
+  min-height:42px;
+  align-content:center;
+  padding:10px 14px;
+  border:2px solid rgba(179,123,8,.72);
+  border-radius:var(--radius);
+  background:#101010;
+  color:#f5f1e8;
+  font-weight:900;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+
+.mobile-platform-menu[open] summary,
+.secondary-profile-section[open] summary,
+.target-advanced-tools[open] summary{
+  border-color:#d9960b;
+}
+
+.mobile-platform-menu a{
+  display:block;
+  margin-top:6px;
+  padding:11px 12px;
+  border:1px solid rgba(179,123,8,.52);
+  border-radius:var(--radius-sm);
+  background:#111;
+  color:#f5f1e8;
+  font-weight:900;
+  text-decoration:none;
+  text-transform:uppercase;
+}
+
+.mobile-platform-menu a[aria-current="page"]{
+  background:#d9960b;
+  color:#0c0c0c;
+}
+
+.secondary-profile-section{
+  display:block;
+}
+
+.secondary-profile-section > h2{
+  margin-top:12px;
+}
+
 @media (max-width:760px){
   .platform-page .shell{
     width:min(100%, 1220px);
@@ -1664,12 +1715,16 @@ input[readonly]{
   }
 
   .platform-page .locked-nav{
-    justify-content:stretch;
+    display:none;
   }
 
-  .platform-page .locked-nav-item{
-    flex:1 1 calc(50% - 5px);
-    justify-content:center;
+  .platform-page .mobile-platform-menu{
+    display:block;
+    flex:1 1 100%;
+  }
+
+  .platform-page .m4-header{
+    align-items:flex-start;
   }
 }
 
@@ -5203,6 +5258,57 @@ input[readonly]{
   background:#181818;
 }
 
+.target-page .workflow-control-row > .button,
+.target-page .workflow-control-row > .neon-file-button,
+.target-page .workflow-control-row > .target-advanced-tools{
+  display:none;
+}
+
+.target-page[data-range-state="choose-target"] #chooseTargetButton,
+.target-page[data-range-state="tap-aim"] #setAimMode,
+.target-page[data-range-state="tap-holes"] #addImpactMode,
+.target-page[data-range-state="show-results"] #showResults,
+.target-page[data-range-state="save-session"] #saveMarks{
+  display:inline-flex;
+}
+
+.target-page[data-range-state="tap-holes"] #clearMarks,
+.target-page[data-range-state="show-results"] #undoImpact,
+.target-page[data-range-state="show-results"] #clearMarks{
+  display:inline-flex;
+}
+
+.target-page[data-has-evidence="true"] .target-advanced-tools{
+  display:block;
+}
+
+.target-page[data-has-evidence="true"] .active-session-bar{
+  display:none;
+}
+
+.target-page[data-has-results="false"][data-authority-status="false"] .target-intel-stack{
+  display:none;
+}
+
+.target-page[data-has-results="false"] .target-correction-card{
+  display:none;
+}
+
+.target-page .target-advanced-tools{
+  flex:1 1 100%;
+}
+
+.target-page .target-advanced-tools summary{
+  min-height:36px;
+  padding:8px 12px;
+  font-size:12px;
+}
+
+.target-page .target-advanced-tools .grid-coordinate-toggle{
+  display:flex;
+  margin-top:6px;
+}
+
 .target-page .evidence-preview{
   border-color:rgba(179,123,8,.54);
   background:linear-gradient(180deg,#111,#080808);
@@ -5374,12 +5480,12 @@ input[readonly]{
   }
 
   .target-page .locked-nav{
-    justify-content:stretch;
+    display:none;
   }
 
-  .target-page .locked-nav-item{
-    flex:1 1 calc(50% - 5px);
-    justify-content:center;
+  .target-page .mobile-platform-menu{
+    display:block;
+    flex:1 1 100%;
   }
 
   .target-page .target-work-heading{
@@ -5498,6 +5604,14 @@ input[readonly]{
 .records-page .vendor-pill img{
   border-color:rgba(12,12,12,.48);
   background:#050505;
+}
+
+.records-page .sec-utility-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:12px;
 }
 
 .records-page .history-list{
@@ -5631,6 +5745,15 @@ input[readonly]{
     margin-left:0;
   }
 
+  .records-page .sec-utility-row{
+    justify-content:stretch;
+  }
+
+  .records-page .sec-utility-row .vendor-pill{
+    flex:1 1 100%;
+    justify-content:center;
+  }
+
   .records-page .history-card{
     grid-template-columns:92px minmax(0,1fr);
     min-height:128px;
@@ -5644,12 +5767,12 @@ input[readonly]{
 
 @media (max-width:560px){
   .records-page .locked-nav{
-    justify-content:stretch;
+    display:none;
   }
 
-  .records-page .locked-nav-item{
-    flex:1 1 calc(50% - 5px);
-    justify-content:center;
+  .records-page .mobile-platform-menu{
+    display:block;
+    flex:1 1 100%;
   }
 
   .records-page .history-card{

@@ -22,6 +22,14 @@
       <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
+    <details class="mobile-platform-menu">
+      <summary>Menu</summary>
+      <a href="index.html">Home</a>
+      <a href="matrix.html" aria-current="page">Weapon Library</a>
+      <a href="shoot.html">Target</a>
+      <a href="records.html">SEC</a>
+      <a href="survey.html">Survey</a>
+    </details>
   </header>
   <section class="active-session-bar" id="activeSessionBar"></section>
 
@@ -123,7 +131,8 @@
         </div>
       </section>
 
-      <section class="form-section attribution-banner">
+      <details class="form-section attribution-banner secondary-profile-section">
+        <summary>Profile Details</summary>
         <h2>Attribution</h2>
         <div class="matrix-grid">
           <label>Shooter<input name="shooterName" autocomplete="name" /></label>
@@ -131,16 +140,17 @@
           <label>Agency<input name="agency" /></label>
           <label>Instructor<input name="instructor" /></label>
         </div>
-      </section>
+      </details>
 
-      <section class="form-section">
+      <details class="form-section secondary-profile-section">
+        <summary>Range Conditions</summary>
         <h2>Weather</h2>
         <div class="matrix-grid">
           <label>Temperature<input name="temperature" placeholder="72 F" /></label>
           <label>Wind<input name="wind" placeholder="5 mph left to right" /></label>
           <label>Conditions<input name="weather" placeholder="clear" /></label>
         </div>
-      </section>
+      </details>
 
       <div hidden>
         <select id="savedSetupSelect">
