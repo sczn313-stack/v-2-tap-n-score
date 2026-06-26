@@ -54,42 +54,6 @@
           <button class="category-pill" type="button" data-weapon-category="Shotgun">Shotgun</button>
         </div>
         <input type="hidden" name="weaponCategory" id="weaponCategory" value="Rifle" />
-        <div class="matrix-grid">
-          <label>Caliber / Gauge<select name="ammoCaliber" id="ammoCaliber">
-            <option>Select Caliber</option><option>.17 HMR</option><option>.22 LR</option><option>.22 WMR</option><option>.223 Rem</option><option>5.56 NATO</option><option>.300 BLK</option><option>.308 Win</option><option>6.5 Creedmoor</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Caliber<input name="customAmmoCaliber" id="customAmmoCaliber" placeholder="Optional custom caliber" /></label>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h2>Sights / Optic</h2>
-        <div class="matrix-grid">
-          <label>Optic Type<select name="opticType" id="opticType">
-            <option>Iron Sights</option><option>Red Dot</option><option>Holographic</option><option>Prism</option><option>LPVO</option><option>Scope</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Optic Type<input name="customOpticType" id="customOpticType" placeholder="Optional custom optic type" /></label>
-          <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
-            <option selected>MOA</option><option>MRAD</option>
-          </select></label>
-          <label>Click Value<select name="opticClickValue" id="opticClickValue">
-            <option value="0.25" selected>1/4 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option><option value="Custom">Custom</option>
-          </select></label>
-          <label class="is-hidden">Custom Click Value<input name="customOpticClickValue" id="customOpticClickValue" inputmode="decimal" placeholder="0.25" /></label>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h2>Session Distance</h2>
-        <div class="matrix-grid distance-setup-grid">
-          <label>Distance<select name="targetDistanceValue" id="matrixDistanceValue">
-            <option>25</option><option>50</option><option selected>100</option><option>200</option><option>300</option><option>400</option><option>500</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Distance<input name="customTargetDistanceValue" id="customTargetDistanceValue" inputmode="numeric" pattern="[0-9]*" /></label>
-          <label>Unit<select name="targetDistanceUnit" id="matrixDistanceUnit">
-            <option selected>YDS</option><option>M</option>
-          </select></label>
-        </div>
       </section>
 
       <details class="form-section secondary-profile-section">
@@ -114,6 +78,10 @@
       <details class="form-section secondary-profile-section">
         <summary>Optic Details</summary>
         <div class="matrix-grid">
+          <label>Optic Type<select name="opticType" id="opticType">
+            <option>Iron Sights</option><option>Red Dot</option><option>Holographic</option><option>Prism</option><option>LPVO</option><option>Scope</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Optic Type<input name="customOpticType" id="customOpticType" placeholder="Optional custom optic type" /></label>
           <label>Manufacturer<select name="opticBrand" id="opticBrand">
             <option>Iron Sights</option><option>Aimpoint</option><option>EOTech</option><option>Trijicon</option><option>Vortex</option><option>Leupold</option><option>Holosun</option><option>Primary Arms</option><option>Other</option>
           </select></label>
@@ -126,12 +94,23 @@
             <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
+          <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
+            <option selected>MOA</option><option>MRAD</option>
+          </select></label>
+          <label>Click Value<select name="opticClickValue" id="opticClickValue">
+            <option value="0.25" selected>1/4 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option><option value="Custom">Custom</option>
+          </select></label>
+          <label class="is-hidden">Custom Click Value<input name="customOpticClickValue" id="customOpticClickValue" inputmode="decimal" placeholder="0.25" /></label>
         </div>
       </details>
 
       <details class="form-section secondary-profile-section">
         <summary>Ammo Details</summary>
         <div class="matrix-grid">
+          <label>Caliber / Gauge<select name="ammoCaliber" id="ammoCaliber">
+            <option>Select Caliber</option><option>.17 HMR</option><option>.22 LR</option><option>.22 WMR</option><option>.223 Rem</option><option>5.56 NATO</option><option>.300 BLK</option><option>.308 Win</option><option>6.5 Creedmoor</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Caliber<input name="customAmmoCaliber" id="customAmmoCaliber" placeholder="Optional custom caliber" /></label>
           <label>Manufacturer<select name="ammoManufacturer" id="ammoManufacturer">
             <option>Select Manufacturer</option><option>Lake City</option><option>Federal</option><option>Winchester</option><option>Hornady</option><option>Remington</option><option>PMC</option><option>IMI</option><option>Black Hills</option><option>Sig Sauer</option><option>Fiocchi</option><option>Sellier & Bellot</option><option>Prvi Partizan</option><option>Norma</option><option>Magtech</option><option>Other</option>
           </select></label>
@@ -147,24 +126,26 @@
         </div>
       </details>
 
+      <details class="form-section secondary-profile-section">
+        <summary>Session Distance</summary>
+        <div class="matrix-grid distance-setup-grid">
+          <label>Distance<select name="targetDistanceValue" id="matrixDistanceValue">
+            <option>25</option><option>50</option><option selected>100</option><option>200</option><option>300</option><option>400</option><option>500</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Distance<input name="customTargetDistanceValue" id="customTargetDistanceValue" inputmode="numeric" pattern="[0-9]*" /></label>
+          <label>Unit<select name="targetDistanceUnit" id="matrixDistanceUnit">
+            <option selected>YDS</option><option>M</option>
+          </select></label>
+        </div>
+      </details>
+
       <details class="form-section attribution-banner secondary-profile-section">
-        <summary>Profile Details</summary>
-        <h2>Attribution</h2>
+        <summary>Personal Details</summary>
         <div class="matrix-grid">
           <label>Shooter<input name="shooterName" autocomplete="name" /></label>
           <label>Unit<input name="unit" /></label>
           <label>Agency<input name="agency" /></label>
           <label>Instructor<input name="instructor" /></label>
-        </div>
-      </details>
-
-      <details class="form-section secondary-profile-section">
-        <summary>Range Conditions</summary>
-        <h2>Weather</h2>
-        <div class="matrix-grid">
-          <label>Temperature<input name="temperature" placeholder="72 F" /></label>
-          <label>Wind<input name="wind" placeholder="5 mph left to right" /></label>
-          <label>Conditions<input name="weather" placeholder="clear" /></label>
         </div>
       </details>
 
