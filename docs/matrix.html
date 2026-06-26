@@ -1273,6 +1273,8 @@ form.addEventListener("submit", event => {
 
 document.getElementById("saveSetup").addEventListener("click", () => {
   saveCurrentSetupToLibrary();
+  setProfileEditorVisible(false);
+  setWeaponListExpanded(true);
 });
 
 document.getElementById("newSetup").addEventListener("click", () => {
