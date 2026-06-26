@@ -206,20 +206,31 @@ function distanceOptions() {
 
 function targetIntelStackHtml() {
   return `
-    <div class="target-intel-distance" aria-label="Distance">
-      <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
-      <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
-        <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
-        <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+    <div class="authority-results-panel" aria-label="Authority results">
+      <div class="authority-results-heading">
+        <span>Authority Results</span>
+        <strong>Backend analyzed</strong>
       </div>
-      <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
-      <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+      <div class="authority-primary-correction" aria-label="Correction recommendation">
+        <div class="target-intel-item correction-axis"><span>Elevation</span><strong id="elevationValue">--</strong></div>
+        <div class="target-intel-item correction-axis"><span>Windage</span><strong id="windageValue">--</strong></div>
+      </div>
+      <div class="authority-evidence-summary">
+        <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
+        <div class="target-intel-item evidence-count"><span>Evidence</span><strong id="hitsValue">0 Hits</strong></div>
+        <div class="target-intel-distance" aria-label="Session distance">
+          <span>Session Distance</span>
+          <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
+          <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
+            <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
+            <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+          </div>
+          <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
+          <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+        </div>
+      </div>
+      <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     </div>
-    <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
-    <div class="target-intel-item"><strong id="elevationValue">--</strong></div>
-    <div class="target-intel-item"><strong id="windageValue">--</strong></div>
-    <div class="target-intel-item"><strong id="hitsValue">0 Hits</strong></div>
-    <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     ${guidanceCardHtml()}
   `;
 }

@@ -621,6 +621,54 @@ button:active,
   align-content:start;
 }
 
+.authority-results-panel{
+  display:grid;
+  gap:10px;
+  padding:10px;
+  border:2px solid var(--ink);
+  border-radius:var(--radius);
+  background:var(--panel);
+}
+
+.authority-results-heading{
+  display:grid;
+  gap:2px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+}
+
+.authority-results-heading span{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+}
+
+.authority-results-heading strong{
+  color:var(--ink);
+  font-size:15px;
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+}
+
+.authority-primary-correction{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.authority-evidence-summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.authority-evidence-summary .target-intel-distance{
+  grid-column:1 / -1;
+}
+
 .target-intel-distance,
 .target-intel-item,
 .target-intel-score{
@@ -635,6 +683,15 @@ button:active,
 
 .target-intel-distance{
   gap:7px;
+}
+
+.target-intel-distance > span,
+.target-intel-item > span{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
 }
 
 .target-intel-distance > strong{
@@ -5097,6 +5154,15 @@ input[readonly]{
   color:#f5f1e8;
 }
 
+.target-page .shooter-tip{
+  min-width:0;
+  white-space:normal;
+}
+
+.target-page #shooterTipText{
+  overflow-wrap:anywhere;
+}
+
 .target-page .upload-panel{
   border-color:rgba(179,123,8,.72);
   background:#0b0b0b;
@@ -5160,6 +5226,52 @@ input[readonly]{
   background:#f4ead5;
 }
 
+.target-page .authority-results-panel{
+  border-color:rgba(217,150,11,.82);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(217,150,11,.14), transparent 40%),
+    linear-gradient(180deg,#181818,#0b0b0b);
+  box-shadow:0 10px 26px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.target-page .authority-results-heading{
+  border-color:rgba(217,150,11,.42);
+}
+
+.target-page .authority-results-heading span{
+  color:#d9960b;
+}
+
+.target-page .authority-results-heading strong{
+  color:#fff;
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-size:22px;
+  letter-spacing:0;
+}
+
+.target-page .authority-primary-correction .target-intel-item{
+  min-height:92px;
+  align-content:center;
+  justify-items:center;
+  gap:8px;
+  border-color:#d9960b;
+  background:#d9960b;
+  color:#0c0c0c;
+  text-align:center;
+  box-shadow:0 6px 16px rgba(0,0,0,.24);
+}
+
+.target-page .authority-primary-correction .target-intel-item span,
+.target-page .authority-primary-correction .target-intel-item strong{
+  color:#0c0c0c;
+}
+
+.target-page .authority-primary-correction .target-intel-item strong{
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-size:clamp(26px, 3.4vw, 38px);
+  letter-spacing:0;
+}
+
 .target-page .target-intel-distance,
 .target-page .target-intel-item,
 .target-page .target-intel-score,
@@ -5178,10 +5290,21 @@ input[readonly]{
   color:#fff;
 }
 
+.target-page .target-intel-distance > span,
+.target-page .target-intel-item > span,
 .target-page .target-data-distance span,
 .target-page .target-data-item span,
 .target-page .target-score-label{
   color:#d9960b;
+}
+
+.target-page .target-intel-score{
+  min-height:64px;
+  border-color:rgba(255,255,255,.18);
+}
+
+.target-page .target-intel-score strong{
+  font-size:clamp(30px, 5vw, 46px);
 }
 
 .target-page .authority-status-message{
@@ -5230,6 +5353,10 @@ input[readonly]{
   color:#d9960b;
 }
 
+.target-page .workflow-control-row #saveMarks.next-step:not([disabled]){
+  box-shadow:0 0 0 2px rgba(217,150,11,.28), 0 0 22px rgba(217,150,11,.22);
+}
+
 .target-page select,
 .target-page input,
 .target-page textarea{
@@ -5263,6 +5390,15 @@ input[readonly]{
     top:6px;
     gap:6px;
     padding:6px;
+  }
+
+  .target-page .authority-primary-correction,
+  .target-page .authority-evidence-summary{
+    grid-template-columns:1fr;
+  }
+
+  .target-page .authority-primary-correction .target-intel-item{
+    min-height:78px;
   }
 }
 
