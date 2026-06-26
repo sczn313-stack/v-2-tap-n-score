@@ -214,10 +214,6 @@ function distanceOptions() {
 function targetIntelStackHtml() {
   return `
     <div class="authority-results-panel" aria-label="Authority results">
-      <div class="authority-primary-correction" aria-label="Correction recommendation">
-        <div class="target-intel-item correction-axis"><span>Elevation</span><strong id="elevationValue">--</strong></div>
-        <div class="target-intel-item correction-axis"><span>Windage</span><strong id="windageValue">--</strong></div>
-      </div>
       <div class="authority-evidence-summary">
         <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
         <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
@@ -808,14 +804,14 @@ function compactClickToken(value, axis) {
     ? String(value.direction).toUpperCase()
     : label.toUpperCase();
   if (axis === "elevation") {
-    if (upper.includes("UP")) return `${amount}↑`;
-    if (upper.includes("DOWN")) return `${amount}↓`;
+    if (upper.includes("UP")) return `${amount}↑ Clicks`;
+    if (upper.includes("DOWN")) return `${amount}↓ Clicks`;
   }
   if (axis === "windage") {
-    if (upper.includes("RIGHT")) return `${amount}→`;
-    if (upper.includes("LEFT")) return `${amount}←`;
+    if (upper.includes("RIGHT")) return `${amount}→ Clicks`;
+    if (upper.includes("LEFT")) return `${amount}← Clicks`;
   }
-  return amount;
+  return `${amount} Clicks`;
 }
 
 function scoreClass(score) {
@@ -834,8 +830,6 @@ function renderResults() {
   if (!scoreCell) return;
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
-  document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
-  document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
   const hitsParts = [`${impacts.length} Hits`];
   if (currentClicks) {
     hitsParts.push(compactClickToken(currentClicks.elevation, "elevation"), compactClickToken(currentClicks.windage, "windage"));
