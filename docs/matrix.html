@@ -37,7 +37,7 @@
     <form class="panel matrix-form" id="matrixForm">
       <div class="weapon-top-row">
         <button class="button weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
-        <button class="button primary" type="submit">Go to Targets</button>
+        <button class="button primary" type="submit">Go To Target</button>
       </div>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
@@ -49,8 +49,8 @@
         <button class="button" type="button" id="newSetup">New Weapon Profile</button>
       </div>
 
-      <section class="form-section">
-        <h2>Weapon Profile</h2>
+      <section class="form-section primary-weapon-path">
+        <h2>New Weapon Profile</h2>
         <div class="category-pill-row" role="group" aria-label="Weapon Category">
           <button class="category-pill" type="button" data-weapon-category="Rifle">Rifle</button>
           <button class="category-pill" type="button" data-weapon-category="Pistol">Pistol</button>
@@ -58,19 +58,10 @@
         </div>
         <input type="hidden" name="weaponCategory" id="weaponCategory" value="Rifle" />
         <div class="matrix-grid">
-          <label>Manufacturer<select name="weaponManufacturer" id="weaponManufacturer">
-            <option>Select Manufacturer</option><option>Colt</option><option>FN</option><option>Daniel Defense</option><option>BCM</option><option>Aero Precision</option><option>Smith & Wesson</option><option>Ruger</option><option>Sig Sauer</option><option>Springfield Armory</option><option>Other</option>
+          <label>Caliber / Gauge<select name="ammoCaliber" id="ammoCaliber">
+            <option>Select Caliber</option><option>.17 HMR</option><option>.22 LR</option><option>.22 WMR</option><option>.223 Rem</option><option>5.56 NATO</option><option>.300 BLK</option><option>.308 Win</option><option>6.5 Creedmoor</option><option>Other</option>
           </select></label>
-          <label class="is-hidden">Custom Manufacturer<input name="customWeaponManufacturer" id="customWeaponManufacturer" placeholder="Optional custom manufacturer" /></label>
-          <label>Model Type<select name="weaponModelType" id="weaponModelType">
-            <option>Select Model Type</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Model Type<input name="customWeaponModelType" id="customWeaponModelType" placeholder="Optional custom model type" /></label>
-          <label>Model Caliber<select name="weaponModelCaliber" id="weaponModelCaliber">
-            <option>Select Model Caliber</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Model Caliber<input name="customWeaponModelCaliber" id="customWeaponModelCaliber" placeholder="Optional custom model caliber" /></label>
-          <label>Barrel Length <span class="optional-label">Optional</span><input name="barrelLength" placeholder="Optional" /></label>
+          <label class="is-hidden">Custom Caliber<input name="customAmmoCaliber" id="customAmmoCaliber" placeholder="Optional custom caliber" /></label>
         </div>
       </section>
 
@@ -81,40 +72,13 @@
             <option>Iron Sights</option><option>Red Dot</option><option>Holographic</option><option>Prism</option><option>LPVO</option><option>Scope</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Optic Type<input name="customOpticType" id="customOpticType" placeholder="Optional custom optic type" /></label>
-          <label>Manufacturer<select name="opticBrand" id="opticBrand">
-            <option>Iron Sights</option><option>Aimpoint</option><option>EOTech</option><option>Trijicon</option><option>Vortex</option><option>Leupold</option><option>Holosun</option><option>Primary Arms</option><option>Other</option>
+          <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
+            <option selected>MOA</option><option>MRAD</option>
           </select></label>
-          <label class="is-hidden">Custom Manufacturer<input name="customOpticManufacturer" id="customOpticManufacturer" placeholder="Optional custom manufacturer" /></label>
-          <label>Model<select name="opticModel" id="opticModel">
-            <option>Iron Sights</option><option>Other</option>
+          <label>Click Value<select name="opticClickValue" id="opticClickValue">
+            <option value="0.25" selected>1/4 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option><option value="Custom">Custom</option>
           </select></label>
-          <label class="is-hidden">Custom Model<input name="customOpticModel" id="customOpticModel" placeholder="Optional custom model" /></label>
-          <label>Magnification<select name="magnification" id="magnification">
-            <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h2>Ammo</h2>
-        <div class="matrix-grid">
-          <label>Caliber / Gauge<select name="ammoCaliber" id="ammoCaliber">
-            <option>Select Caliber</option><option>.17 HMR</option><option>.22 LR</option><option>.22 WMR</option><option>.223 Rem</option><option>5.56 NATO</option><option>.300 BLK</option><option>.308 Win</option><option>6.5 Creedmoor</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Caliber<input name="customAmmoCaliber" id="customAmmoCaliber" placeholder="Optional custom caliber" /></label>
-          <label>Manufacturer<select name="ammoManufacturer" id="ammoManufacturer">
-            <option>Select Manufacturer</option><option>Lake City</option><option>Federal</option><option>Winchester</option><option>Hornady</option><option>Remington</option><option>PMC</option><option>IMI</option><option>Black Hills</option><option>Sig Sauer</option><option>Fiocchi</option><option>Sellier & Bellot</option><option>Prvi Partizan</option><option>Norma</option><option>Magtech</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Manufacturer<input name="customAmmoManufacturer" id="customAmmoManufacturer" placeholder="Optional custom manufacturer" /></label>
-          <label>Load / Model<select name="ammoLoad" id="ammoLoad">
-            <option>Select Load</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Load / Model<input name="customAmmoLoad" id="customAmmoLoad" placeholder="Optional custom load or model" /></label>
-          <label>Grain<select name="bulletWeight" id="bulletWeight">
-            <option>Select Grain</option><option>Other</option>
-          </select></label>
-          <label class="is-hidden">Custom Grain<input name="customBulletWeight" id="customBulletWeight" placeholder="Optional custom grain" /></label>
+          <label class="is-hidden">Custom Click Value<input name="customOpticClickValue" id="customOpticClickValue" inputmode="decimal" placeholder="0.25" /></label>
         </div>
       </section>
 
@@ -130,6 +94,61 @@
           </select></label>
         </div>
       </section>
+
+      <details class="form-section secondary-profile-section">
+        <summary>Weapon Details</summary>
+        <div class="matrix-grid">
+          <label>Manufacturer<select name="weaponManufacturer" id="weaponManufacturer">
+            <option>Select Manufacturer</option><option>Colt</option><option>FN</option><option>Daniel Defense</option><option>BCM</option><option>Aero Precision</option><option>Smith & Wesson</option><option>Ruger</option><option>Sig Sauer</option><option>Springfield Armory</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Manufacturer<input name="customWeaponManufacturer" id="customWeaponManufacturer" placeholder="Optional custom manufacturer" /></label>
+          <label>Model Type<select name="weaponModelType" id="weaponModelType">
+            <option>Select Model Type</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Model Type<input name="customWeaponModelType" id="customWeaponModelType" placeholder="Optional custom model type" /></label>
+          <label>Model Caliber<select name="weaponModelCaliber" id="weaponModelCaliber">
+            <option>Select Model Caliber</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Model Caliber<input name="customWeaponModelCaliber" id="customWeaponModelCaliber" placeholder="Optional custom model caliber" /></label>
+          <label>Barrel Length <span class="optional-label">Optional</span><input name="barrelLength" placeholder="Optional" /></label>
+        </div>
+      </details>
+
+      <details class="form-section secondary-profile-section">
+        <summary>Optic Details</summary>
+        <div class="matrix-grid">
+          <label>Manufacturer<select name="opticBrand" id="opticBrand">
+            <option>Iron Sights</option><option>Aimpoint</option><option>EOTech</option><option>Trijicon</option><option>Vortex</option><option>Leupold</option><option>Holosun</option><option>Primary Arms</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Manufacturer<input name="customOpticManufacturer" id="customOpticManufacturer" placeholder="Optional custom manufacturer" /></label>
+          <label>Model<select name="opticModel" id="opticModel">
+            <option>Iron Sights</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Model<input name="customOpticModel" id="customOpticModel" placeholder="Optional custom model" /></label>
+          <label>Magnification<select name="magnification" id="magnification">
+            <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
+        </div>
+      </details>
+
+      <details class="form-section secondary-profile-section">
+        <summary>Ammo Details</summary>
+        <div class="matrix-grid">
+          <label>Manufacturer<select name="ammoManufacturer" id="ammoManufacturer">
+            <option>Select Manufacturer</option><option>Lake City</option><option>Federal</option><option>Winchester</option><option>Hornady</option><option>Remington</option><option>PMC</option><option>IMI</option><option>Black Hills</option><option>Sig Sauer</option><option>Fiocchi</option><option>Sellier & Bellot</option><option>Prvi Partizan</option><option>Norma</option><option>Magtech</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Manufacturer<input name="customAmmoManufacturer" id="customAmmoManufacturer" placeholder="Optional custom manufacturer" /></label>
+          <label>Load / Model<select name="ammoLoad" id="ammoLoad">
+            <option>Select Load</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Load / Model<input name="customAmmoLoad" id="customAmmoLoad" placeholder="Optional custom load or model" /></label>
+          <label>Grain<select name="bulletWeight" id="bulletWeight">
+            <option>Select Grain</option><option>Other</option>
+          </select></label>
+          <label class="is-hidden">Custom Grain<input name="customBulletWeight" id="customBulletWeight" placeholder="Optional custom grain" /></label>
+        </div>
+      </details>
 
       <details class="form-section attribution-banner secondary-profile-section">
         <summary>Profile Details</summary>
@@ -195,6 +214,19 @@ const WEAPON_CATEGORY_DEFAULT_DISTANCE = {
   Rifle: "100",
   Pistol: "25",
   Shotgun: "25"
+};
+const OPTIC_CLICK_VALUES = {
+  MOA: [
+    { value: "0.25", label: "1/4 MOA" },
+    { value: "0.5", label: "1/2 MOA" },
+    { value: "1", label: "1 MOA" },
+    { value: "Custom", label: "Custom" }
+  ],
+  MRAD: [
+    { value: "0.1", label: "0.1 MRAD" },
+    { value: "0.05", label: "0.05 MRAD" },
+    { value: "Custom", label: "Custom" }
+  ]
 };
 const WEAPON_MODEL_TYPES = {
   "Select Manufacturer": ["Select Model Type", "Other"],
@@ -817,6 +849,20 @@ function updateDistanceOptions(selectedValue = "") {
   toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other");
 }
 
+function updateOpticClickValues(selectedValue = "") {
+  const unit = document.getElementById("opticAdjustmentUnit").value === "MRAD" ? "MRAD" : "MOA";
+  const options = OPTIC_CLICK_VALUES[unit] || OPTIC_CLICK_VALUES.MOA;
+  const selectedString = String(selectedValue || "");
+  const hasPreset = selectedString && options.some(option => option.value === selectedString);
+  const selected = hasPreset ? selectedString : selectedString ? "Custom" : options[0].value;
+  const select = document.getElementById("opticClickValue");
+  select.innerHTML = options.map(option => `<option value="${option.value}">${option.label}</option>`).join("");
+  select.value = selected;
+  const customInput = document.getElementById("customOpticClickValue");
+  if (customInput && selected === "Custom" && selectedString !== "Custom") customInput.value = selectedString;
+  toggleCustom("customOpticClickValue", select.value === "Custom");
+}
+
 function updateAmmoCalibers(selectedValue = "") {
   const options = WEAPON_CATEGORY_AMMO_CALIBERS[selectedWeaponCategory()] || WEAPON_CATEGORY_AMMO_CALIBERS.Rifle;
   setOptions(document.getElementById("ammoCaliber"), options, selectedValue, false);
@@ -879,7 +925,7 @@ function escapeHtml(value = "") {
 
 function setupLabel(snapshot) {
   return document.getElementById("setupName").value.trim()
-    || [snapshot.weaponManufacturer, snapshot.weaponModelCaliber, snapshot.opticModel, snapshot.ammoLoad].filter(Boolean).join(" / ")
+    || [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.ammoCaliber, snapshot.opticType].filter(Boolean).join(" / ")
     || "Weapon Profile";
 }
 
@@ -898,6 +944,11 @@ function setupPayload(snapshot) {
     "opticBrand",
     "opticModel",
     "magnification",
+    "opticAdjustmentUnit",
+    "opticClickValue",
+    "opticClickValueLabel",
+    "opticClickValueMOA",
+    "opticClickValueMRAD",
     "ammoCaliber",
     "ammoManufacturer",
     "ammoLoad",
@@ -909,7 +960,10 @@ function setupPayload(snapshot) {
     "shooterName",
     "unit",
     "agency",
-    "instructor"
+    "instructor",
+    "temperature",
+    "wind",
+    "weather"
   ];
   return allowed.reduce((payload, key) => {
     if (snapshot[key]) payload[key] = snapshot[key];
@@ -1053,8 +1107,10 @@ function setForm(snapshot) {
   updateAmmoLoads(values.ammoLoad);
   updateAmmoGrains(values.bulletWeight);
   updateDistanceOptions(values.targetDistanceValue);
+  document.getElementById("opticAdjustmentUnit").value = values.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
+  updateOpticClickValues(values.opticClickValue);
   document.getElementById("setupName").value = values.setupName || "";
-  const categoryScopedSelects = new Set(["opticType", "ammoCaliber", "matrixDistanceValue"]);
+  const categoryScopedSelects = new Set(["opticType", "ammoCaliber", "matrixDistanceValue", "opticClickValue"]);
   Array.from(form.elements).forEach(field => {
     if (!field.name || field.type === "submit" || field.type === "button") return;
     if (field.tagName === "SELECT" && categoryScopedSelects.has(field.id)) {
@@ -1068,6 +1124,7 @@ function setForm(snapshot) {
     }
     field.value = values[field.name] || "";
   });
+  updateOpticClickValues(values.opticClickValue);
   toggleCustom("customWeaponManufacturer", document.getElementById("weaponManufacturer").value === "Other");
   toggleCustom("customWeaponModelType", document.getElementById("weaponModelType").value === "Other");
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
@@ -1079,6 +1136,7 @@ function setForm(snapshot) {
   toggleCustom("customAmmoLoad", document.getElementById("ammoLoad").value === "Other");
   toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other");
   toggleCustom("customMagnification", document.getElementById("magnification").value === "Other");
+  toggleCustom("customOpticClickValue", document.getElementById("opticClickValue").value === "Custom");
 }
 
 function collectForm() {
@@ -1098,6 +1156,7 @@ function collectForm() {
   if (data.ammoLoad === "Other" && data.customAmmoLoad) data.ammoLoad = data.customAmmoLoad;
   if (data.bulletWeight === "Other" && data.customBulletWeight) data.bulletWeight = data.customBulletWeight;
   if (data.magnification === "Other" && data.customMagnification) data.magnification = data.customMagnification;
+  if (data.opticClickValue === "Custom" && data.customOpticClickValue) data.opticClickValue = data.customOpticClickValue;
   if (data.targetDistanceValue === "Other" && data.customTargetDistanceValue) data.targetDistanceValue = data.customTargetDistanceValue.replace(/\D/g, "");
   data.weaponManufacturer = displayValue(data.weaponManufacturer);
   data.weaponModelType = displayValue(data.weaponModelType);
@@ -1108,6 +1167,11 @@ function collectForm() {
   data.bulletWeight = displayValue(data.bulletWeight);
   data.targetDistanceValue = (data.targetDistanceValue || "100").replace(/\D/g, "") || "100";
   data.targetDistanceUnit = data.targetDistanceUnit === "M" ? "M" : "YDS";
+  data.opticAdjustmentUnit = data.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
+  data.opticClickValue = Number(data.opticClickValue) > 0 ? String(Number(data.opticClickValue)) : (data.opticAdjustmentUnit === "MRAD" ? "0.1" : "0.25");
+  data.opticClickValueLabel = `${data.opticClickValue} ${data.opticAdjustmentUnit}`;
+  data.opticClickValueMOA = data.opticAdjustmentUnit === "MOA" ? Number(data.opticClickValue) : "";
+  data.opticClickValueMRAD = data.opticAdjustmentUnit === "MRAD" ? Number(data.opticClickValue) : "";
   data.targetDistance = `${data.targetDistanceValue} ${data.targetDistanceUnit === "M" ? "m" : "yds"}`;
   data.distance = data.targetDistance;
   Object.keys(data).forEach(key => {
@@ -1116,7 +1180,7 @@ function collectForm() {
   data.setupId = document.getElementById("savedSetupSelect").value || "";
   data.setupName = document.getElementById("setupName").value.trim();
   data.rifle = [data.weaponManufacturer, data.weaponModelType].filter(Boolean).join(" ");
-  data.caliber = data.weaponModelCaliber;
+  data.caliber = data.weaponModelCaliber || data.ammoCaliber;
   return data;
 }
 
@@ -1141,7 +1205,7 @@ function clearSetupFields() {
 
 function renderSessionBar() {
   const snapshot = collectForm();
-  const setup = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber]
+  const setup = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber || snapshot.ammoCaliber]
     .map(displayValue)
     .filter(Boolean)
     .join(" / ");
@@ -1162,6 +1226,11 @@ function loadMatrix() {
     opticBrand: "Iron Sights",
     opticModel: "Iron Sights",
     magnification: "1x",
+    opticAdjustmentUnit: "MOA",
+    opticClickValue: "0.25",
+    opticClickValueLabel: "0.25 MOA",
+    opticClickValueMOA: 0.25,
+    opticClickValueMRAD: "",
     ammoCaliber: "Select Caliber",
     ammoManufacturer: "Select Manufacturer",
     ammoLoad: "Select Load",
@@ -1216,6 +1285,8 @@ document.getElementById("weaponModelCaliber").addEventListener("change", () => t
 document.getElementById("opticType").addEventListener("change", () => updateOpticManufacturers());
 document.getElementById("opticBrand").addEventListener("change", () => updateOpticModels());
 document.getElementById("opticModel").addEventListener("change", () => updateMagnifications());
+document.getElementById("opticAdjustmentUnit").addEventListener("change", () => updateOpticClickValues());
+document.getElementById("opticClickValue").addEventListener("change", () => toggleCustom("customOpticClickValue", document.getElementById("opticClickValue").value === "Custom"));
 document.getElementById("ammoCaliber").addEventListener("change", () => updateAmmoManufacturers());
 document.getElementById("ammoManufacturer").addEventListener("change", () => updateAmmoLoads());
 document.getElementById("ammoLoad").addEventListener("change", () => updateAmmoGrains());
