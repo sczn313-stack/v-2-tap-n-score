@@ -245,24 +245,14 @@ function isPresetDistance(value) {
 }
 
 function guidanceCardHtml() {
-  const presets = [100, 150, 200, 250, 300, 400, 500]
-    .map(distance => `<div>25m → ${distance}m ↑ X Clicks</div>`)
-    .join("");
   return `
     <details class="guidance-card" open>
-      <summary>Clicks to Next Distance</summary>
-      <div class="guidance-list">${presets}</div>
-      <details class="custom-distance-card">
-        <summary>Custom Distance</summary>
-        <label>Current Zero<input id="currentZeroDistance" inputmode="decimal" placeholder="" /></label>
-        <label>Desired Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
-        <div class="unit-toggle" role="group" aria-label="Distance units">
-          <button class="unit-button is-active" type="button" data-distance-unit="YDS">YDS</button>
-          <button class="unit-button" type="button" data-distance-unit="M">M</button>
-        </div>
+      <summary>Distance Click Query</summary>
+      <div class="distance-query-row">
+        <label>Go To Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
-        <div class="guidance-result" id="guidanceResult">Result:</div>
-      </details>
+      </div>
+      <div class="guidance-result" id="guidanceResult">Dial:</div>
     </details>
   `;
 }
@@ -333,26 +323,19 @@ function lockDistanceForSession() {
 }
 
 function bindGuidanceCard() {
-  let selectedUnit = "YDS";
-  document.querySelectorAll("[data-distance-unit]").forEach(button => {
-    button.addEventListener("click", () => {
-      selectedUnit = button.dataset.distanceUnit;
-      document.querySelectorAll("[data-distance-unit]").forEach(item => item.classList.toggle("is-active", item === button));
-    });
-  });
   const calculateButton = document.getElementById("calculateDistanceClicks");
   if (!calculateButton) return;
   calculateButton.addEventListener("click", () => {
-    const current = Number(document.getElementById("currentZeroDistance").value);
     const desired = Number(document.getElementById("desiredZeroDistance").value);
     const result = document.getElementById("guidanceResult");
-    if (!Number.isFinite(current) || !Number.isFinite(desired)) {
-      result.textContent = "Result:";
+    if (!Number.isFinite(desired)) {
+      result.textContent = "Dial:";
       return;
     }
     // Non-authoritative distance guidance placeholder; backend owns click calculations.
-    result.textContent = "Backend authority required";
-    result.dataset.unit = selectedUnit;
+    result.textContent = "Dial: Backend authority required";
+    result.dataset.unit = selectedDistanceUnit;
+    result.dataset.adjustmentUnit = selectedAdjustmentUnit;
   });
 }
 
@@ -797,8 +780,13 @@ function renderMarkers() {
 
 function compactClick(value, axis) {
   if (!value) return "Not calculated";
-  const amount = String(value).match(/\d+/)?.[0] || "0";
-  const upper = String(value).toUpperCase();
+  const label = typeof value === "object" && value.label ? value.label : String(value);
+  const amount = typeof value === "object" && Number.isFinite(Number(value.clicks))
+    ? String(Math.abs(Number(value.clicks)))
+    : (label.match(/\d+/)?.[0] || "0");
+  const upper = typeof value === "object" && value.direction
+    ? String(value.direction).toUpperCase()
+    : label.toUpperCase();
   if (axis === "elevation") {
     if (upper.includes("UP")) return `${amount} Clicks ↑`;
     if (upper.includes("DOWN")) return `${amount} Clicks ↓`;
@@ -812,8 +800,13 @@ function compactClick(value, axis) {
 
 function compactClickToken(value, axis) {
   if (!value) return "--";
-  const amount = String(value).match(/\d+/)?.[0] || "0";
-  const upper = String(value).toUpperCase();
+  const label = typeof value === "object" && value.label ? value.label : String(value);
+  const amount = typeof value === "object" && Number.isFinite(Number(value.clicks))
+    ? String(Math.abs(Number(value.clicks)))
+    : (label.match(/\d+/)?.[0] || "0");
+  const upper = typeof value === "object" && value.direction
+    ? String(value.direction).toUpperCase()
+    : label.toUpperCase();
   if (axis === "elevation") {
     if (upper.includes("UP")) return `${amount}↑`;
     if (upper.includes("DOWN")) return `${amount}↓`;
@@ -847,7 +840,7 @@ function renderResults() {
   if (currentClicks) {
     hitsParts.push(compactClickToken(currentClicks.elevation, "elevation"), compactClickToken(currentClicks.windage, "windage"));
   }
-  document.getElementById("hitsValue").textContent = hitsParts.join("    ");
+  document.getElementById("hitsValue").textContent = hitsParts.join(" • ");
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage

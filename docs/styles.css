@@ -800,6 +800,36 @@ button:active,
   -webkit-touch-callout:none;
 }
 
+.distance-query-row{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  gap:8px;
+  align-items:end;
+  margin-top:8px;
+}
+
+.distance-query-row label{
+  display:grid;
+  gap:4px;
+  margin:0;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.distance-query-row input{
+  width:100%;
+  min-height:36px;
+  padding:6px 9px;
+  border:2px solid var(--ink);
+  border-radius:var(--radius);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:16px;
+  font-weight:900;
+}
+
 .guidance-list{
   display:grid;
   gap:5px;
@@ -842,8 +872,9 @@ button:active,
 }
 
 .guidance-calc-button{
-  width:100%;
+  width:auto;
   min-height:36px;
+  padding-inline:14px;
 }
 
 .guidance-result{
@@ -5431,7 +5462,7 @@ input[readonly]{
   font-size:13px;
   letter-spacing:.04em;
   text-align:center;
-  white-space:pre;
+  white-space:normal;
 }
 
 .target-page .target-distance-unit-toggle{
@@ -5458,6 +5489,16 @@ input[readonly]{
 .target-page .guidance-card summary,
 .target-page .custom-distance-card summary,
 .target-page .guidance-list{
+  color:#f5f1e8;
+}
+
+.target-page .distance-query-row label{
+  color:#d9960b;
+}
+
+.target-page .distance-query-row input{
+  border-color:rgba(179,123,8,.66);
+  background:#101010;
   color:#f5f1e8;
 }
 
