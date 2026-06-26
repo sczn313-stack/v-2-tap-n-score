@@ -24,8 +24,8 @@
       <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
-    <details class="mobile-platform-menu">
-      <summary>Menu</summary>
+    <details class="mobile-platform-menu target-mobile-menu">
+      <summary aria-label="Open navigation">☰</summary>
       <a href="index.html">Home</a>
       <a href="matrix.html">Weapon Library</a>
       <a href="shoot.html" aria-current="page">Target</a>
@@ -47,16 +47,11 @@
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
-          <details class="target-advanced-tools">
-            <summary>Advanced</summary>
-            <label class="grid-coordinate-toggle"><input id="showGridCoordinates" type="checkbox" /> Show Grid Coordinates</label>
-          </details>
+          <input id="showGridCoordinates" type="checkbox" hidden />
         </div>
         <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
           <div class="evidence-meta evidence-status-stack">
             <div class="target-intel-stack" id="resultsGrid"></div>
-            <strong>No target evidence uploaded</strong>
-            <span>Choose Target to begin</span>
           </div>
         </div>
       </section>
@@ -361,9 +356,7 @@ function renderEvidencePreview(image) {
   displayedEvidence = evidence;
   if (!evidence) {
     preview.innerHTML = `
-      <div class="evidence-meta evidence-status-stack empty-target-start">
-        <strong>Choose Target Photo To Begin</strong>
-      </div>
+      <div class="evidence-meta evidence-status-stack empty-target-start"></div>
     `;
     renderMarkStatus();
     return;

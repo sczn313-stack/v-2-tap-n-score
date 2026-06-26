@@ -5476,7 +5476,19 @@ input[readonly]{
   }
 
   .target-page .m4-header{
+    display:flex;
+    flex-wrap:nowrap;
     gap:8px;
+    align-items:center;
+  }
+
+  .target-page .vendor-slot{
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .target-page .brand-lockup .kicker{
+    display:none;
   }
 
   .target-page .locked-nav{
@@ -5485,7 +5497,30 @@ input[readonly]{
 
   .target-page .mobile-platform-menu{
     display:block;
-    flex:1 1 100%;
+    flex:0 0 auto;
+    margin-left:auto;
+    position:relative;
+  }
+
+  .target-page .target-mobile-menu summary{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:44px;
+    height:40px;
+    min-height:40px;
+    padding:6px 10px;
+    text-align:center;
+    font-size:22px;
+    line-height:1;
+  }
+
+  .target-page .target-mobile-menu[open]{
+    flex-basis:100%;
+  }
+
+  .target-page .target-mobile-menu[open] summary{
+    margin-left:auto;
   }
 
   .target-page .target-work-heading{
