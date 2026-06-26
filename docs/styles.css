@@ -1350,6 +1350,40 @@ button:active,
   display:none;
 }
 
+.weapon-library-empty-state{
+  display:grid;
+  gap:10px;
+  padding:12px;
+  border:2px solid rgba(179,123,8,.58);
+  border-radius:var(--radius);
+  background:#111;
+  color:#f5f1e8;
+}
+
+.weapon-library-empty-state h3,
+.weapon-library-empty-state p{
+  margin:0;
+}
+
+.weapon-library-empty-state h3{
+  color:#fff;
+  font-size:15px;
+  font-weight:1000;
+  line-height:1.15;
+}
+
+.weapon-library-empty-state p{
+  color:#d7cdbb;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.weapon-library-empty-state .button{
+  justify-self:start;
+  min-width:min(100%, 220px);
+}
+
 .matrix-form.is-profile-collapsed > .form-section,
 .matrix-form.is-profile-collapsed > details.form-section,
 .matrix-form.is-profile-collapsed > .setup-save-row{

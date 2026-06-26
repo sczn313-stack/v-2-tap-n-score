@@ -37,8 +37,8 @@
     <form class="panel matrix-form is-profile-collapsed" id="matrixForm">
       <div class="weapon-top-row">
         <button class="button primary weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
-        <button class="button primary" type="button" id="newSetup">New Weapon Setup</button>
-        <button class="button primary" type="submit">Go To Target</button>
+        <button class="button" type="button" id="newSetup">New Weapon Setup</button>
+        <button class="button" type="submit">Go To Target</button>
       </div>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
@@ -1016,7 +1016,13 @@ function renderWeaponList() {
   const activeCategory = selectedWeaponCategory();
   const categoryOrder = [activeCategory, "Rifle", "Pistol", "Shotgun"].filter((category, index, array) => array.indexOf(category) === index);
   if (!setups.length) {
-    container.innerHTML = `<p class="weapon-list-empty">No saved weapons yet. Create and save a weapon profile below.</p>`;
+    container.innerHTML = `
+      <article class="weapon-library-empty-state">
+        <h3>Your Weapon Library Is Empty</h3>
+        <p>Set up your first weapon once and save it for future range sessions.</p>
+        <button class="button primary" type="button" data-empty-library-action="new-setup">🟨 New Weapon Setup</button>
+      </article>
+    `;
     return;
   }
   container.innerHTML = categoryOrder.map(category => {
@@ -1268,6 +1274,11 @@ document.getElementById("weaponListToggle").addEventListener("click", () => {
   setWeaponListExpanded(!isExpanded);
 });
 document.getElementById("weaponListPanel").addEventListener("click", event => {
+  if (event.target.closest("[data-empty-library-action='new-setup']")) {
+    setProfileEditorVisible(true);
+    clearSetupFields();
+    return;
+  }
   const button = event.target.closest("[data-setup-action]");
   if (!button) return;
   const setupId = button.dataset.setupId;
