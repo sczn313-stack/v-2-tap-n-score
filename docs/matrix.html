@@ -987,7 +987,9 @@ function weaponCaliber(setup) {
 }
 
 function weaponDistance(setup) {
-  return setup.targetDistance || setup.distance || (setup.targetDistanceValue ? `${setup.targetDistanceValue} ${setup.targetDistanceUnit === "M" ? "m" : "yds"}` : "Distance not set");
+  const distance = setup.targetDistance || setup.distance || (setup.targetDistanceValue ? `${setup.targetDistanceValue} ${setup.targetDistanceUnit === "M" ? "m" : "yds"}` : "Distance not set");
+  const adjustmentUnit = setup.opticAdjustmentUnit === "MRAD" ? "MRAD" : setup.opticAdjustmentUnit === "MOA" ? "MOA" : "";
+  return adjustmentUnit && !new RegExp(`\\b${adjustmentUnit}\\b`, "i").test(distance) ? `${distance} ${adjustmentUnit}` : distance;
 }
 
 function setupUsageStats(setup) {
@@ -1039,7 +1041,7 @@ function renderWeaponList() {
             <span>${escapeHtml(weaponCaliber(setup))}</span>
           </div>
           <dl>
-            <div><dt>Session Distance</dt><dd>${escapeHtml(weaponDistance(setup))}</dd></div>
+            <div><dt>Session Distance Zeroed At</dt><dd>${escapeHtml(weaponDistance(setup))}</dd></div>
             <div><dt>Last Used</dt><dd>${escapeHtml(usage.lastUsed)}</dd></div>
             <div><dt>Sessions</dt><dd>${escapeHtml(usage.sessionCount)}</dd></div>
           </dl>
@@ -1091,10 +1093,23 @@ function setWeaponListExpanded(isExpanded) {
   toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon Library`;
 }
 
-function selectWeaponFromList(setupId, shouldCollapse = false) {
+function goToTarget() {
+  const session = SCZN3M4.createSession(collectForm());
+  try {
+    if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
+  } catch (error) {}
+  window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}`;
+}
+
+function selectWeaponFromList(setupId, action = "edit") {
   loadSavedSetup(setupId);
-  if (shouldCollapse) setWeaponListExpanded(false);
-  if (!shouldCollapse) setProfileEditorVisible(true);
+  setWeaponListExpanded(false);
+  if (action === "use") {
+    setProfileEditorVisible(false);
+    goToTarget();
+    return;
+  }
+  setProfileEditorVisible(true);
 }
 
 function setForm(snapshot) {
@@ -1253,11 +1268,7 @@ function loadMatrix() {
 
 form.addEventListener("submit", event => {
   event.preventDefault();
-  const session = SCZN3M4.createSession(collectForm());
-  try {
-    if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
-  } catch (error) {}
-  window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}`;
+  goToTarget();
 });
 
 document.getElementById("saveSetup").addEventListener("click", () => {
@@ -1265,16 +1276,20 @@ document.getElementById("saveSetup").addEventListener("click", () => {
 });
 
 document.getElementById("newSetup").addEventListener("click", () => {
+  setWeaponListExpanded(false);
   setProfileEditorVisible(true);
   clearSetupFields();
 });
 document.getElementById("savedSetupSelect").addEventListener("change", event => loadSavedSetup(event.target.value));
 document.getElementById("weaponListToggle").addEventListener("click", () => {
   const isExpanded = document.getElementById("weaponListToggle").getAttribute("aria-expanded") === "true";
-  setWeaponListExpanded(!isExpanded);
+  const shouldOpen = !isExpanded;
+  if (shouldOpen) setProfileEditorVisible(false);
+  setWeaponListExpanded(shouldOpen);
 });
 document.getElementById("weaponListPanel").addEventListener("click", event => {
   if (event.target.closest("[data-empty-library-action='new-setup']")) {
+    setWeaponListExpanded(false);
     setProfileEditorVisible(true);
     clearSetupFields();
     return;
@@ -1283,7 +1298,7 @@ document.getElementById("weaponListPanel").addEventListener("click", event => {
   if (!button) return;
   const setupId = button.dataset.setupId;
   if (!setupId) return;
-  selectWeaponFromList(setupId, button.dataset.setupAction === "use");
+  selectWeaponFromList(setupId, button.dataset.setupAction);
 });
 document.querySelectorAll("[data-weapon-category]").forEach(button => {
   button.addEventListener("click", () => {
