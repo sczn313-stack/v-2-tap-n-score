@@ -669,6 +669,10 @@ button:active,
   grid-column:1 / -1;
 }
 
+.authority-evidence-summary .evidence-count{
+  grid-column:1 / -1;
+}
+
 .target-intel-distance,
 .target-intel-item,
 .target-intel-score{
@@ -5411,6 +5415,29 @@ input[readonly]{
 
 .target-page .target-intel-score strong{
   font-size:clamp(30px, 5vw, 46px);
+}
+
+.target-page .evidence-count{
+  min-height:auto;
+  padding:2px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+.target-page .evidence-count strong{
+  color:#f5f1e8;
+  font-size:13px;
+  letter-spacing:.04em;
+  text-align:center;
+  white-space:pre;
+}
+
+.target-page .target-distance-unit-toggle{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:6px;
 }
 
 .target-page .authority-status-message{

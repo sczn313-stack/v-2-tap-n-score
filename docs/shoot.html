@@ -111,6 +111,7 @@ let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.ma
 let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
 let distanceLocked = !!(session && session.targetDistanceLocked);
 let showGridCoordinates = false;
+let selectedAdjustmentUnit = String((matrix && (matrix.opticAdjustmentUnit || matrix.adjustmentUnit)) || "MOA").toUpperCase() === "MRAD" ? "MRAD" : "MOA";
 const BAKER_GRID_AUDIT = {
   imageWidth: 1102,
   imageHeight: 1713,
@@ -213,23 +214,21 @@ function distanceOptions() {
 function targetIntelStackHtml() {
   return `
     <div class="authority-results-panel" aria-label="Authority results">
-      <div class="authority-results-heading">
-        <span>Authority Results</span>
-        <strong>Backend analyzed</strong>
-      </div>
       <div class="authority-primary-correction" aria-label="Correction recommendation">
         <div class="target-intel-item correction-axis"><span>Elevation</span><strong id="elevationValue">--</strong></div>
         <div class="target-intel-item correction-axis"><span>Windage</span><strong id="windageValue">--</strong></div>
       </div>
       <div class="authority-evidence-summary">
         <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
-        <div class="target-intel-item evidence-count"><span>Evidence</span><strong id="hitsValue">0 Hits</strong></div>
+        <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
         <div class="target-intel-distance" aria-label="Session distance">
           <span>Session Distance</span>
           <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
-          <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance units">
+          <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance and optic units">
             <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
             <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+            <button class="unit-button${selectedAdjustmentUnit === "MOA" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MOA">MOA</button>
+            <button class="unit-button${selectedAdjustmentUnit === "MRAD" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MRAD">MRAD</button>
           </div>
           <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
           <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
@@ -299,6 +298,13 @@ function bindDistanceControl() {
       selectedDistanceUnit = button.dataset.targetDistanceUnit;
       document.querySelectorAll("[data-target-distance-unit]").forEach(item => item.classList.toggle("is-active", item === button));
       updateDistanceDisplay();
+    });
+  });
+  document.querySelectorAll("[data-target-adjustment-unit]").forEach(button => {
+    button.addEventListener("click", () => {
+      selectedAdjustmentUnit = button.dataset.targetAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
+      document.querySelectorAll("[data-target-adjustment-unit]").forEach(item => item.classList.toggle("is-active", item === button));
+      clearCalculatedResults();
     });
   });
   updateDistanceDisplay();
@@ -461,9 +467,9 @@ function backendTargetGeometry() {
 
 function backendAuthorityRequest() {
   const source = matrix || {};
-  const opticAdjustmentUnit = String(source.opticAdjustmentUnit || source.adjustmentUnit || "MOA").toUpperCase();
+  const opticAdjustmentUnit = selectedAdjustmentUnit;
   const opticClickValueMOA = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
-  const opticClickValueMRAD = source.opticClickValueMRAD || source.clickValueMRAD || source.opticClickValue || source.clickValue || null;
+  const opticClickValueMRAD = source.opticClickValueMRAD || source.clickValueMRAD || (opticAdjustmentUnit === "MRAD" ? 0.1 : null);
   const opticClickValue = opticAdjustmentUnit === "MRAD" ? opticClickValueMRAD : opticClickValueMOA;
   const opticClickValueLabel = source.opticClickValueLabel || source.clickValueLabel || `${opticClickValue} ${opticAdjustmentUnit}`;
   return {
@@ -536,16 +542,7 @@ function correctionCardDistance() {
 }
 
 function renderCorrectionOverlay(correction) {
-  if (!correction || !correction.poib || !currentAimPoint) return "";
-  const elevation = compactClick(correction.elevation, "elevation");
-  const windage = compactClick(correction.windage, "windage");
-  return `
-    <div class="target-correction-card" aria-label="Calculated correction summary">
-      <strong>${correctionCardDistance()}</strong>
-      <span>${elevation}</span>
-      <span>${windage}</span>
-      <span>${currentImpactPoints.length} Hits</span>
-    </div>`;
+  return "";
 }
 
 // Non-authoritative legacy adapter retained temporarily; do not use for POIB/click/vector truth.
@@ -813,6 +810,21 @@ function compactClick(value, axis) {
   return `${amount} Clicks`;
 }
 
+function compactClickToken(value, axis) {
+  if (!value) return "--";
+  const amount = String(value).match(/\d+/)?.[0] || "0";
+  const upper = String(value).toUpperCase();
+  if (axis === "elevation") {
+    if (upper.includes("UP")) return `${amount}↑`;
+    if (upper.includes("DOWN")) return `${amount}↓`;
+  }
+  if (axis === "windage") {
+    if (upper.includes("RIGHT")) return `${amount}→`;
+    if (upper.includes("LEFT")) return `${amount}←`;
+  }
+  return amount;
+}
+
 function scoreClass(score) {
   if (!Number.isFinite(score)) return "score-pending";
   if (score >= 90) return "score-green";
@@ -831,7 +843,11 @@ function renderResults() {
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
   document.getElementById("elevationValue").textContent = compactClick(currentClicks && currentClicks.elevation, "elevation");
   document.getElementById("windageValue").textContent = compactClick(currentClicks && currentClicks.windage, "windage");
-  document.getElementById("hitsValue").textContent = `${impacts.length} Hits`;
+  const hitsParts = [`${impacts.length} Hits`];
+  if (currentClicks) {
+    hitsParts.push(compactClickToken(currentClicks.elevation, "elevation"), compactClickToken(currentClicks.windage, "windage"));
+  }
+  document.getElementById("hitsValue").textContent = hitsParts.join("    ");
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
