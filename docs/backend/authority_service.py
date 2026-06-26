@@ -189,6 +189,15 @@ def clicks_for_inches(inches: float, yards: float, adjustment: Dict[str, Any]) -
     return int(round(angular_value / click_value))
 
 
+def clicks_for_angular_value(angular_value: float, adjustment_unit: str, click_value: float) -> int:
+    unit = str(adjustment_unit or "").upper()
+    if unit not in {"MOA", "MRAD"}:
+        raise ValueError("invalid or missing optic adjustment unit")
+    if click_value <= 0:
+        raise ValueError("invalid or missing optic click value")
+    return int(round(abs(angular_value) / click_value))
+
+
 def angular_for_inches(inches: float, yards: float, adjustment: Dict[str, Any]) -> float:
     if adjustment["unit"] == "MRAD":
         return mrad_for_inches(inches, yards)
@@ -351,6 +360,92 @@ def build_shooter_guidance(correction: Optional[Dict[str, Any]], clicks: Optiona
 def stable_hash(payload: Dict[str, Any]) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _distance_query_number(payload: Dict[str, Any], key: str) -> Optional[float]:
+    value = _num(payload.get(key), None)
+    return value if value is not None and value > 0 else None
+
+
+def _distance_query_unavailable(reason: str) -> Dict[str, Any]:
+    return {
+        "ok": False,
+        "reason": reason,
+        "display": "Dial: Backend authority required",
+        "method": "distance-click-authority-v1",
+    }
+
+
+def _distance_query_direction(payload: Dict[str, Any], default: str = "UP") -> str:
+    direction = str(payload.get("direction") or payload.get("dialDirection") or default).upper()
+    return direction if direction in {"UP", "DOWN"} else default
+
+
+def build_distance_click_query(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Build authoritative distance-click guidance.
+
+    Distance transitions require trajectory/doctrine authority. Distances and optic
+    click value alone are not enough to produce truthful clicks.
+    """
+    if not isinstance(payload, dict):
+        payload = {}
+
+    current_distance = _distance_query_number(payload, "currentDistance")
+    go_to_distance = _distance_query_number(payload, "goToDistance")
+    distance_unit = str(payload.get("currentDistanceUnit") or payload.get("distanceUnit") or "").upper()
+    adjustment_unit = str(payload.get("adjustmentUnit") or "").upper()
+    click_value = _num(payload.get("clickValue"), None)
+
+    if current_distance is None:
+        return _distance_query_unavailable("missing_current_distance")
+    if go_to_distance is None:
+        return _distance_query_unavailable("missing_go_to_distance")
+    if distance_unit not in {"YDS", "M"}:
+        return _distance_query_unavailable("invalid_distance_unit")
+    if adjustment_unit not in {"MOA", "MRAD"}:
+        return _distance_query_unavailable("invalid_adjustment_unit")
+    if click_value is None or click_value <= 0:
+        return _distance_query_unavailable("invalid_click_value")
+
+    approved_clicks = _num(
+        _first_present(
+            payload.get("authorityClicks"),
+            payload.get("dialClicks"),
+            payload.get("approvedClicks"),
+        ),
+        None,
+    )
+    if approved_clicks is not None:
+        dial_clicks = int(round(abs(approved_clicks)))
+        direction = _distance_query_direction(payload)
+        return {
+            "ok": True,
+            "dialClicks": dial_clicks,
+            "direction": direction,
+            "display": f"Dial: {dial_clicks} Clicks {'↑' if direction == 'UP' else '↓'}",
+            "method": "distance-click-authority-v1-approved-clicks",
+        }
+
+    angular_delta = _num(
+        _first_present(
+            payload.get("authorityAngularDelta"),
+            payload.get("angularDelta"),
+            payload.get("dropDeltaAngular"),
+        ),
+        None,
+    )
+    if angular_delta is not None:
+        dial_clicks = clicks_for_angular_value(angular_delta, adjustment_unit, click_value)
+        direction = _distance_query_direction(payload, "UP" if angular_delta >= 0 else "DOWN")
+        return {
+            "ok": True,
+            "dialClicks": dial_clicks,
+            "direction": direction,
+            "display": f"Dial: {dial_clicks} Clicks {'↑' if direction == 'UP' else '↓'}",
+            "method": "distance-click-authority-v1-angular-delta",
+        }
+
+    return _distance_query_unavailable("insufficient_authority")
 
 
 def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:

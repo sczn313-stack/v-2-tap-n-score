@@ -1,4 +1,4 @@
-from authority_service import build_authority_package
+from authority_service import build_authority_package, build_distance_click_query
 
 
 def package(aim=None, impacts=None, optic=None):
@@ -206,6 +206,73 @@ def test_backend_group_size_is_authoritative():
     assert_close(result["group"]["valueMOA"], 0.96, "one-inch group moa", tolerance=0.01)
 
 
+def distance_query(**overrides):
+    payload = {
+        "currentDistance": 100,
+        "currentDistanceUnit": "YDS",
+        "adjustmentUnit": "MOA",
+        "clickValue": 0.25,
+        "goToDistance": 300,
+    }
+    payload.update(overrides)
+    return build_distance_click_query(payload)
+
+
+def test_distance_click_query_missing_current_distance():
+    result = distance_query(currentDistance=None)
+    assert_equal(result["ok"], False, "missing current distance ok")
+    assert_equal(result["reason"], "missing_current_distance", "missing current distance reason")
+    assert_equal(result["display"], "Dial: Backend authority required", "missing current distance display")
+
+
+def test_distance_click_query_missing_go_to_distance():
+    result = distance_query(goToDistance=None)
+    assert_equal(result["ok"], False, "missing go to distance ok")
+    assert_equal(result["reason"], "missing_go_to_distance", "missing go to distance reason")
+
+
+def test_distance_click_query_missing_adjustment_unit():
+    result = distance_query(adjustmentUnit="")
+    assert_equal(result["ok"], False, "missing adjustment unit ok")
+    assert_equal(result["reason"], "invalid_adjustment_unit", "missing adjustment unit reason")
+
+
+def test_distance_click_query_missing_click_value():
+    result = distance_query(clickValue=None)
+    assert_equal(result["ok"], False, "missing click value ok")
+    assert_equal(result["reason"], "invalid_click_value", "missing click value reason")
+
+
+def test_distance_click_query_distance_only_does_not_fake_clicks():
+    result = distance_query()
+    assert_equal(result["ok"], False, "distance-only ok")
+    assert_equal(result["reason"], "insufficient_authority", "distance-only reason")
+    if "dialClicks" in result:
+        raise AssertionError("distance-only query must not return fake dialClicks")
+
+
+def test_distance_click_query_approved_clicks():
+    result = distance_query(authorityClicks=18, direction="UP")
+    assert_equal(result["ok"], True, "approved clicks ok")
+    assert_equal(result["dialClicks"], 18, "approved clicks count")
+    assert_equal(result["direction"], "UP", "approved clicks direction")
+    assert_equal(result["display"], "Dial: 18 Clicks ↑", "approved clicks display")
+
+
+def test_distance_click_query_angular_delta_moa():
+    result = distance_query(authorityAngularDelta=4.5, adjustmentUnit="MOA", clickValue=0.25, direction="UP")
+    assert_equal(result["ok"], True, "moa angular ok")
+    assert_equal(result["dialClicks"], 18, "moa angular clicks")
+    assert_equal(result["display"], "Dial: 18 Clicks ↑", "moa angular display")
+
+
+def test_distance_click_query_angular_delta_mrad():
+    result = distance_query(authorityAngularDelta=1.8, adjustmentUnit="MRAD", clickValue=0.1, direction="DOWN")
+    assert_equal(result["ok"], True, "mrad angular ok")
+    assert_equal(result["dialClicks"], 18, "mrad angular clicks")
+    assert_equal(result["display"], "Dial: 18 Clicks ↓", "mrad angular display")
+
+
 def run():
     tests = [
         test_no_aim_returns_no_correction,
@@ -230,6 +297,14 @@ def run():
         test_missing_evidence_creates_no_fake_coordinate,
         test_backend_score_scores_close_hits_higher_than_far_hits,
         test_backend_group_size_is_authoritative,
+        test_distance_click_query_missing_current_distance,
+        test_distance_click_query_missing_go_to_distance,
+        test_distance_click_query_missing_adjustment_unit,
+        test_distance_click_query_missing_click_value,
+        test_distance_click_query_distance_only_does_not_fake_clicks,
+        test_distance_click_query_approved_clicks,
+        test_distance_click_query_angular_delta_moa,
+        test_distance_click_query_angular_delta_mrad,
     ]
     for test in tests:
         test()

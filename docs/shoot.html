@@ -82,6 +82,7 @@ const PRODUCTION_AUTHORITY_ENDPOINT = AUTHORITY_ENDPOINT_META && AUTHORITY_ENDPO
 const LOCAL_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
 const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
 const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
+const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
 let pendingEvidence = null;
 let displayedEvidence = null;
 let backendAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
@@ -318,20 +319,54 @@ function lockDistanceForSession() {
   distanceLocked = true;
 }
 
+function distanceClickQueryPayload(goToDistance) {
+  const source = matrix || {};
+  const opticAdjustmentUnit = selectedAdjustmentUnit;
+  const opticClickValueMOA = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
+  const opticClickValueMRAD = source.opticClickValueMRAD || source.clickValueMRAD || (opticAdjustmentUnit === "MRAD" ? 0.1 : null);
+  const opticClickValue = opticAdjustmentUnit === "MRAD" ? opticClickValueMRAD : opticClickValueMOA;
+  return {
+    currentDistance: Number(selectedDistanceValue || 100),
+    currentDistanceUnit: selectedDistanceUnit,
+    adjustmentUnit: opticAdjustmentUnit,
+    clickValue: Number(opticClickValue),
+    goToDistance: Number(goToDistance)
+  };
+}
+
+async function requestDistanceClickQuery(goToDistance) {
+  const response = await fetch(DISTANCE_CLICK_QUERY_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(distanceClickQueryPayload(goToDistance))
+  });
+  if (!response.ok) {
+    throw new Error(`Distance click authority failed: ${response.status}`);
+  }
+  return response.json();
+}
+
 function bindGuidanceCard() {
   const calculateButton = document.getElementById("calculateDistanceClicks");
   if (!calculateButton) return;
-  calculateButton.addEventListener("click", () => {
+  calculateButton.addEventListener("click", async () => {
     const desired = Number(document.getElementById("desiredZeroDistance").value);
     const result = document.getElementById("guidanceResult");
     if (!Number.isFinite(desired)) {
       result.textContent = "Dial:";
       return;
     }
-    // Non-authoritative distance guidance placeholder; backend owns click calculations.
-    result.textContent = "Dial: Backend authority required";
+    result.textContent = "Dial: Checking authority...";
     result.dataset.unit = selectedDistanceUnit;
     result.dataset.adjustmentUnit = selectedAdjustmentUnit;
+    try {
+      const authority = await requestDistanceClickQuery(desired);
+      result.textContent = authority && authority.ok === true && authority.display
+        ? authority.display
+        : "Dial: Backend authority required";
+    } catch (error) {
+      result.textContent = "Dial: Backend authority required";
+    }
   });
 }
 

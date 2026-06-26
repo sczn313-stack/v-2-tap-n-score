@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from authority_service import build_authority_package
+from authority_service import build_authority_package, build_distance_click_query
 from ops_store import record_event, summarize_events
 
 HOST = os.environ.get("HOST", "127.0.0.1")
@@ -26,6 +26,7 @@ ALLOWED_ORIGINS = {
 
 class AuthorityHandler(BaseHTTPRequestHandler):
     AUTHORITY_PATHS = {"/api/authority/ugeo", "/api/authority/ugeo/"}
+    DISTANCE_CLICK_QUERY_PATHS = {"/api/authority/distance-click-query", "/api/authority/distance-click-query/"}
     OPS_EVENT_PATHS = {"/api/ops/event", "/api/ops/event/"}
     OPS_SUMMARY_PATHS = {"/api/ops/summary", "/api/ops/summary/"}
     OPS_HEALTH_PATHS = {"/api/ops/health", "/api/ops/health/"}
@@ -93,6 +94,12 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         if path in self.OPS_EVENT_PATHS:
             try:
                 self._send_json(200, record_event(self._read_json_body()))
+            except Exception as exc:  # pragma: no cover - defensive server boundary
+                self._send_json(400, {"error": str(exc)})
+            return
+        if path in self.DISTANCE_CLICK_QUERY_PATHS:
+            try:
+                self._send_json(200, build_distance_click_query(self._read_json_body()))
             except Exception as exc:  # pragma: no cover - defensive server boundary
                 self._send_json(400, {"error": str(exc)})
             return
