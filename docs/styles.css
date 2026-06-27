@@ -5357,9 +5357,34 @@ input[readonly]{
 }
 
 .target-page .shoot-workflow > .panel{
+  display:grid;
+  gap:8px;
   border:1px solid rgba(255,255,255,.08);
   background:linear-gradient(180deg,#121212,#070707);
   box-shadow:0 14px 34px rgba(0,0,0,.34);
+}
+
+.target-page .target-session-context{
+  display:grid;
+  gap:4px;
+  padding:8px 10px;
+  border:1px solid rgba(179,123,8,.42);
+  border-radius:var(--radius);
+  background:linear-gradient(180deg,#111,#090909);
+}
+
+.target-page .target-session-context > span{
+  color:#d9960b;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.target-page .target-session-context > strong{
+  color:#f5f1e8;
+  font-size:15px;
+  line-height:1.25;
 }
 
 .target-page .target-work-heading{

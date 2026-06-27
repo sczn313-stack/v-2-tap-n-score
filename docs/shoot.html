@@ -29,7 +29,11 @@
   <section class="active-session-bar" id="activeSessionBar"></section>
   <section class="shoot-workflow">
     <div class="panel">
-      <h1 class="target-work-heading"><span>🎯</span><span class="nav-separator">|</span><span>Target</span><span class="shooter-tip is-hidden" id="shooterTip"><span class="nav-separator">|</span><span class="tip-label">Tip:</span><span id="shooterTipText"></span></span></h1>
+      <section class="target-session-context" aria-label="Today's range session">
+        <span>Today's Range Session</span>
+        <strong id="targetSessionSummary">No active weapon profile</strong>
+        <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
+      </section>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
         <div class="workflow-control-row" aria-label="SCZN3 shooting workflow controls">
           <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
@@ -121,9 +125,14 @@ function currentSetupName() {
 }
 
 function renderActiveSessionBar() {
+  const sessionSummary = currentSetupName();
   document.getElementById("activeSessionBar").innerHTML = session
     ? `<strong>${currentSetupName()}</strong><span></span>`
     : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
+  const targetSessionSummary = document.getElementById("targetSessionSummary");
+  if (targetSessionSummary) {
+    targetSessionSummary.textContent = session ? sessionSummary : "Create a weapon profile to begin";
+  }
 }
 
 function defaultTargetMatrix() {
