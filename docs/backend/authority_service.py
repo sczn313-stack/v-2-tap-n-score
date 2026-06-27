@@ -11,6 +11,8 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+from mission_registry import normalize_target_profile, refusal_for_profile
+
 DEFAULT_TARGET_ID = "BAKER_ST_100YD_SMART"
 DEFAULT_TARGET_GEOMETRY = {
     "targetId": DEFAULT_TARGET_ID,
@@ -451,6 +453,11 @@ def build_distance_click_query(payload: Dict[str, Any]) -> Dict[str, Any]:
 def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(payload, dict):
         payload = {}
+
+    profile = normalize_target_profile(payload)
+    refusal = refusal_for_profile(profile)
+    if refusal:
+        return refusal
 
     geometry = target_geometry(payload)
     aim = normalize_point(payload.get("aimCoordinate") or payload.get("aim") or payload.get("aimPoint"))

@@ -1,4 +1,5 @@
 from authority_service import build_authority_package, build_distance_click_query
+from mission_registry import MISSION_FAMILY_IDS, RESULT_PACKAGE_IDS
 
 
 def package(aim=None, impacts=None, optic=None):
@@ -206,6 +207,72 @@ def test_backend_group_size_is_authoritative():
     assert_close(result["group"]["valueMOA"], 0.96, "one-inch group moa", tolerance=0.01)
 
 
+def test_mission_family_registry_contains_known_ids():
+    expected = {
+        "zeroingCorrection",
+        "precisionRingScore",
+        "precisionGroup",
+        "courseOfFireScore",
+        "practicalStageScore",
+        "qualification",
+        "trainingProgression",
+        "hitMissReactive",
+        "scenarioDecision",
+        "anatomyVitalZone",
+        "recreationalChallenge",
+        "smartEvidenceCapture",
+    }
+    assert_equal(MISSION_FAMILY_IDS, expected, "mission family registry")
+
+
+def test_result_package_registry_contains_known_ids():
+    expected = {
+        "zeroCorrectionResult",
+        "precisionScoreResult",
+        "precisionGroupResult",
+        "stageScoreResult",
+        "qualificationResult",
+        "hitMissResult",
+        "trainingProgressionResult",
+        "challengeResult",
+        "smartEvidenceResult",
+    }
+    assert_equal(RESULT_PACKAGE_IDS, expected, "result package registry")
+
+
+def test_unsupported_mission_family_returns_governed_unavailable():
+    result = build_authority_package({
+        "targetId": "IBS_100YD_RIMFIRE_MATCH",
+        "missionFamilyId": "precisionRingScore",
+        "resultPackageType": "precisionScoreResult",
+    })
+    assert_equal(result["ok"], False, "unsupported ok")
+    assert_equal(result["status"], "unavailable", "unsupported status")
+    assert_equal(result["reason"], "mission_family_not_implemented", "unsupported reason")
+    assert_equal(result["missionFamilyId"], "precisionRingScore", "unsupported mission")
+    assert_equal(result["resultPackageType"], "precisionScoreResult", "unsupported result package")
+
+
+def test_result_package_must_be_authorized_by_mission_family():
+    result = build_authority_package({
+        "targetId": "IBS_100YD_RIMFIRE_MATCH",
+        "missionFamilyId": "precisionRingScore",
+        "resultPackageType": "zeroCorrectionResult",
+    })
+    assert_equal(result["ok"], False, "unauthorized package ok")
+    assert_equal(result["reason"], "result_package_not_authorized_by_mission_family", "unauthorized package reason")
+
+
+def test_unknown_mission_family_is_rejected_before_scoring():
+    result = build_authority_package({
+        "targetId": "UNKNOWN_TARGET",
+        "missionFamilyId": "unknownMission",
+        "resultPackageType": "challengeResult",
+    })
+    assert_equal(result["ok"], False, "unknown mission ok")
+    assert_equal(result["reason"], "mission_family_not_registered", "unknown mission reason")
+
+
 def distance_query(**overrides):
     payload = {
         "currentDistance": 100,
@@ -297,6 +364,11 @@ def run():
         test_missing_evidence_creates_no_fake_coordinate,
         test_backend_score_scores_close_hits_higher_than_far_hits,
         test_backend_group_size_is_authoritative,
+        test_mission_family_registry_contains_known_ids,
+        test_result_package_registry_contains_known_ids,
+        test_unsupported_mission_family_returns_governed_unavailable,
+        test_result_package_must_be_authorized_by_mission_family,
+        test_unknown_mission_family_is_rejected_before_scoring,
         test_distance_click_query_missing_current_distance,
         test_distance_click_query_missing_go_to_distance,
         test_distance_click_query_missing_adjustment_unit,
