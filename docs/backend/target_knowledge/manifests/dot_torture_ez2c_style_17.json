@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "dot_torture_ez2c_style_17",
+    "targetName": "EZ2C Style 17 Dot Torture Training Drill",
+    "targetFamily": "Dot Torture",
+    "targetType": "marksmanship-training",
+    "discipline": "pistol",
+    "manufacturer": "EZ2C Targets",
+    "sku": "Style 17",
+    "missionFamilyId": "marksmanshipTraining",
+    "missionName": "dotTorture",
+    "resultPackageType": "marksmanshipTrainingResult",
+    "secTemplate": "trainingSEC",
+    "guidanceMode": "backend-stage-guidance"
+  },
+  "uteRouting": {
+    "targetId": "dot_torture_ez2c_style_17",
+    "manufacturer": "EZ2C Targets",
+    "sku": "Style 17",
+    "missionFamilyId": "marksmanshipTraining",
+    "missionName": "dotTorture",
+    "resultPackageType": "marksmanshipTrainingResult",
+    "secTemplate": "trainingSEC",
+    "authorityStatus": "supported",
+    "rulesSource": "Dot Torture training drill profile: 50 rounds across numbered dots",
+    "geometryStatus": "target-size-known-zone-geometry-pending",
+    "instructionStatus": "published-training-drill-stage-round-counts",
+    "scoringStatus": "inside-numbered-circle-counts",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "photo-plus-hit-coordinates-plus-stage-context"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "instruction_authority",
+    "geometryAuthorityLevel": "partial",
+    "instructionAuthorityLevel": "training-drill-profile",
+    "sourceConfidence": "partial"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [
+      "Dot 1: 5 rounds.",
+      "Dot 2: 5 rounds.",
+      "Dots 3 & 4: 8 rounds.",
+      "Dot 5: 5 rounds.",
+      "Dots 6 & 7: 16 rounds.",
+      "Dot 8: 5 rounds.",
+      "Dots 9 & 10: 6 rounds."
+    ],
+    "printedTargetText": [
+      "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    ],
+    "officialRules": [
+      "Only shots completely inside each numbered circle count."
+    ],
+    "courseOfFire": [
+      "Dot 1: 5 rounds.",
+      "Dot 2: 5 rounds.",
+      "Dots 3 & 4: 8 rounds.",
+      "Dot 5: 5 rounds.",
+      "Dots 6 & 7: 16 rounds.",
+      "Dot 8: 5 rounds.",
+      "Dots 9 & 10: 6 rounds."
+    ],
+    "intendedUse": "Pistol marksmanship training drill that tracks accuracy across ten numbered circles.",
+    "shotCount": 50,
+    "distance": {
+      "value": 3,
+      "unit": "yards",
+      "type": "recommended"
+    },
+    "passFailOrScoringRules": [
+      "Maximum score is 50.",
+      "Only shots completely inside each numbered circle count.",
+      "Misses should be attributable by dot or stage when scored evidence includes stage context."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "targetWidthInches": 11,
+      "targetHeightInches": 17,
+      "dotCount": 10
+    },
+    "gridSpacing": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "bullCount": 10,
+    "zoneCount": 10,
+    "aimPointRules": [
+      "Engage each numbered dot according to the stage course of fire."
+    ],
+    "scoringZones": [
+      "Each numbered circle is a scoring zone; official circle dimensions/positions require source verification."
+    ],
+    "ringGeometry": "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": 50,
+    "requiredDistance": {
+      "value": 3,
+      "unit": "yards",
+      "type": "recommended"
+    },
+    "requiredSetupFields": [
+      "weaponCategory",
+      "distance"
+    ],
+    "minimumConfidenceRequirements": [
+      "Target profile identity must be dot_torture_ez2c_style_17.",
+      "Mission family must be marksmanshipTraining.",
+      "Scored evidence must support hit-to-dot/stage attribution before backend can calculate final score."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "printed target text",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official EZ2C Style 17 target text or verified product source."
+    },
+    {
+      "field": "dot circle dimensions and coordinates",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official target geometry or verified measurement manifest."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "local-profile",
+      "source": "SCZN3 Dot Torture mission skeleton",
+      "authorityType": "instruction_authority",
+      "notes": "Backend session skeleton uses known stage round counts, target size, recommended distance, and scoring rule. Geometry scoring remains pending official zone measurements."
+    }
+  ]
+}

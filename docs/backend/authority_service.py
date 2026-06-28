@@ -44,6 +44,28 @@ GSSF_AC_1_PROFILE = {
     },
     "authoritySource": "GSSF AC-1 profile: 8-inch Down Zero, 13-inch +1, paper +3, miss +10",
 }
+DOT_TORTURE_STAGES = [
+    {"stageId": "dot_1", "label": "Dot 1", "dots": [1], "rounds": 5},
+    {"stageId": "dot_2", "label": "Dot 2", "dots": [2], "rounds": 5},
+    {"stageId": "dots_3_4", "label": "Dots 3 & 4", "dots": [3, 4], "rounds": 8},
+    {"stageId": "dot_5", "label": "Dot 5", "dots": [5], "rounds": 5},
+    {"stageId": "dots_6_7", "label": "Dots 6 & 7", "dots": [6, 7], "rounds": 16},
+    {"stageId": "dot_8", "label": "Dot 8", "dots": [8], "rounds": 5},
+    {"stageId": "dots_9_10", "label": "Dots 9 & 10", "dots": [9, 10], "rounds": 6},
+]
+DOT_TORTURE_PROFILE = {
+    "target_profile_id": "dot_torture_ez2c_style_17",
+    "mission_family": "marksmanshipTraining",
+    "mission_name": "dotTorture",
+    "target_name": "EZ2C Style 17 Dot Torture Training Drill",
+    "target_size": {"width": 11, "height": 17, "unit": "inches"},
+    "discipline": "pistol",
+    "recommended_distance": {"value": 3, "unit": "yards"},
+    "max_score": 50,
+    "total_rounds": 50,
+    "sec_template": "trainingSEC",
+    "scoring_rule": "Only shots completely inside each numbered circle count.",
+}
 
 
 def _num(value: Any, fallback: Optional[float] = None) -> Optional[float]:
@@ -539,6 +561,132 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
     return authority_core
 
 
+def _dot_torture_session_id(payload: Dict[str, Any], profile: Dict[str, Any]) -> str:
+    supplied = _first_present(
+        payload.get("session_id"),
+        payload.get("sessionId"),
+        payload.get("activeSessionId"),
+    )
+    if supplied:
+        return str(supplied)
+    seed = {
+        "targetId": profile.get("targetId"),
+        "missionFamilyId": profile.get("missionFamilyId"),
+        "missionName": profile.get("missionName"),
+        "createdFrom": payload.get("createdFrom") or payload.get("source") or "backend-authority",
+    }
+    return f"dot-torture-{stable_hash(seed)[:12]}"
+
+
+def _dot_torture_distance(payload: Dict[str, Any]) -> Dict[str, Any]:
+    distance = payload.get("distance")
+    if isinstance(distance, dict):
+        value = _num(distance.get("value"), DOT_TORTURE_PROFILE["recommended_distance"]["value"])
+        unit = str(distance.get("unit") or DOT_TORTURE_PROFILE["recommended_distance"]["unit"])
+    else:
+        value = _num(distance, DOT_TORTURE_PROFILE["recommended_distance"]["value"])
+        unit = DOT_TORTURE_PROFILE["recommended_distance"]["unit"]
+    return {
+        "value": _round(value or DOT_TORTURE_PROFILE["recommended_distance"]["value"], 4),
+        "unit": unit,
+    }
+
+
+def build_dot_torture_session_package(payload: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
+    distance = _dot_torture_distance(payload)
+    raw_time = _num(_first_present(payload.get("raw_time_seconds"), payload.get("rawTimeSeconds")), None)
+    stages = [deepcopy(stage) for stage in DOT_TORTURE_STAGES]
+    scoring_rules = [
+        DOT_TORTURE_PROFILE["scoring_rule"],
+        "Maximum score is 50.",
+        "Each counted round is worth one point.",
+        "Misses are recorded by dot/stage when scoring authority has stage attribution.",
+    ]
+    stage_results = [
+        {
+            "stageId": stage["stageId"],
+            "label": stage["label"],
+            "dots": stage["dots"],
+            "rounds": stage["rounds"],
+            "score": None,
+            "misses": None,
+            "status": "awaiting_scored_evidence",
+        }
+        for stage in stages
+    ]
+    authority_core = {
+        "ok": True,
+        "status": "created",
+        "authorityVersion": "sczn3-training-authority-v1",
+        "method": "dot-torture-session-skeleton-v1",
+        "session_id": _dot_torture_session_id(payload, profile),
+        "target_profile_id": "dot_torture_ez2c_style_17",
+        "targetProfileId": "dot_torture_ez2c_style_17",
+        "mission_family": "marksmanshipTraining",
+        "missionFamilyId": "marksmanshipTraining",
+        "mission_name": "dotTorture",
+        "missionName": "dotTorture",
+        "resultPackageType": "marksmanshipTrainingResult",
+        "target_name": DOT_TORTURE_PROFILE["target_name"],
+        "targetName": DOT_TORTURE_PROFILE["target_name"],
+        "target_size": DOT_TORTURE_PROFILE["target_size"],
+        "targetSize": DOT_TORTURE_PROFILE["target_size"],
+        "discipline": DOT_TORTURE_PROFILE["discipline"],
+        "recommended_distance": DOT_TORTURE_PROFILE["recommended_distance"],
+        "recommendedDistance": DOT_TORTURE_PROFILE["recommended_distance"],
+        "distance": distance,
+        "max_score": DOT_TORTURE_PROFILE["max_score"],
+        "maxScore": DOT_TORTURE_PROFILE["max_score"],
+        "total_rounds": DOT_TORTURE_PROFILE["total_rounds"],
+        "totalRounds": DOT_TORTURE_PROFILE["total_rounds"],
+        "stages": stages,
+        "scoring_rules": scoring_rules,
+        "scoringRules": scoring_rules,
+        "score": {
+            "status": "awaiting_scored_evidence",
+            "total": None,
+            "max": DOT_TORTURE_PROFILE["max_score"],
+            "percentage": None,
+        },
+        "stageResults": stage_results,
+        "missesByDot": {},
+        "missesByStage": {},
+        "timeSeconds": raw_time,
+        "sessionSaved": False,
+        "sec_template": DOT_TORTURE_PROFILE["sec_template"],
+        "secTemplate": DOT_TORTURE_PROFILE["sec_template"],
+        "trainingSEC": {
+            "scoreTotal": None,
+            "scoreMax": DOT_TORTURE_PROFILE["max_score"],
+            "percentage": None,
+            "stageResults": stage_results,
+            "missesByDot": {},
+            "missesByStage": {},
+            "distance": distance,
+            "timeSeconds": raw_time,
+            "sessionSaved": False,
+        },
+        "display": {
+            "primary": "Dot Torture training session ready.",
+            "stageGuidance": [f"{stage['label']}: {stage['rounds']} rounds" for stage in stages],
+            "resultLines": [
+                "Mission: Dot Torture",
+                f"Target: {DOT_TORTURE_PROFILE['target_name']}",
+                "Max Score: 50",
+                "Score: awaiting scored evidence",
+            ],
+        },
+        "targetProfile": {
+            **profile,
+            "missionName": "dotTorture",
+            "secTemplate": DOT_TORTURE_PROFILE["sec_template"],
+        },
+    }
+    authority_core["evidenceHash"] = stable_hash(authority_core)
+    authority_core["computedAt"] = datetime.now(timezone.utc).isoformat()
+    return authority_core
+
+
 def _distance_query_number(payload: Dict[str, Any], key: str) -> Optional[float]:
     value = _num(payload.get(key), None)
     return value if value is not None and value > 0 else None
@@ -635,6 +783,12 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         return refusal
     if profile.get("targetId") == "gssf_ac_1" and profile.get("missionFamilyId") == "gssf":
         return build_gssf_ac_1_authority_package(payload, profile)
+    if (
+        profile.get("targetId") == "dot_torture_ez2c_style_17"
+        and profile.get("missionFamilyId") == "marksmanshipTraining"
+        and profile.get("resultPackageType") == "marksmanshipTrainingResult"
+    ):
+        return build_dot_torture_session_package(payload, profile)
 
     geometry = target_geometry(payload)
     aim = normalize_point(payload.get("aimCoordinate") or payload.get("aim") or payload.get("aimPoint"))

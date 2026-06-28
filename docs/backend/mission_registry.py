@@ -16,6 +16,7 @@ MISSION_FAMILY_IDS = {
     "practicalStageScore",
     "qualification",
     "trainingProgression",
+    "marksmanshipTraining",
     "hitMissReactive",
     "scenarioDecision",
     "anatomyVitalZone",
@@ -32,6 +33,7 @@ RESULT_PACKAGE_IDS = {
     "qualificationResult",
     "hitMissResult",
     "trainingProgressionResult",
+    "marksmanshipTrainingResult",
     "challengeResult",
     "smartEvidenceResult",
     "gssfPaperPenaltyResult",
@@ -45,6 +47,7 @@ MISSION_RESULT_PACKAGE_MAP = {
     "practicalStageScore": "stageScoreResult",
     "qualification": "qualificationResult",
     "trainingProgression": "trainingProgressionResult",
+    "marksmanshipTraining": "marksmanshipTrainingResult",
     "hitMissReactive": "hitMissResult",
     "scenarioDecision": "challengeResult",
     "anatomyVitalZone": "challengeResult",
@@ -55,6 +58,7 @@ MISSION_RESULT_PACKAGE_MAP = {
 
 BAKER_TARGET_IDS = {"BAKER_ST_100YD_SMART"}
 GSSF_TARGET_IDS = {"gssf_ac_1", "GSSF_AC_1"}
+DOT_TORTURE_TARGET_IDS = {"dot_torture_ez2c_style_17", "DOT_TORTURE_EZ2C_STYLE_17"}
 
 BAKER_TARGET_PROFILE = {
     "targetId": "BAKER_ST_100YD_SMART",
@@ -86,6 +90,25 @@ GSSF_AC_1_TARGET_PROFILE = {
     "evidenceModel": "photo-plus-hit-coordinates",
 }
 
+DOT_TORTURE_TARGET_PROFILE = {
+    "targetId": "dot_torture_ez2c_style_17",
+    "manufacturer": "EZ2C Targets",
+    "sku": "Style 17",
+    "targetName": "EZ2C Style 17 Dot Torture Training Drill",
+    "missionFamilyId": "marksmanshipTraining",
+    "missionName": "dotTorture",
+    "resultPackageType": "marksmanshipTrainingResult",
+    "authorityStatus": "supported",
+    "rulesSource": "Dot Torture training drill profile: 50 rounds across numbered dots",
+    "geometryStatus": "target-size-known-zone-geometry-pending",
+    "instructionStatus": "published-training-drill-stage-round-counts",
+    "scoringStatus": "inside-numbered-circle-counts",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "photo-plus-hit-coordinates-plus-stage-context",
+    "discipline": "pistol",
+    "secTemplate": "trainingSEC",
+}
+
 
 def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
     supplied = payload.get("targetProfile") if isinstance(payload.get("targetProfile"), dict) else {}
@@ -103,6 +126,8 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
         profile = deepcopy(BAKER_TARGET_PROFILE)
     elif target_id in GSSF_TARGET_IDS:
         profile = deepcopy(GSSF_AC_1_TARGET_PROFILE)
+    elif target_id in DOT_TORTURE_TARGET_IDS:
+        profile = deepcopy(DOT_TORTURE_TARGET_PROFILE)
     else:
         mission_family = (
             supplied.get("missionFamilyId")
@@ -153,6 +178,10 @@ def is_supported_profile(profile: Dict[str, Any]) -> bool:
         profile.get("targetId") in GSSF_TARGET_IDS
         and profile.get("missionFamilyId") == "gssf"
         and profile.get("resultPackageType") == "gssfPaperPenaltyResult"
+    ) or (
+        profile.get("targetId") in DOT_TORTURE_TARGET_IDS
+        and profile.get("missionFamilyId") == "marksmanshipTraining"
+        and profile.get("resultPackageType") == "marksmanshipTrainingResult"
     )
 
 

@@ -216,6 +216,7 @@ def test_mission_family_registry_contains_known_ids():
         "practicalStageScore",
         "qualification",
         "trainingProgression",
+        "marksmanshipTraining",
         "hitMissReactive",
         "scenarioDecision",
         "anatomyVitalZone",
@@ -235,6 +236,7 @@ def test_result_package_registry_contains_known_ids():
         "qualificationResult",
         "hitMissResult",
         "trainingProgressionResult",
+        "marksmanshipTrainingResult",
         "challengeResult",
         "smartEvidenceResult",
         "gssfPaperPenaltyResult",
@@ -332,6 +334,76 @@ def test_gssf_package_does_not_return_baker_zeroing_fields():
     for key in forbidden_keys:
         if key in result:
             raise AssertionError(f"gssf package must not return Baker field: {key}")
+
+
+def dot_torture_package(**overrides):
+    payload = {
+        "target_profile_id": "dot_torture_ez2c_style_17",
+    }
+    payload.update(overrides)
+    return build_authority_package(payload)
+
+
+def test_dot_torture_creates_backend_training_session():
+    result = dot_torture_package()
+    assert_equal(result["ok"], True, "dot torture ok")
+    assert_equal(result["status"], "created", "dot torture status")
+    assert_equal(result["session_id"].startswith("dot-torture-"), True, "dot torture backend session id")
+    assert_equal(result["mission_family"], "marksmanshipTraining", "dot torture mission family")
+    assert_equal(result["mission_name"], "dotTorture", "dot torture mission name")
+    assert_equal(result["target_name"], "EZ2C Style 17 Dot Torture Training Drill", "dot torture target name")
+    assert_equal(result["target_size"], {"width": 11, "height": 17, "unit": "inches"}, "dot torture target size")
+    assert_equal(result["recommended_distance"], {"value": 3, "unit": "yards"}, "dot torture recommended distance")
+    assert_equal(result["discipline"], "pistol", "dot torture discipline")
+    assert_equal(result["max_score"], 50, "dot torture max score")
+    assert_equal(result["total_rounds"], 50, "dot torture total rounds")
+    assert_equal(result["sec_template"], "trainingSEC", "dot torture sec template")
+
+
+def test_dot_torture_stage_guidance_matches_authority_profile():
+    result = dot_torture_package()
+    stages = [(stage["label"], stage["rounds"]) for stage in result["stages"]]
+    assert_equal(stages, [
+        ("Dot 1", 5),
+        ("Dot 2", 5),
+        ("Dots 3 & 4", 8),
+        ("Dot 5", 5),
+        ("Dots 6 & 7", 16),
+        ("Dot 8", 5),
+        ("Dots 9 & 10", 6),
+    ], "dot torture stage round counts")
+    assert_equal(sum(stage["rounds"] for stage in result["stages"]), 50, "dot torture total stage rounds")
+    assert_equal(result["display"]["stageGuidance"], [
+        "Dot 1: 5 rounds",
+        "Dot 2: 5 rounds",
+        "Dots 3 & 4: 8 rounds",
+        "Dot 5: 5 rounds",
+        "Dots 6 & 7: 16 rounds",
+        "Dot 8: 5 rounds",
+        "Dots 9 & 10: 6 rounds",
+    ], "dot torture backend stage guidance")
+
+
+def test_dot_torture_training_sec_template_fields():
+    result = dot_torture_package(distance={"value": 3, "unit": "yards"}, raw_time_seconds=91.25)
+    sec = result["trainingSEC"]
+    assert_equal(sec["scoreMax"], 50, "dot torture sec score max")
+    assert_equal(sec["scoreTotal"], None, "dot torture sec score pending")
+    assert_equal(sec["percentage"], None, "dot torture sec percentage pending")
+    assert_equal(len(sec["stageResults"]), 7, "dot torture sec stage results")
+    assert_equal(sec["missesByDot"], {}, "dot torture misses by dot pending")
+    assert_equal(sec["missesByStage"], {}, "dot torture misses by stage pending")
+    assert_equal(sec["distance"], {"value": 3.0, "unit": "yards"}, "dot torture sec distance")
+    assert_equal(sec["timeSeconds"], 91.25, "dot torture sec time")
+    assert_equal(sec["sessionSaved"], False, "dot torture sec save status")
+
+
+def test_dot_torture_package_does_not_return_zeroing_fields():
+    result = dot_torture_package()
+    forbidden_keys = ["clicks", "moa", "correction", "distanceClickQuery", "poib", "group", "shooterGuidance", "vectors"]
+    for key in forbidden_keys:
+        if key in result:
+            raise AssertionError(f"dot torture package must not return zeroing field: {key}")
 
 
 def distance_query(**overrides):
@@ -434,6 +506,10 @@ def run():
         test_gssf_final_time_unavailable_without_raw_time,
         test_gssf_final_time_calculates_when_raw_time_supplied,
         test_gssf_package_does_not_return_baker_zeroing_fields,
+        test_dot_torture_creates_backend_training_session,
+        test_dot_torture_stage_guidance_matches_authority_profile,
+        test_dot_torture_training_sec_template_fields,
+        test_dot_torture_package_does_not_return_zeroing_fields,
         test_distance_click_query_missing_current_distance,
         test_distance_click_query_missing_go_to_distance,
         test_distance_click_query_missing_adjustment_unit,
