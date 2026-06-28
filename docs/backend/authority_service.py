@@ -28,6 +28,22 @@ DEFAULT_TARGET_GEOMETRY = {
 }
 MOA_INCHES_AT_100_YARDS = 1.047
 MRAD_INCHES_AT_100_YARDS = 3.6
+GSSF_AC_1_PROFILE = {
+    "target_profile_id": "gssf_ac_1",
+    "mission_family": "gssf",
+    "targetWidthInches": 19,
+    "targetHeightInches": 30,
+    "zoneCenterPercent": {"xPercent": 50, "yPercent": 50},
+    "downZeroRadiusInches": 4,
+    "plusOneRadiusInches": 6.5,
+    "penaltySeconds": {
+        "downZero": 0,
+        "plusOne": 1,
+        "plusThree": 3,
+        "miss": 10,
+    },
+    "authoritySource": "GSSF AC-1 profile: 8-inch Down Zero, 13-inch +1, paper +3, miss +10",
+}
 
 
 def _num(value: Any, fallback: Optional[float] = None) -> Optional[float]:
@@ -364,6 +380,165 @@ def stable_hash(payload: Dict[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _gssf_normalize_point(point: Any) -> Optional[Dict[str, float]]:
+    if not isinstance(point, dict):
+        return None
+    x = _num(point.get("xPercent"), None)
+    y = _num(point.get("yPercent"), None)
+    if x is None or y is None:
+        return None
+    return {
+        "xPercent": _round(x, 4),
+        "yPercent": _round(y, 4),
+    }
+
+
+def _gssf_hits(payload: Dict[str, Any]) -> List[Dict[str, float]]:
+    hits = (
+        payload.get("hitCoordinates")
+        or payload.get("hit_coordinates")
+        or payload.get("hits")
+        or payload.get("impactCoordinates")
+        or payload.get("impactPoints")
+    )
+    if not isinstance(hits, list):
+        return []
+    return [point for point in (_gssf_normalize_point(item) for item in hits) if point]
+
+
+def _gssf_point_inches(point: Dict[str, float]) -> Dict[str, float]:
+    profile = GSSF_AC_1_PROFILE
+    return {
+        "xInches": _round((point["xPercent"] / 100) * float(profile["targetWidthInches"]), 4),
+        "yInches": _round((point["yPercent"] / 100) * float(profile["targetHeightInches"]), 4),
+    }
+
+
+def _gssf_zone_for_hit(point: Dict[str, float]) -> Dict[str, Any]:
+    profile = GSSF_AC_1_PROFILE
+    center = _gssf_point_inches(profile["zoneCenterPercent"])
+    hit = _gssf_point_inches(point)
+    x_delta = hit["xInches"] - center["xInches"]
+    y_delta = hit["yInches"] - center["yInches"]
+    radius = math.sqrt((x_delta * x_delta) + (y_delta * y_delta))
+    penalties = profile["penaltySeconds"]
+    if (
+        point["xPercent"] < 0
+        or point["xPercent"] > 100
+        or point["yPercent"] < 0
+        or point["yPercent"] > 100
+    ):
+        zone = "miss"
+    elif radius <= float(profile["downZeroRadiusInches"]):
+        zone = "downZero"
+    elif radius <= float(profile["plusOneRadiusInches"]):
+        zone = "plusOne"
+    else:
+        zone = "plusThree"
+    return {
+        "zone": zone,
+        "penaltySeconds": penalties[zone],
+        "radiusInches": _round(radius, 4),
+    }
+
+
+def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
+    hits = _gssf_hits(payload)
+    raw_time = _num(_first_present(payload.get("raw_time_seconds"), payload.get("rawTimeSeconds")), None)
+    per_hit = []
+    counts = {
+        "downZero": 0,
+        "plusOne": 0,
+        "plusThree": 0,
+        "miss": 0,
+    }
+    for index, hit in enumerate(hits, start=1):
+        classification = _gssf_zone_for_hit(hit)
+        counts[classification["zone"]] += 1
+        per_hit.append({
+            "shot": index,
+            "coordinate": hit,
+            "zone": classification["zone"],
+            "penaltySeconds": classification["penaltySeconds"],
+            "radiusInches": classification["radiusInches"],
+        })
+
+    total_penalty = sum(hit["penaltySeconds"] for hit in per_hit)
+    final_time = _round(raw_time + total_penalty, 4) if raw_time is not None else None
+    final_time_display = f"{final_time} sec" if final_time is not None else "unavailable"
+    result_lines = [
+        "Mission: GSSF AC-1",
+        f"Down Zero: {counts['downZero']}",
+        f"+1: {counts['plusOne']}",
+        f"+3: {counts['plusThree']}",
+        f"Miss: {counts['miss']}",
+        f"Paper Penalty: +{total_penalty} sec",
+        f"Final Time: {final_time_display}",
+    ]
+    authority_core = {
+        "ok": True,
+        "status": "calculated",
+        "authorityVersion": "sczn3-gssf-authority-v1",
+        "target_profile_id": "gssf_ac_1",
+        "targetProfileId": "gssf_ac_1",
+        "mission_family": "gssf",
+        "missionFamilyId": "gssf",
+        "resultPackageType": "gssfPaperPenaltyResult",
+        "target": {
+            "target_profile_id": "gssf_ac_1",
+            "targetName": "GSSF AC-1",
+            "manufacturer": profile.get("manufacturer"),
+        },
+        "inputs": {
+            "target_profile_id": "gssf_ac_1",
+            "mission_family": "gssf",
+            "hitCoordinates": hits,
+            "raw_time_seconds": raw_time,
+        },
+        "hitClassifications": per_hit,
+        "counts": counts,
+        "downZeroCount": counts["downZero"],
+        "plusOneCount": counts["plusOne"],
+        "plusThreeCount": counts["plusThree"],
+        "missCount": counts["miss"],
+        "totalPaperPenaltySeconds": total_penalty,
+        "rawTimeSeconds": raw_time,
+        "finalTimeSeconds": final_time,
+        "finalTimeStatus": "calculated" if final_time is not None else "unavailable_without_raw_time",
+        "display": {
+            "resultLines": result_lines,
+            "mission": "GSSF AC-1",
+            "downZero": f"Down Zero: {counts['downZero']}",
+            "plusOne": f"+1: {counts['plusOne']}",
+            "plusThree": f"+3: {counts['plusThree']}",
+            "miss": f"Miss: {counts['miss']}",
+            "paperPenalty": f"Paper Penalty: +{total_penalty} sec",
+            "finalTime": f"Final Time: {final_time_display}",
+            "summary": (
+                f"{counts['downZero']} Down Zero • {counts['plusOne']} +1 • "
+                f"{counts['plusThree']} +3 • {counts['miss']} Miss"
+            ),
+            "paperPenaltySummary": f"{total_penalty} paper penalty seconds",
+            "finalTimeSummary": f"{final_time} seconds" if final_time is not None else "Final time unavailable without raw time",
+        },
+        "profileAuthority": {
+            "zoneModel": "concentric-ac-1-paper-penalty",
+            "targetWidthInches": GSSF_AC_1_PROFILE["targetWidthInches"],
+            "targetHeightInches": GSSF_AC_1_PROFILE["targetHeightInches"],
+            "downZeroDiameterInches": GSSF_AC_1_PROFILE["downZeroRadiusInches"] * 2,
+            "plusOneDiameterInches": GSSF_AC_1_PROFILE["plusOneRadiusInches"] * 2,
+            "penaltySeconds": GSSF_AC_1_PROFILE["penaltySeconds"],
+            "authoritySource": GSSF_AC_1_PROFILE["authoritySource"],
+        },
+        "renderCoordinates": {
+            "hits": hits,
+        },
+    }
+    authority_core["evidenceHash"] = stable_hash(authority_core)
+    authority_core["computedAt"] = datetime.now(timezone.utc).isoformat()
+    return authority_core
+
+
 def _distance_query_number(payload: Dict[str, Any], key: str) -> Optional[float]:
     value = _num(payload.get(key), None)
     return value if value is not None and value > 0 else None
@@ -458,6 +633,8 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     refusal = refusal_for_profile(profile)
     if refusal:
         return refusal
+    if profile.get("targetId") == "gssf_ac_1" and profile.get("missionFamilyId") == "gssf":
+        return build_gssf_ac_1_authority_package(payload, profile)
 
     geometry = target_geometry(payload)
     aim = normalize_point(payload.get("aimCoordinate") or payload.get("aim") or payload.get("aimPoint"))

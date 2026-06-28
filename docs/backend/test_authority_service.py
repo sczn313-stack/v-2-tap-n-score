@@ -221,6 +221,7 @@ def test_mission_family_registry_contains_known_ids():
         "anatomyVitalZone",
         "recreationalChallenge",
         "smartEvidenceCapture",
+        "gssf",
     }
     assert_equal(MISSION_FAMILY_IDS, expected, "mission family registry")
 
@@ -236,6 +237,7 @@ def test_result_package_registry_contains_known_ids():
         "trainingProgressionResult",
         "challengeResult",
         "smartEvidenceResult",
+        "gssfPaperPenaltyResult",
     }
     assert_equal(RESULT_PACKAGE_IDS, expected, "result package registry")
 
@@ -271,6 +273,65 @@ def test_unknown_mission_family_is_rejected_before_scoring():
     })
     assert_equal(result["ok"], False, "unknown mission ok")
     assert_equal(result["reason"], "mission_family_not_registered", "unknown mission reason")
+
+
+def gssf_package(**overrides):
+    payload = {
+        "target_profile_id": "gssf_ac_1",
+        "mission_family": "gssf",
+        "hitCoordinates": [],
+    }
+    payload.update(overrides)
+    return build_authority_package(payload)
+
+
+def test_gssf_ac_1_scores_hit_by_hit_zones():
+    result = gssf_package(hitCoordinates=[
+        {"xPercent": 50, "yPercent": 50},
+        {"xPercent": 50, "yPercent": 68},
+        {"xPercent": 50, "yPercent": 80},
+        {"xPercent": -5, "yPercent": 50},
+    ])
+    assert_equal(result["ok"], True, "gssf ok")
+    assert_equal(result["resultPackageType"], "gssfPaperPenaltyResult", "gssf result type")
+    assert_equal([hit["zone"] for hit in result["hitClassifications"]], ["downZero", "plusOne", "plusThree", "miss"], "gssf zones")
+    assert_equal(result["downZeroCount"], 1, "gssf down zero count")
+    assert_equal(result["plusOneCount"], 1, "gssf plus one count")
+    assert_equal(result["plusThreeCount"], 1, "gssf plus three count")
+    assert_equal(result["missCount"], 1, "gssf miss count")
+    assert_equal(result["totalPaperPenaltySeconds"], 14, "gssf paper penalty")
+
+
+def test_gssf_final_time_unavailable_without_raw_time():
+    result = gssf_package(hitCoordinates=[{"xPercent": 50, "yPercent": 50}])
+    assert_equal(result["finalTimeSeconds"], None, "gssf final time unavailable")
+    assert_equal(result["finalTimeStatus"], "unavailable_without_raw_time", "gssf final time status")
+    assert_equal(result["display"]["resultLines"], [
+        "Mission: GSSF AC-1",
+        "Down Zero: 1",
+        "+1: 0",
+        "+3: 0",
+        "Miss: 0",
+        "Paper Penalty: +0 sec",
+        "Final Time: unavailable",
+    ], "gssf unavailable final time display lines")
+
+
+def test_gssf_final_time_calculates_when_raw_time_supplied():
+    result = gssf_package(raw_time_seconds=12.45, hitCoordinates=[
+        {"xPercent": 50, "yPercent": 50},
+        {"xPercent": 50, "yPercent": 68},
+    ])
+    assert_close(result["finalTimeSeconds"], 13.45, "gssf final time")
+    assert_equal(result["finalTimeStatus"], "calculated", "gssf final time status")
+
+
+def test_gssf_package_does_not_return_baker_zeroing_fields():
+    result = gssf_package(hitCoordinates=[{"xPercent": 50, "yPercent": 50}])
+    forbidden_keys = ["score", "clicks", "moa", "correction", "distanceClickQuery", "group", "poib"]
+    for key in forbidden_keys:
+        if key in result:
+            raise AssertionError(f"gssf package must not return Baker field: {key}")
 
 
 def distance_query(**overrides):
@@ -369,6 +430,10 @@ def run():
         test_unsupported_mission_family_returns_governed_unavailable,
         test_result_package_must_be_authorized_by_mission_family,
         test_unknown_mission_family_is_rejected_before_scoring,
+        test_gssf_ac_1_scores_hit_by_hit_zones,
+        test_gssf_final_time_unavailable_without_raw_time,
+        test_gssf_final_time_calculates_when_raw_time_supplied,
+        test_gssf_package_does_not_return_baker_zeroing_fields,
         test_distance_click_query_missing_current_distance,
         test_distance_click_query_missing_go_to_distance,
         test_distance_click_query_missing_adjustment_unit,

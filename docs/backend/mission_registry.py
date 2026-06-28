@@ -21,6 +21,7 @@ MISSION_FAMILY_IDS = {
     "anatomyVitalZone",
     "recreationalChallenge",
     "smartEvidenceCapture",
+    "gssf",
 }
 
 RESULT_PACKAGE_IDS = {
@@ -33,6 +34,7 @@ RESULT_PACKAGE_IDS = {
     "trainingProgressionResult",
     "challengeResult",
     "smartEvidenceResult",
+    "gssfPaperPenaltyResult",
 }
 
 MISSION_RESULT_PACKAGE_MAP = {
@@ -48,9 +50,11 @@ MISSION_RESULT_PACKAGE_MAP = {
     "anatomyVitalZone": "challengeResult",
     "recreationalChallenge": "challengeResult",
     "smartEvidenceCapture": "smartEvidenceResult",
+    "gssf": "gssfPaperPenaltyResult",
 }
 
 BAKER_TARGET_IDS = {"BAKER_ST_100YD_SMART"}
+GSSF_TARGET_IDS = {"gssf_ac_1", "GSSF_AC_1"}
 
 BAKER_TARGET_PROFILE = {
     "targetId": "BAKER_ST_100YD_SMART",
@@ -67,20 +71,51 @@ BAKER_TARGET_PROFILE = {
     "evidenceModel": "photo-plus-aim-plus-impacts",
 }
 
+GSSF_AC_1_TARGET_PROFILE = {
+    "targetId": "gssf_ac_1",
+    "manufacturer": "Glock Shooting Sports Foundation",
+    "sku": "AC-1",
+    "missionFamilyId": "gssf",
+    "resultPackageType": "gssfPaperPenaltyResult",
+    "authorityStatus": "supported",
+    "rulesSource": "GSSF AC-1 target scoring authority profile",
+    "geometryStatus": "official-diameter-authority",
+    "instructionStatus": "published-gssf-paper-target-scoring",
+    "scoringStatus": "time-plus-paper-penalty",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "photo-plus-hit-coordinates",
+}
+
 
 def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
     supplied = payload.get("targetProfile") if isinstance(payload.get("targetProfile"), dict) else {}
     target_id = str(
         payload.get("targetId")
+        or payload.get("target_profile_id")
+        or payload.get("targetProfileId")
         or supplied.get("targetId")
+        or supplied.get("target_profile_id")
+        or supplied.get("targetProfileId")
         or BAKER_TARGET_PROFILE["targetId"]
     )
 
     if target_id in BAKER_TARGET_IDS:
         profile = deepcopy(BAKER_TARGET_PROFILE)
+    elif target_id in GSSF_TARGET_IDS:
+        profile = deepcopy(GSSF_AC_1_TARGET_PROFILE)
     else:
-        mission_family = supplied.get("missionFamilyId") or payload.get("missionFamilyId")
-        result_package = supplied.get("resultPackageType") or payload.get("resultPackageType")
+        mission_family = (
+            supplied.get("missionFamilyId")
+            or supplied.get("mission_family")
+            or payload.get("missionFamilyId")
+            or payload.get("mission_family")
+        )
+        result_package = (
+            supplied.get("resultPackageType")
+            or supplied.get("result_package_type")
+            or payload.get("resultPackageType")
+            or payload.get("result_package_type")
+        )
         profile = {
             "targetId": target_id,
             "manufacturer": supplied.get("manufacturer") or payload.get("manufacturer"),
@@ -108,10 +143,16 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def is_supported_profile(profile: Dict[str, Any]) -> bool:
-    return (
+    if (
         profile.get("targetId") in BAKER_TARGET_IDS
         and profile.get("missionFamilyId") == "zeroingCorrection"
         and profile.get("resultPackageType") == "zeroCorrectionResult"
+    ):
+        return True
+    return (
+        profile.get("targetId") in GSSF_TARGET_IDS
+        and profile.get("missionFamilyId") == "gssf"
+        and profile.get("resultPackageType") == "gssfPaperPenaltyResult"
     )
 
 

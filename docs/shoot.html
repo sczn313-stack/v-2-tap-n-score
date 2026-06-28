@@ -101,7 +101,7 @@ let currentClicks = backendAuthorityPackage ? {
   authorityPackage: backendAuthorityPackage
 } : null;
 let currentScore = backendScoreValue(backendAuthorityPackage);
-let resultsShown = !!(backendAuthorityPackage && backendAuthorityPackage.status && backendAuthorityPackage.status.hasCorrection);
+let resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
 let authorityStatusMessage = "";
 let sessionSaved = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
@@ -110,6 +110,7 @@ let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
 let distanceLocked = !!(session && session.targetDistanceLocked);
 let showGridCoordinates = false;
 let selectedAdjustmentUnit = String((matrix && (matrix.opticAdjustmentUnit || matrix.adjustmentUnit)) || "MOA").toUpperCase() === "MRAD" ? "MRAD" : "MOA";
+const TARGET_QUERY = new URLSearchParams(window.location.search);
 const BAKER_GRID_AUDIT = {
   imageWidth: 1102,
   imageHeight: 1713,
@@ -119,6 +120,52 @@ const BAKER_GRID_AUDIT = {
   bottomPx: 1652,
   squarePx: 49
 };
+
+function activeTargetProfileId() {
+  const source = matrix || {};
+  return String(
+    TARGET_QUERY.get("target_profile_id")
+    || TARGET_QUERY.get("targetProfileId")
+    || source.target_profile_id
+    || source.targetProfileId
+    || source.targetId
+    || ""
+  ).toLowerCase();
+}
+
+function activeMissionFamily() {
+  const source = matrix || {};
+  return String(
+    TARGET_QUERY.get("mission_family")
+    || TARGET_QUERY.get("missionFamily")
+    || TARGET_QUERY.get("missionFamilyId")
+    || source.mission_family
+    || source.missionFamily
+    || source.missionFamilyId
+    || ""
+  ).toLowerCase();
+}
+
+function isGssfAuthoritySession() {
+  return activeTargetProfileId() === "gssf_ac_1" || activeMissionFamily() === "gssf";
+}
+
+function isGssfAuthorityPackage(authorityPackage) {
+  return !!(authorityPackage && (
+    authorityPackage.target_profile_id === "gssf_ac_1"
+    || authorityPackage.targetProfileId === "gssf_ac_1"
+    || authorityPackage.mission_family === "gssf"
+    || authorityPackage.missionFamilyId === "gssf"
+  ));
+}
+
+function isAuthorityPackageCalculated(authorityPackage) {
+  if (!authorityPackage) return false;
+  if (isGssfAuthorityPackage(authorityPackage)) {
+    return authorityPackage.ok === true && authorityPackage.status === "calculated";
+  }
+  return !!(authorityPackage.status && authorityPackage.status.hasCorrection);
+}
 
 function currentSetupName() {
   return matrix ? [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ") : "Create setup in Weapon Setup";
@@ -215,6 +262,16 @@ function distanceOptions() {
 }
 
 function targetIntelStackHtml() {
+  if (isGssfAuthoritySession()) {
+    return `
+      <div class="authority-results-panel gssf-results-panel" aria-label="GSSF authority results">
+        <div class="gssf-authority-result" id="gssfAuthorityResult">Mission: GSSF AC-1</div>
+        <div class="target-intel-score score-pending is-hidden" id="scoreCell"><span class="target-score-label">Paper Penalty</span><strong id="scoreValue">--</strong></div>
+        <div class="target-intel-item evidence-count is-hidden"><strong id="hitsValue">0 Hits</strong></div>
+        <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
+      </div>
+    `;
+  }
   return `
     <div class="authority-results-panel" aria-label="Authority results">
       <div class="authority-evidence-summary">
@@ -458,6 +515,7 @@ function safePoint(point) {
 // Non-authoritative display accessor. Backend calculates; frontend displays.
 function currentVisualCorrection() {
   if (!resultsShown || !backendAuthorityPackage) return null;
+  if (isGssfAuthorityPackage(backendAuthorityPackage)) return null;
   const correction = backendAuthorityPackage.correction || {};
   const clicks = backendAuthorityPackage.clicks || {};
   return {
@@ -482,6 +540,19 @@ function backendTargetGeometry() {
 }
 
 function backendAuthorityRequest() {
+  if (isGssfAuthoritySession()) {
+    const source = matrix || {};
+    const payload = {
+      target_profile_id: "gssf_ac_1",
+      mission_family: "gssf",
+      hitCoordinates: currentImpactPoints.map(safePoint).filter(Boolean)
+    };
+    const rawTime = source.raw_time_seconds || source.rawTimeSeconds || TARGET_QUERY.get("raw_time_seconds");
+    if (rawTime !== null && rawTime !== undefined && rawTime !== "") {
+      payload.raw_time_seconds = Number(rawTime);
+    }
+    return payload;
+  }
   const source = matrix || {};
   const opticAdjustmentUnit = selectedAdjustmentUnit;
   const opticClickValueMOA = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
@@ -540,7 +611,7 @@ function applyBackendAuthorityPackage(authorityPackage) {
   backendAuthorityPackage = authorityPackage;
   const correction = authorityPackage && authorityPackage.correction ? authorityPackage.correction : {};
   const clicks = authorityPackage && authorityPackage.clicks ? authorityPackage.clicks : {};
-  currentClicks = authorityPackage ? {
+  currentClicks = authorityPackage && !isGssfAuthorityPackage(authorityPackage) ? {
     ...clicks,
     elevation: correction.elevation,
     windage: correction.windage,
@@ -548,7 +619,7 @@ function applyBackendAuthorityPackage(authorityPackage) {
     authorityPackage
   } : null;
   currentScore = backendScoreValue(authorityPackage);
-  resultsShown = !!(authorityPackage && authorityPackage.status && authorityPackage.status.hasCorrection);
+  resultsShown = isAuthorityPackageCalculated(authorityPackage);
   sessionSaved = false;
 }
 
@@ -788,6 +859,9 @@ function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
   parts.push(vectorHtmlFromBackend(render.vector));
+  (render.hits || []).map(safePoint).filter(Boolean).forEach((point, index) => {
+    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
+  });
   (render.impacts || []).map(safePoint).filter(Boolean).forEach((point, index) => {
     parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
   });
@@ -865,6 +939,23 @@ function renderResults() {
   document.body.dataset.authorityStatus = authorityStatusMessage ? "true" : "false";
   const scoreCell = document.getElementById("scoreCell");
   if (!scoreCell) return;
+  if (isGssfAuthorityPackage(backendAuthorityPackage)) {
+    const resultBlock = document.getElementById("gssfAuthorityResult");
+    const lines = backendAuthorityPackage.display && Array.isArray(backendAuthorityPackage.display.resultLines)
+      ? backendAuthorityPackage.display.resultLines
+      : [];
+    if (resultBlock) {
+      resultBlock.innerHTML = lines.map(line => `<div>${line}</div>`).join("");
+    }
+    const message = document.getElementById("authorityStatusMessage");
+    if (message) {
+      message.innerHTML = authorityStatusMessage
+        ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
+        : "";
+      message.classList.toggle("is-hidden", !authorityStatusMessage);
+    }
+    return;
+  }
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
   const hitsParts = [`${impacts.length} Hits`];
@@ -928,6 +1019,12 @@ function setNextStep(activeId) {
 
 function rangeWorkflowState(canMark) {
   if (!canMark) return "choose-target";
+  if (isGssfAuthoritySession()) {
+    if (!currentImpactPoints.length) return "tap-holes";
+    if (!resultsShown) return "show-results";
+    if (!sessionSaved) return "save-session";
+    return "view-sec";
+  }
   if (!currentAimPoint) return "tap-aim";
   if (!currentImpactPoints.length) return "tap-holes";
   if (!resultsShown) return "show-results";
@@ -937,22 +1034,25 @@ function rangeWorkflowState(canMark) {
 
 function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
-  document.getElementById("setAimMode").disabled = !canMark;
-  document.getElementById("addImpactMode").disabled = !canMark || !currentAimPoint;
+  const isGssf = isGssfAuthoritySession();
+  document.getElementById("setAimMode").disabled = !canMark || isGssf;
+  document.getElementById("addImpactMode").disabled = !canMark || (!currentAimPoint && !isGssf);
   document.getElementById("undoImpact").disabled = !canMark || currentImpactPoints.length === 0;
   document.getElementById("clearMarks").disabled = !canMark || (!currentAimPoint && currentImpactPoints.length === 0);
   document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
   document.getElementById("showResults").disabled = !canMark || currentImpactPoints.length === 0;
   let nextStep = "chooseTargetButton";
-  if (canMark && !currentAimPoint) nextStep = "setAimMode";
-  if (canMark && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (canMark && currentAimPoint && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
-  if (canMark && currentAimPoint && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
+  if (canMark && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (canMark && !isGssf && !currentAimPoint) nextStep = "setAimMode";
+  if (canMark && !isGssf && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (canMark && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
+  if (canMark && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
   document.body.dataset.rangeState = rangeWorkflowState(canMark);
   document.body.dataset.hasEvidence = canMark ? "true" : "false";
   document.body.dataset.hasResults = resultsShown ? "true" : "false";
+  document.body.dataset.targetMission = isGssf ? "gssf" : "zeroing";
 }
 
 function setMode(mode) {
@@ -972,7 +1072,9 @@ function handleMarkTap(event) {
     xPercent: Number(xPercent.toFixed(2)),
     yPercent: Number(yPercent.toFixed(2))
   };
-  if (markMode === "aim" || !currentAimPoint) {
+  if (isGssfAuthoritySession()) {
+    currentImpactPoints.push(point);
+  } else if (markMode === "aim" || !currentAimPoint) {
     currentAimPoint = point;
     markMode = "impact";
   } else {
@@ -1021,7 +1123,7 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
       originalSize: file.size
     };
     renderEvidencePreview(pendingEvidence);
-    setMode("aim");
+    setMode(isGssfAuthoritySession() ? "impact" : "aim");
     renderMarkStatus();
   }).catch(error => {
     console.warn("Target image read failed", error);
@@ -1036,7 +1138,7 @@ document.getElementById("showGridCoordinates").addEventListener("change", event 
 
 document.getElementById("setAimMode").addEventListener("click", () => setMode("aim"));
 document.getElementById("addImpactMode").addEventListener("click", () => {
-  if (currentAimPoint) setMode("impact");
+  if (currentAimPoint || isGssfAuthoritySession()) setMode("impact");
 });
 document.getElementById("undoImpact").addEventListener("click", () => {
   currentImpactPoints.pop();
@@ -1070,7 +1172,7 @@ document.getElementById("clearMarks").addEventListener("click", () => {
   renderMarkStatus();
 });
 document.getElementById("showResults").addEventListener("click", async () => {
-  if (!currentAimPoint || !currentImpactPoints.length) return;
+  if ((!isGssfAuthoritySession() && !currentAimPoint) || !currentImpactPoints.length) return;
   authorityStatusMessage = "";
   renderResults();
   try {
@@ -1081,7 +1183,8 @@ document.getElementById("showResults").addEventListener("click", async () => {
     } catch (error) {}
     renderMarkers();
     renderResults();
-    if (resultsShown) showShooterTip();
+    if (resultsShown && !isGssfAuthorityPackage(authorityPackage)) showShooterTip();
+    if (resultsShown && isGssfAuthorityPackage(authorityPackage)) hideShooterTip();
   } catch (error) {
     console.warn("Backend authority request failed", error);
     currentClicks = null;
@@ -1163,7 +1266,7 @@ window.addEventListener("resize", () => {
   renderMarkers();
 });
 
-setMode(currentAimPoint ? "impact" : "aim");
+setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));
 renderSetupSummary();
 renderResults();
 </script>
