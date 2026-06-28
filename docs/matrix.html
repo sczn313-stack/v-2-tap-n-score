@@ -168,6 +168,7 @@
 const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
+const MATRIX_QUERY = new URLSearchParams(window.location.search);
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
   Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
@@ -1098,7 +1099,10 @@ function goToTarget() {
   try {
     if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
   } catch (error) {}
-  window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}`;
+  const targetQuery = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "gssf_ac_1"
+    ? `&target_profile_id=gssf_ac_1&mission_family=gssf`
+    : "";
+  window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
 }
 
 function selectWeaponFromList(setupId, action = "edit") {
@@ -1204,7 +1208,53 @@ function collectForm() {
   data.setupName = document.getElementById("setupName").value.trim();
   data.rifle = [data.weaponManufacturer, data.weaponModelType].filter(Boolean).join(" ");
   data.caliber = data.weaponModelCaliber || data.ammoCaliber;
+  Object.assign(data, targetAttributionFromContext(data));
   return data;
+}
+
+function targetAttributionFromContext(data = {}) {
+  const targetProfileId = String(
+    MATRIX_QUERY.get("target_profile_id")
+    || MATRIX_QUERY.get("targetProfileId")
+    || data.target_profile_id
+    || data.targetProfileId
+    || data.targetId
+    || ""
+  ).toLowerCase();
+  const missionFamily = String(
+    MATRIX_QUERY.get("mission_family")
+    || MATRIX_QUERY.get("missionFamily")
+    || MATRIX_QUERY.get("missionFamilyId")
+    || data.mission_family
+    || data.missionFamily
+    || data.missionFamilyId
+    || ""
+  ).toLowerCase();
+  const targetName = String(
+    MATRIX_QUERY.get("target")
+    || MATRIX_QUERY.get("targetName")
+    || data.targetName
+    || data.targetFamily
+    || ""
+  ).toLowerCase();
+  if (
+    targetProfileId === "gssf_ac_1"
+    || missionFamily === "gssf"
+    || targetName.includes("gssf")
+    || targetName.includes("ac-1")
+    || targetName.includes("ac1")
+  ) {
+    return {
+      target_profile_id: "gssf_ac_1",
+      targetProfileId: "gssf_ac_1",
+      mission_family: "gssf",
+      missionFamilyId: "gssf",
+      targetId: "gssf_ac_1",
+      targetName: "GSSF AC-1",
+      targetFamily: "GSSF AC-1"
+    };
+  }
+  return {};
 }
 
 function clearSetupFields() {

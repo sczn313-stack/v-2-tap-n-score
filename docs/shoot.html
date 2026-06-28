@@ -122,26 +122,55 @@ const BAKER_GRID_AUDIT = {
 };
 
 function activeTargetProfileId() {
-  const source = matrix || {};
+  const sessionSource = session || {};
+  const matrixSource = matrix || {};
+  const targetAuthority = sessionSource.targetAuthority || {};
+  const targetName = String(
+    TARGET_QUERY.get("target")
+    || TARGET_QUERY.get("targetName")
+    || sessionSource.targetName
+    || matrixSource.targetName
+    || targetAuthority.targetName
+    || targetAuthority.targetFamily
+    || ""
+  ).toLowerCase();
+  if (targetName.includes("gssf") || targetName.includes("ac-1") || targetName.includes("ac1")) {
+    return "gssf_ac_1";
+  }
   return String(
     TARGET_QUERY.get("target_profile_id")
     || TARGET_QUERY.get("targetProfileId")
-    || source.target_profile_id
-    || source.targetProfileId
-    || source.targetId
+    || sessionSource.target_profile_id
+    || sessionSource.targetProfileId
+    || sessionSource.targetId
+    || matrixSource.target_profile_id
+    || matrixSource.targetProfileId
+    || matrixSource.targetId
+    || targetAuthority.target_profile_id
+    || targetAuthority.targetProfileId
+    || targetAuthority.targetId
     || ""
   ).toLowerCase();
 }
 
 function activeMissionFamily() {
-  const source = matrix || {};
+  const sessionSource = session || {};
+  const matrixSource = matrix || {};
+  const targetAuthority = sessionSource.targetAuthority || {};
+  if (activeTargetProfileId() === "gssf_ac_1") return "gssf";
   return String(
     TARGET_QUERY.get("mission_family")
     || TARGET_QUERY.get("missionFamily")
     || TARGET_QUERY.get("missionFamilyId")
-    || source.mission_family
-    || source.missionFamily
-    || source.missionFamilyId
+    || sessionSource.mission_family
+    || sessionSource.missionFamily
+    || sessionSource.missionFamilyId
+    || matrixSource.mission_family
+    || matrixSource.missionFamily
+    || matrixSource.missionFamilyId
+    || targetAuthority.mission_family
+    || targetAuthority.missionFamily
+    || targetAuthority.missionFamilyId
     || ""
   ).toLowerCase();
 }
@@ -196,14 +225,56 @@ function defaultTargetMatrix() {
   };
 }
 
+function targetAttributionOverride(source = {}) {
+  const targetProfileId = activeTargetProfileId();
+  const missionFamily = activeMissionFamily();
+  if (targetProfileId === "gssf_ac_1" || missionFamily === "gssf") {
+    return {
+      ...source,
+      target_profile_id: "gssf_ac_1",
+      targetProfileId: "gssf_ac_1",
+      mission_family: "gssf",
+      missionFamilyId: "gssf",
+      targetName: "GSSF AC-1",
+      targetFamily: "GSSF AC-1",
+      targetId: "gssf_ac_1"
+    };
+  }
+  return source;
+}
+
 function ensureTargetSession() {
   if (session) return session;
-  matrix = SCZN3M4.getActiveMatrix() || SCZN3M4.saveMatrixSnapshot(defaultTargetMatrix());
+  matrix = targetAttributionOverride(SCZN3M4.getActiveMatrix() || defaultTargetMatrix());
+  matrix = SCZN3M4.saveMatrixSnapshot(matrix);
   session = SCZN3M4.createSession(matrix);
   renderActiveSessionBar();
   return session;
 }
 
+function ensureTargetAttribution() {
+  if (!isGssfAuthoritySession()) return;
+  matrix = targetAttributionOverride(matrix || {});
+  SCZN3M4.saveMatrixSnapshot(matrix);
+  if (session) {
+    const patchedSession = targetAttributionOverride(session);
+    patchedSession.matrixSnapshot = targetAttributionOverride(session.matrixSnapshot || matrix);
+    patchedSession.targetAuthority = {
+      ...(session.targetAuthority || {}),
+      target_profile_id: "gssf_ac_1",
+      targetProfileId: "gssf_ac_1",
+      mission_family: "gssf",
+      missionFamilyId: "gssf",
+      targetId: "gssf_ac_1",
+      targetName: "GSSF AC-1",
+      targetFamily: "GSSF AC-1"
+    };
+    session = SCZN3M4.updateActiveSession(patchedSession) || patchedSession;
+    matrix = session.matrixSnapshot || matrix;
+  }
+}
+
+ensureTargetAttribution();
 renderActiveSessionBar();
 
 function cleanSetupValue(value) {
@@ -265,9 +336,15 @@ function targetIntelStackHtml() {
   if (isGssfAuthoritySession()) {
     return `
       <div class="authority-results-panel gssf-results-panel" aria-label="GSSF authority results">
-        <div class="gssf-authority-result" id="gssfAuthorityResult">Mission: GSSF AC-1</div>
-        <div class="target-intel-score score-pending is-hidden" id="scoreCell"><span class="target-score-label">Paper Penalty</span><strong id="scoreValue">--</strong></div>
-        <div class="target-intel-item evidence-count is-hidden"><strong id="hitsValue">0 Hits</strong></div>
+        <div class="gssf-authority-result" id="gssfAuthorityResult">
+          <div>Mission: GSSF AC-1</div>
+          <div>Down Zero:</div>
+          <div>+1:</div>
+          <div>+3:</div>
+          <div>Miss:</div>
+          <div>Paper Penalty:</div>
+          <div>Final Time: unavailable</div>
+        </div>
         <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
       </div>
     `;
@@ -937,8 +1014,6 @@ function renderResults() {
   const impacts = currentImpactPoints;
   const numericScore = currentScore === null ? NaN : Number(currentScore);
   document.body.dataset.authorityStatus = authorityStatusMessage ? "true" : "false";
-  const scoreCell = document.getElementById("scoreCell");
-  if (!scoreCell) return;
   if (isGssfAuthorityPackage(backendAuthorityPackage)) {
     const resultBlock = document.getElementById("gssfAuthorityResult");
     const lines = backendAuthorityPackage.display && Array.isArray(backendAuthorityPackage.display.resultLines)
@@ -956,6 +1031,8 @@ function renderResults() {
     }
     return;
   }
+  const scoreCell = document.getElementById("scoreCell");
+  if (!scoreCell) return;
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
   const hitsParts = [`${impacts.length} Hits`];
