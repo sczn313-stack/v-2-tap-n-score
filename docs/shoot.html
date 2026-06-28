@@ -32,6 +32,7 @@
       <section class="target-session-context" aria-label="Today's range session">
         <span>Today's Range Session</span>
         <strong id="targetSessionSummary">No active weapon profile</strong>
+        <div class="gssf-debug-panel" id="shootGssfDebug">GSSF DEBUG: Target loading</div>
         <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
       </section>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
@@ -243,6 +244,22 @@ function targetAttributionOverride(source = {}) {
   return source;
 }
 
+function renderShootGssfDebug() {
+  const debug = document.getElementById("shootGssfDebug");
+  if (!debug) return;
+  const sessionSource = session || {};
+  const matrixSource = matrix || {};
+  debug.textContent = [
+    "GSSF DEBUG TARGET",
+    `target_profile_id=${activeTargetProfileId() || "(none)"}`,
+    `mission_family=${activeMissionFamily() || "(none)"}`,
+    `isGssfAuthoritySession=${isGssfAuthoritySession() ? "true" : "false"}`,
+    `session=${sessionSource.target_profile_id || sessionSource.targetProfileId || "(none)"}`,
+    `matrix=${matrixSource.target_profile_id || matrixSource.targetProfileId || "(none)"}`,
+    `url=${window.location.search || "(none)"}`
+  ].join(" | ");
+}
+
 function ensureTargetSession() {
   if (session) return session;
   matrix = targetAttributionOverride(SCZN3M4.getActiveMatrix() || defaultTargetMatrix());
@@ -275,6 +292,7 @@ function ensureTargetAttribution() {
 }
 
 ensureTargetAttribution();
+renderShootGssfDebug();
 renderActiveSessionBar();
 
 function cleanSetupValue(value) {
