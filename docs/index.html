@@ -39,7 +39,6 @@
     <div class="package-hero-copy">
       <h1>ZERO FASTER.<br><span>SHOOT SMARTER.</span><br>KEEP GETTING BETTER.</h1>
       <p><strong>THE BEGINNING OF YOUR SHOOTING HISTORY</strong><br><span>Shoot. Scan. Improve. Save.</span></p>
-      <div class="gssf-debug-panel" id="homeGssfDebug">GSSF DEBUG: Home loaded</div>
       <a class="package-start-button" href="matrix.html" data-clear-target-profile="true">START NEW SESSION <span>→</span></a>
       <div class="package-target-launch" aria-label="Target launch options">
         <span>Target Mode</span>
@@ -107,7 +106,6 @@
 </main>
 <script>
 (function(){
-  const homeDebug = document.getElementById("homeGssfDebug");
   const pendingTargetKey = "SCZN3_PENDING_TARGET_PROFILE";
   const gssfProfile = {
     target_profile_id: "gssf_ac_1",
@@ -190,16 +188,6 @@
       }
     } catch (error) {}
   }
-  if (homeDebug) {
-    const params = new URLSearchParams(window.location.search);
-    homeDebug.textContent = [
-      "GSSF DEBUG HOME",
-      `target_profile_id=${params.get("target_profile_id") || "(none)"}`,
-      `mission_family=${params.get("mission_family") || "(none)"}`,
-      `button=visible`
-    ].join(" | ");
-  }
-
   document.querySelectorAll("[data-target-profile-id='gssf_ac_1']").forEach(link => {
     link.addEventListener("pointerdown", createGssfActiveSession);
     link.addEventListener("click", createGssfActiveSession);

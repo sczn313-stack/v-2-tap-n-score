@@ -40,7 +40,6 @@
         <button class="button" type="button" id="newSetup">New Weapon Setup</button>
         <button class="button" type="submit">Go To Target</button>
       </div>
-      <div class="gssf-debug-panel" id="matrixGssfDebug">GSSF DEBUG: Matrix loading</div>
       <div class="target-mode-pill is-hidden" id="targetModePill">Target Mode: GSSF AC-1</div>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
@@ -1200,7 +1199,6 @@ function renderTargetModePill() {
   const attribution = targetAttributionFromContext(collectFormSnapshot());
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
   pill.classList.toggle("is-hidden", !isGssf);
-  renderMatrixGssfDebug(attribution);
 }
 
 function collectFormSnapshot() {
@@ -1215,21 +1213,6 @@ function collectFormSnapshot() {
   snapshot.missionFamilyId = MATRIX_QUERY.get("missionFamilyId") || snapshot.missionFamilyId || "";
   snapshot.targetName = MATRIX_QUERY.get("targetName") || MATRIX_QUERY.get("target") || snapshot.targetName || "";
   return snapshot;
-}
-
-function renderMatrixGssfDebug(attribution = targetAttributionFromContext(collectFormSnapshot())) {
-  const debug = document.getElementById("matrixGssfDebug");
-  if (!debug) return;
-  const activeMatrix = SCZN3M4.getActiveMatrix() || {};
-  const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {};
-  debug.textContent = [
-    "GSSF DEBUG MATRIX",
-    `target_profile_id=${attribution.target_profile_id || activeMatrix.target_profile_id || "(none)"}`,
-    `mission_family=${attribution.mission_family || activeMatrix.mission_family || "(none)"}`,
-    `targetName=${attribution.targetName || activeMatrix.targetName || "(none)"}`,
-    `session=${activeSession.target_profile_id || activeSession.targetProfileId || "(none)"}`,
-    `url=${window.location.search || "(none)"}`
-  ].join(" | ");
 }
 
 function goToTarget() {
