@@ -374,13 +374,13 @@ def test_dot_torture_stage_guidance_matches_authority_profile():
     ], "dot torture stage round counts")
     assert_equal(sum(stage["rounds"] for stage in result["stages"]), 50, "dot torture total stage rounds")
     assert_equal(result["display"]["stageGuidance"], [
-        "Dot 1: 5 rounds",
-        "Dot 2: 5 rounds",
-        "Dots 3 & 4: 8 rounds",
-        "Dot 5: 5 rounds",
-        "Dots 6 & 7: 16 rounds",
-        "Dot 8: 5 rounds",
-        "Dots 9 & 10: 6 rounds",
+        "Stage 1: Dot 1 — Draw and fire 5 slow-fire shots.",
+        "Stage 2: Dot 2 — Draw and fire 1 shot, holster, repeat x5.",
+        "Stage 3: Dots 3 & 4 — Draw, fire 1 on Dot 3 and 1 on Dot 4, repeat x4.",
+        "Stage 4: Dot 5 — Draw and fire 5 shots, strong hand only.",
+        "Stage 5: Dots 6 & 7 — Draw and fire 2 on Dot 6 and 2 on Dot 7, repeat x4.",
+        "Stage 6: Dot 8 — From ready/retention, fire 5 shots weak hand only.",
+        "Stage 7: Dots 9 & 10 — Draw, fire 1 on Dot 9, speed reload, fire 1 on Dot 10, repeat x3.",
     ], "dot torture backend stage guidance")
 
 

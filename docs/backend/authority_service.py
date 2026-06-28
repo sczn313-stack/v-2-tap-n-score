@@ -45,13 +45,55 @@ GSSF_AC_1_PROFILE = {
     "authoritySource": "GSSF AC-1 profile: 8-inch Down Zero, 13-inch +1, paper +3, miss +10",
 }
 DOT_TORTURE_STAGES = [
-    {"stageId": "dot_1", "label": "Dot 1", "dots": [1], "rounds": 5},
-    {"stageId": "dot_2", "label": "Dot 2", "dots": [2], "rounds": 5},
-    {"stageId": "dots_3_4", "label": "Dots 3 & 4", "dots": [3, 4], "rounds": 8},
-    {"stageId": "dot_5", "label": "Dot 5", "dots": [5], "rounds": 5},
-    {"stageId": "dots_6_7", "label": "Dots 6 & 7", "dots": [6, 7], "rounds": 16},
-    {"stageId": "dot_8", "label": "Dot 8", "dots": [8], "rounds": 5},
-    {"stageId": "dots_9_10", "label": "Dots 9 & 10", "dots": [9, 10], "rounds": 6},
+    {
+        "stageId": "dot_1",
+        "label": "Dot 1",
+        "dots": [1],
+        "rounds": 5,
+        "guidance": "Stage 1: Dot 1 — Draw and fire 5 slow-fire shots.",
+    },
+    {
+        "stageId": "dot_2",
+        "label": "Dot 2",
+        "dots": [2],
+        "rounds": 5,
+        "guidance": "Stage 2: Dot 2 — Draw and fire 1 shot, holster, repeat x5.",
+    },
+    {
+        "stageId": "dots_3_4",
+        "label": "Dots 3 & 4",
+        "dots": [3, 4],
+        "rounds": 8,
+        "guidance": "Stage 3: Dots 3 & 4 — Draw, fire 1 on Dot 3 and 1 on Dot 4, repeat x4.",
+    },
+    {
+        "stageId": "dot_5",
+        "label": "Dot 5",
+        "dots": [5],
+        "rounds": 5,
+        "guidance": "Stage 4: Dot 5 — Draw and fire 5 shots, strong hand only.",
+    },
+    {
+        "stageId": "dots_6_7",
+        "label": "Dots 6 & 7",
+        "dots": [6, 7],
+        "rounds": 16,
+        "guidance": "Stage 5: Dots 6 & 7 — Draw and fire 2 on Dot 6 and 2 on Dot 7, repeat x4.",
+    },
+    {
+        "stageId": "dot_8",
+        "label": "Dot 8",
+        "dots": [8],
+        "rounds": 5,
+        "guidance": "Stage 6: Dot 8 — From ready/retention, fire 5 shots weak hand only.",
+    },
+    {
+        "stageId": "dots_9_10",
+        "label": "Dots 9 & 10",
+        "dots": [9, 10],
+        "rounds": 6,
+        "guidance": "Stage 7: Dots 9 & 10 — Draw, fire 1 on Dot 9, speed reload, fire 1 on Dot 10, repeat x3.",
+    },
 ]
 DOT_TORTURE_PROFILE = {
     "target_profile_id": "dot_torture_ez2c_style_17",
@@ -668,7 +710,7 @@ def build_dot_torture_session_package(payload: Dict[str, Any], profile: Dict[str
         },
         "display": {
             "primary": "Dot Torture training session ready.",
-            "stageGuidance": [f"{stage['label']}: {stage['rounds']} rounds" for stage in stages],
+            "stageGuidance": [stage["guidance"] for stage in stages],
             "resultLines": [
                 "Mission: Dot Torture",
                 f"Target: {DOT_TORTURE_PROFILE['target_name']}",

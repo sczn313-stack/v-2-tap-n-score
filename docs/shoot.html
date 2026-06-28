@@ -93,17 +93,13 @@ function backendScoreValue(authorityPackage) {
   const value = score && typeof score === "object" ? score.value : score;
   return Number.isFinite(Number(value)) ? Number(value) : null;
 }
-let currentClicks = backendAuthorityPackage ? {
-  ...(backendAuthorityPackage.clicks || {}),
-  elevation: backendAuthorityPackage.correction && backendAuthorityPackage.correction.elevation,
-  windage: backendAuthorityPackage.correction && backendAuthorityPackage.correction.windage,
-  poib: backendAuthorityPackage.poib,
-  authorityPackage: backendAuthorityPackage
-} : null;
+let currentClicks = zeroingClicksFromAuthorityPackage(backendAuthorityPackage);
 let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
 let authorityStatusMessage = "";
 let sessionSaved = false;
+let trainingStageIndex = 0;
+let trainingDrillFinished = false;
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
 let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
@@ -175,8 +171,30 @@ function activeMissionFamily() {
   ).toLowerCase();
 }
 
+function activeMissionName() {
+  const sessionSource = session || {};
+  const matrixSource = matrix || {};
+  const targetAuthority = sessionSource.targetAuthority || {};
+  return String(
+    sessionSource.mission_name
+    || sessionSource.missionName
+    || matrixSource.mission_name
+    || matrixSource.missionName
+    || targetAuthority.mission_name
+    || targetAuthority.missionName
+    || TARGET_QUERY.get("mission_name")
+    || TARGET_QUERY.get("missionName")
+    || ""
+  ).toLowerCase();
+}
+
 function isGssfAuthoritySession() {
   return activeTargetProfileId() === "gssf_ac_1" || activeMissionFamily() === "gssf";
+}
+
+function isDotTortureAuthoritySession() {
+  return activeTargetProfileId() === "dot_torture_ez2c_style_17"
+    || (activeMissionFamily() === "marksmanshiptraining" && activeMissionName() === "dottorture");
 }
 
 function isGssfAuthorityPackage(authorityPackage) {
@@ -188,8 +206,36 @@ function isGssfAuthorityPackage(authorityPackage) {
   ));
 }
 
+function isDotTortureTrainingPackage(authorityPackage) {
+  if (!authorityPackage) return false;
+  const missionFamily = String(authorityPackage.mission_family || authorityPackage.missionFamily || authorityPackage.missionFamilyId || "");
+  const missionName = String(authorityPackage.mission_name || authorityPackage.missionName || "");
+  const secTemplate = String(authorityPackage.sec_template || authorityPackage.secTemplate || "");
+  return missionFamily === "marksmanshipTraining" && missionName === "dotTorture" && secTemplate === "trainingSEC";
+}
+
+function isNonZeroingAuthorityPackage(authorityPackage) {
+  return isGssfAuthorityPackage(authorityPackage) || isDotTortureTrainingPackage(authorityPackage);
+}
+
+function zeroingClicksFromAuthorityPackage(authorityPackage) {
+  if (!authorityPackage || isNonZeroingAuthorityPackage(authorityPackage)) return null;
+  const correction = authorityPackage.correction || {};
+  const clicks = authorityPackage.clicks || {};
+  return {
+    ...clicks,
+    elevation: correction.elevation,
+    windage: correction.windage,
+    poib: authorityPackage.poib,
+    authorityPackage
+  };
+}
+
 function isAuthorityPackageCalculated(authorityPackage) {
   if (!authorityPackage) return false;
+  if (isDotTortureTrainingPackage(authorityPackage)) {
+    return authorityPackage.ok === true && ["created", "calculated"].includes(String(authorityPackage.status || ""));
+  }
   if (isGssfAuthorityPackage(authorityPackage)) {
     return authorityPackage.ok === true && authorityPackage.status === "calculated";
   }
@@ -332,7 +378,77 @@ function distanceOptions() {
     .join("");
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function trainingDistanceLabel(distance) {
+  if (!distance || typeof distance !== "object") return "Distance unavailable";
+  const value = distance.value ?? distance.distance ?? "";
+  const unit = distance.unit || distance.units || "";
+  return `${value} ${unit}`.trim() || "Distance unavailable";
+}
+
+function trainingStageGuidance(authorityPackage, index) {
+  const stageGuidance = authorityPackage && authorityPackage.display && Array.isArray(authorityPackage.display.stageGuidance)
+    ? authorityPackage.display.stageGuidance
+    : [];
+  const stages = authorityPackage && Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+  const stage = stages[index] || {};
+  return stageGuidance[index] || stage.guidance || `${stage.label || `Stage ${index + 1}`}: ${stage.rounds || 0} rounds`;
+}
+
+function dotTortureTrainingHtml(authorityPackage) {
+  const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+  const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
+  const recommendedDistance = authorityPackage.recommended_distance || authorityPackage.recommendedDistance || authorityPackage.distance;
+  const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || stages.reduce((sum, stage) => sum + Number(stage.rounds || 0), 0);
+  const maxScore = authorityPackage.max_score || authorityPackage.maxScore || (authorityPackage.score && authorityPackage.score.max) || "--";
+  const stageList = stages.map((stage, index) => `
+    <li>
+      <span>${escapeHtml(stage.label || `Stage ${index + 1}`)}</span>
+      <strong>${escapeHtml(stage.rounds || 0)} rounds</strong>
+      <p>${escapeHtml(trainingStageGuidance(authorityPackage, index))}</p>
+    </li>
+  `).join("");
+  return `
+    <div class="authority-results-panel training-results-panel" id="dotTortureTrainingResult" aria-label="Dot Torture training guidance">
+      <div class="training-result-header">
+        <span>Training Mission</span>
+        <strong>${escapeHtml(targetName)}</strong>
+      </div>
+      <div class="training-result-facts">
+        <div><span>Recommended Distance</span><strong>${escapeHtml(trainingDistanceLabel(recommendedDistance))}</strong></div>
+        <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
+        <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
+      </div>
+      <div class="training-stage-current">
+        <span id="trainingStageCounter">Stage 1 of ${Math.max(stages.length, 1)}</span>
+        <strong id="trainingCurrentGuidance">${escapeHtml(trainingStageGuidance(authorityPackage, 0))}</strong>
+      </div>
+      <details class="training-stage-list">
+        <summary>Stage List</summary>
+        <ol>${stageList}</ol>
+      </details>
+      <div class="training-stage-actions">
+        <button class="button" type="button" id="trainingNextStage">Next Stage</button>
+        <button class="button secondary" type="button" id="trainingFinishDrill">Finish Drill</button>
+      </div>
+      <p class="training-drill-status" id="trainingDrillStatus"></p>
+      <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
+    </div>
+  `;
+}
+
 function targetIntelStackHtml() {
+  if (isDotTortureTrainingPackage(backendAuthorityPackage)) {
+    return dotTortureTrainingHtml(backendAuthorityPackage);
+  }
   if (isGssfAuthoritySession()) {
     return `
       <div class="authority-results-panel gssf-results-panel" aria-label="GSSF authority results">
@@ -592,7 +708,7 @@ function safePoint(point) {
 // Non-authoritative display accessor. Backend calculates; frontend displays.
 function currentVisualCorrection() {
   if (!resultsShown || !backendAuthorityPackage) return null;
-  if (isGssfAuthorityPackage(backendAuthorityPackage)) return null;
+  if (isNonZeroingAuthorityPackage(backendAuthorityPackage)) return null;
   const correction = backendAuthorityPackage.correction || {};
   const clicks = backendAuthorityPackage.clicks || {};
   return {
@@ -617,6 +733,17 @@ function backendTargetGeometry() {
 }
 
 function backendAuthorityRequest() {
+  if (isDotTortureAuthoritySession()) {
+    return {
+      target_profile_id: "dot_torture_ez2c_style_17",
+      mission_family: "marksmanshipTraining",
+      mission_name: "dotTorture",
+      distance: {
+        value: Number(selectedDistanceValue || 3),
+        unit: selectedDistanceUnit === "M" ? "m" : "yards"
+      }
+    };
+  }
   if (isGssfAuthoritySession()) {
     const source = matrix || {};
     const payload = {
@@ -686,15 +813,7 @@ async function requestBackendAuthority() {
 function applyBackendAuthorityPackage(authorityPackage) {
   authorityStatusMessage = "";
   backendAuthorityPackage = authorityPackage;
-  const correction = authorityPackage && authorityPackage.correction ? authorityPackage.correction : {};
-  const clicks = authorityPackage && authorityPackage.clicks ? authorityPackage.clicks : {};
-  currentClicks = authorityPackage && !isGssfAuthorityPackage(authorityPackage) ? {
-    ...clicks,
-    elevation: correction.elevation,
-    windage: correction.windage,
-    poib: authorityPackage.poib,
-    authorityPackage
-  } : null;
+  currentClicks = zeroingClicksFromAuthorityPackage(authorityPackage);
   currentScore = backendScoreValue(authorityPackage);
   resultsShown = isAuthorityPackageCalculated(authorityPackage);
   sessionSaved = false;
@@ -1010,10 +1129,57 @@ function scoreClass(score) {
   return "score-red";
 }
 
+function renderDotTortureTrainingResults(authorityPackage) {
+  const grid = document.getElementById("resultsGrid");
+  if (grid && !document.getElementById("dotTortureTrainingResult")) {
+    grid.innerHTML = dotTortureTrainingHtml(authorityPackage);
+  }
+  const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+  const maxIndex = Math.max(stages.length - 1, 0);
+  trainingStageIndex = Math.min(Math.max(trainingStageIndex, 0), maxIndex);
+  const counter = document.getElementById("trainingStageCounter");
+  const guidance = document.getElementById("trainingCurrentGuidance");
+  const nextButton = document.getElementById("trainingNextStage");
+  const finishButton = document.getElementById("trainingFinishDrill");
+  const status = document.getElementById("trainingDrillStatus");
+  if (counter) counter.textContent = `Stage ${trainingStageIndex + 1} of ${Math.max(stages.length, 1)}`;
+  if (guidance) guidance.textContent = trainingStageGuidance(authorityPackage, trainingStageIndex);
+  if (nextButton) {
+    nextButton.disabled = trainingDrillFinished || trainingStageIndex >= maxIndex;
+    nextButton.onclick = () => {
+      if (trainingStageIndex < maxIndex) {
+        trainingStageIndex += 1;
+        renderDotTortureTrainingResults(authorityPackage);
+      }
+    };
+  }
+  if (finishButton) {
+    finishButton.textContent = trainingDrillFinished ? "Drill Complete" : "Finish Drill";
+    finishButton.onclick = () => {
+      trainingDrillFinished = true;
+      renderDotTortureTrainingResults(authorityPackage);
+    };
+  }
+  if (status) {
+    status.textContent = trainingDrillFinished ? "Training drill finished. Save when ready." : "";
+  }
+  const message = document.getElementById("authorityStatusMessage");
+  if (message) {
+    message.innerHTML = authorityStatusMessage
+      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
+      : "";
+    message.classList.toggle("is-hidden", !authorityStatusMessage);
+  }
+}
+
 function renderResults() {
   const impacts = currentImpactPoints;
   const numericScore = currentScore === null ? NaN : Number(currentScore);
   document.body.dataset.authorityStatus = authorityStatusMessage ? "true" : "false";
+  if (isDotTortureTrainingPackage(backendAuthorityPackage)) {
+    renderDotTortureTrainingResults(backendAuthorityPackage);
+    return;
+  }
   if (isGssfAuthorityPackage(backendAuthorityPackage)) {
     const resultBlock = document.getElementById("gssfAuthorityResult");
     const lines = backendAuthorityPackage.display && Array.isArray(backendAuthorityPackage.display.resultLines)
@@ -1096,6 +1262,11 @@ function setNextStep(activeId) {
 
 function rangeWorkflowState(canMark) {
   if (!canMark) return "choose-target";
+  if (isDotTortureAuthoritySession()) {
+    if (!resultsShown) return "show-results";
+    if (!sessionSaved) return "save-session";
+    return "view-sec";
+  }
   if (isGssfAuthoritySession()) {
     if (!currentImpactPoints.length) return "tap-holes";
     if (!resultsShown) return "show-results";
@@ -1112,24 +1283,26 @@ function rangeWorkflowState(canMark) {
 function renderMarkStatus() {
   const canMark = hasMarkableEvidence();
   const isGssf = isGssfAuthoritySession();
-  document.getElementById("setAimMode").disabled = !canMark || isGssf;
-  document.getElementById("addImpactMode").disabled = !canMark || (!currentAimPoint && !isGssf);
-  document.getElementById("undoImpact").disabled = !canMark || currentImpactPoints.length === 0;
-  document.getElementById("clearMarks").disabled = !canMark || (!currentAimPoint && currentImpactPoints.length === 0);
+  const isTraining = isDotTortureAuthoritySession();
+  document.getElementById("setAimMode").disabled = !canMark || isGssf || isTraining;
+  document.getElementById("addImpactMode").disabled = !canMark || isTraining || (!currentAimPoint && !isGssf);
+  document.getElementById("undoImpact").disabled = !canMark || isTraining || currentImpactPoints.length === 0;
+  document.getElementById("clearMarks").disabled = !canMark || isTraining || (!currentAimPoint && currentImpactPoints.length === 0);
   document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
-  document.getElementById("showResults").disabled = !canMark || currentImpactPoints.length === 0;
+  document.getElementById("showResults").disabled = !canMark || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
+  if (canMark && isTraining && !resultsShown) nextStep = "showResults";
   if (canMark && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (canMark && !isGssf && !currentAimPoint) nextStep = "setAimMode";
-  if (canMark && !isGssf && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (canMark && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
-  if (canMark && currentImpactPoints.length && resultsShown) nextStep = "saveMarks";
+  if (canMark && !isGssf && !isTraining && !currentAimPoint) nextStep = "setAimMode";
+  if (canMark && !isGssf && !isTraining && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (canMark && !isTraining && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
+  if (canMark && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
   document.body.dataset.rangeState = rangeWorkflowState(canMark);
   document.body.dataset.hasEvidence = canMark ? "true" : "false";
   document.body.dataset.hasResults = resultsShown ? "true" : "false";
-  document.body.dataset.targetMission = isGssf ? "gssf" : "zeroing";
+  document.body.dataset.targetMission = isTraining ? "marksmanshipTraining" : (isGssf ? "gssf" : "zeroing");
 }
 
 function setMode(mode) {
@@ -1249,7 +1422,7 @@ document.getElementById("clearMarks").addEventListener("click", () => {
   renderMarkStatus();
 });
 document.getElementById("showResults").addEventListener("click", async () => {
-  if ((!isGssfAuthoritySession() && !currentAimPoint) || !currentImpactPoints.length) return;
+  if ((!isGssfAuthoritySession() && !isDotTortureAuthoritySession() && !currentAimPoint) || (!isDotTortureAuthoritySession() && !currentImpactPoints.length)) return;
   authorityStatusMessage = "";
   renderResults();
   try {
@@ -1260,8 +1433,8 @@ document.getElementById("showResults").addEventListener("click", async () => {
     } catch (error) {}
     renderMarkers();
     renderResults();
-    if (resultsShown && !isGssfAuthorityPackage(authorityPackage)) showShooterTip();
-    if (resultsShown && isGssfAuthorityPackage(authorityPackage)) hideShooterTip();
+    if (resultsShown && !isNonZeroingAuthorityPackage(authorityPackage)) showShooterTip();
+    if (resultsShown && isNonZeroingAuthorityPackage(authorityPackage)) hideShooterTip();
   } catch (error) {
     console.warn("Backend authority request failed", error);
     currentClicks = null;
