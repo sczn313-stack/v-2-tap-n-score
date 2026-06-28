@@ -27,8 +27,8 @@
 
   <nav class="package-menu-drawer" id="packageMenuDrawer" aria-label="Mobile menu" hidden>
     <a href="index.html">Home</a>
-    <a href="matrix.html">Start New Session</a>
-    <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1">GSSF AC-1</a>
+    <a href="matrix.html" data-clear-target-profile="true">Start New Session</a>
+    <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1">GSSF AC-1</a>
     <a href="records.html">SEC</a>
     <a href="survey.html">Survey</a>
     <a href="https://BakerTargets.com">Baker's Smart Targets</a>
@@ -39,10 +39,10 @@
       <h1>ZERO FASTER.<br><span>SHOOT SMARTER.</span><br>KEEP GETTING BETTER.</h1>
       <p><strong>THE BEGINNING OF YOUR SHOOTING HISTORY</strong><br><span>Shoot. Scan. Improve. Save.</span></p>
       <div class="gssf-debug-panel" id="homeGssfDebug">GSSF DEBUG: Home loaded</div>
-      <a class="package-start-button" href="matrix.html">START NEW SESSION <span>→</span></a>
+      <a class="package-start-button" href="matrix.html" data-clear-target-profile="true">START NEW SESSION <span>→</span></a>
       <div class="package-target-launch" aria-label="Target launch options">
         <span>Target Mode</span>
-        <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1">GSSF AC-1</a>
+        <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1">GSSF AC-1</a>
       </div>
       <p class="package-setup-reminder">Save time at the range by building your Weapon Library <a href="matrix.html">HERE</a> before your next range trip.</p>
     </div>
@@ -107,6 +107,28 @@
 <script>
 (function(){
   const homeDebug = document.getElementById("homeGssfDebug");
+  const pendingTargetKey = "SCZN3_PENDING_TARGET_PROFILE";
+  const gssfProfile = {
+    target_profile_id: "gssf_ac_1",
+    targetProfileId: "gssf_ac_1",
+    mission_family: "gssf",
+    missionFamilyId: "gssf",
+    targetId: "gssf_ac_1",
+    targetName: "GSSF AC-1",
+    targetFamily: "GSSF AC-1"
+  };
+  function writePendingTargetProfile(profile){
+    try {
+      localStorage.setItem(pendingTargetKey, JSON.stringify(profile));
+      sessionStorage.setItem(pendingTargetKey, JSON.stringify(profile));
+    } catch (error) {}
+  }
+  function clearPendingTargetProfile(){
+    try {
+      localStorage.removeItem(pendingTargetKey);
+      sessionStorage.removeItem(pendingTargetKey);
+    } catch (error) {}
+  }
   if (homeDebug) {
     const params = new URLSearchParams(window.location.search);
     homeDebug.textContent = [
@@ -116,6 +138,13 @@
       `button=visible`
     ].join(" | ");
   }
+
+  document.querySelectorAll("[data-target-profile-id='gssf_ac_1']").forEach(link => {
+    link.addEventListener("click", () => writePendingTargetProfile(gssfProfile));
+  });
+  document.querySelectorAll("[data-clear-target-profile]").forEach(link => {
+    link.addEventListener("click", clearPendingTargetProfile);
+  });
 
   const menuButton = document.querySelector(".package-menu");
   const menuDrawer = document.getElementById("packageMenuDrawer");

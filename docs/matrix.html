@@ -180,6 +180,7 @@ const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
+const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
 let currentWeaponPhoto = null;
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
@@ -933,6 +934,31 @@ function escapeHtml(value = "") {
   }[character]));
 }
 
+function readPendingTargetProfile() {
+  const readJson = storage => {
+    try {
+      const raw = storage.getItem(PENDING_TARGET_PROFILE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  };
+  const pending = readJson(sessionStorage) || readJson(localStorage) || null;
+  return pending && typeof pending === "object" ? pending : {};
+}
+
+function canonicalGssfAttribution() {
+  return {
+    target_profile_id: "gssf_ac_1",
+    targetProfileId: "gssf_ac_1",
+    mission_family: "gssf",
+    missionFamilyId: "gssf",
+    targetId: "gssf_ac_1",
+    targetName: "GSSF AC-1",
+    targetFamily: "GSSF AC-1"
+  };
+}
+
 function renderWeaponPhotoPreview(photo = currentWeaponPhoto) {
   const preview = document.getElementById("weaponPhotoPreview");
   if (!preview) return;
@@ -1327,8 +1353,12 @@ function collectForm() {
 
 function targetAttributionFromContext(data = {}) {
   const activeMatrix = SCZN3M4.getActiveMatrix() || {};
+  const pendingTarget = readPendingTargetProfile();
   const targetProfileId = String(
-    MATRIX_QUERY.get("target_profile_id")
+    pendingTarget.target_profile_id
+    || pendingTarget.targetProfileId
+    || pendingTarget.targetId
+    || MATRIX_QUERY.get("target_profile_id")
     || MATRIX_QUERY.get("targetProfileId")
     || data.target_profile_id
     || data.targetProfileId
@@ -1339,7 +1369,10 @@ function targetAttributionFromContext(data = {}) {
     || ""
   ).toLowerCase();
   const missionFamily = String(
-    MATRIX_QUERY.get("mission_family")
+    pendingTarget.mission_family
+    || pendingTarget.missionFamily
+    || pendingTarget.missionFamilyId
+    || MATRIX_QUERY.get("mission_family")
     || MATRIX_QUERY.get("missionFamily")
     || MATRIX_QUERY.get("missionFamilyId")
     || data.mission_family
@@ -1351,7 +1384,9 @@ function targetAttributionFromContext(data = {}) {
     || ""
   ).toLowerCase();
   const targetName = String(
-    MATRIX_QUERY.get("target")
+    pendingTarget.targetName
+    || pendingTarget.targetFamily
+    || MATRIX_QUERY.get("target")
     || MATRIX_QUERY.get("targetName")
     || data.targetName
     || data.targetFamily
@@ -1366,15 +1401,7 @@ function targetAttributionFromContext(data = {}) {
     || targetName.includes("ac-1")
     || targetName.includes("ac1")
   ) {
-    return {
-      target_profile_id: "gssf_ac_1",
-      targetProfileId: "gssf_ac_1",
-      mission_family: "gssf",
-      missionFamilyId: "gssf",
-      targetId: "gssf_ac_1",
-      targetName: "GSSF AC-1",
-      targetFamily: "GSSF AC-1"
-    };
+    return canonicalGssfAttribution();
   }
   return {};
 }
@@ -1439,7 +1466,12 @@ function loadMatrix() {
     targetDistance: "100 yds",
     distance: "100 yds"
   };
-  setForm(snapshot);
+  const attribution = targetAttributionFromContext(snapshot);
+  const nextSnapshot = attribution.target_profile_id ? { ...snapshot, ...attribution } : snapshot;
+  if (attribution.target_profile_id) {
+    SCZN3M4.saveMatrixSnapshot(nextSnapshot);
+  }
+  setForm(nextSnapshot);
 }
 
 form.addEventListener("submit", event => {
