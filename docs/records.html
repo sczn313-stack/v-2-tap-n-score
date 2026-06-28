@@ -109,6 +109,75 @@ function authorityPackage(session) {
   return session && (session.ugeoAuthorityPackage || session.backendAuthorityPackage) || null;
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function isDotTortureTrainingPackage(pkg) {
+  if (!pkg) return false;
+  const missionFamily = String(pkg.mission_family || pkg.missionFamily || pkg.missionFamilyId || "");
+  const missionName = String(pkg.mission_name || pkg.missionName || "");
+  const secTemplate = String(pkg.sec_template || pkg.secTemplate || "");
+  return missionFamily === "marksmanshipTraining" && missionName === "dotTorture" && secTemplate === "trainingSEC";
+}
+
+function trainingDistanceLabel(distance) {
+  if (!distance || typeof distance !== "object") return "Distance unavailable";
+  const value = distance.value ?? distance.distance ?? "";
+  const unit = distance.unit || distance.units || "";
+  return `${value} ${unit}`.trim() || "Distance unavailable";
+}
+
+function trainingStageSummary(pkg) {
+  const stages = Array.isArray(pkg && pkg.stages) ? pkg.stages : [];
+  const totalRounds = pkg && (pkg.total_rounds || pkg.totalRounds) || stages.reduce((sum, stage) => sum + Number(stage.rounds || 0), 0);
+  return `${stages.length || 0} stages / ${totalRounds || 0} rounds`;
+}
+
+function trainingTimeLabel(pkg) {
+  const time = pkg && (pkg.timeSeconds ?? pkg.raw_time_seconds ?? pkg.rawTimeSeconds);
+  return Number.isFinite(Number(time)) ? `${Number(time)} sec` : "optional/pending";
+}
+
+function renderTrainingSecCard(session, index, pkg) {
+  const targetName = pkg.target_name || pkg.targetName || "Dot Torture Training Drill";
+  const sec = pkg.trainingSEC || {};
+  const maxScore = pkg.max_score || pkg.maxScore || sec.scoreMax || 50;
+  const totalRounds = pkg.total_rounds || pkg.totalRounds || 50;
+  const distance = sec.distance || pkg.distance || pkg.recommended_distance || pkg.recommendedDistance;
+  const stageSummary = trainingStageSummary(pkg);
+  const missesPending = Object.keys(sec.missesByStage || {}).length || Object.keys(sec.missesByDot || {}).length ? "recorded" : "pending/manual";
+  const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
+  return `
+    <article class="history-card training-sec-card" data-session-id="${session.sessionId}">
+      <div class="training-sec-card-heading">
+        <span>Training SEC</span>
+        <strong>Shooter Experience Card — Training</strong>
+        <em>${cleanDateTime(session.timestamp)}</em>
+      </div>
+      <div class="training-sec-card-grid">
+        <div><span>Mission</span><strong>Dot Torture</strong></div>
+        <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
+        <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
+        <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
+        <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
+        <div><span>Score</span><strong>pending/manual</strong></div>
+        <div><span>Percentage</span><strong>pending/manual</strong></div>
+        <div><span>Stage Summary</span><strong>${escapeHtml(stageSummary)}</strong></div>
+        <div><span>Misses</span><strong>${escapeHtml(missesPending)}</strong></div>
+        <div><span>Time</span><strong>${escapeHtml(trainingTimeLabel(pkg))}</strong></div>
+        <div><span>Session Saved</span><strong>${session.savedToSEC ? "saved" : "pending"}</strong></div>
+      </div>
+      ${hashLine}
+    </article>
+  `;
+}
+
 function authorityPoint(point) {
   return SCZN3M4.UGEO.normalizePoint(point);
 }
@@ -191,6 +260,9 @@ function renderHistory() {
     const snapshot = session.matrixSnapshot || {};
     const evidence = session.targetEvidenceImage;
     const pkg = authorityPackage(session);
+    if (isDotTortureTrainingPackage(pkg)) {
+      return renderTrainingSecCard(session, index, pkg);
+    }
     const hasAuthority = !!(pkg && pkg.status);
     const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;
     const score = hasAuthority ? authorityScoreValue(pkg) : null;

@@ -403,6 +403,44 @@ function trainingStageGuidance(authorityPackage, index) {
   return stageGuidance[index] || stage.guidance || `${stage.label || `Stage ${index + 1}`}: ${stage.rounds || 0} rounds`;
 }
 
+function trainingStageSummary(authorityPackage) {
+  const stages = authorityPackage && Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+  const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || stages.reduce((sum, stage) => sum + Number(stage.rounds || 0), 0);
+  return `${stages.length || 0} stages / ${totalRounds || 0} rounds`;
+}
+
+function trainingTimeLabel(authorityPackage) {
+  const time = authorityPackage && (authorityPackage.timeSeconds ?? authorityPackage.raw_time_seconds ?? authorityPackage.rawTimeSeconds);
+  return Number.isFinite(Number(time)) ? `${Number(time)} sec` : "optional/pending";
+}
+
+function trainingSecPreviewHtml(authorityPackage) {
+  const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
+  const distance = authorityPackage.distance || authorityPackage.recommended_distance || authorityPackage.recommendedDistance;
+  const maxScore = authorityPackage.max_score || authorityPackage.maxScore || (authorityPackage.trainingSEC && authorityPackage.trainingSEC.scoreMax) || 50;
+  const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || 50;
+  return `
+    <section class="training-sec-preview is-hidden" id="trainingSecPreview" aria-label="Training Shooter Experience Card">
+      <div class="training-sec-title">
+        <span>Shooter Experience Card — Training</span>
+        <strong>Mission: Dot Torture</strong>
+      </div>
+      <div class="training-sec-grid">
+        <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
+        <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
+        <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
+        <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
+        <div><span>Score</span><strong>pending/manual</strong></div>
+        <div><span>Percentage</span><strong>pending/manual</strong></div>
+        <div><span>Stage Summary</span><strong>${escapeHtml(trainingStageSummary(authorityPackage))}</strong></div>
+        <div><span>Misses</span><strong>pending/manual</strong></div>
+        <div><span>Time</span><strong>${escapeHtml(trainingTimeLabel(authorityPackage))}</strong></div>
+        <div><span>Session Saved</span><strong id="trainingSecSavedStatus">${sessionSaved ? "saved" : "pending"}</strong></div>
+      </div>
+    </section>
+  `;
+}
+
 function dotTortureTrainingHtml(authorityPackage) {
   const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
   const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
@@ -440,6 +478,7 @@ function dotTortureTrainingHtml(authorityPackage) {
         <button class="button secondary" type="button" id="trainingFinishDrill">Finish Drill</button>
       </div>
       <p class="training-drill-status" id="trainingDrillStatus"></p>
+      ${trainingSecPreviewHtml(authorityPackage)}
       <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
     </div>
   `;
@@ -1142,6 +1181,8 @@ function renderDotTortureTrainingResults(authorityPackage) {
   const nextButton = document.getElementById("trainingNextStage");
   const finishButton = document.getElementById("trainingFinishDrill");
   const status = document.getElementById("trainingDrillStatus");
+  const secPreview = document.getElementById("trainingSecPreview");
+  const savedStatus = document.getElementById("trainingSecSavedStatus");
   if (counter) counter.textContent = `Stage ${trainingStageIndex + 1} of ${Math.max(stages.length, 1)}`;
   if (guidance) guidance.textContent = trainingStageGuidance(authorityPackage, trainingStageIndex);
   if (nextButton) {
@@ -1161,8 +1202,10 @@ function renderDotTortureTrainingResults(authorityPackage) {
     };
   }
   if (status) {
-    status.textContent = trainingDrillFinished ? "Training drill finished. Save when ready." : "";
+    status.textContent = trainingDrillFinished ? "Training SEC ready. Save when ready." : "";
   }
+  if (secPreview) secPreview.classList.toggle("is-hidden", !trainingDrillFinished);
+  if (savedStatus) savedStatus.textContent = sessionSaved ? "saved" : "pending";
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
