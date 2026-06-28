@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Tap-N-Score | Baker's Smart Targets</title>
 <link rel="stylesheet" href="styles.css" />
+<script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 </head>
 <body class="package-landing-page">
@@ -117,6 +118,23 @@
     targetName: "GSSF AC-1",
     targetFamily: "GSSF AC-1"
   };
+  const gssfSessionSnapshot = {
+    weaponCategory: "Pistol",
+    weaponManufacturer: "",
+    weaponModelType: "",
+    weaponModelCaliber: "",
+    caliber: "",
+    opticType: "Iron Sights",
+    opticAdjustmentUnit: "MOA",
+    opticClickValue: "0.25",
+    opticClickValueLabel: "0.25 MOA",
+    targetDistanceValue: "25",
+    targetDistanceUnit: "YDS",
+    targetDistance: "25 yds",
+    distance: "25 yds",
+    ...gssfProfile
+  };
+  let gssfSessionPrimed = false;
   function writePendingTargetProfile(profile){
     try {
       localStorage.setItem(pendingTargetKey, JSON.stringify(profile));
@@ -127,6 +145,49 @@
     try {
       localStorage.removeItem(pendingTargetKey);
       sessionStorage.removeItem(pendingTargetKey);
+    } catch (error) {}
+  }
+  function createGssfActiveSession(){
+    writePendingTargetProfile(gssfProfile);
+    if (gssfSessionPrimed) return;
+    gssfSessionPrimed = true;
+    try {
+      if (window.SCZN3M4 && typeof window.SCZN3M4.createSession === "function") {
+        window.SCZN3M4.createSession(gssfSessionSnapshot);
+      }
+    } catch (error) {
+      gssfSessionPrimed = false;
+    }
+  }
+  function removeMissionIdentity(record){
+    if (!record || typeof record !== "object") return record;
+    const next = { ...record };
+    [
+      "target_profile_id",
+      "targetProfileId",
+      "mission_family",
+      "missionFamily",
+      "missionFamilyId",
+      "targetId",
+      "targetName",
+      "targetFamily"
+    ].forEach(key => delete next[key]);
+    return next;
+  }
+  function clearActiveMissionIdentity(){
+    try {
+      if (!window.SCZN3M4) return;
+      const matrix = window.SCZN3M4.getActiveMatrix && window.SCZN3M4.getActiveMatrix();
+      if (matrix) {
+        window.SCZN3M4.write(window.SCZN3M4.KEYS.activeMatrix, removeMissionIdentity(matrix));
+      }
+      const activeSession = window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null);
+      if (activeSession) {
+        const nextSession = removeMissionIdentity(activeSession);
+        nextSession.matrixSnapshot = removeMissionIdentity(activeSession.matrixSnapshot || {});
+        nextSession.targetAuthority = { ...window.SCZN3M4.TARGET_AUTHORITY };
+        window.SCZN3M4.write(window.SCZN3M4.KEYS.activeSession, nextSession);
+      }
     } catch (error) {}
   }
   if (homeDebug) {
@@ -140,10 +201,14 @@
   }
 
   document.querySelectorAll("[data-target-profile-id='gssf_ac_1']").forEach(link => {
-    link.addEventListener("click", () => writePendingTargetProfile(gssfProfile));
+    link.addEventListener("pointerdown", createGssfActiveSession);
+    link.addEventListener("click", createGssfActiveSession);
   });
   document.querySelectorAll("[data-clear-target-profile]").forEach(link => {
-    link.addEventListener("click", clearPendingTargetProfile);
+    link.addEventListener("click", () => {
+      clearPendingTargetProfile();
+      clearActiveMissionIdentity();
+    });
   });
 
   const menuButton = document.querySelector(".package-menu");

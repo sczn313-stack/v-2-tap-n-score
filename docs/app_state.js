@@ -81,18 +81,36 @@
   function buildSession(matrixSnapshot) {
     const sessionNumber = getNextSessionNumber();
     const timestamp = nowStamp();
+    const targetIdentity = {
+      target_profile_id: matrixSnapshot.target_profile_id || matrixSnapshot.targetProfileId || matrixSnapshot.targetId || "",
+      targetProfileId: matrixSnapshot.targetProfileId || matrixSnapshot.target_profile_id || matrixSnapshot.targetId || "",
+      mission_family: matrixSnapshot.mission_family || matrixSnapshot.missionFamily || matrixSnapshot.missionFamilyId || "",
+      missionFamilyId: matrixSnapshot.missionFamilyId || matrixSnapshot.mission_family || matrixSnapshot.missionFamily || "",
+      targetId: matrixSnapshot.targetId || matrixSnapshot.target_profile_id || matrixSnapshot.targetProfileId || "",
+      targetName: matrixSnapshot.targetName || "",
+      targetFamily: matrixSnapshot.targetFamily || matrixSnapshot.targetName || ""
+    };
+    const hasMissionIdentity = !!(targetIdentity.target_profile_id || targetIdentity.mission_family || targetIdentity.targetName);
+    const targetAuthority = hasMissionIdentity
+      ? {
+        ...targetIdentity,
+        authorityStatus: matrixSnapshot.authorityStatus || "profile-selected"
+      }
+      : { ...TARGET_AUTHORITY };
     return {
       sessionId: `baker-session-${String(sessionNumber).padStart(3, "0")}-${Date.now()}`,
       sessionNumber,
       sessionLabel: formatSessionNumber(sessionNumber),
       timestamp,
       createdAt: timestamp,
+      ...(hasMissionIdentity ? targetIdentity : {}),
       matrixSnapshot: {
         ...TARGET_AUTHORITY,
         ...matrixSnapshot,
+        ...(hasMissionIdentity ? targetIdentity : {}),
         frozenAt: timestamp
       },
-      targetAuthority: { ...TARGET_AUTHORITY },
+      targetAuthority,
       shotData: {
         status: "not-started",
         group: [],

@@ -1221,11 +1221,13 @@ function renderMatrixGssfDebug(attribution = targetAttributionFromContext(collec
   const debug = document.getElementById("matrixGssfDebug");
   if (!debug) return;
   const activeMatrix = SCZN3M4.getActiveMatrix() || {};
+  const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {};
   debug.textContent = [
     "GSSF DEBUG MATRIX",
     `target_profile_id=${attribution.target_profile_id || activeMatrix.target_profile_id || "(none)"}`,
     `mission_family=${attribution.mission_family || activeMatrix.mission_family || "(none)"}`,
     `targetName=${attribution.targetName || activeMatrix.targetName || "(none)"}`,
+    `session=${activeSession.target_profile_id || activeSession.targetProfileId || "(none)"}`,
     `url=${window.location.search || "(none)"}`
   ].join(" | ");
 }
@@ -1352,10 +1354,22 @@ function collectForm() {
 }
 
 function targetAttributionFromContext(data = {}) {
+  const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {};
+  const sessionMatrix = activeSession.matrixSnapshot || {};
+  const sessionAuthority = activeSession.targetAuthority || {};
   const activeMatrix = SCZN3M4.getActiveMatrix() || {};
   const pendingTarget = readPendingTargetProfile();
   const targetProfileId = String(
-    pendingTarget.target_profile_id
+    activeSession.target_profile_id
+    || activeSession.targetProfileId
+    || activeSession.targetId
+    || sessionMatrix.target_profile_id
+    || sessionMatrix.targetProfileId
+    || sessionMatrix.targetId
+    || sessionAuthority.target_profile_id
+    || sessionAuthority.targetProfileId
+    || sessionAuthority.targetId
+    || pendingTarget.target_profile_id
     || pendingTarget.targetProfileId
     || pendingTarget.targetId
     || MATRIX_QUERY.get("target_profile_id")
@@ -1369,7 +1383,16 @@ function targetAttributionFromContext(data = {}) {
     || ""
   ).toLowerCase();
   const missionFamily = String(
-    pendingTarget.mission_family
+    activeSession.mission_family
+    || activeSession.missionFamily
+    || activeSession.missionFamilyId
+    || sessionMatrix.mission_family
+    || sessionMatrix.missionFamily
+    || sessionMatrix.missionFamilyId
+    || sessionAuthority.mission_family
+    || sessionAuthority.missionFamily
+    || sessionAuthority.missionFamilyId
+    || pendingTarget.mission_family
     || pendingTarget.missionFamily
     || pendingTarget.missionFamilyId
     || MATRIX_QUERY.get("mission_family")
@@ -1384,7 +1407,13 @@ function targetAttributionFromContext(data = {}) {
     || ""
   ).toLowerCase();
   const targetName = String(
-    pendingTarget.targetName
+    activeSession.targetName
+    || activeSession.targetFamily
+    || sessionMatrix.targetName
+    || sessionMatrix.targetFamily
+    || sessionAuthority.targetName
+    || sessionAuthority.targetFamily
+    || pendingTarget.targetName
     || pendingTarget.targetFamily
     || MATRIX_QUERY.get("target")
     || MATRIX_QUERY.get("targetName")
