@@ -40,6 +40,7 @@
         <button class="button" type="button" id="newSetup">New Weapon Setup</button>
         <button class="button" type="submit">Go To Target</button>
       </div>
+      <div class="target-mode-pill is-hidden" id="targetModePill">Target Mode: GSSF AC-1</div>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
         <h2 class="weapon-library-title">MY WEAPON LIBRARY</h2>
@@ -1024,7 +1025,14 @@ function setupPayload(snapshot) {
     "temperature",
     "wind",
     "weather",
-    "weaponPhoto"
+    "weaponPhoto",
+    "target_profile_id",
+    "targetProfileId",
+    "mission_family",
+    "missionFamilyId",
+    "targetId",
+    "targetName",
+    "targetFamily"
   ];
   return allowed.reduce((payload, key) => {
     if (snapshot[key]) payload[key] = snapshot[key];
@@ -1159,6 +1167,28 @@ function setWeaponListExpanded(isExpanded) {
   toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon Library`;
 }
 
+function renderTargetModePill() {
+  const pill = document.getElementById("targetModePill");
+  if (!pill) return;
+  const attribution = targetAttributionFromContext(collectFormSnapshot());
+  const isGssf = attribution.target_profile_id === "gssf_ac_1";
+  pill.classList.toggle("is-hidden", !isGssf);
+}
+
+function collectFormSnapshot() {
+  const snapshot = {};
+  Array.from(form.elements).forEach(field => {
+    if (!field.name || field.type === "submit" || field.type === "button") return;
+    snapshot[field.name] = field.value ? String(field.value).trim() : "";
+  });
+  snapshot.target_profile_id = MATRIX_QUERY.get("target_profile_id") || snapshot.target_profile_id || "";
+  snapshot.targetProfileId = MATRIX_QUERY.get("targetProfileId") || snapshot.targetProfileId || "";
+  snapshot.mission_family = MATRIX_QUERY.get("mission_family") || snapshot.mission_family || "";
+  snapshot.missionFamilyId = MATRIX_QUERY.get("missionFamilyId") || snapshot.missionFamilyId || "";
+  snapshot.targetName = MATRIX_QUERY.get("targetName") || MATRIX_QUERY.get("target") || snapshot.targetName || "";
+  return snapshot;
+}
+
 function goToTarget() {
   const session = SCZN3M4.createSession(collectForm());
   try {
@@ -1281,12 +1311,16 @@ function collectForm() {
 }
 
 function targetAttributionFromContext(data = {}) {
+  const activeMatrix = SCZN3M4.getActiveMatrix() || {};
   const targetProfileId = String(
     MATRIX_QUERY.get("target_profile_id")
     || MATRIX_QUERY.get("targetProfileId")
     || data.target_profile_id
     || data.targetProfileId
     || data.targetId
+    || activeMatrix.target_profile_id
+    || activeMatrix.targetProfileId
+    || activeMatrix.targetId
     || ""
   ).toLowerCase();
   const missionFamily = String(
@@ -1296,6 +1330,9 @@ function targetAttributionFromContext(data = {}) {
     || data.mission_family
     || data.missionFamily
     || data.missionFamilyId
+    || activeMatrix.mission_family
+    || activeMatrix.missionFamily
+    || activeMatrix.missionFamilyId
     || ""
   ).toLowerCase();
   const targetName = String(
@@ -1303,6 +1340,8 @@ function targetAttributionFromContext(data = {}) {
     || MATRIX_QUERY.get("targetName")
     || data.targetName
     || data.targetFamily
+    || activeMatrix.targetName
+    || activeMatrix.targetFamily
     || ""
   ).toLowerCase();
   if (
@@ -1349,6 +1388,7 @@ function clearSetupFields() {
 
 function renderSessionBar() {
   const snapshot = collectForm();
+  renderTargetModePill();
   const setup = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber || snapshot.ammoCaliber]
     .map(displayValue)
     .filter(Boolean)
