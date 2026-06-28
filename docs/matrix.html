@@ -59,6 +59,15 @@
       <details class="form-section secondary-profile-section">
         <summary>Weapon Details</summary>
         <div class="matrix-grid">
+          <div class="weapon-photo-field">
+            <span class="weapon-photo-label">Weapon Photo <span class="optional-label">Optional</span></span>
+            <div class="weapon-photo-preview is-empty" id="weaponPhotoPreview">No photo saved</div>
+            <div class="weapon-photo-actions">
+              <label class="button" for="weaponPhotoInput">Add Photo</label>
+              <button class="button" type="button" id="removeWeaponPhoto">Remove</button>
+            </div>
+            <input class="visually-hidden-file" id="weaponPhotoInput" type="file" accept="image/*" capture="environment" />
+          </div>
           <label>Manufacturer<select name="weaponManufacturer" id="weaponManufacturer">
             <option>Select Manufacturer</option><option>Colt</option><option>FN</option><option>Daniel Defense</option><option>BCM</option><option>Aero Precision</option><option>Smith & Wesson</option><option>Ruger</option><option>Sig Sauer</option><option>Springfield Armory</option><option>Other</option>
           </select></label>
@@ -169,6 +178,7 @@ const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
+let currentWeaponPhoto = null;
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
   Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
@@ -921,6 +931,58 @@ function escapeHtml(value = "") {
   }[character]));
 }
 
+function renderWeaponPhotoPreview(photo = currentWeaponPhoto) {
+  const preview = document.getElementById("weaponPhotoPreview");
+  if (!preview) return;
+  const dataUrl = photo && photo.dataUrl;
+  preview.classList.toggle("is-empty", !dataUrl);
+  preview.innerHTML = dataUrl
+    ? `<img src="${escapeHtml(dataUrl)}" alt="Saved weapon photo preview" />`
+    : "No photo saved";
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function downsizeWeaponPhoto(dataUrl, maxSize = 900) {
+  return new Promise(resolve => {
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+      if (scale >= 1) {
+        resolve(dataUrl);
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(image.width * scale);
+      canvas.height = Math.round(image.height * scale);
+      const context = canvas.getContext("2d");
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.82));
+    };
+    image.onerror = () => resolve(dataUrl);
+    image.src = dataUrl;
+  });
+}
+
+async function setWeaponPhotoFromFile(file) {
+  if (!file) return;
+  const dataUrl = await readFileAsDataUrl(file);
+  currentWeaponPhoto = {
+    dataUrl: await downsizeWeaponPhoto(dataUrl),
+    name: file.name || "weapon-photo",
+    type: file.type || "image/jpeg",
+    savedAt: new Date().toISOString()
+  };
+  renderWeaponPhotoPreview();
+}
+
 function setupLabel(snapshot) {
   return document.getElementById("setupName").value.trim()
     || [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.ammoCaliber, snapshot.opticType].filter(Boolean).join(" / ")
@@ -961,7 +1023,8 @@ function setupPayload(snapshot) {
     "instructor",
     "temperature",
     "wind",
-    "weather"
+    "weather",
+    "weaponPhoto"
   ];
   return allowed.reduce((payload, key) => {
     if (snapshot[key]) payload[key] = snapshot[key];
@@ -1035,8 +1098,10 @@ function renderWeaponList() {
       <h3>${category.toUpperCase()}S</h3>
       ${categorySetups.length ? categorySetups.map(setup => {
         const usage = setupUsageStats(setup);
+        const photo = setup.weaponPhoto && setup.weaponPhoto.dataUrl ? setup.weaponPhoto : null;
         return `
         <article class="weapon-card">
+          ${photo ? `<div class="weapon-card-photo"><img src="${escapeHtml(photo.dataUrl)}" alt="${escapeHtml(weaponCardTitle(setup))} weapon photo" /></div>` : ""}
           <div>
             <strong>${escapeHtml(weaponCardTitle(setup))}</strong>
             <span>${escapeHtml(weaponCaliber(setup))}</span>
@@ -1121,6 +1186,8 @@ function setForm(snapshot) {
   values.weaponCategory = inferWeaponCategory(values);
   values.weaponModelType = values.weaponModelType || (/^(Rifle|Shotgun|Pistol)$/i.test(values.rifle || "") ? "" : values.rifle);
   values.weaponModelCaliber = values.weaponModelCaliber || values.caliber;
+  currentWeaponPhoto = values.weaponPhoto && values.weaponPhoto.dataUrl ? values.weaponPhoto : null;
+  renderWeaponPhotoPreview();
   setWeaponCategory(values.weaponCategory);
   updateWeaponManufacturers(values.weaponManufacturer);
   updateWeaponModelTypes(values.weaponModelType);
@@ -1208,6 +1275,7 @@ function collectForm() {
   data.setupName = document.getElementById("setupName").value.trim();
   data.rifle = [data.weaponManufacturer, data.weaponModelType].filter(Boolean).join(" ");
   data.caliber = data.weaponModelCaliber || data.ammoCaliber;
+  data.weaponPhoto = currentWeaponPhoto;
   Object.assign(data, targetAttributionFromContext(data));
   return data;
 }
@@ -1268,6 +1336,9 @@ function clearSetupFields() {
   });
   document.getElementById("savedSetupSelect").value = "";
   document.getElementById("setupName").value = "";
+  currentWeaponPhoto = null;
+  document.getElementById("weaponPhotoInput").value = "";
+  renderWeaponPhotoPreview();
   setWeaponCategory("Rifle");
   updateWeaponManufacturers();
   updateOpticTypes();
@@ -1380,6 +1451,16 @@ document.getElementById("bulletWeight").addEventListener("change", () => toggleC
 document.getElementById("magnification").addEventListener("change", () => toggleCustom("customMagnification", document.getElementById("magnification").value === "Other"));
 document.getElementById("matrixDistanceValue").addEventListener("change", () => toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other"));
 document.getElementById("customTargetDistanceValue").addEventListener("input", event => { event.target.value = event.target.value.replace(/\D/g, ""); });
+document.getElementById("weaponPhotoInput").addEventListener("change", event => {
+  setWeaponPhotoFromFile(event.target.files && event.target.files[0]).catch(error => {
+    console.warn("Weapon photo could not be loaded", error);
+  });
+});
+document.getElementById("removeWeaponPhoto").addEventListener("click", () => {
+  currentWeaponPhoto = null;
+  document.getElementById("weaponPhotoInput").value = "";
+  renderWeaponPhotoPreview();
+});
 form.addEventListener("input", renderSessionBar);
 form.addEventListener("change", renderSessionBar);
 
