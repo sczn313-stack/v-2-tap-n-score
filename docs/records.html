@@ -144,6 +144,18 @@ function trainingTimeLabel(pkg) {
   return Number.isFinite(Number(time)) ? `${Number(time)} sec` : "optional/pending";
 }
 
+function trainingStageBreakdownHtml(stageScores) {
+  if (!stageScores || !stageScores.length) return "";
+  return `
+    <div class="training-sec-stage-breakdown">
+      ${stageScores
+        .sort((a, b) => Number(a.stageIndex) - Number(b.stageIndex))
+        .map(stage => `<span>${escapeHtml(stage.label)} <strong>${escapeHtml(stage.score)} / ${escapeHtml(stage.max)}</strong></span>`)
+        .join("")}
+    </div>
+  `;
+}
+
 function renderTrainingSecCard(session, index, pkg) {
   const targetName = pkg.target_name || pkg.targetName || "Dot Torture Training Drill";
   const sec = pkg.trainingSEC || {};
@@ -160,6 +172,7 @@ function renderTrainingSecCard(session, index, pkg) {
   const percentageDisplay = percentage !== null && percentage !== undefined && percentage !== "" ? `${percentage}%` : "pending/manual";
   const missesDisplay = misses !== null && misses !== undefined && misses !== "" ? String(misses) : "pending/manual";
   const notesLine = manual.notes ? `<div><span>Notes</span><strong>${escapeHtml(manual.notes)}</strong></div>` : "";
+  const stageBreakdown = trainingStageBreakdownHtml(manual.stageScores || sec.stageScores);
   const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
   return `
     <article class="history-card training-sec-card" data-session-id="${session.sessionId}">
@@ -182,6 +195,7 @@ function renderTrainingSecCard(session, index, pkg) {
         <div><span>Session Saved</span><strong>${session.savedToSEC ? "saved" : "pending"}</strong></div>
         ${notesLine}
       </div>
+      ${stageBreakdown}
       ${hashLine}
     </article>
   `;

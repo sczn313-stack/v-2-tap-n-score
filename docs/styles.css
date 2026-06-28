@@ -5909,6 +5909,17 @@ input[readonly]{
   text-transform:uppercase;
 }
 
+.target-page .training-stage-score-fields{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:8px;
+  padding:8px;
+  border:1px solid rgba(179,123,8,.36);
+  border-radius:6px;
+  background:#0b0b0b;
+}
+
 .target-page .training-manual-score-form input,
 .target-page .training-manual-score-form textarea{
   width:100%;
@@ -5966,8 +5977,29 @@ input[readonly]{
   font-weight:900;
 }
 
+.target-page .training-stage-score-breakdown{
+  display:grid;
+  gap:5px;
+  padding:10px;
+  border:1px solid rgba(179,123,8,.42);
+  border-radius:6px;
+  background:#101010;
+  color:#f5f1e8;
+  font-size:12px;
+  font-weight:900;
+}
+
+.target-page .training-stage-score-breakdown.is-hidden{
+  display:none;
+}
+
+.target-page .training-stage-score-breakdown strong{
+  color:#d9960b;
+}
+
 @media (max-width:560px){
-  .target-page .training-manual-score-form{
+  .target-page .training-manual-score-form,
+  .target-page .training-stage-score-fields{
     grid-template-columns:1fr;
   }
 }
@@ -6403,6 +6435,31 @@ input[readonly]{
   font-weight:900;
 }
 
+.records-page .training-sec-stage-breakdown{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+
+.records-page .training-sec-stage-breakdown span{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  min-width:0;
+  padding:8px 10px;
+  border:1px solid rgba(179,123,8,.42);
+  border-radius:6px;
+  background:#101010;
+  color:#f5f1e8;
+  font-size:12px;
+  font-weight:900;
+}
+
+.records-page .training-sec-stage-breakdown strong{
+  color:#d9960b;
+  white-space:nowrap;
+}
+
 @media (max-width:900px){
   .records-page .history-panel{
     padding:8px;
@@ -6486,6 +6543,10 @@ input[readonly]{
   }
 
   .records-page .training-sec-card-grid{
+    grid-template-columns:1fr;
+  }
+
+  .records-page .training-sec-stage-breakdown{
     grid-template-columns:1fr;
   }
 }

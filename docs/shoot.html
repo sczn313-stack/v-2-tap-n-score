@@ -409,6 +409,23 @@ function trainingStageSummary(authorityPackage) {
   return `${stages.length || 0} stages / ${totalRounds || 0} rounds`;
 }
 
+function trainingStages(authorityPackage) {
+  return authorityPackage && Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+}
+
+function trainingStageScoreFieldsHtml(authorityPackage) {
+  const stages = trainingStages(authorityPackage);
+  return stages.map((stage, index) => {
+    const label = stage.label || `Stage ${index + 1}`;
+    const max = Number(stage.rounds || 0);
+    return `
+      <label>${escapeHtml(`Stage ${index + 1} / ${label}`)}
+        <input class="training-stage-score-input" type="number" inputmode="numeric" min="0" max="${escapeHtml(max)}" step="1" placeholder="0-${escapeHtml(max)}" data-stage-index="${index}" data-stage-label="${escapeHtml(label)}" data-stage-max="${escapeHtml(max)}" />
+      </label>
+    `;
+  }).join("");
+}
+
 function trainingTimeLabel(authorityPackage) {
   const time = authorityPackage && (authorityPackage.timeSeconds ?? authorityPackage.raw_time_seconds ?? authorityPackage.rawTimeSeconds);
   return Number.isFinite(Number(time)) ? `${Number(time)} sec` : "optional/pending";
@@ -434,19 +451,51 @@ function parseTrainingTimeInput(value) {
   return { ok: false, message: "Time must be seconds or mm:ss." };
 }
 
+function readTrainingStageScores() {
+  const inputs = Array.from(document.querySelectorAll(".training-stage-score-input"));
+  const hasAnyStageScore = inputs.some(input => String(input.value || "").trim() !== "");
+  if (!hasAnyStageScore) return { ok: true, stageScores: null, total: null };
+  const stageScores = [];
+  for (const input of inputs) {
+    const raw = String(input.value || "").trim();
+    const label = input.dataset.stageLabel || "Stage";
+    const max = Number(input.dataset.stageMax || 0);
+    if (!raw) return { ok: false, message: "Enter all stage scores or use Total Score." };
+    if (!/^\d+$/.test(raw)) return { ok: false, message: `${label} score must be a whole number from 0 to ${max}.` };
+    const score = Number(raw);
+    if (score < 0 || score > max) return { ok: false, message: `${label} score must be between 0 and ${max}.` };
+    stageScores.push({
+      stageIndex: Number(input.dataset.stageIndex || stageScores.length),
+      label,
+      score,
+      max
+    });
+  }
+  return {
+    ok: true,
+    stageScores,
+    total: stageScores.reduce((sum, stage) => sum + stage.score, 0)
+  };
+}
+
 function readTrainingManualResult({ requireScore = false } = {}) {
   const scoreInput = document.getElementById("trainingManualScore");
   const missesInput = document.getElementById("trainingManualMisses");
   const timeInput = document.getElementById("trainingManualTime");
   const notesInput = document.getElementById("trainingManualNotes");
+  const stageRead = readTrainingStageScores();
+  if (!stageRead.ok) return stageRead;
   const scoreRaw = String(scoreInput ? scoreInput.value : "").trim();
-  if (!scoreRaw) {
+  let score = stageRead.stageScores ? stageRead.total : null;
+  if (score === null && !scoreRaw) {
     return requireScore
       ? { ok: false, message: "Enter a score from 0 to 50." }
       : { ok: true, result: null };
   }
-  if (!/^\d+$/.test(scoreRaw)) return { ok: false, message: "Score must be a whole number from 0 to 50." };
-  const score = Number(scoreRaw);
+  if (score === null) {
+    if (!/^\d+$/.test(scoreRaw)) return { ok: false, message: "Score must be a whole number from 0 to 50." };
+    score = Number(scoreRaw);
+  }
   if (score < 0 || score > 50) return { ok: false, message: "Score must be between 0 and 50." };
   const missesRaw = String(missesInput ? missesInput.value : "").trim();
   let misses = null;
@@ -464,6 +513,8 @@ function readTrainingManualResult({ requireScore = false } = {}) {
       score,
       maxScore: 50,
       percentage: trainingPercentage(score, 50),
+      scoreSource: stageRead.stageScores ? "stageScores" : "totalScore",
+      stageScores: stageRead.stageScores || [],
       misses,
       timeSeconds: parsedTime.seconds,
       timeDisplay: parsedTime.display,
@@ -478,12 +529,21 @@ function showTrainingManualError(message) {
   if (error) error.textContent = message || "";
 }
 
+function trainingStageBreakdownHtml(stageScores) {
+  if (!stageScores || !stageScores.length) return "";
+  return stageScores
+    .sort((a, b) => Number(a.stageIndex) - Number(b.stageIndex))
+    .map(stage => `<span>${escapeHtml(stage.label)}: <strong>${escapeHtml(stage.score)} / ${escapeHtml(stage.max)}</strong></span>`)
+    .join("");
+}
+
 function updateTrainingManualPreview() {
   const read = readTrainingManualResult({ requireScore: false });
   const scoreValue = document.getElementById("trainingSecScoreValue");
   const percentageValue = document.getElementById("trainingSecPercentageValue");
   const missesValue = document.getElementById("trainingSecMissesValue");
   const timeValue = document.getElementById("trainingSecTimeValue");
+  const stageBreakdown = document.getElementById("trainingStageScoreBreakdown");
   if (!read.ok) {
     showTrainingManualError(read.message);
     return;
@@ -494,6 +554,10 @@ function updateTrainingManualPreview() {
   if (percentageValue) percentageValue.textContent = result ? `${result.percentage}%` : "pending/manual";
   if (missesValue) missesValue.textContent = result && result.misses !== null ? String(result.misses) : "pending/manual";
   if (timeValue) timeValue.textContent = result ? result.timeDisplay : "optional/pending";
+  if (stageBreakdown) {
+    stageBreakdown.innerHTML = result && result.stageScores && result.stageScores.length ? trainingStageBreakdownHtml(result.stageScores) : "";
+    stageBreakdown.classList.toggle("is-hidden", !(result && result.stageScores && result.stageScores.length));
+  }
 }
 
 function authorityPackageWithTrainingManualResult(authorityPackage, manualResult, saved = false) {
@@ -503,6 +567,7 @@ function authorityPackageWithTrainingManualResult(authorityPackage, manualResult
     scoreMax: manualResult.maxScore,
     percentage: manualResult.percentage,
     missesTotal: manualResult.misses,
+    stageScores: manualResult.stageScores,
     timeSeconds: manualResult.timeSeconds,
     timeDisplay: manualResult.timeDisplay,
     notes: manualResult.notes,
@@ -535,6 +600,9 @@ function trainingSecPreviewHtml(authorityPackage) {
       </div>
       <div class="training-manual-score-form" id="trainingManualScoreForm" aria-label="Manual Dot Torture score">
         <label>Total Score<input id="trainingManualScore" type="number" inputmode="numeric" min="0" max="50" step="1" placeholder="0-50" /></label>
+        <div class="training-stage-score-fields" aria-label="Stage scores">
+          ${trainingStageScoreFieldsHtml(authorityPackage)}
+        </div>
         <label>Total Misses<input id="trainingManualMisses" type="number" inputmode="numeric" min="0" step="1" placeholder="Optional" /></label>
         <label>Total Time<input id="trainingManualTime" type="text" inputmode="decimal" placeholder="mm:ss or seconds" /></label>
         <label>Notes<textarea id="trainingManualNotes" rows="2" placeholder="Optional"></textarea></label>
@@ -552,6 +620,7 @@ function trainingSecPreviewHtml(authorityPackage) {
         <div><span>Time</span><strong id="trainingSecTimeValue">${escapeHtml(trainingTimeLabel(authorityPackage))}</strong></div>
         <div><span>Session Saved</span><strong id="trainingSecSavedStatus">${sessionSaved ? "saved" : "pending"}</strong></div>
       </div>
+      <div class="training-stage-score-breakdown is-hidden" id="trainingStageScoreBreakdown"></div>
     </section>
   `;
 }
@@ -1300,7 +1369,8 @@ function renderDotTortureTrainingResults(authorityPackage) {
   const savedStatus = document.getElementById("trainingSecSavedStatus");
   const manualFields = ["trainingManualScore", "trainingManualMisses", "trainingManualTime", "trainingManualNotes"]
     .map(id => document.getElementById(id))
-    .filter(Boolean);
+    .filter(Boolean)
+    .concat(Array.from(document.querySelectorAll(".training-stage-score-input")));
   if (counter) counter.textContent = `Stage ${trainingStageIndex + 1} of ${Math.max(stages.length, 1)}`;
   if (guidance) guidance.textContent = trainingStageGuidance(authorityPackage, trainingStageIndex);
   if (nextButton) {
