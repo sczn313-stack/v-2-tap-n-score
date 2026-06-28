@@ -147,11 +147,19 @@ function trainingTimeLabel(pkg) {
 function renderTrainingSecCard(session, index, pkg) {
   const targetName = pkg.target_name || pkg.targetName || "Dot Torture Training Drill";
   const sec = pkg.trainingSEC || {};
+  const manual = session.trainingManualResult || pkg.trainingManualResult || sec.manualResult || {};
   const maxScore = pkg.max_score || pkg.maxScore || sec.scoreMax || 50;
   const totalRounds = pkg.total_rounds || pkg.totalRounds || 50;
   const distance = sec.distance || pkg.distance || pkg.recommended_distance || pkg.recommendedDistance;
   const stageSummary = trainingStageSummary(pkg);
-  const missesPending = Object.keys(sec.missesByStage || {}).length || Object.keys(sec.missesByDot || {}).length ? "recorded" : "pending/manual";
+  const score = manual.score ?? sec.scoreTotal;
+  const percentage = manual.percentage ?? sec.percentage;
+  const misses = manual.misses ?? sec.missesTotal;
+  const time = manual.timeDisplay || sec.timeDisplay || (Number.isFinite(Number(sec.timeSeconds)) ? `${Number(sec.timeSeconds)} sec` : trainingTimeLabel(pkg));
+  const scoreDisplay = Number.isFinite(Number(score)) ? `${Number(score)} / ${maxScore}` : "pending/manual";
+  const percentageDisplay = percentage !== null && percentage !== undefined && percentage !== "" ? `${percentage}%` : "pending/manual";
+  const missesDisplay = misses !== null && misses !== undefined && misses !== "" ? String(misses) : "pending/manual";
+  const notesLine = manual.notes ? `<div><span>Notes</span><strong>${escapeHtml(manual.notes)}</strong></div>` : "";
   const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
   return `
     <article class="history-card training-sec-card" data-session-id="${session.sessionId}">
@@ -166,12 +174,13 @@ function renderTrainingSecCard(session, index, pkg) {
         <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
         <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
         <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
-        <div><span>Score</span><strong>pending/manual</strong></div>
-        <div><span>Percentage</span><strong>pending/manual</strong></div>
+        <div><span>Score</span><strong>${escapeHtml(scoreDisplay)}</strong></div>
+        <div><span>Percentage</span><strong>${escapeHtml(percentageDisplay)}</strong></div>
         <div><span>Stage Summary</span><strong>${escapeHtml(stageSummary)}</strong></div>
-        <div><span>Misses</span><strong>${escapeHtml(missesPending)}</strong></div>
-        <div><span>Time</span><strong>${escapeHtml(trainingTimeLabel(pkg))}</strong></div>
+        <div><span>Misses</span><strong>${escapeHtml(missesDisplay)}</strong></div>
+        <div><span>Time</span><strong>${escapeHtml(time)}</strong></div>
         <div><span>Session Saved</span><strong>${session.savedToSEC ? "saved" : "pending"}</strong></div>
+        ${notesLine}
       </div>
       ${hashLine}
     </article>

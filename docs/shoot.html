@@ -414,6 +414,114 @@ function trainingTimeLabel(authorityPackage) {
   return Number.isFinite(Number(time)) ? `${Number(time)} sec` : "optional/pending";
 }
 
+function trainingPercentage(score, maxScore = 50) {
+  return Number(((Number(score) / Number(maxScore || 50)) * 100).toFixed(1)).toString();
+}
+
+function parseTrainingTimeInput(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return { ok: true, seconds: null, display: "optional/pending" };
+  const clock = raw.match(/^(\d+):([0-5]\d)$/);
+  if (clock) {
+    const minutes = Number(clock[1]);
+    const seconds = Number(clock[2]);
+    return { ok: true, seconds: (minutes * 60) + seconds, display: `${minutes}:${String(seconds).padStart(2, "0")}` };
+  }
+  if (/^\d+(\.\d+)?$/.test(raw) && Number(raw) >= 0) {
+    const seconds = Number(raw);
+    return { ok: true, seconds, display: `${seconds} sec` };
+  }
+  return { ok: false, message: "Time must be seconds or mm:ss." };
+}
+
+function readTrainingManualResult({ requireScore = false } = {}) {
+  const scoreInput = document.getElementById("trainingManualScore");
+  const missesInput = document.getElementById("trainingManualMisses");
+  const timeInput = document.getElementById("trainingManualTime");
+  const notesInput = document.getElementById("trainingManualNotes");
+  const scoreRaw = String(scoreInput ? scoreInput.value : "").trim();
+  if (!scoreRaw) {
+    return requireScore
+      ? { ok: false, message: "Enter a score from 0 to 50." }
+      : { ok: true, result: null };
+  }
+  if (!/^\d+$/.test(scoreRaw)) return { ok: false, message: "Score must be a whole number from 0 to 50." };
+  const score = Number(scoreRaw);
+  if (score < 0 || score > 50) return { ok: false, message: "Score must be between 0 and 50." };
+  const missesRaw = String(missesInput ? missesInput.value : "").trim();
+  let misses = null;
+  if (missesRaw) {
+    if (!/^\d+$/.test(missesRaw)) return { ok: false, message: "Misses must be zero or greater." };
+    misses = Number(missesRaw);
+  }
+  const parsedTime = parseTrainingTimeInput(timeInput ? timeInput.value : "");
+  if (!parsedTime.ok) return parsedTime;
+  const notes = String(notesInput ? notesInput.value : "").trim();
+  return {
+    ok: true,
+    result: {
+      status: "manual",
+      score,
+      maxScore: 50,
+      percentage: trainingPercentage(score, 50),
+      misses,
+      timeSeconds: parsedTime.seconds,
+      timeDisplay: parsedTime.display,
+      notes,
+      source: "manual"
+    }
+  };
+}
+
+function showTrainingManualError(message) {
+  const error = document.getElementById("trainingManualError");
+  if (error) error.textContent = message || "";
+}
+
+function updateTrainingManualPreview() {
+  const read = readTrainingManualResult({ requireScore: false });
+  const scoreValue = document.getElementById("trainingSecScoreValue");
+  const percentageValue = document.getElementById("trainingSecPercentageValue");
+  const missesValue = document.getElementById("trainingSecMissesValue");
+  const timeValue = document.getElementById("trainingSecTimeValue");
+  if (!read.ok) {
+    showTrainingManualError(read.message);
+    return;
+  }
+  showTrainingManualError("");
+  const result = read.result;
+  if (scoreValue) scoreValue.textContent = result ? `${result.score} / 50` : "pending/manual";
+  if (percentageValue) percentageValue.textContent = result ? `${result.percentage}%` : "pending/manual";
+  if (missesValue) missesValue.textContent = result && result.misses !== null ? String(result.misses) : "pending/manual";
+  if (timeValue) timeValue.textContent = result ? result.timeDisplay : "optional/pending";
+}
+
+function authorityPackageWithTrainingManualResult(authorityPackage, manualResult, saved = false) {
+  const trainingSEC = {
+    ...(authorityPackage.trainingSEC || {}),
+    scoreTotal: manualResult.score,
+    scoreMax: manualResult.maxScore,
+    percentage: manualResult.percentage,
+    missesTotal: manualResult.misses,
+    timeSeconds: manualResult.timeSeconds,
+    timeDisplay: manualResult.timeDisplay,
+    notes: manualResult.notes,
+    manualResult,
+    sessionSaved: saved
+  };
+  return {
+    ...authorityPackage,
+    trainingManualResult: manualResult,
+    trainingSEC,
+    score: {
+      status: "manual",
+      total: manualResult.score,
+      max: manualResult.maxScore,
+      percentage: manualResult.percentage
+    }
+  };
+}
+
 function trainingSecPreviewHtml(authorityPackage) {
   const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
   const distance = authorityPackage.distance || authorityPackage.recommended_distance || authorityPackage.recommendedDistance;
@@ -425,16 +533,23 @@ function trainingSecPreviewHtml(authorityPackage) {
         <span>Shooter Experience Card — Training</span>
         <strong>Mission: Dot Torture</strong>
       </div>
+      <div class="training-manual-score-form" id="trainingManualScoreForm" aria-label="Manual Dot Torture score">
+        <label>Total Score<input id="trainingManualScore" type="number" inputmode="numeric" min="0" max="50" step="1" placeholder="0-50" /></label>
+        <label>Total Misses<input id="trainingManualMisses" type="number" inputmode="numeric" min="0" step="1" placeholder="Optional" /></label>
+        <label>Total Time<input id="trainingManualTime" type="text" inputmode="decimal" placeholder="mm:ss or seconds" /></label>
+        <label>Notes<textarea id="trainingManualNotes" rows="2" placeholder="Optional"></textarea></label>
+        <p class="training-manual-error" id="trainingManualError" role="alert"></p>
+      </div>
       <div class="training-sec-grid">
         <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
         <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
         <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
         <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
-        <div><span>Score</span><strong>pending/manual</strong></div>
-        <div><span>Percentage</span><strong>pending/manual</strong></div>
+        <div><span>Score</span><strong id="trainingSecScoreValue">pending/manual</strong></div>
+        <div><span>Percentage</span><strong id="trainingSecPercentageValue">pending/manual</strong></div>
         <div><span>Stage Summary</span><strong>${escapeHtml(trainingStageSummary(authorityPackage))}</strong></div>
-        <div><span>Misses</span><strong>pending/manual</strong></div>
-        <div><span>Time</span><strong>${escapeHtml(trainingTimeLabel(authorityPackage))}</strong></div>
+        <div><span>Misses</span><strong id="trainingSecMissesValue">pending/manual</strong></div>
+        <div><span>Time</span><strong id="trainingSecTimeValue">${escapeHtml(trainingTimeLabel(authorityPackage))}</strong></div>
         <div><span>Session Saved</span><strong id="trainingSecSavedStatus">${sessionSaved ? "saved" : "pending"}</strong></div>
       </div>
     </section>
@@ -1183,6 +1298,9 @@ function renderDotTortureTrainingResults(authorityPackage) {
   const status = document.getElementById("trainingDrillStatus");
   const secPreview = document.getElementById("trainingSecPreview");
   const savedStatus = document.getElementById("trainingSecSavedStatus");
+  const manualFields = ["trainingManualScore", "trainingManualMisses", "trainingManualTime", "trainingManualNotes"]
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
   if (counter) counter.textContent = `Stage ${trainingStageIndex + 1} of ${Math.max(stages.length, 1)}`;
   if (guidance) guidance.textContent = trainingStageGuidance(authorityPackage, trainingStageIndex);
   if (nextButton) {
@@ -1206,6 +1324,13 @@ function renderDotTortureTrainingResults(authorityPackage) {
   }
   if (secPreview) secPreview.classList.toggle("is-hidden", !trainingDrillFinished);
   if (savedStatus) savedStatus.textContent = sessionSaved ? "saved" : "pending";
+  manualFields.forEach(field => {
+    if (!field.dataset.trainingManualBound) {
+      field.addEventListener("input", updateTrainingManualPreview);
+      field.dataset.trainingManualBound = "true";
+    }
+  });
+  updateTrainingManualPreview();
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
@@ -1498,11 +1623,51 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   }
   lockDistanceForSession();
   const savedTimestamp = new Date().toISOString();
-  const authorityPackage = backendAuthorityPackage;
-  const authorityClicks = currentClicks;
+  let authorityPackage = backendAuthorityPackage;
+  let trainingManualResult = null;
+  if (isDotTortureTrainingPackage(authorityPackage)) {
+    const manualRead = readTrainingManualResult({ requireScore: true });
+    if (!manualRead.ok) {
+      trainingDrillFinished = true;
+      renderResults();
+      showTrainingManualError(manualRead.message);
+      return;
+    }
+    trainingManualResult = {
+      ...manualRead.result,
+      savedAt: savedTimestamp
+    };
+    authorityPackage = authorityPackageWithTrainingManualResult(authorityPackage, trainingManualResult, true);
+    backendAuthorityPackage = authorityPackage;
+  }
+  const authorityClicks = zeroingClicksFromAuthorityPackage(authorityPackage);
   const hadSavedHistoryBefore = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [])
     .some(historySession => historySession && historySession.savedToSEC === true && historySession.sessionId !== session.sessionId);
-  saved = SCZN3M4.updateActiveSession({
+  const savePatch = isDotTortureTrainingPackage(authorityPackage) ? {
+    backendAuthorityPackage: authorityPackage,
+    ugeoAuthorityPackage: authorityPackage,
+    trainingManualResult,
+    score: authorityPackage.score || null,
+    scoreValue: trainingManualResult ? trainingManualResult.score : null,
+    shotData: {
+      status: "training-manual",
+      score: authorityPackage.score || null,
+      scoreValue: trainingManualResult ? trainingManualResult.score : null,
+      authoritySource: "backend",
+      manualSource: "shooter-entry"
+    },
+    hits: 0,
+    shotCount: 0,
+    correctionStatus: "not-applicable",
+    savedToSEC: true,
+    targetDistance: targetDistanceValue(),
+    targetDistanceValue: selectedDistanceValue,
+    targetDistanceUnit: selectedDistanceUnit,
+    targetDistanceLocked: true,
+    distance: targetDistanceValue(),
+    timestamp: savedTimestamp,
+    savedAt: savedTimestamp
+  } : {
     aimPoint: safePoint(currentAimPoint),
     impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
     backendAuthorityPackage: authorityPackage,
@@ -1541,7 +1706,8 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     distance: targetDistanceValue(),
     timestamp: savedTimestamp,
     savedAt: savedTimestamp
-  });
+  };
+  saved = SCZN3M4.updateActiveSession(savePatch);
   if (saved && saved.targetEvidenceImage) {
     renderEvidencePreview(saved.targetEvidenceImage);
   }

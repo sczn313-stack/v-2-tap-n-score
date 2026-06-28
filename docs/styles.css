@@ -5893,6 +5893,50 @@ input[readonly]{
   text-transform:uppercase;
 }
 
+.target-page .training-manual-score-form{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:8px;
+}
+
+.target-page .training-manual-score-form label{
+  display:grid;
+  gap:5px;
+  color:#d9960b;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.target-page .training-manual-score-form input,
+.target-page .training-manual-score-form textarea{
+  width:100%;
+  min-width:0;
+  border:1px solid rgba(179,123,8,.56);
+  border-radius:6px;
+  background:#0d0d0d;
+  color:#fff;
+  font:inherit;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+.target-page .training-manual-score-form textarea{
+  resize:vertical;
+}
+
+.target-page .training-manual-error{
+  grid-column:1/-1;
+  min-height:17px;
+  margin:0;
+  color:#ffcf66;
+  font-size:12px;
+  font-weight:900;
+}
+
 .target-page .training-sec-grid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0,1fr));
@@ -5920,6 +5964,12 @@ input[readonly]{
   color:#fff;
   font-size:13px;
   font-weight:900;
+}
+
+@media (max-width:560px){
+  .target-page .training-manual-score-form{
+    grid-template-columns:1fr;
+  }
 }
 
 .target-page .evidence-count{
