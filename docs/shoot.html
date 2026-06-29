@@ -1633,21 +1633,15 @@ function renderPendingInputMarkers() {
   return parts.join("");
 }
 
-function averageImpactCoordinate(points = []) {
-  const impacts = points.map(safePoint).filter(Boolean);
-  if (!impacts.length) return null;
-  return {
-    xPercent: impacts.reduce((sum, point) => sum + point.xPercent, 0) / impacts.length,
-    yPercent: impacts.reduce((sum, point) => sum + point.yPercent, 0) / impacts.length
-  };
-}
-
 function backendPoibDisplayCoordinate(authorityPackage) {
   if (!authorityPackage) return null;
   const backendPoib = safePoint(authorityPackage.poib || authorityPackage.groupCenter);
   if (backendPoib) return backendPoib;
-  const render = authorityPackage.renderCoordinates || {};
-  return averageImpactCoordinate(authorityPackage.impacts || render.impacts || render.hits || []);
+  if (typeof console !== "undefined" && !backendPoibDisplayCoordinate.hasWarned) {
+    console.warn("POIB unavailable from backend authority.");
+    backendPoibDisplayCoordinate.hasWarned = true;
+  }
+  return null;
 }
 
 function renderBackendAuthorityMarkers(authorityPackage) {
