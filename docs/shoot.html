@@ -118,6 +118,8 @@ const BAKER_GRID_AUDIT = {
 };
 
 function activeTargetProfileId() {
+  const queryTargetProfileId = TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || "";
+  if (queryTargetProfileId) return String(queryTargetProfileId).toLowerCase();
   const sessionSource = session || {};
   const matrixSource = matrix || {};
   const targetAuthority = sessionSource.targetAuthority || {};
@@ -143,8 +145,6 @@ function activeTargetProfileId() {
     || targetAuthority.target_profile_id
     || targetAuthority.targetProfileId
     || targetAuthority.targetId
-    || TARGET_QUERY.get("target_profile_id")
-    || TARGET_QUERY.get("targetProfileId")
     || ""
   ).toLowerCase();
 }
@@ -286,6 +286,16 @@ function targetAttributionOverride(source = {}) {
       targetId: "gssf_ac_1"
     };
   }
+  if (targetProfileId === "dot_torture_ez2c_style_17") {
+    return {
+      ...source,
+      target_profile_id: "dot_torture_ez2c_style_17",
+      targetProfileId: "dot_torture_ez2c_style_17",
+      targetName: "EZ2C Style 17 Dot Torture Training Drill",
+      targetFamily: "Dot Torture",
+      targetId: "dot_torture_ez2c_style_17"
+    };
+  }
   return source;
 }
 
@@ -299,22 +309,13 @@ function ensureTargetSession() {
 }
 
 function ensureTargetAttribution() {
-  if (!isGssfAuthoritySession()) return;
+  if (!isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
   matrix = targetAttributionOverride(matrix || {});
   SCZN3M4.saveMatrixSnapshot(matrix);
   if (session) {
     const patchedSession = targetAttributionOverride(session);
     patchedSession.matrixSnapshot = targetAttributionOverride(session.matrixSnapshot || matrix);
-    patchedSession.targetAuthority = {
-      ...(session.targetAuthority || {}),
-      target_profile_id: "gssf_ac_1",
-      targetProfileId: "gssf_ac_1",
-      mission_family: "gssf",
-      missionFamilyId: "gssf",
-      targetId: "gssf_ac_1",
-      targetName: "GSSF AC-1",
-      targetFamily: "GSSF AC-1"
-    };
+    patchedSession.targetAuthority = targetAttributionOverride(session.targetAuthority || {});
     session = SCZN3M4.updateActiveSession(patchedSession) || patchedSession;
     matrix = session.matrixSnapshot || matrix;
   }
@@ -985,9 +986,7 @@ function backendTargetGeometry() {
 function backendAuthorityRequest() {
   if (isDotTortureAuthoritySession()) {
     return {
-      target_profile_id: "dot_torture_ez2c_style_17",
-      mission_family: "marksmanshipTraining",
-      mission_name: "dotTorture"
+      target_profile_id: "dot_torture_ez2c_style_17"
     };
   }
   if (isGssfAuthoritySession()) {

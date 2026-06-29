@@ -958,6 +958,16 @@ function canonicalGssfAttribution() {
   };
 }
 
+function canonicalDotTortureAttribution() {
+  return {
+    target_profile_id: "dot_torture_ez2c_style_17",
+    targetProfileId: "dot_torture_ez2c_style_17",
+    targetId: "dot_torture_ez2c_style_17",
+    targetName: "EZ2C Style 17 Dot Torture Training Drill",
+    targetFamily: "Dot Torture"
+  };
+}
+
 function renderWeaponPhotoPreview(photo = currentWeaponPhoto) {
   const preview = document.getElementById("weaponPhotoPreview");
   if (!preview) return;
@@ -1198,7 +1208,9 @@ function renderTargetModePill() {
   if (!pill) return;
   const attribution = targetAttributionFromContext(collectFormSnapshot());
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
-  pill.classList.toggle("is-hidden", !isGssf);
+  const isDotTorture = attribution.target_profile_id === "dot_torture_ez2c_style_17";
+  pill.textContent = isDotTorture ? "Target Mode: Dot Torture" : "Target Mode: GSSF AC-1";
+  pill.classList.toggle("is-hidden", !(isGssf || isDotTorture));
 }
 
 function collectFormSnapshot() {
@@ -1222,6 +1234,8 @@ function goToTarget() {
   } catch (error) {}
   const targetQuery = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "gssf_ac_1"
     ? `&target_profile_id=gssf_ac_1&mission_family=gssf`
+    : session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "dot_torture_ez2c_style_17"
+      ? `&target_profile_id=dot_torture_ez2c_style_17`
     : "";
   window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
 }
@@ -1337,13 +1351,15 @@ function collectForm() {
 }
 
 function targetAttributionFromContext(data = {}) {
+  const queryTargetProfileId = MATRIX_QUERY.get("target_profile_id") || MATRIX_QUERY.get("targetProfileId") || "";
   const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {};
   const sessionMatrix = activeSession.matrixSnapshot || {};
   const sessionAuthority = activeSession.targetAuthority || {};
   const activeMatrix = SCZN3M4.getActiveMatrix() || {};
   const pendingTarget = readPendingTargetProfile();
   const targetProfileId = String(
-    activeSession.target_profile_id
+    queryTargetProfileId
+    || activeSession.target_profile_id
     || activeSession.targetProfileId
     || activeSession.targetId
     || sessionMatrix.target_profile_id
@@ -1355,8 +1371,6 @@ function targetAttributionFromContext(data = {}) {
     || pendingTarget.target_profile_id
     || pendingTarget.targetProfileId
     || pendingTarget.targetId
-    || MATRIX_QUERY.get("target_profile_id")
-    || MATRIX_QUERY.get("targetProfileId")
     || data.target_profile_id
     || data.targetProfileId
     || data.targetId
@@ -1414,6 +1428,12 @@ function targetAttributionFromContext(data = {}) {
     || targetName.includes("ac1")
   ) {
     return canonicalGssfAttribution();
+  }
+  if (
+    targetProfileId === "dot_torture_ez2c_style_17"
+    || targetName.includes("dot torture")
+  ) {
+    return canonicalDotTortureAttribution();
   }
   return {};
 }
