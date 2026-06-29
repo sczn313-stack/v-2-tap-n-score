@@ -1939,7 +1939,14 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
     currentImpactPoints = [];
     sessionSaved = false;
     unlockDistanceForNewTarget();
-    clearCalculatedResults();
+    if (isDotTortureAuthoritySession()) {
+      currentClicks = null;
+      currentScore = null;
+      authorityStatusMessage = "";
+      hideShooterTip();
+    } else {
+      clearCalculatedResults();
+    }
     pendingEvidence = {
       dataUrl,
       name: file.name,
