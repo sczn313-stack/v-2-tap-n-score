@@ -156,10 +156,104 @@ function trainingStageBreakdownHtml(stageScores) {
   `;
 }
 
+function trainingManualResult(session, pkg) {
+  const sec = pkg && pkg.trainingSEC || {};
+  return session.trainingManualResult || pkg.trainingManualResult || sec.manualResult || {};
+}
+
+function trainingScoreRecord(session) {
+  const pkg = authorityPackage(session);
+  if (!isDotTortureTrainingPackage(pkg)) return null;
+  const sec = pkg.trainingSEC || {};
+  const manual = trainingManualResult(session, pkg);
+  const maxScore = Number(manual.maxScore ?? pkg.max_score ?? pkg.maxScore ?? sec.scoreMax ?? 50);
+  const score = Number(manual.score ?? sec.scoreTotal);
+  if (!Number.isFinite(score) || !Number.isFinite(maxScore) || maxScore <= 0) return null;
+  const derivedPercentage = (score / maxScore) * 100;
+  const percentage = Number(manual.percentage ?? sec.percentage);
+  return {
+    session,
+    pkg,
+    score,
+    maxScore,
+    percentage: Number.isFinite(percentage) ? percentage : derivedPercentage,
+    stageScores: manual.stageScores || sec.stageScores || [],
+    timestamp: new Date(session.timestamp || 0).getTime()
+  };
+}
+
+function scoreAverage(records) {
+  if (!records.length) return 0;
+  return records.reduce((sum, record) => sum + record.score, 0) / records.length;
+}
+
+function percentageAverage(records) {
+  if (!records.length) return 0;
+  return records.reduce((sum, record) => sum + record.percentage, 0) / records.length;
+}
+
+function formatTrendNumber(value) {
+  const rounded = Math.round(Number(value) * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
+function weakestDotTortureStage(records) {
+  const stages = new Map();
+  records.forEach(record => {
+    (record.stageScores || []).forEach(stage => {
+      const score = Number(stage.score);
+      const max = Number(stage.max);
+      if (!Number.isFinite(score) || !Number.isFinite(max) || max <= 0) return;
+      const key = stage.label || `Stage ${stage.stageIndex || stages.size + 1}`;
+      const bucket = stages.get(key) || { label: key, totalPercentage: 0, count: 0 };
+      bucket.totalPercentage += (score / max) * 100;
+      bucket.count += 1;
+      stages.set(key, bucket);
+    });
+  });
+  let weakest = null;
+  stages.forEach(stage => {
+    const average = stage.count ? stage.totalPercentage / stage.count : 100;
+    if (!weakest || average < weakest.average) {
+      weakest = { label: stage.label, average };
+    }
+  });
+  return weakest ? weakest.label : "Not enough stage data";
+}
+
+function renderDotTortureTrendCard(records) {
+  if (!records.length) return "";
+  const sorted = records.slice().sort((a, b) => b.timestamp - a.timestamp);
+  const last = sorted[0];
+  const best = records.reduce((top, record) => record.score > top.score ? record : top, records[0]);
+  const bestPercentage = Math.max(...records.map(record => record.percentage));
+  const averageScore = scoreAverage(records);
+  const averagePercentage = percentageAverage(records);
+  const maxScore = last.maxScore || 50;
+  return `
+    <article class="history-card dot-training-trend-card">
+      <div class="dot-training-trend-heading">
+        <span>Dot Torture Training Trends</span>
+        <strong>Keep Improving</strong>
+      </div>
+      <div class="dot-training-trend-grid">
+        <div><span>Sessions</span><strong>${records.length}</strong></div>
+        <div><span>Last</span><strong>${formatTrendNumber(last.score)} / ${formatTrendNumber(maxScore)}</strong></div>
+        <div><span>Best</span><strong>${formatTrendNumber(best.score)} / ${formatTrendNumber(best.maxScore || maxScore)}</strong></div>
+        <div><span>Average</span><strong>${formatTrendNumber(averageScore)} / ${formatTrendNumber(maxScore)}</strong></div>
+        <div><span>Best Percentage</span><strong>${formatTrendNumber(bestPercentage)}%</strong></div>
+        <div><span>Average Percentage</span><strong>${formatTrendNumber(averagePercentage)}%</strong></div>
+        <div><span>Weakest Stage</span><strong>${escapeHtml(weakestDotTortureStage(records))}</strong></div>
+      </div>
+      <p class="dot-training-trend-message">Training history is building. Keep improving one clean stage at a time.</p>
+    </article>
+  `;
+}
+
 function renderTrainingSecCard(session, index, pkg) {
   const targetName = pkg.target_name || pkg.targetName || "Dot Torture Training Drill";
   const sec = pkg.trainingSEC || {};
-  const manual = session.trainingManualResult || pkg.trainingManualResult || sec.manualResult || {};
+  const manual = trainingManualResult(session, pkg);
   const maxScore = pkg.max_score || pkg.maxScore || sec.scoreMax || 50;
   const totalRounds = pkg.total_rounds || pkg.totalRounds || 50;
   const distance = sec.distance || pkg.distance || pkg.recommended_distance || pkg.recommendedDistance;
@@ -267,19 +361,21 @@ function authorityDetailLine(pkg) {
 }
 
 function renderHistory() {
-  const sessions = SCZN3M4.getSessionHistory().slice()
+  const savedSessions = SCZN3M4.getSessionHistory().slice()
     .filter(session => session && session.savedToSEC === true)
     .sort((a, b) => {
       const timeDelta = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
       if (timeDelta) return timeDelta;
       return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
-    }).slice(0, 10);
+    });
+  const sessions = savedSessions.slice(0, 10);
   if (!sessions.length) {
     historyList.innerHTML = `<article class="history-card empty-state"><strong>No saved Shooter Experience Cards yet.</strong><span>Save a completed session from Target to create a Baker SEC record.</span></article>`;
     return;
   }
 
-  historyList.innerHTML = sessions.map((session, index) => {
+  const dotTortureTrendCard = renderDotTortureTrendCard(savedSessions.map(trainingScoreRecord).filter(Boolean));
+  historyList.innerHTML = dotTortureTrendCard + sessions.map((session, index) => {
     const snapshot = session.matrixSnapshot || {};
     const evidence = session.targetEvidenceImage;
     const pkg = authorityPackage(session);
