@@ -554,6 +554,25 @@ function trainingStages(authorityPackage) {
   return authorityPackage && Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
 }
 
+function trainingStageLabel(authorityPackage, index) {
+  const stages = trainingStages(authorityPackage);
+  const stage = stages[index] || {};
+  return stage.label || `Stage ${index + 1}`;
+}
+
+function conciseTrainingInstruction(authorityPackage, index) {
+  const guidance = trainingStageGuidance(authorityPackage, index)
+    .replace(/^Stage\s+\d+:\s*/i, "")
+    .replace(/^[^—-]+[—-]\s*/, "")
+    .trim();
+  if (!guidance) return "Follow backend-authorized stage guidance.";
+  return guidance
+    .split(/(?<=\.)\s+/)
+    .filter(Boolean)
+    .map(sentence => escapeHtml(sentence.trim()))
+    .join("<br>");
+}
+
 function dotTortureWorkspacePackage() {
   const authorityPackage = compatibleAuthorityPackage(backendAuthorityPackage);
   if (isDotTortureTrainingPackage(authorityPackage)) return authorityPackage;
@@ -794,9 +813,13 @@ function dotTortureTrainingHtml(authorityPackage) {
   const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
   const hasBackendTrainingPackage = isDotTortureTrainingPackage(authorityPackage) && authorityPackage.ok === true;
   const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
+  const targetShortName = targetName.replace(/\s*Dot Torture Training Drill\s*/i, "").trim() || targetName;
   const recommendedDistance = authorityPackage.recommended_distance || authorityPackage.recommendedDistance || authorityPackage.distance;
   const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || stages.reduce((sum, stage) => sum + Number(stage.rounds || 0), 0);
   const maxScore = authorityPackage.max_score || authorityPackage.maxScore || (authorityPackage.score && authorityPackage.score.max) || "--";
+  const currentStage = stages[0] || {};
+  const currentRounds = currentStage.rounds || 0;
+  const evidence = displayedEvidence && displayedEvidence.dataUrl ? displayedEvidence : null;
   const stageList = stages.map((stage, index) => `
     <li>
       <span>${escapeHtml(stage.label || `Stage ${index + 1}`)}</span>
@@ -804,28 +827,49 @@ function dotTortureTrainingHtml(authorityPackage) {
       <p>${escapeHtml(trainingStageGuidance(authorityPackage, index))}</p>
     </li>
   `).join("");
+  const targetSection = evidence ? `
+    <section class="dot-training-target" aria-label="Dot Torture target evidence">
+      <div class="dot-training-target-frame has-image" id="dotTrainingTargetFrame">
+        <img src="${evidence.dataUrl}" alt="Uploaded Dot Torture target evidence" />
+      </div>
+    </section>
+  ` : "";
   return `
-    <div class="authority-results-panel training-results-panel" id="dotTortureTrainingResult" aria-label="Dot Torture training guidance">
-      <div class="training-result-header">
-        <span>Training Mission</span>
-        <strong>Dot Torture</strong>
-        <em>Backend-authorized session</em>
-        <small>${escapeHtml(targetName)}</small>
-      </div>
-      <div class="training-result-facts">
-        <div><span>Recommended Distance</span><strong>${escapeHtml(trainingDistanceLabel(recommendedDistance))}</strong></div>
-        <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
-        <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
-      </div>
-      <div class="training-stage-current">
-        <span id="trainingStageCounter">Stage 1 of ${Math.max(stages.length, 1)}</span>
-        <strong id="trainingCurrentGuidance">${escapeHtml(hasBackendTrainingPackage ? trainingStageGuidance(authorityPackage, 0) : "Show Results to load backend-authorized stage guidance.")}</strong>
-      </div>
+    <div class="dot-training-workspace${evidence ? " has-target-evidence" : ""}" id="dotTortureTrainingResult" aria-label="Dot Torture training workspace">
+      <section class="dot-training-hero" aria-label="Dot Torture mission">
+        <div class="dot-training-title">
+          <span>Training Mission</span>
+          <strong>Dot Torture</strong>
+          <small>${escapeHtml(targetShortName)}</small>
+        </div>
+        <div class="dot-training-facts">
+          <div>
+            <span>Recommended Distance</span>
+            <strong>${escapeHtml(trainingDistanceLabel(recommendedDistance))}</strong>
+          </div>
+          <div>
+            <span>Progress</span>
+            <strong id="trainingStageCounter">Stage 1 of ${Math.max(stages.length, 1)}</strong>
+          </div>
+        </div>
+      </section>
+      <section class="dot-stage-card" aria-label="Current Dot Torture stage">
+        <span class="dot-stage-kicker" id="trainingStageLabel">${escapeHtml(trainingStageLabel(authorityPackage, 0))}</span>
+        <strong class="dot-stage-number" id="trainingStageTitle">Stage 1</strong>
+        <p id="trainingCurrentGuidance">${hasBackendTrainingPackage ? conciseTrainingInstruction(authorityPackage, 0) : "Backend-authorized stage guidance is loading."}</p>
+        <div class="dot-stage-rounds">
+          <span>Rounds</span>
+          <strong id="trainingStageRounds">${escapeHtml(currentRounds || "--")}</strong>
+        </div>
+        <button class="button dot-stage-begin" type="button" id="trainingBeginStage">Begin Stage</button>
+      </section>
+      ${targetSection}
       <details class="training-stage-list${hasBackendTrainingPackage ? "" : " is-hidden"}">
         <summary>Stage List</summary>
         <ol>${stageList}</ol>
       </details>
-      <div class="training-stage-actions">
+      <div class="dot-training-toolbar" aria-label="Dot Torture stage controls">
+        <button class="button secondary" type="button" id="trainingPreviousStage">Previous Stage</button>
         <button class="button" type="button" id="trainingNextStage">Next Stage</button>
         <button class="button secondary" type="button" id="trainingFinishDrill">Finish Drill</button>
       </div>
@@ -1026,12 +1070,28 @@ function renderEvidencePreview(image) {
     return;
   }
   if (!evidence) {
+    if (isDotTortureAuthoritySession()) {
+      preview.innerHTML = `
+        <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
+      `;
+      renderDotTortureTrainingResults(dotTortureWorkspacePackage());
+      renderMarkStatus();
+      return;
+    }
     preview.innerHTML = `
       <div class="evidence-meta evidence-status-stack empty-target-start"></div>
       ${(isDotTortureAuthoritySession() || isNonZeroingAuthorityPackage(backendAuthorityPackage)) ? `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>` : ""}
     `;
     if (isDotTortureAuthoritySession()) renderDotTortureTrainingResults(dotTortureWorkspacePackage());
     if (isGssfAuthorityPackage(backendAuthorityPackage)) renderResults();
+    renderMarkStatus();
+    return;
+  }
+  if (isDotTortureAuthoritySession() || isDotTortureTrainingPackage(backendAuthorityPackage)) {
+    preview.innerHTML = `
+      <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
+    `;
+    renderDotTortureTrainingResults(dotTortureWorkspacePackage());
     renderMarkStatus();
     return;
   }
@@ -1571,6 +1631,11 @@ function renderDotTortureTrainingResults(authorityPackage) {
   trainingStageIndex = Math.min(Math.max(trainingStageIndex, 0), maxIndex);
   const counter = document.getElementById("trainingStageCounter");
   const guidance = document.getElementById("trainingCurrentGuidance");
+  const stageLabel = document.getElementById("trainingStageLabel");
+  const stageTitle = document.getElementById("trainingStageTitle");
+  const stageRounds = document.getElementById("trainingStageRounds");
+  const beginButton = document.getElementById("trainingBeginStage");
+  const previousButton = document.getElementById("trainingPreviousStage");
   const nextButton = document.getElementById("trainingNextStage");
   const finishButton = document.getElementById("trainingFinishDrill");
   const status = document.getElementById("trainingDrillStatus");
@@ -1581,9 +1646,36 @@ function renderDotTortureTrainingResults(authorityPackage) {
     .filter(Boolean)
     .concat(Array.from(document.querySelectorAll(".training-stage-score-input")));
   if (counter) counter.textContent = `Stage ${trainingStageIndex + 1} of ${Math.max(stages.length, 1)}`;
-  if (guidance) guidance.textContent = hasBackendTrainingPackage
-    ? trainingStageGuidance(authorityPackage, trainingStageIndex)
-    : "Show Results to load backend-authorized stage guidance.";
+  if (stageLabel) stageLabel.textContent = trainingStageLabel(authorityPackage, trainingStageIndex);
+  if (stageTitle) stageTitle.textContent = `Stage ${trainingStageIndex + 1}`;
+  if (stageRounds) stageRounds.textContent = String((stages[trainingStageIndex] && stages[trainingStageIndex].rounds) || "--");
+  if (guidance) guidance.innerHTML = hasBackendTrainingPackage
+    ? conciseTrainingInstruction(authorityPackage, trainingStageIndex)
+    : "Backend-authorized stage guidance is loading.";
+  if (beginButton) {
+    beginButton.disabled = !hasBackendTrainingPackage || trainingDrillFinished;
+    beginButton.textContent = trainingStageIndex >= maxIndex ? "Finish Drill" : (trainingStageIndex === 0 ? "Begin Stage" : "Next Stage");
+    beginButton.onclick = () => {
+      if (!hasBackendTrainingPackage || trainingDrillFinished) return;
+      if (trainingStageIndex < maxIndex) {
+        trainingStageIndex += 1;
+        renderDotTortureTrainingResults(authorityPackage);
+      } else {
+        trainingDrillFinished = true;
+        renderDotTortureTrainingResults(authorityPackage);
+        renderMarkStatus();
+      }
+    };
+  }
+  if (previousButton) {
+    previousButton.disabled = !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex <= 0;
+    previousButton.onclick = () => {
+      if (trainingStageIndex > 0) {
+        trainingStageIndex -= 1;
+        renderDotTortureTrainingResults(authorityPackage);
+      }
+    };
+  }
   if (nextButton) {
     nextButton.disabled = !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex >= maxIndex;
     nextButton.classList.toggle("secondary", !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex >= maxIndex);

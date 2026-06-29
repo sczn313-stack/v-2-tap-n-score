@@ -5743,6 +5743,246 @@ input[readonly]{
   gap:12px;
 }
 
+.target-page[data-target-mission="marksmanshipTraining"] .target-session-context{
+  display:none;
+}
+
+.target-page[data-target-mission="marksmanshipTraining"] .active-session-bar,
+.target-page[data-target-mission="marksmanshipTraining"] .workflow-control-row{
+  display:none;
+}
+
+.target-page[data-target-mission="marksmanshipTraining"][data-range-state="save-session"] .workflow-control-row,
+.target-page[data-target-mission="marksmanshipTraining"][data-range-state="view-sec"] .workflow-control-row{
+  display:flex;
+}
+
+.target-page[data-target-mission="marksmanshipTraining"] .evidence-preview.evidence-workspace{
+  display:block;
+  height:auto;
+  min-height:0;
+  overflow:visible;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+
+.target-page[data-target-mission="marksmanshipTraining"] .evidence-meta{
+  padding:0;
+  border:0;
+  background:transparent;
+  overflow:visible;
+}
+
+.target-page[data-target-mission="marksmanshipTraining"] .target-intel-stack{
+  gap:0;
+}
+
+.target-page .dot-training-workspace{
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-areas:
+    "hero"
+    "stage"
+    "stages"
+    "toolbar"
+    "status"
+    "sec"
+    "message";
+  gap:12px;
+  width:100%;
+  color:#f5f1e8;
+}
+
+.target-page .dot-training-workspace.has-target-evidence{
+  grid-template-columns:minmax(320px, 1.35fr) minmax(300px, .9fr);
+  grid-template-areas:
+    "hero hero"
+    "target stage"
+    "target stages"
+    "toolbar toolbar"
+    "status status"
+    "sec sec"
+    "message message";
+}
+
+.target-page .dot-training-hero{
+  grid-area:hero;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(220px,auto);
+  align-items:end;
+  gap:12px;
+  padding:16px;
+  border:1px solid rgba(217,150,11,.72);
+  border-radius:8px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(217,150,11,.18), transparent 38%),
+    linear-gradient(180deg,#181818,#090909);
+  box-shadow:0 12px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.target-page .dot-training-title{
+  display:grid;
+  gap:5px;
+}
+
+.target-page .dot-training-title span,
+.target-page .dot-training-facts span,
+.target-page .dot-stage-kicker,
+.target-page .dot-stage-rounds span{
+  color:#d9960b;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.08em;
+  line-height:1;
+  text-transform:uppercase;
+}
+
+.target-page .dot-training-title strong{
+  color:#fff;
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-size:clamp(32px, 5vw, 54px);
+  line-height:.92;
+  text-transform:uppercase;
+}
+
+.target-page .dot-training-title small{
+  color:#d7cdbb;
+  font-size:14px;
+  font-weight:900;
+  line-height:1.25;
+}
+
+.target-page .dot-training-facts{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:8px;
+}
+
+.target-page .dot-training-facts div{
+  display:grid;
+  gap:6px;
+  min-width:130px;
+  padding:12px;
+  border:1px solid rgba(179,123,8,.54);
+  border-radius:8px;
+  background:#111;
+}
+
+.target-page .dot-training-facts strong{
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+  line-height:1.05;
+}
+
+.target-page .dot-stage-card{
+  grid-area:stage;
+  display:grid;
+  align-content:start;
+  gap:12px;
+  padding:18px;
+  border:1px solid rgba(217,150,11,.82);
+  border-radius:8px;
+  background:
+    linear-gradient(180deg, rgba(217,150,11,.16), transparent 42%),
+    #111;
+  box-shadow:0 16px 32px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.target-page .dot-stage-number{
+  color:#fff;
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-size:clamp(42px, 7vw, 76px);
+  line-height:.9;
+  text-transform:uppercase;
+}
+
+.target-page .dot-stage-card p{
+  margin:0;
+  color:#fff;
+  font-size:clamp(23px, 3vw, 34px);
+  font-weight:900;
+  line-height:1.08;
+}
+
+.target-page .dot-stage-rounds{
+  display:grid;
+  gap:4px;
+  width:max-content;
+  min-width:96px;
+  padding:10px 12px;
+  border:1px solid rgba(179,123,8,.54);
+  border-radius:8px;
+  background:#090909;
+}
+
+.target-page .dot-stage-rounds strong{
+  color:#fff;
+  font-size:28px;
+  font-weight:900;
+  line-height:1;
+}
+
+.target-page .dot-stage-begin{
+  width:100%;
+  min-height:48px;
+}
+
+.target-page .dot-training-target{
+  grid-area:target;
+  min-width:0;
+}
+
+.target-page .dot-training-target-frame{
+  display:grid;
+  place-items:center;
+  min-height:360px;
+  height:100%;
+  overflow:hidden;
+  border:1px solid rgba(179,123,8,.54);
+  border-radius:8px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(217,150,11,.10), transparent 42%),
+    #080808;
+  color:#d7cdbb;
+  text-align:center;
+}
+
+.target-page .dot-training-target-frame img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  max-height:72vh;
+  object-fit:contain;
+  border:0;
+  background:#f4ead5;
+}
+
+.target-page .dot-training-workspace .training-stage-list{
+  grid-area:stages;
+}
+
+.target-page .dot-training-toolbar{
+  grid-area:toolbar;
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  gap:8px;
+}
+
+.target-page .dot-training-workspace .training-drill-status{
+  grid-area:status;
+}
+
+.target-page .dot-training-workspace .training-sec-preview{
+  grid-area:sec;
+}
+
+.target-page .dot-training-workspace .authority-status-message{
+  grid-area:message;
+}
+
 .target-page .training-result-header{
   display:grid;
   gap:5px;
@@ -6013,10 +6253,62 @@ input[readonly]{
   color:#d9960b;
 }
 
+@media (max-width:900px){
+  .target-page .dot-training-workspace,
+  .target-page .dot-training-workspace.has-target-evidence{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "hero"
+      "stage"
+      "target"
+      "stages"
+      "toolbar"
+      "status"
+      "sec"
+      "message";
+  }
+
+  .target-page .dot-training-hero{
+    grid-template-columns:1fr;
+    align-items:start;
+    padding:14px;
+  }
+
+  .target-page .dot-training-facts{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+
+  .target-page .dot-training-target-frame{
+    min-height:180px;
+  }
+
+  .target-page .dot-stage-card{
+    padding:16px;
+  }
+}
+
 @media (max-width:560px){
+  .target-page .dot-training-workspace{
+    gap:10px;
+  }
+
+  .target-page .dot-training-title strong{
+    font-size:40px;
+  }
+
+  .target-page .dot-training-facts,
+  .target-page .dot-training-toolbar,
   .target-page .training-manual-score-form,
   .target-page .training-stage-score-fields{
     grid-template-columns:1fr;
+  }
+
+  .target-page .dot-stage-card p{
+    font-size:26px;
+  }
+
+  .target-page .dot-training-target-frame img{
+    max-height:58vh;
   }
 }
 
