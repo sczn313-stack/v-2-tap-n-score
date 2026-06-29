@@ -82,6 +82,25 @@ const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (I
 const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
 const TARGET_QUERY = new URLSearchParams(window.location.search);
 const TARGET_PROFILE_LAUNCH_ID = TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || "";
+const DOT_TORTURE_PROFILE_IDS = new Set([
+  "dot_torture_ez2c_style_17",
+  "dot_torture_lite_ez2c",
+  "revolving_dot_torture_ez2c"
+]);
+const DOT_TORTURE_PROFILE_LABELS = {
+  dot_torture_ez2c_style_17: {
+    targetName: "EZ2C Style 17 Dot Torture Training Drill",
+    targetFamily: "Dot Torture"
+  },
+  dot_torture_lite_ez2c: {
+    targetName: "EZ2C Dot Torture Lite Training Drill",
+    targetFamily: "Dot Torture Lite"
+  },
+  revolving_dot_torture_ez2c: {
+    targetName: "EZ2C Revolving Dot Torture Training Drill",
+    targetFamily: "Revolving Dot Torture"
+  }
+};
 let missionResolutionStatus = TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle";
 let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target mission..." : "";
 let pendingEvidence = null;
@@ -153,13 +172,17 @@ function activeTargetProfileId() {
   ).toLowerCase();
 }
 
+function isDotTortureProfileId(value) {
+  return DOT_TORTURE_PROFILE_IDS.has(String(value || "").toLowerCase());
+}
+
 function activeMissionFamily() {
   const sessionSource = session || {};
   const matrixSource = matrix || {};
   const targetAuthority = sessionSource.targetAuthority || {};
   const targetProfileId = activeTargetProfileId();
   if (targetProfileId === "gssf_ac_1") return "gssf";
-  if (targetProfileId === "dot_torture_ez2c_style_17") return "";
+  if (isDotTortureProfileId(targetProfileId)) return "";
   return String(
     sessionSource.mission_family
     || sessionSource.missionFamily
@@ -199,8 +222,14 @@ function isGssfAuthoritySession() {
 }
 
 function isDotTortureAuthoritySession() {
-  return activeTargetProfileId() === "dot_torture_ez2c_style_17"
-    || (activeMissionFamily() === "marksmanshiptraining" && activeMissionName() === "dottorture");
+  const missionName = activeMissionName();
+  return isDotTortureProfileId(activeTargetProfileId())
+    || (activeMissionFamily() === "marksmanshiptraining" && (
+      missionName === "dottorture"
+      || missionName === "dottorturestandard"
+      || missionName === "dottorturelite"
+      || missionName === "revolvingdottorture"
+    ));
 }
 
 function isGssfAuthorityPackage(authorityPackage) {
@@ -216,8 +245,17 @@ function isDotTortureTrainingPackage(authorityPackage) {
   if (!authorityPackage) return false;
   const missionFamily = String(authorityPackage.mission_family || authorityPackage.missionFamily || authorityPackage.missionFamilyId || "");
   const missionName = String(authorityPackage.mission_name || authorityPackage.missionName || "");
+  const missionGroup = String(authorityPackage.mission_group || authorityPackage.missionGroup || "");
   const secTemplate = String(authorityPackage.sec_template || authorityPackage.secTemplate || "");
-  return missionFamily === "marksmanshipTraining" && missionName === "dotTorture" && secTemplate === "trainingSEC";
+  return missionFamily === "marksmanshipTraining"
+    && secTemplate === "trainingSEC"
+    && (
+      missionGroup === "dotTortureFamily"
+      || missionName === "dotTorture"
+      || missionName === "dotTortureStandard"
+      || missionName === "dotTortureLite"
+      || missionName === "revolvingDotTorture"
+    );
 }
 
 function isNonZeroingAuthorityPackage(authorityPackage) {
@@ -274,22 +312,36 @@ function renderMissionResolutionState() {
 }
 
 function activeMissionKind() {
-  if (isDotTortureAuthoritySession()) return "dotTorture";
+  if (isDotTortureAuthoritySession()) return "dotTortureFamily";
   if (isGssfAuthoritySession()) return "gssf";
   return "zeroing";
 }
 
 function authorityPackageMissionKind(authorityPackage) {
   if (!authorityPackage) return "";
-  if (isDotTortureTrainingPackage(authorityPackage)) return "dotTorture";
+  if (isDotTortureTrainingPackage(authorityPackage)) return "dotTortureFamily";
   if (isGssfAuthorityPackage(authorityPackage)) return "gssf";
   if (authorityPackage.status && authorityPackage.status.hasCorrection) return "zeroing";
   return "";
 }
 
+function authorityPackageTargetProfileId(authorityPackage) {
+  return String(
+    authorityPackage && (
+      authorityPackage.target_profile_id
+      || authorityPackage.targetProfileId
+      || authorityPackage.targetId
+      || ""
+    )
+  ).toLowerCase();
+}
+
 function isAuthorityPackageCompatibleWithActiveMission(authorityPackage) {
   const packageKind = authorityPackageMissionKind(authorityPackage);
   if (!packageKind) return false;
+  const activeProfileId = activeTargetProfileId();
+  const packageProfileId = authorityPackageTargetProfileId(authorityPackage);
+  if (activeProfileId && packageProfileId && activeProfileId !== packageProfileId) return false;
   return packageKind === activeMissionKind();
 }
 
@@ -408,18 +460,19 @@ function targetAttributionOverride(source = {}) {
   const targetProfileId = activeTargetProfileId();
   const missionFamily = activeMissionFamily();
   const base = authoritySafeRecord(source);
-  if (targetProfileId === "dot_torture_ez2c_style_17") {
+  if (isDotTortureProfileId(targetProfileId)) {
+    const labels = DOT_TORTURE_PROFILE_LABELS[targetProfileId] || DOT_TORTURE_PROFILE_LABELS.dot_torture_ez2c_style_17;
     return {
       ...base,
-      target_profile_id: "dot_torture_ez2c_style_17",
-      targetProfileId: "dot_torture_ez2c_style_17",
+      target_profile_id: targetProfileId,
+      targetProfileId: targetProfileId,
       mission_family: "",
       missionFamilyId: "",
       mission_name: "",
       missionName: "",
-      targetName: "EZ2C Style 17 Dot Torture Training Drill",
-      targetFamily: "Dot Torture",
-      targetId: "dot_torture_ez2c_style_17"
+      targetName: labels.targetName,
+      targetFamily: labels.targetFamily,
+      targetId: targetProfileId
     };
   }
   if (targetProfileId === "gssf_ac_1" || missionFamily === "gssf") {
@@ -576,18 +629,24 @@ function conciseTrainingInstruction(authorityPackage, index) {
 function dotTortureWorkspacePackage() {
   const authorityPackage = compatibleAuthorityPackage(backendAuthorityPackage);
   if (isDotTortureTrainingPackage(authorityPackage)) return authorityPackage;
+  const targetProfileId = isDotTortureProfileId(activeTargetProfileId()) ? activeTargetProfileId() : "dot_torture_ez2c_style_17";
+  const labels = DOT_TORTURE_PROFILE_LABELS[targetProfileId] || DOT_TORTURE_PROFILE_LABELS.dot_torture_ez2c_style_17;
   return {
     ok: false,
     status: "pending",
-    target_profile_id: "dot_torture_ez2c_style_17",
-    targetProfileId: "dot_torture_ez2c_style_17",
+    target_profile_id: targetProfileId,
+    targetProfileId: targetProfileId,
     mission_family: "marksmanshipTraining",
     missionFamilyId: "marksmanshipTraining",
-    mission_name: "dotTorture",
-    missionName: "dotTorture",
+    mission_group: "dotTortureFamily",
+    missionGroup: "dotTortureFamily",
+    mission_name: "",
+    missionName: "",
     sec_template: "trainingSEC",
     secTemplate: "trainingSEC",
-    target_name: (session && session.targetName) || (matrix && matrix.targetName) || "EZ2C Style 17 Dot Torture Training Drill",
+    target_name: (session && session.targetName) || (matrix && matrix.targetName) || labels.targetName,
+    target_display_name: labels.targetFamily,
+    targetDisplayName: labels.targetFamily,
     recommended_distance: { value: 3, unit: "yards" },
     total_rounds: 50,
     max_score: 50,
@@ -617,6 +676,17 @@ function trainingTimeLabel(authorityPackage) {
 
 function trainingPercentage(score, maxScore = 50) {
   return Number(((Number(score) / Number(maxScore || 50)) * 100).toFixed(1)).toString();
+}
+
+function trainingMaxScore(authorityPackage = dotTortureWorkspacePackage()) {
+  return Number(
+    authorityPackage.max_score
+    || authorityPackage.maxScore
+    || (authorityPackage.trainingSEC && authorityPackage.trainingSEC.scoreMax)
+    || authorityPackage.total_rounds
+    || authorityPackage.totalRounds
+    || 50
+  );
 }
 
 function parseTrainingTimeInput(value) {
@@ -663,6 +733,7 @@ function readTrainingStageScores() {
 }
 
 function readTrainingManualResult({ requireScore = false } = {}) {
+  const maxScore = trainingMaxScore();
   const scoreInput = document.getElementById("trainingManualScore");
   const missesInput = document.getElementById("trainingManualMisses");
   const timeInput = document.getElementById("trainingManualTime");
@@ -673,14 +744,14 @@ function readTrainingManualResult({ requireScore = false } = {}) {
   let score = stageRead.stageScores ? stageRead.total : null;
   if (score === null && !scoreRaw) {
     return requireScore
-      ? { ok: false, message: "Enter a score from 0 to 50." }
+      ? { ok: false, message: `Enter a score from 0 to ${maxScore}.` }
       : { ok: true, result: null };
   }
   if (score === null) {
-    if (!/^\d+$/.test(scoreRaw)) return { ok: false, message: "Score must be a whole number from 0 to 50." };
+    if (!/^\d+$/.test(scoreRaw)) return { ok: false, message: `Score must be a whole number from 0 to ${maxScore}.` };
     score = Number(scoreRaw);
   }
-  if (score < 0 || score > 50) return { ok: false, message: "Score must be between 0 and 50." };
+  if (score < 0 || score > maxScore) return { ok: false, message: `Score must be between 0 and ${maxScore}.` };
   const missesRaw = String(missesInput ? missesInput.value : "").trim();
   let misses = null;
   if (missesRaw) {
@@ -695,8 +766,8 @@ function readTrainingManualResult({ requireScore = false } = {}) {
     result: {
       status: "manual",
       score,
-      maxScore: 50,
-      percentage: trainingPercentage(score, 50),
+      maxScore,
+      percentage: trainingPercentage(score, maxScore),
       scoreSource: stageRead.stageScores ? "stageScores" : "totalScore",
       stageScores: stageRead.stageScores || [],
       misses,
@@ -722,6 +793,7 @@ function trainingStageBreakdownHtml(stageScores) {
 }
 
 function updateTrainingManualPreview() {
+  const maxScore = trainingMaxScore();
   const read = readTrainingManualResult({ requireScore: false });
   const scoreValue = document.getElementById("trainingSecScoreValue");
   const percentageValue = document.getElementById("trainingSecPercentageValue");
@@ -734,7 +806,7 @@ function updateTrainingManualPreview() {
   }
   showTrainingManualError("");
   const result = read.result;
-  if (scoreValue) scoreValue.textContent = result ? `${result.score} / 50` : "pending/manual";
+  if (scoreValue) scoreValue.textContent = result ? `${result.score} / ${result.maxScore || maxScore}` : "pending/manual";
   if (percentageValue) percentageValue.textContent = result ? `${result.percentage}%` : "pending/manual";
   if (missesValue) missesValue.textContent = result && result.misses !== null ? String(result.misses) : "pending/manual";
   if (timeValue) timeValue.textContent = result ? result.timeDisplay : "optional/pending";
@@ -773,6 +845,7 @@ function authorityPackageWithTrainingManualResult(authorityPackage, manualResult
 
 function trainingSecPreviewHtml(authorityPackage) {
   const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
+  const targetDisplayName = authorityPackage.target_display_name || authorityPackage.targetDisplayName || targetName;
   const distance = authorityPackage.distance || authorityPackage.recommended_distance || authorityPackage.recommendedDistance;
   const maxScore = authorityPackage.max_score || authorityPackage.maxScore || (authorityPackage.trainingSEC && authorityPackage.trainingSEC.scoreMax) || 50;
   const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || 50;
@@ -780,10 +853,10 @@ function trainingSecPreviewHtml(authorityPackage) {
     <section class="training-sec-preview is-hidden" id="trainingSecPreview" aria-label="Training Shooter Experience Card">
       <div class="training-sec-title">
         <span>Shooter Experience Card — Training</span>
-        <strong>Mission: Dot Torture</strong>
+        <strong>Mission: ${escapeHtml(targetDisplayName)}</strong>
       </div>
       <div class="training-manual-score-form" id="trainingManualScoreForm" aria-label="Manual Dot Torture score">
-        <label>Total Score<input id="trainingManualScore" type="number" inputmode="numeric" min="0" max="50" step="1" placeholder="0-50" /></label>
+        <label>Total Score<input id="trainingManualScore" type="number" inputmode="numeric" min="0" max="${escapeHtml(maxScore)}" step="1" placeholder="0-${escapeHtml(maxScore)}" /></label>
         <div class="training-stage-score-fields" aria-label="Stage scores">
           ${trainingStageScoreFieldsHtml(authorityPackage)}
         </div>
@@ -813,6 +886,7 @@ function dotTortureTrainingHtml(authorityPackage) {
   const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
   const hasBackendTrainingPackage = isDotTortureTrainingPackage(authorityPackage) && authorityPackage.ok === true;
   const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
+  const targetDisplayName = authorityPackage.target_display_name || authorityPackage.targetDisplayName || "Dot Torture";
   const targetShortName = targetName.replace(/\s*Dot Torture Training Drill\s*/i, "").trim() || targetName;
   const recommendedDistance = authorityPackage.recommended_distance || authorityPackage.recommendedDistance || authorityPackage.distance;
   const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || stages.reduce((sum, stage) => sum + Number(stage.rounds || 0), 0);
@@ -839,13 +913,21 @@ function dotTortureTrainingHtml(authorityPackage) {
       <section class="dot-training-hero" aria-label="Dot Torture mission">
         <div class="dot-training-title">
           <span>Training Mission</span>
-          <strong>Dot Torture</strong>
+          <strong>${escapeHtml(targetDisplayName)}</strong>
           <small>${escapeHtml(targetShortName)}</small>
         </div>
         <div class="dot-training-facts">
           <div>
             <span>Recommended Distance</span>
             <strong>${escapeHtml(trainingDistanceLabel(recommendedDistance))}</strong>
+          </div>
+          <div>
+            <span>Total Rounds</span>
+            <strong>${escapeHtml(totalRounds || "--")}</strong>
+          </div>
+          <div>
+            <span>Max Score</span>
+            <strong>${escapeHtml(maxScore || "--")}</strong>
           </div>
           <div>
             <span>Progress</span>
@@ -1198,7 +1280,7 @@ function backendTargetGeometry() {
 function backendAuthorityRequest() {
   if (isDotTortureAuthoritySession()) {
     return {
-      target_profile_id: "dot_torture_ez2c_style_17"
+      target_profile_id: activeTargetProfileId() || "dot_torture_ez2c_style_17"
     };
   }
   if (isGssfAuthoritySession()) {

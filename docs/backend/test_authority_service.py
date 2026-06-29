@@ -344,13 +344,32 @@ def dot_torture_package(**overrides):
     return build_authority_package(payload)
 
 
+def dot_torture_lite_package(**overrides):
+    payload = {
+        "target_profile_id": "dot_torture_lite_ez2c",
+    }
+    payload.update(overrides)
+    return build_authority_package(payload)
+
+
+def revolving_dot_torture_package(**overrides):
+    payload = {
+        "target_profile_id": "revolving_dot_torture_ez2c",
+    }
+    payload.update(overrides)
+    return build_authority_package(payload)
+
+
 def test_dot_torture_creates_backend_training_session():
     result = dot_torture_package()
     assert_equal(result["ok"], True, "dot torture ok")
     assert_equal(result["status"], "created", "dot torture status")
     assert_equal(result["session_id"].startswith("dot-torture-"), True, "dot torture backend session id")
     assert_equal(result["mission_family"], "marksmanshipTraining", "dot torture mission family")
-    assert_equal(result["mission_name"], "dotTorture", "dot torture mission name")
+    assert_equal(result["mission_group"], "dotTortureFamily", "dot torture mission group")
+    assert_equal(result["mission_name"], "dotTortureStandard", "dot torture mission name")
+    assert_equal(result["mission_variant"], "standard", "dot torture mission variant")
+    assert_equal(result["target_display_name"], "Dot Torture", "dot torture display name")
     assert_equal(result["target_name"], "EZ2C Style 17 Dot Torture Training Drill", "dot torture target name")
     assert_equal(result["target_size"], {"width": 11, "height": 17, "unit": "inches"}, "dot torture target size")
     assert_equal(result["recommended_distance"], {"value": 3, "unit": "yards"}, "dot torture recommended distance")
@@ -358,6 +377,40 @@ def test_dot_torture_creates_backend_training_session():
     assert_equal(result["max_score"], 50, "dot torture max score")
     assert_equal(result["total_rounds"], 50, "dot torture total rounds")
     assert_equal(result["sec_template"], "trainingSEC", "dot torture sec template")
+
+
+def test_dot_torture_lite_creates_variant_training_session():
+    result = dot_torture_lite_package()
+    assert_equal(result["ok"], True, "dot torture lite ok")
+    assert_equal(result["target_profile_id"], "dot_torture_lite_ez2c", "dot torture lite target profile")
+    assert_equal(result["mission_family"], "marksmanshipTraining", "dot torture lite mission family")
+    assert_equal(result["mission_group"], "dotTortureFamily", "dot torture lite mission group")
+    assert_equal(result["mission_name"], "dotTortureLite", "dot torture lite mission name")
+    assert_equal(result["mission_variant"], "lite", "dot torture lite mission variant")
+    assert_equal(result["target_display_name"], "Dot Torture Lite", "dot torture lite display name")
+    assert_equal(result["target_name"], "EZ2C Dot Torture Lite Training Drill", "dot torture lite target name")
+    assert_equal(result["stage_count"], 5, "dot torture lite stage count")
+    assert_equal(result["total_rounds"], 30, "dot torture lite total rounds")
+    assert_equal(result["max_score"], 30, "dot torture lite max score")
+    assert_equal(result["trainingSEC"]["scoreMax"], 30, "dot torture lite sec score max")
+    assert_equal(result["sec_template"], "trainingSEC", "dot torture lite sec template")
+
+
+def test_revolving_dot_torture_creates_variant_training_session():
+    result = revolving_dot_torture_package()
+    assert_equal(result["ok"], True, "revolving dot torture ok")
+    assert_equal(result["target_profile_id"], "revolving_dot_torture_ez2c", "revolving dot torture target profile")
+    assert_equal(result["mission_family"], "marksmanshipTraining", "revolving dot torture mission family")
+    assert_equal(result["mission_group"], "dotTortureFamily", "revolving dot torture mission group")
+    assert_equal(result["mission_name"], "revolvingDotTorture", "revolving dot torture mission name")
+    assert_equal(result["mission_variant"], "revolving", "revolving dot torture mission variant")
+    assert_equal(result["target_display_name"], "Revolving Dot Torture", "revolving dot torture display name")
+    assert_equal(result["target_name"], "EZ2C Revolving Dot Torture Training Drill", "revolving dot torture target name")
+    assert_equal(result["stage_count"], 7, "revolving dot torture stage count")
+    assert_equal(result["total_rounds"], 50, "revolving dot torture total rounds")
+    assert_equal(result["max_score"], 50, "revolving dot torture max score")
+    assert_equal(result["trainingSEC"]["scoreMax"], 50, "revolving dot torture sec score max")
+    assert_equal(result["sec_template"], "trainingSEC", "revolving dot torture sec template")
 
 
 def test_dot_torture_stage_guidance_matches_authority_profile():
@@ -507,6 +560,8 @@ def run():
         test_gssf_final_time_calculates_when_raw_time_supplied,
         test_gssf_package_does_not_return_baker_zeroing_fields,
         test_dot_torture_creates_backend_training_session,
+        test_dot_torture_lite_creates_variant_training_session,
+        test_revolving_dot_torture_creates_variant_training_session,
         test_dot_torture_stage_guidance_matches_authority_profile,
         test_dot_torture_training_sec_template_fields,
         test_dot_torture_package_does_not_return_zeroing_fields,

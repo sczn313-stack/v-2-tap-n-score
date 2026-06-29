@@ -122,8 +122,17 @@ function isDotTortureTrainingPackage(pkg) {
   if (!pkg) return false;
   const missionFamily = String(pkg.mission_family || pkg.missionFamily || pkg.missionFamilyId || "");
   const missionName = String(pkg.mission_name || pkg.missionName || "");
+  const missionGroup = String(pkg.mission_group || pkg.missionGroup || "");
   const secTemplate = String(pkg.sec_template || pkg.secTemplate || "");
-  return missionFamily === "marksmanshipTraining" && missionName === "dotTorture" && secTemplate === "trainingSEC";
+  return missionFamily === "marksmanshipTraining"
+    && secTemplate === "trainingSEC"
+    && (
+      missionGroup === "dotTortureFamily"
+      || missionName === "dotTorture"
+      || missionName === "dotTortureStandard"
+      || missionName === "dotTortureLite"
+      || missionName === "revolvingDotTorture"
+    );
 }
 
 function trainingDistanceLabel(distance) {
@@ -174,12 +183,24 @@ function trainingScoreRecord(session) {
   return {
     session,
     pkg,
+    groupKey: pkg.target_profile_id || pkg.targetProfileId || pkg.mission_name || pkg.missionName || "dotTortureFamily",
+    groupLabel: pkg.target_display_name || pkg.targetDisplayName || pkg.target_name || pkg.targetName || "Dot Torture",
     score,
     maxScore,
     percentage: Number.isFinite(percentage) ? percentage : derivedPercentage,
     stageScores: manual.stageScores || sec.stageScores || [],
     timestamp: new Date(session.timestamp || 0).getTime()
   };
+}
+
+function groupTrainingScoreRecords(records) {
+  return records.reduce((groups, record) => {
+    const key = record.groupKey || "dotTortureFamily";
+    const current = groups.get(key) || { label: record.groupLabel || "Dot Torture", records: [] };
+    current.records.push(record);
+    groups.set(key, current);
+    return groups;
+  }, new Map());
 }
 
 function scoreAverage(records) {
@@ -221,7 +242,7 @@ function weakestDotTortureStage(records) {
   return weakest ? weakest.label : "Not enough stage data";
 }
 
-function renderDotTortureTrendCard(records) {
+function renderDotTortureTrendCard(records, label = "Dot Torture") {
   if (!records.length) return "";
   const sorted = records.slice().sort((a, b) => b.timestamp - a.timestamp);
   const last = sorted[0];
@@ -233,7 +254,7 @@ function renderDotTortureTrendCard(records) {
   return `
     <article class="history-card dot-training-trend-card">
       <div class="dot-training-trend-heading">
-        <span>Dot Torture Training Trends</span>
+        <span>${escapeHtml(label)} Training Trends</span>
         <strong>Keep Improving</strong>
       </div>
       <div class="dot-training-trend-grid">
@@ -252,6 +273,7 @@ function renderDotTortureTrendCard(records) {
 
 function renderTrainingSecCard(session, index, pkg) {
   const targetName = pkg.target_name || pkg.targetName || "Dot Torture Training Drill";
+  const targetDisplayName = pkg.target_display_name || pkg.targetDisplayName || targetName;
   const sec = pkg.trainingSEC || {};
   const manual = trainingManualResult(session, pkg);
   const maxScore = pkg.max_score || pkg.maxScore || sec.scoreMax || 50;
@@ -276,7 +298,7 @@ function renderTrainingSecCard(session, index, pkg) {
         <em>${cleanDateTime(session.timestamp)}</em>
       </div>
       <div class="training-sec-card-grid">
-        <div><span>Mission</span><strong>Dot Torture</strong></div>
+        <div><span>Mission</span><strong>${escapeHtml(targetDisplayName)}</strong></div>
         <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
         <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
         <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
@@ -374,7 +396,10 @@ function renderHistory() {
     return;
   }
 
-  const dotTortureTrendCard = renderDotTortureTrendCard(savedSessions.map(trainingScoreRecord).filter(Boolean));
+  const trainingRecords = savedSessions.map(trainingScoreRecord).filter(Boolean);
+  const dotTortureTrendCard = Array.from(groupTrainingScoreRecords(trainingRecords).values())
+    .map(group => renderDotTortureTrendCard(group.records, group.label))
+    .join("");
   historyList.innerHTML = dotTortureTrendCard + sessions.map((session, index) => {
     const snapshot = session.matrixSnapshot || {};
     const evidence = session.targetEvidenceImage;

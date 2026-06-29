@@ -58,7 +58,14 @@ MISSION_RESULT_PACKAGE_MAP = {
 
 BAKER_TARGET_IDS = {"BAKER_ST_100YD_SMART"}
 GSSF_TARGET_IDS = {"gssf_ac_1", "GSSF_AC_1"}
-DOT_TORTURE_TARGET_IDS = {"dot_torture_ez2c_style_17", "DOT_TORTURE_EZ2C_STYLE_17"}
+DOT_TORTURE_TARGET_IDS = {
+    "dot_torture_ez2c_style_17",
+    "DOT_TORTURE_EZ2C_STYLE_17",
+    "dot_torture_lite_ez2c",
+    "DOT_TORTURE_LITE_EZ2C",
+    "revolving_dot_torture_ez2c",
+    "REVOLVING_DOT_TORTURE_EZ2C",
+}
 
 BAKER_TARGET_PROFILE = {
     "targetId": "BAKER_ST_100YD_SMART",
@@ -90,23 +97,233 @@ GSSF_AC_1_TARGET_PROFILE = {
     "evidenceModel": "photo-plus-hit-coordinates",
 }
 
-DOT_TORTURE_TARGET_PROFILE = {
-    "targetId": "dot_torture_ez2c_style_17",
-    "manufacturer": "EZ2C Targets",
-    "sku": "Style 17",
-    "targetName": "EZ2C Style 17 Dot Torture Training Drill",
-    "missionFamilyId": "marksmanshipTraining",
-    "missionName": "dotTorture",
-    "resultPackageType": "marksmanshipTrainingResult",
-    "authorityStatus": "supported",
-    "rulesSource": "Dot Torture training drill profile: 50 rounds across numbered dots",
-    "geometryStatus": "target-size-known-zone-geometry-pending",
-    "instructionStatus": "published-training-drill-stage-round-counts",
-    "scoringStatus": "inside-numbered-circle-counts",
-    "qualificationStatus": "not_applicable",
-    "evidenceModel": "photo-plus-hit-coordinates-plus-stage-context",
-    "discipline": "pistol",
-    "secTemplate": "trainingSEC",
+DOT_TORTURE_STANDARD_STAGES = [
+    {
+        "stageId": "dot_1",
+        "label": "Dot 1",
+        "dots": [1],
+        "rounds": 5,
+        "guidance": "Stage 1: Dot 1 — Draw and fire 5 slow-fire shots.",
+    },
+    {
+        "stageId": "dot_2",
+        "label": "Dot 2",
+        "dots": [2],
+        "rounds": 5,
+        "guidance": "Stage 2: Dot 2 — Draw and fire 1 shot, holster, repeat x5.",
+    },
+    {
+        "stageId": "dots_3_4",
+        "label": "Dots 3 & 4",
+        "dots": [3, 4],
+        "rounds": 8,
+        "guidance": "Stage 3: Dots 3 & 4 — Draw, fire 1 on Dot 3 and 1 on Dot 4, repeat x4.",
+    },
+    {
+        "stageId": "dot_5",
+        "label": "Dot 5",
+        "dots": [5],
+        "rounds": 5,
+        "guidance": "Stage 4: Dot 5 — Draw and fire 5 shots, strong hand only.",
+    },
+    {
+        "stageId": "dots_6_7",
+        "label": "Dots 6 & 7",
+        "dots": [6, 7],
+        "rounds": 16,
+        "guidance": "Stage 5: Dots 6 & 7 — Draw and fire 2 on Dot 6 and 2 on Dot 7, repeat x4.",
+    },
+    {
+        "stageId": "dot_8",
+        "label": "Dot 8",
+        "dots": [8],
+        "rounds": 5,
+        "guidance": "Stage 6: Dot 8 — From ready/retention, fire 5 shots weak hand only.",
+    },
+    {
+        "stageId": "dots_9_10",
+        "label": "Dots 9 & 10",
+        "dots": [9, 10],
+        "rounds": 6,
+        "guidance": "Stage 7: Dots 9 & 10 — Draw, fire 1 on Dot 9, speed reload, fire 1 on Dot 10, repeat x3.",
+    },
+]
+
+DOT_TORTURE_LITE_STAGES = [
+    {
+        "stageId": "lite_dot_1",
+        "label": "Dot 1",
+        "dots": [1],
+        "rounds": 5,
+        "guidance": "Stage 1: Dot 1 — Fire 5 slow-fire shots.",
+    },
+    {
+        "stageId": "lite_dot_2",
+        "label": "Dot 2",
+        "dots": [2],
+        "rounds": 5,
+        "guidance": "Stage 2: Dot 2 — Fire 5 deliberate shots.",
+    },
+    {
+        "stageId": "lite_dots_3_4",
+        "label": "Dots 3 & 4",
+        "dots": [3, 4],
+        "rounds": 10,
+        "guidance": "Stage 3: Dots 3 & 4 — Alternate one shot on each dot for 10 total rounds.",
+    },
+    {
+        "stageId": "lite_dot_5",
+        "label": "Dot 5",
+        "dots": [5],
+        "rounds": 5,
+        "guidance": "Stage 4: Dot 5 — Fire 5 controlled shots.",
+    },
+    {
+        "stageId": "lite_dot_6",
+        "label": "Dot 6",
+        "dots": [6],
+        "rounds": 5,
+        "guidance": "Stage 5: Dot 6 — Fire 5 controlled shots.",
+    },
+]
+
+REVOLVING_DOT_TORTURE_STAGES = [
+    {
+        "stageId": "revolver_dot_1",
+        "label": "Dot 1",
+        "dots": [1],
+        "rounds": 5,
+        "guidance": "Stage 1: Dot 1 — Fire 5 slow-fire shots.",
+    },
+    {
+        "stageId": "revolver_dot_2",
+        "label": "Dot 2",
+        "dots": [2],
+        "rounds": 5,
+        "guidance": "Stage 2: Dot 2 — Fire 5 deliberate shots.",
+    },
+    {
+        "stageId": "revolver_dots_3_4",
+        "label": "Dots 3 & 4",
+        "dots": [3, 4],
+        "rounds": 8,
+        "guidance": "Stage 3: Dots 3 & 4 — Fire 1 on Dot 3 and 1 on Dot 4, repeat x4.",
+    },
+    {
+        "stageId": "revolver_dot_5",
+        "label": "Dot 5",
+        "dots": [5],
+        "rounds": 5,
+        "guidance": "Stage 4: Dot 5 — Fire 5 shots, strong hand only.",
+    },
+    {
+        "stageId": "revolver_dots_6_7",
+        "label": "Dots 6 & 7",
+        "dots": [6, 7],
+        "rounds": 12,
+        "guidance": "Stage 5: Dots 6 & 7 — Fire 3 on Dot 6 and 3 on Dot 7, repeat x2.",
+    },
+    {
+        "stageId": "revolver_dot_8",
+        "label": "Dot 8",
+        "dots": [8],
+        "rounds": 5,
+        "guidance": "Stage 6: Dot 8 — Fire 5 shots, support hand only.",
+    },
+    {
+        "stageId": "revolver_dots_9_10",
+        "label": "Dots 9 & 10",
+        "dots": [9, 10],
+        "rounds": 10,
+        "guidance": "Stage 7: Dots 9 & 10 — Fire 5 on Dot 9, reload, fire 5 on Dot 10.",
+    },
+]
+
+
+def dot_torture_profile(
+    *,
+    target_id: str,
+    sku: str,
+    target_name: str,
+    display_name: str,
+    mission_name: str,
+    mission_variant: str,
+    stages: list[dict[str, Any]],
+) -> Dict[str, Any]:
+    total_rounds = sum(int(stage.get("rounds", 0)) for stage in stages)
+    return {
+        "targetId": target_id,
+        "manufacturer": "EZ2C Targets",
+        "sku": sku,
+        "targetName": target_name,
+        "targetDisplayName": display_name,
+        "target_display_name": display_name,
+        "missionFamilyId": "marksmanshipTraining",
+        "mission_family": "marksmanshipTraining",
+        "missionGroup": "dotTortureFamily",
+        "mission_group": "dotTortureFamily",
+        "missionName": mission_name,
+        "mission_name": mission_name,
+        "missionVariant": mission_variant,
+        "mission_variant": mission_variant,
+        "resultPackageType": "marksmanshipTrainingResult",
+        "authorityStatus": "supported",
+        "rulesSource": f"{display_name} training drill profile: backend-owned stage package",
+        "geometryStatus": "target-size-known-zone-geometry-pending",
+        "instructionStatus": "training-drill-stage-package",
+        "scoringStatus": "inside-numbered-circle-counts",
+        "qualificationStatus": "not_applicable",
+        "evidenceModel": "photo-plus-hit-coordinates-plus-stage-context",
+        "discipline": "pistol",
+        "recommendedFirearmType": "pistol",
+        "recommended_firearm_type": "pistol",
+        "secTemplate": "trainingSEC",
+        "sec_template": "trainingSEC",
+        "targetSize": {"width": 11, "height": 17, "unit": "inches"},
+        "target_size": {"width": 11, "height": 17, "unit": "inches"},
+        "recommendedDistance": {"value": 3, "unit": "yards"},
+        "recommended_distance": {"value": 3, "unit": "yards"},
+        "stageCount": len(stages),
+        "stage_count": len(stages),
+        "totalRounds": total_rounds,
+        "total_rounds": total_rounds,
+        "maxScore": total_rounds,
+        "max_score": total_rounds,
+        "scoringRule": "Only shots completely inside each numbered circle count.",
+        "scoring_rule": "Only shots completely inside each numbered circle count.",
+        "stageDefinitions": deepcopy(stages),
+        "stage_definitions": deepcopy(stages),
+    }
+
+
+DOT_TORTURE_TARGET_PROFILES = {
+    "dot_torture_ez2c_style_17": dot_torture_profile(
+        target_id="dot_torture_ez2c_style_17",
+        sku="Style 17",
+        target_name="EZ2C Style 17 Dot Torture Training Drill",
+        display_name="Dot Torture",
+        mission_name="dotTortureStandard",
+        mission_variant="standard",
+        stages=DOT_TORTURE_STANDARD_STAGES,
+    ),
+    "dot_torture_lite_ez2c": dot_torture_profile(
+        target_id="dot_torture_lite_ez2c",
+        sku="Dot Torture Lite",
+        target_name="EZ2C Dot Torture Lite Training Drill",
+        display_name="Dot Torture Lite",
+        mission_name="dotTortureLite",
+        mission_variant="lite",
+        stages=DOT_TORTURE_LITE_STAGES,
+    ),
+    "revolving_dot_torture_ez2c": dot_torture_profile(
+        target_id="revolving_dot_torture_ez2c",
+        sku="Revolving Dot Torture",
+        target_name="EZ2C Revolving Dot Torture Training Drill",
+        display_name="Revolving Dot Torture",
+        mission_name="revolvingDotTorture",
+        mission_variant="revolving",
+        stages=REVOLVING_DOT_TORTURE_STAGES,
+    ),
 }
 
 
@@ -122,12 +339,14 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
         or BAKER_TARGET_PROFILE["targetId"]
     )
 
+    target_id_key = target_id.lower()
+
     if target_id in BAKER_TARGET_IDS:
         profile = deepcopy(BAKER_TARGET_PROFILE)
     elif target_id in GSSF_TARGET_IDS:
         profile = deepcopy(GSSF_AC_1_TARGET_PROFILE)
-    elif target_id in DOT_TORTURE_TARGET_IDS:
-        profile = deepcopy(DOT_TORTURE_TARGET_PROFILE)
+    elif target_id in DOT_TORTURE_TARGET_IDS or target_id_key in DOT_TORTURE_TARGET_PROFILES:
+        profile = deepcopy(DOT_TORTURE_TARGET_PROFILES[target_id_key])
     else:
         mission_family = (
             supplied.get("missionFamilyId")
@@ -179,7 +398,10 @@ def is_supported_profile(profile: Dict[str, Any]) -> bool:
         and profile.get("missionFamilyId") == "gssf"
         and profile.get("resultPackageType") == "gssfPaperPenaltyResult"
     ) or (
-        profile.get("targetId") in DOT_TORTURE_TARGET_IDS
+        (
+            profile.get("targetId") in DOT_TORTURE_TARGET_IDS
+            or str(profile.get("targetId", "")).lower() in DOT_TORTURE_TARGET_PROFILES
+        )
         and profile.get("missionFamilyId") == "marksmanshipTraining"
         and profile.get("resultPackageType") == "marksmanshipTrainingResult"
     )
