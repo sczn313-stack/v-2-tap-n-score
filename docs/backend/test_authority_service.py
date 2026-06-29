@@ -53,6 +53,25 @@ def test_four_symmetric_hits_equal_center():
     assert_close(result["poib"]["yPercent"], 50, "symmetric poib y")
 
 
+def test_poib_render_coordinate_uses_hit_group_not_aim():
+    aim = {"xPercent": 50, "yPercent": 50}
+    impacts = [
+        {"xPercent": 62, "yPercent": 38},
+        {"xPercent": 66, "yPercent": 40},
+        {"xPercent": 64, "yPercent": 42},
+        {"xPercent": 68, "yPercent": 36},
+    ]
+    result = package(aim, impacts)
+    assert_close(result["poib"]["xPercent"], 65, "hit-group poib x")
+    assert_close(result["poib"]["yPercent"], 39, "hit-group poib y")
+    assert_close(result["groupCenter"]["xPercent"], 65, "hit-group center x")
+    assert_close(result["groupCenter"]["yPercent"], 39, "hit-group center y")
+    assert_close(result["renderCoordinates"]["poib"]["xPercent"], 65, "render poib x", tolerance=0.001)
+    assert_close(result["renderCoordinates"]["poib"]["yPercent"], 39, "render poib y", tolerance=0.001)
+    if result["renderCoordinates"]["poib"] == result["renderCoordinates"]["aim"]:
+        raise AssertionError("POIB marker must not collapse to aim coordinates")
+
+
 def point_from_grid(x_inches, y_inches):
     geometry = {
         "imageWidth": 1102,
@@ -532,6 +551,7 @@ def run():
         test_no_impacts_returns_no_poib,
         test_single_hit_poib_equals_hit,
         test_four_symmetric_hits_equal_center,
+        test_poib_render_coordinate_uses_hit_group_not_aim,
         test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude,
         test_quarter_moa_clicks,
         test_half_moa_clicks,

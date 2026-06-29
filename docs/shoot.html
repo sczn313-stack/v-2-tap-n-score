@@ -1633,6 +1633,23 @@ function renderPendingInputMarkers() {
   return parts.join("");
 }
 
+function averageImpactCoordinate(points = []) {
+  const impacts = points.map(safePoint).filter(Boolean);
+  if (!impacts.length) return null;
+  return {
+    xPercent: impacts.reduce((sum, point) => sum + point.xPercent, 0) / impacts.length,
+    yPercent: impacts.reduce((sum, point) => sum + point.yPercent, 0) / impacts.length
+  };
+}
+
+function backendPoibDisplayCoordinate(authorityPackage) {
+  if (!authorityPackage) return null;
+  const backendPoib = safePoint(authorityPackage.poib || authorityPackage.groupCenter);
+  if (backendPoib) return backendPoib;
+  const render = authorityPackage.renderCoordinates || {};
+  return averageImpactCoordinate(authorityPackage.impacts || render.impacts || render.hits || []);
+}
+
 function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
@@ -1646,8 +1663,9 @@ function renderBackendAuthorityMarkers(authorityPackage) {
   if (render.aim) {
     parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
   }
-  if (render.poib) {
-    parts.push(markerPointHtml("target-marker poib-auto-marker", render.poib, "", 'aria-label="Backend authority POIB"'));
+  const poib = backendPoibDisplayCoordinate(authorityPackage);
+  if (poib) {
+    parts.push(markerPointHtml("target-marker poib-auto-marker", poib, "", 'aria-label="Backend authority POIB"'));
   }
   return parts.join("");
 }
