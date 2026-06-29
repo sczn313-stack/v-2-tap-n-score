@@ -413,6 +413,29 @@ function trainingStages(authorityPackage) {
   return authorityPackage && Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
 }
 
+function dotTortureWorkspacePackage() {
+  if (isDotTortureTrainingPackage(backendAuthorityPackage)) return backendAuthorityPackage;
+  return {
+    ok: false,
+    status: "pending",
+    target_profile_id: "dot_torture_ez2c_style_17",
+    targetProfileId: "dot_torture_ez2c_style_17",
+    mission_family: "marksmanshipTraining",
+    missionFamilyId: "marksmanshipTraining",
+    mission_name: "dotTorture",
+    missionName: "dotTorture",
+    sec_template: "trainingSEC",
+    secTemplate: "trainingSEC",
+    target_name: (session && session.targetName) || (matrix && matrix.targetName) || "EZ2C Style 17 Dot Torture Training Drill",
+    recommended_distance: { value: 3, unit: "yards" },
+    total_rounds: 50,
+    max_score: 50,
+    stages: [],
+    display: { stageGuidance: [] },
+    trainingSEC: { scoreMax: 50 }
+  };
+}
+
 function trainingStageScoreFieldsHtml(authorityPackage) {
   const stages = trainingStages(authorityPackage);
   return stages.map((stage, index) => {
@@ -627,6 +650,7 @@ function trainingSecPreviewHtml(authorityPackage) {
 
 function dotTortureTrainingHtml(authorityPackage) {
   const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+  const hasBackendTrainingPackage = isDotTortureTrainingPackage(authorityPackage) && authorityPackage.ok === true;
   const targetName = authorityPackage.target_name || authorityPackage.targetName || "Dot Torture Training Drill";
   const recommendedDistance = authorityPackage.recommended_distance || authorityPackage.recommendedDistance || authorityPackage.distance;
   const totalRounds = authorityPackage.total_rounds || authorityPackage.totalRounds || stages.reduce((sum, stage) => sum + Number(stage.rounds || 0), 0);
@@ -653,9 +677,9 @@ function dotTortureTrainingHtml(authorityPackage) {
       </div>
       <div class="training-stage-current">
         <span id="trainingStageCounter">Stage 1 of ${Math.max(stages.length, 1)}</span>
-        <strong id="trainingCurrentGuidance">${escapeHtml(trainingStageGuidance(authorityPackage, 0))}</strong>
+        <strong id="trainingCurrentGuidance">${escapeHtml(hasBackendTrainingPackage ? trainingStageGuidance(authorityPackage, 0) : "Show Results to load backend-authorized stage guidance.")}</strong>
       </div>
-      <details class="training-stage-list">
+      <details class="training-stage-list${hasBackendTrainingPackage ? "" : " is-hidden"}">
         <summary>Stage List</summary>
         <ol>${stageList}</ol>
       </details>
@@ -671,8 +695,8 @@ function dotTortureTrainingHtml(authorityPackage) {
 }
 
 function targetIntelStackHtml() {
-  if (isDotTortureTrainingPackage(backendAuthorityPackage)) {
-    return dotTortureTrainingHtml(backendAuthorityPackage);
+  if (isDotTortureAuthoritySession() || isDotTortureTrainingPackage(backendAuthorityPackage)) {
+    return dotTortureTrainingHtml(dotTortureWorkspacePackage());
   }
   if (isGssfAuthoritySession()) {
     return `
@@ -933,6 +957,7 @@ function safePoint(point) {
 // Non-authoritative display accessor. Backend calculates; frontend displays.
 function currentVisualCorrection() {
   if (!resultsShown || !backendAuthorityPackage) return null;
+  if (isDotTortureAuthoritySession()) return null;
   if (isNonZeroingAuthorityPackage(backendAuthorityPackage)) return null;
   const correction = backendAuthorityPackage.correction || {};
   const clicks = backendAuthorityPackage.clicks || {};
@@ -962,11 +987,7 @@ function backendAuthorityRequest() {
     return {
       target_profile_id: "dot_torture_ez2c_style_17",
       mission_family: "marksmanshipTraining",
-      mission_name: "dotTorture",
-      distance: {
-        value: Number(selectedDistanceValue || 3),
-        unit: selectedDistanceUnit === "M" ? "m" : "yards"
-      }
+      mission_name: "dotTorture"
     };
   }
   if (isGssfAuthoritySession()) {
@@ -1299,6 +1320,11 @@ function renderMarkers() {
   const layer = document.getElementById("markerLayer");
   if (!layer) return;
   syncOverlayLayerToDisplayedImage();
+  if (isDotTortureAuthoritySession()) {
+    layer.innerHTML = "";
+    renderResults();
+    return;
+  }
   const correction = currentVisualCorrection();
   const authorityPackage = resultsShown ? backendAuthorityPackage : null;
   layer.innerHTML = (authorityPackage ? renderBackendAuthorityMarkers(authorityPackage) : renderPendingInputMarkers()) + renderCorrectionOverlay(correction);
@@ -1360,6 +1386,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
     grid.innerHTML = dotTortureTrainingHtml(authorityPackage);
   }
   const stages = Array.isArray(authorityPackage.stages) ? authorityPackage.stages : [];
+  const hasBackendTrainingPackage = isDotTortureTrainingPackage(authorityPackage) && authorityPackage.ok === true;
   const maxIndex = Math.max(stages.length - 1, 0);
   trainingStageIndex = Math.min(Math.max(trainingStageIndex, 0), maxIndex);
   const counter = document.getElementById("trainingStageCounter");
@@ -1374,10 +1401,12 @@ function renderDotTortureTrainingResults(authorityPackage) {
     .filter(Boolean)
     .concat(Array.from(document.querySelectorAll(".training-stage-score-input")));
   if (counter) counter.textContent = `Stage ${trainingStageIndex + 1} of ${Math.max(stages.length, 1)}`;
-  if (guidance) guidance.textContent = trainingStageGuidance(authorityPackage, trainingStageIndex);
+  if (guidance) guidance.textContent = hasBackendTrainingPackage
+    ? trainingStageGuidance(authorityPackage, trainingStageIndex)
+    : "Show Results to load backend-authorized stage guidance.";
   if (nextButton) {
-    nextButton.disabled = trainingDrillFinished || trainingStageIndex >= maxIndex;
-    nextButton.classList.toggle("secondary", trainingDrillFinished || trainingStageIndex >= maxIndex);
+    nextButton.disabled = !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex >= maxIndex;
+    nextButton.classList.toggle("secondary", !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex >= maxIndex);
     nextButton.onclick = () => {
       if (trainingStageIndex < maxIndex) {
         trainingStageIndex += 1;
@@ -1386,7 +1415,8 @@ function renderDotTortureTrainingResults(authorityPackage) {
     };
   }
   if (finishButton) {
-    const finishIsPrimary = !trainingDrillFinished && trainingStageIndex >= maxIndex;
+    const finishIsPrimary = hasBackendTrainingPackage && !trainingDrillFinished && trainingStageIndex >= maxIndex;
+    finishButton.disabled = !hasBackendTrainingPackage;
     finishButton.textContent = trainingDrillFinished ? "Drill Complete" : "Finish Drill";
     finishButton.classList.toggle("secondary", !finishIsPrimary);
     finishButton.onclick = () => {
@@ -1395,7 +1425,9 @@ function renderDotTortureTrainingResults(authorityPackage) {
     };
   }
   if (status) {
-    status.textContent = trainingDrillFinished ? "Training SEC ready. Save when ready." : "";
+    status.textContent = !hasBackendTrainingPackage
+      ? "Backend stage guidance required."
+      : (trainingDrillFinished ? "Training SEC ready. Save when ready." : "");
   }
   if (secPreview) secPreview.classList.toggle("is-hidden", !trainingDrillFinished);
   if (savedStatus) savedStatus.textContent = sessionSaved ? "saved" : "pending";
@@ -1419,8 +1451,8 @@ function renderResults() {
   const impacts = currentImpactPoints;
   const numericScore = currentScore === null ? NaN : Number(currentScore);
   document.body.dataset.authorityStatus = authorityStatusMessage ? "true" : "false";
-  if (isDotTortureTrainingPackage(backendAuthorityPackage)) {
-    renderDotTortureTrainingResults(backendAuthorityPackage);
+  if (isDotTortureAuthoritySession() || isDotTortureTrainingPackage(backendAuthorityPackage)) {
+    renderDotTortureTrainingResults(dotTortureWorkspacePackage());
     return;
   }
   if (isGssfAuthorityPackage(backendAuthorityPackage)) {
