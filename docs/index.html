@@ -331,7 +331,8 @@
     }
     list.innerHTML = recent.map(session => {
       const snapshot = session.matrixSnapshot || {};
-      const weapon = [snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.weaponModelType || snapshot.weaponCategory].map(cleanSetupValue).filter(Boolean).join(" ");
+      const profile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
+      const weapon = profile ? profile.short : [snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.weaponModelType || snapshot.weaponCategory].map(cleanSetupValue).filter(Boolean).join(" ");
       const thumbnail = session.targetEvidenceImage && session.targetEvidenceImage.dataUrl ? session.targetEvidenceImage.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
       const score = scoreValue(session);
       const hits = hitCount(session);

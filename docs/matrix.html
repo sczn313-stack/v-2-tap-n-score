@@ -1246,11 +1246,21 @@ function renderSavedSetups(selectedId = "") {
 }
 
 function weaponCardTitle(setup) {
-  return setup.setupName || [setup.weaponManufacturer, setup.weaponModelType].filter(Boolean).join(" ") || "Weapon Profile";
+  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(setup) : null;
+  return setup.setupName || (weapon && weapon.short) || [setup.weaponManufacturer, setup.weaponModelType].filter(Boolean).join(" ") || "Weapon Profile";
 }
 
 function weaponCaliber(setup) {
-  return setup.weaponModelCaliber || setup.ammoCaliber || setup.caliber || "Caliber not set";
+  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(setup) : null;
+  return weapon ? weapon.caliber : (setup.weaponModelCaliber || setup.ammoCaliber || setup.caliber || "Caliber not set");
+}
+
+function weaponCatalogMeta(setup) {
+  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(setup) : null;
+  if (!weapon) return "";
+  return [weapon.frameCategory, weapon.barrelLength, weapon.sightRadius, weapon.variantFlags]
+    .filter(Boolean)
+    .join(" / ");
 }
 
 function weaponDistance(setup) {
@@ -1302,12 +1312,14 @@ function renderWeaponList() {
       ${categorySetups.length ? categorySetups.map(setup => {
         const usage = setupUsageStats(setup);
         const photo = setup.weaponPhoto && setup.weaponPhoto.dataUrl ? setup.weaponPhoto : null;
+        const catalogMeta = weaponCatalogMeta(setup);
         return `
         <article class="weapon-card">
           ${photo ? `<div class="weapon-card-photo"><img src="${escapeHtml(photo.dataUrl)}" alt="${escapeHtml(weaponCardTitle(setup))} weapon photo" /></div>` : ""}
           <div>
             <strong>${escapeHtml(weaponCardTitle(setup))}</strong>
             <span>${escapeHtml(weaponCaliber(setup))}</span>
+            ${catalogMeta ? `<span class="weapon-card-catalog-meta">${escapeHtml(catalogMeta)}</span>` : ""}
           </div>
           <dl>
             <div><dt>Session Distance Zeroed At</dt><dd>${escapeHtml(weaponDistance(setup))}</dd></div>
@@ -1622,7 +1634,8 @@ function clearSetupFields() {
 function renderSessionBar() {
   const snapshot = collectForm();
   renderTargetModePill();
-  const setup = [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber || snapshot.ammoCaliber]
+  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
+  const setup = weapon ? weapon.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber || snapshot.ammoCaliber]
     .map(displayValue)
     .filter(Boolean)
     .join(" / ");

@@ -428,13 +428,24 @@ function isAuthorityPackageCalculated(authorityPackage) {
 }
 
 function currentSetupName() {
-  return matrix ? [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ") : "Create setup in Weapon Setup";
+  if (!matrix) return "Create setup in Weapon Setup";
+  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(matrix) : null;
+  return weapon ? weapon.summary : [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ");
+}
+
+function currentSetupMeta() {
+  if (!matrix || !SCZN3M4.weaponProfileDisplay) return "";
+  const weapon = SCZN3M4.weaponProfileDisplay(matrix);
+  return [weapon.frameCategory, weapon.barrelLength, weapon.sightRadius, weapon.variantFlags]
+    .filter(Boolean)
+    .join(" / ");
 }
 
 function renderActiveSessionBar() {
   const sessionSummary = currentSetupName();
+  const sessionMeta = currentSetupMeta();
   document.getElementById("activeSessionBar").innerHTML = session
-    ? `<strong>${currentSetupName()}</strong><span></span>`
+    ? `<strong>${escapeHtml(sessionSummary)}</strong><span>${escapeHtml(sessionMeta)}</span>`
     : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
   const targetSessionSummary = document.getElementById("targetSessionSummary");
   if (targetSessionSummary) {
@@ -529,10 +540,12 @@ function renderSetupSummary() {
   const setupSummaryGrid = document.getElementById("setupSummaryGrid");
   if (!setupSummaryGrid) return;
   const source = matrix || {};
-  const weapon = [source.weaponCategory, source.weaponManufacturer, source.weaponModelType, source.weaponModelCaliber]
+  const weaponProfile = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(source) : null;
+  const weapon = weaponProfile ? weaponProfile.summary : [source.weaponCategory, source.weaponManufacturer, source.weaponModelType, source.weaponModelCaliber]
     .map(cleanSetupValue)
     .filter(Boolean)
     .join(" / ");
+  const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
   const optic = [source.opticType, source.opticBrand, source.opticModel, source.magnification]
     .map(cleanSetupValue)
     .filter(Boolean)
@@ -543,6 +556,7 @@ function renderSetupSummary() {
     .join(" / ");
   setupSummaryGrid.innerHTML = [
     setupLine("Weapon", weapon || source.rifle),
+    weaponMeta ? setupLine("Glock Catalog", weaponMeta) : "",
     setupLine("Optic", optic),
     setupLine("Ammunition", ammo)
   ].join("");

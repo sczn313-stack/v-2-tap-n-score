@@ -37,6 +37,30 @@
     return value === undefined || value === null || value === "" ? fallback : value;
   }
 
+  function cleanProfileValue(value) {
+    return /^(Select Manufacturer|Select Model Type|Select Model Caliber|Select Caliber|Select Gauge|Select Load|Select Grain)$/i.test(value || "") ? "" : display(value, "");
+  }
+
+  function weaponProfileDisplay(source = {}) {
+    const model = cleanProfileValue(source.weaponCatalogModel) || cleanProfileValue(source.weaponModelCaliber);
+    const caliber = cleanProfileValue(source.weaponCatalogCaliber) || cleanProfileValue(source.ammoCaliber) || cleanProfileValue(source.caliber);
+    const manufacturer = cleanProfileValue(source.weaponCatalogManufacturer) || cleanProfileValue(source.weaponManufacturer);
+    const category = cleanProfileValue(source.weaponCategory);
+    const modelType = cleanProfileValue(source.weaponModelType);
+    const modelLine = [manufacturer, model || modelType || category].filter(Boolean).join(" ");
+    const summary = [category, manufacturer, model || modelType, caliber && model !== caliber ? caliber : ""].filter(Boolean).join(" / ");
+    return {
+      summary: summary || cleanProfileValue(source.rifle) || "Weapon profile not selected",
+      short: modelLine || cleanProfileValue(source.rifle) || "Weapon Profile",
+      caliber: caliber || cleanProfileValue(source.weaponModelCaliber) || "Caliber not set",
+      frameCategory: cleanProfileValue(source.weaponFrameCategory),
+      barrelLength: cleanProfileValue(source.barrelLength),
+      sightRadius: cleanProfileValue(source.weaponSightRadius),
+      variantFlags: cleanProfileValue(source.weaponVariantFlags),
+      notes: cleanProfileValue(source.weaponCatalogNotes)
+    };
+  }
+
   function formatSessionNumber(number) {
     return `Session #${String(number || 0).padStart(3, "0")}`;
   }
@@ -663,8 +687,9 @@
 
   function sessionPills(session = read(KEYS.activeSession, null), matrix = getActiveMatrix()) {
     const source = session && session.matrixSnapshot ? session.matrixSnapshot : matrix || {};
+    const weapon = weaponProfileDisplay(source);
     return [
-      display(source.rifle || source.rifleFamily, "Weapon"),
+      weapon.short,
       display(source.opticModel || source.opticBrand, "Optic"),
       display(source.ammoLoad || source.ammoManufacturer, "Ammo"),
       session ? session.sessionLabel : "No Session",
@@ -691,6 +716,7 @@
     read,
     write,
     display,
+    weaponProfileDisplay,
     formatSessionNumber,
     registerTargetAuthority,
     getActiveMatrix,
