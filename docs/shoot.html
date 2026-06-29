@@ -879,7 +879,9 @@ function renderEvidencePreview(image) {
   if (!evidence) {
     preview.innerHTML = `
       <div class="evidence-meta evidence-status-stack empty-target-start"></div>
+      ${isDotTortureAuthoritySession() ? `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>` : ""}
     `;
+    if (isDotTortureAuthoritySession()) renderDotTortureTrainingResults(dotTortureWorkspacePackage());
     renderMarkStatus();
     return;
   }
@@ -1555,26 +1557,27 @@ function rangeWorkflowState(canMark) {
 }
 
 function renderMarkStatus() {
-  const canMark = hasMarkableEvidence();
   const isGssf = isGssfAuthoritySession();
   const isTraining = isDotTortureAuthoritySession();
-  document.getElementById("setAimMode").disabled = !canMark || isGssf || isTraining;
-  document.getElementById("addImpactMode").disabled = !canMark || isTraining || (!currentAimPoint && !isGssf);
-  document.getElementById("undoImpact").disabled = !canMark || isTraining || currentImpactPoints.length === 0;
-  document.getElementById("clearMarks").disabled = !canMark || isTraining || (!currentAimPoint && currentImpactPoints.length === 0);
+  const hasEvidence = hasMarkableEvidence();
+  const canProceed = hasEvidence || isTraining;
+  document.getElementById("setAimMode").disabled = !hasEvidence || isGssf || isTraining;
+  document.getElementById("addImpactMode").disabled = !hasEvidence || isTraining || (!currentAimPoint && !isGssf);
+  document.getElementById("undoImpact").disabled = !hasEvidence || isTraining || currentImpactPoints.length === 0;
+  document.getElementById("clearMarks").disabled = !hasEvidence || isTraining || (!currentAimPoint && currentImpactPoints.length === 0);
   document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
-  document.getElementById("showResults").disabled = !canMark || (!isTraining && currentImpactPoints.length === 0);
+  document.getElementById("showResults").disabled = !canProceed || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
-  if (canMark && isTraining && !resultsShown) nextStep = "showResults";
-  if (canMark && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (canMark && !isGssf && !isTraining && !currentAimPoint) nextStep = "setAimMode";
-  if (canMark && !isGssf && !isTraining && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (canMark && !isTraining && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
-  if (canMark && resultsShown) nextStep = "saveMarks";
+  if (canProceed && isTraining && !resultsShown) nextStep = "showResults";
+  if (hasEvidence && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (hasEvidence && !isGssf && !isTraining && !currentAimPoint) nextStep = "setAimMode";
+  if (hasEvidence && !isGssf && !isTraining && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
+  if (hasEvidence && !isTraining && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
+  if (canProceed && resultsShown) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
-  document.body.dataset.rangeState = rangeWorkflowState(canMark);
-  document.body.dataset.hasEvidence = canMark ? "true" : "false";
+  document.body.dataset.rangeState = rangeWorkflowState(canProceed);
+  document.body.dataset.hasEvidence = hasEvidence ? "true" : "false";
   document.body.dataset.hasResults = resultsShown ? "true" : "false";
   document.body.dataset.targetMission = isTraining ? "marksmanshipTraining" : (isGssf ? "gssf" : "zeroing");
 }
@@ -1697,6 +1700,7 @@ document.getElementById("clearMarks").addEventListener("click", () => {
 });
 document.getElementById("showResults").addEventListener("click", async () => {
   if ((!isGssfAuthoritySession() && !isDotTortureAuthoritySession() && !currentAimPoint) || (!isDotTortureAuthoritySession() && !currentImpactPoints.length)) return;
+  if (isDotTortureAuthoritySession() && !session) ensureTargetSession();
   authorityStatusMessage = "";
   renderResults();
   try {
