@@ -80,6 +80,15 @@
           <label>Model Caliber<select name="weaponModelCaliber" id="weaponModelCaliber">
             <option>Select Model Caliber</option><option>Other</option>
           </select></label>
+          <label class="is-hidden" id="glockModelSearchField">Search Glock Model<input id="glockModelSearch" type="search" placeholder="Type 19 or 43" autocomplete="off" /></label>
+          <div class="profile-chip-row is-hidden" id="glockCatalogDetails" aria-live="polite"></div>
+          <input type="hidden" name="weaponCatalogManufacturer" id="weaponCatalogManufacturer" />
+          <input type="hidden" name="weaponCatalogModel" id="weaponCatalogModel" />
+          <input type="hidden" name="weaponCatalogCaliber" id="weaponCatalogCaliber" />
+          <input type="hidden" name="weaponFrameCategory" id="weaponFrameCategory" />
+          <input type="hidden" name="weaponSightRadius" id="weaponSightRadius" />
+          <input type="hidden" name="weaponVariantFlags" id="weaponVariantFlags" />
+          <input type="hidden" name="weaponCatalogNotes" id="weaponCatalogNotes" />
           <label class="is-hidden">Custom Model Caliber<input name="customWeaponModelCaliber" id="customWeaponModelCaliber" placeholder="Optional custom model caliber" /></label>
           <label>Barrel Length <span class="optional-label">Optional</span><input name="barrelLength" placeholder="Optional" /></label>
         </div>
@@ -193,7 +202,7 @@ const WEAPON_CATEGORY_OPTIC_TYPES = {
 };
 const WEAPON_CATEGORY_AMMO_CALIBERS = {
   Rifle: ["Select Caliber", ".17 HMR", ".22 LR", ".22 WMR", ".223 Rem", "5.56 NATO", ".300 BLK", ".308 Win", "6.5 Creedmoor", "Other"],
-  Pistol: ["Select Caliber", "9mm", ".45 ACP", ".40 S&W", ".380 ACP", ".22 LR", ".22 WMR", "Other"],
+  Pistol: ["Select Caliber", "9mm", "10mm Auto", ".45 ACP", ".40 S&W", ".380 ACP", ".357 SIG", ".45 GAP", ".22 LR", ".22 WMR", "Other"],
   Shotgun: ["Select Gauge", "12 Gauge", "20 Gauge", "16 Gauge", ".410 Bore", "Other"]
 };
 const WEAPON_CATEGORY_DISTANCES = {
@@ -237,7 +246,7 @@ const WEAPON_MODEL_TYPES = {
   Winchester: ["Pump Action", "Other"],
   Stoeger: ["Semi-Auto", "Other"],
   Savage: ["Bolt Action", "Rimfire", "Other"],
-  Glock: ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
+  Glock: ["GLOCK Catalog", "Other"],
   "Heckler & Koch": ["MR Series", "Full Size", "Compact", "Other"],
   Walther: ["Full Size", "Compact", "Other"],
   CZ: ["Full Size", "Compact", "Competition", "Pistol Caliber Carbine", "Other"],
@@ -266,7 +275,7 @@ const WEAPON_MODEL_TYPE_FILTERS = {
     Ruger: ["Compact", "Subcompact", "Other"],
     "Sig Sauer": ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
     "Springfield Armory": ["Full Size", "Compact", "Subcompact", "Micro Compact", "1911", "Other"],
-    Glock: ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
+    Glock: ["GLOCK Catalog", "Other"],
     "Heckler & Koch": ["Full Size", "Compact", "Other"],
     Walther: ["Full Size", "Compact", "Other"],
     CZ: ["Full Size", "Compact", "Competition", "Other"],
@@ -358,10 +367,7 @@ const WEAPON_MODEL_CALIBER_FILTERS = {
     "1911": ["1911 Garrison .45 ACP", "1911 Ronin 9mm", "Other"]
   },
   Glock: {
-    "Full Size": ["Glock 17 9mm", "Glock 22 .40 S&W", "Other"],
-    Compact: ["Glock 19 9mm", "Glock 23 .40 S&W", "Other"],
-    Subcompact: ["Glock 26 9mm", "Other"],
-    "Micro Compact": ["Glock 43 9mm", "Glock 43X 9mm", "Other"]
+    "GLOCK Catalog": ["Select Model Caliber", "Other"]
   },
   Mossberg: {
     "Pump Action": ["Mossberg 500 12 Gauge", "Mossberg 590 12 Gauge", "Maverick 88 12 Gauge", "Other"],
@@ -409,6 +415,63 @@ const WEAPON_MODEL_CALIBER_FILTERS = {
     "Pistol Caliber Carbine": ["Scorpion 9mm", "Other"]
   }
 };
+const GLOCK_GSSF_CATALOG = [
+  { model: "G17", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.50 in", flags: ["Standard"], notes: "" },
+  { model: "G17 Gen5", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["Gen5"], notes: "" },
+  { model: "G17 MOS", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["MOS"], notes: "Optics-ready variant" },
+  { model: "G17L", caliber: "9mm", frameCategory: "Long Slide", barrelLength: "6.02 in", sightRadius: "8.03 in", flags: ["Long Slide"], notes: "Long-slide variant" },
+  { model: "G17L Gen5 MOS", caliber: "9mm", frameCategory: "Long Slide", barrelLength: "6.02 in", sightRadius: "8.03 in", flags: ["Gen5", "MOS", "Long Slide"], notes: "Long-slide optics-ready variant" },
+  { model: "G19", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Standard"], notes: "" },
+  { model: "G19 Gen5", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Gen5"], notes: "" },
+  { model: "G19 MOS", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["MOS"], notes: "Optics-ready variant" },
+  { model: "G19X", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Crossover"], notes: "Compact slide with full-size frame" },
+  { model: "G19X MOS", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["MOS", "Crossover"], notes: "Optics-ready crossover variant" },
+  { model: "G20", caliber: "10mm Auto", frameCategory: "Full Size", barrelLength: "4.61 in", sightRadius: "6.77 in", flags: ["Standard"], notes: "" },
+  { model: "G20 Gen5 MOS", caliber: "10mm Auto", frameCategory: "Full Size", barrelLength: "4.61 in", sightRadius: "6.77 in", flags: ["Gen5", "MOS"], notes: "Optics-ready variant" },
+  { model: "G21", caliber: ".45 ACP", frameCategory: "Full Size", barrelLength: "4.61 in", sightRadius: "6.77 in", flags: ["Standard"], notes: "" },
+  { model: "G21 Gen5 MOS", caliber: ".45 ACP", frameCategory: "Full Size", barrelLength: "4.61 in", sightRadius: "6.77 in", flags: ["Gen5", "MOS"], notes: "Optics-ready variant" },
+  { model: "G22", caliber: ".40 S&W", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.50 in", flags: ["Standard"], notes: "" },
+  { model: "G22 Gen5", caliber: ".40 S&W", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["Gen5"], notes: "" },
+  { model: "G23", caliber: ".40 S&W", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Standard"], notes: "" },
+  { model: "G23 Gen5", caliber: ".40 S&W", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Gen5"], notes: "" },
+  { model: "G24", caliber: ".40 S&W", frameCategory: "Long Slide", barrelLength: "6.02 in", sightRadius: "8.03 in", flags: ["Long Slide"], notes: "Long-slide variant" },
+  { model: "G25", caliber: ".380 ACP", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Standard"], notes: "" },
+  { model: "G26", caliber: "9mm", frameCategory: "Subcompact", barrelLength: "3.43 in", sightRadius: "5.39 in", flags: ["Standard"], notes: "" },
+  { model: "G26 Gen5", caliber: "9mm", frameCategory: "Subcompact", barrelLength: "3.43 in", sightRadius: "5.39 in", flags: ["Gen5"], notes: "" },
+  { model: "G27", caliber: ".40 S&W", frameCategory: "Subcompact", barrelLength: "3.43 in", sightRadius: "5.39 in", flags: ["Standard"], notes: "" },
+  { model: "G28", caliber: ".380 ACP", frameCategory: "Subcompact", barrelLength: "3.43 in", sightRadius: "5.39 in", flags: ["Standard"], notes: "" },
+  { model: "G29", caliber: "10mm Auto", frameCategory: "Subcompact", barrelLength: "3.78 in", sightRadius: "5.91 in", flags: ["Standard"], notes: "" },
+  { model: "G29 Gen5", caliber: "10mm Auto", frameCategory: "Subcompact", barrelLength: "3.78 in", sightRadius: "5.91 in", flags: ["Gen5"], notes: "" },
+  { model: "G30", caliber: ".45 ACP", frameCategory: "Subcompact", barrelLength: "3.78 in", sightRadius: "5.91 in", flags: ["Standard"], notes: "" },
+  { model: "G30 Gen5", caliber: ".45 ACP", frameCategory: "Subcompact", barrelLength: "3.78 in", sightRadius: "5.91 in", flags: ["Gen5"], notes: "" },
+  { model: "G30S", caliber: ".45 ACP", frameCategory: "Subcompact", barrelLength: "3.78 in", sightRadius: "5.91 in", flags: ["Slim Slide"], notes: "Slim-slide subcompact variant" },
+  { model: "G31", caliber: ".357 SIG", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.50 in", flags: ["Standard"], notes: "" },
+  { model: "G32", caliber: ".357 SIG", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Standard"], notes: "" },
+  { model: "G33", caliber: ".357 SIG", frameCategory: "Subcompact", barrelLength: "3.43 in", sightRadius: "5.39 in", flags: ["Standard"], notes: "" },
+  { model: "G34", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.31 in", sightRadius: "7.52 in", flags: ["Long Slide"], notes: "Competition/long-slide variant" },
+  { model: "G34 Gen5 MOS", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.31 in", sightRadius: "7.52 in", flags: ["Gen5", "MOS", "Long Slide"], notes: "Competition optics-ready variant" },
+  { model: "G35", caliber: ".40 S&W", frameCategory: "Competition", barrelLength: "5.31 in", sightRadius: "7.52 in", flags: ["Long Slide"], notes: "Competition/long-slide variant" },
+  { model: "G36", caliber: ".45 ACP", frameCategory: "Slimline", barrelLength: "3.78 in", sightRadius: "6.50 in", flags: ["Slimline"], notes: "" },
+  { model: "G37", caliber: ".45 GAP", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.50 in", flags: ["Standard"], notes: "" },
+  { model: "G38", caliber: ".45 GAP", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Standard"], notes: "" },
+  { model: "G39", caliber: ".45 GAP", frameCategory: "Subcompact", barrelLength: "3.43 in", sightRadius: "5.39 in", flags: ["Standard"], notes: "" },
+  { model: "G40 MOS", caliber: "10mm Auto", frameCategory: "Long Slide", barrelLength: "6.02 in", sightRadius: "8.19 in", flags: ["MOS", "Long Slide"], notes: "Long-slide optics-ready variant" },
+  { model: "G41", caliber: ".45 ACP", frameCategory: "Long Slide", barrelLength: "5.31 in", sightRadius: "7.56 in", flags: ["Long Slide"], notes: "" },
+  { model: "G41 MOS", caliber: ".45 ACP", frameCategory: "Long Slide", barrelLength: "5.31 in", sightRadius: "7.56 in", flags: ["MOS", "Long Slide"], notes: "Optics-ready variant" },
+  { model: "G42", caliber: ".380 ACP", frameCategory: "Slimline", barrelLength: "3.25 in", sightRadius: "4.92 in", flags: ["Slimline"], notes: "" },
+  { model: "G43", caliber: "9mm", frameCategory: "Slimline", barrelLength: "3.41 in", sightRadius: "5.20 in", flags: ["Slimline"], notes: "" },
+  { model: "G43X", caliber: "9mm", frameCategory: "Slimline", barrelLength: "3.41 in", sightRadius: "5.24 in", flags: ["Slimline"], notes: "" },
+  { model: "G43X MOS", caliber: "9mm", frameCategory: "Slimline", barrelLength: "3.41 in", sightRadius: "5.24 in", flags: ["MOS", "Slimline"], notes: "Optics-ready slimline variant" },
+  { model: "G44", caliber: ".22 LR", frameCategory: "Compact", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Rimfire"], notes: "" },
+  { model: "G45", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["Crossover"], notes: "Compact slide with full-size frame" },
+  { model: "G45 MOS", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.02 in", sightRadius: "6.02 in", flags: ["MOS", "Crossover"], notes: "Optics-ready crossover variant" },
+  { model: "G46", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["Rotating Barrel"], notes: "Regional/limited-availability variant" },
+  { model: "G47 MOS", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["MOS"], notes: "Optics-ready full-size variant" },
+  { model: "G48", caliber: "9mm", frameCategory: "Slimline", barrelLength: "4.17 in", sightRadius: "5.98 in", flags: ["Slimline"], notes: "" },
+  { model: "G48 MOS", caliber: "9mm", frameCategory: "Slimline", barrelLength: "4.17 in", sightRadius: "5.98 in", flags: ["MOS", "Slimline"], notes: "Optics-ready slimline variant" },
+  { model: "G49 MOS", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["MOS", "Crossover"], notes: "Optics-ready crossover variant" }
+];
+const GLOCK_GSSF_MODEL_OPTIONS = GLOCK_GSSF_CATALOG.map(item => `${item.model} ${item.caliber}`);
 const OPTIC_MODELS = {
   "Iron Sights": ["Iron Sights", "Other"],
   "Bead Sight": ["Bead Sight", "Other"],
@@ -736,6 +799,43 @@ function setOptions(select, options, selectedValue = "", preserveExternal = true
   if (selectedValue) select.value = selectedValue;
 }
 
+function glockCatalogEntryLabel(entry) {
+  return `${entry.model} ${entry.caliber}`;
+}
+
+function normalizeGlockModelLabel(value = "") {
+  const cleaned = String(value || "").trim();
+  if (!cleaned) return "";
+  const direct = GLOCK_GSSF_CATALOG.find(entry => glockCatalogEntryLabel(entry) === cleaned);
+  if (direct) return glockCatalogEntryLabel(direct);
+  const withoutBrand = cleaned.replace(/^Glock\s+/i, "G");
+  const byModel = GLOCK_GSSF_CATALOG.find(entry => {
+    const entryLabel = glockCatalogEntryLabel(entry);
+    return entryLabel === withoutBrand || entry.model.toLowerCase() === withoutBrand.toLowerCase();
+  });
+  return byModel ? glockCatalogEntryLabel(byModel) : cleaned;
+}
+
+function selectedGlockCatalogEntry() {
+  const selected = normalizeGlockModelLabel(document.getElementById("weaponModelCaliber").value || "");
+  return GLOCK_GSSF_CATALOG.find(entry => glockCatalogEntryLabel(entry) === selected) || null;
+}
+
+function glockModelOptions(filter = "", selectedValue = "") {
+  const query = String(filter || "").trim().toLowerCase();
+  const normalizedSelected = normalizeGlockModelLabel(selectedValue);
+  const matches = GLOCK_GSSF_MODEL_OPTIONS.filter(label => {
+    if (!query) return true;
+    return label.toLowerCase().includes(query)
+      || label.replace(/^G/i, "").toLowerCase().includes(query)
+      || label.replace(/\D/g, "").includes(query.replace(/\D/g, ""));
+  });
+  if (normalizedSelected && !matches.includes(normalizedSelected) && GLOCK_GSSF_MODEL_OPTIONS.includes(normalizedSelected)) {
+    matches.unshift(normalizedSelected);
+  }
+  return ["Select Model Caliber", ...matches, "Other"];
+}
+
 function selectedWeaponCategory() {
   return document.getElementById("weaponCategory").value || "Rifle";
 }
@@ -784,7 +884,8 @@ function updateWeaponManufacturers(selectedValue = "") {
 function updateWeaponModelTypes(selectedValue = "") {
   const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
   const categoryModels = WEAPON_MODEL_TYPE_FILTERS[selectedWeaponCategory()] || {};
-  setOptions(document.getElementById("weaponModelType"), categoryModels[manufacturer] || WEAPON_MODEL_TYPES[manufacturer] || WEAPON_MODEL_TYPES.Other, selectedValue, false);
+  const requestedValue = manufacturer === "Glock" && selectedWeaponCategory() === "Pistol" ? "GLOCK Catalog" : selectedValue;
+  setOptions(document.getElementById("weaponModelType"), categoryModels[manufacturer] || WEAPON_MODEL_TYPES[manufacturer] || WEAPON_MODEL_TYPES.Other, requestedValue, false);
   toggleField("weaponModelType", !isSelectedPlaceholder(manufacturer));
   toggleCustom("customWeaponManufacturer", manufacturer === "Other");
   updateWeaponModelCalibers();
@@ -809,11 +910,62 @@ function updateWeaponModelCalibers(selectedValue = "") {
   const modelType = document.getElementById("weaponModelType").value || "Select Model Type";
   const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
   const manufacturerModels = WEAPON_MODEL_CALIBER_FILTERS[manufacturer] || {};
-  setOptions(document.getElementById("weaponModelCaliber"), manufacturerModels[modelType] || WEAPON_MODEL_CALIBERS[modelType] || WEAPON_MODEL_CALIBERS.Other, selectedValue, false);
+  const isGlockCatalog = selectedWeaponCategory() === "Pistol" && manufacturer === "Glock";
+  const searchInput = document.getElementById("glockModelSearch");
+  const modelOptions = isGlockCatalog
+    ? glockModelOptions(searchInput ? searchInput.value : "", selectedValue)
+    : (manufacturerModels[modelType] || WEAPON_MODEL_CALIBERS[modelType] || WEAPON_MODEL_CALIBERS.Other);
+  setOptions(document.getElementById("weaponModelCaliber"), modelOptions, isGlockCatalog ? normalizeGlockModelLabel(selectedValue) : selectedValue, false);
   toggleField("weaponModelCaliber", !isSelectedPlaceholder(modelType));
   toggleCustom("customWeaponModelType", modelType === "Other");
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
+  updateGlockCatalogDetails();
   syncAmmoCaliberFromWeaponModel();
+}
+
+function updateGlockCatalogDetails() {
+  const isGlockCatalog = selectedWeaponCategory() === "Pistol" && document.getElementById("weaponManufacturer").value === "Glock";
+  const searchField = document.getElementById("glockModelSearchField");
+  const details = document.getElementById("glockCatalogDetails");
+  if (searchField) searchField.classList.toggle("is-hidden", !isGlockCatalog);
+  const fields = {
+    weaponCatalogManufacturer: "",
+    weaponCatalogModel: "",
+    weaponCatalogCaliber: "",
+    weaponFrameCategory: "",
+    weaponSightRadius: "",
+    weaponVariantFlags: "",
+    weaponCatalogNotes: ""
+  };
+  const entry = isGlockCatalog ? selectedGlockCatalogEntry() : null;
+  if (entry) {
+    fields.weaponCatalogManufacturer = "Glock";
+    fields.weaponCatalogModel = entry.model;
+    fields.weaponCatalogCaliber = entry.caliber;
+    fields.weaponFrameCategory = entry.frameCategory;
+    fields.weaponSightRadius = entry.sightRadius;
+    fields.weaponVariantFlags = entry.flags.join(", ");
+    fields.weaponCatalogNotes = entry.notes;
+    const barrelLength = document.querySelector('[name="barrelLength"]');
+    if (barrelLength && !barrelLength.value) barrelLength.value = entry.barrelLength;
+    if (details) {
+      details.innerHTML = `
+        <span><strong>${entry.model}</strong></span>
+        <span>${entry.caliber}</span>
+        <span>${entry.frameCategory}</span>
+        <span>${entry.barrelLength}</span>
+        <span>${entry.sightRadius}</span>
+        <span>${entry.flags.join(" / ") || "Standard"}</span>
+      `;
+    }
+  } else if (details) {
+    details.innerHTML = isGlockCatalog ? "<span>Search or select a Glock model.</span>" : "";
+  }
+  Object.entries(fields).forEach(([id, value]) => {
+    const field = document.getElementById(id);
+    if (field) field.value = value;
+  });
+  if (details) details.classList.toggle("is-hidden", !isGlockCatalog);
 }
 
 function updateOpticModels(selectedValue = "") {
@@ -1034,6 +1186,13 @@ function setupPayload(snapshot) {
     "weaponManufacturer",
     "weaponModelType",
     "weaponModelCaliber",
+    "weaponCatalogManufacturer",
+    "weaponCatalogModel",
+    "weaponCatalogCaliber",
+    "weaponFrameCategory",
+    "weaponSightRadius",
+    "weaponVariantFlags",
+    "weaponCatalogNotes",
     "barrelLength",
     "rifle",
     "caliber",
@@ -1556,7 +1715,12 @@ document.getElementById("weaponManufacturer").addEventListener("change", () => u
 document.getElementById("weaponModelType").addEventListener("change", () => updateWeaponModelCalibers());
 document.getElementById("weaponModelCaliber").addEventListener("change", () => {
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
+  updateGlockCatalogDetails();
   syncAmmoCaliberFromWeaponModel();
+});
+document.getElementById("glockModelSearch").addEventListener("input", () => {
+  const selected = document.getElementById("weaponModelCaliber").value;
+  updateWeaponModelCalibers(selected);
 });
 document.getElementById("opticType").addEventListener("change", () => updateOpticManufacturers());
 document.getElementById("opticBrand").addEventListener("change", () => updateOpticModels());
