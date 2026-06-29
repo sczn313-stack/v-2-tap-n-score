@@ -642,7 +642,9 @@ function dotTortureTrainingHtml(authorityPackage) {
     <div class="authority-results-panel training-results-panel" id="dotTortureTrainingResult" aria-label="Dot Torture training guidance">
       <div class="training-result-header">
         <span>Training Mission</span>
-        <strong>${escapeHtml(targetName)}</strong>
+        <strong>Dot Torture</strong>
+        <em>Backend-authorized session</em>
+        <small>${escapeHtml(targetName)}</small>
       </div>
       <div class="training-result-facts">
         <div><span>Recommended Distance</span><strong>${escapeHtml(trainingDistanceLabel(recommendedDistance))}</strong></div>
@@ -1375,6 +1377,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
   if (guidance) guidance.textContent = trainingStageGuidance(authorityPackage, trainingStageIndex);
   if (nextButton) {
     nextButton.disabled = trainingDrillFinished || trainingStageIndex >= maxIndex;
+    nextButton.classList.toggle("secondary", trainingDrillFinished || trainingStageIndex >= maxIndex);
     nextButton.onclick = () => {
       if (trainingStageIndex < maxIndex) {
         trainingStageIndex += 1;
@@ -1383,7 +1386,9 @@ function renderDotTortureTrainingResults(authorityPackage) {
     };
   }
   if (finishButton) {
+    const finishIsPrimary = !trainingDrillFinished && trainingStageIndex >= maxIndex;
     finishButton.textContent = trainingDrillFinished ? "Drill Complete" : "Finish Drill";
+    finishButton.classList.toggle("secondary", !finishIsPrimary);
     finishButton.onclick = () => {
       trainingDrillFinished = true;
       renderDotTortureTrainingResults(authorityPackage);
