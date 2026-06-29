@@ -81,6 +81,9 @@ const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.loca
 const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
 const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
 const TARGET_QUERY = new URLSearchParams(window.location.search);
+const TARGET_PROFILE_LAUNCH_ID = TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || "";
+let missionResolutionStatus = TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle";
+let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target mission..." : "";
 let pendingEvidence = null;
 let displayedEvidence = null;
 const savedAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
@@ -219,6 +222,55 @@ function isDotTortureTrainingPackage(authorityPackage) {
 
 function isNonZeroingAuthorityPackage(authorityPackage) {
   return isGssfAuthorityPackage(authorityPackage) || isDotTortureTrainingPackage(authorityPackage);
+}
+
+function isMissionResolving() {
+  return missionResolutionStatus === "resolving";
+}
+
+function isMissionResolutionUnavailable() {
+  return missionResolutionStatus === "unavailable";
+}
+
+function missionResolutionHtml() {
+  const message = isMissionResolutionUnavailable()
+    ? "Unable to load target mission. Try again."
+    : (missionResolutionMessage || "Loading target mission...");
+  const subtext = isMissionResolutionUnavailable()
+    ? "Backend mission authority did not return a usable package."
+    : "Backend authority is resolving the target profile.";
+  return `
+    <div class="authority-results-panel training-results-panel mission-resolution-panel" id="missionResolutionPanel" aria-label="Mission resolution" role="status" aria-live="polite">
+      <div class="training-result-header">
+        <span>Target Mission</span>
+        <strong>${escapeHtml(message)}</strong>
+        <em>${escapeHtml(subtext)}</em>
+      </div>
+    </div>
+  `;
+}
+
+function setMissionResolutionChrome() {
+  const isBlocked = isMissionResolving() || isMissionResolutionUnavailable();
+  const workflow = document.querySelector(".workflow-control-row");
+  const context = document.querySelector(".target-session-context");
+  if (workflow) {
+    workflow.hidden = isBlocked;
+    workflow.style.display = isBlocked ? "none" : "";
+  }
+  if (context) {
+    context.hidden = isBlocked;
+    context.style.display = isBlocked ? "none" : "";
+  }
+  document.body.dataset.missionResolution = missionResolutionStatus;
+}
+
+function renderMissionResolutionState() {
+  const preview = document.getElementById("targetEvidencePreview");
+  if (preview) {
+    preview.innerHTML = `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${missionResolutionHtml()}</div></div>`;
+  }
+  renderMarkStatus();
 }
 
 function activeMissionKind() {
@@ -785,6 +837,9 @@ function dotTortureTrainingHtml(authorityPackage) {
 }
 
 function targetIntelStackHtml() {
+  if (isMissionResolving() || isMissionResolutionUnavailable()) {
+    return missionResolutionHtml();
+  }
   const authorityPackage = compatibleAuthorityPackage(backendAuthorityPackage);
   if (isDotTortureAuthoritySession() || isDotTortureTrainingPackage(authorityPackage)) {
     return dotTortureTrainingHtml(dotTortureWorkspacePackage());
@@ -966,12 +1021,17 @@ function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
   const evidence = image && image.dataUrl ? image : null;
   displayedEvidence = evidence;
+  if (isMissionResolving() || isMissionResolutionUnavailable()) {
+    renderMissionResolutionState();
+    return;
+  }
   if (!evidence) {
     preview.innerHTML = `
       <div class="evidence-meta evidence-status-stack empty-target-start"></div>
-      ${isDotTortureAuthoritySession() ? `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>` : ""}
+      ${(isDotTortureAuthoritySession() || isNonZeroingAuthorityPackage(backendAuthorityPackage)) ? `<div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>` : ""}
     `;
     if (isDotTortureAuthoritySession()) renderDotTortureTrainingResults(dotTortureWorkspacePackage());
+    if (isGssfAuthorityPackage(backendAuthorityPackage)) renderResults();
     renderMarkStatus();
     return;
   }
@@ -1152,6 +1212,37 @@ function applyBackendAuthorityPackage(authorityPackage) {
   backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
   syncAuthorityDerivedState();
   sessionSaved = false;
+}
+
+async function resolveMissionFromTargetProfile() {
+  if (!TARGET_PROFILE_LAUNCH_ID) return;
+  missionResolutionStatus = "resolving";
+  missionResolutionMessage = "Loading target mission...";
+  backendAuthorityPackage = null;
+  syncAuthorityDerivedState();
+  renderMissionResolutionState();
+  try {
+    if (!session) ensureTargetSession();
+    const authorityPackage = await requestBackendAuthority();
+    applyBackendAuthorityPackage(authorityPackage);
+    if (!backendAuthorityPackage) {
+      throw new Error("Backend returned incompatible mission package");
+    }
+    missionResolutionStatus = "resolved";
+    missionResolutionMessage = "";
+    renderEvidencePreview(activeEvidence());
+    setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));
+    renderSetupSummary();
+    renderResults();
+    renderMarkStatus();
+  } catch (error) {
+    console.warn("Mission resolution failed", error);
+    backendAuthorityPackage = null;
+    syncAuthorityDerivedState();
+    missionResolutionStatus = "unavailable";
+    missionResolutionMessage = "Unable to load target mission. Try again.";
+    renderMissionResolutionState();
+  }
 }
 
 function correctionCardDistance() {
@@ -1511,6 +1602,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
     finishButton.onclick = () => {
       trainingDrillFinished = true;
       renderDotTortureTrainingResults(authorityPackage);
+      renderMarkStatus();
     };
   }
   if (status) {
@@ -1537,6 +1629,10 @@ function renderDotTortureTrainingResults(authorityPackage) {
 }
 
 function renderResults() {
+  if (isMissionResolving() || isMissionResolutionUnavailable()) {
+    renderMissionResolutionState();
+    return;
+  }
   syncAuthorityDerivedState();
   const impacts = currentImpactPoints;
   const numericScore = currentScore === null ? NaN : Number(currentScore);
@@ -1629,6 +1725,7 @@ function rangeWorkflowState(canMark) {
   if (!canMark) return "choose-target";
   if (isDotTortureAuthoritySession()) {
     if (!resultsShown) return "show-results";
+    if (!trainingDrillFinished) return "training-drill";
     if (!sessionSaved) return "save-session";
     return "view-sec";
   }
@@ -1646,6 +1743,22 @@ function rangeWorkflowState(canMark) {
 }
 
 function renderMarkStatus() {
+  if (isMissionResolving() || isMissionResolutionUnavailable()) {
+    setMissionResolutionChrome();
+    ["chooseTargetButton", "setAimMode", "addImpactMode", "showResults", "undoImpact", "clearMarks", "saveMarks"].forEach(id => {
+      const control = document.getElementById(id);
+      if (control) {
+        control.disabled = true;
+        control.classList.remove("next-step");
+      }
+    });
+    document.body.dataset.rangeState = isMissionResolving() ? "mission-resolving" : "mission-unavailable";
+    document.body.dataset.hasEvidence = "false";
+    document.body.dataset.hasResults = "false";
+    document.body.dataset.targetMission = "resolving";
+    return;
+  }
+  setMissionResolutionChrome();
   const isGssf = isGssfAuthoritySession();
   const isTraining = isDotTortureAuthoritySession();
   const hasEvidence = hasMarkableEvidence();
@@ -1654,7 +1767,7 @@ function renderMarkStatus() {
   document.getElementById("addImpactMode").disabled = !hasEvidence || isTraining || (!currentAimPoint && !isGssf);
   document.getElementById("undoImpact").disabled = !hasEvidence || isTraining || currentImpactPoints.length === 0;
   document.getElementById("clearMarks").disabled = !hasEvidence || isTraining || (!currentAimPoint && currentImpactPoints.length === 0);
-  document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown;
+  document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown || (isTraining && !trainingDrillFinished);
   document.getElementById("showResults").disabled = !canProceed || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
   if (canProceed && isTraining && !resultsShown) nextStep = "showResults";
@@ -1662,7 +1775,7 @@ function renderMarkStatus() {
   if (hasEvidence && !isGssf && !isTraining && !currentAimPoint) nextStep = "setAimMode";
   if (hasEvidence && !isGssf && !isTraining && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
   if (hasEvidence && !isTraining && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
-  if (canProceed && resultsShown) nextStep = "saveMarks";
+  if (canProceed && resultsShown && (!isTraining || trainingDrillFinished)) nextStep = "saveMarks";
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
   document.body.dataset.rangeState = rangeWorkflowState(canProceed);
@@ -1707,7 +1820,11 @@ function handleMarkPointer(event) {
   handleMarkTap(event);
 }
 
-renderEvidencePreview(session && session.targetEvidenceImage);
+if (TARGET_PROFILE_LAUNCH_ID) {
+  renderMissionResolutionState();
+} else {
+  renderEvidencePreview(session && session.targetEvidenceImage);
+}
 
 document.getElementById("chooseTargetButton").addEventListener("click", () => {
   ensureTargetSession();
@@ -1924,9 +2041,13 @@ window.addEventListener("resize", () => {
   renderMarkers();
 });
 
-setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));
-renderSetupSummary();
-renderResults();
+if (TARGET_PROFILE_LAUNCH_ID) {
+  resolveMissionFromTargetProfile();
+} else {
+  setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));
+  renderSetupSummary();
+  renderResults();
+}
 </script>
 </body>
 </html>
