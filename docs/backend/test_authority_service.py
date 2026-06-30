@@ -72,6 +72,15 @@ def test_poib_render_coordinate_uses_hit_group_not_aim():
         raise AssertionError("POIB marker must not collapse to aim coordinates")
 
 
+def test_baker_zeroing_package_carries_authoritative_target_identity():
+    result = package({"xPercent": 50, "yPercent": 50}, [{"xPercent": 50, "yPercent": 50}])
+    assert_equal(result["target_profile_id"], "baker_st_100yd_smart_zero", "baker target profile id")
+    assert_equal(result["mission_family"], "zeroingCorrection", "baker mission family")
+    assert_equal(result["manufacturer"], "Baker Targets", "baker manufacturer")
+    assert_equal(result["discipline"], "zeroing", "baker discipline")
+    assert_equal(result["target"]["target_profile_id"], "baker_st_100yd_smart_zero", "nested baker target profile id")
+
+
 def point_from_grid(x_inches, y_inches):
     geometry = {
         "imageWidth": 1102,
@@ -552,6 +561,7 @@ def run():
         test_single_hit_poib_equals_hit,
         test_four_symmetric_hits_equal_center,
         test_poib_render_coordinate_uses_hit_group_not_aim,
+        test_baker_zeroing_package_carries_authoritative_target_identity,
         test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude,
         test_quarter_moa_clicks,
         test_half_moa_clicks,

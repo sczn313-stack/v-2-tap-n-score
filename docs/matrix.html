@@ -80,7 +80,7 @@
           <label>Model Caliber<select name="weaponModelCaliber" id="weaponModelCaliber">
             <option>Select Model Caliber</option><option>Other</option>
           </select></label>
-          <label class="is-hidden" id="glockModelSearchField">Search Glock Model<input id="glockModelSearch" type="search" placeholder="Type 19 or 43" autocomplete="off" /></label>
+          <label class="is-hidden" id="glockModelSearchField">Search Catalog Model<input id="glockModelSearch" type="search" placeholder="Type 19, 43, Rival, or MC9" autocomplete="off" /></label>
           <div class="profile-chip-row is-hidden" id="glockCatalogDetails" aria-live="polite"></div>
           <input type="hidden" name="weaponCatalogManufacturer" id="weaponCatalogManufacturer" />
           <input type="hidden" name="weaponCatalogModel" id="weaponCatalogModel" />
@@ -192,7 +192,7 @@ const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
 let currentWeaponPhoto = null;
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
-  Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
+  Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Canik", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
   Shotgun: ["Select Manufacturer", "Mossberg", "Remington", "Benelli", "Beretta", "Winchester", "Stoeger", "FN", "Other"]
 };
 const WEAPON_CATEGORY_OPTIC_TYPES = {
@@ -247,6 +247,7 @@ const WEAPON_MODEL_TYPES = {
   Stoeger: ["Semi-Auto", "Other"],
   Savage: ["Bolt Action", "Rimfire", "Other"],
   Glock: ["GLOCK Catalog", "Other"],
+  Canik: ["CANIK Catalog", "Other"],
   "Heckler & Koch": ["MR Series", "Full Size", "Compact", "Other"],
   Walther: ["Full Size", "Compact", "Other"],
   CZ: ["Full Size", "Compact", "Competition", "Pistol Caliber Carbine", "Other"],
@@ -276,6 +277,7 @@ const WEAPON_MODEL_TYPE_FILTERS = {
     "Sig Sauer": ["Full Size", "Compact", "Subcompact", "Micro Compact", "Other"],
     "Springfield Armory": ["Full Size", "Compact", "Subcompact", "Micro Compact", "1911", "Other"],
     Glock: ["GLOCK Catalog", "Other"],
+    Canik: ["CANIK Catalog", "Other"],
     "Heckler & Koch": ["Full Size", "Compact", "Other"],
     Walther: ["Full Size", "Compact", "Other"],
     CZ: ["Full Size", "Compact", "Competition", "Other"],
@@ -368,6 +370,9 @@ const WEAPON_MODEL_CALIBER_FILTERS = {
   },
   Glock: {
     "GLOCK Catalog": ["Select Model Caliber", "Other"]
+  },
+  Canik: {
+    "CANIK Catalog": ["Select Model Caliber", "Other"]
   },
   Mossberg: {
     "Pump Action": ["Mossberg 500 12 Gauge", "Mossberg 590 12 Gauge", "Maverick 88 12 Gauge", "Other"],
@@ -472,6 +477,44 @@ const GLOCK_GSSF_CATALOG = [
   { model: "G49 MOS", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["MOS", "Crossover"], notes: "Optics-ready crossover variant" }
 ];
 const GLOCK_GSSF_MODEL_OPTIONS = GLOCK_GSSF_CATALOG.map(item => `${item.model} ${item.caliber}`);
+const CANIK_GSSF_CATALOG = [
+  { model: "TP9SA", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.47 in", sightRadius: "6.69 in", flags: ["TP9"], notes: "Striker-fired full-size model" },
+  { model: "TP9DA", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.07 in", sightRadius: "6.50 in", flags: ["TP9", "DA"], notes: "Double-action/single-action variant" },
+  { model: "TP9SF", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.46 in", sightRadius: "6.69 in", flags: ["TP9"], notes: "Full-size striker-fired model" },
+  { model: "TP9SF Elite", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.19 in", sightRadius: "6.22 in", flags: ["TP9", "Elite"], notes: "Compact Elite variant" },
+  { model: "TP9SF Elite-S", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.19 in", sightRadius: "6.22 in", flags: ["TP9", "Elite", "Safety"], notes: "Elite variant with trigger safety lever" },
+  { model: "TP9 Elite SC", caliber: "9mm", frameCategory: "Subcompact", barrelLength: "3.60 in", sightRadius: "5.74 in", flags: ["TP9", "Elite", "Subcompact"], notes: "Subcompact Elite variant" },
+  { model: "TP9SFX", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.20 in", sightRadius: "7.28 in", flags: ["TP9", "SFx", "Optics Ready"], notes: "Competition/long-slide model" },
+  { model: "TP9SFX Mod.2", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.20 in", sightRadius: "7.28 in", flags: ["TP9", "SFx", "Optics Ready"], notes: "Updated SFx competition model" },
+  { model: "TP9 Elite Combat", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.73 in", sightRadius: "6.22 in", flags: ["TP9", "Elite", "Threaded Barrel"], notes: "Elite Combat variant" },
+  { model: "TP9 Elite Combat Executive", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.73 in", sightRadius: "6.22 in", flags: ["TP9", "Elite", "Threaded Barrel"], notes: "Executive Elite Combat variant" },
+  { model: "METE SF", caliber: "9mm", frameCategory: "Compact", barrelLength: "4.19 in", sightRadius: "6.22 in", flags: ["METE"], notes: "Compact METE model" },
+  { model: "METE SFT", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.47 in", sightRadius: "6.70 in", flags: ["METE"], notes: "Full-size METE model" },
+  { model: "METE SFT Pro", caliber: "9mm", frameCategory: "Full Size", barrelLength: "5.00 in", sightRadius: "6.70 in", flags: ["METE", "Pro", "Threaded Barrel"], notes: "Pro full-size METE variant" },
+  { model: "METE SFX", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.20 in", sightRadius: "7.28 in", flags: ["METE", "SFx", "Optics Ready"], notes: "Long-slide METE competition model" },
+  { model: "METE SFX Pro", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.74 in", sightRadius: "7.28 in", flags: ["METE", "Pro", "Threaded Barrel"], notes: "Pro long-slide METE variant" },
+  { model: "METE MC9", caliber: "9mm", frameCategory: "Micro Compact", barrelLength: "3.18 in", sightRadius: "5.44 in", flags: ["METE", "MC9"], notes: "Micro-compact METE model" },
+  { model: "METE MC9L", caliber: "9mm", frameCategory: "Slimline", barrelLength: "3.18 in", sightRadius: "5.70 in", flags: ["METE", "MC9", "Long Grip"], notes: "MC9 long-grip variant" },
+  { model: "METE MC9LS", caliber: "9mm", frameCategory: "Slimline", barrelLength: "3.64 in", sightRadius: "6.06 in", flags: ["METE", "MC9", "Long Slide"], notes: "MC9 long-slide/long-grip variant" },
+  { model: "SFx Rival", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.00 in", sightRadius: "7.28 in", flags: ["Rival", "Competition"], notes: "Rival competition model" },
+  { model: "SFx Rival Dark Side", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.00 in", sightRadius: "7.28 in", flags: ["Rival", "Competition"], notes: "Dark Side Rival variant" },
+  { model: "SFx Rival-S", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.00 in", sightRadius: "7.28 in", flags: ["Rival", "Steel Frame"], notes: "Steel-frame Rival variant" },
+  { model: "SFx Rival-S Dark Side", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.00 in", sightRadius: "7.28 in", flags: ["Rival", "Steel Frame"], notes: "Dark Side steel-frame Rival variant" },
+  { model: "TTI Combat", caliber: "9mm", frameCategory: "Competition", barrelLength: "4.60 in", sightRadius: "6.70 in", flags: ["TTI", "Competition"], notes: "Taran Tactical Innovations collaboration model" }
+];
+const CANIK_GSSF_MODEL_OPTIONS = CANIK_GSSF_CATALOG.map(item => `${item.model} ${item.caliber}`);
+const GOVERNED_PISTOL_CATALOGS = {
+  Glock: {
+    modelType: "GLOCK Catalog",
+    catalog: GLOCK_GSSF_CATALOG,
+    options: GLOCK_GSSF_MODEL_OPTIONS
+  },
+  Canik: {
+    modelType: "CANIK Catalog",
+    catalog: CANIK_GSSF_CATALOG,
+    options: CANIK_GSSF_MODEL_OPTIONS
+  }
+};
 const OPTIC_MODELS = {
   "Iron Sights": ["Iron Sights", "Other"],
   "Bead Sight": ["Bead Sight", "Other"],
@@ -799,38 +842,52 @@ function setOptions(select, options, selectedValue = "", preserveExternal = true
   if (selectedValue) select.value = selectedValue;
 }
 
-function glockCatalogEntryLabel(entry) {
+function activeGovernedPistolCatalog() {
+  const manufacturer = document.getElementById("weaponManufacturer").value || "";
+  if (selectedWeaponCategory() !== "Pistol") return null;
+  return GOVERNED_PISTOL_CATALOGS[manufacturer] || null;
+}
+
+function catalogEntryLabel(entry) {
   return `${entry.model} ${entry.caliber}`;
 }
 
-function normalizeGlockModelLabel(value = "") {
+function normalizeCatalogModelLabel(value = "") {
+  const activeCatalog = activeGovernedPistolCatalog();
+  const catalog = activeCatalog ? activeCatalog.catalog : [];
   const cleaned = String(value || "").trim();
   if (!cleaned) return "";
-  const direct = GLOCK_GSSF_CATALOG.find(entry => glockCatalogEntryLabel(entry) === cleaned);
-  if (direct) return glockCatalogEntryLabel(direct);
-  const withoutBrand = cleaned.replace(/^Glock\s+/i, "G");
-  const byModel = GLOCK_GSSF_CATALOG.find(entry => {
-    const entryLabel = glockCatalogEntryLabel(entry);
+  const direct = catalog.find(entry => catalogEntryLabel(entry) === cleaned);
+  if (direct) return catalogEntryLabel(direct);
+  const manufacturer = document.getElementById("weaponManufacturer").value || "";
+  const withoutBrand = cleaned.replace(new RegExp(`^${manufacturer}\\s+`, "i"), manufacturer === "Glock" ? "G" : "");
+  const byModel = catalog.find(entry => {
+    const entryLabel = catalogEntryLabel(entry);
     return entryLabel === withoutBrand || entry.model.toLowerCase() === withoutBrand.toLowerCase();
   });
-  return byModel ? glockCatalogEntryLabel(byModel) : cleaned;
+  return byModel ? catalogEntryLabel(byModel) : cleaned;
 }
 
-function selectedGlockCatalogEntry() {
-  const selected = normalizeGlockModelLabel(document.getElementById("weaponModelCaliber").value || "");
-  return GLOCK_GSSF_CATALOG.find(entry => glockCatalogEntryLabel(entry) === selected) || null;
+function selectedGovernedCatalogEntry() {
+  const activeCatalog = activeGovernedPistolCatalog();
+  if (!activeCatalog) return null;
+  const selected = normalizeCatalogModelLabel(document.getElementById("weaponModelCaliber").value || "");
+  return activeCatalog.catalog.find(entry => catalogEntryLabel(entry) === selected) || null;
 }
 
-function glockModelOptions(filter = "", selectedValue = "") {
+function governedCatalogModelOptions(filter = "", selectedValue = "") {
+  const activeCatalog = activeGovernedPistolCatalog();
+  const options = activeCatalog ? activeCatalog.options : [];
   const query = String(filter || "").trim().toLowerCase();
-  const normalizedSelected = normalizeGlockModelLabel(selectedValue);
-  const matches = GLOCK_GSSF_MODEL_OPTIONS.filter(label => {
+  const normalizedSelected = normalizeCatalogModelLabel(selectedValue);
+  const numericQuery = query.replace(/\D/g, "");
+  const matches = options.filter(label => {
     if (!query) return true;
     return label.toLowerCase().includes(query)
       || label.replace(/^G/i, "").toLowerCase().includes(query)
-      || label.replace(/\D/g, "").includes(query.replace(/\D/g, ""));
+      || (!!numericQuery && label.replace(/\D/g, "").includes(numericQuery));
   });
-  if (normalizedSelected && !matches.includes(normalizedSelected) && GLOCK_GSSF_MODEL_OPTIONS.includes(normalizedSelected)) {
+  if (normalizedSelected && !matches.includes(normalizedSelected) && options.includes(normalizedSelected)) {
     matches.unshift(normalizedSelected);
   }
   return ["Select Model Caliber", ...matches, "Other"];
@@ -853,7 +910,7 @@ function inferWeaponCategory(values = {}) {
   const manufacturer = values.weaponManufacturer || "";
   const model = `${values.weaponModelType || ""} ${values.weaponModelCaliber || ""}`;
   if (["Mossberg", "Benelli", "Winchester", "Stoeger"].includes(manufacturer) || /12 Gauge|20 Gauge|Shotgun|Maverick|SuperNova|SXP/i.test(model)) return "Shotgun";
-  if (["Glock", "Walther"].includes(manufacturer) || /Hellcat|P320|P365|Echelon|Shield|Pistol|G17|G19|G43|VP9|USP|PDP|PPQ|Shadow|9mm|\\.45 ACP|\\.40 S&W/i.test(model)) return "Pistol";
+  if (["Glock", "Canik", "Walther"].includes(manufacturer) || /Hellcat|P320|P365|Echelon|Shield|Pistol|G17|G19|G43|VP9|USP|PDP|PPQ|Shadow|METE|TP9|Rival|TTI|9mm|\\.45 ACP|\\.40 S&W/i.test(model)) return "Pistol";
   return "Rifle";
 }
 
@@ -884,7 +941,8 @@ function updateWeaponManufacturers(selectedValue = "") {
 function updateWeaponModelTypes(selectedValue = "") {
   const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
   const categoryModels = WEAPON_MODEL_TYPE_FILTERS[selectedWeaponCategory()] || {};
-  const requestedValue = manufacturer === "Glock" && selectedWeaponCategory() === "Pistol" ? "GLOCK Catalog" : selectedValue;
+  const governedCatalog = selectedWeaponCategory() === "Pistol" ? GOVERNED_PISTOL_CATALOGS[manufacturer] : null;
+  const requestedValue = governedCatalog ? governedCatalog.modelType : selectedValue;
   setOptions(document.getElementById("weaponModelType"), categoryModels[manufacturer] || WEAPON_MODEL_TYPES[manufacturer] || WEAPON_MODEL_TYPES.Other, requestedValue, false);
   toggleField("weaponModelType", !isSelectedPlaceholder(manufacturer));
   toggleCustom("customWeaponManufacturer", manufacturer === "Other");
@@ -910,12 +968,13 @@ function updateWeaponModelCalibers(selectedValue = "") {
   const modelType = document.getElementById("weaponModelType").value || "Select Model Type";
   const manufacturer = document.getElementById("weaponManufacturer").value || "Select Manufacturer";
   const manufacturerModels = WEAPON_MODEL_CALIBER_FILTERS[manufacturer] || {};
-  const isGlockCatalog = selectedWeaponCategory() === "Pistol" && manufacturer === "Glock";
+  const activeCatalog = activeGovernedPistolCatalog();
+  const isGovernedCatalog = !!activeCatalog && modelType === activeCatalog.modelType;
   const searchInput = document.getElementById("glockModelSearch");
-  const modelOptions = isGlockCatalog
-    ? glockModelOptions(searchInput ? searchInput.value : "", selectedValue)
+  const modelOptions = isGovernedCatalog
+    ? governedCatalogModelOptions(searchInput ? searchInput.value : "", selectedValue)
     : (manufacturerModels[modelType] || WEAPON_MODEL_CALIBERS[modelType] || WEAPON_MODEL_CALIBERS.Other);
-  setOptions(document.getElementById("weaponModelCaliber"), modelOptions, isGlockCatalog ? normalizeGlockModelLabel(selectedValue) : selectedValue, false);
+  setOptions(document.getElementById("weaponModelCaliber"), modelOptions, isGovernedCatalog ? normalizeCatalogModelLabel(selectedValue) : selectedValue, false);
   toggleField("weaponModelCaliber", !isSelectedPlaceholder(modelType));
   toggleCustom("customWeaponModelType", modelType === "Other");
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
@@ -924,10 +983,13 @@ function updateWeaponModelCalibers(selectedValue = "") {
 }
 
 function updateGlockCatalogDetails() {
-  const isGlockCatalog = selectedWeaponCategory() === "Pistol" && document.getElementById("weaponManufacturer").value === "Glock";
+  const manufacturer = document.getElementById("weaponManufacturer").value || "";
+  const activeCatalog = activeGovernedPistolCatalog();
+  const modelType = document.getElementById("weaponModelType").value || "";
+  const isGovernedCatalog = !!activeCatalog && modelType === activeCatalog.modelType;
   const searchField = document.getElementById("glockModelSearchField");
   const details = document.getElementById("glockCatalogDetails");
-  if (searchField) searchField.classList.toggle("is-hidden", !isGlockCatalog);
+  if (searchField) searchField.classList.toggle("is-hidden", !isGovernedCatalog);
   const fields = {
     weaponCatalogManufacturer: "",
     weaponCatalogModel: "",
@@ -937,9 +999,9 @@ function updateGlockCatalogDetails() {
     weaponVariantFlags: "",
     weaponCatalogNotes: ""
   };
-  const entry = isGlockCatalog ? selectedGlockCatalogEntry() : null;
+  const entry = isGovernedCatalog ? selectedGovernedCatalogEntry() : null;
   if (entry) {
-    fields.weaponCatalogManufacturer = "Glock";
+    fields.weaponCatalogManufacturer = manufacturer;
     fields.weaponCatalogModel = entry.model;
     fields.weaponCatalogCaliber = entry.caliber;
     fields.weaponFrameCategory = entry.frameCategory;
@@ -959,13 +1021,13 @@ function updateGlockCatalogDetails() {
       `;
     }
   } else if (details) {
-    details.innerHTML = isGlockCatalog ? "<span>Search or select a Glock model.</span>" : "";
+    details.innerHTML = isGovernedCatalog ? `<span>Search or select a ${manufacturer} model.</span>` : "";
   }
   Object.entries(fields).forEach(([id, value]) => {
     const field = document.getElementById(id);
     if (field) field.value = value;
   });
-  if (details) details.classList.toggle("is-hidden", !isGlockCatalog);
+  if (details) details.classList.toggle("is-hidden", !isGovernedCatalog);
 }
 
 function updateOpticModels(selectedValue = "") {
@@ -1223,6 +1285,8 @@ function setupPayload(snapshot) {
     "weaponPhoto",
     "target_profile_id",
     "targetProfileId",
+    "qr_id",
+    "qrId",
     "mission_family",
     "missionFamilyId",
     "targetId",
@@ -1392,6 +1456,8 @@ function collectFormSnapshot() {
   });
   snapshot.target_profile_id = MATRIX_QUERY.get("target_profile_id") || snapshot.target_profile_id || "";
   snapshot.targetProfileId = MATRIX_QUERY.get("targetProfileId") || snapshot.targetProfileId || "";
+  snapshot.qr_id = MATRIX_QUERY.get("qr_id") || snapshot.qr_id || "";
+  snapshot.qrId = MATRIX_QUERY.get("qrId") || snapshot.qrId || "";
   snapshot.mission_family = MATRIX_QUERY.get("mission_family") || snapshot.mission_family || "";
   snapshot.missionFamilyId = MATRIX_QUERY.get("missionFamilyId") || snapshot.missionFamilyId || "";
   snapshot.targetName = MATRIX_QUERY.get("targetName") || MATRIX_QUERY.get("target") || snapshot.targetName || "";
@@ -1404,9 +1470,9 @@ function goToTarget() {
     if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
   } catch (error) {}
   const targetQuery = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "gssf_ac_1"
-    ? `&target_profile_id=gssf_ac_1&mission_family=gssf`
+    ? `&target_profile_id=gssf_ac_1&mission_family=gssf${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}`
     : session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "dot_torture_ez2c_style_17"
-      ? `&target_profile_id=dot_torture_ez2c_style_17`
+      ? `&target_profile_id=dot_torture_ez2c_style_17${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}`
     : "";
   window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
 }
@@ -1528,6 +1594,7 @@ function targetAttributionFromContext(data = {}) {
   const sessionAuthority = activeSession.targetAuthority || {};
   const activeMatrix = SCZN3M4.getActiveMatrix() || {};
   const pendingTarget = readPendingTargetProfile();
+  const qrId = MATRIX_QUERY.get("qr_id") || MATRIX_QUERY.get("qrId") || pendingTarget.qr_id || pendingTarget.qrId || data.qr_id || data.qrId || "";
   const targetProfileId = String(
     queryTargetProfileId
     || activeSession.target_profile_id
@@ -1598,15 +1665,15 @@ function targetAttributionFromContext(data = {}) {
     || targetName.includes("ac-1")
     || targetName.includes("ac1")
   ) {
-    return canonicalGssfAttribution();
+    return { ...canonicalGssfAttribution(), ...(qrId ? { qr_id: qrId, qrId } : {}) };
   }
   if (
     targetProfileId === "dot_torture_ez2c_style_17"
     || targetName.includes("dot torture")
   ) {
-    return canonicalDotTortureAttribution();
+    return { ...canonicalDotTortureAttribution(), ...(qrId ? { qr_id: qrId, qrId } : {}) };
   }
-  return {};
+  return qrId ? { qr_id: qrId, qrId } : {};
 }
 
 function clearSetupFields() {

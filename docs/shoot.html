@@ -11,10 +11,10 @@
 <main class="shell">
   <header class="m4-header">
     <div class="vendor-slot">
-      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target thumbnail" />
+      <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
-        <span class="kicker">Target</span>
-        <a class="vendor-name" href="index.html">Baker Smart Targets</a>
+        <span class="kicker">Tap-n-Score™</span>
+        <a class="vendor-name" id="targetHeaderIdentity" href="index.html">Target</a>
       </div>
     </div>
     <details class="mobile-platform-menu target-mobile-menu">
@@ -104,6 +104,48 @@ const DOT_TORTURE_PROFILE_LABELS = {
   revolving_dot_torture_ez2c: {
     targetName: "EZ2C Revolving Dot Torture Training Drill",
     targetFamily: "Revolving Dot Torture"
+  }
+};
+const STATIC_TARGET_IDENTITY = {
+  baker_st_100yd_smart_zero: {
+    targetName: "Baker 100 Yard Smart Target",
+    targetProfileId: "baker_st_100yd_smart_zero",
+    qrId: "",
+    missionFamily: "zeroingCorrection",
+    manufacturer: "Baker Targets",
+    discipline: "zeroing"
+  },
+  gssf_ac_1: {
+    targetName: "GSSF AC-1",
+    targetProfileId: "gssf_ac_1",
+    qrId: "",
+    missionFamily: "gssf",
+    manufacturer: "Glock Shooting Sports Foundation",
+    discipline: "pistol"
+  },
+  dot_torture_ez2c_style_17: {
+    targetName: "Dot Torture",
+    targetProfileId: "dot_torture_ez2c_style_17",
+    qrId: "",
+    missionFamily: "marksmanshipTraining",
+    manufacturer: "EZ2C Targets",
+    discipline: "pistol"
+  },
+  dot_torture_lite_ez2c: {
+    targetName: "Dot Torture Lite",
+    targetProfileId: "dot_torture_lite_ez2c",
+    qrId: "",
+    missionFamily: "marksmanshipTraining",
+    manufacturer: "EZ2C Targets",
+    discipline: "pistol"
+  },
+  revolving_dot_torture_ez2c: {
+    targetName: "Revolving Dot Torture",
+    targetProfileId: "revolving_dot_torture_ez2c",
+    qrId: "",
+    missionFamily: "marksmanshipTraining",
+    manufacturer: "EZ2C Targets",
+    discipline: "pistol"
   }
 };
 let missionResolutionStatus = TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle";
@@ -220,6 +262,60 @@ function activeMissionName() {
     || TARGET_QUERY.get("missionName")
     || ""
   ).toLowerCase();
+}
+
+function activeTargetIdentity() {
+  const authorityPackage = compatibleAuthorityPackage(backendAuthorityPackage) || {};
+  const authorityTarget = authorityPackage.target || authorityPackage.targetProfile || {};
+  const sessionSource = session || {};
+  const matrixSource = matrix || {};
+  const targetAuthority = sessionSource.targetAuthority || {};
+  const targetProfileId = String(
+    authorityPackage.target_profile_id
+    || authorityPackage.targetProfileId
+    || authorityTarget.target_profile_id
+    || authorityTarget.targetProfileId
+    || authorityTarget.targetId
+    || activeTargetProfileId()
+    || ""
+  ).toLowerCase();
+  const staticIdentity = STATIC_TARGET_IDENTITY[targetProfileId] || {};
+  const targetName = authorityPackage.target_display_name
+    || authorityPackage.targetDisplayName
+    || authorityPackage.target_name
+    || authorityPackage.targetName
+    || authorityTarget.targetName
+    || authorityTarget.target_display_name
+    || sessionSource.targetDisplayName
+    || sessionSource.targetName
+    || matrixSource.targetDisplayName
+    || matrixSource.targetName
+    || targetAuthority.targetDisplayName
+    || targetAuthority.targetName
+    || staticIdentity.targetName
+    || "Target";
+  return {
+    targetName,
+    targetProfileId: targetProfileId || staticIdentity.targetProfileId || "",
+    qrId: authorityPackage.qr_id || authorityPackage.qrId || sessionSource.qr_id || sessionSource.qrId || matrixSource.qr_id || matrixSource.qrId || staticIdentity.qrId || "",
+    missionFamily: authorityPackage.mission_family || authorityPackage.missionFamily || authorityPackage.missionFamilyId || activeMissionFamily() || staticIdentity.missionFamily || "",
+    manufacturer: authorityPackage.manufacturer || authorityTarget.manufacturer || sessionSource.manufacturer || matrixSource.manufacturer || staticIdentity.manufacturer || "",
+    discipline: authorityPackage.discipline || authorityTarget.discipline || sessionSource.discipline || matrixSource.discipline || staticIdentity.discipline || ""
+  };
+}
+
+function renderTargetHeaderIdentity() {
+  const header = document.getElementById("targetHeaderIdentity");
+  if (!header) return;
+  const identity = activeTargetIdentity();
+  header.textContent = `Target: ${identity.targetName || "Target"}`;
+  header.title = [
+    identity.targetProfileId ? `Target Profile: ${identity.targetProfileId}` : "",
+    identity.missionFamily ? `Mission: ${identity.missionFamily}` : "",
+    identity.manufacturer ? `Manufacturer: ${identity.manufacturer}` : "",
+    identity.discipline ? `Discipline: ${identity.discipline}` : "",
+    identity.qrId ? `QR: ${identity.qrId}` : ""
+  ].filter(Boolean).join(" • ");
 }
 
 function isGssfAuthoritySession() {
@@ -447,6 +543,7 @@ function currentSetupMeta() {
 }
 
 function renderActiveSessionBar() {
+  renderTargetHeaderIdentity();
   const sessionSummary = currentSetupName();
   const sessionMeta = currentSetupMeta();
   document.getElementById("activeSessionBar").innerHTML = session
@@ -561,7 +658,7 @@ function renderSetupSummary() {
     .join(" / ");
   setupSummaryGrid.innerHTML = [
     setupLine("Weapon", weapon || source.rifle),
-    weaponMeta ? setupLine("Glock Catalog", weaponMeta) : "",
+    weaponMeta ? setupLine("Weapon Catalog", weaponMeta) : "",
     setupLine("Optic", optic),
     setupLine("Ammunition", ammo)
   ].join("");
@@ -1297,9 +1394,11 @@ function backendTargetGeometry() {
 }
 
 function backendAuthorityRequest() {
+  const qrId = TARGET_QUERY.get("qr_id") || TARGET_QUERY.get("qrId") || (session && (session.qr_id || session.qrId)) || (matrix && (matrix.qr_id || matrix.qrId)) || "";
   if (isDotTortureAuthoritySession()) {
     return {
-      target_profile_id: activeTargetProfileId() || "dot_torture_ez2c_style_17"
+      target_profile_id: activeTargetProfileId() || "dot_torture_ez2c_style_17",
+      qr_id: qrId || undefined
     };
   }
   if (isGssfAuthoritySession()) {
@@ -1307,6 +1406,7 @@ function backendAuthorityRequest() {
     const payload = {
       target_profile_id: "gssf_ac_1",
       mission_family: "gssf",
+      qr_id: qrId || undefined,
       hitCoordinates: currentImpactPoints.map(safePoint).filter(Boolean)
     };
     const rawTime = source.raw_time_seconds || source.rawTimeSeconds || TARGET_QUERY.get("raw_time_seconds");
@@ -1323,8 +1423,15 @@ function backendAuthorityRequest() {
   const opticClickValueLabel = source.opticClickValueLabel || source.clickValueLabel || `${opticClickValue} ${opticAdjustmentUnit}`;
   return {
     targetId: "BAKER_ST_100YD_SMART",
+    target_profile_id: "baker_st_100yd_smart_zero",
+    targetProfileId: "baker_st_100yd_smart_zero",
     targetName: "Baker 100 Yard Smart Target",
     vendor: "Baker Smart Targets",
+    manufacturer: "Baker Targets",
+    mission_family: "zeroingCorrection",
+    missionFamilyId: "zeroingCorrection",
+    discipline: "zeroing",
+    qr_id: qrId || undefined,
     targetAuthorityGeometry: backendTargetGeometry(),
     aimCoordinate: safePoint(currentAimPoint),
     impactCoordinates: currentImpactPoints.map(safePoint).filter(Boolean),
@@ -1372,6 +1479,7 @@ function applyBackendAuthorityPackage(authorityPackage) {
   authorityStatusMessage = "";
   backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
   syncAuthorityDerivedState();
+  renderTargetHeaderIdentity();
   sessionSaved = false;
 }
 
@@ -1957,6 +2065,7 @@ function rangeWorkflowState(canMark) {
 }
 
 function renderMarkStatus() {
+  renderTargetHeaderIdentity();
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
     setMissionResolutionChrome();
     ["chooseTargetButton", "setAimMode", "addImpactMode", "showResults", "undoImpact", "clearMarks", "saveMarks"].forEach(id => {

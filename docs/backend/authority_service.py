@@ -923,11 +923,27 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
     authority_core = {
+        "target_profile_id": "baker_st_100yd_smart_zero",
+        "targetProfileId": "baker_st_100yd_smart_zero",
+        "qr_id": payload.get("qr_id") or payload.get("qrId"),
+        "qrId": payload.get("qrId") or payload.get("qr_id"),
+        "mission_family": "zeroingCorrection",
+        "missionFamilyId": "zeroingCorrection",
+        "manufacturer": "Baker Targets",
+        "discipline": "zeroing",
         "authorityVersion": "sczn3-ugeo-authority-v1",
         "target": {
             "targetId": geometry["targetId"],
             "targetName": payload.get("targetName") or "Baker 100 Yard Smart Target",
             "vendor": payload.get("vendor") or "Baker Smart Targets",
+            "manufacturer": "Baker Targets",
+            "target_profile_id": "baker_st_100yd_smart_zero",
+            "targetProfileId": "baker_st_100yd_smart_zero",
+            "qr_id": payload.get("qr_id") or payload.get("qrId"),
+            "qrId": payload.get("qrId") or payload.get("qr_id"),
+            "mission_family": "zeroingCorrection",
+            "missionFamilyId": "zeroingCorrection",
+            "discipline": "zeroing",
         },
         "inputs": {
             "aimCoordinate": aim,
