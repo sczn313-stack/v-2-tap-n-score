@@ -1,5 +1,10 @@
 from authority_service import build_authority_package, build_distance_click_query
 from mission_registry import MISSION_FAMILY_IDS, RESULT_PACKAGE_IDS
+from target_registry import (
+    GOVERNED_UNAVAILABLE_MESSAGE,
+    get_target_registry_entry,
+    is_target_execution_authorized,
+)
 
 
 def package(aim=None, impacts=None, optic=None):
@@ -274,7 +279,7 @@ def test_result_package_registry_contains_known_ids():
 
 def test_unsupported_mission_family_returns_governed_unavailable():
     result = build_authority_package({
-        "targetId": "IBS_100YD_RIMFIRE_MATCH",
+        "targetId": "NON_REGISTRY_PRECISION_TEST",
         "missionFamilyId": "precisionRingScore",
         "resultPackageType": "precisionScoreResult",
     })
@@ -287,7 +292,7 @@ def test_unsupported_mission_family_returns_governed_unavailable():
 
 def test_result_package_must_be_authorized_by_mission_family():
     result = build_authority_package({
-        "targetId": "IBS_100YD_RIMFIRE_MATCH",
+        "targetId": "NON_REGISTRY_PRECISION_TEST",
         "missionFamilyId": "precisionRingScore",
         "resultPackageType": "zeroCorrectionResult",
     })
@@ -303,6 +308,52 @@ def test_unknown_mission_family_is_rejected_before_scoring():
     })
     assert_equal(result["ok"], False, "unknown mission ok")
     assert_equal(result["reason"], "mission_family_not_registered", "unknown mission reason")
+
+
+def test_target_registry_defaults_research_targets_unavailable():
+    entry = get_target_registry_entry("nra_b8")
+    assert_equal(entry["lifecycleStatus"], "research", "registry lifecycle default")
+    assert_equal(entry["supportedStatus"], "unavailable", "registry support default")
+    assert_equal(entry["geometryAuthorityStatus"], "unconfirmed", "registry geometry default")
+    assert_equal(entry["scoringAuthorityStatus"], "unconfirmed", "registry scoring default")
+    assert_equal(is_target_execution_authorized(entry), False, "registry research executable")
+
+
+def test_target_registry_supported_entries_require_explicit_authority():
+    entry = get_target_registry_entry("BAKER_ST_100YD_SMART")
+    assert_equal(entry["lifecycleStatus"], "supported", "baker registry lifecycle")
+    assert_equal(entry["supportedStatus"], "supported", "baker registry support")
+    assert_equal(entry["geometryAuthorityStatus"], "confirmed", "baker registry geometry")
+    assert_equal(entry["scoringAuthorityStatus"], "confirmed", "baker registry scoring")
+    assert_equal(is_target_execution_authorized(entry), True, "baker registry executable")
+
+
+def test_known_registry_target_refuses_execution_until_authority_granted():
+    result = build_authority_package({
+        "targetId": "IBS_100YD_RIMFIRE_MATCH",
+        "missionFamilyId": "precisionRingScore",
+        "resultPackageType": "precisionScoreResult",
+    })
+    assert_equal(result["ok"], False, "known unsupported target ok")
+    assert_equal(result["status"], "unavailable", "known unsupported status")
+    assert_equal(result["reason"], "target_authority_incomplete", "known unsupported reason")
+    assert_equal(result["displayMessage"], GOVERNED_UNAVAILABLE_MESSAGE, "known unsupported message")
+
+
+def test_payload_cannot_silently_activate_registry_target():
+    result = build_authority_package({
+        "targetId": "nra_b8",
+        "missionFamilyId": "precisionRingScore",
+        "resultPackageType": "precisionScoreResult",
+        "lifecycleStatus": "supported",
+        "supportedStatus": "supported",
+        "geometryAuthorityStatus": "confirmed",
+        "scoringAuthorityStatus": "confirmed",
+    })
+    assert_equal(result["ok"], False, "payload cannot activate ok")
+    assert_equal(result["reason"], "target_authority_incomplete", "payload cannot activate reason")
+    assert_equal(result["lifecycleStatus"], "research", "payload cannot override lifecycle")
+    assert_equal(result["supportedStatus"], "unavailable", "payload cannot override support")
 
 
 def gssf_package(**overrides):
@@ -585,6 +636,10 @@ def run():
         test_unsupported_mission_family_returns_governed_unavailable,
         test_result_package_must_be_authorized_by_mission_family,
         test_unknown_mission_family_is_rejected_before_scoring,
+        test_target_registry_defaults_research_targets_unavailable,
+        test_target_registry_supported_entries_require_explicit_authority,
+        test_known_registry_target_refuses_execution_until_authority_granted,
+        test_payload_cannot_silently_activate_registry_target,
         test_gssf_ac_1_scores_hit_by_hit_zones,
         test_gssf_final_time_unavailable_without_raw_time,
         test_gssf_final_time_calculates_when_raw_time_supplied,

@@ -6,6 +6,32 @@ This folder is not wired into live scoring yet. It exists to separate target
 purpose, instructions, geometry authority, and unknowns before any scoring or
 guidance implementation uses the data.
 
+Constitutional principle:
+
+> Truth matures. Authority is granted.
+
+Target Registry purpose:
+
+> The Target Registry exists to preserve target knowledge without granting
+> target authority.
+
+The registry is allowed to know more than the platform is allowed to do. New
+targets default to `lifecycleStatus: research` and
+`supportedStatus: unavailable`. Execution requires:
+
+- `lifecycleStatus: supported`
+- `supportedStatus: supported`
+- `geometryAuthorityStatus: confirmed`
+- `scoringAuthorityStatus: confirmed`
+
+Until those conditions are met, UTE must refuse execution with:
+
+```text
+Target recognized.
+Authority is incomplete.
+This target is not yet supported.
+```
+
 Authority classes:
 
 - `geometry_authority`: dimensions, coordinates, zones, grids, rings, and other

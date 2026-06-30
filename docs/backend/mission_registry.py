@@ -8,6 +8,12 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Dict, Optional
 
+from target_registry import (
+    GOVERNED_UNAVAILABLE_MESSAGE,
+    registry_profile_for_target,
+    is_target_execution_authorized,
+)
+
 MISSION_FAMILY_IDS = {
     "zeroingCorrection",
     "precisionRingScore",
@@ -348,6 +354,7 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
     elif target_id in DOT_TORTURE_TARGET_IDS or target_id_key in DOT_TORTURE_TARGET_PROFILES:
         profile = deepcopy(DOT_TORTURE_TARGET_PROFILES[target_id_key])
     else:
+        registry_profile = registry_profile_for_target(target_id)
         mission_family = (
             supplied.get("missionFamilyId")
             or supplied.get("mission_family")
@@ -360,20 +367,25 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
             or payload.get("resultPackageType")
             or payload.get("result_package_type")
         )
-        profile = {
-            "targetId": target_id,
-            "manufacturer": supplied.get("manufacturer") or payload.get("manufacturer"),
-            "sku": supplied.get("sku") or payload.get("sku"),
-            "missionFamilyId": mission_family,
-            "resultPackageType": result_package,
-            "authorityStatus": supplied.get("authorityStatus") or payload.get("authorityStatus") or "unsupported",
-            "rulesSource": supplied.get("rulesSource") or payload.get("rulesSource"),
-            "geometryStatus": supplied.get("geometryStatus") or payload.get("geometryStatus") or "unknown",
-            "instructionStatus": supplied.get("instructionStatus") or payload.get("instructionStatus") or "unknown",
-            "scoringStatus": supplied.get("scoringStatus") or payload.get("scoringStatus") or "unknown",
-            "qualificationStatus": supplied.get("qualificationStatus") or payload.get("qualificationStatus") or "unknown",
-            "evidenceModel": supplied.get("evidenceModel") or payload.get("evidenceModel") or "unknown",
-        }
+        if registry_profile:
+            profile = registry_profile
+            profile["missionFamilyId"] = profile.get("missionFamilyId") or mission_family
+            profile["resultPackageType"] = profile.get("resultPackageType") or result_package
+        else:
+            profile = {
+                "targetId": target_id,
+                "manufacturer": supplied.get("manufacturer") or payload.get("manufacturer"),
+                "sku": supplied.get("sku") or payload.get("sku"),
+                "missionFamilyId": mission_family,
+                "resultPackageType": result_package,
+                "authorityStatus": supplied.get("authorityStatus") or payload.get("authorityStatus") or "unsupported",
+                "rulesSource": supplied.get("rulesSource") or payload.get("rulesSource"),
+                "geometryStatus": supplied.get("geometryStatus") or payload.get("geometryStatus") or "unknown",
+                "instructionStatus": supplied.get("instructionStatus") or payload.get("instructionStatus") or "unknown",
+                "scoringStatus": supplied.get("scoringStatus") or payload.get("scoringStatus") or "unknown",
+                "qualificationStatus": supplied.get("qualificationStatus") or payload.get("qualificationStatus") or "unknown",
+                "evidenceModel": supplied.get("evidenceModel") or payload.get("evidenceModel") or "unknown",
+            }
 
     for key in BAKER_TARGET_PROFILE.keys():
         if supplied.get(key) not in (None, ""):
@@ -417,9 +429,16 @@ def unavailable_result(
         "status": status,
         "reason": reason,
         "targetId": profile.get("targetId"),
+        "targetName": profile.get("targetName"),
         "missionFamilyId": profile.get("missionFamilyId"),
         "resultPackageType": profile.get("resultPackageType"),
         "authorityStatus": profile.get("authorityStatus"),
+        "lifecycleStatus": profile.get("lifecycleStatus"),
+        "supportedStatus": profile.get("supportedStatus"),
+        "geometryAuthorityStatus": profile.get("geometryAuthorityStatus"),
+        "scoringAuthorityStatus": profile.get("scoringAuthorityStatus"),
+        "displayMessage": GOVERNED_UNAVAILABLE_MESSAGE if reason == "target_authority_incomplete" else None,
+        "authorityGaps": profile.get("authorityGaps"),
         "method": "ute-routing-skeleton-v1",
     }
 
@@ -428,6 +447,8 @@ def refusal_for_profile(profile: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     mission_family = profile.get("missionFamilyId")
     result_package = profile.get("resultPackageType")
 
+    if profile.get("registryRecognized") and not is_target_execution_authorized(profile):
+        return unavailable_result("target_authority_incomplete", profile)
     if mission_family not in MISSION_FAMILY_IDS:
         return unavailable_result("mission_family_not_registered", profile)
     if result_package not in RESULT_PACKAGE_IDS:
