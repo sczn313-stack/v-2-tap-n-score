@@ -30,8 +30,10 @@
   <section class="shoot-workflow">
     <div class="panel">
       <section class="target-session-context" aria-label="Today's range session">
-        <span>Today's Range Session</span>
-        <strong id="targetSessionSummary">No active weapon profile</strong>
+        <span id="missionWorkspaceEyebrow">Mission Workspace</span>
+        <strong id="targetSessionSummary">Target mission loading</strong>
+        <p class="mission-workspace-meta" id="missionWorkspaceMeta">Backend authority determines this workspace.</p>
+        <p class="mission-workspace-guidance" id="missionWorkspaceGuidance">Add target photo to begin.</p>
         <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
       </section>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
@@ -44,7 +46,7 @@
           <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
           <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
           <button class="button" type="button" id="addImpactMode">Tap Bullet Holes</button>
-          <button class="button" type="button" id="showResults">Show Results</button>
+          <button class="button" type="button" id="showResults">Complete Mission</button>
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
@@ -318,6 +320,111 @@ function renderTargetHeaderIdentity() {
   ].filter(Boolean).join(" • ");
 }
 
+function missionStageProgress(authorityPackage) {
+  const stages = trainingStages(authorityPackage);
+  if (!stages.length) return "";
+  return `Stage ${Math.min(trainingStageIndex + 1, stages.length)} of ${stages.length}`;
+}
+
+function zeroingMissionProgress() {
+  if (!hasMarkableEvidence()) return "Add target photo";
+  if (!currentAimPoint) return "Tap aim point";
+  if (!currentImpactPoints.length) return "Tap bullet holes";
+  if (!resultsShown) return `${currentImpactPoints.length} impacts recorded`;
+  if (!sessionSaved) return "Ready to save SEC";
+  return "Session saved";
+}
+
+function gssfMissionProgress() {
+  if (!hasMarkableEvidence()) return "Add target photo";
+  if (!currentImpactPoints.length) return "Tap stage hits";
+  if (!resultsShown) return `${currentImpactPoints.length} hits recorded`;
+  if (!sessionSaved) return "Ready to save SEC";
+  return "Session saved";
+}
+
+function missionWorkspaceDescriptor() {
+  const identity = activeTargetIdentity();
+  const targetName = identity.targetName || "Target";
+  if (isMissionResolving()) {
+    return {
+      eyebrow: "Resolving Mission",
+      title: targetName,
+      meta: "Backend authority is loading the target mission.",
+      guidance: "Please wait for mission authority before shooting.",
+      chooseLabel: "Add Target Photo",
+      impactLabel: "Tap Hits",
+      completeLabel: "Complete Mission"
+    };
+  }
+  if (isMissionResolutionUnavailable()) {
+    return {
+      eyebrow: "Mission Unavailable",
+      title: targetName,
+      meta: "Authority is incomplete for this target.",
+      guidance: "Unable to load target mission. Try again.",
+      chooseLabel: "Add Target Photo",
+      impactLabel: "Tap Hits",
+      completeLabel: "Complete Mission"
+    };
+  }
+  if (isDotTortureAuthoritySession()) {
+    const authorityPackage = dotTortureWorkspacePackage();
+    const stageProgress = missionStageProgress(authorityPackage);
+    return {
+      eyebrow: "Training Mission",
+      title: authorityPackage.target_display_name || authorityPackage.targetDisplayName || targetName,
+      meta: [stageProgress, trainingStageSummary(authorityPackage)].filter(Boolean).join(" • "),
+      guidance: trainingDrillFinished
+        ? "Enter training score details, then save the Training SEC."
+        : trainingStageGuidance(authorityPackage, trainingStageIndex),
+      chooseLabel: "Add Target Photo",
+      impactLabel: "Stage Hits",
+      completeLabel: trainingDrillFinished ? "Training SEC Ready" : "Complete Mission"
+    };
+  }
+  if (isGssfAuthoritySession()) {
+    return {
+      eyebrow: "GSSF",
+      title: targetName,
+      meta: gssfMissionProgress(),
+      guidance: resultsShown ? "Review the backend authority package, then save the SEC." : "Tap stage hits, then complete the mission.",
+      chooseLabel: "Add Target Photo",
+      impactLabel: "Tap Stage Hits",
+      completeLabel: "Complete Mission"
+    };
+  }
+  return {
+    eyebrow: "Zeroing Mission",
+    title: targetName,
+    meta: zeroingMissionProgress(),
+    guidance: resultsShown ? "Review the backend correction package, then save the SEC." : "Record aim point and bullet holes for backend authority.",
+    chooseLabel: "Add Target Photo",
+    impactLabel: "Tap Bullet Holes",
+    completeLabel: "Complete Mission"
+  };
+}
+
+function renderMissionWorkspaceChrome() {
+  const descriptor = missionWorkspaceDescriptor();
+  const eyebrow = document.getElementById("missionWorkspaceEyebrow");
+  const summary = document.getElementById("targetSessionSummary");
+  const meta = document.getElementById("missionWorkspaceMeta");
+  const guidance = document.getElementById("missionWorkspaceGuidance");
+  const chooseTarget = document.getElementById("chooseTargetButton");
+  const aimButton = document.getElementById("setAimMode");
+  const impactButton = document.getElementById("addImpactMode");
+  const completeButton = document.getElementById("showResults");
+  if (eyebrow) eyebrow.textContent = descriptor.eyebrow;
+  if (summary) summary.textContent = descriptor.title;
+  if (meta) meta.textContent = descriptor.meta || "";
+  if (guidance) guidance.textContent = descriptor.guidance || "";
+  if (chooseTarget) chooseTarget.textContent = descriptor.chooseLabel || "Add Target Photo";
+  if (aimButton) aimButton.textContent = "Tap Aim Point";
+  if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Bullet Holes";
+  if (completeButton) completeButton.textContent = descriptor.completeLabel || "Complete Mission";
+}
+
 function isGssfAuthoritySession() {
   return activeTargetProfileId() === "gssf_ac_1" || activeMissionFamily() === "gssf";
 }
@@ -549,10 +656,7 @@ function renderActiveSessionBar() {
   document.getElementById("activeSessionBar").innerHTML = session
     ? `<strong>${escapeHtml(sessionSummary)}</strong><span>${escapeHtml(sessionMeta)}</span>`
     : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
-  const targetSessionSummary = document.getElementById("targetSessionSummary");
-  if (targetSessionSummary) {
-    targetSessionSummary.textContent = session ? sessionSummary : "Create a weapon profile to begin";
-  }
+  renderMissionWorkspaceChrome();
 }
 
 function defaultTargetMatrix() {
@@ -2067,6 +2171,7 @@ function rangeWorkflowState(canMark) {
 function renderMarkStatus() {
   renderTargetHeaderIdentity();
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
+    renderMissionWorkspaceChrome();
     setMissionResolutionChrome();
     ["chooseTargetButton", "setAimMode", "addImpactMode", "showResults", "undoImpact", "clearMarks", "saveMarks"].forEach(id => {
       const control = document.getElementById(id);
@@ -2087,6 +2192,7 @@ function renderMarkStatus() {
   const hasEvidence = hasMarkableEvidence();
   const canProceed = hasEvidence || isTraining;
   updateHitCounter();
+  renderMissionWorkspaceChrome();
   document.getElementById("setAimMode").disabled = !hasEvidence || isGssf || isTraining;
   document.getElementById("addImpactMode").disabled = !hasEvidence || isTraining || (!currentAimPoint && !isGssf);
   document.getElementById("undoImpact").disabled = !hasEvidence || isTraining || currentImpactPoints.length === 0;
