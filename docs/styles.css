@@ -924,6 +924,12 @@ button:active,
   -webkit-touch-callout:none;
 }
 
+.target-page[data-has-results="true"] .mark-surface{
+  pointer-events:none;
+  touch-action:pan-y;
+  overscroll-behavior:auto;
+}
+
 .marker-layer{
   position:absolute;
   left:0;

@@ -2016,8 +2016,10 @@ function handleMarkTap(event) {
 }
 
 function handleMarkPointer(event) {
-  event.preventDefault();
+  if (resultsShown) return;
+  if (!hasMarkableEvidence()) return;
   handleMarkTap(event);
+  event.preventDefault();
 }
 
 if (TARGET_PROFILE_LAUNCH_ID) {
