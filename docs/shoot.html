@@ -33,6 +33,7 @@
         <span id="missionWorkspaceEyebrow">Mission Workspace</span>
         <strong id="targetSessionSummary">Target mission loading</strong>
         <p class="mission-workspace-meta" id="missionWorkspaceMeta">Backend authority determines this workspace.</p>
+        <p class="mission-workspace-status" id="missionWorkspaceStatus">Mission Ready</p>
         <p class="mission-workspace-guidance" id="missionWorkspaceGuidance">Add target photo to begin.</p>
         <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
       </section>
@@ -343,6 +344,53 @@ function gssfMissionProgress() {
   return "Session saved";
 }
 
+function zeroingMissionGuidance() {
+  if (!hasMarkableEvidence()) return "Add Target Photo";
+  if (!currentAimPoint) return "Tap Aim Point";
+  if (!currentImpactPoints.length) return "Tap Bullet Holes";
+  if (!resultsShown) return "Complete Mission";
+  if (!sessionSaved) return "Save Session";
+  return "View SEC";
+}
+
+function zeroingMissionStatus() {
+  if (!hasMarkableEvidence()) return "Mission Ready";
+  if (!currentAimPoint) return "Awaiting Aim Point";
+  if (!currentImpactPoints.length) return "Awaiting Impacts";
+  if (!resultsShown) return "Ready to Complete";
+  if (!sessionSaved) return "Mission Complete";
+  return "SEC Saved";
+}
+
+function gssfMissionGuidance() {
+  if (!hasMarkableEvidence()) return "Add Target Photo";
+  if (!currentImpactPoints.length) return "Record Impacts";
+  if (!resultsShown) return "Complete Mission";
+  if (!sessionSaved) return "Save Session";
+  return "View SEC";
+}
+
+function gssfMissionStatus() {
+  if (!hasMarkableEvidence()) return "Mission Ready";
+  if (!currentImpactPoints.length) return "Recording Impacts";
+  if (!resultsShown) return "Ready to Complete";
+  if (!sessionSaved) return "Mission Complete";
+  return "SEC Saved";
+}
+
+function trainingMissionGuidance(authorityPackage) {
+  if (!hasMarkableEvidence()) return "Add Target Photo";
+  if (trainingDrillFinished) return "Save Training SEC";
+  return trainingStageGuidance(authorityPackage, trainingStageIndex);
+}
+
+function trainingMissionStatus(authorityPackage) {
+  if (!hasMarkableEvidence()) return "Mission Ready";
+  if (trainingDrillFinished) return "Mission Complete";
+  const progress = missionStageProgress(authorityPackage);
+  return progress || "Training In Progress";
+}
+
 function missionWorkspaceDescriptor() {
   const identity = activeTargetIdentity();
   const targetName = identity.targetName || "Target";
@@ -351,6 +399,7 @@ function missionWorkspaceDescriptor() {
       eyebrow: "Resolving Mission",
       title: targetName,
       meta: "Backend authority is loading the target mission.",
+      status: "Loading Mission",
       guidance: "Please wait for mission authority before shooting.",
       chooseLabel: "Add Target Photo",
       impactLabel: "Tap Hits",
@@ -362,6 +411,7 @@ function missionWorkspaceDescriptor() {
       eyebrow: "Mission Unavailable",
       title: targetName,
       meta: "Authority is incomplete for this target.",
+      status: "Mission Unavailable",
       guidance: "Unable to load target mission. Try again.",
       chooseLabel: "Add Target Photo",
       impactLabel: "Tap Hits",
@@ -375,9 +425,8 @@ function missionWorkspaceDescriptor() {
       eyebrow: "Training Mission",
       title: authorityPackage.target_display_name || authorityPackage.targetDisplayName || targetName,
       meta: [stageProgress, trainingStageSummary(authorityPackage)].filter(Boolean).join(" • "),
-      guidance: trainingDrillFinished
-        ? "Enter training score details, then save the Training SEC."
-        : trainingStageGuidance(authorityPackage, trainingStageIndex),
+      status: trainingMissionStatus(authorityPackage),
+      guidance: trainingMissionGuidance(authorityPackage),
       chooseLabel: "Add Target Photo",
       impactLabel: "Stage Hits",
       completeLabel: trainingDrillFinished ? "Training SEC Ready" : "Complete Mission"
@@ -388,7 +437,8 @@ function missionWorkspaceDescriptor() {
       eyebrow: "GSSF",
       title: targetName,
       meta: gssfMissionProgress(),
-      guidance: resultsShown ? "Review the backend authority package, then save the SEC." : "Tap stage hits, then complete the mission.",
+      status: gssfMissionStatus(),
+      guidance: gssfMissionGuidance(),
       chooseLabel: "Add Target Photo",
       impactLabel: "Tap Stage Hits",
       completeLabel: "Complete Mission"
@@ -398,7 +448,8 @@ function missionWorkspaceDescriptor() {
     eyebrow: "Zeroing Mission",
     title: targetName,
     meta: zeroingMissionProgress(),
-    guidance: resultsShown ? "Review the backend correction package, then save the SEC." : "Record aim point and bullet holes for backend authority.",
+    status: zeroingMissionStatus(),
+    guidance: zeroingMissionGuidance(),
     chooseLabel: "Add Target Photo",
     impactLabel: "Tap Bullet Holes",
     completeLabel: "Complete Mission"
@@ -410,6 +461,7 @@ function renderMissionWorkspaceChrome() {
   const eyebrow = document.getElementById("missionWorkspaceEyebrow");
   const summary = document.getElementById("targetSessionSummary");
   const meta = document.getElementById("missionWorkspaceMeta");
+  const status = document.getElementById("missionWorkspaceStatus");
   const guidance = document.getElementById("missionWorkspaceGuidance");
   const chooseTarget = document.getElementById("chooseTargetButton");
   const aimButton = document.getElementById("setAimMode");
@@ -418,6 +470,7 @@ function renderMissionWorkspaceChrome() {
   if (eyebrow) eyebrow.textContent = descriptor.eyebrow;
   if (summary) summary.textContent = descriptor.title;
   if (meta) meta.textContent = descriptor.meta || "";
+  if (status) status.textContent = descriptor.status || "Mission Ready";
   if (guidance) guidance.textContent = descriptor.guidance || "";
   if (chooseTarget) chooseTarget.textContent = descriptor.chooseLabel || "Add Target Photo";
   if (aimButton) aimButton.textContent = "Tap Aim Point";
