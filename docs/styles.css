@@ -290,6 +290,43 @@ button:active,
   opacity:1;
 }
 
+.target-hit-counter{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  min-width:74px;
+  min-height:42px;
+  padding:5px 10px;
+  border:2px solid rgba(217,150,11,.9);
+  border-radius:var(--radius);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(247,196,91,.42), transparent 62%),
+    linear-gradient(180deg,#17100a,#070707);
+  color:#f7c45b;
+  box-shadow:0 0 0 1px rgba(247,196,91,.24), 0 0 22px rgba(217,150,11,.42);
+  text-align:center;
+}
+
+.target-hit-counter strong{
+  display:block;
+  color:#ffe29a;
+  font-family:Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-size:clamp(24px, 6vw, 34px);
+  line-height:.82;
+  text-shadow:0 0 12px rgba(247,196,91,.72);
+}
+
+.target-hit-counter span{
+  display:block;
+  margin-top:3px;
+  color:#f7c45b;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  line-height:1;
+  text-transform:uppercase;
+}
+
 .workflow-control-row .button.next-step,
 .neon-file-button.next-step{
   background:#39ff14;
@@ -5602,6 +5639,13 @@ input[readonly]{
   background:#181818;
 }
 
+.target-page .target-hit-counter{
+  border-color:#d9960b;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(247,196,91,.45), transparent 64%),
+    linear-gradient(180deg,#1b1207,#050505);
+}
+
 .target-page .workflow-control-row > .button,
 .target-page .workflow-control-row > .neon-file-button,
 .target-page .workflow-control-row > .target-advanced-tools{
@@ -5656,6 +5700,29 @@ input[readonly]{
 .target-page .evidence-preview{
   border-color:rgba(179,123,8,.54);
   background:linear-gradient(180deg,#111,#080808);
+}
+
+.target-scroll-cue{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:6px 0 0;
+  min-height:28px;
+  color:#d9960b;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.02em;
+  text-align:center;
+  text-transform:uppercase;
+  text-shadow:0 0 12px rgba(217,150,11,.34);
+}
+
+.target-scroll-cue span{
+  color:#ffe29a;
+  font-size:17px;
+  line-height:1;
+  filter:drop-shadow(0 0 8px rgba(247,196,91,.5));
 }
 
 .target-page .evidence-meta{

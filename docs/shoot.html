@@ -36,6 +36,10 @@
       </section>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
         <div class="workflow-control-row" aria-label="SCZN3 shooting workflow controls">
+          <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
+            <strong>0</strong>
+            <span>Taps</span>
+          </div>
           <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
           <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
           <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
@@ -51,6 +55,7 @@
             <div class="target-intel-stack" id="resultsGrid"></div>
           </div>
         </div>
+        <p class="target-scroll-cue" id="targetScrollCue"><span aria-hidden="true">☝ ↓</span> Scroll down for your results, insights, and more</p>
       </section>
     </div>
   </section>
@@ -1921,6 +1926,15 @@ function setNextStep(activeId) {
   });
 }
 
+function updateHitCounter() {
+  const counter = document.getElementById("targetHitCounter");
+  if (!counter) return;
+  const count = currentImpactPoints.length;
+  counter.querySelector("strong").textContent = String(count);
+  counter.querySelector("span").textContent = count === 1 ? "Tap" : "Taps";
+  counter.dataset.hitCount = String(count);
+}
+
 function rangeWorkflowState(canMark) {
   if (!canMark) return "choose-target";
   if (isDotTortureAuthoritySession()) {
@@ -1963,6 +1977,7 @@ function renderMarkStatus() {
   const isTraining = isDotTortureAuthoritySession();
   const hasEvidence = hasMarkableEvidence();
   const canProceed = hasEvidence || isTraining;
+  updateHitCounter();
   document.getElementById("setAimMode").disabled = !hasEvidence || isGssf || isTraining;
   document.getElementById("addImpactMode").disabled = !hasEvidence || isTraining || (!currentAimPoint && !isGssf);
   document.getElementById("undoImpact").disabled = !hasEvidence || isTraining || currentImpactPoints.length === 0;
