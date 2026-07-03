@@ -381,6 +381,10 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
     assert_equal(result["plusThreeCount"], 1, "gssf plus three count")
     assert_equal(result["missCount"], 1, "gssf miss count")
     assert_equal(result["totalPaperPenaltySeconds"], 14, "gssf paper penalty")
+    assert_equal(result["resultSource"], "backend", "gssf result source")
+    assert_equal(result["authorityPackageId"], "gssf-ac-1-paper-penalty-v1", "gssf authority package id")
+    assert_equal(result["authorityTrace"]["source"], "backend", "gssf authority trace source")
+    assert_equal(result["authorityTrace"]["classificationCount"], 4, "gssf authority trace classification count")
 
 
 def test_gssf_final_time_unavailable_without_raw_time():

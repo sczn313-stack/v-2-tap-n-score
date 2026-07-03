@@ -2098,6 +2098,51 @@ function renderDotTortureTrainingResults(authorityPackage) {
   }
 }
 
+function gssfScoringSourceHtml(authorityPackage) {
+  const source = String(authorityPackage.resultSource || authorityPackage.scoringSource || authorityPackage.authorityTrace?.source || "backend");
+  const packageId = authorityPackage.authorityPackageId || authorityPackage.authorityTrace?.authorityPackageId || authorityPackage.evidenceHash || "";
+  return `
+    <div class="gssf-source-validation" aria-label="GSSF scoring source validation">
+      <strong>Scoring source: ${escapeHtml(source === "backend" ? "Backend" : source)}</strong>
+      ${packageId ? `<span>Authority package: ${escapeHtml(packageId)}</span>` : ""}
+    </div>
+  `;
+}
+
+function gssfShotClassificationsHtml(authorityPackage) {
+  const classifications = Array.isArray(authorityPackage.hitClassifications)
+    ? authorityPackage.hitClassifications
+    : [];
+  if (!classifications.length) {
+    return `
+      <details class="gssf-classification-debug">
+        <summary>Backend shot classifications</summary>
+        <p>No shot classifications returned yet.</p>
+      </details>
+    `;
+  }
+  const rows = classifications.map(hit => {
+    const coordinate = hit.coordinate || {};
+    const x = Number.isFinite(Number(coordinate.xPercent)) ? `${Number(coordinate.xPercent).toFixed(2)}%` : "--";
+    const y = Number.isFinite(Number(coordinate.yPercent)) ? `${Number(coordinate.yPercent).toFixed(2)}%` : "--";
+    const penalty = Number.isFinite(Number(hit.penaltySeconds)) ? `+${hit.penaltySeconds} sec` : "--";
+    return `
+      <li>
+        <strong>Shot ${escapeHtml(hit.shot || "")}</strong>
+        <span>${escapeHtml(hit.zone || "unclassified")}</span>
+        <em>${escapeHtml(penalty)}</em>
+        <small>${escapeHtml(x)} / ${escapeHtml(y)}</small>
+      </li>
+    `;
+  }).join("");
+  return `
+    <details class="gssf-classification-debug">
+      <summary>Backend shot classifications</summary>
+      <ol>${rows}</ol>
+    </details>
+  `;
+}
+
 function renderResults() {
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
     renderMissionResolutionState();
@@ -2117,7 +2162,11 @@ function renderResults() {
       ? backendAuthorityPackage.display.resultLines
       : [];
     if (resultBlock) {
-      resultBlock.innerHTML = lines.map(line => `<div>${line}</div>`).join("");
+      resultBlock.innerHTML = `
+        ${lines.map(line => `<div>${escapeHtml(line)}</div>`).join("")}
+        ${gssfScoringSourceHtml(backendAuthorityPackage)}
+        ${gssfShotClassificationsHtml(backendAuthorityPackage)}
+      `;
     }
     const message = document.getElementById("authorityStatusMessage");
     if (message) {

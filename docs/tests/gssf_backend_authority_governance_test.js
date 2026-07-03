@@ -39,8 +39,28 @@ assert(
   "GSSF result display must render backend-provided display lines"
 );
 assert(
+  renderSource.includes("gssfScoringSourceHtml(backendAuthorityPackage)"),
+  "GSSF result display must show backend scoring source validation"
+);
+assert(
+  renderSource.includes("gssfShotClassificationsHtml(backendAuthorityPackage)"),
+  "GSSF result display must expose backend per-shot classifications"
+);
+assert(
   !/downZeroCount\s*=|plusOneCount\s*=|plusThreeCount\s*=|missCount\s*=|totalPaperPenaltySeconds\s*=/.test(renderSource),
   "GSSF renderer must not calculate score buckets or paper penalty"
+);
+assert(
+  shootHtml.includes("function gssfShotClassificationsHtml(authorityPackage)"),
+  "GSSF per-shot validation view helper must exist"
+);
+assert(
+  shootHtml.includes("authorityPackage.hitClassifications"),
+  "GSSF per-shot validation must read backend hit classifications"
+);
+assert(
+  shootHtml.includes("Scoring source:"),
+  "GSSF validation must visibly identify the scoring source"
 );
 assert(
   saveSource.includes("isGssfAuthorityPackage(authorityPackage)"),

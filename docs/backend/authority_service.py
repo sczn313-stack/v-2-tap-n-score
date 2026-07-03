@@ -543,6 +543,8 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
         "ok": True,
         "status": "calculated",
         "authorityVersion": "sczn3-gssf-authority-v1",
+        "resultSource": "backend",
+        "authorityPackageId": "gssf-ac-1-paper-penalty-v1",
         "target_profile_id": "gssf_ac_1",
         "targetProfileId": "gssf_ac_1",
         "mission_family": "gssf",
@@ -593,6 +595,12 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
             "plusOneDiameterInches": GSSF_AC_1_PROFILE["plusOneRadiusInches"] * 2,
             "penaltySeconds": GSSF_AC_1_PROFILE["penaltySeconds"],
             "authoritySource": GSSF_AC_1_PROFILE["authoritySource"],
+        },
+        "authorityTrace": {
+            "source": "backend",
+            "authorityPackageId": "gssf-ac-1-paper-penalty-v1",
+            "classificationCount": len(per_hit),
+            "rulesApplied": "GSSF AC-1 concentric-zone paper penalty rules",
         },
         "renderCoordinates": {
             "hits": hits,
