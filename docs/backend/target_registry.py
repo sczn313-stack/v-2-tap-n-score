@@ -131,6 +131,17 @@ RESEARCH_TARGET_SEEDS: Dict[str, Dict[str, Any]] = {
         "resultPackageType": "precisionScoreResult",
         "authorityGaps": ["official ring geometry", "official scoring rules", "target source"],
     },
+    "ibs_100yd_rimfire_match": {
+        "targetId": "IBS_100YD_RIMFIRE_MATCH",
+        "targetName": "IBS 100 Yard Rimfire Match",
+        "targetFamily": "IBS Benchrest",
+        "targetType": "precision-ring-score",
+        "manufacturer": "International Benchrest Shooters",
+        "discipline": "benchrest rifle",
+        "missionFamilyId": "precisionRingScore",
+        "resultPackageType": "precisionScoreResult",
+        "authorityGaps": ["official target geometry", "official scoring rules", "match procedure authority"],
+    },
     "uspsa_classifier": {
         "targetId": "uspsa_classifier",
         "targetName": "USPSA Classifier",

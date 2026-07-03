@@ -2451,7 +2451,52 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   const authorityClicks = zeroingClicksFromAuthorityPackage(authorityPackage);
   const hadSavedHistoryBefore = (SCZN3M4.getSessionHistory ? SCZN3M4.getSessionHistory() : [])
     .some(historySession => historySession && historySession.savedToSEC === true && historySession.sessionId !== session.sessionId);
-  const savePatch = isDotTortureTrainingPackage(authorityPackage) ? {
+  const savePatch = isGssfAuthorityPackage(authorityPackage) ? {
+    aimPoint: null,
+    impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
+    backendAuthorityPackage: authorityPackage,
+    ugeoAuthorityPackage: null,
+    authorityPackage,
+    score: null,
+    scoreValue: null,
+    poib: null,
+    groupCenter: null,
+    clicks: null,
+    correctionData: {
+      status: "not-applicable",
+      clicks: null,
+      correction: null,
+      moa: null,
+      vectors: null
+    },
+    shotData: {
+      status: "backend-gssf-authority-calculated",
+      impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
+      shotCount: currentImpactPoints.length,
+      hits: currentImpactPoints.length,
+      hitClassifications: authorityPackage.hitClassifications || [],
+      counts: authorityPackage.counts || {},
+      downZeroCount: authorityPackage.downZeroCount,
+      plusOneCount: authorityPackage.plusOneCount,
+      plusThreeCount: authorityPackage.plusThreeCount,
+      missCount: authorityPackage.missCount,
+      totalPaperPenaltySeconds: authorityPackage.totalPaperPenaltySeconds,
+      finalTimeSeconds: authorityPackage.finalTimeSeconds,
+      finalTimeStatus: authorityPackage.finalTimeStatus,
+      authoritySource: "backend"
+    },
+    hits: currentImpactPoints.length,
+    shotCount: currentImpactPoints.length,
+    correctionStatus: "not-applicable",
+    savedToSEC: true,
+    targetDistance: targetDistanceValue(),
+    targetDistanceValue: selectedDistanceValue,
+    targetDistanceUnit: selectedDistanceUnit,
+    targetDistanceLocked: true,
+    distance: targetDistanceValue(),
+    timestamp: savedTimestamp,
+    savedAt: savedTimestamp
+  } : isDotTortureTrainingPackage(authorityPackage) ? {
     backendAuthorityPackage: authorityPackage,
     ugeoAuthorityPackage: authorityPackage,
     trainingManualResult,
