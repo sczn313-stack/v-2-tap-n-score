@@ -5430,10 +5430,13 @@ input[readonly]{
   }
 
   .range-metrics-strip{
-    grid-template-columns:repeat(5, minmax(96px, 1fr));
-    overflow-x:auto;
-    padding-bottom:2px;
-    -webkit-overflow-scrolling:touch;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    overflow:visible;
+    padding-bottom:0;
+  }
+
+  .range-metrics-strip div:last-child{
+    grid-column:1 / -1;
   }
 
   .recent-range-grid{
