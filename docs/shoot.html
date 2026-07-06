@@ -1974,11 +1974,23 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
     ? "Enter official match time"
     : gssfFormatSeconds(result.officialFinalScoreSeconds);
   const inputValue = result.officialMatchTimeSeconds === null ? "" : Number(result.officialMatchTimeSeconds).toFixed(2);
+  const officialTimeText = result.officialMatchTimeSeconds === null ? "Enter official match time" : gssfFormatSeconds(result.officialMatchTimeSeconds);
+  const paperPenaltyText = `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
   return `
     <section class="gssf-final-score-panel" aria-label="GSSF official final score">
       <span>Official Final Score</span>
       <strong id="gssfOfficialFinalScore">${escapeHtml(finalText)}</strong>
-      <small>Official Match Time + Backend Paper Penalty</small>
+      <div class="gssf-final-score-breakdown" aria-label="Official score breakdown">
+        <div>
+          <span>Official Match Time</span>
+          <strong id="gssfOfficialTimeDisplay">${escapeHtml(officialTimeText)}</strong>
+        </div>
+        <div>
+          <span>Backend Paper Penalty</span>
+          <strong>${escapeHtml(paperPenaltyText)}</strong>
+        </div>
+      </div>
+      <small>Time: manual | Penalty/Classifications: backend</small>
     </section>
     <label class="gssf-official-time-entry" for="gssfOfficialMatchTime">
       <span>Official Match Time</span>
@@ -1991,11 +2003,17 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
 
 function updateGssfOfficialFinalScoreDisplay(authorityPackage) {
   const finalScore = document.getElementById("gssfOfficialFinalScore");
+  const officialTimeDisplay = document.getElementById("gssfOfficialTimeDisplay");
   if (!finalScore) return;
   const result = gssfOfficialCompetitionResult(authorityPackage);
   finalScore.textContent = result.officialFinalScoreSeconds === null
     ? "Enter official match time"
     : gssfFormatSeconds(result.officialFinalScoreSeconds);
+  if (officialTimeDisplay) {
+    officialTimeDisplay.textContent = result.officialMatchTimeSeconds === null
+      ? "Enter official match time"
+      : gssfFormatSeconds(result.officialMatchTimeSeconds);
+  }
 }
 
 function bindGssfOfficialTimeInput(authorityPackage) {
