@@ -227,6 +227,34 @@ function gssfResultLine(pkg, label) {
   return lines.find(line => String(line).toLowerCase().startsWith(`${label.toLowerCase()}:`)) || "";
 }
 
+function gssfFormatSeconds(value) {
+  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)} sec` : "unavailable";
+}
+
+function optionalNumber(...values) {
+  const value = values.find(item => item !== null && item !== undefined && item !== "");
+  return Number.isFinite(Number(value)) ? Number(value) : null;
+}
+
+function gssfCompetitionRecord(session, pkg) {
+  const officialMatchTimeSeconds = optionalNumber(session.officialMatchTimeSeconds, session.gssfOfficialMatchTimeSeconds, session.shotData?.officialMatchTimeSeconds);
+  const totalPaperPenaltySeconds = Number.isFinite(Number(session.totalPaperPenaltySeconds ?? session.shotData?.totalPaperPenaltySeconds ?? pkg.totalPaperPenaltySeconds))
+    ? Number(session.totalPaperPenaltySeconds ?? session.shotData?.totalPaperPenaltySeconds ?? pkg.totalPaperPenaltySeconds)
+    : 0;
+  const savedFinalScore = optionalNumber(session.officialFinalScoreSeconds, session.shotData?.officialFinalScoreSeconds);
+  const officialFinalScoreSeconds = savedFinalScore !== null
+    ? savedFinalScore
+    : (officialMatchTimeSeconds === null ? null : Number((officialMatchTimeSeconds + totalPaperPenaltySeconds).toFixed(2)));
+  return {
+    officialMatchTimeSeconds,
+    totalPaperPenaltySeconds,
+    officialFinalScoreSeconds,
+    finalScoreStatus: officialFinalScoreSeconds === null ? "unavailable_without_official_time" : "calculated",
+    manualTimeSource: session.gssfManualTimeSource || session.shotData?.manualTimeSource || "shooter-entered-official-timer",
+    scoringSource: session.gssfScoringSource || "backend-penalty-plus-manual-time"
+  };
+}
+
 function gssfShotClassificationsHtml(pkg) {
   const classifications = backendHitClassifications(pkg);
   if (!classifications.length) return "";
@@ -449,8 +477,10 @@ function renderGssfSecCard(session, index, pkg) {
   const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "--";
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
   const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
-  const paperPenalty = gssfResultLine(pkg, "Paper Penalty") || `Paper Penalty: +${pkg.totalPaperPenaltySeconds || 0} sec`;
-  const finalTime = gssfResultLine(pkg, "Final Time") || "Final Time: unavailable";
+  const competition = gssfCompetitionRecord(session, pkg);
+  const paperPenalty = `Paper Penalty: +${competition.totalPaperPenaltySeconds} sec`;
+  const officialTime = competition.officialMatchTimeSeconds === null ? "Official Match Time: unavailable" : `Official Match Time: ${gssfFormatSeconds(competition.officialMatchTimeSeconds)}`;
+  const finalScore = competition.officialFinalScoreSeconds === null ? "time unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
   const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
   return `
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
@@ -466,12 +496,17 @@ function renderGssfSecCard(session, index, pkg) {
         <div class="sec-setup-line">${[weapon, weaponMeta].filter(Boolean).join(" | ")}</div>
         ${attributionLine(snapshot)}
         <div class="sec-gssf-mission">${escapeHtml(missionLine)}</div>
+        <section class="sec-gssf-final-score" aria-label="Official GSSF final score">
+          <span>Official Final Score</span>
+          <strong>${escapeHtml(finalScore)}</strong>
+          <small>Official Match Time + Backend Paper Penalty</small>
+        </section>
         ${gssfBucketSummaryHtml(pkg)}
         <div class="sec-gssf-totals">
+          <span>${escapeHtml(officialTime)}</span>
           <span>${escapeHtml(paperPenalty)}</span>
-          <span>${escapeHtml(finalTime)}</span>
         </div>
-        <div class="sec-gssf-source">${escapeHtml(gssfScoringSourceLine(pkg))}</div>
+        <div class="sec-gssf-source">${escapeHtml(gssfScoringSourceLine(pkg))} | Manual time source: ${escapeHtml(competition.manualTimeSource)}</div>
         ${gssfShotClassificationsHtml(pkg)}
         ${hashLine}
       </div>

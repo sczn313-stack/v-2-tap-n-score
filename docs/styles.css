@@ -5986,6 +5986,67 @@ input[readonly]{
   letter-spacing:0;
 }
 
+.target-page .gssf-final-score-panel{
+  display:grid;
+  gap:3px;
+  padding:12px;
+  border:1px solid rgba(217,150,11,.72);
+  border-radius:8px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(217,150,11,.2), transparent 54%),
+    rgba(0,0,0,.28);
+  text-align:center;
+}
+
+.target-page .gssf-final-score-panel span,
+.target-page .gssf-official-time-entry span{
+  color:#d9960b;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.target-page .gssf-final-score-panel strong{
+  color:#fff;
+  font-size:clamp(30px, 7vw, 48px);
+  line-height:1;
+}
+
+.target-page .gssf-final-score-panel small{
+  color:rgba(245,241,232,.72);
+  font-size:11px;
+  font-weight:800;
+}
+
+.target-page .gssf-official-time-entry{
+  display:grid;
+  gap:5px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;
+  background:rgba(0,0,0,.18);
+}
+
+.target-page .gssf-official-time-entry input{
+  width:100%;
+  min-height:42px;
+  border:1px solid rgba(217,150,11,.6);
+  border-radius:7px;
+  background:#070707;
+  color:#f5f1e8;
+  font-size:22px;
+  font-weight:900;
+  text-align:center;
+}
+
+.target-page .gssf-official-time-entry small,
+.target-page .gssf-official-time-entry em{
+  color:rgba(245,241,232,.7);
+  font-size:11px;
+  font-style:normal;
+  font-weight:800;
+}
+
 .target-page .gssf-shooter-totals{
   display:grid;
   gap:4px;
@@ -7318,6 +7379,37 @@ input[readonly]{
   font-size:12px;
   font-weight:900;
   text-transform:uppercase;
+}
+
+.records-page .sec-gssf-final-score{
+  display:grid;
+  gap:3px;
+  padding:10px;
+  border:1px solid rgba(217,150,11,.72);
+  border-radius:8px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(217,150,11,.2), transparent 55%),
+    rgba(0,0,0,.22);
+  text-align:center;
+}
+
+.records-page .sec-gssf-final-score span{
+  color:#d9960b;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.records-page .sec-gssf-final-score strong{
+  color:#fff;
+  font-size:clamp(28px, 5vw, 44px);
+  line-height:1;
+}
+
+.records-page .sec-gssf-final-score small{
+  color:rgba(245,241,232,.72);
+  font-size:10px;
+  font-weight:800;
 }
 
 .records-page .sec-gssf-bucket-grid{
