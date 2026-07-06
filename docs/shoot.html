@@ -1898,6 +1898,28 @@ function backendHitCoordinateForValidation(authorityPackage, hit, index) {
   return safePoint((hit && hit.coordinate) || backendRenderedHitCoordinates(authorityPackage)[index]);
 }
 
+function gssfZoneTone(zone) {
+  const normalized = String(zone || "").trim().toLowerCase().replace(/[\s_-]+/g, "");
+  if (normalized === "downzero" || normalized === "0") return "down-zero";
+  if (normalized === "plusone" || normalized === "+1" || normalized === "1") return "plus-one";
+  if (normalized === "plusthree" || normalized === "+3" || normalized === "3") return "plus-three";
+  if (normalized === "miss") return "miss";
+  return "other";
+}
+
+function gssfZoneMarkerClass(zone) {
+  return `gssf-zone-${gssfZoneTone(zone)}`;
+}
+
+function gssfResultLineClass(line) {
+  const label = String(line || "").split(":")[0];
+  if (/^down zero$/i.test(label)) return "gssf-result-line gssf-zone-text-down-zero";
+  if (/^\+1$/i.test(label)) return "gssf-result-line gssf-zone-text-plus-one";
+  if (/^\+3$/i.test(label)) return "gssf-result-line gssf-zone-text-plus-three";
+  if (/^miss$/i.test(label)) return "gssf-result-line gssf-zone-text-miss";
+  return "gssf-result-line";
+}
+
 function vectorHtmlFromBackend(vector) {
   if (!vector || !vector.start || !vector.end) return "";
   const start = safePoint(vector.start);
@@ -1951,7 +1973,8 @@ function renderBackendAuthorityMarkers(authorityPackage) {
     const hit = classifications[index] || {};
     const shotNumber = hit.shot || index + 1;
     const zone = escapeHtml(hit.zone || "");
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(shotNumber), `data-shot-index="${escapeHtml(shotNumber)}" data-backend-zone="${zone}"`));
+    const zoneClass = isGssfAuthorityPackage(authorityPackage) ? ` ${gssfZoneMarkerClass(hit.zone)}` : "";
+    parts.push(markerPointHtml(`target-marker impact-marker${zoneClass}`, point, String(shotNumber), `data-shot-index="${escapeHtml(shotNumber)}" data-backend-zone="${zone}"`));
   });
   if (render.aim) {
     parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
@@ -2168,6 +2191,17 @@ function gssfScoringSourceHtml(authorityPackage) {
   `;
 }
 
+function gssfZoneLegendHtml() {
+  return `
+    <div class="gssf-zone-legend" aria-label="GSSF marker color legend">
+      <span><i class="gssf-zone-dot gssf-zone-down-zero"></i>Green = Down Zero</span>
+      <span><i class="gssf-zone-dot gssf-zone-plus-one"></i>Yellow = +1</span>
+      <span><i class="gssf-zone-dot gssf-zone-plus-three"></i>Orange = +3</span>
+      <span><i class="gssf-zone-dot gssf-zone-miss"></i>Red = Miss / Other</span>
+    </div>
+  `;
+}
+
 function gssfMarkerValidationShellHtml(authorityPackage) {
   if (!isGssfAuthorityPackage(authorityPackage)) return "";
   return `
@@ -2272,8 +2306,9 @@ function gssfShotClassificationsHtml(authorityPackage) {
     const x = Number.isFinite(Number(coordinate.xPercent)) ? `${Number(coordinate.xPercent).toFixed(2)}%` : "--";
     const y = Number.isFinite(Number(coordinate.yPercent)) ? `${Number(coordinate.yPercent).toFixed(2)}%` : "--";
     const penalty = Number.isFinite(Number(hit.penaltySeconds)) ? `+${hit.penaltySeconds} sec` : "--";
+    const zoneClass = `gssf-zone-card-${gssfZoneTone(hit.zone)}`;
     return `
-      <li>
+      <li class="${zoneClass}">
         <strong>Shot ${escapeHtml(hit.shot || "")}</strong>
         <span>${escapeHtml(hit.zone || "unclassified")}</span>
         <em>${escapeHtml(penalty)}</em>
@@ -2309,7 +2344,8 @@ function renderResults() {
       : [];
     if (resultBlock) {
       resultBlock.innerHTML = `
-        ${lines.map(line => `<div>${escapeHtml(line)}</div>`).join("")}
+        ${lines.map(line => `<div class="${gssfResultLineClass(line)}">${escapeHtml(line)}</div>`).join("")}
+        ${gssfZoneLegendHtml()}
         ${gssfScoringSourceHtml(backendAuthorityPackage)}
         ${gssfShotClassificationsHtml(backendAuthorityPackage)}
         ${gssfMarkerValidationShellHtml(backendAuthorityPackage)}

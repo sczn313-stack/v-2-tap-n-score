@@ -1083,6 +1083,39 @@ button:active,
   background:var(--red);
 }
 
+.impact-marker.gssf-zone-down-zero{
+  border-color:#0f2f1b;
+  background:#22b35a;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.75);
+  box-shadow:0 0 0 2px rgba(34,179,90,.28), 0 2px 8px rgba(0,0,0,.32);
+}
+
+.impact-marker.gssf-zone-plus-one{
+  border-color:#3f3205;
+  background:#ffd43b;
+  color:#1b1400;
+  text-shadow:none;
+  box-shadow:0 0 0 2px rgba(255,212,59,.32), 0 2px 8px rgba(0,0,0,.32);
+}
+
+.impact-marker.gssf-zone-plus-three{
+  border-color:#4b2100;
+  background:#ff8a1f;
+  color:#190b00;
+  text-shadow:none;
+  box-shadow:0 0 0 2px rgba(255,138,31,.32), 0 2px 8px rgba(0,0,0,.32);
+}
+
+.impact-marker.gssf-zone-miss,
+.impact-marker.gssf-zone-other{
+  border-color:#3e0505;
+  background:#e32929;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.75);
+  box-shadow:0 0 0 2px rgba(227,41,41,.32), 0 2px 8px rgba(0,0,0,.32);
+}
+
 .poib-auto-marker{
   width:16px;
   height:16px;
@@ -5915,6 +5948,69 @@ input[readonly]{
   box-shadow:0 10px 24px rgba(0,0,0,.22);
 }
 
+.target-page .gssf-result-line{
+  padding:2px 0;
+}
+
+.target-page .gssf-zone-text-down-zero{
+  color:#8cf0a7;
+}
+
+.target-page .gssf-zone-text-plus-one{
+  color:#ffe881;
+}
+
+.target-page .gssf-zone-text-plus-three{
+  color:#ffba78;
+}
+
+.target-page .gssf-zone-text-miss{
+  color:#ff9a9a;
+}
+
+.target-page .gssf-zone-legend{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:6px 10px;
+  margin-top:4px;
+  padding-top:8px;
+  border-top:1px solid rgba(217,150,11,.24);
+  color:rgba(245,241,232,.78);
+  font-size:11px;
+  font-weight:800;
+}
+
+.target-page .gssf-zone-legend span{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+}
+
+.target-page .gssf-zone-dot{
+  width:9px;
+  height:9px;
+  flex:0 0 9px;
+  border-radius:50%;
+  border:1px solid rgba(0,0,0,.6);
+}
+
+.target-page .gssf-zone-dot.gssf-zone-down-zero{
+  background:#22b35a;
+}
+
+.target-page .gssf-zone-dot.gssf-zone-plus-one{
+  background:#ffd43b;
+}
+
+.target-page .gssf-zone-dot.gssf-zone-plus-three{
+  background:#ff8a1f;
+}
+
+.target-page .gssf-zone-dot.gssf-zone-miss{
+  background:#e32929;
+}
+
 .target-page .gssf-source-validation{
   display:grid;
   gap:3px;
@@ -5961,6 +6057,23 @@ input[readonly]{
   border:1px solid rgba(255,255,255,.1);
   border-radius:7px;
   background:rgba(0,0,0,.18);
+}
+
+.target-page .gssf-classification-debug li.gssf-zone-card-down-zero{
+  border-color:rgba(34,179,90,.42);
+}
+
+.target-page .gssf-classification-debug li.gssf-zone-card-plus-one{
+  border-color:rgba(255,212,59,.42);
+}
+
+.target-page .gssf-classification-debug li.gssf-zone-card-plus-three{
+  border-color:rgba(255,138,31,.42);
+}
+
+.target-page .gssf-classification-debug li.gssf-zone-card-miss,
+.target-page .gssf-classification-debug li.gssf-zone-card-other{
+  border-color:rgba(227,41,41,.48);
 }
 
 .target-page .gssf-classification-debug li span,
