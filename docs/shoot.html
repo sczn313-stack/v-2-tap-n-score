@@ -1702,6 +1702,17 @@ function displayedImageBox() {
   return SCZN3M4.UGEO.displayedImageContentBox(image, surface);
 }
 
+function evidencePointFromPointer(event) {
+  const box = displayedImageBox();
+  if (!box || !box.width || !box.height) return null;
+  const xPercent = Math.max(0, Math.min(100, ((event.clientX - box.pageLeft) / box.width) * 100));
+  const yPercent = Math.max(0, Math.min(100, ((event.clientY - box.pageTop) / box.height) * 100));
+  return {
+    xPercent: Number(xPercent.toFixed(2)),
+    yPercent: Number(yPercent.toFixed(2))
+  };
+}
+
 function syncOverlayLayerToDisplayedImage() {
   const layer = document.getElementById("markerLayer");
   const coordinateLayer = document.getElementById("gridCoordinateLayer");
@@ -1874,7 +1885,7 @@ function logRenderCoordinates(correction) {
 function markerPointHtml(className, point, content = "", attributes = "") {
   const safe = safePoint(point);
   if (!safe) return "";
-  return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attributes ? ` ${attributes}` : ""}>${content}</span>`;
+  return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%" data-x-percent="${safe.xPercent}" data-y-percent="${safe.yPercent}"${attributes ? ` ${attributes}` : ""}>${content}</span>`;
 }
 
 function vectorHtmlFromBackend(vector) {
@@ -1914,14 +1925,18 @@ function backendPoibDisplayCoordinate(authorityPackage) {
   return null;
 }
 
+function backendRenderedHitCoordinates(authorityPackage) {
+  const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
+  const hits = Array.isArray(render.hits) ? render.hits : [];
+  const impacts = Array.isArray(render.impacts) ? render.impacts : [];
+  return (hits.length ? hits : impacts).map(safePoint).filter(Boolean);
+}
+
 function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
   parts.push(vectorHtmlFromBackend(render.vector));
-  (render.hits || []).map(safePoint).filter(Boolean).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
-  });
-  (render.impacts || []).map(safePoint).filter(Boolean).forEach((point, index) => {
+  backendRenderedHitCoordinates(authorityPackage).forEach((point, index) => {
     parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
   });
   if (render.aim) {
@@ -1947,7 +1962,36 @@ function renderMarkers() {
   const authorityPackage = resultsShown ? backendAuthorityPackage : null;
   layer.innerHTML = (authorityPackage ? renderBackendAuthorityMarkers(authorityPackage) : renderPendingInputMarkers()) + renderCorrectionOverlay(correction);
   syncArrowLayerToMarkerLayer();
+  auditBackendMarkerAlignment(authorityPackage);
   renderResults();
+}
+
+function auditBackendMarkerAlignment(authorityPackage) {
+  if (!authorityPackage || !authorityPackage.renderCoordinates || typeof console === "undefined") return;
+  requestAnimationFrame(() => {
+    const layer = document.getElementById("markerLayer");
+    if (!layer) return;
+    const layerRect = layer.getBoundingClientRect();
+    const backendHits = backendRenderedHitCoordinates(authorityPackage);
+    if (!backendHits.length) return;
+    const markers = Array.from(layer.querySelectorAll(".impact-marker"));
+    const mismatches = backendHits
+      .map((point, index) => {
+        const marker = markers[index];
+        if (!marker) return { shot: index + 1, reason: "missing rendered marker", point };
+        const rendered = renderedPercentFromRect(marker.getBoundingClientRect(), layerRect);
+        if (!rendered) return { shot: index + 1, reason: "unreadable marker", point };
+        const xDelta = Number((rendered.xPercent - point.xPercent).toFixed(2));
+        const yDelta = Number((rendered.yPercent - point.yPercent).toFixed(2));
+        return Math.abs(xDelta) > 0.25 || Math.abs(yDelta) > 0.25
+          ? { shot: index + 1, expected: point, rendered, xDelta, yDelta }
+          : null;
+      })
+      .filter(Boolean);
+    if (mismatches.length) {
+      console.warn("Backend hit marker display does not match backend render coordinates.", mismatches);
+    }
+  });
 }
 
 function compactClick(value, axis) {
@@ -2325,14 +2369,8 @@ function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
   if (resultsShown) return;
   syncOverlayLayerToDisplayedImage();
-  const layer = document.getElementById("markerLayer");
-  const rect = (layer || event.currentTarget).getBoundingClientRect();
-  const xPercent = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
-  const yPercent = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
-  const point = {
-    xPercent: Number(xPercent.toFixed(2)),
-    yPercent: Number(yPercent.toFixed(2))
-  };
+  const point = evidencePointFromPointer(event);
+  if (!point) return;
   if (isGssfAuthoritySession()) {
     currentImpactPoints.push(point);
   } else if (markMode === "aim" || !currentAimPoint) {

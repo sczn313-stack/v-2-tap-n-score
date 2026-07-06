@@ -307,20 +307,34 @@
       const imageRect = image.getBoundingClientRect();
       const frameRect = frame.getBoundingClientRect();
       if (!imageRect.width || !imageRect.height) return null;
+      const style = window.getComputedStyle ? window.getComputedStyle(image) : null;
+      const borderLeft = style ? Number.parseFloat(style.borderLeftWidth) || 0 : 0;
+      const borderRight = style ? Number.parseFloat(style.borderRightWidth) || 0 : 0;
+      const borderTop = style ? Number.parseFloat(style.borderTopWidth) || 0 : 0;
+      const borderBottom = style ? Number.parseFloat(style.borderBottomWidth) || 0 : 0;
+      const paddingLeft = style ? Number.parseFloat(style.paddingLeft) || 0 : 0;
+      const paddingRight = style ? Number.parseFloat(style.paddingRight) || 0 : 0;
+      const paddingTop = style ? Number.parseFloat(style.paddingTop) || 0 : 0;
+      const paddingBottom = style ? Number.parseFloat(style.paddingBottom) || 0 : 0;
+      const contentLeft = imageRect.left + borderLeft + paddingLeft;
+      const contentTop = imageRect.top + borderTop + paddingTop;
+      const contentWidth = Math.max(0, imageRect.width - borderLeft - borderRight - paddingLeft - paddingRight);
+      const contentHeight = Math.max(0, imageRect.height - borderTop - borderBottom - paddingTop - paddingBottom);
+      if (!contentWidth || !contentHeight) return null;
       const naturalWidth = image.naturalWidth || imageRect.width || 1;
       const naturalHeight = image.naturalHeight || imageRect.height || 1;
       const naturalRatio = naturalWidth / naturalHeight;
-      const elementRatio = imageRect.width / imageRect.height;
-      let width = imageRect.width;
-      let height = imageRect.height;
-      let left = imageRect.left;
-      let top = imageRect.top;
+      const elementRatio = contentWidth / contentHeight;
+      let width = contentWidth;
+      let height = contentHeight;
+      let left = contentLeft;
+      let top = contentTop;
       if (elementRatio > naturalRatio) {
-        width = imageRect.height * naturalRatio;
-        left = imageRect.left + ((imageRect.width - width) / 2);
+        width = contentHeight * naturalRatio;
+        left = contentLeft + ((contentWidth - width) / 2);
       } else {
-        height = imageRect.width / naturalRatio;
-        top = imageRect.top + ((imageRect.height - height) / 2);
+        height = contentWidth / naturalRatio;
+        top = contentTop + ((contentHeight - height) / 2);
       }
       return {
         naturalWidth,
