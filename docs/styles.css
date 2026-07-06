@@ -5962,17 +5962,19 @@ input[readonly]{
 
 .target-page .gssf-authority-result{
   display:grid;
-  gap:6px;
+  gap:14px;
   width:100%;
-  padding:14px;
-  border:1px solid rgba(217,150,11,.72);
+  padding:18px;
+  border:1px solid rgba(217,150,11,.58);
   border-radius:8px;
-  background:#161616;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(217,150,11,.12), transparent 46%),
+    linear-gradient(180deg,#171717,#080808);
   color:#f5f1e8;
   font-size:15px;
   font-weight:900;
   line-height:1.2;
-  box-shadow:0 10px 24px rgba(0,0,0,.22);
+  box-shadow:0 16px 36px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .target-page .gssf-result-line{
@@ -5988,13 +5990,13 @@ input[readonly]{
 
 .target-page .gssf-final-score-panel{
   display:grid;
-  gap:3px;
-  padding:12px;
-  border:1px solid rgba(217,150,11,.72);
+  gap:8px;
+  padding:16px 14px;
+  border:1px solid rgba(217,150,11,.66);
   border-radius:8px;
   background:
-    radial-gradient(circle at 50% 0%, rgba(217,150,11,.2), transparent 54%),
-    rgba(0,0,0,.28);
+    radial-gradient(circle at 50% 0%, rgba(217,150,11,.24), transparent 58%),
+    rgba(0,0,0,.34);
   text-align:center;
 }
 
@@ -6008,7 +6010,7 @@ input[readonly]{
 
 .target-page .gssf-final-score-panel strong{
   color:#fff;
-  font-size:clamp(30px, 7vw, 48px);
+  font-size:clamp(38px, 9vw, 60px);
   line-height:1;
 }
 
@@ -6016,14 +6018,14 @@ input[readonly]{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:8px;
-  margin-top:7px;
+  margin-top:4px;
 }
 
 .target-page .gssf-final-score-breakdown div{
   display:grid;
-  gap:2px;
+  gap:4px;
   min-width:0;
-  padding:8px;
+  padding:10px 8px;
   border:1px solid rgba(255,255,255,.12);
   border-radius:7px;
   background:rgba(0,0,0,.28);
@@ -6047,8 +6049,8 @@ input[readonly]{
 
 .target-page .gssf-official-time-entry{
   display:grid;
-  gap:5px;
-  padding:10px;
+  gap:7px;
+  padding:12px;
   border:1px solid rgba(255,255,255,.12);
   border-radius:8px;
   background:rgba(0,0,0,.18);
@@ -6086,19 +6088,26 @@ input[readonly]{
   display:flex;
   flex-wrap:wrap;
   gap:6px;
-  margin-top:8px;
-  padding-top:8px;
+  margin-top:2px;
+  padding-top:10px;
   border-top:1px solid rgba(255,255,255,.1);
 }
 
+.target-page .gssf-mode-controls.is-quiet{
+  justify-content:flex-end;
+  margin-top:-4px;
+  padding-top:0;
+  border-top:0;
+}
+
 .target-page .gssf-mode-button{
-  min-height:30px;
-  padding:6px 10px;
-  border:1px solid rgba(217,150,11,.45);
+  min-height:28px;
+  padding:5px 9px;
+  border:1px solid rgba(217,150,11,.32);
   border-radius:7px;
   background:rgba(0,0,0,.24);
-  color:rgba(245,241,232,.78);
-  font-size:11px;
+  color:rgba(245,241,232,.68);
+  font-size:10px;
   font-weight:900;
   text-transform:uppercase;
 }
@@ -6150,28 +6159,28 @@ input[readonly]{
 .target-page .gssf-bucket-grid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:8px;
-  margin-top:4px;
+  gap:10px;
+  margin-top:0;
 }
 
 .target-page .gssf-bucket-card{
   display:grid;
-  gap:3px;
+  gap:5px;
   min-width:0;
-  padding:8px;
+  padding:11px 10px;
   border:1px solid rgba(255,255,255,.12);
   border-radius:8px;
-  background:rgba(0,0,0,.2);
+  background:rgba(0,0,0,.24);
 }
 
 .target-page .gssf-bucket-card strong{
   color:#f5f1e8;
-  font-size:13px;
+  font-size:14px;
 }
 
 .target-page .gssf-bucket-card b{
   color:#fff;
-  font-size:24px;
+  font-size:28px;
   line-height:1;
 }
 

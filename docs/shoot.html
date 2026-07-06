@@ -2083,6 +2083,13 @@ function gssfModeControlsHtml(currentMode) {
   const developerButton = TARGET_QUERY.get("gssf_display_mode") === "developer"
     ? `<button class="gssf-mode-button${currentMode === "developer" ? " is-active" : ""}" type="button" data-gssf-result-mode="developer">Developer</button>`
     : "";
+  if (currentMode === "shooter") {
+    return `
+      <div class="gssf-mode-controls is-quiet" aria-label="GSSF result display mode">
+        <button class="gssf-mode-button" type="button" data-gssf-result-mode="validation">Validation</button>
+      </div>
+    `;
+  }
   return `
     <div class="gssf-mode-controls" aria-label="GSSF result display mode">
       <button class="gssf-mode-button${currentMode === "shooter" ? " is-active" : ""}" type="button" data-gssf-result-mode="shooter">Shooter</button>
@@ -2093,14 +2100,9 @@ function gssfModeControlsHtml(currentMode) {
 }
 
 function gssfShooterModeHtml(authorityPackage, lines) {
-  const shooterLines = gssfShooterResultLines(lines);
   return `
-    <div class="gssf-mode-heading">Mission Complete</div>
     ${gssfOfficialFinalScoreHtml(authorityPackage)}
     ${gssfBucketSummaryHtml(authorityPackage)}
-    <div class="gssf-shooter-totals">
-      ${shooterLines.map(line => `<div>${escapeHtml(line)}</div>`).join("")}
-    </div>
   `;
 }
 
