@@ -15,27 +15,21 @@
         <a class="vendor-name" href="index.html">Tap-n-Score™</a>
       </div>
     </div>
-    <nav class="locked-nav" aria-label="Target workflow navigation">
-      <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
-      <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Library</span></a>
-      <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
-      <a class="locked-nav-item is-active" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
-      <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
-    </nav>
-    <details class="mobile-platform-menu">
-      <summary>Menu</summary>
-      <a href="index.html">Home</a>
-      <a href="matrix.html">Weapon Library</a>
-      <a href="shoot.html">Target</a>
-      <a href="records.html" aria-current="page">SEC</a>
-      <a href="survey.html">Survey</a>
-    </details>
+    <button class="package-menu records-menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="recordsMenuDrawer"><span></span><span></span><span></span></button>
   </header>
+  <nav class="package-menu-drawer records-menu-drawer" id="recordsMenuDrawer" aria-label="Target workflow navigation" hidden>
+    <a href="index.html">Home</a>
+    <a href="matrix.html">Weapon Library</a>
+    <a href="shoot.html">Target</a>
+    <a href="records.html" aria-current="page">SEC</a>
+    <a href="survey.html">Survey</a>
+  </nav>
   <section class="panel history-panel">
     <div class="section-heading sec-heading">
       <div>
         <h1>SEC</h1>
         <h2>Shooter Experience Card</h2>
+        <p class="sec-page-intro"><strong>Save your Shooter Experience Card.</strong><span>This is the first page of your shooting journey.</span></p>
       </div>
     </div>
     <div class="history-list" id="historyList"></div>
@@ -51,6 +45,37 @@
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
+(function(){
+  const menuButton = document.querySelector(".records-menu-button");
+  const menuDrawer = document.getElementById("recordsMenuDrawer");
+  if(!menuButton || !menuDrawer) return;
+
+  function setMenuOpen(isOpen){
+    menuButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    menuDrawer.hidden = !isOpen;
+    document.body.classList.toggle("package-menu-open", isOpen);
+  }
+
+  menuButton.addEventListener("click", function(event){
+    event.stopPropagation();
+    setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
+  });
+
+  menuDrawer.addEventListener("click", function(event){
+    if(event.target.closest("a")) setMenuOpen(false);
+  });
+
+  document.addEventListener("click", function(event){
+    if(menuDrawer.hidden) return;
+    if(menuDrawer.contains(event.target) || menuButton.contains(event.target)) return;
+    setMenuOpen(false);
+  });
+
+  document.addEventListener("keydown", function(event){
+    if(event.key === "Escape") setMenuOpen(false);
+  });
+})();
+
 const historyList = document.getElementById("historyList");
 
 function cleanDateTime(value) {

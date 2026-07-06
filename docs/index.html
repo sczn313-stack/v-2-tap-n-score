@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tap-N-Score | Baker's Smart Targets</title>
+<title>Tap-n-Score™</title>
 <link rel="stylesheet" href="styles.css" />
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
@@ -18,11 +18,6 @@
         <em>SHOOT SMARTER. GET BETTER.</em>
       </div>
     </div>
-    <div class="package-divider" aria-hidden="true"></div>
-    <a class="package-partner-lockup" href="https://BakerTargets.com" aria-label="Open Baker's Smart Targets website">
-      <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
-      <strong>Baker's Smart Targets</strong>
-    </a>
     <button class="package-menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="packageMenuDrawer"><span></span><span></span><span></span></button>
   </header>
 
@@ -33,7 +28,6 @@
     <a href="shoot.html?target_profile_id=dot_torture_ez2c_style_17" data-target-profile-id="dot_torture_ez2c_style_17" data-target-name="EZ2C Style 17 Dot Torture Training Drill">Dot Torture</a>
     <a href="records.html">SEC</a>
     <a href="survey.html">Survey</a>
-    <a href="https://BakerTargets.com">Baker's Smart Targets</a>
   </nav>
 
   <section class="package-hero" aria-label="Tap-N-Score start">
@@ -41,12 +35,11 @@
       <h1>ZERO FASTER.<br><span>SHOOT SMARTER.</span><br>KEEP GETTING BETTER.</h1>
       <p><strong>THE BEGINNING OF YOUR SHOOTING HISTORY</strong><br><span>Shoot. Scan. Improve. Save.</span></p>
       <a class="package-start-button" href="matrix.html" data-clear-target-profile="true">START NEW SESSION <span>→</span></a>
-      <div class="package-target-launch" aria-label="Target launch options">
+      <div class="package-target-launch" aria-label="Target launch options" hidden>
         <span>Target Mode</span>
         <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1">GSSF AC-1</a>
         <a href="shoot.html?target_profile_id=dot_torture_ez2c_style_17" data-target-profile-id="dot_torture_ez2c_style_17" data-target-name="EZ2C Style 17 Dot Torture Training Drill">Dot Torture</a>
       </div>
-      <p class="package-setup-reminder">Save time at the range by building your Weapon Library <a href="matrix.html">HERE</a> before your next range trip.</p>
     </div>
     <img class="package-hero-rifle" src="assets/landing-hero-visual-scene-img1429.jpeg" alt="" />
   </section>
@@ -67,7 +60,12 @@
         <div class="range-trend-visual" aria-label="Range trend visualization">
           <div class="trend-bars" data-trend-bars></div>
           <div class="trend-baseline"></div>
-          <span class="trend-empty" data-trend-empty>Scan your first QRC target to begin your shooting history.</span>
+          <div class="trend-empty platform-orientation" data-trend-empty>
+            <span>🎯 <strong>Smart Targets</strong></span>
+            <span>🏆 <strong>Competition Support</strong></span>
+            <span>📖 <strong>My Shooting Journey</strong></span>
+            <span>🔫 <strong>Weapon Library</strong></span>
+          </div>
         </div>
       </div>
     </div>
@@ -87,8 +85,8 @@
 
     <div class="recent-range-grid" data-recent-sec-list>
       <article class="range-day-card range-day-empty">
-        <strong>Your first SEC starts here.</strong>
-        <span class="range-day-date">Save your first QRC target to begin your shooting history.</span>
+        <strong>No SEC saved yet.</strong>
+        <span class="range-day-date">Saved cards will appear here.</span>
       </article>
     </div>
 
@@ -326,7 +324,7 @@
     if (!list) return;
     const recent = sessions.slice(0, 3);
     if (!recent.length) {
-      list.innerHTML = `<article class="range-day-card range-day-empty"><strong>Your first SEC starts here.</strong><span class="range-day-date">Save your first QRC target to begin your shooting history.</span></article>`;
+      list.innerHTML = `<article class="range-day-card range-day-empty"><strong>No SEC saved yet.</strong><span class="range-day-date">Saved cards will appear here.</span></article>`;
       return;
     }
     list.innerHTML = recent.map(session => {

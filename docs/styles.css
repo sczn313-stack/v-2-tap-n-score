@@ -4678,7 +4678,7 @@ input[readonly]{
 
 .package-header{
   display:grid;
-  grid-template-columns:minmax(0,1.14fr) 1px minmax(0,.88fr) auto;
+  grid-template-columns:minmax(0,1fr) auto;
   align-items:center;
   gap:13px;
   min-height:90px;
@@ -4919,6 +4919,10 @@ input[readonly]{
   font-family:Arial, sans-serif;
 }
 
+.package-target-launch[hidden]{
+  display:none;
+}
+
 .package-target-launch span{
   color:rgba(245,241,232,.72);
   font-size:10px;
@@ -5124,6 +5128,26 @@ input[readonly]{
   line-height:1.12;
   text-align:center;
   text-transform:uppercase;
+}
+
+.trend-empty.platform-orientation{
+  align-content:center;
+  justify-items:start;
+  gap:8px;
+  padding:18px 20px;
+  text-align:left;
+}
+
+.trend-empty.platform-orientation span{
+  display:block;
+  color:#d7cec0;
+  font-size:11px;
+  line-height:1.1;
+}
+
+.trend-empty.platform-orientation strong{
+  color:#f5f1e8;
+  letter-spacing:.02em;
 }
 
 .range-metrics-strip{
@@ -6693,6 +6717,14 @@ input[readonly]{
   box-shadow:0 14px 34px rgba(0,0,0,.32);
 }
 
+.records-page .records-menu-button{
+  margin-left:auto;
+}
+
+.records-page .records-menu-drawer{
+  margin:0 0 8px;
+}
+
 .records-page .vendor-slot img{
   border-color:#b37b08;
   background:#050505;
@@ -6757,6 +6789,27 @@ input[readonly]{
 .records-page .sec-heading h2{
   color:#d9960b;
   letter-spacing:.02em;
+}
+
+.records-page .sec-page-intro{
+  display:grid;
+  gap:3px;
+  margin:8px 0 0;
+  color:#d7cdbb;
+  font-family:Arial, sans-serif;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.25;
+  text-transform:none;
+}
+
+.records-page .sec-page-intro strong{
+  color:#fff;
+  font-weight:900;
+}
+
+.records-page .sec-page-intro span{
+  color:#d7cdbb;
 }
 
 .records-page .vendor-pill{
