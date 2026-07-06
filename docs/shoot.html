@@ -1920,6 +1920,50 @@ function gssfResultLineClass(line) {
   return "gssf-result-line";
 }
 
+function isGssfBucketLine(line) {
+  const label = String(line || "").split(":")[0].trim().toLowerCase();
+  return label === "down zero" || label === "+1" || label === "+3" || label === "miss";
+}
+
+function gssfContextResultLines(lines) {
+  return Array.isArray(lines) ? lines.filter(line => !isGssfBucketLine(line)) : [];
+}
+
+function gssfBucketTone(zone) {
+  const tone = gssfZoneTone(zone);
+  return tone === "down-zero" || tone === "plus-one" || tone === "plus-three" ? tone : "miss";
+}
+
+function gssfBucketDefinitions() {
+  return [
+    { id: "down-zero", label: "Down Zero", color: "Green" },
+    { id: "plus-one", label: "+1", color: "Yellow" },
+    { id: "plus-three", label: "+3", color: "Orange" },
+    { id: "miss", label: "Miss / Other", color: "Red" }
+  ];
+}
+
+function gssfBucketSummaryHtml(authorityPackage) {
+  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, shots: [] }));
+  const bucketById = Object.fromEntries(buckets.map(bucket => [bucket.id, bucket]));
+  backendHitClassifications(authorityPackage).forEach((hit, index) => {
+    const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
+    bucket.shots.push(String(hit.shot || index + 1));
+  });
+  const cards = buckets.map(bucket => {
+    const shots = bucket.shots.length ? bucket.shots.join(", ") : "--";
+    return `
+      <div class="gssf-bucket-card gssf-zone-card-${bucket.id}">
+        <span class="gssf-bucket-color"><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.color)}</span>
+        <strong>${escapeHtml(bucket.label)}</strong>
+        <b>${escapeHtml(bucket.shots.length)}</b>
+        <small>Shots: ${escapeHtml(shots)}</small>
+      </div>
+    `;
+  }).join("");
+  return `<div class="gssf-bucket-grid" aria-label="GSSF backend classification buckets">${cards}</div>`;
+}
+
 function vectorHtmlFromBackend(vector) {
   if (!vector || !vector.start || !vector.end) return "";
   const start = safePoint(vector.start);
@@ -2343,8 +2387,10 @@ function renderResults() {
       ? backendAuthorityPackage.display.resultLines
       : [];
     if (resultBlock) {
+      const contextLines = gssfContextResultLines(lines);
       resultBlock.innerHTML = `
-        ${lines.map(line => `<div class="${gssfResultLineClass(line)}">${escapeHtml(line)}</div>`).join("")}
+        ${contextLines.map(line => `<div class="${gssfResultLineClass(line)}">${escapeHtml(line)}</div>`).join("")}
+        ${gssfBucketSummaryHtml(backendAuthorityPackage)}
         ${gssfZoneLegendHtml()}
         ${gssfScoringSourceHtml(backendAuthorityPackage)}
         ${gssfShotClassificationsHtml(backendAuthorityPackage)}
