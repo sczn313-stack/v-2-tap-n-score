@@ -156,6 +156,103 @@ function isDotTortureTrainingPackage(pkg) {
     );
 }
 
+function isGssfAuthorityPackage(pkg) {
+  return !!(pkg && (
+    pkg.target_profile_id === "gssf_ac_1"
+    || pkg.targetProfileId === "gssf_ac_1"
+    || pkg.mission_family === "gssf"
+    || pkg.missionFamilyId === "gssf"
+  ));
+}
+
+function backendHitClassifications(pkg) {
+  return Array.isArray(pkg && pkg.hitClassifications) ? pkg.hitClassifications : [];
+}
+
+function gssfZoneTone(zone) {
+  const normalized = String(zone || "").trim().toLowerCase().replace(/[\s_-]+/g, "");
+  if (normalized === "downzero" || normalized === "0") return "down-zero";
+  if (normalized === "plusone" || normalized === "+1" || normalized === "1") return "plus-one";
+  if (normalized === "plusthree" || normalized === "+3" || normalized === "3") return "plus-three";
+  if (normalized === "miss") return "miss";
+  return "other";
+}
+
+function gssfBucketTone(zone) {
+  const tone = gssfZoneTone(zone);
+  return tone === "down-zero" || tone === "plus-one" || tone === "plus-three" ? tone : "miss";
+}
+
+function gssfBucketDefinitions() {
+  return [
+    { id: "down-zero", label: "Down Zero", color: "Green" },
+    { id: "plus-one", label: "+1", color: "Yellow" },
+    { id: "plus-three", label: "+3", color: "Orange" },
+    { id: "miss", label: "Miss / Other", color: "Red" }
+  ];
+}
+
+function gssfBucketSummaryHtml(pkg) {
+  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, shots: [] }));
+  const bucketById = Object.fromEntries(buckets.map(bucket => [bucket.id, bucket]));
+  backendHitClassifications(pkg).forEach((hit, index) => {
+    const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
+    bucket.shots.push(String(hit.shot || index + 1));
+  });
+  return `
+    <div class="sec-gssf-bucket-grid" aria-label="GSSF SEC backend classification buckets">
+      ${buckets.map(bucket => `
+        <div class="sec-gssf-bucket gssf-zone-card-${bucket.id}">
+          <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.color)}</span>
+          <strong>${escapeHtml(bucket.label)}</strong>
+          <b>${escapeHtml(bucket.shots.length)}</b>
+          <small>Shots: ${escapeHtml(bucket.shots.length ? bucket.shots.join(", ") : "--")}</small>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function gssfScoringSourceLine(pkg) {
+  const source = String(pkg.resultSource || pkg.scoringSource || pkg.authorityTrace?.source || "backend");
+  const packageId = pkg.authorityPackageId || pkg.authorityTrace?.authorityPackageId || pkg.evidenceHash || "";
+  return [
+    `Scoring source: ${source === "backend" ? "Backend" : source}`,
+    packageId ? `Authority package: ${packageId}` : ""
+  ].filter(Boolean).join(" | ");
+}
+
+function gssfResultLine(pkg, label) {
+  const lines = pkg && pkg.display && Array.isArray(pkg.display.resultLines) ? pkg.display.resultLines : [];
+  return lines.find(line => String(line).toLowerCase().startsWith(`${label.toLowerCase()}:`)) || "";
+}
+
+function gssfShotClassificationsHtml(pkg) {
+  const classifications = backendHitClassifications(pkg);
+  if (!classifications.length) return "";
+  return `
+    <details class="sec-gssf-classifications">
+      <summary>Backend shot classifications</summary>
+      <ol>
+        ${classifications.map(hit => {
+          const coordinate = hit.coordinate || {};
+          const x = Number.isFinite(Number(coordinate.xPercent)) ? `${Number(coordinate.xPercent).toFixed(2)}%` : "--";
+          const y = Number.isFinite(Number(coordinate.yPercent)) ? `${Number(coordinate.yPercent).toFixed(2)}%` : "--";
+          const penalty = Number.isFinite(Number(hit.penaltySeconds)) ? `+${hit.penaltySeconds} sec` : "--";
+          return `
+            <li class="gssf-zone-card-${gssfZoneTone(hit.zone)}">
+              <strong>Shot ${escapeHtml(hit.shot || "")}</strong>
+              <span>${escapeHtml(hit.zone || "unclassified")}</span>
+              <em>${escapeHtml(penalty)}</em>
+              <small>${escapeHtml(x)} / ${escapeHtml(y)}</small>
+            </li>
+          `;
+        }).join("")}
+      </ol>
+    </details>
+  `;
+}
+
 function trainingDistanceLabel(distance) {
   if (!distance || typeof distance !== "object") return "Distance unavailable";
   const value = distance.value ?? distance.distance ?? "";
@@ -344,6 +441,44 @@ function renderTrainingSecCard(session, index, pkg) {
   `;
 }
 
+function renderGssfSecCard(session, index, pkg) {
+  const snapshot = session.matrixSnapshot || {};
+  const evidence = session.targetEvidenceImage;
+  const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
+  const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
+  const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "--";
+  const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
+  const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
+  const paperPenalty = gssfResultLine(pkg, "Paper Penalty") || `Paper Penalty: +${pkg.totalPaperPenaltySeconds || 0} sec`;
+  const finalTime = gssfResultLine(pkg, "Final Time") || "Final Time: unavailable";
+  const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
+  return `
+    <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
+      <div class="history-thumb gssf-sec-thumb">
+        <img src="${thumbnail}" alt="Saved scored GSSF target evidence" />
+        <div class="history-evidence-layer">${authorityVisual(session)}</div>
+      </div>
+      <div class="history-copy">
+        <div class="history-title">
+          <strong>GSSF SEC #${index + 1}</strong>
+          <span>${cleanDateTime(session.timestamp)}</span>
+        </div>
+        <div class="sec-setup-line">${[weapon, weaponMeta].filter(Boolean).join(" | ")}</div>
+        ${attributionLine(snapshot)}
+        <div class="sec-gssf-mission">${escapeHtml(missionLine)}</div>
+        ${gssfBucketSummaryHtml(pkg)}
+        <div class="sec-gssf-totals">
+          <span>${escapeHtml(paperPenalty)}</span>
+          <span>${escapeHtml(finalTime)}</span>
+        </div>
+        <div class="sec-gssf-source">${escapeHtml(gssfScoringSourceLine(pkg))}</div>
+        ${gssfShotClassificationsHtml(pkg)}
+        ${hashLine}
+      </div>
+    </article>
+  `;
+}
+
 function authorityPoint(point) {
   return SCZN3M4.UGEO.normalizePoint(point);
 }
@@ -354,11 +489,28 @@ function markerHtml(className, point, content = "", attrs = "") {
   return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attrs ? ` ${attrs}` : ""}>${content}</span>`;
 }
 
+function backendRenderedHitCoordinates(pkg) {
+  const render = pkg && pkg.renderCoordinates ? pkg.renderCoordinates : {};
+  const hits = Array.isArray(render.hits) ? render.hits : [];
+  const impacts = Array.isArray(render.impacts) ? render.impacts : [];
+  return (hits.length ? hits : impacts).map(authorityPoint).filter(Boolean);
+}
+
 function authorityVisual(session) {
   const pkg = authorityPackage(session);
   if (!pkg || !pkg.renderCoordinates) return "";
   const render = pkg.renderCoordinates;
   const parts = [];
+  if (isGssfAuthorityPackage(pkg)) {
+    const classifications = backendHitClassifications(pkg);
+    backendRenderedHitCoordinates(pkg).forEach((point, index) => {
+      const hit = classifications[index] || {};
+      const shotNumber = hit.shot || index + 1;
+      const zoneClass = `gssf-zone-${gssfZoneTone(hit.zone)}`;
+      parts.push(markerHtml(`history-thumb-impact history-gssf-impact ${zoneClass}`, point, String(shotNumber), `data-backend-zone="${escapeHtml(hit.zone || "")}"`));
+    });
+    return parts.join("");
+  }
   (render.impacts || []).forEach((point, index) => {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
   });
@@ -433,6 +585,9 @@ function renderHistory() {
     const pkg = authorityPackage(session);
     if (isDotTortureTrainingPackage(pkg)) {
       return renderTrainingSecCard(session, index, pkg);
+    }
+    if (isGssfAuthorityPackage(pkg)) {
+      return renderGssfSecCard(session, index, pkg);
     }
     const hasAuthority = !!(pkg && pkg.status);
     const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;

@@ -2239,6 +2239,33 @@ input[readonly]{
   z-index:4;
 }
 
+.history-thumb-impact.gssf-zone-down-zero{
+  border-color:#0f2f1b;
+  background:#22b35a;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.75);
+}
+
+.history-thumb-impact.gssf-zone-plus-one{
+  border-color:#3f3205;
+  background:#ffd43b;
+  color:#1b1400;
+}
+
+.history-thumb-impact.gssf-zone-plus-three{
+  border-color:#4b2100;
+  background:#ff8a1f;
+  color:#190b00;
+}
+
+.history-thumb-impact.gssf-zone-miss,
+.history-thumb-impact.gssf-zone-other{
+  border-color:#3e0505;
+  background:#e32929;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.75);
+}
+
 .sec-setup-line{
   overflow:hidden;
   color:var(--muted);
@@ -7271,6 +7298,180 @@ input[readonly]{
   box-shadow:0 0 0 1px rgba(255,255,255,.92), 0 0 0 3px rgba(217,150,11,.42);
 }
 
+.records-page .gssf-sec-card{
+  grid-template-columns:120px 1fr;
+  height:auto;
+  min-height:174px;
+  border-color:rgba(217,150,11,.78);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(217,150,11,.15), transparent 40%),
+    linear-gradient(180deg,#15120a,#070707);
+}
+
+.records-page .gssf-sec-thumb{
+  width:120px;
+  min-height:168px;
+}
+
+.records-page .sec-gssf-mission{
+  color:#f5f1e8;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.records-page .sec-gssf-bucket-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:6px;
+}
+
+.records-page .sec-gssf-bucket{
+  display:grid;
+  gap:2px;
+  min-width:0;
+  padding:7px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:6px;
+  background:rgba(0,0,0,.18);
+}
+
+.records-page .sec-gssf-bucket span{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  color:rgba(245,241,232,.72);
+  font-size:10px;
+  font-weight:900;
+}
+
+.records-page .sec-gssf-bucket strong{
+  color:#f5f1e8;
+  font-size:12px;
+}
+
+.records-page .sec-gssf-bucket b{
+  color:#fff;
+  font-size:22px;
+  line-height:1;
+}
+
+.records-page .sec-gssf-bucket small{
+  color:rgba(245,241,232,.72);
+  font-size:10px;
+  overflow-wrap:anywhere;
+}
+
+.records-page .sec-gssf-bucket.gssf-zone-card-down-zero{
+  border-color:rgba(34,179,90,.5);
+}
+
+.records-page .sec-gssf-bucket.gssf-zone-card-plus-one{
+  border-color:rgba(255,212,59,.5);
+}
+
+.records-page .sec-gssf-bucket.gssf-zone-card-plus-three{
+  border-color:rgba(255,138,31,.5);
+}
+
+.records-page .sec-gssf-bucket.gssf-zone-card-miss{
+  border-color:rgba(227,41,41,.55);
+}
+
+.records-page .gssf-zone-dot{
+  width:8px;
+  height:8px;
+  flex:0 0 8px;
+  border:1px solid rgba(0,0,0,.65);
+  border-radius:50%;
+}
+
+.records-page .gssf-zone-dot.gssf-zone-down-zero{
+  background:#22b35a;
+}
+
+.records-page .gssf-zone-dot.gssf-zone-plus-one{
+  background:#ffd43b;
+}
+
+.records-page .gssf-zone-dot.gssf-zone-plus-three{
+  background:#ff8a1f;
+}
+
+.records-page .gssf-zone-dot.gssf-zone-miss{
+  background:#e32929;
+}
+
+.records-page .sec-gssf-totals,
+.records-page .sec-gssf-source{
+  display:grid;
+  gap:3px;
+  color:#f5f1e8;
+  font-size:11px;
+  font-weight:900;
+}
+
+.records-page .sec-gssf-source{
+  color:#d9960b;
+  overflow-wrap:anywhere;
+}
+
+.records-page .sec-gssf-classifications{
+  color:rgba(245,241,232,.82);
+  font-size:11px;
+  font-weight:800;
+}
+
+.records-page .sec-gssf-classifications summary{
+  cursor:pointer;
+  color:#d9960b;
+}
+
+.records-page .sec-gssf-classifications ol{
+  display:grid;
+  gap:5px;
+  margin:6px 0 0;
+  padding:0;
+  list-style:none;
+}
+
+.records-page .sec-gssf-classifications li{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:2px 8px;
+  padding:6px 7px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:6px;
+  background:rgba(0,0,0,.16);
+}
+
+.records-page .sec-gssf-classifications li.gssf-zone-card-down-zero{
+  border-color:rgba(34,179,90,.42);
+}
+
+.records-page .sec-gssf-classifications li.gssf-zone-card-plus-one{
+  border-color:rgba(255,212,59,.42);
+}
+
+.records-page .sec-gssf-classifications li.gssf-zone-card-plus-three{
+  border-color:rgba(255,138,31,.42);
+}
+
+.records-page .sec-gssf-classifications li.gssf-zone-card-miss,
+.records-page .sec-gssf-classifications li.gssf-zone-card-other{
+  border-color:rgba(227,41,41,.48);
+}
+
+.records-page .sec-gssf-classifications li span,
+.records-page .sec-gssf-classifications li small{
+  color:rgba(245,241,232,.72);
+}
+
+.records-page .sec-gssf-classifications li em{
+  color:#f5f1e8;
+  font-style:normal;
+}
+
 .records-page .training-sec-card{
   display:grid;
   grid-template-columns:1fr;
@@ -7469,6 +7670,10 @@ input[readonly]{
     grid-template-columns:1fr;
   }
 
+  .records-page .gssf-sec-card{
+    grid-template-columns:104px minmax(0,1fr);
+  }
+
   .records-page .dot-training-trend-grid{
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
@@ -7502,6 +7707,20 @@ input[readonly]{
   .records-page .training-sec-card{
     grid-template-columns:1fr;
     gap:10px;
+  }
+
+  .records-page .gssf-sec-card{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .records-page .gssf-sec-thumb{
+    width:100%;
+    min-height:220px;
+  }
+
+  .records-page .sec-gssf-bucket-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
   }
 
   .records-page .dot-training-trend-card{
