@@ -153,6 +153,7 @@ const STATIC_TARGET_IDENTITY = {
 };
 let missionResolutionStatus = TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle";
 let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target mission..." : "";
+let gssfResultDisplayMode = TARGET_QUERY.get("gssf_display_mode") === "developer" ? "developer" : "shooter";
 let pendingEvidence = null;
 let displayedEvidence = null;
 const savedAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
@@ -1929,6 +1930,10 @@ function gssfContextResultLines(lines) {
   return Array.isArray(lines) ? lines.filter(line => !isGssfBucketLine(line)) : [];
 }
 
+function gssfShooterResultLines(lines) {
+  return gssfContextResultLines(lines).filter(line => /^(paper penalty|final time):/i.test(String(line || "").trim()));
+}
+
 function gssfBucketTone(zone) {
   const tone = gssfZoneTone(zone);
   return tone === "down-zero" || tone === "plus-one" || tone === "plus-three" ? tone : "miss";
@@ -1962,6 +1967,69 @@ function gssfBucketSummaryHtml(authorityPackage) {
     `;
   }).join("");
   return `<div class="gssf-bucket-grid" aria-label="GSSF backend classification buckets">${cards}</div>`;
+}
+
+function setGssfResultDisplayMode(mode) {
+  const requested = mode === "validation" || mode === "developer" ? mode : "shooter";
+  gssfResultDisplayMode = requested === "developer" && TARGET_QUERY.get("gssf_display_mode") !== "developer"
+    ? "validation"
+    : requested;
+  renderResults();
+}
+
+function bindGssfResultModeControls() {
+  document.querySelectorAll("[data-gssf-result-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      setGssfResultDisplayMode(button.dataset.gssfResultMode || "shooter");
+    });
+  });
+}
+
+function gssfModeControlsHtml(currentMode) {
+  const developerButton = TARGET_QUERY.get("gssf_display_mode") === "developer"
+    ? `<button class="gssf-mode-button${currentMode === "developer" ? " is-active" : ""}" type="button" data-gssf-result-mode="developer">Developer</button>`
+    : "";
+  return `
+    <div class="gssf-mode-controls" aria-label="GSSF result display mode">
+      <button class="gssf-mode-button${currentMode === "shooter" ? " is-active" : ""}" type="button" data-gssf-result-mode="shooter">Shooter</button>
+      <button class="gssf-mode-button${currentMode === "validation" ? " is-active" : ""}" type="button" data-gssf-result-mode="validation">Validation</button>
+      ${developerButton}
+    </div>
+  `;
+}
+
+function gssfShooterModeHtml(authorityPackage, lines) {
+  const shooterLines = gssfShooterResultLines(lines);
+  return `
+    <div class="gssf-mode-heading">Mission Complete</div>
+    ${gssfBucketSummaryHtml(authorityPackage)}
+    <div class="gssf-shooter-totals">
+      ${shooterLines.map(line => `<div>${escapeHtml(line)}</div>`).join("")}
+    </div>
+  `;
+}
+
+function gssfValidationModeHtml(authorityPackage, lines) {
+  const contextLines = gssfContextResultLines(lines);
+  return `
+    <div class="gssf-mode-heading">Validation Mode</div>
+    ${contextLines.map(line => `<div class="${gssfResultLineClass(line)}">${escapeHtml(line)}</div>`).join("")}
+    ${gssfBucketSummaryHtml(authorityPackage)}
+    ${gssfZoneLegendHtml()}
+    ${gssfScoringSourceHtml(authorityPackage)}
+    ${gssfShotClassificationsHtml(authorityPackage)}
+    ${gssfMarkerValidationShellHtml(authorityPackage)}
+  `;
+}
+
+function gssfDeveloperModeHtml(authorityPackage, lines) {
+  return `
+    ${gssfValidationModeHtml(authorityPackage, lines)}
+    <details class="gssf-developer-debug">
+      <summary>Developer payload</summary>
+      <pre>${escapeHtml(JSON.stringify(authorityPackage, null, 2))}</pre>
+    </details>
+  `;
 }
 
 function vectorHtmlFromBackend(vector) {
@@ -2387,15 +2455,19 @@ function renderResults() {
       ? backendAuthorityPackage.display.resultLines
       : [];
     if (resultBlock) {
-      const contextLines = gssfContextResultLines(lines);
+      const mode = gssfResultDisplayMode === "developer" && TARGET_QUERY.get("gssf_display_mode") !== "developer"
+        ? "validation"
+        : gssfResultDisplayMode;
+      const modeHtml = mode === "developer"
+        ? gssfDeveloperModeHtml(backendAuthorityPackage, lines)
+        : (mode === "validation"
+          ? gssfValidationModeHtml(backendAuthorityPackage, lines)
+          : gssfShooterModeHtml(backendAuthorityPackage, lines));
       resultBlock.innerHTML = `
-        ${contextLines.map(line => `<div class="${gssfResultLineClass(line)}">${escapeHtml(line)}</div>`).join("")}
-        ${gssfBucketSummaryHtml(backendAuthorityPackage)}
-        ${gssfZoneLegendHtml()}
-        ${gssfScoringSourceHtml(backendAuthorityPackage)}
-        ${gssfShotClassificationsHtml(backendAuthorityPackage)}
-        ${gssfMarkerValidationShellHtml(backendAuthorityPackage)}
+        ${modeHtml}
+        ${gssfModeControlsHtml(mode)}
       `;
+      bindGssfResultModeControls();
       renderGssfMarkerValidation(backendAuthorityPackage);
     }
     const message = document.getElementById("authorityStatusMessage");
