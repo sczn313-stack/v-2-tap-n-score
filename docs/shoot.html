@@ -1888,6 +1888,16 @@ function markerPointHtml(className, point, content = "", attributes = "") {
   return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%" data-x-percent="${safe.xPercent}" data-y-percent="${safe.yPercent}"${attributes ? ` ${attributes}` : ""}>${content}</span>`;
 }
 
+function backendHitClassifications(authorityPackage) {
+  return Array.isArray(authorityPackage && authorityPackage.hitClassifications)
+    ? authorityPackage.hitClassifications
+    : [];
+}
+
+function backendHitCoordinateForValidation(authorityPackage, hit, index) {
+  return safePoint((hit && hit.coordinate) || backendRenderedHitCoordinates(authorityPackage)[index]);
+}
+
 function vectorHtmlFromBackend(vector) {
   if (!vector || !vector.start || !vector.end) return "";
   const start = safePoint(vector.start);
@@ -1935,9 +1945,13 @@ function backendRenderedHitCoordinates(authorityPackage) {
 function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
+  const classifications = backendHitClassifications(authorityPackage);
   parts.push(vectorHtmlFromBackend(render.vector));
   backendRenderedHitCoordinates(authorityPackage).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
+    const hit = classifications[index] || {};
+    const shotNumber = hit.shot || index + 1;
+    const zone = escapeHtml(hit.zone || "");
+    parts.push(markerPointHtml("target-marker impact-marker", point, String(shotNumber), `data-shot-index="${escapeHtml(shotNumber)}" data-backend-zone="${zone}"`));
   });
   if (render.aim) {
     parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
@@ -1963,6 +1977,7 @@ function renderMarkers() {
   layer.innerHTML = (authorityPackage ? renderBackendAuthorityMarkers(authorityPackage) : renderPendingInputMarkers()) + renderCorrectionOverlay(correction);
   syncArrowLayerToMarkerLayer();
   auditBackendMarkerAlignment(authorityPackage);
+  renderGssfMarkerValidation(authorityPackage);
   renderResults();
 }
 
@@ -2153,6 +2168,93 @@ function gssfScoringSourceHtml(authorityPackage) {
   `;
 }
 
+function gssfMarkerValidationShellHtml(authorityPackage) {
+  if (!isGssfAuthorityPackage(authorityPackage)) return "";
+  return `
+    <details class="gssf-marker-validation" open>
+      <summary>Marker coordinate validation</summary>
+      <div id="gssfMarkerValidationRows" class="gssf-marker-validation-body">
+        Awaiting rendered marker audit.
+      </div>
+    </details>
+  `;
+}
+
+function formatValidationPercent(value) {
+  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)}%` : "--";
+}
+
+function formatValidationDelta(value) {
+  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)}%` : "--";
+}
+
+function renderGssfMarkerValidation(authorityPackage) {
+  const container = document.getElementById("gssfMarkerValidationRows");
+  if (!container || !isGssfAuthorityPackage(authorityPackage)) return;
+  requestAnimationFrame(() => {
+    const layer = document.getElementById("markerLayer");
+    if (!layer) {
+      container.innerHTML = `<div class="gssf-marker-validation-summary is-fail">FAIL: marker layer unavailable.</div>`;
+      return;
+    }
+    const layerRect = layer.getBoundingClientRect();
+    const classifications = backendHitClassifications(authorityPackage);
+    const backendHits = backendRenderedHitCoordinates(authorityPackage);
+    const markers = Array.from(layer.querySelectorAll(".impact-marker"));
+    const source = authorityPackage.renderCoordinates && Array.isArray(authorityPackage.renderCoordinates.hits) && authorityPackage.renderCoordinates.hits.length
+      ? "renderCoordinates.hits"
+      : "renderCoordinates.impacts";
+    const rowCount = Math.max(classifications.length, backendHits.length);
+    if (!rowCount) {
+      container.innerHTML = `<div class="gssf-marker-validation-summary is-fail">FAIL: backend returned no hit render coordinates.</div>`;
+      return;
+    }
+    const rows = Array.from({ length: rowCount }, (_, index) => {
+      const hit = classifications[index] || {};
+      const marker = markers[index];
+      const backendPoint = backendHitCoordinateForValidation(authorityPackage, hit, index);
+      const renderedPoint = marker ? renderedPercentFromRect(marker.getBoundingClientRect(), layerRect) : null;
+      const backendShot = String(hit.shot || index + 1);
+      const markerShot = marker ? String((marker.textContent || "").trim()) : "";
+      const backendZone = String(hit.zone || "unclassified");
+      const renderedZone = marker ? String(marker.getAttribute("data-backend-zone") || "unclassified") : "missing";
+      const xDelta = renderedPoint && backendPoint ? Number((renderedPoint.xPercent - backendPoint.xPercent).toFixed(2)) : NaN;
+      const yDelta = renderedPoint && backendPoint ? Number((renderedPoint.yPercent - backendPoint.yPercent).toFixed(2)) : NaN;
+      const coordinatePass = Number.isFinite(xDelta) && Number.isFinite(yDelta) && Math.abs(xDelta) <= 0.25 && Math.abs(yDelta) <= 0.25;
+      const orderPass = markerShot === backendShot;
+      const classificationPass = renderedZone === backendZone;
+      const pass = !!marker && !!backendPoint && coordinatePass && orderPass && classificationPass;
+      return {
+        pass,
+        html: `
+          <li class="${pass ? "is-pass" : "is-fail"}">
+            <strong>Shot ${escapeHtml(backendShot)}: ${pass ? "PASS" : "FAIL"}</strong>
+            <span>Backend x/y: ${formatValidationPercent(backendPoint && backendPoint.xPercent)} / ${formatValidationPercent(backendPoint && backendPoint.yPercent)}</span>
+            <span>Marker x/y: ${formatValidationPercent(renderedPoint && renderedPoint.xPercent)} / ${formatValidationPercent(renderedPoint && renderedPoint.yPercent)}</span>
+            <span>Backend classification: ${escapeHtml(backendZone)}</span>
+            <span>Rendered classification: ${escapeHtml(renderedZone)}</span>
+            <span>Delta: ${formatValidationDelta(xDelta)} / ${formatValidationDelta(yDelta)}</span>
+            <span>Order: marker ${escapeHtml(markerShot || "missing")} vs backend ${escapeHtml(backendShot)}</span>
+          </li>
+        `
+      };
+    });
+    const countPass = markers.length === backendHits.length;
+    const overallPass = countPass && rows.every(row => row.pass);
+    container.innerHTML = `
+      <div class="gssf-marker-validation-summary ${overallPass ? "is-pass" : "is-fail"}">
+        ${overallPass ? "PASS" : "FAIL"}: backend evidence rendered within 0.25%.
+      </div>
+      <div class="gssf-marker-validation-meta">
+        <span>Source: backend ${escapeHtml(source)}</span>
+        <span>Markers: ${escapeHtml(markers.length)} / Backend shots: ${escapeHtml(backendHits.length)}</span>
+        <span>Frontend tap coordinates are not used after backend authority returns.</span>
+      </div>
+      <ol>${rows.map(row => row.html).join("")}</ol>
+    `;
+  });
+}
+
 function gssfShotClassificationsHtml(authorityPackage) {
   const classifications = Array.isArray(authorityPackage.hitClassifications)
     ? authorityPackage.hitClassifications
@@ -2210,7 +2312,9 @@ function renderResults() {
         ${lines.map(line => `<div>${escapeHtml(line)}</div>`).join("")}
         ${gssfScoringSourceHtml(backendAuthorityPackage)}
         ${gssfShotClassificationsHtml(backendAuthorityPackage)}
+        ${gssfMarkerValidationShellHtml(backendAuthorityPackage)}
       `;
+      renderGssfMarkerValidation(backendAuthorityPackage);
     }
     const message = document.getElementById("authorityStatusMessage");
     if (message) {
