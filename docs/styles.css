@@ -8055,6 +8055,112 @@ input[readonly]{
     padding-right:14px;
   }
 
+  .package-header,
+  .platform-page .m4-header{
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) 46px;
+    min-height:68px;
+    padding:10px 14px;
+    gap:10px;
+    border:2px solid #b37b08;
+    border-radius:var(--radius);
+    background:#030303;
+    color:#f5f1e8;
+    box-shadow:0 14px 34px rgba(0,0,0,.32);
+  }
+
+  .package-header{
+    border-bottom:2px solid #b37b08;
+  }
+
+  .package-brand-lockup,
+  .package-brand-copy,
+  .platform-page .brand-lockup,
+  .platform-page .vendor-slot{
+    min-width:0;
+    max-width:100%;
+    overflow:hidden;
+  }
+
+  .package-brand-lockup,
+  .platform-page .vendor-slot{
+    grid-column:1;
+    justify-self:start;
+  }
+
+  .package-emblem,
+  .platform-page .vendor-slot img{
+    flex:0 0 44px;
+    width:44px;
+    height:44px;
+    padding:3px;
+    border:1px solid #b37b08;
+    border-radius:8px;
+    background:#050505;
+    object-fit:contain;
+  }
+
+  .package-brand-copy strong{
+    max-width:100%;
+    font-size:clamp(24px, 7vw, 28px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .package-brand-copy em{
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .package-menu,
+  .platform-page .mobile-platform-menu summary,
+  .target-page .target-mobile-menu summary,
+  .matrix-page .mobile-platform-menu summary,
+  .records-page .records-menu-button{
+    flex:0 0 46px;
+    width:46px;
+    height:46px;
+    min-width:46px;
+    min-height:46px;
+    padding:0;
+    margin-left:auto;
+    border:1px solid #b37b08;
+    border-radius:8px;
+    background:#101010;
+    color:#d9960b;
+    display:grid;
+    place-content:center;
+    line-height:1;
+  }
+
+  .package-menu,
+  .platform-page .mobile-platform-menu,
+  .records-page .records-menu-button{
+    grid-column:2;
+    justify-self:end;
+  }
+
+  .platform-page .mobile-platform-menu{
+    margin-left:0;
+  }
+
+  .package-menu span{
+    width:25px;
+    height:3px;
+  }
+
+  .platform-page .mobile-platform-menu summary{
+    font-size:24px;
+  }
+
+  .package-header *,
+  .platform-page .m4-header *{
+    max-width:100%;
+  }
+
   .brand-lockup,
   .vendor-slot{
     min-width:0;
@@ -8069,6 +8175,20 @@ input[readonly]{
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
+  }
+
+  .package-hero h1,
+  .package-hero p,
+  .package-start-button,
+  .platform-page .button,
+  .platform-page button,
+  .platform-page .panel h1,
+  .platform-page .panel h2,
+  .matrix-form h1,
+  .matrix-guidance{
+    max-width:100%;
+    white-space:normal;
+    overflow-wrap:anywhere;
   }
 
   .target-page .target-session-context{
