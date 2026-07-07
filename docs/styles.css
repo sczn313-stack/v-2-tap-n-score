@@ -5956,6 +5956,10 @@ input[readonly]{
   border-color:rgba(255,255,255,.18);
 }
 
+.target-page .authority-evidence-summary{
+  grid-template-columns:1fr;
+}
+
 .target-page .target-intel-score strong{
   font-size:clamp(30px, 5vw, 46px);
 }
@@ -7025,6 +7029,19 @@ input[readonly]{
 .target-page .guidance-card,
 .target-page .custom-distance-card{
   border-color:rgba(179,123,8,.54);
+}
+
+.target-page .zeroing-setup-panel{
+  margin-top:2px;
+  padding:10px 12px;
+  border:1px solid rgba(179,123,8,.42);
+  border-radius:8px;
+  background:rgba(10,10,10,.52);
+}
+
+.target-page .zeroing-setup-panel[open]{
+  display:grid;
+  gap:10px;
 }
 
 .target-page .guidance-card summary,

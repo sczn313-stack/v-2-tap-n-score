@@ -1270,26 +1270,14 @@ function targetIntelStackHtml() {
     `;
   }
   return `
-    <div class="authority-results-panel" aria-label="Results">
-      <div class="authority-evidence-summary">
-        <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
-        <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
-        <div class="target-intel-distance" aria-label="Session distance">
-          <span>Session Distance</span>
-          <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
-          <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance and optic units">
-            <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
-            <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
-            <button class="unit-button${selectedAdjustmentUnit === "MOA" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MOA">MOA</button>
-            <button class="unit-button${selectedAdjustmentUnit === "MRAD" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MRAD">MRAD</button>
-          </div>
-          <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
-          <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+      <div class="authority-results-panel" aria-label="Results">
+        <div class="authority-evidence-summary">
+          <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
+          <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
         </div>
+        <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
       </div>
-      <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
-    </div>
-    ${guidanceCardHtml()}
+      ${zeroingSetupPanelHtml()}
   `;
 }
 
@@ -1297,10 +1285,22 @@ function isPresetDistance(value) {
   return ["25", "50", "75", "100", "150", "175", "200", "250", "300", "400", "500"].includes(String(value || ""));
 }
 
-function guidanceCardHtml() {
+function zeroingSetupPanelHtml() {
   return `
-    <details class="guidance-card" open>
-      <summary>Distance Click Query</summary>
+    <details class="guidance-card zeroing-setup-panel">
+      <summary>Zeroing Setup</summary>
+      <div class="target-intel-distance" aria-label="Session distance">
+        <span>Session Distance</span>
+        <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
+        <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance and optic units">
+          <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
+          <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
+          <button class="unit-button${selectedAdjustmentUnit === "MOA" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MOA">MOA</button>
+          <button class="unit-button${selectedAdjustmentUnit === "MRAD" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MRAD">MRAD</button>
+        </div>
+        <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
+        <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+      </div>
       <div class="distance-query-row">
         <label>Go To Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
