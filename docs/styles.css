@@ -1911,6 +1911,9 @@ input[readonly]{
 
 .mobile-platform-menu{
   display:none;
+  position:relative;
+  flex:0 0 auto;
+  margin-left:auto;
 }
 
 .mobile-platform-menu summary,
@@ -1926,6 +1929,15 @@ input[readonly]{
   font-weight:900;
   text-transform:uppercase;
   cursor:pointer;
+  list-style:none;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+}
+
+.mobile-platform-menu summary::-webkit-details-marker{
+  display:none;
 }
 
 .mobile-platform-menu[open] summary,
@@ -1937,14 +1949,17 @@ input[readonly]{
 .mobile-platform-menu a{
   display:block;
   margin-top:6px;
-  padding:11px 12px;
+  min-height:44px;
+  padding:12px 14px;
   border:1px solid rgba(179,123,8,.52);
   border-radius:var(--radius-sm);
   background:#111;
   color:#f5f1e8;
   font-weight:900;
+  line-height:1.1;
   text-decoration:none;
   text-transform:uppercase;
+  touch-action:manipulation;
 }
 
 .mobile-platform-menu a[aria-current="page"]{
@@ -1975,9 +1990,6 @@ input[readonly]{
 
 .matrix-page .mobile-platform-menu{
   display:block;
-  flex:0 0 auto;
-  margin-left:auto;
-  position:relative;
 }
 
 .matrix-page .mobile-platform-menu summary{
@@ -2006,6 +2018,8 @@ input[readonly]{
 
   .platform-page .m4-header{
     gap:8px;
+    align-items:center;
+    flex-wrap:nowrap;
   }
 
   .platform-page .locked-nav{
@@ -2014,11 +2028,8 @@ input[readonly]{
 
   .platform-page .mobile-platform-menu{
     display:block;
-    flex:1 1 100%;
-  }
-
-  .platform-page .m4-header{
-    align-items:flex-start;
+    flex:0 0 auto;
+    margin-left:auto;
   }
 
   .matrix-page .m4-header{
@@ -4877,7 +4888,7 @@ input[readonly]{
 .package-menu-drawer a{
   display:flex;
   align-items:center;
-  min-height:42px;
+  min-height:44px;
   padding:0 12px;
   border:1px solid rgba(179,123,8,.72);
   border-radius:4px;
@@ -4888,6 +4899,7 @@ input[readonly]{
   font-weight:900;
   text-decoration:none;
   text-transform:uppercase;
+  touch-action:manipulation;
 }
 
 .package-hero{
@@ -7122,10 +7134,6 @@ input[readonly]{
 
   .target-page .brand-lockup .kicker{
     display:none;
-  }
-
-  .target-page .target-mobile-menu[open]{
-    flex-basis:100%;
   }
 
   .target-page .target-mobile-menu[open] summary{

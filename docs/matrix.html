@@ -184,6 +184,12 @@
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
+document.querySelectorAll(".mobile-platform-menu").forEach(menu => {
+  menu.addEventListener("click", event => {
+    if (event.target.closest("a")) menu.open = false;
+  });
+});
+
 const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
