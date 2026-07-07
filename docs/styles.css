@@ -622,10 +622,10 @@ button:active,
 }
 
 .evidence-preview.evidence-workspace{
-  grid-template-columns:minmax(320px, min(76vw, 820px)) minmax(220px,1fr);
+  grid-template-columns:minmax(360px, min(82vw, 960px)) minmax(200px, .8fr);
   align-items:stretch;
-  height:720px;
-  min-height:720px;
+  height:760px;
+  min-height:760px;
   overflow:hidden;
 }
 
@@ -938,7 +938,7 @@ button:active,
   position:relative;
   display:block;
   width:100%;
-  max-width:820px;
+  max-width:960px;
   height:100%;
   min-height:0;
   contain:layout paint;
@@ -5736,15 +5736,18 @@ input[readonly]{
 }
 
 .target-page .upload-panel{
-  border-color:rgba(179,123,8,.72);
-  background:#0b0b0b;
+  gap:5px;
+  padding:6px;
+  border-color:rgba(179,123,8,.42);
+  background:#090909;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .target-page .workflow-control-row{
-  border-color:rgba(179,123,8,.72);
+  padding:6px;
+  border-color:rgba(179,123,8,.56);
   background:linear-gradient(180deg,#141414,#080808);
-  box-shadow:0 8px 18px rgba(0,0,0,.26);
+  box-shadow:0 5px 14px rgba(0,0,0,.22);
 }
 
 .target-page .workflow-control-row .button,
@@ -5834,8 +5837,11 @@ input[readonly]{
 }
 
 .target-page .evidence-preview{
-  border-color:rgba(179,123,8,.54);
-  background:linear-gradient(180deg,#111,#080808);
+  gap:10px;
+  padding:6px;
+  border-color:rgba(179,123,8,.34);
+  border-style:solid;
+  background:linear-gradient(180deg,#0d0d0d,#070707);
 }
 
 .target-scroll-cue{
@@ -5862,9 +5868,9 @@ input[readonly]{
 }
 
 .target-page .evidence-meta{
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.06);
   border-radius:var(--radius);
-  background:#111;
+  background:#0e0e0e;
   color:#f5f1e8;
 }
 
@@ -5875,8 +5881,9 @@ input[readonly]{
 }
 
 .target-page .evidence-preview img{
-  border-color:#b37b08;
+  border-color:rgba(179,123,8,.84);
   background:#f4ead5;
+  box-shadow:0 14px 30px rgba(0,0,0,.34);
 }
 
 .target-page .authority-results-panel{
