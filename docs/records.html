@@ -255,28 +255,41 @@ function gssfCompetitionRecord(session, pkg) {
   };
 }
 
-function gssfShotClassificationsHtml(pkg) {
+function gssfShotClassificationsListHtml(pkg) {
   const classifications = backendHitClassifications(pkg);
   if (!classifications.length) return "";
   return `
-    <details class="sec-gssf-classifications">
-      <summary>Backend shot classifications</summary>
-      <ol>
-        ${classifications.map(hit => {
-          const coordinate = hit.coordinate || {};
-          const x = Number.isFinite(Number(coordinate.xPercent)) ? `${Number(coordinate.xPercent).toFixed(2)}%` : "--";
-          const y = Number.isFinite(Number(coordinate.yPercent)) ? `${Number(coordinate.yPercent).toFixed(2)}%` : "--";
-          const penalty = Number.isFinite(Number(hit.penaltySeconds)) ? `+${hit.penaltySeconds} sec` : "--";
-          return `
-            <li class="gssf-zone-card-${gssfZoneTone(hit.zone)}">
-              <strong>Shot ${escapeHtml(hit.shot || "")}</strong>
-              <span>${escapeHtml(hit.zone || "unclassified")}</span>
-              <em>${escapeHtml(penalty)}</em>
-              <small>${escapeHtml(x)} / ${escapeHtml(y)}</small>
-            </li>
-          `;
-        }).join("")}
-      </ol>
+    <ol class="sec-gssf-classification-list">
+      ${classifications.map(hit => {
+        const coordinate = hit.coordinate || {};
+        const x = Number.isFinite(Number(coordinate.xPercent)) ? `${Number(coordinate.xPercent).toFixed(2)}%` : "--";
+        const y = Number.isFinite(Number(coordinate.yPercent)) ? `${Number(coordinate.yPercent).toFixed(2)}%` : "--";
+        const penalty = Number.isFinite(Number(hit.penaltySeconds)) ? `+${hit.penaltySeconds} sec` : "--";
+        return `
+          <li class="gssf-zone-card-${gssfZoneTone(hit.zone)}">
+            <strong>Shot ${escapeHtml(hit.shot || "")}</strong>
+            <span>${escapeHtml(hit.zone || "unclassified")}</span>
+            <em>${escapeHtml(penalty)}</em>
+            <small>${escapeHtml(x)} / ${escapeHtml(y)}</small>
+          </li>
+        `;
+      }).join("")}
+    </ol>
+  `;
+}
+
+function gssfSecValidationDetailsHtml(session, pkg, competition) {
+  const evidenceLine = pkg.evidenceHash ? `<div>Evidence ID: ${escapeHtml(pkg.evidenceHash.slice(0, 12))}</div>` : "";
+  const classifications = gssfShotClassificationsListHtml(pkg);
+  return `
+    <details class="sec-gssf-validation-details">
+      <summary>Validation</summary>
+      <div class="sec-gssf-validation-body">
+        <div>${escapeHtml(gssfScoringSourceLine(pkg))}</div>
+        <div>Manual time source: ${escapeHtml(competition.manualTimeSource)}</div>
+        ${evidenceLine}
+        ${classifications ? `<strong>Backend shot classifications</strong>${classifications}` : ""}
+      </div>
     </details>
   `;
 }
@@ -479,9 +492,8 @@ function renderGssfSecCard(session, index, pkg) {
   const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
   const competition = gssfCompetitionRecord(session, pkg);
   const paperPenalty = `Paper Penalty: +${gssfFormatSeconds(competition.totalPaperPenaltySeconds)}`;
-  const officialTime = competition.officialMatchTimeSeconds === null ? "Official Match Time: unavailable" : `Official Match Time: ${gssfFormatSeconds(competition.officialMatchTimeSeconds)}`;
+  const matchTime = competition.officialMatchTimeSeconds === null ? "Match Time: unavailable" : `Match Time: ${gssfFormatSeconds(competition.officialMatchTimeSeconds)}`;
   const finalScore = competition.officialFinalScoreSeconds === null ? "time unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
-  const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
   return `
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
       <div class="history-thumb gssf-sec-thumb">
@@ -496,25 +508,22 @@ function renderGssfSecCard(session, index, pkg) {
         <div class="sec-setup-line">${[weapon, weaponMeta].filter(Boolean).join(" | ")}</div>
         ${attributionLine(snapshot)}
         <div class="sec-gssf-mission">${escapeHtml(missionLine)}</div>
-        <section class="sec-gssf-final-score" aria-label="Official GSSF final score">
-          <span>Official Final Score</span>
+        <section class="sec-gssf-final-score" aria-label="GSSF final score">
+          <span>Final Score</span>
           <strong>${escapeHtml(finalScore)}</strong>
-          <div class="sec-gssf-final-breakdown" aria-label="Official score breakdown">
+          <div class="sec-gssf-final-breakdown" aria-label="Score breakdown">
             <div>
-              <span>Official Match Time</span>
-              <strong>${escapeHtml(officialTime.replace(/^Official Match Time:\\s*/i, ""))}</strong>
+              <span>Match Time</span>
+              <strong>${escapeHtml(matchTime.replace(/^Match Time:\\s*/i, ""))}</strong>
             </div>
             <div>
-              <span>Backend Paper Penalty</span>
+              <span>Paper Penalty</span>
               <strong>${escapeHtml(paperPenalty.replace(/^Paper Penalty:\\s*/i, ""))}</strong>
             </div>
           </div>
-          <small>Time: manual | Penalty/Classifications: backend</small>
         </section>
         ${gssfBucketSummaryHtml(pkg)}
-        <div class="sec-gssf-source">${escapeHtml(gssfScoringSourceLine(pkg))} | Manual time source: ${escapeHtml(competition.manualTimeSource)}</div>
-        ${gssfShotClassificationsHtml(pkg)}
-        ${hashLine}
+        ${gssfSecValidationDetailsHtml(session, pkg, competition)}
       </div>
     </article>
   `;
