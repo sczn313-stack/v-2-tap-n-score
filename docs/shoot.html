@@ -30,10 +30,10 @@
   <section class="shoot-workflow">
     <div class="panel">
       <section class="target-session-context" aria-label="Today's range session">
-        <span id="missionWorkspaceEyebrow">Mission Workspace</span>
-        <strong id="targetSessionSummary">Target mission loading</strong>
-        <p class="mission-workspace-meta" id="missionWorkspaceMeta">Backend authority determines this workspace.</p>
-        <p class="mission-workspace-status" id="missionWorkspaceStatus">Mission Ready</p>
+        <span id="missionWorkspaceEyebrow">Target</span>
+        <strong id="targetSessionSummary">Loading target</strong>
+        <p class="mission-workspace-meta" id="missionWorkspaceMeta"></p>
+        <p class="mission-workspace-status" id="missionWorkspaceStatus">Ready</p>
         <p class="mission-workspace-guidance" id="missionWorkspaceGuidance">Add target photo to begin.</p>
         <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
       </section>
@@ -47,7 +47,7 @@
           <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
           <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
           <button class="button" type="button" id="addImpactMode">Tap Bullet Holes</button>
-          <button class="button" type="button" id="showResults">Complete Mission</button>
+          <button class="button" type="button" id="showResults">Show Results</button>
           <button class="button" type="button" id="undoImpact">Undo</button>
           <button class="button" type="button" id="clearMarks">Clear</button>
           <button class="button" type="button" id="saveMarks">Save Session</button>
@@ -58,7 +58,6 @@
             <div class="target-intel-stack" id="resultsGrid"></div>
           </div>
         </div>
-        <p class="target-scroll-cue" id="targetScrollCue"><span aria-hidden="true">☝ ↓</span> Scroll down for your results, insights, and more</p>
       </section>
     </div>
   </section>
@@ -152,7 +151,7 @@ const STATIC_TARGET_IDENTITY = {
   }
 };
 let missionResolutionStatus = TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle";
-let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target mission..." : "";
+let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target..." : "";
 let gssfResultDisplayMode = TARGET_QUERY.get("gssf_display_mode") === "developer" ? "developer" : "shooter";
 const savedGssfOfficialMatchTime = session && (session.officialMatchTimeSeconds ?? session.gssfOfficialMatchTimeSeconds);
 let gssfOfficialMatchTimeSeconds = savedGssfOfficialMatchTime !== null
@@ -322,7 +321,7 @@ function renderTargetHeaderIdentity() {
   header.textContent = `Target: ${identity.targetName || "Target"}`;
   header.title = [
     identity.targetProfileId ? `Target Profile: ${identity.targetProfileId}` : "",
-    identity.missionFamily ? `Mission: ${identity.missionFamily}` : "",
+    identity.missionFamily ? `Type: ${identity.missionFamily}` : "",
     identity.manufacturer ? `Manufacturer: ${identity.manufacturer}` : "",
     identity.discipline ? `Discipline: ${identity.discipline}` : "",
     identity.qrId ? `QR: ${identity.qrId}` : ""
@@ -340,7 +339,7 @@ function zeroingMissionProgress() {
   if (!currentAimPoint) return "Tap aim point";
   if (!currentImpactPoints.length) return "Tap bullet holes";
   if (!resultsShown) return `${currentImpactPoints.length} impacts recorded`;
-  if (!sessionSaved) return "Ready to save SEC";
+  if (!sessionSaved) return "Ready to save";
   return "Session saved";
 }
 
@@ -348,7 +347,7 @@ function gssfMissionProgress() {
   if (!hasMarkableEvidence()) return "Add target photo";
   if (!currentImpactPoints.length) return "Tap stage hits";
   if (!resultsShown) return `${currentImpactPoints.length} hits recorded`;
-  if (!sessionSaved) return "Ready to save SEC";
+  if (!sessionSaved) return "Ready to save";
   return "Session saved";
 }
 
@@ -356,45 +355,45 @@ function zeroingMissionGuidance() {
   if (!hasMarkableEvidence()) return "Add Target Photo";
   if (!currentAimPoint) return "Tap Aim Point";
   if (!currentImpactPoints.length) return "Tap Bullet Holes";
-  if (!resultsShown) return "Complete Mission";
+  if (!resultsShown) return "Show Results";
   if (!sessionSaved) return "Save Session";
-  return "View SEC";
+  return "View Record";
 }
 
 function zeroingMissionStatus() {
-  if (!hasMarkableEvidence()) return "Mission Ready";
+  if (!hasMarkableEvidence()) return "Ready";
   if (!currentAimPoint) return "Awaiting Aim Point";
   if (!currentImpactPoints.length) return "Awaiting Impacts";
-  if (!resultsShown) return "Ready to Complete";
-  if (!sessionSaved) return "Mission Complete";
-  return "SEC Saved";
+  if (!resultsShown) return "Ready for Results";
+  if (!sessionSaved) return "Results Ready";
+  return "Saved";
 }
 
 function gssfMissionGuidance() {
   if (!hasMarkableEvidence()) return "Add Target Photo";
   if (!currentImpactPoints.length) return "Record Impacts";
-  if (!resultsShown) return "Complete Mission";
+  if (!resultsShown) return "Show Results";
   if (!sessionSaved) return "Save Session";
-  return "View SEC";
+  return "View Record";
 }
 
 function gssfMissionStatus() {
-  if (!hasMarkableEvidence()) return "Mission Ready";
+  if (!hasMarkableEvidence()) return "Ready";
   if (!currentImpactPoints.length) return "Recording Impacts";
-  if (!resultsShown) return "Ready to Complete";
-  if (!sessionSaved) return "Mission Complete";
-  return "SEC Saved";
+  if (!resultsShown) return "Ready for Results";
+  if (!sessionSaved) return "Results Ready";
+  return "Saved";
 }
 
 function trainingMissionGuidance(authorityPackage) {
   if (!hasMarkableEvidence()) return "Add Target Photo";
-  if (trainingDrillFinished) return "Save Training SEC";
+  if (trainingDrillFinished) return "Save Results";
   return trainingStageGuidance(authorityPackage, trainingStageIndex);
 }
 
 function trainingMissionStatus(authorityPackage) {
-  if (!hasMarkableEvidence()) return "Mission Ready";
-  if (trainingDrillFinished) return "Mission Complete";
+  if (!hasMarkableEvidence()) return "Ready";
+  if (trainingDrillFinished) return "Results Ready";
   const progress = missionStageProgress(authorityPackage);
   return progress || "Training In Progress";
 }
@@ -404,40 +403,40 @@ function missionWorkspaceDescriptor() {
   const targetName = identity.targetName || "Target";
   if (isMissionResolving()) {
     return {
-      eyebrow: "Resolving Mission",
+      eyebrow: "Target",
       title: targetName,
-      meta: "Backend authority is loading the target mission.",
-      status: "Loading Mission",
-      guidance: "Please wait for mission authority before shooting.",
+      meta: "",
+      status: "Loading",
+      guidance: "Getting your target ready.",
       chooseLabel: "Add Target Photo",
       impactLabel: "Tap Hits",
-      completeLabel: "Complete Mission"
+      completeLabel: "Show Results"
     };
   }
   if (isMissionResolutionUnavailable()) {
     return {
-      eyebrow: "Mission Unavailable",
+      eyebrow: "Target",
       title: targetName,
-      meta: "Authority is incomplete for this target.",
-      status: "Mission Unavailable",
-      guidance: "Unable to load target mission. Try again.",
+      meta: "This target is not ready yet.",
+      status: "Target Unavailable",
+      guidance: "Unable to load this target. Try again.",
       chooseLabel: "Add Target Photo",
       impactLabel: "Tap Hits",
-      completeLabel: "Complete Mission"
+      completeLabel: "Show Results"
     };
   }
   if (isDotTortureAuthoritySession()) {
     const authorityPackage = dotTortureWorkspacePackage();
     const stageProgress = missionStageProgress(authorityPackage);
     return {
-      eyebrow: "Training Mission",
+      eyebrow: "Practice",
       title: authorityPackage.target_display_name || authorityPackage.targetDisplayName || targetName,
       meta: [stageProgress, trainingStageSummary(authorityPackage)].filter(Boolean).join(" • "),
       status: trainingMissionStatus(authorityPackage),
       guidance: trainingMissionGuidance(authorityPackage),
       chooseLabel: "Add Target Photo",
       impactLabel: "Stage Hits",
-      completeLabel: trainingDrillFinished ? "Training SEC Ready" : "Complete Mission"
+      completeLabel: trainingDrillFinished ? "Results Ready" : "Show Results"
     };
   }
   if (isGssfAuthoritySession()) {
@@ -449,18 +448,18 @@ function missionWorkspaceDescriptor() {
       guidance: gssfMissionGuidance(),
       chooseLabel: "Add Target Photo",
       impactLabel: "Tap Stage Hits",
-      completeLabel: "Complete Mission"
+      completeLabel: "Show Results"
     };
   }
   return {
-    eyebrow: "Zeroing Mission",
+    eyebrow: "Zeroing",
     title: targetName,
     meta: zeroingMissionProgress(),
     status: zeroingMissionStatus(),
     guidance: zeroingMissionGuidance(),
     chooseLabel: "Add Target Photo",
     impactLabel: "Tap Bullet Holes",
-    completeLabel: "Complete Mission"
+    completeLabel: "Show Results"
   };
 }
 
@@ -477,13 +476,16 @@ function renderMissionWorkspaceChrome() {
   const completeButton = document.getElementById("showResults");
   if (eyebrow) eyebrow.textContent = descriptor.eyebrow;
   if (summary) summary.textContent = descriptor.title;
-  if (meta) meta.textContent = descriptor.meta || "";
-  if (status) status.textContent = descriptor.status || "Mission Ready";
+  if (meta) {
+    meta.textContent = descriptor.meta || "";
+    meta.classList.toggle("is-hidden", !descriptor.meta);
+  }
+  if (status) status.textContent = descriptor.status || "Ready";
   if (guidance) guidance.textContent = descriptor.guidance || "";
   if (chooseTarget) chooseTarget.textContent = descriptor.chooseLabel || "Add Target Photo";
   if (aimButton) aimButton.textContent = "Tap Aim Point";
   if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Bullet Holes";
-  if (completeButton) completeButton.textContent = descriptor.completeLabel || "Complete Mission";
+  if (completeButton) completeButton.textContent = descriptor.completeLabel || "Show Results";
 }
 
 function isGssfAuthoritySession() {
@@ -541,15 +543,15 @@ function isMissionResolutionUnavailable() {
 
 function missionResolutionHtml() {
   const message = isMissionResolutionUnavailable()
-    ? "Unable to load target mission. Try again."
-    : (missionResolutionMessage || "Loading target mission...");
+    ? "Unable to load this target. Try again."
+    : (missionResolutionMessage || "Loading target...");
   const subtext = isMissionResolutionUnavailable()
-    ? "Backend mission authority did not return a usable package."
-    : "Backend authority is resolving the target profile.";
+    ? "This target is not ready yet."
+    : "Getting your target ready.";
   return `
-    <div class="authority-results-panel training-results-panel mission-resolution-panel" id="missionResolutionPanel" aria-label="Mission resolution" role="status" aria-live="polite">
+    <div class="authority-results-panel training-results-panel mission-resolution-panel" id="missionResolutionPanel" aria-label="Target loading" role="status" aria-live="polite">
       <div class="training-result-header">
-        <span>Target Mission</span>
+        <span>Target</span>
         <strong>${escapeHtml(message)}</strong>
         <em>${escapeHtml(subtext)}</em>
       </div>
@@ -899,7 +901,7 @@ function conciseTrainingInstruction(authorityPackage, index) {
     .replace(/^Stage\s+\d+:\s*/i, "")
     .replace(/^[^—-]+[—-]\s*/, "")
     .trim();
-  if (!guidance) return "Follow backend-authorized stage guidance.";
+  if (!guidance) return "Follow the stage guidance.";
   return guidance
     .split(/(?<=\.)\s+/)
     .filter(Boolean)
@@ -1134,7 +1136,7 @@ function trainingSecPreviewHtml(authorityPackage) {
     <section class="training-sec-preview is-hidden" id="trainingSecPreview" aria-label="Training Shooter Experience Card">
       <div class="training-sec-title">
         <span>Shooter Experience Card — Training</span>
-        <strong>Mission: ${escapeHtml(targetDisplayName)}</strong>
+        <strong>${escapeHtml(targetDisplayName)}</strong>
       </div>
       <div class="training-manual-score-form" id="trainingManualScoreForm" aria-label="Manual Dot Torture score">
         <label>Total Score<input id="trainingManualScore" type="number" inputmode="numeric" min="0" max="${escapeHtml(maxScore)}" step="1" placeholder="0-${escapeHtml(maxScore)}" /></label>
@@ -1193,7 +1195,7 @@ function dotTortureTrainingHtml(authorityPackage) {
     <div class="dot-training-workspace${evidence ? " has-target-evidence" : ""}" id="dotTortureTrainingResult" aria-label="Dot Torture training workspace">
       <section class="dot-training-hero" aria-label="Dot Torture mission">
         <div class="dot-training-title">
-          <span>Training Mission</span>
+          <span>Practice</span>
           <strong>${escapeHtml(targetDisplayName)}</strong>
           <small>${escapeHtml(targetShortName)}</small>
         </div>
@@ -1219,7 +1221,7 @@ function dotTortureTrainingHtml(authorityPackage) {
       <section class="dot-stage-card" aria-label="Current Dot Torture stage">
         <span class="dot-stage-kicker" id="trainingStageLabel">${escapeHtml(trainingStageLabel(authorityPackage, 0))}</span>
         <strong class="dot-stage-number" id="trainingStageTitle">Stage 1</strong>
-        <p id="trainingCurrentGuidance">${hasBackendTrainingPackage ? conciseTrainingInstruction(authorityPackage, 0) : "Backend-authorized stage guidance is loading."}</p>
+        <p id="trainingCurrentGuidance">${hasBackendTrainingPackage ? conciseTrainingInstruction(authorityPackage, 0) : "Stage guidance is loading."}</p>
         <div class="dot-stage-rounds">
           <span>Rounds</span>
           <strong id="trainingStageRounds">${escapeHtml(currentRounds || "--")}</strong>
@@ -1253,9 +1255,9 @@ function targetIntelStackHtml() {
   }
   if (isGssfAuthoritySession()) {
     return `
-      <div class="authority-results-panel gssf-results-panel" aria-label="GSSF authority results">
+      <div class="authority-results-panel gssf-results-panel" aria-label="GSSF results">
         <div class="gssf-authority-result" id="gssfAuthorityResult">
-          <div>Mission: GSSF AC-1</div>
+          <div>GSSF AC-1</div>
           <div>Down Zero:</div>
           <div>+1:</div>
           <div>+3:</div>
@@ -1268,7 +1270,7 @@ function targetIntelStackHtml() {
     `;
   }
   return `
-    <div class="authority-results-panel" aria-label="Authority results">
+    <div class="authority-results-panel" aria-label="Results">
       <div class="authority-evidence-summary">
         <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
         <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
@@ -1410,16 +1412,16 @@ function bindGuidanceCard() {
       result.textContent = "Dial:";
       return;
     }
-    result.textContent = "Dial: Checking authority...";
+    result.textContent = "Dial: Checking...";
     result.dataset.unit = selectedDistanceUnit;
     result.dataset.adjustmentUnit = selectedAdjustmentUnit;
     try {
       const authority = await requestDistanceClickQuery(desired);
       result.textContent = authority && authority.ok === true && authority.display
         ? authority.display
-        : "Dial: Backend authority required";
+        : "Dial: Not enough info to calculate";
     } catch (error) {
-      result.textContent = "Dial: Backend authority required";
+      result.textContent = "Dial: Not enough info to calculate";
     }
   });
 }
@@ -1651,7 +1653,7 @@ function applyBackendAuthorityPackage(authorityPackage) {
 async function resolveMissionFromTargetProfile() {
   if (!TARGET_PROFILE_LAUNCH_ID) return;
   missionResolutionStatus = "resolving";
-  missionResolutionMessage = "Loading target mission...";
+  missionResolutionMessage = "Loading target...";
   backendAuthorityPackage = null;
   syncAuthorityDerivedState();
   renderMissionResolutionState();
@@ -1674,7 +1676,7 @@ async function resolveMissionFromTargetProfile() {
     backendAuthorityPackage = null;
     syncAuthorityDerivedState();
     missionResolutionStatus = "unavailable";
-    missionResolutionMessage = "Unable to load target mission. Try again.";
+    missionResolutionMessage = "Unable to load this target. Try again.";
     renderMissionResolutionState();
   }
 }
@@ -1977,26 +1979,26 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
   const officialTimeText = result.officialMatchTimeSeconds === null ? "Enter official match time" : gssfFormatSeconds(result.officialMatchTimeSeconds);
   const paperPenaltyText = `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
   return `
-    <section class="gssf-final-score-panel" aria-label="GSSF official final score">
-      <span>Official Final Score</span>
+    <section class="gssf-final-score-panel" aria-label="GSSF final score">
+      <span>Final Score</span>
       <strong id="gssfOfficialFinalScore">${escapeHtml(finalText)}</strong>
-      <div class="gssf-final-score-breakdown" aria-label="Official score breakdown">
+      <div class="gssf-final-score-breakdown" aria-label="Score breakdown">
         <div>
-          <span>Official Match Time</span>
+          <span>Match Time</span>
           <strong id="gssfOfficialTimeDisplay">${escapeHtml(officialTimeText)}</strong>
         </div>
         <div>
-          <span>Backend Paper Penalty</span>
+          <span>Paper Penalty</span>
           <strong>${escapeHtml(paperPenaltyText)}</strong>
         </div>
       </div>
-      <small>Time: manual | Penalty/Classifications: backend</small>
+      <small>Match time + paper penalty</small>
     </section>
     <label class="gssf-official-time-entry" for="gssfOfficialMatchTime">
-      <span>Official Match Time</span>
+      <span>Match Time</span>
       <input id="gssfOfficialMatchTime" type="number" inputmode="decimal" min="0" step="0.01" placeholder="42.31" value="${escapeHtml(inputValue)}" />
       <small>Enter the official timer value from the range.</small>
-      <em id="gssfOfficialTimeSource">Manual time source: shooter-entered official timer</em>
+      <em id="gssfOfficialTimeSource">Manual entry</em>
     </label>
   `;
 }
@@ -2060,7 +2062,7 @@ function gssfBucketSummaryHtml(authorityPackage) {
       </div>
     `;
   }).join("");
-  return `<div class="gssf-bucket-grid" aria-label="GSSF backend classification buckets">${cards}</div>`;
+  return `<div class="gssf-bucket-grid" aria-label="GSSF scoring buckets">${cards}</div>`;
 }
 
 function setGssfResultDisplayMode(mode) {
@@ -2190,7 +2192,7 @@ function renderBackendAuthorityMarkers(authorityPackage) {
   }
   const poib = backendPoibDisplayCoordinate(authorityPackage);
   if (poib) {
-    parts.push(markerPointHtml("target-marker poib-auto-marker", poib, "", 'aria-label="Backend authority POIB"'));
+    parts.push(markerPointHtml("target-marker poib-auto-marker", poib, "", 'aria-label="Point of impact"'));
   }
   return parts.join("");
 }
@@ -2320,7 +2322,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
   if (stageRounds) stageRounds.textContent = String((stages[trainingStageIndex] && stages[trainingStageIndex].rounds) || "--");
   if (guidance) guidance.innerHTML = hasBackendTrainingPackage
     ? conciseTrainingInstruction(authorityPackage, trainingStageIndex)
-    : "Backend-authorized stage guidance is loading.";
+    : "Stage guidance is loading.";
   if (beginButton) {
     beginButton.disabled = !hasBackendTrainingPackage || trainingDrillFinished;
     beginButton.textContent = trainingStageIndex >= maxIndex ? "Finish Drill" : (trainingStageIndex === 0 ? "Begin Stage" : "Next Stage");
@@ -2368,8 +2370,8 @@ function renderDotTortureTrainingResults(authorityPackage) {
   }
   if (status) {
     status.textContent = !hasBackendTrainingPackage
-      ? "Backend stage guidance required."
-      : (trainingDrillFinished ? "Training SEC ready. Save when ready." : "");
+      ? "Stage guidance required."
+      : (trainingDrillFinished ? "Results ready. Save when ready." : "");
   }
   if (secPreview) secPreview.classList.toggle("is-hidden", !trainingDrillFinished);
   if (savedStatus) savedStatus.textContent = sessionSaved ? "saved" : "pending";
@@ -2860,7 +2862,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = "Authority service unavailable. Please try again.";
+    authorityStatusMessage = "Scoring service unavailable. Please try again.";
     renderResults();
   }
   renderMarkStatus();
