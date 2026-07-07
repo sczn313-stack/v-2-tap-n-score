@@ -432,6 +432,8 @@ function renderDotTortureTrendCard(records, label = "Dot Torture") {
 
 function renderTrainingSecCard(session, index, pkg) {
   const snapshot = session.matrixSnapshot || {};
+  const evidence = session.targetEvidenceImage;
+  const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
   const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
   const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
@@ -452,32 +454,48 @@ function renderTrainingSecCard(session, index, pkg) {
   const missesDisplay = misses !== null && misses !== undefined && misses !== "" ? String(misses) : "pending/manual";
   const notesLine = manual.notes ? `<div><span>Notes</span><strong>${escapeHtml(manual.notes)}</strong></div>` : "";
   const stageBreakdown = trainingStageBreakdownHtml(manual.stageScores || sec.stageScores);
-  const hashLine = pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
+  const validationLine = pkg.evidenceHash ? `
+    <details class="sec-gssf-validation-details">
+      <summary>Validation</summary>
+      <div class="sec-gssf-validation-body">
+        <div>Evidence ID: ${escapeHtml(pkg.evidenceHash.slice(0, 12))}</div>
+      </div>
+    </details>
+  ` : "";
   return `
     <article class="history-card training-sec-card" data-session-id="${session.sessionId}">
-      <div class="training-sec-card-heading">
-        <span>Training SEC</span>
-        <strong>Shooter Experience Card — Training</strong>
-        <em>${cleanDateTime(session.timestamp)}</em>
+      <div class="history-thumb training-sec-thumb">
+        <img src="${thumbnail}" alt="Saved training target evidence" />
       </div>
-      <div class="training-sec-card-grid">
-        <div><span>Mission</span><strong>${escapeHtml(targetDisplayName)}</strong></div>
-        <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
-        <div><span>Weapon</span><strong>${escapeHtml(weapon)}</strong></div>
-        ${weaponMeta ? `<div><span>Weapon Catalog</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
-        <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
-        <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
-        <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
-        <div><span>Score</span><strong>${escapeHtml(scoreDisplay)}</strong></div>
-        <div><span>Percentage</span><strong>${escapeHtml(percentageDisplay)}</strong></div>
-        <div><span>Stage Summary</span><strong>${escapeHtml(stageSummary)}</strong></div>
-        <div><span>Misses</span><strong>${escapeHtml(missesDisplay)}</strong></div>
-        <div><span>Time</span><strong>${escapeHtml(time)}</strong></div>
-        <div><span>Session Saved</span><strong>${session.savedToSEC ? "saved" : "pending"}</strong></div>
-        ${notesLine}
+      <div class="training-sec-card-body">
+        <div class="training-sec-card-heading">
+          <span>Practice</span>
+          <strong>${escapeHtml(targetDisplayName)}</strong>
+          <em>${cleanDateTime(session.timestamp)}</em>
+        </div>
+        <section class="sec-journal-score" aria-label="Saved practice score">
+          <span>Final Score</span>
+          <strong>${escapeHtml(scoreDisplay)}</strong>
+        </section>
+        <div class="sec-journal-grid">
+          <div><span>Firearm</span><strong>${escapeHtml(weapon || "--")}</strong></div>
+          <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
+          <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
+          <div><span>Time</span><strong>${escapeHtml(time)}</strong></div>
+          ${weaponMeta ? `<div><span>Weapon Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
+        </div>
+        <div class="training-sec-card-grid">
+          <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
+          <div><span>Total Rounds</span><strong>${escapeHtml(totalRounds)}</strong></div>
+          <div><span>Max Score</span><strong>${escapeHtml(maxScore)}</strong></div>
+          <div><span>Percentage</span><strong>${escapeHtml(percentageDisplay)}</strong></div>
+          <div><span>Stage Summary</span><strong>${escapeHtml(stageSummary)}</strong></div>
+          <div><span>Misses</span><strong>${escapeHtml(missesDisplay)}</strong></div>
+          ${notesLine}
+        </div>
+        ${stageBreakdown}
+        ${validationLine}
       </div>
-      ${stageBreakdown}
-      ${hashLine}
     </article>
   `;
 }
@@ -501,13 +519,7 @@ function renderGssfSecCard(session, index, pkg) {
         <div class="history-evidence-layer">${authorityVisual(session)}</div>
       </div>
       <div class="history-copy">
-        <div class="history-title">
-          <strong>GSSF SEC #${index + 1}</strong>
-          <span>${cleanDateTime(session.timestamp)}</span>
-        </div>
-        <div class="sec-setup-line">${[weapon, weaponMeta].filter(Boolean).join(" | ")}</div>
-        ${attributionLine(snapshot)}
-        <div class="sec-gssf-mission">${escapeHtml(missionLine)}</div>
+        <div class="sec-gssf-mission">${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</div>
         <section class="sec-gssf-final-score" aria-label="GSSF final score">
           <span>Final Score</span>
           <strong>${escapeHtml(finalScore)}</strong>
@@ -522,6 +534,12 @@ function renderGssfSecCard(session, index, pkg) {
             </div>
           </div>
         </section>
+        <div class="sec-journal-grid">
+          <div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div>
+          <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
+          ${weaponMeta ? `<div><span>Weapon Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
+        </div>
+        ${attributionLine(snapshot)}
         ${gssfBucketSummaryHtml(pkg)}
         ${gssfSecValidationDetailsHtml(session, pkg, competition)}
       </div>
@@ -611,6 +629,20 @@ function authorityDetailLine(pkg) {
   return parts.length ? `<div class="sec-authority-detail">${parts.join(" | ")}</div>` : "";
 }
 
+function zeroingValidationDetailsHtml(pkg, hasAuthority) {
+  const evidenceLine = hasAuthority && pkg.evidenceHash ? `<div>Evidence ID: ${escapeHtml(pkg.evidenceHash.slice(0, 12))}</div>` : "";
+  const sourceLine = hasAuthority ? `<div>Scoring source: Backend</div>` : `<div>Scoring details unavailable.</div>`;
+  return `
+    <details class="sec-gssf-validation-details">
+      <summary>Validation</summary>
+      <div class="sec-gssf-validation-body">
+        ${sourceLine}
+        ${evidenceLine}
+      </div>
+    </details>
+  `;
+}
+
 function renderHistory() {
   const savedSessions = SCZN3M4.getSessionHistory().slice()
     .filter(session => session && session.savedToSEC === true)
@@ -650,31 +682,35 @@ function renderHistory() {
     const correction = hasAuthority ? (pkg.correction || {}) : {};
     const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
     const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
-    const scorePill = score !== null ? `<span class="sec-score ${scoreClass(score)}">SCORE <strong>${score}</strong></span>` : "";
-    const authorityMessage = hasAuthority ? "" : `<div class="sec-authority-missing">Backend authority package unavailable.</div>`;
-    const hashLine = hasAuthority && pkg.evidenceHash ? `<div class="sec-authority-hash">Evidence: ${pkg.evidenceHash.slice(0, 12)}</div>` : "";
+    const authorityMessage = hasAuthority ? "" : `<div class="sec-authority-missing">Scoring details unavailable.</div>`;
+    const scoreDisplay = score !== null ? String(score) : "--";
+    const correctionDisplay = [
+      compactClick(clicks.elevation, "elevation"),
+      compactClick(clicks.windage, "windage")
+    ].filter(Boolean).join(" / ") || "--";
     return `
-      <article class="history-card" data-session-id="${session.sessionId}">
+      <article class="history-card zeroing-sec-card" data-session-id="${session.sessionId}">
           <div class="history-thumb">
             <img src="${thumbnail}" alt="Uploaded target evidence thumbnail" />
             <div class="history-evidence-layer">${authorityVisual(session)}</div>
           </div>
         <div class="history-copy">
-          <div class="history-title">
-            <strong>Session #${index + 1}</strong>
-            <span>${cleanDateTime(session.timestamp)}</span>
+          <section class="sec-journal-score" aria-label="Saved target score">
+            <span>Final Score</span>
+            <strong>${escapeHtml(scoreDisplay)}</strong>
+          </section>
+          <div class="sec-journal-grid">
+            <div><span>Firearm</span><strong>${escapeHtml(weapon || "--")}</strong></div>
+            <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
+            <div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div>
+            <div><span>Corrections</span><strong>${escapeHtml(correctionDisplay)}</strong></div>
+            <div><span>Hits</span><strong>${escapeHtml(shotCount)}</strong></div>
           </div>
-          <div class="sec-setup-line">${[weapon, weaponMeta, optic, ammo].filter(Boolean).join(" | ") || "--"}</div>
+          ${weaponMeta || optic || ammo ? `<div class="sec-setup-line">${[weaponMeta, optic, ammo].filter(Boolean).join(" | ")}</div>` : ""}
           ${attributionLine(snapshot)}
           ${authorityMessage}
           ${hasAuthority ? authorityDetailLine(pkg) : ""}
-          <div class="sec-intel-pill">
-            <span>${distanceDisplay(session)}</span>
-            ${scorePill}
-            <span class="sec-clicks"><strong>${compactClick(clicks.elevation, "elevation")}</strong><em>CLICKS</em><strong>${compactClick(clicks.windage, "windage")}</strong></span>
-            <span>${shotCount} Hits</span>
-          </div>
-          ${hashLine}
+          ${zeroingValidationDetailsHtml(pkg, hasAuthority)}
         </div>
       </article>
     `;
