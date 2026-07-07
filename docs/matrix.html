@@ -1447,6 +1447,20 @@ function setWeaponListExpanded(isExpanded) {
 function renderTargetModePill() {
   const pill = document.getElementById("targetModePill");
   if (!pill) return;
+  const hasExplicitTargetIntent = MATRIX_QUERY.has("target_profile_id")
+    || MATRIX_QUERY.has("targetProfileId")
+    || MATRIX_QUERY.has("mission_family")
+    || MATRIX_QUERY.has("missionFamily")
+    || MATRIX_QUERY.has("missionFamilyId")
+    || MATRIX_QUERY.has("target")
+    || MATRIX_QUERY.has("targetName")
+    || MATRIX_QUERY.has("qr_id")
+    || MATRIX_QUERY.has("qrId");
+  if (!hasExplicitTargetIntent) {
+    pill.classList.add("is-hidden");
+    pill.textContent = "";
+    return;
+  }
   const attribution = targetAttributionFromContext(collectFormSnapshot());
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
   const isDotTorture = attribution.target_profile_id === "dot_torture_ez2c_style_17";

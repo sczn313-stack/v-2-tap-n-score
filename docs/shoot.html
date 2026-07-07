@@ -341,7 +341,7 @@ function missionStageProgress(authorityPackage) {
 }
 
 function zeroingMissionProgress() {
-  if (!hasMarkableEvidence()) return "Add target photo";
+  if (!hasMarkableEvidence()) return "";
   if (!currentAimPoint) return "Tap aim point";
   if (!currentImpactPoints.length) return "Tap bullet holes";
   if (!resultsShown) return `${currentImpactPoints.length} impacts recorded`;
@@ -350,7 +350,7 @@ function zeroingMissionProgress() {
 }
 
 function gssfMissionProgress() {
-  if (!hasMarkableEvidence()) return "Add target photo";
+  if (!hasMarkableEvidence()) return "";
   if (!currentImpactPoints.length) return "Tap stage hits";
   if (!resultsShown) return `${currentImpactPoints.length} hits recorded`;
   if (!sessionSaved) return "Ready to save";
@@ -358,7 +358,7 @@ function gssfMissionProgress() {
 }
 
 function zeroingMissionGuidance() {
-  if (!hasMarkableEvidence()) return "Add Target Photo";
+  if (!hasMarkableEvidence()) return "Start With A Target Photo";
   if (!currentAimPoint) return "Tap Aim Point";
   if (!currentImpactPoints.length) return "Tap Bullet Holes";
   if (!resultsShown) return "Show Results";
@@ -376,7 +376,7 @@ function zeroingMissionStatus() {
 }
 
 function gssfMissionGuidance() {
-  if (!hasMarkableEvidence()) return "Add Target Photo";
+  if (!hasMarkableEvidence()) return "Start With A Target Photo";
   if (!currentImpactPoints.length) return "Record Impacts";
   if (!resultsShown) return "Show Results";
   if (!sessionSaved) return "Save Session";
@@ -392,7 +392,7 @@ function gssfMissionStatus() {
 }
 
 function trainingMissionGuidance(authorityPackage) {
-  if (!hasMarkableEvidence()) return "Add Target Photo";
+  if (!hasMarkableEvidence()) return "Start With A Target Photo";
   if (trainingDrillFinished) return "Save Results";
   return trainingStageGuidance(authorityPackage, trainingStageIndex);
 }
@@ -699,7 +699,12 @@ function isAuthorityPackageCalculated(authorityPackage) {
     return authorityPackage.ok === true && ["created", "calculated"].includes(String(authorityPackage.status || ""));
   }
   if (isGssfAuthorityPackage(authorityPackage)) {
-    return authorityPackage.ok === true && authorityPackage.status === "calculated";
+    const classifications = backendHitClassifications(authorityPackage);
+    const render = authorityPackage.renderCoordinates || {};
+    const renderHits = Array.isArray(render.hits) ? render.hits : [];
+    return authorityPackage.ok === true
+      && authorityPackage.status === "calculated"
+      && (classifications.length > 0 || renderHits.length > 0);
   }
   return !!(authorityPackage.status && authorityPackage.status.hasCorrection);
 }
@@ -1260,6 +1265,9 @@ function targetIntelStackHtml() {
     return dotTortureTrainingHtml(dotTortureWorkspacePackage());
   }
   if (isGssfAuthoritySession()) {
+    if (!resultsShown || !isGssfAuthorityPackage(authorityPackage) || !isAuthorityPackageCalculated(authorityPackage)) {
+      return "";
+    }
     return `
       <div class="authority-results-panel gssf-results-panel" aria-label="GSSF results">
         <div class="gssf-authority-result" id="gssfAuthorityResult">
