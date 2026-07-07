@@ -168,6 +168,9 @@ let gssfOfficialMatchTimeSeconds = savedGssfOfficialMatchTime !== null
   : null;
 let pendingEvidence = null;
 let displayedEvidence = null;
+const activeMarkPointers = new Set();
+let markTapCandidate = null;
+let markGestureCancelled = false;
 const savedAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
   ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
   : null;
@@ -1497,7 +1500,9 @@ function renderEvidencePreview(image) {
       renderMarkers();
     }, { once: true });
   }
-  markSurface.addEventListener("pointerdown", handleMarkPointer, { passive: false });
+  markSurface.addEventListener("pointerdown", handleMarkPointerDown, { passive: true });
+  markSurface.addEventListener("pointerup", handleMarkPointerUp, { passive: true });
+  markSurface.addEventListener("pointercancel", handleMarkPointerCancel, { passive: true });
   markSurface.addEventListener("contextmenu", event => event.preventDefault());
   renderMarkers();
   renderMarkStatus();
@@ -2757,11 +2762,50 @@ function handleMarkTap(event) {
   renderMarkStatus();
 }
 
-function handleMarkPointer(event) {
+function resetMarkPointerState() {
+  activeMarkPointers.clear();
+  markTapCandidate = null;
+  markGestureCancelled = false;
+}
+
+function handleMarkPointerDown(event) {
   if (resultsShown) return;
   if (!hasMarkableEvidence()) return;
-  handleMarkTap(event);
-  event.preventDefault();
+  activeMarkPointers.add(event.pointerId);
+  if (activeMarkPointers.size > 1) {
+    markGestureCancelled = true;
+    markTapCandidate = null;
+    return;
+  }
+  markGestureCancelled = false;
+  markTapCandidate = {
+    pointerId: event.pointerId,
+    pointerType: event.pointerType,
+    clientX: event.clientX,
+    clientY: event.clientY
+  };
+}
+
+function handleMarkPointerUp(event) {
+  const wasOnlyPointer = activeMarkPointers.size === 1 && activeMarkPointers.has(event.pointerId);
+  activeMarkPointers.delete(event.pointerId);
+  if (resultsShown || !hasMarkableEvidence()) {
+    resetMarkPointerState();
+    return;
+  }
+  if (!wasOnlyPointer || markGestureCancelled || !markTapCandidate || markTapCandidate.pointerId !== event.pointerId) {
+    if (!activeMarkPointers.size) resetMarkPointerState();
+    return;
+  }
+  const moveDistance = Math.hypot(event.clientX - markTapCandidate.clientX, event.clientY - markTapCandidate.clientY);
+  const maxTapMove = markTapCandidate.pointerType === "touch" ? 12 : 6;
+  if (moveDistance <= maxTapMove) handleMarkTap(event);
+  resetMarkPointerState();
+}
+
+function handleMarkPointerCancel(event) {
+  activeMarkPointers.delete(event.pointerId);
+  if (!activeMarkPointers.size) resetMarkPointerState();
 }
 
 if (TARGET_PROFILE_LAUNCH_ID) {
