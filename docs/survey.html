@@ -84,6 +84,12 @@
   </section>
 </main>
 <script>
+document.querySelectorAll(".mobile-platform-menu").forEach(menu => {
+  menu.addEventListener("click", event => {
+    if (event.target.closest("a")) menu.open = false;
+  });
+});
+
 const SURVEY_KEY = "SCZN3_SURVEY_RESPONSES";
 const form = document.getElementById("surveyForm");
 const message = document.getElementById("surveyMessage");
