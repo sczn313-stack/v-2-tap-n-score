@@ -102,6 +102,97 @@
     return next;
   }
 
+  function cleanDistanceUnit(unit) {
+    return String(unit || "").toUpperCase() === "M" ? "M" : "YDS";
+  }
+
+  function distanceUnitLabel(unit) {
+    return cleanDistanceUnit(unit) === "M" ? "m" : "yds";
+  }
+
+  function distanceNumber(value, fallback = 100) {
+    const match = String(value || "").match(/[\d.]+/);
+    const number = match ? Number(match[0]) : Number(value);
+    return Number.isFinite(number) && number > 0 ? number : fallback;
+  }
+
+  function targetProfileIdFrom(source = {}) {
+    return source.target_profile_id || source.targetProfileId || source.targetId || "";
+  }
+
+  function missionFamilyFrom(source = {}) {
+    return source.mission_family || source.missionFamily || source.missionFamilyId || "";
+  }
+
+  function isM4DistanceGovernedTarget(source = {}) {
+    const targetProfileId = String(targetProfileIdFrom(source)).toLowerCase();
+    const targetName = String(source.targetName || source.targetFamily || "").toLowerCase();
+    return (targetProfileId.includes("m4") && targetProfileId.includes("25"))
+      || (targetName.includes("m4") && targetName.includes("25"));
+  }
+
+  function activeSessionDistance(source = {}, existingSession = null) {
+    if (isM4DistanceGovernedTarget(source)) {
+      return {
+        value: 25,
+        unit: "M",
+        display: "25 m",
+        source: "atp",
+        locked: true,
+        targetProfileId: targetProfileIdFrom(source),
+        reason: "m4_25_meter_zero_atp"
+      };
+    }
+    const existing = existingSession && existingSession.sessionDistance;
+    if (existing && Number.isFinite(Number(existing.value))) {
+      const unit = cleanDistanceUnit(existing.unit);
+      const value = distanceNumber(existing.value);
+      return {
+        ...existing,
+        value,
+        unit,
+        display: existing.display || `${value} ${distanceUnitLabel(unit)}`,
+        source: existing.source || "session",
+        locked: existing.locked === true
+      };
+    }
+    const rawValue = source.targetDistanceValue || source.targetDistance || source.distance;
+    const unit = cleanDistanceUnit(source.targetDistanceUnit || (/m(eters?)?$/i.test(String(rawValue || "")) ? "M" : "YDS"));
+    const value = distanceNumber(rawValue, 100);
+    return {
+      value,
+      unit,
+      display: `${value} ${distanceUnitLabel(unit)}`,
+      source: source.targetDistanceSource || "weapon_profile",
+      locked: source.targetDistanceLocked === true,
+      targetProfileId: targetProfileIdFrom(source)
+    };
+  }
+
+  function buildActiveCalculationContext(source = {}, existingSession = null) {
+    const sessionDistance = activeSessionDistance(source, existingSession);
+    const angularUnit = String(source.opticAdjustmentUnit || source.adjustmentUnit || "MOA").toUpperCase() === "MRAD" ? "MRAD" : "MOA";
+    const clickValue = Number(
+      source.opticClickValue
+      || source.clickValue
+      || (angularUnit === "MRAD" ? source.opticClickValueMRAD || source.clickValueMRAD : source.opticClickValueMOA || source.clickValueMOA)
+      || (angularUnit === "MRAD" ? 0.1 : 0.25)
+    );
+    return {
+      contextVersion: "active-calculation-context-v1",
+      target_profile_id: targetProfileIdFrom(source),
+      targetProfileId: targetProfileIdFrom(source),
+      mission_family: missionFamilyFrom(source),
+      missionFamilyId: missionFamilyFrom(source),
+      sessionDistance,
+      establishedZero: source.establishedZero || existingSession?.establishedZero || null,
+      angularUnit,
+      clickValue: Number.isFinite(clickValue) && clickValue > 0 ? clickValue : (angularUnit === "MRAD" ? 0.1 : 0.25),
+      clickValueSource: "weapon_profile",
+      authorityStatus: "context-attached"
+    };
+  }
+
   function buildSession(matrixSnapshot) {
     const sessionNumber = getNextSessionNumber();
     const timestamp = nowStamp();
@@ -121,6 +212,7 @@
         authorityStatus: matrixSnapshot.authorityStatus || "profile-selected"
       }
       : { ...TARGET_AUTHORITY };
+    const activeCalculationContext = buildActiveCalculationContext(matrixSnapshot, null);
     return {
       sessionId: `baker-session-${String(sessionNumber).padStart(3, "0")}-${Date.now()}`,
       sessionNumber,
@@ -135,6 +227,8 @@
         frozenAt: timestamp
       },
       targetAuthority,
+      activeCalculationContext,
+      sessionDistance: activeCalculationContext.sessionDistance,
       shotData: {
         status: "not-started",
         group: [],
@@ -736,6 +830,7 @@
     getActiveMatrix,
     saveMatrixSnapshot,
     createSession,
+    buildActiveCalculationContext,
     replaceSession,
     updateActiveSession,
     attachCorrection,

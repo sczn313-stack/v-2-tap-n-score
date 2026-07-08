@@ -614,12 +614,45 @@ def test_distance_click_query_distance_only_does_not_fake_clicks():
         raise AssertionError("distance-only query must not return fake dialClicks")
 
 
+def test_distance_click_query_session_context_alone_does_not_authorize_clicks():
+    context = {
+        "sessionDistance": {"value": 100, "unit": "YDS", "source": "session"},
+        "angularUnit": "MOA",
+        "clickValue": 0.25,
+    }
+    result = distance_query(session_id="session-001", activeCalculationContext=context)
+    assert_equal(result["ok"], False, "context-only query ok")
+    assert_equal(result["reason"], "insufficient_authority", "context-only reason")
+    assert_equal(result["session_id"], "session-001", "context-only session id")
+    assert_equal(result["activeCalculationContext"], context, "context-only preserved context")
+    if "dialClicks" in result:
+        raise AssertionError("session context alone must not return fake dialClicks")
+
+
 def test_distance_click_query_approved_clicks():
     result = distance_query(authorityClicks=18, direction="UP")
     assert_equal(result["ok"], True, "approved clicks ok")
     assert_equal(result["dialClicks"], 18, "approved clicks count")
     assert_equal(result["direction"], "UP", "approved clicks direction")
     assert_equal(result["display"], "Dial: 18 Clicks ↑", "approved clicks display")
+
+
+def test_distance_click_query_uses_nested_transition_authority():
+    context = {
+        "sessionDistance": {"value": 25, "unit": "M", "source": "atp", "locked": True},
+        "angularUnit": "MOA",
+        "clickValue": 0.25,
+    }
+    result = distance_query(
+        session_id="m4-session-001",
+        activeCalculationContext=context,
+        distanceTransitionAuthority={"authorityClicks": 12, "direction": "DOWN"},
+    )
+    assert_equal(result["ok"], True, "nested transition ok")
+    assert_equal(result["dialClicks"], 12, "nested transition clicks")
+    assert_equal(result["direction"], "DOWN", "nested transition direction")
+    assert_equal(result["session_id"], "m4-session-001", "nested transition session id")
+    assert_equal(result["activeCalculationContext"], context, "nested transition context")
 
 
 def test_distance_click_query_angular_delta_moa():
@@ -688,7 +721,9 @@ def run():
         test_distance_click_query_missing_adjustment_unit,
         test_distance_click_query_missing_click_value,
         test_distance_click_query_distance_only_does_not_fake_clicks,
+        test_distance_click_query_session_context_alone_does_not_authorize_clicks,
         test_distance_click_query_approved_clicks,
+        test_distance_click_query_uses_nested_transition_authority,
         test_distance_click_query_angular_delta_moa,
         test_distance_click_query_angular_delta_mrad,
     ]

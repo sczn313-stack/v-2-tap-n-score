@@ -768,18 +768,26 @@ def _distance_query_number(payload: Dict[str, Any], key: str) -> Optional[float]
     return value if value is not None and value > 0 else None
 
 
-def _distance_query_unavailable(reason: str) -> Dict[str, Any]:
+def _distance_query_unavailable(reason: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    payload = payload if isinstance(payload, dict) else {}
     return {
         "ok": False,
         "reason": reason,
         "display": "Dial: Backend authority required",
         "method": "distance-click-authority-v1",
+        "session_id": payload.get("session_id") or payload.get("sessionId"),
+        "activeCalculationContext": payload.get("activeCalculationContext"),
     }
 
 
 def _distance_query_direction(payload: Dict[str, Any], default: str = "UP") -> str:
     direction = str(payload.get("direction") or payload.get("dialDirection") or default).upper()
     return direction if direction in {"UP", "DOWN"} else default
+
+
+def _distance_transition_authority(payload: Dict[str, Any]) -> Dict[str, Any]:
+    authority = payload.get("distanceTransitionAuthority")
+    return authority if isinstance(authority, dict) else {}
 
 
 def build_distance_click_query(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -798,33 +806,39 @@ def build_distance_click_query(payload: Dict[str, Any]) -> Dict[str, Any]:
     click_value = _num(payload.get("clickValue"), None)
 
     if current_distance is None:
-        return _distance_query_unavailable("missing_current_distance")
+        return _distance_query_unavailable("missing_current_distance", payload)
     if go_to_distance is None:
-        return _distance_query_unavailable("missing_go_to_distance")
+        return _distance_query_unavailable("missing_go_to_distance", payload)
     if distance_unit not in {"YDS", "M"}:
-        return _distance_query_unavailable("invalid_distance_unit")
+        return _distance_query_unavailable("invalid_distance_unit", payload)
     if adjustment_unit not in {"MOA", "MRAD"}:
-        return _distance_query_unavailable("invalid_adjustment_unit")
+        return _distance_query_unavailable("invalid_adjustment_unit", payload)
     if click_value is None or click_value <= 0:
-        return _distance_query_unavailable("invalid_click_value")
+        return _distance_query_unavailable("invalid_click_value", payload)
 
+    transition_authority = _distance_transition_authority(payload)
     approved_clicks = _num(
         _first_present(
             payload.get("authorityClicks"),
             payload.get("dialClicks"),
             payload.get("approvedClicks"),
+            transition_authority.get("authorityClicks"),
+            transition_authority.get("dialClicks"),
+            transition_authority.get("approvedClicks"),
         ),
         None,
     )
     if approved_clicks is not None:
         dial_clicks = int(round(abs(approved_clicks)))
-        direction = _distance_query_direction(payload)
+        direction = _distance_query_direction({**payload, **transition_authority})
         return {
             "ok": True,
             "dialClicks": dial_clicks,
             "direction": direction,
             "display": f"Dial: {dial_clicks} Clicks {'↑' if direction == 'UP' else '↓'}",
             "method": "distance-click-authority-v1-approved-clicks",
+            "session_id": payload.get("session_id") or payload.get("sessionId"),
+            "activeCalculationContext": payload.get("activeCalculationContext"),
         }
 
     angular_delta = _num(
@@ -832,21 +846,26 @@ def build_distance_click_query(payload: Dict[str, Any]) -> Dict[str, Any]:
             payload.get("authorityAngularDelta"),
             payload.get("angularDelta"),
             payload.get("dropDeltaAngular"),
+            transition_authority.get("authorityAngularDelta"),
+            transition_authority.get("angularDelta"),
+            transition_authority.get("dropDeltaAngular"),
         ),
         None,
     )
     if angular_delta is not None:
         dial_clicks = clicks_for_angular_value(angular_delta, adjustment_unit, click_value)
-        direction = _distance_query_direction(payload, "UP" if angular_delta >= 0 else "DOWN")
+        direction = _distance_query_direction({**payload, **transition_authority}, "UP" if angular_delta >= 0 else "DOWN")
         return {
             "ok": True,
             "dialClicks": dial_clicks,
             "direction": direction,
             "display": f"Dial: {dial_clicks} Clicks {'↑' if direction == 'UP' else '↓'}",
             "method": "distance-click-authority-v1-angular-delta",
+            "session_id": payload.get("session_id") or payload.get("sessionId"),
+            "activeCalculationContext": payload.get("activeCalculationContext"),
         }
 
-    return _distance_query_unavailable("insufficient_authority")
+    return _distance_query_unavailable("insufficient_authority", payload)
 
 
 def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:

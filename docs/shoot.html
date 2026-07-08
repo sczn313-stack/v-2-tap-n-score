@@ -1411,18 +1411,53 @@ function lockDistanceForSession() {
   distanceLocked = true;
 }
 
+function activeCalculationContextForTarget() {
+  const source = {
+    ...(matrix || {}),
+    targetDistanceValue: selectedDistanceValue || "100",
+    targetDistanceUnit: selectedDistanceUnit,
+    targetDistance: formatDistanceDisplay(),
+    distance: formatDistanceDisplay(),
+    opticAdjustmentUnit: selectedAdjustmentUnit
+  };
+  if (SCZN3M4.buildActiveCalculationContext) {
+    return SCZN3M4.buildActiveCalculationContext(source, session);
+  }
+  return {
+    contextVersion: "active-calculation-context-v1",
+    sessionDistance: {
+      value: Number(selectedDistanceValue || 100),
+      unit: selectedDistanceUnit,
+      display: formatDistanceDisplay(),
+      source: "session",
+      locked: distanceLocked
+    },
+    establishedZero: null,
+    angularUnit: selectedAdjustmentUnit,
+    clickValue: Number(source.opticClickValue || source.clickValue || (selectedAdjustmentUnit === "MRAD" ? 0.1 : 0.25)),
+    authorityStatus: "context-attached"
+  };
+}
+
 function distanceClickQueryPayload(goToDistance) {
   const source = matrix || {};
   const opticAdjustmentUnit = selectedAdjustmentUnit;
   const opticClickValueMOA = source.opticClickValueMOA || source.clickValueMOA || source.opticClickValue || source.clickValue || 0.25;
   const opticClickValueMRAD = source.opticClickValueMRAD || source.clickValueMRAD || (opticAdjustmentUnit === "MRAD" ? 0.1 : null);
   const opticClickValue = opticAdjustmentUnit === "MRAD" ? opticClickValueMRAD : opticClickValueMOA;
+  const activeCalculationContext = activeCalculationContextForTarget();
   return {
+    session_id: session && session.sessionId,
+    sessionId: session && session.sessionId,
+    target_profile_id: activeTargetProfileId(),
+    targetProfileId: activeTargetProfileId(),
     currentDistance: Number(selectedDistanceValue || 100),
     currentDistanceUnit: selectedDistanceUnit,
     adjustmentUnit: opticAdjustmentUnit,
     clickValue: Number(opticClickValue),
-    goToDistance: Number(goToDistance)
+    goToDistance: Number(goToDistance),
+    activeCalculationContext,
+    distanceTransitionAuthority: null
   };
 }
 
