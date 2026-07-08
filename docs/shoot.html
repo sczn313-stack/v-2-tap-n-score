@@ -14,7 +14,7 @@
       <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
         <span class="kicker">Tap-n-Score™</span>
-        <a class="vendor-name" id="targetHeaderIdentity" href="index.html">Target</a>
+        <a class="vendor-name" id="targetHeaderIdentity" href="index.html">Target: Not Known</a>
       </div>
     </div>
     <details class="mobile-platform-menu target-mobile-menu">
@@ -31,7 +31,7 @@
     <div class="panel">
       <section class="target-session-context" aria-label="Today's range session">
         <span id="missionWorkspaceEyebrow">Target</span>
-        <strong id="targetSessionSummary">Loading target</strong>
+        <strong id="targetSessionSummary">Not Known</strong>
         <p class="mission-workspace-meta" id="missionWorkspaceMeta"></p>
         <p class="mission-workspace-status" id="missionWorkspaceStatus">Ready</p>
         <p class="mission-workspace-guidance" id="missionWorkspaceGuidance">Add target photo to begin.</p>
@@ -283,6 +283,17 @@ function activeMissionName() {
   ).toLowerCase();
 }
 
+function authoritativeTargetName(value) {
+  const name = String(value || "").trim();
+  if (!name) return "";
+  if (/^(target|generic target|default target|unknown baker target)$/i.test(name)) return "";
+  return name;
+}
+
+function displayTargetName(value) {
+  return authoritativeTargetName(value) || "Not Known";
+}
+
 function activeTargetIdentity() {
   const authorityPackage = compatibleAuthorityPackage(backendAuthorityPackage) || {};
   const authorityTarget = authorityPackage.target || authorityPackage.targetProfile || {};
@@ -299,20 +310,28 @@ function activeTargetIdentity() {
     || ""
   ).toLowerCase();
   const staticIdentity = STATIC_TARGET_IDENTITY[targetProfileId] || {};
-  const targetName = authorityPackage.target_display_name
-    || authorityPackage.targetDisplayName
-    || authorityPackage.target_name
-    || authorityPackage.targetName
-    || authorityTarget.targetName
-    || authorityTarget.target_display_name
-    || sessionSource.targetDisplayName
-    || sessionSource.targetName
-    || matrixSource.targetDisplayName
-    || matrixSource.targetName
-    || targetAuthority.targetDisplayName
-    || targetAuthority.targetName
-    || staticIdentity.targetName
-    || "Target";
+  const targetName = [
+    authorityPackage.target_display_name,
+    authorityPackage.targetDisplayName,
+    authorityPackage.target_name,
+    authorityPackage.targetName,
+    authorityTarget.target_display_name,
+    authorityTarget.targetDisplayName,
+    authorityTarget.target_name,
+    authorityTarget.targetName,
+    sessionSource.target_display_name,
+    sessionSource.targetDisplayName,
+    sessionSource.target_name,
+    sessionSource.targetName,
+    matrixSource.target_display_name,
+    matrixSource.targetDisplayName,
+    matrixSource.target_name,
+    matrixSource.targetName,
+    targetAuthority.target_display_name,
+    targetAuthority.targetDisplayName,
+    targetAuthority.target_name,
+    targetAuthority.targetName
+  ].map(authoritativeTargetName).find(Boolean) || "";
   return {
     targetName,
     targetProfileId: targetProfileId || staticIdentity.targetProfileId || "",
@@ -327,7 +346,7 @@ function renderTargetHeaderIdentity() {
   const header = document.getElementById("targetHeaderIdentity");
   if (!header) return;
   const identity = activeTargetIdentity();
-  header.textContent = `Target: ${identity.targetName || "Target"}`;
+  header.textContent = `Target: ${displayTargetName(identity.targetName)}`;
   header.title = [
     identity.targetProfileId ? `Target Profile: ${identity.targetProfileId}` : "",
     identity.missionFamily ? `Type: ${identity.missionFamily}` : "",
@@ -409,7 +428,7 @@ function trainingMissionStatus(authorityPackage) {
 
 function missionWorkspaceDescriptor() {
   const identity = activeTargetIdentity();
-  const targetName = identity.targetName || "Target";
+  const targetName = displayTargetName(identity.targetName);
   if (isMissionResolving()) {
     return {
       eyebrow: "Target",
