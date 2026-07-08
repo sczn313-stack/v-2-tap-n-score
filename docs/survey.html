@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Baker Shooter Feedback Survey</title>
+<title>Tap-n-Score Feedback Survey</title>
 <link rel="stylesheet" href="styles.css" />
 <script src="ops.js?v=ops-v3-0623"></script>
 </head>
@@ -11,13 +11,12 @@
 <main class="shell">
   <header class="m4-header">
     <div class="vendor-slot">
-      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target thumbnail" />
+      <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
-        <a class="vendor-name" href="index.html">Baker Smart Targets</a>
-        <a class="vendor-minor-link" href="buy-targets.html">Buy More Targets</a>
+        <a class="vendor-name" href="index.html">Tap-n-Score™</a>
       </div>
     </div>
-    <nav class="locked-nav" aria-label="Baker workflow navigation">
+    <nav class="locked-nav" aria-label="Target workflow navigation">
       <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
       <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Library</span></a>
       <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
@@ -25,7 +24,7 @@
       <a class="locked-nav-item is-active" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
     <details class="mobile-platform-menu">
-      <summary>Menu</summary>
+      <summary aria-label="Open navigation">☰</summary>
       <a href="index.html">Home</a>
       <a href="matrix.html">Weapon Library</a>
       <a href="shoot.html">Target</a>
@@ -33,16 +32,16 @@
       <a href="survey.html" aria-current="page">Survey</a>
     </details>
   </header>
-  <section class="active-session-bar"><strong>Survey</strong><span>Baker Smart Targets</span></section>
+  <section class="active-session-bar"><strong>Survey</strong><span>Tap-n-Score Feedback</span></section>
 
   <section class="panel matrix-form">
     <span class="kicker">Feedback</span>
-    <h1>Baker Smart Targets — Shooter Feedback Survey</h1>
+    <h1>Shooter Feedback Survey</h1>
     <form id="surveyForm">
       <section class="form-section">
         <h2>Survey</h2>
         <div class="matrix-grid">
-          <label>Was the Baker Smart Target easy to understand?
+          <label>Was the target easy to understand?
             <select name="targetUnderstand" required>
               <option value="">Select Answer</option><option>Yes</option><option>No</option><option>Somewhat</option>
             </select>
@@ -62,7 +61,7 @@
               <option value="">Select Answer</option><option>Yes</option><option>No</option><option>I did not know what SEC was</option>
             </select>
           </label>
-          <label>Would you use Baker Smart Targets again?
+          <label>Would you use SCZN3 again?
             <select name="useAgain" required>
               <option value="">Select Answer</option><option>Yes</option><option>No</option><option>Maybe</option>
             </select>
@@ -85,7 +84,7 @@
   </section>
 </main>
 <script>
-const SURVEY_KEY = "SCZN3_BAKER_SURVEY_RESPONSES";
+const SURVEY_KEY = "SCZN3_SURVEY_RESPONSES";
 const form = document.getElementById("surveyForm");
 const message = document.getElementById("surveyMessage");
 
@@ -104,7 +103,7 @@ form.addEventListener("submit", event => {
   const responses = readResponses();
   responses.unshift({ ...data, submittedAt: new Date().toISOString() });
   localStorage.setItem(SURVEY_KEY, JSON.stringify(responses));
-  message.textContent = "Thank you for helping improve Baker Smart Targets.";
+  message.textContent = "Thank you for helping improve Tap-n-Score.";
   form.reset();
 });
 </script>
