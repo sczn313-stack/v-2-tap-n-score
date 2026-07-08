@@ -319,6 +319,19 @@ def test_target_registry_defaults_research_targets_unavailable():
     assert_equal(is_target_execution_authorized(entry), False, "registry research executable")
 
 
+def test_b1_tq6_ring_scoring_prototype_is_known_but_not_executable():
+    entry = get_target_registry_entry("nra_b1_tq6")
+    assert_equal(entry["targetName"], "NRA B-1 / TQ-6 25-Foot Slow Fire Pistol", "b1 target name")
+    assert_equal(entry["missionFamilyId"], "precisionRingScore", "b1 mission family")
+    assert_equal(entry["resultPackageType"], "precisionScoreResult", "b1 result package")
+    assert_equal(entry["lifecycleStatus"], "research", "b1 lifecycle default")
+    assert_equal(entry["supportedStatus"], "unavailable", "b1 support default")
+    assert_equal(entry["geometryAuthorityStatus"], "unconfirmed", "b1 geometry authority")
+    assert_equal(entry["scoringAuthorityStatus"], "unconfirmed", "b1 scoring authority")
+    assert_equal(is_target_execution_authorized(entry), False, "b1 executable")
+    assert_equal("officialRingGeometry" in entry["authorityGaps"], True, "b1 ring geometry gap")
+
+
 def test_target_registry_supported_entries_require_explicit_authority():
     entry = get_target_registry_entry("BAKER_ST_100YD_SMART")
     assert_equal(entry["lifecycleStatus"], "supported", "baker registry lifecycle")
@@ -338,6 +351,20 @@ def test_known_registry_target_refuses_execution_until_authority_granted():
     assert_equal(result["status"], "unavailable", "known unsupported status")
     assert_equal(result["reason"], "target_authority_incomplete", "known unsupported reason")
     assert_equal(result["displayMessage"], GOVERNED_UNAVAILABLE_MESSAGE, "known unsupported message")
+
+
+def test_b1_tq6_refuses_precision_ring_scoring_until_authority_confirmed():
+    result = build_authority_package({
+        "targetId": "nra_b1_tq6",
+        "missionFamilyId": "precisionRingScore",
+        "resultPackageType": "precisionScoreResult",
+        "hitCoordinates": [{"xPercent": 50, "yPercent": 50}],
+    })
+    assert_equal(result["ok"], False, "b1 unsupported ok")
+    assert_equal(result["status"], "unavailable", "b1 unsupported status")
+    assert_equal(result["reason"], "target_authority_incomplete", "b1 unsupported reason")
+    assert_equal(result["displayMessage"], GOVERNED_UNAVAILABLE_MESSAGE, "b1 unavailable message")
+    assert_equal(result["targetId"], "nra_b1_tq6", "b1 target id")
 
 
 def test_payload_cannot_silently_activate_registry_target():
@@ -641,8 +668,10 @@ def run():
         test_result_package_must_be_authorized_by_mission_family,
         test_unknown_mission_family_is_rejected_before_scoring,
         test_target_registry_defaults_research_targets_unavailable,
+        test_b1_tq6_ring_scoring_prototype_is_known_but_not_executable,
         test_target_registry_supported_entries_require_explicit_authority,
         test_known_registry_target_refuses_execution_until_authority_granted,
+        test_b1_tq6_refuses_precision_ring_scoring_until_authority_confirmed,
         test_payload_cannot_silently_activate_registry_target,
         test_gssf_ac_1_scores_hit_by_hit_zones,
         test_gssf_final_time_unavailable_without_raw_time,

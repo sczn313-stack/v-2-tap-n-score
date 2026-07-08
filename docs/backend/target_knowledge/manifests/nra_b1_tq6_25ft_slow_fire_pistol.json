@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "nra_b1_tq6",
+    "targetName": "NRA B-1 / TQ-6 25-Foot Slow Fire Pistol",
+    "targetFamily": "NRA Bullseye",
+    "targetType": "precision-ring-score",
+    "discipline": "bullseye pistol",
+    "manufacturer": "National Rifle Association",
+    "sku": "B-1 / TQ-6",
+    "missionFamilyId": "precisionRingScore",
+    "missionGroup": "bullseyeRingFamily",
+    "missionName": "nraB1SlowFirePistol",
+    "missionVariant": "tq6_25ft",
+    "targetDisplayName": "NRA B-1 / TQ-6",
+    "lifecycleStatus": "research",
+    "supportedStatus": "unavailable",
+    "recommendedFirearmType": "pistol",
+    "resultPackageType": "precisionScoreResult",
+    "secTemplate": "precisionScoreSEC",
+    "guidanceMode": "precision-ring-score"
+  },
+  "uteRouting": {
+    "targetId": "nra_b1_tq6",
+    "manufacturer": "National Rifle Association",
+    "sku": "B-1 / TQ-6",
+    "missionFamilyId": "precisionRingScore",
+    "missionGroup": "bullseyeRingFamily",
+    "missionName": "nraB1SlowFirePistol",
+    "missionVariant": "tq6_25ft",
+    "targetDisplayName": "NRA B-1 / TQ-6",
+    "lifecycleStatus": "research",
+    "supportedStatus": "unavailable",
+    "geometryAuthorityStatus": "partial",
+    "scoringAuthorityStatus": "unconfirmed",
+    "recommendedFirearmType": "pistol",
+    "resultPackageType": "precisionScoreResult",
+    "secTemplate": "precisionScoreSEC",
+    "authorityStatus": "unavailable",
+    "rulesSource": "Pistoleer NRA handgun target listing confirms B-1/TQ-6 identity, distance, sheet size, and black center size; complete ring geometry remains unconfirmed.",
+    "geometryStatus": "partial-sheet-and-black-center-only",
+    "instructionStatus": "official-target-listing",
+    "scoringStatus": "prototype-not-executable",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "photo-plus-ring-center-plus-hit-coordinates"
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "target_identity_and_partial_geometry",
+    "geometryAuthorityLevel": "partial",
+    "instructionAuthorityLevel": "official-target-listing",
+    "sourceConfidence": "partial"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    ],
+    "officialRules": [
+      "B-1 / TQ-6 is identified as a 25-foot Slow Fire Pistol target.",
+      "Ring-based scoring is expected for bullseye slow-fire pistol targets.",
+      "Highest scoring ring touched should determine shot value once bullet-hole boundary evidence is authoritative."
+    ],
+    "courseOfFire": [
+      "25-foot slow-fire pistol target.",
+      "Shot count and match course are intentionally not activated until official scoring authority is confirmed."
+    ],
+    "intendedUse": "Indoor or reduced-distance slow-fire pistol bullseye practice and competition scoring.",
+    "shotCount": {
+      "recordShotsPerTargetSheet": "UNKNOWN / REQUIRES OFFICIAL SOURCE"
+    },
+    "distance": {
+      "required": "25 ft",
+      "status": "confirmed by target listing"
+    },
+    "passFailOrScoringRules": [
+      "Each shot receives a ring value once official ring geometry is confirmed.",
+      "X-ring, if supported by authoritative geometry, counts as 10 points plus X-count.",
+      "Line-touch scoring requires authoritative bullet-hole boundary evidence; otherwise close calls must be flagged for review."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "sheetWidthInches": 6,
+      "sheetHeightInches": 7,
+      "blackCenterDiameterInches": 1.5625
+    },
+    "gridSpacing": "not applicable",
+    "bullCount": {
+      "recordBulls": 1
+    },
+    "zoneCount": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+    "aimPointRules": [
+      "Aim at the center of the single bull."
+    ],
+    "scoringZones": [
+      "Conceptual bullseye rings are known; exact official ring diameters and X-ring dimensions remain UNKNOWN / REQUIRES OFFICIAL SOURCE."
+    ],
+    "ringGeometry": {
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "confirmedFields": {
+        "blackCenterDiameterInches": 1.5625
+      },
+      "requiredBeforeExecution": [
+        "xRingDiameterInches",
+        "tenRingDiameterInches",
+        "nineRingDiameterInches",
+        "eightRingDiameterInches",
+        "sevenRingDiameterInches",
+        "sixRingDiameterInches",
+        "fiveRingDiameterInches",
+        "outerScoringBoundaryDiameterInches"
+      ]
+    }
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": "single authoritative bull center",
+    "requiredImpactCount": "match/practice dependent; do not infer until course authority is confirmed",
+    "requiredDistance": "25 ft",
+    "requiredSetupFields": [
+      "pistol",
+      "ammunition",
+      "distance"
+    ],
+    "minimumConfidenceRequirements": [
+      "Official ring geometry required before authoritative ring score.",
+      "Uploaded target must be calibrated to the B-1/TQ-6 sheet or bull geometry.",
+      "Line-touch scoring requires authoritative bullet-hole boundary evidence or review flagging."
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "officialRingGeometry",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Authoritative NRA rulebook, NRA target specification, or approved target manufacturer source listing all B-1/TQ-6 ring and X-ring diameters."
+    },
+    {
+      "field": "officialCourseShotCount",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Official NRA Precision Pistol course-of-fire authority for B-1/TQ-6 use."
+    },
+    {
+      "field": "bulletHoleBoundaryEvidence",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "SCZN3 evidence model for bullet diameter, hole edge detection, or manual review before awarding line-touch higher value."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "approved-target-retailer",
+      "source": "https://www.pistoleer.com/shooting-targets/handgun/",
+      "authorityType": "target_identity_and_partial_geometry",
+      "notes": "Pistoleer lists TQ-6 as B-1 Slow Fire under 25 Foot Slow Fire Pistol, 6 x 7 inch tagboard target, with 1-9/16 inch black center."
+    }
+  ]
+}
