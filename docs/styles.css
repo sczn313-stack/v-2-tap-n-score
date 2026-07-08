@@ -7927,20 +7927,45 @@ input[readonly]{
     flex:1 1 100%;
   }
 
+  .records-page .history-panel{
+    gap:8px;
+    padding:7px;
+  }
+
+  .records-page .sec-heading{
+    margin-bottom:8px;
+    padding:7px 8px;
+    border-radius:8px;
+  }
+
+  .records-page .sec-heading h1{
+    font-size:clamp(38px, 13vw, 52px);
+    line-height:.9;
+  }
+
+  .records-page .sec-heading h2{
+    font-size:clamp(19px, 6vw, 26px);
+    line-height:.95;
+  }
+
+  .records-page .history-list{
+    gap:10px;
+  }
+
   .records-page .history-card{
     grid-template-columns:1fr;
-    gap:10px;
-    padding:10px;
+    gap:8px;
+    padding:8px;
   }
 
   .records-page .training-sec-card{
     grid-template-columns:1fr;
-    gap:10px;
+    gap:8px;
   }
 
   .records-page .gssf-sec-card{
     grid-template-columns:1fr;
-    gap:10px;
+    gap:8px;
   }
 
   .records-page .history-copy,
@@ -7956,8 +7981,8 @@ input[readonly]{
 
   .records-page .gssf-sec-thumb{
     width:100%;
-    min-height:150px;
-    max-height:210px;
+    min-height:128px;
+    max-height:180px;
   }
 
   .records-page .sec-gssf-bucket-grid{
@@ -7966,7 +7991,7 @@ input[readonly]{
 
   .records-page .dot-training-trend-card{
     grid-template-columns:1fr;
-    gap:10px;
+    gap:8px;
   }
 
   .records-page .dot-training-trend-heading{
@@ -7976,8 +8001,8 @@ input[readonly]{
 
   .records-page .history-thumb{
     width:100%;
-    min-height:150px;
-    max-height:210px;
+    min-height:128px;
+    max-height:180px;
   }
 
   .records-page .history-title{
@@ -8001,7 +8026,8 @@ input[readonly]{
 
   .records-page .sec-journal-score,
   .records-page .sec-gssf-final-score{
-    padding:12px 10px;
+    gap:5px;
+    padding:10px 9px;
   }
 
   .records-page .sec-journal-score strong,
@@ -8011,6 +8037,27 @@ input[readonly]{
 
   .records-page .sec-gssf-final-breakdown strong{
     font-size:clamp(14px, 4vw, 18px);
+  }
+
+  .records-page .sec-gssf-final-breakdown{
+    gap:6px;
+    margin-top:2px;
+  }
+
+  .records-page .sec-gssf-final-breakdown div,
+  .records-page .sec-journal-grid div,
+  .records-page .training-sec-card-grid div{
+    gap:3px;
+    padding:7px;
+  }
+
+  .records-page .history-copy,
+  .records-page .training-sec-card-body{
+    gap:8px;
+  }
+
+  .records-page .sec-gssf-validation-details{
+    margin-top:0;
   }
 
   .records-page .training-sec-card-grid{
