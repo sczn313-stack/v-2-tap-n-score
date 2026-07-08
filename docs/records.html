@@ -6,7 +6,7 @@
 <title>SEC - Shooter Experience Card</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="platform-page records-page">
+<body class="platform-page records-page" data-sec-state="empty">
 <main class="shell">
   <header class="m4-header">
     <div class="vendor-slot">
@@ -29,7 +29,6 @@
       <div>
         <h1>SEC</h1>
         <h2>Shooter Experience Card</h2>
-        <p class="sec-page-intro"><strong>Save your Shooter Experience Card.</strong><span>This is the first page of your shooting journey.</span></p>
       </div>
     </div>
     <div class="history-list" id="historyList"></div>
@@ -653,9 +652,11 @@ function renderHistory() {
     });
   const sessions = savedSessions.slice(0, 10);
   if (!sessions.length) {
+    document.body.dataset.secState = "empty";
     historyList.innerHTML = `<article class="history-card empty-state"><strong>No saved Shooter Experience Cards yet.</strong><span>Save a completed session from Target to create your next SEC record.</span></article>`;
     return;
   }
+  document.body.dataset.secState = "saved";
 
   const trainingRecords = savedSessions.map(trainingScoreRecord).filter(Boolean);
   const dotTortureTrendCard = Array.from(groupTrainingScoreRecords(trainingRecords).values())

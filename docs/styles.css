@@ -7214,7 +7214,7 @@ input[readonly]{
 .records-page .sec-heading{
   align-items:center;
   margin-bottom:12px;
-  padding:10px;
+  padding:9px 10px;
   border:1px solid rgba(179,123,8,.58);
   border-radius:var(--radius);
   background:linear-gradient(180deg,#151515,#090909);
@@ -7277,6 +7277,10 @@ input[readonly]{
   gap:10px;
   justify-content:flex-end;
   margin-top:12px;
+}
+
+.records-page[data-sec-state="empty"] .sec-utility-row{
+  display:none;
 }
 
 .records-page .history-list{
@@ -7924,9 +7928,9 @@ input[readonly]{
   }
 
   .records-page .history-card{
-    grid-template-columns:78px minmax(0,1fr);
-    gap:7px;
-    padding:6px;
+    grid-template-columns:1fr;
+    gap:10px;
+    padding:10px;
   }
 
   .records-page .training-sec-card{
@@ -7936,12 +7940,24 @@ input[readonly]{
 
   .records-page .gssf-sec-card{
     grid-template-columns:1fr;
-    gap:12px;
+    gap:10px;
+  }
+
+  .records-page .history-copy,
+  .records-page .training-sec-card-body{
+    order:1;
+  }
+
+  .records-page .history-thumb,
+  .records-page .gssf-sec-thumb,
+  .records-page .training-sec-thumb{
+    order:2;
   }
 
   .records-page .gssf-sec-thumb{
     width:100%;
-    min-height:220px;
+    min-height:150px;
+    max-height:210px;
   }
 
   .records-page .sec-gssf-bucket-grid{
@@ -7960,7 +7976,8 @@ input[readonly]{
 
   .records-page .history-thumb{
     width:100%;
-    min-height:220px;
+    min-height:150px;
+    max-height:210px;
   }
 
   .records-page .history-title{
@@ -7979,7 +7996,21 @@ input[readonly]{
 
   .records-page .sec-journal-grid,
   .records-page .sec-gssf-final-breakdown{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .records-page .sec-journal-score,
+  .records-page .sec-gssf-final-score{
+    padding:12px 10px;
+  }
+
+  .records-page .sec-journal-score strong,
+  .records-page .sec-gssf-final-score strong{
+    font-size:clamp(42px, 13vw, 56px);
+  }
+
+  .records-page .sec-gssf-final-breakdown strong{
+    font-size:clamp(14px, 4vw, 18px);
   }
 
   .records-page .training-sec-card-grid{
