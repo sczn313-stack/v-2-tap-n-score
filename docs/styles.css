@@ -5622,7 +5622,7 @@ input[readonly]{
 
 .target-page .shoot-workflow > .panel{
   display:grid;
-  gap:8px;
+  gap:6px;
   border:1px solid rgba(255,255,255,.08);
   background:linear-gradient(180deg,#121212,#070707);
   box-shadow:0 14px 34px rgba(0,0,0,.34);
@@ -5631,8 +5631,8 @@ input[readonly]{
 .target-page .target-session-context{
   display:grid;
   grid-template-columns:1fr auto;
-  gap:6px 12px;
-  padding:14px;
+  gap:5px 12px;
+  padding:12px;
   border:1px solid rgba(217,150,11,.68);
   border-radius:10px;
   background:
@@ -5736,7 +5736,7 @@ input[readonly]{
 }
 
 .target-page .workflow-control-row{
-  padding:6px;
+  padding:7px;
   border-color:rgba(179,123,8,.56);
   background:linear-gradient(180deg,#141414,#080808);
   box-shadow:0 5px 14px rgba(0,0,0,.22);
@@ -5775,6 +5775,21 @@ input[readonly]{
   background:
     radial-gradient(circle at 50% 0%, rgba(247,196,91,.45), transparent 64%),
     linear-gradient(180deg,#1b1207,#050505);
+}
+
+.target-page .workflow-control-row #chooseTargetButton{
+  min-height:54px;
+  font-size:14px;
+}
+
+.target-page .target-hit-counter{
+  min-width:88px;
+  min-height:54px;
+  padding:7px 12px;
+}
+
+.target-page .target-hit-counter strong{
+  font-size:clamp(30px, 6vw, 42px);
 }
 
 .target-page .workflow-control-row > .button,
@@ -8175,16 +8190,85 @@ input[readonly]{
     overflow:hidden;
   }
 
+  .target-page .shell{
+    padding-top:6px;
+  }
+
+  .target-page .m4-header{
+    min-height:52px;
+    padding:6px 10px;
+    gap:8px;
+    border-width:1px;
+    box-shadow:0 8px 20px rgba(0,0,0,.28);
+  }
+
+  .target-page .vendor-slot{
+    gap:8px;
+  }
+
+  .target-page .vendor-slot img{
+    flex-basis:38px;
+    width:38px;
+    height:38px;
+    padding:2px;
+  }
+
+  .target-page .vendor-name{
+    font-size:15px;
+    line-height:1;
+  }
+
+  .target-page .active-session-bar{
+    margin-top:4px;
+    min-height:22px;
+    padding:4px 7px;
+    border-width:1px;
+    box-shadow:0 5px 14px rgba(0,0,0,.22);
+  }
+
+  .target-page .active-session-bar strong{
+    font-size:11px;
+  }
+
+  .target-page .active-session-bar span{
+    font-size:9px;
+  }
+
+  .target-page .shoot-workflow{
+    margin-top:5px;
+  }
+
+  .target-page .shoot-workflow > .panel{
+    gap:5px;
+    padding:7px;
+  }
+
+  .target-page .target-session-context{
+    gap:4px;
+    padding:10px;
+    border-radius:8px;
+  }
+
+  .target-page .target-session-context > span{
+    font-size:10px;
+  }
+
+  .target-page .target-session-context > strong{
+    font-size:clamp(24px, 8vw, 32px);
+  }
+
   .target-page .mission-workspace-guidance{
     max-width:100%;
-    font-size:clamp(24px, 8vw, 32px);
+    font-size:clamp(28px, 9vw, 38px);
     overflow-wrap:anywhere;
   }
 
   .target-page .workflow-control-row{
     display:grid;
-    grid-template-columns:minmax(86px, .46fr) minmax(0, 1fr);
+    grid-template-columns:minmax(104px, .48fr) minmax(0, 1fr);
     align-items:stretch;
+    gap:7px;
+    padding:7px;
   }
 
   .target-page .target-hit-counter,
@@ -8193,6 +8277,24 @@ input[readonly]{
     width:100%;
     min-width:0;
     max-width:100%;
+  }
+
+  .target-page .target-hit-counter{
+    min-height:62px;
+    padding:8px 10px;
+  }
+
+  .target-page .target-hit-counter strong{
+    font-size:clamp(36px, 12vw, 48px);
+  }
+
+  .target-page .target-hit-counter span{
+    font-size:10px;
+  }
+
+  .target-page .workflow-control-row #chooseTargetButton{
+    min-height:62px;
+    font-size:15px;
   }
 
   .matrix-page .weapon-top-row{
