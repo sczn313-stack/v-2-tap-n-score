@@ -527,6 +527,26 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
             "radiusInches": classification["radiusInches"],
         })
 
+    scoring_breakdown = []
+    for zone, label, multiplier in [
+        ("downZero", "Down Zero", 0),
+        ("plusOne", "+1", 1),
+        ("plusThree", "+3", 3),
+        ("miss", "Miss", 10),
+    ]:
+        shot_ids = [hit["shot"] for hit in per_hit if hit["zone"] == zone]
+        count = len(shot_ids)
+        subtotal = count * multiplier
+        scoring_breakdown.append({
+            "zone": zone,
+            "label": label,
+            "count": count,
+            "penaltySecondsPerHit": multiplier,
+            "subtotalPenaltySeconds": subtotal,
+            "math": f"{count} x {multiplier} = {subtotal}",
+            "shotIds": shot_ids,
+        })
+
     total_penalty = sum(hit["penaltySeconds"] for hit in per_hit)
     final_time = _round(raw_time + total_penalty, 4) if raw_time is not None else None
     final_time_display = f"{final_time} sec" if final_time is not None else "unavailable"
@@ -562,6 +582,7 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
             "raw_time_seconds": raw_time,
         },
         "hitClassifications": per_hit,
+        "scoringBreakdown": scoring_breakdown,
         "counts": counts,
         "downZeroCount": counts["downZero"],
         "plusOneCount": counts["plusOne"],

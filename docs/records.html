@@ -184,30 +184,44 @@ function gssfBucketTone(zone) {
 
 function gssfBucketDefinitions() {
   return [
-    { id: "down-zero", label: "Down Zero", color: "Green" },
-    { id: "plus-one", label: "+1", color: "Yellow" },
-    { id: "plus-three", label: "+3", color: "Orange" },
-    { id: "miss", label: "Miss / Other", color: "Red" }
+    { id: "down-zero", zone: "downZero", label: "Down Zero", color: "Green", multiplier: 0 },
+    { id: "plus-one", zone: "plusOne", label: "+1", color: "Yellow", multiplier: 1 },
+    { id: "plus-three", zone: "plusThree", label: "+3", color: "Orange", multiplier: 3 },
+    { id: "miss", zone: "miss", label: "Miss", color: "Red", multiplier: 10 }
   ];
 }
 
 function gssfBucketSummaryHtml(pkg) {
-  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, shots: [] }));
+  const backendBreakdown = Array.isArray(pkg.scoringBreakdown) ? pkg.scoringBreakdown : [];
+  const breakdownByZone = Object.fromEntries(backendBreakdown.map(item => [gssfBucketTone(item.zone), item]));
+  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, shots: [], backend: breakdownByZone[bucket.id] || null }));
   const bucketById = Object.fromEntries(buckets.map(bucket => [bucket.id, bucket]));
-  backendHitClassifications(pkg).forEach((hit, index) => {
-    const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
-    bucket.shots.push(String(hit.shot || index + 1));
-  });
+  if (!backendBreakdown.length) {
+    backendHitClassifications(pkg).forEach((hit, index) => {
+      const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
+      bucket.shots.push(String(hit.shot || index + 1));
+    });
+  }
   return `
     <div class="sec-gssf-bucket-grid" aria-label="GSSF SEC backend classification buckets">
-      ${buckets.map(bucket => `
-        <div class="sec-gssf-bucket gssf-zone-card-${bucket.id}">
-          <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.color)}</span>
-          <strong>${escapeHtml(bucket.label)}</strong>
-          <b>${escapeHtml(bucket.shots.length)}</b>
-          <small>Shots: ${escapeHtml(bucket.shots.length ? bucket.shots.join(", ") : "--")}</small>
-        </div>
-      `).join("")}
+      ${buckets.map(bucket => {
+        const source = bucket.backend || {};
+        const count = Number.isFinite(Number(source.count)) ? Number(source.count) : bucket.shots.length;
+        const multiplier = Number.isFinite(Number(source.penaltySecondsPerHit)) ? Number(source.penaltySecondsPerHit) : bucket.multiplier;
+        const subtotal = Number.isFinite(Number(source.subtotalPenaltySeconds)) ? Number(source.subtotalPenaltySeconds) : count * multiplier;
+        const math = source.math || `${count} x ${multiplier} = ${subtotal}`;
+        const shotIds = Array.isArray(source.shotIds) ? source.shotIds.map(String) : bucket.shots;
+        return `
+          <div class="sec-gssf-bucket gssf-zone-card-${bucket.id}">
+            <div class="sec-gssf-bucket-head">
+              <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(source.label || bucket.label)}</span>
+              <strong>${escapeHtml(math)}</strong>
+            </div>
+            <b>Hits: ${escapeHtml(count)}</b>
+            <small>Shot IDs: ${escapeHtml(shotIds.length ? shotIds.join(", ") : "--")}</small>
+          </div>
+        `;
+      }).join("")}
     </div>
   `;
 }

@@ -408,6 +408,44 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
     assert_equal(result["plusThreeCount"], 1, "gssf plus three count")
     assert_equal(result["missCount"], 1, "gssf miss count")
     assert_equal(result["totalPaperPenaltySeconds"], 14, "gssf paper penalty")
+    assert_equal(result["scoringBreakdown"], [
+        {
+            "zone": "downZero",
+            "label": "Down Zero",
+            "count": 1,
+            "penaltySecondsPerHit": 0,
+            "subtotalPenaltySeconds": 0,
+            "math": "1 x 0 = 0",
+            "shotIds": [1],
+        },
+        {
+            "zone": "plusOne",
+            "label": "+1",
+            "count": 1,
+            "penaltySecondsPerHit": 1,
+            "subtotalPenaltySeconds": 1,
+            "math": "1 x 1 = 1",
+            "shotIds": [2],
+        },
+        {
+            "zone": "plusThree",
+            "label": "+3",
+            "count": 1,
+            "penaltySecondsPerHit": 3,
+            "subtotalPenaltySeconds": 3,
+            "math": "1 x 3 = 3",
+            "shotIds": [3],
+        },
+        {
+            "zone": "miss",
+            "label": "Miss",
+            "count": 1,
+            "penaltySecondsPerHit": 10,
+            "subtotalPenaltySeconds": 10,
+            "math": "1 x 10 = 10",
+            "shotIds": [4],
+        },
+    ], "gssf backend scoring breakdown")
     assert_equal(result["resultSource"], "backend", "gssf result source")
     assert_equal(result["authorityPackageId"], "gssf-ac-1-paper-penalty-v1", "gssf authority package id")
     assert_equal(result["authorityTrace"]["source"], "backend", "gssf authority trace source")

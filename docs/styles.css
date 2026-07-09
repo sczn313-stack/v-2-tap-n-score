@@ -7548,54 +7548,67 @@ input[readonly]{
 
 .records-page .sec-gssf-bucket{
   display:grid;
-  gap:2px;
+  gap:7px;
   min-width:0;
-  padding:7px;
-  border:1px solid rgba(255,255,255,.12);
+  padding:10px;
+  border:1.5px solid rgba(255,255,255,.22);
   border-radius:6px;
-  background:rgba(0,0,0,.18);
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(0,0,0,.22));
+  box-shadow:0 0 0 1px rgba(0,0,0,.35), 0 8px 18px rgba(0,0,0,.2);
 }
 
-.records-page .sec-gssf-bucket span{
+.records-page .sec-gssf-bucket-head{
+  display:grid;
+  gap:4px;
+}
+
+.records-page .sec-gssf-bucket-head span{
   display:flex;
   align-items:center;
   gap:5px;
-  color:rgba(245,241,232,.72);
+  color:rgba(245,241,232,.9);
   font-size:10px;
   font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
 }
 
-.records-page .sec-gssf-bucket strong{
+.records-page .sec-gssf-bucket-head strong{
   color:#f5f1e8;
-  font-size:12px;
+  font-size:13px;
 }
 
 .records-page .sec-gssf-bucket b{
   color:#fff;
-  font-size:22px;
-  line-height:1;
+  font-size:13px;
+  line-height:1.2;
 }
 
 .records-page .sec-gssf-bucket small{
-  color:rgba(245,241,232,.72);
-  font-size:10px;
+  color:rgba(245,241,232,.78);
+  font-size:11px;
+  line-height:1.35;
   overflow-wrap:anywhere;
 }
 
 .records-page .sec-gssf-bucket.gssf-zone-card-down-zero{
-  border-color:rgba(34,179,90,.5);
+  border-color:rgba(34,197,94,.92);
+  box-shadow:0 0 0 1px rgba(34,197,94,.22), 0 8px 18px rgba(0,0,0,.2);
 }
 
 .records-page .sec-gssf-bucket.gssf-zone-card-plus-one{
-  border-color:rgba(255,212,59,.5);
+  border-color:rgba(255,212,59,.94);
+  box-shadow:0 0 0 1px rgba(255,212,59,.24), 0 8px 18px rgba(0,0,0,.2);
 }
 
 .records-page .sec-gssf-bucket.gssf-zone-card-plus-three{
-  border-color:rgba(255,138,31,.5);
+  border-color:rgba(255,138,31,.94);
+  box-shadow:0 0 0 1px rgba(255,138,31,.24), 0 8px 18px rgba(0,0,0,.2);
 }
 
 .records-page .sec-gssf-bucket.gssf-zone-card-miss{
-  border-color:rgba(227,41,41,.55);
+  border-color:rgba(248,72,72,.95);
+  box-shadow:0 0 0 1px rgba(248,72,72,.24), 0 8px 18px rgba(0,0,0,.2);
 }
 
 .records-page .gssf-zone-dot{
