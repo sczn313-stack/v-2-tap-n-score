@@ -510,6 +510,7 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
     hits = _gssf_hits(payload)
     raw_time = _num(_first_present(payload.get("raw_time_seconds"), payload.get("rawTimeSeconds")), None)
     per_hit = []
+    render_hits = []
     counts = {
         "downZero": 0,
         "plusOne": 0,
@@ -525,6 +526,10 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
             "zone": classification["zone"],
             "penaltySeconds": classification["penaltySeconds"],
             "radiusInches": classification["radiusInches"],
+        })
+        render_hits.append({
+            **hit,
+            "shot": index,
         })
 
     scoring_breakdown = []
@@ -624,7 +629,7 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
             "rulesApplied": "GSSF AC-1 concentric-zone paper penalty rules",
         },
         "renderCoordinates": {
-            "hits": hits,
+            "hits": render_hits,
         },
     }
     authority_core["evidenceHash"] = stable_hash(authority_core)

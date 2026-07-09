@@ -403,6 +403,8 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
     assert_equal(result["ok"], True, "gssf ok")
     assert_equal(result["resultPackageType"], "gssfPaperPenaltyResult", "gssf result type")
     assert_equal([hit["zone"] for hit in result["hitClassifications"]], ["downZero", "plusOne", "plusThree", "miss"], "gssf zones")
+    assert_equal([hit["shot"] for hit in result["hitClassifications"]], [1, 2, 3, 4], "gssf hit classification shot ids")
+    assert_equal([hit["shot"] for hit in result["renderCoordinates"]["hits"]], [1, 2, 3, 4], "gssf rendered hit shot ids")
     assert_equal(result["downZeroCount"], 1, "gssf down zero count")
     assert_equal(result["plusOneCount"], 1, "gssf plus one count")
     assert_equal(result["plusThreeCount"], 1, "gssf plus three count")

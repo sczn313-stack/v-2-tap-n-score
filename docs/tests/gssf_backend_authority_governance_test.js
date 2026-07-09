@@ -39,11 +39,11 @@ assert(
   "GSSF result display must render backend-provided display lines"
 );
 assert(
-  renderSource.includes("gssfScoringSourceHtml(backendAuthorityPackage)"),
+  shootHtml.includes("gssfScoringSourceHtml(authorityPackage)"),
   "GSSF result display must show backend scoring source validation"
 );
 assert(
-  renderSource.includes("gssfShotClassificationsHtml(backendAuthorityPackage)"),
+  shootHtml.includes("gssfShotClassificationsHtml(authorityPackage)"),
   "GSSF result display must expose backend per-shot classifications"
 );
 assert(
@@ -57,6 +57,14 @@ assert(
 assert(
   shootHtml.includes("authorityPackage.hitClassifications"),
   "GSSF per-shot validation must read backend hit classifications"
+);
+assert(
+  shootHtml.includes("function backendShotIdForHit(authorityPackage, hit, index)"),
+  "GSSF display must resolve shot IDs from backend authority fields"
+);
+assert(
+  !shootHtml.includes("hit.shot || index + 1"),
+  "GSSF display must not invent shot IDs from frontend array indexes after backend classification"
 );
 assert(
   shootHtml.includes("Scoring source:"),

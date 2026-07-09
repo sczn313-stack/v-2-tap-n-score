@@ -199,7 +199,9 @@ function gssfBucketSummaryHtml(pkg) {
   if (!backendBreakdown.length) {
     backendHitClassifications(pkg).forEach((hit, index) => {
       const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
-      bucket.shots.push(String(hit.shot || index + 1));
+      const renderedHit = backendRenderedHitEntries(pkg)[index];
+      const shotId = hit.shot || (renderedHit && renderedHit.shot);
+      if (shotId !== undefined && shotId !== null && shotId !== "") bucket.shots.push(String(shotId));
     });
   }
   return `
@@ -574,11 +576,15 @@ function markerHtml(className, point, content = "", attrs = "") {
   return `<span class="${className}" style="left:${safe.xPercent}%;top:${safe.yPercent}%"${attrs ? ` ${attrs}` : ""}>${content}</span>`;
 }
 
-function backendRenderedHitCoordinates(pkg) {
+function backendRenderedHitEntries(pkg) {
   const render = pkg && pkg.renderCoordinates ? pkg.renderCoordinates : {};
   const hits = Array.isArray(render.hits) ? render.hits : [];
   const impacts = Array.isArray(render.impacts) ? render.impacts : [];
-  return (hits.length ? hits : impacts).map(authorityPoint).filter(Boolean);
+  return hits.length ? hits : impacts;
+}
+
+function backendRenderedHitCoordinates(pkg) {
+  return backendRenderedHitEntries(pkg).map(authorityPoint).filter(Boolean);
 }
 
 function authorityVisual(session) {
@@ -590,9 +596,11 @@ function authorityVisual(session) {
     const classifications = backendHitClassifications(pkg);
     backendRenderedHitCoordinates(pkg).forEach((point, index) => {
       const hit = classifications[index] || {};
-      const shotNumber = hit.shot || index + 1;
+      const renderedHit = backendRenderedHitEntries(pkg)[index];
+      const shotNumber = hit.shot || (renderedHit && renderedHit.shot);
       const zoneClass = `gssf-zone-${gssfZoneTone(hit.zone)}`;
-      parts.push(markerHtml(`history-thumb-impact history-gssf-impact ${zoneClass}`, point, String(shotNumber), `data-backend-zone="${escapeHtml(hit.zone || "")}"`));
+      const label = shotNumber === undefined || shotNumber === null ? "" : String(shotNumber);
+      parts.push(markerHtml(`history-thumb-impact history-gssf-impact ${zoneClass}`, point, label, `data-backend-zone="${escapeHtml(hit.zone || "")}"`));
     });
     return parts.join("");
   }

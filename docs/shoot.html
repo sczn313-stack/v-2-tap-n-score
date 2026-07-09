@@ -1981,6 +1981,21 @@ function backendHitCoordinateForValidation(authorityPackage, hit, index) {
   return safePoint((hit && hit.coordinate) || backendRenderedHitCoordinates(authorityPackage)[index]);
 }
 
+function backendRenderedHitEntries(authorityPackage) {
+  const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
+  const hits = Array.isArray(render.hits) ? render.hits : [];
+  const impacts = Array.isArray(render.impacts) ? render.impacts : [];
+  return hits.length ? hits : impacts;
+}
+
+function backendShotIdForHit(authorityPackage, hit, index) {
+  if (hit && hit.shot !== undefined && hit.shot !== null && hit.shot !== "") return hit.shot;
+  const renderedHit = backendRenderedHitEntries(authorityPackage)[index];
+  return renderedHit && renderedHit.shot !== undefined && renderedHit.shot !== null && renderedHit.shot !== ""
+    ? renderedHit.shot
+    : null;
+}
+
 function gssfZoneTone(zone) {
   const normalized = String(zone || "").trim().toLowerCase().replace(/[\s_-]+/g, "");
   if (normalized === "downzero" || normalized === "0") return "down-zero";
@@ -2122,7 +2137,8 @@ function gssfBucketSummaryHtml(authorityPackage) {
   const bucketById = Object.fromEntries(buckets.map(bucket => [bucket.id, bucket]));
   backendHitClassifications(authorityPackage).forEach((hit, index) => {
     const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
-    bucket.shots.push(String(hit.shot || index + 1));
+    const shotId = backendShotIdForHit(authorityPackage, hit, index);
+    if (shotId !== null) bucket.shots.push(String(shotId));
   });
   const cards = buckets.map(bucket => {
     const shots = bucket.shots.length ? bucket.shots.join(", ") : "--";
@@ -2242,10 +2258,7 @@ function backendPoibDisplayCoordinate(authorityPackage) {
 }
 
 function backendRenderedHitCoordinates(authorityPackage) {
-  const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
-  const hits = Array.isArray(render.hits) ? render.hits : [];
-  const impacts = Array.isArray(render.impacts) ? render.impacts : [];
-  return (hits.length ? hits : impacts).map(safePoint).filter(Boolean);
+  return backendRenderedHitEntries(authorityPackage).map(safePoint).filter(Boolean);
 }
 
 function renderBackendAuthorityMarkers(authorityPackage) {
@@ -2255,10 +2268,11 @@ function renderBackendAuthorityMarkers(authorityPackage) {
   parts.push(vectorHtmlFromBackend(render.vector));
   backendRenderedHitCoordinates(authorityPackage).forEach((point, index) => {
     const hit = classifications[index] || {};
-    const shotNumber = hit.shot || index + 1;
+    const shotNumber = backendShotIdForHit(authorityPackage, hit, index);
     const zone = escapeHtml(hit.zone || "");
     const zoneClass = isGssfAuthorityPackage(authorityPackage) ? ` ${gssfZoneMarkerClass(hit.zone)}` : "";
-    parts.push(markerPointHtml(`target-marker impact-marker${zoneClass}`, point, String(shotNumber), `data-shot-index="${escapeHtml(shotNumber)}" data-backend-zone="${zone}"`));
+    const label = shotNumber === null ? "" : String(shotNumber);
+    parts.push(markerPointHtml(`target-marker impact-marker${zoneClass}`, point, label, `data-shot-index="${escapeHtml(label)}" data-backend-zone="${zone}"`));
   });
   if (render.aim) {
     parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
@@ -2532,7 +2546,8 @@ function renderGssfMarkerValidation(authorityPackage) {
       const marker = markers[index];
       const backendPoint = backendHitCoordinateForValidation(authorityPackage, hit, index);
       const renderedPoint = marker ? renderedPercentFromRect(marker.getBoundingClientRect(), layerRect) : null;
-      const backendShot = String(hit.shot || index + 1);
+      const backendShotId = backendShotIdForHit(authorityPackage, hit, index);
+      const backendShot = backendShotId === null ? "" : String(backendShotId);
       const markerShot = marker ? String((marker.textContent || "").trim()) : "";
       const backendZone = String(hit.zone || "unclassified");
       const renderedZone = marker ? String(marker.getAttribute("data-backend-zone") || "unclassified") : "missing";
