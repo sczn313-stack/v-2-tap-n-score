@@ -522,8 +522,8 @@ function renderGssfSecCard(session, index, pkg) {
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
   const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
   const competition = gssfCompetitionRecord(session, pkg);
-  const paperPenalty = `Paper Penalty: +${gssfFormatSeconds(competition.totalPaperPenaltySeconds)}`;
-  const matchTime = competition.officialMatchTimeSeconds === null ? "Match Time: unavailable" : `Match Time: ${gssfFormatSeconds(competition.officialMatchTimeSeconds)}`;
+  const paperPenalty = `+${gssfFormatSeconds(competition.totalPaperPenaltySeconds)}`;
+  const matchTime = competition.officialMatchTimeSeconds === null ? "unavailable" : gssfFormatSeconds(competition.officialMatchTimeSeconds);
   const finalScore = competition.officialFinalScoreSeconds === null ? "time unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
   return `
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
@@ -539,11 +539,11 @@ function renderGssfSecCard(session, index, pkg) {
           <div class="sec-gssf-final-breakdown" aria-label="Score breakdown">
             <div>
               <span>Match Time</span>
-              <strong>${escapeHtml(matchTime.replace(/^Match Time:\\s*/i, ""))}</strong>
+              <strong>${escapeHtml(matchTime)}</strong>
             </div>
             <div>
               <span>Paper Penalty</span>
-              <strong>${escapeHtml(paperPenalty.replace(/^Paper Penalty:\\s*/i, ""))}</strong>
+              <strong>${escapeHtml(paperPenalty)}</strong>
             </div>
           </div>
         </section>
