@@ -187,7 +187,7 @@ function gssfBucketDefinitions() {
     { id: "down-zero", zone: "downZero", label: "Down Zero", color: "Green", multiplier: 0 },
     { id: "plus-one", zone: "plusOne", label: "+1", color: "Yellow", multiplier: 1 },
     { id: "plus-three", zone: "plusThree", label: "+3", color: "Orange", multiplier: 3 },
-    { id: "miss", zone: "miss", label: "Miss", color: "Red", multiplier: 10 }
+    { id: "miss", zone: "miss", label: "Miss / Other", color: "Red", multiplier: 10 }
   ];
 }
 
@@ -210,15 +210,19 @@ function gssfBucketSummaryHtml(pkg) {
         const multiplier = Number.isFinite(Number(source.penaltySecondsPerHit)) ? Number(source.penaltySecondsPerHit) : bucket.multiplier;
         const subtotal = Number.isFinite(Number(source.subtotalPenaltySeconds)) ? Number(source.subtotalPenaltySeconds) : count * multiplier;
         const math = source.math || `${count} x ${multiplier} = ${subtotal}`;
+        const subtotalDisplay = `${subtotal} sec`;
+        const mathDisplay = `${String(math).replace(/\s*=\s*.*/, "").trim()} =`;
         const shotIds = Array.isArray(source.shotIds) ? source.shotIds.map(String) : bucket.shots;
         return `
           <div class="sec-gssf-bucket gssf-zone-card-${bucket.id}">
             <div class="sec-gssf-bucket-head">
-              <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(source.label || bucket.label)}</span>
-              <strong>${escapeHtml(math)}</strong>
+              <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.label)}</span>
             </div>
+            <em class="sec-gssf-bucket-math">${escapeHtml(mathDisplay)}</em>
+            <strong class="sec-gssf-bucket-subtotal">${escapeHtml(subtotalDisplay)}</strong>
+            <span class="sec-gssf-bucket-rule" aria-hidden="true"></span>
             <b>Hits: ${escapeHtml(count)}</b>
-            <small>Shot IDs: ${escapeHtml(shotIds.length ? shotIds.join(", ") : "--")}</small>
+            <small><span>Shot IDs:</span> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "--")}</small>
           </div>
         `;
       }).join("")}
