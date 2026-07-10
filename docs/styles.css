@@ -8549,3 +8549,18 @@ input[readonly]{
     white-space:normal;
   }
 }
+
+@media (max-width:760px){
+  body.records-page .history-card.gssf-sec-card .history-copy > .sec-gssf-bucket-grid{
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) !important;
+    gap:10px;
+    width:100%;
+  }
+
+  body.records-page .history-card.gssf-sec-card .history-copy > .sec-gssf-bucket-grid > .sec-gssf-bucket{
+    width:100%;
+    min-width:0;
+    grid-column:1 / -1;
+  }
+}
