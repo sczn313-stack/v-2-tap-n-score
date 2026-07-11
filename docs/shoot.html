@@ -2125,29 +2125,39 @@ function gssfBucketTone(zone) {
 
 function gssfBucketDefinitions() {
   return [
-    { id: "down-zero", label: "Down Zero", color: "Green" },
-    { id: "plus-one", label: "+1", color: "Yellow" },
-    { id: "plus-three", label: "+3", color: "Orange" },
-    { id: "miss", label: "Miss / Other", color: "Red" }
+    { id: "down-zero", label: "Down Zero" },
+    { id: "plus-one", label: "+1" },
+    { id: "plus-three", label: "+3" },
+    { id: "miss", label: "Miss / Other" }
   ];
 }
 
 function gssfBucketSummaryHtml(authorityPackage) {
-  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, shots: [] }));
-  const bucketById = Object.fromEntries(buckets.map(bucket => [bucket.id, bucket]));
-  backendHitClassifications(authorityPackage).forEach((hit, index) => {
-    const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
-    const shotId = backendShotIdForHit(authorityPackage, hit, index);
-    if (shotId !== null) bucket.shots.push(String(shotId));
-  });
+  const backendBreakdown = Array.isArray(authorityPackage && authorityPackage.scoringBreakdown)
+    ? authorityPackage.scoringBreakdown
+    : [];
+  const breakdownByZone = Object.fromEntries(backendBreakdown.map(item => [gssfBucketTone(item.zone), item]));
+  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, source: breakdownByZone[bucket.id] }));
+  const isComplete = buckets.every(({ source }) => (
+    source
+    && Number.isFinite(Number(source.count))
+    && Number.isFinite(Number(source.penaltySecondsPerHit))
+    && Number.isFinite(Number(source.subtotalPenaltySeconds))
+    && Array.isArray(source.shotIds)
+  ));
+  if (!isComplete) return "";
   const cards = buckets.map(bucket => {
-    const shots = bucket.shots.length ? bucket.shots.join(", ") : "--";
+    const count = Number(bucket.source.count);
+    const multiplier = Number(bucket.source.penaltySecondsPerHit);
+    const subtotal = Number(bucket.source.subtotalPenaltySeconds);
+    const shotIds = bucket.source.shotIds.map(String);
     return `
       <div class="gssf-bucket-card gssf-zone-card-${bucket.id}">
-        <span class="gssf-bucket-color"><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.color)}</span>
-        <strong>${escapeHtml(bucket.label)}</strong>
-        <b>${escapeHtml(bucket.shots.length)}</b>
-        <small>Shots: ${escapeHtml(shots)}</small>
+        <strong><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.label)}</strong>
+        <em>${escapeHtml(`${count} × ${multiplier}`)}</em>
+        <b>${escapeHtml(`= ${subtotal} sec`)}</b>
+        <span>Hits: ${escapeHtml(count)}</span>
+        <small>Shot IDs: ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small>
       </div>
     `;
   }).join("");

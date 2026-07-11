@@ -67,6 +67,18 @@ assert(
   "GSSF display must not invent shot IDs from frontend array indexes after backend classification"
 );
 assert(
+  shootHtml.includes("authorityPackage.scoringBreakdown"),
+  "GSSF time bucket cards must read the authoritative backend scoring breakdown"
+);
+assert(
+  shootHtml.includes("source.subtotalPenaltySeconds"),
+  "GSSF time bucket cards must display backend-provided subtotals"
+);
+assert(
+  !shootHtml.includes("count * multiplier"),
+  "GSSF time bucket cards must not calculate subtotals in the frontend"
+);
+assert(
   shootHtml.includes("Scoring source:"),
   "GSSF validation must visibly identify the scoring source"
 );

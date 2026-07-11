@@ -184,47 +184,47 @@ function gssfBucketTone(zone) {
 
 function gssfBucketDefinitions() {
   return [
-    { id: "down-zero", zone: "downZero", label: "Down Zero", color: "Green", multiplier: 0 },
-    { id: "plus-one", zone: "plusOne", label: "+1", color: "Yellow", multiplier: 1 },
-    { id: "plus-three", zone: "plusThree", label: "+3", color: "Orange", multiplier: 3 },
-    { id: "miss", zone: "miss", label: "Miss / Other", color: "Red", multiplier: 10 }
+    { id: "down-zero", label: "Down Zero" },
+    { id: "plus-one", label: "+1" },
+    { id: "plus-three", label: "+3" },
+    { id: "miss", label: "Miss / Other" }
   ];
 }
 
-function gssfBucketSummaryHtml(pkg) {
-  const backendBreakdown = Array.isArray(pkg.scoringBreakdown) ? pkg.scoringBreakdown : [];
+function gssfAuthoritativeBreakdown(pkg) {
+  const backendBreakdown = Array.isArray(pkg && pkg.scoringBreakdown) ? pkg.scoringBreakdown : [];
   const breakdownByZone = Object.fromEntries(backendBreakdown.map(item => [gssfBucketTone(item.zone), item]));
-  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, shots: [], backend: breakdownByZone[bucket.id] || null }));
-  const bucketById = Object.fromEntries(buckets.map(bucket => [bucket.id, bucket]));
-  if (!backendBreakdown.length) {
-    backendHitClassifications(pkg).forEach((hit, index) => {
-      const bucket = bucketById[gssfBucketTone(hit.zone)] || bucketById.miss;
-      const renderedHit = backendRenderedHitEntries(pkg)[index];
-      const shotId = hit.shot || (renderedHit && renderedHit.shot);
-      if (shotId !== undefined && shotId !== null && shotId !== "") bucket.shots.push(String(shotId));
-    });
-  }
+  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, source: breakdownByZone[bucket.id] }));
+  const isComplete = buckets.every(({ source }) => (
+    source
+    && Number.isFinite(Number(source.count))
+    && Number.isFinite(Number(source.penaltySecondsPerHit))
+    && Number.isFinite(Number(source.subtotalPenaltySeconds))
+    && Array.isArray(source.shotIds)
+  ));
+  return isComplete ? buckets : [];
+}
+
+function gssfBucketSummaryHtml(pkg) {
+  const buckets = gssfAuthoritativeBreakdown(pkg);
+  if (!buckets.length) return "";
   return `
     <div class="sec-gssf-bucket-grid" aria-label="GSSF SEC backend classification buckets">
       ${buckets.map(bucket => {
-        const source = bucket.backend || {};
-        const count = Number.isFinite(Number(source.count)) ? Number(source.count) : bucket.shots.length;
-        const multiplier = Number.isFinite(Number(source.penaltySecondsPerHit)) ? Number(source.penaltySecondsPerHit) : bucket.multiplier;
-        const subtotal = Number.isFinite(Number(source.subtotalPenaltySeconds)) ? Number(source.subtotalPenaltySeconds) : count * multiplier;
-        const math = source.math || `${count} x ${multiplier} = ${subtotal}`;
-        const subtotalDisplay = `${subtotal} sec`;
-        const mathDisplay = `${String(math).replace(/\s*=\s*.*/, "").trim()} =`;
-        const shotIds = Array.isArray(source.shotIds) ? source.shotIds.map(String) : bucket.shots;
+        const count = Number(bucket.source.count);
+        const multiplier = Number(bucket.source.penaltySecondsPerHit);
+        const subtotal = Number(bucket.source.subtotalPenaltySeconds);
+        const shotIds = bucket.source.shotIds.map(String);
         return `
           <div class="sec-gssf-bucket gssf-zone-card-${bucket.id}">
             <div class="sec-gssf-bucket-head">
               <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.label)}</span>
             </div>
-            <em class="sec-gssf-bucket-math">${escapeHtml(mathDisplay)}</em>
-            <strong class="sec-gssf-bucket-subtotal">${escapeHtml(subtotalDisplay)}</strong>
+            <em class="sec-gssf-bucket-math">${escapeHtml(`${count} × ${multiplier}`)}</em>
+            <strong class="sec-gssf-bucket-subtotal">${escapeHtml(`= ${subtotal} sec`)}</strong>
             <span class="sec-gssf-bucket-rule" aria-hidden="true"></span>
             <b>Hits: ${escapeHtml(count)}</b>
-            <small><span>Shot IDs:</span> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "--")}</small>
+            <small><span>Shot IDs:</span> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small>
           </div>
         `;
       }).join("")}

@@ -6166,16 +6166,27 @@ input[readonly]{
 }
 
 .target-page .gssf-bucket-card strong{
+  display:flex;
+  align-items:center;
+  gap:6px;
   color:#f5f1e8;
   font-size:14px;
 }
 
+.target-page .gssf-bucket-card em{
+  color:rgba(245,241,232,.9);
+  font-size:13px;
+  font-style:normal;
+  font-weight:900;
+}
+
 .target-page .gssf-bucket-card b{
   color:#fff;
-  font-size:28px;
+  font-size:24px;
   line-height:1;
 }
 
+.target-page .gssf-bucket-card > span,
 .target-page .gssf-bucket-card small,
 .target-page .gssf-bucket-color{
   color:rgba(245,241,232,.72);
@@ -8028,7 +8039,10 @@ input[readonly]{
   }
 
   .records-page .history-list{
+    grid-template-columns:minmax(0, 1fr);
     gap:10px;
+    width:100%;
+    min-width:0;
   }
 
   .records-page .history-card{
@@ -8050,6 +8064,9 @@ input[readonly]{
   .records-page .history-copy,
   .records-page .training-sec-card-body{
     order:1;
+    width:100%;
+    min-width:0;
+    max-width:100%;
   }
 
   .records-page .history-thumb,
@@ -8067,6 +8084,9 @@ input[readonly]{
   .records-page .sec-gssf-bucket-grid{
     grid-template-columns:1fr;
     gap:10px;
+    width:100%;
+    min-width:0;
+    max-width:100%;
   }
 
   .records-page .sec-gssf-bucket{
@@ -8103,6 +8123,8 @@ input[readonly]{
   .records-page .sec-gssf-bucket small{
     font-size:11px;
     line-height:1.25;
+    overflow-wrap:anywhere;
+    word-break:break-word;
   }
 
   .records-page .dot-training-trend-card{
