@@ -532,8 +532,6 @@ function renderTrainingSecCard(session, index, pkg) {
 
 function renderGssfSecCard(session, index, pkg) {
   const snapshot = session.matrixSnapshot || {};
-  const evidence = session.targetEvidenceImage;
-  const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
   const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
   const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "--";
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
@@ -544,10 +542,7 @@ function renderGssfSecCard(session, index, pkg) {
   const finalScore = competition.officialFinalScoreSeconds === null ? "time unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
   return `
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
-      <div class="history-thumb gssf-sec-thumb">
-        <img src="${thumbnail}" alt="Saved scored GSSF target evidence" />
-        <div class="history-evidence-layer">${authorityVisual(session)}</div>
-      </div>
+      ${gssfSavedEvidenceHtml(session, pkg)}
       <div class="history-copy">
         <div class="sec-gssf-mission">${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</div>
         <section class="sec-gssf-final-score" aria-label="GSSF final score">
@@ -574,6 +569,31 @@ function renderGssfSecCard(session, index, pkg) {
         ${gssfSecValidationDetailsHtml(session, pkg, competition)}
       </div>
     </article>
+  `;
+}
+
+function gssfSavedEvidenceDataUrl(session, pkg) {
+  if (!isGssfAuthorityPackage(pkg)) return null;
+  const evidence = session && session.targetEvidenceImage;
+  if (!evidence || evidence.evidenceType !== "uploaded-target-image" || typeof evidence.dataUrl !== "string") return null;
+  const dataUrl = evidence.dataUrl.trim();
+  return /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/]+={0,2}$/i.test(dataUrl) ? dataUrl : null;
+}
+
+function gssfSavedEvidenceHtml(session, pkg) {
+  const dataUrl = gssfSavedEvidenceDataUrl(session, pkg);
+  if (!dataUrl) {
+    return `
+      <div class="history-thumb gssf-sec-thumb" role="status" aria-label="GSSF evidence unavailable">
+        <div class="sec-authority-missing">GSSF evidence unavailable: no governed saved target image is available.</div>
+      </div>
+    `;
+  }
+  return `
+    <div class="history-thumb gssf-sec-thumb">
+      <img src="${escapeHtml(dataUrl)}" alt="Saved scored GSSF target evidence" />
+      <div class="history-evidence-layer">${authorityVisual(session)}</div>
+    </div>
   `;
 }
 
