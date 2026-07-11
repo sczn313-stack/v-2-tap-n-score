@@ -542,31 +542,62 @@ function renderGssfSecCard(session, index, pkg) {
   const finalScore = competition.officialFinalScoreSeconds === null ? "time unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
   return `
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
-      ${gssfSavedEvidenceHtml(session, pkg)}
       <div class="history-copy">
-        <div class="sec-gssf-mission">${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</div>
-        <section class="sec-gssf-final-score" aria-label="GSSF final score">
-          <span>Final Score</span>
+        <section class="sec-gssf-story-section sec-gssf-story-result" aria-label="Result">
+          <small>${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</small>
+          <span>Final Time</span>
           <strong>${escapeHtml(finalScore)}</strong>
-          <div class="sec-gssf-final-breakdown" aria-label="Score breakdown">
-            <div>
-              <span>Match Time</span>
+        </section>
+
+        <section class="sec-gssf-story-section sec-gssf-story-explanation" aria-labelledby="gssf-explanation-${index}">
+          <h3 id="gssf-explanation-${index}">How Your Final Time Was Calculated</h3>
+          <div class="sec-gssf-equation-stack" aria-label="Final time calculation">
+            <div class="sec-gssf-equation-value sec-gssf-timer-slot">
+              <span>Timer</span>
               <strong>${escapeHtml(matchTime)}</strong>
             </div>
-            <div>
-              <span>Paper Penalty</span>
+            <b aria-hidden="true">+</b>
+            <div class="sec-gssf-equation-value">
+              <span>Paper Penalties</span>
               <strong>${escapeHtml(paperPenalty)}</strong>
+            </div>
+            <b aria-hidden="true">=</b>
+            <div class="sec-gssf-equation-value is-total">
+              <span>Final Time</span>
+              <strong>${escapeHtml(finalScore)}</strong>
             </div>
           </div>
         </section>
-        <div class="sec-journal-grid">
-          <div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div>
-          <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
-          ${weaponMeta ? `<div><span>Weapon Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
-        </div>
-        ${attributionLine(snapshot)}
-        ${gssfBucketSummaryHtml(pkg)}
-        ${gssfSecValidationDetailsHtml(session, pkg, competition)}
+
+        <section class="sec-gssf-story-section sec-gssf-story-buckets" aria-labelledby="gssf-score-build-${index}">
+          <h3 id="gssf-score-build-${index}">How Your Score Was Built</h3>
+          ${gssfBucketSummaryHtml(pkg)}
+        </section>
+
+        <section class="sec-gssf-story-section sec-gssf-story-target" aria-labelledby="gssf-target-${index}">
+          <h3 id="gssf-target-${index}">Target</h3>
+          ${gssfSavedEvidenceHtml(session, pkg)}
+        </section>
+
+        <section class="sec-gssf-story-section sec-gssf-story-session" aria-labelledby="gssf-session-${index}">
+          <h3 id="gssf-session-${index}">Session</h3>
+          <div class="sec-gssf-session-summary">
+            <div><span>Course</span><strong>${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</strong></div>
+            <div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div>
+            <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
+            ${weaponMeta ? `<div><span>Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
+          </div>
+          ${attributionLine(snapshot)}
+        </section>
+
+        <section class="sec-gssf-story-section sec-gssf-story-continue" aria-labelledby="gssf-continue-${index}">
+          <h3 id="gssf-continue-${index}">Continue</h3>
+          <div class="sec-gssf-continue-actions">
+            <a href="shoot.html">Continue Shooting</a>
+            <a href="records.html">View History</a>
+            <a href="#saveSecPage">Save or Share</a>
+          </div>
+        </section>
       </div>
     </article>
   `;
@@ -584,13 +615,13 @@ function gssfSavedEvidenceHtml(session, pkg) {
   const dataUrl = gssfSavedEvidenceDataUrl(session, pkg);
   if (!dataUrl) {
     return `
-      <div class="history-thumb gssf-sec-thumb" role="status" aria-label="GSSF evidence unavailable">
-        <div class="sec-authority-missing">GSSF evidence unavailable: no governed saved target image is available.</div>
+      <div class="history-thumb gssf-sec-thumb is-unavailable" role="status" aria-label="GSSF evidence unavailable">
+        <div class="sec-authority-missing">Target image unavailable</div>
       </div>
     `;
   }
   return `
-    <div class="history-thumb gssf-sec-thumb">
+    <div class="history-thumb gssf-sec-thumb has-evidence">
       <img src="${escapeHtml(dataUrl)}" alt="Saved scored GSSF target evidence" />
       <div class="history-evidence-layer">${authorityVisual(session)}</div>
     </div>

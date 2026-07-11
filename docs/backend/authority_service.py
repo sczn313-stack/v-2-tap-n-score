@@ -533,12 +533,14 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
         })
 
     scoring_breakdown = []
-    for zone, label, multiplier in [
-        ("downZero", "Down Zero", 0),
-        ("plusOne", "+1", 1),
-        ("plusThree", "+3", 3),
-        ("miss", "Miss", 10),
+    penalties = GSSF_AC_1_PROFILE["penaltySeconds"]
+    for zone, label in [
+        ("downZero", "Down Zero"),
+        ("plusOne", "+1"),
+        ("plusThree", "+3"),
+        ("miss", "Miss"),
     ]:
+        multiplier = penalties[zone]
         shot_ids = [hit["shot"] for hit in per_hit if hit["zone"] == zone]
         count = len(shot_ids)
         subtotal = count * multiplier

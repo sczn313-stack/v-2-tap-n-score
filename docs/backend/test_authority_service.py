@@ -1,4 +1,4 @@
-from authority_service import build_authority_package, build_distance_click_query
+from authority_service import GSSF_AC_1_PROFILE, build_authority_package, build_distance_click_query
 from mission_registry import MISSION_FAMILY_IDS, RESULT_PACKAGE_IDS
 from target_registry import (
     GOVERNED_UNAVAILABLE_MESSAGE,
@@ -452,6 +452,41 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
     assert_equal(result["authorityPackageId"], "gssf-ac-1-paper-penalty-v1", "gssf authority package id")
     assert_equal(result["authorityTrace"]["source"], "backend", "gssf authority trace source")
     assert_equal(result["authorityTrace"]["classificationCount"], 4, "gssf authority trace classification count")
+
+    original_penalties = dict(GSSF_AC_1_PROFILE["penaltySeconds"])
+    governed_penalties = {
+        "downZero": 2,
+        "plusOne": 4,
+        "plusThree": 6,
+        "miss": 8,
+    }
+    try:
+        GSSF_AC_1_PROFILE["penaltySeconds"].update(governed_penalties)
+        governed_result = gssf_package(hitCoordinates=[
+            {"xPercent": 50, "yPercent": 50},
+            {"xPercent": 50, "yPercent": 68},
+            {"xPercent": 50, "yPercent": 80},
+            {"xPercent": -5, "yPercent": 50},
+        ])
+        assert_equal(
+            [hit["penaltySeconds"] for hit in governed_result["hitClassifications"]],
+            [2, 4, 6, 8],
+            "gssf hit penalties use profile authority",
+        )
+        assert_equal(
+            [bucket["penaltySecondsPerHit"] for bucket in governed_result["scoringBreakdown"]],
+            [2, 4, 6, 8],
+            "gssf breakdown multipliers use profile authority",
+        )
+        assert_equal(
+            [bucket["subtotalPenaltySeconds"] for bucket in governed_result["scoringBreakdown"]],
+            [2, 4, 6, 8],
+            "gssf breakdown subtotals use profile authority",
+        )
+        assert_equal(governed_result["totalPaperPenaltySeconds"], 20, "gssf total uses profile authority")
+    finally:
+        GSSF_AC_1_PROFILE["penaltySeconds"].clear()
+        GSSF_AC_1_PROFILE["penaltySeconds"].update(original_penalties)
 
 
 def test_gssf_final_time_unavailable_without_raw_time():
