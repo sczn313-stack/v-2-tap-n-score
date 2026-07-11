@@ -532,12 +532,28 @@ function isDotTortureAuthoritySession() {
 }
 
 function isGssfAuthorityPackage(authorityPackage) {
-  return !!(authorityPackage && (
-    authorityPackage.target_profile_id === "gssf_ac_1"
-    || authorityPackage.targetProfileId === "gssf_ac_1"
-    || authorityPackage.mission_family === "gssf"
-    || authorityPackage.missionFamilyId === "gssf"
-  ));
+  if (!authorityPackage || typeof authorityPackage !== "object") return false;
+  if (authorityPackage.ok !== true || authorityPackage.status !== "calculated") return false;
+  if (authorityPackage.target_profile_id !== "gssf_ac_1" || authorityPackage.mission_family !== "gssf") return false;
+  if (authorityPackage.resultPackageType !== "gssfPaperPenaltyResult" || authorityPackage.resultSource !== "backend") return false;
+  const breakdown = authorityPackage.scoringBreakdown;
+  if (!Array.isArray(breakdown) || breakdown.length !== 4) return false;
+  const expectedZones = new Set(["downZero", "plusOne", "plusThree", "miss"]);
+  const seenZones = new Set();
+  const seenShotIds = new Set();
+  for (const bucket of breakdown) {
+    if (!bucket || typeof bucket !== "object" || !expectedZones.has(bucket.zone) || seenZones.has(bucket.zone)) return false;
+    if (typeof bucket.count !== "number" || !Number.isFinite(bucket.count) || !Number.isInteger(bucket.count) || bucket.count < 0) return false;
+    if (typeof bucket.penaltySecondsPerHit !== "number" || !Number.isFinite(bucket.penaltySecondsPerHit)) return false;
+    if (typeof bucket.subtotalPenaltySeconds !== "number" || !Number.isFinite(bucket.subtotalPenaltySeconds)) return false;
+    if (!Array.isArray(bucket.shotIds) || bucket.shotIds.length !== bucket.count) return false;
+    for (const shotId of bucket.shotIds) {
+      if (typeof shotId !== "number" || !Number.isFinite(shotId) || !Number.isInteger(shotId) || shotId < 1 || seenShotIds.has(shotId)) return false;
+      seenShotIds.add(shotId);
+    }
+    seenZones.add(bucket.zone);
+  }
+  return seenZones.size === expectedZones.size;
 }
 
 function isDotTortureTrainingPackage(authorityPackage) {
@@ -2118,34 +2134,24 @@ function bindGssfOfficialTimeInput(authorityPackage) {
   });
 }
 
-function gssfBucketTone(zone) {
-  const tone = gssfZoneTone(zone);
-  return tone === "down-zero" || tone === "plus-one" || tone === "plus-three" ? tone : "miss";
-}
-
 function gssfBucketDefinitions() {
   return [
-    { id: "down-zero", label: "Down Zero" },
-    { id: "plus-one", label: "+1" },
-    { id: "plus-three", label: "+3" },
-    { id: "miss", label: "Miss / Other" }
+    { id: "down-zero", zone: "downZero", label: "Down Zero" },
+    { id: "plus-one", zone: "plusOne", label: "+1" },
+    { id: "plus-three", zone: "plusThree", label: "+3" },
+    { id: "miss", zone: "miss", label: "Miss / Other" }
   ];
 }
 
+function gssfAuthoritativeBreakdown(authorityPackage) {
+  if (!isGssfAuthorityPackage(authorityPackage)) return [];
+  const breakdownByZone = new Map(authorityPackage.scoringBreakdown.map(bucket => [bucket.zone, bucket]));
+  return gssfBucketDefinitions().map(bucket => ({ ...bucket, source: breakdownByZone.get(bucket.zone) }));
+}
+
 function gssfBucketSummaryHtml(authorityPackage) {
-  const backendBreakdown = Array.isArray(authorityPackage && authorityPackage.scoringBreakdown)
-    ? authorityPackage.scoringBreakdown
-    : [];
-  const breakdownByZone = Object.fromEntries(backendBreakdown.map(item => [gssfBucketTone(item.zone), item]));
-  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, source: breakdownByZone[bucket.id] }));
-  const isComplete = buckets.every(({ source }) => (
-    source
-    && Number.isFinite(Number(source.count))
-    && Number.isFinite(Number(source.penaltySecondsPerHit))
-    && Number.isFinite(Number(source.subtotalPenaltySeconds))
-    && Array.isArray(source.shotIds)
-  ));
-  if (!isComplete) return "";
+  const buckets = gssfAuthoritativeBreakdown(authorityPackage);
+  if (!buckets.length) return "";
   const cards = buckets.map(bucket => {
     const count = Number(bucket.source.count);
     const multiplier = Number(bucket.source.penaltySecondsPerHit);

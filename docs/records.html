@@ -156,11 +156,35 @@ function isDotTortureTrainingPackage(pkg) {
 }
 
 function isGssfAuthorityPackage(pkg) {
+  if (!pkg || typeof pkg !== "object") return false;
+  if (pkg.ok !== true || pkg.status !== "calculated") return false;
+  if (pkg.target_profile_id !== "gssf_ac_1" || pkg.mission_family !== "gssf") return false;
+  if (pkg.resultPackageType !== "gssfPaperPenaltyResult" || pkg.resultSource !== "backend") return false;
+  const breakdown = pkg.scoringBreakdown;
+  if (!Array.isArray(breakdown) || breakdown.length !== 4) return false;
+  const expectedZones = new Set(["downZero", "plusOne", "plusThree", "miss"]);
+  const seenZones = new Set();
+  const seenShotIds = new Set();
+  for (const bucket of breakdown) {
+    if (!bucket || typeof bucket !== "object" || !expectedZones.has(bucket.zone) || seenZones.has(bucket.zone)) return false;
+    if (typeof bucket.count !== "number" || !Number.isFinite(bucket.count) || !Number.isInteger(bucket.count) || bucket.count < 0) return false;
+    if (typeof bucket.penaltySecondsPerHit !== "number" || !Number.isFinite(bucket.penaltySecondsPerHit)) return false;
+    if (typeof bucket.subtotalPenaltySeconds !== "number" || !Number.isFinite(bucket.subtotalPenaltySeconds)) return false;
+    if (!Array.isArray(bucket.shotIds) || bucket.shotIds.length !== bucket.count) return false;
+    for (const shotId of bucket.shotIds) {
+      if (typeof shotId !== "number" || !Number.isFinite(shotId) || !Number.isInteger(shotId) || shotId < 1 || seenShotIds.has(shotId)) return false;
+      seenShotIds.add(shotId);
+    }
+    seenZones.add(bucket.zone);
+  }
+  return seenZones.size === expectedZones.size;
+}
+
+function hasGssfAuthorityIdentity(pkg) {
   return !!(pkg && (
     pkg.target_profile_id === "gssf_ac_1"
-    || pkg.targetProfileId === "gssf_ac_1"
     || pkg.mission_family === "gssf"
-    || pkg.missionFamilyId === "gssf"
+    || pkg.resultPackageType === "gssfPaperPenaltyResult"
   ));
 }
 
@@ -177,32 +201,19 @@ function gssfZoneTone(zone) {
   return "other";
 }
 
-function gssfBucketTone(zone) {
-  const tone = gssfZoneTone(zone);
-  return tone === "down-zero" || tone === "plus-one" || tone === "plus-three" ? tone : "miss";
-}
-
 function gssfBucketDefinitions() {
   return [
-    { id: "down-zero", label: "Down Zero" },
-    { id: "plus-one", label: "+1" },
-    { id: "plus-three", label: "+3" },
-    { id: "miss", label: "Miss / Other" }
+    { id: "down-zero", zone: "downZero", label: "Down Zero" },
+    { id: "plus-one", zone: "plusOne", label: "+1" },
+    { id: "plus-three", zone: "plusThree", label: "+3" },
+    { id: "miss", zone: "miss", label: "Miss / Other" }
   ];
 }
 
 function gssfAuthoritativeBreakdown(pkg) {
-  const backendBreakdown = Array.isArray(pkg && pkg.scoringBreakdown) ? pkg.scoringBreakdown : [];
-  const breakdownByZone = Object.fromEntries(backendBreakdown.map(item => [gssfBucketTone(item.zone), item]));
-  const buckets = gssfBucketDefinitions().map(bucket => ({ ...bucket, source: breakdownByZone[bucket.id] }));
-  const isComplete = buckets.every(({ source }) => (
-    source
-    && Number.isFinite(Number(source.count))
-    && Number.isFinite(Number(source.penaltySecondsPerHit))
-    && Number.isFinite(Number(source.subtotalPenaltySeconds))
-    && Array.isArray(source.shotIds)
-  ));
-  return isComplete ? buckets : [];
+  if (!isGssfAuthorityPackage(pkg)) return [];
+  const breakdownByZone = new Map(pkg.scoringBreakdown.map(bucket => [bucket.zone, bucket]));
+  return gssfBucketDefinitions().map(bucket => ({ ...bucket, source: breakdownByZone.get(bucket.zone) }));
 }
 
 function gssfBucketSummaryHtml(pkg) {
@@ -566,6 +577,17 @@ function renderGssfSecCard(session, index, pkg) {
   `;
 }
 
+function renderInvalidGssfSecCard(session) {
+  return `
+    <article class="history-card gssf-sec-card no-thumb" data-session-id="${escapeHtml(session.sessionId || "")}">
+      <div class="history-copy">
+        <div class="sec-gssf-mission">GSSF AC-1</div>
+        <div class="sec-authority-missing" role="status">GSSF result unavailable: authoritative backend package is incomplete or invalid.</div>
+      </div>
+    </article>
+  `;
+}
+
 function authorityPoint(point) {
   return SCZN3M4.UGEO.normalizePoint(point);
 }
@@ -697,6 +719,9 @@ function renderHistory() {
     }
     if (isGssfAuthorityPackage(pkg)) {
       return renderGssfSecCard(session, index, pkg);
+    }
+    if (hasGssfAuthorityIdentity(pkg)) {
+      return renderInvalidGssfSecCard(session);
     }
     const hasAuthority = !!(pkg && pkg.status);
     const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;

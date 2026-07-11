@@ -71,6 +71,18 @@ assert(
   "GSSF time bucket cards must read the authoritative backend scoring breakdown"
 );
 assert(
+  shootHtml.includes('authorityPackage.resultPackageType !== "gssfPaperPenaltyResult"'),
+  "GSSF authority predicate must require the expected result package type"
+);
+assert(
+  shootHtml.includes('authorityPackage.resultSource !== "backend"'),
+  "GSSF authority predicate must require the backend source"
+);
+assert(
+  !shootHtml.includes("function gssfBucketTone("),
+  "Unknown GSSF scoring zones must not be converted into a fallback bucket"
+);
+assert(
   shootHtml.includes("source.subtotalPenaltySeconds"),
   "GSSF time bucket cards must display backend-provided subtotals"
 );
