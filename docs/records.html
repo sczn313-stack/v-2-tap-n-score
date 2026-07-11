@@ -221,8 +221,10 @@ function gssfBucketSummaryHtml(pkg) {
   const buckets = gssfAuthoritativeBreakdown(pkg);
   if (!buckets.length) return "";
   return `
-    <div class="sec-gssf-bucket-grid" aria-label="GSSF SEC backend classification buckets">
-      ${buckets.map(bucket => {
+    <div class="sec-gssf-rail-shell">
+      <button class="sec-gssf-rail-arrow is-previous" type="button" aria-label="Previous scoring zone">‹</button>
+      <div class="sec-gssf-bucket-grid" aria-label="GSSF SEC backend classification buckets">
+        ${buckets.map(bucket => {
         const count = Number(bucket.source.count);
         const multiplier = Number(bucket.source.penaltySecondsPerHit);
         const subtotal = Number(bucket.source.subtotalPenaltySeconds);
@@ -232,14 +234,17 @@ function gssfBucketSummaryHtml(pkg) {
             <div class="sec-gssf-bucket-head">
               <span><i class="gssf-zone-dot gssf-zone-${bucket.id}"></i>${escapeHtml(bucket.label)}</span>
             </div>
-            <em class="sec-gssf-bucket-math">${escapeHtml(`${count} × ${multiplier}`)}</em>
-            <strong class="sec-gssf-bucket-subtotal">${escapeHtml(`= ${subtotal} sec`)}</strong>
+            <em class="sec-gssf-bucket-math"><span>${escapeHtml(count)}</span><i>×</i><span>${escapeHtml(multiplier)}</span><i class="mobile-equals">=</i></em>
+            <strong class="sec-gssf-bucket-subtotal"><i class="desktop-equals">=</i>${escapeHtml(`${subtotal} sec`)}</strong>
             <span class="sec-gssf-bucket-rule" aria-hidden="true"></span>
-            <b>Hits: ${escapeHtml(count)}</b>
+            <b><span>Hits:</span><strong>${escapeHtml(count)}</strong></b>
             <small><span>Shot IDs:</span> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small>
           </div>
         `;
-      }).join("")}
+        }).join("")}
+      </div>
+      <button class="sec-gssf-rail-arrow is-next" type="button" aria-label="Next scoring zone">›</button>
+      <div class="sec-gssf-rail-dots" aria-hidden="true">${buckets.map((_, index) => `<i${index === 0 ? ' class="is-active"' : ""}></i>`).join("")}</div>
     </div>
   `;
 }
@@ -693,6 +698,29 @@ function syncSecEvidenceLayers() {
   });
 }
 
+function syncGssfScoringRails() {
+  document.querySelectorAll(".sec-gssf-rail-shell").forEach(shell => {
+    if (shell.dataset.ready === "true") return;
+    shell.dataset.ready = "true";
+    const rail = shell.querySelector(".sec-gssf-bucket-grid");
+    const cards = Array.from(rail.querySelectorAll(".sec-gssf-bucket"));
+    const dots = Array.from(shell.querySelectorAll(".sec-gssf-rail-dots i"));
+    const previous = shell.querySelector(".sec-gssf-rail-arrow.is-previous");
+    const next = shell.querySelector(".sec-gssf-rail-arrow.is-next");
+    const activeIndex = () => cards.reduce((best, card, index) =>
+      Math.abs(card.offsetLeft - rail.scrollLeft) < Math.abs(cards[best].offsetLeft - rail.scrollLeft) ? index : best, 0);
+    const update = () => dots.forEach((dot, index) => dot.classList.toggle("is-active", index === activeIndex()));
+    const move = direction => {
+      const index = Math.max(0, Math.min(cards.length - 1, activeIndex() + direction));
+      rail.scrollTo({ left: cards[index].offsetLeft, behavior: "smooth" });
+    };
+    previous.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    rail.addEventListener("scroll", update, { passive: true });
+    update();
+  });
+}
+
 function attributionLine(snapshot) {
   const parts = [
     ["Shooter", snapshot.shooterName],
@@ -819,6 +847,7 @@ function renderHistory() {
     `;
   }).join("");
   requestAnimationFrame(syncSecEvidenceLayers);
+  requestAnimationFrame(syncGssfScoringRails);
 }
 
 renderHistory();

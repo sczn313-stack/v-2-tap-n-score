@@ -78,6 +78,14 @@ for (const contentClass of ["sec-gssf-bucket-head", "sec-gssf-bucket-math", "sec
   assert(bucketRenderer.includes(contentClass), `every scoring column must retain ${contentClass}`);
 }
 assert(bucketRenderer.includes("Hits:") && bucketRenderer.includes("Shot IDs:"), "every scoring column must retain hits and authoritative shot IDs");
+for (const railClass of ["sec-gssf-rail-shell", "sec-gssf-rail-arrow", "sec-gssf-rail-dots", "mobile-equals"]) {
+  assert(bucketRenderer.includes(railClass), `mobile scoring rail must retain ${railClass}`);
+}
+assert(records.includes("function syncGssfScoringRails()"), "mobile rail indicators must track the active scoring column");
+assert(
+  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-rail-dots i\.is-active\s*\{[^}]*background:#22c55e/s.test(styles),
+  "mobile rail must expose a visible active-position indicator"
+);
 assert(
   styles.includes("--gssf-sec-space") && styles.includes("--gssf-sec-radius") && styles.includes("--gssf-sec-shadow"),
   "SEC Standard v1.0 must use a consistent spacing, radius, and shadow system"
