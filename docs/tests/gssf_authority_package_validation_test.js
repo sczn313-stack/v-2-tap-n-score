@@ -42,6 +42,7 @@ function validPackage() {
     mission_family: "gssf",
     resultPackageType: "gssfPaperPenaltyResult",
     resultSource: "backend",
+    totalPaperPenaltySeconds: 1,
     scoringBreakdown: [
       { zone: "downZero", count: 2, penaltySecondsPerHit: 0, subtotalPenaltySeconds: 0, shotIds: [11, 15] },
       { zone: "plusOne", count: 1, penaltySecondsPerHit: 1, subtotalPenaltySeconds: 1, shotIds: [22] },

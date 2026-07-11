@@ -79,6 +79,14 @@ assert(
   "GSSF authority predicate must require the backend source"
 );
 assert(
+  shootHtml.includes('typeof authorityPackage.totalPaperPenaltySeconds !== "number"'),
+  "GSSF authority predicate must require an actual numeric backend paper penalty"
+);
+assert(
+  !shootHtml.includes("return Number.isFinite(Number(value)) ? Number(value) : 0"),
+  "GSSF live scoring must not replace missing paper-penalty authority with zero"
+);
+assert(
   !shootHtml.includes("function gssfBucketTone("),
   "Unknown GSSF scoring zones must not be converted into a fallback bucket"
 );

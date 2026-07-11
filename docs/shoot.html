@@ -536,6 +536,7 @@ function isGssfAuthorityPackage(authorityPackage) {
   if (authorityPackage.ok !== true || authorityPackage.status !== "calculated") return false;
   if (authorityPackage.target_profile_id !== "gssf_ac_1" || authorityPackage.mission_family !== "gssf") return false;
   if (authorityPackage.resultPackageType !== "gssfPaperPenaltyResult" || authorityPackage.resultSource !== "backend") return false;
+  if (typeof authorityPackage.totalPaperPenaltySeconds !== "number" || !Number.isFinite(authorityPackage.totalPaperPenaltySeconds) || authorityPackage.totalPaperPenaltySeconds < 0) return false;
   const breakdown = authorityPackage.scoringBreakdown;
   if (!Array.isArray(breakdown) || breakdown.length !== 4) return false;
   const expectedZones = new Set(["downZero", "plusOne", "plusThree", "miss"]);
@@ -1304,7 +1305,13 @@ function targetIntelStackHtml() {
   }
   if (isGssfAuthoritySession()) {
     if (!resultsShown || !isGssfAuthorityPackage(authorityPackage) || !isAuthorityPackageCalculated(authorityPackage)) {
-      return "";
+      return authorityStatusMessage
+        ? `
+          <div class="authority-results-panel gssf-results-panel" aria-label="GSSF authority unavailable" role="status">
+            <div class="authority-status-message"><strong>${escapeHtml(authorityStatusMessage)}</strong></div>
+          </div>
+        `
+        : "";
     }
     return `
       <div class="authority-results-panel gssf-results-panel" aria-label="GSSF results">
@@ -1732,7 +1739,9 @@ async function requestBackendAuthority() {
 }
 
 function applyBackendAuthorityPackage(authorityPackage) {
-  authorityStatusMessage = "";
+  authorityStatusMessage = isGssfAuthoritySession() && !isGssfAuthorityPackage(authorityPackage)
+    ? "GSSF result unavailable: authoritative paper-penalty seconds are missing or invalid."
+    : "";
   backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
   syncAuthorityDerivedState();
   renderTargetHeaderIdentity();
@@ -2052,8 +2061,7 @@ function gssfFormatSeconds(value) {
 }
 
 function gssfPaperPenaltySeconds(authorityPackage) {
-  const value = authorityPackage && authorityPackage.totalPaperPenaltySeconds;
-  return Number.isFinite(Number(value)) ? Number(value) : 0;
+  return isGssfAuthorityPackage(authorityPackage) ? authorityPackage.totalPaperPenaltySeconds : null;
 }
 
 function gssfOfficialCompetitionResult(authorityPackage) {
@@ -2061,14 +2069,16 @@ function gssfOfficialCompetitionResult(authorityPackage) {
     ? Number(gssfOfficialMatchTimeSeconds)
     : null;
   const totalPaperPenaltySeconds = gssfPaperPenaltySeconds(authorityPackage);
-  const officialFinalScoreSeconds = officialMatchTimeSeconds === null
+  const officialFinalScoreSeconds = officialMatchTimeSeconds === null || totalPaperPenaltySeconds === null
     ? null
     : Number((officialMatchTimeSeconds + totalPaperPenaltySeconds).toFixed(2));
   return {
     officialMatchTimeSeconds,
     totalPaperPenaltySeconds,
     officialFinalScoreSeconds,
-    finalScoreStatus: officialFinalScoreSeconds === null ? "unavailable_without_official_time" : "calculated",
+    finalScoreStatus: totalPaperPenaltySeconds === null
+      ? "authority_unavailable"
+      : (officialFinalScoreSeconds === null ? "unavailable_without_official_time" : "calculated"),
     manualTimeSource: "shooter-entered-official-timer",
     scoringSource: "backend-penalty-plus-manual-time"
   };
@@ -2076,12 +2086,16 @@ function gssfOfficialCompetitionResult(authorityPackage) {
 
 function gssfOfficialFinalScoreHtml(authorityPackage) {
   const result = gssfOfficialCompetitionResult(authorityPackage);
-  const finalText = result.officialFinalScoreSeconds === null
-    ? "Enter official match time"
-    : gssfFormatSeconds(result.officialFinalScoreSeconds);
+  const finalText = result.finalScoreStatus === "authority_unavailable"
+    ? "Authority unavailable"
+    : (result.officialFinalScoreSeconds === null
+      ? "Enter official match time"
+      : gssfFormatSeconds(result.officialFinalScoreSeconds));
   const inputValue = result.officialMatchTimeSeconds === null ? "" : Number(result.officialMatchTimeSeconds).toFixed(2);
   const officialTimeText = result.officialMatchTimeSeconds === null ? "Enter official match time" : gssfFormatSeconds(result.officialMatchTimeSeconds);
-  const paperPenaltyText = `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
+  const paperPenaltyText = result.totalPaperPenaltySeconds === null
+    ? "Authority unavailable"
+    : `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
   return `
     <section class="gssf-final-score-panel" aria-label="GSSF final score">
       <span>Final Score</span>
@@ -2112,9 +2126,11 @@ function updateGssfOfficialFinalScoreDisplay(authorityPackage) {
   const officialTimeDisplay = document.getElementById("gssfOfficialTimeDisplay");
   if (!finalScore) return;
   const result = gssfOfficialCompetitionResult(authorityPackage);
-  finalScore.textContent = result.officialFinalScoreSeconds === null
-    ? "Enter official match time"
-    : gssfFormatSeconds(result.officialFinalScoreSeconds);
+  finalScore.textContent = result.finalScoreStatus === "authority_unavailable"
+    ? "Authority unavailable"
+    : (result.officialFinalScoreSeconds === null
+      ? "Enter official match time"
+      : gssfFormatSeconds(result.officialFinalScoreSeconds));
   if (officialTimeDisplay) {
     officialTimeDisplay.textContent = result.officialMatchTimeSeconds === null
       ? "Enter official match time"

@@ -160,6 +160,7 @@ function isGssfAuthorityPackage(pkg) {
   if (pkg.ok !== true || pkg.status !== "calculated") return false;
   if (pkg.target_profile_id !== "gssf_ac_1" || pkg.mission_family !== "gssf") return false;
   if (pkg.resultPackageType !== "gssfPaperPenaltyResult" || pkg.resultSource !== "backend") return false;
+  if (typeof pkg.totalPaperPenaltySeconds !== "number" || !Number.isFinite(pkg.totalPaperPenaltySeconds) || pkg.totalPaperPenaltySeconds < 0) return false;
   const breakdown = pkg.scoringBreakdown;
   if (!Array.isArray(breakdown) || breakdown.length !== 4) return false;
   const expectedZones = new Set(["downZero", "plusOne", "plusThree", "miss"]);
@@ -268,18 +269,17 @@ function optionalNumber(...values) {
 
 function gssfCompetitionRecord(session, pkg) {
   const officialMatchTimeSeconds = optionalNumber(session.officialMatchTimeSeconds, session.gssfOfficialMatchTimeSeconds, session.shotData?.officialMatchTimeSeconds);
-  const totalPaperPenaltySeconds = Number.isFinite(Number(session.totalPaperPenaltySeconds ?? session.shotData?.totalPaperPenaltySeconds ?? pkg.totalPaperPenaltySeconds))
-    ? Number(session.totalPaperPenaltySeconds ?? session.shotData?.totalPaperPenaltySeconds ?? pkg.totalPaperPenaltySeconds)
-    : 0;
-  const savedFinalScore = optionalNumber(session.officialFinalScoreSeconds, session.shotData?.officialFinalScoreSeconds);
-  const officialFinalScoreSeconds = savedFinalScore !== null
-    ? savedFinalScore
-    : (officialMatchTimeSeconds === null ? null : Number((officialMatchTimeSeconds + totalPaperPenaltySeconds).toFixed(2)));
+  const totalPaperPenaltySeconds = isGssfAuthorityPackage(pkg) ? pkg.totalPaperPenaltySeconds : null;
+  const officialFinalScoreSeconds = officialMatchTimeSeconds === null || totalPaperPenaltySeconds === null
+    ? null
+    : Number((officialMatchTimeSeconds + totalPaperPenaltySeconds).toFixed(2));
   return {
     officialMatchTimeSeconds,
     totalPaperPenaltySeconds,
     officialFinalScoreSeconds,
-    finalScoreStatus: officialFinalScoreSeconds === null ? "unavailable_without_official_time" : "calculated",
+    finalScoreStatus: totalPaperPenaltySeconds === null
+      ? "authority_unavailable"
+      : (officialFinalScoreSeconds === null ? "unavailable_without_official_time" : "calculated"),
     manualTimeSource: session.gssfManualTimeSource || session.shotData?.manualTimeSource || "shooter-entered-official-timer",
     scoringSource: session.gssfScoringSource || "backend-penalty-plus-manual-time"
   };
