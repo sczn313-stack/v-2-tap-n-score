@@ -21,8 +21,8 @@ assert(
   "GSSF SEC content must use a single governed column on narrow mobile"
 );
 assert(
-  /\.records-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:none[^}]*grid-auto-flow:column[^}]*width:100%[^}]*min-width:0[^}]*max-width:100%[^}]*overflow-x:auto[^}]*overflow-y:hidden/s.test(mobileStyles),
-  "Authoritative bucket rail must scroll internally without widening its narrow-mobile parent"
+  /\.records-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:repeat\(4, minmax\(0, 1fr\)\)[^}]*width:100%[^}]*min-width:0[^}]*max-width:100%[^}]*overflow-x:hidden[^}]*overflow-y:hidden/s.test(mobileStyles),
+  "Authoritative bucket scoreboard must show four contained columns without widening the viewport"
 );
 assert(
   /\.records-page \.sec-gssf-bucket small\s*\{[^}]*overflow-wrap:anywhere[^}]*word-break:break-word/s.test(mobileStyles),

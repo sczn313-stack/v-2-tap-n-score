@@ -64,8 +64,8 @@ assert(
   "GSSF scoring must not fall back to a 2 by 2 presentation"
 );
 assert(
-  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:none[^}]*grid-auto-flow:column[^}]*grid-auto-columns:clamp\(218px, 68vw, 232px\)[^}]*overflow-x:auto[^}]*scroll-snap-type:inline mandatory/s.test(styles),
-  "mobile scoring must remain one horizontally scrollable snap row"
+  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:repeat\(4, minmax\(0, 1fr\)\)[^}]*grid-auto-flow:row[^}]*overflow-x:hidden[^}]*scroll-snap-type:none/s.test(styles),
+  "mobile scoring must display all four columns without carousel behavior"
 );
 const expectedBucketOrder = ["Down Zero", "+1", "+3", "Miss / Other"];
 for (let index = 1; index < expectedBucketOrder.length; index += 1) {
@@ -81,10 +81,10 @@ assert(bucketRenderer.includes("Hits:") && bucketRenderer.includes("Shot IDs:"),
 for (const railClass of ["sec-gssf-rail-shell", "sec-gssf-rail-arrow", "sec-gssf-rail-dots", "mobile-equals"]) {
   assert(bucketRenderer.includes(railClass), `mobile scoring rail must retain ${railClass}`);
 }
-assert(records.includes("function syncGssfScoringRails()"), "mobile rail indicators must track the active scoring column");
 assert(
-  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-rail-dots i\.is-active\s*\{[^}]*background:#22c55e/s.test(styles),
-  "mobile rail must expose a visible active-position indicator"
+  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-rail-arrow\s*\{[^}]*display:none/s.test(styles)
+    && /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-rail-dots\s*\{[^}]*display:none/s.test(styles),
+  "mobile scoring must hide carousel arrows and position dots"
 );
 assert(
   styles.includes("--gssf-sec-space") && styles.includes("--gssf-sec-radius") && styles.includes("--gssf-sec-shadow"),
