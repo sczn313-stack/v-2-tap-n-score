@@ -15,6 +15,7 @@ The Milestone Index records major engineering and governance checkpoints. Milest
 | M-005 | Active Calculation Context | 2026-07-08 | Episode number Needs Review | Completed |
 | M-006 | Explainable Scoring | 2026-07-08 through 2026-07-11 | Episode number Needs Review | Completed |
 | M-007 | Target Authority Phase 1 | 2026-07-14 | Episode 27 | Architecture Locked; Implementation Pending |
+| M-008 | Universal SEC Architecture | 2026-07-14 | Episode number Needs Review | Architecture Baseline |
 
 ## Milestone records
 
@@ -189,6 +190,28 @@ The Milestone Index records major engineering and governance checkpoints. Milest
 - `c44538a` — `Lock Phase 1 target authority architecture`
 
 **Status:** Architecture Locked; Implementation Pending
+
+### M-008 — Universal SEC Architecture
+
+**Milestone number:** M-008
+
+**Title:** Universal SEC Architecture
+
+**Date:** 2026-07-14
+
+**Summary:** The four-target Universal SEC study was incorporated into the authoritative architecture set and normalized to current Mission Family, ATP, Registration Package, Authoritative Shot Package, result-package, evidence, and zeroing-isolation terminology.
+
+**Why it mattered:** SCZN3 can provide one recognizable shooter experience across different disciplines without centralizing their rules in a client-side or generic scoring engine.
+
+**Architecture impact:** Established [SCZN3 Universal Shooter Experience Card Architecture](../../architecture/SCZN3_Universal_SEC_Architecture.md) and the governed chain `Mission Family → Target Authority → Result Package → Universal SEC`.
+
+**Governance impact:** Made renderer selection dependent on strict package identity, preserved mission-specific contracts, classified unsupported USPSA and IBS adapters as conceptual, restored Registration Package requirements for asset-based authority, and explicitly preserved Baker zeroing isolation.
+
+**Related episodes:** [Universal SEC Architecture Baseline — episode number Needs Review](../episodes/README.md#universal-sec-architecture-baseline)
+
+**Related commits:** `f0a7ca0` — `Establish Universal SEC architecture`
+
+**Status:** Architecture Baseline
 
 ## Milestone entry template
 

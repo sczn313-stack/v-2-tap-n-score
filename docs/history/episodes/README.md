@@ -17,6 +17,7 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Needs Review | Active Calculation Context | 2026-07-08 | [M-005](../milestones/README.md#m-005--active-calculation-context) | Completed |
 | Needs Review | Explainable Scoring | 2026-07-08 through 2026-07-11 | [M-006](../milestones/README.md#m-006--explainable-scoring) | Completed |
 | Episode 27 | Target Authority Phase 1 Architecture Lock | 2026-07-14 | [M-007](../milestones/README.md#m-007--target-authority-phase-1) | Architecture Locked; Implementation Pending |
+| Needs Review | Universal SEC Architecture Baseline | 2026-07-14 | [M-008](../milestones/README.md#m-008--universal-sec-architecture) | Architecture Baseline |
 
 ## Episode records
 
@@ -205,6 +206,30 @@ Episode numbers are recorded only when committed documentation establishes them.
 - `c44538a` — `Lock Phase 1 target authority architecture`
 
 **Status:** Architecture Locked; Implementation Pending
+
+### Universal SEC Architecture Baseline
+
+**Episode number:** Needs Review
+
+**Title:** Universal SEC Architecture Baseline
+
+**Date:** 2026-07-14
+
+**Summary:** SCZN3 incorporated the four-target Universal Shooter Experience Card study into its authoritative architecture and aligned it with Mission Family Routing, Target Authority, registered result packages, evidence governance, and zeroing isolation.
+
+**Problem:** Different disciplines use fundamentally different scoring or guidance models, creating a risk that each would produce an unrelated shooter experience or that a shared interface would become an unsafe shared scoring engine.
+
+**Discovery:** One consistent SEC can present mission-specific governed results when the Mission Family, Target Authority, and Result Package are validated before rendering.
+
+**Governance decisions:** The Universal SEC renders but does not calculate. Result packages remain mission-specific. Unsupported USPSA and IBS examples remain conceptual. Asset-based classification retains Registration Package requirements. Baker zeroing remains isolated behind `zeroingCorrection` and `zeroCorrectionResult`.
+
+**Outcome:** [SCZN3 Universal Shooter Experience Card Architecture](../../architecture/SCZN3_Universal_SEC_Architecture.md) became an architecture baseline without activating new targets or changing production behavior.
+
+**Related milestones:** [M-008 — Universal SEC Architecture](../milestones/README.md#m-008--universal-sec-architecture)
+
+**Related commits:** `f0a7ca0` — `Establish Universal SEC architecture`
+
+**Status:** Architecture Baseline
 
 ## Episode entry template
 

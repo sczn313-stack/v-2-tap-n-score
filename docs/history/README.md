@@ -30,6 +30,7 @@ One episode may produce several milestones. One milestone may also represent wor
 ## Status vocabulary
 
 - **Completed** — committed evidence establishes that the described checkpoint was delivered.
+- **Architecture Baseline** — a governing architecture document has been committed for continued platform use.
 - **Architecture Locked** — the governing architecture is committed, but implementation may still be pending.
 - **Implementation Pending** — implementation is explicitly outside the completed checkpoint.
 - **Needs Review** — chronology, episode numbering, or another historical claim cannot be confirmed from current repository evidence.
