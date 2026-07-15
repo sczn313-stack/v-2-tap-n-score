@@ -18,6 +18,7 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Needs Review | Explainable Scoring | 2026-07-08 through 2026-07-11 | [M-006](../milestones/README.md#m-006--explainable-scoring) | Completed |
 | Episode 27 | Target Authority Phase 1 Architecture Lock | 2026-07-14 | [M-007](../milestones/README.md#m-007--target-authority-phase-1) | Architecture Locked; Implementation Pending |
 | Needs Review | Universal SEC Architecture Baseline | 2026-07-14 | [M-008](../milestones/README.md#m-008--universal-sec-architecture) | Architecture Baseline |
+| Episode 30 | Composable Target Authority | 2026-07-14 | [M-009](../milestones/README.md#m-009--composable-target-authority) | Architecture Locked |
 
 ## Episode records
 
@@ -230,6 +231,52 @@ Episode numbers are recorded only when committed documentation establishes them.
 **Related commits:** `f0a7ca0` — `Establish Universal SEC architecture`
 
 **Status:** Architecture Baseline
+
+### Composable Target Authority
+
+**Episode number:** Episode 30
+
+**Title:** Composable Target Authority
+
+**Date:** 2026-07-14
+
+**Summary:** SCZN3 adopted an evolutionary refinement that separates immutable geometry, exact asset registration, numerical scoring, mission semantics, and execution authorization into independently versioned authority components.
+
+**Problem:** A one-target/one-asset/one-scoring/one-mission mental model could encourage duplicated geometry and governance drift as Smart Targets gain additional approved renditions, scoring systems, and shooter activities.
+
+**Discovery:** The discovery originated while evaluating whether a dimensioned engineering rendering and a clean production rendering of the same GSSF target should register under one ATP. The question revealed that Geometry, Registration, Scoring, Mission, and Target Identity are independent authority components. Phase 1 is a valid single-component instance of the resulting general model. Reuse remains safe only when a Target Execution Contract explicitly authorizes the exact component versions.
+
+```text
+One Target
+    ↓
+One ATP
+    ↓
+Question:
+Can multiple registered assets belong to one ATP?
+    ↓
+Discovery:
+Geometry, Registration, Scoring, Mission,
+and Target Identity are independent authority components.
+    ↓
+Solution:
+Composable Target Authority.
+```
+
+**Governance decisions:** Geometry owns spatial truth. The ATP retains target identity and compatible authority. Registration binds exact assets. Scoring owns numerical interpretation. Missions own shooter activity and aggregation. No authority component may assume another component's responsibility; every authority decision has one authoritative owner. The platform is composed, but authority is not: execution resolves through one explicit Target Execution Contract. `missionFamily` remains the sole pipeline switch. Universal SEC remains presentation-only. Unknown, incompatible, suspended, revoked, or mismatched combinations return `authority_unavailable`.
+
+**Outcome:** [ADR-001 — Composable Target Authority](../../architecture/decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md) and its [Authority Ownership Matrix](../../architecture/COMPOSABLE_TARGET_AUTHORITY_OWNERSHIP_MATRIX.md) became locked governance. The decision requires no runtime migration and independently authorizes no implementation.
+
+**Relationship to Episode 28:** Needs Review. The current repository history contains no committed Episode 28 record. This relationship must be updated when Episode 28's title, scope, and evidence are documented.
+
+**Relationship to Universal SEC:** The Universal SEC remains downstream of mission-specific Result Packages and unchanged. Composable authority strengthens result provenance without moving scoring or authorization into presentation.
+
+**Future scalability:** Multiple asset renditions, scoring profiles, and mission profiles may reuse physical geometry through explicit versioned contracts rather than duplicated ATP definitions.
+
+**Related milestones:** [M-009 — Composable Target Authority](../milestones/README.md#m-009--composable-target-authority)
+
+**Related commits:** `Lock Episode 30 — Adopt Composable Target Authority` documentation checkpoint
+
+**Status:** Architecture Locked
 
 ## Episode entry template
 

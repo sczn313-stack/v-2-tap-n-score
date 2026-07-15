@@ -16,6 +16,7 @@ The Milestone Index records major engineering and governance checkpoints. Milest
 | M-006 | Explainable Scoring | 2026-07-08 through 2026-07-11 | Episode number Needs Review | Completed |
 | M-007 | Target Authority Phase 1 | 2026-07-14 | Episode 27 | Architecture Locked; Implementation Pending |
 | M-008 | Universal SEC Architecture | 2026-07-14 | Episode number Needs Review | Architecture Baseline |
+| M-009 | Composable Target Authority | 2026-07-14 | Episode 30 | Architecture Locked |
 
 ## Milestone records
 
@@ -212,6 +213,30 @@ The Milestone Index records major engineering and governance checkpoints. Milest
 **Related commits:** `f0a7ca0` — `Establish Universal SEC architecture`
 
 **Status:** Architecture Baseline
+
+### M-009 — Composable Target Authority
+
+**Milestone number:** M-009
+
+**Title:** Composable Target Authority
+
+**Date:** 2026-07-14
+
+**Summary:** SCZN3 adopted a composable authority model in which Geometry Profiles, ATPs, Registration Packages, Scoring Profiles, Mission Profiles, and Target Execution Contracts have explicit independent ownership and version boundaries.
+
+**Why it mattered:** Future targets can reuse immutable spatial truth across approved assets, scoring interpretations, and shooter activities without copying geometry or weakening authority.
+
+**Architecture impact:** Generalizes Phase 1 from a valid one-to-one instance into an explicitly authorized composition model. The ATP remains target identity and compatibility authority; a new Target Execution Contract authorizes exact component combinations.
+
+**Governance impact:** Preserves backend ownership, strict refusal, immutable versioning, mission-family routing, Zeroing Authority isolation, and Universal SEC presentation boundaries while preventing unauthorized component composition.
+
+**Compatibility:** GSSF Phase 1 remains valid. Baker GF-DB remains a draft and unavailable. Existing single-asset ATPs require no runtime migration or behavior change.
+
+**Related episodes:** [Episode 30 — Composable Target Authority](../episodes/README.md#composable-target-authority)
+
+**Related commits:** `Lock Episode 30 — Adopt Composable Target Authority` documentation checkpoint
+
+**Status:** Architecture Locked
 
 ## Milestone entry template
 

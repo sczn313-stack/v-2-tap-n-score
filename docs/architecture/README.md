@@ -10,6 +10,13 @@ This index is the front door to SCZN3 architecture. Read the documents in order 
 4. [SCZN3 Universal Shooter Experience Card Architecture](./SCZN3_Universal_SEC_Architecture.md)
 5. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
 
+### Adopted architecture decision
+
+- [ADR-001 — Composable Target Authority](./decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md)
+- [Composable Target Authority Ownership Matrix](./COMPOSABLE_TARGET_AUTHORITY_OWNERSHIP_MATRIX.md)
+
+These documents are locked architecture. They generalize the Phase 1 model without changing Phase 1 runtime behavior or independently authorizing implementation.
+
 ## 2. Document roles and authority boundaries
 
 ### [Smart Target Catalog](./SMART_TARGET_CATALOG.md) — Active
