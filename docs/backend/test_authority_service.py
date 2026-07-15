@@ -383,33 +383,71 @@ def test_payload_cannot_silently_activate_registry_target():
     assert_equal(result["supportedStatus"], "unavailable", "payload cannot override support")
 
 
-def gssf_package(**overrides):
+GSSF_CANONICAL_AC_1_ASSET = {
+    "canonicalAssetId": "gssf_ac_1_clean_reference_png_v1",
+    "canonicalAssetSha256": "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+    "imageWidthPx": 1125,
+    "imageHeightPx": 1373,
+    "canonicalCoordinateSystemVersion": "gssf-ac-1-canonical-coordinate-system-v1",
+}
+
+
+GSSF_CANONICAL_AC_1_CENTER_PX = {"x": 561.8978, "y": 649.6939}
+GSSF_CANONICAL_AC_1_PIXELS_PER_INCH = 60.9
+
+
+MISSING_CANONICAL_ASSET_SENTINEL = object()
+
+
+def gssf_canonical_asset_package(hits=None, canonical_asset=MISSING_CANONICAL_ASSET_SENTINEL, **overrides):
+    supplied_hits = hits if hits is not None else []
+    normalized_hits = [dict(hit, shotId=hit.get("shotId", index)) for index, hit in enumerate(supplied_hits, start=1)]
     payload = {
         "target_profile_id": "gssf_ac_1",
+        "targetProfileVersion": "1",
+        "missionFamily": "gssf",
         "mission_family": "gssf",
-        "hitCoordinates": [],
+        "registrationPackageId": "gssf-ac-1-clean-png-registration-v1",
+        "registrationPackageVersion": "1",
+        "targetExecutionContractId": "gssf-ac-1-live-canonical-v1",
+        "imageWidthPx": 1125,
+        "imageHeightPx": 1373,
+        "evidenceSha256": "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+        "hitPixelCoordinates": normalized_hits,
+        "observationCount": len(normalized_hits),
     }
+    if canonical_asset is MISSING_CANONICAL_ASSET_SENTINEL:
+        payload["canonicalAsset"] = dict(GSSF_CANONICAL_AC_1_ASSET)
+    elif canonical_asset is not None:
+        payload["canonicalAsset"] = canonical_asset
     payload.update(overrides)
     return build_authority_package(payload)
 
 
+def gssf_pixel_at_radius(radius_inches, axis="x"):
+    center = GSSF_CANONICAL_AC_1_CENTER_PX
+    ppi = GSSF_CANONICAL_AC_1_PIXELS_PER_INCH
+    if axis == "y":
+        return {"xPx": center["x"], "yPx": center["y"] + (radius_inches * ppi)}
+    return {"xPx": center["x"] + (radius_inches * ppi), "yPx": center["y"]}
+
+
 def test_gssf_ac_1_scores_hit_by_hit_zones():
-    result = gssf_package(hitCoordinates=[
-        {"xPercent": 50, "yPercent": 50},
-        {"xPercent": 50, "yPercent": 68},
-        {"xPercent": 50, "yPercent": 80},
-        {"xPercent": -5, "yPercent": 50},
+    result = gssf_canonical_asset_package(hits=[
+        gssf_pixel_at_radius(0),
+        gssf_pixel_at_radius(5),
+        gssf_pixel_at_radius(7),
     ])
     assert_equal(result["ok"], True, "gssf ok")
     assert_equal(result["resultPackageType"], "gssfPaperPenaltyResult", "gssf result type")
-    assert_equal([hit["zone"] for hit in result["hitClassifications"]], ["downZero", "plusOne", "plusThree", "miss"], "gssf zones")
-    assert_equal([hit["shot"] for hit in result["hitClassifications"]], [1, 2, 3, 4], "gssf hit classification shot ids")
-    assert_equal([hit["shot"] for hit in result["renderCoordinates"]["hits"]], [1, 2, 3, 4], "gssf rendered hit shot ids")
+    assert_equal([hit["zone"] for hit in result["hitClassifications"]], ["downZero", "plusOne", "plusThree"], "gssf zones")
+    assert_equal([hit["shot"] for hit in result["hitClassifications"]], [1, 2, 3], "gssf hit classification shot ids")
+    assert_equal([hit["shot"] for hit in result["renderCoordinates"]["hits"]], [1, 2, 3], "gssf rendered hit shot ids")
     assert_equal(result["downZeroCount"], 1, "gssf down zero count")
     assert_equal(result["plusOneCount"], 1, "gssf plus one count")
     assert_equal(result["plusThreeCount"], 1, "gssf plus three count")
-    assert_equal(result["missCount"], 1, "gssf miss count")
-    assert_equal(result["totalPaperPenaltySeconds"], 14, "gssf paper penalty")
+    assert_equal(result["missCount"], 0, "gssf miss count")
+    assert_equal(result["totalPaperPenaltySeconds"], 4, "gssf paper penalty")
     assert_equal(result["scoringBreakdown"], [
         {
             "zone": "downZero",
@@ -441,17 +479,17 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
         {
             "zone": "miss",
             "label": "Miss",
-            "count": 1,
+            "count": 0,
             "penaltySecondsPerHit": 10,
-            "subtotalPenaltySeconds": 10,
-            "math": "1 x 10 = 10",
-            "shotIds": [4],
+            "subtotalPenaltySeconds": 0,
+            "math": "0 x 10 = 0",
+            "shotIds": [],
         },
     ], "gssf backend scoring breakdown")
     assert_equal(result["resultSource"], "backend", "gssf result source")
-    assert_equal(result["authorityPackageId"], "gssf-ac-1-paper-penalty-v1", "gssf authority package id")
+    assert_equal(result["authorityPackageId"], "gssf-ac-1-canonical-asset-paper-penalty-v1", "gssf authority package id")
     assert_equal(result["authorityTrace"]["source"], "backend", "gssf authority trace source")
-    assert_equal(result["authorityTrace"]["classificationCount"], 4, "gssf authority trace classification count")
+    assert_equal(result["authorityTrace"]["classificationCount"], 3, "gssf authority trace classification count")
 
     original_penalties = dict(GSSF_AC_1_PROFILE["penaltySeconds"])
     governed_penalties = {
@@ -462,15 +500,14 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
     }
     try:
         GSSF_AC_1_PROFILE["penaltySeconds"].update(governed_penalties)
-        governed_result = gssf_package(hitCoordinates=[
-            {"xPercent": 50, "yPercent": 50},
-            {"xPercent": 50, "yPercent": 68},
-            {"xPercent": 50, "yPercent": 80},
-            {"xPercent": -5, "yPercent": 50},
+        governed_result = gssf_canonical_asset_package(hits=[
+            gssf_pixel_at_radius(0),
+            gssf_pixel_at_radius(5),
+            gssf_pixel_at_radius(7),
         ])
         assert_equal(
             [hit["penaltySeconds"] for hit in governed_result["hitClassifications"]],
-            [2, 4, 6, 8],
+            [2, 4, 6],
             "gssf hit penalties use profile authority",
         )
         assert_equal(
@@ -480,17 +517,17 @@ def test_gssf_ac_1_scores_hit_by_hit_zones():
         )
         assert_equal(
             [bucket["subtotalPenaltySeconds"] for bucket in governed_result["scoringBreakdown"]],
-            [2, 4, 6, 8],
+            [2, 4, 6, 0],
             "gssf breakdown subtotals use profile authority",
         )
-        assert_equal(governed_result["totalPaperPenaltySeconds"], 20, "gssf total uses profile authority")
+        assert_equal(governed_result["totalPaperPenaltySeconds"], 12, "gssf total uses profile authority")
     finally:
         GSSF_AC_1_PROFILE["penaltySeconds"].clear()
         GSSF_AC_1_PROFILE["penaltySeconds"].update(original_penalties)
 
 
 def test_gssf_final_time_unavailable_without_raw_time():
-    result = gssf_package(hitCoordinates=[{"xPercent": 50, "yPercent": 50}])
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)])
     assert_equal(result["finalTimeSeconds"], None, "gssf final time unavailable")
     assert_equal(result["finalTimeStatus"], "unavailable_without_raw_time", "gssf final time status")
     assert_equal(result["display"]["resultLines"], [
@@ -505,20 +542,214 @@ def test_gssf_final_time_unavailable_without_raw_time():
 
 
 def test_gssf_final_time_calculates_when_raw_time_supplied():
-    result = gssf_package(raw_time_seconds=12.45, hitCoordinates=[
-        {"xPercent": 50, "yPercent": 50},
-        {"xPercent": 50, "yPercent": 68},
+    result = gssf_canonical_asset_package(raw_time_seconds=12.45, hits=[
+        gssf_pixel_at_radius(0), gssf_pixel_at_radius(5),
     ])
     assert_close(result["finalTimeSeconds"], 13.45, "gssf final time")
     assert_equal(result["finalTimeStatus"], "calculated", "gssf final time status")
 
 
 def test_gssf_package_does_not_return_baker_zeroing_fields():
-    result = gssf_package(hitCoordinates=[{"xPercent": 50, "yPercent": 50}])
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)])
     forbidden_keys = ["score", "clicks", "moa", "correction", "distanceClickQuery", "group", "poib"]
     for key in forbidden_keys:
         if key in result:
             raise AssertionError(f"gssf package must not return Baker field: {key}")
+
+
+def test_gssf_canonical_asset_scores_exact_center():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)])
+    hit = result["hitClassifications"][0]
+    assert_equal(result["ok"], True, "canonical asset ok")
+    assert_equal(result["scoringModel"], "canonical-asset-scoring", "canonical asset scoring model")
+    assert_equal(result["canonicalAsset"]["canonicalAssetId"], "gssf_ac_1_clean_reference_png_v1", "canonical asset id")
+    assert_equal(
+        result["canonicalAsset"]["canonicalAssetSha256"],
+        "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+        "canonical asset sha256",
+    )
+    assert_equal(
+        result["canonicalAsset"]["canonicalCoordinateSystemVersion"],
+        "gssf-ac-1-canonical-coordinate-system-v1",
+        "canonical coordinate system version",
+    )
+    assert_equal(hit["zone"], "downZero", "canonical asset center zone")
+    assert_close(hit["radiusInches"], 0, "canonical asset center radius")
+    assert_equal(hit["tapPixel"], {"xPx": 561.8978, "yPx": 649.6939}, "canonical asset center tap pixel")
+    assert_equal(hit["canonicalCenterPixel"], {"xPx": 561.8978, "yPx": 649.6939}, "canonical center pixel")
+    assert_equal(hit["canonicalPixelsPerInch"], 60.9, "canonical pixels per inch")
+
+
+def test_gssf_canonical_asset_scores_just_inside_four_inches():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(3.999)])
+    hit = result["hitClassifications"][0]
+    assert_equal(hit["zone"], "downZero", "canonical asset just inside down zero")
+    assert_close(hit["radiusInches"], 3.999, "canonical asset just inside radius")
+
+
+def test_gssf_canonical_asset_scores_exactly_four_inches():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(4.0)])
+    hit = result["hitClassifications"][0]
+    assert_equal(hit["zone"], "downZero", "canonical asset exactly down zero boundary")
+    assert_close(hit["distanceFromDownZeroBoundaryInches"], 0, "canonical asset four inch boundary distance")
+
+
+def test_gssf_canonical_asset_scores_just_outside_four_inches():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(4.001)])
+    hit = result["hitClassifications"][0]
+    assert_equal(hit["zone"], "plusOne", "canonical asset just outside down zero")
+    assert_close(hit["distanceFromDownZeroBoundaryInches"], 0.001, "canonical asset just outside four inch distance")
+
+
+def test_gssf_canonical_asset_scores_exactly_six_point_five_inches():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(6.5)])
+    hit = result["hitClassifications"][0]
+    assert_equal(hit["zone"], "plusOne", "canonical asset exactly plus one boundary")
+    assert_close(hit["distanceFromPlusOneBoundaryInches"], 0, "canonical asset six point five boundary distance")
+
+
+def test_gssf_canonical_asset_scores_just_outside_six_point_five_inches():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(6.501)])
+    hit = result["hitClassifications"][0]
+    assert_equal(hit["zone"], "plusThree", "canonical asset just outside plus one")
+    assert_close(hit["distanceFromPlusOneBoundaryInches"], 0.001, "canonical asset just outside six point five distance")
+
+
+def test_gssf_canonical_asset_refuses_missing_canonical_asset():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], canonical_asset=None)
+    assert_equal(result["ok"], False, "canonical asset missing asset ok")
+    assert_equal(result["reason"], "missing_canonical_asset_id", "canonical asset missing asset reason")
+
+
+def test_gssf_canonical_asset_refuses_wrong_coordinate_system_version():
+    canonical_asset = dict(GSSF_CANONICAL_AC_1_ASSET)
+    canonical_asset["canonicalCoordinateSystemVersion"] = "draft-coordinate-system"
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], canonical_asset=canonical_asset)
+    assert_equal(result["ok"], False, "canonical asset wrong coordinate system ok")
+    assert_equal(
+        result["reason"],
+        "unsupported_canonical_coordinate_system_version",
+        "canonical asset wrong coordinate system reason",
+    )
+
+
+def test_gssf_canonical_asset_refuses_missing_asset_id():
+    canonical_asset = dict(GSSF_CANONICAL_AC_1_ASSET)
+    del canonical_asset["canonicalAssetId"]
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], canonical_asset=canonical_asset)
+    assert_equal(result["ok"], False, "canonical asset missing asset id ok")
+    assert_equal(result["reason"], "missing_canonical_asset_id", "canonical asset missing asset id reason")
+
+
+def test_gssf_canonical_asset_refuses_missing_asset_sha256():
+    canonical_asset = dict(GSSF_CANONICAL_AC_1_ASSET)
+    del canonical_asset["canonicalAssetSha256"]
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], canonical_asset=canonical_asset)
+    assert_equal(result["ok"], False, "canonical asset missing asset sha ok")
+    assert_equal(result["reason"], "missing_canonical_asset_sha256", "canonical asset missing asset sha reason")
+
+
+def test_gssf_canonical_asset_refuses_wrong_asset_sha256():
+    canonical_asset = dict(GSSF_CANONICAL_AC_1_ASSET)
+    canonical_asset["canonicalAssetSha256"] = "0" * 64
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], canonical_asset=canonical_asset)
+    assert_equal(result["ok"], False, "canonical asset wrong asset sha ok")
+    assert_equal(result["reason"], "unapproved_canonical_asset_sha256", "canonical asset wrong asset sha reason")
+
+
+def test_gssf_canonical_asset_refuses_same_dimensions_wrong_asset_identity():
+    canonical_asset = dict(GSSF_CANONICAL_AC_1_ASSET)
+    canonical_asset["canonicalAssetId"] = "different_1125_by_1373_asset"
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], canonical_asset=canonical_asset)
+    assert_equal(result["ok"], False, "canonical asset wrong asset id ok")
+    assert_equal(result["reason"], "unapproved_canonical_asset_id", "canonical asset wrong asset id reason")
+
+
+def test_gssf_canonical_asset_refuses_evidence_sha256_mismatch():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], evidenceSha256="1" * 64)
+    assert_equal(result["ok"], False, "canonical asset wrong evidence sha ok")
+    assert_equal(result["reason"], "evidence_sha256_mismatch", "canonical asset wrong evidence sha reason")
+
+
+def test_gssf_canonical_asset_refuses_mismatched_image_dimensions():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], imageHeightPx=1400)
+    assert_equal(result["ok"], False, "canonical asset mismatched dimensions ok")
+    assert_equal(result["reason"], "canonical_image_dimension_mismatch", "canonical asset mismatched dimensions reason")
+    assert_equal(result["canonicalAssetValidation"]["field"], "imageHeightPx", "canonical asset mismatched field")
+
+
+def test_gssf_canonical_asset_scores_shot_two_in_canonical_atp_coordinates():
+    result = gssf_canonical_asset_package(hits=[
+        gssf_pixel_at_radius(0),
+        {"xPx": 562.0, "yPx": 932.96},
+    ])
+    hit = result["hitClassifications"][1]
+    assert_equal(hit["shot"], 2, "canonical asset shot two test shot id")
+    assert_equal(hit["zone"], "plusOne", "canonical asset shot two classification")
+    assert_close(hit["radiusInches"], 4.6513, "canonical asset shot two radius", tolerance=0.0001)
+    assert_close(hit["distanceFromDownZeroBoundaryInches"], 0.6513, "canonical asset shot two down zero distance", tolerance=0.0001)
+
+
+def test_gssf_legacy_percentage_request_refuses_without_fallback():
+    result = build_authority_package({
+        "target_profile_id": "gssf_ac_1",
+        "mission_family": "gssf",
+        "hitCoordinates": [{"xPercent": 50, "yPercent": 50}],
+    })
+    assert_equal(result["ok"], False, "legacy GSSF request refuses")
+    assert_equal(result["status"], "authority_unavailable", "legacy GSSF refusal status")
+
+
+def test_gssf_invalid_registration_refuses():
+    result = gssf_canonical_asset_package(
+        hits=[gssf_pixel_at_radius(0)], registrationPackageId="unknown-registration"
+    )
+    assert_equal(result["reason"], "execution_contract_identity_mismatch", "registration mismatch reason")
+
+
+def test_gssf_malformed_observation_refuses_without_partial_package():
+    result = gssf_canonical_asset_package(
+        hits=[gssf_pixel_at_radius(0)],
+        hitPixelCoordinates=[{"shotId": 1, "xPx": None, "yPx": 649.6939}],
+        observationCount=1,
+    )
+    assert_equal(result["status"], "authority_unavailable", "malformed observation status")
+    assert_equal(result["reason"], "malformed_shot_observation", "malformed observation reason")
+    assert_equal("scoringBreakdown" in result, False, "malformed observation has no partial scoring")
+
+
+def test_gssf_observation_count_and_shot_id_parity_are_required():
+    count_result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)], observationCount=2)
+    assert_equal(count_result["reason"], "observation_count_mismatch", "observation count mismatch")
+    duplicate_result = gssf_canonical_asset_package(hits=[
+        dict(gssf_pixel_at_radius(0), shotId=7),
+        dict(gssf_pixel_at_radius(5), shotId=7),
+    ])
+    assert_equal(duplicate_result["reason"], "duplicate_shot_id", "duplicate shot id refusal")
+
+
+def test_gssf_supplied_shot_ids_are_preserved():
+    result = gssf_canonical_asset_package(hits=[
+        dict(gssf_pixel_at_radius(0), shotId=2),
+        dict(gssf_pixel_at_radius(5), shotId=9),
+    ])
+    assert_equal([hit["shotId"] for hit in result["hitClassifications"]], [2, 9], "classification shot ids")
+    assert_equal(result["scoringBreakdown"][0]["shotIds"], [2], "down zero supplied shot id")
+    assert_equal(result["scoringBreakdown"][1]["shotIds"], [9], "plus one supplied shot id")
+
+
+def test_gssf_authority_trace_names_all_execution_components():
+    result = gssf_canonical_asset_package(hits=[gssf_pixel_at_radius(0)])
+    trace = result["authorityTrace"]
+    assert_equal(trace["registrationPackageId"], "gssf-ac-1-clean-png-registration-v1", "trace registration")
+    assert_equal(trace["registrationPackageVersion"], "1", "trace registration version")
+    assert_equal(trace["geometryProfileId"], "gssf-ac-1-concentric-geometry-v1", "trace geometry")
+    assert_equal(trace["geometryProfileVersion"], "1", "trace geometry version")
+    assert_equal(trace["scoringProfileId"], "gssf-ac-1-paper-penalty-v1", "trace scoring")
+    assert_equal(trace["scoringProfileVersion"], "1", "trace scoring version")
+    assert_equal(trace["missionProfileId"], "gssf-ac-1-paper-penalty-mission-v1", "trace mission")
+    assert_equal(trace["missionProfileVersion"], "1", "trace mission version")
+    assert_equal(trace["targetExecutionContractId"], "gssf-ac-1-live-canonical-v1", "trace contract")
 
 
 def dot_torture_package(**overrides):
@@ -785,6 +1016,27 @@ def run():
         test_gssf_final_time_unavailable_without_raw_time,
         test_gssf_final_time_calculates_when_raw_time_supplied,
         test_gssf_package_does_not_return_baker_zeroing_fields,
+        test_gssf_canonical_asset_scores_exact_center,
+        test_gssf_canonical_asset_scores_just_inside_four_inches,
+        test_gssf_canonical_asset_scores_exactly_four_inches,
+        test_gssf_canonical_asset_scores_just_outside_four_inches,
+        test_gssf_canonical_asset_scores_exactly_six_point_five_inches,
+        test_gssf_canonical_asset_scores_just_outside_six_point_five_inches,
+        test_gssf_canonical_asset_refuses_missing_canonical_asset,
+        test_gssf_canonical_asset_refuses_wrong_coordinate_system_version,
+        test_gssf_canonical_asset_refuses_missing_asset_id,
+        test_gssf_canonical_asset_refuses_missing_asset_sha256,
+        test_gssf_canonical_asset_refuses_wrong_asset_sha256,
+        test_gssf_canonical_asset_refuses_same_dimensions_wrong_asset_identity,
+        test_gssf_canonical_asset_refuses_evidence_sha256_mismatch,
+        test_gssf_canonical_asset_refuses_mismatched_image_dimensions,
+        test_gssf_canonical_asset_scores_shot_two_in_canonical_atp_coordinates,
+        test_gssf_legacy_percentage_request_refuses_without_fallback,
+        test_gssf_invalid_registration_refuses,
+        test_gssf_malformed_observation_refuses_without_partial_package,
+        test_gssf_observation_count_and_shot_id_parity_are_required,
+        test_gssf_supplied_shot_ids_are_preserved,
+        test_gssf_authority_trace_names_all_execution_components,
         test_dot_torture_creates_backend_training_session,
         test_dot_torture_lite_creates_variant_training_session,
         test_revolving_dot_torture_creates_variant_training_session,

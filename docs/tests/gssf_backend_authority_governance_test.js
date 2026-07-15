@@ -31,8 +31,18 @@ assert(
   "GSSF request must carry the authoritative mission family"
 );
 assert(
-  requestSource.includes("hitCoordinates: currentImpactPoints.map(safePoint).filter(Boolean)"),
-  "GSSF request must send confirmed shot coordinates to backend authority"
+  requestSource.includes("hitPixelCoordinates: registeredAssetObservations")
+    && requestSource.includes("observationCount: registeredAssetObservations.length"),
+  "GSSF request must send ordered observations on the registered asset to backend authority"
+);
+assert(
+  requestSource.includes("registrationPackageId: GSSF_CANONICAL_AUTHORITY.registrationPackageId")
+    && requestSource.includes("targetExecutionContractId: GSSF_CANONICAL_AUTHORITY.targetExecutionContractId"),
+  "GSSF request must identify the governed registration and execution contract"
+);
+assert(
+  !requestSource.includes("hitCoordinates:") && !requestSource.includes("xPercent") && !requestSource.includes("yPercent"),
+  "GSSF backend request must not use legacy percentage observations"
 );
 assert(
   renderSource.includes("backendAuthorityPackage.display.resultLines"),

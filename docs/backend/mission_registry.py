@@ -100,7 +100,13 @@ GSSF_AC_1_TARGET_PROFILE = {
     "instructionStatus": "published-gssf-paper-target-scoring",
     "scoringStatus": "time-plus-paper-penalty",
     "qualificationStatus": "not_applicable",
-    "evidenceModel": "photo-plus-hit-coordinates",
+    "targetProfileVersion": "1",
+    "registrationPackageId": "gssf-ac-1-clean-png-registration-v1",
+    "registrationPackageVersion": "1",
+    "geometryProfileId": "gssf-ac-1-concentric-geometry-v1",
+    "scoringProfileId": "gssf-ac-1-paper-penalty-v1",
+    "targetExecutionContractId": "gssf-ac-1-live-canonical-v1",
+    "evidenceModel": "registered-canonical-asset-plus-pixel-observations",
 }
 
 DOT_TORTURE_STANDARD_STAGES = [

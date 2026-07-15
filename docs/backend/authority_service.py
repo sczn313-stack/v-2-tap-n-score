@@ -12,6 +12,15 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from mission_registry import normalize_target_profile, refusal_for_profile
+from gssf_ac_1_authority import (
+    GSSF_AC_1_ATP,
+    GSSF_AC_1_EXECUTION_CONTRACT,
+    GSSF_AC_1_GEOMETRY_PROFILE,
+    GSSF_AC_1_MISSION_PROFILE,
+    GSSF_AC_1_PROFILE,
+    GSSF_AC_1_REGISTRATION_PACKAGE,
+    GSSF_AC_1_SCORING_PROFILE,
+)
 
 DEFAULT_TARGET_ID = "BAKER_ST_100YD_SMART"
 DEFAULT_TARGET_GEOMETRY = {
@@ -28,22 +37,17 @@ DEFAULT_TARGET_GEOMETRY = {
 }
 MOA_INCHES_AT_100_YARDS = 1.047
 MRAD_INCHES_AT_100_YARDS = 3.6
-GSSF_AC_1_PROFILE = {
-    "target_profile_id": "gssf_ac_1",
-    "mission_family": "gssf",
-    "targetWidthInches": 19,
-    "targetHeightInches": 30,
-    "zoneCenterPercent": {"xPercent": 50, "yPercent": 50},
-    "downZeroRadiusInches": 4,
-    "plusOneRadiusInches": 6.5,
-    "penaltySeconds": {
-        "downZero": 0,
-        "plusOne": 1,
-        "plusThree": 3,
-        "miss": 10,
-    },
-    "authoritySource": "GSSF AC-1 profile: 8-inch Down Zero, 13-inch +1, paper +3, miss +10",
-}
+GSSF_AC_1_CANONICAL_COORDINATE_SYSTEM_VERSION = GSSF_AC_1_GEOMETRY_PROFILE["coordinateSystemVersion"]
+GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_VERSION = "gssf-ac-1-canonical-asset-scoring-v1"
+GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_SOURCE = (
+    "GSSF AC-1 governed concentric-circle geometry: 8-inch Down Zero, 13-inch +1"
+)
+GSSF_AC_1_CANONICAL_ASSET_ID = GSSF_AC_1_REGISTRATION_PACKAGE["canonicalAssetId"]
+GSSF_AC_1_CANONICAL_ASSET_SHA256 = GSSF_AC_1_REGISTRATION_PACKAGE["canonicalAssetSha256"]
+GSSF_AC_1_CANONICAL_IMAGE_WIDTH_PX = GSSF_AC_1_REGISTRATION_PACKAGE["imageWidthPx"]
+GSSF_AC_1_CANONICAL_IMAGE_HEIGHT_PX = GSSF_AC_1_REGISTRATION_PACKAGE["imageHeightPx"]
+GSSF_AC_1_CANONICAL_CENTER_PX = GSSF_AC_1_GEOMETRY_PROFILE["canonicalCenterPx"]
+GSSF_AC_1_CANONICAL_PIXELS_PER_INCH = GSSF_AC_1_GEOMETRY_PROFILE["pixelsPerInch"]
 DOT_TORTURE_STAGES = [
     {
         "stageId": "dot_1",
@@ -444,70 +448,220 @@ def stable_hash(payload: Dict[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def _gssf_normalize_point(point: Any) -> Optional[Dict[str, float]]:
+def _gssf_canonical_asset_refusal(reason: str, payload: Dict[str, Any], details: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    canonical_asset = payload.get("canonicalAsset") if isinstance(payload.get("canonicalAsset"), dict) else None
+    result = {
+        "ok": False,
+        "status": "authority_unavailable",
+        "reason": reason,
+        "resultSource": "backend",
+        "authorityVersion": GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_VERSION,
+        "authorityPackageId": "gssf-ac-1-canonical-asset-refusal-v1",
+        "target_profile_id": "gssf_ac_1",
+        "targetProfileId": "gssf_ac_1",
+        "mission_family": "gssf",
+        "missionFamilyId": "gssf",
+        "resultPackageType": "gssfPaperPenaltyResult",
+        "canonicalAssetScoring": "refused",
+        "inputs": {
+            "target_profile_id": "gssf_ac_1",
+            "mission_family": "gssf",
+            "canonicalAsset": canonical_asset,
+            "canonicalAssetId": payload.get("canonicalAssetId"),
+            "canonicalAssetSha256": payload.get("canonicalAssetSha256"),
+            "canonicalCoordinateSystemVersion": payload.get("canonicalCoordinateSystemVersion"),
+            "imageWidthPx": payload.get("imageWidthPx"),
+            "imageHeightPx": payload.get("imageHeightPx"),
+        },
+        "authorityTrace": {
+            "source": "backend",
+            "authorityPackageId": "gssf-ac-1-canonical-asset-refusal-v1",
+            "targetExecutionContractId": GSSF_AC_1_EXECUTION_CONTRACT["targetExecutionContractId"],
+            "rulesApplied": "GSSF AC-1 canonical pre-registered ATP asset validation",
+        },
+    }
+    if details:
+        result["canonicalAssetValidation"] = details
+    result["evidenceHash"] = stable_hash(result)
+    result["computedAt"] = datetime.now(timezone.utc).isoformat()
+    return result
+
+
+def _gssf_pixel_point(point: Any) -> Optional[Dict[str, Any]]:
     if not isinstance(point, dict):
         return None
-    x = _num(point.get("xPercent"), None)
-    y = _num(point.get("yPercent"), None)
-    if x is None or y is None:
+    x = point.get("xPx")
+    y = point.get("yPx")
+    shot_id = point.get("shotId")
+    if (
+        isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x)
+        or isinstance(y, bool) or not isinstance(y, (int, float)) or not math.isfinite(y)
+        or isinstance(shot_id, bool) or not isinstance(shot_id, int) or shot_id < 1
+    ):
         return None
     return {
-        "xPercent": _round(x, 4),
-        "yPercent": _round(y, 4),
+        "xPx": _round(x, 4),
+        "yPx": _round(y, 4),
+        "shotId": shot_id,
     }
 
 
-def _gssf_hits(payload: Dict[str, Any]) -> List[Dict[str, float]]:
-    hits = (
-        payload.get("hitCoordinates")
-        or payload.get("hit_coordinates")
-        or payload.get("hits")
-        or payload.get("impactCoordinates")
-        or payload.get("impactPoints")
+def _gssf_validated_pixel_hits(payload: Dict[str, Any]) -> Any:
+    hits = payload.get("hitPixelCoordinates")
+    if not isinstance(hits, list) or not hits:
+        return None, _gssf_canonical_asset_refusal("missing_or_malformed_shot_observations", payload)
+    observation_count = payload.get("observationCount")
+    if isinstance(observation_count, bool) or not isinstance(observation_count, int) or observation_count != len(hits):
+        return None, _gssf_canonical_asset_refusal("observation_count_mismatch", payload)
+    normalized = []
+    for index, item in enumerate(hits):
+        point = _gssf_pixel_point(item)
+        if point is None:
+            return None, _gssf_canonical_asset_refusal(
+                "malformed_shot_observation", payload, {"observationIndex": index}
+            )
+        if point["xPx"] < 0 or point["xPx"] > GSSF_AC_1_CANONICAL_IMAGE_WIDTH_PX or point["yPx"] < 0 or point["yPx"] > GSSF_AC_1_CANONICAL_IMAGE_HEIGHT_PX:
+            return None, _gssf_canonical_asset_refusal(
+                "shot_observation_outside_registered_asset", payload, {"observationIndex": index}
+            )
+        normalized.append(point)
+    shot_ids = [point["shotId"] for point in normalized]
+    if len(set(shot_ids)) != len(shot_ids):
+        return None, _gssf_canonical_asset_refusal("duplicate_shot_id", payload)
+    return normalized, None
+
+
+def _gssf_validated_canonical_asset(payload: Dict[str, Any]) -> Any:
+    canonical_asset = payload.get("canonicalAsset") if isinstance(payload.get("canonicalAsset"), dict) else {}
+    expected_contract = GSSF_AC_1_EXECUTION_CONTRACT
+    identity_fields = {
+        "target_profile_id": GSSF_AC_1_ATP["targetProfileId"],
+        "targetProfileVersion": GSSF_AC_1_ATP["targetProfileVersion"],
+        "missionFamily": expected_contract["missionFamily"],
+        "mission_family": expected_contract["missionFamily"],
+        "registrationPackageId": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageId"],
+        "registrationPackageVersion": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageVersion"],
+        "targetExecutionContractId": expected_contract["targetExecutionContractId"],
+    }
+    for field, expected in identity_fields.items():
+        if payload.get(field) != expected:
+            return None, _gssf_canonical_asset_refusal(
+                "execution_contract_identity_mismatch", payload, {"field": field, "expected": expected}
+            )
+    asset_id = _first_present(canonical_asset.get("canonicalAssetId"), payload.get("canonicalAssetId"))
+    asset_sha256 = _first_present(canonical_asset.get("canonicalAssetSha256"), payload.get("canonicalAssetSha256"))
+    coordinate_system_version = _first_present(
+        canonical_asset.get("canonicalCoordinateSystemVersion"),
+        payload.get("canonicalCoordinateSystemVersion"),
     )
-    if not isinstance(hits, list):
-        return []
-    return [point for point in (_gssf_normalize_point(item) for item in hits) if point]
+    if not asset_id:
+        return None, _gssf_canonical_asset_refusal("missing_canonical_asset_id", payload)
+    if not asset_sha256:
+        return None, _gssf_canonical_asset_refusal("missing_canonical_asset_sha256", payload)
+    if not coordinate_system_version:
+        return None, _gssf_canonical_asset_refusal("missing_canonical_coordinate_system_version", payload)
+    if asset_id != GSSF_AC_1_CANONICAL_ASSET_ID:
+        return None, _gssf_canonical_asset_refusal("unapproved_canonical_asset_id", payload)
+    if asset_sha256 != GSSF_AC_1_CANONICAL_ASSET_SHA256:
+        return None, _gssf_canonical_asset_refusal("unapproved_canonical_asset_sha256", payload)
+    if coordinate_system_version != GSSF_AC_1_CANONICAL_COORDINATE_SYSTEM_VERSION:
+        return None, _gssf_canonical_asset_refusal("unsupported_canonical_coordinate_system_version", payload)
+    evidence_sha256 = _first_present(
+        payload.get("evidenceSha256"),
+        payload.get("imageSha256"),
+        payload.get("canonicalAssetSha256"),
+        payload.get("targetImageSha256"),
+    )
+    if not evidence_sha256:
+        return None, _gssf_canonical_asset_refusal("missing_evidence_sha256", payload)
+    if evidence_sha256 != GSSF_AC_1_CANONICAL_ASSET_SHA256:
+        return None, _gssf_canonical_asset_refusal("evidence_sha256_mismatch", payload)
 
+    image_width = _num(_first_present(payload.get("imageWidthPx"), canonical_asset.get("imageWidthPx")), None)
+    image_height = _num(_first_present(payload.get("imageHeightPx"), canonical_asset.get("imageHeightPx")), None)
+    if image_width is None or image_height is None:
+        return None, _gssf_canonical_asset_refusal("missing_canonical_image_dimensions", payload)
+    if _round(image_width, 4) != GSSF_AC_1_CANONICAL_IMAGE_WIDTH_PX:
+        return None, _gssf_canonical_asset_refusal(
+            "canonical_image_dimension_mismatch",
+            payload,
+            {"field": "imageWidthPx", "payload": _round(image_width, 4), "canonical": GSSF_AC_1_CANONICAL_IMAGE_WIDTH_PX},
+        )
+    if _round(image_height, 4) != GSSF_AC_1_CANONICAL_IMAGE_HEIGHT_PX:
+        return None, _gssf_canonical_asset_refusal(
+            "canonical_image_dimension_mismatch",
+            payload,
+            {"field": "imageHeightPx", "payload": _round(image_height, 4), "canonical": GSSF_AC_1_CANONICAL_IMAGE_HEIGHT_PX},
+        )
 
-def _gssf_point_inches(point: Dict[str, float]) -> Dict[str, float]:
-    profile = GSSF_AC_1_PROFILE
-    return {
-        "xInches": _round((point["xPercent"] / 100) * float(profile["targetWidthInches"]), 4),
-        "yInches": _round((point["yPercent"] / 100) * float(profile["targetHeightInches"]), 4),
+    normalized = {
+        "canonicalAssetId": asset_id,
+        "canonicalAssetSha256": asset_sha256,
+        "evidenceSha256": evidence_sha256,
+        "imageWidthPx": GSSF_AC_1_CANONICAL_IMAGE_WIDTH_PX,
+        "imageHeightPx": GSSF_AC_1_CANONICAL_IMAGE_HEIGHT_PX,
+        "canonicalCenterPx": {
+            "x": _round(GSSF_AC_1_CANONICAL_CENTER_PX["x"], 4),
+            "y": _round(GSSF_AC_1_CANONICAL_CENTER_PX["y"], 4),
+        },
+        "canonicalPixelsPerInch": GSSF_AC_1_CANONICAL_PIXELS_PER_INCH,
+        "canonicalCoordinateSystemVersion": coordinate_system_version,
+        "authorityVersion": GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_VERSION,
+        "registrationPackageId": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageId"],
+        "registrationPackageVersion": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageVersion"],
+        "geometryProfileId": GSSF_AC_1_GEOMETRY_PROFILE["geometryProfileId"],
+        "scoringProfileId": GSSF_AC_1_SCORING_PROFILE["scoringProfileId"],
+        "targetProfileVersion": GSSF_AC_1_ATP["targetProfileVersion"],
+        "assetRole": GSSF_AC_1_REGISTRATION_PACKAGE["assetRole"],
     }
+    return normalized, None
 
 
-def _gssf_zone_for_hit(point: Dict[str, float]) -> Dict[str, Any]:
-    profile = GSSF_AC_1_PROFILE
-    center = _gssf_point_inches(profile["zoneCenterPercent"])
-    hit = _gssf_point_inches(point)
-    x_delta = hit["xInches"] - center["xInches"]
-    y_delta = hit["yInches"] - center["yInches"]
-    radius = math.sqrt((x_delta * x_delta) + (y_delta * y_delta))
-    penalties = profile["penaltySeconds"]
-    if (
-        point["xPercent"] < 0
-        or point["xPercent"] > 100
-        or point["yPercent"] < 0
-        or point["yPercent"] > 100
-    ):
-        zone = "miss"
-    elif radius <= float(profile["downZeroRadiusInches"]):
-        zone = "downZero"
-    elif radius <= float(profile["plusOneRadiusInches"]):
-        zone = "plusOne"
-    else:
-        zone = "plusThree"
+def _gssf_zone_for_radius(radius: float) -> str:
+    rounded_radius = _round(radius, 4)
+    if rounded_radius <= float(GSSF_AC_1_PROFILE["downZeroRadiusInches"]):
+        return "downZero"
+    if rounded_radius <= float(GSSF_AC_1_PROFILE["plusOneRadiusInches"]):
+        return "plusOne"
+    return "plusThree"
+
+
+def _gssf_canonical_asset_hit(hit: Dict[str, float], canonical_asset: Dict[str, Any]) -> Dict[str, Any]:
+    center = canonical_asset["canonicalCenterPx"]
+    pixels_per_inch = float(canonical_asset["canonicalPixelsPerInch"])
+    dx_px = hit["xPx"] - center["x"]
+    dy_px = hit["yPx"] - center["y"]
+    dx_inches = dx_px / pixels_per_inch
+    dy_inches = dy_px / pixels_per_inch
+    radius = math.sqrt((dx_inches * dx_inches) + (dy_inches * dy_inches))
+    zone = _gssf_zone_for_radius(radius)
+    penalties = GSSF_AC_1_PROFILE["penaltySeconds"]
     return {
+        "tapPixel": {"xPx": _round(hit["xPx"], 4), "yPx": _round(hit["yPx"], 4)},
+        "canonicalCenterPixel": {"xPx": _round(center["x"], 4), "yPx": _round(center["y"], 4)},
+        "dxPixels": _round(dx_px, 4),
+        "dyPixels": _round(dy_px, 4),
+        "dxInches": _round(dx_inches, 4),
+        "dyInches": _round(dy_inches, 4),
+        "radiusInches": _round(radius, 4),
         "zone": zone,
         "penaltySeconds": penalties[zone],
-        "radiusInches": _round(radius, 4),
+        "distanceFromDownZeroBoundaryInches": _round(radius - float(GSSF_AC_1_PROFILE["downZeroRadiusInches"]), 4),
+        "distanceFromPlusOneBoundaryInches": _round(radius - float(GSSF_AC_1_PROFILE["plusOneRadiusInches"]), 4),
+        "canonicalAssetId": canonical_asset["canonicalAssetId"],
+        "canonicalCoordinateSystemVersion": canonical_asset["canonicalCoordinateSystemVersion"],
+        "canonicalPixelsPerInch": canonical_asset["canonicalPixelsPerInch"],
+        "authoritySource": GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_SOURCE,
     }
 
 
-def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
-    hits = _gssf_hits(payload)
+def build_gssf_ac_1_canonical_asset_package(payload: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
+    canonical_asset, refusal = _gssf_validated_canonical_asset(payload)
+    if refusal:
+        return refusal
+    hits, refusal = _gssf_validated_pixel_hits(payload)
+    if refusal:
+        return refusal
     raw_time = _num(_first_present(payload.get("raw_time_seconds"), payload.get("rawTimeSeconds")), None)
     per_hit = []
     render_hits = []
@@ -517,19 +671,43 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
         "plusThree": 0,
         "miss": 0,
     }
-    for index, hit in enumerate(hits, start=1):
-        classification = _gssf_zone_for_hit(hit)
+    for hit in hits:
+        classification = _gssf_canonical_asset_hit(hit, canonical_asset)
+        display_coordinate = {
+            "xPercent": _round((hit["xPx"] / GSSF_AC_1_CANONICAL_IMAGE_WIDTH_PX) * 100, 4),
+            "yPercent": _round((hit["yPx"] / GSSF_AC_1_CANONICAL_IMAGE_HEIGHT_PX) * 100, 4),
+        }
         counts[classification["zone"]] += 1
         per_hit.append({
-            "shot": index,
-            "coordinate": hit,
+            "shot": hit["shotId"],
+            "shotId": hit["shotId"],
+            "coordinate": display_coordinate,
+            "tapPixel": classification["tapPixel"],
+            "canonicalCenterPixel": classification["canonicalCenterPixel"],
+            "dxPixels": classification["dxPixels"],
+            "dyPixels": classification["dyPixels"],
+            "dxInches": classification["dxInches"],
+            "dyInches": classification["dyInches"],
             "zone": classification["zone"],
             "penaltySeconds": classification["penaltySeconds"],
             "radiusInches": classification["radiusInches"],
+            "distanceFromDownZeroBoundaryInches": classification["distanceFromDownZeroBoundaryInches"],
+            "distanceFromPlusOneBoundaryInches": classification["distanceFromPlusOneBoundaryInches"],
+            "canonicalAssetId": classification["canonicalAssetId"],
+            "canonicalCoordinateSystemVersion": classification["canonicalCoordinateSystemVersion"],
+            "canonicalPixelsPerInch": classification["canonicalPixelsPerInch"],
+            "governedBoundariesInches": {
+                "downZeroRadiusInches": GSSF_AC_1_PROFILE["downZeroRadiusInches"],
+                "plusOneRadiusInches": GSSF_AC_1_PROFILE["plusOneRadiusInches"],
+            },
+            "authoritySource": classification["authoritySource"],
         })
         render_hits.append({
-            **hit,
-            "shot": index,
+            "xPx": hit["xPx"],
+            "yPx": hit["yPx"],
+            **display_coordinate,
+            "shot": hit["shotId"],
+            "shotId": hit["shotId"],
         })
 
     scoring_breakdown = []
@@ -569,23 +747,36 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
     authority_core = {
         "ok": True,
         "status": "calculated",
-        "authorityVersion": "sczn3-gssf-authority-v1",
+        "authorityVersion": GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_VERSION,
         "resultSource": "backend",
-        "authorityPackageId": "gssf-ac-1-paper-penalty-v1",
+        "authorityPackageId": "gssf-ac-1-canonical-asset-paper-penalty-v1",
         "target_profile_id": "gssf_ac_1",
         "targetProfileId": "gssf_ac_1",
+        "targetProfileVersion": GSSF_AC_1_ATP["targetProfileVersion"],
         "mission_family": "gssf",
         "missionFamilyId": "gssf",
         "resultPackageType": "gssfPaperPenaltyResult",
+        "scoringModel": "canonical-asset-scoring",
         "target": {
             "target_profile_id": "gssf_ac_1",
             "targetName": "GSSF AC-1",
             "manufacturer": profile.get("manufacturer"),
         },
+        "canonicalAsset": canonical_asset,
+        "canonicalAssetScoring": "accepted",
         "inputs": {
             "target_profile_id": "gssf_ac_1",
+            "targetProfileVersion": GSSF_AC_1_ATP["targetProfileVersion"],
             "mission_family": "gssf",
-            "hitCoordinates": hits,
+            "missionFamily": "gssf",
+            "registrationPackageId": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageId"],
+            "registrationPackageVersion": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageVersion"],
+            "targetExecutionContractId": GSSF_AC_1_EXECUTION_CONTRACT["targetExecutionContractId"],
+            "canonicalAsset": canonical_asset,
+            "hitPixelCoordinates": hits,
+            "observationCount": len(hits),
+            "imageWidthPx": payload.get("imageWidthPx"),
+            "imageHeightPx": payload.get("imageHeightPx"),
             "raw_time_seconds": raw_time,
         },
         "hitClassifications": per_hit,
@@ -616,27 +807,48 @@ def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str
             "finalTimeSummary": f"{final_time} seconds" if final_time is not None else "Final time unavailable without raw time",
         },
         "profileAuthority": {
-            "zoneModel": "concentric-ac-1-paper-penalty",
-            "targetWidthInches": GSSF_AC_1_PROFILE["targetWidthInches"],
-            "targetHeightInches": GSSF_AC_1_PROFILE["targetHeightInches"],
+            "zoneModel": "governed-concentric-circle-canonical-asset",
+            "downZeroRadiusInches": GSSF_AC_1_PROFILE["downZeroRadiusInches"],
+            "plusOneRadiusInches": GSSF_AC_1_PROFILE["plusOneRadiusInches"],
             "downZeroDiameterInches": GSSF_AC_1_PROFILE["downZeroRadiusInches"] * 2,
             "plusOneDiameterInches": GSSF_AC_1_PROFILE["plusOneRadiusInches"] * 2,
             "penaltySeconds": GSSF_AC_1_PROFILE["penaltySeconds"],
-            "authoritySource": GSSF_AC_1_PROFILE["authoritySource"],
+            "authoritySource": GSSF_AC_1_CANONICAL_SCORING_AUTHORITY_SOURCE,
         },
         "authorityTrace": {
             "source": "backend",
-            "authorityPackageId": "gssf-ac-1-paper-penalty-v1",
+            "authorityPackageId": "gssf-ac-1-canonical-asset-paper-penalty-v1",
+            "missionFamily": "gssf",
+            "targetProfileId": GSSF_AC_1_ATP["targetProfileId"],
+            "targetProfileVersion": GSSF_AC_1_ATP["targetProfileVersion"],
+            "registrationPackageId": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageId"],
+            "registrationPackageVersion": GSSF_AC_1_REGISTRATION_PACKAGE["registrationPackageVersion"],
+            "canonicalAssetId": GSSF_AC_1_REGISTRATION_PACKAGE["canonicalAssetId"],
+            "canonicalAssetSha256": GSSF_AC_1_REGISTRATION_PACKAGE["canonicalAssetSha256"],
+            "coordinateSystemVersion": GSSF_AC_1_GEOMETRY_PROFILE["coordinateSystemVersion"],
+            "geometryProfileId": GSSF_AC_1_GEOMETRY_PROFILE["geometryProfileId"],
+            "geometryProfileVersion": GSSF_AC_1_GEOMETRY_PROFILE["version"],
+            "scoringProfileId": GSSF_AC_1_SCORING_PROFILE["scoringProfileId"],
+            "scoringProfileVersion": GSSF_AC_1_SCORING_PROFILE["version"],
+            "missionProfileId": GSSF_AC_1_MISSION_PROFILE["missionProfileId"],
+            "missionProfileVersion": GSSF_AC_1_MISSION_PROFILE["version"],
+            "targetExecutionContractId": GSSF_AC_1_EXECUTION_CONTRACT["targetExecutionContractId"],
+            "boundaryPolicy": GSSF_AC_1_GEOMETRY_PROFILE["boundaryPolicy"],
             "classificationCount": len(per_hit),
-            "rulesApplied": "GSSF AC-1 concentric-zone paper penalty rules",
+            "rulesApplied": "GSSF AC-1 canonical ATP coordinate physical-radius paper penalty rules",
         },
         "renderCoordinates": {
             "hits": render_hits,
+            "coordinateSystem": "image-pixels",
         },
     }
     authority_core["evidenceHash"] = stable_hash(authority_core)
     authority_core["computedAt"] = datetime.now(timezone.utc).isoformat()
     return authority_core
+
+
+def build_gssf_ac_1_authority_package(payload: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
+    return build_gssf_ac_1_canonical_asset_package(payload, profile)
 
 
 def _dot_torture_session_id(payload: Dict[str, Any], profile: Dict[str, Any]) -> str:
