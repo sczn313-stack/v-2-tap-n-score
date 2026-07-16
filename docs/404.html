@@ -51,14 +51,78 @@
 <body>
   <div class="box">
     <div class="card">
-      <p class="h">Page Not Found</p>
-      <p class="p">This page could not be found. Sending you back to Tap-n-Score.</p>
-      <a href="/">Go to Tap-n-Score</a>
+      <p class="h" id="errorTitle">Page Not Found</p>
+      <p class="p" id="errorMessage">This page could not be found. Sending you back to Tap-n-Score.</p>
+      <a href="/" id="homeLink">Go to Tap-n-Score</a>
     </div>
   </div>
 
   <script>
-    location.replace("/");
+    (() => {
+      "use strict";
+      const match = location.pathname.match(/^\/t\/([^/]+)\/([^/]+)\/?$/);
+      if (!match) {
+        location.replace("/");
+        return;
+      }
+
+      const publisherRouteId = decodeURIComponent(match[1]).toLowerCase();
+      const productRouteId = decodeURIComponent(match[2]).toLowerCase();
+      const local = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+      const endpoint = local
+        ? "http://127.0.0.1:8098/api/catalog/product-route"
+        : "https://sczn3-authoritative-clean.onrender.com/api/catalog/product-route";
+      const title = document.getElementById("errorTitle");
+      const message = document.getElementById("errorMessage");
+      const homeLink = document.getElementById("homeLink");
+      title.textContent = "Product unavailable";
+      message.textContent = "Resolving the requested product identity…";
+      homeLink.hidden = true;
+
+      function refuse(kind, detail) {
+        title.textContent = kind === "authority_unavailable"
+          ? "Authority unavailable"
+          : kind === "product_retired" ? "Product retired" : "Product unavailable";
+        message.textContent = detail || "This product is not currently available.";
+      }
+
+      function approvedExperienceUrl(value) {
+        try {
+          const resolved = new URL(value, location.origin);
+          return resolved.origin === location.origin
+            && resolved.pathname === "/shoot.html"
+            && resolved.searchParams.get("target_profile_id") === "gssf_ac_1"
+            && resolved.searchParams.get("publisher_route_id") === publisherRouteId
+            && resolved.searchParams.get("product_route_id") === productRouteId
+            && resolved.searchParams.get("catalog_entry_id") === "gssf-ac1-public-route-v1";
+        } catch (_) {
+          return false;
+        }
+      }
+
+      const url = new URL(endpoint);
+      url.searchParams.set("publisherRouteId", publisherRouteId);
+      url.searchParams.set("productRouteId", productRouteId);
+      fetch(url.toString(), { headers: { "Accept": "application/json" }, cache: "no-store" })
+        .then(async response => ({ response, payload: await response.json() }))
+        .then(({ response, payload }) => {
+          const authority = payload && payload.authorityResolution;
+          const valid = response.ok
+            && payload.ok === true
+            && payload.status === "resolved"
+            && payload.publisher && payload.publisher.publisherRouteId === publisherRouteId
+            && payload.product && payload.product.productRouteId === productRouteId
+            && authority && authority.missionFamily === "gssf"
+            && authority.targetExecutionContractId === "gssf-ac-1-live-canonical-v1"
+            && approvedExperienceUrl(payload.experienceUrl);
+          if (valid) {
+            location.replace(payload.experienceUrl);
+            return;
+          }
+          refuse(payload && payload.status, payload && payload.reason);
+        })
+        .catch(() => refuse("authority_unavailable", "Product authority could not be resolved."));
+    })();
   </script>
 </body>
 </html>

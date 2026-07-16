@@ -4,8 +4,10 @@ from __future__ import annotations
 import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
 from ops_store import record_event, summarize_events
+from product_catalog import product_resolution_http_status, resolve_product_route
 
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8098"))
@@ -31,6 +33,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     OPS_SUMMARY_PATHS = {"/api/ops/summary", "/api/ops/summary/"}
     OPS_HEALTH_PATHS = {"/api/ops/health", "/api/ops/health/"}
     OPS_ENV_CHECK_PATHS = {"/api/ops/env-check", "/api/ops/env-check/"}
+    PRODUCT_ROUTE_PATHS = {"/api/catalog/product-route", "/api/catalog/product-route/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -86,6 +89,14 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             return
         if path in self.OPS_SUMMARY_PATHS:
             self._send_json(200, summarize_events())
+            return
+        if path in self.PRODUCT_ROUTE_PATHS:
+            query = parse_qs(urlparse(self.path).query)
+            result = resolve_product_route(
+                query.get("publisherRouteId", [""])[0],
+                query.get("productRouteId", [""])[0],
+            )
+            self._send_json(product_resolution_http_status(result), result)
             return
         self._send_json(404, {"error": "not found"})
 
