@@ -23,7 +23,6 @@
     <a href="matrix.html">Weapon Library</a>
     <a href="shoot.html">Target</a>
     <a href="records.html" aria-current="page">SEC</a>
-    <a href="analytics.html">Analytics</a>
     <a href="survey.html">Survey</a>
   </nav>
   <section class="panel history-panel">
@@ -523,6 +522,40 @@ function renderTrainingSecCard(session, index, pkg) {
   `;
 }
 
+function gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, weapon, weaponMeta) {
+  const cleanParts = values => values.map(cleanSetupValue).filter(value => value !== undefined && value !== null && value !== "");
+  const optic = cleanParts([snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification]).join(" / ");
+  const ammunition = cleanParts([snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight]).join(" / ");
+  const rawDistance = session.targetDistance || session.distance || snapshot.targetDistance || snapshot.distance || "";
+  const distance = rawDistance || (session.targetDistanceValue
+    ? `${session.targetDistanceValue} ${session.targetDistanceUnit === "M" ? "m" : "yds"}`
+    : snapshot.targetDistanceValue
+      ? `${snapshot.targetDistanceValue} ${snapshot.targetDistanceUnit === "M" ? "m" : "yds"}`
+      : "");
+  const sessionLabel = session.sessionLabel || (session.sessionNumber ? `Session #${String(session.sessionNumber).padStart(3, "0")}` : "");
+  const rows = [
+    ["Session", sessionLabel],
+    ["Session Record ID", session.sessionId],
+    ["Course", missionDisplayName],
+    ["Firearm", weapon === "--" ? "" : weapon],
+    ["Weapon Details", weaponMeta],
+    ["Optic", optic],
+    ["Ammunition", ammunition],
+    ["Distance", distance],
+    ["Date", session.timestamp ? cleanDateTime(session.timestamp) : ""],
+    ["Shooter", snapshot.shooterName],
+    ["Unit", snapshot.unit],
+    ["Agency", snapshot.agency],
+    ["Instructor", snapshot.instructor],
+    ["Notes", session.notes || snapshot.shooterNotes || snapshot.environmentalNotes]
+  ].filter(([, value]) => value !== undefined && value !== null && value !== "");
+  return `
+    <div class="sec-gssf-session-complete" hidden>
+      ${rows.map(([label, value]) => `<div${label === "Session Record ID" ? ' class="is-wide"' : ""}><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
+    </div>
+  `;
+}
+
 function renderGssfSecCard(session, index, pkg) {
   const snapshot = session.matrixSnapshot || {};
   const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
@@ -586,6 +619,7 @@ function renderGssfSecCard(session, index, pkg) {
             <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
             ${weaponMeta ? `<div><span>Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
           </div>
+          ${gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, weapon, weaponMeta)}
           ${attributionLine(snapshot)}
         </section>
 
@@ -942,6 +976,11 @@ function buildGssfSecExportPages(card) {
   ].forEach(selector => {
     const section = cloneGssfExportSection(card, selector);
     if (!section) return;
+    if (selector === ".sec-gssf-story-session") {
+      section.querySelector(".sec-gssf-session-summary")?.remove();
+      section.querySelector(".sec-attribution-line")?.remove();
+      section.querySelector(".sec-gssf-session-complete")?.removeAttribute("hidden");
+    }
     section.removeAttribute("hidden");
     pageTwo.append(section);
   });

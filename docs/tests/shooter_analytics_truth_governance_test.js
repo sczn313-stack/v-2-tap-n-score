@@ -84,8 +84,13 @@ const evidenceSession = {
 assert.strictEqual(analytics.governedEvidenceUrl(evidenceSession, analytics.eligibleRecord(evidenceSession)), "assets/gssf_ac_1_clean_reference.png", "approved canonical evidence renders");
 assert.strictEqual(analytics.governedEvidenceUrl({ ...evidenceSession, targetEvidenceImage: null }, analytics.eligibleRecord(evidenceSession)), null, "missing evidence has no fallback");
 
-assert(analyticsHtml.includes("Today") && analyticsHtml.includes("WTD") && analyticsHtml.includes("MTD") && analyticsHtml.includes("YTD") && analyticsHtml.includes("All Time"), "approved time windows are present");
-assert(indexHtml.includes("Completed Sessions"), "Home uses the metric it actually counts");
+assert(analyticsHtml.includes("Founder Dashboard") && analyticsHtml.includes("Founder authentication is required"), "analytics is relocated behind the founder access boundary");
+assert(!analyticsHtml.includes("renderAnalyticsPage") && !analyticsHtml.includes('src="analytics.js"'), "public analytics URL requests and renders no analytics data");
+for (const page of ["index.html", "matrix.html", "shoot.html", "records.html", "survey.html", "buy-targets.html"]) {
+  const html = fs.readFileSync(path.join(docs, page), "utf8");
+  assert(!html.includes('href="analytics.html"'), `${page} does not expose founder analytics in public navigation`);
+}
+assert(!indexHtml.includes("Completed Sessions") && !indexHtml.includes("Shooting Days"), "Home no longer presents analytics metrics");
 assert(!indexHtml.includes("Average Score") && !indexHtml.includes("Best Score") && !indexHtml.includes("Targets Shot"), "fabricated universal metrics are removed");
 assert(!indexHtml.includes("BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png"), "Home has no Baker evidence fallback");
 

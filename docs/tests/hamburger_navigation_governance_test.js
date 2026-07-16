@@ -4,7 +4,7 @@ const path = require("path");
 
 const docs = path.resolve(__dirname, "..");
 const navigation = fs.readFileSync(path.join(docs, "navigation.js"), "utf8");
-const pages = ["index.html", "matrix.html", "shoot.html", "records.html", "analytics.html", "survey.html", "buy-targets.html"];
+const pages = ["index.html", "matrix.html", "shoot.html", "records.html", "survey.html", "buy-targets.html"];
 
 pages.forEach(page => {
   const html = fs.readFileSync(path.join(docs, page), "utf8");

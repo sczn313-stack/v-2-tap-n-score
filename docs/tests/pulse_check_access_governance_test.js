@@ -4,6 +4,7 @@ const path = require("path");
 
 const docs = path.resolve(__dirname, "..");
 const opsHtml = fs.readFileSync(path.join(docs, "ops.html"), "utf8");
+const analyticsHtml = fs.readFileSync(path.join(docs, "analytics.html"), "utf8");
 const opsJs = fs.readFileSync(path.join(docs, "ops.js"), "utf8");
 const server = fs.readFileSync(path.join(docs, "backend", "server.py"), "utf8");
 const store = fs.readFileSync(path.join(docs, "backend", "ops_store.py"), "utf8");
@@ -11,6 +12,8 @@ const store = fs.readFileSync(path.join(docs, "backend", "ops_store.py"), "utf8"
 assert(opsHtml.includes("Founder authentication is required"), "Pulse Check states the access requirement");
 assert(opsHtml.includes("No operational data has been requested or rendered"), "locked page makes its data behavior explicit");
 assert(!opsHtml.includes("/api/ops/summary") && !opsHtml.includes("ops.js"), "locked page does not request telemetry");
+assert(analyticsHtml.includes("Founder Dashboard") && analyticsHtml.includes("Founder authentication is required"), "Analytics is isolated inside the founder access boundary");
+assert(!analyticsHtml.includes("analytics.js") && !analyticsHtml.includes("app_state.js"), "locked founder analytics requests no shooter history or analytics data");
 assert(server.includes("self._send_json(403, founder_access_unavailable())"), "private endpoints refuse without server authentication");
 assert(server.includes('"status": "founder_authentication_required"'), "refusal is explicit");
 assert(!server.includes("envKeysContainingDatabase") && !server.includes("databaseUrlPrefix"), "environment diagnostics are not publicly disclosed");

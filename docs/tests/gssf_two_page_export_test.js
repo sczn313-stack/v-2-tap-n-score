@@ -38,6 +38,12 @@ assert(!builder.includes("package-menu"), "export pages must exclude navigation"
 
 assert(records.includes("const GSSF_SEC_EXPORT_WIDTH = 390"), "export width must be governed at iPhone width");
 assert(records.includes("cloneGssfExportSection(card, selector)"), "both pages must clone the rendered authoritative SEC");
+assert(records.includes('section.querySelector(".sec-gssf-session-summary")?.remove()'), "Page 2 replaces the compact live summary without changing the live SEC");
+assert(records.includes('section.querySelector(".sec-attribution-line")?.remove()'), "Page 2 avoids duplicating attribution already included in the complete session record");
+assert(records.includes('section.querySelector(".sec-gssf-session-complete")?.removeAttribute("hidden")'), "Page 2 restores the complete governed session record");
+for (const field of ["Session Record ID", "Course", "Firearm", "Optic", "Ammunition", "Distance", "Date", "Shooter", "Unit", "Agency", "Instructor", "Notes"]) {
+  assert(records.includes(`["${field}"`), `complete session export supports ${field}`);
+}
 assert(records.includes('clone.querySelectorAll("button, .sec-gssf-rail-dots")'), "export clones must remove rail controls and indicators");
 assert(records.includes("prepareGssfExportPage(page)"), "governed evidence must be prepared from the rendered page before capture");
 assert(records.includes("SEC-${stamp}-01-results.png") && records.includes("SEC-${stamp}-02-evidence.png"), "save produces two clearly named images");
@@ -56,5 +62,6 @@ assert(/\.history-thumb-impact\s*\{[^}]*white-space:nowrap/s.test(styles), "save
 assert(/\.gssf-sec-export-page \.history-thumb-impact\s*\{[^}]*white-space:nowrap/s.test(styles), "exported two-digit shot IDs must not wrap");
 assert(/\.gssf-sec-export-page\s*\{[^}]*width:390px[^}]*overflow:hidden/s.test(styles), "each export page must have a fixed safe width without overflow");
 assert(/\.gssf-sec-export-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:repeat\(4, minmax\(0, 1fr\)\)/s.test(styles), "Page 1 preserves all four scoring columns");
+assert(/\.sec-gssf-session-complete\s*\{[^}]*grid-template-columns:repeat\(2, minmax\(0, 1fr\)\)/s.test(styles), "Page 2 complete session record remains readable at export width");
 
 console.log("PASS GSSF two-page authoritative SEC export test");

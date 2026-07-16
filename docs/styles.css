@@ -7913,7 +7913,8 @@ input[readonly]{
 
 .records-page .sec-gssf-story-result span,
 .records-page .sec-gssf-equation-value span,
-.records-page .sec-gssf-session-summary span{
+.records-page .sec-gssf-session-summary span,
+.records-page .sec-gssf-session-complete span{
   color:#d9960b;
   font-size:11px;
   font-weight:900;
@@ -8036,6 +8037,16 @@ input[readonly]{
   gap:8px;
 }
 
+.records-page .sec-gssf-session-complete{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:8px;
+}
+
+.records-page .sec-gssf-session-complete[hidden]{
+  display:none;
+}
+
 .records-page .sec-gssf-story-buckets{
   gap:16px;
 }
@@ -8116,7 +8127,8 @@ input[readonly]{
   line-height:1.3;
 }
 
-.records-page .sec-gssf-session-summary div{
+.records-page .sec-gssf-session-summary div,
+.records-page .sec-gssf-session-complete div{
   display:grid;
   gap:4px;
   min-width:0;
@@ -8126,11 +8138,16 @@ input[readonly]{
   background:rgba(0,0,0,.2);
 }
 
-.records-page .sec-gssf-session-summary strong{
+.records-page .sec-gssf-session-summary strong,
+.records-page .sec-gssf-session-complete strong{
   color:#f5f1e8;
   font-size:12px;
   line-height:1.2;
   overflow-wrap:anywhere;
+}
+
+.records-page .sec-gssf-session-complete .is-wide{
+  grid-column:1 / -1;
 }
 
 .records-page .sec-gssf-story-session{
