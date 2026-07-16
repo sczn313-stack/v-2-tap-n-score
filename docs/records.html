@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SEC - Shooter Experience Card</title>
 <link rel="stylesheet" href="styles.css" />
+<script src="navigation.js" defer></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
 <main class="shell">
@@ -22,6 +23,7 @@
     <a href="matrix.html">Weapon Library</a>
     <a href="shoot.html">Target</a>
     <a href="records.html" aria-current="page">SEC</a>
+    <a href="analytics.html">Analytics</a>
     <a href="survey.html">Survey</a>
   </nav>
   <section class="panel history-panel">
@@ -41,37 +43,6 @@
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
-(function(){
-  const menuButton = document.querySelector(".records-menu-button");
-  const menuDrawer = document.getElementById("recordsMenuDrawer");
-  if(!menuButton || !menuDrawer) return;
-
-  function setMenuOpen(isOpen){
-    menuButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    menuDrawer.hidden = !isOpen;
-    document.body.classList.toggle("package-menu-open", isOpen);
-  }
-
-  menuButton.addEventListener("click", function(event){
-    event.stopPropagation();
-    setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
-  });
-
-  menuDrawer.addEventListener("click", function(event){
-    if(event.target.closest("a")) setMenuOpen(false);
-  });
-
-  document.addEventListener("click", function(event){
-    if(menuDrawer.hidden) return;
-    if(menuDrawer.contains(event.target) || menuButton.contains(event.target)) return;
-    setMenuOpen(false);
-  });
-
-  document.addEventListener("keydown", function(event){
-    if(event.key === "Escape") setMenuOpen(false);
-  });
-})();
-
 const historyList = document.getElementById("historyList");
 
 function cleanDateTime(value) {

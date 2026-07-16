@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shooter Analytics — Tap-n-Score</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="navigation.js" defer></script>
+</head>
+<body class="platform-page analytics-page">
+<main class="analytics-shell">
+  <header class="m4-header analytics-header">
+    <div class="vendor-slot">
+      <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
+      <div class="brand-lockup">
+        <span class="kicker">Tap-n-Score™</span>
+        <a class="vendor-name" href="index.html">Shooter Analytics</a>
+      </div>
+    </div>
+    <details class="mobile-platform-menu analytics-menu">
+      <summary aria-label="Open navigation">☰</summary>
+      <a href="index.html">Home</a>
+      <a href="matrix.html">Weapon Library</a>
+      <a href="shoot.html">Target</a>
+      <a href="records.html">SEC</a>
+      <a href="analytics.html" aria-current="page">Analytics</a>
+    </details>
+  </header>
+
+  <section class="analytics-hero" aria-labelledby="analyticsTitle">
+    <span>Your Progress</span>
+    <h1 id="analyticsTitle">Shooter Analytics</h1>
+    <p>See how your shooting is developing—one comparable session at a time.</p>
+  </section>
+
+  <section class="analytics-window-section" aria-labelledby="analyticsWindowTitle">
+    <div class="analytics-section-heading">
+      <div>
+        <span>Time</span>
+        <h2 id="analyticsWindowTitle">Choose a window</h2>
+      </div>
+      <small>Device time: <strong id="analyticsTimezone">Loading…</strong></small>
+    </div>
+    <div class="analytics-filter-row" role="group" aria-label="Analytics time window">
+      <button type="button" data-analytics-window="today" aria-pressed="false">Today</button>
+      <button type="button" data-analytics-window="wtd" aria-pressed="false">WTD</button>
+      <button type="button" data-analytics-window="mtd" aria-pressed="false">MTD</button>
+      <button type="button" data-analytics-window="ytd" aria-pressed="false">YTD</button>
+      <button type="button" data-analytics-window="all" aria-pressed="true">All Time</button>
+    </div>
+  </section>
+
+  <section class="analytics-summary-section" aria-labelledby="analyticsSummaryTitle">
+    <div class="analytics-section-heading">
+      <div>
+        <span>Activity</span>
+        <h2 id="analyticsSummaryTitle">Your shooting history</h2>
+      </div>
+    </div>
+    <div class="analytics-summary" id="analyticsSummary"></div>
+    <p class="analytics-truth-note" id="analyticsUnavailableCount" hidden></p>
+  </section>
+
+  <section class="analytics-mission-section" aria-labelledby="analyticsMissionTitle">
+    <div class="analytics-section-heading">
+      <div>
+        <span>Progress</span>
+        <h2 id="analyticsMissionTitle">Choose a mission</h2>
+      </div>
+      <small>Only comparable sessions are shown together.</small>
+    </div>
+    <div class="analytics-filter-row analytics-mission-tabs" role="group" aria-label="Mission analytics">
+      <button type="button" data-analytics-mission="gssf" aria-pressed="true">GSSF</button>
+      <button type="button" data-analytics-mission="zeroing" aria-pressed="false">Zeroing</button>
+      <button type="button" data-analytics-mission="training" aria-pressed="false">Training</button>
+    </div>
+    <div class="analytics-mission-panel" id="analyticsMissionPanel" aria-live="polite"></div>
+  </section>
+
+  <section class="analytics-history-link" aria-label="Saved history">
+    <div>
+      <span>Want the full story?</span>
+      <strong>Open your saved Shooter Experience Cards.</strong>
+    </div>
+    <a href="records.html">View SEC History</a>
+  </section>
+
+  <p class="analytics-retention-note">All Time includes all available saved history on this device.</p>
+</main>
+<script src="app_state.js"></script>
+<script src="analytics.js"></script>
+<script>
+SCZN3Analytics.renderAnalyticsPage();
+</script>
+</body>
+</html>

@@ -6,7 +6,7 @@ import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
-from ops_store import record_event, summarize_events
+from ops_store import record_event
 from product_catalog import product_resolution_http_status, resolve_product_route
 
 HOST = os.environ.get("HOST", "127.0.0.1")
@@ -24,6 +24,15 @@ ALLOWED_ORIGINS = {
     for origin in os.environ.get("SCZN3_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")
     if origin.strip()
 }
+
+
+def founder_access_unavailable():
+    """Refuse private telemetry until authenticated founder access exists."""
+    return {
+        "ok": False,
+        "status": "founder_authentication_required",
+        "reason": "Pulse Check remains unavailable until server-verified founder authentication is configured.",
+    }
 
 
 class AuthorityHandler(BaseHTTPRequestHandler):
@@ -73,22 +82,10 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self._send_json(200, {"ok": True, "service": "sczn3-ops"})
             return
         if path in self.OPS_ENV_CHECK_PATHS:
-            database_url = os.environ.get("DATABASE_URL", "")
-            self._send_json(
-                200,
-                {
-                    "ok": True,
-                    "databaseUrlPresent": bool(database_url),
-                    "databaseUrlLength": len(database_url),
-                    "databaseUrlPrefix": database_url[:12] if database_url else "",
-                    "envKeysContainingDatabase": sorted(
-                        key for key in os.environ.keys() if "DATABASE" in key.upper()
-                    ),
-                },
-            )
+            self._send_json(403, founder_access_unavailable())
             return
         if path in self.OPS_SUMMARY_PATHS:
-            self._send_json(200, summarize_events())
+            self._send_json(403, founder_access_unavailable())
             return
         if path in self.PRODUCT_ROUTE_PATHS:
             query = parse_qs(urlparse(self.path).query)

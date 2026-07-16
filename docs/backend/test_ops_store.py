@@ -94,9 +94,9 @@ def sample_event(event_type="arrival", arrival_id="arrival-1"):
         "eventType": event_type,
         "arrivalId": arrival_id,
         "sessionId": "session-1",
-        "referralSource": "QR Target",
-        "targetSource": "ST-100",
-        "region": "America/New_York",
+        "publisherRouteId": "gssf",
+        "productRouteId": "ac1",
+        "catalogEntryId": "gssf-ac1-public-route-v1",
         "path": "/index.html",
         "timestamp": "2026-06-23T15:00:00Z",
         "metadata": {"source": "test"},
@@ -136,7 +136,7 @@ def test_duplicate_arrival_id_does_not_double_count_arrival():
 
 def test_summary_totals_return_correct_counts():
     db = FakeDatabase()
-    for event_type in ["arrival", "pageView", "sessionStart", "showResults", "sessionSaved", "returnShooter"]:
+    for event_type in ["arrival", "pageView", "sessionStart", "showResults", "sessionSaved"]:
         record_event(sample_event(event_type, f"{event_type}-1"), database_url_override="postgresql://test", connect_fn=db.connect)
     summary = summarize_events(database_url_override="postgresql://test", connect_fn=db.connect)
     assert_equal(summary["totals"]["arrivals"], 1, "arrivals total")
@@ -144,21 +144,29 @@ def test_summary_totals_return_correct_counts():
     assert_equal(summary["totals"]["sessionStarts"], 1, "session starts total")
     assert_equal(summary["totals"]["showResults"], 1, "show results total")
     assert_equal(summary["totals"]["sessionsSaved"], 1, "sessions saved total")
-    assert_equal(summary["totals"]["returnShooters"], 1, "return shooters total")
+    assert_equal(summary["totals"]["returnShooters"], 0, "return shooters remain deferred")
 
 
-def test_referral_target_region_buckets_summarize_correctly():
+def test_only_governed_product_identity_is_attributed():
     db = FakeDatabase()
     record_event(sample_event("arrival", "arrival-a"), database_url_override="postgresql://test", connect_fn=db.connect)
     event = sample_event("arrival", "arrival-b")
-    event["referralSource"] = "Baker Targets"
-    event["targetSource"] = "M4"
-    event["region"] = "America/Chicago"
+    event.pop("publisherRouteId")
+    event.pop("productRouteId")
+    event.pop("catalogEntryId")
     record_event(event, database_url_override="postgresql://test", connect_fn=db.connect)
     summary = summarize_events(database_url_override="postgresql://test", connect_fn=db.connect)
-    assert_equal(summary["sources"]["referrals"], {"Baker Targets": 1, "QR Target": 1}, "referral bucket")
-    assert_equal(summary["sources"]["targets"], {"M4": 1, "ST-100": 1}, "target bucket")
-    assert_equal(summary["sources"]["regions"], {"America/Chicago": 1, "America/New_York": 1}, "region bucket")
+    assert_equal(summary["sources"]["referrals"], {"Deferred": 2}, "referral bucket deferred")
+    assert_equal(summary["sources"]["targets"], {"Unattributed": 1, "gssf-ac1-public-route-v1": 1}, "governed target bucket")
+    assert_equal(summary["sources"]["regions"], {"Deferred": 2}, "region bucket deferred")
+
+
+def test_mismatched_product_identity_is_rejected():
+    event = sample_event()
+    event["catalogEntryId"] = "untrusted-entry"
+    validated, error = validate_event(event)
+    assert_equal(validated, None, "mismatched product event")
+    assert_equal(error, "governed product identity is unavailable or mismatched", "mismatched product error")
 
 
 def test_ops_failure_does_not_affect_authority_package():
@@ -191,7 +199,8 @@ def run():
         test_missing_database_url_returns_unavailable,
         test_duplicate_arrival_id_does_not_double_count_arrival,
         test_summary_totals_return_correct_counts,
-        test_referral_target_region_buckets_summarize_correctly,
+        test_only_governed_product_identity_is_attributed,
+        test_mismatched_product_identity_is_rejected,
         test_ops_failure_does_not_affect_authority_package,
         test_validate_event_rejects_non_object_metadata,
     ]

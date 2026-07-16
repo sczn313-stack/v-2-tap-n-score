@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Weapon Library</title>
 <link rel="stylesheet" href="styles.css" />
+<script src="navigation.js" defer></script>
 </head>
 <body class="platform-page matrix-page">
 <main class="shell">
@@ -20,6 +21,7 @@
       <a class="locked-nav-item is-active" href="matrix.html"><span class="nav-dot"></span><span>Weapon Library</span></a>
       <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
       <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
+      <a class="locked-nav-item" href="analytics.html"><span class="nav-dot"></span><span>Analytics</span></a>
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
     <details class="mobile-platform-menu">
@@ -28,6 +30,7 @@
       <a href="matrix.html" aria-current="page">Weapon Library</a>
       <a href="shoot.html">Target</a>
       <a href="records.html">SEC</a>
+      <a href="analytics.html">Analytics</a>
       <a href="survey.html">Survey</a>
     </details>
   </header>
@@ -113,13 +116,13 @@
             <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
-          <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
-            <option selected>MOA</option><option>MRAD</option>
-          </select></label>
           <label>Click Value<select name="opticClickValue" id="opticClickValue">
             <option value="0.25" selected>1/4 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option><option value="Custom">Custom</option>
           </select></label>
           <label class="is-hidden">Custom Click Value<input name="customOpticClickValue" id="customOpticClickValue" inputmode="decimal" placeholder="0.25" /></label>
+          <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
+            <option selected>MOA</option><option>MRAD</option>
+          </select></label>
         </div>
       </details>
 
@@ -185,12 +188,6 @@
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
-document.querySelectorAll(".mobile-platform-menu").forEach(menu => {
-  menu.addEventListener("click", event => {
-    if (event.target.closest("a")) menu.open = false;
-  });
-});
-
 const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
@@ -931,11 +928,59 @@ function toggleField(selectId, shouldShow) {
   field.closest("label").classList.toggle("is-hidden", !shouldShow);
 }
 
-function toggleCustom(inputId, shouldShow) {
+function toggleCustom(inputId, shouldShow, shouldFocus = true) {
   const input = document.getElementById(inputId);
   if (!input) return;
   input.closest("label").classList.toggle("is-hidden", !shouldShow);
-  if (shouldShow) input.focus();
+  if (shouldShow && shouldFocus) focusFieldWithoutPageJump(inputId);
+}
+
+function focusFieldWithoutPageJump(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (!field || field.disabled || field.closest("label")?.classList.contains("is-hidden")) return false;
+  try {
+    field.focus({ preventScroll: true });
+  } catch (error) {
+    field.focus();
+  }
+  return document.activeElement === field;
+}
+
+function nextOpticField(currentId) {
+  const value = document.getElementById(currentId)?.value;
+  const nextByField = {
+    opticType: value === "Other" ? "customOpticType" : "opticBrand",
+    customOpticType: "opticBrand",
+    opticBrand: value === "Other" ? "customOpticManufacturer" : "opticModel",
+    customOpticManufacturer: "opticModel",
+    opticModel: value === "Other" ? "customOpticModel" : "magnification",
+    customOpticModel: "magnification",
+    magnification: value === "Other" ? "customMagnification" : "opticClickValue",
+    customMagnification: "opticClickValue",
+    opticClickValue: value === "Custom" ? "customOpticClickValue" : "opticAdjustmentUnit",
+    customOpticClickValue: "opticAdjustmentUnit"
+  };
+  return nextByField[currentId] || "";
+}
+
+function advanceOpticFocus(currentId) {
+  const nextId = nextOpticField(currentId);
+  return nextId ? focusFieldWithoutPageJump(nextId) : false;
+}
+
+function installSingleActiveWeaponSections() {
+  const sections = Array.from(document.querySelectorAll("details.secondary-profile-section"));
+  sections.forEach(section => section.addEventListener("toggle", () => {
+    if (!section.open) return;
+    const summary = section.querySelector("summary");
+    const anchorBefore = summary ? summary.getBoundingClientRect().top : 0;
+    sections.forEach(other => {
+      if (other !== section && other.open) other.open = false;
+    });
+    const anchorAfter = summary ? summary.getBoundingClientRect().top : anchorBefore;
+    const delta = anchorAfter - anchorBefore;
+    if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+  }));
 }
 
 function updateWeaponManufacturers(selectedValue = "") {
@@ -1043,8 +1088,8 @@ function updateOpticModels(selectedValue = "") {
   const typeModels = OPTIC_MODEL_FILTERS[type] || {};
   setOptions(document.getElementById("opticModel"), typeModels[brand] || OPTIC_MODELS[brand] || OPTIC_MODELS.Other, selectedValue);
   toggleField("opticModel", !isSelectedPlaceholder(brand));
-  toggleCustom("customOpticManufacturer", brand === "Other");
-  toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other");
+  toggleCustom("customOpticManufacturer", brand === "Other", false);
+  toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other", false);
   updateMagnifications();
 }
 
@@ -1057,8 +1102,8 @@ function updateOpticTypes(selectedValue = "") {
 function updateOpticManufacturers(selectedValue = "") {
   const type = document.getElementById("opticType").value || "Iron Sights";
   setOptions(document.getElementById("opticBrand"), OPTIC_TYPE_MANUFACTURERS[type] || OPTIC_TYPE_MANUFACTURERS.Other, selectedValue);
-  toggleCustom("customOpticType", type === "Other");
-  toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other");
+  toggleCustom("customOpticType", type === "Other", false);
+  toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other", false);
   updateOpticModels();
 }
 
@@ -1067,9 +1112,9 @@ function updateMagnifications(selectedValue = "") {
   const type = document.getElementById("opticType").value || "Iron Sights";
   const fallback = type === "Iron Sights" ? OPTIC_MAGNIFICATIONS["Iron Sights"] : ["1x", "1-4x", "1-6x", "1-8x", "2-10x", "3-9x", "4-12x", "Other"];
   setOptions(document.getElementById("magnification"), OPTIC_MAGNIFICATIONS[model] || fallback, selectedValue);
-  toggleCustom("customOpticModel", model === "Other");
-  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other");
-  toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other");
+  toggleCustom("customOpticModel", model === "Other", false);
+  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other", false);
+  toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other", false);
 }
 
 function updateDistanceOptions(selectedValue = "") {
@@ -1091,7 +1136,7 @@ function updateOpticClickValues(selectedValue = "") {
   select.value = selected;
   const customInput = document.getElementById("customOpticClickValue");
   if (customInput && selected === "Custom" && selectedString !== "Custom") customInput.value = selectedString;
-  toggleCustom("customOpticClickValue", select.value === "Custom");
+  toggleCustom("customOpticClickValue", select.value === "Custom", false);
 }
 
 function updateAmmoCalibers(selectedValue = "") {
@@ -1548,18 +1593,18 @@ function setForm(snapshot) {
     field.value = values[field.name] || "";
   });
   updateOpticClickValues(values.opticClickValue);
-  toggleCustom("customWeaponManufacturer", document.getElementById("weaponManufacturer").value === "Other");
-  toggleCustom("customWeaponModelType", document.getElementById("weaponModelType").value === "Other");
-  toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
-  toggleCustom("customOpticType", document.getElementById("opticType").value === "Other");
-  toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other");
-  toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other");
-  toggleCustom("customAmmoCaliber", document.getElementById("ammoCaliber").value === "Other");
-  toggleCustom("customAmmoManufacturer", document.getElementById("ammoManufacturer").value === "Other");
-  toggleCustom("customAmmoLoad", document.getElementById("ammoLoad").value === "Other");
-  toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other");
-  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other");
-  toggleCustom("customOpticClickValue", document.getElementById("opticClickValue").value === "Custom");
+  toggleCustom("customWeaponManufacturer", document.getElementById("weaponManufacturer").value === "Other", false);
+  toggleCustom("customWeaponModelType", document.getElementById("weaponModelType").value === "Other", false);
+  toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other", false);
+  toggleCustom("customOpticType", document.getElementById("opticType").value === "Other", false);
+  toggleCustom("customOpticManufacturer", document.getElementById("opticBrand").value === "Other", false);
+  toggleCustom("customOpticModel", document.getElementById("opticModel").value === "Other", false);
+  toggleCustom("customAmmoCaliber", document.getElementById("ammoCaliber").value === "Other", false);
+  toggleCustom("customAmmoManufacturer", document.getElementById("ammoManufacturer").value === "Other", false);
+  toggleCustom("customAmmoLoad", document.getElementById("ammoLoad").value === "Other", false);
+  toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other", false);
+  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other", false);
+  toggleCustom("customOpticClickValue", document.getElementById("opticClickValue").value === "Custom", false);
 }
 
 function collectForm() {
@@ -1715,6 +1760,8 @@ function clearSetupFields() {
   setWeaponCategory("Rifle");
   updateWeaponManufacturers();
   updateOpticTypes();
+  document.getElementById("opticAdjustmentUnit").value = "MOA";
+  updateOpticClickValues("0.25");
   updateAmmoCalibers();
   updateDistanceOptions("100");
   renderSessionBar();
@@ -1824,16 +1871,38 @@ document.getElementById("glockModelSearch").addEventListener("input", () => {
   const selected = document.getElementById("weaponModelCaliber").value;
   updateWeaponModelCalibers(selected);
 });
-document.getElementById("opticType").addEventListener("change", () => updateOpticManufacturers());
-document.getElementById("opticBrand").addEventListener("change", () => updateOpticModels());
-document.getElementById("opticModel").addEventListener("change", () => updateMagnifications());
+document.getElementById("opticType").addEventListener("change", () => {
+  updateOpticManufacturers();
+  advanceOpticFocus("opticType");
+});
+document.getElementById("opticBrand").addEventListener("change", () => {
+  updateOpticModels();
+  advanceOpticFocus("opticBrand");
+});
+document.getElementById("opticModel").addEventListener("change", () => {
+  updateMagnifications();
+  advanceOpticFocus("opticModel");
+});
 document.getElementById("opticAdjustmentUnit").addEventListener("change", () => updateOpticClickValues());
-document.getElementById("opticClickValue").addEventListener("change", () => toggleCustom("customOpticClickValue", document.getElementById("opticClickValue").value === "Custom"));
+document.getElementById("opticClickValue").addEventListener("change", () => {
+  toggleCustom("customOpticClickValue", document.getElementById("opticClickValue").value === "Custom", false);
+  advanceOpticFocus("opticClickValue");
+});
 document.getElementById("ammoCaliber").addEventListener("change", () => updateAmmoManufacturers());
 document.getElementById("ammoManufacturer").addEventListener("change", () => updateAmmoLoads());
 document.getElementById("ammoLoad").addEventListener("change", () => updateAmmoGrains());
 document.getElementById("bulletWeight").addEventListener("change", () => toggleCustom("customBulletWeight", document.getElementById("bulletWeight").value === "Other"));
-document.getElementById("magnification").addEventListener("change", () => toggleCustom("customMagnification", document.getElementById("magnification").value === "Other"));
+document.getElementById("magnification").addEventListener("change", () => {
+  toggleCustom("customMagnification", document.getElementById("magnification").value === "Other", false);
+  advanceOpticFocus("magnification");
+});
+[
+  "customOpticType",
+  "customOpticManufacturer",
+  "customOpticModel",
+  "customMagnification",
+  "customOpticClickValue"
+].forEach(fieldId => document.getElementById(fieldId).addEventListener("change", () => advanceOpticFocus(fieldId)));
 document.getElementById("matrixDistanceValue").addEventListener("change", () => toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other"));
 document.getElementById("customTargetDistanceValue").addEventListener("input", event => { event.target.value = event.target.value.replace(/\D/g, ""); });
 document.getElementById("weaponPhotoInput").addEventListener("change", event => {
@@ -1846,6 +1915,7 @@ document.getElementById("removeWeaponPhoto").addEventListener("click", () => {
   document.getElementById("weaponPhotoInput").value = "";
   renderWeaponPhotoPreview();
 });
+installSingleActiveWeaponSections();
 form.addEventListener("input", renderSessionBar);
 form.addEventListener("change", renderSessionBar);
 

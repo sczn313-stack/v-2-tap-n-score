@@ -6,6 +6,7 @@
 <meta name="sczn3-authority-endpoint" content="https://sczn3-authority.onrender.com/api/authority/ugeo" />
 <title>Target</title>
 <link rel="stylesheet" href="styles.css" />
+<script src="navigation.js" defer></script>
 </head>
 <body class="platform-page target-page">
 <main class="shell">
@@ -23,6 +24,7 @@
       <a href="matrix.html">Weapon Library</a>
       <a href="shoot.html" aria-current="page">Target</a>
       <a href="records.html">SEC</a>
+      <a href="analytics.html">Analytics</a>
       <a href="survey.html">Survey</a>
     </details>
   </header>
@@ -66,12 +68,6 @@
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
-document.querySelectorAll(".mobile-platform-menu").forEach(menu => {
-  menu.addEventListener("click", event => {
-    if (event.target.closest("a")) menu.open = false;
-  });
-});
-
 let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 
 function isFinalizedSession(candidate) {

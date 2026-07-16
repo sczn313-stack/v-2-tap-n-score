@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 from datetime import datetime, timezone
+from product_catalog import resolve_product_route
 
 ALLOWED_EVENT_TYPES = {
     "arrival",
@@ -15,7 +16,6 @@ ALLOWED_EVENT_TYPES = {
     "sessionStart",
     "showResults",
     "sessionSaved",
-    "returnShooter",
 }
 
 SUMMARY_KEYS = {
@@ -24,7 +24,6 @@ SUMMARY_KEYS = {
     "sessionStart": "sessionStarts",
     "showResults": "showResults",
     "sessionSaved": "sessionsSaved",
-    "returnShooter": "returnShooters",
 }
 
 
@@ -62,13 +61,35 @@ def validate_event(payload):
     if not isinstance(metadata, dict):
         return None, "metadata must be an object"
 
+    publisher_route_id = clean_optional_text(payload.get("publisherRouteId") or payload.get("publisher_route_id"))
+    product_route_id = clean_optional_text(payload.get("productRouteId") or payload.get("product_route_id"))
+    catalog_entry_id = clean_optional_text(payload.get("catalogEntryId") or payload.get("catalog_entry_id"))
+    provided_identity = [publisher_route_id, product_route_id, catalog_entry_id]
+    if any(provided_identity) and not all(provided_identity):
+        return None, "governed product identity must be complete"
+    target_source = "Unattributed"
+    if all(provided_identity):
+        resolution = resolve_product_route(publisher_route_id, product_route_id)
+        resolved_entry = resolution.get("catalogEntry") if resolution.get("ok") is True else None
+        if not resolved_entry or resolved_entry.get("catalogEntryId") != catalog_entry_id:
+            return None, "governed product identity is unavailable or mismatched"
+        target_source = catalog_entry_id
+        metadata = {
+            **metadata,
+            "governedProduct": {
+                "publisherRouteId": publisher_route_id,
+                "productRouteId": product_route_id,
+                "catalogEntryId": catalog_entry_id,
+            },
+        }
+
     return {
         "event_type": event_type,
         "arrival_id": clean_optional_text(payload.get("arrivalId") or payload.get("arrival_id")),
         "session_id": clean_optional_text(payload.get("sessionId") or payload.get("session_id")),
-        "referral_source": clean_text(payload.get("referralSource") or payload.get("referral_source")),
-        "target_source": clean_text(payload.get("targetSource") or payload.get("target_source")),
-        "region": clean_text(payload.get("region")),
+        "referral_source": "Deferred",
+        "target_source": target_source,
+        "region": "Deferred",
         "path": clean_optional_text(payload.get("path")),
         "occurred_at": clean_optional_text(payload.get("timestamp") or payload.get("occurredAt") or payload.get("occurred_at")) or utc_now_iso(),
         "user_agent_hash": clean_optional_text(payload.get("userAgentHash") or payload.get("user_agent_hash")),

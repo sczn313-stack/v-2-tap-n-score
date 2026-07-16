@@ -6,6 +6,7 @@
 <title>Tap-n-Score Feedback Survey</title>
 <link rel="stylesheet" href="styles.css" />
 <script src="ops.js?v=ops-v3-0623"></script>
+<script src="navigation.js" defer></script>
 </head>
 <body class="platform-page survey-page">
 <main class="shell">
@@ -84,12 +85,6 @@
   </section>
 </main>
 <script>
-document.querySelectorAll(".mobile-platform-menu").forEach(menu => {
-  menu.addEventListener("click", event => {
-    if (event.target.closest("a")) menu.open = false;
-  });
-});
-
 const SURVEY_KEY = "SCZN3_SURVEY_RESPONSES";
 const form = document.getElementById("surveyForm");
 const message = document.getElementById("surveyMessage");
