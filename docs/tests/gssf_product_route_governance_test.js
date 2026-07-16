@@ -12,6 +12,9 @@ assert(route.includes('const PUBLISHER_ROUTE_ID = "gssf"'), "route resolves publ
 assert(route.includes('const PRODUCT_ROUTE_ID = "ac1"'), "route resolves product ac1");
 assert(route.includes('const EXPECTED_CONTRACT_ID = "gssf-ac-1-live-canonical-v1"'), "route requires approved execution contract");
 assert(route.includes("/api/catalog/product-route"), "route uses governed backend product resolver");
+assert(route.includes("https://sczn3-authority.onrender.com/api/catalog/product-route"), "route uses the deployed production authority service");
+assert(notFound.includes("https://sczn3-authority.onrender.com/api/catalog/product-route"), "product-route 404 uses the deployed production authority service");
+assert(!route.includes("sczn3-authoritative-clean.onrender.com") && !notFound.includes("sczn3-authoritative-clean.onrender.com"), "obsolete authority hostname is unavailable");
 assert(route.includes("payload.authorityResolution") && route.includes('authority.missionFamily === "gssf"'), "route validates resolved mission authority");
 assert(route.includes("approvedExperienceUrl(payload.experienceUrl)"), "route refuses an unapproved redirect destination");
 assert(route.includes("location.replace(payload.experienceUrl)"), "successful resolution uses explicit governed redirect");
