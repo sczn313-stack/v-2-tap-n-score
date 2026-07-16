@@ -5,7 +5,7 @@ const assert = require("assert");
 const records = fs.readFileSync(path.join(__dirname, "..", "records.html"), "utf8");
 const styles = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
 const renderStart = records.indexOf("function renderGssfSecCard(");
-const renderEnd = records.indexOf("\nfunction gssfSavedEvidenceDataUrl", renderStart);
+const renderEnd = records.indexOf("\nfunction gssfCanonicalSavedEvidenceContract", renderStart);
 const bucketDefinitionsStart = records.indexOf("function gssfBucketDefinitions(");
 const bucketDefinitionsEnd = records.indexOf("\nfunction gssfAuthoritativeBreakdown", bucketDefinitionsStart);
 const bucketRendererStart = records.indexOf("function gssfBucketSummaryHtml(");
@@ -19,9 +19,10 @@ const bucketRenderer = records.slice(bucketRendererStart, bucketRendererEnd);
 const requiredStory = [
   "Final Time",
   "How Your Final Time Was Calculated",
-  "Timer",
-  "Paper Penalties",
-  "How Your Score Was Built",
+  "How Your Final Time Is Calculated",
+  "Timer Time",
+  "Paper Penalty",
+  "How Your Paper Penalty Was Built",
   "Target",
   "Session",
   "Continue"
@@ -77,7 +78,8 @@ for (let index = 1; index < expectedBucketOrder.length; index += 1) {
 for (const contentClass of ["sec-gssf-bucket-head", "sec-gssf-bucket-math", "sec-gssf-bucket-subtotal", "sec-gssf-bucket-rule"]) {
   assert(bucketRenderer.includes(contentClass), `every scoring column must retain ${contentClass}`);
 }
-assert(bucketRenderer.includes("Hits:") && bucketRenderer.includes("Shot IDs:"), "every scoring column must retain hits and authoritative shot IDs");
+assert(bucketRenderer.includes("Hits:") && bucketRenderer.includes("Shots:"), "every scoring column must retain hits and authoritative shot IDs in customer language");
+assert(renderer.includes("Timer time required for Final Time"), "missing timer time must be stated without presenting a Final Time");
 for (const railClass of ["sec-gssf-rail-shell", "sec-gssf-rail-arrow", "sec-gssf-rail-dots", "mobile-equals"]) {
   assert(bucketRenderer.includes(railClass), `mobile scoring rail must retain ${railClass}`);
 }

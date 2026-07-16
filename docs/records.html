@@ -238,7 +238,7 @@ function gssfBucketSummaryHtml(pkg) {
             <strong class="sec-gssf-bucket-subtotal"><i class="desktop-equals">=</i>${escapeHtml(`${subtotal} sec`)}</strong>
             <span class="sec-gssf-bucket-rule" aria-hidden="true"></span>
             <b><span>Hits:</span><strong>${escapeHtml(count)}</strong></b>
-            <small><span>Shot IDs:</span> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small>
+            <small><span>Shots:</span> <i class="gssf-shot-id-list">${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</i></small>
           </div>
         `;
         }).join("")}
@@ -264,12 +264,12 @@ function gssfResultLine(pkg, label) {
 }
 
 function gssfFormatSeconds(value) {
-  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)} sec` : "unavailable";
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(2)} sec` : "unavailable";
 }
 
 function optionalNumber(...values) {
-  const value = values.find(item => item !== null && item !== undefined && item !== "");
-  return Number.isFinite(Number(value)) ? Number(value) : null;
+  const value = values.find(item => typeof item === "number" && Number.isFinite(item) && item >= 0);
+  return value === undefined ? null : value;
 }
 
 function gssfCompetitionRecord(session, pkg) {
@@ -542,29 +542,34 @@ function renderGssfSecCard(session, index, pkg) {
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
   const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
   const competition = gssfCompetitionRecord(session, pkg);
-  const paperPenalty = `+${gssfFormatSeconds(competition.totalPaperPenaltySeconds)}`;
-  const matchTime = competition.officialMatchTimeSeconds === null ? "unavailable" : gssfFormatSeconds(competition.officialMatchTimeSeconds);
-  const finalScore = competition.officialFinalScoreSeconds === null ? "time unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
+  const hasTimerTime = competition.officialMatchTimeSeconds !== null;
+  const paperPenalty = gssfFormatSeconds(competition.totalPaperPenaltySeconds);
+  const equationPenalty = competition.totalPaperPenaltySeconds === null ? "unavailable" : `+${paperPenalty}`;
+  const matchTime = hasTimerTime ? gssfFormatSeconds(competition.officialMatchTimeSeconds) : "Not entered";
+  const finalScore = competition.officialFinalScoreSeconds === null ? "Unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
+  const resultLabel = hasTimerTime ? "Final Time" : "Paper Penalty";
+  const resultValue = hasTimerTime ? finalScore : paperPenalty;
   return `
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
       <div class="history-copy">
         <section class="sec-gssf-story-section sec-gssf-story-result" aria-label="Result">
           <small>${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</small>
-          <span>Final Time</span>
-          <strong>${escapeHtml(finalScore)}</strong>
+          <span>${resultLabel}</span>
+          <strong>${escapeHtml(resultValue)}</strong>
+          ${hasTimerTime ? "" : "<p>Timer time required for Final Time</p>"}
         </section>
 
         <section class="sec-gssf-story-section sec-gssf-story-explanation" aria-labelledby="gssf-explanation-${index}">
-          <h3 id="gssf-explanation-${index}">How Your Final Time Was Calculated</h3>
+          <h3 id="gssf-explanation-${index}">${hasTimerTime ? "How Your Final Time Was Calculated" : "How Your Final Time Is Calculated"}</h3>
           <div class="sec-gssf-equation-stack" aria-label="Final time calculation">
             <div class="sec-gssf-equation-value sec-gssf-timer-slot">
-              <span>Timer</span>
+              <span>Timer Time</span>
               <strong>${escapeHtml(matchTime)}</strong>
             </div>
             <b aria-hidden="true">+</b>
             <div class="sec-gssf-equation-value">
-              <span>Paper Penalties</span>
-              <strong>${escapeHtml(paperPenalty)}</strong>
+              <span>Paper Penalty</span>
+              <strong>${escapeHtml(equationPenalty)}</strong>
             </div>
             <b aria-hidden="true">=</b>
             <div class="sec-gssf-equation-value is-total">
@@ -575,7 +580,7 @@ function renderGssfSecCard(session, index, pkg) {
         </section>
 
         <section class="sec-gssf-story-section sec-gssf-story-buckets" aria-labelledby="gssf-score-build-${index}">
-          <h3 id="gssf-score-build-${index}">How Your Score Was Built</h3>
+          <h3 id="gssf-score-build-${index}">How Your Paper Penalty Was Built</h3>
           ${gssfBucketSummaryHtml(pkg)}
         </section>
 
@@ -608,12 +613,58 @@ function renderGssfSecCard(session, index, pkg) {
   `;
 }
 
+function gssfCanonicalSavedEvidenceContract() {
+  return {
+    targetProfileId: "gssf_ac_1",
+    targetProfileVersion: "1",
+    registrationPackageId: "gssf-ac-1-clean-png-registration-v1",
+    registrationPackageVersion: "1",
+    targetExecutionContractId: "gssf-ac-1-live-canonical-v1",
+    canonicalAssetId: "gssf_ac_1_clean_reference_png_v1",
+    canonicalAssetSha256: "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+    coordinateSystemVersion: "gssf-ac-1-canonical-coordinate-system-v1",
+    imageWidthPx: 1125,
+    imageHeightPx: 1373,
+    dataUrl: "assets/gssf_ac_1_clean_reference.png"
+  };
+}
+
+function hasGssfCanonicalSavedEvidenceAuthority(pkg) {
+  if (!isGssfAuthorityPackage(pkg) || pkg.canonicalAssetScoring !== "accepted") return false;
+  const expected = gssfCanonicalSavedEvidenceContract();
+  const trace = pkg.authorityTrace || {};
+  return pkg.targetProfileVersion === expected.targetProfileVersion
+    && trace.targetProfileId === expected.targetProfileId
+    && trace.targetProfileVersion === expected.targetProfileVersion
+    && trace.registrationPackageId === expected.registrationPackageId
+    && trace.registrationPackageVersion === expected.registrationPackageVersion
+    && trace.targetExecutionContractId === expected.targetExecutionContractId
+    && trace.canonicalAssetId === expected.canonicalAssetId
+    && trace.canonicalAssetSha256 === expected.canonicalAssetSha256
+    && trace.coordinateSystemVersion === expected.coordinateSystemVersion;
+}
+
 function gssfSavedEvidenceDataUrl(session, pkg) {
   if (!isGssfAuthorityPackage(pkg)) return null;
   const evidence = session && session.targetEvidenceImage;
-  if (!evidence || evidence.evidenceType !== "uploaded-target-image" || typeof evidence.dataUrl !== "string") return null;
+  if (!evidence || typeof evidence.dataUrl !== "string") return null;
   const dataUrl = evidence.dataUrl.trim();
-  return /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/]+={0,2}$/i.test(dataUrl) ? dataUrl : null;
+  if (evidence.evidenceType === "uploaded-target-image") {
+    return /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/]+={0,2}$/i.test(dataUrl) ? dataUrl : null;
+  }
+  if (!hasGssfCanonicalSavedEvidenceAuthority(pkg)) return null;
+  const expected = gssfCanonicalSavedEvidenceContract();
+  return dataUrl === expected.dataUrl
+    && evidence.assetRole === "scorable_canonical_asset"
+    && evidence.canonicalAssetId === expected.canonicalAssetId
+    && evidence.canonicalAssetSha256 === expected.canonicalAssetSha256
+    && evidence.registrationPackageId === expected.registrationPackageId
+    && evidence.registrationPackageVersion === expected.registrationPackageVersion
+    && evidence.canonicalCoordinateSystemVersion === expected.coordinateSystemVersion
+    && evidence.imageWidthPx === expected.imageWidthPx
+    && evidence.imageHeightPx === expected.imageHeightPx
+    ? dataUrl
+    : null;
 }
 
 function gssfSavedEvidenceHtml(session, pkg) {

@@ -65,7 +65,7 @@ for (const [label, runtime] of runtimes) {
   const valid = validPackage();
   assert.strictEqual(runtime.predicate(valid), true, `${label} accepts a complete backend GSSF package`);
   const rendered = runtime.render(valid);
-  assert(rendered.includes("Shot IDs:"), `${label} renders the authoritative shot-ID field`);
+  assert(rendered.includes("Shots:"), `${label} renders the authoritative shot-ID field in customer language`);
   assert(rendered.includes("11, 15"), `${label} renders backend shot IDs without inventing indexes`);
   assert(rendered.includes("None"), `${label} preserves legitimate empty authoritative buckets`);
 

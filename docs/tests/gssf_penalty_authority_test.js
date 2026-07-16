@@ -99,4 +99,24 @@ for (const [label, runtime, resultFor] of runtimes) {
   assert.strictEqual(positiveResult.officialFinalScoreSeconds, 16.5, `${label} combines manual time with backend positive penalty`);
 }
 
+liveContext.gssfOfficialMatchTimeSeconds = null;
+const liveMissingTimer = liveContext.result(validPackage(4));
+assert.strictEqual(liveMissingTimer.officialMatchTimeSeconds, null, "live preserves missing timer time as unavailable");
+assert.strictEqual(liveMissingTimer.officialFinalScoreSeconds, null, "live does not manufacture Final Time without timer time");
+assert.strictEqual(liveMissingTimer.finalScoreStatus, "unavailable_without_official_time", "live labels missing timer truthfully");
+
+liveContext.gssfOfficialMatchTimeSeconds = 0;
+const liveZeroTimer = liveContext.result(validPackage(4));
+assert.strictEqual(liveZeroTimer.officialMatchTimeSeconds, 0, "live preserves explicit numeric zero timer time");
+assert.strictEqual(liveZeroTimer.officialFinalScoreSeconds, 4, "live calculates Final Time from explicit numeric zero timer time");
+
+const savedMissingTimer = savedContext.result({}, validPackage(4));
+assert.strictEqual(savedMissingTimer.officialMatchTimeSeconds, null, "saved preserves missing timer time as unavailable");
+assert.strictEqual(savedMissingTimer.officialFinalScoreSeconds, null, "saved does not manufacture Final Time without timer time");
+assert.strictEqual(savedMissingTimer.finalScoreStatus, "unavailable_without_official_time", "saved labels missing timer truthfully");
+
+const savedZeroTimer = savedContext.result({ officialMatchTimeSeconds: 0 }, validPackage(4));
+assert.strictEqual(savedZeroTimer.officialMatchTimeSeconds, 0, "saved preserves explicit numeric zero timer time");
+assert.strictEqual(savedZeroTimer.officialFinalScoreSeconds, 4, "saved calculates Final Time from explicit numeric zero timer time");
+
 console.log("PASS GSSF paper-penalty authority test");

@@ -176,11 +176,10 @@ let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target..." : 
 let gssfResultDisplayMode = TARGET_QUERY.get("gssf_display_mode") === "developer" ? "developer" : "shooter";
 let gssfCanonicalValidationTransaction = null;
 const savedGssfOfficialMatchTime = session && (session.officialMatchTimeSeconds ?? session.gssfOfficialMatchTimeSeconds);
-let gssfOfficialMatchTimeSeconds = savedGssfOfficialMatchTime !== null
-  && savedGssfOfficialMatchTime !== undefined
-  && savedGssfOfficialMatchTime !== ""
-  && Number.isFinite(Number(savedGssfOfficialMatchTime))
-  ? Number(savedGssfOfficialMatchTime)
+let gssfOfficialMatchTimeSeconds = typeof savedGssfOfficialMatchTime === "number"
+  && Number.isFinite(savedGssfOfficialMatchTime)
+  && savedGssfOfficialMatchTime >= 0
+  ? savedGssfOfficialMatchTime
   : null;
 let pendingEvidence = null;
 let displayedEvidence = null;
@@ -2170,7 +2169,7 @@ function gssfShooterResultLines(lines) {
 }
 
 function gssfFormatSeconds(value) {
-  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)} sec` : "unavailable";
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(2)} sec` : "unavailable";
 }
 
 function gssfPaperPenaltySeconds(authorityPackage) {
@@ -2178,8 +2177,10 @@ function gssfPaperPenaltySeconds(authorityPackage) {
 }
 
 function gssfOfficialCompetitionResult(authorityPackage) {
-  const officialMatchTimeSeconds = Number.isFinite(Number(gssfOfficialMatchTimeSeconds))
-    ? Number(gssfOfficialMatchTimeSeconds)
+  const officialMatchTimeSeconds = typeof gssfOfficialMatchTimeSeconds === "number"
+    && Number.isFinite(gssfOfficialMatchTimeSeconds)
+    && gssfOfficialMatchTimeSeconds >= 0
+    ? gssfOfficialMatchTimeSeconds
     : null;
   const totalPaperPenaltySeconds = gssfPaperPenaltySeconds(authorityPackage);
   const officialFinalScoreSeconds = officialMatchTimeSeconds === null || totalPaperPenaltySeconds === null
@@ -2199,23 +2200,25 @@ function gssfOfficialCompetitionResult(authorityPackage) {
 
 function gssfOfficialFinalScoreHtml(authorityPackage) {
   const result = gssfOfficialCompetitionResult(authorityPackage);
+  const hasTimerTime = result.officialMatchTimeSeconds !== null;
   const finalText = result.finalScoreStatus === "authority_unavailable"
     ? "Authority unavailable"
     : (result.officialFinalScoreSeconds === null
-      ? "Enter official match time"
+      ? gssfFormatSeconds(result.totalPaperPenaltySeconds)
       : gssfFormatSeconds(result.officialFinalScoreSeconds));
   const inputValue = result.officialMatchTimeSeconds === null ? "" : Number(result.officialMatchTimeSeconds).toFixed(2);
-  const officialTimeText = result.officialMatchTimeSeconds === null ? "Enter official match time" : gssfFormatSeconds(result.officialMatchTimeSeconds);
+  const officialTimeText = hasTimerTime ? gssfFormatSeconds(result.officialMatchTimeSeconds) : "Not entered";
   const paperPenaltyText = result.totalPaperPenaltySeconds === null
     ? "Authority unavailable"
     : `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
   return `
-    <section class="gssf-final-score-panel" aria-label="GSSF final score">
-      <span>Final Score</span>
+    <section class="gssf-final-score-panel" aria-label="GSSF result">
+      <span id="gssfOfficialResultLabel">${hasTimerTime ? "Final Time" : "Paper Penalty"}</span>
       <strong id="gssfOfficialFinalScore">${escapeHtml(finalText)}</strong>
+      <p id="gssfOfficialResultStatus"${hasTimerTime ? " hidden" : ""}>Timer time required for Final Time</p>
       <div class="gssf-final-score-breakdown" aria-label="Score breakdown">
         <div>
-          <span>Match Time</span>
+          <span>Timer Time</span>
           <strong id="gssfOfficialTimeDisplay">${escapeHtml(officialTimeText)}</strong>
         </div>
         <div>
@@ -2223,13 +2226,13 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
           <strong>${escapeHtml(paperPenaltyText)}</strong>
         </div>
       </div>
-      <small>Match time + paper penalty</small>
+      <small>Timer time + paper penalty = Final Time</small>
     </section>
     <label class="gssf-official-time-entry" for="gssfOfficialMatchTime">
-      <span>Match Time</span>
+      <span>Timer Time</span>
       <input id="gssfOfficialMatchTime" type="number" inputmode="decimal" min="0" step="0.01" placeholder="42.31" value="${escapeHtml(inputValue)}" />
       <small>Enter the official timer value from the range.</small>
-      <em id="gssfOfficialTimeSource">Manual entry</em>
+      <em id="gssfOfficialTimeSource">Entered manually</em>
     </label>
   `;
 }
@@ -2237,17 +2240,22 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
 function updateGssfOfficialFinalScoreDisplay(authorityPackage) {
   const finalScore = document.getElementById("gssfOfficialFinalScore");
   const officialTimeDisplay = document.getElementById("gssfOfficialTimeDisplay");
+  const resultLabel = document.getElementById("gssfOfficialResultLabel");
+  const resultStatus = document.getElementById("gssfOfficialResultStatus");
   if (!finalScore) return;
   const result = gssfOfficialCompetitionResult(authorityPackage);
+  const hasTimerTime = result.officialMatchTimeSeconds !== null;
   finalScore.textContent = result.finalScoreStatus === "authority_unavailable"
     ? "Authority unavailable"
     : (result.officialFinalScoreSeconds === null
-      ? "Enter official match time"
+      ? gssfFormatSeconds(result.totalPaperPenaltySeconds)
       : gssfFormatSeconds(result.officialFinalScoreSeconds));
+  if (resultLabel) resultLabel.textContent = hasTimerTime ? "Final Time" : "Paper Penalty";
+  if (resultStatus) resultStatus.hidden = hasTimerTime;
   if (officialTimeDisplay) {
-    officialTimeDisplay.textContent = result.officialMatchTimeSeconds === null
-      ? "Enter official match time"
-      : gssfFormatSeconds(result.officialMatchTimeSeconds);
+    officialTimeDisplay.textContent = hasTimerTime
+      ? gssfFormatSeconds(result.officialMatchTimeSeconds)
+      : "Not entered";
   }
 }
 
@@ -2292,7 +2300,7 @@ function gssfBucketSummaryHtml(authorityPackage) {
         <em>${escapeHtml(`${count} × ${multiplier}`)}</em>
         <b>${escapeHtml(`= ${subtotal} sec`)}</b>
         <span>Hits: ${escapeHtml(count)}</span>
-        <small>Shot IDs: ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small>
+        <small>Shots: <i class="gssf-shot-id-list">${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</i></small>
       </div>
     `;
   }).join("");

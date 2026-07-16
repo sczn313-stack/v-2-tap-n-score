@@ -71,6 +71,8 @@ function savedRuntime() {
     ${extractFunction(recordsSource, "gssfBucketSummaryHtml")}
     ${extractFunction(recordsSource, "optionalNumber")}
     ${extractFunction(recordsSource, "gssfCompetitionRecord")}
+    ${extractFunction(recordsSource, "gssfCanonicalSavedEvidenceContract")}
+    ${extractFunction(recordsSource, "hasGssfCanonicalSavedEvidenceAuthority")}
     ${extractFunction(recordsSource, "gssfSavedEvidenceDataUrl")}
     ${extractFunction(recordsSource, "gssfSavedEvidenceHtml")}
     this.accepts = isGssfAuthorityPackage;
@@ -145,6 +147,13 @@ const zeroPenalty = authoritativePackage(0);
 assertParity("explicit numeric zero penalty", zeroPenalty, true);
 assert.strictEqual(live.result(zeroPenalty).officialFinalScoreSeconds, 12.5, "live preserves explicit zero penalty");
 assert.strictEqual(savedResult(zeroPenalty).officialFinalScoreSeconds, 12.5, "saved preserves explicit zero penalty");
+
+live.gssfOfficialMatchTimeSeconds = null;
+const liveMissingTimer = live.result(valid);
+const savedMissingTimer = saved.result({}, valid);
+assert.strictEqual(liveMissingTimer.finalScoreStatus, "unavailable_without_official_time", "live refuses Final Time without timer time");
+assert.strictEqual(savedMissingTimer.finalScoreStatus, "unavailable_without_official_time", "saved refuses Final Time without timer time");
+assert.strictEqual(liveMissingTimer.officialFinalScoreSeconds, savedMissingTimer.officialFinalScoreSeconds, "live/saved missing-timer parity");
 
 const missingEvidenceHtml = saved.renderEvidence({}, valid);
 assert(missingEvidenceHtml.includes("GSSF evidence unavailable"), "saved missing evidence is explicitly unavailable");

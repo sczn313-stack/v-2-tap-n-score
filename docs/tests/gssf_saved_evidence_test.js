@@ -34,6 +34,24 @@ function validPackage() {
   };
 }
 
+function canonicalPackage() {
+  return {
+    ...validPackage(),
+    targetProfileVersion: "1",
+    canonicalAssetScoring: "accepted",
+    authorityTrace: {
+      targetProfileId: "gssf_ac_1",
+      targetProfileVersion: "1",
+      registrationPackageId: "gssf-ac-1-clean-png-registration-v1",
+      registrationPackageVersion: "1",
+      targetExecutionContractId: "gssf-ac-1-live-canonical-v1",
+      canonicalAssetId: "gssf_ac_1_clean_reference_png_v1",
+      canonicalAssetSha256: "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+      coordinateSystemVersion: "gssf-ac-1-canonical-coordinate-system-v1"
+    }
+  };
+}
+
 const recordsSource = fs.readFileSync(path.join(__dirname, "..", "records.html"), "utf8");
 const context = { Number, Set };
 vm.createContext(context);
@@ -41,6 +59,8 @@ vm.runInContext(`
   function escapeHtml(value) { return String(value ?? ""); }
   function authorityVisual() { return "governed-overlay"; }
   ${extractFunction(recordsSource, "isGssfAuthorityPackage")}
+  ${extractFunction(recordsSource, "gssfCanonicalSavedEvidenceContract")}
+  ${extractFunction(recordsSource, "hasGssfCanonicalSavedEvidenceAuthority")}
   ${extractFunction(recordsSource, "gssfSavedEvidenceDataUrl")}
   ${extractFunction(recordsSource, "gssfSavedEvidenceHtml")}
   this.select = gssfSavedEvidenceDataUrl;
@@ -59,6 +79,43 @@ assert.strictEqual(context.select(validSession, pkg), validDataUrl, "valid gover
 const validHtml = context.render(validSession, pkg);
 assert(validHtml.includes(`<img src="${validDataUrl}"`), "valid GSSF evidence renders its saved image only");
 assert(validHtml.includes("governed-overlay"), "valid GSSF evidence retains the authoritative overlay");
+
+const canonicalSession = {
+  targetEvidenceImage: {
+    dataUrl: "assets/gssf_ac_1_clean_reference.png",
+    assetRole: "scorable_canonical_asset",
+    canonicalAssetId: "gssf_ac_1_clean_reference_png_v1",
+    canonicalAssetSha256: "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+    registrationPackageId: "gssf-ac-1-clean-png-registration-v1",
+    registrationPackageVersion: "1",
+    canonicalCoordinateSystemVersion: "gssf-ac-1-canonical-coordinate-system-v1",
+    imageWidthPx: 1125,
+    imageHeightPx: 1373
+  }
+};
+assert.strictEqual(
+  context.select(canonicalSession, canonicalPackage()),
+  "assets/gssf_ac_1_clean_reference.png",
+  "the exact governed canonical GSSF asset is selected"
+);
+assert(
+  context.render(canonicalSession, canonicalPackage()).includes("assets/gssf_ac_1_clean_reference.png"),
+  "the governed canonical target image renders in the saved SEC"
+);
+
+for (const [label, mutateSession, mutatePackage] of [
+  ["canonical asset hash mismatch", session => { session.targetEvidenceImage.canonicalAssetSha256 = "wrong"; }],
+  ["canonical registration mismatch", session => { session.targetEvidenceImage.registrationPackageId = "wrong"; }],
+  ["canonical dimensions mismatch", session => { session.targetEvidenceImage.imageWidthPx = 1; }],
+  ["canonical coordinate mismatch", session => { session.targetEvidenceImage.canonicalCoordinateSystemVersion = "wrong"; }],
+  ["authority trace mismatch", () => {}, pkgValue => { pkgValue.authorityTrace.targetExecutionContractId = "wrong"; }]
+]) {
+  const sessionValue = JSON.parse(JSON.stringify(canonicalSession));
+  const packageValue = JSON.parse(JSON.stringify(canonicalPackage()));
+  mutateSession(sessionValue);
+  if (mutatePackage) mutatePackage(packageValue);
+  assert.strictEqual(context.select(sessionValue, packageValue), null, `${label} refuses canonical evidence`);
+}
 
 for (const [label, session] of [
   ["missing", {}],
