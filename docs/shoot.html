@@ -62,6 +62,7 @@
     </div>
   </section>
 </main>
+<script src="presentation_labels.js"></script>
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
@@ -305,8 +306,8 @@ function authoritativeTargetName(value) {
   return name;
 }
 
-function displayTargetName(value) {
-  return authoritativeTargetName(value) || "Not Known";
+function displayTargetName(value, targetProfileId = "") {
+  return SCZN3Presentation.targetLabel(targetProfileId, authoritativeTargetName(value) || "Not Known");
 }
 
 function activeTargetIdentity() {
@@ -361,7 +362,7 @@ function renderTargetHeaderIdentity() {
   const header = document.getElementById("targetHeaderIdentity");
   if (!header) return;
   const identity = activeTargetIdentity();
-  header.textContent = `Target: ${displayTargetName(identity.targetName)}`;
+  header.textContent = `Target: ${displayTargetName(identity.targetName, identity.targetProfileId)}`;
   header.title = [
     identity.targetProfileId ? `Target Profile: ${identity.targetProfileId}` : "",
     identity.missionFamily ? `Type: ${identity.missionFamily}` : "",
@@ -443,7 +444,7 @@ function trainingMissionStatus(authorityPackage) {
 
 function missionWorkspaceDescriptor() {
   const identity = activeTargetIdentity();
-  const targetName = displayTargetName(identity.targetName);
+  const targetName = displayTargetName(identity.targetName, identity.targetProfileId);
   if (isMissionResolving()) {
     return {
       eyebrow: "Target",
@@ -484,7 +485,7 @@ function missionWorkspaceDescriptor() {
   }
   if (isGssfAuthoritySession()) {
     return {
-      eyebrow: "GSSF",
+      eyebrow: "Competition",
       title: targetName,
       meta: gssfMissionProgress(),
       status: gssfMissionStatus(),
@@ -1347,16 +1348,16 @@ function targetIntelStackHtml() {
     if (!resultsShown || !isGssfAuthorityPackage(authorityPackage) || !isAuthorityPackageCalculated(authorityPackage)) {
       return authorityStatusMessage
         ? `
-          <div class="authority-results-panel gssf-results-panel" aria-label="GSSF authority unavailable" role="status">
+          <div class="authority-results-panel gssf-results-panel" aria-label="Competition paper target result unavailable" role="status">
             <div class="authority-status-message"><strong>${escapeHtml(authorityStatusMessage)}</strong></div>
           </div>
         `
         : "";
     }
     return `
-      <div class="authority-results-panel gssf-results-panel" aria-label="GSSF results">
+      <div class="authority-results-panel gssf-results-panel" aria-label="Competition paper target results">
         <div class="gssf-authority-result" id="gssfAuthorityResult">
-          <div>GSSF AC-1</div>
+          <div>${escapeHtml(SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1"))}</div>
           <div>Down Zero:</div>
           <div>+1:</div>
           <div>+3:</div>
@@ -2212,7 +2213,7 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
     ? "Authority unavailable"
     : `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
   return `
-    <section class="gssf-final-score-panel" aria-label="GSSF result">
+    <section class="gssf-final-score-panel" aria-label="Competition paper target result">
       <span id="gssfOfficialResultLabel">${hasTimerTime ? "Final Time" : "Paper Penalty"}</span>
       <strong id="gssfOfficialFinalScore">${escapeHtml(finalText)}</strong>
       <p id="gssfOfficialResultStatus"${hasTimerTime ? " hidden" : ""}>Timer time required for Final Time</p>
@@ -2304,7 +2305,7 @@ function gssfBucketSummaryHtml(authorityPackage) {
       </div>
     `;
   }).join("");
-  return `<div class="gssf-bucket-grid" aria-label="GSSF scoring buckets">${cards}</div>`;
+  return `<div class="gssf-bucket-grid" aria-label="Competition paper target scoring buckets">${cards}</div>`;
 }
 
 function setGssfResultDisplayMode(mode) {

@@ -156,7 +156,7 @@ assert.strictEqual(savedMissingTimer.finalScoreStatus, "unavailable_without_offi
 assert.strictEqual(liveMissingTimer.officialFinalScoreSeconds, savedMissingTimer.officialFinalScoreSeconds, "live/saved missing-timer parity");
 
 const missingEvidenceHtml = saved.renderEvidence({}, valid);
-assert(missingEvidenceHtml.includes("GSSF evidence unavailable"), "saved missing evidence is explicitly unavailable");
+assert(missingEvidenceHtml.includes("Target image unavailable"), "saved missing evidence is explicitly unavailable without public branding");
 assert(!missingEvidenceHtml.includes("<img"), "saved missing evidence has no substitute image");
 const governedEvidenceHtml = saved.renderEvidence({
   targetEvidenceImage: { evidenceType: "uploaded-target-image", dataUrl: "data:image/png;base64,AAAA" }

@@ -40,7 +40,7 @@
         <button class="button" type="button" id="newSetup">New Weapon Setup</button>
         <button class="button" type="submit">Go To Target</button>
       </div>
-      <div class="target-mode-pill is-hidden" id="targetModePill">Target Mode: GSSF AC-1</div>
+      <div class="target-mode-pill is-hidden" id="targetModePill"></div>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
         <h2 class="weapon-library-title">MY WEAPON LIBRARY</h2>
@@ -181,6 +181,7 @@
     </form>
   </section>
 </main>
+<script src="presentation_labels.js"></script>
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
@@ -1464,7 +1465,8 @@ function renderTargetModePill() {
   const attribution = targetAttributionFromContext(collectFormSnapshot());
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
   const isDotTorture = attribution.target_profile_id === "dot_torture_ez2c_style_17";
-  pill.textContent = isDotTorture ? "Target Mode: Dot Torture" : "Target Mode: GSSF AC-1";
+  const gssfLabel = SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1");
+  pill.textContent = isDotTorture ? "Target Mode: Dot Torture" : `Target Mode: ${gssfLabel}`;
   pill.classList.toggle("is-hidden", !(isGssf || isDotTorture));
 }
 

@@ -37,6 +37,7 @@
     </div>
   </section>
 </main>
+<script src="presentation_labels.js"></script>
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
@@ -223,7 +224,7 @@ function gssfBucketSummaryHtml(pkg) {
   return `
     <div class="sec-gssf-rail-shell">
       <button class="sec-gssf-rail-arrow is-previous" type="button" aria-label="Previous scoring zone">‹</button>
-      <div class="sec-gssf-bucket-grid" aria-label="GSSF SEC backend classification buckets">
+      <div class="sec-gssf-bucket-grid" aria-label="Competition paper target scoring buckets">
         ${buckets.map(bucket => {
         const count = Number(bucket.source.count);
         const multiplier = Number(bucket.source.penaltySecondsPerHit);
@@ -541,6 +542,7 @@ function renderGssfSecCard(session, index, pkg) {
   const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "--";
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
   const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
+  const missionDisplayName = SCZN3Presentation.targetLabel("gssf_ac_1", missionLine.replace(/^Mission:\s*/i, ""));
   const competition = gssfCompetitionRecord(session, pkg);
   const hasTimerTime = competition.officialMatchTimeSeconds !== null;
   const paperPenalty = gssfFormatSeconds(competition.totalPaperPenaltySeconds);
@@ -553,7 +555,7 @@ function renderGssfSecCard(session, index, pkg) {
     <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}">
       <div class="history-copy">
         <section class="sec-gssf-story-section sec-gssf-story-result" aria-label="Result">
-          <small>${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</small>
+          <small>${escapeHtml(missionDisplayName)}</small>
           <span>${resultLabel}</span>
           <strong>${escapeHtml(resultValue)}</strong>
           ${hasTimerTime ? "" : "<p>Timer time required for Final Time</p>"}
@@ -592,7 +594,7 @@ function renderGssfSecCard(session, index, pkg) {
         <section class="sec-gssf-story-section sec-gssf-story-session" aria-labelledby="gssf-session-${index}">
           <h3 id="gssf-session-${index}">Session</h3>
           <div class="sec-gssf-session-summary">
-            <div><span>Course</span><strong>${escapeHtml(missionLine.replace(/^Mission:\s*/i, ""))}</strong></div>
+            <div><span>Course</span><strong>${escapeHtml(missionDisplayName)}</strong></div>
             <div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div>
             <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
             ${weaponMeta ? `<div><span>Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
@@ -671,14 +673,14 @@ function gssfSavedEvidenceHtml(session, pkg) {
   const dataUrl = gssfSavedEvidenceDataUrl(session, pkg);
   if (!dataUrl) {
     return `
-      <div class="history-thumb gssf-sec-thumb is-unavailable" role="status" aria-label="GSSF evidence unavailable">
+      <div class="history-thumb gssf-sec-thumb is-unavailable" role="status" aria-label="Target image unavailable">
         <div class="sec-authority-missing">Target image unavailable</div>
       </div>
     `;
   }
   return `
     <div class="history-thumb gssf-sec-thumb has-evidence">
-      <img src="${escapeHtml(dataUrl)}" alt="Saved scored GSSF target evidence" />
+      <img src="${escapeHtml(dataUrl)}" alt="Saved scored competition paper target evidence" />
       <div class="history-evidence-layer">${authorityVisual(session)}</div>
     </div>
   `;
@@ -688,8 +690,8 @@ function renderInvalidGssfSecCard(session) {
   return `
     <article class="history-card gssf-sec-card no-thumb" data-session-id="${escapeHtml(session.sessionId || "")}">
       <div class="history-copy">
-        <div class="sec-gssf-mission">GSSF AC-1</div>
-        <div class="sec-authority-missing" role="status">GSSF result unavailable: authoritative backend package is incomplete or invalid.</div>
+        <div class="sec-gssf-mission">${escapeHtml(SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1"))}</div>
+        <div class="sec-authority-missing" role="status">Result unavailable: authoritative backend package is incomplete or invalid.</div>
       </div>
     </article>
   `;

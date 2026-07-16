@@ -127,7 +127,7 @@ for (const [label, session] of [
 ]) {
   assert.strictEqual(context.select(session, pkg), null, `${label} GSSF evidence is rejected`);
   const html = context.render(session, pkg);
-  assert(html.includes("GSSF evidence unavailable"), `${label} GSSF evidence renders an explicit unavailable state`);
+  assert(html.includes("Target image unavailable"), `${label} GSSF evidence renders an explicit unavailable state without public branding`);
   assert(!html.includes("<img"), `${label} GSSF evidence does not render a substitute image`);
   assert(!html.includes("BAKER_ST_100YD_SMART"), `${label} GSSF evidence never selects the Baker fallback`);
 }
