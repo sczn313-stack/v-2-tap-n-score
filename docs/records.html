@@ -42,6 +42,7 @@
 <script src="presentation_labels.js"></script>
 <script src="app_state.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
+<script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
 const historyList = document.getElementById("historyList");
 
@@ -947,20 +948,6 @@ function buildGssfSecExportPages(card) {
   return [pageOne, pageTwo];
 }
 
-function imageDataUrl(image) {
-  if (!image || !image.complete || !image.naturalWidth || !image.naturalHeight) return null;
-  const canvas = document.createElement("canvas");
-  canvas.width = image.naturalWidth;
-  canvas.height = image.naturalHeight;
-  const context = canvas.getContext("2d");
-  context.drawImage(image, 0, 0);
-  try {
-    return canvas.toDataURL("image/png");
-  } catch (error) {
-    return null;
-  }
-}
-
 async function prepareGssfExportPage(page) {
   const images = Array.from(page.querySelectorAll("img"));
   await Promise.all(images.map(image => image.complete
@@ -969,10 +956,6 @@ async function prepareGssfExportPage(page) {
       image.addEventListener("load", resolve, { once: true });
       image.addEventListener("error", resolve, { once: true });
     })));
-  images.forEach(image => {
-    const dataUrl = imageDataUrl(image);
-    if (dataUrl) image.src = dataUrl;
-  });
   page.querySelectorAll(".history-thumb").forEach(frame => {
     const image = frame.querySelector("img");
     const layer = frame.querySelector(".history-evidence-layer");
@@ -996,39 +979,28 @@ function collectedStyles() {
 async function captureSecNode(target, fileName, fixedWidth = null) {
   const width = fixedWidth || Math.ceil(target.scrollWidth);
   const height = Math.ceil(target.scrollHeight);
-  const styles = collectedStyles();
-  const clone = target.cloneNode(true);
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-      <foreignObject width="100%" height="100%">
-        <div xmlns="http://www.w3.org/1999/xhtml" class="records-page gssf-sec-export-canvas">
-          <style>${styles}</style>
-          ${clone.outerHTML}
-        </div>
-      </foreignObject>
-    </svg>`;
-  const image = new Image();
-  await new Promise((resolve, reject) => {
-    image.onload = resolve;
-    image.onerror = reject;
-    image.src = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+  if (typeof window.html2canvas !== "function") throw new Error("SEC image capture is unavailable.");
+  const canvas = await window.html2canvas(target, {
+    backgroundColor: "#070707",
+    scale: 2,
+    useCORS: true,
+    allowTaint: false,
+    logging: false,
+    width,
+    height,
+    windowWidth: width,
+    windowHeight: height,
+    scrollX: 0,
+    scrollY: 0
   });
-  const scale = 2;
-  const canvas = document.createElement("canvas");
-  canvas.width = width * scale;
-  canvas.height = height * scale;
-  const context = canvas.getContext("2d");
-  context.scale(scale, scale);
-  context.fillStyle = "#070707";
-  context.fillRect(0, 0, width, height);
-  context.drawImage(image, 0, 0, width, height);
-  URL.revokeObjectURL(image.src);
   const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+  if (!blob) throw new Error(`SEC image capture failed for ${fileName}.`);
   const link = document.createElement("a");
   link.download = fileName;
   link.href = URL.createObjectURL(blob);
   link.click();
   setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  return fileName;
 }
 
 async function saveGssfSecTwoPageImages(card) {
@@ -1041,8 +1013,10 @@ async function saveGssfSecTwoPageImages(card) {
   try {
     for (const page of pages) await prepareGssfExportPage(page);
     const stamp = new Date().toISOString().slice(0, 10);
-    await captureSecNode(pages[0], `SEC-${stamp}-01-results.png`, GSSF_SEC_EXPORT_WIDTH);
-    await captureSecNode(pages[1], `SEC-${stamp}-02-evidence.png`, GSSF_SEC_EXPORT_WIDTH);
+    const files = [];
+    files.push(await captureSecNode(pages[0], `SEC-${stamp}-01-results.png`, GSSF_SEC_EXPORT_WIDTH));
+    files.push(await captureSecNode(pages[1], `SEC-${stamp}-02-evidence.png`, GSSF_SEC_EXPORT_WIDTH));
+    return files;
   } finally {
     stage.remove();
   }
@@ -1051,7 +1025,16 @@ async function saveGssfSecTwoPageImages(card) {
 async function saveSecPageImage() {
   const gssfCard = document.querySelector('.gssf-sec-card[data-gssf-export-ready="true"]');
   if (gssfCard) {
-    await saveGssfSecTwoPageImages(gssfCard);
+    document.body.dataset.gssfExportStatus = "capturing";
+    document.body.dataset.gssfExportImageCount = "0";
+    try {
+      const files = await saveGssfSecTwoPageImages(gssfCard);
+      document.body.dataset.gssfExportImageCount = String(files.length);
+      document.body.dataset.gssfExportStatus = files.length === 2 ? "complete" : "failed";
+    } catch (error) {
+      document.body.dataset.gssfExportStatus = "failed";
+      throw error;
+    }
     return;
   }
   const target = document.querySelector(".history-panel");

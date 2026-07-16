@@ -6,9 +6,13 @@ const records = fs.readFileSync(path.join(__dirname, "..", "records.html"), "utf
 const styles = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
 
 const buildStart = records.indexOf("function buildGssfSecExportPages(");
-const buildEnd = records.indexOf("\nfunction imageDataUrl", buildStart);
+const buildEnd = records.indexOf("\nasync function prepareGssfExportPage", buildStart);
 assert(buildStart >= 0 && buildEnd > buildStart, "two-page GSSF export builder must exist");
 const builder = records.slice(buildStart, buildEnd);
+const captureStart = records.indexOf("async function captureSecNode(");
+const captureEnd = records.indexOf("\nasync function saveGssfSecTwoPageImages", captureStart);
+assert(captureStart >= 0 && captureEnd > captureStart, "GSSF SEC capture function must be extractable");
+const capture = records.slice(captureStart, captureEnd);
 
 for (const selector of [
   ".sec-gssf-story-result",
@@ -38,6 +42,14 @@ assert(records.includes('clone.querySelectorAll("button, .sec-gssf-rail-dots")')
 assert(records.includes("prepareGssfExportPage(page)"), "governed evidence must be prepared from the rendered page before capture");
 assert(records.includes("SEC-${stamp}-01-results.png") && records.includes("SEC-${stamp}-02-evidence.png"), "save produces two clearly named images");
 assert(records.includes("if (pages.length !== 2)"), "export must refuse anything other than exactly two pages");
+assert(records.includes('document.body.dataset.gssfExportStatus = "capturing"'), "export must expose a reviewable capture state");
+assert(records.includes('document.body.dataset.gssfExportImageCount = String(files.length)'), "export must expose the exact completed image count");
+assert(records.includes('files.length === 2 ? "complete" : "failed"'), "export only completes when exactly two images were captured");
+assert(records.includes('<script src="vendor/html2canvas-1.4.1.min.js"></script>'), "the pinned local capture renderer must load before export");
+assert(capture.includes('typeof window.html2canvas !== "function"'), "export must refuse when the local capture renderer is unavailable");
+assert(capture.includes("window.html2canvas(target"), "export must capture the rendered authoritative SEC DOM");
+assert(capture.includes("useCORS: true") && capture.includes("allowTaint: false"), "export capture must remain origin-clean");
+assert(!capture.includes("foreignObject"), "GSSF export must not use the canvas-tainting foreignObject path");
 
 assert(/\.target-marker\s*\{[^}]*white-space:nowrap/s.test(styles), "live two-digit shot IDs must not wrap");
 assert(/\.history-thumb-impact\s*\{[^}]*white-space:nowrap/s.test(styles), "saved two-digit shot IDs must not wrap");
