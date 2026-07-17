@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
-from product_catalog import resolve_product_route
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from product_catalog import PUBLISHER_RECORDS, PRODUCT_RECORDS, TARGET_CATALOG_ENTRIES, resolve_product_route
 
 ALLOWED_EVENT_TYPES = {
     "arrival",
@@ -25,6 +26,8 @@ SUMMARY_KEYS = {
     "showResults": "showResults",
     "sessionSaved": "sessionsSaved",
 }
+
+TIME_WINDOWS = {"today", "week", "month", "year", "all"}
 
 
 def database_url(explicit_url=None):
@@ -159,6 +162,74 @@ def record_event(payload, *, database_url_override=None, connect_fn=None):
         return {"ok": False, "status": "storage_error", "error": str(exc)}
 
 
+def governed_product_options():
+    options = [{"id": "all", "label": "All Products"}]
+    for (publisher_id, product_id), entry in TARGET_CATALOG_ENTRIES.items():
+        if entry.get("lifecycleStatus") != "active" or entry.get("availabilityStatus") != "available":
+            continue
+        publisher = PUBLISHER_RECORDS.get(publisher_id, {})
+        product = PRODUCT_RECORDS.get((publisher_id, product_id), {})
+        options.append({
+            "id": entry["catalogEntryId"],
+            "label": f"{publisher.get('displayName', publisher_id)} / {product.get('displayName', product_id)}",
+        })
+    return options
+
+
+def resolve_summary_filters(time_window="all", product_filter="all", timezone_name="UTC", now=None):
+    window = clean_text(time_window, "all").lower()
+    if window not in TIME_WINDOWS:
+        return None, "invalid time window"
+    product = clean_text(product_filter, "all")
+    allowed_products = {option["id"] for option in governed_product_options()}
+    if product not in allowed_products:
+        return None, "unknown or unavailable product filter"
+    try:
+        zone = ZoneInfo(clean_text(timezone_name, "UTC"))
+    except ZoneInfoNotFoundError:
+        return None, "invalid time zone"
+
+    current_utc = now.astimezone(timezone.utc) if now else datetime.now(timezone.utc)
+    local_now = current_utc.astimezone(zone)
+    start_local = None
+    if window == "today":
+        start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif window == "week":
+        start_local = (local_now - timedelta(days=local_now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
+    elif window == "month":
+        start_local = local_now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    elif window == "year":
+        start_local = local_now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    return {
+        "timeWindow": window,
+        "product": product,
+        "timeZone": zone.key,
+        "startAt": start_local.astimezone(timezone.utc) if start_local else None,
+        "endAt": current_utc,
+    }, None
+
+
+def conversion_percent(numerator, denominator):
+    if (
+        not isinstance(numerator, int)
+        or not isinstance(denominator, int)
+        or denominator <= 0
+        or numerator > denominator
+    ):
+        return None
+    return round((numerator / denominator) * 100, 1)
+
+
+def public_filter_context(filters):
+    return {
+        **filters,
+        "startAt": filters["startAt"].isoformat() if filters["startAt"] else None,
+        "endAt": filters["endAt"].isoformat(),
+        "productOptions": governed_product_options(),
+    }
+
+
 def empty_summary(status="ok"):
     return {
         "ok": status == "ok",
@@ -169,7 +240,18 @@ def empty_summary(status="ok"):
             "sessionStarts": 0,
             "showResults": 0,
             "sessionsSaved": 0,
-            "returnShooters": 0,
+            "returnShooters": None,
+        },
+        "conversionPercentages": {
+            "arrivalToSessionStart": None,
+            "sessionStartToResult": None,
+            "resultToSave": None,
+        },
+        "operationalFailures": [],
+        "productActivity": {},
+        "unavailableTelemetry": {
+            "returningVisitors": True,
+            "unattributedArrivals": None,
         },
         "sources": {
             "referrals": {},
@@ -183,38 +265,95 @@ def rows_to_bucket(rows):
     return {str(label or "Unknown"): int(count or 0) for label, count in rows}
 
 
-def summarize_events(*, database_url_override=None, connect_fn=None):
+def summarize_events(
+    *,
+    time_window="all",
+    product_filter="all",
+    timezone_name="UTC",
+    now=None,
+    database_url_override=None,
+    connect_fn=None,
+):
+    filters, filter_error = resolve_summary_filters(time_window, product_filter, timezone_name, now)
+    if filter_error:
+        summary = empty_summary("invalid_filter")
+        summary["reason"] = filter_error
+        return summary
     url = database_url(database_url_override)
     if not url:
         summary = empty_summary("unavailable")
         summary["reason"] = "DATABASE_URL not configured"
+        summary["filters"] = public_filter_context(filters)
         return summary
 
     connector = connect_fn or connect_postgres
     try:
         summary = empty_summary()
+        summary["filters"] = public_filter_context(filters)
+        clauses = ["occurred_at < %(end_at)s"]
+        params = {"end_at": filters["endAt"]}
+        if filters["startAt"]:
+            clauses.append("occurred_at >= %(start_at)s")
+            params["start_at"] = filters["startAt"]
+        if filters["product"] != "all":
+            clauses.append("target_source = %(product)s")
+            params["product"] = filters["product"]
+        where_sql = " where " + " and ".join(clauses)
+        arrival_where_sql = " where event_type = 'arrival' and " + " and ".join(clauses)
         with connector(url) as connection:
             with connection.cursor() as cursor:
-                cursor.execute("select event_type, count(*) from ops_events group by event_type")
+                cursor.execute(f"select event_type, count(*) from ops_events{where_sql} group by event_type", params)
                 for event_type, count in cursor.fetchall():
                     key = SUMMARY_KEYS.get(event_type)
                     if key:
                         summary["totals"][key] = int(count or 0)
 
                 cursor.execute(
-                    "select referral_source, count(*) from ops_events where event_type = 'arrival' group by referral_source"
+                    f"select referral_source, count(*) from ops_events{arrival_where_sql} group by referral_source",
+                    params,
                 )
                 summary["sources"]["referrals"] = rows_to_bucket(cursor.fetchall())
 
                 cursor.execute(
-                    "select target_source, count(*) from ops_events where event_type = 'arrival' group by target_source"
+                    f"select target_source, count(*) from ops_events{arrival_where_sql} group by target_source",
+                    params,
                 )
                 summary["sources"]["targets"] = rows_to_bucket(cursor.fetchall())
 
                 cursor.execute(
-                    "select region, count(*) from ops_events where event_type = 'arrival' group by region"
+                    f"select region, count(*) from ops_events{arrival_where_sql} group by region",
+                    params,
                 )
                 summary["sources"]["regions"] = rows_to_bucket(cursor.fetchall())
+
+        totals = summary["totals"]
+        governed_product_ids = {option["id"] for option in governed_product_options() if option["id"] != "all"}
+        summary["productActivity"] = {
+            product_id: count
+            for product_id, count in summary["sources"]["targets"].items()
+            if product_id in governed_product_ids
+        }
+        summary["unavailableTelemetry"] = {
+            "returningVisitors": True,
+            "unattributedArrivals": sum(
+                count
+                for product_id, count in summary["sources"]["targets"].items()
+                if product_id not in governed_product_ids
+            ),
+        }
+        failures = []
+        if totals["sessionStarts"] > totals["arrivals"]:
+            failures.append("session_starts_exceed_arrivals")
+        if totals["showResults"] > totals["sessionStarts"]:
+            failures.append("results_exceed_session_starts")
+        if totals["sessionsSaved"] > totals["showResults"]:
+            failures.append("saves_exceed_results")
+        summary["operationalFailures"] = failures
+        summary["conversionPercentages"] = {
+            "arrivalToSessionStart": conversion_percent(totals["sessionStarts"], totals["arrivals"]),
+            "sessionStartToResult": conversion_percent(totals["showResults"], totals["sessionStarts"]),
+            "resultToSave": conversion_percent(totals["sessionsSaved"], totals["showResults"]),
+        }
 
         return summary
     except Exception as exc:  # pragma: no cover - defensive backend boundary

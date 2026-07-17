@@ -85,7 +85,13 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self._send_json(403, founder_access_unavailable())
             return
         if path in self.OPS_SUMMARY_PATHS:
-            self._send_json(200, summarize_events())
+            query = parse_qs(urlparse(self.path).query)
+            summary = summarize_events(
+                time_window=query.get("window", ["all"])[0],
+                product_filter=query.get("product", ["all"])[0],
+                timezone_name=query.get("timeZone", ["UTC"])[0],
+            )
+            self._send_json(200 if summary.get("ok") is True else 400, summary)
             return
         if path in self.PRODUCT_ROUTE_PATHS:
             query = parse_qs(urlparse(self.path).query)

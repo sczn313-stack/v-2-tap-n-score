@@ -289,6 +289,34 @@
     line-height: 1.45;
   }
 
+  .ops-filters {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 16px;
+    border: 1px solid var(--ops-gold-soft);
+    border-radius: 16px;
+    background: rgba(217, 154, 25, 0.08);
+    padding: 16px;
+    font-family: Arial, sans-serif;
+  }
+
+  .ops-filter-group { display: grid; gap: 8px; }
+  .ops-filter-group label,
+  .ops-filter-label { color: var(--ops-muted); font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+  .ops-product-select { min-height: 44px; border: 1px solid var(--ops-gold-soft); border-radius: 10px; color: var(--ops-ink); background: #11100c; padding: 0 12px; font: 800 15px Arial,sans-serif; }
+  .ops-window-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .ops-window-row button { min-height: 42px; border: 1px solid rgba(248,241,223,.14); border-radius: 9px; color: var(--ops-muted); background: rgba(0,0,0,.3); font: 900 11px Arial,sans-serif; }
+  .ops-window-row button[aria-pressed="true"] { border-color: var(--ops-gold); color: #080706; background: var(--ops-gold); }
+  .ops-filter-context { margin: 0; color: var(--ops-muted); font-size: 12px; line-height: 1.4; }
+  .ops-failure-note { margin: 0 0 16px; border: 1px solid rgba(229,87,68,.45); border-radius: 12px; color: #ffd4cc; background: rgba(229,87,68,.1); padding: 12px 14px; font: 800 13px/1.4 Arial,sans-serif; }
+  .ops-conversion-grid { display: grid; gap: 10px; }
+  .ops-conversion-card { display: grid; gap: 5px; border: 1px solid rgba(248,241,223,.12); border-radius: 12px; padding: 14px; background: rgba(255,255,255,.035); }
+  .ops-conversion-card span { color: var(--ops-muted); font: 800 12px Arial,sans-serif; }
+  .ops-conversion-card strong { color: var(--ops-gold); font-size: 34px; font-variant-numeric: tabular-nums; }
+  .ops-diagnostics { margin-top: 16px; border: 1px solid rgba(248,241,223,.12); border-radius: 14px; background: rgba(255,255,255,.025); }
+  .ops-diagnostics summary { cursor: pointer; padding: 16px; color: var(--ops-muted); font: 900 12px Arial,sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+  .ops-diagnostics-grid { display: grid; gap: 14px; padding: 0 16px 16px; }
+
   @media (min-width: 720px) {
     .ops-header {
       grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
@@ -296,7 +324,7 @@
     }
 
     .ops-flow {
-      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       align-items: stretch;
     }
 
@@ -311,6 +339,17 @@
     .ops-section-wide {
       grid-column: span 2;
     }
+
+    .ops-filters { grid-template-columns: minmax(220px,.7fr) minmax(0,1.3fr); align-items: end; }
+    .ops-filter-context { grid-column: 1 / -1; }
+    .ops-conversion-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .ops-diagnostics-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  }
+
+  @media (max-width: 560px) {
+    .ops-window-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .ops-flow { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .ops-flow-step:last-child { grid-column: 1 / -1; }
   }
 </style>
 </head>
@@ -319,72 +358,100 @@
   <header class="ops-header">
     <div>
       <h1 class="ops-title">SCZN3 Operations</h1>
-      <p class="ops-subtitle">Production telemetry active.</p>
+      <p class="ops-subtitle">Founder operational intelligence.</p>
     </div>
     <aside class="ops-status-card" aria-label="System status">
       <div class="ops-status-line">
         <span class="ops-status-label">System Status</span>
-        <strong class="ops-live-pill"><span class="ops-live-dot"></span><span id="opsSystemStatus">Live</span></strong>
+        <strong class="ops-live-pill"><span class="ops-live-dot"></span><span id="opsSystemStatus">Loading</span></strong>
       </div>
       <div class="ops-status-grid">
-        <div>Database: <strong id="opsDatabaseStatus">Supabase Connected</strong></div>
+        <div>Database: <strong id="opsDatabaseStatus">Checking…</strong></div>
+        <div>Telemetry: <strong id="opsTelemetryStatus">Checking…</strong></div>
         <div>Last updated: <strong id="opsLastUpdated">Loading...</strong></div>
       </div>
     </aside>
   </header>
 
-  <section class="ops-flow" aria-label="Engagement Flow">
+  <section class="ops-filters" aria-label="Operations filters">
+    <div class="ops-filter-group">
+      <label for="opsProductFilter">Product</label>
+      <select class="ops-product-select" id="opsProductFilter">
+        <option value="all">All Products</option>
+      </select>
+    </div>
+    <div class="ops-filter-group">
+      <span class="ops-filter-label">Time</span>
+      <div class="ops-window-row" id="opsWindowFilter" role="group" aria-label="Operations time window">
+        <button type="button" data-window="today" aria-pressed="false">Today</button>
+        <button type="button" data-window="week" aria-pressed="false">This Week</button>
+        <button type="button" data-window="month" aria-pressed="false">This Month</button>
+        <button type="button" data-window="year" aria-pressed="false">This Year</button>
+        <button type="button" data-window="all" aria-pressed="true">All Time</button>
+      </div>
+    </div>
+    <p class="ops-filter-context" id="opsFilterContext">Loading governed interval…</p>
+  </section>
+  <p class="ops-failure-note" id="opsFailureNotice" hidden></p>
+
+  <section class="ops-flow" aria-label="Founder intelligence">
     <article class="ops-flow-step">
       <span class="ops-flow-name">Arrivals</span>
-      <strong class="ops-flow-value" id="opsArrivals">0</strong>
+      <strong class="ops-flow-value" id="opsArrivals">Unavailable</strong>
     </article>
-    <span class="ops-arrow">→</span>
     <article class="ops-flow-step">
       <span class="ops-flow-name">Session Starts</span>
-      <strong class="ops-flow-value" id="opsSessionsStarted">0</strong>
+      <strong class="ops-flow-value" id="opsSessionsStarted">Unavailable</strong>
     </article>
-    <span class="ops-arrow">→</span>
     <article class="ops-flow-step">
-      <span class="ops-flow-name">Show Results</span>
-      <strong class="ops-flow-value" id="opsShowResults">0</strong>
+      <span class="ops-flow-name">Results Produced</span>
+      <strong class="ops-flow-value" id="opsShowResults">Unavailable</strong>
     </article>
-    <span class="ops-arrow">→</span>
     <article class="ops-flow-step">
       <span class="ops-flow-name">Sessions Saved</span>
-      <strong class="ops-flow-value" id="opsSessionsSaved">0</strong>
+      <strong class="ops-flow-value" id="opsSessionsSaved">Unavailable</strong>
+    </article>
+    <article class="ops-flow-step">
+      <span class="ops-flow-name">Returning Visitors</span>
+      <strong class="ops-flow-value" id="opsReturnShooters">Unavailable</strong>
     </article>
   </section>
 
   <section class="ops-grid">
     <article class="ops-section ops-section-wide">
-      <h2 class="ops-section-title">Engagement Flow <span>Production totals</span></h2>
-      <div class="ops-list" id="opsEngagementFlow"></div>
-    </article>
-    <article class="ops-section">
-      <h2 class="ops-section-title">Retention <span>Saved history</span></h2>
-      <div class="ops-retention-card">
-        <span>Return Shooters</span>
-        <strong id="opsReturnShooters">0</strong>
+      <h2 class="ops-section-title">Conversion <span>Selected interval</span></h2>
+      <div class="ops-conversion-grid">
+        <div class="ops-conversion-card"><span>Arrivals → Session Starts</span><strong id="opsArrivalConversion">Unavailable</strong></div>
+        <div class="ops-conversion-card"><span>Session Starts → Results</span><strong id="opsResultConversion">Unavailable</strong></div>
+        <div class="ops-conversion-card"><span>Results → Saves</span><strong id="opsSaveConversion">Unavailable</strong></div>
       </div>
     </article>
     <article class="ops-section">
-      <h2 class="ops-section-title">Referrals <span>Arrival source</span></h2>
-      <div class="ops-list" id="opsReferrals"></div>
-    </article>
-    <article class="ops-section">
-      <h2 class="ops-section-title">Targets <span>Attribution</span></h2>
+      <h2 class="ops-section-title">Product Activity <span>Governed identity</span></h2>
       <div class="ops-list" id="opsTargets"></div>
     </article>
-    <article class="ops-section">
-      <h2 class="ops-section-title">Regions <span>Timezone</span></h2>
-      <div class="ops-list" id="opsRegions"></div>
-    </article>
   </section>
+
+  <details class="ops-diagnostics">
+    <summary>Raw telemetry diagnostics</summary>
+    <div class="ops-diagnostics-grid">
+      <article class="ops-section"><h2 class="ops-section-title">Referrals <span>Arrival source</span></h2><div class="ops-list" id="opsReferrals"></div></article>
+      <article class="ops-section"><h2 class="ops-section-title">Target Attribution <span>Raw</span></h2><div class="ops-list" id="opsRawTargets"></div></article>
+      <article class="ops-section"><h2 class="ops-section-title">Regions <span>Timezone</span></h2><div class="ops-list" id="opsRegions"></div></article>
+    </div>
+  </details>
 
   <p class="ops-note">If operations monitoring fails, shooter workflow continues. Counts sourced from live SCZN3 OPS telemetry.</p>
 </main>
 <script>
 const OPS_SUMMARY_ENDPOINT = "https://sczn3-authority.onrender.com/api/ops/summary";
+const opsState = {
+  product: "all",
+  window: "all",
+  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+  productLabels: new Map([["all", "All Products"]]),
+  requestId: 0
+};
 
 function safeNumber(value) {
   return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
@@ -392,7 +459,12 @@ function safeNumber(value) {
 
 function formatNumber(value) {
   const number = safeNumber(value);
-  return number === null ? "—" : number.toLocaleString();
+  return number === null ? "Unavailable" : number.toLocaleString();
+}
+
+function formatPercent(value) {
+  const number = safeNumber(value);
+  return number === null ? "Unavailable" : `${number.toFixed(1)}%`;
 }
 
 function setText(id, value) {
@@ -402,11 +474,12 @@ function setText(id, value) {
 
 function friendlyBucketLabel(label, bucketName) {
   const text = String(label || "Unknown").trim() || "Unknown";
+  if (bucketName === "targets" && opsState.productLabels.has(text)) return opsState.productLabels.get(text);
   if (bucketName === "targets" && text.toLowerCase() === "unknown") return "Target attribution missing";
   return text;
 }
 
-function renderBars(id, bucket, bucketName) {
+function renderBars(id, bucket, bucketName, emptyLabel = "Data unavailable") {
   const node = document.getElementById(id);
   if (!node) return;
   const entries = Object.entries(bucket || {})
@@ -424,66 +497,110 @@ function renderBars(id, bucket, bucketName) {
           </div>
         `;
       }).join("")
-    : `<div class="ops-empty">Data unavailable</div>`;
+    : `<div class="ops-empty">${emptyLabel}</div>`;
 }
 
-function renderEngagement(totals) {
-  const node = document.getElementById("opsEngagementFlow");
-  if (!node) return;
-  const rows = [
-    ["Arrivals", totals.arrivals],
-    ["Session Starts", totals.sessionStarts],
-    ["Show Results", totals.showResults],
-    ["Sessions Saved", totals.sessionsSaved]
-  ];
-  const max = Math.max(1, ...rows.map(([, value]) => safeNumber(value)).filter(value => value !== null));
-  node.innerHTML = rows.map(([label, value]) => {
-    const count = safeNumber(value);
-    const width = count === null ? 0 : Math.max(4, Math.round((count / max) * 100));
-    return `
-      <div class="ops-bar-row">
-        <div class="ops-bar-meta"><span>${label}</span><strong>${formatNumber(count)}</strong></div>
-        <div class="ops-bar-track"><span class="ops-bar-fill" style="width:${width}%"></span></div>
-      </div>
-    `;
-  }).join("");
+function renderProductOptions(filters) {
+  const select = document.getElementById("opsProductFilter");
+  const options = filters && Array.isArray(filters.productOptions) ? filters.productOptions : [];
+  if (!select || !options.length) return;
+  opsState.productLabels = new Map(options.map(option => [option.id, option.label]));
+  select.innerHTML = options.map(option => `<option value="${option.id}">${option.label}</option>`).join("");
+  select.value = opsState.product;
+}
+
+function renderFilterContext(filters) {
+  if (!filters) return setText("opsFilterContext", "Governed interval unavailable");
+  const productLabel = opsState.productLabels.get(filters.product) || "Unavailable product";
+  const end = filters.endAt ? new Date(filters.endAt).toLocaleString() : "Unavailable";
+  const interval = filters.startAt
+    ? `${new Date(filters.startAt).toLocaleString()} – ${end}`
+    : `All recorded telemetry through ${end}`;
+  setText("opsFilterContext", `${productLabel} · ${interval} · ${filters.timeZone}`);
+}
+
+function renderOperationalFailures(failures, unavailableTelemetry) {
+  const node = document.getElementById("opsFailureNotice");
+  const labels = {
+    session_starts_exceed_arrivals: "Session starts exceed recorded arrivals in this interval.",
+    results_exceed_session_starts: "Results exceed recorded session starts in this interval.",
+    saves_exceed_results: "Saved sessions exceed recorded results in this interval."
+  };
+  const messages = Array.isArray(failures) ? failures.map(code => labels[code] || `Telemetry issue: ${code}`) : [];
+  const unattributed = safeNumber(unavailableTelemetry && unavailableTelemetry.unattributedArrivals);
+  if (unattributed !== null && unattributed > 0) messages.push(`${formatNumber(unattributed)} arrivals lack governed product attribution.`);
+  node.hidden = messages.length === 0;
+  node.textContent = messages.join(" ");
+  setText("opsTelemetryStatus", messages.length ? `${messages.length} issue${messages.length === 1 ? "" : "s"}` : "Healthy");
 }
 
 function renderOps(summary) {
   const totals = summary && summary.totals ? summary.totals : {};
   const sources = summary && summary.sources ? summary.sources : {};
+  const conversions = summary && summary.conversionPercentages ? summary.conversionPercentages : {};
+  const productActivity = summary && summary.productActivity ? summary.productActivity : {};
   const isLive = !!(summary && summary.ok);
+
+  renderProductOptions(summary && summary.filters);
+  renderFilterContext(summary && summary.filters);
+  renderOperationalFailures(summary && summary.operationalFailures, summary && summary.unavailableTelemetry);
 
   setText("opsArrivals", formatNumber(totals.arrivals));
   setText("opsSessionsStarted", formatNumber(totals.sessionStarts));
   setText("opsShowResults", formatNumber(totals.showResults));
   setText("opsSessionsSaved", formatNumber(totals.sessionsSaved));
   setText("opsReturnShooters", formatNumber(totals.returnShooters));
+  setText("opsArrivalConversion", formatPercent(conversions.arrivalToSessionStart));
+  setText("opsResultConversion", formatPercent(conversions.sessionStartToResult));
+  setText("opsSaveConversion", formatPercent(conversions.resultToSave));
   setText("opsSystemStatus", isLive ? "Live" : "Unavailable");
   setText("opsDatabaseStatus", isLive ? "Supabase Connected" : "Backend Unavailable");
   setText("opsLastUpdated", new Date().toLocaleString());
 
-  renderEngagement(totals);
-  renderBars("opsReferrals", sources.referrals, "referrals");
-  renderBars("opsTargets", sources.targets, "targets");
-  renderBars("opsRegions", sources.regions, "regions");
+  const emptyLabel = isLive ? "No activity recorded" : "Data unavailable";
+  renderBars("opsReferrals", sources.referrals, "referrals", emptyLabel);
+  renderBars("opsTargets", productActivity, "targets", isLive ? "No governed product activity recorded" : "Data unavailable");
+  renderBars("opsRawTargets", sources.targets, "targets", emptyLabel);
+  renderBars("opsRegions", sources.regions, "regions", emptyLabel);
 }
 
 function renderOpsUnavailable() {
   renderOps({ ok: false, status: "unavailable", totals: {}, sources: {} });
+  setText("opsTelemetryStatus", "Unavailable");
 }
 
 async function loadOps() {
+  const requestId = ++opsState.requestId;
   try {
-    const response = await fetch(OPS_SUMMARY_ENDPOINT, { cache: "no-store" });
+    const query = new URLSearchParams({
+      window: opsState.window,
+      product: opsState.product,
+      timeZone: opsState.timeZone
+    });
+    const response = await fetch(`${OPS_SUMMARY_ENDPOINT}?${query}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`OPS summary ${response.status}`);
     const summary = await response.json();
     if (!summary || summary.ok !== true) throw new Error("OPS summary unavailable");
+    if (requestId !== opsState.requestId) return;
     renderOps(summary);
   } catch (error) {
+    if (requestId !== opsState.requestId) return;
     renderOpsUnavailable();
   }
 }
+
+document.getElementById("opsProductFilter").addEventListener("change", event => {
+  opsState.product = event.target.value;
+  loadOps();
+});
+
+document.getElementById("opsWindowFilter").addEventListener("click", event => {
+  const button = event.target.closest("button[data-window]");
+  if (!button) return;
+  opsState.window = button.dataset.window;
+  document.querySelectorAll("button[data-window]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+  loadOps();
+});
 
 loadOps();
 </script>

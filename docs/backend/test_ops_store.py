@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from authority_service import build_authority_package
 from ops_store import record_event, summarize_events, validate_event
 
@@ -21,16 +22,16 @@ class FakeCursor:
             self.result = []
             return
         if "select event_type, count(*)" in normalized:
-            self.result = self.database.count_by("event_type")
+            self.result = self.database.count_by("event_type", params)
             return
         if "select referral_source, count(*)" in normalized:
-            self.result = self.database.count_arrival_by("referral_source")
+            self.result = self.database.count_arrival_by("referral_source", params)
             return
         if "select target_source, count(*)" in normalized:
-            self.result = self.database.count_arrival_by("target_source")
+            self.result = self.database.count_arrival_by("target_source", params)
             return
         if "select region, count(*)" in normalized:
-            self.result = self.database.count_arrival_by("region")
+            self.result = self.database.count_arrival_by("region", params)
             return
         raise AssertionError(f"Unexpected SQL: {sql}")
 
@@ -67,16 +68,30 @@ class FakeDatabase:
         self.events.append(dict(event))
         return 1
 
-    def count_by(self, field):
-        counts = {}
+    def matching_events(self, params):
+        params = params or {}
+        matches = []
         for event in self.events:
+            occurred_at = datetime.fromisoformat(event["occurred_at"].replace("Z", "+00:00"))
+            if params.get("start_at") and occurred_at < params["start_at"]:
+                continue
+            if params.get("end_at") and occurred_at >= params["end_at"]:
+                continue
+            if params.get("product") and event.get("target_source") != params["product"]:
+                continue
+            matches.append(event)
+        return matches
+
+    def count_by(self, field, params=None):
+        counts = {}
+        for event in self.matching_events(params):
             key = event.get(field) or "Unknown"
             counts[key] = counts.get(key, 0) + 1
         return sorted(counts.items())
 
-    def count_arrival_by(self, field):
+    def count_arrival_by(self, field, params=None):
         counts = {}
-        for event in self.events:
+        for event in self.matching_events(params):
             if event.get("event_type") != "arrival":
                 continue
             key = event.get(field) or "Unknown"
@@ -144,7 +159,7 @@ def test_summary_totals_return_correct_counts():
     assert_equal(summary["totals"]["sessionStarts"], 1, "session starts total")
     assert_equal(summary["totals"]["showResults"], 1, "show results total")
     assert_equal(summary["totals"]["sessionsSaved"], 1, "sessions saved total")
-    assert_equal(summary["totals"]["returnShooters"], 0, "return shooters remain deferred")
+    assert_equal(summary["totals"]["returnShooters"], None, "return visitors remain unavailable")
 
 
 def test_only_governed_product_identity_is_attributed():
@@ -158,6 +173,8 @@ def test_only_governed_product_identity_is_attributed():
     summary = summarize_events(database_url_override="postgresql://test", connect_fn=db.connect)
     assert_equal(summary["sources"]["referrals"], {"Deferred": 2}, "referral bucket deferred")
     assert_equal(summary["sources"]["targets"], {"Unattributed": 1, "gssf-ac1-public-route-v1": 1}, "governed target bucket")
+    assert_equal(summary["productActivity"], {"gssf-ac1-public-route-v1": 1}, "primary product activity contains governed identity only")
+    assert_equal(summary["unavailableTelemetry"]["unattributedArrivals"], 1, "unattributed activity remains explicit")
     assert_equal(summary["sources"]["regions"], {"Deferred": 2}, "region bucket deferred")
 
 
@@ -192,6 +209,65 @@ def test_validate_event_rejects_non_object_metadata():
     assert_equal(error, "metadata must be an object", "bad metadata error")
 
 
+def test_time_windows_are_single_governed_intervals():
+    db = FakeDatabase()
+    for arrival_id, timestamp in [
+        ("today", "2026-07-16T14:00:00Z"),
+        ("this-week", "2026-07-15T23:00:00Z"),
+        ("older", "2026-06-30T12:00:00Z"),
+    ]:
+        event = sample_event("arrival", arrival_id)
+        event["timestamp"] = timestamp
+        record_event(event, database_url_override="postgresql://test", connect_fn=db.connect)
+    now = datetime(2026, 7, 16, 18, 0, tzinfo=timezone.utc)
+    today = summarize_events(time_window="today", timezone_name="America/New_York", now=now, database_url_override="postgresql://test", connect_fn=db.connect)
+    week = summarize_events(time_window="week", timezone_name="America/New_York", now=now, database_url_override="postgresql://test", connect_fn=db.connect)
+    assert_equal(today["totals"]["arrivals"], 1, "today contains only today's interval")
+    assert_equal(week["totals"]["arrivals"], 2, "week contains only this week's interval")
+    assert_equal(today["filters"]["startAt"], "2026-07-16T04:00:00+00:00", "today starts at founder-local midnight")
+
+
+def test_product_filter_uses_governed_catalog_identity_only():
+    db = FakeDatabase()
+    record_event(sample_event("arrival", "gssf"), database_url_override="postgresql://test", connect_fn=db.connect)
+    unattributed = sample_event("arrival", "unattributed")
+    for field in ["publisherRouteId", "productRouteId", "catalogEntryId"]:
+        unattributed.pop(field)
+    record_event(unattributed, database_url_override="postgresql://test", connect_fn=db.connect)
+    summary = summarize_events(product_filter="gssf-ac1-public-route-v1", now=datetime(2026, 7, 17, tzinfo=timezone.utc), database_url_override="postgresql://test", connect_fn=db.connect)
+    assert_equal(summary["totals"]["arrivals"], 1, "GSSF filter excludes unattributed events")
+    assert_equal(summary["sources"]["targets"], {"gssf-ac1-public-route-v1": 1}, "filtered attribution contains only the selected governed product")
+    assert_equal(summary["unavailableTelemetry"]["unattributedArrivals"], 0, "selected governed product has no unattributed activity")
+    assert_equal(summary["filters"]["product"], "gssf-ac1-public-route-v1", "governed product filter recorded")
+    invalid = summarize_events(product_filter="baker-inferred", database_url_override="postgresql://test", connect_fn=db.connect)
+    assert_equal(invalid["status"], "invalid_filter", "unknown product filter refuses")
+
+
+def test_conversion_percentages_preserve_zero_and_unavailable():
+    db = FakeDatabase()
+    record_event(sample_event("arrival", "arrival-1"), database_url_override="postgresql://test", connect_fn=db.connect)
+    record_event(sample_event("arrival", "arrival-2"), database_url_override="postgresql://test", connect_fn=db.connect)
+    record_event(sample_event("sessionStart", "session-start"), database_url_override="postgresql://test", connect_fn=db.connect)
+    record_event(sample_event("showResults", "result"), database_url_override="postgresql://test", connect_fn=db.connect)
+    summary = summarize_events(now=datetime(2026, 7, 17, tzinfo=timezone.utc), database_url_override="postgresql://test", connect_fn=db.connect)
+    assert_equal(summary["conversionPercentages"]["arrivalToSessionStart"], 50.0, "arrival conversion")
+    assert_equal(summary["conversionPercentages"]["sessionStartToResult"], 100.0, "result conversion")
+    assert_equal(summary["conversionPercentages"]["resultToSave"], 0.0, "measured zero conversion remains zero")
+    empty = summarize_events(now=datetime(2026, 7, 17, tzinfo=timezone.utc), database_url_override="postgresql://test", connect_fn=FakeDatabase().connect)
+    assert_equal(empty["conversionPercentages"]["arrivalToSessionStart"], None, "conversion without denominator is unavailable")
+
+
+def test_inconsistent_funnel_is_explicitly_unavailable():
+    db = FakeDatabase()
+    record_event(sample_event("arrival", "arrival"), database_url_override="postgresql://test", connect_fn=db.connect)
+    record_event(sample_event("sessionStart", "start"), database_url_override="postgresql://test", connect_fn=db.connect)
+    record_event(sample_event("showResults", "result-1"), database_url_override="postgresql://test", connect_fn=db.connect)
+    record_event(sample_event("showResults", "result-2"), database_url_override="postgresql://test", connect_fn=db.connect)
+    summary = summarize_events(now=datetime(2026, 7, 17, tzinfo=timezone.utc), database_url_override="postgresql://test", connect_fn=db.connect)
+    assert_equal(summary["conversionPercentages"]["sessionStartToResult"], None, "inconsistent conversion unavailable")
+    assert_equal(summary["operationalFailures"], ["results_exceed_session_starts"], "integrity failure explicit")
+
+
 def run():
     tests = [
         test_valid_event_accepted,
@@ -203,6 +279,10 @@ def run():
         test_mismatched_product_identity_is_rejected,
         test_ops_failure_does_not_affect_authority_package,
         test_validate_event_rejects_non_object_metadata,
+        test_time_windows_are_single_governed_intervals,
+        test_product_filter_uses_governed_catalog_identity_only,
+        test_conversion_percentages_preserve_zero_and_unavailable,
+        test_inconsistent_funnel_is_explicitly_unavailable,
     ]
     for test in tests:
         test()
