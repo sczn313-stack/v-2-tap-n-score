@@ -6,17 +6,18 @@
 <title>Pulse Check — Private Access</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="platform-page pulse-locked-page">
+<body class="platform-page pulse-locked-page" data-founder-auth-status="unconfigured">
 <main class="pulse-locked-shell">
   <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
   <span>Private Operations</span>
   <h1>Pulse Check</h1>
   <p>Founder authentication is required before operational telemetry can be displayed.</p>
   <div role="status">
-    <strong>Access unavailable</strong>
-    <small>No operational data has been requested or rendered.</small>
+    <strong>Founder sign-in is not configured</strong>
+    <small>No operational data has been requested or rendered. Authenticated access must be established before Pulse Check can open.</small>
   </div>
-  <a href="index.html">Return Home</a>
+  <button class="pulse-founder-signin" type="button" disabled aria-disabled="true">Founder Sign-In Unavailable</button>
+  <a class="pulse-return-link" href="index.html">Return to Shooter Experience</a>
 </main>
 </body>
 </html>

@@ -14,6 +14,12 @@ assert(opsHtml.includes("No operational data has been requested or rendered"), "
 assert(!opsHtml.includes("/api/ops/summary") && !opsHtml.includes("ops.js"), "locked page does not request telemetry");
 assert(analyticsHtml.includes("Founder Dashboard") && analyticsHtml.includes("Founder authentication is required"), "Analytics is isolated inside the founder access boundary");
 assert(!analyticsHtml.includes("analytics.js") && !analyticsHtml.includes("app_state.js"), "locked founder analytics requests no shooter history or analytics data");
+for (const [label, html] of [["Founder Dashboard", analyticsHtml], ["Pulse Check", opsHtml]]) {
+  assert(html.includes('data-founder-auth-status="unconfigured"'), `${label} exposes the truthful authentication state`);
+  assert(html.includes('disabled aria-disabled="true">Founder Sign-In Unavailable</button>'), `${label} cannot route through an unconfigured sign-in`);
+  assert(html.includes('class="pulse-return-link" href="index.html">Return to Shooter Experience</a>'), `${label} identifies the public return path as a separate secondary action`);
+  assert(!html.includes('href="index.html">Founder'), `${label} never presents the public landing page as founder sign-in`);
+}
 assert(server.includes("self._send_json(403, founder_access_unavailable())"), "private endpoints refuse without server authentication");
 assert(server.includes('"status": "founder_authentication_required"'), "refusal is explicit");
 assert(!server.includes("envKeysContainingDatabase") && !server.includes("databaseUrlPrefix"), "environment diagnostics are not publicly disclosed");
