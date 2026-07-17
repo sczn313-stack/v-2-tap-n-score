@@ -6,7 +6,7 @@ import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
-from ops_store import record_event
+from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
 
 HOST = os.environ.get("HOST", "127.0.0.1")
@@ -85,7 +85,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self._send_json(403, founder_access_unavailable())
             return
         if path in self.OPS_SUMMARY_PATHS:
-            self._send_json(403, founder_access_unavailable())
+            self._send_json(200, summarize_events())
             return
         if path in self.PRODUCT_ROUTE_PATHS:
             query = parse_qs(urlparse(self.path).query)

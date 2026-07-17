@@ -84,8 +84,8 @@ const evidenceSession = {
 assert.strictEqual(analytics.governedEvidenceUrl(evidenceSession, analytics.eligibleRecord(evidenceSession)), "assets/gssf_ac_1_clean_reference.png", "approved canonical evidence renders");
 assert.strictEqual(analytics.governedEvidenceUrl({ ...evidenceSession, targetEvidenceImage: null }, analytics.eligibleRecord(evidenceSession)), null, "missing evidence has no fallback");
 
-assert(analyticsHtml.includes("Founder Dashboard") && analyticsHtml.includes("Founder authentication is required"), "analytics is relocated behind the founder access boundary");
-assert(!analyticsHtml.includes("renderAnalyticsPage") && !analyticsHtml.includes('src="analytics.js"'), "public analytics URL requests and renders no analytics data");
+assert(analyticsHtml.includes('data-founder-access-mode="temporary-direct"'), "analytics identifies the temporary emergency access mode");
+assert(analyticsHtml.includes("renderAnalyticsPage") && analyticsHtml.includes('src="analytics.js"'), "temporary Analytics access renders existing same-origin history");
 for (const page of ["index.html", "matrix.html", "shoot.html", "records.html", "survey.html", "buy-targets.html"]) {
   const html = fs.readFileSync(path.join(docs, page), "utf8");
   assert(!html.includes('href="analytics.html"'), `${page} does not expose founder analytics in public navigation`);

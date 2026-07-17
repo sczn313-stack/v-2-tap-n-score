@@ -9,20 +9,21 @@ const opsJs = fs.readFileSync(path.join(docs, "ops.js"), "utf8");
 const server = fs.readFileSync(path.join(docs, "backend", "server.py"), "utf8");
 const store = fs.readFileSync(path.join(docs, "backend", "ops_store.py"), "utf8");
 
-assert(opsHtml.includes("Founder authentication is required"), "Pulse Check states the access requirement");
-assert(opsHtml.includes("No operational data has been requested or rendered"), "locked page makes its data behavior explicit");
-assert(!opsHtml.includes("/api/ops/summary") && !opsHtml.includes("ops.js"), "locked page does not request telemetry");
-assert(analyticsHtml.includes("Founder Dashboard") && analyticsHtml.includes("Founder authentication is required"), "Analytics is isolated inside the founder access boundary");
-assert(!analyticsHtml.includes("analytics.js") && !analyticsHtml.includes("app_state.js"), "locked founder analytics requests no shooter history or analytics data");
-for (const [label, html] of [["Founder Dashboard", analyticsHtml], ["Pulse Check", opsHtml]]) {
-  assert(html.includes('data-founder-auth-status="unconfigured"'), `${label} exposes the truthful authentication state`);
-  assert(html.includes('disabled aria-disabled="true">Founder Sign-In Unavailable</button>'), `${label} cannot route through an unconfigured sign-in`);
-  assert(html.includes('class="pulse-return-link" href="index.html">Return to Shooter Experience</a>'), `${label} identifies the public return path as a separate secondary action`);
-  assert(!html.includes('href="index.html">Founder'), `${label} never presents the public landing page as founder sign-in`);
-}
-assert(server.includes("self._send_json(403, founder_access_unavailable())"), "private endpoints refuse without server authentication");
-assert(server.includes('"status": "founder_authentication_required"'), "refusal is explicit");
+assert(opsHtml.includes('data-founder-access-mode="temporary-direct"'), "Pulse Check identifies the emergency direct-access mode");
+assert(opsHtml.includes("/api/ops/summary") && opsHtml.includes("ops.js"), "Pulse Check requests the existing governed telemetry summary");
+assert(!opsHtml.includes("localFallbackSummary") && opsHtml.includes("renderOpsUnavailable"), "telemetry failure remains unavailable rather than becoming device-local totals");
+assert(opsHtml.includes("summary.ok !== true"), "an unavailable backend summary cannot render believable zero totals");
+assert(analyticsHtml.includes('data-founder-access-mode="temporary-direct"'), "Analytics identifies the emergency direct-access mode");
+assert(analyticsHtml.includes("renderAnalyticsPage") && analyticsHtml.includes('src="analytics.js"'), "Analytics reads the existing same-origin history");
+assert(server.includes("self._send_json(200, summarize_events())"), "operational summary is restored for emergency founder access");
+assert(server.includes("self._send_json(403, founder_access_unavailable())"), "environment diagnostics remain refused");
 assert(!server.includes("envKeysContainingDatabase") && !server.includes("databaseUrlPrefix"), "environment diagnostics are not publicly disclosed");
+
+for (const page of ["index.html", "matrix.html", "shoot.html", "records.html", "survey.html", "buy-targets.html"]) {
+  const html = fs.readFileSync(path.join(docs, page), "utf8");
+  assert(!html.includes('href="analytics.html"'), `${page} omits Analytics from public navigation`);
+  assert(!html.includes('href="ops.html"'), `${page} omits Pulse Check from public navigation`);
+}
 
 assert(!opsJs.includes("localStorage"), "device-local telemetry totals are removed");
 assert(!opsJs.includes("returnShooter"), "ungoverned return-shooter identity is removed");
