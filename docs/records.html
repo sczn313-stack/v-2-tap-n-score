@@ -60,19 +60,15 @@ function cleanSetupValue(value) {
   return /^(Select Manufacturer|Select Model Type|Select Model Caliber|Select Caliber|Select Load|Select Grain)$/i.test(value || "") ? "" : value;
 }
 
-function compactClick(value, axis) {
-  if (!value) return "--";
-  const amount = String(value).match(/\d+/)?.[0] || "0";
-  const upper = String(value).toUpperCase();
-  if (axis === "elevation") {
-    if (upper.includes("UP")) return `${amount}↑`;
-    if (upper.includes("DOWN")) return `${amount}↓`;
-  }
-  if (axis === "windage") {
-    if (upper.includes("RIGHT")) return `${amount}→`;
-    if (upper.includes("LEFT")) return `${amount}←`;
-  }
-  return amount;
+function correctionInstruction(value, axis) {
+  const upper = String(value || "").trim().toUpperCase();
+  if (!upper) return "";
+  const direction = upper.match(/\b(?:UP|DOWN|LEFT|RIGHT|CENTER)\b/)?.[0] || "";
+  const amount = upper.match(/\d+/)?.[0] || "";
+  const axisLabel = axis === "elevation" ? "ELEVATION" : "WINDAGE";
+  if (direction === "CENTER" || amount === "0") return `${axisLabel} CENTERED`;
+  if (!direction || !amount) return "";
+  return `${direction} ${amount} ${Number(amount) === 1 ? "click" : "clicks"}`;
 }
 
 function distanceDisplay(session) {
@@ -813,9 +809,10 @@ function attributionLine(snapshot) {
 
 function poibDisplay(pkg) {
   const correction = pkg && pkg.correction;
-  if (!correction || !Number.isFinite(Number(correction.xInches)) || !Number.isFinite(Number(correction.yInches))) return "";
-  const x = Number(correction.xInches);
-  const y = Number(correction.yInches);
+  if (!correction || typeof correction.xInches !== "number" || typeof correction.yInches !== "number") return "";
+  if (!Number.isFinite(correction.xInches) || !Number.isFinite(correction.yInches)) return "";
+  const x = correction.xInches;
+  const y = correction.yInches;
   const windage = Math.abs(x) < 0.05 ? "Centered" : `${Math.abs(x).toFixed(1)}\" ${x > 0 ? "Right" : "Left"}`;
   const elevation = Math.abs(y) < 0.05 ? "Centered" : `${Math.abs(y).toFixed(1)}\" ${y > 0 ? "Low" : "High"}`;
   if (windage === "Centered" && elevation === "Centered") return "Centered";
@@ -826,11 +823,15 @@ function poibDisplay(pkg) {
 
 function authorityDetailLine(pkg) {
   if (!pkg) return "";
-  const parts = [];
-  if (pkg.group && pkg.group.display) parts.push(`Group: ${pkg.group.display}`);
+  const metrics = [];
+  if (pkg.group && pkg.group.display) metrics.push(["Group Size", pkg.group.display]);
   const poib = poibDisplay(pkg);
-  if (poib) parts.push(`POIB: ${poib}`);
-  return parts.length ? `<div class="sec-authority-detail">${parts.join(" | ")}</div>` : "";
+  if (poib) metrics.push(["POIB", poib]);
+  return metrics.length ? `
+    <div class="sec-authority-detail" aria-label="Authoritative group measurements">
+      ${metrics.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
+    </div>
+  ` : "";
 }
 
 function zeroingValidationDetailsHtml(pkg, hasAuthority) {
@@ -881,12 +882,15 @@ function renderHistory() {
       return renderInvalidGssfSecCard(session);
     }
     const hasAuthority = !!(pkg && pkg.status);
-    const shotCount = hasAuthority ? Number(pkg.status.impactCount || 0) : 0;
+    const rawImpactCount = hasAuthority && pkg.status ? pkg.status.impactCount : null;
+    const shotCount = typeof rawImpactCount === "number" && Number.isInteger(rawImpactCount) && rawImpactCount >= 0
+      ? rawImpactCount
+      : null;
     const score = hasAuthority ? authorityScoreValue(pkg) : null;
     const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
     const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
     const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
-    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification, snapshot.opticClickValue, snapshot.opticAdjustmentUnit].map(cleanSetupValue).filter(Boolean).join(" / ");
     const ammo = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
     const correction = hasAuthority ? (pkg.correction || {}) : {};
     const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
@@ -894,9 +898,10 @@ function renderHistory() {
     const authorityMessage = hasAuthority ? "" : `<div class="sec-authority-missing">Scoring details unavailable.</div>`;
     const scoreDisplay = score !== null ? String(score) : "--";
     const correctionDisplay = [
-      compactClick(clicks.elevation, "elevation"),
-      compactClick(clicks.windage, "windage")
-    ].filter(Boolean).join(" / ") || "--";
+      correctionInstruction(clicks.elevation, "elevation"),
+      correctionInstruction(clicks.windage, "windage")
+    ].filter(Boolean);
+    const impactsDisplay = shotCount === null ? "Unavailable" : `${shotCount} ${shotCount === 1 ? "impact" : "impacts"}`;
     return `
       <article class="history-card zeroing-sec-card" data-session-id="${session.sessionId}">
           <div class="history-thumb">
@@ -908,14 +913,22 @@ function renderHistory() {
             <span>Final Score</span>
             <strong>${escapeHtml(scoreDisplay)}</strong>
           </section>
+          <section class="sec-correction-callout" aria-label="Authoritative scope corrections">
+            <span>Scope Corrections</span>
+            <div>
+              ${correctionDisplay.length
+                ? correctionDisplay.map(instruction => `<strong>${escapeHtml(instruction)}</strong>`).join("")
+                : "<strong>Unavailable</strong>"}
+            </div>
+          </section>
           <div class="sec-journal-grid">
             <div><span>Firearm</span><strong>${escapeHtml(weapon || "--")}</strong></div>
             <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
             <div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div>
-            <div><span>Corrections</span><strong>${escapeHtml(correctionDisplay)}</strong></div>
-            <div><span>Hits</span><strong>${escapeHtml(shotCount)}</strong></div>
+            <div><span>Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div>
+            ${optic ? `<div class="sec-journal-wide"><span>Scope / Optic</span><strong>${escapeHtml(optic)}</strong></div>` : ""}
           </div>
-          ${weaponMeta || optic || ammo ? `<div class="sec-setup-line">${[weaponMeta, optic, ammo].filter(Boolean).join(" | ")}</div>` : ""}
+          ${weaponMeta || ammo ? `<div class="sec-setup-line">${[weaponMeta, ammo].filter(Boolean).join(" | ")}</div>` : ""}
           ${attributionLine(snapshot)}
           ${authorityMessage}
           ${hasAuthority ? authorityDetailLine(pkg) : ""}

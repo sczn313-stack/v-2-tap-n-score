@@ -9748,3 +9748,111 @@ input[readonly]{
     white-space:normal;
   }
 }
+
+/* SEC zeroing presentation refinement */
+.records-page .sec-heading > div{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  min-width:0;
+}
+
+.records-page .sec-heading h1,
+.records-page .sec-heading h2{
+  margin:0;
+}
+
+.records-page .sec-correction-callout{
+  display:grid;
+  gap:8px;
+  padding:13px 14px;
+  border:1px solid rgba(217,150,11,.68);
+  border-radius:8px;
+  background:linear-gradient(135deg,rgba(217,150,11,.18),rgba(0,0,0,.28));
+}
+
+.records-page .sec-correction-callout > span,
+.records-page .sec-authority-detail span{
+  color:#d9960b;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.records-page .sec-correction-callout > div{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.records-page .sec-correction-callout strong{
+  min-width:0;
+  color:#fff;
+  font-family:Impact,"Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:clamp(22px,4vw,34px);
+  line-height:1;
+  letter-spacing:.01em;
+  overflow-wrap:anywhere;
+}
+
+.records-page .sec-journal-grid .sec-journal-wide{
+  grid-column:1 / -1;
+}
+
+.records-page .sec-authority-detail{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  overflow:visible;
+  white-space:normal;
+}
+
+.records-page .sec-authority-detail > div{
+  display:grid;
+  gap:4px;
+  min-width:0;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:7px;
+  background:rgba(0,0,0,.20);
+}
+
+.records-page .sec-authority-detail strong{
+  color:#f5f1e8;
+  font-size:14px;
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+
+@media (max-width:560px){
+  .records-page .sec-heading{
+    margin-bottom:6px;
+    padding:6px 8px;
+  }
+
+  .records-page .sec-heading > div{
+    gap:8px;
+  }
+
+  .records-page .sec-heading h1{
+    flex:0 0 auto;
+    font-size:32px;
+    line-height:.9;
+  }
+
+  .records-page .sec-heading h2{
+    min-width:0;
+    font-size:14px;
+    line-height:1;
+  }
+
+  .records-page .sec-correction-callout > div,
+  .records-page .sec-authority-detail{
+    grid-template-columns:1fr;
+  }
+
+  .records-page .sec-correction-callout strong{
+    font-size:clamp(24px,8vw,31px);
+  }
+}
