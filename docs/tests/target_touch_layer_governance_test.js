@@ -22,7 +22,8 @@ const resetSource = functionSource(shootHtml, "resetMarkPointerState");
 const pointerDownSource = functionSource(shootHtml, "handleMarkPointerDown");
 const pointerUpSource = functionSource(shootHtml, "handleMarkPointerUp");
 const pointerCancelSource = functionSource(shootHtml, "handleMarkPointerCancel");
-const activeSurfaceRuleStart = styles.indexOf('\n.target-page[data-has-results="false"] .mark-surface{');
+const touchMoveSource = functionSource(shootHtml, "handleMarkTouchMove");
+const activeSurfaceRuleStart = styles.indexOf('\n.target-page[data-has-results="false"] .mark-surface,');
 const activeSurfaceRuleEnd = styles.indexOf("\n}", activeSurfaceRuleStart);
 assert(activeSurfaceRuleStart >= 0 && activeSurfaceRuleEnd > activeSurfaceRuleStart, "active mark-surface rule must exist");
 const activeSurfaceRule = styles.slice(activeSurfaceRuleStart, activeSurfaceRuleEnd + 2);
@@ -39,6 +40,13 @@ assert(
   /markSurface\.addEventListener\("pointercancel", handleMarkPointerCancel, \{ passive: true \}\)/.test(shootHtml),
   "mark surface must bind the current passive pointer-cancel handler"
 );
+assert(
+  /markSurface\.addEventListener\("touchmove", handleMarkTouchMove, \{ passive: false \}\)/.test(shootHtml),
+  "mark surface must use a non-passive Safari touch-move guard"
+);
+assert(/touches\.length === 1/.test(touchMoveSource), "single-touch movement must be identified explicitly");
+assert(/event\.preventDefault\(\)/.test(touchMoveSource), "single-touch target panning must be prevented");
+assert(!/touches\.length === 2/.test(touchMoveSource), "two-touch pinch movement must remain native");
 
 assert(
   /touch-action\s*:\s*pinch-zoom/i.test(activeSurfaceRule),
@@ -48,6 +56,7 @@ assert(
   !/touch-action\s*:[^;}]*\bpan-[xy]\b/i.test(activeSurfaceRule),
   "active marking must not permit one-finger panning from the target surface"
 );
+assert(/overscroll-behavior\s*:\s*none/i.test(activeSurfaceRule), "active marking must not chain scroll from the target");
 assert(
   /\.marker-layer\s*\{[^}]*position\s*:\s*absolute/i.test(styles),
   "marker rendering must remain outside normal layout flow"

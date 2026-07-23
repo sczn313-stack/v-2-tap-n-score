@@ -1016,18 +1016,6 @@ async function prepareGssfExportPage(page) {
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 }
 
-function collectedStyles() {
-  return Array.from(document.styleSheets)
-    .map(sheet => {
-      try {
-        return Array.from(sheet.cssRules).map(rule => rule.cssText).join("\n");
-      } catch (error) {
-        return "";
-      }
-    })
-    .join("\n");
-}
-
 async function captureSecNode(target, fileName, fixedWidth = null) {
   const width = fixedWidth || Math.ceil(target.scrollWidth);
   const height = Math.ceil(target.scrollHeight);
@@ -1047,12 +1035,33 @@ async function captureSecNode(target, fileName, fixedWidth = null) {
   });
   const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error(`SEC image capture failed for ${fileName}.`);
+  return { fileName, blob };
+}
+
+function downloadSecCapture(capture) {
   const link = document.createElement("a");
-  link.download = fileName;
-  link.href = URL.createObjectURL(blob);
+  const objectUrl = URL.createObjectURL(capture.blob);
+  link.download = capture.fileName;
+  link.href = objectUrl;
+  link.rel = "noopener";
+  document.body.append(link);
   link.click();
-  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-  return fileName;
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
+
+async function deliverSecCaptures(captures) {
+  const files = typeof File === "function"
+    ? captures.map(capture => new File([capture.blob], capture.fileName, { type: "image/png" }))
+    : [];
+  const shareData = files.length ? { files, title: "Shooter Experience Card" } : null;
+  if (shareData && typeof navigator.share === "function" &&
+      (!navigator.canShare || navigator.canShare(shareData))) {
+    await navigator.share(shareData);
+    return "shared";
+  }
+  captures.forEach(downloadSecCapture);
+  return "downloaded";
 }
 
 async function saveGssfSecTwoPageImages(card) {
@@ -1075,50 +1084,44 @@ async function saveGssfSecTwoPageImages(card) {
 }
 
 async function saveSecPageImage() {
+  const saveButton = document.getElementById("saveSecPage");
+  const originalLabel = saveButton.textContent;
+  saveButton.disabled = true;
+  saveButton.textContent = "Preparing…";
   const gssfCard = document.querySelector('.gssf-sec-card[data-gssf-export-ready="true"]');
-  if (gssfCard) {
-    document.body.dataset.gssfExportStatus = "capturing";
-    document.body.dataset.gssfExportImageCount = "0";
-    try {
+  try {
+    let captures;
+    if (gssfCard) {
+      document.body.dataset.gssfExportStatus = "capturing";
+      document.body.dataset.gssfExportImageCount = "0";
       const files = await saveGssfSecTwoPageImages(gssfCard);
       document.body.dataset.gssfExportImageCount = String(files.length);
-      document.body.dataset.gssfExportStatus = files.length === 2 ? "complete" : "failed";
-    } catch (error) {
-      document.body.dataset.gssfExportStatus = "failed";
-      throw error;
+      if (files.length !== 2) throw new Error("GSSF SEC export requires exactly two images.");
+      captures = files;
+    } else {
+      const target = document.querySelector(".history-panel");
+      if (!target) throw new Error("SEC content is unavailable.");
+      const stamp = new Date().toISOString().slice(0, 10);
+      captures = [await captureSecNode(target, `SEC-${stamp}.png`)];
     }
+    document.body.dataset.secSaveDelivery = await deliverSecCaptures(captures);
+    if (gssfCard) document.body.dataset.gssfExportStatus = "complete";
+    saveButton.textContent = "Saved";
+  } catch (error) {
+    if (error && error.name === "AbortError") {
+      document.body.dataset.secSaveDelivery = "cancelled";
+      saveButton.textContent = originalLabel;
+      return;
+    }
+    document.body.dataset.secSaveDelivery = "failed";
+    if (gssfCard) document.body.dataset.gssfExportStatus = "failed";
+    saveButton.textContent = "Save Failed — Try Again";
+    console.error("SEC save failed", error);
     return;
+  } finally {
+    saveButton.disabled = false;
   }
-  const target = document.querySelector(".history-panel");
-  const width = Math.ceil(target.scrollWidth);
-  const height = Math.ceil(target.scrollHeight);
-  const styles = collectedStyles();
-  const clone = target.cloneNode(true);
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-      <foreignObject width="100%" height="100%">
-        <div xmlns="http://www.w3.org/1999/xhtml">
-          <style>${styles}</style>
-          ${clone.outerHTML}
-        </div>
-      </foreignObject>
-    </svg>`;
-  const image = new Image();
-  image.onload = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d");
-    context.fillStyle = "#eadbbd";
-    context.fillRect(0, 0, width, height);
-    context.drawImage(image, 0, 0);
-    const link = document.createElement("a");
-    link.download = `SEC-${new Date().toISOString().slice(0, 10)}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-    URL.revokeObjectURL(image.src);
-  };
-  image.src = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+  setTimeout(() => { saveButton.textContent = originalLabel; }, 1600);
 }
 </script>
 </body>

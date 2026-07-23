@@ -949,8 +949,10 @@ button:active,
   overscroll-behavior:contain;
 }
 
-.target-page[data-has-results="false"] .mark-surface{
+.target-page[data-has-results="false"] .mark-surface,
+.target-page:not([data-has-results="true"]) .mark-surface{
   touch-action:pinch-zoom;
+  overscroll-behavior:none;
 }
 
 .mark-surface img{
@@ -963,6 +965,7 @@ button:active,
   user-select:none;
   -webkit-user-select:none;
   -webkit-touch-callout:none;
+  -webkit-user-drag:none;
 }
 
 .target-page[data-has-results="true"] .mark-surface{

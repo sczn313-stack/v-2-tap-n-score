@@ -1616,6 +1616,7 @@ function renderEvidencePreview(image) {
   markSurface.addEventListener("pointerdown", handleMarkPointerDown, { passive: true });
   markSurface.addEventListener("pointerup", handleMarkPointerUp, { passive: true });
   markSurface.addEventListener("pointercancel", handleMarkPointerCancel, { passive: true });
+  markSurface.addEventListener("touchmove", handleMarkTouchMove, { passive: false });
   markSurface.addEventListener("contextmenu", event => event.preventDefault());
   renderMarkers();
   renderMarkStatus();
@@ -3061,6 +3062,11 @@ function handleMarkPointerUp(event) {
 function handleMarkPointerCancel(event) {
   activeMarkPointers.delete(event.pointerId);
   if (!activeMarkPointers.size) resetMarkPointerState();
+}
+
+function handleMarkTouchMove(event) {
+  if (resultsShown || !hasMarkableEvidence()) return;
+  if (event.touches && event.touches.length === 1) event.preventDefault();
 }
 
 if (TARGET_PROFILE_LAUNCH_ID) {

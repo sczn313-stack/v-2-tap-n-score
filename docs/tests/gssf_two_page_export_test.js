@@ -50,12 +50,20 @@ assert(records.includes("SEC-${stamp}-01-results.png") && records.includes("SEC-
 assert(records.includes("if (pages.length !== 2)"), "export must refuse anything other than exactly two pages");
 assert(records.includes('document.body.dataset.gssfExportStatus = "capturing"'), "export must expose a reviewable capture state");
 assert(records.includes('document.body.dataset.gssfExportImageCount = String(files.length)'), "export must expose the exact completed image count");
-assert(records.includes('files.length === 2 ? "complete" : "failed"'), "export only completes when exactly two images were captured");
+assert(records.includes('if (files.length !== 2) throw new Error("GSSF SEC export requires exactly two images.")'), "export must refuse unless exactly two images were captured");
+assert(records.includes('if (gssfCard) document.body.dataset.gssfExportStatus = "complete"'), "export only completes after governed delivery succeeds");
 assert(records.includes('<script src="vendor/html2canvas-1.4.1.min.js"></script>'), "the pinned local capture renderer must load before export");
 assert(capture.includes('typeof window.html2canvas !== "function"'), "export must refuse when the local capture renderer is unavailable");
 assert(capture.includes("window.html2canvas(target"), "export must capture the rendered authoritative SEC DOM");
 assert(capture.includes("useCORS: true") && capture.includes("allowTaint: false"), "export capture must remain origin-clean");
 assert(!capture.includes("foreignObject"), "GSSF export must not use the canvas-tainting foreignObject path");
+assert(capture.includes("return { fileName, blob }"), "capture must return the exact PNG evidence for governed delivery");
+assert(records.includes("async function deliverSecCaptures("), "SEC save must have one delivery path for mobile and desktop");
+assert(records.includes('new File([capture.blob], capture.fileName, { type: "image/png" })'), "mobile delivery must preserve exact PNG filenames");
+assert(records.includes('typeof navigator.share === "function"'), "mobile SEC save must support the native share sheet");
+assert(records.includes("navigator.canShare(shareData)"), "file sharing capability must be verified before use");
+assert(records.includes("captures.forEach(downloadSecCapture)"), "desktop and unsupported browsers must retain download fallback");
+assert(!records.includes("<foreignObject"), "no SEC save path may depend on Safari-fragile foreignObject rendering");
 
 assert(/\.target-marker\s*\{[^}]*white-space:nowrap/s.test(styles), "live two-digit shot IDs must not wrap");
 assert(/\.history-thumb-impact\s*\{[^}]*white-space:nowrap/s.test(styles), "saved two-digit shot IDs must not wrap");
