@@ -6155,10 +6155,19 @@ input[readonly]{
   display:inline-flex;
 }
 
+.target-page[data-has-evidence="true"][data-has-results="false"] .workflow-control-row #undoImpact,
+.target-page[data-has-evidence="true"][data-has-results="false"] .workflow-control-row #clearMarks{
+  display:inline-flex;
+  visibility:hidden;
+  pointer-events:none;
+}
+
 .target-page[data-range-state="tap-holes"] #clearMarks,
 .target-page[data-range-state="show-results"] #undoImpact,
 .target-page[data-range-state="show-results"] #clearMarks{
   display:inline-flex;
+  visibility:visible;
+  pointer-events:auto;
 }
 
 .target-page[data-has-evidence="true"] .target-advanced-tools{

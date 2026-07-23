@@ -58,6 +58,14 @@ assert(
 );
 assert(/overscroll-behavior\s*:\s*none/i.test(activeSurfaceRule), "active marking must not chain scroll from the target");
 assert(
+  /\.target-page\[data-has-evidence="true"\]\[data-has-results="false"\][\s\S]*?#undoImpact,[\s\S]*?#clearMarks\s*\{[^}]*display\s*:\s*inline-flex[^}]*visibility\s*:\s*hidden[^}]*pointer-events\s*:\s*none/i.test(styles),
+  "active evidence must reserve stable Undo and Clear control slots before they become available"
+);
+assert(
+  /\.target-page\[data-range-state="tap-holes"\] #clearMarks,[\s\S]*?\.target-page\[data-range-state="show-results"\] #clearMarks\s*\{[^}]*visibility\s*:\s*visible[^}]*pointer-events\s*:\s*auto/i.test(styles),
+  "reserved controls must become interactive only in their governed workflow states"
+);
+assert(
   /\.marker-layer\s*\{[^}]*position\s*:\s*absolute/i.test(styles),
   "marker rendering must remain outside normal layout flow"
 );
