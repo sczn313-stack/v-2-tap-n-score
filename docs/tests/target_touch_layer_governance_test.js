@@ -62,8 +62,8 @@ assert(
   "active evidence must reserve stable Undo and Clear control slots before they become available"
 );
 assert(
-  /\.target-page\[data-range-state="tap-holes"\] #clearMarks,[\s\S]*?\.target-page\[data-range-state="show-results"\] #clearMarks\s*\{[^}]*visibility\s*:\s*visible[^}]*pointer-events\s*:\s*auto/i.test(styles),
-  "reserved controls must become interactive only in their governed workflow states"
+  /\.target-page\[data-has-evidence="true"\]\[data-has-results="false"\]\[data-range-state="tap-holes"\] \.workflow-control-row #clearMarks,[\s\S]*?\.target-page\[data-has-evidence="true"\]\[data-has-results="false"\]\[data-range-state="show-results"\] \.workflow-control-row #undoImpact,[\s\S]*?#clearMarks\s*\{[^}]*visibility\s*:\s*visible[^}]*pointer-events\s*:\s*auto/i.test(styles),
+  "governed reveal selectors must outrank the reserved hidden state so Undo and Clear become interactive"
 );
 assert(
   /\.marker-layer\s*\{[^}]*position\s*:\s*absolute/i.test(styles),

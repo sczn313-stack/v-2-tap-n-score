@@ -6162,9 +6162,9 @@ input[readonly]{
   pointer-events:none;
 }
 
-.target-page[data-range-state="tap-holes"] #clearMarks,
-.target-page[data-range-state="show-results"] #undoImpact,
-.target-page[data-range-state="show-results"] #clearMarks{
+.target-page[data-has-evidence="true"][data-has-results="false"][data-range-state="tap-holes"] .workflow-control-row #clearMarks,
+.target-page[data-has-evidence="true"][data-has-results="false"][data-range-state="show-results"] .workflow-control-row #undoImpact,
+.target-page[data-has-evidence="true"][data-has-results="false"][data-range-state="show-results"] .workflow-control-row #clearMarks{
   display:inline-flex;
   visibility:visible;
   pointer-events:auto;
