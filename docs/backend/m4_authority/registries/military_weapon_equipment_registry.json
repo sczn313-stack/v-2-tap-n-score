@@ -1,0 +1,84 @@
+{
+  "registryId": "SCZN3-MILITARY-WEAPON-EQUIPMENT-LIBRARY",
+  "schemaVersion": "1.0.0",
+  "authorityOwner": "SCZN3 Weapon Library",
+  "governingPrinciple": "Research broadly. Register precisely. Implement only proven configurations.",
+  "publicationStatus": "founder_review",
+  "records": [
+    {
+      "recordId": "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
+      "recordType": "weapon_sight_configuration",
+      "status": "proven",
+      "libraryPublicationStatus": "founder_review",
+      "militaryDesignation": "M4/M4A1 Carbine",
+      "displayName": "M4/M4A1 Carbine — Detachable Carrying Handle and Front Sight Post",
+      "manufacturer": null,
+      "serviceBranches": [
+        {
+          "branch": "Army",
+          "approvedUse": "M4/M4A1 25-meter zeroing with the exact sight configuration documented by FM 3-22.9, Change 1."
+        }
+      ],
+      "compatibleWeaponPlatforms": [
+        "M4 Carbine",
+        "M4A1 Carbine"
+      ],
+      "equipmentIdentity": {
+        "rearSight": "Detachable carrying-handle rear sight",
+        "rearAperture": "Unmarked aperture",
+        "rearElevationSetting": "6/3",
+        "windageControl": "Rear sight windage knob",
+        "frontSight": "Standard four-notch front sight post",
+        "mountingConfiguration": "Detachable carrying handle installed on the M4/M4A1 upper receiver with the standard fixed front sight assembly"
+      },
+      "adjustmentSystem": "M4_IRON_DCH_FSP",
+      "adjustmentUnit": "MOA",
+      "axes": {
+        "windage": {
+          "control": "Rear sight windage knob",
+          "movementPerClick": 0.75,
+          "movementUnit": "MOA",
+          "directionConvention": {
+            "RIGHT": "CLOCKWISE",
+            "LEFT": "COUNTERCLOCKWISE"
+          }
+        },
+        "elevation": {
+          "control": "Standard four-notch front sight post",
+          "movementPerClick": 1.5,
+          "movementUnit": "MOA",
+          "directionConvention": {
+            "UP": "CLOCKWISE",
+            "DOWN": "COUNTERCLOCKWISE"
+          }
+        }
+      },
+      "roundingRule": "nearest-whole-click-half-to-even",
+      "ammunitionConfigurations": [],
+      "sourceDocumentation": [
+        {
+          "sourceId": "FM-3-22.9-C1-2011",
+          "title": "Rifle Marksmanship M16-/M4-Series Weapons",
+          "publisher": "Headquarters, Department of the Army",
+          "publication": "FM 3-22.9, Change 1",
+          "effectiveDate": "2011-02-10",
+          "url": "https://api.army.mil/e2/c/downloads/363931.pdf",
+          "sourceSha256": "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532",
+          "applicableEvidence": [
+            "Figure 5-19",
+            "Table 5-5",
+            "Table 7-31"
+          ]
+        }
+      ],
+      "registrationRecord": "docs/authority-evidence/m4-mechanical-sight/M4_MECHANICAL_SIGHT_AUTHORITY_REGISTRATION.json",
+      "validationRecord": "docs/authority-evidence/m4-mechanical-sight/INDEPENDENT_VALIDATION_REPORT.md",
+      "effectiveDate": "2026-07-28",
+      "revisionDate": "2026-07-28",
+      "notes": [
+        "This record does not govern generic iron sights, backup iron sights, carry-handle variants, optics, or non-M4 platforms.",
+        "The 0.50 MOA and 1.25 MOA controlled-test constants are not applicable to this registered M4 configuration."
+      ]
+    }
+  ]
+}

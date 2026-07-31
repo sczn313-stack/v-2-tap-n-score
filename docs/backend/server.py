@@ -6,6 +6,7 @@ import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
+from m4_authority.authority_service import build_authority_package as build_m4_authority_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
 
@@ -37,6 +38,7 @@ def founder_access_unavailable():
 
 class AuthorityHandler(BaseHTTPRequestHandler):
     AUTHORITY_PATHS = {"/api/authority/ugeo", "/api/authority/ugeo/"}
+    M4_AUTHORITY_PATHS = {"/api/authority/m4", "/api/authority/m4/"}
     DISTANCE_CLICK_QUERY_PATHS = {"/api/authority/distance-click-query", "/api/authority/distance-click-query/"}
     OPS_EVENT_PATHS = {"/api/ops/event", "/api/ops/event/"}
     OPS_SUMMARY_PATHS = {"/api/ops/summary", "/api/ops/summary/"}
@@ -78,6 +80,9 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         if path == "/health":
             self._send_json(200, {"ok": True, "service": "sczn3-authority"})
             return
+        if path in self.M4_AUTHORITY_PATHS:
+            self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
+            return
         if path in self.OPS_HEALTH_PATHS:
             self._send_json(200, {"ok": True, "service": "sczn3-ops"})
             return
@@ -117,6 +122,12 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             except Exception as exc:  # pragma: no cover - defensive server boundary
                 self._send_json(400, {"error": str(exc)})
             return
+        if path in self.M4_AUTHORITY_PATHS:
+            try:
+                self._send_json(200, build_m4_authority_package(self._read_json_body()))
+            except Exception as exc:  # pragma: no cover - defensive server boundary
+                self._send_json(400, {"error": str(exc)})
+            return
         if path not in self.AUTHORITY_PATHS:
             self._send_json(404, {"error": "not found"})
             return
@@ -133,5 +144,5 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer((HOST, PORT), AuthorityHandler)
-    print(f"SCZN3 authority backend listening at http://{HOST}:{PORT}/api/authority/ugeo")
+    print(f"SCZN3 authority backend listening at http://{HOST}:{PORT}/api/authority/ugeo and /api/authority/m4")
     server.serve_forever()
