@@ -1170,6 +1170,11 @@ function renderHistory() {
     const ammo = simulationSession ? "" : [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
     const correction = hasAuthority ? (pkg.correction || {}) : {};
     const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
+    const targetProfileId = String(snapshot.target_profile_id || snapshot.targetProfileId || session.target_profile_id || session.targetProfileId || pkg.target_profile_id || pkg.targetProfileId || "");
+    const targetName = SCZN3Presentation.targetLabel(
+      targetProfileId,
+      snapshot.targetName || snapshot.targetFamily || session.targetName || session.product || pkg.target_name || pkg.targetName || "Smart Target"
+    );
     const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
     const authorityMessage = hasAuthority ? "" : `<div class="sec-authority-missing">Scoring details unavailable.</div>`;
     const scoreDisplay = score !== null ? String(score) : "--";
@@ -1179,6 +1184,7 @@ function renderHistory() {
     ].filter(Boolean);
     const impactsDisplay = shotCount === null ? "Unavailable" : `${shotCount} ${shotCount === 1 ? "impact" : "impacts"}`;
     const evidenceStage = universalSecStageHtml("evidence", "Target Evidence", `
+      <div class="sec-journal-grid"><div class="sec-journal-wide"><span>Smart Target</span><strong>${escapeHtml(targetName)}</strong></div></div>
       <div class="history-thumb"><img src="${thumbnail}" alt="Uploaded target evidence thumbnail" /><div class="history-evidence-layer">${authorityVisual(session)}</div></div>
     `);
     const measurementStage = universalSecStageHtml("measurement", "Group Measurement", `

@@ -32,6 +32,11 @@ assertOrdered("Universal Practice SEC", positions(sources["universal_practice_se
 for (const stage of stageOrder) {
   assert.match(sources["records.html"], new RegExp(`universalSecStageHtml\\("${stage}"`), `100 Yard Vault: missing ${stage}`);
 }
+assert.match(
+  sources["records.html"],
+  /universalSecStageHtml\("evidence", "Target Evidence", `[\s\S]*?<span>Smart Target<\/span><strong>\$\{escapeHtml\(targetName\)\}<\/strong>/,
+  "100 Yard SEC must present the preserved target identity before measurement and interpretation",
+);
 
 assert.match(sources["records.html"], /data-sec-export/, "preserved SECs expose Export where supported");
 assert.match(sources["records.html"], /data-sec-share/, "preserved SECs expose Share where supported");

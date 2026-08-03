@@ -9,6 +9,7 @@ Candidate: Universal Shooter Experience Card production migration
 - 100 Yard Bullseye completes Shoot → Results → SEC → Save → Ballistic Vault → exact preserved SEC reopen.
 - GSSF completes 25-shot evidence capture → backend score → SEC → Save → Ballistic Vault → exact preserved SEC reopen.
 - Every current SEC reads Evidence → Measurement → Recommendation/Score → Execution → Validation → Preservation.
+- Every current SEC presents its preserved Smart Target identity in the evidence-first opening stage.
 - Ballistic Vault uses the same evidence-first architecture for M4, 100 Yard Bullseye, and GSSF.
 - Explicit 100 Yard target identity overrides stale mission and firearm state.
 - Explicit GSSF target identity cannot enter the M4 authority route and renders as GSSF AC-1 without legacy demo branding.
