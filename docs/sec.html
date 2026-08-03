@@ -46,10 +46,11 @@
       <summary>Session Setup</summary>
       <div class="correction-context-panel sec-session-record">
         <div class="sec-session-configuration">
-          <span>Shooting Configuration</span>
+          <span>Preserved Shooting Setup</span>
           <strong id="secSessionConfiguration"></strong>
         </div>
         <div class="sec-session-record-fields">
+          <div class="sec-session-target"><span>Target</span><strong id="secSessionTarget"></strong></div>
           <div><span>Shooter</span><strong id="secSessionShooter"></strong></div>
           <div><span>Date</span><strong id="secSessionDate"></strong></div>
           <div><span>Time</span><strong id="secSessionTime"></strong></div>
@@ -70,11 +71,6 @@
             <div class="marker-layer" id="beforeEvidenceMarkers"></div>
           </div>
         </figure>
-        <div class="sec-comparison-arrow" aria-label="Apply the correction, then confirm">
-          <span>Apply</span>
-          <strong aria-hidden="true">→</strong>
-          <small>Confirm</small>
-        </div>
         <figure id="confirmationWorkspace">
           <figcaption><span>After</span><strong>Confirmation Group</strong></figcaption>
           <div class="sec-comparison-target">
@@ -503,8 +499,15 @@ function renderSEC() {
   const adjustmentUnit = savedContext.adjustmentUnit || setup.opticAdjustmentUnit || "MOA";
   const sessionTimestamp = new Date(session.timestamp || session.savedAt || session.createdAt || "");
   const hasSessionTimestamp = Number.isFinite(sessionTimestamp.getTime());
+  const targetIdentity =
+    session.targetName
+    || session.product
+    || session.targetFamily
+    || setup.targetName
+    || "M4/M16 Series Weapons 25M Zero";
+  document.getElementById("secSessionTarget").textContent = targetIdentity;
   document.getElementById("secSessionConfiguration").textContent =
-    `${sightLabel} • ${distanceValue} ${distanceLabel} • ${adjustmentUnit}`;
+    `${sightLabel} • Shooting Distance: ${distanceValue} ${distanceLabel} • ${adjustmentUnit}`;
   document.getElementById("secSessionShooter").textContent =
     session.shooterName || setup.shooterName || "Not recorded";
   document.getElementById("secSessionDate").textContent = hasSessionTimestamp

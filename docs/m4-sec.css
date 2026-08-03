@@ -49,7 +49,7 @@
 .sec-technical-details>summary{padding:11px 12px;color:#314e34;font-size:12px;font-weight:900;letter-spacing:.04em;cursor:pointer}
 .sec-technical-details[open]>summary{border-bottom:1px solid var(--line)}
 .sec-technical-details>.sec-metric-grid,.sec-technical-details>.trace-button{margin:10px 12px}
-.sec-before-after{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:10px;align-items:center}
+.sec-before-after{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
 .sec-before-after figure{min-width:0;margin:0}
 .sec-before-after figcaption{display:grid;gap:2px;margin-bottom:6px}
 .sec-before-after figcaption span{color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
@@ -62,9 +62,6 @@
 .sec-target-session-identity small{color:#f2b516;font-size:6px;font-weight:900;letter-spacing:.08em;line-height:1;text-transform:uppercase}
 .sec-target-session-identity small:empty{display:none}
 .sec-evidence-frame>.marker-layer,.sec-comparison-target>.marker-layer{height:125.714%;bottom:auto}
-.sec-comparison-arrow{display:grid;place-items:center;gap:2px;width:72px;padding:9px 5px;border:2px solid #c98b00;border-radius:8px;background:linear-gradient(145deg,#f2b516,#c98000);color:#17130a;box-shadow:0 7px 16px rgba(66,45,0,.25);text-align:center}
-.sec-comparison-arrow span,.sec-comparison-arrow small{font-size:8px;font-weight:900;letter-spacing:.07em;line-height:1;text-transform:uppercase}
-.sec-comparison-arrow strong{font-size:28px;line-height:.8}
 .sec-comparison-pending{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);color:#fff;font-size:16px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .sec-comparison-target .target-correction-vector{z-index:5;filter:drop-shadow(0 1px 1px rgba(255,255,255,.9)) drop-shadow(0 2px 2px rgba(0,0,0,.28))}
 .sec-comparison-target .target-correction-vector line{stroke:#087432;stroke-width:3}
@@ -129,8 +126,6 @@ body[data-vault-thumbnail="true"] .sec-target-story{padding:10px;box-shadow:none
   .sec-validation-controls .button,.sec-preservation-actions .button,.sec-preservation-actions a{flex:1 1 calc(50% - 8px);min-width:0}
   .sec-preserved-history-row #viewHistory{min-width:132px}
   .sec-before-after{grid-template-columns:1fr}
-  .sec-comparison-arrow{width:min(180px,70%);grid-template-columns:auto auto auto;gap:8px;margin:auto;padding:7px 12px}
-  .sec-comparison-arrow strong{rotate:90deg}
   .sec-validation-workspace{width:calc(100vw - 12px);max-height:calc(100dvh - 12px)}
   .sec-validation-workspace-shell{padding:10px}
   .sec-validation-workspace-header{margin:-10px -10px 0;padding:12px}

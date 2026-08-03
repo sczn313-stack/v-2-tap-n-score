@@ -40,12 +40,82 @@
     document.documentElement.dataset.sczn3NavigationReady = "true";
     const menus = platformMenus();
 
-    function activeZeroingSession() {
+    function activeWorkspaceSession() {
       if (!document.body.classList.contains("target-page")) return null;
       const state = window.SCZN3M4;
       if (!state || !state.read || !state.KEYS) return null;
       return state.read(state.KEYS.activeSession, null);
     }
+
+    function workspaceHasUnsavedProgress() {
+      const resolver = window.SCZN3WorkspaceNavigationState
+        && window.SCZN3WorkspaceNavigationState.hasUnsavedProgress;
+      if (typeof resolver === "function") {
+        try {
+          return resolver() === true;
+        } catch (error) {}
+      }
+      const session = activeWorkspaceSession();
+      if (!session) return false;
+      const completed = window.SCZN3ZeroingPlatform
+        ? window.SCZN3ZeroingPlatform.isCompletedSession(session)
+        : session.savedToSEC === true && session.workflowStage === "preservation";
+      return !completed;
+    }
+
+    let pendingDestination = "";
+    let previouslyFocusedElement = null;
+    const leaveDialog = document.createElement("div");
+    leaveDialog.className = "navigation-leave-dialog";
+    leaveDialog.hidden = true;
+    leaveDialog.setAttribute("role", "dialog");
+    leaveDialog.setAttribute("aria-modal", "true");
+    leaveDialog.setAttribute("aria-labelledby", "navigationLeaveDialogTitle");
+    leaveDialog.setAttribute("aria-describedby", "navigationLeaveDialogMessage");
+    leaveDialog.innerHTML = `
+      <section class="navigation-leave-dialog-card">
+        <h2 id="navigationLeaveDialogTitle">Leave Current Session?</h2>
+        <p id="navigationLeaveDialogMessage">You have an unsaved shooting session.</p>
+        <p>Leaving this page will discard any unsaved shots and results.</p>
+        <div class="navigation-leave-dialog-actions">
+          <button class="button secondary" type="button" data-navigation-stay>Stay Here</button>
+          <button class="button" type="button" data-navigation-leave>Leave Session</button>
+        </div>
+      </section>
+    `;
+    document.body.append(leaveDialog);
+    const stayButton = leaveDialog.querySelector("[data-navigation-stay]");
+    const leaveButton = leaveDialog.querySelector("[data-navigation-leave]");
+
+    function closeLeaveDialog() {
+      leaveDialog.hidden = true;
+      document.body.classList.remove("navigation-leave-dialog-open");
+      pendingDestination = "";
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === "function") {
+        previouslyFocusedElement.focus();
+      }
+      previouslyFocusedElement = null;
+    }
+
+    function openLeaveDialog(destination) {
+      pendingDestination = destination;
+      previouslyFocusedElement = document.activeElement;
+      leaveDialog.hidden = false;
+      document.body.classList.add("navigation-leave-dialog-open");
+      stayButton.focus();
+    }
+
+    stayButton.addEventListener("click", closeLeaveDialog);
+    leaveButton.addEventListener("click", () => {
+      const destination = pendingDestination;
+      leaveDialog.hidden = true;
+      document.body.classList.remove("navigation-leave-dialog-open");
+      pendingDestination = "";
+      if (destination) window.location.assign(destination);
+    });
+    leaveDialog.addEventListener("click", event => {
+      if (event.target === leaveDialog) closeLeaveDialog();
+    });
 
     function protectActiveWorkspace(event) {
       const link = event.target.closest("a[href]");
@@ -53,16 +123,11 @@
       const destination = new URL(link.href, window.location.href);
       if (destination.origin !== window.location.origin) return;
       if (destination.pathname.endsWith("/shoot.html")) return;
-      const session = activeZeroingSession();
-      if (!session) return;
-      const completed = window.SCZN3ZeroingPlatform
-        ? window.SCZN3ZeroingPlatform.isCompletedSession(session)
-        : session.savedToSEC === true && session.workflowStage === "preservation";
-      if (completed) return;
+      if (!workspaceHasUnsavedProgress()) return;
       event.preventDefault();
       event.stopPropagation();
-      const status = document.getElementById("saveSessionStatus") || document.getElementById("missionWorkspaceStatus");
-      if (status) status.textContent = "Complete the zeroing mission before leaving the Workspace.";
+      closeAll();
+      openLeaveDialog(destination.href);
     }
 
     document.addEventListener("click", protectActiveWorkspace, true);
@@ -98,6 +163,11 @@
       closeAll();
     }, true);
     document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !leaveDialog.hidden) {
+        event.preventDefault();
+        closeLeaveDialog();
+        return;
+      }
       if (["Escape", "PageDown", "PageUp", "ArrowDown", "ArrowUp", "Home", "End", " "].includes(event.key)) closeAll();
     });
     document.addEventListener("wheel", () => closeAll(), { passive: true });

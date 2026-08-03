@@ -42,9 +42,6 @@ window.addEventListener("error", event => {
               <summary aria-label="Open navigation">☰</summary>
               <a href="index.html">Home</a>
               <a href="matrix.html" data-simulation-hide>Weapon Library</a>
-              <a href="shoot.html" data-simulation-target-link aria-current="page">Target</a>
-              <a href="records.html" data-simulation-sec-link>SEC</a>
-              <a href="survey.html">Survey</a>
             </details>
           </div>
           <section class="target-session-context" aria-label="Current step" aria-live="polite">
@@ -92,7 +89,6 @@ window.addEventListener("error", event => {
                 </select>
               </label>
               <div class="correction-context-actions">
-                <button class="button" type="button" id="backToTaps">Back to Taps</button>
                 <button class="button" type="button" id="confirmCorrectionContext">Show Results</button>
               </div>
             </div>
@@ -361,6 +357,33 @@ let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
 let authorityStatusMessage = "";
 let sessionSaved = false;
+let workspaceHasUnsavedProgress = !!(
+  session
+  && session.savedToSEC !== true
+  && (
+    session.aimPoint
+    || Array.isArray(session.impactPoints) && session.impactPoints.length
+    || session.backendAuthorityPackage
+    || session.authorityPackage
+    || session.trainingManualResult
+  )
+);
+
+function markWorkspaceProgressUnsaved() {
+  workspaceHasUnsavedProgress = true;
+  sessionSaved = false;
+}
+
+function markWorkspaceProgressPreserved() {
+  workspaceHasUnsavedProgress = false;
+  sessionSaved = true;
+}
+
+window.SCZN3WorkspaceNavigationState = Object.freeze({
+  hasUnsavedProgress() {
+    return workspaceHasUnsavedProgress;
+  }
+});
 let m4LivePhase = RESUMING_M4_CONFIRMATION ? "confirmation" : "initial";
 let m4InitialAuthorityPackage = session && (
   session.m4AuthorityPackage
@@ -791,7 +814,7 @@ function renderMissionWorkspaceChrome() {
     && isM4AuthoritySession()
     && m4LivePhase === "confirmation"
   ) {
-    impactButton.textContent = "Confirmation Tap Holes";
+    impactButton.textContent = "Tap Your Confirmation Impacts";
   }
   if (completeButton) completeButton.textContent = descriptor.completeLabel || "Show Results";
   if (restartLink) restartLink.hidden = !simulationLimitReached();
@@ -799,6 +822,10 @@ function renderMissionWorkspaceChrome() {
 
 function isGssfAuthoritySession() {
   return activeTargetProfileId() === "gssf_ac_1" || activeMissionFamily() === "gssf";
+}
+
+function isBaker100YardSession() {
+  return activeTargetProfileId() === "baker_st_100yd_smart_zero";
 }
 
 function isDotTortureAuthoritySession() {
@@ -1198,6 +1225,27 @@ function installBakerSimulationEvidence() {
   if (targetInput) targetInput.disabled = true;
   renderEvidencePreview(evidence);
   setMode("aim");
+  return evidence;
+}
+
+function installBaker100YardEvidence() {
+  if (!isBaker100YardSession()) return null;
+  ensureTargetSession();
+  const evidence = {
+    dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+    name: "Baker 100 Yard Smart Target",
+    type: "image/png",
+    assetRole: "registered-reference-target",
+    targetProfileId: "baker_st_100yd_smart_zero",
+    targetId: "BAKER_ST_100YD_SMART",
+    publisher: "Baker Targets"
+  };
+  session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
+  pendingEvidence = null;
+  const chooseTarget = document.getElementById("chooseTargetButton");
+  const targetInput = document.getElementById("targetImageInput");
+  if (chooseTarget) chooseTarget.hidden = true;
+  if (targetInput) targetInput.disabled = true;
   return evidence;
 }
 
@@ -1899,7 +1947,6 @@ function bindCorrectionContextDrawer() {
   const distanceUnit = document.getElementById("correctionContextDistanceUnit");
   const adjustmentUnit = document.getElementById("correctionContextAdjustmentUnit");
   const confirm = document.getElementById("confirmCorrectionContext");
-  const back = document.getElementById("backToTaps");
   if (!sight || sight.dataset.bound === "true") return;
   sight.dataset.bound = "true";
   sight.addEventListener("change", () => {
@@ -1920,14 +1967,6 @@ function bindCorrectionContextDrawer() {
     invalidateCorrectionContext();
   });
   confirm.addEventListener("click", confirmCorrectionContext);
-  back.addEventListener("click", () => {
-    correctionContextReviewDismissed = true;
-    const drawer = document.getElementById("correctionContextDrawer");
-    if (drawer) drawer.open = false;
-    setMode("impact");
-    renderCorrectionContextDrawer();
-    renderMarkStatus();
-  });
 }
 
 function syncDistanceFromControls() {
@@ -2009,6 +2048,41 @@ function correctionContextIsConfirmed(authorityPackage = backendAuthorityPackage
   );
 }
 
+function correctionUnavailableShooterMessage(authorityPackage = backendAuthorityPackage) {
+  const context = correctionContextSnapshot(authorityPackage);
+  if (!Number.isFinite(context.distanceValue) || context.distanceValue <= 0) {
+    return "Enter the firing distance, then tap Confirm.";
+  }
+  if (context.sightSystem === "optic" && (!Number.isFinite(context.opticClickValue) || context.opticClickValue <= 0)) {
+    return "The optic adjustment value is missing. Return to Weapon Library, complete the optic setup, then try again.";
+  }
+  if (context.sightSystem === "iron" && !context.equipmentAuthorityRecordId) {
+    return "This iron-sight setup is not registered for click adjustments. Return to Weapon Library and select the supported M4 sight setup.";
+  }
+  if (!authorityPackage || !authorityPackage.clicks || authorityPackage.mechanicalValidation?.status !== "calculated") {
+    return "This sight setup does not provide a verified click adjustment. Review the sight setup in Weapon Library, then try again.";
+  }
+  return "A correction could not be calculated from this group. Check the session setup and try Show Results again.";
+}
+
+function remainingCorrectionShooterMessage(authorityPackage = backendAuthorityPackage) {
+  const clicks = authorityPackage && authorityPackage.clicks;
+  if (!clicks) {
+    return "Review the session setup before firing another confirmation group.";
+  }
+  const axes = ["windage", "elevation"].map(axis => {
+    const direction = String(clicks[`${axis}Direction`] || "CENTER").trim().toUpperCase();
+    const count = Math.abs(Number(clicks[`${axis}Clicks`] || 0));
+    if (!Number.isFinite(count) || count <= 0 || direction === "CENTER") return "";
+    const readableDirection = direction.charAt(0) + direction.slice(1).toLowerCase();
+    return `${readableDirection} ${count} ${count === 1 ? "click" : "clicks"}`;
+  }).filter(Boolean);
+  if (!axes.length) {
+    return "Fire and tap another confirmation group.";
+  }
+  return `Apply the remaining correction: ${axes.join(" · ")}. Then fire and tap another confirmation group.`;
+}
+
 function correctionContextEvidenceX(authorityPackage = backendAuthorityPackage) {
   const points = currentImpactPoints.map(safePoint).filter(Boolean);
   const poib = safePoint(authorityPackage && (
@@ -2063,7 +2137,6 @@ function renderCorrectionContextDrawer() {
     if (mrad) mrad.disabled = !FOUNDER_WORKSPACE_TEST_MODE && context.sightSystem === "iron";
   }
   const confirm = document.getElementById("confirmCorrectionContext");
-  const back = document.getElementById("backToTaps");
   if (confirm) {
     confirm.disabled = correctionContextRefreshing || !Number.isFinite(context.distanceValue) || context.distanceValue <= 0;
     confirm.textContent = correctionContextRefreshing
@@ -2071,10 +2144,6 @@ function renderCorrectionContextDrawer() {
       : FOUNDER_WORKSPACE_TEST_MODE
         ? (resultsShown ? "Update Results" : "Show Results")
         : "Confirm";
-  }
-  if (back) {
-    back.hidden = !founderGate;
-    back.disabled = correctionContextRefreshing;
   }
   if (founderGate || correctionContextPending) drawer.open = true;
   placeCorrectionContextDrawer();
@@ -2095,6 +2164,7 @@ function syncCorrectionContextGate() {
 }
 
 function invalidateCorrectionContext() {
+  markWorkspaceProgressUnsaved();
   if (FOUNDER_WORKSPACE_TEST_MODE && isM4AuthoritySession()) {
     correctionContextPending = false;
     correctionContextConfirmedFingerprint = "";
@@ -2108,7 +2178,7 @@ function invalidateCorrectionContext() {
   correctionContextPending = !!(isM4AuthoritySession() && resultsShown && currentClicks);
   sessionSaved = false;
   if (correctionContextPending) {
-    setSaveSessionStatus("Confirm correction context to refresh the authoritative recommendation.");
+    setSaveSessionStatus("Review the session setup to refresh the correction.");
   }
   renderMarkers();
   renderCorrectionContextDrawer();
@@ -2153,7 +2223,7 @@ async function confirmCorrectionContext() {
     applyBackendAuthorityPackage(authorityPackage);
     if (!FOUNDER_WORKSPACE_TEST_MODE && !correctionContextIsAuthoritative(authorityPackage)) {
       correctionContextPending = true;
-      authorityStatusMessage = "Correction authority unavailable for the selected context.";
+      authorityStatusMessage = correctionUnavailableShooterMessage(authorityPackage);
       setSaveSessionStatus(authorityStatusMessage, "error");
       return;
     }
@@ -2164,21 +2234,22 @@ async function confirmCorrectionContext() {
       correctionContextConfirmedFingerprint,
       correctionContextSnapshot: correctionContextSnapshot(authorityPackage)
     }) || session;
-    if (
-      m4LivePhase === "confirmation"
-      && authorityPackage.validation
-      && !authorityPackage.validation.confirmed
-    ) {
-      setSaveSessionStatus("Confirmation recorded. Apply the remaining correction and fire another group.");
+    if (m4LivePhase === "confirmation" && authorityPackage.validation) {
+      setSaveSessionStatus(
+        authorityPackage.validation.confirmed
+          ? "Confirmation complete."
+          : remainingCorrectionShooterMessage(authorityPackage),
+        authorityPackage.validation.confirmed ? "saved" : ""
+      );
     } else {
       setSaveSessionStatus("");
     }
     const drawer = document.getElementById("correctionContextDrawer");
-    if (drawer && FOUNDER_WORKSPACE_TEST_MODE) drawer.open = false;
+    if (drawer) drawer.open = false;
   } catch (error) {
     console.warn("Correction context authority refresh failed", error);
     correctionContextPending = true;
-    authorityStatusMessage = "Correction authority refresh failed. Your evidence remains on this screen.";
+    authorityStatusMessage = "The correction could not be refreshed. Your impacts remain on this screen; check the session setup and try again.";
     setSaveSessionStatus(authorityStatusMessage, "error");
   } finally {
     correctionContextRefreshing = false;
@@ -2652,6 +2723,17 @@ async function resolveMissionFromTargetProfile() {
       renderMarkStatus();
       return;
     }
+    if (isBaker100YardSession()) {
+      const evidence = installBaker100YardEvidence();
+      missionResolutionStatus = "resolved";
+      missionResolutionMessage = "";
+      renderEvidencePreview(evidence);
+      setMode("aim");
+      renderSetupSummary();
+      renderResults();
+      renderMarkStatus();
+      return;
+    }
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
     if (!backendAuthorityPackage) {
@@ -3118,6 +3200,7 @@ function bindGssfOfficialTimeInput(authorityPackage) {
   if (!input || input.dataset.gssfOfficialTimeBound) return;
   input.dataset.gssfOfficialTimeBound = "true";
   input.addEventListener("input", () => {
+    markWorkspaceProgressUnsaved();
     const rawValue = String(input.value || "").trim();
     const value = Number(rawValue);
     gssfOfficialMatchTimeSeconds = rawValue !== "" && Number.isFinite(value) && value >= 0 ? value : null;
@@ -3294,7 +3377,7 @@ function renderPendingInputMarkers() {
   currentImpactPoints.map(safePoint).filter(Boolean).forEach((point, index) => {
     parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
   });
-  if (currentAimPoint) {
+  if (currentAimPoint && !(isM4AuthoritySession() && m4LivePhase === "confirmation")) {
     parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "", 'aria-label="Intended aim point"'));
   }
   return parts.join("");
@@ -3519,6 +3602,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
     beginButton.textContent = trainingStageIndex >= maxIndex ? "Finish Drill" : (trainingStageIndex === 0 ? "Begin Stage" : "Next Stage");
     beginButton.onclick = () => {
       if (!hasBackendTrainingPackage || trainingDrillFinished) return;
+      markWorkspaceProgressUnsaved();
       if (trainingStageIndex < maxIndex) {
         trainingStageIndex += 1;
         renderDotTortureTrainingResults(authorityPackage);
@@ -3533,6 +3617,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
     previousButton.disabled = !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex <= 0;
     previousButton.onclick = () => {
       if (trainingStageIndex > 0) {
+        markWorkspaceProgressUnsaved();
         trainingStageIndex -= 1;
         renderDotTortureTrainingResults(authorityPackage);
       }
@@ -3543,6 +3628,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
     nextButton.classList.toggle("secondary", !hasBackendTrainingPackage || trainingDrillFinished || trainingStageIndex >= maxIndex);
     nextButton.onclick = () => {
       if (trainingStageIndex < maxIndex) {
+        markWorkspaceProgressUnsaved();
         trainingStageIndex += 1;
         renderDotTortureTrainingResults(authorityPackage);
       }
@@ -3554,6 +3640,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
     finishButton.textContent = trainingDrillFinished ? "Drill Complete" : "Finish Drill";
     finishButton.classList.toggle("secondary", !finishIsPrimary);
     finishButton.onclick = () => {
+      markWorkspaceProgressUnsaved();
       trainingDrillFinished = true;
       renderDotTortureTrainingResults(authorityPackage);
       renderMarkStatus();
@@ -3568,7 +3655,10 @@ function renderDotTortureTrainingResults(authorityPackage) {
   if (savedStatus) savedStatus.textContent = sessionSaved ? "saved" : "pending";
   manualFields.forEach(field => {
     if (!field.dataset.trainingManualBound) {
-      field.addEventListener("input", updateTrainingManualPreview);
+      field.addEventListener("input", () => {
+        markWorkspaceProgressUnsaved();
+        updateTrainingManualPreview();
+      });
       field.dataset.trainingManualBound = "true";
     }
   });
@@ -3810,7 +3900,7 @@ function hideShooterTip() {
 
 function shooterTipFromResults() {
   if (!currentImpactPoints.length) return "Record confirmed impacts before saving.";
-  if (!currentClicks) return "Geometry is calculated. Mechanical instructions remain unavailable until sight authority is proven.";
+  if (!currentClicks) return "The group is measured, but click instructions are unavailable for this sight setup.";
   if (currentImpactPoints.length < 3) return "Add more confirmed impacts for a stronger read.";
   const windage = Number(currentClicks.windageClicks || 0);
   const elevation = Number(currentClicks.elevationClicks || 0);
@@ -4066,6 +4156,7 @@ function handleMarkTap(event) {
     correctionContextReviewDismissed = false;
     scheduleHoleEntryReadiness();
   }
+  markWorkspaceProgressUnsaved();
   clearCalculatedResults();
   setMode(markMode);
   renderMarkers();
@@ -4108,7 +4199,7 @@ function handleMarkPointerUp(event) {
     return;
   }
   const moveDistance = Math.hypot(event.clientX - markTapCandidate.clientX, event.clientY - markTapCandidate.clientY);
-  const maxTapMove = markTapCandidate.pointerType === "touch" ? 12 : 6;
+  const maxTapMove = markTapCandidate.pointerType === "touch" ? 24 : 8;
   if (moveDistance <= maxTapMove) handleMarkTap(event);
   resetMarkPointerState();
 }
@@ -4158,7 +4249,7 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
     holeEntrySettled = false;
     currentAimPoint = null;
     currentImpactPoints = [];
-    sessionSaved = false;
+    markWorkspaceProgressUnsaved();
     unlockDistanceForNewTarget();
     if (isDotTortureAuthoritySession()) {
       currentClicks = null;
@@ -4194,6 +4285,7 @@ document.getElementById("addImpactMode").addEventListener("click", () => {
   if (currentAimPoint || isGssfAuthoritySession()) setMode("impact");
 });
 document.getElementById("undoImpact").addEventListener("click", () => {
+  markWorkspaceProgressUnsaved();
   cancelHoleEntryReadiness();
   currentImpactPoints.pop();
   holeEntrySettled = false;
@@ -4204,6 +4296,7 @@ document.getElementById("undoImpact").addEventListener("click", () => {
   if (currentImpactPoints.length > 0) scheduleHoleEntryReadiness();
 });
 document.getElementById("clearMarks").addEventListener("click", () => {
+  markWorkspaceProgressUnsaved();
   cancelHoleEntryReadiness();
   holeEntrySettled = false;
   correctionContextReviewDismissed = false;
@@ -4266,10 +4359,10 @@ document.getElementById("showResults").addEventListener("click", async () => {
     if (isM4AuthoritySession() && m4LivePhase === "confirmation" && authorityPackage.validation) {
       setSaveSessionStatus(
         correctionContextPending
-          ? "Confirm correction context to refresh the authoritative recommendation."
+          ? "Review the session setup to refresh the correction."
           : authorityPackage.validation.confirmed
-          ? "Confirmation complete. Save the authoritative session."
-          : "Confirmation recorded. Apply the remaining correction and fire another group.",
+          ? "Confirmation complete."
+          : remainingCorrectionShooterMessage(authorityPackage),
         !correctionContextPending && authorityPackage.validation.confirmed ? "saved" : ""
       );
     }
@@ -4346,7 +4439,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     return;
   }
   if (!backendAuthorityPackage) {
-    setSaveSessionStatus("Show Results before saving so the authoritative result is preserved.", "error");
+    setSaveSessionStatus("Show Results before saving so the complete result is preserved.", "error");
     return;
   }
   if (
@@ -4356,17 +4449,18 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     && backendAuthorityPackage.validation.status === "calculated"
     && !backendAuthorityPackage.validation.confirmed
   ) {
+    const nextGroupMessage = remainingCorrectionShooterMessage(backendAuthorityPackage);
     SCZN3M4.saveConfirmationAuthority(backendAuthorityPackage, activeEvidence(), currentImpactPoints.map(safePoint).filter(Boolean));
     currentImpactPoints = [];
     clearCalculatedResults();
     setMode("impact");
-    setSaveSessionStatus("Additional correction recorded. Fire the next confirmation group.", "saved");
+    setSaveSessionStatus(nextGroupMessage, "saved");
     renderMarkers();
     renderMarkStatus();
     return;
   }
   setSavePersistenceDiagnostic(null);
-  setSaveSessionStatus("Saving authoritative session…", "saving");
+  setSaveSessionStatus("Saving session…", "saving");
   saveButton.disabled = true;
   saveButton.textContent = "Saving…";
   let saved = null;
@@ -4629,7 +4723,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   if (!saved || !saved.savedIdentifier || !saved.authorityPackage) {
     saveButton.disabled = false;
     saveButton.textContent = "Save Session";
-    setSaveSessionStatus("Save failed. The complete authoritative session was not preserved.", "error");
+    setSaveSessionStatus("Save failed. The complete session was not preserved.", "error");
     return;
   }
   if (saved && saved.targetEvidenceImage) {
@@ -4638,12 +4732,12 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   try {
     if (window.SCZN3Ops) window.SCZN3Ops.recordSessionSaved(saved, { hadSavedHistoryBefore });
   } catch (error) {}
-  sessionSaved = true;
+  markWorkspaceProgressPreserved();
   session = saved;
   if (isM4AuthoritySession() && m4LivePhase === "initial") {
     m4InitialAuthorityPackage = authorityPackage;
     m4LivePhase = "confirmation";
-    sessionSaved = false;
+    markWorkspaceProgressUnsaved();
     currentImpactPoints = [];
     holeEntrySettled = false;
     currentClicks = null;

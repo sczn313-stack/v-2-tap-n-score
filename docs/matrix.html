@@ -1233,6 +1233,28 @@ function canonicalGssfAttribution() {
   };
 }
 
+function canonicalBaker100YardAttribution() {
+  return {
+    target_profile_id: "baker_st_100yd_smart_zero",
+    targetProfileId: "baker_st_100yd_smart_zero",
+    mission_family: "zeroingCorrection",
+    missionFamily: "zeroingCorrection",
+    missionFamilyId: "zeroingCorrection",
+    targetId: "BAKER_ST_100YD_SMART",
+    targetVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    targetName: "Baker 100 Yard Smart Target",
+    targetFamily: "Baker 100 Yard Smart Target",
+    vendor: "Baker",
+    sku: "",
+    qr_id: "",
+    qrId: "",
+    targetDistance: "100 yds",
+    targetDistanceValue: "100",
+    targetDistanceUnit: "YDS",
+    targetDistanceLocked: false
+  };
+}
+
 function canonicalDotTortureAttribution() {
   return {
     target_profile_id: "dot_torture_ez2c_style_17",
@@ -1520,11 +1542,14 @@ function renderTargetModePill() {
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
   const isDotTorture = attribution.target_profile_id === "dot_torture_ez2c_style_17";
   const isM4 = attribution.target_profile_id === "m4_25m_zero";
+  const isBaker100Yard = attribution.target_profile_id === "baker_st_100yd_smart_zero";
   const gssfLabel = SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1");
   pill.textContent = isM4
     ? "Target Mode: M4 25 Meter Zero"
-    : (isDotTorture ? "Target Mode: Dot Torture" : `Target Mode: ${gssfLabel}`);
-  pill.classList.toggle("is-hidden", !(isM4 || isGssf || isDotTorture));
+    : (isBaker100Yard
+      ? "Target Mode: 100 Yard Bullseye"
+      : (isDotTorture ? "Target Mode: Dot Torture" : `Target Mode: ${gssfLabel}`));
+  pill.classList.toggle("is-hidden", !(isM4 || isBaker100Yard || isGssf || isDotTorture));
 }
 
 function collectFormSnapshot() {
@@ -1742,6 +1767,9 @@ function targetAttributionFromContext(data = {}) {
     || activeMatrix.targetFamily
     || ""
   ).toLowerCase();
+  if (queryTargetProfileId.toLowerCase() === "baker_st_100yd_smart_zero") {
+    return canonicalBaker100YardAttribution();
+  }
   if (
     scannedIdentity
     || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(activeSession))

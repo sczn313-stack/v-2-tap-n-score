@@ -102,7 +102,7 @@
 
 .target-page .correction-context-drawer{
   top:14%;
-  width:clamp(132px, 19%, 168px);
+  width:clamp(126px, 18%, 158px);
   border-radius:2px;
 }
 
@@ -112,13 +112,13 @@
 }
 
 .target-page .correction-context-panel{
-  gap:4px;
-  padding:0 6px 6px;
+  gap:3px;
+  padding:0 5px 5px;
 }
 
 .target-page .correction-context-panel select,
 .target-page .correction-context-panel input{
-  height:23px;
+  height:22px;
   padding:2px 4px;
   border-radius:2px;
   font-size:9px;
@@ -128,15 +128,13 @@
   font-size:7px;
 }
 
-.target-page #confirmCorrectionContext[hidden],
-.target-page #backToTaps[hidden]{
+.target-page #confirmCorrectionContext[hidden]{
   display:none!important;
 }
 
 .target-page .correction-context-actions{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:3px;
+  grid-template-columns:1fr;
 }
 
 .target-page .correction-context-actions .button{
@@ -214,9 +212,9 @@
 
 .sec-correction-context[open]{
   box-sizing:border-box;
-  height:108px;
+  height:auto;
   min-height:108px;
-  overflow:hidden;
+  overflow:visible;
 }
 
 .sec-correction-context .sec-session-record{
@@ -257,9 +255,13 @@
 
 .sec-session-record-fields{
   display:grid;
-  grid-template-columns:1.35fr 1fr 1fr;
+  grid-template-columns:1.6fr 1.2fr 1fr 1fr;
   gap:5px;
   min-width:0;
+}
+
+.sec-session-record-fields .sec-session-target{
+  grid-column:auto;
 }
 
 .sec-session-record-fields strong{
@@ -288,8 +290,11 @@
   }
 
   .sec-session-record-fields{
+    grid-template-columns:1.5fr 1fr;
     gap:3px;
   }
+
+  .sec-session-record-fields .sec-session-target{grid-column:1/-1}
 
   .sec-session-record-fields strong{
     font-size:9px;
@@ -765,6 +770,61 @@
   display:none;
 }
 
+.target-page .save-session-status.is-visible{
+  display:block;
+  left:8%;
+  right:8%;
+  bottom:12%;
+  padding:7px 9px;
+  border-color:rgba(73,190,99,.72);
+  background:rgba(7,18,12,.94);
+  color:#f5fff7;
+  font-size:clamp(9px,1.7vw,12px);
+  line-height:1.3;
+  text-align:center;
+}
+
+.target-page .correction-context-drawer{
+  width:min(238px,calc(100% - 60px));
+}
+
+.target-page .correction-context-drawer > summary{
+  min-height:24px;
+  padding:4px 6px;
+}
+
+.target-page .correction-context-title{
+  font-size:9px;
+  letter-spacing:.06em;
+}
+
+.target-page .correction-context-summary{
+  font-size:8px;
+}
+
+.target-page .correction-context-panel{
+  gap:3px;
+  padding:3px 5px 5px;
+}
+
+.target-page .correction-context-panel label{
+  gap:2px;
+  font-size:7px;
+}
+
+.target-page .correction-context-panel select,
+.target-page .correction-context-panel input{
+  min-height:24px;
+  padding:3px 5px;
+  font-size:9px;
+}
+
+.target-page .correction-context-actions button{
+  min-height:24px;
+  padding:4px 6px;
+  font-size:9px;
+}
+
 @media (max-width:560px){
   .target-page{
     --workspace-top-rail-height:44px;
@@ -779,7 +839,7 @@
   .target-page .correction-context-drawer{
     top:4px!important;
     left:6px!important;
-    width:min(280px,calc(100% - 56px));
+    width:min(220px,calc(100% - 56px));
   }
 
   .target-page .workspace-result-overlay{

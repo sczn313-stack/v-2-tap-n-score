@@ -7,8 +7,8 @@
       name: "M4 Carbine — 25 Meter Zero",
       description: "Experience military zeroing with authoritative digital analysis.",
       status: "available",
-      thumbnail: "assets/M4_TARGET_AUTHORITY_v1_ORIGINAL.png",
-      thumbnailAlt: "M4 25 Meter Zeroing Target",
+      thumbnail: "assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg",
+      thumbnailAlt: "Photographed M4/M16 Series Weapons 25M Zero target",
       href: "?v=baker&sku=ST-M16A2%2FM4"
     },
     {
