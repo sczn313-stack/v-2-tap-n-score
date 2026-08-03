@@ -2,7 +2,7 @@
   "use strict";
 
   const TARGET_LABELS = Object.freeze({
-    gssf_ac_1: "Competition Paper Target (Demo)"
+    gssf_ac_1: "GSSF AC-1"
   });
 
   function targetLabel(targetProfileId, fallback = "Target") {

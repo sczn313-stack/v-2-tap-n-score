@@ -1,0 +1,15 @@
+[build]
+  command = "npm run build:netlify"
+  publish = "dist/netlify"
+
+[[redirects]]
+  from = "/api/authority/m4"
+  to = "https://sczn3-authority.onrender.com/api/authority/m4"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/authority/ugeo"
+  to = "https://sczn3-authority.onrender.com/api/authority/ugeo"
+  status = 200
+  force = true

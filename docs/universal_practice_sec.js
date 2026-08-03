@@ -143,38 +143,13 @@
       },
       regions: [
         {
-          key: "result",
-          className: "sec-v1-result-content",
-          ariaLabel: "Primary Result",
-          contentHtml: `
-            <span class="sec-v1-result-label">Primary Result</span>
-            <div class="sec-primary-result-grid">
-              <div class="sec-primary-result-value">
-                <span>Practice Analysis</span>
-                <strong class="sec-v1-result-value">Unavailable</strong>
-                <p class="sec-v1-result-note">${escapeHtml(reason)}</p>
-              </div>
-              <div class="sec-supporting-metric">
-                <span>Measurements</span>
-                <strong>None calculated</strong>
-                <small>Missing authority remains unavailable. It is never converted to zero.</small>
-              </div>
-            </div>
-            ${global.SCZN3SEC.renderAchievementScale("Unavailable — no approved achievement authority")}
-            ${noticeHtml()}
-          `
-        },
-        {
           key: "evidence",
           className: "sec-v1-evidence-content",
-          ariaLabel: "Evidence Workspace",
+          ariaLabel: "Evidence",
           contentHtml: `
             <section class="sec-v1-adapter-block sec-practice-evidence" aria-labelledby="st001-evidence">
               <div class="sec-workspace-heading">
-                <div>
-                  <span>Proof</span>
-                  <h3 class="sec-v1-region-title" id="st001-evidence">Evidence Workspace</h3>
-                </div>
+                <div><span>1 · Evidence</span><h3 class="sec-v1-region-title" id="st001-evidence">Evidence Workspace</h3></div>
                 <small>Registered evidence is required before analysis can begin.</small>
               </div>
               <div class="sec-practice-evidence-unavailable" role="status">
@@ -185,57 +160,53 @@
           `
         },
         {
-          key: "experience",
-          className: "sec-v1-experience-stack",
-          ariaLabel: "Shooter Experience",
+          key: "measurement",
+          className: "sec-v1-measurement-content",
+          ariaLabel: "Measurement",
           contentHtml: `
-            <div class="sec-experience-heading">
-              <span>Understanding</span>
-              <h3 class="sec-v1-region-title">Shooter Experience</h3>
-            </div>
-            <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="st001-authority-state">
-              <span>Authority State</span>
-              <h3 id="st001-authority-state">Practice Analysis</h3>
-              <strong>Blocked</strong>
-            </section>
+            <div class="sec-experience-heading"><span>2 · Measurement</span><h3 class="sec-v1-region-title">Measured Result</h3></div>
+            <div class="sec-primary-result-grid"><div class="sec-primary-result-value"><span>Practice Analysis</span><strong class="sec-v1-result-value">Unavailable</strong></div><div class="sec-supporting-metric"><span>Measurements</span><strong>None calculated</strong><small>Missing authority remains unavailable. It is never converted to zero.</small></div></div>
+          `
+        },
+        {
+          key: "recommendation",
+          className: "sec-v1-recommendation-content",
+          ariaLabel: "Recommendation or Score",
+          contentHtml: `
+            <div class="sec-experience-heading"><span>3 · Recommendation / Score</span><h3 class="sec-v1-region-title">Analysis Status</h3></div>
             <section class="sec-v1-adapter-block sec-v1-explanation-primary sec-practice-explanation" aria-labelledby="st001-explanation">
-              <span class="sec-component-label">Why results are unavailable</span>
-              <h3 class="sec-v1-region-title" id="st001-explanation">Authority must precede measurement</h3>
-              <p>${escapeHtml(reason)}</p>
-              <p>No score, group measurement, POIB, consistency value, or improvement claim has been fabricated.</p>
-            </section>
-            <section class="sec-v1-adapter-block sec-v1-performance-detail sec-practice-performance" aria-labelledby="st001-blocked-fields">
-              <h3 class="sec-v1-region-title" id="st001-blocked-fields">Intentionally Blocked</h3>
-              ${blockedItemsHtml()}
+              <span class="sec-component-label">Why results are unavailable</span><h3 class="sec-v1-region-title" id="st001-explanation">Authority must precede measurement</h3><p>${escapeHtml(reason)}</p><p>No score, group measurement, POIB, consistency value, or improvement claim has been fabricated.</p>
             </section>
           `
         },
         {
-          key: "nextStep",
-          className: "sec-v1-next-step-content",
-          ariaLabel: "Next Recommended Step",
+          key: "execution",
+          className: "sec-v1-execution-content",
+          ariaLabel: "Execution",
           contentHtml: `
-            <span>Next Recommended Step</span>
+            <span>4 · Execution</span>
             <strong>Complete and approve ST-001 authority before Practice Analysis begins.</strong>
             <i aria-hidden="true">→</i>
           `
         },
         {
-          key: "session",
-          className: "sec-v1-session-content",
-          ariaLabel: "Session Summary",
+          key: "validation",
+          className: "sec-v1-validation-content",
+          ariaLabel: "Validation",
           contentHtml: `
-            <section class="sec-v1-adapter-block sec-v1-history-content" aria-labelledby="st001-session-summary">
-              <h3 class="sec-v1-region-title" id="st001-session-summary">Session Summary</h3>
-              ${sessionSummaryHtml(session)}
-            </section>
+            <div class="sec-experience-heading"><span>5 · Validation</span><h3 class="sec-v1-region-title">Authority State</h3></div>
+            <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="st001-authority-state"><span>Authority State</span><h3 id="st001-authority-state">Practice Analysis</h3><strong>Blocked</strong></section>
+            <section class="sec-v1-adapter-block sec-v1-performance-detail sec-practice-performance" aria-labelledby="st001-blocked-fields"><h3 class="sec-v1-region-title" id="st001-blocked-fields">Intentionally Blocked</h3>${blockedItemsHtml()}</section>
+            ${global.SCZN3SEC.renderAchievementScale("Unavailable — no approved achievement authority")}
+            ${noticeHtml()}
           `
         },
         {
-          key: "identity",
-          className: "sec-v1-identity-content",
-          ariaLabel: "Identity, confidence, signature, and actions",
+          key: "preservation",
+          className: "sec-v1-preservation-content",
+          ariaLabel: "Preservation",
           contentHtml: `
+            <section class="sec-v1-adapter-block sec-v1-history-content" aria-labelledby="st001-session-summary"><span>6 · Preservation</span><h3 class="sec-v1-region-title" id="st001-session-summary">Session Summary</h3>${sessionSummaryHtml(session)}</section>
             <div class="sec-v1-wordmark"><span>SEC</span><small>Shooter Experience Card</small></div>
             <div class="sec-identity-ledger">
               <div><span>Smart Target</span><strong>ST-001</strong></div>

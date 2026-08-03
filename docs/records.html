@@ -6,6 +6,7 @@
 <title>Ballistic Vault - Tap-n-Score</title>
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="ballistic-vault.css" />
+<link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
 <script src="navigation.js" defer></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
@@ -35,7 +36,7 @@
     </div>
   </section>
 </main>
-<script src="presentation_labels.js"></script>
+<script src="presentation_labels.js?v=universal-sec-1"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
@@ -49,6 +50,7 @@
 const historyList = document.getElementById("historyList");
 const RECORD_QUERY = new URLSearchParams(window.location.search);
 const SIMULATION_MODE = RECORD_QUERY.get("simulation") === "1";
+const REQUESTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("session") || RECORD_QUERY.get("sessionId") || "").trim();
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const SIMULATION_SESSION_ID = SIMULATION_MODE ? (localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY) || "") : "";
@@ -713,38 +715,13 @@ function renderGssfSecCard(session, index, pkg) {
     },
     regions: [
       {
-        key: "result",
-        className: "sec-v1-result-content sec-gssf-story-section sec-gssf-story-result",
-        ariaLabel: "Primary Result",
-        contentHtml: `
-          ${simulationSession ? '<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>' : ""}
-          <span class="sec-v1-result-label">Primary Result</span>
-          <div class="sec-primary-result-grid">
-            <div class="sec-primary-result-value">
-              <span>${escapeHtml(resultLabel)}</span>
-              <strong class="sec-v1-result-value">${escapeHtml(resultValue)}</strong>
-              ${hasTimerTime ? "" : '<p class="sec-v1-result-note">Timer time required for Final Time</p>'}
-            </div>
-            <div class="sec-supporting-metric">
-              <span>Supporting Metric</span>
-              <strong>${escapeHtml(observationCount)}</strong>
-              <small>${escapeHtml(authoritativeSummary)}</small>
-            </div>
-          </div>
-          ${secAchievementScaleHtml()}
-        `
-      },
-      {
         key: "evidence",
         className: "sec-v1-evidence-content sec-gssf-story-evidence-shell",
-        ariaLabel: "Evidence Workspace",
+        ariaLabel: "Evidence",
         contentHtml: `
           <section class="sec-v1-adapter-block sec-gssf-story-section sec-gssf-story-target" aria-labelledby="gssf-evidence-${index}">
             <div class="sec-workspace-heading">
-              <div>
-                <span>Proof</span>
-                <h3 class="sec-v1-region-title" id="gssf-evidence-${index}">Evidence Workspace</h3>
-              </div>
+              <div><span>1 · Evidence</span><h3 class="sec-v1-region-title" id="gssf-evidence-${index}">Target Evidence</h3></div>
               <small>Original target · confirmed impacts · governed classifications</small>
             </div>
             ${gssfSavedEvidenceHtml(session, pkg)}
@@ -752,19 +729,34 @@ function renderGssfSecCard(session, index, pkg) {
         `
       },
       {
-        key: "experience",
-        className: "sec-v1-experience-stack sec-gssf-story-explanation-shell",
-        ariaLabel: "Shooter Experience Rail",
+        key: "measurement",
+        className: "sec-v1-measurement-content sec-gssf-story-explanation-shell",
+        ariaLabel: "Measurement",
         contentHtml: `
-          <div class="sec-experience-heading">
-            <span>Understanding</span>
-            <h3 class="sec-v1-region-title">Shooter Experience</h3>
+          <div class="sec-experience-heading"><span>2 · Measurement</span><h3 class="sec-v1-region-title">Scoring Analysis</h3></div>
+          <div class="sec-primary-result-grid">
+            <div class="sec-supporting-metric"><span>Confirmed Evidence</span><strong>${escapeHtml(observationCount)}</strong><small>${escapeHtml(authoritativeSummary)}</small></div>
+            <div class="sec-supporting-metric"><span>${hasTimerTime ? "Paper Penalty" : "Scoring Distribution"}</span><strong>${hasTimerTime ? escapeHtml(paperPenalty) : escapeHtml(authoritativeSummary)}</strong></div>
           </div>
-          <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="gssf-secondary-${index}">
-            <span>Secondary Result</span>
-            <h3 id="gssf-secondary-${index}">${hasTimerTime ? "Paper Penalty" : "Scoring Distribution"}</h3>
-            <strong>${hasTimerTime ? escapeHtml(paperPenalty) : escapeHtml(authoritativeSummary)}</strong>
+          <section class="sec-v1-adapter-block sec-v1-performance-detail sec-gssf-story-section sec-gssf-story-buckets" aria-labelledby="gssf-score-build-${index}">
+            <h3 class="sec-v1-region-title" id="gssf-score-build-${index}">How Your Paper Penalty Was Built</h3>
+            ${gssfBucketSummaryHtml(pkg)}
           </section>
+        `
+      },
+      {
+        key: "recommendation",
+        className: "sec-v1-recommendation-content sec-gssf-story-section sec-gssf-story-result",
+        ariaLabel: "Recommendation or Score",
+        contentHtml: `
+          ${simulationSession ? '<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>' : ""}
+          <span class="sec-v1-result-label">3 · Recommendation / Score</span>
+          <div class="sec-primary-result-grid">
+            <div class="sec-primary-result-value">
+              <span>${escapeHtml(resultLabel)}</span><strong class="sec-v1-result-value">${escapeHtml(resultValue)}</strong>
+              ${hasTimerTime ? "" : '<p class="sec-v1-result-note">Timer time required for Final Time</p>'}
+            </div>
+          </div>
           <section class="sec-v1-adapter-block sec-v1-explanation-primary sec-gssf-story-section sec-gssf-story-explanation" aria-labelledby="gssf-explanation-${index}">
             <span class="sec-component-label">Performance Insights</span>
             <h3 class="sec-v1-region-title" id="gssf-explanation-${index}">${hasTimerTime ? "How Your Final Time Was Calculated" : "How Your Final Time Is Calculated"}</h3>
@@ -785,41 +777,41 @@ function renderGssfSecCard(session, index, pkg) {
               </div>
             </div>
           </section>
-          <section class="sec-v1-adapter-block sec-v1-performance-detail sec-gssf-story-section sec-gssf-story-buckets" aria-labelledby="gssf-score-build-${index}">
-            <h3 class="sec-v1-region-title" id="gssf-score-build-${index}">How Your Paper Penalty Was Built</h3>
-            ${gssfBucketSummaryHtml(pkg)}
-          </section>
+          ${secAchievementScaleHtml()}
         `
       },
       {
-        key: "nextStep",
-        className: "sec-v1-next-step-content",
-        ariaLabel: "Next Recommended Step",
+        key: "execution",
+        className: "sec-v1-execution-content",
+        ariaLabel: "Execution",
         contentHtml: `
-          <span>Next Recommended Step</span>
+          <span>4 · Execution</span>
           <strong>${escapeHtml(nextStep)}</strong>
           <i aria-hidden="true">→</i>
         `
       },
       {
-        key: "session",
-        className: "sec-v1-session-content sec-gssf-story-history-shell",
-        ariaLabel: "Session Summary",
+        key: "validation",
+        className: "sec-v1-validation-content",
+        ariaLabel: "Validation",
+        contentHtml: `
+          <div class="sec-experience-heading"><span>5 · Validation</span><h3 class="sec-v1-region-title">Governed Result</h3></div>
+          ${gssfSecValidationDetailsHtml(session, pkg, competition)}
+          <div class="sec-identity-ledger"><div><span>Confidence</span><strong>${escapeHtml(confidence)}</strong></div><div><span>Evidence</span><strong>${escapeHtml(pkg.evidenceHash ? pkg.evidenceHash.slice(0, 16) : "Unavailable")}</strong></div></div>
+        `
+      },
+      {
+        key: "preservation",
+        className: "sec-v1-preservation-content sec-gssf-story-history-shell",
+        ariaLabel: "Preservation",
         contentHtml: `
           <section class="sec-v1-adapter-block sec-v1-history-content sec-gssf-story-section sec-gssf-story-session" aria-labelledby="gssf-session-${index}">
-            <h3 class="sec-v1-region-title" id="gssf-session-${index}">Session Summary</h3>
+            <span>6 · Preservation</span><h3 class="sec-v1-region-title" id="gssf-session-${index}">Session Summary</h3>
             ${gssfSessionSummaryHtml(session, snapshot, missionDisplayName, weapon, weaponMeta, simulationSession)}
             ${gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, weapon, weaponMeta)}
             ${attributionLine(snapshot)}
           </section>
           ${simulationSession && index === 0 ? simulationCompletionHtml(SCZN3M4.getSessionHistory().filter(isCurrentSimulationSession).length) : ""}
-        `
-      },
-      {
-        key: "identity",
-        className: "sec-v1-identity-content sec-gssf-story-identity",
-        ariaLabel: "Identity, confidence, signature, and actions",
-        contentHtml: `
           <div class="sec-v1-wordmark"><span>SEC</span><small>Shooter Experience Card</small></div>
           <div class="sec-identity-ledger">
             <div><span>Smart Target</span><strong>${escapeHtml(missionDisplayName)}</strong></div>
@@ -830,6 +822,8 @@ function renderGssfSecCard(session, index, pkg) {
           <div class="sec-v1-record-actions" aria-label="SEC actions">
             <span class="sec-save-status">Saved SEC</span>
             <button type="button" data-sec-export>Export SEC</button>
+            <button type="button" data-sec-share>Share SEC</button>
+            <a class="sec-action-link" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a>
           </div>
         `
       }
@@ -1095,6 +1089,26 @@ function renderM4VaultEntry(session) {
   `;
 }
 
+const UNIVERSAL_SEC_STAGES = Object.freeze([
+  "evidence",
+  "measurement",
+  "recommendation",
+  "execution",
+  "validation",
+  "preservation"
+]);
+
+function universalSecStageHtml(stage, title, contentHtml) {
+  const position = UNIVERSAL_SEC_STAGES.indexOf(stage) + 1;
+  const label = stage === "recommendation" ? "Recommendation / Score" : stage[0].toUpperCase() + stage.slice(1);
+  return `
+    <section class="sec-universal-stage sec-universal-stage-${escapeHtml(stage)}" data-sec-stage="${escapeHtml(stage)}" aria-label="${escapeHtml(label)}">
+      <header class="sec-universal-stage-heading"><span>${position} · ${escapeHtml(label)}</span><h3>${escapeHtml(title)}</h3></header>
+      <div class="sec-universal-stage-content">${contentHtml}</div>
+    </section>
+  `;
+}
+
 function renderHistory() {
   const allSavedSessions = SCZN3M4.getSessionHistory().slice()
     .filter(session => session && session.savedToSEC === true)
@@ -1104,7 +1118,10 @@ function renderHistory() {
       return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
     });
   const simulationCount = allSavedSessions.filter(isCurrentSimulationSession).length;
-  const savedSessions = SIMULATION_MODE ? allSavedSessions.filter(isCurrentSimulationSession) : allSavedSessions;
+  const modeSessions = SIMULATION_MODE ? allSavedSessions.filter(isCurrentSimulationSession) : allSavedSessions;
+  const savedSessions = REQUESTED_RECORD_SESSION_ID
+    ? modeSessions.filter(session => String(session.sessionId || "") === REQUESTED_RECORD_SESSION_ID)
+    : modeSessions;
   const sessions = savedSessions.slice(0, 10);
   if (!sessions.length) {
     document.body.dataset.secState = "empty";
@@ -1161,42 +1178,43 @@ function renderHistory() {
       correctionInstruction(clicks.windage, "windage")
     ].filter(Boolean);
     const impactsDisplay = shotCount === null ? "Unavailable" : `${shotCount} ${shotCount === 1 ? "impact" : "impacts"}`;
+    const evidenceStage = universalSecStageHtml("evidence", "Target Evidence", `
+      <div class="history-thumb"><img src="${thumbnail}" alt="Uploaded target evidence thumbnail" /><div class="history-evidence-layer">${authorityVisual(session)}</div></div>
+    `);
+    const measurementStage = universalSecStageHtml("measurement", "Group Measurement", `
+      <div class="sec-journal-grid"><div><span>Confirmed Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div><div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div></div>
+      ${hasAuthority ? authorityDetailLine(pkg, simulationSession) : authorityMessage}
+    `);
+    const recommendationStage = universalSecStageHtml("recommendation", "Result and Correction", `
+      <section class="sec-journal-score" aria-label="Saved target score"><span>Final Score</span><strong>${escapeHtml(scoreDisplay)}</strong></section>
+      <section class="sec-correction-callout" aria-label="Authoritative scope corrections"><span>Corrections</span><div>${correctionDisplay.length ? correctionDisplay.map(correctionInstructionHtml).join("") : '<strong class="sec-correction-unavailable">Unavailable</strong>'}</div></section>
+    `);
+    const executionStage = universalSecStageHtml("execution", "Apply the Governed Result", `
+      <strong>${correctionDisplay.length ? "Apply the displayed correction before firing the confirmation group." : "No execution instruction is available for this preserved result."}</strong>
+    `);
+    const validationStage = universalSecStageHtml("validation", "Authority and Validation", `
+      ${simulationSession ? "Simulation result — no governed validation claim." : zeroingValidationDetailsHtml(pkg, hasAuthority)}
+    `);
+    const preservationStage = universalSecStageHtml("preservation", "Preserved Session", `
+      ${simulationSession ? `<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>${simulationPublisherHtml()}` : ""}
+      <div class="sec-journal-grid">
+        <div><span>Firearm</span><strong>${simulationSession ? "Simulation" : escapeHtml(weapon || "--")}</strong></div>
+        <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
+        ${simulationSession ? '<div class="sec-journal-wide"><span>Scope / Optic</span><strong>Simulation</strong></div>' : optic ? `<div class="sec-journal-wide"><span>Scope / Optic</span><strong>${escapeHtml(optic)}</strong></div>` : ""}
+      </div>
+      ${weaponMeta || ammo ? `<div class="sec-setup-line">${[weaponMeta, ammo].filter(Boolean).join(" | ")}</div>` : ""}
+      ${simulationSession ? "" : attributionLine(snapshot)}
+      ${simulationSession && index === 0 ? simulationCompletionHtml(simulationCount) : ""}
+      <div class="sec-v1-record-actions" aria-label="SEC actions">
+        <span class="sec-save-status">Saved SEC</span>
+        <button type="button" data-sec-export>Export SEC</button>
+        <button type="button" data-sec-share>Share SEC</button>
+        <a class="sec-action-link" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a>
+      </div>
+    `);
     return `
-      <article class="history-card zeroing-sec-card${simulationSession ? " is-simulation" : ""}" data-session-id="${session.sessionId}">
-          <div class="history-thumb">
-            <img src="${thumbnail}" alt="Uploaded target evidence thumbnail" />
-            <div class="history-evidence-layer">${authorityVisual(session)}</div>
-          </div>
-        <div class="history-copy">
-          ${simulationSession ? `<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>${simulationPublisherHtml()}` : ""}
-          <section class="sec-journal-score" aria-label="Saved target score">
-            <span>Final Score</span>
-            <strong>${escapeHtml(scoreDisplay)}</strong>
-          </section>
-          <section class="sec-correction-callout" aria-label="Authoritative scope corrections">
-            <span>Scope Corrections</span>
-            <div>
-              ${correctionDisplay.length
-                ? correctionDisplay.map(correctionInstructionHtml).join("")
-                : '<strong class="sec-correction-unavailable">Unavailable</strong>'}
-            </div>
-          </section>
-          <div class="sec-journal-grid">
-            <div><span>Firearm</span><strong>${simulationSession ? "Simulation" : escapeHtml(weapon || "--")}</strong></div>
-            <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
-            <div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div>
-            <div><span>Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div>
-            ${simulationSession
-              ? '<div class="sec-journal-wide"><span>Scope / Optic</span><strong>Simulation</strong></div>'
-              : optic ? `<div class="sec-journal-wide"><span>Scope / Optic</span><strong>${escapeHtml(optic)}</strong></div>` : ""}
-          </div>
-          ${weaponMeta || ammo ? `<div class="sec-setup-line">${[weaponMeta, ammo].filter(Boolean).join(" | ")}</div>` : ""}
-          ${simulationSession ? "" : attributionLine(snapshot)}
-          ${authorityMessage}
-          ${hasAuthority ? authorityDetailLine(pkg, simulationSession) : ""}
-          ${simulationSession ? "" : zeroingValidationDetailsHtml(pkg, hasAuthority)}
-          ${simulationSession && index === 0 ? simulationCompletionHtml(simulationCount) : ""}
-        </div>
+      <article class="history-card zeroing-sec-card sec-universal-flow${simulationSession ? " is-simulation" : ""}" data-session-id="${session.sessionId}">
+        ${evidenceStage}${measurementStage}${recommendationStage}${executionStage}${validationStage}${preservationStage}
       </article>
     `;
   }).join("");
@@ -1205,8 +1223,9 @@ function renderHistory() {
 }
 
 renderHistory();
+syncSecShareCapability();
 window.addEventListener("resize", syncSecEvidenceLayers);
-document.getElementById("saveSecPage")?.addEventListener("click", saveSecPageImage);
+document.getElementById("saveSecPage")?.addEventListener("click", event => saveSecPageImage({ button: event.currentTarget }));
 historyList.addEventListener("click", event => {
   const m4Button = event.target.closest("[data-open-m4-sec]");
   if (m4Button) {
@@ -1214,11 +1233,27 @@ historyList.addEventListener("click", event => {
     window.location.href = "sec.html?v=stay-on-screen-002";
     return;
   }
-  if (!event.target.closest("[data-sec-export]")) return;
-  saveSecPageImage();
+  const exportButton = event.target.closest("[data-sec-export]");
+  const shareButton = event.target.closest("[data-sec-share]");
+  const actionButton = exportButton || shareButton;
+  if (!actionButton) return;
+  saveSecPageImage({
+    button: actionButton,
+    card: actionButton.closest(".history-card"),
+    mode: shareButton ? "share" : "download"
+  });
 });
 
 const GSSF_SEC_EXPORT_WIDTH = 390;
+
+function syncSecShareCapability() {
+  const shareSupported = typeof navigator.share === "function" && typeof File === "function";
+  document.querySelectorAll("[data-sec-share]").forEach(button => {
+    button.hidden = !shareSupported;
+    button.disabled = !shareSupported;
+    button.setAttribute("aria-hidden", shareSupported ? "false" : "true");
+  });
+}
 
 function cloneGssfExportSection(card, selector) {
   const section = card.querySelector(selector);
@@ -1238,27 +1273,29 @@ function gssfExportHeader(pageLabel) {
 function buildGssfSecExportPages(card) {
   if (!card || card.dataset.gssfExportReady !== "true") return [];
   const pageOne = document.createElement("article");
-  pageOne.className = "gssf-sec-export-page gssf-sec-export-results";
+  pageOne.className = "gssf-sec-export-page gssf-sec-export-evidence";
   pageOne.dataset.exportPage = "1";
-  pageOne.append(gssfExportHeader("Results"));
+  pageOne.append(gssfExportHeader("Evidence"));
   [
-    ".sec-gssf-story-result",
-    ".sec-gssf-story-explanation",
-    ".sec-gssf-story-buckets"
+    ".sec-gssf-story-target",
+    ".sec-gssf-export-evidence-meta",
+    ".sec-gssf-export-footer"
   ].forEach(selector => {
     const section = cloneGssfExportSection(card, selector);
-    if (section) pageOne.append(section);
+    if (!section) return;
+    section.removeAttribute("hidden");
+    pageOne.append(section);
   });
 
   const pageTwo = document.createElement("article");
-  pageTwo.className = "gssf-sec-export-page gssf-sec-export-evidence";
+  pageTwo.className = "gssf-sec-export-page gssf-sec-export-results";
   pageTwo.dataset.exportPage = "2";
-  pageTwo.append(gssfExportHeader("Evidence"));
+  pageTwo.append(gssfExportHeader("Measurement → Preservation"));
   [
-    ".sec-gssf-story-target",
+    ".sec-gssf-story-buckets",
+    ".sec-gssf-story-result",
+    ".sec-gssf-story-explanation",
     ".sec-gssf-story-session",
-    ".sec-gssf-export-evidence-meta",
-    ".sec-gssf-export-footer"
   ].forEach(selector => {
     const section = cloneGssfExportSection(card, selector);
     if (!section) return;
@@ -1267,7 +1304,6 @@ function buildGssfSecExportPages(card) {
       section.querySelector(".sec-attribution-line")?.remove();
       section.querySelector(".sec-gssf-session-complete")?.removeAttribute("hidden");
     }
-    section.removeAttribute("hidden");
     pageTwo.append(section);
   });
   return [pageOne, pageTwo];
@@ -1352,20 +1388,24 @@ async function saveGssfSecTwoPageImages(card) {
     for (const page of pages) await prepareGssfExportPage(page);
     const stamp = new Date().toISOString().slice(0, 10);
     const files = [];
-    files.push(await captureSecNode(pages[0], `SEC-${stamp}-01-results.png`, GSSF_SEC_EXPORT_WIDTH));
-    files.push(await captureSecNode(pages[1], `SEC-${stamp}-02-evidence.png`, GSSF_SEC_EXPORT_WIDTH));
+    files.push(await captureSecNode(pages[0], `SEC-${stamp}-01-evidence.png`, GSSF_SEC_EXPORT_WIDTH));
+    files.push(await captureSecNode(pages[1], `SEC-${stamp}-02-results.png`, GSSF_SEC_EXPORT_WIDTH));
     return files;
   } finally {
     stage.remove();
   }
 }
 
-async function saveSecPageImage() {
-  const saveButton = document.getElementById("saveSecPage");
-  const originalLabel = saveButton.textContent;
-  saveButton.disabled = true;
-  saveButton.textContent = "Preparing…";
-  const gssfCard = document.querySelector('.gssf-sec-card[data-gssf-export-ready="true"]');
+async function saveSecPageImage({ button = null, card = null, mode = "download" } = {}) {
+  const actionButton = button || document.getElementById("saveSecPage");
+  const originalLabel = actionButton ? actionButton.textContent : "";
+  if (actionButton) {
+    actionButton.disabled = true;
+    actionButton.textContent = "Preparing…";
+  }
+  const gssfCard = card && card.matches('.gssf-sec-card[data-gssf-export-ready="true"]')
+    ? card
+    : (!card ? document.querySelector('.gssf-sec-card[data-gssf-export-ready="true"]') : null);
   try {
     let captures;
     if (gssfCard) {
@@ -1379,31 +1419,38 @@ async function saveSecPageImage() {
       document.body.dataset.gssfExportGenerationStatus = "complete";
       captures = files;
     } else {
-      const target = document.querySelector(".history-panel");
+      const target = card || document.querySelector(".history-panel");
       if (!target) throw new Error("SEC content is unavailable.");
       const stamp = new Date().toISOString().slice(0, 10);
       captures = [await captureSecNode(target, `SEC-${stamp}.png`)];
     }
-    document.body.dataset.secSaveDelivery = await deliverSecCaptures(captures, { mode: "download" });
-    document.body.dataset.gssfExportDeliveryStatus = document.body.dataset.secSaveDelivery;
+    const delivery = await deliverSecCaptures(captures, { mode });
+    document.body.dataset.secSaveDelivery = delivery;
+    document.body.dataset.gssfExportDeliveryStatus = delivery;
     if (gssfCard) document.body.dataset.gssfExportStatus = "complete";
-    saveButton.textContent = "Saved";
+    if (actionButton) {
+      actionButton.textContent = delivery === "shared"
+        ? "Shared"
+        : delivery === "downloaded"
+          ? "Exported"
+          : "Share Unavailable";
+    }
   } catch (error) {
     if (error && error.name === "AbortError") {
       document.body.dataset.secSaveDelivery = "cancelled";
-      saveButton.textContent = originalLabel;
+      if (actionButton) actionButton.textContent = originalLabel;
       return;
     }
     document.body.dataset.secSaveDelivery = "failed";
     document.body.dataset.gssfExportDeliveryStatus = "failed";
     if (gssfCard) document.body.dataset.gssfExportStatus = "failed";
-    saveButton.textContent = "Save Failed — Try Again";
+    if (actionButton) actionButton.textContent = "Try Again";
     console.error("SEC save failed", error);
     return;
   } finally {
-    saveButton.disabled = false;
+    if (actionButton) actionButton.disabled = false;
   }
-  setTimeout(() => { saveButton.textContent = originalLabel; }, 1600);
+  if (actionButton) setTimeout(() => { actionButton.textContent = originalLabel; }, 1600);
 }
 </script>
 </body>

@@ -2,7 +2,7 @@
   "use strict";
 
   const VERSION = "1.1";
-  const REQUIRED_REGIONS = ["result", "evidence", "experience", "nextStep", "session", "identity"];
+  const REQUIRED_REGIONS = ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"];
   const ACHIEVEMENT_LEVELS = Object.freeze([
     Object.freeze(["needs-attention", "Needs Attention"]),
     Object.freeze(["developing", "Developing"]),

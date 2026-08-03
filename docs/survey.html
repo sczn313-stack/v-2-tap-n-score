@@ -3,110 +3,52 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tap-n-Score Feedback Survey</title>
+<meta name="theme-color" content="#050505" />
+<title>Smart Target Family Survey | Tap-n-Score™</title>
+<meta name="description" content="Help shape the next generation of Smart Targets." />
 <link rel="stylesheet" href="styles.css" />
-<script src="ops.js?v=ops-v3-0623"></script>
-<script src="navigation.js" defer></script>
+<link rel="stylesheet" href="landing.css" />
 </head>
-<body class="platform-page survey-page">
-<main class="shell">
-  <header class="m4-header">
-    <div class="vendor-slot">
-      <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
-      <div class="brand-lockup">
-        <a class="vendor-name" href="index.html">Tap-n-Score™</a>
-      </div>
+<body class="package-landing-page ecosystem-landing-page ecosystem-survey-page">
+<main class="package-landing-shell">
+  <header class="ecosystem-header" aria-label="Tap-n-Score header">
+    <div class="ecosystem-brand-lockup">
+      <img class="ecosystem-brand-mark" src="assets/SCZN3_GOLD_CROSSHAIR_FOUNDER_APPROVED.jpeg" alt="" aria-hidden="true" />
+      <a class="ecosystem-brand" href="index.html" aria-label="Tap-n-Score home">
+        <span class="ecosystem-brand-name">Tap-n-Score<sup>™</sup></span>
+        <span class="ecosystem-brand-promise">SHOOT. SCAN. SAVE. IMPROVE.</span>
+      </a>
     </div>
-    <nav class="locked-nav" aria-label="Target workflow navigation">
-      <a class="locked-nav-item" href="index.html"><span class="nav-dot"></span><span>🏠 Home</span></a>
-      <a class="locked-nav-item" href="matrix.html"><span class="nav-dot"></span><span>Weapon Library</span></a>
-      <a class="locked-nav-item" href="shoot.html"><span class="nav-dot"></span><span class="target-nav-icon" aria-hidden="true"></span><span>Target</span></a>
-      <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>SEC</span></a>
-      <a class="locked-nav-item is-active" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
-    </nav>
-    <details class="mobile-platform-menu">
-      <summary aria-label="Open navigation">☰</summary>
-      <a href="index.html">Home</a>
-      <a href="matrix.html">Weapon Library</a>
-      <a href="shoot.html">Target</a>
-      <a href="records.html">SEC</a>
-      <a href="survey.html" aria-current="page">Survey</a>
-    </details>
+    <a class="ecosystem-survey-back" href="index.html#targetExperiences">BACK TO TARGETS</a>
   </header>
-  <section class="active-session-bar"><strong>Survey</strong><span>Tap-n-Score Feedback</span></section>
 
-  <section class="panel matrix-form">
-    <span class="kicker">Feedback</span>
-    <h1>Shooter Feedback Survey</h1>
-    <form id="surveyForm">
-      <section class="form-section">
-        <h2>Survey</h2>
-        <div class="matrix-grid">
-          <label>Was the target easy to understand?
-            <select name="targetUnderstand" required>
-              <option value="">Select Answer</option><option>Yes</option><option>No</option><option>Somewhat</option>
-            </select>
-          </label>
-          <label>Was the Weapon Setup page easy to use?
-            <select name="weaponSetupEasy" required>
-              <option value="">Select Answer</option><option>Yes</option><option>No</option><option>Somewhat</option>
-            </select>
-          </label>
-          <label>Did the Target page help you understand your shot correction?
-            <select name="targetCorrectionHelp" required>
-              <option value="">Select Answer</option><option>Yes</option><option>No</option><option>Somewhat</option>
-            </select>
-          </label>
-          <label>Did you save or view your SEC?
-            <select name="secViewed" required>
-              <option value="">Select Answer</option><option>Yes</option><option>No</option><option>I did not know what SEC was</option>
-            </select>
-          </label>
-          <label>Would you use SCZN3 again?
-            <select name="useAgain" required>
-              <option value="">Select Answer</option><option>Yes</option><option>No</option><option>Maybe</option>
-            </select>
-          </label>
-          <label>What should we improve?
-            <textarea name="improve" rows="5"></textarea>
-          </label>
-          <label>What worked well?
-            <textarea name="workedWell" rows="5"></textarea>
-          </label>
-        </div>
-      </section>
+  <section class="ecosystem-survey-main" aria-labelledby="surveyTitle">
+    <div class="ecosystem-survey-card">
+      <p class="ecosystem-kicker">SMART TARGET FAMILY SURVEY</p>
+      <h1 id="surveyTitle">Help the Smart Target Family Grow.</h1>
+      <p class="ecosystem-survey-lead">Tell us what targets you shoot. Help shape the next generation of Smart Targets.</p>
 
-      <div class="action-grid">
-        <button class="button primary" type="submit">Submit Survey</button>
-        <a class="button" href="index.html">Back Home</a>
+      <div class="ecosystem-survey-placeholder" role="status">
+        <strong>The survey is being prepared.</strong>
+        <p>It will invite shooters to share:</p>
+        <ul>
+          <li>Which targets they currently use</li>
+          <li>Which targets they want added next</li>
+          <li>What shooting experiences they want SCZN3 to support</li>
+          <li>Additional comments and suggestions</li>
+        </ul>
       </div>
-      <p class="survey-message" id="surveyMessage" role="status" aria-live="polite"></p>
-    </form>
+
+      <a class="ecosystem-survey-return" href="index.html#targetExperiences">RETURN TO TARGET EXPERIENCES <span aria-hidden="true">→</span></a>
+    </div>
   </section>
+
+  <footer class="ecosystem-footer" aria-label="SCZN3 platform principles">
+    <div><strong>VERIFIED RESULTS</strong><span>Evidence before opinion.</span></div>
+    <div><strong>YOUR DATA IS YOURS</strong><span>Private. Always secure.</span></div>
+    <div><strong>SAVE &amp; TRACK</strong><span>Every session. Every shot.</span></div>
+    <div><strong>KEEP IMPROVING</strong><span>Today. Tomorrow. Always.</span></div>
+  </footer>
 </main>
-<script>
-const SURVEY_KEY = "SCZN3_SURVEY_RESPONSES";
-const form = document.getElementById("surveyForm");
-const message = document.getElementById("surveyMessage");
-
-function readResponses() {
-  try {
-    return JSON.parse(localStorage.getItem(SURVEY_KEY) || "[]");
-  } catch (error) {
-    console.warn("Survey response read failed", error);
-    return [];
-  }
-}
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const data = Object.fromEntries(new FormData(form).entries());
-  const responses = readResponses();
-  responses.unshift({ ...data, submittedAt: new Date().toISOString() });
-  localStorage.setItem(SURVEY_KEY, JSON.stringify(responses));
-  message.textContent = "Thank you for helping improve Tap-n-Score.";
-  form.reset();
-});
-</script>
 </body>
 </html>

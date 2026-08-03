@@ -1,0 +1,29 @@
+/* Universal evidence-first SEC and Ballistic Vault reading order. */
+.records-page .sec-v1-flow,
+.records-page .sec-universal-flow{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+.records-page .sec-v1-region,
+.records-page .sec-universal-stage{grid-column:1!important;grid-row:auto!important;min-width:0;padding:14px!important;border:1px solid #d7c9aa!important;border-radius:10px!important;background:#fffdf8!important}
+.records-page .sec-v1-evidence,.records-page .sec-universal-stage-evidence{order:1}
+.records-page .sec-v1-measurement,.records-page .sec-universal-stage-measurement{order:2}
+.records-page .sec-v1-recommendation,.records-page .sec-universal-stage-recommendation{order:3;background:#fff8e7!important;border-color:#c69a36!important}
+.records-page .sec-v1-execution,.records-page .sec-universal-stage-execution{order:4}
+.records-page .sec-v1-validation,.records-page .sec-universal-stage-validation{order:5;background:#f1f7ef!important;border-color:#6f8d70!important}
+.records-page .sec-v1-preservation,.records-page .sec-universal-stage-preservation{order:6;background:#f4efe5!important;border-color:#9c8353!important}
+.records-page .sec-universal-stage{display:grid;gap:11px}
+.records-page .sec-universal-stage-heading{display:grid;gap:3px;padding-bottom:8px;border-bottom:1px solid #d7c9aa}
+.records-page .sec-universal-stage-heading span,
+.records-page .sec-v1-region>.sec-experience-heading>span,
+.records-page .sec-v1-region>.sec-v1-result-label,
+.records-page .sec-v1-region>span:first-child{color:#8a6212;font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.records-page .sec-universal-stage-heading h3{margin:0;font-size:clamp(19px,4vw,27px);line-height:1.05}
+.records-page .sec-universal-stage-content{display:grid;gap:10px;min-width:0}
+.records-page .sec-universal-stage .history-thumb{width:min(100%,560px);margin:0 auto}
+.records-page .sec-v1-preservation-content{display:grid;gap:12px}
+.records-page .sec-v1-preservation-content .sec-v1-wordmark,
+.records-page .sec-v1-preservation-content .sec-identity-ledger,
+.records-page .sec-v1-preservation-content .sec-v1-record-actions{position:static!important;grid-column:auto!important;grid-row:auto!important}
+
+@media(max-width:560px){
+  .records-page .sec-v1-region,.records-page .sec-universal-stage{padding:10px!important}
+  .records-page .sec-universal-stage-heading h3{font-size:20px}
+}

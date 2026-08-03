@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tap-n-score.com/schemas/military-weapon-equipment-registry-v1.json",
+  "title": "SCZN3 Military Weapon & Equipment Library",
+  "type": "object",
+  "required": [
+    "registryId",
+    "schemaVersion",
+    "authorityOwner",
+    "publicationStatus",
+    "records"
+  ],
+  "properties": {
+    "registryId": { "const": "SCZN3-MILITARY-WEAPON-EQUIPMENT-LIBRARY" },
+    "schemaVersion": { "type": "string" },
+    "authorityOwner": { "const": "SCZN3 Weapon Library" },
+    "publicationStatus": {
+      "enum": ["research", "draft", "validation", "founder_review", "production"]
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "recordId",
+          "recordType",
+          "status",
+          "militaryDesignation",
+          "displayName",
+          "serviceBranches",
+          "compatibleWeaponPlatforms",
+          "equipmentIdentity",
+          "adjustmentSystem",
+          "adjustmentUnit",
+          "axes",
+          "sourceDocumentation",
+          "validationRecord",
+          "effectiveDate",
+          "revisionDate"
+        ],
+        "properties": {
+          "recordId": { "type": "string", "minLength": 1 },
+          "recordType": { "type": "string", "minLength": 1 },
+          "status": {
+            "enum": ["research", "draft", "validation", "proven", "retired"]
+          },
+          "libraryPublicationStatus": {
+            "enum": ["research", "draft", "validation", "founder_review", "production"]
+          },
+          "manufacturer": { "type": ["string", "null"] },
+          "serviceBranches": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["branch", "approvedUse"],
+              "properties": {
+                "branch": {
+                  "enum": [
+                    "Army",
+                    "Marine Corps",
+                    "Navy",
+                    "Air Force",
+                    "Space Force",
+                    "Coast Guard"
+                  ]
+                },
+                "approvedUse": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "axes": {
+            "type": "object",
+            "required": ["windage", "elevation"],
+            "properties": {
+              "windage": { "$ref": "#/$defs/axis" },
+              "elevation": { "$ref": "#/$defs/axis" }
+            },
+            "additionalProperties": false
+          },
+          "sourceDocumentation": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "axis": {
+      "type": "object",
+      "required": [
+        "control",
+        "movementPerClick",
+        "movementUnit",
+        "directionConvention"
+      ],
+      "properties": {
+        "control": { "type": "string", "minLength": 1 },
+        "movementPerClick": { "type": "number", "exclusiveMinimum": 0 },
+        "movementUnit": { "enum": ["MOA", "MRAD"] },
+        "directionConvention": {
+          "type": "object",
+          "minProperties": 2
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

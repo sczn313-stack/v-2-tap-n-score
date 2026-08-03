@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="sczn3-authority-endpoint" content="https://sczn3-authority.onrender.com/api/authority/ugeo" />
+<meta name="sczn3-authority-endpoint" content="/api/authority/ugeo" />
 <title>Target</title>
 <link rel="stylesheet" href="styles.css?v=workspace-template-v1" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=episode45-ui-polish-v1" />
@@ -133,7 +133,7 @@ window.addEventListener("error", event => {
     new ResizeObserver(syncWorkspaceTopOverlayGeometry).observe(workspaceStage);
   }
 </script>
-<script src="presentation_labels.js"></script>
+<script src="presentation_labels.js?v=universal-sec-1"></script>
 <script src="smart_target_identity.js"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
@@ -356,6 +356,7 @@ let currentClicks = zeroingClicksFromAuthorityPackage(backendAuthorityPackage);
 let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
 let authorityStatusMessage = "";
+let authorityRequestInFlight = false;
 let sessionSaved = false;
 let workspaceHasUnsavedProgress = !!(
   session
@@ -404,11 +405,12 @@ let correctionContextConfirmedFingerprint = String(
 let selectedSightSystem = "";
 
 function isM4AuthoritySession() {
-  return activeTargetProfileId() === "m4_25m_zero"
-    || !!(window.SCZN3SmartTargetIdentity && (
+  const targetProfileId = activeTargetProfileId();
+  if (targetProfileId) return targetProfileId === "m4_25m_zero";
+  return !!(window.SCZN3SmartTargetIdentity && (
       SCZN3SmartTargetIdentity.isM4(session)
       || SCZN3SmartTargetIdentity.isM4(matrix)
-      || SCZN3SmartTargetIdentity.resolve(TARGET_QUERY)
+      || SCZN3SmartTargetIdentity.isM4(SCZN3SmartTargetIdentity.resolve(TARGET_QUERY))
     ))
     || !!(window.SCZN3M4 && SCZN3M4.isM4Session && SCZN3M4.isM4Session(session || matrix));
 }
@@ -481,8 +483,13 @@ function activeMissionFamily() {
   const matrixSource = matrix || {};
   const targetAuthority = sessionSource.targetAuthority || {};
   const targetProfileId = activeTargetProfileId();
+  const queryMissionFamily = TARGET_QUERY.get("mission_family")
+    || TARGET_QUERY.get("missionFamily")
+    || TARGET_QUERY.get("missionFamilyId")
+    || "";
   if (targetProfileId === "gssf_ac_1") return "gssf";
   if (isDotTortureProfileId(targetProfileId)) return "";
+  if (queryMissionFamily) return String(queryMissionFamily).toLowerCase();
   return String(
     sessionSource.mission_family
     || sessionSource.missionFamily
@@ -493,9 +500,6 @@ function activeMissionFamily() {
     || targetAuthority.mission_family
     || targetAuthority.missionFamily
     || targetAuthority.missionFamilyId
-    || TARGET_QUERY.get("mission_family")
-    || TARGET_QUERY.get("missionFamily")
-    || TARGET_QUERY.get("missionFamilyId")
     || ""
   ).toLowerCase();
 }
@@ -817,6 +821,7 @@ function renderMissionWorkspaceChrome() {
     impactButton.textContent = "Tap Your Confirmation Impacts";
   }
   if (completeButton) completeButton.textContent = descriptor.completeLabel || "Show Results";
+  if (completeButton && authorityRequestInFlight) completeButton.textContent = "Scoring…";
   if (restartLink) restartLink.hidden = !simulationLimitReached();
 }
 
@@ -1163,10 +1168,13 @@ function targetAttributionOverride(source = {}) {
       missionName: "",
       targetName: labels.targetName,
       targetFamily: labels.targetFamily,
-      targetId: targetProfileId
+      targetId: targetProfileId,
+      sku: "",
+      product: labels.targetName,
+      authority: "Marksmanship Training"
     };
   }
-  if (targetProfileId === "gssf_ac_1" || missionFamily === "gssf") {
+  if (targetProfileId === "gssf_ac_1" || (!targetProfileId && missionFamily === "gssf")) {
     return {
       ...base,
       target_profile_id: "gssf_ac_1",
@@ -1175,7 +1183,31 @@ function targetAttributionOverride(source = {}) {
       missionFamilyId: "gssf",
       targetName: "GSSF AC-1",
       targetFamily: "GSSF AC-1",
-      targetId: "gssf_ac_1"
+      targetId: "gssf_ac_1",
+      sku: "",
+      product: "GSSF AC-1",
+      authority: "GSSF Paper Penalty"
+    };
+  }
+  if (targetProfileId === "baker_st_100yd_smart_zero") {
+    return {
+      ...base,
+      target_profile_id: "baker_st_100yd_smart_zero",
+      targetProfileId: "baker_st_100yd_smart_zero",
+      mission_family: "zeroingCorrection",
+      missionFamily: "zeroingCorrection",
+      missionFamilyId: "zeroingCorrection",
+      targetName: "Baker 100 Yard Smart Target",
+      targetFamily: "Baker 100 Yard Smart Target",
+      targetId: "BAKER_ST_100YD_SMART",
+      vendor: "Baker",
+      sku: "",
+      product: "Baker 100 Yard Smart Target",
+      authority: "Baker 100 Yard Zeroing",
+      manufacturer: "Baker Targets",
+      targetDistance: "100 yds",
+      targetDistanceValue: "100",
+      targetDistanceUnit: "YDS"
     };
   }
   return source;
@@ -1797,6 +1829,13 @@ function targetIntelStackHtml() {
     return dotTortureTrainingHtml(dotTortureWorkspacePackage());
   }
   if (isGssfAuthoritySession()) {
+    if (authorityRequestInFlight && !resultsShown) {
+      return `
+        <div class="authority-results-panel gssf-results-panel" aria-label="Competition paper target scoring" role="status">
+          <div class="authority-status-message"><strong>Scoring confirmed impacts…</strong></div>
+        </div>
+      `;
+    }
     if (!resultsShown || !isGssfAuthorityPackage(authorityPackage) || !isAuthorityPackageCalculated(authorityPackage)) {
       return authorityStatusMessage
         ? `
@@ -3830,6 +3869,11 @@ function renderResults() {
     renderDotTortureTrainingResults(dotTortureWorkspacePackage());
     return;
   }
+  if (isGssfAuthoritySession() && !isGssfAuthorityPackage(backendAuthorityPackage)) {
+    const grid = document.getElementById("resultsGrid");
+    if (grid) grid.innerHTML = targetIntelStackHtml();
+    return;
+  }
   if (isGssfAuthorityPackage(backendAuthorityPackage)) {
     let resultBlock = document.getElementById("gssfAuthorityResult");
     if (!resultBlock) {
@@ -4072,7 +4116,7 @@ function renderMarkStatus() {
     || correctionContextPending
     || awaitingNextM4Group()
     || (isTraining && !trainingDrillFinished);
-  document.getElementById("showResults").disabled = !canProceed || (!isTraining && currentImpactPoints.length === 0);
+  document.getElementById("showResults").disabled = authorityRequestInFlight || !canProceed || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
   if (canProceed && isTraining && !resultsShown) nextStep = "showResults";
   if (hasEvidence && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
@@ -4103,6 +4147,8 @@ function renderMarkStatus() {
         : m4LivePhase === "confirmation"
           ? "Save Session"
           : "Apply the Correction, Then Begin Confirmation";
+  } else if (saveButton) {
+    saveButton.textContent = "Save Session";
   }
   document.body.dataset.rangeState = rangeWorkflowState(canProceed);
   document.body.dataset.m4LivePhase = isM4AuthoritySession() ? m4LivePhase : "";
@@ -4334,6 +4380,7 @@ document.getElementById("clearMarks").addEventListener("click", () => {
 });
 document.getElementById("showResults").addEventListener("click", async () => {
   if ((!isGssfAuthoritySession() && !isDotTortureAuthoritySession() && !currentAimPoint) || (!isDotTortureAuthoritySession() && !currentImpactPoints.length)) return;
+  if (authorityRequestInFlight) return;
   cancelHoleEntryReadiness();
   holeEntrySettled = true;
   if (FOUNDER_WORKSPACE_TEST_MODE && isM4AuthoritySession() && !resultsShown) {
@@ -4343,8 +4390,10 @@ document.getElementById("showResults").addEventListener("click", async () => {
     return;
   }
   if (isDotTortureAuthoritySession() && !session) ensureTargetSession();
+  authorityRequestInFlight = true;
   authorityStatusMessage = "";
   renderResults();
+  renderMarkStatus();
   try {
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
@@ -4373,6 +4422,9 @@ document.getElementById("showResults").addEventListener("click", async () => {
     backendAuthorityPackage = null;
     resultsShown = false;
     authorityStatusMessage = "Scoring service unavailable. Please try again.";
+    renderResults();
+  } finally {
+    authorityRequestInFlight = false;
     renderResults();
   }
   renderMarkStatus();
@@ -4763,7 +4815,10 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       if (isM4AuthoritySession()) {
         window.location.href = "sec.html?v=stay-on-screen-002";
       } else {
-        window.location.href = SIMULATION_MODE ? "records.html?simulation=1" : "records.html";
+        const recordQuery = new URLSearchParams();
+        if (SIMULATION_MODE) recordQuery.set("simulation", "1");
+        if (saved.sessionId) recordQuery.set("session", saved.sessionId);
+        window.location.href = `records.html${recordQuery.toString() ? `?${recordQuery}` : ""}`;
       }
     }, 450);
   }

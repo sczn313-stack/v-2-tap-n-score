@@ -137,3 +137,22 @@ body[data-vault-thumbnail="true"] .sec-target-story{padding:10px;box-shadow:none
   body{background:#fff}
   .sec-target-story{break-inside:avoid;box-shadow:none}
 }
+
+/* Universal evidence-first SEC sequence: mission content changes, stage order does not. */
+.sec-target-story>.sec-universal-stage{display:grid;gap:12px;padding:15px;border:1px solid var(--line);border-radius:10px;background:#fffdf8}
+.sec-target-story>.sec-universal-stage+.sec-universal-stage{margin-top:2px}
+.sec-universal-stage-heading{display:grid;gap:3px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.sec-universal-stage-heading span{color:#8a6212;font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.sec-universal-stage-heading h2,.sec-universal-stage-heading h3{margin:0;font-size:clamp(19px,4vw,28px);line-height:1.05}
+.sec-universal-stage-recommendation{border-color:#b8861c!important;background:#fff9e9!important}
+.sec-universal-stage-validation{border-color:#537457!important;background:#f2f7ef!important}
+.sec-universal-stage-preservation{border-color:#8d7341!important;background:#f6f1e7!important}
+.sec-universal-stage-preservation .sec-story-command-bar{padding-top:0;border-top:0}
+.sec-universal-stage-preservation .sec-correction-context{margin:0}
+body[data-vault-thumbnail="true"] .sec-target-story>.sec-universal-stage:not(.sec-universal-stage-evidence){display:none!important}
+body[data-vault-thumbnail="true"] .sec-universal-stage-heading{display:none}
+
+@media(max-width:640px){
+  .sec-target-story>.sec-universal-stage{padding:11px 9px}
+  .sec-universal-stage-heading h2{font-size:20px}
+}

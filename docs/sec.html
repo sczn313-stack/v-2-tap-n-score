@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="m4-sec.css?v=founder-session-context-overlay-0730" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
+<link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
 </head>
 <body>
 <main class="shell app-shell sec-shell">
@@ -42,59 +43,63 @@
   </div>
 
   <article id="secCard" class="sec-experience is-hidden">
-    <details class="correction-context-drawer sec-correction-context" open>
-      <summary>Session Setup</summary>
-      <div class="correction-context-panel sec-session-record">
-        <div class="sec-session-configuration">
-          <span>Preserved Shooting Setup</span>
-          <strong id="secSessionConfiguration"></strong>
-        </div>
-        <div class="sec-session-record-fields">
-          <div class="sec-session-target"><span>Target</span><strong id="secSessionTarget"></strong></div>
-          <div><span>Shooter</span><strong id="secSessionShooter"></strong></div>
-          <div><span>Date</span><strong id="secSessionDate"></strong></div>
-          <div><span>Time</span><strong id="secSessionTime"></strong></div>
-        </div>
-      </div>
-    </details>
-
     <section class="sec-target-story" aria-label="Initial and confirmation target story">
-      <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
-        <figure>
-          <figcaption><span>Before</span><strong>Initial Group</strong></figcaption>
-          <div class="sec-comparison-target">
-            <img id="beforeEvidenceImage" alt="Initial group target evidence" />
-            <span class="sec-target-session-identity">
-              <strong id="evidenceSessionIdentifier"></strong>
-              <small id="evidenceDataStatus"></small>
-            </span>
-            <div class="marker-layer" id="beforeEvidenceMarkers"></div>
-          </div>
-        </figure>
-        <figure id="confirmationWorkspace">
-          <figcaption><span>After</span><strong>Confirmation Group</strong></figcaption>
-          <div class="sec-comparison-target">
-            <img id="confirmationImage" alt="Confirmation-group target evidence" />
-            <div class="marker-layer" id="confirmationMarkers"></div>
-            <span class="sec-comparison-pending" id="confirmationPending">Pending</span>
-          </div>
-        </figure>
-      </div>
-      <div class="sec-story-command-bar" aria-label="Shooter Experience Card actions">
-        <div class="sec-preservation-actions">
-          <button class="button primary" type="button" id="saveSEC">Save SEC</button>
-          <button class="button" type="button" id="shareSEC">Share</button>
-          <button class="button" type="button" id="exportSEC">Export / Print PDF</button>
-          <button class="button" type="button" id="addNote">Add Note</button>
-          <a class="button" href="records.html">View History</a>
+      <section class="sec-universal-stage sec-universal-stage-evidence" data-sec-stage="evidence" aria-labelledby="secStageEvidence">
+        <header class="sec-universal-stage-heading"><span>1 · Evidence</span><h2 id="secStageEvidence">Initial and Confirmation Groups</h2></header>
+        <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
+          <figure>
+            <figcaption><span>Before</span><strong>Initial Group</strong></figcaption>
+            <div class="sec-comparison-target">
+              <img id="beforeEvidenceImage" alt="Initial group target evidence" />
+              <span class="sec-target-session-identity"><strong id="evidenceSessionIdentifier"></strong><small id="evidenceDataStatus"></small></span>
+              <div class="marker-layer" id="beforeEvidenceMarkers"></div>
+            </div>
+          </figure>
+          <figure id="confirmationWorkspace">
+            <figcaption><span>After</span><strong>Confirmation Group</strong></figcaption>
+            <div class="sec-comparison-target"><img id="confirmationImage" alt="Confirmation-group target evidence" /><div class="marker-layer" id="confirmationMarkers"></div><span class="sec-comparison-pending" id="confirmationPending">Pending</span></div>
+          </figure>
         </div>
-        <div class="sec-note-editor is-hidden" id="noteEditor">
-          <label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label>
-          <button class="button" type="button" id="saveNote">Save Note</button>
+      </section>
+
+      <section class="sec-universal-stage sec-universal-stage-measurement" data-sec-stage="measurement" aria-labelledby="secStageMeasurement">
+        <header class="sec-universal-stage-heading"><span>2 · Measurement</span><h2 id="secStageMeasurement">Group Analysis</h2></header>
+        <div class="sec-metric-grid" id="summaryMeasurementGrid"></div>
+      </section>
+
+      <section class="sec-universal-stage sec-universal-stage-recommendation" data-sec-stage="recommendation" aria-labelledby="secStageRecommendation">
+        <header class="sec-universal-stage-heading"><span>3 · Recommendation</span><h2 id="secStageRecommendation">Sight Correction</h2></header>
+        <div class="sec-correction-call" id="summaryRecommendationCall"></div>
+        <div class="sec-metric-grid" id="summaryAngularGrid"></div>
+      </section>
+
+      <section class="sec-universal-stage sec-universal-stage-execution" data-sec-stage="execution" aria-labelledby="secStageExecution">
+        <header class="sec-universal-stage-heading"><span>4 · Execution</span><h2 id="secStageExecution">Apply the Correction</h2></header>
+        <div class="sec-execution" id="summaryExecutionInstructions"></div>
+      </section>
+
+      <section class="sec-universal-stage sec-universal-stage-validation" data-sec-stage="validation" aria-labelledby="secStageValidation">
+        <header class="sec-universal-stage-heading"><span>5 · Validation</span><h2 id="secStageValidation">Confirmation Outcome</h2></header>
+        <div class="sec-validation-calculation" id="summaryValidationOutcome"></div>
+      </section>
+
+      <section class="sec-universal-stage sec-universal-stage-preservation" data-sec-stage="preservation" aria-labelledby="secStagePreservation">
+        <header class="sec-universal-stage-heading"><span>6 · Preservation</span><h2 id="secStagePreservation">Save the Complete Shooting Event</h2></header>
+        <details class="correction-context-drawer sec-correction-context">
+          <summary>Preserved Session Setup</summary>
+          <div class="correction-context-panel sec-session-record">
+            <div class="sec-session-configuration"><span>Preserved Shooting Setup</span><strong id="secSessionConfiguration"></strong></div>
+            <div class="sec-session-record-fields">
+              <div class="sec-session-target"><span>Target</span><strong id="secSessionTarget"></strong></div><div><span>Shooter</span><strong id="secSessionShooter"></strong></div><div><span>Date</span><strong id="secSessionDate"></strong></div><div><span>Time</span><strong id="secSessionTime"></strong></div>
+            </div>
+          </div>
+        </details>
+        <div class="sec-story-command-bar" aria-label="Shooter Experience Card actions">
+          <div class="sec-preservation-actions"><button class="button primary" type="button" id="saveSEC">Save SEC</button><button class="button" type="button" id="shareSEC">Share</button><button class="button" type="button" id="exportSEC">Export / Print PDF</button><button class="button" type="button" id="addNote">Add Note</button><a class="button" href="records.html">View History</a></div>
+          <div class="sec-note-editor is-hidden" id="noteEditor"><label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label><button class="button" type="button" id="saveNote">Save Note</button></div>
+          <div class="sec-preserved-history-row is-hidden"></div><span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
         </div>
-        <div class="sec-preserved-history-row is-hidden"></div>
-        <span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
-      </div>
+      </section>
     </section>
 
     <dialog class="sec-validation-workspace" id="validationWorkspace" aria-labelledby="validationWorkspaceTitle">
@@ -488,10 +493,16 @@ function renderSEC() {
     session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
   document.getElementById("beforeEvidenceImage").src =
     session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
-  document.getElementById("measurementGrid").innerHTML = SCZN3SEC.GroupAnalysisCard(authority);
+  const measurementHtml = SCZN3SEC.GroupAnalysisCard(authority);
+  const executionHtml = SCZN3SEC.ExecutionCard(authority);
+  document.getElementById("measurementGrid").innerHTML = measurementHtml;
+  document.getElementById("summaryMeasurementGrid").innerHTML = measurementHtml;
   document.getElementById("recommendationCall").innerHTML = recommendationCard.call;
+  document.getElementById("summaryRecommendationCall").innerHTML = recommendationCard.call;
   document.getElementById("angularGrid").innerHTML = recommendationCard.angular;
-  document.getElementById("executionInstructions").innerHTML = SCZN3SEC.ExecutionCard(authority);
+  document.getElementById("summaryAngularGrid").innerHTML = recommendationCard.angular;
+  document.getElementById("executionInstructions").innerHTML = executionHtml;
+  document.getElementById("summaryExecutionInstructions").innerHTML = executionHtml;
   const sightLabel =
     savedContext.sightLabel || (String(setup.opticType || "").toLowerCase().includes("iron") ? "Iron Sight" : "Optic");
   const distanceValue = savedContext.distanceValue || session.targetDistanceValue || 25;
@@ -519,7 +530,7 @@ function renderSEC() {
   document.getElementById("secNote").value = session.secNote || "";
   renderValidationWorkspace(evidenceCard);
   document.getElementById("beforeEvidenceMarkers").innerHTML =
-    evidenceCard.overlay() + correctionOverlay(authority);
+    evidenceCard.overlay();
   renderConfirmation();
   renderPreservationState(session.savedToSEC && session.preservedAt);
 }
@@ -540,8 +551,13 @@ function renderConfirmation() {
       : "";
   document.getElementById("saveSEC").disabled = !confirmationAuthority;
   if (!confirmationAuthority) {
+    document.getElementById("summaryValidationOutcome").innerHTML =
+      "<strong>Confirmation group pending</strong><span>Fire and record the confirmation group to validate the correction.</span>";
     return;
   }
+  const validationCard = SCZN3SEC.ValidationCard(confirmationAuthority, authority);
+  document.getElementById("summaryValidationOutcome").innerHTML =
+    `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
   renderValidationWorkspace(SCZN3SEC.EvidenceCard(authority));
 }
 

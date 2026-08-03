@@ -212,6 +212,7 @@
       || ""
     ).toLowerCase();
     const name = String(source.targetName || source.targetFamily || session.product || "").toLowerCase();
+    if (profile) return profile === "m4_25m_zero" || (profile.includes("m4") && profile.includes("25"));
     return String(session.sku || source.sku || "") === "ST-M16A2/M4"
       || (profile.includes("m4") && profile.includes("25"))
       || (name.includes("m4") && name.includes("25"));
