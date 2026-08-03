@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SEC - Shooter Experience Card</title>
+<title>Ballistic Vault - Tap-n-Score</title>
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="ballistic-vault.css" />
 <script src="navigation.js" defer></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
@@ -16,34 +17,87 @@
         <a class="vendor-name" href="index.html">Tap-n-Score™</a>
       </div>
     </div>
+    <h1 class="vault-header-title">BALLISTIC VAULT</h1>
     <button class="package-menu records-menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="recordsMenuDrawer"><span></span><span></span><span></span></button>
   </header>
   <nav class="package-menu-drawer records-menu-drawer" id="recordsMenuDrawer" aria-label="Target workflow navigation" hidden>
     <a href="index.html">Home</a>
-    <a href="matrix.html">Weapon Library</a>
-    <a href="shoot.html">Target</a>
-    <a href="records.html" aria-current="page">SEC</a>
+    <a href="matrix.html" data-simulation-hide>Weapon Library</a>
+    <a href="shoot.html" data-simulation-target-link>Target</a>
+    <a href="records.html" data-simulation-sec-link aria-current="page">Ballistic Vault</a>
     <a href="survey.html">Survey</a>
   </nav>
-  <section class="panel history-panel">
-    <div class="section-heading sec-heading">
-      <div>
-        <h1>SEC</h1>
-        <h2>Shooter Experience Card</h2>
-      </div>
-    </div>
-    <div class="history-list" id="historyList"></div>
-    <div class="sec-utility-row" aria-label="SEC utilities">
-      <button class="vendor-pill save-page-button" type="button" id="saveSecPage">Save This Page</button>
+  <section class="panel history-panel ballistic-vault">
+    <div class="history-list vault-gallery" id="historyList">
+      <article class="vault-loading" role="status" aria-live="polite">
+        <strong>Opening the Vault…</strong>
+      </article>
     </div>
   </section>
 </main>
 <script src="presentation_labels.js"></script>
-<script src="app_state.js"></script>
+<script src="zeroing_platform.js"></script>
+<script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
+<script src="app_state.js?v=session-normalization-0727"></script>
+<script src="m4_runtime.js?v=20260728-m4-sight-authority"></script>
+<script src="sec_v1.js"></script>
+<script src="universal_practice_sec.js"></script>
+<script src="m4_smart_target_sec.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
 const historyList = document.getElementById("historyList");
+const RECORD_QUERY = new URLSearchParams(window.location.search);
+const SIMULATION_MODE = RECORD_QUERY.get("simulation") === "1";
+const SIMULATION_LIMIT = 3;
+const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
+const SIMULATION_SESSION_ID = SIMULATION_MODE ? (localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY) || "") : "";
+document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
+if (SIMULATION_MODE) {
+  document.querySelectorAll("[data-simulation-target-link]").forEach(link => { link.href = "shoot.html?simulation=1"; });
+  document.querySelectorAll("[data-simulation-sec-link]").forEach(link => { link.href = "records.html?simulation=1"; });
+}
+
+function isSimulationSession(session) {
+  return !!(session && (session.simulation === true || session.experienceMode === "simulation"));
+}
+
+function isCurrentSimulationSession(session) {
+  return isSimulationSession(session)
+    && !!SIMULATION_SESSION_ID
+    && session.simulationSessionId === SIMULATION_SESSION_ID;
+}
+
+function simulationCompletionHtml(completedCount) {
+  const count = Math.max(1, Math.min(SIMULATION_LIMIT, completedCount));
+  const completed = count >= SIMULATION_LIMIT;
+  return `
+    <section class="sec-simulation-completion" aria-label="Simulation progress">
+      <strong>You’ve completed ${count} of ${SIMULATION_LIMIT} simulations.</strong>
+      <span>${completed ? "Your introduction is complete. Keep exploring the Smart Target ecosystem." : "Try another target or explore the catalog."}</span>
+      <div>
+        ${completed
+          ? '<a href="shoot.html?simulation=1&new_simulation=1">Start a New Simulation Session</a>'
+          : '<a href="shoot.html?simulation=1">Try Another Smart Target</a>'}
+        <a href="buy-targets.html">Explore the Catalog</a>
+        <a href="index.html">Learn More About Tap-n-Score™</a>
+      </div>
+    </section>
+  `;
+}
+
+function simulationPublisherHtml() {
+  return `
+    <section class="sec-simulation-publisher" aria-label="Smart Target publisher">
+      <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target" />
+      <div>
+        <span>Smart Target</span>
+        <strong>Baker 100 Yard Smart Target</strong>
+        <a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer">BakerTargets.com</a>
+      </div>
+    </section>
+  `;
+}
 
 function cleanDateTime(value) {
   const date = value ? new Date(value) : new Date();
@@ -54,6 +108,28 @@ function cleanDateTime(value) {
     hour: "numeric",
     minute: "2-digit"
   });
+}
+
+function cleanVaultDate(value) {
+  const date = value ? new Date(value) : new Date();
+  return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function cleanVaultTime(value) {
+  const date = value ? new Date(value) : new Date();
+  return Number.isNaN(date.getTime()) ? "Time unavailable" : date.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function vaultDateTimeAttribute(value) {
+  const date = value ? new Date(value) : new Date();
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString();
 }
 
 function cleanSetupValue(value) {
@@ -69,6 +145,17 @@ function correctionInstruction(value, axis) {
   if (direction === "CENTER" || amount === "0") return `${axisLabel} CENTERED`;
   if (!direction || !amount) return "";
   return `${direction} ${amount} ${Number(amount) === 1 ? "click" : "clicks"}`;
+}
+
+function correctionInstructionHtml(instruction) {
+  const text = String(instruction || "").trim();
+  const centered = text.match(/^(ELEVATION|WINDAGE)\s+CENTERED$/);
+  if (centered) {
+    return `<strong aria-label="${escapeHtml(text)}"><span class="sec-correction-direction">${escapeHtml(centered[1])}</span><span class="sec-correction-centered">CENTERED</span></strong>`;
+  }
+  const parts = text.match(/^(UP|DOWN|LEFT|RIGHT)\s+(\d+)\s+(click|clicks)$/i);
+  if (!parts) return `<strong class="sec-correction-unavailable">${escapeHtml(text)}</strong>`;
+  return `<strong aria-label="${escapeHtml(text)}"><span class="sec-correction-direction">${escapeHtml(parts[1].toUpperCase())}</span><span class="sec-correction-number">${escapeHtml(parts[2])}</span><span class="sec-correction-unit">${escapeHtml(parts[3].toLowerCase())}</span></strong>`;
 }
 
 function distanceDisplay(session) {
@@ -241,11 +328,12 @@ function optionalNumber(...values) {
 }
 
 function gssfCompetitionRecord(session, pkg) {
-  const officialMatchTimeSeconds = optionalNumber(session.officialMatchTimeSeconds, session.gssfOfficialMatchTimeSeconds, session.shotData?.officialMatchTimeSeconds);
-  const totalPaperPenaltySeconds = isGssfAuthorityPackage(pkg) ? pkg.totalPaperPenaltySeconds : null;
-  const officialFinalScoreSeconds = officialMatchTimeSeconds === null || totalPaperPenaltySeconds === null
-    ? null
-    : Number((officialMatchTimeSeconds + totalPaperPenaltySeconds).toFixed(2));
+  const hasAuthority = isGssfAuthorityPackage(pkg);
+  const officialMatchTimeSeconds = hasAuthority ? optionalNumber(pkg.rawTimeSeconds) : null;
+  const totalPaperPenaltySeconds = hasAuthority ? pkg.totalPaperPenaltySeconds : null;
+  const officialFinalScoreSeconds = hasAuthority && pkg.finalTimeStatus === "calculated"
+    ? optionalNumber(pkg.finalTimeSeconds)
+    : null;
   return {
     officialMatchTimeSeconds,
     totalPaperPenaltySeconds,
@@ -552,10 +640,45 @@ function gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, we
   `;
 }
 
+function secAchievementScaleHtml() {
+  return SCZN3SEC.renderAchievementScale("Unavailable for this result");
+}
+
+function gssfSessionSummaryHtml(session, snapshot, missionDisplayName, weapon, weaponMeta, simulationSession) {
+  const ammunition = [
+    snapshot.ammoCaliber,
+    snapshot.ammoManufacturer,
+    snapshot.ammoLoad,
+    snapshot.bulletWeight
+  ].map(cleanSetupValue).filter(Boolean).join(" / ");
+  const distance = distanceDisplay(session);
+  const rows = [
+    ["Shooter", simulationSession ? "Simulation" : cleanSetupValue(snapshot.shooterName || "")],
+    ["Smart Target", missionDisplayName],
+    ["Firearm", simulationSession ? "Simulation" : weapon],
+    ["Distance", distance],
+    ["Ammunition", simulationSession ? "Simulation" : ammunition],
+    ["Date and Time", session.timestamp ? cleanDateTime(session.timestamp) : ""],
+    ["Session Identifier", session.sessionId]
+  ].filter(([, value]) => value !== undefined && value !== null && value !== "");
+  return `
+    <div class="sec-session-summary-grid">
+      ${rows.map(([label, value]) => `
+        <div${label === "Session Identifier" ? ' class="is-wide"' : ""}>
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(value)}</strong>
+        </div>
+      `).join("")}
+    </div>
+    ${weaponMeta ? `<p class="sec-session-detail">${escapeHtml(weaponMeta)}</p>` : ""}
+  `;
+}
+
 function renderGssfSecCard(session, index, pkg) {
   const snapshot = session.matrixSnapshot || {};
-  const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
-  const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "--";
+  const simulationSession = isSimulationSession(session);
+  const weaponProfile = !simulationSession && window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
+  const weapon = simulationSession ? "" : (weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "");
   const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
   const missionLine = gssfResultLine(pkg, "Mission") || "Mission: GSSF AC-1";
   const missionDisplayName = SCZN3Presentation.targetLabel("gssf_ac_1", missionLine.replace(/^Mission:\s*/i, ""));
@@ -567,73 +690,152 @@ function renderGssfSecCard(session, index, pkg) {
   const finalScore = competition.officialFinalScoreSeconds === null ? "Unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
   const resultLabel = hasTimerTime ? "Final Time" : "Paper Penalty";
   const resultValue = hasTimerTime ? finalScore : paperPenalty;
-  return `
-    <article class="history-card gssf-sec-card" data-session-id="${session.sessionId}" data-gssf-export-ready="true">
-      <div class="history-copy">
-        <section class="sec-gssf-story-section sec-gssf-story-result" aria-label="Result">
-          <small>${escapeHtml(missionDisplayName)}</small>
-          <span>${resultLabel}</span>
-          <strong>${escapeHtml(resultValue)}</strong>
-          ${hasTimerTime ? "" : "<p>Timer time required for Final Time</p>"}
-        </section>
-
-        <section class="sec-gssf-story-section sec-gssf-story-explanation" aria-labelledby="gssf-explanation-${index}">
-          <h3 id="gssf-explanation-${index}">${hasTimerTime ? "How Your Final Time Was Calculated" : "How Your Final Time Is Calculated"}</h3>
-          <div class="sec-gssf-equation-stack" aria-label="Final time calculation">
-            <div class="sec-gssf-equation-value sec-gssf-timer-slot">
-              <span>Timer Time</span>
-              <strong>${escapeHtml(matchTime)}</strong>
+  const authoritativeSummary = pkg.display && typeof pkg.display.summary === "string" && pkg.display.summary.trim()
+    ? pkg.display.summary.trim()
+    : "Scoring distribution unavailable";
+  const observationCount = pkg.inputs && Number.isInteger(pkg.inputs.observationCount)
+    ? `${pkg.inputs.observationCount} authoritative ${pkg.inputs.observationCount === 1 ? "shot" : "shots"}`
+    : "Shot count unavailable";
+  const nextStep = hasTimerTime
+    ? "Save or export this governed record."
+    : "Enter the official timer time to complete Final Time.";
+  const confidence = pkg.canonicalAssetScoring === "accepted"
+    ? "Canonical evidence accepted"
+    : "Authority unavailable";
+  return SCZN3SEC.render({
+    schemaVersion: "1.1",
+    recordId: String(session.sessionId || `gssf-session-${index}`),
+    missionFamily: "gssf",
+    articleClassName: "history-card gssf-sec-card",
+    articleAttributes: {
+      "data-session-id": session.sessionId || "",
+      "data-gssf-export-ready": "true"
+    },
+    regions: [
+      {
+        key: "result",
+        className: "sec-v1-result-content sec-gssf-story-section sec-gssf-story-result",
+        ariaLabel: "Primary Result",
+        contentHtml: `
+          ${simulationSession ? '<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>' : ""}
+          <span class="sec-v1-result-label">Primary Result</span>
+          <div class="sec-primary-result-grid">
+            <div class="sec-primary-result-value">
+              <span>${escapeHtml(resultLabel)}</span>
+              <strong class="sec-v1-result-value">${escapeHtml(resultValue)}</strong>
+              ${hasTimerTime ? "" : '<p class="sec-v1-result-note">Timer time required for Final Time</p>'}
             </div>
-            <b aria-hidden="true">+</b>
-            <div class="sec-gssf-equation-value">
-              <span>Paper Penalty</span>
-              <strong>${escapeHtml(equationPenalty)}</strong>
-            </div>
-            <b aria-hidden="true">=</b>
-            <div class="sec-gssf-equation-value is-total">
-              <span>Final Time</span>
-              <strong>${escapeHtml(finalScore)}</strong>
+            <div class="sec-supporting-metric">
+              <span>Supporting Metric</span>
+              <strong>${escapeHtml(observationCount)}</strong>
+              <small>${escapeHtml(authoritativeSummary)}</small>
             </div>
           </div>
-        </section>
-
-        <section class="sec-gssf-story-section sec-gssf-story-buckets" aria-labelledby="gssf-score-build-${index}">
-          <h3 id="gssf-score-build-${index}">How Your Paper Penalty Was Built</h3>
-          ${gssfBucketSummaryHtml(pkg)}
-        </section>
-
-        <section class="sec-gssf-story-section sec-gssf-story-target" aria-labelledby="gssf-target-${index}">
-          <h3 id="gssf-target-${index}">Target</h3>
-          ${gssfSavedEvidenceHtml(session, pkg)}
-        </section>
-
-        <section class="sec-gssf-story-section sec-gssf-story-session" aria-labelledby="gssf-session-${index}">
-          <h3 id="gssf-session-${index}">Session</h3>
-          <div class="sec-gssf-session-summary">
-            <div><span>Course</span><strong>${escapeHtml(missionDisplayName)}</strong></div>
-            <div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div>
-            <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
-            ${weaponMeta ? `<div><span>Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
+          ${secAchievementScaleHtml()}
+        `
+      },
+      {
+        key: "evidence",
+        className: "sec-v1-evidence-content sec-gssf-story-evidence-shell",
+        ariaLabel: "Evidence Workspace",
+        contentHtml: `
+          <section class="sec-v1-adapter-block sec-gssf-story-section sec-gssf-story-target" aria-labelledby="gssf-evidence-${index}">
+            <div class="sec-workspace-heading">
+              <div>
+                <span>Proof</span>
+                <h3 class="sec-v1-region-title" id="gssf-evidence-${index}">Evidence Workspace</h3>
+              </div>
+              <small>Original target · confirmed impacts · governed classifications</small>
+            </div>
+            ${gssfSavedEvidenceHtml(session, pkg)}
+          </section>
+        `
+      },
+      {
+        key: "experience",
+        className: "sec-v1-experience-stack sec-gssf-story-explanation-shell",
+        ariaLabel: "Shooter Experience Rail",
+        contentHtml: `
+          <div class="sec-experience-heading">
+            <span>Understanding</span>
+            <h3 class="sec-v1-region-title">Shooter Experience</h3>
           </div>
-          ${gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, weapon, weaponMeta)}
-          ${attributionLine(snapshot)}
-        </section>
-
-        ${gssfExportEvidenceMetaHtml(pkg)}
-
-        <footer class="sec-gssf-export-footer" hidden>tap-n-score.com</footer>
-
-        <section class="sec-gssf-story-section sec-gssf-story-continue" aria-labelledby="gssf-continue-${index}">
-          <h3 id="gssf-continue-${index}">Continue</h3>
-          <div class="sec-gssf-continue-actions">
-            <a href="shoot.html">Continue Shooting</a>
-            <a href="records.html">View History</a>
-            <a href="#saveSecPage">Save or Share</a>
+          <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="gssf-secondary-${index}">
+            <span>Secondary Result</span>
+            <h3 id="gssf-secondary-${index}">${hasTimerTime ? "Paper Penalty" : "Scoring Distribution"}</h3>
+            <strong>${hasTimerTime ? escapeHtml(paperPenalty) : escapeHtml(authoritativeSummary)}</strong>
+          </section>
+          <section class="sec-v1-adapter-block sec-v1-explanation-primary sec-gssf-story-section sec-gssf-story-explanation" aria-labelledby="gssf-explanation-${index}">
+            <span class="sec-component-label">Performance Insights</span>
+            <h3 class="sec-v1-region-title" id="gssf-explanation-${index}">${hasTimerTime ? "How Your Final Time Was Calculated" : "How Your Final Time Is Calculated"}</h3>
+            <div class="sec-gssf-equation-stack" aria-label="Final time calculation">
+              <div class="sec-gssf-equation-value sec-gssf-timer-slot">
+                <span>Timer Time</span>
+                <strong>${escapeHtml(matchTime)}</strong>
+              </div>
+              <b aria-hidden="true">+</b>
+              <div class="sec-gssf-equation-value">
+                <span>Paper Penalty</span>
+                <strong>${escapeHtml(equationPenalty)}</strong>
+              </div>
+              <b aria-hidden="true">=</b>
+              <div class="sec-gssf-equation-value is-total">
+                <span>Final Time</span>
+                <strong>${escapeHtml(finalScore)}</strong>
+              </div>
+            </div>
+          </section>
+          <section class="sec-v1-adapter-block sec-v1-performance-detail sec-gssf-story-section sec-gssf-story-buckets" aria-labelledby="gssf-score-build-${index}">
+            <h3 class="sec-v1-region-title" id="gssf-score-build-${index}">How Your Paper Penalty Was Built</h3>
+            ${gssfBucketSummaryHtml(pkg)}
+          </section>
+        `
+      },
+      {
+        key: "nextStep",
+        className: "sec-v1-next-step-content",
+        ariaLabel: "Next Recommended Step",
+        contentHtml: `
+          <span>Next Recommended Step</span>
+          <strong>${escapeHtml(nextStep)}</strong>
+          <i aria-hidden="true">→</i>
+        `
+      },
+      {
+        key: "session",
+        className: "sec-v1-session-content sec-gssf-story-history-shell",
+        ariaLabel: "Session Summary",
+        contentHtml: `
+          <section class="sec-v1-adapter-block sec-v1-history-content sec-gssf-story-section sec-gssf-story-session" aria-labelledby="gssf-session-${index}">
+            <h3 class="sec-v1-region-title" id="gssf-session-${index}">Session Summary</h3>
+            ${gssfSessionSummaryHtml(session, snapshot, missionDisplayName, weapon, weaponMeta, simulationSession)}
+            ${gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, weapon, weaponMeta)}
+            ${attributionLine(snapshot)}
+          </section>
+          ${simulationSession && index === 0 ? simulationCompletionHtml(SCZN3M4.getSessionHistory().filter(isCurrentSimulationSession).length) : ""}
+        `
+      },
+      {
+        key: "identity",
+        className: "sec-v1-identity-content sec-gssf-story-identity",
+        ariaLabel: "Identity, confidence, signature, and actions",
+        contentHtml: `
+          <div class="sec-v1-wordmark"><span>SEC</span><small>Shooter Experience Card</small></div>
+          <div class="sec-identity-ledger">
+            <div><span>Smart Target</span><strong>${escapeHtml(missionDisplayName)}</strong></div>
+            <div><span>SEC Version</span><strong>1.1</strong></div>
+            <div><span>Confidence</span><strong>${escapeHtml(confidence)}</strong></div>
+            <div><span>SCZN3 Signature</span><strong>Tap-n-Score™</strong></div>
           </div>
-        </section>
-      </div>
-    </article>
-  `;
+          <div class="sec-v1-record-actions" aria-label="SEC actions">
+            <span class="sec-save-status">Saved SEC</span>
+            <button type="button" data-sec-export>Export SEC</button>
+          </div>
+        `
+      }
+    ],
+    afterHtml: `${gssfExportEvidenceMetaHtml(pkg)}<footer class="sec-gssf-export-footer" hidden>tap-n-score.com</footer>`
+  });
 }
 
 function gssfCanonicalSavedEvidenceContract() {
@@ -708,14 +910,7 @@ function gssfSavedEvidenceHtml(session, pkg) {
 }
 
 function renderInvalidGssfSecCard(session) {
-  return `
-    <article class="history-card gssf-sec-card no-thumb" data-session-id="${escapeHtml(session.sessionId || "")}">
-      <div class="history-copy">
-        <div class="sec-gssf-mission">${escapeHtml(SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1"))}</div>
-        <div class="sec-authority-missing" role="status">Result unavailable: authoritative backend package is incomplete or invalid.</div>
-      </div>
-    </article>
-  `;
+  return SCZN3SEC.renderUnavailable("Result unavailable: the saved result is incomplete or invalid.");
 }
 
 function authorityPoint(point) {
@@ -760,7 +955,7 @@ function authorityVisual(session) {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
   });
   parts.push(markerHtml("aim-arrow", render.aim, ""));
-  parts.push(markerHtml("poib-dot", render.poib, "<span></span>"));
+  parts.push(markerHtml("poib-dot", render.poib, "<span>POIB</span>", 'aria-label="Point of impact balance"'));
   return parts.join("");
 }
 
@@ -821,12 +1016,20 @@ function poibDisplay(pkg) {
   return `${elevation}, ${windage}`;
 }
 
-function authorityDetailLine(pkg) {
+function authorityDetailLine(pkg, simulationSession = false) {
   if (!pkg) return "";
   const metrics = [];
-  if (pkg.group && pkg.group.display) metrics.push(["Group Size", pkg.group.display]);
+  if (pkg.group && pkg.group.display) {
+    metrics.push(["Group Size", pkg.group.display]);
+  } else if (simulationSession) {
+    metrics.push(["Group Size", "Unavailable"]);
+  }
   const poib = poibDisplay(pkg);
-  if (poib) metrics.push(["POIB", poib]);
+  if (poib) {
+    metrics.push(["POIB", poib]);
+  } else if (simulationSession) {
+    metrics.push(["POIB", "Unavailable"]);
+  }
   return metrics.length ? `
     <div class="sec-authority-detail" aria-label="Authoritative group measurements">
       ${metrics.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
@@ -848,14 +1051,60 @@ function zeroingValidationDetailsHtml(pkg, hasAuthority) {
   `;
 }
 
+function vaultSessionNumber(session) {
+  const label = String(session.sessionLabel || session.savedIdentifier || "").trim();
+  const number = label.match(/\d+/)?.[0] || String(session.sessionNumber || "").trim();
+  return number ? `#${number.padStart(3, "0")}` : "#—";
+}
+
+function preservedSecUrl(session, thumbnail = false) {
+  const params = new URLSearchParams({
+    sessionId: session.sessionId,
+    v: "ballistic-vault-gallery-0730"
+  });
+  if (thumbnail) params.set("vaultThumbnail", "1");
+  return `sec.html?${params.toString()}`;
+}
+
+function renderM4VaultEntry(session) {
+  const secNumber = vaultSessionNumber(session);
+  const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
+  const date = cleanVaultDate(preservedAt);
+  const time = cleanVaultTime(preservedAt);
+  const destination = preservedSecUrl(session);
+  const thumbnail = preservedSecUrl(session, true);
+  const openLabel = "OPEN PRESERVED SEC";
+  return `
+    <article class="vault-entry" data-session-id="${escapeHtml(session.sessionId)}">
+      <a class="vault-sec-thumbnail" href="${escapeHtml(destination)}" aria-label="${escapeHtml(openLabel + " " + secNumber)}">
+        <iframe
+          src="${escapeHtml(thumbnail)}"
+          title="${escapeHtml(secNumber + " preserved Shooter Experience Card preview")}"
+          loading="lazy"
+          tabindex="-1"
+          aria-hidden="true"
+        ></iframe>
+      </a>
+      <footer class="vault-card-footer">
+        <strong>${escapeHtml(secNumber)}</strong>
+        <span aria-hidden="true">·</span>
+        <time datetime="${escapeHtml(vaultDateTimeAttribute(preservedAt))}">${escapeHtml(date)} · ${escapeHtml(time)}</time>
+        <a href="${escapeHtml(destination)}">${escapeHtml(openLabel)}</a>
+      </footer>
+    </article>
+  `;
+}
+
 function renderHistory() {
-  const savedSessions = SCZN3M4.getSessionHistory().slice()
+  const allSavedSessions = SCZN3M4.getSessionHistory().slice()
     .filter(session => session && session.savedToSEC === true)
     .sort((a, b) => {
       const timeDelta = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
       if (timeDelta) return timeDelta;
       return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
     });
+  const simulationCount = allSavedSessions.filter(isCurrentSimulationSession).length;
+  const savedSessions = SIMULATION_MODE ? allSavedSessions.filter(isCurrentSimulationSession) : allSavedSessions;
   const sessions = savedSessions.slice(0, 10);
   if (!sessions.length) {
     document.body.dataset.secState = "empty";
@@ -870,8 +1119,18 @@ function renderHistory() {
     .join("");
   historyList.innerHTML = dotTortureTrendCard + sessions.map((session, index) => {
     const snapshot = session.matrixSnapshot || {};
+    const simulationSession = isSimulationSession(session);
     const evidence = session.targetEvidenceImage;
     const pkg = authorityPackage(session);
+    if (session.m4AuthorityPackage && pkg && pkg.status && pkg.status.hasCorrection) {
+      return renderM4VaultEntry(session);
+    }
+    if (window.SCZN3M4SmartTargetSEC && SCZN3M4SmartTargetSEC.matches(pkg)) {
+      return SCZN3M4SmartTargetSEC.render({ session, package: pkg });
+    }
+    if (window.SCZN3UniversalPracticeSEC && SCZN3UniversalPracticeSEC.matches(pkg)) {
+      return SCZN3UniversalPracticeSEC.render({ session, package: pkg });
+    }
     if (isDotTortureTrainingPackage(pkg)) {
       return renderTrainingSecCard(session, index, pkg);
     }
@@ -887,11 +1146,11 @@ function renderHistory() {
       ? rawImpactCount
       : null;
     const score = hasAuthority ? authorityScoreValue(pkg) : null;
-    const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
-    const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle;
+    const weaponProfile = !simulationSession && window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
+    const weapon = simulationSession ? "" : (weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle);
     const weaponMeta = weaponProfile ? [weaponProfile.frameCategory, weaponProfile.barrelLength, weaponProfile.sightRadius, weaponProfile.variantFlags].filter(Boolean).join(" / ") : "";
-    const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification, snapshot.opticClickValue, snapshot.opticAdjustmentUnit].map(cleanSetupValue).filter(Boolean).join(" / ");
-    const ammo = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const optic = simulationSession ? "" : [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification, snapshot.opticClickValue, snapshot.opticAdjustmentUnit].map(cleanSetupValue).filter(Boolean).join(" / ");
+    const ammo = simulationSession ? "" : [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ");
     const correction = hasAuthority ? (pkg.correction || {}) : {};
     const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
     const thumbnail = evidence && evidence.dataUrl ? evidence.dataUrl : "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
@@ -903,12 +1162,13 @@ function renderHistory() {
     ].filter(Boolean);
     const impactsDisplay = shotCount === null ? "Unavailable" : `${shotCount} ${shotCount === 1 ? "impact" : "impacts"}`;
     return `
-      <article class="history-card zeroing-sec-card" data-session-id="${session.sessionId}">
+      <article class="history-card zeroing-sec-card${simulationSession ? " is-simulation" : ""}" data-session-id="${session.sessionId}">
           <div class="history-thumb">
             <img src="${thumbnail}" alt="Uploaded target evidence thumbnail" />
             <div class="history-evidence-layer">${authorityVisual(session)}</div>
           </div>
         <div class="history-copy">
+          ${simulationSession ? `<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>${simulationPublisherHtml()}` : ""}
           <section class="sec-journal-score" aria-label="Saved target score">
             <span>Final Score</span>
             <strong>${escapeHtml(scoreDisplay)}</strong>
@@ -917,22 +1177,25 @@ function renderHistory() {
             <span>Scope Corrections</span>
             <div>
               ${correctionDisplay.length
-                ? correctionDisplay.map(instruction => `<strong>${escapeHtml(instruction)}</strong>`).join("")
-                : "<strong>Unavailable</strong>"}
+                ? correctionDisplay.map(correctionInstructionHtml).join("")
+                : '<strong class="sec-correction-unavailable">Unavailable</strong>'}
             </div>
           </section>
           <div class="sec-journal-grid">
-            <div><span>Firearm</span><strong>${escapeHtml(weapon || "--")}</strong></div>
+            <div><span>Firearm</span><strong>${simulationSession ? "Simulation" : escapeHtml(weapon || "--")}</strong></div>
             <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
             <div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div>
             <div><span>Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div>
-            ${optic ? `<div class="sec-journal-wide"><span>Scope / Optic</span><strong>${escapeHtml(optic)}</strong></div>` : ""}
+            ${simulationSession
+              ? '<div class="sec-journal-wide"><span>Scope / Optic</span><strong>Simulation</strong></div>'
+              : optic ? `<div class="sec-journal-wide"><span>Scope / Optic</span><strong>${escapeHtml(optic)}</strong></div>` : ""}
           </div>
           ${weaponMeta || ammo ? `<div class="sec-setup-line">${[weaponMeta, ammo].filter(Boolean).join(" | ")}</div>` : ""}
-          ${attributionLine(snapshot)}
+          ${simulationSession ? "" : attributionLine(snapshot)}
           ${authorityMessage}
-          ${hasAuthority ? authorityDetailLine(pkg) : ""}
-          ${zeroingValidationDetailsHtml(pkg, hasAuthority)}
+          ${hasAuthority ? authorityDetailLine(pkg, simulationSession) : ""}
+          ${simulationSession ? "" : zeroingValidationDetailsHtml(pkg, hasAuthority)}
+          ${simulationSession && index === 0 ? simulationCompletionHtml(simulationCount) : ""}
         </div>
       </article>
     `;
@@ -943,7 +1206,17 @@ function renderHistory() {
 
 renderHistory();
 window.addEventListener("resize", syncSecEvidenceLayers);
-document.getElementById("saveSecPage").addEventListener("click", saveSecPageImage);
+document.getElementById("saveSecPage")?.addEventListener("click", saveSecPageImage);
+historyList.addEventListener("click", event => {
+  const m4Button = event.target.closest("[data-open-m4-sec]");
+  if (m4Button) {
+    SCZN3M4.loadSession(m4Button.dataset.openM4Sec);
+    window.location.href = "sec.html?v=stay-on-screen-002";
+    return;
+  }
+  if (!event.target.closest("[data-sec-export]")) return;
+  saveSecPageImage();
+});
 
 const GSSF_SEC_EXPORT_WIDTH = 390;
 
@@ -1050,16 +1323,20 @@ function downloadSecCapture(capture) {
   setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
-async function deliverSecCaptures(captures) {
+async function shareSecCaptures(captures) {
   const files = typeof File === "function"
     ? captures.map(capture => new File([capture.blob], capture.fileName, { type: "image/png" }))
     : [];
   const shareData = files.length ? { files, title: "Shooter Experience Card" } : null;
-  if (shareData && typeof navigator.share === "function" &&
-      (!navigator.canShare || navigator.canShare(shareData))) {
-    await navigator.share(shareData);
-    return "shared";
-  }
+  const hasUserActivation = !navigator.userActivation || navigator.userActivation.isActive;
+  if (!hasUserActivation || !shareData || typeof navigator.share !== "function") return "share_unavailable";
+  if (navigator.canShare && !navigator.canShare(shareData)) return "share_unavailable";
+  await navigator.share(shareData);
+  return "shared";
+}
+
+async function deliverSecCaptures(captures, { mode = "download" } = {}) {
+  if (mode === "share") return shareSecCaptures(captures);
   captures.forEach(downloadSecCapture);
   return "downloaded";
 }
@@ -1093,10 +1370,13 @@ async function saveSecPageImage() {
     let captures;
     if (gssfCard) {
       document.body.dataset.gssfExportStatus = "capturing";
+      document.body.dataset.gssfExportGenerationStatus = "capturing";
+      document.body.dataset.gssfExportDeliveryStatus = "pending";
       document.body.dataset.gssfExportImageCount = "0";
       const files = await saveGssfSecTwoPageImages(gssfCard);
       document.body.dataset.gssfExportImageCount = String(files.length);
       if (files.length !== 2) throw new Error("GSSF SEC export requires exactly two images.");
+      document.body.dataset.gssfExportGenerationStatus = "complete";
       captures = files;
     } else {
       const target = document.querySelector(".history-panel");
@@ -1104,7 +1384,8 @@ async function saveSecPageImage() {
       const stamp = new Date().toISOString().slice(0, 10);
       captures = [await captureSecNode(target, `SEC-${stamp}.png`)];
     }
-    document.body.dataset.secSaveDelivery = await deliverSecCaptures(captures);
+    document.body.dataset.secSaveDelivery = await deliverSecCaptures(captures, { mode: "download" });
+    document.body.dataset.gssfExportDeliveryStatus = document.body.dataset.secSaveDelivery;
     if (gssfCard) document.body.dataset.gssfExportStatus = "complete";
     saveButton.textContent = "Saved";
   } catch (error) {
@@ -1114,6 +1395,7 @@ async function saveSecPageImage() {
       return;
     }
     document.body.dataset.secSaveDelivery = "failed";
+    document.body.dataset.gssfExportDeliveryStatus = "failed";
     if (gssfCard) document.body.dataset.gssfExportStatus = "failed";
     saveButton.textContent = "Save Failed — Try Again";
     console.error("SEC save failed", error);

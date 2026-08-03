@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in" viewBox="0 0 2550 3300"
+  data-status="founder-review-presentation" aria-labelledby="title desc">
+  <title id="title">M4/M16 25M validated reconstruction — Workspace presentation</title>
+  <desc id="desc">Workspace presentation derived from the physically validated reconstruction. The validated 8-inch target geometry is unchanged; the lower printed-information region is reserved for SCZN3 digital intelligence.</desc>
+  <defs>
+    <pattern id="gridBlack" width="75" height="75" patternUnits="userSpaceOnUse" x="75" y="225">
+      <path d="M75 0H0V75" fill="none" stroke="#444" stroke-width="2.2"/>
+    </pattern>
+    <pattern id="gridWhite" width="75" height="75" patternUnits="userSpaceOnUse" x="75" y="225">
+      <path d="M75 0H0V75" fill="none" stroke="#f7f7f2" stroke-width="2.2"/>
+    </pattern>
+    <clipPath id="darkDiskClip"><circle cx="1275" cy="1425" r="600"/></clipPath>
+    <style>
+      .title{font:600 52px "Courier New",monospace;letter-spacing:2px;text-anchor:middle;fill:#202020;stroke:#202020;stroke-width:.25px;paint-order:stroke fill}
+      .heavy{fill:none;stroke:#333;stroke-width:10}
+      .white-heavy{fill:none;stroke:#f7f7f2;stroke-width:12}
+    </style>
+  </defs>
+
+  <rect width="2550" height="3300" fill="#f7f7f2"/>
+  <text class="title" x="1275" y="105">M4/M16 SERIES WEAPONS 25M ZERO</text>
+  <text class="title" x="1275" y="165">SHORT RANGE AND PISTOL MARKSMANSHIP TARGET</text>
+
+  <!-- Exact validated reconstruction geometry; no presentation transform is applied. -->
+  <rect id="target-grid-boundary" x="75" y="225" width="2400" height="2400" fill="none" stroke="#444" stroke-width="3"/>
+  <circle id="dark-disk" cx="1275" cy="1425" r="600" fill="#3d3d3d"/>
+  <rect x="75" y="225" width="2400" height="2400" fill="url(#gridBlack)"/>
+  <rect x="75" y="225" width="2400" height="2400" fill="url(#gridWhite)" clip-path="url(#darkDiskClip)"/>
+
+  <circle id="ring-4-00" class="heavy" cx="1275" cy="1425" r="1200"/>
+  <circle id="ring-3-50" class="heavy" cx="1275" cy="1425" r="1050"/>
+  <circle id="ring-3-00" class="heavy" cx="1275" cy="1425" r="900"/>
+  <circle id="ring-2-50" class="heavy" cx="1275" cy="1425" r="750"/>
+  <circle id="ring-1-50" class="white-heavy" cx="1275" cy="1425" r="450"/>
+  <circle id="ring-1-00" class="white-heavy" cx="1275" cy="1425" r="300"/>
+  <circle id="ring-0-75" cx="1275" cy="1425" r="225" fill="none" stroke="#f7f7f2" stroke-width="10" stroke-dasharray="36 28"/>
+
+  <path class="heavy" d="M1275 225V2625M75 1425H2475"/>
+  <path class="white-heavy" d="M1275 825V2025M675 1425H1875" clip-path="url(#darkDiskClip)"/>
+  <path id="center-diamond" d="M1275 1275L1425 1425L1275 1575L1125 1425Z" fill="#f7f7f2"/>
+</svg>

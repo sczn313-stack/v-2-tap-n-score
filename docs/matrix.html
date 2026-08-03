@@ -183,7 +183,8 @@
   </section>
 </main>
 <script src="presentation_labels.js"></script>
-<script src="app_state.js"></script>
+<script src="smart_target_identity.js"></script>
+<script src="app_state.js?v=session-normalization-0727"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
 const form = document.getElementById("matrixForm");
@@ -1176,7 +1177,13 @@ function displayValue(value) {
 
 function readSavedSetups() {
   try {
-    return JSON.parse(localStorage.getItem(SAVED_SETUPS_KEY) || "[]");
+    const stored = JSON.parse(localStorage.getItem(SAVED_SETUPS_KEY) || "[]");
+    if (JSON.stringify(stored).includes("\"dataUrl\":\"data:")) {
+      writeSavedSetups(stored);
+    }
+    return window.SCZN3M4 && SCZN3M4.hydrateStoredMedia
+      ? SCZN3M4.hydrateStoredMedia(stored)
+      : stored;
   } catch (error) {
     console.warn("Weapon profile read failed", error);
     return [];
@@ -1184,7 +1191,11 @@ function readSavedSetups() {
 }
 
 function writeSavedSetups(setups) {
-  localStorage.setItem(SAVED_SETUPS_KEY, JSON.stringify(setups.slice(0, MAX_SAVED_SETUPS)));
+  const source = setups.slice(0, MAX_SAVED_SETUPS);
+  const stored = window.SCZN3M4 && SCZN3M4.storeMediaReferences
+    ? SCZN3M4.storeMediaReferences(source)
+    : source;
+  localStorage.setItem(SAVED_SETUPS_KEY, JSON.stringify(stored));
 }
 
 function escapeHtml(value = "") {
@@ -1508,9 +1519,12 @@ function renderTargetModePill() {
   const attribution = targetAttributionFromContext(collectFormSnapshot());
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
   const isDotTorture = attribution.target_profile_id === "dot_torture_ez2c_style_17";
+  const isM4 = attribution.target_profile_id === "m4_25m_zero";
   const gssfLabel = SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1");
-  pill.textContent = isDotTorture ? "Target Mode: Dot Torture" : `Target Mode: ${gssfLabel}`;
-  pill.classList.toggle("is-hidden", !(isGssf || isDotTorture));
+  pill.textContent = isM4
+    ? "Target Mode: M4 25 Meter Zero"
+    : (isDotTorture ? "Target Mode: Dot Torture" : `Target Mode: ${gssfLabel}`);
+  pill.classList.toggle("is-hidden", !(isM4 || isGssf || isDotTorture));
 }
 
 function collectFormSnapshot() {
@@ -1526,6 +1540,8 @@ function collectFormSnapshot() {
   snapshot.mission_family = MATRIX_QUERY.get("mission_family") || snapshot.mission_family || "";
   snapshot.missionFamilyId = MATRIX_QUERY.get("missionFamilyId") || snapshot.missionFamilyId || "";
   snapshot.targetName = MATRIX_QUERY.get("targetName") || MATRIX_QUERY.get("target") || snapshot.targetName || "";
+  snapshot.vendor = MATRIX_QUERY.get("v") || MATRIX_QUERY.get("vendor") || snapshot.vendor || "";
+  snapshot.sku = MATRIX_QUERY.get("sku") || snapshot.sku || "";
   return snapshot;
 }
 
@@ -1534,10 +1550,10 @@ function goToTarget() {
   try {
     if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
   } catch (error) {}
-  const targetQuery = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "gssf_ac_1"
-    ? `&target_profile_id=gssf_ac_1&mission_family=gssf${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}`
-    : session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id === "dot_torture_ez2c_style_17"
-      ? `&target_profile_id=dot_torture_ez2c_style_17${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}`
+  const targetProfileId = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id;
+  const missionFamily = session && session.matrixSnapshot && session.matrixSnapshot.mission_family;
+  const targetQuery = targetProfileId
+    ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${missionFamily ? `&mission_family=${encodeURIComponent(missionFamily)}` : ""}${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}${session.matrixSnapshot.vendor ? `&v=${encodeURIComponent(String(session.matrixSnapshot.vendor).toLowerCase())}` : ""}${session.matrixSnapshot.sku ? `&sku=${encodeURIComponent(session.matrixSnapshot.sku)}` : ""}`
     : "";
   window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
 }
@@ -1653,6 +1669,9 @@ function collectForm() {
 }
 
 function targetAttributionFromContext(data = {}) {
+  const scannedIdentity = window.SCZN3SmartTargetIdentity
+    ? SCZN3SmartTargetIdentity.resolve(MATRIX_QUERY)
+    : null;
   const queryTargetProfileId = MATRIX_QUERY.get("target_profile_id") || MATRIX_QUERY.get("targetProfileId") || "";
   const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {};
   const sessionMatrix = activeSession.matrixSnapshot || {};
@@ -1724,6 +1743,38 @@ function targetAttributionFromContext(data = {}) {
     || ""
   ).toLowerCase();
   if (
+    scannedIdentity
+    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(activeSession))
+    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(sessionMatrix))
+    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(pendingTarget))
+    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(data))
+    ||
+    targetProfileId === "m4_25m_zero"
+    || (targetName.includes("m4") && targetName.includes("25"))
+  ) {
+    return {
+      ...(window.SCZN3SmartTargetIdentity ? SCZN3SmartTargetIdentity.BAKER_M4_IDENTITY : {}),
+      target_profile_id: "m4_25m_zero",
+      targetProfileId: "m4_25m_zero",
+      mission_family: "zeroingCorrection",
+      missionFamilyId: "zeroingCorrection",
+      targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+      targetVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+      targetName: "M4 Carbine • 25 Meter Zeroing Target",
+      targetFamily: "Military 25 Meter M4 Zeroing Target",
+      targetDistance: "25 m",
+      targetDistanceValue: "25",
+      targetDistanceUnit: "M",
+      targetDistanceLocked: true,
+      opticType: "Iron Sights",
+      opticBrand: "USGI",
+      opticModel: "M4 Detachable Carry Handle + Front Sight Post",
+      adjustmentSystem: "M4_IRON_DCH_FSP",
+      equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
+      ...(qrId ? { qr_id: qrId, qrId } : {})
+    };
+  }
+  if (
     targetProfileId === "gssf_ac_1"
     || missionFamily === "gssf"
     || targetName.includes("gssf")
@@ -1762,7 +1813,23 @@ function clearSetupFields() {
   updateOpticClickValues("0.25");
   updateAmmoCalibers();
   updateDistanceOptions("100");
+  applyM4MissionDefaults();
   renderSessionBar();
+}
+
+function applyM4MissionDefaults() {
+  const queryProfile = String(MATRIX_QUERY.get("target_profile_id") || MATRIX_QUERY.get("targetProfileId") || "").toLowerCase();
+  if (queryProfile !== "m4_25m_zero") return;
+  const distance = document.getElementById("matrixDistanceValue");
+  const unit = document.getElementById("matrixDistanceUnit");
+  if (distance) {
+    distance.value = "25";
+    distance.disabled = true;
+  }
+  if (unit) {
+    unit.value = "M";
+    unit.disabled = true;
+  }
 }
 
 function renderSessionBar() {
@@ -1810,6 +1877,7 @@ function loadMatrix() {
     SCZN3M4.saveMatrixSnapshot(nextSnapshot);
   }
   setForm(nextSnapshot);
+  applyM4MissionDefaults();
 }
 
 form.addEventListener("submit", event => {

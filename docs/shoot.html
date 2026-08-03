@@ -5,71 +5,206 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="sczn3-authority-endpoint" content="https://sczn3-authority.onrender.com/api/authority/ugeo" />
 <title>Target</title>
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=workspace-template-v1" />
+<link rel="stylesheet" href="workspace_correction_context.css?v=episode45-ui-polish-v1" />
+<script>
+window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
+window.addEventListener("error", event => {
+  window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__.push({
+    message: event.message,
+    source: event.filename,
+    line: event.lineno,
+    column: event.colno
+  });
+  const diagnostic = document.getElementById("workspaceRuntimeDiagnostic");
+  if (diagnostic) {
+    diagnostic.hidden = false;
+    diagnostic.textContent = `${event.message} (${event.filename}:${event.lineno}:${event.colno})`;
+  }
+});
+</script>
 <script src="navigation.js" defer></script>
 </head>
 <body class="platform-page target-page">
 <main class="shell">
-  <header class="m4-header">
-    <div class="vendor-slot">
-      <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
-      <div class="brand-lockup">
-        <span class="kicker">Tap-n-Score™</span>
-        <a class="vendor-name" id="targetHeaderIdentity" href="index.html">Target: Not Known</a>
-      </div>
-    </div>
-    <details class="mobile-platform-menu target-mobile-menu">
-      <summary aria-label="Open navigation">☰</summary>
-      <a href="index.html">Home</a>
-      <a href="matrix.html">Weapon Library</a>
-      <a href="shoot.html" aria-current="page">Target</a>
-      <a href="records.html">SEC</a>
-      <a href="survey.html">Survey</a>
-    </details>
-  </header>
-  <section class="active-session-bar" id="activeSessionBar"></section>
   <section class="shoot-workflow">
     <div class="panel">
-      <section class="target-session-context" aria-label="Today's range session">
-        <span id="missionWorkspaceEyebrow">Target</span>
-        <strong id="targetSessionSummary">Not Known</strong>
-        <p class="mission-workspace-meta" id="missionWorkspaceMeta"></p>
-        <p class="mission-workspace-status" id="missionWorkspaceStatus">Ready</p>
-        <p class="mission-workspace-guidance" id="missionWorkspaceGuidance">Add target photo to begin.</p>
-        <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
-      </section>
       <section class="upload-panel" aria-label="Upload or capture target evidence">
-        <div class="workflow-control-row" aria-label="SCZN3 shooting workflow controls">
-          <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
-            <strong>0</strong>
-            <span>Taps</span>
+        <div class="workspace-stage-shell" id="workspaceStageShell">
+          <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
+            <div class="evidence-meta evidence-status-stack">
+              <div class="target-intel-stack" id="resultsGrid"></div>
+            </div>
           </div>
-          <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
-          <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
-          <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
-          <button class="button" type="button" id="addImpactMode">Tap Bullet Holes</button>
-          <button class="button" type="button" id="showResults">Show Results</button>
-          <button class="button" type="button" id="undoImpact">Undo</button>
-          <button class="button" type="button" id="clearMarks">Clear</button>
-          <button class="button" type="button" id="saveMarks">Save Session</button>
-          <input id="showGridCoordinates" type="checkbox" hidden />
-        </div>
-        <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
-          <div class="evidence-meta evidence-status-stack">
-            <div class="target-intel-stack" id="resultsGrid"></div>
+          <div class="workspace-top-overlay" aria-label="Workspace controls">
+            <a class="workspace-target-identity" id="targetHeaderIdentity" href="index.html">Target: Not Known</a>
+            <details class="mobile-platform-menu target-mobile-menu workspace-menu">
+              <summary aria-label="Open navigation">☰</summary>
+              <a href="index.html">Home</a>
+              <a href="matrix.html" data-simulation-hide>Weapon Library</a>
+              <a href="shoot.html" data-simulation-target-link aria-current="page">Target</a>
+              <a href="records.html" data-simulation-sec-link>SEC</a>
+              <a href="survey.html">Survey</a>
+            </details>
+          </div>
+          <section class="target-session-context" aria-label="Current step" aria-live="polite">
+            <span id="missionWorkspaceEyebrow">Target</span>
+            <strong id="targetSessionSummary">Not Known</strong>
+            <p class="mission-workspace-meta" id="missionWorkspaceMeta"></p>
+            <div class="simulation-target-selection" id="simulationTargetSelection" hidden>
+              <img src="assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" alt="Baker 100 Yard Smart Target" />
+              <div>
+                <span>Selected Smart Target</span>
+                <strong>Baker 100 Yard Smart Target</strong>
+                <a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer">BakerTargets.com</a>
+                <a class="simulation-restart-link" id="simulationRestartLink" href="shoot.html?simulation=1&amp;new_simulation=1" hidden>Start a New Simulation Session</a>
+              </div>
+            </div>
+            <p class="mission-workspace-status" id="missionWorkspaceStatus">Ready</p>
+            <p class="mission-workspace-guidance" id="missionWorkspaceGuidance">Add target photo to begin.</p>
+            <p class="shooter-tip is-hidden" id="shooterTip"><span class="tip-label">Tip:</span><span id="shooterTipText"></span></p>
+          </section>
+          <details class="correction-context-drawer" id="correctionContextDrawer" hidden>
+            <summary>Confirm Session Setup</summary>
+            <div class="correction-context-panel">
+              <label>
+                <span>Sight System</span>
+                <select id="correctionContextSight">
+                  <option value="iron">Iron Sight</option>
+                  <option value="optic">Optic</option>
+                </select>
+              </label>
+              <label>
+                <span>Distance</span>
+                <span class="correction-context-distance">
+                  <input id="correctionContextDistance" type="number" min="1" step="1" inputmode="decimal" />
+                  <select id="correctionContextDistanceUnit">
+                    <option value="M">meters</option>
+                    <option value="YDS">yards</option>
+                  </select>
+                </span>
+              </label>
+              <label>
+                <span>Adjustment Units</span>
+                <select id="correctionContextAdjustmentUnit">
+                  <option value="MOA">MOA</option>
+                  <option value="MRAD">MRAD</option>
+                </select>
+              </label>
+              <div class="correction-context-actions">
+                <button class="button" type="button" id="backToTaps">Back to Taps</button>
+                <button class="button" type="button" id="confirmCorrectionContext">Show Results</button>
+              </div>
+            </div>
+          </details>
+          <p class="save-session-status" id="saveSessionStatus" role="status" aria-live="polite"></p>
+          <div class="workflow-control-row" aria-label="Primary Action Bar">
+            <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
+              <strong>0</strong>
+              <span>Holes</span>
+            </div>
+            <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
+            <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
+            <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
+            <button class="button" type="button" id="addImpactMode">Tap Holes</button>
+            <button class="button" type="button" id="showResults">Show Results</button>
+            <button class="button" type="button" id="undoImpact">Undo</button>
+            <button class="button" type="button" id="clearMarks">Clear</button>
+            <button class="button" type="button" id="saveMarks">Begin Confirmation</button>
+            <input id="showGridCoordinates" type="checkbox" hidden />
           </div>
         </div>
+        <pre id="savePersistenceDiagnostic" hidden></pre>
       </section>
     </div>
   </section>
 </main>
+<pre id="workspaceRuntimeDiagnostic" role="alert" hidden></pre>
+<script>
+  const workspaceTopOverlay = document.querySelector(".workspace-top-overlay");
+  const workspaceStage = document.getElementById("workspaceStageShell");
+  const syncWorkspaceTopOverlayGeometry = () => {
+    if (!workspaceTopOverlay || !workspaceStage) return;
+    const stageRect = workspaceStage.getBoundingClientRect();
+    workspaceTopOverlay.style.left = `${stageRect.left}px`;
+    workspaceTopOverlay.style.width = `${stageRect.width}px`;
+  };
+  workspaceTopOverlay?.append(document.getElementById("correctionContextDrawer"));
+  document.body.append(workspaceTopOverlay);
+  requestAnimationFrame(syncWorkspaceTopOverlayGeometry);
+  window.addEventListener("resize", syncWorkspaceTopOverlayGeometry);
+  if ("ResizeObserver" in window && workspaceStage) {
+    new ResizeObserver(syncWorkspaceTopOverlayGeometry).observe(workspaceStage);
+  }
+</script>
 <script src="presentation_labels.js"></script>
-<script src="app_state.js"></script>
+<script src="smart_target_identity.js"></script>
+<script src="zeroing_platform.js"></script>
+<script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
+<script src="app_state.js?v=session-normalization-0727"></script>
+<script src="m4_runtime.js?v=20260728-m4-sight-authority"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
-let session = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
+const TARGET_QUERY = new URLSearchParams(window.location.search);
+const REQUESTED_SESSION_ID = String(TARGET_QUERY.get("session") || "").trim();
+const REQUESTED_TARGET_PROFILE_ID = String(
+  TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || ""
+).toLowerCase();
+const SIMULATION_MODE = TARGET_QUERY.get("simulation") === "1";
+const SIMULATION_LIMIT = 3;
+const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
+const PRE_SIMULATION_ACTIVE_MATRIX = SIMULATION_MODE ? SCZN3M4.getActiveMatrix() : null;
+
+function newSimulationSessionId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") return `simulation-${window.crypto.randomUUID()}`;
+  return `simulation-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function activeSimulationSessionId() {
+  if (!SIMULATION_MODE) return "";
+  const startNew = TARGET_QUERY.get("new_simulation") === "1";
+  let value = startNew ? "" : localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY);
+  if (!value) {
+    value = newSimulationSessionId();
+    localStorage.setItem(SIMULATION_SESSION_STORAGE_KEY, value);
+  }
+  return value;
+}
+
+const SIMULATION_SESSION_ID = activeSimulationSessionId();
+let session = REQUESTED_SESSION_ID
+  ? SCZN3M4.loadSession(REQUESTED_SESSION_ID)
+  : SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
+const SESSION_ROUTE_MISS = Boolean(REQUESTED_SESSION_ID && !session);
+
+function sessionTargetProfileId(candidate) {
+  const source = candidate && candidate.matrixSnapshot ? candidate.matrixSnapshot : candidate || {};
+  return String(source.target_profile_id || source.targetProfileId || source.targetId || "").toLowerCase();
+}
+
+if (
+  !REQUESTED_SESSION_ID
+  && REQUESTED_TARGET_PROFILE_ID
+  && session
+  && sessionTargetProfileId(session) !== REQUESTED_TARGET_PROFILE_ID
+) {
+  session = null;
+}
+
+if (SIMULATION_MODE && (!session || session.simulationSessionId !== SIMULATION_SESSION_ID)) {
+  session = null;
+}
+if (!SIMULATION_MODE && session && session.experienceMode === "simulation") {
+  session = null;
+}
 
 function isFinalizedSession(candidate) {
+  if (
+    candidate
+    && candidate.savedToSEC !== true
+    && candidate.workflowStage === "validation"
+    && String(candidate.target_profile_id || candidate.targetProfileId || "").toLowerCase() === "m4_25m_zero"
+  ) return false;
   return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
 }
 
@@ -77,19 +212,20 @@ if (isFinalizedSession(session)) {
   session = null;
 }
 
-if (!session && SCZN3M4.getActiveMatrix()) {
+if (!SIMULATION_MODE && !session && !SESSION_ROUTE_MISS && !REQUESTED_TARGET_PROFILE_ID && SCZN3M4.getActiveMatrix()) {
   session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
 }
 let matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
+if (SIMULATION_MODE && !session) matrix = simulationTargetMatrix();
 const AUTHORITY_ENDPOINT_META = document.querySelector('meta[name="sczn3-authority-endpoint"]');
 const PRODUCTION_AUTHORITY_ENDPOINT = AUTHORITY_ENDPOINT_META && AUTHORITY_ENDPOINT_META.content
   ? AUTHORITY_ENDPOINT_META.content.trim()
   : "https://sczn3-authority.onrender.com/api/authority/ugeo";
 const LOCAL_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
 const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const FOUNDER_WORKSPACE_TEST_MODE = IS_LOCAL_FRONTEND && TARGET_QUERY.get("founder_review") !== "0";
 const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
 const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
-const TARGET_QUERY = new URLSearchParams(window.location.search);
 const TARGET_PROFILE_LAUNCH_ID = TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || "";
 const GSSF_CANONICAL_EXPORT_ENABLED = TARGET_QUERY.get("gssf_canonical_export") === "1";
 const DOT_TORTURE_PROFILE_IDS = new Set([
@@ -112,6 +248,18 @@ const DOT_TORTURE_PROFILE_LABELS = {
   }
 };
 const STATIC_TARGET_IDENTITY = {
+  m4_25m_zero: {
+    targetName: "M4 Carbine • 25 Meter Zeroing Target",
+    targetProfileId: "m4_25m_zero",
+    sku: "ST-M16A2/M4",
+    vendor: "Baker",
+    authority: "M4 Zeroing",
+    product: "M4 Carbine • 25 Meter Zeroing Target",
+    qrId: "ST-M16A2/M4",
+    missionFamily: "zeroingCorrection",
+    manufacturer: "Baker Targets",
+    discipline: "zeroing"
+  },
   baker_st_100yd_smart_zero: {
     targetName: "Baker 100 Yard Smart Target",
     targetProfileId: "baker_st_100yd_smart_zero",
@@ -167,8 +315,10 @@ const GSSF_CANONICAL_AUTHORITY = Object.freeze({
   imageHeightPx: 1373,
   dataUrl: "assets/gssf_ac_1_clean_reference.png"
 });
-let missionResolutionStatus = TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle";
-let missionResolutionMessage = TARGET_PROFILE_LAUNCH_ID ? "Loading target..." : "";
+let missionResolutionStatus = SESSION_ROUTE_MISS ? "unavailable" : (TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle");
+let missionResolutionMessage = SESSION_ROUTE_MISS
+  ? "The requested session is unavailable. Return to Weapon Setup and start the session again."
+  : (TARGET_PROFILE_LAUNCH_ID ? "Loading target..." : "");
 let gssfResultDisplayMode = TARGET_QUERY.get("gssf_display_mode") === "developer" ? "developer" : "shooter";
 let gssfCanonicalValidationTransaction = null;
 const savedGssfOfficialMatchTime = session && (session.officialMatchTimeSeconds ?? session.gssfOfficialMatchTimeSeconds);
@@ -177,18 +327,30 @@ let gssfOfficialMatchTimeSeconds = typeof savedGssfOfficialMatchTime === "number
   && savedGssfOfficialMatchTime >= 0
   ? savedGssfOfficialMatchTime
   : null;
+let gssfTimerAuthorityRequestHandle = null;
+let gssfTimerAuthorityRequestToken = 0;
 let pendingEvidence = null;
 let displayedEvidence = null;
 const activeMarkPointers = new Set();
 let markTapCandidate = null;
 let markGestureCancelled = false;
-const savedAuthorityPackage = session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
+const RESUMING_M4_CONFIRMATION = !!(
+  session
+  && session.savedToSEC !== true
+  && session.workflowStage === "validation"
+  && String(session.target_profile_id || session.targetProfileId || "").toLowerCase() === "m4_25m_zero"
+);
+const savedAuthorityPackage = RESUMING_M4_CONFIRMATION
+  ? (session.confirmationAuthorityPackage || null)
+  : session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
   ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
   : null;
 let backendAuthorityPackage = compatibleAuthorityPackage(savedAuthorityPackage);
 let markMode = "aim";
 let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
-let currentImpactPoints = session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : [];
+let currentImpactPoints = RESUMING_M4_CONFIRMATION
+  ? (session && Array.isArray(session.confirmationImpactPoints) ? [...session.confirmationImpactPoints] : [])
+  : (session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : []);
 function backendScoreValue(authorityPackage) {
   const score = authorityPackage && authorityPackage.score;
   const value = score && typeof score === "object" ? score.value : score;
@@ -199,14 +361,52 @@ let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
 let authorityStatusMessage = "";
 let sessionSaved = false;
+let m4LivePhase = RESUMING_M4_CONFIRMATION ? "confirmation" : "initial";
+let m4InitialAuthorityPackage = session && (
+  session.m4AuthorityPackage
+  || session.backendAuthorityPackage
+  || session.authorityPackage
+) || null;
 let trainingStageIndex = 0;
 let trainingDrillFinished = false;
+let holeEntrySettled = currentImpactPoints.length > 0;
+let holeEntryIdleHandle = null;
+const HOLE_ENTRY_IDLE_MS = 900;
+let correctionContextPending = false;
+let correctionContextRefreshing = false;
+let correctionContextReviewDismissed = false;
+let correctionContextConfirmedFingerprint = String(
+  session && session.correctionContextConfirmedFingerprint || ""
+);
+let selectedSightSystem = "";
+
+function isM4AuthoritySession() {
+  return activeTargetProfileId() === "m4_25m_zero"
+    || !!(window.SCZN3SmartTargetIdentity && (
+      SCZN3SmartTargetIdentity.isM4(session)
+      || SCZN3SmartTargetIdentity.isM4(matrix)
+      || SCZN3SmartTargetIdentity.resolve(TARGET_QUERY)
+    ))
+    || !!(window.SCZN3M4 && SCZN3M4.isM4Session && SCZN3M4.isM4Session(session || matrix));
+}
+document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
+if (SIMULATION_MODE) {
+  document.querySelectorAll("[data-simulation-target-link]").forEach(link => { link.href = "shoot.html?simulation=1"; });
+  document.querySelectorAll("[data-simulation-sec-link]").forEach(link => { link.href = "records.html?simulation=1"; });
+  const selection = document.getElementById("simulationTargetSelection");
+  if (selection) selection.hidden = false;
+}
 const savedDistance = session && (session.targetDistanceValue || session.targetDistance || session.distance || session.matrixSnapshot?.targetDistance || session.matrixSnapshot?.distance);
 let selectedDistanceUnit = (session && (session.targetDistanceUnit || session.matrixSnapshot?.targetDistanceUnit)) || (/m(eters?)?$/i.test(String(savedDistance || "")) ? "M" : "YDS");
 let selectedDistanceValue = parseDistanceValue(savedDistance) || "100";
 let distanceLocked = !!(session && session.targetDistanceLocked);
 let showGridCoordinates = false;
 let selectedAdjustmentUnit = String((matrix && (matrix.opticAdjustmentUnit || matrix.adjustmentUnit)) || "MOA").toUpperCase() === "MRAD" ? "MRAD" : "MOA";
+selectedSightSystem = (() => {
+  const source = session && session.matrixSnapshot || matrix || {};
+  const label = String(source.opticType || source.opticModel || source.adjustmentSystem || "").toLowerCase();
+  return label.includes("iron") || label.includes("m4_iron") ? "iron" : "optic";
+})();
 const BAKER_GRID_AUDIT = {
   imageWidth: 1102,
   imageHeight: 1713,
@@ -375,10 +575,17 @@ function missionStageProgress(authorityPackage) {
 
 function zeroingMissionProgress() {
   if (!hasMarkableEvidence()) return "";
+  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+    if (!currentImpactPoints.length) return "Confirmation group";
+    if (!resultsShown) return `${currentImpactPoints.length} confirmation ${currentImpactPoints.length === 1 ? "hole" : "holes"}`;
+    return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
+      ? "Zero confirmed"
+      : "Additional correction required";
+  }
   if (!currentAimPoint) return "Tap aim point";
   if (!currentImpactPoints.length) return "Tap bullet holes";
-  if (!resultsShown) return `${currentImpactPoints.length} impacts recorded`;
-  if (!sessionSaved) return "Ready to save";
+  if (!resultsShown) return `${currentImpactPoints.length} ${currentImpactPoints.length === 1 ? "hole" : "holes"} recorded`;
+  if (!sessionSaved) return "Ready for confirmation";
   return "Session saved";
 }
 
@@ -390,21 +597,51 @@ function gssfMissionProgress() {
   return "Session saved";
 }
 
+function simulationCompletedCount() {
+  if (!SIMULATION_MODE || !SIMULATION_SESSION_ID) return 0;
+  return SCZN3M4.getSessionHistory().filter(candidate => (
+    candidate
+    && candidate.savedToSEC === true
+    && candidate.experienceMode === "simulation"
+    && candidate.simulationSessionId === SIMULATION_SESSION_ID
+  )).length;
+}
+
+function simulationLimitReached() {
+  return SIMULATION_MODE && simulationCompletedCount() >= SIMULATION_LIMIT;
+}
+
 function zeroingMissionGuidance() {
   if (!hasMarkableEvidence()) return "Start With A Target Photo";
-  if (!currentAimPoint) return "Tap Aim Point";
-  if (!currentImpactPoints.length) return "Tap Bullet Holes";
-  if (!resultsShown) return "Show Results";
-  if (!sessionSaved) return "Save Session";
+  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+    if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
+    if (!resultsShown) return "Review the group, then show confirmation results.";
+    return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
+      ? "Zero confirmed. Save the completed session."
+      : "Apply the correction, then fire another confirmation group.";
+  }
+  if (!currentAimPoint) return "Tap the point you aimed at.";
+  if (!currentImpactPoints.length) return "Tap each bullet hole in the initial group.";
+  if (!resultsShown) return (!isM4AuthoritySession() || holeEntrySettled)
+    ? "Review the group, then show results."
+    : "Continue tapping bullet holes.";
+  if (!sessionSaved) return "Apply the correction, then begin confirmation.";
   return "View Record";
 }
 
 function zeroingMissionStatus() {
   if (!hasMarkableEvidence()) return "Ready";
+  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+    if (!currentImpactPoints.length) return "Confirmation";
+    if (!resultsShown) return "Confirmation Evidence";
+    return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
+      ? "Zero Confirmed"
+      : "Correction Required";
+  }
   if (!currentAimPoint) return "Awaiting Aim Point";
   if (!currentImpactPoints.length) return "Awaiting Impacts";
   if (!resultsShown) return "Ready for Results";
-  if (!sessionSaved) return "Results Ready";
+  if (!sessionSaved) return "Initial Results";
   return "Saved";
 }
 
@@ -495,15 +732,33 @@ function missionWorkspaceDescriptor() {
     title: targetName,
     meta: zeroingMissionProgress(),
     status: zeroingMissionStatus(),
-    guidance: zeroingMissionGuidance(),
+    guidance: SIMULATION_MODE && hasMarkableEvidence() && !currentAimPoint
+      ? "Tap your aim point"
+      : SIMULATION_MODE && hasMarkableEvidence() && !currentImpactPoints.length
+        ? "Tap up to 10 bullet holes"
+        : zeroingMissionGuidance(),
     chooseLabel: "Add Target Photo",
-    impactLabel: "Tap Bullet Holes",
+    impactLabel: SIMULATION_MODE ? "Tap up to 10 holes" : "Tap Holes",
     completeLabel: "Show Results"
   };
 }
 
 function renderMissionWorkspaceChrome() {
   const descriptor = missionWorkspaceDescriptor();
+  if (SIMULATION_MODE) {
+    const remaining = Math.max(0, SIMULATION_LIMIT - simulationCompletedCount());
+    descriptor.eyebrow = "Try Before You Buy";
+    descriptor.title = "Simulation";
+    descriptor.meta = [
+      `${remaining} complimentary ${remaining === 1 ? "simulation" : "simulations"} available`,
+      "Baker 100 Yard Smart Target"
+    ].join(" • ");
+    descriptor.chooseLabel = "Start Simulation";
+    if (simulationLimitReached()) {
+      descriptor.status = "Simulation Complete";
+      descriptor.guidance = "Start a new simulator session or explore the Smart Target catalog.";
+    }
+  }
   const eyebrow = document.getElementById("missionWorkspaceEyebrow");
   const summary = document.getElementById("targetSessionSummary");
   const meta = document.getElementById("missionWorkspaceMeta");
@@ -513,6 +768,7 @@ function renderMissionWorkspaceChrome() {
   const aimButton = document.getElementById("setAimMode");
   const impactButton = document.getElementById("addImpactMode");
   const completeButton = document.getElementById("showResults");
+  const restartLink = document.getElementById("simulationRestartLink");
   if (eyebrow) eyebrow.textContent = descriptor.eyebrow;
   if (summary) summary.textContent = descriptor.title;
   if (meta) {
@@ -522,9 +778,23 @@ function renderMissionWorkspaceChrome() {
   if (status) status.textContent = descriptor.status || "Ready";
   if (guidance) guidance.textContent = descriptor.guidance || "";
   if (chooseTarget) chooseTarget.textContent = descriptor.chooseLabel || "Add Target Photo";
-  if (aimButton) aimButton.textContent = "Tap Aim Point";
-  if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Bullet Holes";
+  if (aimButton) {
+    aimButton.textContent = SIMULATION_MODE
+      ? "Tap where you aimed"
+      : isM4AuthoritySession()
+        ? "Tap Where You Aimed"
+        : "Tap Aim Point";
+  }
+  if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Holes";
+  if (
+    impactButton
+    && isM4AuthoritySession()
+    && m4LivePhase === "confirmation"
+  ) {
+    impactButton.textContent = "Confirmation Tap Holes";
+  }
   if (completeButton) completeButton.textContent = descriptor.completeLabel || "Show Results";
+  if (restartLink) restartLink.hidden = !simulationLimitReached();
 }
 
 function isGssfAuthoritySession() {
@@ -732,6 +1002,7 @@ function syncAuthorityDerivedState() {
 
 function zeroingClicksFromAuthorityPackage(authorityPackage) {
   if (!authorityPackage || isNonZeroingAuthorityPackage(authorityPackage)) return null;
+  if (!authorityPackage.clicks || authorityPackage.mechanicalValidation?.status !== "calculated") return null;
   const correction = authorityPackage.correction || {};
   const clicks = authorityPackage.clicks || {};
   return {
@@ -777,9 +1048,14 @@ function renderActiveSessionBar() {
   renderTargetHeaderIdentity();
   const sessionSummary = currentSetupName();
   const sessionMeta = currentSetupMeta();
-  document.getElementById("activeSessionBar").innerHTML = session
-    ? `<strong>${escapeHtml(sessionSummary)}</strong><span>${escapeHtml(sessionMeta)}</span>`
-    : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
+  const activeSessionBar = document.getElementById("activeSessionBar");
+  if (activeSessionBar) {
+    activeSessionBar.innerHTML = session
+      ? `<strong>${escapeHtml(sessionSummary)}</strong><span>${escapeHtml(sessionMeta)}</span>`
+      : SIMULATION_MODE
+        ? `<strong>Baker 100 Yard Smart Target</strong><span>Simulation</span>`
+        : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
+  }
   renderMissionWorkspaceChrome();
 }
 
@@ -797,10 +1073,57 @@ function defaultTargetMatrix() {
   };
 }
 
+function simulationTargetMatrix() {
+  return {
+    experienceMode: "simulation",
+    simulation: true,
+    simulationSessionId: SIMULATION_SESSION_ID,
+    target_profile_id: "baker_st_100yd_smart_zero",
+    targetProfileId: "baker_st_100yd_smart_zero",
+    targetId: "BAKER_ST_100YD_SMART",
+    targetName: "Baker 100 Yard Smart Target",
+    targetFamily: "Baker 100 Yard Smart Target",
+    manufacturer: "Baker Targets",
+    mission_family: "zeroingCorrection",
+    missionFamily: "zeroingCorrection",
+    missionFamilyId: "zeroingCorrection",
+    targetDistance: "100 yds",
+    targetDistanceValue: "100",
+    targetDistanceUnit: "YDS",
+    opticClickValue: "0.25",
+    opticClickValueMOA: "0.25",
+    opticAdjustmentUnit: "MOA"
+  };
+}
+
 function targetAttributionOverride(source = {}) {
   const targetProfileId = activeTargetProfileId();
   const missionFamily = activeMissionFamily();
   const base = authoritySafeRecord(source);
+  if (targetProfileId === "m4_25m_zero") {
+    return {
+      ...base,
+      ...(window.SCZN3SmartTargetIdentity ? SCZN3SmartTargetIdentity.BAKER_M4_IDENTITY : {}),
+      target_profile_id: "m4_25m_zero",
+      targetProfileId: "m4_25m_zero",
+      mission_family: "zeroingCorrection",
+      missionFamilyId: "zeroingCorrection",
+      targetName: "M4 Carbine • 25 Meter Zeroing Target",
+      targetFamily: "Military 25 Meter M4 Zeroing Target",
+      targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+      targetVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+      targetDistance: "25 m",
+      targetDistanceValue: "25",
+      targetDistanceUnit: "M",
+      targetDistanceLocked: true,
+      opticType: "Iron Sights",
+      opticBrand: "USGI",
+      opticModel: "M4 Detachable Carry Handle + Front Sight Post",
+      opticAdjustmentUnit: "MOA",
+      adjustmentSystem: "M4_IRON_DCH_FSP",
+      equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+    };
+  }
   if (isDotTortureProfileId(targetProfileId)) {
     const labels = DOT_TORTURE_PROFILE_LABELS[targetProfileId] || DOT_TORTURE_PROFILE_LABELS.dot_torture_ez2c_style_17;
     return {
@@ -833,11 +1156,49 @@ function targetAttributionOverride(source = {}) {
 
 function ensureTargetSession() {
   if (session) return session;
-  matrix = targetAttributionOverride(SCZN3M4.getActiveMatrix() || defaultTargetMatrix());
+  matrix = SIMULATION_MODE
+    ? simulationTargetMatrix()
+    : targetAttributionOverride(SCZN3M4.getActiveMatrix() || defaultTargetMatrix());
   matrix = SCZN3M4.saveMatrixSnapshot(matrix);
   session = SCZN3M4.createSession(matrix);
+  if (SIMULATION_MODE) {
+    session = SCZN3M4.replaceSession({
+      ...session,
+      experienceMode: "simulation",
+      simulation: true,
+      simulationSessionId: SIMULATION_SESSION_ID
+    });
+    if (PRE_SIMULATION_ACTIVE_MATRIX) {
+      SCZN3M4.write(SCZN3M4.KEYS.activeMatrix, PRE_SIMULATION_ACTIVE_MATRIX);
+    } else {
+      localStorage.removeItem(SCZN3M4.KEYS.activeMatrix);
+    }
+  }
   renderActiveSessionBar();
   return session;
+}
+
+function installBakerSimulationEvidence() {
+  if (!SIMULATION_MODE || simulationLimitReached()) return null;
+  ensureTargetSession();
+  const evidence = {
+    dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+    name: "Baker 100 Yard Smart Target",
+    type: "image/png",
+    assetRole: "simulation-reference-target",
+    targetProfileId: "baker_st_100yd_smart_zero",
+    targetId: "BAKER_ST_100YD_SMART",
+    publisher: "Baker Targets"
+  };
+  session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
+  pendingEvidence = null;
+  const chooseTarget = document.getElementById("chooseTargetButton");
+  const targetInput = document.getElementById("targetImageInput");
+  if (chooseTarget) chooseTarget.hidden = true;
+  if (targetInput) targetInput.disabled = true;
+  renderEvidencePreview(evidence);
+  setMode("aim");
+  return evidence;
 }
 
 function installGssfCanonicalEvidence() {
@@ -865,8 +1226,51 @@ function installGssfCanonicalEvidence() {
   return evidence;
 }
 
+function installM4CanonicalEvidence() {
+  if (!isM4AuthoritySession()) return null;
+  ensureTargetSession();
+  const founderPrototypeAsset = "authority-evidence/m4-target-reconstruction/M4_M16_25M_WORKSPACE_PRESENTATION.svg";
+  const existingEvidence = session && session.targetEvidenceImage || null;
+  const existingSource = String(existingEvidence && existingEvidence.dataUrl || "");
+  const isFounderPrototypeTarget = existingSource.includes("M4_M16_25M_WORKSPACE_PRESENTATION.svg")
+    && Number(existingEvidence && existingEvidence.imageWidthPx) === 2550
+    && Number(existingEvidence && existingEvidence.imageHeightPx) === 3300;
+  if (existingEvidence && isFounderPrototypeTarget) {
+    return existingEvidence;
+  }
+  const evidence = {
+    dataUrl: founderPrototypeAsset,
+    name: "M4/M16 Series Weapons 25M Zero Short Range and Pistol Marksmanship Target",
+    type: "image/svg+xml",
+    assetRole: "founder-workspace-presentation-from-physically-validated-reconstruction",
+    temporaryDevelopmentAsset: false,
+    productionAuthorityPromotion: false,
+    physicalValidationStatus: "passed-33-of-33",
+    validatedReconstruction: "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
+    canonicalVisualReference: "authority-evidence/m4-target-reconstruction/founder-reference/IMG_2089_ORIGINAL.jpeg",
+    rollbackAsset: "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg",
+    targetProfileId: "m4_25m_zero",
+    targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    publisher: "Baker",
+    vendor: "Baker",
+    sku: "ST-M16A2/M4",
+    product: "M4 Carbine • 25 Meter Zeroing Target",
+    authority: "M4 Zeroing",
+    imageWidthPx: 2550,
+    imageHeightPx: 3300,
+    qrOverlay: null
+  };
+  session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
+  pendingEvidence = null;
+  const chooseTarget = document.getElementById("chooseTargetButton");
+  const targetInput = document.getElementById("targetImageInput");
+  if (chooseTarget) chooseTarget.hidden = true;
+  if (targetInput) targetInput.disabled = true;
+  return evidence;
+}
+
 function ensureTargetAttribution() {
-  if (!isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
+  if (!isM4AuthoritySession() && !isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
   matrix = targetAttributionOverride(matrix || {});
   SCZN3M4.saveMatrixSnapshot(matrix);
   if (session) {
@@ -881,6 +1285,11 @@ function ensureTargetAttribution() {
 }
 
 ensureTargetAttribution();
+if (isM4AuthoritySession()) {
+  selectedDistanceValue = "25";
+  selectedDistanceUnit = "M";
+  distanceLocked = true;
+}
 renderActiveSessionBar();
 
 function cleanSetupValue(value) {
@@ -1370,6 +1779,7 @@ function targetIntelStackHtml() {
           <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
           <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
         </div>
+        <div class="m4-validation-summary is-hidden" id="m4ValidationSummary"></div>
         <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
       </div>
       ${zeroingSetupPanelHtml()}
@@ -1381,26 +1791,48 @@ function isPresetDistance(value) {
 }
 
 function zeroingSetupPanelHtml() {
+  const isM4 = isM4AuthoritySession();
   return `
     <details class="guidance-card zeroing-setup-panel">
       <summary>Zeroing Setup</summary>
       <div class="target-intel-distance" aria-label="Session distance">
         <span>Session Distance</span>
         <strong id="distanceDisplay">${formatDistanceDisplay()}</strong>
-        <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance and optic units">
-          <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS"${distanceLocked ? " disabled" : ""}>YDS</button>
-          <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M"${distanceLocked ? " disabled" : ""}>M</button>
-          <button class="unit-button${selectedAdjustmentUnit === "MOA" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MOA">MOA</button>
-          <button class="unit-button${selectedAdjustmentUnit === "MRAD" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MRAD">MRAD</button>
+        <div class="zeroing-unit-groups">
+          <div class="zeroing-unit-group">
+            <span>Distance Unit</span>
+            <div class="unit-toggle target-distance-unit-toggle" role="group" aria-label="Distance unit">
+              <button class="unit-button${selectedDistanceUnit === "YDS" ? " is-active" : ""}" type="button" data-target-distance-unit="YDS" aria-pressed="${selectedDistanceUnit === "YDS"}"${distanceLocked ? " disabled" : ""}>YDS${selectedDistanceUnit === "YDS" ? " ✓" : ""}</button>
+              <button class="unit-button${selectedDistanceUnit === "M" ? " is-active" : ""}" type="button" data-target-distance-unit="M" aria-pressed="${selectedDistanceUnit === "M"}"${distanceLocked ? " disabled" : ""}>M${selectedDistanceUnit === "M" ? " ✓" : ""}</button>
+            </div>
+          </div>
+          <div class="zeroing-unit-group">
+            <span>Adjustment Unit</span>
+            <div class="unit-toggle target-adjustment-unit-toggle" role="group" aria-label="Adjustment unit">
+              <button class="unit-button${selectedAdjustmentUnit === "MOA" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MOA" aria-pressed="${selectedAdjustmentUnit === "MOA"}">MOA${selectedAdjustmentUnit === "MOA" ? " ✓" : ""}</button>
+              <button class="unit-button${selectedAdjustmentUnit === "MRAD" ? " is-active" : ""}" type="button" data-target-adjustment-unit="MRAD" aria-pressed="${selectedAdjustmentUnit === "MRAD"}">MRAD${selectedAdjustmentUnit === "MRAD" ? " ✓" : ""}</button>
+            </div>
+          </div>
         </div>
-        <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
-        <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+        ${isM4 ? `
+          <div class="m4-target-zero" aria-label="Target zero distance">
+            <span>Target Zero</span>
+            <strong>300 m</strong>
+          </div>
+          <input id="targetDistance" type="hidden" value="25" />
+          <input id="targetDistanceOther" type="hidden" value="" />
+        ` : `
+          <label class="zeroing-distance-select">Session Distance
+            <select id="targetDistance"${distanceLocked ? " disabled" : ""}>${distanceOptions()}</select>
+          </label>
+          <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
+        `}
       </div>
-      <div class="distance-query-row">
+      ${isM4 ? "" : `<div class="distance-query-row">
         <label>Go To Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
       </div>
-      <div class="guidance-result" id="guidanceResult">Dial:</div>
+      <div class="guidance-result" id="guidanceResult">Dial:</div>`}
     </details>
   `;
 }
@@ -1422,30 +1854,80 @@ function bindDistanceControl() {
       otherInput.value = "";
     }
     updateDistanceDisplay();
+    invalidateCorrectionContext();
   });
   if (otherInput) {
     otherInput.addEventListener("input", () => {
       otherInput.value = otherInput.value.replace(/\D/g, "");
       selectedDistanceValue = otherInput.value;
       updateDistanceDisplay();
+      invalidateCorrectionContext();
     });
   }
   document.querySelectorAll("[data-target-distance-unit]").forEach(button => {
     button.addEventListener("click", () => {
       if (distanceLocked) return;
       selectedDistanceUnit = button.dataset.targetDistanceUnit;
-      document.querySelectorAll("[data-target-distance-unit]").forEach(item => item.classList.toggle("is-active", item === button));
+      document.querySelectorAll("[data-target-distance-unit]").forEach(item => {
+        const selected = item === button;
+        item.classList.toggle("is-active", selected);
+        item.setAttribute("aria-pressed", String(selected));
+        item.textContent = `${item.dataset.targetDistanceUnit}${selected ? " ✓" : ""}`;
+      });
       updateDistanceDisplay();
+      invalidateCorrectionContext();
     });
   });
   document.querySelectorAll("[data-target-adjustment-unit]").forEach(button => {
     button.addEventListener("click", () => {
       selectedAdjustmentUnit = button.dataset.targetAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
-      document.querySelectorAll("[data-target-adjustment-unit]").forEach(item => item.classList.toggle("is-active", item === button));
-      clearCalculatedResults();
+      document.querySelectorAll("[data-target-adjustment-unit]").forEach(item => {
+        const selected = item === button;
+        item.classList.toggle("is-active", selected);
+        item.setAttribute("aria-pressed", String(selected));
+        item.textContent = `${item.dataset.targetAdjustmentUnit}${selected ? " ✓" : ""}`;
+      });
+      invalidateCorrectionContext();
     });
   });
   updateDistanceDisplay();
+}
+
+function bindCorrectionContextDrawer() {
+  const sight = document.getElementById("correctionContextSight");
+  const distance = document.getElementById("correctionContextDistance");
+  const distanceUnit = document.getElementById("correctionContextDistanceUnit");
+  const adjustmentUnit = document.getElementById("correctionContextAdjustmentUnit");
+  const confirm = document.getElementById("confirmCorrectionContext");
+  const back = document.getElementById("backToTaps");
+  if (!sight || sight.dataset.bound === "true") return;
+  sight.dataset.bound = "true";
+  sight.addEventListener("change", () => {
+    selectedSightSystem = sight.value === "optic" ? "optic" : "iron";
+    if (!FOUNDER_WORKSPACE_TEST_MODE && selectedSightSystem === "iron") selectedAdjustmentUnit = "MOA";
+    invalidateCorrectionContext();
+  });
+  distance.addEventListener("input", () => {
+    selectedDistanceValue = distance.value;
+    invalidateCorrectionContext();
+  });
+  distanceUnit.addEventListener("change", () => {
+    selectedDistanceUnit = distanceUnit.value === "M" ? "M" : "YDS";
+    invalidateCorrectionContext();
+  });
+  adjustmentUnit.addEventListener("change", () => {
+    selectedAdjustmentUnit = adjustmentUnit.value === "MRAD" ? "MRAD" : "MOA";
+    invalidateCorrectionContext();
+  });
+  confirm.addEventListener("click", confirmCorrectionContext);
+  back.addEventListener("click", () => {
+    correctionContextReviewDismissed = true;
+    const drawer = document.getElementById("correctionContextDrawer");
+    if (drawer) drawer.open = false;
+    setMode("impact");
+    renderCorrectionContextDrawer();
+    renderMarkStatus();
+  });
 }
 
 function syncDistanceFromControls() {
@@ -1458,6 +1940,253 @@ function syncDistanceFromControls() {
 function updateDistanceDisplay() {
   const display = document.getElementById("distanceDisplay");
   if (display) display.textContent = formatDistanceDisplay();
+}
+
+function correctionContextSnapshot(authorityPackage = backendAuthorityPackage) {
+  const source = session && session.matrixSnapshot || matrix || {};
+  const model = authorityPackage && authorityPackage.mechanicalValidation
+    ? authorityPackage.mechanicalValidation.model || {}
+    : {};
+  const opticType = String(source.opticType || source.opticModel || source.adjustmentSystem || "").toLowerCase();
+  const sightSystem = selectedSightSystem || (
+    opticType.includes("iron") || opticType.includes("m4_iron") ? "iron" : "optic"
+  );
+  return {
+    sightSystem,
+    sightLabel: sightSystem === "iron" ? "Iron Sight" : "Optic",
+    distanceValue: Number(selectedDistanceValue || 0),
+    distanceUnit: selectedDistanceUnit === "M" ? "M" : "YDS",
+    adjustmentUnit: selectedAdjustmentUnit === "MRAD" ? "MRAD" : "MOA",
+    equipmentAuthorityRecordId: String(
+      model.equipmentAuthorityRecordId
+      || source.equipmentAuthorityRecordId
+      || source.mechanicalSightAuthorityId
+      || source.sightAuthorityId
+      || ""
+    ),
+    opticIdentity: sightSystem === "optic"
+      ? [source.opticType, source.opticBrand, source.opticModel].filter(Boolean).join("|")
+      : "",
+    opticClickValue: sightSystem === "optic"
+      ? Number(
+        source.opticClickValue
+        || (selectedAdjustmentUnit === "MRAD" ? source.opticClickValueMRAD : source.opticClickValueMOA)
+        || 0
+      )
+      : null
+  };
+}
+
+function correctionContextFingerprint(authorityPackage = backendAuthorityPackage) {
+  const context = correctionContextSnapshot(authorityPackage);
+  if (window.SCZN3ZeroingPlatform) {
+    return window.SCZN3ZeroingPlatform.contextFingerprint({
+      ...context,
+      distance: context.distanceValue,
+      sightAuthorityId: context.equipmentAuthorityRecordId
+    });
+  }
+  return JSON.stringify(context);
+}
+
+function correctionContextIsAuthoritative(authorityPackage = backendAuthorityPackage) {
+  const context = correctionContextSnapshot(authorityPackage);
+  return !!(
+    Number.isFinite(context.distanceValue)
+    && context.distanceValue > 0
+    && authorityPackage
+    && authorityPackage.clicks
+    && authorityPackage.mechanicalValidation
+    && authorityPackage.mechanicalValidation.status === "calculated"
+  );
+}
+
+function correctionContextIsConfirmed(authorityPackage = backendAuthorityPackage) {
+  return !!(
+    correctionContextConfirmedFingerprint
+    && correctionContextConfirmedFingerprint === correctionContextFingerprint(authorityPackage)
+    && correctionContextIsAuthoritative(authorityPackage)
+  );
+}
+
+function correctionContextEvidenceX(authorityPackage = backendAuthorityPackage) {
+  const points = currentImpactPoints.map(safePoint).filter(Boolean);
+  const poib = safePoint(authorityPackage && (
+    authorityPackage.poib
+    || authorityPackage.renderCoordinates && authorityPackage.renderCoordinates.poib
+  ));
+  if (poib) points.push(poib);
+  if (!points.length) return 50;
+  return points.reduce((sum, point) => sum + Number(point.xPercent), 0) / points.length;
+}
+
+function placeCorrectionContextDrawer() {
+  const drawer = document.getElementById("correctionContextDrawer");
+  if (!drawer) return;
+  drawer.dataset.drawerDirection = correctionContextEvidenceX() < 50 ? "right" : "left";
+}
+
+function founderContextAtResultsGate() {
+  return !!(
+    FOUNDER_WORKSPACE_TEST_MODE
+    && isM4AuthoritySession()
+    && currentAimPoint
+    && currentImpactPoints.length
+    && holeEntrySettled
+    && !resultsShown
+    && !correctionContextReviewDismissed
+  );
+}
+
+function renderCorrectionContextDrawer() {
+  const drawer = document.getElementById("correctionContextDrawer");
+  if (!drawer) return;
+  const founderGate = founderContextAtResultsGate();
+  const available = isM4AuthoritySession() && (
+    FOUNDER_WORKSPACE_TEST_MODE
+      ? founderGate || resultsShown
+      : correctionContextPending || !!correctionContextConfirmedFingerprint
+  );
+  drawer.hidden = !available;
+  if (!available) return;
+  const context = correctionContextSnapshot();
+  const sight = document.getElementById("correctionContextSight");
+  const distance = document.getElementById("correctionContextDistance");
+  const distanceUnit = document.getElementById("correctionContextDistanceUnit");
+  const adjustmentUnit = document.getElementById("correctionContextAdjustmentUnit");
+  if (sight && document.activeElement !== sight) sight.value = context.sightSystem;
+  if (distance && document.activeElement !== distance) distance.value = String(context.distanceValue || "");
+  if (distanceUnit && document.activeElement !== distanceUnit) distanceUnit.value = context.distanceUnit;
+  if (adjustmentUnit && document.activeElement !== adjustmentUnit) adjustmentUnit.value = context.adjustmentUnit;
+  if (adjustmentUnit) {
+    const mrad = adjustmentUnit.querySelector('option[value="MRAD"]');
+    if (mrad) mrad.disabled = !FOUNDER_WORKSPACE_TEST_MODE && context.sightSystem === "iron";
+  }
+  const confirm = document.getElementById("confirmCorrectionContext");
+  const back = document.getElementById("backToTaps");
+  if (confirm) {
+    confirm.disabled = correctionContextRefreshing || !Number.isFinite(context.distanceValue) || context.distanceValue <= 0;
+    confirm.textContent = correctionContextRefreshing
+      ? (resultsShown ? "Updating…" : "Calculating…")
+      : FOUNDER_WORKSPACE_TEST_MODE
+        ? (resultsShown ? "Update Results" : "Show Results")
+        : "Confirm";
+  }
+  if (back) {
+    back.hidden = !founderGate;
+    back.disabled = correctionContextRefreshing;
+  }
+  if (founderGate || correctionContextPending) drawer.open = true;
+  placeCorrectionContextDrawer();
+}
+
+function syncCorrectionContextGate() {
+  if (FOUNDER_WORKSPACE_TEST_MODE && isM4AuthoritySession()) {
+    correctionContextPending = false;
+    renderCorrectionContextDrawer();
+    return;
+  }
+  if (!isM4AuthoritySession() || !resultsShown || !currentClicks) {
+    renderCorrectionContextDrawer();
+    return;
+  }
+  correctionContextPending = !correctionContextIsConfirmed(backendAuthorityPackage);
+  renderCorrectionContextDrawer();
+}
+
+function invalidateCorrectionContext() {
+  if (FOUNDER_WORKSPACE_TEST_MODE && isM4AuthoritySession()) {
+    correctionContextPending = false;
+    correctionContextConfirmedFingerprint = "";
+    sessionSaved = false;
+    persistCorrectionContextSelection();
+    renderCorrectionContextDrawer();
+    renderMarkStatus();
+    return;
+  }
+  correctionContextConfirmedFingerprint = "";
+  correctionContextPending = !!(isM4AuthoritySession() && resultsShown && currentClicks);
+  sessionSaved = false;
+  if (correctionContextPending) {
+    setSaveSessionStatus("Confirm correction context to refresh the authoritative recommendation.");
+  }
+  renderMarkers();
+  renderCorrectionContextDrawer();
+  renderMarkStatus();
+}
+
+function persistCorrectionContextSelection() {
+  if (!session) ensureTargetSession();
+  const source = { ...(session && session.matrixSnapshot || matrix || {}) };
+  const previousOpticType = String(source.opticType || "");
+  const nextOpticType = selectedSightSystem === "iron"
+    ? "Iron Sights"
+    : (!previousOpticType.toLowerCase().includes("iron") && previousOpticType ? previousOpticType : "Optic");
+  const nextMatrix = {
+    ...source,
+    opticType: nextOpticType,
+    opticAdjustmentUnit: selectedAdjustmentUnit,
+    targetDistance: `${selectedDistanceValue} ${selectedDistanceUnit === "M" ? "m" : "yds"}`,
+    targetDistanceValue: String(selectedDistanceValue),
+    targetDistanceUnit: selectedDistanceUnit
+  };
+  matrix = { ...(matrix || {}), ...nextMatrix };
+  session = SCZN3M4.updateActiveSession({
+    matrixSnapshot: nextMatrix,
+    targetDistance: nextMatrix.targetDistance,
+    targetDistanceValue: nextMatrix.targetDistanceValue,
+    targetDistanceUnit: nextMatrix.targetDistanceUnit,
+    correctionContextConfirmedFingerprint: "",
+    correctionContextSnapshot: correctionContextSnapshot(null)
+  }) || session;
+}
+
+async function confirmCorrectionContext() {
+  if (correctionContextRefreshing) return;
+  const context = correctionContextSnapshot();
+  if (!Number.isFinite(context.distanceValue) || context.distanceValue <= 0) return;
+  correctionContextRefreshing = true;
+  renderCorrectionContextDrawer();
+  persistCorrectionContextSelection();
+  try {
+    const authorityPackage = await requestBackendAuthority();
+    applyBackendAuthorityPackage(authorityPackage);
+    if (!FOUNDER_WORKSPACE_TEST_MODE && !correctionContextIsAuthoritative(authorityPackage)) {
+      correctionContextPending = true;
+      authorityStatusMessage = "Correction authority unavailable for the selected context.";
+      setSaveSessionStatus(authorityStatusMessage, "error");
+      return;
+    }
+    correctionContextConfirmedFingerprint = correctionContextFingerprint(authorityPackage);
+    correctionContextPending = false;
+    correctionContextReviewDismissed = false;
+    session = SCZN3M4.updateActiveSession({
+      correctionContextConfirmedFingerprint,
+      correctionContextSnapshot: correctionContextSnapshot(authorityPackage)
+    }) || session;
+    if (
+      m4LivePhase === "confirmation"
+      && authorityPackage.validation
+      && !authorityPackage.validation.confirmed
+    ) {
+      setSaveSessionStatus("Confirmation recorded. Apply the remaining correction and fire another group.");
+    } else {
+      setSaveSessionStatus("");
+    }
+    const drawer = document.getElementById("correctionContextDrawer");
+    if (drawer && FOUNDER_WORKSPACE_TEST_MODE) drawer.open = false;
+  } catch (error) {
+    console.warn("Correction context authority refresh failed", error);
+    correctionContextPending = true;
+    authorityStatusMessage = "Correction authority refresh failed. Your evidence remains on this screen.";
+    setSaveSessionStatus(authorityStatusMessage, "error");
+  } finally {
+    correctionContextRefreshing = false;
+    renderMarkers();
+    renderResults();
+    renderMarkStatus();
+    renderCorrectionContextDrawer();
+  }
 }
 
 function unlockDistanceForNewTarget() {
@@ -1556,10 +2285,54 @@ function bindGuidanceCard() {
   });
 }
 
+function workspaceEvidenceDimensions(evidence) {
+  const source = String(evidence && evidence.dataUrl || "");
+  if (source.includes("BAKER_ST-M16A2-M4_SMART_TARGET.svg")) {
+    return { width: 1024, height: 1270 };
+  }
+  const width = Number(evidence && (evidence.imageWidthPx || evidence.width));
+  const height = Number(evidence && (evidence.imageHeightPx || evidence.height));
+  return Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0
+    ? { width, height }
+    : null;
+}
+
+function configureWorkspaceStage(evidence, image = null) {
+  const stage = document.getElementById("workspaceStageShell");
+  if (!stage || stage.dataset.geometryLocked === "true") return;
+  const registered = workspaceEvidenceDimensions(evidence);
+  const naturalWidth = Number(image && image.naturalWidth);
+  const naturalHeight = Number(image && image.naturalHeight);
+  const dimensions = registered || (
+    Number.isFinite(naturalWidth) && naturalWidth > 0 && Number.isFinite(naturalHeight) && naturalHeight > 0
+      ? { width: naturalWidth, height: naturalHeight }
+      : null
+  );
+  if (!dimensions) return;
+  const viewportWidth = Math.max(1, document.documentElement.clientWidth || window.innerWidth || dimensions.width);
+  const viewportHeight = Math.max(1, document.documentElement.clientHeight || window.innerHeight || dimensions.height);
+  const width = Math.floor(Math.min(viewportWidth, viewportHeight * (dimensions.width / dimensions.height)));
+  const height = Math.floor(width * (dimensions.height / dimensions.width));
+  stage.style.setProperty("--workspace-stage-width", `${width}px`);
+  stage.style.setProperty("--workspace-stage-height", `${height}px`);
+  stage.style.setProperty("--workspace-target-ratio", `${dimensions.width} / ${dimensions.height}`);
+  stage.dataset.geometryLocked = "true";
+}
+
+function resetWorkspaceStageGeometry() {
+  const stage = document.getElementById("workspaceStageShell");
+  if (!stage) return;
+  stage.dataset.geometryLocked = "false";
+  stage.style.removeProperty("--workspace-stage-width");
+  stage.style.removeProperty("--workspace-stage-height");
+  stage.style.removeProperty("--workspace-target-ratio");
+}
+
 function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
   const evidence = image && image.dataUrl ? image : null;
   displayedEvidence = evidence;
+  configureWorkspaceStage(evidence);
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
     renderMissionResolutionState();
     return;
@@ -1603,12 +2376,14 @@ function renderEvidencePreview(image) {
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");
   if (targetImage.complete) {
+    configureWorkspaceStage(evidence, targetImage);
     requestAnimationFrame(() => {
       syncOverlayLayerToDisplayedImage();
       renderMarkers();
     });
   } else {
     targetImage.addEventListener("load", () => {
+      configureWorkspaceStage(evidence, targetImage);
       syncOverlayLayerToDisplayedImage();
       renderMarkers();
     }, { once: true });
@@ -1695,6 +2470,14 @@ function backendTargetGeometry() {
 
 function backendAuthorityRequest() {
   const qrId = TARGET_QUERY.get("qr_id") || TARGET_QUERY.get("qrId") || (session && (session.qr_id || session.qrId)) || (matrix && (matrix.qr_id || matrix.qrId)) || "";
+  if (isM4AuthoritySession()) {
+    return SCZN3M4.authorityRequest(
+      session,
+      safePoint(currentAimPoint),
+      currentImpactPoints.map(safePoint).filter(Boolean),
+      m4LivePhase === "confirmation" ? "confirmation" : "initial"
+    );
+  }
   if (isDotTortureAuthoritySession()) {
     return {
       target_profile_id: activeTargetProfileId() || "dot_torture_ez2c_style_17",
@@ -1730,7 +2513,7 @@ function backendAuthorityRequest() {
       hitPixelCoordinates: registeredAssetObservations,
       observationCount: registeredAssetObservations.length
     };
-    const rawTime = source.raw_time_seconds || source.rawTimeSeconds || TARGET_QUERY.get("raw_time_seconds");
+    const rawTime = gssfOfficialMatchTimeSeconds ?? source.raw_time_seconds ?? source.rawTimeSeconds ?? TARGET_QUERY.get("raw_time_seconds");
     if (rawTime !== null && rawTime !== undefined && rawTime !== "") {
       payload.raw_time_seconds = Number(rawTime);
     }
@@ -1785,7 +2568,10 @@ async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
   const requestBody = JSON.stringify(requestPayload);
   const exactWireRequest = JSON.parse(requestBody);
-  const response = await fetch(BACKEND_AUTHORITY_ENDPOINT, {
+  const authorityEndpoint = isM4AuthoritySession()
+    ? SCZN3M4.M4_AUTHORITY_ENDPOINT
+    : BACKEND_AUTHORITY_ENDPOINT;
+  const response = await fetch(authorityEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: requestBody
@@ -1831,6 +2617,11 @@ function applyBackendAuthorityPackage(authorityPackage) {
 
 async function resolveMissionFromTargetProfile() {
   if (!TARGET_PROFILE_LAUNCH_ID) return;
+  if (SESSION_ROUTE_MISS) {
+    renderMissionResolutionState();
+    renderMarkStatus();
+    return;
+  }
   missionResolutionStatus = "resolving";
   missionResolutionMessage = "Loading target...";
   backendAuthorityPackage = null;
@@ -1838,6 +2629,18 @@ async function resolveMissionFromTargetProfile() {
   renderMissionResolutionState();
   try {
     if (!session) ensureTargetSession();
+    if (isM4AuthoritySession()) {
+      ensureTargetAttribution();
+      const evidence = installM4CanonicalEvidence();
+      missionResolutionStatus = "resolved";
+      missionResolutionMessage = "";
+      renderEvidencePreview(evidence);
+      setMode("aim");
+      renderSetupSummary();
+      renderResults();
+      renderMarkStatus();
+      return;
+    }
     if (isGssfAuthoritySession()) {
       const evidence = installGssfCanonicalEvidence();
       missionResolutionStatus = "resolved";
@@ -1876,8 +2679,56 @@ function correctionCardDistance() {
   return formatDistanceDisplay().toUpperCase();
 }
 
+function correctionAxisDisplay(clicks, axis) {
+  const direction = String(clicks && clicks[`${axis}Direction`] || "CENTER").toUpperCase();
+  const count = Math.abs(Number(clicks && clicks[`${axis}Clicks`] || 0));
+  const arrows = {
+    LEFT: "←",
+    RIGHT: "→",
+    UP: "↑",
+    DOWN: "↓",
+    CENTER: "•"
+  };
+  return {
+    direction,
+    arrow: arrows[direction] || "•",
+    count: Number.isFinite(count) ? count : 0,
+    unit: Number.isFinite(count) && count === 1 ? "click" : "clicks"
+  };
+}
+
 function renderCorrectionOverlay(correction) {
-  return "";
+  const confirmedM4Group = isM4AuthoritySession()
+    && m4LivePhase === "confirmation"
+    && backendAuthorityPackage
+    && backendAuthorityPackage.validation
+    && backendAuthorityPackage.validation.confirmed;
+  if (
+    !isM4AuthoritySession()
+    || !resultsShown
+    || confirmedM4Group
+    || !correction
+    || !currentClicks
+    || (!FOUNDER_WORKSPACE_TEST_MODE && !correctionContextIsConfirmed(backendAuthorityPackage))
+  ) return "";
+  const windage = correctionAxisDisplay(currentClicks, "windage");
+  const elevation = correctionAxisDisplay(currentClicks, "elevation");
+  return `
+    <div class="workspace-result-overlay" aria-label="Mechanical correction">
+      <span class="workspace-axis-correction sczn3-live-correction-card" data-axis="windage">
+        <b aria-hidden="true">${windage.arrow}</b>
+        <strong>${escapeHtml(windage.count)}</strong>
+        <small>${escapeHtml(windage.direction)}</small>
+        <em>${escapeHtml(windage.unit)}</em>
+      </span>
+      <span class="workspace-axis-correction sczn3-live-correction-card" data-axis="elevation">
+        <b aria-hidden="true">${elevation.arrow}</b>
+        <strong>${escapeHtml(elevation.count)}</strong>
+        <small>${escapeHtml(elevation.direction)}</small>
+        <em>${escapeHtml(elevation.unit)}</em>
+      </span>
+    </div>
+  `;
 }
 
 // Non-authoritative legacy adapter retained temporarily; do not use for POIB/click/vector truth.
@@ -2174,15 +3025,21 @@ function gssfPaperPenaltySeconds(authorityPackage) {
 }
 
 function gssfOfficialCompetitionResult(authorityPackage) {
-  const officialMatchTimeSeconds = typeof gssfOfficialMatchTimeSeconds === "number"
-    && Number.isFinite(gssfOfficialMatchTimeSeconds)
-    && gssfOfficialMatchTimeSeconds >= 0
-    ? gssfOfficialMatchTimeSeconds
+  const hasAuthority = isGssfAuthorityPackage(authorityPackage);
+  const officialMatchTimeSeconds = hasAuthority
+    && typeof authorityPackage?.rawTimeSeconds === "number"
+    && Number.isFinite(authorityPackage.rawTimeSeconds)
+    && authorityPackage.rawTimeSeconds >= 0
+    ? authorityPackage.rawTimeSeconds
     : null;
   const totalPaperPenaltySeconds = gssfPaperPenaltySeconds(authorityPackage);
-  const officialFinalScoreSeconds = officialMatchTimeSeconds === null || totalPaperPenaltySeconds === null
-    ? null
-    : Number((officialMatchTimeSeconds + totalPaperPenaltySeconds).toFixed(2));
+  const officialFinalScoreSeconds = hasAuthority
+    && authorityPackage?.finalTimeStatus === "calculated"
+    && typeof authorityPackage.finalTimeSeconds === "number"
+    && Number.isFinite(authorityPackage.finalTimeSeconds)
+    && authorityPackage.finalTimeSeconds >= 0
+    ? authorityPackage.finalTimeSeconds
+    : null;
   return {
     officialMatchTimeSeconds,
     totalPaperPenaltySeconds,
@@ -2264,7 +3121,23 @@ function bindGssfOfficialTimeInput(authorityPackage) {
     const rawValue = String(input.value || "").trim();
     const value = Number(rawValue);
     gssfOfficialMatchTimeSeconds = rawValue !== "" && Number.isFinite(value) && value >= 0 ? value : null;
-    updateGssfOfficialFinalScoreDisplay(authorityPackage);
+    const requestToken = ++gssfTimerAuthorityRequestToken;
+    window.clearTimeout(gssfTimerAuthorityRequestHandle);
+    gssfTimerAuthorityRequestHandle = window.setTimeout(async () => {
+      try {
+        const verifiedPackage = await requestBackendAuthority();
+        if (requestToken !== gssfTimerAuthorityRequestToken) return;
+        applyBackendAuthorityPackage(verifiedPackage);
+        renderMarkers();
+        renderResults();
+        renderMarkStatus();
+      } catch (error) {
+        if (requestToken !== gssfTimerAuthorityRequestToken) return;
+        console.warn("Timer authority request failed", error);
+        authorityStatusMessage = "Final Time unavailable: timer time could not be verified by scoring authority.";
+        renderResults();
+      }
+    }, 250);
   });
 }
 
@@ -2408,7 +3281,7 @@ function vectorHtmlFromBackend(vector) {
   if (!start || !end) return "";
   return `<svg class="target-correction-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
     <defs>
-      <marker id="targetCorrectionArrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <marker id="targetCorrectionArrowhead" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto" markerUnits="strokeWidth">
         <path d="M0,0 L8,4 L0,8 Z"></path>
       </marker>
     </defs>
@@ -2422,7 +3295,7 @@ function renderPendingInputMarkers() {
     parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
   });
   if (currentAimPoint) {
-    parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "A"));
+    parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "", 'aria-label="Intended aim point"'));
   }
   return parts.join("");
 }
@@ -2446,21 +3319,25 @@ function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
   const classifications = backendHitClassifications(authorityPackage);
-  parts.push(vectorHtmlFromBackend(render.vector));
+  const confirmationEvidenceOnly = isM4AuthoritySession() && m4LivePhase === "confirmation";
+  if (!confirmationEvidenceOnly) parts.push(vectorHtmlFromBackend(render.vector));
   backendRenderedHitCoordinates(authorityPackage).forEach((point, index) => {
     const hit = classifications[index] || {};
     const shotNumber = backendShotIdForHit(authorityPackage, hit, index);
     const zone = escapeHtml(hit.zone || "");
     const zoneClass = isGssfAuthorityPackage(authorityPackage) ? ` ${gssfZoneMarkerClass(hit.zone)}` : "";
-    const label = shotNumber === null ? "" : String(shotNumber);
+    const label = shotNumber === null ? String(index + 1) : String(shotNumber);
     parts.push(markerPointHtml(`target-marker impact-marker${zoneClass}`, point, label, `data-shot-index="${escapeHtml(label)}" data-backend-zone="${zone}"`));
   });
-  if (render.aim) {
-    parts.push(markerPointHtml("target-marker aim-marker", render.aim, "A"));
+  if (render.aim && !isM4AuthoritySession()) {
+    parts.push(markerPointHtml("target-marker aim-marker", render.aim, "", 'aria-label="Confirmed aim point"'));
+  }
+  if (render.bull && !isM4AuthoritySession()) {
+    parts.push(markerPointHtml("target-marker bull-marker", render.bull, "", 'aria-label="Registered bull"'));
   }
   const poib = backendPoibDisplayCoordinate(authorityPackage);
-  if (poib) {
-    parts.push(markerPointHtml("target-marker poib-auto-marker", poib, "", 'aria-label="Point of impact"'));
+  if (poib && !confirmationEvidenceOnly) {
+    parts.push(markerPointHtml("target-marker poib-auto-marker", poib, "POIB", 'aria-label="Point of impact balance"'));
   }
   return parts.join("");
 }
@@ -2507,6 +3384,30 @@ function auditBackendMarkerAlignment(authorityPackage) {
       .filter(Boolean);
     if (mismatches.length) {
       console.warn("Backend hit marker display does not match backend render coordinates.", mismatches);
+    }
+    const aimMarker = layer.querySelector(".aim-marker");
+    const arrowLine = layer.querySelector(".target-correction-vector line");
+    const authoritativeAim = safePoint(authorityPackage.renderCoordinates.aim);
+    const authoritativeVectorEnd = safePoint(authorityPackage.renderCoordinates.vector && authorityPackage.renderCoordinates.vector.end);
+    const renderedAim = aimMarker ? renderedPercentFromRect(aimMarker.getBoundingClientRect(), layerRect) : null;
+    const arrowEnd = arrowLine ? {
+      xPercent: Number(arrowLine.getAttribute("x2")),
+      yPercent: Number(arrowLine.getAttribute("y2"))
+    } : null;
+    const exceedsTolerance = (first, second) => !first || !second
+      || Math.abs(Number(first.xPercent) - Number(second.xPercent)) > 0.25
+      || Math.abs(Number(first.yPercent) - Number(second.yPercent)) > 0.25;
+    if (
+      exceedsTolerance(authoritativeVectorEnd, authoritativeAim)
+      || exceedsTolerance(arrowEnd, authoritativeAim)
+      || (!isM4AuthoritySession() && exceedsTolerance(renderedAim, authoritativeAim))
+    ) {
+      console.warn("Confirmed Aim Point authority does not match the rendered vector endpoint.", {
+        authoritativeAim,
+        authoritativeVectorEnd,
+        arrowEnd,
+        renderedAim
+      });
     }
   });
 }
@@ -2557,6 +3458,28 @@ function scoreClass(score) {
   if (score >= 80) return "score-yellow";
   if (score >= 70) return "score-orange";
   return "score-red";
+}
+
+function renderM4ValidationSummary(authorityPackage) {
+  const summary = document.getElementById("m4ValidationSummary");
+  if (!summary) return;
+  const isM4 = isM4AuthoritySession() && !!authorityPackage;
+  summary.classList.toggle("is-hidden", !isM4);
+  if (!isM4) {
+    summary.innerHTML = "";
+    return;
+  }
+  const geometry = authorityPackage.geometryValidation || {};
+  const mechanical = authorityPackage.mechanicalValidation || {};
+  const discrepancy = authorityPackage.aimPointDiscrepancy || {};
+  const discrepancyText = Number.isFinite(Number(discrepancy.magnitudeInches))
+    ? `${Number(discrepancy.magnitudeInches).toFixed(2)}" measured`
+    : "Unavailable";
+  summary.innerHTML = `
+    <div><span>Geometry validation</span><strong>${escapeHtml(geometry.status || "Unavailable")}</strong></div>
+    <div><span>Mechanical validation</span><strong>${escapeHtml(mechanical.status === "calculated" ? "Calculated" : "Unavailable — sight authority unproven")}</strong></div>
+    <div><span>Aim-point discrepancy</span><strong>${escapeHtml(discrepancyText)}</strong><small>No approved materiality threshold</small></div>
+  `;
 }
 
 function renderDotTortureTrainingResults(authorityPackage) {
@@ -2856,9 +3779,15 @@ function renderResults() {
   }
   const scoreCell = document.getElementById("scoreCell");
   if (!scoreCell) return;
+  renderM4ValidationSummary(backendAuthorityPackage);
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
-  const hitsParts = [`${impacts.length} Hits`];
+  const hitsParts = [SIMULATION_MODE
+    ? `Shot group: ${impacts.length} ${impacts.length === 1 ? "impact" : "impacts"}`
+    : `${impacts.length} Hits`];
+  if (SIMULATION_MODE && backendPoibDisplayCoordinate(backendAuthorityPackage)) {
+    hitsParts.push("Center of group highlighted");
+  }
   if (currentClicks) {
     hitsParts.push(compactClickToken(currentClicks.elevation, "elevation"), compactClickToken(currentClicks.windage, "windage"));
   }
@@ -2880,7 +3809,8 @@ function hideShooterTip() {
 }
 
 function shooterTipFromResults() {
-  if (!currentClicks || !currentImpactPoints.length) return "Record confirmed impacts before saving.";
+  if (!currentImpactPoints.length) return "Record confirmed impacts before saving.";
+  if (!currentClicks) return "Geometry is calculated. Mechanical instructions remain unavailable until sight authority is proven.";
   if (currentImpactPoints.length < 3) return "Add more confirmed impacts for a stronger read.";
   const windage = Number(currentClicks.windageClicks || 0);
   const elevation = Number(currentClicks.elevationClicks || 0);
@@ -2922,11 +3852,51 @@ function updateHitCounter() {
   if (!counter) return;
   const count = currentImpactPoints.length;
   counter.querySelector("strong").textContent = String(count);
-  counter.querySelector("span").textContent = count === 1 ? "Tap" : "Taps";
+  counter.querySelector("span").textContent = count === 1 ? "Hole" : "Holes";
   counter.dataset.hitCount = String(count);
 }
 
+function cancelHoleEntryReadiness() {
+  if (holeEntryIdleHandle !== null) {
+    window.clearTimeout(holeEntryIdleHandle);
+    holeEntryIdleHandle = null;
+  }
+}
+
+function scheduleHoleEntryReadiness() {
+  cancelHoleEntryReadiness();
+  holeEntrySettled = false;
+  if (!currentImpactPoints.length || resultsShown) return;
+  holeEntryIdleHandle = window.setTimeout(() => {
+    holeEntryIdleHandle = null;
+    if (!resultsShown && currentImpactPoints.length) {
+      holeEntrySettled = true;
+      correctionContextReviewDismissed = false;
+      renderMarkStatus();
+    }
+  }, HOLE_ENTRY_IDLE_MS);
+}
+
+function resultsOfferReady() {
+  return !isM4AuthoritySession() || holeEntrySettled;
+}
+
+function awaitingNextM4Group() {
+  return !!(
+    isM4AuthoritySession()
+    && m4LivePhase === "confirmation"
+    && resultsShown
+    && backendAuthorityPackage
+    && backendAuthorityPackage.validation
+    && backendAuthorityPackage.validation.status === "calculated"
+    && !backendAuthorityPackage.validation.confirmed
+    && !correctionContextPending
+    && correctionContextIsConfirmed(backendAuthorityPackage)
+  );
+}
+
 function rangeWorkflowState(canMark) {
+  if (simulationLimitReached()) return "simulation-complete";
   if (!canMark) return "choose-target";
   if (isDotTortureAuthoritySession()) {
     if (!resultsShown) return "show-results";
@@ -2942,7 +3912,17 @@ function rangeWorkflowState(canMark) {
   }
   if (!currentAimPoint) return "tap-aim";
   if (!currentImpactPoints.length) return "tap-holes";
-  if (!resultsShown) return "show-results";
+  if (founderContextAtResultsGate()) return "review-context";
+  if (!resultsShown) return resultsOfferReady() ? "show-results" : "tap-holes";
+  if (correctionContextPending) return "confirm-context";
+  if (awaitingNextM4Group()) return "await-next-group";
+  if (
+    isM4AuthoritySession()
+    && m4LivePhase === "confirmation"
+    && backendAuthorityPackage
+    && backendAuthorityPackage.validation
+    && !backendAuthorityPackage.validation.confirmed
+  ) return "continue-confirmation";
   if (!sessionSaved) return "save-session";
   return "view-sec";
 }
@@ -2966,30 +3946,84 @@ function renderMarkStatus() {
     return;
   }
   setMissionResolutionChrome();
+  if (simulationLimitReached()) {
+    renderMissionWorkspaceChrome();
+    ["setAimMode", "addImpactMode", "showResults", "undoImpact", "clearMarks", "saveMarks"].forEach(id => {
+      const control = document.getElementById(id);
+      if (control) {
+        control.disabled = true;
+        control.classList.remove("next-step");
+      }
+    });
+    const chooseTarget = document.getElementById("chooseTargetButton");
+    if (chooseTarget) {
+      chooseTarget.classList.remove("next-step");
+      chooseTarget.setAttribute("aria-disabled", "true");
+    }
+    document.body.dataset.rangeState = "simulation-complete";
+    document.body.dataset.hasEvidence = hasMarkableEvidence() ? "true" : "false";
+    document.body.dataset.hasResults = resultsShown ? "true" : "false";
+    return;
+  }
   const isGssf = isGssfAuthoritySession();
   const isTraining = isDotTortureAuthoritySession();
   const hasEvidence = hasMarkableEvidence();
   const canProceed = hasEvidence || isTraining;
+  syncCorrectionContextGate();
   updateHitCounter();
   renderMissionWorkspaceChrome();
   document.getElementById("setAimMode").disabled = !hasEvidence || isGssf || isTraining;
   document.getElementById("addImpactMode").disabled = !hasEvidence || isTraining || (!currentAimPoint && !isGssf);
   document.getElementById("undoImpact").disabled = !hasEvidence || isTraining || currentImpactPoints.length === 0;
   document.getElementById("clearMarks").disabled = !hasEvidence || isTraining || (!currentAimPoint && currentImpactPoints.length === 0);
-  document.getElementById("saveMarks").disabled = !session || sessionSaved || !resultsShown || (isTraining && !trainingDrillFinished);
+  document.getElementById("saveMarks").disabled = !session
+    || sessionSaved
+    || !resultsShown
+    || correctionContextPending
+    || awaitingNextM4Group()
+    || (isTraining && !trainingDrillFinished);
   document.getElementById("showResults").disabled = !canProceed || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
   if (canProceed && isTraining && !resultsShown) nextStep = "showResults";
   if (hasEvidence && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
   if (hasEvidence && !isGssf && !isTraining && !currentAimPoint) nextStep = "setAimMode";
   if (hasEvidence && !isGssf && !isTraining && currentAimPoint && !currentImpactPoints.length) nextStep = "addImpactMode";
-  if (hasEvidence && !isTraining && currentImpactPoints.length && !resultsShown) nextStep = "showResults";
+  if (hasEvidence && !isTraining && currentImpactPoints.length && !resultsShown) {
+    nextStep = resultsOfferReady() ? "showResults" : "addImpactMode";
+  }
   if (canProceed && resultsShown && (!isTraining || trainingDrillFinished)) nextStep = "saveMarks";
+  if (correctionContextPending || founderContextAtResultsGate() || awaitingNextM4Group()) nextStep = null;
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
+  const saveButton = document.getElementById("saveMarks");
+  if (saveButton && isM4AuthoritySession()) {
+    const confirmationComplete = m4LivePhase === "confirmation"
+      && backendAuthorityPackage
+      && backendAuthorityPackage.validation
+      && backendAuthorityPackage.validation.confirmed;
+    const additionalCorrection = m4LivePhase === "confirmation"
+      && backendAuthorityPackage
+      && backendAuthorityPackage.validation
+      && backendAuthorityPackage.validation.status === "calculated"
+      && !backendAuthorityPackage.validation.confirmed;
+    saveButton.textContent = confirmationComplete
+      ? "Save Session"
+      : additionalCorrection
+        ? "Fire Another Group"
+        : m4LivePhase === "confirmation"
+          ? "Save Session"
+          : "Apply the Correction, Then Begin Confirmation";
+  }
   document.body.dataset.rangeState = rangeWorkflowState(canProceed);
+  document.body.dataset.m4LivePhase = isM4AuthoritySession() ? m4LivePhase : "";
   document.body.dataset.hasEvidence = hasEvidence ? "true" : "false";
   document.body.dataset.hasResults = resultsShown ? "true" : "false";
+  document.body.dataset.awaitingNextGroup = awaitingNextM4Group() ? "true" : "false";
+  document.body.dataset.correctionContext = correctionContextPending
+    ? "pending"
+    : correctionContextConfirmedFingerprint
+      ? "confirmed"
+      : "unconfirmed";
   document.body.dataset.targetMission = isTraining ? "marksmanshipTraining" : (isGssf ? "gssf" : "zeroing");
 }
 
@@ -3000,17 +4034,37 @@ function setMode(mode) {
 
 function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
-  if (resultsShown) return;
+  const beginsNextGroup = awaitingNextM4Group();
+  if (resultsShown && !beginsNextGroup) return;
+  if (SIMULATION_MODE && (currentAimPoint || isGssfAuthoritySession()) && currentImpactPoints.length >= 10) return;
   syncOverlayLayerToDisplayedImage();
   const point = evidencePointFromPointer(event);
   if (!point) return;
-  if (isGssfAuthoritySession()) {
+  if (beginsNextGroup) {
+    cancelHoleEntryReadiness();
+    currentImpactPoints = [point];
+    currentClicks = null;
+    currentScore = null;
+    backendAuthorityPackage = null;
+    resultsShown = false;
+    authorityStatusMessage = "";
+    sessionSaved = false;
+    holeEntrySettled = false;
+    markMode = "impact";
+    hideShooterTip();
+    setSaveSessionStatus("");
+    scheduleHoleEntryReadiness();
+  } else if (isGssfAuthoritySession()) {
     currentImpactPoints.push(point);
+    scheduleHoleEntryReadiness();
   } else if (markMode === "aim" || !currentAimPoint) {
     currentAimPoint = point;
     markMode = "impact";
+    holeEntrySettled = false;
   } else {
     currentImpactPoints.push(point);
+    correctionContextReviewDismissed = false;
+    scheduleHoleEntryReadiness();
   }
   clearCalculatedResults();
   setMode(markMode);
@@ -3025,7 +4079,7 @@ function resetMarkPointerState() {
 }
 
 function handleMarkPointerDown(event) {
-  if (resultsShown) return;
+  if (resultsShown && !awaitingNextM4Group()) return;
   if (!hasMarkableEvidence()) return;
   activeMarkPointers.add(event.pointerId);
   if (activeMarkPointers.size > 1) {
@@ -3045,7 +4099,7 @@ function handleMarkPointerDown(event) {
 function handleMarkPointerUp(event) {
   const wasOnlyPointer = activeMarkPointers.size === 1 && activeMarkPointers.has(event.pointerId);
   activeMarkPointers.delete(event.pointerId);
-  if (resultsShown || !hasMarkableEvidence()) {
+  if ((resultsShown && !awaitingNextM4Group()) || !hasMarkableEvidence()) {
     resetMarkPointerState();
     return;
   }
@@ -3065,7 +4119,7 @@ function handleMarkPointerCancel(event) {
 }
 
 function handleMarkTouchMove(event) {
-  if (resultsShown || !hasMarkableEvidence()) return;
+  if ((resultsShown && !awaitingNextM4Group()) || !hasMarkableEvidence()) return;
   if (event.touches && event.touches.length === 1) event.preventDefault();
 }
 
@@ -3075,7 +4129,12 @@ if (TARGET_PROFILE_LAUNCH_ID) {
   renderEvidencePreview(session && session.targetEvidenceImage);
 }
 
-document.getElementById("chooseTargetButton").addEventListener("click", () => {
+document.getElementById("chooseTargetButton").addEventListener("click", event => {
+  if (SIMULATION_MODE) {
+    event.preventDefault();
+    installBakerSimulationEvidence();
+    return;
+  }
   if (isGssfAuthoritySession()) return;
   ensureTargetSession();
   const input = document.getElementById("targetImageInput");
@@ -3094,6 +4153,9 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
   const file = event.target.files && event.target.files[0];
   if (!file) return;
   readFileAsDataUrl(file).then(dataUrl => downsizeImageDataUrl(dataUrl)).then(dataUrl => {
+    resetWorkspaceStageGeometry();
+    cancelHoleEntryReadiness();
+    holeEntrySettled = false;
     currentAimPoint = null;
     currentImpactPoints = [];
     sessionSaved = false;
@@ -3132,12 +4194,27 @@ document.getElementById("addImpactMode").addEventListener("click", () => {
   if (currentAimPoint || isGssfAuthoritySession()) setMode("impact");
 });
 document.getElementById("undoImpact").addEventListener("click", () => {
+  cancelHoleEntryReadiness();
   currentImpactPoints.pop();
+  holeEntrySettled = false;
+  correctionContextReviewDismissed = true;
   clearCalculatedResults();
   renderMarkers();
   renderMarkStatus();
+  if (currentImpactPoints.length > 0) scheduleHoleEntryReadiness();
 });
 document.getElementById("clearMarks").addEventListener("click", () => {
+  cancelHoleEntryReadiness();
+  holeEntrySettled = false;
+  correctionContextReviewDismissed = false;
+  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+    currentImpactPoints = [];
+    clearCalculatedResults();
+    setMode("impact");
+    renderMarkers();
+    renderMarkStatus();
+    return;
+  }
   currentAimPoint = null;
   currentImpactPoints = [];
   clearCalculatedResults();
@@ -3164,12 +4241,21 @@ document.getElementById("clearMarks").addEventListener("click", () => {
 });
 document.getElementById("showResults").addEventListener("click", async () => {
   if ((!isGssfAuthoritySession() && !isDotTortureAuthoritySession() && !currentAimPoint) || (!isDotTortureAuthoritySession() && !currentImpactPoints.length)) return;
+  cancelHoleEntryReadiness();
+  holeEntrySettled = true;
+  if (FOUNDER_WORKSPACE_TEST_MODE && isM4AuthoritySession() && !resultsShown) {
+    correctionContextReviewDismissed = false;
+    renderCorrectionContextDrawer();
+    renderMarkStatus();
+    return;
+  }
   if (isDotTortureAuthoritySession() && !session) ensureTargetSession();
   authorityStatusMessage = "";
   renderResults();
   try {
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
+    syncCorrectionContextGate();
     try {
       if (window.SCZN3Ops) window.SCZN3Ops.recordShowResults(authorityPackage);
     } catch (error) {}
@@ -3177,6 +4263,16 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
     if (resultsShown && !isNonZeroingAuthorityPackage(authorityPackage)) showShooterTip();
     if (resultsShown && isNonZeroingAuthorityPackage(authorityPackage)) hideShooterTip();
+    if (isM4AuthoritySession() && m4LivePhase === "confirmation" && authorityPackage.validation) {
+      setSaveSessionStatus(
+        correctionContextPending
+          ? "Confirm correction context to refresh the authoritative recommendation."
+          : authorityPackage.validation.confirmed
+          ? "Confirmation complete. Save the authoritative session."
+          : "Confirmation recorded. Apply the remaining correction and fire another group.",
+        !correctionContextPending && authorityPackage.validation.confirmed ? "saved" : ""
+      );
+    }
   } catch (error) {
     console.warn("Backend authority request failed", error);
     currentClicks = null;
@@ -3188,8 +4284,91 @@ document.getElementById("showResults").addEventListener("click", async () => {
   }
   renderMarkStatus();
 });
+
+function setSaveSessionStatus(message = "", state = "") {
+  const status = document.getElementById("saveSessionStatus");
+  if (!status) return;
+  status.textContent = message;
+  status.dataset.state = state;
+  status.classList.toggle("is-visible", !!message);
+}
+
+function setSavePersistenceDiagnostic(record = null) {
+  const output = document.getElementById("savePersistenceDiagnostic");
+  if (!output) return;
+  if (!record || record.ok !== false) {
+    output.hidden = true;
+    output.textContent = "";
+    return;
+  }
+  const lines = [
+    "Temporary Save Persistence Diagnostic",
+    `Key: ${record.key || "Unavailable"}`,
+    `Exception: ${record.exceptionName || "Unavailable"}`,
+    `Message: ${record.exceptionMessage || "Unavailable"}`,
+    `Attempted payload: ${record.attemptedPayloadBytes ?? "Unavailable"} bytes`,
+    `Approximate localStorage usage: ${record.approximateLocalStorageUsageBytes ?? "Unavailable"} bytes`
+  ];
+  const composition = record.payloadComposition;
+  if (composition) {
+    lines.push("", "Payload Composition by Category");
+    composition.categoryBytes.forEach(entry => {
+      lines.push(`- ${entry.category}: ${entry.bytes} bytes`);
+    });
+    lines.push("", "Largest Top-Level Fields");
+    composition.topLevelFields.forEach(entry => {
+      lines.push(`- ${entry.path}: ${entry.bytes} bytes [${entry.category}]`);
+    });
+    lines.push("", "Largest Nested Fields");
+    composition.largestNestedFields.forEach(entry => {
+      lines.push(`- ${entry.path}: ${entry.bytes} bytes (${entry.type})`);
+    });
+    lines.push("", "Embedded Asset Content");
+    if (!composition.embeddedAssetContent.length) lines.push("- none detected");
+    composition.embeddedAssetContent.forEach(entry => {
+      lines.push(`- ${entry.path}: ${entry.bytes} bytes (${entry.type})`);
+    });
+    lines.push("", "Duplicated Large Values");
+    if (!composition.duplicatedLargeValues.length) lines.push("- none detected");
+    composition.duplicatedLargeValues.forEach(entry => {
+      lines.push(`- ${entry.bytesEach} bytes × ${entry.count}; duplicated bytes: ${entry.duplicatedBytes}`);
+      lines.push(`  paths: ${entry.paths.join(", ")}`);
+    });
+  }
+  output.textContent = lines.join("\n");
+  output.hidden = false;
+}
+
 document.getElementById("saveMarks").addEventListener("click", () => {
-  if (!session || !backendAuthorityPackage) return;
+  const saveButton = document.getElementById("saveMarks");
+  if (!session) {
+    setSaveSessionStatus("Session could not be saved because no active session was found.", "error");
+    return;
+  }
+  if (!backendAuthorityPackage) {
+    setSaveSessionStatus("Show Results before saving so the authoritative result is preserved.", "error");
+    return;
+  }
+  if (
+    isM4AuthoritySession()
+    && m4LivePhase === "confirmation"
+    && backendAuthorityPackage.validation
+    && backendAuthorityPackage.validation.status === "calculated"
+    && !backendAuthorityPackage.validation.confirmed
+  ) {
+    SCZN3M4.saveConfirmationAuthority(backendAuthorityPackage, activeEvidence(), currentImpactPoints.map(safePoint).filter(Boolean));
+    currentImpactPoints = [];
+    clearCalculatedResults();
+    setMode("impact");
+    setSaveSessionStatus("Additional correction recorded. Fire the next confirmation group.", "saved");
+    renderMarkers();
+    renderMarkStatus();
+    return;
+  }
+  setSavePersistenceDiagnostic(null);
+  setSaveSessionStatus("Saving authoritative session…", "saving");
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving…";
   let saved = null;
   if (pendingEvidence) {
     saved = SCZN3M4.saveTargetEvidenceImage(pendingEvidence);
@@ -3205,6 +4384,9 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       trainingDrillFinished = true;
       renderResults();
       showTrainingManualError(manualRead.message);
+      saveButton.disabled = false;
+      saveButton.textContent = "Save Session";
+      setSaveSessionStatus(manualRead.message, "error");
       return;
     }
     trainingManualResult = {
@@ -3302,6 +4484,8 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     savedAt: savedTimestamp
   } : {
     aimPoint: safePoint(currentAimPoint),
+    confirmedAimPoint: authorityPackage.inputs && authorityPackage.inputs.confirmedAimPoint || safePoint(currentAimPoint),
+    confirmedAimPointAuthority: authorityPackage.confirmedAimPointAuthority || null,
     impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
     backendAuthorityPackage: authorityPackage,
     ugeoAuthorityPackage: authorityPackage,
@@ -3319,6 +4503,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     },
     shotData: {
       aimPoint: safePoint(currentAimPoint),
+      confirmedAimPoint: authorityPackage.inputs && authorityPackage.inputs.confirmedAimPoint || safePoint(currentAimPoint),
       impactPoints: currentImpactPoints.map(safePoint).filter(Boolean),
       shotCount: currentImpactPoints.length,
       hits: currentImpactPoints.length,
@@ -3340,7 +4525,113 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     timestamp: savedTimestamp,
     savedAt: savedTimestamp
   };
-  saved = SCZN3M4.updateActiveSession(savePatch);
+  savePatch.correctionContextSnapshot = correctionContextSnapshot(authorityPackage);
+  savePatch.founderWorkspaceTestMode = FOUNDER_WORKSPACE_TEST_MODE;
+  savePatch.savedIdentifier = session.savedIdentifier || `SEC-${session.sessionId}`;
+  savePatch.savedRecordId = session.savedRecordId || session.sessionId;
+  savePatch.authorityPackage = authorityPackage;
+  if (isM4AuthoritySession()) {
+    if (m4LivePhase === "confirmation") {
+      const initialAuthority = m4InitialAuthorityPackage
+        || session.m4AuthorityPackage
+        || session.backendAuthorityPackage
+        || session.authorityPackage;
+      const initialImpacts = Array.isArray(session.impactPoints)
+        ? session.impactPoints.map(safePoint).filter(Boolean)
+        : [];
+      savePatch.backendAuthorityPackage = initialAuthority;
+      savePatch.ugeoAuthorityPackage = initialAuthority;
+      savePatch.authorityPackage = initialAuthority;
+      savePatch.m4AuthorityPackage = initialAuthority;
+      savePatch.aimPoint = safePoint(session.aimPoint || currentAimPoint);
+      savePatch.confirmedAimPoint = initialAuthority && initialAuthority.inputs && initialAuthority.inputs.confirmedAimPoint
+        || safePoint(session.confirmedAimPoint || session.aimPoint || currentAimPoint);
+      savePatch.confirmedAimPointAuthority = initialAuthority && initialAuthority.confirmedAimPointAuthority
+        || session.confirmedAimPointAuthority
+        || null;
+      savePatch.impactPoints = initialImpacts;
+      savePatch.shotData = session.shotData || {
+        aimPoint: savePatch.aimPoint,
+        impactPoints: initialImpacts,
+        shotCount: initialImpacts.length,
+        hits: initialImpacts.length,
+        poib: initialAuthority && initialAuthority.poib || null,
+        groupCenter: initialAuthority && initialAuthority.groupCenter || null,
+        score: initialAuthority && initialAuthority.score || null,
+        scoreValue: backendScoreValue(initialAuthority),
+        authoritySource: "backend"
+      };
+      savePatch.score = session.score || initialAuthority && initialAuthority.score || null;
+      savePatch.scoreValue = Number.isFinite(Number(session.scoreValue))
+        ? Number(session.scoreValue)
+        : backendScoreValue(initialAuthority);
+      savePatch.poib = session.poib || initialAuthority && initialAuthority.poib || null;
+      savePatch.groupCenter = session.groupCenter || initialAuthority && initialAuthority.groupCenter || null;
+      savePatch.clicks = session.clicks || initialAuthority && initialAuthority.clicks || null;
+      savePatch.correctionData = session.correctionData || {
+        status: initialAuthority && initialAuthority.status && initialAuthority.status.hasCorrection
+          ? "backend-authority-calculated"
+          : "not-calculated",
+        clicks: savePatch.clicks,
+        correction: initialAuthority && initialAuthority.correction || null,
+        moa: initialAuthority && initialAuthority.moa || null,
+        vectors: initialAuthority && initialAuthority.vectors || null
+      };
+      savePatch.confirmationEvidenceImage = activeEvidence();
+      savePatch.confirmationImpactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
+      savePatch.confirmationAuthorityPackage = authorityPackage;
+      savePatch.confirmationStatus = authorityPackage.validation && authorityPackage.validation.confirmed
+        ? "Confirmed"
+        : "Correction Required";
+      savePatch.confirmedAt = authorityPackage.validation && authorityPackage.validation.confirmed
+        ? savedTimestamp
+        : null;
+      savePatch.savedToSEC = true;
+      savePatch.workflowStage = "preservation";
+      savePatch.preservationStatus = "saved";
+    } else {
+      savePatch.m4AuthorityPackage = authorityPackage;
+      savePatch.savedToSEC = false;
+      savePatch.workflowStage = "validation";
+      savePatch.preservationStatus = "initial-authority-saved-confirmation-pending";
+    }
+  }
+  if (SIMULATION_MODE) {
+    const source = session.matrixSnapshot || matrix || {};
+    savePatch.experienceMode = "simulation";
+    savePatch.simulation = true;
+    savePatch.simulationSessionId = SIMULATION_SESSION_ID;
+    savePatch.matrixSnapshot = {
+      target_profile_id: source.target_profile_id || source.targetProfileId || "",
+      targetProfileId: source.targetProfileId || source.target_profile_id || "",
+      targetId: source.targetId || source.target_profile_id || source.targetProfileId || "",
+      targetName: source.targetName || "Simulation Target",
+      targetFamily: source.targetFamily || "",
+      mission_family: source.mission_family || source.missionFamily || source.missionFamilyId || "",
+      missionFamily: source.missionFamily || source.mission_family || source.missionFamilyId || "",
+      targetDistance: targetDistanceValue(),
+      targetDistanceValue: selectedDistanceValue,
+      targetDistanceUnit: selectedDistanceUnit,
+      opticClickValue: source.opticClickValue || "",
+      opticAdjustmentUnit: source.opticAdjustmentUnit || source.adjustmentUnit || ""
+    };
+  }
+  try {
+    saved = SCZN3M4.updateActiveSession(savePatch);
+  } catch (error) {
+    console.warn("Session preservation failed", error);
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Session";
+    setSaveSessionStatus("Save failed. Your marks remain on this screen; try again.", "error");
+    setSavePersistenceDiagnostic(window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTIC__ || null);
+    return;
+  }
+  if (!saved || !saved.savedIdentifier || !saved.authorityPackage) {
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Session";
+    setSaveSessionStatus("Save failed. The complete authoritative session was not preserved.", "error");
+    return;
+  }
   if (saved && saved.targetEvidenceImage) {
     renderEvidencePreview(saved.targetEvidenceImage);
   }
@@ -3348,19 +4639,56 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     if (window.SCZN3Ops) window.SCZN3Ops.recordSessionSaved(saved, { hadSavedHistoryBefore });
   } catch (error) {}
   sessionSaved = true;
+  session = saved;
+  if (isM4AuthoritySession() && m4LivePhase === "initial") {
+    m4InitialAuthorityPackage = authorityPackage;
+    m4LivePhase = "confirmation";
+    sessionSaved = false;
+    currentImpactPoints = [];
+    holeEntrySettled = false;
+    currentClicks = null;
+    currentScore = null;
+    backendAuthorityPackage = null;
+    resultsShown = false;
+    authorityStatusMessage = "";
+    hideShooterTip();
+    renderEvidencePreview(saved.targetEvidenceImage || activeEvidence());
+    setMode("impact");
+    renderMarkers();
+    renderResults();
+    renderMarkStatus();
+    setSaveSessionStatus("");
+    return;
+  }
   renderMarkStatus();
   renderResults();
-  if (saved) window.location.href = "records.html";
+  saveButton.textContent = "Saved ✓";
+  setSaveSessionStatus(`Saved as ${saved.savedIdentifier}. Opening Shooter Experience Card…`, "saved");
+  if (saved) {
+    window.setTimeout(() => {
+      if (isM4AuthoritySession()) {
+        window.location.href = "sec.html?v=stay-on-screen-002";
+      } else {
+        window.location.href = SIMULATION_MODE ? "records.html?simulation=1" : "records.html";
+      }
+    }, 450);
+  }
 });
 
 window.addEventListener("resize", () => {
   syncOverlayLayerToDisplayedImage();
   renderMarkers();
+  placeCorrectionContextDrawer();
 });
 
+bindCorrectionContextDrawer();
 if (TARGET_PROFILE_LAUNCH_ID) {
   resolveMissionFromTargetProfile();
 } else {
+  if (isM4AuthoritySession()) {
+    const evidence = installM4CanonicalEvidence();
+    if (evidence) renderEvidencePreview(evidence);
+  }
   setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));
   renderSetupSummary();
   renderResults();

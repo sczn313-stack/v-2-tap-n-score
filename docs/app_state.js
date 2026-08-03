@@ -7,7 +7,9 @@
     activeSession: "SCZN3_BAKER_ACTIVE_SESSION",
     sessionHistory: "SCZN3_BAKER_SESSION_HISTORY",
     sessionCounter: "SCZN3_BAKER_SESSION_COUNTER",
-    activeZeroSession: "SCZN3_BAKER_ACTIVE_ZERO_SESSION"
+    activeZeroSession: "SCZN3_BAKER_ACTIVE_ZERO_SESSION",
+    sessionRecordPrefix: "SCZN3_BAKER_SESSION_RECORD_",
+    mediaPrefix: "SCZN3_BAKER_MEDIA_"
   };
 
   const TARGET_AUTHORITY = {
@@ -17,13 +19,15 @@
     asset: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png"
   };
   const MAX_SESSION_HISTORY = 10;
+  const SESSION_REF_SCHEMA = "sczn3-session-ref-v1";
+  const SESSION_RECORD_SCHEMA = "sczn3-canonical-session-v1";
 
-  function write(key, value) {
+  function rawWrite(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
     return value;
   }
 
-  function read(key, fallback = null) {
+  function rawRead(key, fallback = null) {
     try {
       const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : fallback;
@@ -31,6 +35,514 @@
       console.warn("SCZN3 Baker state read failed", key, error);
       return fallback;
     }
+  }
+
+  function serializedByteSize(value) {
+    if (typeof TextEncoder === "function") {
+      return new TextEncoder().encode(value).byteLength;
+    }
+    return value.length * 2;
+  }
+
+  function sessionRecordKey(sessionId) {
+    return `${KEYS.sessionRecordPrefix}${encodeURIComponent(String(sessionId || ""))}`;
+  }
+
+  function mediaKey(mediaId) {
+    return `${KEYS.mediaPrefix}${encodeURIComponent(String(mediaId || ""))}`;
+  }
+
+  function mediaIdForDataUrl(dataUrl) {
+    let hash = 2166136261;
+    for (let index = 0; index < dataUrl.length; index += 1) {
+      hash ^= dataUrl.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return `media-${(hash >>> 0).toString(16).padStart(8, "0")}-${dataUrl.length}`;
+  }
+
+  function compactMediaValue(value, mediaRecords) {
+    if (Array.isArray(value)) return value.map(entry => compactMediaValue(entry, mediaRecords));
+    if (!value || typeof value !== "object") return value;
+    if (typeof value.dataUrl === "string" && /^data:/i.test(value.dataUrl)) {
+      const mediaId = mediaIdForDataUrl(value.dataUrl);
+      if (!mediaRecords.has(mediaId)) {
+        mediaRecords.set(mediaId, {
+          mediaId,
+          dataUrl: value.dataUrl,
+          name: value.name || "",
+          type: value.type || value.dataUrl.slice(5, value.dataUrl.indexOf(";")) || "",
+          size: value.size || value.dataUrl.length,
+          originalSize: value.originalSize || null,
+          savedAt: value.savedAt || null,
+          evidenceType: value.evidenceType || null
+        });
+      }
+      const reference = {};
+      Object.entries(value).forEach(([key, child]) => {
+        if (key !== "dataUrl") reference[key] = compactMediaValue(child, mediaRecords);
+      });
+      reference.mediaRef = mediaId;
+      return reference;
+    }
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [key, compactMediaValue(child, mediaRecords)])
+    );
+  }
+
+  function hydrateMediaValue(value) {
+    if (Array.isArray(value)) return value.map(hydrateMediaValue);
+    if (!value || typeof value !== "object") return value;
+    if (value.mediaRef) {
+      const media = rawRead(mediaKey(value.mediaRef), null);
+      if (!media) return { ...value };
+      const hydrated = { ...value, ...media };
+      delete hydrated.mediaRef;
+      delete hydrated.mediaId;
+      return hydrated;
+    }
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [key, hydrateMediaValue(child)])
+    );
+  }
+
+  function canonicalAuthorityPackage(session = {}) {
+    return session.authorityPackage
+      || session.m4AuthorityPackage
+      || session.backendAuthorityPackage
+      || session.ugeoAuthorityPackage
+      || session.correctionData?.clicks?.authorityPackage
+      || session.clicks?.authorityPackage
+      || null;
+  }
+
+  function compactAuthorityPackage(authorityPackage, mediaRecords) {
+    if (!authorityPackage || typeof authorityPackage !== "object") return null;
+    const compact = compactMediaValue(authorityPackage, mediaRecords);
+    if (compact.frontendRequest) {
+      delete compact.frontendRequest;
+      compact.frontendRequestRef = "inputs";
+    }
+    return compact;
+  }
+
+  function compactSessionRecord(session = {}) {
+    const mediaRecords = new Map();
+    const authorityPackage = canonicalAuthorityPackage(session);
+    const skipped = new Set([
+      "backendAuthorityPackage",
+      "ugeoAuthorityPackage",
+      "m4AuthorityPackage",
+      "clicks",
+      "correctionData",
+      "authorityPackage"
+    ]);
+    const compact = {};
+    Object.entries(session).forEach(([key, value]) => {
+      if (!skipped.has(key)) compact[key] = compactMediaValue(value, mediaRecords);
+    });
+    if (authorityPackage) compact.authorityPackage = compactAuthorityPackage(authorityPackage, mediaRecords);
+    if (session.confirmationAuthorityPackage) {
+      compact.confirmationAuthorityPackage = compactAuthorityPackage(session.confirmationAuthorityPackage, mediaRecords);
+    }
+    compact.persistenceSchema = SESSION_RECORD_SCHEMA;
+    return { compact, mediaRecords };
+  }
+
+  function derivedClicks(authorityPackage) {
+    if (!authorityPackage || typeof authorityPackage !== "object") return null;
+    if (!authorityPackage.clicks || authorityPackage.mechanicalValidation?.status !== "calculated") return null;
+    const clicks = authorityPackage.clicks || {};
+    const correction = authorityPackage.correction || {};
+    return {
+      ...clicks,
+      elevation: correction.elevation,
+      windage: correction.windage,
+      poib: authorityPackage.poib
+    };
+  }
+
+  function derivedCorrectionData(authorityPackage, session = {}) {
+    if (!authorityPackage || typeof authorityPackage !== "object") {
+      return {
+        status: session.correctionStatus || "not-calculated",
+        clicks: null
+      };
+    }
+    return {
+      status: authorityPackage.status && authorityPackage.status.hasCorrection
+        ? "backend-authority-calculated"
+        : (session.correctionStatus || "not-calculated"),
+      clicks: derivedClicks(authorityPackage),
+      correction: authorityPackage.correction || null,
+      angular: authorityPackage.angular || null,
+      moa: authorityPackage.moa || null,
+      vectors: authorityPackage.vectors || null,
+      aimPointDiscrepancy: authorityPackage.aimPointDiscrepancy || null,
+      geometryValidation: authorityPackage.geometryValidation || null,
+      mechanicalValidation: authorityPackage.mechanicalValidation || null,
+      evidenceHash: authorityPackage.evidenceHash || null
+    };
+  }
+
+  function runtimeAlias(target, key, getter) {
+    if (!target || Object.prototype.hasOwnProperty.call(target, key)) return;
+    Object.defineProperty(target, key, {
+      configurable: true,
+      enumerable: false,
+      get: getter
+    });
+  }
+
+  function hydrateAuthorityPackage(storedPackage) {
+    if (!storedPackage || typeof storedPackage !== "object") return null;
+    const authorityPackage = hydrateMediaValue(storedPackage);
+    if (authorityPackage.frontendRequestRef === "inputs" && !authorityPackage.frontendRequest) {
+      runtimeAlias(authorityPackage, "frontendRequest", () => authorityPackage.inputs || null);
+    }
+    return authorityPackage;
+  }
+
+  function isM4StoredSession(session = {}) {
+    const source = session.matrixSnapshot || session;
+    const profile = String(
+      source.target_profile_id
+      || source.targetProfileId
+      || source.targetId
+      || ""
+    ).toLowerCase();
+    const name = String(source.targetName || source.targetFamily || session.product || "").toLowerCase();
+    return String(session.sku || source.sku || "") === "ST-M16A2/M4"
+      || (profile.includes("m4") && profile.includes("25"))
+      || (name.includes("m4") && name.includes("25"));
+  }
+
+  function hydrateSessionRecord(storedSession) {
+    if (!storedSession || typeof storedSession !== "object") return storedSession;
+    const session = hydrateMediaValue(storedSession);
+    if (storedSession.authorityPackage) {
+      session.authorityPackage = hydrateAuthorityPackage(storedSession.authorityPackage);
+    }
+    if (storedSession.confirmationAuthorityPackage) {
+      session.confirmationAuthorityPackage = hydrateAuthorityPackage(storedSession.confirmationAuthorityPackage);
+    }
+    const authorityPackage = canonicalAuthorityPackage(session);
+    if (authorityPackage) {
+      session.authorityPackage = authorityPackage;
+      runtimeAlias(session, "backendAuthorityPackage", () => session.authorityPackage);
+      runtimeAlias(session, "ugeoAuthorityPackage", () => session.authorityPackage);
+      if (isM4StoredSession(session)) {
+        runtimeAlias(session, "m4AuthorityPackage", () => session.authorityPackage);
+      }
+      runtimeAlias(session, "clicks", () => derivedClicks(session.authorityPackage));
+      runtimeAlias(session, "correctionData", () => derivedCorrectionData(session.authorityPackage, session));
+    }
+    return session;
+  }
+
+  function sessionReference(sessionId) {
+    return {
+      persistenceSchema: SESSION_REF_SCHEMA,
+      sessionId
+    };
+  }
+
+  function historyReference(session) {
+    return {
+      persistenceSchema: SESSION_REF_SCHEMA,
+      sessionId: session.sessionId,
+      sessionLabel: session.sessionLabel || "",
+      savedIdentifier: session.savedIdentifier || "",
+      targetName: session.targetName || session.product || "",
+      product: session.product || session.targetName || "",
+      timestamp: session.timestamp || session.savedAt || session.createdAt || "",
+      savedAt: session.savedAt || "",
+      savedToSEC: session.savedToSEC === true,
+      confirmationStatus: session.confirmationStatus || "Pending",
+      workflowStage: session.workflowStage || ""
+    };
+  }
+
+  function isSessionReference(value) {
+    return !!(value && value.persistenceSchema === SESSION_REF_SCHEMA && value.sessionId);
+  }
+
+  function readCanonicalSession(sessionId) {
+    return hydrateSessionRecord(rawRead(sessionRecordKey(sessionId), null));
+  }
+
+  function persistCanonicalSession(session, operation = "persist-canonical-session") {
+    if (!session || !session.sessionId) return null;
+    const originalSerialized = JSON.stringify(session);
+    const { compact, mediaRecords } = compactSessionRecord(session);
+    const storedMatrix = rawRead(KEYS.activeMatrix, null);
+    const compactMatrix = storedMatrix ? compactMediaValue(storedMatrix, mediaRecords) : null;
+    mediaRecords.forEach((media, mediaId) => {
+      writeSaveDiagnostic(mediaKey(mediaId), media, `${operation}-media`);
+    });
+    writeSaveDiagnostic(sessionRecordKey(session.sessionId), compact, operation);
+    if (compactMatrix) rawWrite(KEYS.activeMatrix, compactMatrix);
+    window.__SCZN3_SESSION_NORMALIZATION_REPORT__ = {
+      sessionId: session.sessionId,
+      originalPayloadBytes: serializedByteSize(originalSerialized),
+      canonicalRecordBytes: serializedByteSize(JSON.stringify(compact)),
+      mediaAssetBytes: [...mediaRecords.values()]
+        .reduce((sum, media) => sum + serializedByteSize(JSON.stringify(media)), 0),
+      mediaAssetCount: mediaRecords.size,
+      completedAt: nowStamp()
+    };
+    try {
+      if (typeof document === "undefined" || !document.documentElement) return hydrateSessionRecord(compact);
+      document.documentElement.setAttribute(
+        "data-sczn3-session-normalization-report",
+        JSON.stringify(window.__SCZN3_SESSION_NORMALIZATION_REPORT__)
+      );
+    } catch (diagnosticError) {
+      console.warn("SCZN3 normalization diagnostic publication failed", diagnosticError);
+    }
+    return hydrateSessionRecord(compact);
+  }
+
+  function ensureCanonicalHistory(sessions, operation = "migrate-history-session") {
+    return sessions.map(session => {
+      if (!session || !session.sessionId) return null;
+      return readCanonicalSession(session.sessionId)
+        || persistCanonicalSession(session, operation);
+    }).filter(Boolean);
+  }
+
+  function storeMediaReferences(value) {
+    const mediaRecords = new Map();
+    const compact = compactMediaValue(value, mediaRecords);
+    mediaRecords.forEach((media, mediaId) => rawWrite(mediaKey(mediaId), media));
+    return compact;
+  }
+
+  function hydrateStoredMedia(value) {
+    return hydrateMediaValue(value);
+  }
+
+  function write(key, value) {
+    if (key === KEYS.activeMatrix) {
+      const compact = storeMediaReferences(value);
+      rawWrite(key, compact);
+      return hydrateMediaValue(compact);
+    }
+    if ((key === KEYS.activeSession || key === KEYS.activeZeroSession) && value && value.sessionId && !isSessionReference(value)) {
+      const session = persistCanonicalSession(value, `write-${key}`);
+      rawWrite(key, sessionReference(value.sessionId));
+      return session;
+    }
+    if (key === KEYS.sessionHistory && Array.isArray(value)) {
+      const sessions = ensureCanonicalHistory(value, "write-session-history-record");
+      rawWrite(key, sessions.slice(0, MAX_SESSION_HISTORY).map(historyReference));
+      return sessions;
+    }
+    return rawWrite(key, value);
+  }
+
+  function approximateLocalStorageUsage() {
+    let characters = 0;
+    try {
+      for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index) || "";
+        const value = localStorage.getItem(key) || "";
+        characters += key.length + value.length;
+      }
+    } catch (error) {
+      return {
+        bytes: null,
+        readable: false,
+        exceptionName: error && error.name || "Error",
+        exceptionMessage: error && error.message || String(error)
+      };
+    }
+    return {
+      bytes: characters * 2,
+      readable: true
+    };
+  }
+
+  function publishSaveDiagnostic(record) {
+    window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTIC__ = record;
+    const records = Array.isArray(window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTICS__)
+      ? window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTICS__
+      : [];
+    window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTICS__ = [...records, record].slice(-12);
+    try {
+      if (typeof document === "undefined" || !document.documentElement) return;
+      document.documentElement.setAttribute(
+        "data-sczn3-save-persistence-diagnostic",
+        JSON.stringify(record)
+      );
+      document.documentElement.setAttribute(
+        "data-sczn3-save-persistence-diagnostics",
+        JSON.stringify(window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTICS__)
+      );
+    } catch (diagnosticError) {
+      console.warn("SCZN3 save diagnostic publication failed", diagnosticError);
+    }
+  }
+
+  function savePayloadCategory(fieldName) {
+    if (/image|photo|dataurl|assetcontent/i.test(fieldName)) return "target/evidence image data";
+    if (/shot|impact|aimpoint|mark|evidence/i.test(fieldName)) return "shot evidence";
+    if (/authority/i.test(fieldName)) return "authority package";
+    if (/correction|click|moa|mrad|poib/i.test(fieldName)) return "correction package";
+    if (/matrix|registry|targetprofile|profile|target/i.test(fieldName)) return "target registry/profile data";
+    return "session metadata";
+  }
+
+  function analyzeSavePayload(value, serialized) {
+    const topLevelFields = [];
+    const categoryBytes = {};
+    const largeValues = [];
+    const repeatedCandidates = new Map();
+    const assetContent = [];
+    const seen = new WeakSet();
+
+    Object.entries(value || {}).forEach(([field, fieldValue]) => {
+      const fieldSerialized = JSON.stringify(fieldValue);
+      const bytes = serializedByteSize(fieldSerialized === undefined ? "null" : fieldSerialized);
+      const category = savePayloadCategory(field);
+      categoryBytes[category] = (categoryBytes[category] || 0) + bytes;
+      topLevelFields.push({ path: field, bytes, category });
+    });
+
+    function inspect(node, path, depth) {
+      if (node === null || node === undefined || depth > 7) return;
+      if (typeof node === "string") {
+        const bytes = serializedByteSize(JSON.stringify(node));
+        if (bytes >= 1024) {
+          largeValues.push({ path, bytes, type: "string" });
+          const signature = `${node.length}:${node.slice(0, 96)}:${node.slice(-96)}`;
+          const duplicate = repeatedCandidates.get(signature) || {
+            bytes,
+            count: 0,
+            paths: []
+          };
+          duplicate.count += 1;
+          duplicate.paths.push(path);
+          repeatedCandidates.set(signature, duplicate);
+        }
+        if (/^data:/i.test(node)) {
+          assetContent.push({
+            path,
+            bytes,
+            type: node.slice(0, Math.max(0, node.indexOf(","))).slice(0, 120) || "data URL"
+          });
+        } else if (/<svg[\s>]/i.test(node)) {
+          assetContent.push({ path, bytes, type: "embedded SVG" });
+        }
+        return;
+      }
+      if (typeof node !== "object" || seen.has(node)) return;
+      seen.add(node);
+      Object.entries(node).forEach(([key, child]) => {
+        const childPath = path ? `${path}.${key}` : key;
+        if (child && typeof child === "object") {
+          const childSerialized = JSON.stringify(child);
+          const bytes = serializedByteSize(childSerialized);
+          if (bytes >= 1024) {
+            largeValues.push({ path: childPath, bytes, type: Array.isArray(child) ? "array" : "object" });
+            const signature = `${childSerialized.length}:${childSerialized.slice(0, 96)}:${childSerialized.slice(-96)}`;
+            const duplicate = repeatedCandidates.get(signature) || {
+              bytes,
+              count: 0,
+              paths: []
+            };
+            duplicate.count += 1;
+            duplicate.paths.push(childPath);
+            repeatedCandidates.set(signature, duplicate);
+          }
+        }
+        inspect(child, childPath, depth + 1);
+      });
+    }
+
+    inspect(value, "", 0);
+    const duplicatedValues = [...repeatedCandidates.values()]
+      .filter(entry => entry.count > 1)
+      .map(entry => ({
+        bytesEach: entry.bytes,
+        count: entry.count,
+        duplicatedBytes: entry.bytes * (entry.count - 1),
+        paths: entry.paths
+      }))
+      .sort((a, b) => b.duplicatedBytes - a.duplicatedBytes)
+      .slice(0, 10);
+
+    return {
+      serializedPayloadBytes: serializedByteSize(serialized),
+      categoryBytes: Object.entries(categoryBytes)
+        .map(([category, bytes]) => ({ category, bytes }))
+        .sort((a, b) => b.bytes - a.bytes),
+      topLevelFields: topLevelFields.sort((a, b) => b.bytes - a.bytes).slice(0, 20),
+      largestNestedFields: largeValues.sort((a, b) => b.bytes - a.bytes).slice(0, 20),
+      embeddedAssetContent: assetContent.sort((a, b) => b.bytes - a.bytes).slice(0, 10),
+      duplicatedLargeValues: duplicatedValues
+    };
+  }
+
+  function writeSaveDiagnostic(key, value, operation) {
+    const serialized = JSON.stringify(value);
+    const attemptedPayloadBytes = serializedByteSize(serialized);
+    const currentUsage = approximateLocalStorageUsage();
+    const attempt = {
+      operation,
+      key,
+      attemptedPayloadBytes,
+      approximateLocalStorageUsageBytes: currentUsage.bytes,
+      localStorageReadable: currentUsage.readable,
+      startedAt: nowStamp()
+    };
+    console.info("SCZN3 save persistence write", attempt);
+    try {
+      localStorage.setItem(key, serialized);
+      const success = {
+        ...attempt,
+        ok: true,
+        completedAt: nowStamp()
+      };
+      publishSaveDiagnostic(success);
+      console.info("SCZN3 save persistence success", success);
+      return value;
+    } catch (error) {
+      const failure = {
+        ...attempt,
+        ok: false,
+        exceptionName: error && error.name || "Error",
+        exceptionMessage: error && error.message || String(error),
+        payloadComposition: analyzeSavePayload(value, serialized),
+        failedAt: nowStamp()
+      };
+      publishSaveDiagnostic(failure);
+      console.error("SCZN3 save persistence failure", failure);
+      throw error;
+    }
+  }
+
+  function read(key, fallback = null) {
+    const stored = rawRead(key, fallback);
+    if (key === KEYS.activeMatrix) {
+      if (stored && JSON.stringify(stored).includes("\"dataUrl\":\"data:")) {
+        const compact = storeMediaReferences(stored);
+        rawWrite(key, compact);
+        return hydrateMediaValue(compact);
+      }
+      return hydrateMediaValue(stored);
+    }
+    if (key === KEYS.activeSession || key === KEYS.activeZeroSession) {
+      if (isSessionReference(stored)) return readCanonicalSession(stored.sessionId) || fallback;
+      return hydrateSessionRecord(stored);
+    }
+    if (key === KEYS.sessionHistory && Array.isArray(stored)) {
+      return stored.map(entry => {
+        if (!isSessionReference(entry)) return hydrateSessionRecord(entry);
+        return readCanonicalSession(entry.sessionId) || entry;
+      }).filter(Boolean);
+    }
+    return stored;
   }
 
   function display(value, fallback = "--") {
@@ -197,6 +709,10 @@
     const sessionNumber = getNextSessionNumber();
     const timestamp = nowStamp();
     const targetIdentity = {
+      vendor: matrixSnapshot.vendor || "",
+      sku: matrixSnapshot.sku || "",
+      product: matrixSnapshot.product || "",
+      authority: matrixSnapshot.authority || "",
       target_profile_id: matrixSnapshot.target_profile_id || matrixSnapshot.targetProfileId || matrixSnapshot.targetId || "",
       targetProfileId: matrixSnapshot.targetProfileId || matrixSnapshot.target_profile_id || matrixSnapshot.targetId || "",
       mission_family: matrixSnapshot.mission_family || matrixSnapshot.missionFamily || matrixSnapshot.missionFamilyId || "",
@@ -252,22 +768,31 @@
   function createSession(matrixSnapshot) {
     const frozenMatrix = saveMatrixSnapshot(matrixSnapshot);
     const session = buildSession(frozenMatrix);
-    const history = [session, ...getSessionHistory()].slice(0, MAX_SESSION_HISTORY);
-    write(KEYS.activeSession, session);
-    write(KEYS.activeZeroSession, session);
-    write(KEYS.sessionHistory, history);
-    return session;
+    const canonical = persistCanonicalSession(session, "create-canonical-session");
+    const history = ensureCanonicalHistory([canonical, ...getSessionHistory()]
+      .filter((item, index, source) => item && source.findIndex(candidate => candidate.sessionId === item.sessionId) === index)
+      .slice(0, MAX_SESSION_HISTORY), "migrate-create-history-session");
+    rawWrite(KEYS.activeSession, sessionReference(session.sessionId));
+    if (frozenMatrix.experienceMode !== "simulation") {
+      rawWrite(KEYS.activeZeroSession, sessionReference(session.sessionId));
+    }
+    rawWrite(KEYS.sessionHistory, history.map(historyReference));
+    return canonical;
   }
 
   function replaceSession(updatedSession) {
     const history = getSessionHistory();
-    const nextHistory = history.some(session => session.sessionId === updatedSession.sessionId)
-      ? history.map(session => session.sessionId === updatedSession.sessionId ? updatedSession : session)
-      : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
-    write(KEYS.activeSession, updatedSession);
-    write(KEYS.activeZeroSession, updatedSession);
-    write(KEYS.sessionHistory, nextHistory);
-    return updatedSession;
+    const canonical = persistCanonicalSession(updatedSession, "persist-canonical-session");
+    const nextHistory = history.some(session => session.sessionId === canonical.sessionId)
+      ? history.map(session => session.sessionId === canonical.sessionId ? canonical : session)
+      : [canonical, ...history].slice(0, MAX_SESSION_HISTORY);
+    const canonicalHistory = ensureCanonicalHistory(nextHistory, "migrate-save-history-session");
+    writeSaveDiagnostic(KEYS.sessionHistory, canonicalHistory.map(historyReference), "persist-session-history-references");
+    writeSaveDiagnostic(KEYS.activeSession, sessionReference(canonical.sessionId), "persist-active-session-reference");
+    if (canonical.experienceMode !== "simulation") {
+      writeSaveDiagnostic(KEYS.activeZeroSession, sessionReference(canonical.sessionId), "persist-active-zero-session-reference");
+    }
+    return canonical;
   }
 
   function updateActiveSession(patch) {
@@ -499,10 +1024,16 @@
       const session = source.session || (source.sessionId || source.matrixSnapshot || source.shotData || source.targetEvidenceImage ? source : null);
       const snapshot = source.matrixSnapshot || (session && session.matrixSnapshot) || {};
       const shotData = source.shotData || (session && session.shotData) || {};
+      const authoritative = source.authorityPackage
+        || source.m4AuthorityPackage
+        || (session && (session.authorityPackage || session.m4AuthorityPackage))
+        || null;
+      const authoritativeRender = authoritative && authoritative.renderCoordinates || {};
       const correctionSource = source.correction || source.clicks || source.correctionData?.clicks || (session && (session.clicks || session.correctionData?.clicks)) || null;
       const targetEvidence = source.targetEvidenceImage || (session && session.targetEvidenceImage) || null;
       const targetImage = source.targetImage || source.image || source.dataUrl || (targetEvidence && targetEvidence.dataUrl) || TARGET_AUTHORITY.asset;
-      const aim = normalizePoint(source.aim || source.aimPoint || shotData.aimPoint || (session && (session.aimPoint || session.shotData?.aimPoint)));
+      const aim = normalizePoint(authoritativeRender.aim || source.aim || source.aimPoint || shotData.aimPoint || (session && (session.aimPoint || session.shotData?.aimPoint)));
+      const bull = normalizePoint(authoritativeRender.bull || (authoritative && authoritative.inputs && authoritative.inputs.registeredBullCoordinate));
       const impactsSource = Array.isArray(source.impacts) ? source.impacts
         : Array.isArray(source.impactPoints) ? source.impactPoints
           : Array.isArray(shotData.impactPoints) ? shotData.impactPoints
@@ -510,9 +1041,11 @@
               : Array.isArray(session && session.shotData && session.shotData.impactPoints) ? session.shotData.impactPoints
                 : [];
       const impacts = impactsSource.map(normalizePoint).filter(Boolean);
-      const poib = normalizePoint(source.poib || correctionSource?.poib || shotData.poib || (session && (session.poib || session.shotData?.poib || session.clicks?.poib)));
+      const poib = normalizePoint(authoritativeRender.poib || source.poib || correctionSource?.poib || shotData.poib || (session && (session.poib || session.shotData?.poib || session.clicks?.poib)));
       const correction = correctionSource || (poib ? { poib } : null);
-      const vector = poib && aim ? vectorCoordinates(poib, aim) : null;
+      const vector = authoritativeRender.vector
+        ? vectorCoordinates(authoritativeRender.vector.start, authoritativeRender.vector.end)
+        : poib && aim ? vectorCoordinates(poib, aim) : null;
       const distance = source.distance || source.targetDistance || source.display?.distance || (session && (session.targetDistance || session.distance)) || snapshot.targetDistance || snapshot.distance || null;
       const hitCount = Number.isFinite(Number(source.hitCount)) ? Number(source.hitCount)
         : Number.isFinite(Number(source.hits)) ? Number(source.hits)
@@ -539,6 +1072,7 @@
         targetName: source.targetName || snapshot.targetName || snapshot.targetFamily || TARGET_AUTHORITY.targetFamily,
         distance,
         aim,
+        bull,
         impacts,
         poib,
         vector,
@@ -554,13 +1088,20 @@
     function evidenceCoordinates(evidence) {
       const normalized = normalizeEvidencePackage(evidence);
       const aim = normalized.aim;
+      const bull = normalized.bull;
       const poib = normalized.poib;
       const impacts = normalized.impacts;
       return {
         aim: aim ? imagePointThroughGrid(aim) : null,
+        bull: bull ? imagePointThroughGrid(bull) : null,
         poib: poib ? imagePointThroughGrid(poib) : null,
         impacts: impacts.map(imagePointThroughGrid).filter(Boolean),
-        vector: poib && aim ? vectorCoordinates(poib, aim) : null
+        vector: normalized.vector
+          ? {
+              start: imagePointThroughGrid(normalized.vector.start),
+              end: imagePointThroughGrid(normalized.vector.end)
+            }
+          : poib && aim ? vectorCoordinates(poib, aim) : null
       };
     }
 
@@ -572,6 +1113,7 @@
       } : null;
       return JSON.stringify({
         aim: round(coords.aim),
+        bull: round(coords.bull),
         poib: round(coords.poib),
         impacts: coords.impacts.map(round),
         vector: coords.vector ? { start: round(coords.vector.start), end: round(coords.vector.end) } : null
@@ -590,11 +1132,13 @@
     function renderEvidenceUGEO(evidence, options = {}) {
       const normalized = normalizeEvidencePackage(evidence);
       const aim = normalized.aim;
+      const bull = normalized.bull;
       const poib = normalized.poib;
       const impacts = normalized.impacts;
       const parts = [];
-      if (options.vector !== false && poib && aim) {
-        parts.push(renderVector(poib, aim, {
+      const correctionVector = normalized.vector || (poib && aim ? vectorCoordinates(poib, aim) : null);
+      if (options.vector !== false && correctionVector) {
+        parts.push(renderVector(correctionVector.start, correctionVector.end, {
           svgClass: options.vectorClass || "ugeo-vector",
           markerId: options.vectorMarkerId,
           markerDef: options.vectorMarkerDef,
@@ -615,6 +1159,9 @@
       if (options.aim !== false) {
         const aimStyleExtra = typeof options.aimStyleExtra === "function" ? options.aimStyleExtra({ aim, poib }) : (options.aimStyleExtra || "");
         parts.push(renderPoint(options.aimClass || "ugeo-aim", aim, options.aimContent || "", options.aimAttributes || "", aimStyleExtra));
+      }
+      if (options.bull !== false) {
+        parts.push(renderPoint(options.bullClass || "bull-marker", bull, options.bullContent || "", 'aria-label="Registered bull"', options.bullStyleExtra || ""));
       }
       if (options.poib !== false) {
         parts.push(renderPoint(options.poibClass || "ugeo-poib", poib, options.poibContent || "", options.poibAttributes || "", options.poibStyleExtra || ""));
@@ -763,8 +1310,9 @@
   function loadSession(sessionId) {
     const session = getSessionHistory().find(item => item.sessionId === sessionId);
     if (!session) return null;
-    write(KEYS.activeSession, session);
-    write(KEYS.activeZeroSession, session);
+    if (!readCanonicalSession(sessionId)) persistCanonicalSession(session, "migrate-loaded-session");
+    rawWrite(KEYS.activeSession, sessionReference(session.sessionId));
+    rawWrite(KEYS.activeZeroSession, sessionReference(session.sessionId));
     if (session.matrixSnapshot) write(KEYS.activeMatrix, session.matrixSnapshot);
     return session;
   }
@@ -846,6 +1394,8 @@
     usePreviousSetup,
     createSessionFromSession,
     sessionPills,
+    storeMediaReferences,
+    hydrateStoredMedia,
     startPlaceholderSession
   };
 })();

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>M4 Shooter Experience Card</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="m4-sec.css?v=founder-session-context-overlay-0730" />
+<link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
+</head>
+<body>
+<main class="shell app-shell sec-shell">
+  <header class="package-header sec-document-header" aria-label="Tap-N-Score header">
+    <div class="package-brand-lockup">
+      <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
+      <div class="package-brand-copy">
+        <strong>Tap-<span>n</span>-Score</strong>
+      </div>
+    </div>
+    <span class="sec-document-identifier">Shooter Experience Card</span>
+    <button class="package-menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="packageMenu"><span></span><span></span><span></span></button>
+  </header>
+  <nav class="package-drawer" id="packageMenu" aria-label="Tap-N-Score navigation" hidden>
+    <a href="index.html">Home</a>
+    <a href="matrix.html">Weapon Setup</a>
+    <a href="shoot.html">Target</a>
+    <a href="sec.html" aria-current="page">SEC</a>
+    <a href="records.html">History</a>
+  </nav>
+  <a class="sec-mission-bar" href="https://BakerTargets.com" aria-label="Open Baker's Targets website">
+    <strong>Baker's Targets</strong>
+    <span aria-hidden="true">•</span>
+    <span>M4 Carbine</span>
+    <span aria-hidden="true">•</span>
+    <span>25 Meter Zero</span>
+  </a>
+
+  <div id="missingState" class="panel is-hidden">
+    <h1>No completed session</h1>
+    <p>Complete the Target steps before opening the Shooter Experience Card.</p>
+    <a class="button primary" href="shoot.html">Return to Target</a>
+  </div>
+
+  <article id="secCard" class="sec-experience is-hidden">
+    <details class="correction-context-drawer sec-correction-context" open>
+      <summary>Session Setup</summary>
+      <div class="correction-context-panel sec-session-record">
+        <div class="sec-session-configuration">
+          <span>Shooting Configuration</span>
+          <strong id="secSessionConfiguration"></strong>
+        </div>
+        <div class="sec-session-record-fields">
+          <div><span>Shooter</span><strong id="secSessionShooter"></strong></div>
+          <div><span>Date</span><strong id="secSessionDate"></strong></div>
+          <div><span>Time</span><strong id="secSessionTime"></strong></div>
+        </div>
+      </div>
+    </details>
+
+    <section class="sec-target-story" aria-label="Initial and confirmation target story">
+      <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
+        <figure>
+          <figcaption><span>Before</span><strong>Initial Group</strong></figcaption>
+          <div class="sec-comparison-target">
+            <img id="beforeEvidenceImage" alt="Initial group target evidence" />
+            <span class="sec-target-session-identity">
+              <strong id="evidenceSessionIdentifier"></strong>
+              <small id="evidenceDataStatus"></small>
+            </span>
+            <div class="marker-layer" id="beforeEvidenceMarkers"></div>
+          </div>
+        </figure>
+        <div class="sec-comparison-arrow" aria-label="Apply the correction, then confirm">
+          <span>Apply</span>
+          <strong aria-hidden="true">→</strong>
+          <small>Confirm</small>
+        </div>
+        <figure id="confirmationWorkspace">
+          <figcaption><span>After</span><strong>Confirmation Group</strong></figcaption>
+          <div class="sec-comparison-target">
+            <img id="confirmationImage" alt="Confirmation-group target evidence" />
+            <div class="marker-layer" id="confirmationMarkers"></div>
+            <span class="sec-comparison-pending" id="confirmationPending">Pending</span>
+          </div>
+        </figure>
+      </div>
+      <div class="sec-story-command-bar" aria-label="Shooter Experience Card actions">
+        <div class="sec-preservation-actions">
+          <button class="button primary" type="button" id="saveSEC">Save SEC</button>
+          <button class="button" type="button" id="shareSEC">Share</button>
+          <button class="button" type="button" id="exportSEC">Export / Print PDF</button>
+          <button class="button" type="button" id="addNote">Add Note</button>
+          <a class="button" href="records.html">View History</a>
+        </div>
+        <div class="sec-note-editor is-hidden" id="noteEditor">
+          <label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label>
+          <button class="button" type="button" id="saveNote">Save Note</button>
+        </div>
+        <div class="sec-preserved-history-row is-hidden"></div>
+        <span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <dialog class="sec-validation-workspace" id="validationWorkspace" aria-labelledby="validationWorkspaceTitle">
+      <div class="sec-validation-workspace-shell">
+        <header class="sec-validation-workspace-header">
+          <div>
+            <span class="kicker">Engineering Traceability</span>
+            <h2 id="validationWorkspaceTitle">Validation</h2>
+            <p>Inspect the evidence and calculations preserved with this session.</p>
+          </div>
+          <button class="sec-validation-close" type="button" id="closeValidation" aria-label="Close Validation">×</button>
+        </header>
+
+        <section class="sec-validation-section">
+          <div class="sec-validation-section-heading">
+            <span>Evidence</span>
+            <strong>Shot Coordinates &amp; Numbering</strong>
+            <small id="validationEvidenceSummary"></small>
+          </div>
+          <div class="sec-validation-evidence-grid">
+            <div class="sec-evidence-frame trace-source" id="validationEvidenceFrame">
+              <img id="validationEvidenceImage" alt="Confirmed M4 target evidence with numbered shots" />
+              <div class="marker-layer" id="validationEvidenceMarkers"></div>
+            </div>
+            <div class="sec-shot-inspector">
+              <div class="sec-shot-selector" id="validationShotList" aria-label="Select a shot to inspect"></div>
+              <div class="sec-shot-coordinate" id="selectedShotCoordinate" aria-live="polite">
+                <span>Select a numbered shot</span>
+                <strong>Coordinates will appear here.</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="sec-validation-section">
+          <div class="sec-validation-section-heading">
+            <span>Measurement</span>
+            <strong>Validation Data</strong>
+            <small>Derived from confirmed shots</small>
+          </div>
+          <div class="sec-metric-grid" id="measurementGrid"></div>
+        </section>
+
+        <section class="sec-validation-section">
+          <div class="sec-validation-section-heading">
+            <span>Recommendation</span>
+            <strong>Engineering Details</strong>
+            <small>Confirmed aim point minus POIB</small>
+          </div>
+          <div class="sec-correction-call" id="recommendationCall"></div>
+          <div class="sec-metric-grid" id="angularGrid"></div>
+          <span class="sec-validation-subheading">Execution</span>
+          <div class="sec-execution" id="executionInstructions"></div>
+        </section>
+
+        <section class="sec-validation-section">
+          <div class="sec-validation-section-heading">
+            <span>Validation Calculation</span>
+            <strong>Confirmation authority</strong>
+          </div>
+          <div class="sec-validation-calculation" id="validationCalculation"></div>
+          <div class="sec-authority-trace" id="authorityTrace"></div>
+        </section>
+      </div>
+    </dialog>
+  </article>
+  <footer class="package-footer" aria-label="SCZN3 footer">
+    <strong>⊙ SCZN3</strong>
+    <span>FAITH • ORDER • PRECISION</span>
+    <em>BUILT FOR SHOOTERS, BY SHOOTERS.</em>
+  </footer>
+</main>
+<script src="zeroing_platform.js"></script>
+<script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
+<script src="sec_framework.js?v=founder-validation-refactor-0730"></script>
+<script src="app_state.js?v=session-normalization-0727"></script>
+<script src="m4_runtime.js?v=sec-preservation-flow-0730"></script>
+<script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
+<script>
+const SEC_QUERY = new URLSearchParams(window.location.search);
+const reviewSessionId = SEC_QUERY.get("reviewSession");
+const requestedSessionId = SEC_QUERY.get("sessionId");
+const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
+const persistedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
+const requestedPersistedSession = requestedSessionId
+  ? SCZN3M4.getSessionHistory().find(candidate => candidate && candidate.sessionId === requestedSessionId) || null
+  : null;
+const founderReviewSession =
+  reviewSessionId === "003" ? window.SCZN3_FOUNDER_REVIEW_SESSION_003 : null;
+const restoredFounderReviewSession =
+  founderReviewSession &&
+  persistedSession &&
+  persistedSession.sessionId === founderReviewSession.sessionId &&
+  persistedSession.preservedAt
+    ? persistedSession
+    : founderReviewSession;
+
+function isValidFounderReviewSession(candidate) {
+  const initial = candidate && candidate.m4AuthorityPackage;
+  const confirmation = candidate && candidate.confirmationAuthorityPackage;
+  const initialShots =
+    initial && initial.lineage && Array.isArray(initial.lineage.sourceShotIds)
+      ? initial.lineage.sourceShotIds
+      : [];
+  const confirmationShots =
+    confirmation &&
+    confirmation.lineage &&
+    Array.isArray(confirmation.lineage.sourceShotIds)
+      ? confirmation.lineage.sourceShotIds
+      : [];
+
+  return Boolean(
+    candidate &&
+      candidate.fixtureKind === "sczn3-founder-review-completed-session-v1" &&
+      candidate.sessionId === "FOUNDER_REVIEW_M4_003" &&
+      candidate.sessionLabel === "Session #003" &&
+      candidate.isTestData === true &&
+      candidate.savedToSEC === true &&
+      initial &&
+      initial.authorityVersion &&
+      initial.target &&
+      initial.target.sku === candidate.targetId &&
+      initial.status &&
+      initial.status.hasCorrection === true &&
+      initial.geometryValidation &&
+      initial.geometryValidation.status === "calculated" &&
+      initial.mechanicalValidation &&
+      initial.mechanicalValidation.status === "calculated" &&
+      initial.calculationReconciliation &&
+      initial.calculationReconciliation.status === "reconciled" &&
+      initial.mechanicalSightAuthority &&
+      initial.mechanicalSightAuthority.status === "proven" &&
+      initial.evidenceHash ===
+        "debcf21d24b6f74e8214dd47ae9ea36cffa7a95b58a92e249fccf5da526350be" &&
+      initialShots.length >= 3 &&
+      confirmation &&
+      confirmation.phase === "confirmation" &&
+      confirmation.target &&
+      confirmation.target.sku === candidate.targetId &&
+      confirmation.validation &&
+      confirmation.validation.status === "calculated" &&
+      confirmation.validation.confirmed === true &&
+      confirmation.calculationReconciliation &&
+      confirmation.calculationReconciliation.status === "reconciled" &&
+      confirmation.status &&
+      confirmation.status.hasCorrection === true &&
+      confirmation.evidenceHash ===
+        "1a55f8b85ad98b71ee579492ff87c0afba0c565d74c209f4a882ffe01c3dd2d3" &&
+      confirmationShots.length >= 3
+  );
+}
+
+function isCompletedZeroingSession(candidate) {
+  return Boolean(
+    candidate &&
+    window.SCZN3ZeroingPlatform &&
+    window.SCZN3ZeroingPlatform.isCompletedSession(candidate) &&
+    (candidate.m4AuthorityPackage || candidate.backendAuthorityPackage) &&
+    candidate.confirmationAuthorityPackage
+  );
+}
+
+const session = (isCompletedZeroingSession(requestedPersistedSession) ? requestedPersistedSession : null)
+  || (isValidFounderReviewSession(restoredFounderReviewSession)
+    ? restoredFounderReviewSession
+    : founderReviewSession
+      ? null
+      : isCompletedZeroingSession(persistedSession) ? persistedSession : null);
+const authority = session && (session.m4AuthorityPackage || session.backendAuthorityPackage);
+const card = document.getElementById("secCard");
+document.body.dataset.vaultThumbnail = vaultThumbnailMode ? "true" : "false";
+let confirmationEvidence = session && session.confirmationEvidenceImage || null;
+let confirmationImpacts = session && Array.isArray(session.confirmationImpactPoints) ? [...session.confirmationImpactPoints] : [];
+let confirmationAuthority = session && session.confirmationAuthorityPackage || null;
+document.querySelector(".sec-preservation-actions").innerHTML = SCZN3SEC.PreservationCard({
+  save: true,
+  validation: true,
+  share: true,
+  print: true,
+  note: true,
+  history: true
+});
+document.querySelector(".sec-preserved-history-row").append(document.getElementById("viewHistory"));
+
+function esc(value) {
+  return SCZN3SEC.escapeHtml(value);
+}
+
+function metric(label, value, detail = "") {
+  return SCZN3SEC.metric(label, value, detail);
+}
+
+function marker(point, className, label) {
+  return SCZN3SEC.marker(point, className, label);
+}
+
+function authoritativeClickItems(authorityPackage) {
+  const mechanical = authorityPackage && authorityPackage.mechanicalValidation || {};
+  const status = authorityPackage && authorityPackage.status || {};
+  const clicks = authorityPackage && authorityPackage.clicks;
+  if (
+    mechanical.status !== "calculated" ||
+    status.hasMechanicalRecommendation !== true ||
+    !clicks
+  ) {
+    return [];
+  }
+  return [
+    {
+      axis: "Windage",
+      amount: Number(clicks.windageClicks),
+      direction: String(clicks.windageDirection || "CENTER").toUpperCase()
+    },
+    {
+      axis: "Elevation",
+      amount: Number(clicks.elevationClicks),
+      direction: String(clicks.elevationDirection || "CENTER").toUpperCase()
+    }
+  ].filter(item => Number.isFinite(item.amount)).map(item => ({
+    ...item,
+    direction: item.amount === 0 || item.direction === "CENTER" ? "CENTERED" : item.direction,
+    arrow: {
+      LEFT: "←",
+      RIGHT: "→",
+      UP: "↑",
+      DOWN: "↓",
+      CENTERED: "•"
+    }[item.amount === 0 ? "CENTERED" : item.direction] || "•",
+    unit: item.amount === 1 ? "click" : "clicks"
+  }));
+}
+
+function correctionOverlayPosition(render) {
+  const points = [
+    ...((render && render.impacts) || []),
+    render && render.poib,
+    render && render.aim
+  ].filter(Boolean).map(point => ({
+    x: Number(point.xPercent),
+    y: Number(point.yPercent)
+  })).filter(point => Number.isFinite(point.x) && Number.isFinite(point.y));
+  const vector = render && render.vector;
+  const vectorStart = vector && vector.start;
+  const vectorEnd = vector && vector.end;
+  if (
+    vectorStart &&
+    vectorEnd &&
+    Number.isFinite(Number(vectorStart.xPercent)) &&
+    Number.isFinite(Number(vectorStart.yPercent)) &&
+    Number.isFinite(Number(vectorEnd.xPercent)) &&
+    Number.isFinite(Number(vectorEnd.yPercent))
+  ) {
+    for (let step = 0; step <= 12; step += 1) {
+      const ratio = step / 12;
+      points.push({
+        x: Number(vectorStart.xPercent) + (Number(vectorEnd.xPercent) - Number(vectorStart.xPercent)) * ratio,
+        y: Number(vectorStart.yPercent) + (Number(vectorEnd.yPercent) - Number(vectorStart.yPercent)) * ratio
+      });
+    }
+  }
+  const candidates = [
+    { name: "top-right", left: 53.5, right: 97.5, top: 17.5, bottom: 32 },
+    { name: "bottom-left", left: 2.5, right: 46.5, top: 68, bottom: 82.5 },
+    { name: "bottom-right", left: 53.5, right: 97.5, top: 68, bottom: 82.5 }
+  ];
+  if (!points.length) return candidates[0].name;
+  const scored = candidates.map(candidate => {
+    const center = {
+      x: (candidate.left + candidate.right) / 2,
+      y: (candidate.top + candidate.bottom) / 2
+    };
+    const collision = points.some(point =>
+      point.x >= candidate.left - 3 &&
+      point.x <= candidate.right + 3 &&
+      point.y >= candidate.top - 3 &&
+      point.y <= candidate.bottom + 3
+    );
+    const clearance = Math.min(...points.map(point => Math.hypot(point.x - center.x, point.y - center.y)));
+    return { ...candidate, score: clearance - (collision ? 1000 : 0) };
+  });
+  return scored.sort((left, right) => right.score - left.score)[0].name;
+}
+
+function correctionOverlay(authorityPackage) {
+  const items = authoritativeClickItems(authorityPackage);
+  if (!items.length) return "";
+  const position = correctionOverlayPosition(authorityPackage.renderCoordinates || {});
+  return `<aside class="sec-target-correction-overlay ${position}" aria-label="Sight correction applied to the initial group">
+    ${items.map(item => `<span class="workspace-axis-correction sczn3-live-correction-card" data-axis="${esc(item.axis.toLowerCase())}">
+      <b aria-hidden="true">${esc(item.arrow)}</b>
+      <strong>${esc(item.amount)}</strong>
+      <small>${esc(item.direction)}</small>
+      <em>${esc(item.unit)}</em>
+    </span>`).join("")}
+  </aside>`;
+}
+
+function renderPreservationState(preservedAt) {
+  const saveButton = document.getElementById("saveSEC");
+  const historyButton = document.getElementById("viewHistory");
+  const historyRow = document.querySelector(".sec-preserved-history-row");
+  const preserved = !!preservedAt;
+  saveButton.textContent = preserved ? "SEC PRESERVED" : "SAVE SEC";
+  saveButton.classList.toggle("is-preserved", preserved);
+  saveButton.disabled = preserved || !confirmationAuthority;
+  historyRow.classList.toggle("is-hidden", !preserved);
+  historyButton.classList.toggle("is-next-action", preserved);
+  if (session && session.sessionId) {
+    historyButton.href = `records.html?from=preserved-sec&sessionId=${encodeURIComponent(session.sessionId)}`;
+  }
+}
+
+function selectValidationShot(index) {
+  const impacts = authority && authority.inputs && authority.inputs.impactCoordinates || [];
+  const renderImpacts = authority && authority.renderCoordinates && authority.renderCoordinates.impacts || [];
+  const sourceIds = authority && authority.lineage && authority.lineage.sourceShotIds || [];
+  const point = impacts[index] || renderImpacts[index];
+  document.querySelectorAll("[data-validation-shot]").forEach(node => {
+    node.classList.toggle("is-selected", Number(node.dataset.validationShot) === index);
+  });
+  if (!point) return;
+  const shotId = point.shotId || sourceIds[index] || `Shot ${index + 1}`;
+  document.getElementById("selectedShotCoordinate").innerHTML =
+    `<span>Shot ${index + 1} · ${esc(shotId)}</span>
+     <strong>X ${Number(point.xPercent).toFixed(4)}% · Y ${Number(point.yPercent).toFixed(4)}%</strong>
+     <small>Normalized target coordinates preserved by backend authority.</small>`;
+}
+
+function renderValidationWorkspace(evidenceCard) {
+  const render = authority.renderCoordinates || {};
+  const impacts = authority.inputs && authority.inputs.impactCoordinates || render.impacts || [];
+  const sourceIds = authority.lineage && authority.lineage.sourceShotIds || [];
+  document.getElementById("validationEvidenceMarkers").innerHTML = evidenceCard.overlay();
+  document.querySelectorAll("#validationEvidenceMarkers .impact-marker").forEach((node, index) => {
+    node.dataset.validationShot = String(index);
+  });
+  document.getElementById("validationShotList").innerHTML = impacts.map((point, index) => {
+    const shotId = point.shotId || sourceIds[index] || `Shot ${index + 1}`;
+    return `<button type="button" data-validation-shot="${index}" aria-label="Inspect shot ${index + 1}">
+      <b>${index + 1}</b><span>${esc(shotId)}</span>
+    </button>`;
+  }).join("");
+  document.querySelectorAll("#validationShotList [data-validation-shot]").forEach(button => {
+    button.addEventListener("click", () => selectValidationShot(Number(button.dataset.validationShot)));
+  });
+  if (impacts.length) selectValidationShot(0);
+
+  const validationCard = SCZN3SEC.ValidationCard(confirmationAuthority, authority);
+  document.getElementById("validationCalculation").innerHTML =
+    `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
+  document.getElementById("authorityTrace").innerHTML =
+    `<div><span>Authority version</span><strong>${esc(authority.authorityVersion || "Unavailable")}</strong></div>
+     <div><span>Evidence hash</span><strong>${esc(authority.evidenceHash || "Unavailable")}</strong></div>
+     <div><span>Calculated</span><strong>${esc(authority.computedAt || "Unavailable")}</strong></div>`;
+}
+
+function renderSEC() {
+  if (!session || !authority || !authority.status || !authority.status.hasCorrection) {
+    document.getElementById("missingState").classList.remove("is-hidden");
+    return;
+  }
+  const calculationIntegrity = SCZN3SEC.verifyCalculationChain(authority);
+  if (
+    authority.status.hasMechanicalRecommendation === true
+    && calculationIntegrity.status !== "reconciled"
+  ) {
+    const missingState = document.getElementById("missingState");
+    missingState.querySelector("h1").textContent = "Calculation integrity unavailable";
+    missingState.querySelector("p").textContent =
+      "The angular correction, sight constant, rounding, and displayed click recommendation did not reconcile. No validation conclusion is available.";
+    missingState.querySelector("a").textContent = "Return to Target";
+    missingState.classList.remove("is-hidden");
+    return;
+  }
+  card.classList.remove("is-hidden");
+  const setup = session.matrixSnapshot || {};
+  const correction = authority.correction;
+  const clicks = authority.clicks || {};
+  const angular = authority.angular;
+  const score = authority.score || {};
+  const group = authority.group || {};
+  const isTest = !!session.isTestData;
+  const evidenceCard = SCZN3SEC.EvidenceCard(authority);
+  const recommendationCard = SCZN3SEC.RecommendationCard(authority);
+  const savedContext = session.correctionContextSnapshot || {};
+
+  document.getElementById("evidenceSessionIdentifier").textContent = session.sessionLabel || "Session";
+  document.getElementById("evidenceDataStatus").textContent = isTest ? "TEST DATA" : "";
+  document.getElementById("validationEvidenceSummary").textContent = evidenceCard.summary;
+  document.getElementById("validationEvidenceImage").src =
+    session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
+  document.getElementById("beforeEvidenceImage").src =
+    session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
+  document.getElementById("measurementGrid").innerHTML = SCZN3SEC.GroupAnalysisCard(authority);
+  document.getElementById("recommendationCall").innerHTML = recommendationCard.call;
+  document.getElementById("angularGrid").innerHTML = recommendationCard.angular;
+  document.getElementById("executionInstructions").innerHTML = SCZN3SEC.ExecutionCard(authority);
+  const sightLabel =
+    savedContext.sightLabel || (String(setup.opticType || "").toLowerCase().includes("iron") ? "Iron Sight" : "Optic");
+  const distanceValue = savedContext.distanceValue || session.targetDistanceValue || 25;
+  const distanceLabel = savedContext.distanceUnit === "YDS" ? "yards" : "meters";
+  const adjustmentUnit = savedContext.adjustmentUnit || setup.opticAdjustmentUnit || "MOA";
+  const sessionTimestamp = new Date(session.timestamp || session.savedAt || session.createdAt || "");
+  const hasSessionTimestamp = Number.isFinite(sessionTimestamp.getTime());
+  document.getElementById("secSessionConfiguration").textContent =
+    `${sightLabel} • ${distanceValue} ${distanceLabel} • ${adjustmentUnit}`;
+  document.getElementById("secSessionShooter").textContent =
+    session.shooterName || setup.shooterName || "Not recorded";
+  document.getElementById("secSessionDate").textContent = hasSessionTimestamp
+    ? new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short", day: "numeric" }).format(sessionTimestamp)
+    : "Not recorded";
+  document.getElementById("secSessionTime").textContent = hasSessionTimestamp
+    ? new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(sessionTimestamp)
+    : "Not recorded";
+  document.getElementById("secNote").value = session.secNote || "";
+  renderValidationWorkspace(evidenceCard);
+  document.getElementById("beforeEvidenceMarkers").innerHTML =
+    evidenceCard.overlay() + correctionOverlay(authority);
+  renderConfirmation();
+  renderPreservationState(session.savedToSEC && session.preservedAt);
+}
+
+function renderConfirmation() {
+  const pending = document.getElementById("confirmationPending");
+  if (confirmationEvidence && confirmationEvidence.dataUrl) {
+    document.getElementById("confirmationImage").src = confirmationEvidence.dataUrl;
+    pending.classList.add("is-hidden");
+  } else {
+    document.getElementById("confirmationImage").src =
+      session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
+    pending.classList.remove("is-hidden");
+  }
+  document.getElementById("confirmationMarkers").innerHTML =
+    (confirmationEvidence || confirmationImpacts.length)
+      ? confirmationImpacts.map((point, index) => marker(point, "impact-marker", index + 1)).join("")
+      : "";
+  document.getElementById("saveSEC").disabled = !confirmationAuthority;
+  if (!confirmationAuthority) {
+    return;
+  }
+  renderValidationWorkspace(SCZN3SEC.EvidenceCard(authority));
+}
+
+document.getElementById("openValidation").addEventListener("click", () => {
+  const workspace = document.getElementById("validationWorkspace");
+  if (typeof workspace.showModal === "function") workspace.showModal();
+  else workspace.setAttribute("open", "");
+});
+
+document.getElementById("closeValidation").addEventListener("click", () => {
+  const workspace = document.getElementById("validationWorkspace");
+  if (typeof workspace.close === "function") workspace.close();
+  else workspace.removeAttribute("open");
+});
+
+document.getElementById("validationWorkspace").addEventListener("click", event => {
+  if (event.target === event.currentTarget) event.currentTarget.close();
+});
+
+document.getElementById("addNote").addEventListener("click", () => {
+  document.getElementById("noteEditor").classList.toggle("is-hidden");
+});
+
+document.getElementById("saveNote").addEventListener("click", () => {
+  SCZN3M4.updateActiveSession({ secNote: document.getElementById("secNote").value.trim() });
+  document.getElementById("secActionStatus").textContent = "Note saved to the active session.";
+});
+
+document.getElementById("saveSEC").addEventListener("click", () => {
+  const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
+  if (saved) {
+    renderPreservationState(saved.preservedAt);
+    document.getElementById("secActionStatus").textContent = "";
+  } else {
+    document.getElementById("secActionStatus").textContent = "SEC could not be preserved.";
+  }
+});
+
+document.getElementById("shareSEC").addEventListener("click", async () => {
+  const data = { title: "M4 Shooter Experience Card", text: session.sessionLabel, url: location.href };
+  if (navigator.share) {
+    await navigator.share(data);
+  } else {
+    await navigator.clipboard.writeText(location.href);
+    document.getElementById("secActionStatus").textContent = "SEC link copied.";
+  }
+});
+
+document.getElementById("exportSEC").addEventListener("click", () => window.print());
+
+renderSEC();
+</script>
+</body>
+</html>

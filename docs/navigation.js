@@ -40,6 +40,33 @@
     document.documentElement.dataset.sczn3NavigationReady = "true";
     const menus = platformMenus();
 
+    function activeZeroingSession() {
+      if (!document.body.classList.contains("target-page")) return null;
+      const state = window.SCZN3M4;
+      if (!state || !state.read || !state.KEYS) return null;
+      return state.read(state.KEYS.activeSession, null);
+    }
+
+    function protectActiveWorkspace(event) {
+      const link = event.target.closest("a[href]");
+      if (!link || link.hasAttribute("data-allow-mission-exit")) return;
+      const destination = new URL(link.href, window.location.href);
+      if (destination.origin !== window.location.origin) return;
+      if (destination.pathname.endsWith("/shoot.html")) return;
+      const session = activeZeroingSession();
+      if (!session) return;
+      const completed = window.SCZN3ZeroingPlatform
+        ? window.SCZN3ZeroingPlatform.isCompletedSession(session)
+        : session.savedToSEC === true && session.workflowStage === "preservation";
+      if (completed) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const status = document.getElementById("saveSessionStatus") || document.getElementById("missionWorkspaceStatus");
+      if (status) status.textContent = "Complete the zeroing mission before leaving the Workspace.";
+    }
+
+    document.addEventListener("click", protectActiveWorkspace, true);
+
     function closeAll(except = null) {
       menus.forEach(menu => {
         if (menu !== except) menu.close();

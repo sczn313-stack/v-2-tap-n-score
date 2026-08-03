@@ -3,91 +3,100 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tap-n-Score™</title>
+<meta name="theme-color" content="#050505" />
+<title>Tap-n-Score™ | Smart Target Ecosystem</title>
+<meta name="description" content="Select a supported Smart Target Experience and turn paper evidence into authoritative shooter intelligence." />
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="landing.css" />
+<script src="smart_target_identity.js"></script>
+<script>
+(function () {
+  const identity = window.SCZN3SmartTargetIdentity.resolve(window.location.search);
+  if (!identity) return;
+  window.SCZN3SmartTargetIdentity.writePending(identity);
+  window.location.replace(window.SCZN3SmartTargetIdentity.matrixUrl(identity));
+})();
+</script>
 <script src="presentation_labels.js"></script>
-<script src="app_state.js"></script>
+<script src="app_state.js?v=session-normalization-0727"></script>
 <script src="analytics.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="navigation.js" defer></script>
 </head>
-<body class="package-landing-page">
-<main class="package-landing-shell">
-  <header class="package-header" aria-label="Tap-N-Score header">
-    <div class="package-brand-lockup">
-      <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
-      <div class="package-brand-copy">
-        <strong>Tap-<span>n</span>-Score</strong>
-        <em>SHOOT SMARTER. GET BETTER.</em>
-      </div>
-    </div>
-    <button class="package-menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="packageMenuDrawer"><span></span><span></span><span></span></button>
+<body class="package-landing-page ecosystem-landing-page">
+<a class="ecosystem-skip-link" href="#targetExperiences">Skip to Target Experiences</a>
+
+<main class="package-landing-shell" data-ecosystem-shell>
+  <header class="ecosystem-header" aria-label="Tap-n-Score header">
+    <a class="ecosystem-brand" href="index.html" aria-label="Tap-n-Score home">
+      <span class="ecosystem-brand-name">Tap-n-Score<sup>™</sup></span>
+      <span class="ecosystem-brand-promise">SHOOT. SCAN. SAVE. IMPROVE.</span>
+    </a>
+    <button class="package-menu ecosystem-menu-button" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="packageMenuDrawer">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <nav class="package-menu-drawer" id="packageMenuDrawer" aria-label="Mobile menu" hidden>
-    <a href="index.html">Home</a>
-    <a href="matrix.html" data-clear-target-profile="true">Start New Session</a>
-    <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1" data-sczn3-target-label="gssf_ac_1">Target</a>
-    <a href="shoot.html?target_profile_id=dot_torture_ez2c_style_17" data-target-profile-id="dot_torture_ez2c_style_17" data-target-name="EZ2C Style 17 Dot Torture Training Drill">Dot Torture</a>
-    <a href="records.html">SEC</a>
-    <a href="survey.html">Survey</a>
+  <nav class="package-menu-drawer ecosystem-menu-drawer" id="packageMenuDrawer" aria-label="Experience navigation" hidden>
+    <a href="index.html">Smart Target Ecosystem</a>
+    <a href="?v=baker&amp;sku=ST-M16A2%2FM4">M4 Smart Target</a>
+    <a href="matrix.html?target_profile_id=baker_st_100yd_smart_zero&amp;mission_family=zeroingCorrection&amp;targetName=Baker%20100%20Yard%20Smart%20Target">100 Yard Bullseye</a>
+    <a href="matrix.html?target_profile_id=gssf_ac_1&amp;mission_family=gssf&amp;targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1">GSSF Practice Target</a>
+    <a href="records.html">Ballistic Vault</a>
   </nav>
 
-  <section class="package-hero" aria-label="Tap-N-Score start">
-    <div class="package-hero-copy">
-      <h1>ZERO FASTER.<br><span>SHOOT SMARTER.</span><br>KEEP GETTING BETTER.</h1>
-      <p><strong>THE BEGINNING OF YOUR SHOOTING HISTORY</strong><br><span>Shoot. Scan. Improve. Save.</span></p>
-      <a class="package-start-button" href="matrix.html" data-clear-target-profile="true">START NEW SESSION <span>→</span></a>
-      <div class="package-target-launch" aria-label="Target launch options" hidden>
-        <span>Target Mode</span>
-        <a href="matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1" data-sczn3-target-label="gssf_ac_1">Target</a>
-        <a href="shoot.html?target_profile_id=dot_torture_ez2c_style_17" data-target-profile-id="dot_torture_ez2c_style_17" data-target-name="EZ2C Style 17 Dot Torture Training Drill">Dot Torture</a>
-      </div>
-    </div>
-    <img class="package-hero-rifle" src="assets/landing-hero-visual-scene-img1429.jpeg" alt="" />
-  </section>
-
-  <section class="welcome-card" aria-labelledby="welcomeTitle">
-    <div class="welcome-progress-row">
-      <div class="sarg-support-photo" aria-label="Keep improving">
-        <img src="assets/sarg-range-photo.png" alt="Sarg shooting from a range bench" />
-      </div>
-
-      <div class="range-trends-block home-progress-preview">
-        <span class="home-progress-kicker">YOUR NEXT SESSION</span>
-        <h2 id="welcomeTitle">WELCOME BACK.</h2>
-        <p>Shoot. Save the evidence. Keep building your history.</p>
-      </div>
-    </div>
-
-    <div class="recent-header">
-      <h3>RECENT SEC</h3>
-      <a href="records.html">OPEN SEC <span>→</span></a>
-    </div>
-
-    <div class="recent-range-grid" data-recent-sec-list>
-      <article class="range-day-card range-day-empty">
-        <strong>No SEC saved yet.</strong>
-        <span class="range-day-date">Saved cards will appear here.</span>
-      </article>
-    </div>
-
-    <div class="sec-strip">
-      <strong>SEC</strong>
-      <span><b>SHOOTER EXPERIENCE CARD</b><br>Your Shooting History. Ready To Save.</span>
-      <a class="sec-action" href="records.html">OPEN SEC <i>→</i></a>
-      <a class="sec-action sec-action-survey" href="survey.html">SURVEY</a>
+  <section class="ecosystem-hero" aria-labelledby="ecosystemHeroTitle">
+    <img class="ecosystem-hero-image" src="assets/landing-hero-visual-scene-img1429.jpeg" alt="Precision rifle positioned on a mountain range" />
+    <div class="ecosystem-hero-shade" aria-hidden="true"></div>
+    <div class="ecosystem-hero-message" id="ecosystemHeroTitle">
+      <span>ZERO FASTER.</span>
+      <strong>SHOOT SMARTER.</strong>
+      <span>KEEP GETTING BETTER.</span>
     </div>
   </section>
 
-  <footer class="package-footer" aria-label="SCZN3 footer">
-    <strong>⊙ SCZN3</strong>
-    <span>FAITH • ORDER • PRECISION</span>
-    <em>BUILT FOR SHOOTERS, BY SHOOTERS.</em>
+  <section class="ecosystem-catalog-section" id="targetExperiences" aria-labelledby="catalogTitle">
+    <div class="ecosystem-intro">
+      <p class="ecosystem-kicker">THE SMART TARGET ECOSYSTEM</p>
+      <h1>Come Be Part of the<br />Smart Target Family.</h1>
+      <span class="ecosystem-gold-rule" aria-hidden="true"></span>
+    </div>
+
+    <header class="ecosystem-catalog-heading">
+      <h2 id="catalogTitle">Select Your Digital Target Experience.</h2>
+      <p class="ecosystem-availability-heading">Available Now &amp; Coming Soon</p>
+      <p>We’re continually adding support for more of your family’s favorite targets.</p>
+    </header>
+
+    <div class="ecosystem-target-grid" data-target-experiences aria-live="polite"></div>
+    <noscript>
+      <p class="ecosystem-noscript">JavaScript is required to load the Target Experience catalog.</p>
+    </noscript>
+
+    <aside class="ecosystem-family-card" aria-labelledby="familyTitle">
+      <img src="assets/sarg-range-photo.png" alt="Shooter working from a range bench" />
+      <div class="ecosystem-family-copy">
+        <span class="ecosystem-family-icon" aria-hidden="true">◎</span>
+        <div>
+          <h2 id="familyTitle">Come Be Part of the<br />Smart Target Family.</h2>
+          <p>More targets. More experiences.<br />More ways to improve.<br />Together, we build better shooters.</p>
+        </div>
+      </div>
+      <a href="#targetExperiences">EXPLORE TARGETS <span aria-hidden="true">→</span></a>
+    </aside>
+  </section>
+
+  <footer class="ecosystem-footer" aria-label="SCZN3 platform principles">
+    <div><strong>VERIFIED RESULTS</strong><span>Evidence before opinion.</span></div>
+    <div><strong>YOUR DATA IS YOURS</strong><span>Private. Always secure.</span></div>
+    <div><strong>SAVE &amp; TRACK</strong><span>Every session. Every shot.</span></div>
+    <div><strong>KEEP IMPROVING</strong><span>Today. Tomorrow. Always.</span></div>
   </footer>
 </main>
+
+<script src="target_experiences.js"></script>
 <script>
-(function(){
+(function () {
   const pendingTargetKey = "SCZN3_PENDING_TARGET_PROFILE";
   const gssfProfile = {
     target_profile_id: "gssf_ac_1",
@@ -115,74 +124,26 @@
     ...gssfProfile
   };
   let gssfSessionPrimed = false;
-  function writePendingTargetProfile(profile){
+
+  function createGssfActiveSession() {
     try {
-      localStorage.setItem(pendingTargetKey, JSON.stringify(profile));
-      sessionStorage.setItem(pendingTargetKey, JSON.stringify(profile));
-    } catch (error) {}
-  }
-  function clearPendingTargetProfile(){
-    try {
-      localStorage.removeItem(pendingTargetKey);
-      sessionStorage.removeItem(pendingTargetKey);
-    } catch (error) {}
-  }
-  function createGssfActiveSession(){
-    writePendingTargetProfile(gssfProfile);
-    if (gssfSessionPrimed) return;
-    gssfSessionPrimed = true;
-    try {
-      if (window.SCZN3M4 && typeof window.SCZN3M4.createSession === "function") {
+      const encoded = JSON.stringify(gssfProfile);
+      localStorage.setItem(pendingTargetKey, encoded);
+      sessionStorage.setItem(pendingTargetKey, encoded);
+      if (!gssfSessionPrimed && window.SCZN3M4 && typeof window.SCZN3M4.createSession === "function") {
+        gssfSessionPrimed = true;
         window.SCZN3M4.createSession(gssfSessionSnapshot);
       }
     } catch (error) {
       gssfSessionPrimed = false;
     }
   }
-  function removeMissionIdentity(record){
-    if (!record || typeof record !== "object") return record;
-    const next = { ...record };
-    [
-      "target_profile_id",
-      "targetProfileId",
-      "mission_family",
-      "missionFamily",
-      "missionFamilyId",
-      "targetId",
-      "targetName",
-      "targetFamily"
-    ].forEach(key => delete next[key]);
-    return next;
-  }
-  function clearActiveMissionIdentity(){
-    try {
-      if (!window.SCZN3M4) return;
-      const matrix = window.SCZN3M4.getActiveMatrix && window.SCZN3M4.getActiveMatrix();
-      if (matrix) {
-        window.SCZN3M4.write(window.SCZN3M4.KEYS.activeMatrix, removeMissionIdentity(matrix));
-      }
-      const activeSession = window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null);
-      if (activeSession) {
-        const nextSession = removeMissionIdentity(activeSession);
-        nextSession.matrixSnapshot = removeMissionIdentity(activeSession.matrixSnapshot || {});
-        nextSession.targetAuthority = { ...window.SCZN3M4.TARGET_AUTHORITY };
-        window.SCZN3M4.write(window.SCZN3M4.KEYS.activeSession, nextSession);
-      }
-    } catch (error) {}
-  }
+
   document.querySelectorAll("[data-target-profile-id='gssf_ac_1']").forEach(link => {
     link.addEventListener("pointerdown", createGssfActiveSession);
     link.addEventListener("click", createGssfActiveSession);
   });
-  document.querySelectorAll("[data-clear-target-profile]").forEach(link => {
-    link.addEventListener("click", () => {
-      clearPendingTargetProfile();
-      clearActiveMissionIdentity();
-    });
-  });
-
 })();
 </script>
-<script>SCZN3Analytics.renderHomePreview();</script>
 </body>
 </html>

@@ -1,0 +1,74 @@
+{
+  "id": "OET-M4-25-V1",
+  "name": "OET M4 25 Meter Zero Target",
+  "family": "One Exceptional Target",
+  "platform": "Tap-n-Score",
+  "version": "1.0",
+  "status": "prototype",
+  "doctrine": {
+    "baseTarget": "M4 25 Meter Zeroing Target",
+    "simulatedZero": "300 meters",
+    "principle": "Preserve doctrine. Inject intelligence."
+  },
+  "paper": {
+    "widthIn": 8.5,
+    "heightIn": 11,
+    "orientation": "portrait",
+    "safeMarginIn": 0.25
+  },
+  "coordinateSystem": {
+    "originName": "bullCenter",
+    "units": "inches",
+    "xPositive": "right",
+    "yPositive": "down",
+    "lockedOrientation": "top = up, right = right"
+  },
+  "grid": {
+    "spacingIn": 1.0,
+    "majorAxisLineWeight": "heavy",
+    "minorGridLineWeight": "light",
+    "horizontalLabels": [-21, -18, -15, -12, -9, -6, -3, 0, 3, 6, 9, 12, 15, 18, 21],
+    "verticalLabels": [8, 7, 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+  },
+  "bull": {
+    "centerIn": [4.25, 5.5],
+    "radiusIn": 1.0,
+    "role": "aimPoint"
+  },
+  "silhouette": {
+    "centeredOnBull": true,
+    "preserveDoctrineShape": true,
+    "role": "visualReference"
+  },
+  "qrZone": {
+    "location": "upperRight",
+    "purpose": "scanActivation",
+    "recommendedSizeIn": 1.25,
+    "quietZoneRequired": true
+  },
+  "registrationMarks": {
+    "enabled": true,
+    "locations": ["topLeft", "topRight", "bottomLeft", "bottomRight"],
+    "purpose": "photo alignment and perspective correction"
+  },
+  "analysis": {
+    "primaryMetric": "POIB",
+    "outputs": [
+      "score",
+      "POIB",
+      "windageClicks",
+      "elevationClicks",
+      "correctionDirection",
+      "sessionTutoring",
+      "compareMode"
+    ],
+    "defaultDistance": "25 meters",
+    "clickModel": "M4 doctrine zeroing"
+  },
+  "workflow": ["Shoot", "Scan", "Improve", "Save"],
+  "notes": [
+    "Physical target is the structured intelligence canvas.",
+    "SCZN3/Tap-n-Score is the interpretation and tutoring layer.",
+    "Do not redesign doctrine geometry without explicit approval."
+  ]
+}
