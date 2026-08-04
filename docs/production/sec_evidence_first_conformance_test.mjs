@@ -10,6 +10,8 @@ const styles = await readFile("styles.css", "utf8");
 const m4Styles = await readFile("m4-sec.css", "utf8");
 const universalUi = await readFile("universal-ui.css", "utf8");
 const shooterWorkspace = await readFile("shoot.html", "utf8");
+const netlifyBuild = await readFile("production/build-netlify.mjs", "utf8");
+const serverBuild = await readFile("production/build-site.mjs", "utf8");
 
 assert.match(
   sources["sec_v1.js"],
@@ -86,6 +88,8 @@ assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-s
   "--sczn3-pill-radius:999px",
 ].forEach(token => assert.ok(styles.includes(token), `universal UI standard: missing ${token}`));
 assert.match(universalUi, /Founder UI Standard — one control language across every mission and preserved SEC/, "universal button and pill standard must be declared once");
+assert.match(netlifyBuild, /"universal-ui\.css"/, "the Netlify artifact must include the governing UI standard");
+assert.match(serverBuild, /"universal-ui\.css"/, "the server artifact must include the governing UI standard");
 assert.match(universalUi, /\.records-page \.sec-v1-record-actions button,[\s\S]*?height:var\(--sczn3-control-height\)/, "Vault actions inherit the universal button footprint");
 assert.match(universalUi, /\.workflow-control-row \.button\.next-step,[\s\S]*?background:var\(--sczn3-control-active-background\)/, "active workflow actions inherit the universal gold state");
 assert.match(universalUi, /\.status-pill,[\s\S]*?\.vendor-pill,[\s\S]*?height:var\(--sczn3-pill-height\)/, "SEC pills inherit the universal pill footprint");

@@ -29,6 +29,7 @@ const publicFiles = [
   "vendor/html2canvas-1.4.1.min.js",
   "shell.js",
   "styles.css",
+  "universal-ui.css",
   "landing.css",
   "target_experiences.js",
   "shell.css",
