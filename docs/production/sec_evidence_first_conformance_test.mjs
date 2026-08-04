@@ -8,6 +8,8 @@ const sources = Object.fromEntries(await Promise.all(
 ));
 const styles = await readFile("styles.css", "utf8");
 const m4Styles = await readFile("m4-sec.css", "utf8");
+const universalUi = await readFile("universal-ui.css", "utf8");
+const shooterWorkspace = await readFile("shoot.html", "utf8");
 
 assert.match(
   sources["sec_v1.js"],
@@ -65,9 +67,39 @@ assert.match(sources["records.html"], /if \(isGssfAuthorityPackage\(pkg\)\) retu
 assert.match(sources["records.html"], /<span>Initial<\/span><strong>Confirmed Impacts<\/strong>/, "GSSF exposes the initial-target caption");
 assert.match(sources["records.html"], /<span>Analysis<\/span><strong>Shot Distribution<\/strong>/, "GSSF uses the approved scoring-analysis exception in the second evidence panel");
 assert.match(sources["records.html"], /Down Zero[\s\S]*?\+1[\s\S]*?\+3[\s\S]*?Miss \/ Other/, "GSSF analysis preserves the governed scoring buckets");
+assert.match(sources["records.html"], /function gssfEvidenceVisualForPackage\(pkg\)[\s\S]*?renderedHits\.map[\s\S]*?authorityPoint\(renderedHit\)[\s\S]*?shotNumber[\s\S]*?gssf-zone-\$\{gssfZoneTone\(hit\.zone\)\}/, "GSSF evidence markers must preserve backend coordinate, shot number, and score color alignment");
+assert.match(sources["records.html"], /Array\.isArray\(result\.shotIds\)[\s\S]*?<b>Shots:<\/b>[\s\S]*?shotIds\.join\(", "\)/, "GSSF scoring buckets must preserve authoritative shot-number lineage");
 assert.doesNotMatch(sources["records.html"], /<div class="sec-correction-call">\$\{scoreBreakdown\}<\/div>/, "GSSF must not use the oversized score hero");
+assert.doesNotMatch(sources["records.html"], /<span class="sec-save-status">Saved SEC<\/span>/, "preservation sections must not repeat the saved-state label");
+assert.doesNotMatch(sources["records.html"], /Backend shot classifications|Diagnostic validation evidence|Marker coordinate validation/, "preserved GSSF SECs must not expose developer diagnostics");
+assert.match(sources["records.html"], /class="button primary" href="records\.html\?session=/, "universal preserved SECs must use Reopen SEC as the primary action");
 assert.match(m4Styles, /\.sec-before-after figcaption\{[^}]*min-height:42px/, "universal target captions share one footprint");
 assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-stage-evidence\{min-height:620px\}/, "reference SEC evidence stages share one desktop footprint");
+
+[
+  "--sczn3-control-height:42px",
+  "--sczn3-control-radius:8px",
+  "--sczn3-control-background:#101010",
+  "--sczn3-control-border:#d9960b",
+  "--sczn3-control-active-background:#d9960b",
+  "--sczn3-pill-height:38px",
+  "--sczn3-pill-radius:999px",
+].forEach(token => assert.ok(styles.includes(token), `universal UI standard: missing ${token}`));
+assert.match(universalUi, /Founder UI Standard — one control language across every mission and preserved SEC/, "universal button and pill standard must be declared once");
+assert.match(universalUi, /\.records-page \.sec-v1-record-actions button,[\s\S]*?height:var\(--sczn3-control-height\)/, "Vault actions inherit the universal button footprint");
+assert.match(universalUi, /\.workflow-control-row \.button\.next-step,[\s\S]*?background:var\(--sczn3-control-active-background\)/, "active workflow actions inherit the universal gold state");
+assert.match(universalUi, /\.status-pill,[\s\S]*?\.vendor-pill,[\s\S]*?height:var\(--sczn3-pill-height\)/, "SEC pills inherit the universal pill footprint");
+assert.match(universalUi, /\.analytics-filter-row button,[\s\S]*?\.ops-window-row button,[\s\S]*?height:var\(--sczn3-control-height\)/, "analytics and operations filters inherit the universal button footprint");
+assert.match(universalUi, /\.proof-pill,[\s\S]*?\.ops-live-pill[\s\S]*?height:var\(--sczn3-pill-height\)/, "proof and operations status pills inherit the universal pill footprint");
+assert.match(universalUi, /\.ecosystem-family-actions \.button,[\s\S]*?\.matrix-page \.weapon-top-row \.button,[\s\S]*?height:var\(--sczn3-control-height\)/, "landing and equipment actions inherit the universal button footprint");
+assert.match(universalUi, /\.target-page \.workflow-control-row > \.button\.next-step,[\s\S]*?background:var\(--sczn3-control-active-background\)/, "the Target Workspace height exception must retain the universal active colors");
+for (const page of ["analytics.html", "backend-authority-proof.html", "buy-targets.html", "index.html", "matrix.html", "ops.html", "records.html", "sec.html", "shoot.html", "survey.html"]) {
+  assert.match(await readFile(page, "utf8"), /<link rel="stylesheet" href="universal-ui\.css\?v=founder-ui-standard-1" \/>/, `${page} must load the governing UI standard`);
+}
+for (const page of ["backend-authority-proof.html", "ops.html"]) {
+  const source = await readFile(page, "utf8");
+  assert.ok(source.lastIndexOf("universal-ui.css") > source.lastIndexOf("</style>"), `${page} must load the governing UI standard after page-local CSS`);
+}
 
 assert.match(sources["records.html"], /data-sec-export/, "preserved SECs expose Export where supported");
 assert.match(sources["records.html"], /data-sec-share/, "preserved SECs expose Share where supported");
@@ -99,6 +131,9 @@ const m4EvidenceEnd = sources["sec.html"].indexOf('data-sec-stage="measurement"'
 assert.ok(sources["sec.html"].indexOf('id="beforeEvidenceImage"') < m4EvidenceEnd);
 assert.ok(sources["sec.html"].indexOf('id="secSessionConfiguration"') > sources["sec.html"].indexOf('data-sec-stage="preservation"'));
 assert.doesNotMatch(sources["sec.html"], /Authority version|Evidence hash|Confirmation authority|backend authority/, "the preserved M4 SEC must not expose internal authority terminology");
+assert.doesNotMatch(sources["sec.html"], /Engineering Traceability/, "the shooter-facing SEC must not expose engineering terminology");
 assert.doesNotMatch(sources["sec_framework.js"], /score\.method|group\.method|Geometry validation|Mechanical validation/, "M4 result cards must use shooter-facing labels instead of internal method identifiers");
+assert.doesNotMatch(shooterWorkspace, /m4ValidationSummary|renderM4ValidationSummary|Geometry validation|Mechanical validation|Aim-point discrepancy|materiality threshold|workspaceRuntimeDiagnostic|savePersistenceDiagnostic|Temporary Save Persistence Diagnostic/i, "the shooter workspace must not contain developer diagnostics UI");
+assert.doesNotMatch(shooterWorkspace, /gssf-mode-controls|gssf-marker-validation|gssf-classification-debug|Marker coordinate validation|Backend shot classifications|Diagnostic validation evidence/, "the GSSF shooter experience must not expose developer diagnostics or validation modes");
 
 console.log("PASS universal evidence-first SEC and Ballistic Vault conformance");

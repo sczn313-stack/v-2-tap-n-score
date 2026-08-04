@@ -7,6 +7,7 @@
 <title>Target</title>
 <link rel="stylesheet" href="styles.css?v=workspace-template-v1" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=episode45-ui-polish-v1" />
+<link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -16,11 +17,6 @@ window.addEventListener("error", event => {
     line: event.lineno,
     column: event.colno
   });
-  const diagnostic = document.getElementById("workspaceRuntimeDiagnostic");
-  if (diagnostic) {
-    diagnostic.hidden = false;
-    diagnostic.textContent = `${event.message} (${event.filename}:${event.lineno}:${event.colno})`;
-  }
 });
 </script>
 <script src="navigation.js" defer></script>
@@ -89,7 +85,7 @@ window.addEventListener("error", event => {
                 </select>
               </label>
               <div class="correction-context-actions">
-                <button class="button" type="button" id="confirmCorrectionContext">Show Results</button>
+                <button class="button primary" type="button" id="confirmCorrectionContext">Show Results</button>
               </div>
             </div>
           </details>
@@ -110,12 +106,10 @@ window.addEventListener("error", event => {
             <input id="showGridCoordinates" type="checkbox" hidden />
           </div>
         </div>
-        <pre id="savePersistenceDiagnostic" hidden></pre>
       </section>
     </div>
   </section>
 </main>
-<pre id="workspaceRuntimeDiagnostic" role="alert" hidden></pre>
 <script>
   const workspaceTopOverlay = document.querySelector(".workspace-top-overlay");
   const workspaceStage = document.getElementById("workspaceStageShell");
@@ -315,7 +309,6 @@ let missionResolutionStatus = SESSION_ROUTE_MISS ? "unavailable" : (TARGET_PROFI
 let missionResolutionMessage = SESSION_ROUTE_MISS
   ? "The requested session is unavailable. Return to Weapon Setup and start the session again."
   : (TARGET_PROFILE_LAUNCH_ID ? "Loading target..." : "");
-let gssfResultDisplayMode = TARGET_QUERY.get("gssf_display_mode") === "developer" ? "developer" : "shooter";
 let gssfCanonicalValidationTransaction = null;
 const savedGssfOfficialMatchTime = session && (session.officialMatchTimeSeconds ?? session.gssfOfficialMatchTimeSeconds);
 let gssfOfficialMatchTimeSeconds = typeof savedGssfOfficialMatchTime === "number"
@@ -1866,7 +1859,6 @@ function targetIntelStackHtml() {
           <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
           <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
         </div>
-        <div class="m4-validation-summary is-hidden" id="m4ValidationSummary"></div>
         <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
       </div>
       ${zeroingSetupPanelHtml()}
@@ -3115,15 +3107,6 @@ function gssfZoneMarkerClass(zone) {
   return `gssf-zone-${gssfZoneTone(zone)}`;
 }
 
-function gssfResultLineClass(line) {
-  const label = String(line || "").split(":")[0];
-  if (/^down zero$/i.test(label)) return "gssf-result-line gssf-zone-text-down-zero";
-  if (/^\+1$/i.test(label)) return "gssf-result-line gssf-zone-text-plus-one";
-  if (/^\+3$/i.test(label)) return "gssf-result-line gssf-zone-text-plus-three";
-  if (/^miss$/i.test(label)) return "gssf-result-line gssf-zone-text-miss";
-  return "gssf-result-line";
-}
-
 function isGssfBucketLine(line) {
   const label = String(line || "").split(":")[0].trim().toLowerCase();
   return label === "down zero" || label === "+1" || label === "+3" || label === "miss";
@@ -3299,100 +3282,10 @@ function gssfBucketSummaryHtml(authorityPackage) {
   return `<div class="gssf-bucket-grid" aria-label="Competition paper target scoring buckets">${cards}</div>`;
 }
 
-function setGssfResultDisplayMode(mode) {
-  const requested = mode === "validation" || mode === "developer" ? mode : "shooter";
-  gssfResultDisplayMode = requested === "developer" && TARGET_QUERY.get("gssf_display_mode") !== "developer"
-    ? "validation"
-    : requested;
-  renderResults();
-}
-
-function bindGssfResultModeControls() {
-  document.querySelectorAll("[data-gssf-result-mode]").forEach(button => {
-    button.addEventListener("click", () => {
-      setGssfResultDisplayMode(button.dataset.gssfResultMode || "shooter");
-    });
-  });
-  const exportButton = document.getElementById("gssfCanonicalValidationExport");
-  if (exportButton && !exportButton.dataset.bound) {
-    exportButton.dataset.bound = "true";
-    exportButton.addEventListener("click", downloadGssfCanonicalValidationEvidence);
-  }
-}
-
-function gssfCanonicalValidationExportHtml() {
-  if (!GSSF_CANONICAL_EXPORT_ENABLED || !gssfCanonicalValidationTransaction) return "";
-  const exactTransactionJson = JSON.stringify(gssfCanonicalValidationTransaction, null, 2);
-  return `
-    <aside aria-label="Diagnostic validation evidence">
-      <strong>Diagnostic validation evidence</strong>
-      <p>Recorded xPx/yPx values are ordered observations on the registered asset, not scoring coordinates. The Registration Package transforms them into governed Geometry Profile coordinates before classification.</p>
-      <textarea id="gssfCanonicalValidationPayload" hidden readonly>${escapeHtml(exactTransactionJson)}</textarea>
-      <button id="gssfCanonicalValidationExport" type="button">Download exact governed transaction</button>
-    </aside>
-  `;
-}
-
-function downloadGssfCanonicalValidationEvidence() {
-  if (!GSSF_CANONICAL_EXPORT_ENABLED || !gssfCanonicalValidationTransaction) return;
-  const blob = new Blob([JSON.stringify(gssfCanonicalValidationTransaction, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "gssf-canonical-session-validation.json";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function gssfModeControlsHtml(currentMode) {
-  const developerButton = TARGET_QUERY.get("gssf_display_mode") === "developer"
-    ? `<button class="gssf-mode-button${currentMode === "developer" ? " is-active" : ""}" type="button" data-gssf-result-mode="developer">Developer</button>`
-    : "";
-  if (currentMode === "shooter") {
-    return `
-      <div class="gssf-mode-controls is-quiet" aria-label="GSSF result display mode">
-        <button class="gssf-mode-button" type="button" data-gssf-result-mode="validation">Validation</button>
-      </div>
-    `;
-  }
-  return `
-    <div class="gssf-mode-controls" aria-label="GSSF result display mode">
-      <button class="gssf-mode-button${currentMode === "shooter" ? " is-active" : ""}" type="button" data-gssf-result-mode="shooter">Shooter</button>
-      <button class="gssf-mode-button${currentMode === "validation" ? " is-active" : ""}" type="button" data-gssf-result-mode="validation">Validation</button>
-      ${developerButton}
-    </div>
-  `;
-}
-
 function gssfShooterModeHtml(authorityPackage, lines) {
   return `
     ${gssfOfficialFinalScoreHtml(authorityPackage)}
     ${gssfBucketSummaryHtml(authorityPackage)}
-  `;
-}
-
-function gssfValidationModeHtml(authorityPackage, lines) {
-  const contextLines = gssfContextResultLines(lines);
-  return `
-    <div class="gssf-mode-heading">Validation Mode</div>
-    ${contextLines.map(line => `<div class="${gssfResultLineClass(line)}">${escapeHtml(line)}</div>`).join("")}
-    ${gssfBucketSummaryHtml(authorityPackage)}
-    ${gssfZoneLegendHtml()}
-    ${gssfScoringSourceHtml(authorityPackage)}
-    ${gssfShotClassificationsHtml(authorityPackage)}
-    ${gssfMarkerValidationShellHtml(authorityPackage)}
-  `;
-}
-
-function gssfDeveloperModeHtml(authorityPackage, lines) {
-  return `
-    ${gssfValidationModeHtml(authorityPackage, lines)}
-    <details class="gssf-developer-debug">
-      <summary>Developer payload</summary>
-      <pre>${escapeHtml(JSON.stringify(authorityPackage, null, 2))}</pre>
-    </details>
   `;
 }
 
@@ -3478,7 +3371,6 @@ function renderMarkers() {
   layer.innerHTML = (authorityPackage ? renderBackendAuthorityMarkers(authorityPackage) : renderPendingInputMarkers()) + renderCorrectionOverlay(correction);
   syncArrowLayerToMarkerLayer();
   auditBackendMarkerAlignment(authorityPackage);
-  renderGssfMarkerValidation(authorityPackage);
   renderResults();
 }
 
@@ -3580,28 +3472,6 @@ function scoreClass(score) {
   if (score >= 80) return "score-yellow";
   if (score >= 70) return "score-orange";
   return "score-red";
-}
-
-function renderM4ValidationSummary(authorityPackage) {
-  const summary = document.getElementById("m4ValidationSummary");
-  if (!summary) return;
-  const isM4 = isM4AuthoritySession() && !!authorityPackage;
-  summary.classList.toggle("is-hidden", !isM4);
-  if (!isM4) {
-    summary.innerHTML = "";
-    return;
-  }
-  const geometry = authorityPackage.geometryValidation || {};
-  const mechanical = authorityPackage.mechanicalValidation || {};
-  const discrepancy = authorityPackage.aimPointDiscrepancy || {};
-  const discrepancyText = Number.isFinite(Number(discrepancy.magnitudeInches))
-    ? `${Number(discrepancy.magnitudeInches).toFixed(2)}" measured`
-    : "Unavailable";
-  summary.innerHTML = `
-    <div><span>Geometry validation</span><strong>${escapeHtml(geometry.status || "Unavailable")}</strong></div>
-    <div><span>Mechanical validation</span><strong>${escapeHtml(mechanical.status === "calculated" ? "Calculated" : "Unavailable — sight authority unproven")}</strong></div>
-    <div><span>Aim-point discrepancy</span><strong>${escapeHtml(discrepancyText)}</strong><small>No approved materiality threshold</small></div>
-  `;
 }
 
 function renderDotTortureTrainingResults(authorityPackage) {
@@ -3711,151 +3581,6 @@ function renderDotTortureTrainingResults(authorityPackage) {
   }
 }
 
-function gssfScoringSourceHtml(authorityPackage) {
-  const source = String(authorityPackage.resultSource || authorityPackage.scoringSource || authorityPackage.authorityTrace?.source || "backend");
-  const packageId = authorityPackage.authorityPackageId || authorityPackage.authorityTrace?.authorityPackageId || authorityPackage.evidenceHash || "";
-  return `
-    <div class="gssf-source-validation" aria-label="GSSF scoring source validation">
-      <strong>Scoring source: ${escapeHtml(source === "backend" ? "Backend" : source)}</strong>
-      ${packageId ? `<span>Authority package: ${escapeHtml(packageId)}</span>` : ""}
-    </div>
-  `;
-}
-
-function gssfZoneLegendHtml() {
-  return `
-    <div class="gssf-zone-legend" aria-label="GSSF marker color legend">
-      <span><i class="gssf-zone-dot gssf-zone-down-zero"></i>Green = Down Zero</span>
-      <span><i class="gssf-zone-dot gssf-zone-plus-one"></i>Yellow = +1</span>
-      <span><i class="gssf-zone-dot gssf-zone-plus-three"></i>Orange = +3</span>
-      <span><i class="gssf-zone-dot gssf-zone-miss"></i>Red = Miss / Other</span>
-    </div>
-  `;
-}
-
-function gssfMarkerValidationShellHtml(authorityPackage) {
-  if (!isGssfAuthorityPackage(authorityPackage)) return "";
-  return `
-    <details class="gssf-marker-validation" open>
-      <summary>Marker coordinate validation</summary>
-      <div id="gssfMarkerValidationRows" class="gssf-marker-validation-body">
-        Awaiting rendered marker audit.
-      </div>
-    </details>
-  `;
-}
-
-function formatValidationPercent(value) {
-  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)}%` : "--";
-}
-
-function formatValidationDelta(value) {
-  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)}%` : "--";
-}
-
-function renderGssfMarkerValidation(authorityPackage) {
-  const container = document.getElementById("gssfMarkerValidationRows");
-  if (!container || !isGssfAuthorityPackage(authorityPackage)) return;
-  requestAnimationFrame(() => {
-    const layer = document.getElementById("markerLayer");
-    if (!layer) {
-      container.innerHTML = `<div class="gssf-marker-validation-summary is-fail">FAIL: marker layer unavailable.</div>`;
-      return;
-    }
-    const layerRect = layer.getBoundingClientRect();
-    const classifications = backendHitClassifications(authorityPackage);
-    const backendHits = backendRenderedHitCoordinates(authorityPackage);
-    const markers = Array.from(layer.querySelectorAll(".impact-marker"));
-    const source = authorityPackage.renderCoordinates && Array.isArray(authorityPackage.renderCoordinates.hits) && authorityPackage.renderCoordinates.hits.length
-      ? "renderCoordinates.hits"
-      : "renderCoordinates.impacts";
-    const rowCount = Math.max(classifications.length, backendHits.length);
-    if (!rowCount) {
-      container.innerHTML = `<div class="gssf-marker-validation-summary is-fail">FAIL: backend returned no hit render coordinates.</div>`;
-      return;
-    }
-    const rows = Array.from({ length: rowCount }, (_, index) => {
-      const hit = classifications[index] || {};
-      const marker = markers[index];
-      const backendPoint = backendHitCoordinateForValidation(authorityPackage, hit, index);
-      const renderedPoint = marker ? renderedPercentFromRect(marker.getBoundingClientRect(), layerRect) : null;
-      const backendShotId = backendShotIdForHit(authorityPackage, hit, index);
-      const backendShot = backendShotId === null ? "" : String(backendShotId);
-      const markerShot = marker ? String((marker.textContent || "").trim()) : "";
-      const backendZone = String(hit.zone || "unclassified");
-      const renderedZone = marker ? String(marker.getAttribute("data-backend-zone") || "unclassified") : "missing";
-      const xDelta = renderedPoint && backendPoint ? Number((renderedPoint.xPercent - backendPoint.xPercent).toFixed(2)) : NaN;
-      const yDelta = renderedPoint && backendPoint ? Number((renderedPoint.yPercent - backendPoint.yPercent).toFixed(2)) : NaN;
-      const coordinatePass = Number.isFinite(xDelta) && Number.isFinite(yDelta) && Math.abs(xDelta) <= 0.25 && Math.abs(yDelta) <= 0.25;
-      const orderPass = markerShot === backendShot;
-      const classificationPass = renderedZone === backendZone;
-      const pass = !!marker && !!backendPoint && coordinatePass && orderPass && classificationPass;
-      return {
-        pass,
-        html: `
-          <li class="${pass ? "is-pass" : "is-fail"}">
-            <strong>Shot ${escapeHtml(backendShot)}: ${pass ? "PASS" : "FAIL"}</strong>
-            <span>Backend x/y: ${formatValidationPercent(backendPoint && backendPoint.xPercent)} / ${formatValidationPercent(backendPoint && backendPoint.yPercent)}</span>
-            <span>Marker x/y: ${formatValidationPercent(renderedPoint && renderedPoint.xPercent)} / ${formatValidationPercent(renderedPoint && renderedPoint.yPercent)}</span>
-            <span>Backend classification: ${escapeHtml(backendZone)}</span>
-            <span>Rendered classification: ${escapeHtml(renderedZone)}</span>
-            <span>Delta: ${formatValidationDelta(xDelta)} / ${formatValidationDelta(yDelta)}</span>
-            <span>Order: marker ${escapeHtml(markerShot || "missing")} vs backend ${escapeHtml(backendShot)}</span>
-          </li>
-        `
-      };
-    });
-    const countPass = markers.length === backendHits.length;
-    const overallPass = countPass && rows.every(row => row.pass);
-    container.innerHTML = `
-      <div class="gssf-marker-validation-summary ${overallPass ? "is-pass" : "is-fail"}">
-        ${overallPass ? "PASS" : "FAIL"}: backend evidence rendered within 0.25%.
-      </div>
-      <div class="gssf-marker-validation-meta">
-        <span>Source: backend ${escapeHtml(source)}</span>
-        <span>Markers: ${escapeHtml(markers.length)} / Backend shots: ${escapeHtml(backendHits.length)}</span>
-        <span>Frontend tap coordinates are not used after backend authority returns.</span>
-      </div>
-      <ol>${rows.map(row => row.html).join("")}</ol>
-    `;
-  });
-}
-
-function gssfShotClassificationsHtml(authorityPackage) {
-  const classifications = Array.isArray(authorityPackage.hitClassifications)
-    ? authorityPackage.hitClassifications
-    : [];
-  if (!classifications.length) {
-    return `
-      <details class="gssf-classification-debug">
-        <summary>Backend shot classifications</summary>
-        <p>No shot classifications returned yet.</p>
-      </details>
-    `;
-  }
-  const rows = classifications.map(hit => {
-    const coordinate = hit.coordinate || {};
-    const x = Number.isFinite(Number(coordinate.xPercent)) ? `${Number(coordinate.xPercent).toFixed(2)}%` : "--";
-    const y = Number.isFinite(Number(coordinate.yPercent)) ? `${Number(coordinate.yPercent).toFixed(2)}%` : "--";
-    const penalty = Number.isFinite(Number(hit.penaltySeconds)) ? `+${hit.penaltySeconds} sec` : "--";
-    const zoneClass = `gssf-zone-card-${gssfZoneTone(hit.zone)}`;
-    return `
-      <li class="${zoneClass}">
-        <strong>Shot ${escapeHtml(hit.shot || "")}</strong>
-        <span>${escapeHtml(hit.zone || "unclassified")}</span>
-        <em>${escapeHtml(penalty)}</em>
-        <small>${escapeHtml(x)} / ${escapeHtml(y)}</small>
-      </li>
-    `;
-  }).join("");
-  return `
-    <details class="gssf-classification-debug">
-      <summary>Backend shot classifications</summary>
-      <ol>${rows}</ol>
-    </details>
-  `;
-}
-
 function renderResults() {
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
     renderMissionResolutionState();
@@ -3885,22 +3610,8 @@ function renderResults() {
       ? backendAuthorityPackage.display.resultLines
       : [];
     if (resultBlock) {
-      const mode = gssfResultDisplayMode === "developer" && TARGET_QUERY.get("gssf_display_mode") !== "developer"
-        ? "validation"
-        : gssfResultDisplayMode;
-      const modeHtml = mode === "developer"
-        ? gssfDeveloperModeHtml(backendAuthorityPackage, lines)
-        : (mode === "validation"
-          ? gssfValidationModeHtml(backendAuthorityPackage, lines)
-          : gssfShooterModeHtml(backendAuthorityPackage, lines));
-      resultBlock.innerHTML = `
-        ${modeHtml}
-        ${gssfModeControlsHtml(mode)}
-        ${gssfCanonicalValidationExportHtml()}
-      `;
-      bindGssfResultModeControls();
+      resultBlock.innerHTML = gssfShooterModeHtml(backendAuthorityPackage, lines);
       bindGssfOfficialTimeInput(backendAuthorityPackage);
-      renderGssfMarkerValidation(backendAuthorityPackage);
     }
     const message = document.getElementById("authorityStatusMessage");
     if (message) {
@@ -3913,7 +3624,6 @@ function renderResults() {
   }
   const scoreCell = document.getElementById("scoreCell");
   if (!scoreCell) return;
-  renderM4ValidationSummary(backendAuthorityPackage);
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
   const hitsParts = [SIMULATION_MODE
@@ -4442,52 +4152,6 @@ function setSaveSessionStatus(message = "", state = "") {
   status.classList.toggle("is-visible", !!message);
 }
 
-function setSavePersistenceDiagnostic(record = null) {
-  const output = document.getElementById("savePersistenceDiagnostic");
-  if (!output) return;
-  if (!record || record.ok !== false) {
-    output.hidden = true;
-    output.textContent = "";
-    return;
-  }
-  const lines = [
-    "Temporary Save Persistence Diagnostic",
-    `Key: ${record.key || "Unavailable"}`,
-    `Exception: ${record.exceptionName || "Unavailable"}`,
-    `Message: ${record.exceptionMessage || "Unavailable"}`,
-    `Attempted payload: ${record.attemptedPayloadBytes ?? "Unavailable"} bytes`,
-    `Approximate localStorage usage: ${record.approximateLocalStorageUsageBytes ?? "Unavailable"} bytes`
-  ];
-  const composition = record.payloadComposition;
-  if (composition) {
-    lines.push("", "Payload Composition by Category");
-    composition.categoryBytes.forEach(entry => {
-      lines.push(`- ${entry.category}: ${entry.bytes} bytes`);
-    });
-    lines.push("", "Largest Top-Level Fields");
-    composition.topLevelFields.forEach(entry => {
-      lines.push(`- ${entry.path}: ${entry.bytes} bytes [${entry.category}]`);
-    });
-    lines.push("", "Largest Nested Fields");
-    composition.largestNestedFields.forEach(entry => {
-      lines.push(`- ${entry.path}: ${entry.bytes} bytes (${entry.type})`);
-    });
-    lines.push("", "Embedded Asset Content");
-    if (!composition.embeddedAssetContent.length) lines.push("- none detected");
-    composition.embeddedAssetContent.forEach(entry => {
-      lines.push(`- ${entry.path}: ${entry.bytes} bytes (${entry.type})`);
-    });
-    lines.push("", "Duplicated Large Values");
-    if (!composition.duplicatedLargeValues.length) lines.push("- none detected");
-    composition.duplicatedLargeValues.forEach(entry => {
-      lines.push(`- ${entry.bytesEach} bytes × ${entry.count}; duplicated bytes: ${entry.duplicatedBytes}`);
-      lines.push(`  paths: ${entry.paths.join(", ")}`);
-    });
-  }
-  output.textContent = lines.join("\n");
-  output.hidden = false;
-}
-
 document.getElementById("saveMarks").addEventListener("click", () => {
   const saveButton = document.getElementById("saveMarks");
   if (!session) {
@@ -4515,7 +4179,6 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     renderMarkStatus();
     return;
   }
-  setSavePersistenceDiagnostic(null);
   setSaveSessionStatus("Saving session…", "saving");
   saveButton.disabled = true;
   saveButton.textContent = "Saving…";
@@ -4773,7 +4436,6 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     saveButton.disabled = false;
     saveButton.textContent = "Save Session";
     setSaveSessionStatus("Save failed. Your marks remain on this screen; try again.", "error");
-    setSavePersistenceDiagnostic(window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTIC__ || null);
     return;
   }
   if (!saved || !saved.savedIdentifier || !saved.authorityPackage) {

@@ -15,6 +15,19 @@
   --white:#ffffff;
   --radius:6px;
   --shadow:0 16px 36px rgba(33,25,10,.18);
+  --sczn3-control-height:42px;
+  --sczn3-control-radius:8px;
+  --sczn3-control-padding-inline:14px;
+  --sczn3-control-font-size:12px;
+  --sczn3-control-background:#101010;
+  --sczn3-control-border:#d9960b;
+  --sczn3-control-text:#ffffff;
+  --sczn3-control-active-background:#d9960b;
+  --sczn3-control-active-text:#0c0c0c;
+  --sczn3-pill-height:38px;
+  --sczn3-pill-radius:999px;
+  --sczn3-pill-padding-inline:10px;
+  --sczn3-pill-font-size:11px;
 }
 
 /* Workspace Template v1.0 — stable target reference implementation */
@@ -385,8 +398,7 @@
   font-weight:900;
 }
 
-.target-page .save-session-status,
-.target-page #savePersistenceDiagnostic{
+.target-page .save-session-status{
   position:fixed;
   z-index:100;
   right:10px;
@@ -2669,26 +2681,6 @@ button:active,
 .bull-marker::after{
   width:2px;
   height:12px;
-}
-
-.m4-validation-summary{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-  padding:10px;
-  border:1px solid rgba(231,164,0,.55);
-  border-radius:10px;
-  background:rgba(255,255,255,.04);
-}
-
-.m4-validation-summary > div{
-  display:grid;
-  gap:2px;
-}
-
-.m4-validation-summary span,
-.m4-validation-summary small{
-  color:#c6b98f;
 }
 
 .impact-marker{
@@ -8329,17 +8321,6 @@ body.navigation-leave-dialog-open{
   box-shadow:0 16px 36px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05);
 }
 
-.target-page .gssf-result-line{
-  padding:2px 0;
-}
-
-.target-page .gssf-mode-heading{
-  color:#f5f1e8;
-  font-size:16px;
-  font-weight:900;
-  letter-spacing:0;
-}
-
 .target-page .gssf-final-score-panel{
   display:grid;
   gap:8px;
@@ -8441,62 +8422,6 @@ body.navigation-leave-dialog-open{
   padding-top:8px;
   border-top:1px solid rgba(217,150,11,.24);
   color:#f5f1e8;
-}
-
-.target-page .gssf-mode-controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-top:2px;
-  padding-top:10px;
-  border-top:1px solid rgba(255,255,255,.1);
-}
-
-.target-page .gssf-mode-controls.is-quiet{
-  justify-content:flex-end;
-  margin-top:-4px;
-  padding-top:0;
-  border-top:0;
-}
-
-.target-page .gssf-mode-button{
-  min-height:28px;
-  padding:5px 9px;
-  border:1px solid rgba(217,150,11,.32);
-  border-radius:7px;
-  background:rgba(0,0,0,.24);
-  color:rgba(245,241,232,.68);
-  font-size:10px;
-  font-weight:900;
-  text-transform:uppercase;
-}
-
-.target-page .gssf-mode-button.is-active{
-  background:#d9960b;
-  color:#111;
-}
-
-.target-page .gssf-developer-debug{
-  margin-top:8px;
-  color:rgba(245,241,232,.78);
-  font-size:11px;
-}
-
-.target-page .gssf-developer-debug summary{
-  cursor:pointer;
-  color:#d9960b;
-}
-
-.target-page .gssf-developer-debug pre{
-  max-height:240px;
-  overflow:auto;
-  padding:8px;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:7px;
-  background:rgba(0,0,0,.35);
-  color:rgba(245,241,232,.82);
-  font-size:10px;
-  white-space:pre-wrap;
 }
 
 .target-page .gssf-zone-text-down-zero{
@@ -8633,164 +8558,6 @@ body.navigation-leave-dialog-open{
 
 .target-page .gssf-zone-dot.gssf-zone-miss{
   background:#e32929;
-}
-
-.target-page .gssf-source-validation{
-  display:grid;
-  gap:3px;
-  margin-top:6px;
-  padding-top:8px;
-  border-top:1px solid rgba(217,150,11,.35);
-}
-
-.target-page .gssf-source-validation strong{
-  color:#d9960b;
-}
-
-.target-page .gssf-source-validation span{
-  color:rgba(245,241,232,.72);
-  font-size:12px;
-  overflow-wrap:anywhere;
-}
-
-.target-page .gssf-classification-debug{
-  margin-top:6px;
-  color:rgba(245,241,232,.86);
-  font-size:12px;
-  font-weight:700;
-}
-
-.target-page .gssf-classification-debug summary{
-  cursor:pointer;
-  color:#d9960b;
-}
-
-.target-page .gssf-classification-debug ol{
-  display:grid;
-  gap:6px;
-  margin:8px 0 0;
-  padding:0;
-  list-style:none;
-}
-
-.target-page .gssf-classification-debug li{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:2px 8px;
-  padding:7px 8px;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:7px;
-  background:rgba(0,0,0,.18);
-}
-
-.target-page .gssf-classification-debug li.gssf-zone-card-down-zero{
-  border-color:rgba(34,179,90,.42);
-}
-
-.target-page .gssf-classification-debug li.gssf-zone-card-plus-one{
-  border-color:rgba(255,228,92,.46);
-}
-
-.target-page .gssf-classification-debug li.gssf-zone-card-plus-three{
-  border-color:rgba(255,122,0,.48);
-}
-
-.target-page .gssf-classification-debug li.gssf-zone-card-miss,
-.target-page .gssf-classification-debug li.gssf-zone-card-other{
-  border-color:rgba(227,41,41,.48);
-}
-
-.target-page .gssf-classification-debug li span,
-.target-page .gssf-classification-debug li small{
-  color:rgba(245,241,232,.72);
-}
-
-.target-page .gssf-classification-debug li em{
-  color:#f5f1e8;
-  font-style:normal;
-}
-
-.target-page .gssf-marker-validation{
-  margin-top:8px;
-  color:rgba(245,241,232,.88);
-  font-size:11px;
-  font-weight:700;
-}
-
-.target-page .gssf-marker-validation summary{
-  cursor:pointer;
-  color:#d9960b;
-}
-
-.target-page .gssf-marker-validation-body{
-  display:grid;
-  gap:8px;
-  margin-top:8px;
-}
-
-.target-page .gssf-marker-validation-summary{
-  padding:7px 8px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:7px;
-  background:rgba(0,0,0,.18);
-}
-
-.target-page .gssf-marker-validation-summary.is-pass{
-  border-color:rgba(66,191,106,.55);
-  color:#8cf0a7;
-}
-
-.target-page .gssf-marker-validation-summary.is-fail{
-  border-color:rgba(255,87,87,.65);
-  color:#ff9a9a;
-}
-
-.target-page .gssf-marker-validation-meta{
-  display:grid;
-  gap:3px;
-  color:rgba(245,241,232,.68);
-}
-
-.target-page .gssf-marker-validation ol{
-  display:grid;
-  gap:6px;
-  margin:0;
-  padding:0;
-  list-style:none;
-}
-
-.target-page .gssf-marker-validation li{
-  display:grid;
-  gap:3px;
-  padding:7px 8px;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:7px;
-  background:rgba(0,0,0,.16);
-}
-
-.target-page .gssf-marker-validation li.is-pass{
-  border-color:rgba(66,191,106,.42);
-}
-
-.target-page .gssf-marker-validation li.is-fail{
-  border-color:rgba(255,87,87,.52);
-}
-
-.target-page .gssf-marker-validation li strong{
-  color:#f5f1e8;
-}
-
-.target-page .gssf-marker-validation li.is-pass strong{
-  color:#8cf0a7;
-}
-
-.target-page .gssf-marker-validation li.is-fail strong{
-  color:#ff9a9a;
-}
-
-.target-page .gssf-marker-validation li span{
-  color:rgba(245,241,232,.7);
-  overflow-wrap:anywhere;
 }
 
 .target-page .training-results-panel{
@@ -12076,7 +11843,6 @@ body.navigation-leave-dialog-open{
 
 .target-page .evidence-workspace{ order:1; }
 .target-page .save-session-status,
-.target-page #savePersistenceDiagnostic{ order:2; }
 .target-page .workflow-control-row{ order:3; }
 
 @media (max-width:560px){

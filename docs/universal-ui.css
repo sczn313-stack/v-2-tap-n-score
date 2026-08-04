@@ -1,0 +1,178 @@
+/* Founder UI Standard — one control language across every mission and preserved SEC. */
+.button,
+.platform-page .button,
+.records-page .button,
+.sec-shell .button,
+.trace-button,
+.guidance-calc-button,
+.unit-button,
+.home-survey-button,
+.ecosystem-family-actions .button,
+.ecosystem-survey-page .button,
+.analytics-filter-row button,
+.ops-window-row button,
+.matrix-page .weapon-top-row .button,
+.matrix-page .setup-save-row .button,
+.target-page .correction-context-panel .button,
+.target-page .gssf-mode-button,
+#gssfCanonicalValidationExport,
+.records-page .sec-v1-record-actions button,
+.records-page .sec-v1-record-actions .sec-action-link{
+  box-sizing:border-box;
+  height:var(--sczn3-control-height);
+  min-height:var(--sczn3-control-height);
+  padding:0 var(--sczn3-control-padding-inline);
+  border:2px solid var(--sczn3-control-border);
+  border-radius:var(--sczn3-control-radius);
+  background:var(--sczn3-control-background);
+  color:var(--sczn3-control-text);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-control-font-size);
+  font-weight:900;
+  line-height:1.1;
+  letter-spacing:0;
+  text-align:center;
+  text-transform:uppercase;
+  box-shadow:none;
+}
+
+.button.primary,
+.platform-page .button.primary,
+.ecosystem-family-actions .button.primary,
+.ecosystem-survey-page .button.primary,
+.button.is-active,
+.button[aria-pressed="true"],
+.unit-button.is-active,
+.analytics-filter-row button[aria-pressed="true"],
+.ops-window-row button[aria-pressed="true"],
+.target-page .gssf-mode-button.is-active,
+.workflow-control-row .button.next-step,
+.neon-file-button.next-step,
+.sec-story-command-bar #saveSEC,
+.sec-preserved-history-row #viewHistory.is-next-action{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-active-background);
+  color:var(--sczn3-control-active-text);
+  box-shadow:none;
+}
+
+.sec-story-command-bar #saveSEC.is-preserved,
+.sec-story-command-bar #saveSEC.is-preserved[disabled]{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-background);
+  color:var(--sczn3-control-text);
+  box-shadow:none;
+}
+
+.status-pill,
+.profile-chip-row span,
+.category-pill,
+.target-mode-pill,
+.vendor-pill,
+.records-page .vendor-pill,
+.sec-source-row span,
+.sec-save-status,
+.records-page .sec-save-status,
+.sec-authority-missing{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-width:0;
+  height:var(--sczn3-pill-height);
+  min-height:var(--sczn3-pill-height);
+  padding:0 var(--sczn3-pill-padding-inline);
+  border-radius:var(--sczn3-pill-radius);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-pill-font-size);
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.proof-pill,
+.ops-live-pill{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-width:0;
+  height:var(--sczn3-pill-height);
+  min-height:var(--sczn3-pill-height);
+  padding:0 var(--sczn3-pill-padding-inline);
+  border-radius:var(--sczn3-pill-radius);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-pill-font-size);
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.category-pill.is-active,
+.status-pill.is-active{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-active-background);
+  color:var(--sczn3-control-active-text);
+}
+
+/* The SEC intelligence rail is one compound pill; its internal result fields are not controls. */
+.sec-intel-pill,
+.records-page .sec-intel-pill{
+  min-height:var(--sczn3-pill-height);
+  border-radius:var(--sczn3-pill-radius);
+  font-size:var(--sczn3-pill-font-size);
+}
+
+/* Stay-on-screen target controls retain their constrained height as a functional exception. */
+.target-page .workflow-control-row > .button,
+.target-page .workflow-control-row > .neon-file-button{
+  height:100%;
+  min-height:0;
+  padding:3px;
+  border-radius:var(--sczn3-control-radius);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-control-font-size);
+  font-weight:900;
+  line-height:1.1;
+}
+
+.target-page .workflow-control-row > .button.next-step,
+.target-page .workflow-control-row > .neon-file-button.next-step,
+.target-page .workflow-control-row #chooseTargetButton.next-step,
+.target-page .workflow-control-row .button.next-step:not([disabled]){
+  border-color:var(--sczn3-control-border)!important;
+  background:var(--sczn3-control-active-background)!important;
+  color:var(--sczn3-control-active-text)!important;
+  font-size:var(--sczn3-control-font-size)!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
+
+.target-page .workflow-control-row > .button:not(.next-step){
+  border-color:var(--sczn3-control-border)!important;
+  background:var(--sczn3-control-background)!important;
+  color:var(--sczn3-control-text)!important;
+  font-size:var(--sczn3-control-font-size)!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
+
+.target-page .correction-context-actions #confirmCorrectionContext{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-active-background);
+  color:var(--sczn3-control-active-text);
+  font-size:var(--sczn3-control-font-size);
+}
+
+.target-page .gssf-mode-button{
+  height:28px;
+  min-height:28px;
+  padding:0 9px;
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-background);
+  color:var(--sczn3-control-text);
+}
