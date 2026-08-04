@@ -137,14 +137,14 @@
     const poib = authorityPackage.poib || {};
     const discrepancy = authorityPackage.aimPointDiscrepancy || {};
     return [
-      metric("Score", score.value === null || score.value === undefined ? "Unavailable" : score.value, score.method),
-      metric("Group", group.display || "Unavailable", group.method),
+      metric("Score", score.value === null || score.value === undefined ? "Unavailable" : score.value, "group placement"),
+      metric("Group", group.display || "Unavailable", "confirmed impact spread"),
       metric("POIB X", Number.isFinite(Number(poib.xPercent)) ? `${Number(poib.xPercent).toFixed(2)}%` : "Unavailable", "confirmed impacts"),
       metric("POIB Y", Number.isFinite(Number(poib.yPercent)) ? `${Number(poib.yPercent).toFixed(2)}%` : "Unavailable", "confirmed impacts"),
       metric(
         "Aim vs Bull",
         Number.isFinite(Number(discrepancy.magnitudeInches)) ? `${Number(discrepancy.magnitudeInches).toFixed(2)}"` : "Unavailable",
-        "measured only · no approved threshold"
+        "recorded offset"
       )
     ].join("");
   }
@@ -157,8 +157,8 @@
     const instruction = mechanical.status === "calculated" && integrity.status === "reconciled"
       ? `<strong>${escapeHtml(correction.elevation)}</strong><strong>${escapeHtml(correction.windage)}</strong>`
       : integrity.status === "mismatch"
-        ? "<strong>Calculation integrity unavailable</strong>"
-        : "<strong>Mechanical instructions unavailable</strong>";
+        ? "<strong>Correction unavailable</strong>"
+        : "<strong>Sight adjustment unavailable</strong>";
     return {
       call: `${instruction}
         <span>Confirmed aim point minus POIB correction vector</span>`,
@@ -169,7 +169,7 @@
           return metric(
             axisLabel,
             `${Number(angular[`${axis}MOA`] || 0).toFixed(2)} MOA`,
-            `${Number(angular[`${axis}MRAD`] || 0).toFixed(2)} MRAD · calculation integrity unavailable`
+            `${Number(angular[`${axis}MRAD`] || 0).toFixed(2)} MRAD · click recommendation unavailable`
           );
         }
         return metric(
@@ -187,8 +187,8 @@
     const mechanical = authorityPackage.mechanicalValidation || {};
     const integrity = verifyCalculationChain(authorityPackage);
     if (mechanical.status !== "calculated" || integrity.status !== "reconciled") {
-      return `<div><span>Geometry validation</span><strong>${escapeHtml((authorityPackage.geometryValidation || {}).status || "Unavailable")}</strong></div>
-        <div><span>Mechanical validation</span><strong>${integrity.status === "mismatch" ? "Unavailable — calculation chain mismatch" : "Unavailable — sight authority unproven"}</strong></div>`;
+      return `<div><span>Target measurement</span><strong>${escapeHtml((authorityPackage.geometryValidation || {}).status === "calculated" ? "Complete" : "Unavailable")}</strong></div>
+        <div><span>Sight adjustment</span><strong>${integrity.status === "mismatch" ? "Unavailable — result could not be verified" : "Unavailable for this sight setup"}</strong></div>`;
     }
     return `<div><span>Adjustment system</span><strong>${escapeHtml(adjustment.label || "Unavailable")}</strong></div>
       <div><span>Elevation</span><strong>Apply ${escapeHtml(correction.elevation || "Unavailable")}${authorityPackage.clicks.elevationTurnDirection ? ` · turn ${escapeHtml(authorityPackage.clicks.elevationTurnDirection)}` : ""}</strong></div>
@@ -212,8 +212,8 @@
       || confirmationIntegrity.status === "mismatch"
     ) {
       return {
-        outcome: "CALCULATION INTEGRITY FAILED",
-        detail: "The displayed angular correction, sight constant, rounding, and click recommendation do not reconcile.",
+        outcome: "RESULT UNAVAILABLE",
+        detail: "The correction could not be verified. Return to the target and try Show Results again.",
         confirmed: false,
         hash: ""
       };

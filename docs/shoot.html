@@ -138,7 +138,7 @@ window.addEventListener("error", event => {
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
-<script src="m4_runtime.js?v=20260728-m4-sight-authority"></script>
+<script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
 const TARGET_QUERY = new URLSearchParams(window.location.search);
@@ -219,7 +219,7 @@ const PRODUCTION_AUTHORITY_ENDPOINT = AUTHORITY_ENDPOINT_META && AUTHORITY_ENDPO
   : "https://sczn3-authority.onrender.com/api/authority/ugeo";
 const LOCAL_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
 const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
-const FOUNDER_WORKSPACE_TEST_MODE = IS_LOCAL_FRONTEND && TARGET_QUERY.get("founder_review") !== "0";
+const FOUNDER_WORKSPACE_TEST_MODE = IS_LOCAL_FRONTEND && TARGET_QUERY.get("founder_review") === "1";
 const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
 const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
 const TARGET_PROFILE_LAUNCH_ID = TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || "";
@@ -4415,13 +4415,17 @@ document.getElementById("showResults").addEventListener("click", async () => {
         !correctionContextPending && authorityPackage.validation.confirmed ? "saved" : ""
       );
     }
+    if (isGssfAuthorityPackage(authorityPackage)) {
+      renderMarkStatus();
+      document.getElementById("saveMarks").click();
+    }
   } catch (error) {
     console.warn("Backend authority request failed", error);
     currentClicks = null;
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = "Scoring service unavailable. Please try again.";
+    authorityStatusMessage = "We couldn't score this target right now. Your impacts are still here. Tap Show Results to try again.";
     renderResults();
   } finally {
     authorityRequestInFlight = false;

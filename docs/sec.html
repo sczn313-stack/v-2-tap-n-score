@@ -146,7 +146,7 @@
         <section class="sec-validation-section">
           <div class="sec-validation-section-heading">
             <span>Recommendation</span>
-            <strong>Engineering Details</strong>
+            <strong>Correction Details</strong>
             <small>Confirmed aim point minus POIB</small>
           </div>
           <div class="sec-correction-call" id="recommendationCall"></div>
@@ -158,7 +158,7 @@
         <section class="sec-validation-section">
           <div class="sec-validation-section-heading">
             <span>Validation Calculation</span>
-            <strong>Confirmation authority</strong>
+            <strong>Confirmation Result</strong>
           </div>
           <div class="sec-validation-calculation" id="validationCalculation"></div>
           <div class="sec-authority-trace" id="authorityTrace"></div>
@@ -176,7 +176,7 @@
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="sec_framework.js?v=founder-validation-refactor-0730"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
-<script src="m4_runtime.js?v=sec-preservation-flow-0730"></script>
+<script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
 <script>
 const SEC_QUERY = new URLSearchParams(window.location.search);
@@ -421,11 +421,10 @@ function selectValidationShot(index) {
     node.classList.toggle("is-selected", Number(node.dataset.validationShot) === index);
   });
   if (!point) return;
-  const shotId = point.shotId || sourceIds[index] || `Shot ${index + 1}`;
   document.getElementById("selectedShotCoordinate").innerHTML =
-    `<span>Shot ${index + 1} · ${esc(shotId)}</span>
+    `<span>Shot ${index + 1}</span>
      <strong>X ${Number(point.xPercent).toFixed(4)}% · Y ${Number(point.yPercent).toFixed(4)}%</strong>
-     <small>Normalized target coordinates preserved by backend authority.</small>`;
+     <small>Shot location preserved with this session.</small>`;
 }
 
 function renderValidationWorkspace(evidenceCard) {
@@ -437,9 +436,8 @@ function renderValidationWorkspace(evidenceCard) {
     node.dataset.validationShot = String(index);
   });
   document.getElementById("validationShotList").innerHTML = impacts.map((point, index) => {
-    const shotId = point.shotId || sourceIds[index] || `Shot ${index + 1}`;
     return `<button type="button" data-validation-shot="${index}" aria-label="Inspect shot ${index + 1}">
-      <b>${index + 1}</b><span>${esc(shotId)}</span>
+      <b>${index + 1}</b><span>Confirmed impact</span>
     </button>`;
   }).join("");
   document.querySelectorAll("#validationShotList [data-validation-shot]").forEach(button => {
@@ -451,9 +449,9 @@ function renderValidationWorkspace(evidenceCard) {
   document.getElementById("validationCalculation").innerHTML =
     `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
   document.getElementById("authorityTrace").innerHTML =
-    `<div><span>Authority version</span><strong>${esc(authority.authorityVersion || "Unavailable")}</strong></div>
-     <div><span>Evidence hash</span><strong>${esc(authority.evidenceHash || "Unavailable")}</strong></div>
-     <div><span>Calculated</span><strong>${esc(authority.computedAt || "Unavailable")}</strong></div>`;
+    `<div><span>Calculation</span><strong>Complete</strong></div>
+     <div><span>Evidence</span><strong>Preserved</strong></div>
+     <div><span>Completed</span><strong>${esc(authority.computedAt || "Unavailable")}</strong></div>`;
 }
 
 function renderSEC() {
@@ -467,9 +465,9 @@ function renderSEC() {
     && calculationIntegrity.status !== "reconciled"
   ) {
     const missingState = document.getElementById("missingState");
-    missingState.querySelector("h1").textContent = "Calculation integrity unavailable";
+    missingState.querySelector("h1").textContent = "Result unavailable";
     missingState.querySelector("p").textContent =
-      "The angular correction, sight constant, rounding, and displayed click recommendation did not reconcile. No validation conclusion is available.";
+      "The correction could not be verified. Return to the target and try Show Results again.";
     missingState.querySelector("a").textContent = "Return to Target";
     missingState.classList.remove("is-hidden");
     return;

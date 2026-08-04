@@ -92,8 +92,24 @@
   object-fit:contain;
 }
 
-.target-page[data-target-mission="zeroing"] .evidence-meta{
+.target-page[data-target-mission="zeroing"][data-has-results="false"][data-authority-status="false"] .evidence-meta{
   display:none;
+}
+
+.target-page[data-has-results="true"] .evidence-meta,
+.target-page[data-authority-status="true"] .evidence-meta{
+  position:absolute;
+  z-index:26;
+  right:3.4%;
+  bottom:10.1%;
+  left:3.4%;
+  display:block;
+  width:auto;
+  max-height:38%;
+  margin:0;
+  overflow:auto;
+  background:rgba(8,8,8,.96);
+  box-shadow:0 8px 24px rgba(0,0,0,.42);
 }
 
 .target-page .workspace-top-overlay{

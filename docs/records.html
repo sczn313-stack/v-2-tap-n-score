@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="ballistic-vault.css" />
 <link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
+<link rel="stylesheet" href="m4-sec.css?v=episode46-gssf-reference-candidate-1" />
 <script src="navigation.js" defer></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
@@ -40,7 +41,7 @@
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
-<script src="m4_runtime.js?v=20260728-m4-sight-authority"></script>
+<script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="sec_v1.js"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
@@ -928,8 +929,7 @@ function backendRenderedHitCoordinates(pkg) {
   return backendRenderedHitEntries(pkg).map(authorityPoint).filter(Boolean);
 }
 
-function authorityVisual(session) {
-  const pkg = authorityPackage(session);
+function authorityVisualForPackage(pkg, { includeAim = true } = {}) {
   if (!pkg || !pkg.renderCoordinates) return "";
   const render = pkg.renderCoordinates;
   const parts = [];
@@ -948,9 +948,20 @@ function authorityVisual(session) {
   (render.impacts || []).forEach((point, index) => {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
   });
-  parts.push(markerHtml("aim-arrow", render.aim, ""));
+  if (includeAim) parts.push(markerHtml("aim-arrow", render.aim, ""));
   parts.push(markerHtml("poib-dot", render.poib, "<span>POIB</span>", 'aria-label="Point of impact balance"'));
   return parts.join("");
+}
+
+function gssfEvidenceVisualForPackage(pkg) {
+  if (!isGssfAuthorityPackage(pkg)) return "";
+  return backendRenderedHitCoordinates(pkg).map((point, index) => {
+    return markerHtml("history-thumb-impact", point, String(index + 1));
+  }).join("");
+}
+
+function authorityVisual(session) {
+  return authorityVisualForPackage(authorityPackage(session));
 }
 
 function syncSecEvidenceLayers() {
@@ -1109,6 +1120,157 @@ function universalSecStageHtml(stage, title, contentHtml) {
   `;
 }
 
+function isBaker100YardZeroingSession(session, pkg) {
+  const snapshot = session && session.matrixSnapshot || {};
+  const profileId = String(
+    snapshot.target_profile_id || snapshot.targetProfileId ||
+    session && (session.target_profile_id || session.targetProfileId) ||
+    pkg && (pkg.target_profile_id || pkg.targetProfileId) || ""
+  ).toLowerCase();
+  return profileId === "baker_st_100yd_smart_zero";
+}
+
+function zeroingReferenceMetric(label, value, detail = "") {
+  return `<div class="sec-metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</div>`;
+}
+
+function renderBaker100YardReferenceSec(session, pkg) {
+  const snapshot = session.matrixSnapshot || {};
+  const evidence = session.targetEvidenceImage || {};
+  const confirmationEvidence = session.confirmationEvidenceImage || {};
+  const confirmationPackage = session.confirmationAuthorityPackage || null;
+  const hasConfirmationEvidence = Boolean(confirmationEvidence.dataUrl);
+  const hasAuthority = Boolean(pkg && pkg.status);
+  const score = hasAuthority ? authorityScoreValue(pkg) : null;
+  const correction = hasAuthority ? pkg.correction || {} : {};
+  const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
+  const correctionDisplay = [
+    correctionInstruction(clicks.elevation, "elevation"),
+    correctionInstruction(clicks.windage, "windage")
+  ].filter(Boolean);
+  const targetName = snapshot.targetName || snapshot.targetFamily || session.targetName || session.product || "Baker 100 Yard Smart Target";
+  const targetImage = evidence.dataUrl || "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
+  const rawImpactCount = hasAuthority && pkg.status ? pkg.status.impactCount : null;
+  const impactCount = Number.isInteger(rawImpactCount) ? rawImpactCount : null;
+  const groupDisplay = pkg && pkg.group && pkg.group.display || "Unavailable";
+  const poib = poibDisplay(pkg) || "Unavailable";
+  const distance = distanceDisplay(session);
+  const angular = pkg && pkg.angular || {};
+  const measurementMetrics = [
+    zeroingReferenceMetric("Score", score === null ? "--" : String(score), "session result"),
+    zeroingReferenceMetric("Group", groupDisplay, impactCount === null ? "confirmed evidence" : `${impactCount} confirmed ${impactCount === 1 ? "impact" : "impacts"}`),
+    zeroingReferenceMetric("POIB", poib, "confirmed impacts"),
+    zeroingReferenceMetric("Distance", distance, "preserved shooting distance")
+  ].join("");
+  const angularMetrics = [
+    typeof angular.elevationMOA === "number" ? zeroingReferenceMetric("Elevation", `${angular.elevationMOA.toFixed(2)} MOA`, "calculated adjustment") : "",
+    typeof angular.windageMOA === "number" ? zeroingReferenceMetric("Windage", `${angular.windageMOA.toFixed(2)} MOA`, "calculated adjustment") : ""
+  ].filter(Boolean).join("");
+  const correctionCall = correctionDisplay.length
+    ? `${correctionDisplay.map(instruction => `<strong>${escapeHtml(instruction)}</strong>`).join("")}<span>Bull minus POIB correction vector</span>`
+    : `<strong>Correction unavailable</strong><span>No sight adjustment is saved for this result.</span>`;
+  const execution = correctionDisplay.length
+    ? correctionDisplay.map(instruction => {
+        const axis = /UP|DOWN|ELEVATION/.test(instruction) ? "Elevation" : "Windage";
+        return `<div><span>${axis}</span><strong>Apply ${escapeHtml(instruction)}</strong></div>`;
+      }).join("")
+    : `<div><span>Adjustment</span><strong>No sight correction is available.</strong></div>`;
+  const confirmationOutcome = confirmationPackage && confirmationPackage.validation
+    ? `<strong>${escapeHtml(confirmationPackage.validation.outcome || (confirmationPackage.validation.confirmed ? "CONFIRMED" : "REQUIRES ANOTHER GROUP"))}</strong><span>Saved confirmation result</span>`
+    : `<strong>Confirmation not recorded</strong><span>This preserved event contains the initial 100 Yard group and correction only.</span>`;
+  const sessionDate = session.timestamp ? new Date(session.timestamp) : null;
+  const dateLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : "Unavailable";
+  const timeLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "Unavailable";
+  const setup = [snapshot.opticType, distance, snapshot.opticAdjustmentUnit].map(cleanSetupValue).filter(Boolean).join(" • ") || distance;
+  return `
+    <article class="sec-experience m4-reference-sec-card zeroing-reference-sec-card" data-session-id="${escapeHtml(session.sessionId || "")}">
+      <div class="sec-mission-bar" aria-label="100 Yard zeroing mission"><strong>Baker's Targets</strong><span aria-hidden="true">•</span><span>100 Yard Bullseye</span><span aria-hidden="true">•</span><span>100 Yard Zero</span></div>
+      <section class="sec-target-story" aria-label="100 Yard zeroing target story">
+        <section class="sec-universal-stage sec-universal-stage-evidence" data-sec-stage="evidence" aria-label="Evidence">
+          <header class="sec-universal-stage-heading"><span>1 · Evidence</span><h2>Initial and Confirmation Groups</h2></header>
+          <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
+            <figure><figcaption><span>Before</span><strong>Initial Group</strong></figcaption><div class="sec-comparison-target history-thumb"><img src="${escapeHtml(targetImage)}" alt="100 Yard initial group target evidence" /><span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span><div class="history-evidence-layer">${authorityVisualForPackage(pkg)}</div></div></figure>
+            <figure><figcaption><span>After</span><strong>Confirmation Group</strong></figcaption><div class="sec-comparison-target history-thumb"><img src="${escapeHtml(hasConfirmationEvidence ? confirmationEvidence.dataUrl : targetImage)}" alt="100 Yard confirmation group target evidence" />${hasConfirmationEvidence ? `<div class="history-evidence-layer">${authorityVisualForPackage(confirmationPackage, { includeAim: false })}</div>` : `<span class="sec-comparison-pending">Confirmation not recorded</span>`}</div></figure>
+          </div>
+        </section>
+        <section class="sec-universal-stage sec-universal-stage-measurement" data-sec-stage="measurement" aria-label="Measurement"><header class="sec-universal-stage-heading"><span>2 · Measurement</span><h2>Group Analysis</h2></header><div class="sec-metric-grid">${measurementMetrics}</div></section>
+        <section class="sec-universal-stage sec-universal-stage-recommendation" data-sec-stage="recommendation" aria-label="Recommendation"><header class="sec-universal-stage-heading"><span>3 · Recommendation</span><h2>Sight Correction</h2></header><div class="sec-correction-call">${correctionCall}</div>${angularMetrics ? `<div class="sec-metric-grid">${angularMetrics}</div>` : ""}</section>
+        <section class="sec-universal-stage sec-universal-stage-execution" data-sec-stage="execution" aria-label="Execution"><header class="sec-universal-stage-heading"><span>4 · Execution</span><h2>Apply the Correction</h2></header><div class="sec-execution">${execution}</div></section>
+        <section class="sec-universal-stage sec-universal-stage-validation" data-sec-stage="validation" aria-label="Validation"><header class="sec-universal-stage-heading"><span>5 · Validation</span><h2>Confirmation Outcome</h2></header><div class="sec-validation-calculation">${confirmationOutcome}</div></section>
+        <section class="sec-universal-stage sec-universal-stage-preservation" data-sec-stage="preservation" aria-label="Preservation">
+          <header class="sec-universal-stage-heading"><span>6 · Preservation</span><h2>Save the Complete Shooting Event</h2></header>
+          <details class="correction-context-drawer sec-correction-context"><summary>Preserved Session Setup</summary><div class="correction-context-panel sec-session-record"><div class="sec-session-configuration"><span>Preserved Shooting Setup</span><strong>${escapeHtml(setup)}</strong></div><div class="sec-session-record-fields"><div class="sec-session-target"><span>Target</span><strong>${escapeHtml(targetName)}</strong></div><div><span>Shooter</span><strong>${escapeHtml(snapshot.shooterName || "Not recorded")}</strong></div><div><span>Date</span><strong>${escapeHtml(dateLabel)}</strong></div><div><span>Time</span><strong>${escapeHtml(timeLabel)}</strong></div></div></div></details>
+          <div class="sec-story-command-bar" aria-label="Shooter Experience Card actions"><div class="sec-preservation-actions"><span class="sec-save-status">Saved SEC</span><button class="button" type="button" data-sec-export>Export SEC</button><button class="button" type="button" data-sec-share>Share SEC</button><a class="button" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a></div></div>
+        </section>
+      </section>
+    </article>
+  `;
+}
+
+function renderGssfM4ReferenceSec(session, pkg) {
+  const snapshot = session.matrixSnapshot || {};
+  const evidenceUrl = gssfSavedEvidenceDataUrl(session, pkg);
+  const buckets = new Map(gssfAuthoritativeBreakdown(pkg).map(bucket => [bucket.zone, bucket.source]));
+  const bucket = zone => buckets.get(zone) || { count: 0, penaltySecondsPerHit: 0, subtotalPenaltySeconds: 0 };
+  const downZero = bucket("downZero");
+  const plusOne = bucket("plusOne");
+  const plusThree = bucket("plusThree");
+  const miss = bucket("miss");
+  const competition = gssfCompetitionRecord(session, pkg);
+  const paperPenalty = gssfFormatSeconds(competition.totalPaperPenaltySeconds);
+  const finalTime = competition.officialFinalScoreSeconds === null ? "Unavailable" : gssfFormatSeconds(competition.officialFinalScoreSeconds);
+  const officialTime = competition.officialMatchTimeSeconds === null ? "Not entered" : gssfFormatSeconds(competition.officialMatchTimeSeconds);
+  const observationCount = pkg.inputs && Number.isInteger(pkg.inputs.observationCount)
+    ? pkg.inputs.observationCount
+    : backendHitClassifications(pkg).length;
+  const scoringAnalysis = [
+    ["Down Zero", downZero],
+    ["+1", plusOne],
+    ["+3", plusThree],
+    ["Miss / Other", miss]
+  ].map(([label, result]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(result.count))}</strong><small>${escapeHtml(`${result.subtotalPenaltySeconds} sec`)}</small></div>`).join("");
+  const measurementMetrics = [
+    zeroingReferenceMetric("Confirmed Shots", String(observationCount), "saved impacts"),
+    zeroingReferenceMetric("Paper Penalty", paperPenalty, "from scored zones"),
+    zeroingReferenceMetric("Official Timer", officialTime, competition.officialMatchTimeSeconds === null ? "timer entry needed" : "entered time"),
+    zeroingReferenceMetric("Final Time", finalTime, competition.officialFinalScoreSeconds === null ? "waiting for timer" : "lowest time wins")
+  ].join("");
+  const scoreBreakdown = `<div class="sec-gssf-compact-score"><span>GSSF Result</span><strong>${escapeHtml(competition.officialFinalScoreSeconds === null ? `${paperPenalty} paper penalty` : `${finalTime} final time`)}</strong><small>${escapeHtml(competition.officialFinalScoreSeconds === null ? "Enter the official timer time to complete the result." : "Lowest time wins.")}</small></div>`;
+  const execution = competition.officialMatchTimeSeconds === null
+    ? `<div><span>Official Timer</span><strong>Enter the official timer time.</strong></div><div><span>Final Result</span><strong>Add the paper penalty to complete Final Time.</strong></div>`
+    : `<div><span>Official Timer</span><strong>${escapeHtml(officialTime)}</strong></div><div><span>Final Result</span><strong>Preserve the calculated Final Time.</strong></div>`;
+  const confidence = pkg.canonicalAssetScoring === "accepted" ? "Scoring complete" : "Scoring result saved";
+  const resultLabel = competition.officialFinalScoreSeconds === null ? `${paperPenalty} paper penalty` : `${finalTime} final time`;
+  const weaponProfile = window.SCZN3M4 && SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
+  const weapon = weaponProfile ? weaponProfile.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || "Not recorded";
+  const sessionDate = session.timestamp ? new Date(session.timestamp) : null;
+  const dateLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : "Unavailable";
+  const timeLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "Unavailable";
+  return `
+    <article class="sec-experience m4-reference-sec-card gssf-m4-reference-sec-card" data-session-id="${escapeHtml(session.sessionId || "")}">
+      <div class="sec-mission-bar" aria-label="GSSF scoring mission"><strong>SCZN3</strong><span aria-hidden="true">•</span><span>GSSF AC-1</span><span aria-hidden="true">•</span><span>Scoring Mission</span></div>
+      <section class="sec-target-story" aria-label="GSSF scoring target story">
+        <section class="sec-universal-stage sec-universal-stage-evidence" data-sec-stage="evidence" aria-label="Evidence">
+          <header class="sec-universal-stage-heading"><span>1 · Evidence</span><h2>Target and Scoring Analysis</h2></header>
+          <div class="sec-before-after" aria-label="GSSF target evidence and scoring analysis">
+            <figure><figcaption><span>Initial</span><strong>Confirmed Impacts</strong></figcaption><div class="sec-comparison-target history-thumb">${evidenceUrl ? `<img src="${escapeHtml(evidenceUrl)}" alt="GSSF AC-1 initial target" /><span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span><div class="history-evidence-layer">${gssfEvidenceVisualForPackage(pkg)}</div>` : `<span class="sec-comparison-pending">Target image unavailable</span>`}</div></figure>
+            <figure><figcaption><span>Analysis</span><strong>Shot Distribution</strong></figcaption><div class="sec-comparison-target sec-gssf-analysis-panel" aria-label="GSSF shot distribution"><div class="sec-gssf-analysis-grid">${scoringAnalysis}</div><div class="sec-gssf-distribution-summary"><span>Compact Shot Distribution</span><strong>${escapeHtml(`${downZero.count} · ${plusOne.count} · ${plusThree.count} · ${miss.count}`)}</strong><small>Down Zero · +1 · +3 · Miss / Other</small></div></div></figure>
+          </div>
+        </section>
+        <section class="sec-universal-stage sec-universal-stage-measurement" data-sec-stage="measurement" aria-label="Measurement"><header class="sec-universal-stage-heading"><span>2 · Measurement</span><h2>Timer and Result Inputs</h2></header><div class="sec-metric-grid">${measurementMetrics}</div></section>
+        <section class="sec-universal-stage sec-universal-stage-recommendation" data-sec-stage="recommendation" aria-label="Score"><header class="sec-universal-stage-heading"><span>3 · Score</span><h2>GSSF Score</h2></header>${scoreBreakdown}</section>
+        <section class="sec-universal-stage sec-universal-stage-execution" data-sec-stage="execution" aria-label="Execution"><header class="sec-universal-stage-heading"><span>4 · Execution</span><h2>Complete the Result</h2></header><div class="sec-execution">${execution}</div></section>
+        <section class="sec-universal-stage sec-universal-stage-validation" data-sec-stage="validation" aria-label="Validation"><header class="sec-universal-stage-heading"><span>5 · Validation</span><h2>GSSF Final Results</h2></header><div class="sec-validation-calculation"><strong>${escapeHtml(resultLabel)}</strong><span>${escapeHtml(`${confidence} · ${observationCount} impacts preserved`)}</span></div></section>
+        <section class="sec-universal-stage sec-universal-stage-preservation" data-sec-stage="preservation" aria-label="Preservation">
+          <header class="sec-universal-stage-heading"><span>6 · Preservation</span><h2>Save the Complete Shooting Event</h2></header>
+          <details class="correction-context-drawer sec-correction-context"><summary>Preserved Session Setup</summary><div class="correction-context-panel sec-session-record"><div class="sec-session-configuration"><span>Preserved Shooting Setup</span><strong>${escapeHtml(`GSSF AC-1 • ${distanceDisplay(session)}`)}</strong></div><div class="sec-session-record-fields"><div class="sec-session-target"><span>Target</span><strong>GSSF AC-1</strong></div><div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div><div><span>Date</span><strong>${escapeHtml(dateLabel)}</strong></div><div><span>Time</span><strong>${escapeHtml(timeLabel)}</strong></div></div></div></details>
+          <div class="sec-story-command-bar" aria-label="Shooter Experience Card actions"><div class="sec-preservation-actions"><span class="sec-save-status">Saved SEC</span><button class="button" type="button" data-sec-export>Export SEC</button><button class="button" type="button" data-sec-share>Share SEC</button><a class="button" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a></div></div>
+        </section>
+      </section>
+    </article>
+  `;
+}
+
 function renderHistory() {
   const allSavedSessions = SCZN3M4.getSessionHistory().slice()
     .filter(session => session && session.savedToSEC === true)
@@ -1151,11 +1313,12 @@ function renderHistory() {
     if (isDotTortureTrainingPackage(pkg)) {
       return renderTrainingSecCard(session, index, pkg);
     }
-    if (isGssfAuthorityPackage(pkg)) {
-      return renderGssfSecCard(session, index, pkg);
-    }
+    if (isGssfAuthorityPackage(pkg)) return renderGssfM4ReferenceSec(session, pkg);
     if (hasGssfAuthorityIdentity(pkg)) {
       return renderInvalidGssfSecCard(session);
+    }
+    if (isBaker100YardZeroingSession(session, pkg)) {
+      return renderBaker100YardReferenceSec(session, pkg);
     }
     const hasAuthority = !!(pkg && pkg.status);
     const rawImpactCount = hasAuthority && pkg.status ? pkg.status.impactCount : null;

@@ -62,8 +62,13 @@ assert.match(
 );
 assert.match(
   shoot,
-  /authorityStatusMessage = "Scoring service unavailable\. Please try again\.";[\s\S]*?renderResults\(\);[\s\S]*?finally \{[\s\S]*?authorityRequestInFlight = false;[\s\S]*?renderResults\(\);/,
+  /authorityStatusMessage = "We couldn't score this target right now\. Your impacts are still here\. Tap Show Results to try again\.";[\s\S]*?renderResults\(\);[\s\S]*?finally \{[\s\S]*?authorityRequestInFlight = false;[\s\S]*?renderResults\(\);/,
   "authority failure must be visible and must release the submission lock",
+);
+assert.match(
+  shoot,
+  /if \(isGssfAuthorityPackage\(authorityPackage\)\) \{[\s\S]*?renderMarkStatus\(\);[\s\S]*?document\.getElementById\("saveMarks"\)\.click\(\);[\s\S]*?\}/,
+  "a governed GSSF result must preserve and open the universal SEC from the single Show Results action",
 );
 
 console.log("GSSF Show Results contract: PASS");
