@@ -176,3 +176,41 @@
   background:var(--sczn3-control-background);
   color:var(--sczn3-control-text);
 }
+
+/* Founder Review Batch 3 — navigation rests neutrally and signals only interaction. */
+.package-menu,
+.platform-page .mobile-platform-menu summary,
+.target-page .target-mobile-menu summary,
+.matrix-page .mobile-platform-menu summary,
+.records-page .records-menu-button{
+  border-color:rgba(255,255,255,.34);
+  background:#101010;
+  color:#f5f1e8;
+  box-shadow:none;
+}
+
+.package-menu span{
+  background:#f5f1e8;
+}
+
+.package-menu:hover,
+.package-menu:focus-visible,
+.package-menu[aria-expanded="true"],
+.platform-page .mobile-platform-menu summary:hover,
+.platform-page .mobile-platform-menu summary:focus-visible,
+.platform-page .mobile-platform-menu[open] summary,
+.records-page .records-menu-button:hover,
+.records-page .records-menu-button:focus-visible,
+.records-page .records-menu-button[aria-expanded="true"]{
+  border-color:var(--sczn3-control-border);
+  color:var(--sczn3-control-border);
+}
+
+.package-menu:hover span,
+.package-menu:focus-visible span,
+.package-menu[aria-expanded="true"] span,
+.records-page .records-menu-button:hover span,
+.records-page .records-menu-button:focus-visible span,
+.records-page .records-menu-button[aria-expanded="true"] span{
+  background:var(--sczn3-control-border);
+}

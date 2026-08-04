@@ -9219,15 +9219,89 @@ body.navigation-leave-dialog-open{
 
 .target-page .zeroing-setup-panel{
   margin-top:2px;
-  padding:10px 12px;
-  border:1px solid rgba(179,123,8,.42);
+  padding:7px 9px;
+  border:1px solid rgba(255,255,255,.18);
   border-radius:8px;
-  background:rgba(10,10,10,.52);
+  background:rgba(10,10,10,.38);
 }
 
 .target-page .zeroing-setup-panel[open]{
   display:grid;
   gap:10px;
+}
+
+.target-page .zeroing-setup-panel>summary{
+  color:#b9b1a3;
+  font-size:11px;
+  letter-spacing:.04em;
+}
+
+.target-page .shooter-result-action{
+  display:grid;
+  gap:5px;
+  padding:12px 14px;
+  border:2px solid #d9960b;
+  border-radius:8px;
+  background:linear-gradient(180deg,#211806,#110d05);
+  color:#fff;
+}
+
+.target-page .shooter-result-action[hidden]{display:none}
+
+.target-page .shooter-result-action span{
+  color:#d9960b;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.target-page .shooter-result-action strong{
+  font-size:clamp(16px,2.4vw,22px);
+  line-height:1.2;
+}
+
+.target-page .authority-recovery-state{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:1px solid rgba(217,150,11,.7);
+  border-radius:8px;
+  background:#15120a;
+  color:#f5f1e8;
+}
+
+.target-page .authority-recovery-state>div{display:grid;gap:4px}
+.target-page .authority-recovery-state span{color:#d9960b;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.target-page .authority-recovery-state strong{font-size:14px;line-height:1.3}
+.target-page .authority-recovery-state .button{min-width:112px}
+
+.target-page .authority-evidence-summary{
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:stretch;
+}
+
+.target-page .authority-evidence-summary .evidence-count{
+  grid-column:auto;
+}
+
+.target-page .target-intel-score{
+  width:auto;
+  min-width:86px;
+  min-height:42px;
+  padding:7px 10px;
+}
+
+.target-page .target-intel-score strong{
+  font-size:20px;
+  line-height:1;
+}
+
+@media(max-width:560px){
+  .target-page .authority-recovery-state{grid-template-columns:1fr}
+  .target-page .authority-recovery-state .button{width:100%}
 }
 
 .target-page .guidance-card summary,

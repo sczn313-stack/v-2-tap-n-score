@@ -68,9 +68,10 @@ assert.match(
 );
 assert.match(
   shoot,
-  /authorityStatusMessage = "We couldn't score this target right now\. Your impacts are still here\. Tap Show Results to try again\.";[\s\S]*?renderResults\(\);[\s\S]*?finally \{[\s\S]*?authorityRequestInFlight = false;[\s\S]*?renderResults\(\);/,
+  /authorityStatusMessage = "Results couldn’t be calculated\. Check your connection, then try again\.";[\s\S]*?renderResults\(\);[\s\S]*?finally \{[\s\S]*?authorityRequestInFlight = false;[\s\S]*?renderResults\(\);/,
   "authority failure must be visible and must release the submission lock",
 );
+assert.match(shoot, /data-authority-retry>Try Again</, "authority failure must expose an intentional retry action");
 assert.match(
   shoot,
   /if \(isGssfAuthorityPackage\(authorityPackage\)\) \{[\s\S]*?renderMarkStatus\(\);[\s\S]*?document\.getElementById\("saveMarks"\)\.click\(\);[\s\S]*?\}/,

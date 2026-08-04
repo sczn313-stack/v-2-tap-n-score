@@ -218,7 +218,7 @@
 }
 
 .sec-correction-context .sec-session-record{
-  grid-template-columns:minmax(220px,1fr) minmax(0,1.35fr);
+  grid-template-columns:1fr;
   gap:8px;
   align-items:stretch;
 }
@@ -246,35 +246,37 @@
 }
 
 .sec-session-configuration strong{
-  overflow:hidden;
+  overflow:visible;
+  overflow-wrap:anywhere;
   font-size:clamp(15px,2vw,20px);
   line-height:1.05;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  text-overflow:clip;
+  white-space:normal;
 }
 
 .sec-session-record-fields{
   display:grid;
-  grid-template-columns:1.6fr 1.2fr 1fr 1fr;
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:5px;
   min-width:0;
 }
 
 .sec-session-record-fields .sec-session-target{
-  grid-column:auto;
+  grid-column:1/-1;
 }
 
 .sec-session-record-fields strong{
-  overflow:hidden;
+  overflow:visible;
+  overflow-wrap:anywhere;
   font-size:clamp(11px,1.25vw,14px);
   line-height:1.08;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  text-overflow:clip;
+  white-space:normal;
 }
 
 @media(max-width:560px){
   .sec-correction-context .sec-session-record{
-    grid-template-columns:minmax(145px,.9fr) minmax(0,1.1fr);
+    grid-template-columns:1fr;
     gap:5px;
     padding-inline:7px;
   }
@@ -290,7 +292,7 @@
   }
 
   .sec-session-record-fields{
-    grid-template-columns:1.5fr 1fr;
+    grid-template-columns:1fr;
     gap:3px;
   }
 

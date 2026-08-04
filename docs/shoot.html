@@ -343,6 +343,7 @@ let currentImpactPoints = RESUMING_M4_CONFIRMATION
 function backendScoreValue(authorityPackage) {
   const score = authorityPackage && authorityPackage.score;
   const value = score && typeof score === "object" ? score.value : score;
+  if (value === null || value === undefined || value === "") return null;
   return Number.isFinite(Number(value)) ? Number(value) : null;
 }
 let currentClicks = zeroingClicksFromAuthorityPackage(backendAuthorityPackage);
@@ -1830,13 +1831,7 @@ function targetIntelStackHtml() {
       `;
     }
     if (!resultsShown || !isGssfAuthorityPackage(authorityPackage) || !isAuthorityPackageCalculated(authorityPackage)) {
-      return authorityStatusMessage
-        ? `
-          <div class="authority-results-panel gssf-results-panel" aria-label="Competition paper target result unavailable" role="status">
-            <div class="authority-status-message"><strong>${escapeHtml(authorityStatusMessage)}</strong></div>
-          </div>
-        `
-        : "";
+      return authorityStatusMessage ? authorityRecoveryHtml(authorityStatusMessage) : "";
     }
     return `
       <div class="authority-results-panel gssf-results-panel" aria-label="Competition paper target results">
@@ -1853,16 +1848,41 @@ function targetIntelStackHtml() {
       </div>
     `;
   }
+  if (authorityStatusMessage && !resultsShown) return authorityRecoveryHtml(authorityStatusMessage);
   return `
       <div class="authority-results-panel" aria-label="Results">
+        <section class="shooter-result-action" id="shooterResultAction" aria-live="polite" hidden>
+          <span>Next Step</span>
+          <strong id="shooterResultActionText"></strong>
+        </section>
         <div class="authority-evidence-summary">
-          <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Your Score</span><strong id="scoreValue">--</strong></div>
           <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
+          <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Score</span><strong id="scoreValue">--</strong></div>
         </div>
         <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
       </div>
       ${zeroingSetupPanelHtml()}
   `;
+}
+
+function authorityRecoveryHtml(message) {
+  return `
+    <section class="authority-recovery-state" aria-label="Results unavailable" role="alert">
+      <div>
+        <span>Results Unavailable</span>
+        <strong>${escapeHtml(message)}</strong>
+      </div>
+      <button class="button" type="button" data-authority-retry>Try Again</button>
+    </section>
+  `;
+}
+
+function bindAuthorityRecoveryAction() {
+  const retry = document.querySelector("[data-authority-retry]");
+  const showResults = document.getElementById("showResults");
+  if (!retry || !showResults || retry.dataset.bound === "true") return;
+  retry.dataset.bound = "true";
+  retry.addEventListener("click", () => showResults.click());
 }
 
 function isPresetDistance(value) {
@@ -3575,7 +3595,7 @@ function renderDotTortureTrainingResults(authorityPackage) {
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
-      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
+      ? `<strong>${authorityStatusMessage}</strong>`
       : "";
     message.classList.toggle("is-hidden", !authorityStatusMessage);
   }
@@ -3597,6 +3617,7 @@ function renderResults() {
   if (isGssfAuthoritySession() && !isGssfAuthorityPackage(backendAuthorityPackage)) {
     const grid = document.getElementById("resultsGrid");
     if (grid) grid.innerHTML = targetIntelStackHtml();
+    bindAuthorityRecoveryAction();
     return;
   }
   if (isGssfAuthorityPackage(backendAuthorityPackage)) {
@@ -3616,16 +3637,39 @@ function renderResults() {
     const message = document.getElementById("authorityStatusMessage");
     if (message) {
       message.innerHTML = authorityStatusMessage
-        ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
+        ? `<strong>${authorityStatusMessage}</strong>`
         : "";
       message.classList.toggle("is-hidden", !authorityStatusMessage);
     }
     return;
   }
-  const scoreCell = document.getElementById("scoreCell");
-  if (!scoreCell) return;
+  if (authorityStatusMessage && !resultsShown) {
+    const grid = document.getElementById("resultsGrid");
+    if (grid) grid.innerHTML = authorityRecoveryHtml(authorityStatusMessage);
+    bindAuthorityRecoveryAction();
+    return;
+  }
+  let scoreCell = document.getElementById("scoreCell");
+  if (!scoreCell && resultsShown) {
+    const grid = document.getElementById("resultsGrid");
+    if (grid) grid.innerHTML = targetIntelStackHtml();
+    bindDistanceControl();
+    scoreCell = document.getElementById("scoreCell");
+  }
+  if (!scoreCell) {
+    const grid = document.getElementById("resultsGrid");
+    if (grid && authorityStatusMessage) grid.innerHTML = authorityRecoveryHtml(authorityStatusMessage);
+    bindAuthorityRecoveryAction();
+    return;
+  }
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
+  const action = document.getElementById("shooterResultAction");
+  const actionText = document.getElementById("shooterResultActionText");
+  if (action && actionText) {
+    actionText.textContent = zeroingShooterNextAction();
+    action.hidden = !resultsShown;
+  }
   const hitsParts = [SIMULATION_MODE
     ? `Shot group: ${impacts.length} ${impacts.length === 1 ? "impact" : "impacts"}`
     : `${impacts.length} Hits`];
@@ -3639,10 +3683,27 @@ function renderResults() {
   const message = document.getElementById("authorityStatusMessage");
   if (message) {
     message.innerHTML = authorityStatusMessage
-      ? `<strong>${authorityStatusMessage}</strong><span class="authority-status-subtext">Your target data has not been lost.</span>`
+      ? `<strong>${authorityStatusMessage}</strong>`
       : "";
     message.classList.toggle("is-hidden", !authorityStatusMessage);
   }
+}
+
+function zeroingShooterNextAction() {
+  if (!resultsShown) return "";
+  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+    if (backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed) {
+      return "Confirmation complete. Save Session.";
+    }
+    return remainingCorrectionShooterMessage(backendAuthorityPackage);
+  }
+  if (!currentClicks) return "Review the session setup, then try Show Results again.";
+  const windage = correctionAxisDisplay(currentClicks, "windage");
+  const elevation = correctionAxisDisplay(currentClicks, "elevation");
+  if (windage.count === 0 && elevation.count === 0) {
+    return "No sight adjustment is needed. Fire a confirmation group.";
+  }
+  return `Apply ${windage.direction} ${windage.count} ${windage.unit} · ${elevation.direction} ${elevation.count} ${elevation.unit}. Then fire a confirmation group.`;
 }
 
 function hideShooterTip() {
@@ -4135,7 +4196,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     currentScore = null;
     backendAuthorityPackage = null;
     resultsShown = false;
-    authorityStatusMessage = "We couldn't score this target right now. Your impacts are still here. Tap Show Results to try again.";
+    authorityStatusMessage = "Results couldn’t be calculated. Check your connection, then try again.";
     renderResults();
   } finally {
     authorityRequestInFlight = false;

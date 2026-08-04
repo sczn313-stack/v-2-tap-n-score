@@ -4,13 +4,16 @@ const path = require("path");
 
 const docs = path.resolve(__dirname, "..");
 const navigation = fs.readFileSync(path.join(docs, "navigation.js"), "utf8");
-const pages = ["index.html", "matrix.html", "shoot.html", "records.html", "survey.html", "buy-targets.html"];
+const pages = ["index.html", "matrix.html", "shoot.html", "records.html", "buy-targets.html"];
 
 pages.forEach(page => {
   const html = fs.readFileSync(path.join(docs, page), "utf8");
   assert(html.includes('<script src="navigation.js" defer></script>'), `${page} loads shared navigation behavior`);
   assert(!html.includes('querySelectorAll(".mobile-platform-menu").forEach'), `${page} has no page-specific details-menu controller`);
 });
+
+const survey = fs.readFileSync(path.join(docs, "survey.html"), "utf8");
+assert(!survey.includes("mobile-platform-menu") && !survey.includes("package-menu"), "survey has no hamburger state to govern");
 
 assert(navigation.includes('event.target.closest("a,button")'), "selecting any menu item closes its menu");
 assert(navigation.includes('document.addEventListener("pointerdown"'), "outside pointer interaction closes menus");
