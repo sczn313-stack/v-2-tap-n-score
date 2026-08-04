@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const shoot = await readFile(new URL("../shoot.html", import.meta.url), "utf8");
+const matrix = await readFile(new URL("../matrix.html", import.meta.url), "utf8");
 const redirects = await readFile(new URL("../_redirects", import.meta.url), "utf8");
 const netlify = await readFile(new URL("../netlify.toml", import.meta.url), "utf8");
 const labels = await readFile(new URL("../presentation_labels.js", import.meta.url), "utf8");
@@ -12,6 +13,11 @@ assert.match(
   "public generic authority traffic must stay same-origin in the browser",
 );
 assert.match(labels, /gssf_ac_1: "GSSF AC-1"/, "GSSF must preserve its governed target identity");
+assert.match(
+  matrix,
+  /queryTargetProfileId\.toLowerCase\(\) === "gssf_ac_1"[\s\S]*?canonicalGssfAttribution\(\)[\s\S]*?if \(\s*scannedIdentity/,
+  "an explicit GSSF launch must resolve before any stale M4 scan identity",
+);
 assert.doesNotMatch(labels, /Competition Paper Target \(Demo\)/, "legacy demo identity must not reach the universal SEC");
 assert.match(
   redirects,

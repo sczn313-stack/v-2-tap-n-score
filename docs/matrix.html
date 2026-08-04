@@ -1772,6 +1772,12 @@ function targetAttributionFromContext(data = {}) {
     return canonicalBaker100YardAttribution();
   }
   if (
+    queryTargetProfileId.toLowerCase() === "gssf_ac_1"
+    || String(MATRIX_QUERY.get("mission_family") || MATRIX_QUERY.get("missionFamily") || MATRIX_QUERY.get("missionFamilyId") || "").toLowerCase() === "gssf"
+  ) {
+    return { ...canonicalGssfAttribution(), ...(qrId ? { qr_id: qrId, qrId } : {}) };
+  }
+  if (
     scannedIdentity
     || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(activeSession))
     || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(sessionMatrix))
