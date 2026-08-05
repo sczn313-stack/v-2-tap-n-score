@@ -39,8 +39,8 @@
 
   <article id="secCard" class="sec-experience is-hidden">
     <section class="sec-target-story" aria-label="Initial and confirmation target story">
-      <section class="sec-universal-stage sec-universal-stage-evidence" data-sec-stage="evidence" aria-labelledby="secStageEvidence">
-        <header class="sec-universal-stage-heading"><span>1 · Evidence</span><h2 id="secStageEvidence">Before and After</h2></header>
+      <details class="sec-universal-stage sec-universal-stage-evidence sec-accordion-stage" data-sec-stage="evidence" open>
+        <summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · Evidence</span><h2>Before and After</h2></summary>
         <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
           <figure>
             <figcaption><strong>Before</strong></figcaption>
@@ -54,9 +54,9 @@
             <div class="sec-comparison-target"><img id="confirmationImage" alt="Confirmation-group target evidence" /><div class="marker-layer" id="confirmationMarkers"></div><span class="sec-comparison-pending is-hidden" id="confirmationPending" hidden></span></div>
           </figure>
         </div>
-      </section>
+      </details>
 
-      <details class="sec-universal-stage sec-universal-stage-measurement sec-collapsible-stage" data-sec-stage="measurement">
+      <details class="sec-universal-stage sec-universal-stage-measurement sec-collapsible-stage sec-accordion-stage" data-sec-stage="measurement">
         <summary class="sec-universal-stage-heading sec-stage-pill"><span>2</span><h2>Group Analysis</h2><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body">
           <div class="sec-metric-grid" id="summaryMeasurementGrid"></div>
@@ -77,22 +77,22 @@
         </div>
       </details>
 
-      <details class="sec-universal-stage sec-universal-stage-recommendation sec-collapsible-stage" data-sec-stage="recommendation">
+      <details class="sec-universal-stage sec-universal-stage-recommendation sec-collapsible-stage sec-accordion-stage" data-sec-stage="recommendation">
         <summary class="sec-universal-stage-heading sec-stage-pill"><span>3</span><h2>Measurements</h2><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body"><div class="sec-metric-grid" id="summaryAngularGrid"></div></div>
       </details>
 
-      <details class="sec-universal-stage sec-universal-stage-execution sec-collapsible-stage" data-sec-stage="execution">
+      <details class="sec-universal-stage sec-universal-stage-execution sec-collapsible-stage sec-accordion-stage" data-sec-stage="execution">
         <summary class="sec-universal-stage-heading sec-stage-pill"><span>4</span><h2>Zero Correction</h2><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body"><div class="sec-correction-call" id="summaryRecommendationCall"></div></div>
       </details>
 
-      <details class="sec-universal-stage sec-universal-stage-validation sec-collapsible-stage" data-sec-stage="validation">
+      <details class="sec-universal-stage sec-universal-stage-validation sec-collapsible-stage sec-accordion-stage" data-sec-stage="validation">
         <summary class="sec-universal-stage-heading sec-stage-pill"><span>5</span><h2>Mechanical Adjustment</h2><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body"><div class="sec-execution" id="summaryExecutionInstructions"></div></div>
       </details>
 
-      <details class="sec-universal-stage sec-universal-stage-preservation sec-collapsible-stage" data-sec-stage="preservation">
+      <details class="sec-universal-stage sec-universal-stage-preservation sec-collapsible-stage sec-accordion-stage" data-sec-stage="preservation">
         <summary class="sec-universal-stage-heading sec-stage-pill"><span>6</span><h2>Confirmation</h2><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body">
           <div class="sec-validation-calculation" id="summaryValidationOutcome"></div>
@@ -123,6 +123,15 @@ const SEC_QUERY = new URLSearchParams(window.location.search);
 const reviewSessionId = SEC_QUERY.get("reviewSession");
 const requestedSessionId = SEC_QUERY.get("sessionId");
 const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
+const SEC_ACCORDION_STAGES = [...document.querySelectorAll(".sec-target-story > details.sec-accordion-stage")];
+SEC_ACCORDION_STAGES.forEach(stage => {
+  stage.addEventListener("toggle", () => {
+    if (!stage.open) return;
+    SEC_ACCORDION_STAGES.forEach(otherStage => {
+      if (otherStage !== stage) otherStage.open = false;
+    });
+  });
+});
 const persistedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 const requestedPersistedSession = requestedSessionId
   ? SCZN3M4.getSessionHistory().find(candidate => candidate && candidate.sessionId === requestedSessionId) || null

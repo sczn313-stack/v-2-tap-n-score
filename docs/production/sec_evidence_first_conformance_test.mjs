@@ -30,12 +30,14 @@ function assertOrdered(label, values) {
 }
 
 assertOrdered("M4 live SEC", positions(sources["sec.html"], stage => `data-sec-stage="${stage}"`));
-assert.match(sources["sec.html"], /data-sec-stage="evidence"[\s\S]*?<header class="sec-universal-stage-heading">/, "Evidence remains an always-open section");
+assert.match(sources["sec.html"], /<details class="sec-universal-stage sec-universal-stage-evidence sec-accordion-stage" data-sec-stage="evidence" open>/, "Evidence is the initially open accordion stage");
 for (const label of ["Group Analysis", "Measurements", "Zero Correction", "Mechanical Adjustment", "Confirmation"]) {
   assert.match(sources["sec.html"], new RegExp(`<h2>${label}<\\/h2>`), `M4 live SEC: missing ${label} disclosure pill`);
 }
 assert.equal((sources["sec.html"].match(/sec-collapsible-stage/g) || []).length, 5, "M4 live SEC must expose five collapsible stages");
-assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage[^>]*\sopen(?:\s|>)/, "Sections 2–6 must be collapsed on initial load");
+assert.equal((sources["sec.html"].match(/class="[^"]*sec-accordion-stage/g) || []).length, 6, "M4 live SEC must bind all six stages to one accordion");
+assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage(?! sec-universal-stage-evidence)[^>]*\sopen(?:\s|>)/, "Sections 2–6 must be collapsed on initial load");
+assert.match(sources["sec.html"], /SEC_ACCORDION_STAGES\.forEach\(stage => \{[\s\S]*?if \(!stage\.open\) return;[\s\S]*?if \(otherStage !== stage\) otherStage\.open = false;/, "opening one SEC stage closes every other stage");
 assert.match(m4Styles, /\.sec-stage-pill\{[\s\S]*?min-height:var\(--sczn3-pill-height\)/, "SEC disclosure headers use the universal pill footprint");
 assertOrdered("GSSF Vault SEC", positions(sources["records.html"], stage => `key: "${stage}"`));
 assertOrdered("M4 unavailable SEC", positions(sources["m4_smart_target_sec.js"], stage => `key: "${stage}"`));

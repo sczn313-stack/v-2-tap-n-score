@@ -189,6 +189,10 @@ body[data-vault-thumbnail="true"] .sec-target-story{padding:10px;box-shadow:none
 .sec-universal-stage-preservation{border-color:#8d7341!important;background:#f6f1e7!important}
 .sec-universal-stage-preservation .sec-story-command-bar{padding-top:0;border-top:0}
 .sec-universal-stage-preservation .sec-correction-context{margin:0}
+.sec-evidence-toggle{cursor:pointer;list-style:none}
+.sec-evidence-toggle::-webkit-details-marker{display:none}
+.sec-evidence-toggle::marker{content:""}
+.sec-evidence-toggle:focus-visible{outline:2px solid #8a6212;outline-offset:2px}
 .sec-target-story>details.sec-collapsible-stage{padding:0;border:0!important;background:transparent!important}
 .sec-stage-pill{box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) 18px;align-items:center;gap:8px;width:100%;min-height:var(--sczn3-pill-height);padding:0 var(--sczn3-pill-padding-inline);border:2px solid var(--sczn3-control-border);border-radius:var(--sczn3-pill-radius);background:var(--sczn3-control-background);color:var(--sczn3-control-text);cursor:pointer;list-style:none}
 .sec-stage-pill::-webkit-details-marker{display:none}
@@ -215,6 +219,7 @@ body[data-vault-thumbnail="true"] .sec-universal-stage-heading{display:none}
 }
 
 @media print{
+  .sec-accordion-stage:not([open])>.sec-before-after{display:grid!important}
   .sec-collapsible-stage>.sec-stage-pill{display:none!important}
   .sec-collapsible-stage:not([open])>.sec-stage-body{display:grid!important}
 }
