@@ -34,8 +34,8 @@ assert.match(
 );
 
 assert.match(source["sec.html"], /class="sec-before-after"/);
-assert.match(source["sec.html"], /Initial Group/);
-assert.match(source["sec.html"], /Confirmation Group/);
+assert.match(source["sec.html"], /<figcaption><strong>Before<\/strong><\/figcaption>/);
+assert.match(source["sec.html"], /<figcaption><strong>After<\/strong><\/figcaption>/);
 assert.match(source["sec.html"], /isCompletedZeroingSession/);
 assert.doesNotMatch(source["sec.html"], /Choose Confirmation Target/);
 assert.doesNotMatch(source["sec.html"], /id="validateConfirmation"/);

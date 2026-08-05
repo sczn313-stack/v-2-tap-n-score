@@ -133,7 +133,14 @@ assert.match(
 
 const m4EvidenceEnd = sources["sec.html"].indexOf('data-sec-stage="measurement"');
 assert.ok(sources["sec.html"].indexOf('id="beforeEvidenceImage"') < m4EvidenceEnd);
-assert.ok(sources["sec.html"].indexOf('id="secSessionConfiguration"') > sources["sec.html"].indexOf('data-sec-stage="preservation"'));
+assert.match(sources["sec.html"], /class="sec-mission-bar" aria-label="Session identifier"><strong id="secSessionIdentifier"><\/strong><\/div>/, "the SEC identity line contains only the session number");
+assert.doesNotMatch(sources["sec.html"].slice(0, m4EvidenceEnd), /secSessionTarget|secSessionDistance|secSessionFirearm|secSessionAmmo|secSessionDate|secSessionTime|secSessionShooter|evidenceDataStatus/, "Evidence contains no session metadata or status text");
+const m4MeasurementEnd = sources["sec.html"].indexOf('data-sec-stage="recommendation"');
+for (const id of ["secSessionTarget", "secSessionDistance", "secSessionFirearm", "secSessionAmmo", "secSessionDate", "secSessionTime", "secSessionShooter"]) {
+  const position = sources["sec.html"].indexOf(`id="${id}"`);
+  assert.ok(position > m4EvidenceEnd && position < m4MeasurementEnd, `Measurement must own ${id}`);
+}
+assert.doesNotMatch(sources["sec.html"], /id="secSessionConfiguration"|Preserved Session Setup|Preserved Shooting Setup/, "the legacy metadata strip is removed");
 assert.doesNotMatch(sources["sec.html"], /Authority version|Evidence hash|Confirmation authority|backend authority/, "the preserved M4 SEC must not expose internal authority terminology");
 assert.doesNotMatch(sources["sec.html"], /Engineering Traceability/, "the shooter-facing SEC must not expose engineering terminology");
 assert.doesNotMatch(sources["sec_framework.js"], /score\.method|group\.method|Geometry validation|Mechanical validation/, "M4 result cards must use shooter-facing labels instead of internal method identifiers");
