@@ -1851,10 +1851,6 @@ function targetIntelStackHtml() {
   if (authorityStatusMessage && !resultsShown) return authorityRecoveryHtml(authorityStatusMessage);
   return `
       <div class="authority-results-panel" aria-label="Results">
-        <section class="shooter-result-action" id="shooterResultAction" aria-live="polite" hidden>
-          <span>Next Step</span>
-          <strong id="shooterResultActionText"></strong>
-        </section>
         <div class="authority-evidence-summary">
           <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
           <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Score</span><strong id="scoreValue">--</strong></div>
@@ -3466,26 +3462,6 @@ function compactClick(value, axis) {
   return `${amount} Clicks`;
 }
 
-function compactClickToken(value, axis) {
-  if (!value) return "--";
-  const label = typeof value === "object" && value.label ? value.label : String(value);
-  const amount = typeof value === "object" && Number.isFinite(Number(value.clicks))
-    ? String(Math.abs(Number(value.clicks)))
-    : (label.match(/\d+/)?.[0] || "0");
-  const upper = typeof value === "object" && value.direction
-    ? String(value.direction).toUpperCase()
-    : label.toUpperCase();
-  if (axis === "elevation") {
-    if (upper.includes("UP")) return `${amount}↑ Clicks`;
-    if (upper.includes("DOWN")) return `${amount}↓ Clicks`;
-  }
-  if (axis === "windage") {
-    if (upper.includes("RIGHT")) return `${amount}→ Clicks`;
-    if (upper.includes("LEFT")) return `${amount}← Clicks`;
-  }
-  return `${amount} Clicks`;
-}
-
 function scoreClass(score) {
   if (!Number.isFinite(score)) return "score-pending";
   if (score >= 90) return "score-green";
@@ -3664,20 +3640,11 @@ function renderResults() {
   }
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
-  const action = document.getElementById("shooterResultAction");
-  const actionText = document.getElementById("shooterResultActionText");
-  if (action && actionText) {
-    actionText.textContent = zeroingShooterNextAction();
-    action.hidden = !resultsShown;
-  }
   const hitsParts = [SIMULATION_MODE
     ? `Shot group: ${impacts.length} ${impacts.length === 1 ? "impact" : "impacts"}`
     : `${impacts.length} Hits`];
   if (SIMULATION_MODE && backendPoibDisplayCoordinate(backendAuthorityPackage)) {
     hitsParts.push("Center of group highlighted");
-  }
-  if (currentClicks) {
-    hitsParts.push(compactClickToken(currentClicks.elevation, "elevation"), compactClickToken(currentClicks.windage, "windage"));
   }
   document.getElementById("hitsValue").textContent = hitsParts.join(" • ");
   const message = document.getElementById("authorityStatusMessage");
@@ -3687,23 +3654,6 @@ function renderResults() {
       : "";
     message.classList.toggle("is-hidden", !authorityStatusMessage);
   }
-}
-
-function zeroingShooterNextAction() {
-  if (!resultsShown) return "";
-  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
-    if (backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed) {
-      return "Confirmation complete. Save Session.";
-    }
-    return remainingCorrectionShooterMessage(backendAuthorityPackage);
-  }
-  if (!currentClicks) return "Review the session setup, then try Show Results again.";
-  const windage = correctionAxisDisplay(currentClicks, "windage");
-  const elevation = correctionAxisDisplay(currentClicks, "elevation");
-  if (windage.count === 0 && elevation.count === 0) {
-    return "No sight adjustment is needed. Fire a confirmation group.";
-  }
-  return `Apply ${windage.direction} ${windage.count} ${windage.unit} · ${elevation.direction} ${elevation.count} ${elevation.unit}. Then fire a confirmation group.`;
 }
 
 function hideShooterTip() {

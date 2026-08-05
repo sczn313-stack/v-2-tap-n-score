@@ -13,10 +13,12 @@ assert.match(shoot, /Results couldn’t be calculated\. Check your connection, t
 assert.doesNotMatch(shoot, /Your target data has not been lost\./, "recovery removes unnecessary reassurance");
 assert.doesNotMatch(shoot, />Your Score</, "a failed or zeroing result cannot present score as the visual hero");
 assert.match(shoot, /if \(value === null \|\| value === undefined \|\| value === ""\) return null;/, "missing score data cannot render as a numeric zero");
-assert.match(shoot, /id="shooterResultAction"/, "zeroing results lead with the next shooter action");
-assert.match(shoot, /Apply \$\{windage\.direction\} \$\{windage\.count\}/, "the next action carries the precise click correction");
+assert.doesNotMatch(shoot, /id="shooterResultAction"|<span>Next Step<\/span>/, "the rejected NEXT STEP card is absent");
+assert.doesNotMatch(shoot, /compactClickToken|hitsParts\.push\([^\n]*currentClicks/, "the results header does not duplicate the click correction");
+assert.match(shoot, /class="workspace-result-overlay" aria-label="Mechanical correction"/, "the approved correction overlay remains adjacent to the target");
+assert.match(shoot, /data-axis="windage"[\s\S]*?data-axis="elevation"/, "windage and elevation remain separate correction cards");
 
-assert.match(styles, /\.target-page \.shooter-result-action\{[\s\S]*?border:2px solid #d9960b/, "the next action receives primary result emphasis");
+assert.doesNotMatch(styles, /\.target-page \.shooter-result-action/, "the removed NEXT STEP card leaves no reserved layout space");
 assert.match(styles, /\.target-page \.target-intel-score\{[\s\S]*?min-height:42px/, "score is reduced to a compact supporting metric");
 assert.match(styles, /\.target-page \.zeroing-setup-panel\{[\s\S]*?border:1px solid rgba\(255,255,255,\.18\)/, "zeroing setup uses subordinate visual weight");
 
