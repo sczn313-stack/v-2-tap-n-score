@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
 <link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<script src="navigation.js" defer></script>
 </head>
 <body>
 <main class="shell app-shell sec-shell">
@@ -19,6 +20,7 @@
         <strong>Tap-<span>n</span>-Score</strong>
       </div>
     </div>
+    <span class="sec-document-badge">SEC</span>
     <span class="sec-document-identifier">Shooter Experience Card</span>
     <button class="package-menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="packageMenu"><span></span><span></span><span></span></button>
   </header>
@@ -29,7 +31,11 @@
     <a href="sec.html" aria-current="page">SEC</a>
     <a href="records.html">History</a>
   </nav>
-  <div class="sec-mission-bar" aria-label="Session identifier"><strong id="secSessionIdentifier"></strong></div>
+  <div class="sec-publisher-bar" aria-label="Baker target publisher">
+    <span>Buy more targets like this</span>
+    <a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer">BakerTargets.com</a>
+  </div>
+  <a class="sec-vault-back" id="secVaultBack" href="records.html" data-preserve-active-session hidden>← Back to Ballistic Vault</a>
 
   <div id="missingState" class="panel is-hidden">
     <h1>No completed session</h1>
@@ -40,17 +46,17 @@
   <article id="secCard" class="sec-experience is-hidden">
     <section class="sec-target-story" aria-label="Initial and confirmation target story">
       <details class="sec-universal-stage sec-universal-stage-evidence sec-accordion-stage" data-sec-stage="evidence" open>
-        <summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · Evidence</span><h2>Before and After</h2></summary>
+        <summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · TARGET</span><strong id="secSessionIdentifier"></strong></summary>
         <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
           <figure>
-            <figcaption><strong>Before</strong></figcaption>
+            <figcaption><strong>BEFORE</strong></figcaption>
             <div class="sec-comparison-target">
               <img id="beforeEvidenceImage" alt="Initial group target evidence" />
               <div class="marker-layer" id="beforeEvidenceMarkers"></div>
             </div>
           </figure>
           <figure id="confirmationWorkspace">
-            <figcaption><strong>After</strong></figcaption>
+            <figcaption><strong>AFTER</strong></figcaption>
             <div class="sec-comparison-target"><img id="confirmationImage" alt="Confirmation-group target evidence" /><div class="marker-layer" id="confirmationMarkers"></div><span class="sec-comparison-pending is-hidden" id="confirmationPending" hidden></span></div>
           </figure>
         </div>
@@ -122,6 +128,7 @@
 const SEC_QUERY = new URLSearchParams(window.location.search);
 const reviewSessionId = SEC_QUERY.get("reviewSession");
 const requestedSessionId = SEC_QUERY.get("sessionId");
+const historicalSnapshotMode = Boolean(requestedSessionId);
 const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
 const SEC_ACCORDION_STAGES = [...document.querySelectorAll(".sec-target-story > details.sec-accordion-stage")];
 SEC_ACCORDION_STAGES.forEach(stage => {
@@ -220,15 +227,21 @@ const session = (isCompletedZeroingSession(requestedPersistedSession) ? requeste
 const authority = session && (session.m4AuthorityPackage || session.backendAuthorityPackage);
 const card = document.getElementById("secCard");
 document.body.dataset.vaultThumbnail = vaultThumbnailMode ? "true" : "false";
+document.body.dataset.secMode = historicalSnapshotMode ? "historical" : "current";
+const secVaultBack = document.getElementById("secVaultBack");
+if (historicalSnapshotMode && session && secVaultBack) {
+  secVaultBack.hidden = false;
+  secVaultBack.href = `records.html?selected=${encodeURIComponent(session.sessionId || "")}`;
+}
 let confirmationEvidence = session && session.confirmationEvidenceImage || null;
 let confirmationImpacts = session && Array.isArray(session.confirmationImpactPoints) ? [...session.confirmationImpactPoints] : [];
 let confirmationAuthority = session && session.confirmationAuthorityPackage || null;
 document.querySelector(".sec-preservation-actions").innerHTML = SCZN3SEC.PreservationCard({
-  save: true,
+  save: !historicalSnapshotMode,
   validation: false,
   share: true,
   print: true,
-  note: true,
+  note: !historicalSnapshotMode,
   history: true
 });
 document.querySelector(".sec-preserved-history-row").append(document.getElementById("viewHistory"));
@@ -347,13 +360,17 @@ function renderPreservationState(preservedAt) {
   const historyButton = document.getElementById("viewHistory");
   const historyRow = document.querySelector(".sec-preserved-history-row");
   const preserved = !!preservedAt;
-  saveButton.textContent = preserved ? "SEC PRESERVED" : "SAVE SEC";
-  saveButton.classList.toggle("is-preserved", preserved);
-  saveButton.disabled = preserved || !confirmationAuthority;
+  if (saveButton) {
+    saveButton.textContent = preserved ? "SEC PRESERVED" : "SAVE SEC";
+    saveButton.classList.toggle("is-preserved", preserved);
+    saveButton.disabled = preserved || !confirmationAuthority;
+  }
   historyRow.classList.toggle("is-hidden", !preserved);
   historyButton.classList.toggle("is-next-action", preserved);
   if (session && session.sessionId) {
-    historyButton.href = `records.html?from=preserved-sec&sessionId=${encodeURIComponent(session.sessionId)}`;
+    historyButton.href = historicalSnapshotMode
+      ? `records.html?selected=${encodeURIComponent(session.sessionId)}`
+      : `records.html?from=preserved-sec&selected=${encodeURIComponent(session.sessionId)}`;
   }
 }
 
@@ -376,6 +393,7 @@ function renderSEC() {
     return;
   }
   card.classList.remove("is-hidden");
+  card.dataset.sessionNumberAuthority = session.sessionNumberAuthority || "device-local-temporary";
   const setup = session.matrixSnapshot || {};
   const correction = authority.correction;
   const clicks = authority.clicks || {};
@@ -397,7 +415,7 @@ function renderSEC() {
   document.getElementById("summaryExecutionInstructions").innerHTML = executionHtml;
   const distanceValue = savedContext.distanceValue || session.targetDistanceValue || 25;
   const distanceLabel = savedContext.distanceUnit === "YDS" ? "yards" : "meters";
-  const sessionTimestamp = new Date(session.timestamp || session.savedAt || session.createdAt || "");
+  const sessionTimestamp = new Date(session.preservedAt || session.savedAt || session.timestamp || session.createdAt || "");
   const hasSessionTimestamp = Number.isFinite(sessionTimestamp.getTime());
   const targetIdentity =
     session.targetName
@@ -446,7 +464,8 @@ function renderConfirmation() {
     (confirmationEvidence || confirmationImpacts.length)
       ? confirmationImpacts.map((point, index) => marker(point, "impact-marker", index + 1)).join("")
       : "";
-  document.getElementById("saveSEC").disabled = !confirmationAuthority;
+  const saveButton = document.getElementById("saveSEC");
+  if (saveButton) saveButton.disabled = !confirmationAuthority;
   if (!confirmationAuthority) {
     document.getElementById("summaryValidationOutcome").innerHTML =
       "<strong>Confirmation group pending</strong><span>Fire and record the confirmation group to validate the correction.</span>";
@@ -457,16 +476,16 @@ function renderConfirmation() {
     `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
 }
 
-document.getElementById("addNote").addEventListener("click", () => {
+document.getElementById("addNote")?.addEventListener("click", () => {
   document.getElementById("noteEditor").classList.toggle("is-hidden");
 });
 
-document.getElementById("saveNote").addEventListener("click", () => {
+document.getElementById("saveNote")?.addEventListener("click", () => {
   SCZN3M4.updateActiveSession({ secNote: document.getElementById("secNote").value.trim() });
   document.getElementById("secActionStatus").textContent = "Note saved to the active session.";
 });
 
-document.getElementById("saveSEC").addEventListener("click", () => {
+document.getElementById("saveSEC")?.addEventListener("click", () => {
   const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
   if (saved) {
     renderPreservationState(saved.preservedAt);
@@ -488,6 +507,7 @@ document.getElementById("shareSEC").addEventListener("click", async () => {
 
 document.getElementById("exportSEC").addEventListener("click", () => window.print());
 
+SEC_ACCORDION_STAGES.forEach((stage, index) => { stage.open = index === 0; });
 renderSEC();
 </script>
 </body>

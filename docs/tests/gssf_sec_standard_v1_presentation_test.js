@@ -3,98 +3,26 @@ const path = require("path");
 const assert = require("assert");
 
 const records = fs.readFileSync(path.join(__dirname, "..", "records.html"), "utf8");
-const styles = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
-const renderStart = records.indexOf("function renderGssfSecCard(");
-const renderEnd = records.indexOf("\nfunction gssfCanonicalSavedEvidenceContract", renderStart);
-const bucketDefinitionsStart = records.indexOf("function gssfBucketDefinitions(");
-const bucketDefinitionsEnd = records.indexOf("\nfunction gssfAuthoritativeBreakdown", bucketDefinitionsStart);
-const bucketRendererStart = records.indexOf("function gssfBucketSummaryHtml(");
-const bucketRendererEnd = records.indexOf("\nfunction gssfScoringSourceLine", bucketRendererStart);
+const m4Styles = fs.readFileSync(path.join(__dirname, "..", "m4-sec.css"), "utf8");
+const vaultStyles = fs.readFileSync(path.join(__dirname, "..", "ballistic-vault.css"), "utf8");
+const renderStart = records.indexOf("function renderGssfM4ReferenceSec(");
+const renderEnd = records.indexOf("\nfunction renderHistory", renderStart);
 
-assert(renderStart >= 0 && renderEnd > renderStart, "saved GSSF SEC renderer must be extractable");
+assert(renderStart >= 0 && renderEnd > renderStart, "universal GSSF SEC renderer must be extractable");
 const renderer = records.slice(renderStart, renderEnd);
-const bucketDefinitions = records.slice(bucketDefinitionsStart, bucketDefinitionsEnd);
-const bucketRenderer = records.slice(bucketRendererStart, bucketRendererEnd);
 
-const requiredStory = [
-  "Final Time",
-  "How Your Final Time Was Calculated",
-  "How Your Final Time Is Calculated",
-  "Timer Time",
-  "Paper Penalty",
-  "How Your Paper Penalty Was Built",
-  "Target",
-  "Session",
-  "Continue"
-];
+assert(renderer.includes('class="sec-experience m4-reference-sec-card gssf-m4-reference-sec-card"'), "GSSF must inherit the M4 SEC shell");
+assert(renderer.includes('class="sec-before-after"'), "GSSF must retain the universal two-panel TARGET footprint");
+assert(renderer.includes("Confirmed Impacts"), "GSSF left TARGET panel must show confirmed target evidence");
+assert(renderer.includes("Shot Distribution"), "GSSF right TARGET panel must show scoring analysis");
+assert(renderer.includes("Down Zero") && renderer.includes("+1") && renderer.includes("+3") && renderer.includes("Miss / Other"), "GSSF analysis must retain all governed scoring buckets");
+assert(renderer.includes("shotIds.join"), "GSSF scoring buckets must retain shot-number traceability");
+assert(renderer.includes("Timer") && renderer.includes("GSSF Final Results"), "timer and final result must remain in the universal sequence below TARGET");
+assert(!renderer.includes('class="sec-correction-call"'), "GSSF must not restore an oversized score hero");
+assert(!/Backend shot classifications|Diagnostic validation evidence|Marker coordinate validation/.test(renderer), "GSSF SEC must not expose developer diagnostics");
 
-for (const label of requiredStory) {
-  assert(renderer.includes(label), `SEC Standard v1.0 must display ${label}`);
-}
+assert(/\.records-page \.m4-reference-sec-card\{/.test(m4Styles), "GSSF must use the governed reference-card footprint");
+assert(/\.vault-scoring-panel\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/.test(vaultStyles), "Vault GSSF analysis must remain compact inside the second evidence panel");
+assert(records.includes('? "ANALYSIS" : "AFTER"'), "Vault browse must label the GSSF exception as ANALYSIS");
 
-const orderedSections = [
-  "sec-gssf-story-result",
-  "sec-gssf-story-explanation",
-  "sec-gssf-story-buckets",
-  "sec-gssf-story-target",
-  "sec-gssf-story-session",
-  "sec-gssf-story-continue"
-];
-
-for (let index = 1; index < orderedSections.length; index += 1) {
-  assert(
-    renderer.indexOf(orderedSections[index - 1]) < renderer.indexOf(orderedSections[index]),
-    `${orderedSections[index - 1]} must precede ${orderedSections[index]}`
-  );
-}
-
-assert(
-  !/\b(?:Authority|Backend|Validation|Package)\b/.test(renderer),
-  "saved GSSF SEC customer copy must not expose developer terminology"
-);
-assert(renderer.includes("gssfCompetitionRecord(session, pkg)"), "presentation must retain governed time values");
-assert(renderer.includes("gssfBucketSummaryHtml(pkg)"), "presentation must retain governed bucket rendering");
-assert(renderer.includes("gssfSavedEvidenceHtml(session, pkg)"), "presentation must retain governed evidence selection");
-
-assert(
-  /\.records-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:repeat\(4, minmax\(0, 1fr\)\)/s.test(styles),
-  "desktop and tablet bucket presentation must be one four-column row"
-);
-assert(
-  !/grid-template-columns:repeat\(2, minmax\(0, 1fr\)\)/.test(styles.slice(styles.indexOf(".records-page .sec-gssf-bucket-grid"))),
-  "GSSF scoring must not fall back to a 2 by 2 presentation"
-);
-assert(
-  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-bucket-grid\s*\{[^}]*grid-template-columns:repeat\(4, minmax\(0, 1fr\)\)[^}]*grid-auto-flow:row[^}]*overflow-x:hidden[^}]*scroll-snap-type:none/s.test(styles),
-  "mobile scoring must display all four columns without carousel behavior"
-);
-const expectedBucketOrder = ["Down Zero", "+1", "+3", "Miss / Other"];
-for (let index = 1; index < expectedBucketOrder.length; index += 1) {
-  assert(
-    bucketDefinitions.indexOf(`label: "${expectedBucketOrder[index - 1]}"`) < bucketDefinitions.indexOf(`label: "${expectedBucketOrder[index]}"`),
-    `${expectedBucketOrder[index - 1]} must precede ${expectedBucketOrder[index]}`
-  );
-}
-for (const contentClass of ["sec-gssf-bucket-head", "sec-gssf-bucket-math", "sec-gssf-bucket-subtotal", "sec-gssf-bucket-rule"]) {
-  assert(bucketRenderer.includes(contentClass), `every scoring column must retain ${contentClass}`);
-}
-assert(bucketRenderer.includes("Hits:") && bucketRenderer.includes("Shots:"), "every scoring column must retain hits and authoritative shot IDs in customer language");
-assert(renderer.includes("Timer time required for Final Time"), "missing timer time must be stated without presenting a Final Time");
-for (const railClass of ["sec-gssf-rail-shell", "sec-gssf-rail-arrow", "sec-gssf-rail-dots", "mobile-equals"]) {
-  assert(bucketRenderer.includes(railClass), `mobile scoring rail must retain ${railClass}`);
-}
-assert(
-  /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-rail-arrow\s*\{[^}]*display:none/s.test(styles)
-    && /@media \(max-width:560px\)[\s\S]*?\.records-page \.sec-gssf-rail-dots\s*\{[^}]*display:none/s.test(styles),
-  "mobile scoring must hide carousel arrows and position dots"
-);
-assert(
-  styles.includes("--gssf-sec-space") && styles.includes("--gssf-sec-radius") && styles.includes("--gssf-sec-shadow"),
-  "SEC Standard v1.0 must use a consistent spacing, radius, and shadow system"
-);
-assert(
-  /\.records-page \.sec-gssf-continue-actions a\s*\{[^}]*min-height:50px/s.test(styles),
-  "continue actions must provide comfortable touch targets"
-);
-
-console.log("PASS SCZN3 SEC Standard v1.0 presentation test");
+console.log("PASS GSSF universal SEC presentation contract");

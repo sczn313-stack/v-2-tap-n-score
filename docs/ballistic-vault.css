@@ -5,11 +5,12 @@
 }
 .records-page .m4-header{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto minmax(46px,1fr);
+  grid-template-columns:minmax(0,1fr) auto auto minmax(46px,1fr);
   align-items:center;
   gap:12px;
 }
 .records-page .m4-header .vendor-slot{justify-self:start}
+.records-sec-badge{display:grid;place-items:center;min-height:30px;padding:4px 10px;border-radius:999px;background:#fff;color:#111;font-size:12px;font-weight:950;letter-spacing:.06em}
 .vault-header-title{
   margin:0;
   color:#fff;
@@ -22,6 +23,10 @@
   white-space:nowrap;
 }
 .records-page .m4-header .records-menu-button{justify-self:end}
+.records-historical-promo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;padding:9px 12px;border:1px solid #9d6b07;border-radius:var(--radius);background:#d9960b;color:#0c0c0c;font-size:12px;font-weight:800}
+.records-historical-promo a{color:#0c0c0c;font-weight:950}
+.records-vault-back{display:inline-flex;align-items:center;min-height:38px;margin-top:8px;padding:7px 10px;border:1px solid #8f650d;border-radius:7px;background:#111;color:#fff;font-size:11px;font-weight:900;text-decoration:none}
+.records-vault-back[hidden],.records-historical-promo[hidden]{display:none!important}
 .records-page .history-panel.ballistic-vault{
   display:grid;
   gap:0;
@@ -44,6 +49,25 @@
   background:#101010;
   box-shadow:0 16px 34px rgba(0,0,0,.38);
 }
+.vault-record-summary{min-width:0;overflow:hidden;border:1px solid #a8750c;border-radius:12px;background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.38)}
+.vault-record-summary.is-selected{border:3px solid #ffd85a;box-shadow:0 0 0 3px rgba(255,216,90,.24),0 16px 34px rgba(0,0,0,.48)}
+.vault-record-link{display:block;color:#111;text-decoration:none}
+.vault-record-link>header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:9px 11px;background:#111;color:#fff}
+.vault-record-link>header strong{font-size:14px}
+.vault-record-link>header time{color:#ddd;font-size:11px;font-weight:800}
+.vault-evidence-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px}
+.vault-evidence-pair figure{display:grid;gap:5px;min-width:0;margin:0}
+.vault-evidence-pair figcaption{color:#111;font-size:10px;font-weight:950;letter-spacing:.05em;text-align:center}
+.vault-target-panel{position:relative;display:grid;place-items:center;aspect-ratio:4/3;overflow:hidden;border:1px solid #bdb7aa;background:#f5f0df}
+.vault-target-panel img{display:block;width:100%;height:100%;object-fit:contain}
+.vault-target-panel .history-evidence-layer{position:absolute;inset:0}
+.vault-target-unavailable{display:grid;place-items:center;position:absolute;inset:0;padding:10px;background:rgba(10,10,10,.75);color:#fff;font-size:10px;font-weight:900;text-align:center}
+.vault-scoring-panel{grid-template-columns:repeat(2,minmax(0,1fr));align-content:center;gap:6px;padding:8px;background:linear-gradient(160deg,#17130b,#090909);color:#fff}
+.vault-scoring-panel>span{display:grid;gap:2px;padding:7px;border:1px solid rgba(217,150,11,.55);border-radius:6px}
+.vault-scoring-panel b{color:#e7b642;font-size:8px;text-transform:uppercase}
+.vault-scoring-panel strong{font-size:18px}
+.vault-open-label{display:flex;justify-content:flex-end;padding:0 11px 10px;color:#277a35;font-size:10px;font-weight:950}
+.vault-record-link:focus-visible{outline:3px solid #ffd85a;outline-offset:-4px}
 .vault-sec-thumbnail{
   position:relative;
   display:block;
@@ -112,14 +136,20 @@
 }
 @media(max-width:720px){
   .records-page .m4-header{
-    grid-template-columns:minmax(0,1fr) auto 46px;
+    grid-template-columns:minmax(0,1fr) auto auto 46px;
     gap:7px;
   }
-  .vault-header-title{grid-column:2;font-size:clamp(17px,5vw,23px)}
-  .records-page .m4-header .records-menu-button{grid-column:3}
+  .records-sec-badge{grid-column:2;min-height:26px;padding:3px 7px;font-size:10px}
+  .vault-header-title{grid-column:3;font-size:clamp(15px,4.5vw,21px)}
+  .records-page .m4-header .records-menu-button{grid-column:4}
+  .records-page .m4-header .vendor-slot img{flex-basis:36px;width:36px;height:36px}
+  .records-page .m4-header .vendor-name{font-size:13px}
   .records-page .history-panel.ballistic-vault{padding:8px}
   .records-page .vault-gallery{grid-template-columns:1fr;gap:16px}
   .vault-card-footer{gap:5px;padding:6px 7px;font-size:9px}
   .vault-card-footer strong{font-size:11px}
   .vault-card-footer a{padding-inline:8px;font-size:8px}
+  .records-historical-promo{gap:6px;padding:7px 8px;font-size:10px}
+  .vault-evidence-pair{gap:8px;padding:8px}
+  .vault-record-link>header{padding:8px 9px}
 }

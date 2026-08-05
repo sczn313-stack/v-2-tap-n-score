@@ -2,17 +2,22 @@
 .is-hidden{display:none!important}
 .sec-shell{max-width:1040px}
 .sec-experience{display:grid;gap:12px}
-.sec-shell .sec-document-header{grid-template-columns:auto minmax(0,1fr) auto;gap:14px;min-height:64px;padding:8px 12px;border:2px solid #b37b08;border-radius:var(--radius)}
+.sec-shell .sec-document-header{grid-template-columns:auto auto minmax(0,1fr) auto;gap:12px;min-height:64px;padding:8px 12px;border:2px solid #b37b08;border-radius:var(--radius)}
 .sec-shell .sec-document-header .package-brand-lockup{grid-column:auto;gap:9px;justify-self:start;overflow:visible}
 .sec-shell .sec-document-header .package-emblem{flex-basis:40px;width:40px;height:40px}
 .sec-shell .sec-document-header .package-brand-copy{overflow:visible}
 .sec-shell .sec-document-header .package-brand-copy strong{font-size:27px}
-.sec-document-identifier{justify-self:center;color:#e8dfcd;font:900 12px/1.1 Arial,sans-serif;letter-spacing:.08em;text-align:center;text-transform:uppercase}
+.sec-document-badge{display:grid;place-items:center;min-height:30px;padding:4px 10px;border-radius:999px;background:#fff;color:#111;font:900 12px/1 Arial,sans-serif;letter-spacing:.06em}
+.sec-document-identifier{min-width:0;justify-self:start;overflow:hidden;color:#e8dfcd;font:900 12px/1.1 Arial,sans-serif;letter-spacing:.06em;text-align:left;text-overflow:ellipsis;text-transform:none;white-space:nowrap}
 .sec-shell .sec-document-header .package-menu{grid-column:auto;justify-self:end;width:44px;height:44px;min-width:44px;min-height:44px}
 .sec-shell .sec-document-header .package-menu span{width:24px;height:3px}
 .sec-mission-bar{display:flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:7px 12px;border:1px solid #9d6b07;border-radius:var(--radius);background:#d9960b;color:#0c0c0c;font:900 13px/1.1 Arial,sans-serif;letter-spacing:.015em;text-align:center;text-decoration:none}
 .sec-mission-bar strong{font-weight:900}
 .sec-mission-bar:focus-visible{outline:2px solid #0c0c0c;outline-offset:-4px}
+.sec-publisher-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:38px;padding:7px 12px;border:1px solid #9d6b07;border-radius:var(--radius);background:#d9960b;color:#0c0c0c;font:800 13px/1.1 Arial,sans-serif}
+.sec-publisher-bar a{color:#0c0c0c;font-weight:950}
+.sec-vault-back{display:inline-flex;align-items:center;min-height:38px;margin-top:8px;padding:7px 10px;border:1px solid #8f650d;border-radius:7px;background:#111;color:#fff;font-size:11px;font-weight:900;text-decoration:none}
+.sec-vault-back[hidden]{display:none!important}
 .sec-target-story{border:2px solid var(--ink);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow)}
 .sec-target-story{display:grid;gap:14px;padding:20px;overflow:hidden}
 .sec-story-command-bar{display:grid;gap:10px;padding-top:14px;border-top:2px solid var(--ink)}
@@ -51,9 +56,9 @@
 .sec-technical-details>.sec-metric-grid,.sec-technical-details>.trace-button{margin:10px 12px}
 .sec-before-after{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
 .sec-before-after figure{display:grid;grid-template-rows:auto auto;min-width:0;margin:0}
-.sec-before-after figcaption{display:grid;align-content:start;gap:2px;min-height:42px;margin-bottom:6px}
+.sec-before-after figcaption{display:grid;place-items:center;gap:2px;min-height:42px;margin-bottom:6px;text-align:center}
 .sec-before-after figcaption span{color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-.sec-before-after figcaption strong{font-size:15px}
+.sec-before-after figcaption strong{font-size:20px;font-weight:950;letter-spacing:.05em}
 .sec-evidence-frame,.sec-comparison-target{aspect-ratio:2550/2625}
 .sec-comparison-target{position:relative;overflow:hidden;border:2px solid var(--ink);border-radius:var(--radius);background:var(--paper)}
 .sec-comparison-target img{display:block;width:100%;height:auto}
@@ -145,20 +150,23 @@ body[data-vault-thumbnail="true"] .package-footer{display:none!important}
 body[data-vault-thumbnail="true"] .sec-experience{display:block}
 body[data-vault-thumbnail="true"] .sec-target-story{padding:10px;box-shadow:none}
 @media(max-width:640px){
-  .sec-shell .sec-document-header{grid-template-columns:auto minmax(0,1fr) 40px;gap:7px;min-height:58px;padding:7px 8px}
+  .sec-shell .sec-document-header{grid-template-columns:auto auto minmax(0,1fr) 40px;gap:6px;min-height:58px;padding:7px 8px}
   .sec-shell .sec-document-header .package-brand-lockup{gap:6px}
   .sec-shell .sec-document-header .package-emblem{flex-basis:34px;width:34px;height:34px}
   .sec-shell .sec-document-header .package-brand-copy strong{font-size:clamp(19px,5.5vw,23px)}
-  .sec-document-identifier{font-size:clamp(8px,2.4vw,10px);letter-spacing:.05em}
+  .sec-document-badge{min-height:26px;padding:3px 7px;font-size:10px}
+  .sec-document-identifier{font-size:clamp(8px,2.4vw,10px);letter-spacing:.02em}
   .sec-shell .sec-document-header .package-menu{width:40px;height:40px;min-width:40px;min-height:40px}
   .sec-mission-bar{gap:5px;min-height:34px;padding:6px 8px;font-size:clamp(9px,2.8vw,11px)}
+  .sec-publisher-bar{gap:6px;min-height:34px;padding:6px 8px;font-size:clamp(9px,2.8vw,11px)}
   .sec-target-story{padding:14px 12px}
   .sec-metric-grid,.sec-correction-call{grid-template-columns:1fr}
   .sec-correction-call span{grid-column:auto}
   .sec-execution>div{grid-template-columns:1fr;gap:3px}
   .sec-validation-controls .button,.sec-preservation-actions .button,.sec-preservation-actions a{flex:1 1 calc(50% - 8px);min-width:0}
   .sec-preserved-history-row #viewHistory{min-width:132px}
-  .sec-before-after{grid-template-columns:1fr}
+  .sec-before-after{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .sec-before-after figcaption strong{font-size:16px}
   .records-page .m4-reference-sec-card{padding:7px}
   .records-page .m4-reference-sec-card .sec-universal-stage-evidence,
   .records-page .m4-reference-sec-card .sec-universal-stage-measurement,
@@ -193,6 +201,14 @@ body[data-vault-thumbnail="true"] .sec-target-story{padding:10px;box-shadow:none
 .sec-evidence-toggle::-webkit-details-marker{display:none}
 .sec-evidence-toggle::marker{content:""}
 .sec-evidence-toggle:focus-visible{outline:2px solid #8a6212;outline-offset:2px}
+.sec-target-story{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sec-target-story>details.sec-accordion-stage{min-width:0}
+.sec-target-story>details.sec-universal-stage-evidence,.sec-target-story>details.sec-universal-stage-preservation{grid-column:1/-1}
+.sec-target-story>details.sec-universal-stage-evidence{padding:0;overflow:hidden;border-color:#111;background:#fff}
+.sec-target-story>details.sec-universal-stage-evidence>.sec-evidence-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;padding:10px 13px;border:0;background:#111;color:#fff}
+.sec-target-story>details.sec-universal-stage-evidence>.sec-evidence-toggle span{color:#fff;font-size:14px}
+.sec-target-story>details.sec-universal-stage-evidence>.sec-evidence-toggle strong{color:#dedede;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none}
+.sec-target-story>details.sec-universal-stage-evidence>.sec-before-after{padding:14px}
 .sec-target-story>details.sec-collapsible-stage{padding:0;border:0!important;background:transparent!important}
 .sec-stage-pill{box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) 18px;align-items:center;gap:8px;width:100%;min-height:var(--sczn3-pill-height);padding:0 var(--sczn3-pill-padding-inline);border:2px solid var(--sczn3-control-border);border-radius:var(--sczn3-pill-radius);background:var(--sczn3-control-background);color:var(--sczn3-control-text);cursor:pointer;list-style:none}
 .sec-stage-pill::-webkit-details-marker{display:none}
@@ -218,8 +234,39 @@ body[data-vault-thumbnail="true"] .sec-universal-stage-heading{display:none}
   .sec-stage-body{padding:11px 9px}
 }
 
+@media(max-width:460px){
+  .sec-shell .sec-document-header{grid-template-columns:auto auto minmax(0,1fr) 40px;gap:4px;padding-inline:6px}
+  .sec-shell .sec-document-header .package-emblem{flex-basis:32px;width:32px;height:32px}
+  .sec-shell .sec-document-header .package-brand-copy strong{font-size:19px}
+  .sec-document-badge{padding-inline:5px;font-size:9px}
+  .sec-document-identifier{overflow:visible;font-size:8px;letter-spacing:0;text-overflow:clip}
+  .sec-target-story{grid-template-columns:1fr}
+  .sec-target-story>details.sec-accordion-stage{grid-column:1}
+  .sec-stage-pill h2{white-space:normal}
+}
+
 @media print{
   .sec-accordion-stage:not([open])>.sec-before-after{display:grid!important}
   .sec-collapsible-stage>.sec-stage-pill{display:none!important}
   .sec-collapsible-stage:not([open])>.sec-stage-body{display:grid!important}
+}
+
+/* Historical SECs reuse the Current Session architecture without mutating active state. */
+.records-page[data-vault-view="historical"] .vault-gallery{grid-template-columns:minmax(0,1fr)}
+.records-page[data-vault-view="historical"] .history-panel.ballistic-vault{background:#0d0d0d}
+.records-page .historical-sec-detail{width:100%;max-width:1040px;margin:0 auto}
+.records-page .historical-sec-detail .sec-target-story{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.records-page .historical-sec-detail .sec-target-story>details.sec-accordion-stage{min-width:0;min-height:0!important;padding:0!important;border:0!important;background:transparent!important}
+.records-page .historical-sec-detail .sec-target-story>details.sec-universal-stage-evidence,.records-page .historical-sec-detail .sec-target-story>details.sec-universal-stage-preservation{grid-column:1/-1}
+.records-page .historical-sec-detail .sec-evidence-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;padding:10px 13px;border:0;border-radius:10px;background:#111;color:#fff}
+.records-page .historical-sec-detail .sec-evidence-toggle span{color:#fff;font-size:14px}
+.records-page .historical-sec-detail .sec-evidence-toggle strong{color:#dedede;font-size:13px;font-weight:600}
+.records-page .historical-sec-detail .sec-historical-target-body{display:grid;gap:12px;margin-top:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fffdf8}
+.records-page .historical-sec-detail .sec-before-after figcaption{place-items:center;text-align:center}
+.records-page .historical-sec-detail .sec-before-after figcaption strong{font-size:18px;font-weight:950;letter-spacing:.04em;text-transform:uppercase}
+.records-page .historical-sec-detail[data-read-only="true"] .sec-preservation-actions button{display:none}
+
+@media(max-width:460px){
+  .records-page .historical-sec-detail .sec-target-story{grid-template-columns:1fr}
+  .records-page .historical-sec-detail .sec-target-story>details.sec-accordion-stage{grid-column:1}
 }

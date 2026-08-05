@@ -83,7 +83,7 @@ assert.match(sources["records.html"], /Array\.isArray\(result\.shotIds\)[\s\S]*?
 assert.doesNotMatch(sources["records.html"], /<div class="sec-correction-call">\$\{scoreBreakdown\}<\/div>/, "GSSF must not use the oversized score hero");
 assert.doesNotMatch(sources["records.html"], /<span class="sec-save-status">Saved SEC<\/span>/, "preservation sections must not repeat the saved-state label");
 assert.doesNotMatch(sources["records.html"], /Backend shot classifications|Diagnostic validation evidence|Marker coordinate validation/, "preserved GSSF SECs must not expose developer diagnostics");
-assert.match(sources["records.html"], /class="button primary" href="records\.html\?session=/, "universal preserved SECs must use Reopen SEC as the primary action");
+assert.match(sources["records.html"], /class="vault-record-summary[^"]*"[\s\S]*?OPEN SEC →/, "Vault browse cards must expose one full-SEC action");
 assert.match(m4Styles, /\.sec-before-after figcaption\{[^}]*min-height:42px/, "universal target captions share one footprint");
 assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-stage-evidence\{min-height:620px\}/, "reference SEC evidence stages share one desktop footprint");
 
@@ -131,7 +131,7 @@ assert.match(
   /RECORD_QUERY\.get\("session"\) \|\| RECORD_QUERY\.get\("sessionId"\)/,
   "Ballistic Vault must reopen an exact SEC from both universal and M4 preservation links",
 );
-assert.match(sources["records.html"], /records\.html\?session=/, "preserved SECs provide an exact reopen route");
+assert.match(sources["records.html"], /function historicalSecUrl/, "preserved SECs provide a mission-appropriate exact reopen route");
 assert.match(sources["records.html"], /REQUESTED_RECORD_SESSION_ID/, "Ballistic Vault can reopen one exact preserved session");
 assert.match(styles, /\.records-page \.sec-v1-record-actions\{[\s\S]*?flex-wrap:wrap;/, "SEC actions must wrap at mobile width");
 assert.match(
@@ -142,7 +142,7 @@ assert.match(
 
 const m4EvidenceEnd = sources["sec.html"].indexOf('data-sec-stage="measurement"');
 assert.ok(sources["sec.html"].indexOf('id="beforeEvidenceImage"') < m4EvidenceEnd);
-assert.match(sources["sec.html"], /class="sec-mission-bar" aria-label="Session identifier"><strong id="secSessionIdentifier"><\/strong><\/div>/, "the SEC identity line contains only the session number");
+assert.match(sources["sec.html"], /<summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong><\/summary>/, "the TARGET header contains only its label and session number");
 assert.doesNotMatch(sources["sec.html"].slice(0, m4EvidenceEnd), /secSessionTarget|secSessionDistance|secSessionFirearm|secSessionAmmo|secSessionDate|secSessionTime|secSessionShooter|evidenceDataStatus/, "Evidence contains no session metadata or status text");
 const m4MeasurementEnd = sources["sec.html"].indexOf('data-sec-stage="recommendation"');
 for (const id of ["secSessionTarget", "secSessionDistance", "secSessionFirearm", "secSessionAmmo", "secSessionDate", "secSessionTime", "secSessionShooter"]) {

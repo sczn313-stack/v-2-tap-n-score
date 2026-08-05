@@ -20,6 +20,7 @@
         <a class="vendor-name" href="index.html">Tap-n-Score™</a>
       </div>
     </div>
+    <span class="records-sec-badge">SEC</span>
     <h1 class="vault-header-title">BALLISTIC VAULT</h1>
     <button class="package-menu records-menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="recordsMenuDrawer"><span></span><span></span><span></span></button>
   </header>
@@ -30,6 +31,8 @@
     <a href="records.html" data-simulation-sec-link aria-current="page">Ballistic Vault</a>
     <a href="survey.html">Survey</a>
   </nav>
+  <div class="records-historical-promo" id="recordsHistoricalPromo" hidden><span>Buy more targets like this</span><a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer">BakerTargets.com</a></div>
+  <a class="records-vault-back" id="recordsVaultBack" href="records.html" hidden>← Back to Ballistic Vault</a>
   <section class="panel history-panel ballistic-vault">
     <div class="history-list vault-gallery" id="historyList">
       <article class="vault-loading" role="status" aria-live="polite">
@@ -53,6 +56,9 @@ const historyList = document.getElementById("historyList");
 const RECORD_QUERY = new URLSearchParams(window.location.search);
 const SIMULATION_MODE = RECORD_QUERY.get("simulation") === "1";
 const REQUESTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("session") || RECORD_QUERY.get("sessionId") || "").trim();
+const SELECTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("selected") || "").trim();
+const HISTORICAL_DETAIL_MODE = Boolean(REQUESTED_RECORD_SESSION_ID);
+const VAULT_RETURN_STATE_KEY = "SCZN3_BALLISTIC_VAULT_RETURN_STATE";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const SIMULATION_SESSION_ID = SIMULATION_MODE ? (localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY) || "") : "";
@@ -1028,6 +1034,83 @@ function preservedSecUrl(session, thumbnail = false) {
   return `sec.html?${params.toString()}`;
 }
 
+function isCompletedZeroingVaultSession(session, pkg = authorityPackage(session)) {
+  return Boolean(
+    session &&
+    pkg && pkg.status && pkg.status.hasCorrection === true &&
+    session.confirmationAuthorityPackage
+  );
+}
+
+function historicalSecUrl(session, pkg = authorityPackage(session)) {
+  if (isCompletedZeroingVaultSession(session, pkg)) return preservedSecUrl(session);
+  return `records.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec`;
+}
+
+function vaultTargetPanel(imageUrl, alt, overlay = "", pending = "") {
+  if (!imageUrl) return `<div class="vault-target-panel"><span class="vault-target-unavailable">${escapeHtml(pending || "Evidence unavailable")}</span></div>`;
+  return `<div class="vault-target-panel"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(alt)}" />${overlay ? `<div class="history-evidence-layer">${overlay}</div>` : ""}${pending ? `<span class="vault-target-unavailable">${escapeHtml(pending)}</span>` : ""}</div>`;
+}
+
+function vaultScoringPanel(pkg) {
+  const breakdown = gssfAuthoritativeBreakdown(pkg);
+  if (!breakdown.length) return `<div class="vault-target-panel vault-scoring-panel"><strong>Scoring analysis</strong><span>Saved result</span></div>`;
+  return `<div class="vault-target-panel vault-scoring-panel" aria-label="Saved GSSF scoring analysis">${breakdown.slice(0, 4).map(bucket => `<span><b>${escapeHtml(bucket.zone === "downZero" ? "Down Zero" : bucket.zone === "plusOne" ? "+1" : bucket.zone === "plusThree" ? "+3" : "Miss / Other")}</b><strong>${escapeHtml(bucket.source && bucket.source.count || 0)}</strong></span>`).join("")}</div>`;
+}
+
+function renderCompactVaultRecord(session) {
+  const pkg = authorityPackage(session);
+  const evidence = session.targetEvidenceImage || {};
+  const confirmationEvidence = session.confirmationEvidenceImage || {};
+  const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
+  const destination = historicalSecUrl(session, pkg);
+  const sessionLabel = session.sessionLabel || `Session ${vaultSessionNumber(session)}`;
+  const before = vaultTargetPanel(
+    evidence.dataUrl || (isBaker100YardZeroingSession(session, pkg) ? "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" : ""),
+    `${sessionLabel} saved target evidence`,
+    pkg ? authorityVisualForPackage(pkg) : ""
+  );
+  const after = isGssfAuthorityPackage(pkg)
+    ? vaultScoringPanel(pkg)
+    : confirmationEvidence.dataUrl
+      ? vaultTargetPanel(confirmationEvidence.dataUrl, `${sessionLabel} saved confirmation evidence`, authorityVisualForPackage(session.confirmationAuthorityPackage, { includeAim: false }))
+      : vaultTargetPanel("", "", "", "Confirmation not recorded");
+  return `
+    <article class="vault-record-summary" data-session-id="${escapeHtml(session.sessionId || "")}" data-session-number-authority="${escapeHtml(session.sessionNumberAuthority || "device-local-temporary")}" id="vault-session-${escapeHtml(session.sessionId || "")}">
+      <a class="vault-record-link" href="${escapeHtml(destination)}" data-preserve-active-session aria-label="Open ${escapeHtml(sessionLabel)} preserved Shooter Experience Card">
+        <header><strong>${escapeHtml(sessionLabel)}</strong><time datetime="${escapeHtml(vaultDateTimeAttribute(preservedAt))}">${escapeHtml(cleanVaultDate(preservedAt))}</time></header>
+        <div class="vault-evidence-pair">
+          <figure><figcaption>BEFORE</figcaption>${before}</figure>
+          <figure><figcaption>${isGssfAuthorityPackage(pkg) ? "ANALYSIS" : "AFTER"}</figcaption>${after}</figure>
+        </div>
+        <span class="vault-open-label">OPEN SEC →</span>
+      </a>
+    </article>`;
+}
+
+function readVaultReturnState() {
+  try {
+    const parsed = JSON.parse(sessionStorage.getItem(VAULT_RETURN_STATE_KEY) || "null");
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function restoreVaultReturnState() {
+  const state = readVaultReturnState();
+  const selectedId = SELECTED_RECORD_SESSION_ID || state && state.sessionId || "";
+  if (!selectedId) return;
+  const selected = historyList.querySelector(`[data-session-id="${CSS.escape(selectedId)}"]`);
+  if (!selected) return;
+  selected.classList.add("is-selected");
+  selected.setAttribute("aria-current", "true");
+  requestAnimationFrame(() => {
+    if (state && Number.isFinite(Number(state.scrollY))) window.scrollTo(0, Number(state.scrollY));
+    else selected.scrollIntoView({ block: "center" });
+  });
+}
+
 function renderM4VaultEntry(session) {
   const secNumber = vaultSessionNumber(session);
   const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
@@ -1235,7 +1318,7 @@ function renderHistory() {
   const allSavedSessions = SCZN3M4.getSessionHistory().slice()
     .filter(session => session && session.savedToSEC === true)
     .sort((a, b) => {
-      const timeDelta = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+      const timeDelta = new Date(b.preservedAt || b.savedAt || b.timestamp || 0) - new Date(a.preservedAt || a.savedAt || a.timestamp || 0);
       if (timeDelta) return timeDelta;
       return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
     });
@@ -1252,10 +1335,29 @@ function renderHistory() {
   }
   document.body.dataset.secState = "saved";
 
+  if (!HISTORICAL_DETAIL_MODE) {
+    document.body.dataset.vaultView = "browse";
+    historyList.innerHTML = sessions.map(renderCompactVaultRecord).join("");
+    requestAnimationFrame(syncSecEvidenceLayers);
+    requestAnimationFrame(restoreVaultReturnState);
+    return;
+  }
+
+  const requestedSession = sessions[0];
+  const requestedPackage = authorityPackage(requestedSession);
+  if (isCompletedZeroingVaultSession(requestedSession, requestedPackage)) {
+    window.location.replace(preservedSecUrl(requestedSession));
+    return;
+  }
+  document.body.dataset.vaultView = "historical";
+  document.querySelector(".vault-header-title").textContent = "SHOOTER EXPERIENCE CARD";
+  document.getElementById("recordsHistoricalPromo").hidden = false;
+  const vaultBack = document.getElementById("recordsVaultBack");
+  vaultBack.hidden = false;
+  vaultBack.href = `records.html?selected=${encodeURIComponent(requestedSession.sessionId || "")}`;
+
   const trainingRecords = savedSessions.map(trainingScoreRecord).filter(Boolean);
-  const dotTortureTrendCard = Array.from(groupTrainingScoreRecords(trainingRecords).values())
-    .map(group => renderDotTortureTrendCard(group.records, group.label))
-    .join("");
+  const dotTortureTrendCard = "";
   historyList.innerHTML = dotTortureTrendCard + sessions.map((session, index) => {
     const snapshot = session.matrixSnapshot || {};
     const simulationSession = isSimulationSession(session);
@@ -1350,15 +1452,74 @@ function renderHistory() {
   requestAnimationFrame(syncGssfScoringRails);
 }
 
+function prepareHistoricalSec(session) {
+  const card = historyList.querySelector(`[data-session-id="${CSS.escape(String(session.sessionId || ""))}"]`)
+    || historyList.querySelector(".sec-experience, .history-card");
+  if (!card) return;
+  card.dataset.readOnly = "true";
+  card.classList.add("historical-sec-detail");
+  card.querySelectorAll(".sec-target-session-identity").forEach(label => label.remove());
+  card.querySelectorAll('a[href*="records.html?session="]').forEach(link => link.remove());
+  const story = card.querySelector(".sec-target-story") || card;
+  const stages = [...story.children].filter(element => element.matches(".sec-universal-stage"));
+  const accordionStages = stages.map((stage, index) => {
+    let details = stage;
+    if (stage.tagName !== "DETAILS") {
+      details = document.createElement("details");
+      details.className = stage.className;
+      [...stage.attributes].forEach(attribute => {
+        if (attribute.name !== "class") details.setAttribute(attribute.name, attribute.value);
+      });
+      const heading = stage.querySelector(":scope > .sec-universal-stage-heading");
+      const title = heading && heading.querySelector("h2,h3")?.textContent.trim() || "Section";
+      const summary = document.createElement("summary");
+      if (index === 0) {
+        summary.className = "sec-universal-stage-heading sec-evidence-toggle";
+        summary.innerHTML = `<span>1 · TARGET</span><strong>${escapeHtml(session.sessionLabel || `Session ${vaultSessionNumber(session)}`)}</strong>`;
+      } else {
+        summary.className = "sec-universal-stage-heading sec-stage-pill";
+        summary.innerHTML = `<span>${index + 1}</span><h2>${escapeHtml(title)}</h2><b aria-hidden="true"></b>`;
+      }
+      const body = document.createElement("div");
+      body.className = index === 0 ? "sec-historical-target-body" : "sec-stage-body";
+      [...stage.childNodes].forEach(node => {
+        if (node !== heading) body.append(node);
+      });
+      details.replaceChildren(summary, body);
+      stage.replaceWith(details);
+    }
+    details.classList.add("sec-accordion-stage");
+    if (index > 0) details.classList.add("sec-collapsible-stage");
+    details.open = index === 0;
+    return details;
+  });
+  accordionStages.forEach(stage => stage.addEventListener("toggle", () => {
+    if (!stage.open) return;
+    accordionStages.forEach(otherStage => { if (otherStage !== stage) otherStage.open = false; });
+  }));
+}
+
 renderHistory();
+if (HISTORICAL_DETAIL_MODE) {
+  const detailSession = SCZN3M4.getSessionHistory().find(session => String(session.sessionId || "") === REQUESTED_RECORD_SESSION_ID);
+  if (detailSession) prepareHistoricalSec(detailSession);
+}
 syncSecShareCapability();
 window.addEventListener("resize", syncSecEvidenceLayers);
 document.getElementById("saveSecPage")?.addEventListener("click", event => saveSecPageImage({ button: event.currentTarget }));
 historyList.addEventListener("click", event => {
+  const vaultRecordLink = event.target.closest(".vault-record-link");
+  if (vaultRecordLink) {
+    const record = vaultRecordLink.closest("[data-session-id]");
+    sessionStorage.setItem(VAULT_RETURN_STATE_KEY, JSON.stringify({
+      sessionId: record && record.dataset.sessionId || "",
+      scrollY: window.scrollY
+    }));
+    return;
+  }
   const m4Button = event.target.closest("[data-open-m4-sec]");
   if (m4Button) {
-    SCZN3M4.loadSession(m4Button.dataset.openM4Sec);
-    window.location.href = "sec.html?v=stay-on-screen-002";
+    window.location.href = `sec.html?sessionId=${encodeURIComponent(m4Button.dataset.openM4Sec || "")}`;
     return;
   }
   const exportButton = event.target.closest("[data-sec-export]");
@@ -1370,6 +1531,14 @@ historyList.addEventListener("click", event => {
     card: actionButton.closest(".history-card"),
     mode: shareButton ? "share" : "download"
   });
+});
+
+document.getElementById("recordsVaultBack")?.addEventListener("click", event => {
+  const state = readVaultReturnState();
+  if (state && history.length > 1) {
+    event.preventDefault();
+    history.back();
+  }
 });
 
 const GSSF_SEC_EXPORT_WIDTH = 390;

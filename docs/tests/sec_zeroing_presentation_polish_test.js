@@ -9,9 +9,9 @@ assert(records.includes("function correctionInstruction(value, axis)"), "SEC mus
 assert(records.includes('return `${direction} ${amount} ${Number(amount) === 1 ? "click" : "clicks"}`;'), "correction wording must lead with the authoritative direction");
 assert(!records.includes("function compactClick"), "SEC must not reduce correction directions to arrow-only shorthand");
 assert(records.includes('class="sec-correction-callout"'), "scope corrections must receive a prominent presentation region");
-assert(records.includes("Scope Corrections"), "correction region must use shooter-readable language");
+assert(records.includes('<span>Corrections</span>'), "correction region must use shooter-readable language");
 
-assert(records.includes('<div><span>Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div>'), "impact count must describe the recorded group");
+assert(records.includes('<div><span>Confirmed Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div>'), "impact count must describe the recorded group");
 assert(records.includes('metrics.push(["Group Size", pkg.group.display])'), "group size must remain backend-authoritative");
 assert(records.includes('metrics.push(["POIB", poib])'), "POIB must remain visible and backend-derived");
 assert(records.includes("typeof rawImpactCount === \"number\""), "missing impact count must not be coerced into zero");

@@ -40,11 +40,24 @@
     document.documentElement.dataset.sczn3NavigationReady = "true";
     const menus = platformMenus();
 
-    function activeWorkspaceSession() {
-      if (!document.body.classList.contains("target-page")) return null;
+    function activeSession() {
       const state = window.SCZN3M4;
       if (!state || !state.read || !state.KEYS) return null;
       return state.read(state.KEYS.activeSession, null);
+    }
+
+    function sessionHasRecordedProgress(session) {
+      if (!session || session.savedToSEC === true) return false;
+      return !!(
+        session.targetEvidenceImage
+        || session.aimPoint
+        || Array.isArray(session.impactPoints) && session.impactPoints.length
+        || Array.isArray(session.confirmationImpactPoints) && session.confirmationImpactPoints.length
+        || session.backendAuthorityPackage
+        || session.authorityPackage
+        || session.m4AuthorityPackage
+        || session.trainingManualResult
+      );
     }
 
     function workspaceHasUnsavedProgress() {
@@ -55,8 +68,8 @@
           return resolver() === true;
         } catch (error) {}
       }
-      const session = activeWorkspaceSession();
-      if (!session) return false;
+      const session = activeSession();
+      if (!session || !sessionHasRecordedProgress(session)) return false;
       const completed = window.SCZN3ZeroingPlatform
         ? window.SCZN3ZeroingPlatform.isCompletedSession(session)
         : session.savedToSEC === true && session.workflowStage === "preservation";
@@ -120,9 +133,13 @@
     function protectActiveWorkspace(event) {
       const link = event.target.closest("a[href]");
       if (!link || link.hasAttribute("data-allow-mission-exit")) return;
+      if (link.hasAttribute("data-preserve-active-session")) return;
       const destination = new URL(link.href, window.location.href);
       if (destination.origin !== window.location.origin) return;
       if (destination.pathname.endsWith("/shoot.html")) return;
+      const replacesOrDiscardsSession = document.body.classList.contains("target-page")
+        || link.hasAttribute("data-replaces-active-session");
+      if (!replacesOrDiscardsSession) return;
       if (!workspaceHasUnsavedProgress()) return;
       event.preventDefault();
       event.stopPropagation();

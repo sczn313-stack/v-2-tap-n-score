@@ -34,18 +34,24 @@ assert.match(
 );
 
 assert.match(source["sec.html"], /class="sec-before-after"/);
-assert.match(source["sec.html"], /<figcaption><strong>Before<\/strong><\/figcaption>/);
-assert.match(source["sec.html"], /<figcaption><strong>After<\/strong><\/figcaption>/);
+assert.match(source["sec.html"], /<figcaption><strong>BEFORE<\/strong><\/figcaption>/);
+assert.match(source["sec.html"], /<figcaption><strong>AFTER<\/strong><\/figcaption>/);
+assert.match(source["sec.html"], /<span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong>/);
+assert.match(source["sec.html"], /const historicalSnapshotMode = Boolean\(requestedSessionId\)/);
+assert.match(source["sec.html"], /SEC_ACCORDION_STAGES\.forEach/);
 assert.match(source["sec.html"], /isCompletedZeroingSession/);
 assert.doesNotMatch(source["sec.html"], /Choose Confirmation Target/);
 assert.doesNotMatch(source["sec.html"], /id="validateConfirmation"/);
 assert.match(source["sec_framework.js"], /id="openValidation"/);
 
 assert.match(source["records.html"], /BALLISTIC VAULT/);
-assert.match(source["records.html"], /vault-sec-thumbnail/);
-assert.match(source["records.html"], /OPEN PRESERVED SEC/);
+assert.match(source["records.html"], /renderCompactVaultRecord/);
+assert.match(source["records.html"], /vault-evidence-pair/);
+assert.match(source["records.html"], /OPEN SEC →/);
+assert.match(source["records.html"], /VAULT_RETURN_STATE_KEY/);
+assert.match(source["records.html"], /data-preserve-active-session/);
 assert.match(source["records.html"], /sessionId/);
-assert.match(source["ballistic-vault.css"], /\.vault-sec-thumbnail iframe/);
+assert.match(source["ballistic-vault.css"], /\.vault-evidence-pair/);
 
 assert.match(source["navigation.js"], /protectActiveWorkspace/);
 assert.match(source["navigation.js"], /Leave Current Session\?/);
