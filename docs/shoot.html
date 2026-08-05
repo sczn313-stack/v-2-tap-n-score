@@ -2682,6 +2682,35 @@ function backendAuthorityRequest() {
   };
 }
 
+const TRANSIENT_AUTHORITY_HTTP_STATUSES = new Set([502, 503, 504]);
+
+function waitForAuthorityRetry(delayMs = 250) {
+  return new Promise(resolve => window.setTimeout(resolve, delayMs));
+}
+
+async function fetchAuthorityResponse(authorityEndpoint, requestOptions) {
+  let lastNetworkError = null;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await fetch(authorityEndpoint, requestOptions);
+      if (response.ok) return response;
+      if (attempt === 0 && TRANSIENT_AUTHORITY_HTTP_STATUSES.has(response.status)) {
+        await waitForAuthorityRetry();
+        continue;
+      }
+      throw new Error(`Backend authority failed: ${response.status}`);
+    } catch (error) {
+      if (error && /^Backend authority failed:/.test(String(error.message || error))) throw error;
+      lastNetworkError = error;
+      if (attempt === 0) {
+        await waitForAuthorityRetry();
+        continue;
+      }
+    }
+  }
+  throw lastNetworkError || new Error("Backend authority request failed");
+}
+
 async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
   const requestBody = JSON.stringify(requestPayload);
@@ -2689,14 +2718,11 @@ async function requestBackendAuthority() {
   const authorityEndpoint = isM4AuthoritySession()
     ? SCZN3M4.M4_AUTHORITY_ENDPOINT
     : BACKEND_AUTHORITY_ENDPOINT;
-  const response = await fetch(authorityEndpoint, {
+  const response = await fetchAuthorityResponse(authorityEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: requestBody
   });
-  if (!response.ok) {
-    throw new Error(`Backend authority failed: ${response.status}`);
-  }
   const responseBody = await response.text();
   const authorityPackage = JSON.parse(responseBody);
   if (GSSF_CANONICAL_EXPORT_ENABLED && isGssfAuthoritySession()) {

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import vm from "node:vm";
 
 const shoot = await readFile(new URL("../shoot.html", import.meta.url), "utf8");
 const matrix = await readFile(new URL("../matrix.html", import.meta.url), "utf8");
@@ -30,6 +31,48 @@ assert.match(
   "Netlify configuration must preserve the GSSF authority proxy",
 );
 assert.match(shoot, /let authorityRequestInFlight = false;/, "submission must have an explicit in-flight state");
+assert.match(
+  shoot,
+  /const TRANSIENT_AUTHORITY_HTTP_STATUSES = new Set\(\[502, 503, 504\]\);[\s\S]*?for \(let attempt = 0; attempt < 2; attempt \+= 1\)[\s\S]*?TRANSIENT_AUTHORITY_HTTP_STATUSES\.has\(response\.status\)/,
+  "one automatic retry must absorb a transient Netlify-to-Render gateway failure",
+);
+assert.match(
+  shoot,
+  /if \(error && \/\^Backend authority failed:\/\.test\(String\(error\.message \|\| error\)\)\) throw error;/,
+  "non-transient HTTP authority failures must fail safely without retry",
+);
+
+const retrySource = shoot.match(/const TRANSIENT_AUTHORITY_HTTP_STATUSES[\s\S]*?(?=async function requestBackendAuthority\(\))/)?.[0];
+assert.ok(retrySource, "the transient authority retry helper must remain testable");
+
+async function exerciseRetry(responses) {
+  let requestCount = 0;
+  const context = {
+    fetch: async () => {
+      const response = responses[requestCount++];
+      if (response instanceof Error) throw response;
+      return response;
+    },
+    window: { setTimeout: callback => callback() },
+  };
+  vm.runInNewContext(`${retrySource}\nglobalThis.fetchAuthorityResponse = fetchAuthorityResponse;`, context);
+  return {
+    requestCount: () => requestCount,
+    response: () => context.fetchAuthorityResponse("/api/authority/m4", { method: "POST" }),
+  };
+}
+
+const transientGateway = await exerciseRetry([{ ok: false, status: 502 }, { ok: true, status: 200 }]);
+assert.equal((await transientGateway.response()).status, 200, "a transient 502 must recover on the single retry");
+assert.equal(transientGateway.requestCount(), 2, "a transient gateway failure must be attempted exactly twice");
+
+const invalidAuthority = await exerciseRetry([{ ok: false, status: 400 }, { ok: true, status: 200 }]);
+await assert.rejects(invalidAuthority.response(), /Backend authority failed: 400/);
+assert.equal(invalidAuthority.requestCount(), 1, "a governed 400 response must not be retried");
+
+const interruptedRequest = await exerciseRetry([new TypeError("network interrupted"), { ok: true, status: 200 }]);
+assert.equal((await interruptedRequest.response()).status, 200, "one interrupted request must recover on retry");
+assert.equal(interruptedRequest.requestCount(), 2, "a network interruption must be attempted exactly twice");
 assert.match(
   shoot,
   /SCZN3SmartTargetIdentity\.isM4\(SCZN3SmartTargetIdentity\.resolve\(TARGET_QUERY\)\)/,
