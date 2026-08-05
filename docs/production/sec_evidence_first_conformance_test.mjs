@@ -138,6 +138,7 @@ assert.doesNotMatch(sources["sec.html"], /Authority version|Evidence hash|Confir
 assert.doesNotMatch(sources["sec.html"], /Engineering Traceability/, "the shooter-facing SEC must not expose engineering terminology");
 assert.doesNotMatch(sources["sec_framework.js"], /score\.method|group\.method|Geometry validation|Mechanical validation/, "M4 result cards must use shooter-facing labels instead of internal method identifiers");
 assert.doesNotMatch(shooterWorkspace, /m4ValidationSummary|renderM4ValidationSummary|Geometry validation|Mechanical validation|Aim-point discrepancy|materiality threshold|workspaceRuntimeDiagnostic|savePersistenceDiagnostic|Temporary Save Persistence Diagnostic/i, "the shooter workspace must not contain developer diagnostics UI");
+assert.doesNotMatch(sources["sec.html"], /sec-validation-workspace|validationWorkspace|openValidation|Validation Data|Shot Coordinates &amp; Numbering/, "the shooter-facing SEC must not render the developer validation workspace");
 assert.doesNotMatch(shooterWorkspace, /gssf-mode-controls|gssf-marker-validation|gssf-classification-debug|Marker coordinate validation|Backend shot classifications|Diagnostic validation evidence/, "the GSSF shooter experience must not expose developer diagnostics or validation modes");
 
 console.log("PASS universal evidence-first SEC and Ballistic Vault conformance");

@@ -103,68 +103,6 @@
       </section>
     </section>
 
-    <dialog class="sec-validation-workspace" id="validationWorkspace" aria-labelledby="validationWorkspaceTitle">
-      <div class="sec-validation-workspace-shell">
-        <header class="sec-validation-workspace-header">
-          <div>
-            <h2 id="validationWorkspaceTitle">Validation</h2>
-            <p>Inspect the evidence and calculations preserved with this session.</p>
-          </div>
-          <button class="sec-validation-close" type="button" id="closeValidation" aria-label="Close Validation">×</button>
-        </header>
-
-        <section class="sec-validation-section">
-          <div class="sec-validation-section-heading">
-            <span>Evidence</span>
-            <strong>Shot Coordinates &amp; Numbering</strong>
-            <small id="validationEvidenceSummary"></small>
-          </div>
-          <div class="sec-validation-evidence-grid">
-            <div class="sec-evidence-frame trace-source" id="validationEvidenceFrame">
-              <img id="validationEvidenceImage" alt="Confirmed M4 target evidence with numbered shots" />
-              <div class="marker-layer" id="validationEvidenceMarkers"></div>
-            </div>
-            <div class="sec-shot-inspector">
-              <div class="sec-shot-selector" id="validationShotList" aria-label="Select a shot to inspect"></div>
-              <div class="sec-shot-coordinate" id="selectedShotCoordinate" aria-live="polite">
-                <span>Select a numbered shot</span>
-                <strong>Coordinates will appear here.</strong>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="sec-validation-section">
-          <div class="sec-validation-section-heading">
-            <span>Measurement</span>
-            <strong>Validation Data</strong>
-            <small>Derived from confirmed shots</small>
-          </div>
-          <div class="sec-metric-grid" id="measurementGrid"></div>
-        </section>
-
-        <section class="sec-validation-section">
-          <div class="sec-validation-section-heading">
-            <span>Recommendation</span>
-            <strong>Correction Details</strong>
-            <small>Confirmed aim point minus POIB</small>
-          </div>
-          <div class="sec-correction-call" id="recommendationCall"></div>
-          <div class="sec-metric-grid" id="angularGrid"></div>
-          <span class="sec-validation-subheading">Execution</span>
-          <div class="sec-execution" id="executionInstructions"></div>
-        </section>
-
-        <section class="sec-validation-section">
-          <div class="sec-validation-section-heading">
-            <span>Validation Calculation</span>
-            <strong>Confirmation Result</strong>
-          </div>
-          <div class="sec-validation-calculation" id="validationCalculation"></div>
-          <div class="sec-authority-trace" id="authorityTrace"></div>
-        </section>
-      </div>
-    </dialog>
   </article>
   <footer class="package-footer" aria-label="SCZN3 footer">
     <strong>⊙ SCZN3</strong>
@@ -276,7 +214,7 @@ let confirmationImpacts = session && Array.isArray(session.confirmationImpactPoi
 let confirmationAuthority = session && session.confirmationAuthorityPackage || null;
 document.querySelector(".sec-preservation-actions").innerHTML = SCZN3SEC.PreservationCard({
   save: true,
-  validation: true,
+  validation: false,
   share: true,
   print: true,
   note: true,
@@ -286,10 +224,6 @@ document.querySelector(".sec-preserved-history-row").append(document.getElementB
 
 function esc(value) {
   return SCZN3SEC.escapeHtml(value);
-}
-
-function metric(label, value, detail = "") {
-  return SCZN3SEC.metric(label, value, detail);
 }
 
 function marker(point, className, label) {
@@ -412,48 +346,6 @@ function renderPreservationState(preservedAt) {
   }
 }
 
-function selectValidationShot(index) {
-  const impacts = authority && authority.inputs && authority.inputs.impactCoordinates || [];
-  const renderImpacts = authority && authority.renderCoordinates && authority.renderCoordinates.impacts || [];
-  const sourceIds = authority && authority.lineage && authority.lineage.sourceShotIds || [];
-  const point = impacts[index] || renderImpacts[index];
-  document.querySelectorAll("[data-validation-shot]").forEach(node => {
-    node.classList.toggle("is-selected", Number(node.dataset.validationShot) === index);
-  });
-  if (!point) return;
-  document.getElementById("selectedShotCoordinate").innerHTML =
-    `<span>Shot ${index + 1}</span>
-     <strong>X ${Number(point.xPercent).toFixed(4)}% · Y ${Number(point.yPercent).toFixed(4)}%</strong>
-     <small>Shot location preserved with this session.</small>`;
-}
-
-function renderValidationWorkspace(evidenceCard) {
-  const render = authority.renderCoordinates || {};
-  const impacts = authority.inputs && authority.inputs.impactCoordinates || render.impacts || [];
-  const sourceIds = authority.lineage && authority.lineage.sourceShotIds || [];
-  document.getElementById("validationEvidenceMarkers").innerHTML = evidenceCard.overlay();
-  document.querySelectorAll("#validationEvidenceMarkers .impact-marker").forEach((node, index) => {
-    node.dataset.validationShot = String(index);
-  });
-  document.getElementById("validationShotList").innerHTML = impacts.map((point, index) => {
-    return `<button type="button" data-validation-shot="${index}" aria-label="Inspect shot ${index + 1}">
-      <b>${index + 1}</b><span>Confirmed impact</span>
-    </button>`;
-  }).join("");
-  document.querySelectorAll("#validationShotList [data-validation-shot]").forEach(button => {
-    button.addEventListener("click", () => selectValidationShot(Number(button.dataset.validationShot)));
-  });
-  if (impacts.length) selectValidationShot(0);
-
-  const validationCard = SCZN3SEC.ValidationCard(confirmationAuthority, authority);
-  document.getElementById("validationCalculation").innerHTML =
-    `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
-  document.getElementById("authorityTrace").innerHTML =
-    `<div><span>Calculation</span><strong>Complete</strong></div>
-     <div><span>Evidence</span><strong>Preserved</strong></div>
-     <div><span>Completed</span><strong>${esc(authority.computedAt || "Unavailable")}</strong></div>`;
-}
-
 function renderSEC() {
   if (!session || !authority || !authority.status || !authority.status.hasCorrection) {
     document.getElementById("missingState").classList.remove("is-hidden");
@@ -486,20 +378,13 @@ function renderSEC() {
 
   document.getElementById("evidenceSessionIdentifier").textContent = session.sessionLabel || "Session";
   document.getElementById("evidenceDataStatus").textContent = isTest ? "TEST DATA" : "";
-  document.getElementById("validationEvidenceSummary").textContent = evidenceCard.summary;
-  document.getElementById("validationEvidenceImage").src =
-    session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
   document.getElementById("beforeEvidenceImage").src =
     session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
   const measurementHtml = SCZN3SEC.GroupAnalysisCard(authority);
   const executionHtml = SCZN3SEC.ExecutionCard(authority);
-  document.getElementById("measurementGrid").innerHTML = measurementHtml;
   document.getElementById("summaryMeasurementGrid").innerHTML = measurementHtml;
-  document.getElementById("recommendationCall").innerHTML = recommendationCard.call;
   document.getElementById("summaryRecommendationCall").innerHTML = recommendationCard.call;
-  document.getElementById("angularGrid").innerHTML = recommendationCard.angular;
   document.getElementById("summaryAngularGrid").innerHTML = recommendationCard.angular;
-  document.getElementById("executionInstructions").innerHTML = executionHtml;
   document.getElementById("summaryExecutionInstructions").innerHTML = executionHtml;
   const sightLabel =
     savedContext.sightLabel || (String(setup.opticType || "").toLowerCase().includes("iron") ? "Iron Sight" : "Optic");
@@ -526,7 +411,6 @@ function renderSEC() {
     ? new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(sessionTimestamp)
     : "Not recorded";
   document.getElementById("secNote").value = session.secNote || "";
-  renderValidationWorkspace(evidenceCard);
   document.getElementById("beforeEvidenceMarkers").innerHTML =
     evidenceCard.overlay();
   renderConfirmation();
@@ -556,24 +440,7 @@ function renderConfirmation() {
   const validationCard = SCZN3SEC.ValidationCard(confirmationAuthority, authority);
   document.getElementById("summaryValidationOutcome").innerHTML =
     `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
-  renderValidationWorkspace(SCZN3SEC.EvidenceCard(authority));
 }
-
-document.getElementById("openValidation").addEventListener("click", () => {
-  const workspace = document.getElementById("validationWorkspace");
-  if (typeof workspace.showModal === "function") workspace.showModal();
-  else workspace.setAttribute("open", "");
-});
-
-document.getElementById("closeValidation").addEventListener("click", () => {
-  const workspace = document.getElementById("validationWorkspace");
-  if (typeof workspace.close === "function") workspace.close();
-  else workspace.removeAttribute("open");
-});
-
-document.getElementById("validationWorkspace").addEventListener("click", event => {
-  if (event.target === event.currentTarget) event.currentTarget.close();
-});
 
 document.getElementById("addNote").addEventListener("click", () => {
   document.getElementById("noteEditor").classList.toggle("is-hidden");
