@@ -20,7 +20,11 @@ assert.match(shoot, /data-axis="windage"[\s\S]*?data-axis="elevation"/, "windage
 
 assert.doesNotMatch(styles, /\.target-page \.shooter-result-action/, "the removed NEXT STEP card leaves no reserved layout space");
 assert.match(styles, /\.target-page \.target-intel-score\{[\s\S]*?min-height:42px/, "score is reduced to a compact supporting metric");
-assert.match(styles, /\.target-page \.zeroing-setup-panel\{[\s\S]*?border:1px solid rgba\(255,255,255,\.18\)/, "zeroing setup uses subordinate visual weight");
+assert.match(
+  styles,
+  /\.target-page\[data-target-mission="zeroing"\]\[data-has-results="true"\]\[data-authority-status="false"\] \.evidence-meta\{[\s\S]*?display:none;/,
+  "the complete successful zeroing results-summary parent is removed from the shooter-facing layout",
+);
 
 assert.match(contextStyles, /\.sec-session-configuration strong\{[\s\S]*?overflow-wrap:anywhere;[\s\S]*?text-overflow:clip;[\s\S]*?white-space:normal;/, "preserved setup does not truncate");
 assert.match(contextStyles, /\.sec-session-record-fields strong\{[\s\S]*?overflow-wrap:anywhere;[\s\S]*?text-overflow:clip;[\s\S]*?white-space:normal;/, "Target, Shooter, Date, and Time do not truncate");
