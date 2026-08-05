@@ -30,6 +30,13 @@ function assertOrdered(label, values) {
 }
 
 assertOrdered("M4 live SEC", positions(sources["sec.html"], stage => `data-sec-stage="${stage}"`));
+assert.match(sources["sec.html"], /data-sec-stage="evidence"[\s\S]*?<header class="sec-universal-stage-heading">/, "Evidence remains an always-open section");
+for (const label of ["Group Analysis", "Measurements", "Zero Correction", "Mechanical Adjustment", "Confirmation"]) {
+  assert.match(sources["sec.html"], new RegExp(`<h2>${label}<\\/h2>`), `M4 live SEC: missing ${label} disclosure pill`);
+}
+assert.equal((sources["sec.html"].match(/sec-collapsible-stage/g) || []).length, 5, "M4 live SEC must expose five collapsible stages");
+assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage[^>]*\sopen(?:\s|>)/, "Sections 2–6 must be collapsed on initial load");
+assert.match(m4Styles, /\.sec-stage-pill\{[\s\S]*?min-height:var\(--sczn3-pill-height\)/, "SEC disclosure headers use the universal pill footprint");
 assertOrdered("GSSF Vault SEC", positions(sources["records.html"], stage => `key: "${stage}"`));
 assertOrdered("M4 unavailable SEC", positions(sources["m4_smart_target_sec.js"], stage => `key: "${stage}"`));
 assertOrdered("Universal Practice SEC", positions(sources["universal_practice_sec.js"], stage => `key: "${stage}"`));
