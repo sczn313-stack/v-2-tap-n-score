@@ -221,6 +221,10 @@
   function hydrateSessionRecord(storedSession) {
     if (!storedSession || typeof storedSession !== "object") return storedSession;
     const session = hydrateMediaValue(storedSession);
+    if (!session.authoritativeSessionId && !session.sessionIdAuthority) {
+      session.sessionIdAuthority = "legacy-device-local";
+      session.legacyDeviceLocalSession = true;
+    }
     if (storedSession.authorityPackage) {
       session.authorityPackage = hydrateAuthorityPackage(storedSession.authorityPackage);
     }
@@ -771,10 +775,108 @@
   function createSession(matrixSnapshot) {
     const frozenMatrix = saveMatrixSnapshot(matrixSnapshot);
     const session = buildSession(frozenMatrix);
+    session.sessionIdAuthority = "legacy-device-local";
+    session.legacyDeviceLocalSession = true;
     const canonical = persistCanonicalSession(session, "create-canonical-session");
     const history = ensureCanonicalHistory([canonical, ...getSessionHistory()]
       .filter((item, index, source) => item && source.findIndex(candidate => candidate.sessionId === item.sessionId) === index)
       .slice(0, MAX_SESSION_HISTORY), "migrate-create-history-session");
+    rawWrite(KEYS.activeSession, sessionReference(session.sessionId));
+    if (frozenMatrix.experienceMode !== "simulation") {
+      rawWrite(KEYS.activeZeroSession, sessionReference(session.sessionId));
+    }
+    rawWrite(KEYS.sessionHistory, history.map(historyReference));
+    return canonical;
+  }
+
+  function createAuthoritativeSession(authorityPackage, matrixSnapshot) {
+    if (!authorityPackage || authorityPackage.ok !== true || !authorityPackage.authoritativeSessionId) {
+      throw new Error("A backend-issued session is required.");
+    }
+    const target = authorityPackage.target || {};
+    const mission = authorityPackage.missionIdentity || {};
+    const distance = authorityPackage.governedDistance || {};
+    const selectedEquipment = authorityPackage.selectedEquipment || {};
+    const standardSetup = selectedEquipment.source === "backend_standard_setup" ? {
+      setupId: "",
+      setupName: "Standard Setup",
+      weaponCategory: selectedEquipment.weaponCategory || "",
+      weaponManufacturer: selectedEquipment.manufacturer || "",
+      weaponModelType: selectedEquipment.modelType || "",
+      weaponModelCaliber: selectedEquipment.modelCaliber || "",
+      opticType: selectedEquipment.opticType || "",
+      opticAdjustmentUnit: selectedEquipment.adjustmentUnit || "",
+      opticClickValue: selectedEquipment.clickValue || "",
+      adjustmentSystem: selectedEquipment.adjustmentSystem || "",
+      equipmentAuthorityRecordId: selectedEquipment.equipmentAuthorityRecordId || "",
+      axisAdjustment: selectedEquipment.axisAdjustment || {},
+      setupAuthority: selectedEquipment.setupAuthority || "backend-target-authority",
+      setupAuthorityId: selectedEquipment.setupAuthorityId || "",
+      setupMode: "standard"
+    } : {};
+    const authoritySnapshot = {
+      ...matrixSnapshot,
+      ...standardSetup,
+      target_profile_id: target.targetId || "",
+      targetProfileId: target.targetId || "",
+      targetId: target.targetAuthorityId || target.targetId || "",
+      targetName: target.targetName || matrixSnapshot.targetName || "",
+      targetProfileVersion: target.targetProfileVersion || "",
+      atpId: target.atpId || "",
+      mission_family: mission.missionFamily || "",
+      missionFamily: mission.missionFamily || "",
+      missionFamilyId: mission.missionFamily || "",
+      missionId: mission.missionId || "",
+      resultPackageType: mission.resultPackageType || "",
+      targetDistanceValue: distance.value === null || distance.value === undefined
+        ? matrixSnapshot.targetDistanceValue
+        : String(distance.value),
+      targetDistanceUnit: distance.unit || matrixSnapshot.targetDistanceUnit || "",
+      targetDistanceLocked: distance.locked === true,
+      sessionAuthorityOwner: "backend"
+    };
+    const frozenMatrix = saveMatrixSnapshot(authoritySnapshot);
+    const session = buildSession(frozenMatrix);
+    session.sessionId = authorityPackage.authoritativeSessionId;
+    session.authoritativeSessionId = authorityPackage.authoritativeSessionId;
+    session.sessionIdAuthority = "backend";
+    session.legacyDeviceLocalSession = false;
+    session.sessionLifecycle = authorityPackage.sessionLifecycle || "created";
+    session.backendSessionAuthority = authorityPackage;
+    session.targetProfileVersion = target.targetProfileVersion || "";
+    session.atpId = target.atpId || "";
+    session.targetAuthority = {
+      ...session.targetAuthority,
+      targetId: target.targetAuthorityId || target.targetId || "",
+      target_profile_id: target.targetId || "",
+      targetProfileId: target.targetId || "",
+      targetProfileVersion: target.targetProfileVersion || "",
+      atpId: target.atpId || "",
+      mission_family: mission.missionFamily || "",
+      missionFamilyId: mission.missionFamily || "",
+      authorityStatus: "backend-session-authority"
+    };
+    if (distance.value !== null && distance.value !== undefined) {
+      session.sessionDistance = {
+        value: Number(distance.value),
+        unit: distance.unit || "YDS",
+        display: `${distance.value} ${distance.unit === "M" ? "m" : "yds"}`,
+        source: "backend-atp",
+        locked: distance.locked === true,
+        targetProfileId: target.targetId || ""
+      };
+      session.activeCalculationContext = {
+        ...session.activeCalculationContext,
+        sessionDistance: session.sessionDistance,
+        mission_family: mission.missionFamily || "",
+        missionFamilyId: mission.missionFamily || "",
+        authorityStatus: "backend-session-authority"
+      };
+    }
+    const canonical = persistCanonicalSession(session, "create-authoritative-session");
+    const history = ensureCanonicalHistory([canonical, ...getSessionHistory()]
+      .filter((item, index, source) => item && source.findIndex(candidate => candidate.sessionId === item.sessionId) === index)
+      .slice(0, MAX_SESSION_HISTORY), "migrate-authoritative-history-session");
     rawWrite(KEYS.activeSession, sessionReference(session.sessionId));
     if (frozenMatrix.experienceMode !== "simulation") {
       rawWrite(KEYS.activeZeroSession, sessionReference(session.sessionId));
@@ -1381,6 +1483,7 @@
     getActiveMatrix,
     saveMatrixSnapshot,
     createSession,
+    createAuthoritativeSession,
     buildActiveCalculationContext,
     replaceSession,
     updateActiveSession,

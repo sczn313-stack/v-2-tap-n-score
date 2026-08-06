@@ -79,7 +79,6 @@
       v: identity.vendor.toLowerCase(),
       sku: identity.sku,
       target_profile_id: identity.target_profile_id,
-      mission_family: identity.mission_family,
       targetName: identity.targetName
     });
     return `matrix.html?${params.toString()}`;

@@ -44,8 +44,8 @@
   <nav class="package-menu-drawer ecosystem-menu-drawer" id="packageMenuDrawer" aria-label="Experience navigation" hidden>
     <a href="index.html">Smart Target Ecosystem</a>
     <a href="?v=baker&amp;sku=ST-M16A2%2FM4">M4 Smart Target</a>
-    <a href="matrix.html?target_profile_id=baker_st_100yd_smart_zero&amp;mission_family=zeroingCorrection&amp;targetName=Baker%20100%20Yard%20Smart%20Target">100 Yard Bullseye</a>
-    <a href="matrix.html?target_profile_id=gssf_ac_1&amp;mission_family=gssf&amp;targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-mission-family="gssf" data-target-name="GSSF AC-1">GSSF Practice Target</a>
+    <a href="matrix.html?target_profile_id=baker_st_100yd_smart_zero&amp;targetName=Baker%20100%20Yard%20Smart%20Target">100 Yard Bullseye</a>
+    <a href="matrix.html?target_profile_id=gssf_ac_1&amp;targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-target-name="GSSF AC-1">GSSF Practice Target</a>
     <a href="records.html">Ballistic Vault</a>
   </nav>
 
@@ -108,47 +108,22 @@
   const gssfProfile = {
     target_profile_id: "gssf_ac_1",
     targetProfileId: "gssf_ac_1",
-    mission_family: "gssf",
-    missionFamilyId: "gssf",
     targetId: "gssf_ac_1",
     targetName: "GSSF AC-1",
     targetFamily: "GSSF AC-1"
   };
-  const gssfSessionSnapshot = {
-    weaponCategory: "Pistol",
-    weaponManufacturer: "",
-    weaponModelType: "",
-    weaponModelCaliber: "",
-    caliber: "",
-    opticType: "Iron Sights",
-    opticAdjustmentUnit: "MOA",
-    opticClickValue: "0.25",
-    opticClickValueLabel: "0.25 MOA",
-    targetDistanceValue: "25",
-    targetDistanceUnit: "YDS",
-    targetDistance: "25 yds",
-    distance: "25 yds",
-    ...gssfProfile
-  };
-  let gssfSessionPrimed = false;
 
-  function createGssfActiveSession() {
+  function preservePendingGssfTarget() {
     try {
       const encoded = JSON.stringify(gssfProfile);
       localStorage.setItem(pendingTargetKey, encoded);
       sessionStorage.setItem(pendingTargetKey, encoded);
-      if (!gssfSessionPrimed && window.SCZN3M4 && typeof window.SCZN3M4.createSession === "function") {
-        gssfSessionPrimed = true;
-        window.SCZN3M4.createSession(gssfSessionSnapshot);
-      }
-    } catch (error) {
-      gssfSessionPrimed = false;
-    }
+    } catch (error) {}
   }
 
   document.querySelectorAll("[data-target-profile-id='gssf_ac_1']").forEach(link => {
-    link.addEventListener("pointerdown", createGssfActiveSession);
-    link.addEventListener("click", createGssfActiveSession);
+    link.addEventListener("pointerdown", preservePendingGssfTarget);
+    link.addEventListener("click", preservePendingGssfTarget);
   });
 })();
 </script>

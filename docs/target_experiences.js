@@ -18,7 +18,7 @@
       status: "available",
       thumbnail: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
       thumbnailAlt: "Baker 100 Yard Bullseye Smart Target",
-      href: "matrix.html?target_profile_id=baker_st_100yd_smart_zero&mission_family=zeroingCorrection&targetName=Baker%20100%20Yard%20Smart%20Target"
+      href: "matrix.html?target_profile_id=baker_st_100yd_smart_zero&targetName=Baker%20100%20Yard%20Smart%20Target"
     },
     {
       id: "gssf-practice-target",
@@ -27,10 +27,9 @@
       status: "available",
       thumbnail: "assets/gssf_ac_1_clean_reference.png",
       thumbnailAlt: "GSSF practice silhouette target",
-      href: "matrix.html?target_profile_id=gssf_ac_1&mission_family=gssf&targetName=GSSF%20AC-1",
+      href: "matrix.html?target_profile_id=gssf_ac_1&targetName=GSSF%20AC-1",
       attributes: {
         "data-target-profile-id": "gssf_ac_1",
-        "data-mission-family": "gssf",
         "data-target-name": "GSSF AC-1"
       }
     },

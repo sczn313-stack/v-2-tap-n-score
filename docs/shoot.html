@@ -202,9 +202,6 @@ if (isFinalizedSession(session)) {
   session = null;
 }
 
-if (!SIMULATION_MODE && !session && !SESSION_ROUTE_MISS && !REQUESTED_TARGET_PROFILE_ID && SCZN3M4.getActiveMatrix()) {
-  session = SCZN3M4.createSession(SCZN3M4.getActiveMatrix());
-}
 let matrix = session && session.matrixSnapshot ? session.matrixSnapshot : SCZN3M4.getActiveMatrix();
 if (SIMULATION_MODE && !session) matrix = simulationTargetMatrix();
 const AUTHORITY_ENDPOINT_META = document.querySelector('meta[name="sczn3-authority-endpoint"]');
@@ -1209,6 +1206,19 @@ function targetAttributionOverride(source = {}) {
 
 function ensureTargetSession() {
   if (session) return session;
+  if (!SIMULATION_MODE) {
+    const targetProfileId = TARGET_PROFILE_LAUNCH_ID || sessionTargetProfileId(matrix);
+    const params = new URLSearchParams();
+    if (targetProfileId) params.set("target_profile_id", targetProfileId);
+    const qrId = TARGET_QUERY.get("qr_id") || TARGET_QUERY.get("qrId");
+    if (qrId) params.set("qr_id", qrId);
+    const vendor = TARGET_QUERY.get("v") || TARGET_QUERY.get("vendor");
+    const sku = TARGET_QUERY.get("sku");
+    if (vendor) params.set("v", vendor);
+    if (sku) params.set("sku", sku);
+    window.location.replace(`matrix.html${params.toString() ? `?${params.toString()}` : ""}`);
+    return null;
+  }
   matrix = SIMULATION_MODE
     ? simulationTargetMatrix()
     : targetAttributionOverride(SCZN3M4.getActiveMatrix() || defaultTargetMatrix());
@@ -1233,7 +1243,7 @@ function ensureTargetSession() {
 
 function installBakerSimulationEvidence() {
   if (!SIMULATION_MODE || simulationLimitReached()) return null;
-  ensureTargetSession();
+  if (!ensureTargetSession()) return null;
   const evidence = {
     dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
     name: "Baker 100 Yard Smart Target",
@@ -1256,7 +1266,7 @@ function installBakerSimulationEvidence() {
 
 function installBaker100YardEvidence() {
   if (!isBaker100YardSession()) return null;
-  ensureTargetSession();
+  if (!ensureTargetSession()) return null;
   const evidence = {
     dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
     name: "Baker 100 Yard Smart Target",
@@ -1277,7 +1287,7 @@ function installBaker100YardEvidence() {
 
 function installGssfCanonicalEvidence() {
   if (!isGssfAuthoritySession()) return null;
-  ensureTargetSession();
+  if (!ensureTargetSession()) return null;
   const evidence = {
     dataUrl: GSSF_CANONICAL_AUTHORITY.dataUrl,
     name: "GSSF AC-1 clean registered target",
@@ -1302,7 +1312,7 @@ function installGssfCanonicalEvidence() {
 
 function installM4CanonicalEvidence() {
   if (!isM4AuthoritySession()) return null;
-  ensureTargetSession();
+  if (!ensureTargetSession()) return null;
   const founderPrototypeAsset = "authority-evidence/m4-target-reconstruction/M4_M16_25M_WORKSPACE_PRESENTATION.svg";
   const existingEvidence = session && session.targetEvidenceImage || null;
   const existingSource = String(existingEvidence && existingEvidence.dataUrl || "");
@@ -2233,7 +2243,7 @@ function invalidateCorrectionContext() {
 }
 
 function persistCorrectionContextSelection() {
-  if (!session) ensureTargetSession();
+  if (!session && !ensureTargetSession()) return;
   const source = { ...(session && session.matrixSnapshot || matrix || {}) };
   const previousOpticType = String(source.opticType || "");
   const nextOpticType = selectedSightSystem === "iron"
@@ -2772,7 +2782,7 @@ async function resolveMissionFromTargetProfile() {
   syncAuthorityDerivedState();
   renderMissionResolutionState();
   try {
-    if (!session) ensureTargetSession();
+    if (!session && !ensureTargetSession()) return;
     if (isM4AuthoritySession()) {
       ensureTargetAttribution();
       const evidence = installM4CanonicalEvidence();
@@ -4020,7 +4030,7 @@ document.getElementById("chooseTargetButton").addEventListener("click", event =>
     return;
   }
   if (isGssfAuthoritySession()) return;
-  ensureTargetSession();
+  if (!ensureTargetSession()) return;
   const input = document.getElementById("targetImageInput");
   input.value = "";
 });
@@ -4033,7 +4043,7 @@ document.getElementById("chooseTargetButton").addEventListener("keydown", event 
 
 document.getElementById("targetImageInput").addEventListener("change", event => {
   if (isGssfAuthoritySession()) return;
-  ensureTargetSession();
+  if (!ensureTargetSession()) return;
   const file = event.target.files && event.target.files[0];
   if (!file) return;
   readFileAsDataUrl(file).then(dataUrl => downsizeImageDataUrl(dataUrl)).then(dataUrl => {
@@ -4136,7 +4146,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderMarkStatus();
     return;
   }
-  if (isDotTortureAuthoritySession() && !session) ensureTargetSession();
+  if (isDotTortureAuthoritySession() && !session && !ensureTargetSession()) return;
   authorityRequestInFlight = true;
   authorityStatusMessage = "";
   renderResults();

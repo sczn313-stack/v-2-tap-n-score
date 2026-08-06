@@ -43,6 +43,19 @@
         <button class="button" type="submit">Go To Target</button>
       </div>
       <div class="target-mode-pill is-hidden" id="targetModePill"></div>
+      <div class="session-authority-status is-hidden" id="sessionAuthorityStatus" role="status" aria-live="polite"></div>
+      <section class="standard-setup-panel is-hidden" id="standardSetupPanel" aria-labelledby="standardSetupTitle">
+        <div>
+          <span class="standard-setup-kicker">Backend Target Authority</span>
+          <h2 id="standardSetupTitle">Standard Setup</h2>
+          <p>This target will use the Standard Setup shown below.</p>
+        </div>
+        <dl class="standard-setup-values" id="standardSetupValues"></dl>
+        <div class="standard-setup-actions">
+          <button class="button primary" type="button" id="continueStandardSetup">Continue with Standard Setup</button>
+          <button class="button" type="button" id="chooseWeaponSetup">Weapon Setup</button>
+        </div>
+      </section>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
         <h2 class="weapon-library-title">MY WEAPON LIBRARY</h2>
@@ -193,7 +206,15 @@ const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
 const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
+const PENDING_SESSION_START_KEY = "SCZN3_PENDING_BACKEND_SESSION_START";
+const SESSION_AUTHORITY_BASE = window.SCZN3_SESSION_AUTHORITY_BASE || (
+  /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname)
+    ? "http://127.0.0.1:8098/api/session"
+    : "/api/session"
+);
 let currentWeaponPhoto = null;
+let sessionStartInFlight = false;
+let standardSetupPromptActive = false;
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
   Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Canik", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
@@ -1571,20 +1592,238 @@ function collectFormSnapshot() {
   return snapshot;
 }
 
-function goToTarget() {
-  const session = SCZN3M4.createSession(collectForm());
+function authorityStatus(message = "", state = "pending") {
+  const element = document.getElementById("sessionAuthorityStatus");
+  if (!element) return;
+  element.textContent = message;
+  element.dataset.state = state;
+  element.classList.toggle("is-hidden", !message);
+}
+
+function setSessionStartControlsDisabled(disabled) {
+  form.querySelectorAll('button[type="submit"], [data-setup-action="use"], #continueStandardSetup, #chooseWeaponSetup').forEach(button => {
+    button.disabled = disabled;
+    button.setAttribute("aria-busy", String(disabled));
+  });
+}
+
+function setStandardSetupPromptVisible(visible) {
+  standardSetupPromptActive = visible;
+  form.classList.toggle("has-standard-setup-prompt", visible);
+  document.getElementById("standardSetupPanel").classList.toggle("is-hidden", !visible);
+}
+
+function renderStandardSetup(standardSetup) {
+  const fields = standardSetup && Array.isArray(standardSetup.displayFields) ? standardSetup.displayFields : [];
+  document.getElementById("standardSetupValues").innerHTML = fields
+    .map(field => `<div><dt>${escapeHtml(field.label)}</dt><dd>${escapeHtml(field.value)}</dd></div>`)
+    .join("");
+}
+
+async function offerStandardSetupIfNeeded() {
+  const snapshot = collectForm();
+  const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || "").trim();
+  const selectedSavedSetupExists = Boolean(
+    snapshot.setupId && readSavedSetups().some(setup => setup.setupId === snapshot.setupId)
+  );
+  if (!targetId || selectedSavedSetupExists) return;
+  writePendingSessionStart(null);
+  authorityStatus("Loading the target's Standard Setup…", "pending");
   try {
-    if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
-  } catch (error) {}
-  const targetProfileId = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id;
-  const missionFamily = session && session.matrixSnapshot && session.matrixSnapshot.mission_family;
-  const targetQuery = targetProfileId
-    ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${missionFamily ? `&mission_family=${encodeURIComponent(missionFamily)}` : ""}${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}${session.matrixSnapshot.vendor ? `&v=${encodeURIComponent(String(session.matrixSnapshot.vendor).toLowerCase())}` : ""}${session.matrixSnapshot.sku ? `&sku=${encodeURIComponent(session.matrixSnapshot.sku)}` : ""}`
-    : "";
-  window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
+    const preparation = await sessionAuthorityRequest("prepare", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ targetId })
+    });
+    const standardSetup = preparation.standardSetup;
+    const compatibility = preparation.compatibilityResults && preparation.compatibilityResults[0];
+    if (!standardSetup || !compatibility || compatibility.compatible !== true) {
+      throw new Error("standard_setup_unavailable");
+    }
+    const pending = {
+      targetId,
+      equipmentKey: equipmentKey(standardSetup),
+      candidate: standardSetup,
+      setupMode: "standard",
+      preparationToken: preparation.preparationToken,
+      idempotencyKey: idempotencyKey(),
+      expiresAt: preparation.expiresAt
+    };
+    writePendingSessionStart(pending);
+    renderStandardSetup(standardSetup);
+    setProfileEditorVisible(false);
+    setWeaponListExpanded(false);
+    setStandardSetupPromptVisible(true);
+    authorityStatus("", "");
+  } catch (error) {
+    setStandardSetupPromptVisible(false);
+    authorityStatus("The Standard Setup could not be loaded. Check your connection, then reload this page to try again.", "error");
+  }
+}
+
+function equipmentCandidateFrom(snapshot) {
+  return {
+    candidateId: snapshot.setupId || "temporary-current-setup",
+    setupId: snapshot.setupId || "",
+    weaponCategory: snapshot.weaponCategory || "",
+    weaponManufacturer: snapshot.weaponManufacturer || "",
+    weaponModelType: snapshot.weaponModelType || "",
+    weaponModelCaliber: snapshot.weaponModelCaliber || "",
+    opticType: snapshot.opticType || "",
+    opticAdjustmentUnit: snapshot.opticAdjustmentUnit || "",
+    opticClickValue: snapshot.opticClickValue || "",
+    source: snapshot.setupId ? "weapon_library" : "one_time_setup"
+  };
+}
+
+function equipmentKey(candidate) {
+  return JSON.stringify(Object.keys(candidate).sort().reduce((result, key) => {
+    result[key] = candidate[key];
+    return result;
+  }, {}));
+}
+
+function readPendingSessionStart() {
+  try {
+    return JSON.parse(sessionStorage.getItem(PENDING_SESSION_START_KEY) || "null");
+  } catch (error) {
+    return null;
+  }
+}
+
+function writePendingSessionStart(value) {
+  if (!value) {
+    sessionStorage.removeItem(PENDING_SESSION_START_KEY);
+    return;
+  }
+  sessionStorage.setItem(PENDING_SESSION_START_KEY, JSON.stringify(value));
+}
+
+function idempotencyKey() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+  return `session-start-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+async function sessionAuthorityRequest(path, options) {
+  const response = await fetch(`${SESSION_AUTHORITY_BASE}/${path}`, {
+    cache: "no-store",
+    ...options
+  });
+  let packageData = null;
+  try {
+    packageData = await response.json();
+  } catch (error) {
+    packageData = { ok: false, status: "invalid_response", reason: "session_authority_response_invalid" };
+  }
+  if (!response.ok || packageData.ok !== true) {
+    const failure = new Error(packageData.reason || `session_authority_http_${response.status}`);
+    failure.packageData = packageData;
+    failure.httpStatus = response.status;
+    throw failure;
+  }
+  return packageData;
+}
+
+function compatibilityMessage(result) {
+  const reasons = result && Array.isArray(result.reasons) ? result.reasons : [];
+  if (reasons.includes("weapon_category_incompatible")) return "This weapon type is not compatible with the selected target. Choose a compatible weapon and try again.";
+  if (reasons.includes("weapon_model_family_incompatible")) return "This target requires an M4, M16, or AR-platform rifle. Choose a compatible weapon and try again.";
+  if (reasons.includes("adjustment_unit_required") || reasons.includes("positive_click_value_required")) return "Complete the sight adjustment unit and click value before starting this zeroing session.";
+  return "The selected equipment does not meet this target's requirements.";
+}
+
+async function goToTarget(options = {}) {
+  if (sessionStartInFlight) return;
+  const snapshot = collectForm();
+  const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || "").trim();
+  if (!targetId) {
+    authorityStatus("Select a supported target before confirming your weapon.", "error");
+    return;
+  }
+  const useStandardSetup = options.useStandardSetup === true;
+  const storedPending = readPendingSessionStart();
+  const candidate = useStandardSetup && storedPending && storedPending.setupMode === "standard"
+    ? storedPending.candidate
+    : equipmentCandidateFrom(snapshot);
+  const candidateKey = equipmentKey(candidate);
+  let pending = storedPending;
+  if (!pending || pending.targetId !== targetId || pending.equipmentKey !== candidateKey) {
+    pending = null;
+    writePendingSessionStart(null);
+  }
+
+  sessionStartInFlight = true;
+  setSessionStartControlsDisabled(true);
+  authorityStatus("Confirming target and equipment…", "pending");
+  try {
+    if (!pending) {
+      if (useStandardSetup) {
+        authorityStatus("The Standard Setup confirmation expired. Reload the page to review it again.", "error");
+        return;
+      }
+      const preparation = await sessionAuthorityRequest("prepare", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetId, equipmentCandidates: [candidate] })
+      });
+      const compatibility = preparation.compatibilityResults && preparation.compatibilityResults[0];
+      if (!compatibility || compatibility.compatible !== true) {
+        authorityStatus(compatibilityMessage(compatibility), "error");
+        return;
+      }
+      pending = {
+        targetId,
+        equipmentKey: candidateKey,
+        candidate,
+        preparationToken: preparation.preparationToken,
+        idempotencyKey: idempotencyKey(),
+        expiresAt: preparation.expiresAt
+      };
+      writePendingSessionStart(pending);
+    }
+
+    authorityStatus("Creating your session…", "pending");
+    const backendSession = await sessionAuthorityRequest("start", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Idempotency-Key": pending.idempotencyKey
+      },
+      body: JSON.stringify({
+        preparationToken: pending.preparationToken,
+        selectedEquipment: pending.candidate
+      })
+    });
+    const session = SCZN3M4.createAuthoritativeSession(backendSession, snapshot);
+    writePendingSessionStart(null);
+    try {
+      if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
+    } catch (error) {}
+    const targetProfileId = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id;
+    const targetQuery = targetProfileId
+      ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}${session.matrixSnapshot.vendor ? `&v=${encodeURIComponent(String(session.matrixSnapshot.vendor).toLowerCase())}` : ""}${session.matrixSnapshot.sku ? `&sku=${encodeURIComponent(session.matrixSnapshot.sku)}` : ""}`
+      : "";
+    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
+  } catch (error) {
+    const reason = error && error.packageData && error.packageData.reason;
+    if (reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {
+      writePendingSessionStart(null);
+      authorityStatus("The target requirements changed or the confirmation expired. Review your setup, then tap Go To Target again.", "error");
+    } else if (reason === "selected_equipment_incompatible") {
+      writePendingSessionStart(null);
+      authorityStatus("This equipment is not compatible with the selected target. Choose another setup and try again.", "error");
+    } else {
+      authorityStatus("A session could not be created. Your target and weapon selections are preserved. Check your connection, then tap Go To Target to retry.", "error");
+    }
+  } finally {
+    sessionStartInFlight = false;
+    setSessionStartControlsDisabled(false);
+  }
 }
 
 function selectWeaponFromList(setupId, action = "edit") {
+  setStandardSetupPromptVisible(false);
+  writePendingSessionStart(null);
   loadSavedSetup(setupId);
   setWeaponListExpanded(false);
   if (action === "use") {
@@ -1927,9 +2166,17 @@ document.getElementById("saveSetup").addEventListener("click", () => {
 });
 
 document.getElementById("newSetup").addEventListener("click", () => {
+  setStandardSetupPromptVisible(false);
   setWeaponListExpanded(false);
   setProfileEditorVisible(true);
   clearSetupFields();
+});
+document.getElementById("continueStandardSetup").addEventListener("click", () => goToTarget({ useStandardSetup: true }));
+document.getElementById("chooseWeaponSetup").addEventListener("click", () => {
+  writePendingSessionStart(null);
+  setStandardSetupPromptVisible(false);
+  setWeaponListExpanded(false);
+  setProfileEditorVisible(true);
 });
 document.getElementById("savedSetupSelect").addEventListener("change", event => loadSavedSetup(event.target.value));
 document.getElementById("weaponListToggle").addEventListener("click", () => {
@@ -2024,6 +2271,7 @@ loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
 renderWeaponList();
 renderSessionBar();
+offerStandardSetupIfNeeded();
 </script>
 </body>
 </html>

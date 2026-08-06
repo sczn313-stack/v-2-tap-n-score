@@ -16,6 +16,7 @@
     "test:sec-vault": "node production/sec_vault_architecture_contract_test.mjs",
     "test:founder-review-batch3": "node production/founder_review_batch3_test.mjs",
     "test:persistence": "node production/session_persistence_normalization_test.mjs",
-    "test:identity": "node production/smart_target_identity_test.mjs"
+    "test:identity": "node production/smart_target_identity_test.mjs",
+    "test:session-authority": "python3 backend/test_session_authority.py && python3 backend/test_session_authority_http.py && node production/session_authority_contract_test.mjs"
   }
 }

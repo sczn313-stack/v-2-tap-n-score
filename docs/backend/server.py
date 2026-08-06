@@ -9,6 +9,12 @@ from authority_service import build_authority_package, build_distance_click_quer
 from m4_authority.authority_service import build_authority_package as build_m4_authority_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
+from session_authority import (
+    SessionAuthorityError,
+    prepare_session,
+    runtime_store,
+    start_session,
+)
 
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8098"))
@@ -45,6 +51,8 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     OPS_HEALTH_PATHS = {"/api/ops/health", "/api/ops/health/"}
     OPS_ENV_CHECK_PATHS = {"/api/ops/env-check", "/api/ops/env-check/"}
     PRODUCT_ROUTE_PATHS = {"/api/catalog/product-route", "/api/catalog/product-route/"}
+    SESSION_PREPARE_PATHS = {"/api/session/prepare", "/api/session/prepare/"}
+    SESSION_START_PATHS = {"/api/session/start", "/api/session/start/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -63,7 +71,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", cors_origin)
             self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Idempotency-Key")
         self.end_headers()
         self.wfile.write(body)
 
@@ -81,6 +89,9 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self._send_json(200, {"ok": True, "service": "sczn3-authority"})
             return
         if path in self.M4_AUTHORITY_PATHS:
+            self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
+            return
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -110,6 +121,31 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.SESSION_PREPARE_PATHS:
+            try:
+                self._send_json(200, prepare_session(self._read_json_body(), runtime_store()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except SessionAuthorityError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:  # pragma: no cover - defensive storage boundary
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "session_preparation_persistence_failed"})
+            return
+        if path in self.SESSION_START_PATHS:
+            try:
+                package = start_session(
+                    self._read_json_body(),
+                    runtime_store(),
+                    idempotency_key=self.headers.get("Idempotency-Key"),
+                )
+                self._send_json(200 if package.get("idempotentReplay") else 201, package)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except SessionAuthorityError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:  # pragma: no cover - defensive storage boundary
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "session_persistence_failed"})
+            return
         if path in self.OPS_EVENT_PATHS:
             try:
                 self._send_json(200, record_event(self._read_json_body()))
@@ -144,5 +180,5 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer((HOST, PORT), AuthorityHandler)
-    print(f"SCZN3 authority backend listening at http://{HOST}:{PORT}/api/authority/ugeo and /api/authority/m4")
+    print(f"SCZN3 authority backend listening at http://{HOST}:{PORT}/api/authority/ugeo, /api/authority/m4, and /api/session/*")
     server.serve_forever()
