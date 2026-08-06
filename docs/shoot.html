@@ -304,7 +304,7 @@ const GSSF_CANONICAL_AUTHORITY = Object.freeze({
 });
 let missionResolutionStatus = SESSION_ROUTE_MISS ? "unavailable" : (TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle");
 let missionResolutionMessage = SESSION_ROUTE_MISS
-  ? "The requested session is unavailable. Return to Weapon Setup and start the session again."
+  ? "The requested session is unavailable. Return to Session Setup and start the session again."
   : (TARGET_PROFILE_LAUNCH_ID ? "Loading target..." : "");
 let gssfCanonicalValidationTransaction = null;
 const savedGssfOfficialMatchTime = session && (session.officialMatchTimeSeconds ?? session.gssfOfficialMatchTimeSeconds);
@@ -1054,7 +1054,7 @@ function isAuthorityPackageCalculated(authorityPackage) {
 }
 
 function currentSetupName() {
-  if (!matrix) return "Create setup in Weapon Setup";
+  if (!matrix) return "Choose a setup for this target";
   const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(matrix) : null;
   return weapon ? weapon.summary : [matrix.weaponCategory, matrix.weaponManufacturer, matrix.weaponModelType, matrix.weaponModelCaliber].filter(Boolean).join(" / ");
 }
@@ -1077,7 +1077,7 @@ function renderActiveSessionBar() {
       ? `<strong>${escapeHtml(sessionSummary)}</strong><span>${escapeHtml(sessionMeta)}</span>`
       : SIMULATION_MODE
         ? `<strong>Baker 100 Yard Smart Target</strong><span>Simulation</span>`
-        : `<strong>No Active Session</strong><span>Create one in Weapon Setup</span>`;
+        : `<strong>No Active Session</strong><span>Start from Home and confirm this target’s setup</span>`;
   }
   renderMissionWorkspaceChrome();
 }

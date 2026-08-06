@@ -67,7 +67,9 @@
 
   function writePending(identity) {
     if (!identity) return;
-    const encoded = JSON.stringify(identity);
+    const targetId = String(identity.target_profile_id || identity.targetProfileId || identity.targetId || "").trim();
+    if (!targetId) return;
+    const encoded = JSON.stringify({ targetId });
     try {
       localStorage.setItem(PENDING_TARGET_PROFILE_KEY, encoded);
       sessionStorage.setItem(PENDING_TARGET_PROFILE_KEY, encoded);

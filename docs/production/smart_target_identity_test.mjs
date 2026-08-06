@@ -44,9 +44,9 @@ assert.equal(resolved.authority, "M4 Zeroing");
 assert.equal(identityApi.resolve("?v=baker&sku=ST-M16A2-M4"), null);
 
 identityApi.writePending(resolved);
-assert.equal(
-  JSON.parse(localStorage.getItem(identityApi.PENDING_TARGET_PROFILE_KEY)).sku,
-  "ST-M16A2/M4"
+assert.deepEqual(
+  JSON.parse(localStorage.getItem(identityApi.PENDING_TARGET_PROFILE_KEY)),
+  { targetId: "m4_25m_zero" }
 );
 
 const stateContext = {

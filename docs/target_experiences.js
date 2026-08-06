@@ -9,7 +9,8 @@
       status: "available",
       thumbnail: "assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg",
       thumbnailAlt: "Photographed M4/M16 Series Weapons 25M Zero target",
-      href: "?v=baker&sku=ST-M16A2%2FM4"
+      targetId: "m4_25m_zero",
+      href: "matrix.html?target_profile_id=m4_25m_zero&targetName=M4%2FM16%20Series%20Weapons%2025M%20Zero"
     },
     {
       id: "baker-100-yard-bullseye",
@@ -18,6 +19,7 @@
       status: "available",
       thumbnail: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
       thumbnailAlt: "Baker 100 Yard Bullseye Smart Target",
+      targetId: "baker_st_100yd_smart_zero",
       href: "matrix.html?target_profile_id=baker_st_100yd_smart_zero&targetName=Baker%20100%20Yard%20Smart%20Target"
     },
     {
@@ -27,6 +29,7 @@
       status: "available",
       thumbnail: "assets/gssf_ac_1_clean_reference.png",
       thumbnailAlt: "GSSF practice silhouette target",
+      targetId: "gssf_ac_1",
       href: "matrix.html?target_profile_id=gssf_ac_1&targetName=GSSF%20AC-1",
       attributes: {
         "data-target-profile-id": "gssf_ac_1",
@@ -105,20 +108,28 @@
     return `<span class="ecosystem-generated-preview ecosystem-generated-preview--${escapeHtml(experience.preview)}" role="img" aria-label="${escapeHtml(experience.thumbnailAlt)}"><i></i><i></i><i></i><i></i><i></i></span>`;
   }
 
+  const PENDING_TARGET_KEY = "SCZN3_PENDING_TARGET_PROFILE";
+  const CATALOG_VIEW_KEY = "SCZN3_TARGET_CATALOG_VIEW_COUNT_V1";
+
   function actionMarkup(experience) {
     if (experience.status !== "available") {
       return `<span class="ecosystem-card-action ecosystem-card-action--soon">Coming Soon</span>`;
     }
+    return `<span class="ecosystem-card-action ecosystem-card-action--launch">Launch <span aria-hidden="true">→</span></span>`;
+  }
+
+  function cardMarkup(experience, availableIndex) {
+    const available = experience.status === "available";
+    const tag = available ? "a" : "article";
     const attributes = Object.entries(experience.attributes || {})
       .map(([name, value]) => `${escapeHtml(name)}="${escapeHtml(value)}"`)
       .join(" ");
-    return `<a class="ecosystem-card-action ecosystem-card-action--launch" href="${escapeHtml(experience.href)}" ${attributes} aria-label="Launch ${escapeHtml(experience.name)}">Launch <span aria-hidden="true">→</span></a>`;
-  }
-
-  function cardMarkup(experience) {
-    const available = experience.status === "available";
+    const navigation = available
+      ? `href="${escapeHtml(experience.href)}" aria-label="Launch ${escapeHtml(experience.name)}" data-target-id="${escapeHtml(experience.targetId)}" ${attributes}`
+      : `aria-label="${escapeHtml(experience.name)}, coming soon"`;
+    const discoveryOrder = available ? `style="--discovery-order:${availableIndex}"` : "";
     return `
-      <article class="ecosystem-target-card" data-experience-id="${escapeHtml(experience.id)}" data-status="${escapeHtml(experience.status)}">
+      <${tag} class="ecosystem-target-card" data-experience-id="${escapeHtml(experience.id)}" data-status="${escapeHtml(experience.status)}" ${navigation} ${discoveryOrder}>
         <div class="ecosystem-target-thumbnail">${previewMarkup(experience)}</div>
         <div class="ecosystem-target-copy">
           <h3><span class="ecosystem-status-dot" aria-hidden="true"></span>${escapeHtml(experience.name)}</h3>
@@ -126,12 +137,58 @@
           <p>${escapeHtml(experience.description)}</p>
         </div>
         ${actionMarkup(experience)}
-      </article>`;
+      </${tag}>`;
+  }
+
+  function readCatalogViewCount() {
+    try {
+      const value = Number.parseInt(localStorage.getItem(CATALOG_VIEW_KEY) || "0", 10);
+      return Number.isFinite(value) && value >= 0 ? value : 0;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  function recordCatalogView() {
+    const count = readCatalogViewCount();
+    try {
+      localStorage.setItem(CATALOG_VIEW_KEY, String(count + 1));
+    } catch (error) {}
+    return count < 3;
+  }
+
+  function preservePendingTarget(targetId) {
+    if (!targetId) return;
+    const encoded = JSON.stringify({ targetId });
+    try {
+      localStorage.setItem(PENDING_TARGET_KEY, encoded);
+      sessionStorage.setItem(PENDING_TARGET_KEY, encoded);
+    } catch (error) {}
+  }
+
+  function installCardBehavior(container, showDiscoveryCue) {
+    const availableCards = Array.from(container.querySelectorAll('.ecosystem-target-card[data-status="available"]'));
+    availableCards.forEach(card => {
+      if (showDiscoveryCue) card.classList.add("is-discovery-cued");
+      card.addEventListener("click", () => {
+        availableCards.forEach(item => item.classList.remove("is-discovery-cued"));
+        preservePendingTarget(card.dataset.targetId);
+      });
+    });
+    if (showDiscoveryCue) {
+      window.setTimeout(() => availableCards.forEach(card => card.classList.remove("is-discovery-cued")), 2600);
+    }
   }
 
   function render() {
+    const showDiscoveryCue = recordCatalogView();
     document.querySelectorAll("[data-target-experiences]").forEach(container => {
-      container.innerHTML = experiences.map(cardMarkup).join("");
+      let availableIndex = 0;
+      container.innerHTML = experiences.map(experience => {
+        const index = experience.status === "available" ? availableIndex++ : -1;
+        return cardMarkup(experience, index);
+      }).join("");
+      installCardBehavior(container, showDiscoveryCue);
     });
   }
 

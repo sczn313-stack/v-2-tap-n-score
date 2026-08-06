@@ -67,7 +67,7 @@
     </div>
 
     <header class="ecosystem-catalog-heading">
-      <h2 id="catalogTitle">Select Your Digital Target Experience.</h2>
+      <h2 class="ecosystem-target-instruction" id="catalogTitle"><strong>TAP</strong><span>your target below</span></h2>
       <p class="ecosystem-availability-heading"><span class="ecosystem-availability-now">Available Now</span> &amp; Coming Soon</p>
       <p>We’re continually adding support for more of your family’s favorite targets.</p>
     </header>
@@ -102,30 +102,5 @@
 </main>
 
 <script src="target_experiences.js"></script>
-<script>
-(function () {
-  const pendingTargetKey = "SCZN3_PENDING_TARGET_PROFILE";
-  const gssfProfile = {
-    target_profile_id: "gssf_ac_1",
-    targetProfileId: "gssf_ac_1",
-    targetId: "gssf_ac_1",
-    targetName: "GSSF AC-1",
-    targetFamily: "GSSF AC-1"
-  };
-
-  function preservePendingGssfTarget() {
-    try {
-      const encoded = JSON.stringify(gssfProfile);
-      localStorage.setItem(pendingTargetKey, encoded);
-      sessionStorage.setItem(pendingTargetKey, encoded);
-    } catch (error) {}
-  }
-
-  document.querySelectorAll("[data-target-profile-id='gssf_ac_1']").forEach(link => {
-    link.addEventListener("pointerdown", preservePendingGssfTarget);
-    link.addEventListener("click", preservePendingGssfTarget);
-  });
-})();
-</script>
 </body>
 </html>

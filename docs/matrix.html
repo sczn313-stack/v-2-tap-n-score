@@ -215,6 +215,7 @@ const SESSION_AUTHORITY_BASE = window.SCZN3_SESSION_AUTHORITY_BASE || (
 let currentWeaponPhoto = null;
 let sessionStartInFlight = false;
 let standardSetupPromptActive = false;
+let latestTargetPreparation = null;
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
   Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Canik", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
@@ -1620,44 +1621,124 @@ function renderStandardSetup(standardSetup) {
     .join("");
 }
 
-async function offerStandardSetupIfNeeded() {
-  const snapshot = collectForm();
-  const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || "").trim();
-  const selectedSavedSetupExists = Boolean(
-    snapshot.setupId && readSavedSetups().some(setup => setup.setupId === snapshot.setupId)
-  );
-  if (!targetId || selectedSavedSetupExists) return;
+function savedSetupLastUsedAt(setup) {
+  const history = typeof SCZN3M4.getSessionHistory === "function" ? SCZN3M4.getSessionHistory() : [];
+  const sessionTimestamps = history
+    .filter(session => session.matrixSnapshot && session.matrixSnapshot.setupId === setup.setupId)
+    .map(session => session.timestamp || session.createdAt || session.savedAt || "")
+    .filter(Boolean)
+    .map(value => Date.parse(value))
+    .filter(Number.isFinite);
+  const updatedAt = Date.parse(setup.updatedAt || setup.createdAt || "");
+  return Math.max(0, Number.isFinite(updatedAt) ? updatedAt : 0, ...sessionTimestamps);
+}
+
+function savedSetupCandidatesByRecency() {
+  return readSavedSetups()
+    .slice()
+    .sort((left, right) => savedSetupLastUsedAt(right) - savedSetupLastUsedAt(left))
+    .map(setup => ({ setup, candidate: equipmentCandidateFrom(setup) }));
+}
+
+function preferredCompatibleSavedSetup(preparation, candidates) {
+  const compatibleIds = new Set((preparation.compatibilityResults || [])
+    .filter(result => result && result.compatible === true)
+    .map(result => String(result.candidateId || "")));
+  return candidates.find(item => compatibleIds.has(String(item.candidate.candidateId || item.candidate.setupId || ""))) || null;
+}
+
+function governedWeaponCategory() {
+  const requirements = latestTargetPreparation && latestTargetPreparation.equipmentRequirements;
+  const categories = requirements && Array.isArray(requirements.weaponCategories) ? requirements.weaponCategories : [];
+  return categories[0] || "Rifle";
+}
+
+function initializeOneTimeSetupFromAuthority() {
+  clearSetupFields();
+  const category = governedWeaponCategory();
+  setWeaponCategory(category);
+  updateWeaponManufacturers();
+  updateOpticTypes();
+  updateAmmoCalibers();
+  updateDistanceOptions();
+  renderSessionBar();
+}
+
+async function prepareStandardSetup(targetId) {
+  return sessionAuthorityRequest("prepare", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ targetId })
+  });
+}
+
+function presentStandardSetup(targetId, preparation) {
+  latestTargetPreparation = preparation;
+  const standardSetup = preparation.standardSetup;
+  const compatibility = preparation.compatibilityResults && preparation.compatibilityResults[0];
+  if (!standardSetup || !compatibility || compatibility.compatible !== true) {
+    throw new Error("standard_setup_unavailable");
+  }
+  const pending = {
+    targetId,
+    equipmentKey: equipmentKey(standardSetup),
+    candidate: standardSetup,
+    setupMode: "standard",
+    preparationToken: preparation.preparationToken,
+    idempotencyKey: idempotencyKey(),
+    expiresAt: preparation.expiresAt
+  };
+  writePendingSessionStart(pending);
+  renderStandardSetup(standardSetup);
+  setProfileEditorVisible(false);
+  setWeaponListExpanded(false);
+  setStandardSetupPromptVisible(true);
+  authorityStatus("", "");
+}
+
+async function offerGovernedSetupChoices() {
+  const snapshot = collectFormSnapshot();
+  const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || snapshot.targetId || "").trim();
+  if (!targetId) return;
   writePendingSessionStart(null);
-  authorityStatus("Loading the target's Standard Setup…", "pending");
+  authorityStatus("Checking compatible equipment for this target…", "pending");
   try {
-    const preparation = await sessionAuthorityRequest("prepare", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ targetId })
-    });
-    const standardSetup = preparation.standardSetup;
-    const compatibility = preparation.compatibilityResults && preparation.compatibilityResults[0];
-    if (!standardSetup || !compatibility || compatibility.compatible !== true) {
-      throw new Error("standard_setup_unavailable");
+    const savedCandidates = savedSetupCandidatesByRecency();
+    if (savedCandidates.length) {
+      const preparation = await sessionAuthorityRequest("prepare", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetId,
+          equipmentCandidates: savedCandidates.map(item => item.candidate)
+        })
+      });
+      latestTargetPreparation = preparation;
+      const compatible = preferredCompatibleSavedSetup(preparation, savedCandidates);
+      if (compatible) {
+        loadSavedSetup(compatible.setup.setupId);
+        const pending = {
+          targetId,
+          equipmentKey: equipmentKey(compatible.candidate),
+          candidate: compatible.candidate,
+          setupMode: "saved",
+          preparationToken: preparation.preparationToken,
+          idempotencyKey: idempotencyKey(),
+          expiresAt: preparation.expiresAt
+        };
+        writePendingSessionStart(pending);
+        setStandardSetupPromptVisible(false);
+        setProfileEditorVisible(false);
+        setWeaponListExpanded(false);
+        authorityStatus(`${weaponCardTitle(compatible.setup)} is compatible and selected. Confirm with Go To Target, or choose another weapon.`, "ready");
+        return;
+      }
     }
-    const pending = {
-      targetId,
-      equipmentKey: equipmentKey(standardSetup),
-      candidate: standardSetup,
-      setupMode: "standard",
-      preparationToken: preparation.preparationToken,
-      idempotencyKey: idempotencyKey(),
-      expiresAt: preparation.expiresAt
-    };
-    writePendingSessionStart(pending);
-    renderStandardSetup(standardSetup);
-    setProfileEditorVisible(false);
-    setWeaponListExpanded(false);
-    setStandardSetupPromptVisible(true);
-    authorityStatus("", "");
+    presentStandardSetup(targetId, await prepareStandardSetup(targetId));
   } catch (error) {
+    latestTargetPreparation = null;
     setStandardSetupPromptVisible(false);
-    authorityStatus("The Standard Setup could not be loaded. Check your connection, then reload this page to try again.", "error");
+    authorityStatus("The setup requirements could not be loaded. Check your connection, then reload this page to try again.", "error");
   }
 }
 
@@ -2080,7 +2161,7 @@ function clearSetupFields() {
   currentWeaponPhoto = null;
   document.getElementById("weaponPhotoInput").value = "";
   renderWeaponPhotoPreview();
-  setWeaponCategory("Rifle");
+  setWeaponCategory(governedWeaponCategory());
   updateWeaponManufacturers();
   updateOpticTypes();
   document.getElementById("opticAdjustmentUnit").value = "MOA";
@@ -2169,7 +2250,7 @@ document.getElementById("newSetup").addEventListener("click", () => {
   setStandardSetupPromptVisible(false);
   setWeaponListExpanded(false);
   setProfileEditorVisible(true);
-  clearSetupFields();
+  initializeOneTimeSetupFromAuthority();
 });
 document.getElementById("continueStandardSetup").addEventListener("click", () => goToTarget({ useStandardSetup: true }));
 document.getElementById("chooseWeaponSetup").addEventListener("click", () => {
@@ -2177,6 +2258,7 @@ document.getElementById("chooseWeaponSetup").addEventListener("click", () => {
   setStandardSetupPromptVisible(false);
   setWeaponListExpanded(false);
   setProfileEditorVisible(true);
+  initializeOneTimeSetupFromAuthority();
 });
 document.getElementById("savedSetupSelect").addEventListener("change", event => loadSavedSetup(event.target.value));
 document.getElementById("weaponListToggle").addEventListener("click", () => {
@@ -2189,7 +2271,7 @@ document.getElementById("weaponListPanel").addEventListener("click", event => {
   if (event.target.closest("[data-empty-library-action='new-setup']")) {
     setWeaponListExpanded(false);
     setProfileEditorVisible(true);
-    clearSetupFields();
+    initializeOneTimeSetupFromAuthority();
     return;
   }
   const button = event.target.closest("[data-setup-action]");
@@ -2271,7 +2353,7 @@ loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
 renderWeaponList();
 renderSessionBar();
-offerStandardSetupIfNeeded();
+offerGovernedSetupChoices();
 </script>
 </body>
 </html>

@@ -93,6 +93,11 @@ assert(matrixHtml.includes("SCZN3M4.createAuthoritativeSession"));
 assert(!matrixHtml.includes("SCZN3M4.createSession(collectForm())"));
 assert(!indexHtml.includes("SCZN3M4.createSession"));
 assert(!targetExperiences.includes("mission_family="));
+assert(targetExperiences.includes('JSON.stringify({ targetId })'));
+assert(targetExperiences.includes('data-status="${escapeHtml(experience.status)}"'));
+assert(targetExperiences.includes('tag = available ? "a" : "article"'));
+assert(targetExperiences.includes("SCZN3_TARGET_CATALOG_VIEW_COUNT_V1"));
+assert(indexHtml.includes("<strong>TAP</strong><span>your target below</span>"));
 assert(shootHtml.includes("window.location.replace(`matrix.html"));
 assert(netlifyConfig.includes('from = "/api/session/prepare"'));
 assert(netlifyConfig.includes('from = "/api/session/start"'));
@@ -102,6 +107,8 @@ assert(matrixHtml.includes("This target will use the Standard Setup shown below.
 assert(matrixHtml.includes("Continue with Standard Setup"));
 assert(matrixHtml.includes(">Weapon Setup</button>"));
 assert(matrixHtml.includes("JSON.stringify({ targetId })"));
+assert(matrixHtml.includes("preferredCompatibleSavedSetup"));
+assert(matrixHtml.includes("initializeOneTimeSetupFromAuthority"));
 assert(!matrixHtml.includes("standardSetup: {"));
 
 const standardBackendPackage = {

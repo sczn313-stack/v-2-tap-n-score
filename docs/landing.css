@@ -202,6 +202,27 @@ html{scroll-behavior:smooth}
 
 .ecosystem-catalog-heading{margin-bottom:22px}
 .ecosystem-catalog-heading h2{font-size:clamp(34px, 4.6vw, 55px);line-height:1.05}
+.ecosystem-catalog-heading .ecosystem-target-instruction{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:1px;
+  text-transform:none;
+}
+.ecosystem-target-instruction strong{
+  color:#111;
+  font:inherit;
+  font-size:1.12em;
+  line-height:.9;
+  letter-spacing:.035em;
+}
+.ecosystem-target-instruction span{
+  font-family:Arial, sans-serif;
+  font-size:.48em;
+  font-weight:800;
+  line-height:1.15;
+  letter-spacing:.015em;
+}
 .ecosystem-catalog-heading p{margin:6px 0 0;font-size:16px;line-height:1.45}
 .ecosystem-catalog-heading .ecosystem-availability-heading{
   margin-top:18px;
@@ -227,6 +248,22 @@ html{scroll-behavior:smooth}
   border-radius:12px;
   background:#fff;
   box-shadow:0 4px 14px rgba(0,0,0,.09);
+  color:inherit;
+  text-decoration:none;
+}
+.ecosystem-target-card[data-status="available"]{cursor:pointer}
+.ecosystem-target-card[data-status="available"]:hover,
+.ecosystem-target-card[data-status="available"]:focus-visible{
+  border-color:var(--ecosystem-gold-deep);
+  box-shadow:0 5px 18px rgba(0,0,0,.13),0 0 0 2px rgba(229,164,0,.2);
+  outline:none;
+}
+.ecosystem-target-card.is-discovery-cued{
+  animation:ecosystem-card-discovery 1.45s ease-out calc(var(--discovery-order, 0) * 140ms) 1 both;
+}
+@keyframes ecosystem-card-discovery{
+  0%,100%{border-color:var(--ecosystem-line);box-shadow:0 4px 14px rgba(0,0,0,.09)}
+  38%,68%{border-color:var(--ecosystem-gold);box-shadow:0 5px 18px rgba(0,0,0,.11),0 0 0 3px rgba(229,164,0,.24)}
 }
 .ecosystem-target-thumbnail{
   display:grid;
@@ -546,4 +583,11 @@ html{scroll-behavior:smooth}
   .ecosystem-survey-return{width:100%;padding-right:12px;padding-left:12px}
 }
 
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .ecosystem-target-card.is-discovery-cued{
+    animation:none;
+    border-color:var(--ecosystem-gold);
+    box-shadow:0 4px 14px rgba(0,0,0,.09),0 0 0 2px rgba(229,164,0,.3);
+  }
+}
