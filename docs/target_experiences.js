@@ -115,7 +115,7 @@
     if (experience.status !== "available") {
       return `<span class="ecosystem-card-action ecosystem-card-action--soon">Coming Soon</span>`;
     }
-    return `<span class="ecosystem-card-action ecosystem-card-action--launch">Launch <span aria-hidden="true">→</span></span>`;
+    return `<span class="ecosystem-card-action ecosystem-card-action--launch"><span aria-hidden="true">●</span> Tap to Begin</span>`;
   }
 
   function cardMarkup(experience, availableIndex) {
@@ -125,7 +125,7 @@
       .map(([name, value]) => `${escapeHtml(name)}="${escapeHtml(value)}"`)
       .join(" ");
     const navigation = available
-      ? `href="${escapeHtml(experience.href)}" aria-label="Launch ${escapeHtml(experience.name)}" data-target-id="${escapeHtml(experience.targetId)}" ${attributes}`
+      ? `href="${escapeHtml(experience.href)}" aria-label="Tap to begin ${escapeHtml(experience.name)}" data-target-id="${escapeHtml(experience.targetId)}" ${attributes}`
       : `aria-label="${escapeHtml(experience.name)}, coming soon"`;
     const discoveryOrder = available ? `style="--discovery-order:${availableIndex}"` : "";
     return `

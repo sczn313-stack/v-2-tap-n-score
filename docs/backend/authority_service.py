@@ -1189,6 +1189,21 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         "vector": vector,
     }
 
+    phase = str(payload.get("phase") or "initial").strip().lower()
+    if phase not in {"initial", "confirmation"}:
+        phase = "initial"
+    validation = (
+        {
+            "status": "recorded",
+            "outcome": "CONFIRMATION RECORDED",
+            "confirmed": None,
+            "method": "zeroing-confirmation-evidence-v1",
+            "note": "Confirmation evidence was measured by backend authority; no zero-tolerance claim is registered for this target profile.",
+        }
+        if phase == "confirmation"
+        else {"status": "not-requested", "outcome": "PENDING"}
+    )
+
     authority_core = {
         "target_profile_id": "baker_st_100yd_smart_zero",
         "targetProfileId": "baker_st_100yd_smart_zero",
@@ -1199,6 +1214,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         "manufacturer": "Baker Targets",
         "discipline": "zeroing",
         "authorityVersion": "sczn3-ugeo-authority-v1",
+        "phase": phase,
         "target": {
             "targetId": geometry["targetId"],
             "targetName": payload.get("targetName") or "Baker 100 Yard Smart Target",
@@ -1236,6 +1252,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "gridSquarePx": geometry.get("gridSquarePx"),
         },
         "renderCoordinates": render_coordinates,
+        "validation": validation,
         "hasCorrection": correction is not None,
         "status": {
             "hasAim": aim is not None,

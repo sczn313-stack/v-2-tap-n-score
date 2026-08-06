@@ -39,7 +39,12 @@ assert.equal(platform.isCompletedSession({
 const shoot = await readFile("shoot.html", "utf8");
 const sec = await readFile("sec.html", "utf8");
 const vault = await readFile("records.html", "utf8");
-assert.match(shoot, /m4LivePhase === "confirmation"/);
+assert.match(shoot, /zeroingLivePhase === "confirmation"/);
+assert.match(shoot, /isZeroingAuthoritySession\(\)[\s\S]*?zeroingLivePhase === "confirmation"/);
+assert.match(shoot, /phase: zeroingLivePhase === "confirmation" \? "confirmation" : "initial"/);
+assert.match(shoot, /confirmationStatus = isM4AuthoritySession\(\)[\s\S]*?: "Recorded"/);
+assert.match(shoot, /if \(isM4AuthoritySession\(\) && authorityPackage\.mechanicalValidation\?\.status !== "calculated"\) return null;/);
+assert.match(shoot, /function renderCorrectionOverlay\(correction\)[\s\S]*?!isZeroingAuthoritySession\(\)[\s\S]*?!currentClicks/);
 assert.match(shoot, /REQUESTED_SESSION_ID[\s\S]*?SCZN3M4\.loadSession\(REQUESTED_SESSION_ID\)/);
 assert.match(shoot, /SESSION_ROUTE_MISS/);
 assert.doesNotMatch(shoot, /!REQUESTED_TARGET_PROFILE_ID && SCZN3M4\.getActiveMatrix\(\)[\s\S]*?SCZN3M4\.createSession/);

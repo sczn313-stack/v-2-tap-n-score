@@ -569,7 +569,24 @@
 
 .target-page .target-session-context,
 .target-page[data-target-mission="zeroing"] .target-session-context{
-  display:none!important;
+  display:flex!important;
+  right:3.4%;
+  bottom:10.1%;
+  left:3.4%;
+  min-height:34px;
+  padding:5px 9px;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #26e36d;
+  background:linear-gradient(180deg,rgba(8,92,37,.97),rgba(3,58,24,.97));
+  box-shadow:0 5px 18px rgba(0,0,0,.38),0 0 0 2px rgba(38,227,109,.14);
+  animation:workspace-guidance-arrival .28s ease-out 1 both;
+  visibility:visible!important;
+}
+
+@keyframes workspace-guidance-arrival{
+  from{opacity:0;transform:translateY(-5px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
 .target-page .target-session-context > span{
@@ -579,14 +596,22 @@
 .target-page .mission-workspace-guidance{
   width:100%;
   color:#fff6dc;
-  font-size:clamp(9px,1.4vw,12px);
+  font-size:clamp(11px,1.65vw,15px);
+  font-weight:950;
   line-height:1.15;
   text-align:center;
   white-space:normal;
 }
 
+@media (prefers-reduced-motion:reduce){
+  .target-page .target-session-context,
+  .target-page[data-target-mission="zeroing"] .target-session-context{
+    animation:none;
+  }
+}
+
 .target-page .workspace-result-overlay{
-  top:80.4%;
+  top:69%;
   right:auto!important;
   left:50%!important;
   width:max-content;

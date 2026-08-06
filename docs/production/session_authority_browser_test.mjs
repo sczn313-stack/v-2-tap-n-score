@@ -121,6 +121,52 @@ try {
         })
       });
     });
+    const zeroingAuthorityPhases = [];
+    if (targetId === "baker_st_100yd_smart_zero") {
+      await context.route("**/api/authority/ugeo", async route => {
+        const request = route.request().postDataJSON();
+        const phase = request.phase || "initial";
+        zeroingAuthorityPhases.push(phase);
+        const impacts = request.impactCoordinates || [];
+        const aim = request.aimCoordinate;
+        const poib = impacts.length
+          ? {
+              xPercent: impacts.reduce((sum, point) => sum + Number(point.xPercent), 0) / impacts.length,
+              yPercent: impacts.reduce((sum, point) => sum + Number(point.yPercent), 0) / impacts.length,
+            }
+          : null;
+        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+          target_profile_id: targetId,
+          targetProfileId: targetId,
+          mission_family: "zeroingCorrection",
+          missionFamilyId: "zeroingCorrection",
+          phase,
+          inputs: { aimCoordinate: aim, impactCoordinates: impacts, confirmedAimPoint: aim },
+          impacts,
+          poib,
+          groupCenter: poib,
+          score: { value: 88, method: "authority-v1" },
+          correction: {
+            windage: "4 clicks LEFT", elevation: "2 clicks UP",
+            windageDirection: "LEFT", elevationDirection: "UP",
+          },
+          clicks: {
+            windageClicks: 4, elevationClicks: 2,
+            windageDirection: "LEFT", elevationDirection: "UP",
+            adjustmentUnit: "MOA", clickValue: 0.25, clickValueLabel: "0.25 MOA",
+          },
+          renderCoordinates: {
+            aim, impacts, poib,
+            vector: poib && aim ? { start: poib, end: aim, intent: "POIB_TO_AIM" } : null,
+          },
+          validation: phase === "confirmation"
+            ? { status: "recorded", outcome: "CONFIRMATION RECORDED", confirmed: null }
+            : { status: "not-requested", outcome: "PENDING" },
+          status: { hasAim: true, impactCount: impacts.length, hasPOIB: true, hasCorrection: true },
+          evidenceHash: `browser-${phase}-evidence`,
+        }) });
+      });
+    }
 
     const page = await context.newPage();
     await page.goto(`${baseUrl}/matrix.html?target_profile_id=${encodeURIComponent(targetId)}`, { waitUntil: "networkidle" });
@@ -143,6 +189,43 @@ try {
     assert.equal(stored.mission_family, profile.missionIdentity.missionFamily);
     assert.equal(stored.matrixSnapshot.setupMode, "standard");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+    if (targetId === "baker_st_100yd_smart_zero") {
+      await page.locator("#targetImageInput").setInputFiles("assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png");
+      await page.locator("#markSurface").waitFor();
+      const targetBox = await page.locator("#markSurface").boundingBox();
+      assert(targetBox, "100 Yard target surface must be rendered");
+      const tap = async (x, y) => page.mouse.click(targetBox.x + targetBox.width * x, targetBox.y + targetBox.height * y);
+      await tap(0.50, 0.50);
+      await tap(0.44, 0.45);
+      await tap(0.46, 0.47);
+      await tap(0.48, 0.46);
+      await page.locator("#showResults").click();
+      await page.locator('.sczn3-live-correction-card[data-axis="windage"]').waitFor();
+      assert.equal(await page.locator("#missionWorkspaceGuidance").isVisible(), true);
+      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /Apply the correction, then begin confirmation\./);
+      assert.match(await page.locator("#saveMarks").textContent(), /Apply the Correction, Then Begin Confirmation/);
+      await page.locator("#saveMarks").click();
+      await page.waitForFunction(() => document.body.dataset.m4LivePhase === "confirmation");
+      assert.equal(await page.locator("#missionWorkspaceGuidance").isVisible(), true);
+      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /Tap each hole in the confirmation group\./);
+      await tap(0.495, 0.50);
+      await tap(0.50, 0.495);
+      await tap(0.505, 0.50);
+      await page.locator("#showResults").click();
+      await page.waitForFunction(() => /Confirmation recorded/i.test(document.getElementById("missionWorkspaceGuidance")?.textContent || ""));
+      assert.deepEqual(zeroingAuthorityPhases, ["initial", "confirmation"]);
+      await page.locator("#saveMarks").click();
+      await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
+      const completed = await page.evaluate(sessionId => {
+        const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+        return JSON.parse(localStorage.getItem(key));
+      }, `sczn3-session-browser-${targetId}`);
+      assert.equal(completed.savedToSEC, true);
+      assert.equal(completed.confirmationStatus, "Recorded");
+      assert.equal(completed.confirmationImpactPoints.length, 3);
+      assert.equal(completed.confirmationAuthorityPackage.validation.outcome, "CONFIRMATION RECORDED");
+      console.log("PASS 100 Yard initial correction → confirmation → preserved SEC workflow");
+    }
     await context.close();
     console.log(`PASS browser session authority ${targetId}`);
   }

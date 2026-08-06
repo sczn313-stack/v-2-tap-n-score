@@ -193,7 +193,7 @@ function isFinalizedSession(candidate) {
     candidate
     && candidate.savedToSEC !== true
     && candidate.workflowStage === "validation"
-    && String(candidate.target_profile_id || candidate.targetProfileId || "").toLowerCase() === "m4_25m_zero"
+    && sourceIsZeroingSession(candidate)
   ) return false;
   return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
 }
@@ -320,13 +320,33 @@ let displayedEvidence = null;
 const activeMarkPointers = new Set();
 let markTapCandidate = null;
 let markGestureCancelled = false;
-const RESUMING_M4_CONFIRMATION = !!(
+function sourceIsZeroingSession(source) {
+  if (!source || typeof source !== "object") return false;
+  const matrixSource = source.matrixSnapshot || {};
+  const profileId = String(
+    source.target_profile_id || source.targetProfileId
+    || matrixSource.target_profile_id || matrixSource.targetProfileId
+    || ""
+  ).toLowerCase();
+  const missionFamily = String(
+    source.mission_family || source.missionFamily || source.missionFamilyId
+    || matrixSource.mission_family || matrixSource.missionFamily || matrixSource.missionFamilyId
+    || ""
+  )
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+  return profileId === "m4_25m_zero"
+    || profileId === "baker_st_100yd_smart_zero"
+    || missionFamily === "zeroingcorrection";
+}
+
+const RESUMING_ZEROING_CONFIRMATION = !!(
   session
   && session.savedToSEC !== true
   && session.workflowStage === "validation"
-  && String(session.target_profile_id || session.targetProfileId || "").toLowerCase() === "m4_25m_zero"
+  && sourceIsZeroingSession(session)
 );
-const savedAuthorityPackage = RESUMING_M4_CONFIRMATION
+const savedAuthorityPackage = RESUMING_ZEROING_CONFIRMATION
   ? (session.confirmationAuthorityPackage || null)
   : session && (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
   ? (session.backendAuthorityPackage || session.ugeoAuthorityPackage)
@@ -334,7 +354,7 @@ const savedAuthorityPackage = RESUMING_M4_CONFIRMATION
 let backendAuthorityPackage = compatibleAuthorityPackage(savedAuthorityPackage);
 let markMode = "aim";
 let currentAimPoint = session && session.aimPoint ? session.aimPoint : null;
-let currentImpactPoints = RESUMING_M4_CONFIRMATION
+let currentImpactPoints = RESUMING_ZEROING_CONFIRMATION
   ? (session && Array.isArray(session.confirmationImpactPoints) ? [...session.confirmationImpactPoints] : [])
   : (session && Array.isArray(session.impactPoints) ? [...session.impactPoints] : []);
 function backendScoreValue(authorityPackage) {
@@ -376,8 +396,8 @@ window.SCZN3WorkspaceNavigationState = Object.freeze({
     return workspaceHasUnsavedProgress;
   }
 });
-let m4LivePhase = RESUMING_M4_CONFIRMATION ? "confirmation" : "initial";
-let m4InitialAuthorityPackage = session && (
+let zeroingLivePhase = RESUMING_ZEROING_CONFIRMATION ? "confirmation" : "initial";
+let initialZeroingAuthorityPackage = session && (
   session.m4AuthorityPackage
   || session.backendAuthorityPackage
   || session.authorityPackage
@@ -404,6 +424,12 @@ function isM4AuthoritySession() {
       || SCZN3SmartTargetIdentity.isM4(SCZN3SmartTargetIdentity.resolve(TARGET_QUERY))
     ))
     || !!(window.SCZN3M4 && SCZN3M4.isM4Session && SCZN3M4.isM4Session(session || matrix));
+}
+
+function isZeroingAuthoritySession() {
+  return isM4AuthoritySession()
+    || isBaker100YardSession()
+    || activeMissionFamily() === "zeroingcorrection";
 }
 document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
 if (SIMULATION_MODE) {
@@ -593,9 +619,10 @@ function missionStageProgress(authorityPackage) {
 
 function zeroingMissionProgress() {
   if (!hasMarkableEvidence()) return "";
-  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation group";
     if (!resultsShown) return `${currentImpactPoints.length} confirmation ${currentImpactPoints.length === 1 ? "hole" : "holes"}`;
+    if (!isM4AuthoritySession()) return "Confirmation recorded";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero confirmed"
       : "Additional correction required";
@@ -631,9 +658,10 @@ function simulationLimitReached() {
 
 function zeroingMissionGuidance() {
   if (!hasMarkableEvidence()) return "Start With A Target Photo";
-  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
     if (!resultsShown) return "Review the group, then show confirmation results.";
+    if (!isM4AuthoritySession()) return "Confirmation recorded. Save the completed session.";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero confirmed. Save the completed session."
       : "Apply the correction, then fire another confirmation group.";
@@ -649,9 +677,10 @@ function zeroingMissionGuidance() {
 
 function zeroingMissionStatus() {
   if (!hasMarkableEvidence()) return "Ready";
-  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation";
     if (!resultsShown) return "Confirmation Evidence";
+    if (!isM4AuthoritySession()) return "Confirmation Recorded";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero Confirmed"
       : "Correction Required";
@@ -806,8 +835,8 @@ function renderMissionWorkspaceChrome() {
   if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Holes";
   if (
     impactButton
-    && isM4AuthoritySession()
-    && m4LivePhase === "confirmation"
+    && isZeroingAuthoritySession()
+    && zeroingLivePhase === "confirmation"
   ) {
     impactButton.textContent = "Tap Your Confirmation Impacts";
   }
@@ -1025,7 +1054,8 @@ function syncAuthorityDerivedState() {
 
 function zeroingClicksFromAuthorityPackage(authorityPackage) {
   if (!authorityPackage || isNonZeroingAuthorityPackage(authorityPackage)) return null;
-  if (!authorityPackage.clicks || authorityPackage.mechanicalValidation?.status !== "calculated") return null;
+  if (!authorityPackage.clicks) return null;
+  if (isM4AuthoritySession() && authorityPackage.mechanicalValidation?.status !== "calculated") return null;
   const correction = authorityPackage.correction || {};
   const clicks = authorityPackage.clicks || {};
   return {
@@ -2291,7 +2321,7 @@ async function confirmCorrectionContext() {
       correctionContextConfirmedFingerprint,
       correctionContextSnapshot: correctionContextSnapshot(authorityPackage)
     }) || session;
-    if (m4LivePhase === "confirmation" && authorityPackage.validation) {
+    if (zeroingLivePhase === "confirmation" && authorityPackage.validation) {
       setSaveSessionStatus(
         authorityPackage.validation.confirmed
           ? "Confirmation complete."
@@ -2603,7 +2633,7 @@ function backendAuthorityRequest() {
       session,
       safePoint(currentAimPoint),
       currentImpactPoints.map(safePoint).filter(Boolean),
-      m4LivePhase === "confirmation" ? "confirmation" : "initial"
+      zeroingLivePhase === "confirmation" ? "confirmation" : "initial"
     );
   }
   if (isDotTortureAuthoritySession()) {
@@ -2663,6 +2693,7 @@ function backendAuthorityRequest() {
     mission_family: "zeroingCorrection",
     missionFamilyId: "zeroingCorrection",
     discipline: "zeroing",
+    phase: zeroingLivePhase === "confirmation" ? "confirmation" : "initial",
     qr_id: qrId || undefined,
     targetAuthorityGeometry: backendTargetGeometry(),
     aimCoordinate: safePoint(currentAimPoint),
@@ -2864,17 +2895,16 @@ function correctionAxisDisplay(clicks, axis) {
 
 function renderCorrectionOverlay(correction) {
   const confirmedM4Group = isM4AuthoritySession()
-    && m4LivePhase === "confirmation"
+    && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
     && backendAuthorityPackage.validation.confirmed;
   if (
-    !isM4AuthoritySession()
+    !isZeroingAuthoritySession()
     || !resultsShown
     || confirmedM4Group
     || !correction
     || !currentClicks
-    || (!FOUNDER_WORKSPACE_TEST_MODE && !correctionContextIsConfirmed(backendAuthorityPackage))
   ) return "";
   const windage = correctionAxisDisplay(currentClicks, "windage");
   const elevation = correctionAxisDisplay(currentClicks, "elevation");
@@ -3361,7 +3391,7 @@ function renderPendingInputMarkers() {
   currentImpactPoints.map(safePoint).filter(Boolean).forEach((point, index) => {
     parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
   });
-  if (currentAimPoint && !(isM4AuthoritySession() && m4LivePhase === "confirmation")) {
+  if (currentAimPoint && !(isZeroingAuthoritySession() && zeroingLivePhase === "confirmation")) {
     parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "", 'aria-label="Intended aim point"'));
   }
   return parts.join("");
@@ -3386,7 +3416,7 @@ function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
   const classifications = backendHitClassifications(authorityPackage);
-  const confirmationEvidenceOnly = isM4AuthoritySession() && m4LivePhase === "confirmation";
+  const confirmationEvidenceOnly = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
   if (!confirmationEvidenceOnly) parts.push(vectorHtmlFromBackend(render.vector));
   backendRenderedHitCoordinates(authorityPackage).forEach((point, index) => {
     const hit = classifications[index] || {};
@@ -3772,10 +3802,10 @@ function resultsOfferReady() {
   return !isM4AuthoritySession() || holeEntrySettled;
 }
 
-function awaitingNextM4Group() {
+function awaitingNextConfirmationGroup() {
   return !!(
     isM4AuthoritySession()
-    && m4LivePhase === "confirmation"
+    && zeroingLivePhase === "confirmation"
     && resultsShown
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
@@ -3806,10 +3836,10 @@ function rangeWorkflowState(canMark) {
   if (founderContextAtResultsGate()) return "review-context";
   if (!resultsShown) return resultsOfferReady() ? "show-results" : "tap-holes";
   if (correctionContextPending) return "confirm-context";
-  if (awaitingNextM4Group()) return "await-next-group";
+  if (awaitingNextConfirmationGroup()) return "await-next-group";
   if (
     isM4AuthoritySession()
-    && m4LivePhase === "confirmation"
+    && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
     && !backendAuthorityPackage.validation.confirmed
@@ -3871,7 +3901,7 @@ function renderMarkStatus() {
     || sessionSaved
     || !resultsShown
     || correctionContextPending
-    || awaitingNextM4Group()
+    || awaitingNextConfirmationGroup()
     || (isTraining && !trainingDrillFinished);
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canProceed || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
@@ -3883,16 +3913,15 @@ function renderMarkStatus() {
     nextStep = resultsOfferReady() ? "showResults" : "addImpactMode";
   }
   if (canProceed && resultsShown && (!isTraining || trainingDrillFinished)) nextStep = "saveMarks";
-  if (correctionContextPending || founderContextAtResultsGate() || awaitingNextM4Group()) nextStep = null;
+  if (correctionContextPending || founderContextAtResultsGate() || awaitingNextConfirmationGroup()) nextStep = null;
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
   const saveButton = document.getElementById("saveMarks");
-  if (saveButton && isM4AuthoritySession()) {
-    const confirmationComplete = m4LivePhase === "confirmation"
+  if (saveButton && isZeroingAuthoritySession()) {
+    const confirmationComplete = zeroingLivePhase === "confirmation"
       && backendAuthorityPackage
-      && backendAuthorityPackage.validation
-      && backendAuthorityPackage.validation.confirmed;
-    const additionalCorrection = m4LivePhase === "confirmation"
+      && (!isM4AuthoritySession() || backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed);
+    const additionalCorrection = isM4AuthoritySession() && zeroingLivePhase === "confirmation"
       && backendAuthorityPackage
       && backendAuthorityPackage.validation
       && backendAuthorityPackage.validation.status === "calculated"
@@ -3901,17 +3930,17 @@ function renderMarkStatus() {
       ? "Save Session"
       : additionalCorrection
         ? "Fire Another Group"
-        : m4LivePhase === "confirmation"
+        : zeroingLivePhase === "confirmation"
           ? "Save Session"
           : "Apply the Correction, Then Begin Confirmation";
   } else if (saveButton) {
     saveButton.textContent = "Save Session";
   }
   document.body.dataset.rangeState = rangeWorkflowState(canProceed);
-  document.body.dataset.m4LivePhase = isM4AuthoritySession() ? m4LivePhase : "";
+  document.body.dataset.m4LivePhase = isZeroingAuthoritySession() ? zeroingLivePhase : "";
   document.body.dataset.hasEvidence = hasEvidence ? "true" : "false";
   document.body.dataset.hasResults = resultsShown ? "true" : "false";
-  document.body.dataset.awaitingNextGroup = awaitingNextM4Group() ? "true" : "false";
+  document.body.dataset.awaitingNextGroup = awaitingNextConfirmationGroup() ? "true" : "false";
   document.body.dataset.correctionContext = correctionContextPending
     ? "pending"
     : correctionContextConfirmedFingerprint
@@ -3927,7 +3956,7 @@ function setMode(mode) {
 
 function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
-  const beginsNextGroup = awaitingNextM4Group();
+  const beginsNextGroup = awaitingNextConfirmationGroup();
   if (resultsShown && !beginsNextGroup) return;
   if (SIMULATION_MODE && (currentAimPoint || isGssfAuthoritySession()) && currentImpactPoints.length >= 10) return;
   syncOverlayLayerToDisplayedImage();
@@ -3973,7 +4002,7 @@ function resetMarkPointerState() {
 }
 
 function handleMarkPointerDown(event) {
-  if (resultsShown && !awaitingNextM4Group()) return;
+  if (resultsShown && !awaitingNextConfirmationGroup()) return;
   if (!hasMarkableEvidence()) return;
   activeMarkPointers.add(event.pointerId);
   if (activeMarkPointers.size > 1) {
@@ -3993,7 +4022,7 @@ function handleMarkPointerDown(event) {
 function handleMarkPointerUp(event) {
   const wasOnlyPointer = activeMarkPointers.size === 1 && activeMarkPointers.has(event.pointerId);
   activeMarkPointers.delete(event.pointerId);
-  if ((resultsShown && !awaitingNextM4Group()) || !hasMarkableEvidence()) {
+  if ((resultsShown && !awaitingNextConfirmationGroup()) || !hasMarkableEvidence()) {
     resetMarkPointerState();
     return;
   }
@@ -4013,7 +4042,7 @@ function handleMarkPointerCancel(event) {
 }
 
 function handleMarkTouchMove(event) {
-  if ((resultsShown && !awaitingNextM4Group()) || !hasMarkableEvidence()) return;
+  if ((resultsShown && !awaitingNextConfirmationGroup()) || !hasMarkableEvidence()) return;
   if (event.touches && event.touches.length === 1) event.preventDefault();
 }
 
@@ -4103,7 +4132,7 @@ document.getElementById("clearMarks").addEventListener("click", () => {
   cancelHoleEntryReadiness();
   holeEntrySettled = false;
   correctionContextReviewDismissed = false;
-  if (isM4AuthoritySession() && m4LivePhase === "confirmation") {
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     currentImpactPoints = [];
     clearCalculatedResults();
     setMode("impact");
@@ -4162,7 +4191,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
     if (resultsShown && !isNonZeroingAuthorityPackage(authorityPackage)) showShooterTip();
     if (resultsShown && isNonZeroingAuthorityPackage(authorityPackage)) hideShooterTip();
-    if (isM4AuthoritySession() && m4LivePhase === "confirmation" && authorityPackage.validation) {
+    if (isM4AuthoritySession() && zeroingLivePhase === "confirmation" && authorityPackage.validation) {
       setSaveSessionStatus(
         correctionContextPending
           ? "Review the session setup to refresh the correction."
@@ -4211,7 +4240,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   }
   if (
     isM4AuthoritySession()
-    && m4LivePhase === "confirmation"
+    && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage.validation
     && backendAuthorityPackage.validation.status === "calculated"
     && !backendAuthorityPackage.validation.confirmed
@@ -4390,9 +4419,9 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   savePatch.savedIdentifier = session.savedIdentifier || `SEC-${session.sessionId}`;
   savePatch.savedRecordId = session.savedRecordId || session.sessionId;
   savePatch.authorityPackage = authorityPackage;
-  if (isM4AuthoritySession()) {
-    if (m4LivePhase === "confirmation") {
-      const initialAuthority = m4InitialAuthorityPackage
+  if (isZeroingAuthoritySession()) {
+    if (zeroingLivePhase === "confirmation") {
+      const initialAuthority = initialZeroingAuthorityPackage
         || session.m4AuthorityPackage
         || session.backendAuthorityPackage
         || session.authorityPackage;
@@ -4402,7 +4431,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       savePatch.backendAuthorityPackage = initialAuthority;
       savePatch.ugeoAuthorityPackage = initialAuthority;
       savePatch.authorityPackage = initialAuthority;
-      savePatch.m4AuthorityPackage = initialAuthority;
+      if (isM4AuthoritySession()) savePatch.m4AuthorityPackage = initialAuthority;
       savePatch.aimPoint = safePoint(session.aimPoint || currentAimPoint);
       savePatch.confirmedAimPoint = initialAuthority && initialAuthority.inputs && initialAuthority.inputs.confirmedAimPoint
         || safePoint(session.confirmedAimPoint || session.aimPoint || currentAimPoint);
@@ -4440,9 +4469,12 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       savePatch.confirmationEvidenceImage = activeEvidence();
       savePatch.confirmationImpactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
       savePatch.confirmationAuthorityPackage = authorityPackage;
-      savePatch.confirmationStatus = authorityPackage.validation && authorityPackage.validation.confirmed
-        ? "Confirmed"
-        : "Correction Required";
+      savePatch.confirmationStatus = isM4AuthoritySession()
+        ? authorityPackage.validation && authorityPackage.validation.confirmed
+          ? "Confirmed"
+          : "Correction Required"
+        : "Recorded";
+      savePatch.confirmationRecordedAt = savedTimestamp;
       savePatch.confirmedAt = authorityPackage.validation && authorityPackage.validation.confirmed
         ? savedTimestamp
         : null;
@@ -4450,7 +4482,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       savePatch.workflowStage = "preservation";
       savePatch.preservationStatus = "saved";
     } else {
-      savePatch.m4AuthorityPackage = authorityPackage;
+      if (isM4AuthoritySession()) savePatch.m4AuthorityPackage = authorityPackage;
       savePatch.savedToSEC = false;
       savePatch.workflowStage = "validation";
       savePatch.preservationStatus = "initial-authority-saved-confirmation-pending";
@@ -4499,9 +4531,9 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   } catch (error) {}
   markWorkspaceProgressPreserved();
   session = saved;
-  if (isM4AuthoritySession() && m4LivePhase === "initial") {
-    m4InitialAuthorityPackage = authorityPackage;
-    m4LivePhase = "confirmation";
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "initial") {
+    initialZeroingAuthorityPackage = authorityPackage;
+    zeroingLivePhase = "confirmation";
     markWorkspaceProgressUnsaved();
     currentImpactPoints = [];
     holeEntrySettled = false;

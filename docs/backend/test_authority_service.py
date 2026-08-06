@@ -86,6 +86,25 @@ def test_baker_zeroing_package_carries_authoritative_target_identity():
     assert_equal(result["target"]["target_profile_id"], "baker_st_100yd_smart_zero", "nested baker target profile id")
 
 
+def test_baker_confirmation_records_evidence_without_inventing_zero_claim():
+    result = build_authority_package({
+        "targetId": "BAKER_ST_100YD_SMART",
+        "phase": "confirmation",
+        "aimCoordinate": {"xPercent": 50, "yPercent": 50},
+        "impactCoordinates": [
+            {"xPercent": 49, "yPercent": 50},
+            {"xPercent": 50, "yPercent": 49},
+            {"xPercent": 51, "yPercent": 50},
+        ],
+        "distance": {"value": 100, "unit": "yds"},
+        "shooterSetup": {"optic": {"adjustmentUnit": "MOA", "clickValueMOA": 0.25}},
+    })
+    assert_equal(result["phase"], "confirmation", "confirmation phase")
+    assert_equal(result["validation"]["status"], "recorded", "confirmation evidence status")
+    assert_equal(result["validation"]["outcome"], "CONFIRMATION RECORDED", "confirmation evidence outcome")
+    assert_equal(result["validation"]["confirmed"], None, "no invented zero claim")
+
+
 def point_from_grid(x_inches, y_inches):
     geometry = {
         "imageWidth": 1102,
@@ -983,6 +1002,7 @@ def run():
         test_four_symmetric_hits_equal_center,
         test_poib_render_coordinate_uses_hit_group_not_aim,
         test_baker_zeroing_package_carries_authoritative_target_identity,
+        test_baker_confirmation_records_evidence_without_inventing_zero_claim,
         test_10_horizontal_squares_equals_10_vertical_squares_click_magnitude,
         test_quarter_moa_clicks,
         test_half_moa_clicks,
