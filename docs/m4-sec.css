@@ -134,7 +134,9 @@
 .records-page .sec-gssf-analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .records-page .sec-gssf-analysis-grid>div{display:grid;align-content:start;gap:3px;min-height:82px;padding:12px;border:1px solid rgba(217,150,11,.58);border-radius:8px;background:rgba(255,255,255,.055)}
 .records-page .sec-gssf-analysis-grid span,.records-page .sec-gssf-compact-score span{color:#e7b642;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
-.records-page .sec-gssf-analysis-grid strong{font-size:clamp(25px,4vw,38px);line-height:1}
+.records-page .sec-gssf-analysis-grid strong{display:flex;align-items:baseline;gap:4px;min-width:0;line-height:1;white-space:nowrap}
+.records-page .sec-gssf-analysis-grid .sec-gssf-hit-count{color:#fff;font-size:clamp(23px,4vw,31px);font-weight:950;letter-spacing:0}
+.records-page .sec-gssf-analysis-grid .sec-gssf-hit-label{color:#d7c8a8;font-size:8px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 .records-page .sec-gssf-analysis-grid small,.records-page .sec-gssf-compact-score small{color:#d7c8a8;font-size:9px;font-weight:800}
 .records-page .sec-gssf-analysis-grid small{overflow-wrap:anywhere;line-height:1.25}
 .records-page .sec-gssf-analysis-grid small b{color:#e7b642;font:inherit;text-transform:uppercase}
@@ -142,6 +144,16 @@
 .records-page .sec-gssf-compact-score span{color:#4d604c}
 .records-page .sec-gssf-compact-score strong{font-size:clamp(20px,4vw,28px)}
 .records-page .sec-gssf-compact-score small{color:#4d604c;font-size:10px}
+@media(min-width:461px) and (max-width:900px){
+  .records-page .sec-gssf-analysis-grid strong{display:grid;gap:1px}
+  .records-page .sec-gssf-analysis-grid .sec-gssf-hit-count{justify-self:start;max-width:100%;font-size:clamp(14px,1.8vw,18px)}
+  .records-page .sec-gssf-analysis-grid .sec-gssf-hit-label{justify-self:start;max-width:100%;font-size:clamp(7px,.9vw,8px)}
+}
+@media(max-width:460px){
+  .records-page .sec-gssf-analysis-grid strong{display:grid;gap:1px}
+  .records-page .sec-gssf-analysis-grid .sec-gssf-hit-count{justify-self:start;max-width:100%;font-size:16px}
+  .records-page .sec-gssf-analysis-grid .sec-gssf-hit-label{justify-self:start;max-width:100%;font-size:7px}
+}
 body[data-vault-thumbnail="true"]{overflow:hidden;background:#0b0b0b}
 body[data-vault-thumbnail="true"] .sec-shell{width:100%;max-width:none;margin:0;padding:8px}
 body[data-vault-thumbnail="true"] .sec-document-header,

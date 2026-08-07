@@ -1289,7 +1289,7 @@ function renderGssfM4ReferenceSec(session, pkg) {
     ["Miss / Other", miss]
   ].map(([label, result]) => {
     const shotIds = Array.isArray(result.shotIds) ? result.shotIds : [];
-    return `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(`${result.count} Hits`)}</strong><small><b>Shots:</b> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small><small>${escapeHtml(`${result.subtotalPenaltySeconds} sec`)}</small></div>`;
+    return `<div><span>${escapeHtml(label)}</span><strong><b class="sec-gssf-hit-count">${escapeHtml(result.count)}</b><small class="sec-gssf-hit-label">Hits</small></strong><small><b>Shots:</b> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small><small>${escapeHtml(`${result.subtotalPenaltySeconds} sec`)}</small></div>`;
   }).join("");
   const measurementMetrics = [
     zeroingReferenceMetric("Confirmed Shots", String(observationCount), "saved impacts"),
