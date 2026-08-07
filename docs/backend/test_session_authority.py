@@ -103,6 +103,26 @@ def test_prepare_normalizes_three_supported_targets():
         assert result["compatibilityResults"][0]["compatible"] is True
 
 
+def test_100_yard_confirmation_authority_remains_explicitly_unavailable():
+    store = TestStore()
+    result = prepared(store, "baker_st_100yd_smart_zero", equipment(model="Bolt Action"))
+    confirmation = result["confirmationAuthority"]
+    assert confirmation["status"] == "authority_unavailable"
+    assert confirmation["reason"] == "authoritative_confirmation_standard_not_registered"
+    assert confirmation["requiredConfirmationShotCount"] is None
+    assert confirmation["residualTolerance"] is None
+    assert confirmation["units"] is None
+    assert confirmation["applicableTargetProfileVersion"] is None
+    assert confirmation["authorityProvenance"] is None
+    assert confirmation["additionalConfirmationRules"] is None
+
+    started = start_session({
+        "preparationToken": result["preparationToken"],
+        "selectedEquipment": result["standardSetup"] if result["setupMode"] == "standard" else equipment(model="Bolt Action"),
+    }, store, idempotency_key="idem-100-yard-authority-gap", now=NOW)
+    assert started["confirmationAuthority"]["status"] == "authority_unavailable"
+
+
 def test_prepare_without_saved_equipment_returns_backend_standard_setup_for_all_targets():
     cases = [
         ("m4_25m_zero", "Rifle", "backend_standard_setup"),

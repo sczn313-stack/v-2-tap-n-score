@@ -100,9 +100,15 @@ def test_baker_confirmation_records_evidence_without_inventing_zero_claim():
         "shooterSetup": {"optic": {"adjustmentUnit": "MOA", "clickValueMOA": 0.25}},
     })
     assert_equal(result["phase"], "confirmation", "confirmation phase")
-    assert_equal(result["validation"]["status"], "recorded", "confirmation evidence status")
-    assert_equal(result["validation"]["outcome"], "CONFIRMATION RECORDED", "confirmation evidence outcome")
+    assert_equal(result["validation"]["status"], "authority_unavailable", "confirmation authority status")
+    assert_equal(result["validation"]["evidenceStatus"], "recorded", "confirmation evidence status")
+    assert_equal(result["validation"]["outcome"], "CONFIRMATION DECISION UNAVAILABLE", "confirmation decision outcome")
     assert_equal(result["validation"]["confirmed"], None, "no invented zero claim")
+    assert_equal(
+        result["validation"]["reason"],
+        "authoritative_confirmation_standard_not_registered",
+        "confirmation authority gap",
+    )
 
 
 def point_from_grid(x_inches, y_inches):

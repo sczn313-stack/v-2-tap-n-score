@@ -6,6 +6,7 @@ const root = process.cwd();
 const serverDir = path.join(root, "dist", "server");
 
 const publicFiles = [
+  "favicon.ico",
   "index.html",
   "survey.html",
   "matrix.html",

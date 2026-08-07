@@ -1194,11 +1194,21 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         phase = "initial"
     validation = (
         {
-            "status": "recorded",
-            "outcome": "CONFIRMATION RECORDED",
+            "status": "authority_unavailable",
+            "outcome": "CONFIRMATION DECISION UNAVAILABLE",
+            "evidenceStatus": "recorded",
             "confirmed": None,
             "method": "zeroing-confirmation-evidence-v1",
-            "note": "Confirmation evidence was measured by backend authority; no zero-tolerance claim is registered for this target profile.",
+            "reason": "authoritative_confirmation_standard_not_registered",
+            "requiredAuthorityFields": [
+                "requiredConfirmationShotCount",
+                "residualTolerance",
+                "units",
+                "applicableTargetProfileVersion",
+                "authorityProvenance",
+                "additionalConfirmationRules",
+            ],
+            "note": "Confirmation evidence was measured and preserved. A confirmation decision is unavailable until the target profile registers its authoritative confirmation standard.",
         }
         if phase == "confirmation"
         else {"status": "not-requested", "outcome": "PENDING"}

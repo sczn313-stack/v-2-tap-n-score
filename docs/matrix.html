@@ -1736,7 +1736,7 @@ async function offerGovernedSetupChoices() {
   } catch (error) {
     latestTargetPreparation = null;
     setStandardSetupPromptVisible(false);
-    authorityStatus("The setup requirements could not be loaded. Check your connection, then reload this page to try again.", "error");
+    authorityStatus(sessionAuthorityShooterMessage(error, "prepare"), "error");
   }
 }
 
@@ -1801,6 +1801,30 @@ async function sessionAuthorityRequest(path, options) {
     throw failure;
   }
   return packageData;
+}
+
+function sessionAuthorityShooterMessage(error, stage = "start") {
+  const reason = String(error && error.packageData && error.packageData.reason || "");
+  const status = Number(error && error.httpStatus || 0);
+  if (error instanceof TypeError || (!status && !reason)) {
+    return "SCZN3 cannot reach the session service. Check your connection, then try again.";
+  }
+  if (reason === "DATABASE_URL_not_configured" || reason === "session_store_unavailable" || status === 503) {
+    return "The session service is temporarily unavailable. Your selections are preserved. Try again shortly.";
+  }
+  if (reason === "target_id_not_registered" || reason === "target_not_found" || status === 404) {
+    return "This target is not currently ready to start a governed session. Choose another supported target.";
+  }
+  if (reason === "session_authority_response_invalid" || reason === "invalid_response") {
+    return "The session service returned an incomplete response. Your selections are preserved. Try again.";
+  }
+  if (reason === "preparation_not_found" || reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {
+    return "The target requirements changed or the setup confirmation expired. Review and confirm the setup again.";
+  }
+  if (stage === "prepare") {
+    return "The setup requirements could not be loaded. Your target selection is preserved. Try again.";
+  }
+  return "A session could not be created. Your target and weapon selections are preserved. Try again.";
 }
 
 function compatibilityMessage(result) {
@@ -1892,7 +1916,7 @@ async function goToTarget(options = {}) {
       writePendingSessionStart(null);
       authorityStatus("This equipment is not compatible with the selected target. Choose another setup and try again.", "error");
     } else {
-      authorityStatus("A session could not be created. Your target and weapon selections are preserved. Check your connection, then tap Go To Target to retry.", "error");
+      authorityStatus(sessionAuthorityShooterMessage(error, "start"), "error");
     }
   } finally {
     sessionStartInFlight = false;

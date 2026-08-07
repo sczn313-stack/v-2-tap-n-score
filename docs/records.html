@@ -1046,9 +1046,20 @@ function historicalSecUrl(session, pkg = authorityPackage(session)) {
   return `records.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec`;
 }
 
-function vaultTargetPanel(imageUrl, alt, overlay = "", pending = "") {
+function evidenceDimensions(evidence, fallbackWidth = 2550, fallbackHeight = 3300) {
+  const width = Number(evidence && (evidence.imageWidth || evidence.width)) || fallbackWidth;
+  const height = Number(evidence && (evidence.imageHeight || evidence.height)) || fallbackHeight;
+  return { width, height };
+}
+
+function evidencePlane(imageUrl, alt, overlay = "", evidence = {}, fallbackWidth = 2550, fallbackHeight = 3300, extra = "") {
+  const dimensions = evidenceDimensions(evidence, fallbackWidth, fallbackHeight);
+  return `<div class="sec-evidence-plane" style="--evidence-aspect:${dimensions.width} / ${dimensions.height}"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(alt)}" />${overlay ? `<div class="history-evidence-layer">${overlay}</div>` : ""}${extra}</div>`;
+}
+
+function vaultTargetPanel(imageUrl, alt, overlay = "", pending = "", evidence = {}) {
   if (!imageUrl) return `<div class="vault-target-panel"><span class="vault-target-unavailable">${escapeHtml(pending || "Evidence unavailable")}</span></div>`;
-  return `<div class="vault-target-panel"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(alt)}" />${overlay ? `<div class="history-evidence-layer">${overlay}</div>` : ""}${pending ? `<span class="vault-target-unavailable">${escapeHtml(pending)}</span>` : ""}</div>`;
+  return `<div class="vault-target-panel">${evidencePlane(imageUrl, alt, overlay, evidence, 2550, 3300)}${pending ? `<span class="vault-target-unavailable">${escapeHtml(pending)}</span>` : ""}</div>`;
 }
 
 function vaultScoringPanel(pkg) {
@@ -1064,15 +1075,22 @@ function renderCompactVaultRecord(session) {
   const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
   const destination = historicalSecUrl(session, pkg);
   const sessionLabel = session.sessionLabel || `Session ${vaultSessionNumber(session)}`;
+  const compactEvidence = evidence.dataUrl
+    ? evidence
+    : isBaker100YardZeroingSession(session, pkg)
+      ? { imageWidth: 1102, imageHeight: 1713 }
+      : evidence;
   const before = vaultTargetPanel(
     evidence.dataUrl || (isBaker100YardZeroingSession(session, pkg) ? "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" : ""),
     `${sessionLabel} saved target evidence`,
-    pkg ? authorityVisualForPackage(pkg) : ""
+    pkg ? authorityVisualForPackage(pkg) : "",
+    "",
+    compactEvidence
   );
   const after = isGssfAuthorityPackage(pkg)
     ? vaultScoringPanel(pkg)
     : confirmationEvidence.dataUrl
-      ? vaultTargetPanel(confirmationEvidence.dataUrl, `${sessionLabel} saved confirmation evidence`, authorityVisualForPackage(session.confirmationAuthorityPackage, { includeAim: false }))
+      ? vaultTargetPanel(confirmationEvidence.dataUrl, `${sessionLabel} saved confirmation evidence`, authorityVisualForPackage(session.confirmationAuthorityPackage, { includeAim: false }), "", confirmationEvidence)
       : vaultTargetPanel("", "", "", "Confirmation not recorded");
   return `
     <article class="vault-record-summary" data-session-id="${escapeHtml(session.sessionId || "")}" data-session-number-authority="${escapeHtml(session.sessionNumberAuthority || "device-local-temporary")}" id="vault-session-${escapeHtml(session.sessionId || "")}">
@@ -1215,7 +1233,9 @@ function renderBaker100YardReferenceSec(session, pkg) {
       }).join("")
     : `<div><span>Adjustment</span><strong>No sight correction is available.</strong></div>`;
   const confirmationOutcome = confirmationPackage && confirmationPackage.validation
-    ? `<strong>${escapeHtml(confirmationPackage.validation.outcome || (confirmationPackage.validation.confirmed ? "CONFIRMED" : "REQUIRES ANOTHER GROUP"))}</strong><span>Saved confirmation result</span>`
+    ? confirmationPackage.validation.status === "authority_unavailable"
+      ? `<strong>Confirmation evidence preserved</strong><span>A confirmation decision is not available because this target's official confirmation standard has not been registered.</span>`
+      : `<strong>${escapeHtml(confirmationPackage.validation.outcome || (confirmationPackage.validation.confirmed ? "CONFIRMED" : "REQUIRES ANOTHER GROUP"))}</strong><span>Saved confirmation result</span>`
     : `<strong>Confirmation not recorded</strong><span>This preserved event contains the initial 100 Yard group and correction only.</span>`;
   const sessionDate = session.timestamp ? new Date(session.timestamp) : null;
   const dateLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : "Unavailable";
@@ -1228,8 +1248,8 @@ function renderBaker100YardReferenceSec(session, pkg) {
         <section class="sec-universal-stage sec-universal-stage-evidence" data-sec-stage="evidence" aria-label="Evidence">
           <header class="sec-universal-stage-heading"><span>1 · Evidence</span><h2>Initial and Confirmation Groups</h2></header>
           <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
-            <figure><figcaption><span>Before</span><strong>Initial Group</strong></figcaption><div class="sec-comparison-target history-thumb"><img src="${escapeHtml(targetImage)}" alt="100 Yard initial group target evidence" /><span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span><div class="history-evidence-layer">${authorityVisualForPackage(pkg)}</div></div></figure>
-            <figure><figcaption><span>After</span><strong>Confirmation Group</strong></figcaption><div class="sec-comparison-target history-thumb"><img src="${escapeHtml(hasConfirmationEvidence ? confirmationEvidence.dataUrl : targetImage)}" alt="100 Yard confirmation group target evidence" />${hasConfirmationEvidence ? `<div class="history-evidence-layer">${authorityVisualForPackage(confirmationPackage, { includeAim: false })}</div>` : `<span class="sec-comparison-pending">Confirmation not recorded</span>`}</div></figure>
+            <figure><figcaption><span>Before</span><strong>Initial Group</strong></figcaption><div class="sec-comparison-target history-thumb">${evidencePlane(targetImage, "100 Yard initial group target evidence", authorityVisualForPackage(pkg), evidence, 1102, 1713, `<span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span>`)}</div></figure>
+            <figure><figcaption><span>After</span><strong>Confirmation Group</strong></figcaption><div class="sec-comparison-target history-thumb">${evidencePlane(hasConfirmationEvidence ? confirmationEvidence.dataUrl : targetImage, "100 Yard confirmation group target evidence", hasConfirmationEvidence ? authorityVisualForPackage(confirmationPackage, { includeAim: false }) : "", hasConfirmationEvidence ? confirmationEvidence : evidence, 1102, 1713)}${hasConfirmationEvidence ? "" : `<span class="sec-comparison-pending">Confirmation not recorded</span>`}</div></figure>
           </div>
         </section>
         <section class="sec-universal-stage sec-universal-stage-measurement" data-sec-stage="measurement" aria-label="Measurement"><header class="sec-universal-stage-heading"><span>2 · Measurement</span><h2>Group Analysis</h2></header><div class="sec-metric-grid">${measurementMetrics}</div></section>
@@ -1295,7 +1315,7 @@ function renderGssfM4ReferenceSec(session, pkg) {
         <section class="sec-universal-stage sec-universal-stage-evidence" data-sec-stage="evidence" aria-label="Evidence">
           <header class="sec-universal-stage-heading"><span>1 · Evidence</span><h2>Target and Scoring Analysis</h2></header>
           <div class="sec-before-after" aria-label="GSSF target evidence and scoring analysis">
-            <figure><figcaption><span>Initial</span><strong>Confirmed Impacts</strong></figcaption><div class="sec-comparison-target history-thumb">${evidenceUrl ? `<img src="${escapeHtml(evidenceUrl)}" alt="GSSF AC-1 initial target" /><span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span><div class="history-evidence-layer">${gssfEvidenceVisualForPackage(pkg)}</div>` : `<span class="sec-comparison-pending">Target image unavailable</span>`}</div></figure>
+            <figure><figcaption><span>Initial</span><strong>Confirmed Impacts</strong></figcaption><div class="sec-comparison-target history-thumb">${evidenceUrl ? evidencePlane(evidenceUrl, "GSSF AC-1 initial target", gssfEvidenceVisualForPackage(pkg), session.targetEvidenceImage || {}, 1125, 1373, `<span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span>`) : `<span class="sec-comparison-pending">Target image unavailable</span>`}</div></figure>
             <figure><figcaption><span>Analysis</span><strong>Shot Distribution</strong></figcaption><div class="sec-comparison-target sec-gssf-analysis-panel" aria-label="GSSF shot distribution"><div class="sec-gssf-analysis-grid">${scoringAnalysis}</div><div class="sec-gssf-distribution-summary"><span>Compact Shot Distribution</span><strong>${escapeHtml(`${downZero.count} · ${plusOne.count} · ${plusThree.count} · ${miss.count}`)}</strong><small>Down Zero · +1 · +3 · Miss / Other</small></div></div></figure>
           </div>
         </section>
@@ -1409,7 +1429,7 @@ function renderHistory() {
     const impactsDisplay = shotCount === null ? "Unavailable" : `${shotCount} ${shotCount === 1 ? "impact" : "impacts"}`;
     const evidenceStage = universalSecStageHtml("evidence", "Target Evidence", `
       <div class="sec-journal-grid"><div class="sec-journal-wide"><span>Smart Target</span><strong>${escapeHtml(targetName)}</strong></div></div>
-      <div class="history-thumb"><img src="${thumbnail}" alt="Uploaded target evidence thumbnail" /><div class="history-evidence-layer">${authorityVisual(session)}</div></div>
+      <div class="history-thumb">${evidencePlane(thumbnail, "Uploaded target evidence thumbnail", authorityVisual(session), evidence)}</div>
     `);
     const measurementStage = universalSecStageHtml("measurement", "Group Measurement", `
       <div class="sec-journal-grid"><div><span>Confirmed Group</span><strong>${escapeHtml(impactsDisplay)}</strong></div><div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div></div>

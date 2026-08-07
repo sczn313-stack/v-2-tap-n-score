@@ -38,7 +38,7 @@ assert.match(
 );
 assert.match(
   shoot,
-  /if \(error && \/\^Backend authority failed:\/\.test\(String\(error\.message \|\| error\)\)\) throw error;/,
+  /if \(error && error\.isAuthorityResponse\) throw error;/,
   "non-transient HTTP authority failures must fail safely without retry",
 );
 
@@ -51,7 +51,12 @@ async function exerciseRetry(responses) {
     fetch: async () => {
       const response = responses[requestCount++];
       if (response instanceof Error) throw response;
-      return response;
+      return {
+        ...response,
+        clone() {
+          return { json: async () => response.packageData || {} };
+        },
+      };
     },
     window: { setTimeout: callback => callback() },
   };
@@ -67,7 +72,7 @@ assert.equal((await transientGateway.response()).status, 200, "a transient 502 m
 assert.equal(transientGateway.requestCount(), 2, "a transient gateway failure must be attempted exactly twice");
 
 const invalidAuthority = await exerciseRetry([{ ok: false, status: 400 }, { ok: true, status: 200 }]);
-await assert.rejects(invalidAuthority.response(), /Backend authority failed: 400/);
+await assert.rejects(invalidAuthority.response(), /authority_http_400/);
 assert.equal(invalidAuthority.requestCount(), 1, "a governed 400 response must not be retried");
 
 const interruptedRequest = await exerciseRetry([new TypeError("network interrupted"), { ok: true, status: 200 }]);
@@ -111,9 +116,10 @@ assert.match(
 );
 assert.match(
   shoot,
-  /authorityStatusMessage = "Results couldn’t be calculated\. Check your connection, then try again\.";[\s\S]*?renderResults\(\);[\s\S]*?finally \{[\s\S]*?authorityRequestInFlight = false;[\s\S]*?renderResults\(\);/,
+  /authorityStatusMessage = authorityFailureShooterMessage\(error\);[\s\S]*?renderResults\(\);[\s\S]*?finally \{[\s\S]*?authorityRequestInFlight = false;[\s\S]*?renderResults\(\);/,
   "authority failure must be visible and must release the submission lock",
 );
+assert.match(shoot, /status >= 500[\s\S]*?analysis service is temporarily unavailable/, "backend failures must not be mislabeled as connection failures");
 assert.match(shoot, /data-authority-retry>Try Again</, "authority failure must expose an intentional retry action");
 assert.match(
   shoot,

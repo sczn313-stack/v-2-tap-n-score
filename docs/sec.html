@@ -50,13 +50,15 @@
           <figure>
             <figcaption><strong>BEFORE</strong></figcaption>
             <div class="sec-comparison-target">
-              <img id="beforeEvidenceImage" alt="Initial group target evidence" />
-              <div class="marker-layer" id="beforeEvidenceMarkers"></div>
+              <div class="sec-evidence-plane" id="beforeEvidencePlane">
+                <img id="beforeEvidenceImage" alt="Initial group target evidence" />
+                <div class="marker-layer" id="beforeEvidenceMarkers"></div>
+              </div>
             </div>
           </figure>
           <figure id="confirmationWorkspace">
             <figcaption><strong>AFTER</strong></figcaption>
-            <div class="sec-comparison-target"><img id="confirmationImage" alt="Confirmation-group target evidence" /><div class="marker-layer" id="confirmationMarkers"></div><span class="sec-comparison-pending is-hidden" id="confirmationPending" hidden></span></div>
+            <div class="sec-comparison-target"><div class="sec-evidence-plane" id="confirmationEvidencePlane"><img id="confirmationImage" alt="Confirmation-group target evidence" /><div class="marker-layer" id="confirmationMarkers"></div></div><span class="sec-comparison-pending is-hidden" id="confirmationPending" hidden></span></div>
           </figure>
         </div>
       </details>
@@ -404,8 +406,10 @@ function renderSEC() {
   const savedContext = session.correctionContextSnapshot || {};
 
   document.getElementById("secSessionIdentifier").textContent = session.sessionLabel || "Session";
+  const initialEvidence = session.targetEvidenceImage || {};
   document.getElementById("beforeEvidenceImage").src =
-    session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
+    initialEvidence.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
+  setEvidencePlaneAspect(document.getElementById("beforeEvidencePlane"), initialEvidence, 2550, 3300);
   const measurementHtml = SCZN3SEC.GroupAnalysisCard(authority);
   const executionHtml = SCZN3SEC.ExecutionCard(authority);
   document.getElementById("summaryMeasurementGrid").innerHTML = measurementHtml;
@@ -453,10 +457,12 @@ function renderConfirmation() {
   const pending = document.getElementById("confirmationPending");
   if (confirmationEvidence && confirmationEvidence.dataUrl) {
     document.getElementById("confirmationImage").src = confirmationEvidence.dataUrl;
+    setEvidencePlaneAspect(document.getElementById("confirmationEvidencePlane"), confirmationEvidence, 2550, 3300);
     pending.classList.add("is-hidden");
   } else {
     document.getElementById("confirmationImage").src =
       session.targetEvidenceImage && session.targetEvidenceImage.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
+    setEvidencePlaneAspect(document.getElementById("confirmationEvidencePlane"), session.targetEvidenceImage || {}, 2550, 3300);
     pending.classList.remove("is-hidden");
   }
   document.getElementById("confirmationMarkers").innerHTML =
@@ -473,6 +479,13 @@ function renderConfirmation() {
   const validationCard = SCZN3SEC.ValidationCard(confirmationAuthority, authority);
   document.getElementById("summaryValidationOutcome").innerHTML =
     `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
+}
+
+function setEvidencePlaneAspect(plane, evidence, fallbackWidth, fallbackHeight) {
+  if (!plane) return;
+  const width = Number(evidence && (evidence.imageWidth || evidence.width)) || fallbackWidth;
+  const height = Number(evidence && (evidence.imageHeight || evidence.height)) || fallbackHeight;
+  plane.style.setProperty("--evidence-aspect", `${width} / ${height}`);
 }
 
 document.getElementById("addNote")?.addEventListener("click", () => {

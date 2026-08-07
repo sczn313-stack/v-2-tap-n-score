@@ -6,6 +6,38 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function (document, window) {
   "use strict";
 
+  const DESKTOP_DESTINATIONS = [
+    { page: "index.html", label: "Home" },
+    { page: "matrix.html", label: "Weapon Setup" },
+    { page: "shoot.html", label: "Target" },
+    { page: "records.html", label: "History", preserve: true }
+  ];
+
+  function currentPage() {
+    const page = String(window.location.pathname || "").split("/").pop();
+    return page || "index.html";
+  }
+
+  function installDesktopNavigation() {
+    if (!document || document.querySelector(".platform-quick-nav")) return;
+    const activePage = currentPage();
+    const existing = document.querySelector(".locked-nav");
+    const menuControl = document.querySelector("button.package-menu");
+    if (!existing && (!menuControl || !menuControl.parentNode)) return;
+    const nav = existing || document.createElement("nav");
+    nav.classList.add("platform-quick-nav");
+    nav.setAttribute("aria-label", "Quick navigation");
+    nav.replaceChildren();
+    DESKTOP_DESTINATIONS.filter(item => item.page !== activePage).forEach(item => {
+      const link = document.createElement("a");
+      link.href = item.page;
+      link.textContent = item.label;
+      if (item.preserve) link.setAttribute("data-preserve-active-session", "");
+      nav.append(link);
+    });
+    if (!existing) menuControl.parentNode.insertBefore(nav, menuControl);
+  }
+
   function platformMenus() {
     if (!document) return [];
     const menus = [];
@@ -38,6 +70,7 @@
   function install() {
     if (!document || !window || document.documentElement.dataset.sczn3NavigationReady === "true") return;
     document.documentElement.dataset.sczn3NavigationReady = "true";
+    installDesktopNavigation();
     const menus = platformMenus();
 
     function activeSession() {

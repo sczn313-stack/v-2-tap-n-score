@@ -6,6 +6,7 @@ const output = path.join(root, "dist", "netlify");
 
 const publicFiles = [
   "_redirects",
+  "favicon.ico",
   "index.html",
   "survey.html",
   "matrix.html",
