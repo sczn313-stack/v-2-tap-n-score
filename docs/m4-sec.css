@@ -128,6 +128,9 @@
 .records-page .m4-reference-sec-card .sec-correction-call{min-height:92px}
 .records-page .m4-reference-sec-card .sec-validation-calculation{min-height:72px}
 .records-page .sec-gssf-analysis-panel{display:grid;align-content:space-between;gap:14px;padding:18px;border-color:#b8861c;background:radial-gradient(circle at 50% 0%,rgba(217,150,11,.18),transparent 45%),linear-gradient(160deg,#17130b,#090909 62%);color:#fff}
+.records-page .sec-gssf-evidence-grid{align-items:stretch}
+.records-page .sec-gssf-evidence-grid>figure{grid-template-rows:auto minmax(0,1fr)}
+.records-page .sec-gssf-evidence-grid .sec-comparison-target{min-height:clamp(360px,48vw,520px);aspect-ratio:auto}
 .records-page .sec-gssf-analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .records-page .sec-gssf-analysis-grid>div{display:grid;align-content:start;gap:3px;min-height:82px;padding:12px;border:1px solid rgba(217,150,11,.58);border-radius:8px;background:rgba(255,255,255,.055)}
 .records-page .sec-gssf-analysis-grid span,.records-page .sec-gssf-distribution-summary span,.records-page .sec-gssf-compact-score span{color:#e7b642;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
@@ -244,6 +247,7 @@ body[data-vault-thumbnail="true"] .sec-universal-stage-heading{display:none}
   .sec-target-story{grid-template-columns:1fr}
   .sec-target-story>details.sec-accordion-stage{grid-column:1}
   .sec-stage-pill h2{white-space:normal}
+  .records-page .sec-gssf-evidence-grid .sec-comparison-target{min-height:600px}
 }
 
 @media print{
