@@ -1,0 +1,33 @@
+"""GunFun manufacturer collection bucket for the SCZN3 partnership concept.
+
+This is intentionally separate from scoring/mission authority. It preserves collected
+manufacturer facts and SCZN3 proposals so the frontend cannot invent catalog truth.
+"""
+from copy import deepcopy
+
+GUNFUN_CATALOG = {
+    "schemaVersion": "SCZN3_MANUFACTURER_COLLECTION_V1",
+    "manufacturer": {"id": "gunfun", "name": "GunFun Shooting Targets, Inc.", "website": "https://gunfun.com/"},
+    "collectionPurpose": ["collection_bucket", "lie_detector"],
+    "smartTargetPricing": {"status": "sczn3_proposed", "surchargePerTargetUsd": 0.10},
+    "records": [
+        {"gunfunSku":"82020","smartTargetSku":"ST-GF-82020","name":"M16 Zeroing Target","family":"Sighting","size":"14 x 20 in","publishedSingleTargetPriceUsd":0.28,"proposedSmartTargetPriceUsd":0.38,"productUrl":"https://gunfun.com/shop/m16-zeroing-target-82020/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2016/07/ZeroingTarget-82020-500x715.jpg"},
+        {"gunfunSku":"82030","smartTargetSku":"ST-GF-82030","name":"100 Yd Rifle Target","family":"Sighting","size":"14 x 20 in","publishedSingleTargetPriceUsd":0.28,"proposedSmartTargetPriceUsd":0.38,"productUrl":"https://gunfun.com/shop/100-yd-rifle-target-82030/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2016/07/100-yd-Rifle-Target-RED-1-500x672.jpg"},
+        {"gunfunSku":"22050","smartTargetSku":"ST-GF-22050","name":"Big Yellow","family":"Sighting","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.10,"proposedSmartTargetPriceUsd":1.20,"productUrl":"https://gunfun.com/shop/big-yellow-22050/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2020/02/BigYellow-500x761.jpg"},
+        {"gunfunSku":"22920","smartTargetSku":"ST-GF-22920","name":"Friendly Competition","family":"Competition","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.10,"proposedSmartTargetPriceUsd":1.20,"productUrl":"https://gunfun.com/shop/friendly-competition-22920/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2022/02/22920-500x761.jpg"},
+        {"gunfunSku":"22360","smartTargetSku":"ST-GF-22360","name":"COM-2A","family":"Training","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.10,"proposedSmartTargetPriceUsd":1.20,"productUrl":"https://gunfun.com/shop/com-2a-22360/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2013/03/COM-2A-22360-500x732.jpg"},
+        {"gunfunSku":"23280","smartTargetSku":"ST-GF-23280","name":"Hostage Crisis","family":"Hostages","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.10,"proposedSmartTargetPriceUsd":1.20,"productUrl":"https://gunfun.com/shop/hostage-crisis-23280/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2018/04/HostageCrisis-500x761.jpg"},
+        {"gunfunSku":"21450","smartTargetSku":"ST-GF-21450","name":"Pool Hall","family":"Games","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.10,"proposedSmartTargetPriceUsd":1.20,"productUrl":"https://gunfun.com/shop/poolhall-21450/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2022/02/PoolHall-500x761.jpg"},
+        {"gunfunSku":"13100","smartTargetSku":"ST-GF-13100","name":"Target Man","family":"Silhouettes","size":"19 x 25 in","publishedSingleTargetPriceUsd":1.06,"proposedSmartTargetPriceUsd":1.16,"productUrl":"https://gunfun.com/shop/target-man-13100/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2013/03/Target-Man-13100-500x656.jpg"},
+        {"gunfunSku":"22470","smartTargetSku":"ST-GF-22470","name":"USPSA/IPSC","family":"Competition","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.14,"proposedSmartTargetPriceUsd":1.24,"productUrl":"https://gunfun.com/shop/uspsa-tan-22470/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2013/09/USPSA-IDPA-22470-500x773.jpg"},
+        {"gunfunSku":"22640","smartTargetSku":"ST-GF-22640","name":"Orange Dude","family":"Anatomy","size":"23 x 35 in","publishedSingleTargetPriceUsd":1.10,"proposedSmartTargetPriceUsd":1.20,"productUrl":"https://gunfun.com/shop/orange-dude-22640/","imageUrl":"https://gunfun.com/wpgfcanow/wp-content/uploads/2014/04/Orange-Dude-22640-tiny.jpg"}
+    ]
+}
+
+for record in GUNFUN_CATALOG["records"]:
+    record["sourceStatus"] = "publicly_verified"
+    record["smartTargetStatus"] = "concept_only"
+
+
+def gunfun_catalog_package():
+    return {"ok": True, **deepcopy(GUNFUN_CATALOG)}

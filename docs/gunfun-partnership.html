@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GunFun + SCZN3 Smart Targets</title>
+<link rel="stylesheet" href="gunfun-partnership.css" />
+</head>
+<body>
+<header class="hero">
+  <nav><strong>GunFun × SCZN3</strong><span>Smart Target Partnership Concept</span></nav>
+  <div class="hero-copy">
+    <p class="eyebrow">THE TARGETS STAY GUNFUN.</p>
+    <h1>The fun doesn't end<br>when the shooting stops.</h1>
+    <p class="lead">Add one small doorway to the targets shooters already love.</p>
+    <div class="flow"><b>Shoot.</b><b>Scan.</b><b>Improve.</b><b>Save.</b></div>
+    <a class="cta" href="#vault">See the first 10 Smart Targets</a>
+  </div>
+  <div class="hero-qr" aria-label="Smart Target QR concept"><span>SMART</span><div class="qr">▦</div><small>SCAN AFTER SHOOTING</small></div>
+</header>
+<main>
+<section class="intro">
+  <p class="eyebrow">A DIGITAL EDITION, NOT A REDESIGN</p>
+  <h2>Your catalog. Your artwork. Your targets.<br><em>Now with a digital life.</em></h2>
+  <p>SCZN3 adds a Smart Target identity and QR entry point while GunFun remains unmistakably GunFun.</p>
+</section>
+<section id="vault" class="vault">
+  <header><p class="eyebrow">10 KEYS TO THE VAULT</p><h2>Meet the Smart Target collection.</h2><p>Every card below is rendered from the backend manufacturer collection bucket.</p></header>
+  <div id="catalogStatus" class="status">Loading GunFun collection…</div>
+  <div id="catalog" class="catalog" aria-live="polite"></div>
+</section>
+<section class="promise">
+  <div><span>01</span><h3>GunFun creates the reason to shoot.</h3></div>
+  <div><span>02</span><h3>SCZN3 creates the reason to come back.</h3></div>
+</section>
+<section class="close">
+  <p class="eyebrow">THE OPPORTUNITY</p>
+  <h2>Hundreds of physical targets.<br>Hundreds of digital experiences.</h2>
+  <p>The Smart Target edition begins with a simple concept: the published GunFun target plus a proposed $0.10 digital experience.</p>
+  <div class="flow dark"><b>Shoot.</b><b>Scan.</b><b>Improve.</b><b>Save.</b></div>
+</section>
+</main>
+<footer><strong>GunFun × SCZN3</strong><span>Partnership concept — not affiliated or approved by GunFun.</span></footer>
+<script>
+(async function(){
+  const status=document.getElementById('catalogStatus');
+  const catalog=document.getElementById('catalog');
+  try{
+    const response=await fetch('/api/manufacturers/gunfun/catalog',{headers:{Accept:'application/json'}});
+    if(!response.ok) throw new Error('catalog_unavailable');
+    const data=await response.json();
+    if(!data.ok || !Array.isArray(data.records)) throw new Error('invalid_catalog');
+    status.hidden=true;
+    catalog.innerHTML=data.records.map((item,index)=>`
+      <article class="target-card">
+        <div class="number">${String(index+1).padStart(2,'0')}</div>
+        <div class="target-art">
+          <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.name)}" loading="lazy">
+          <div class="smart-qr"><span>ST</span><b>▦</b></div>
+        </div>
+        <div class="target-meta">
+          <span>${escapeHtml(item.family)}</span>
+          <h3>${escapeHtml(item.name)}</h3>
+          <dl><div><dt>GunFun SKU</dt><dd>${escapeHtml(item.gunfunSku)}</dd></div><div><dt>Smart SKU</dt><dd>${escapeHtml(item.smartTargetSku)}</dd></div><div><dt>Size</dt><dd>${escapeHtml(item.size)}</dd></div><div><dt>Published</dt><dd>$${Number(item.publishedSingleTargetPriceUsd).toFixed(2)}</dd></div><div class="smart-price"><dt>Smart Target</dt><dd>$${Number(item.proposedSmartTargetPriceUsd).toFixed(2)}</dd></div></dl>
+        </div>
+      </article>`).join('');
+  }catch(error){
+    status.textContent='GunFun collection unavailable. Frontend will not invent or substitute catalog data.';
+    status.classList.add('error');
+  }
+  function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+})();
+</script>
+</body>
+</html>

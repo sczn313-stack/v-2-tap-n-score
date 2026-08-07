@@ -7,39 +7,22 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
 from m4_authority.authority_service import build_authority_package as build_m4_authority_package
+from manufacturer_catalogs.gunfun_catalog import gunfun_catalog_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
-from session_authority import (
-    SessionAuthorityError,
-    prepare_session,
-    runtime_store,
-    start_session,
-)
+from session_authority import SessionAuthorityError, prepare_session, runtime_store, start_session
 
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8098"))
 DEFAULT_ALLOWED_ORIGINS = (
-    "https://tap-n-score.com,"
-    "https://www.tap-n-score.com,"
-    "https://BakerTargets.com,"
-    "https://www.BakerTargets.com,"
-    "http://127.0.0.1:8101,"
-    "http://localhost:8101"
+    "https://tap-n-score.com,https://www.tap-n-score.com,https://BakerTargets.com,"
+    "https://www.BakerTargets.com,http://127.0.0.1:8101,http://localhost:8101"
 )
-ALLOWED_ORIGINS = {
-    origin.strip()
-    for origin in os.environ.get("SCZN3_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")
-    if origin.strip()
-}
+ALLOWED_ORIGINS = {origin.strip() for origin in os.environ.get("SCZN3_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",") if origin.strip()}
 
 
 def founder_access_unavailable():
-    """Refuse private telemetry until authenticated founder access exists."""
-    return {
-        "ok": False,
-        "status": "founder_authentication_required",
-        "reason": "Pulse Check remains unavailable until server-verified founder authentication is configured.",
-    }
+    return {"ok": False, "status": "founder_authentication_required", "reason": "Pulse Check remains unavailable until server-verified founder authentication is configured."}
 
 
 class AuthorityHandler(BaseHTTPRequestHandler):
@@ -51,6 +34,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     OPS_HEALTH_PATHS = {"/api/ops/health", "/api/ops/health/"}
     OPS_ENV_CHECK_PATHS = {"/api/ops/env-check", "/api/ops/env-check/"}
     PRODUCT_ROUTE_PATHS = {"/api/catalog/product-route", "/api/catalog/product-route/"}
+    GUNFUN_CATALOG_PATHS = {"/api/manufacturers/gunfun/catalog", "/api/manufacturers/gunfun/catalog/"}
     SESSION_PREPARE_PATHS = {"/api/session/prepare", "/api/session/prepare/"}
     SESSION_START_PATHS = {"/api/session/start", "/api/session/start/"}
 
@@ -86,93 +70,59 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self._request_path()
         if path == "/health":
-            self._send_json(200, {"ok": True, "service": "sczn3-authority"})
-            return
+            self._send_json(200, {"ok": True, "service": "sczn3-authority"}); return
+        if path in self.GUNFUN_CATALOG_PATHS:
+            self._send_json(200, gunfun_catalog_package()); return
         if path in self.M4_AUTHORITY_PATHS:
-            self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
-            return
+            self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]}); return
         if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS:
-            self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
-            return
+            self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]}); return
         if path in self.OPS_HEALTH_PATHS:
-            self._send_json(200, {"ok": True, "service": "sczn3-ops"})
-            return
+            self._send_json(200, {"ok": True, "service": "sczn3-ops"}); return
         if path in self.OPS_ENV_CHECK_PATHS:
-            self._send_json(403, founder_access_unavailable())
-            return
+            self._send_json(403, founder_access_unavailable()); return
         if path in self.OPS_SUMMARY_PATHS:
             query = parse_qs(urlparse(self.path).query)
-            summary = summarize_events(
-                time_window=query.get("window", ["all"])[0],
-                product_filter=query.get("product", ["all"])[0],
-                timezone_name=query.get("timeZone", ["UTC"])[0],
-            )
-            self._send_json(200 if summary.get("ok") is True else 400, summary)
-            return
+            summary = summarize_events(time_window=query.get("window", ["all"])[0], product_filter=query.get("product", ["all"])[0], timezone_name=query.get("timeZone", ["UTC"])[0])
+            self._send_json(200 if summary.get("ok") is True else 400, summary); return
         if path in self.PRODUCT_ROUTE_PATHS:
             query = parse_qs(urlparse(self.path).query)
-            result = resolve_product_route(
-                query.get("publisherRouteId", [""])[0],
-                query.get("productRouteId", [""])[0],
-            )
-            self._send_json(product_resolution_http_status(result), result)
-            return
+            result = resolve_product_route(query.get("publisherRouteId", [""])[0], query.get("productRouteId", [""])[0])
+            self._send_json(product_resolution_http_status(result), result); return
         self._send_json(404, {"error": "not found"})
 
     def do_POST(self):
         path = self._request_path()
         if path in self.SESSION_PREPARE_PATHS:
-            try:
-                self._send_json(200, prepare_session(self._read_json_body(), runtime_store()))
-            except (json.JSONDecodeError, UnicodeDecodeError):
-                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
-            except SessionAuthorityError as exc:
-                self._send_json(exc.http_status, exc.payload)
-            except Exception:  # pragma: no cover - defensive storage boundary
-                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "session_preparation_persistence_failed"})
+            try: self._send_json(200, prepare_session(self._read_json_body(), runtime_store()))
+            except (json.JSONDecodeError, UnicodeDecodeError): self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except SessionAuthorityError as exc: self._send_json(exc.http_status, exc.payload)
+            except Exception: self._send_json(503, {"ok": False, "status": "storage_error", "reason": "session_preparation_persistence_failed"})
             return
         if path in self.SESSION_START_PATHS:
             try:
-                package = start_session(
-                    self._read_json_body(),
-                    runtime_store(),
-                    idempotency_key=self.headers.get("Idempotency-Key"),
-                )
+                package = start_session(self._read_json_body(), runtime_store(), idempotency_key=self.headers.get("Idempotency-Key"))
                 self._send_json(200 if package.get("idempotentReplay") else 201, package)
-            except (json.JSONDecodeError, UnicodeDecodeError):
-                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
-            except SessionAuthorityError as exc:
-                self._send_json(exc.http_status, exc.payload)
-            except Exception:  # pragma: no cover - defensive storage boundary
-                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "session_persistence_failed"})
+            except (json.JSONDecodeError, UnicodeDecodeError): self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except SessionAuthorityError as exc: self._send_json(exc.http_status, exc.payload)
+            except Exception: self._send_json(503, {"ok": False, "status": "storage_error", "reason": "session_persistence_failed"})
             return
         if path in self.OPS_EVENT_PATHS:
-            try:
-                self._send_json(200, record_event(self._read_json_body()))
-            except Exception as exc:  # pragma: no cover - defensive server boundary
-                self._send_json(400, {"error": str(exc)})
+            try: self._send_json(200, record_event(self._read_json_body()))
+            except Exception as exc: self._send_json(400, {"error": str(exc)})
             return
         if path in self.DISTANCE_CLICK_QUERY_PATHS:
-            try:
-                self._send_json(200, build_distance_click_query(self._read_json_body()))
-            except Exception as exc:  # pragma: no cover - defensive server boundary
-                self._send_json(400, {"error": str(exc)})
+            try: self._send_json(200, build_distance_click_query(self._read_json_body()))
+            except Exception as exc: self._send_json(400, {"error": str(exc)})
             return
         if path in self.M4_AUTHORITY_PATHS:
-            try:
-                self._send_json(200, build_m4_authority_package(self._read_json_body()))
-            except Exception as exc:  # pragma: no cover - defensive server boundary
-                self._send_json(400, {"error": str(exc)})
+            try: self._send_json(200, build_m4_authority_package(self._read_json_body()))
+            except Exception as exc: self._send_json(400, {"error": str(exc)})
             return
         if path not in self.AUTHORITY_PATHS:
-            self._send_json(404, {"error": "not found"})
-            return
-        try:
-            payload = self._read_json_body()
-            package = build_authority_package(payload)
-            self._send_json(200, package)
-        except Exception as exc:  # pragma: no cover - defensive server boundary
-            self._send_json(400, {"error": str(exc)})
+            self._send_json(404, {"error": "not found"}); return
+        try: self._send_json(200, build_authority_package(self._read_json_body()))
+        except Exception as exc: self._send_json(400, {"error": str(exc)})
 
     def log_message(self, fmt, *args):
         print(f"{self.address_string()} - {fmt % args}")
@@ -180,5 +130,5 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer((HOST, PORT), AuthorityHandler)
-    print(f"SCZN3 authority backend listening at http://{HOST}:{PORT}/api/authority/ugeo, /api/authority/m4, and /api/session/*")
+    print(f"SCZN3 authority backend listening at http://{HOST}:{PORT}")
     server.serve_forever()
