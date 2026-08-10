@@ -193,6 +193,89 @@
   background:#f5f1e8;
 }
 
+/* Item 1 — one governed hamburger placement across the primary application. */
+.universal-app-header{
+  position:relative;
+  z-index:90;
+  padding-right:12px;
+}
+
+.target-page .universal-app-header{
+  display:flex;
+  align-items:center;
+  width:100%;
+}
+
+.target-page .workspace-top-overlay{
+  top:54px!important;
+}
+
+.universal-app-header > .package-menu{
+  flex:0 0 44px;
+  align-self:center;
+  justify-self:end;
+  width:44px;
+  min-width:44px;
+  height:44px;
+  min-height:44px;
+  margin-left:auto;
+}
+
+.universal-app-header > .package-menu span,
+.universal-header-menu > summary span{
+  display:block;
+  width:24px;
+  height:3px;
+  border-radius:99px;
+  background:#f5f1e8;
+  transition:opacity .16s ease, transform .16s ease;
+}
+
+.universal-app-header > .universal-header-menu{
+  position:absolute;
+  z-index:80;
+  top:50%;
+  right:12px;
+  display:block!important;
+  width:44px;
+  margin:0;
+  transform:translateY(-50%);
+}
+
+.universal-header-menu > summary{
+  display:grid!important;
+  gap:5px;
+  place-content:center;
+  width:44px!important;
+  min-width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+  margin-left:auto;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  border-radius:8px;
+  background:#101010!important;
+  color:#f5f1e8;
+  font-size:0!important;
+  box-shadow:none!important;
+}
+
+.universal-header-menu[open]{
+  top:calc(50% - 22px);
+  width:min(230px,72vw);
+  transform:none;
+}
+
+.universal-header-menu[open] > summary span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.universal-header-menu[open] > summary span:nth-child(2){opacity:0}
+.universal-header-menu[open] > summary span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+.universal-header-menu > a{
+  box-sizing:border-box;
+  width:100%;
+  margin-top:4px;
+}
+
 .package-menu:hover,
 .package-menu:focus-visible,
 .package-menu[aria-expanded="true"],

@@ -12,6 +12,17 @@ pages.forEach(page => {
   assert(!html.includes('querySelectorAll(".mobile-platform-menu").forEach'), `${page} has no page-specific details-menu controller`);
 });
 
+const primaryApplicationPages = ["index.html", "matrix.html", "shoot.html", "sec.html", "records.html"];
+primaryApplicationPages.forEach(page => {
+  const html = fs.readFileSync(path.join(docs, page), "utf8");
+  assert(html.includes("universal-app-header"), `${page} uses the governed application header placement`);
+});
+
+const universalUi = fs.readFileSync(path.join(docs, "universal-ui.css"), "utf8");
+assert(universalUi.includes(".universal-app-header > .package-menu"), "button hamburgers use the universal top-header position");
+assert(universalUi.includes(".universal-header-menu"), "details hamburgers use the same universal top-header position");
+assert(universalUi.includes("right:12px"), "the hamburger has one governed right-edge placement");
+
 const survey = fs.readFileSync(path.join(docs, "survey.html"), "utf8");
 assert(!survey.includes("mobile-platform-menu") && !survey.includes("package-menu"), "survey has no hamburger state to govern");
 

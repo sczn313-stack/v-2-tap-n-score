@@ -23,6 +23,19 @@ window.addEventListener("error", event => {
 </head>
 <body class="platform-page target-page">
 <main class="shell">
+  <header class="m4-header universal-app-header target-application-header">
+    <div class="vendor-slot">
+      <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
+      <div class="brand-lockup">
+        <a class="vendor-name" href="index.html">Tap-n-Score™</a>
+      </div>
+    </div>
+    <details class="mobile-platform-menu universal-header-menu">
+      <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+      <a href="index.html">Home</a>
+      <a href="matrix.html" data-simulation-hide>Weapon Library</a>
+    </details>
+  </header>
   <section class="shoot-workflow">
     <div class="panel">
       <section class="upload-panel" aria-label="Upload or capture target evidence">
@@ -34,11 +47,6 @@ window.addEventListener("error", event => {
           </div>
           <div class="workspace-top-overlay" aria-label="Workspace controls">
             <a class="workspace-target-identity" id="targetHeaderIdentity" href="index.html">Target: Not Known</a>
-            <details class="mobile-platform-menu target-mobile-menu workspace-menu">
-              <summary aria-label="Open navigation">☰</summary>
-              <a href="index.html">Home</a>
-              <a href="matrix.html" data-simulation-hide>Weapon Library</a>
-            </details>
           </div>
           <section class="target-session-context" aria-label="Current step" aria-live="polite">
             <span id="missionWorkspaceEyebrow">Target</span>
