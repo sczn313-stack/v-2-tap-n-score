@@ -105,7 +105,7 @@ assert(redirects.includes("/api/session/prepare"));
 assert(redirects.includes("/api/session/start"));
 assert(matrixHtml.includes("This target will use the Standard Setup shown below."));
 assert(matrixHtml.includes("Continue with Standard Setup"));
-assert(matrixHtml.includes(">Weapon Setup</button>"));
+assert(matrixHtml.includes(">Equipment</button>"));
 assert(matrixHtml.includes("JSON.stringify({ targetId })"));
 assert(matrixHtml.includes("preferredCompatibleSavedSetup"));
 assert(matrixHtml.includes("initializeOneTimeSetupFromAuthority"));

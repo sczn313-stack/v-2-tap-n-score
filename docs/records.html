@@ -26,7 +26,7 @@
   </header>
   <nav class="package-menu-drawer records-menu-drawer" id="recordsMenuDrawer" aria-label="Target workflow navigation" hidden>
     <a href="index.html">Home</a>
-    <a href="matrix.html" data-simulation-hide>Weapon Library</a>
+    <a href="matrix.html" data-simulation-hide>Equipment Library</a>
     <a href="shoot.html" data-simulation-target-link>Target</a>
     <a href="survey.html">Survey</a>
   </nav>
@@ -543,7 +543,7 @@ function renderTrainingSecCard(session, index, pkg) {
           <div><span>Date</span><strong>${escapeHtml(cleanDateTime(session.timestamp))}</strong></div>
           <div><span>Distance</span><strong>${escapeHtml(trainingDistanceLabel(distance))}</strong></div>
           <div><span>Time</span><strong>${escapeHtml(time)}</strong></div>
-          ${weaponMeta ? `<div><span>Weapon Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
+          ${weaponMeta ? `<div><span>Equipment Details</span><strong>${escapeHtml(weaponMeta)}</strong></div>` : ""}
         </div>
         <div class="training-sec-card-grid">
           <div><span>Target</span><strong>${escapeHtml(targetName)}</strong></div>
@@ -577,7 +577,7 @@ function gssfCompleteSessionRecordHtml(session, snapshot, missionDisplayName, we
     ["Session Record ID", session.sessionId],
     ["Course", missionDisplayName],
     ["Firearm", weapon === "--" ? "" : weapon],
-    ["Weapon Details", weaponMeta],
+    ["Equipment Details", weaponMeta],
     ["Optic", optic],
     ["Ammunition", ammunition],
     ["Distance", distance],

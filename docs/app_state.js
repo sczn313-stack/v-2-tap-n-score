@@ -568,8 +568,8 @@
     const modelLine = [manufacturer, model || modelType || category].filter(Boolean).join(" ");
     const summary = [category, manufacturer, model || modelType, caliber && model !== caliber ? caliber : ""].filter(Boolean).join(" / ");
     return {
-      summary: summary || cleanProfileValue(source.rifle) || "Weapon profile not selected",
-      short: modelLine || cleanProfileValue(source.rifle) || "Weapon Profile",
+      summary: summary || cleanProfileValue(source.rifle) || "Equipment profile not selected",
+      short: modelLine || cleanProfileValue(source.rifle) || "Equipment Profile",
       caliber: caliber || cleanProfileValue(source.weaponModelCaliber) || "Caliber not set",
       frameCategory: cleanProfileValue(source.weaponFrameCategory),
       barrelLength: cleanProfileValue(source.barrelLength),

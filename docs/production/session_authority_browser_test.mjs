@@ -174,7 +174,7 @@ try {
     assert.match(await page.locator("#standardSetupPanel").textContent(), /This target will use the Standard Setup shown below\./);
     assert.equal(await page.locator("#standardSetupPanel button").count(), 2);
     assert.equal(await page.locator("#continueStandardSetup").textContent(), "Continue with Standard Setup");
-    assert.equal(await page.locator("#chooseWeaponSetup").textContent(), "Weapon Setup");
+    assert.equal(await page.locator("#chooseWeaponSetup").textContent(), "Equipment");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     await page.locator("#continueStandardSetup").click();
     await page.waitForURL(url => url.pathname.endsWith("/shoot.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);

@@ -33,7 +33,7 @@ window.addEventListener("error", event => {
     <details class="mobile-platform-menu universal-header-menu">
       <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
       <a href="index.html">Home</a>
-      <a href="matrix.html" data-simulation-hide>Weapon Library</a>
+      <a href="matrix.html" data-simulation-hide>Equipment Library</a>
     </details>
   </header>
   <section class="shoot-workflow">
@@ -1442,7 +1442,7 @@ function renderSetupSummary() {
     .join(" / ");
   setupSummaryGrid.innerHTML = [
     setupLine("Weapon", weapon || source.rifle),
-    weaponMeta ? setupLine("Weapon Catalog", weaponMeta) : "",
+    weaponMeta ? setupLine("Equipment Catalog", weaponMeta) : "",
     setupLine("Optic", optic),
     setupLine("Ammunition", ammo)
   ].join("");
@@ -2149,13 +2149,13 @@ function correctionUnavailableShooterMessage(authorityPackage = backendAuthority
     return "Enter the firing distance, then tap Confirm.";
   }
   if (context.sightSystem === "optic" && (!Number.isFinite(context.opticClickValue) || context.opticClickValue <= 0)) {
-    return "The optic adjustment value is missing. Return to Weapon Library, complete the optic setup, then try again.";
+    return "The optic adjustment value is missing. Return to Equipment Library, complete the optic setup, then try again.";
   }
   if (context.sightSystem === "iron" && !context.equipmentAuthorityRecordId) {
-    return "This iron-sight setup is not registered for click adjustments. Return to Weapon Library and select the supported M4 sight setup.";
+    return "This iron-sight setup is not registered for click adjustments. Return to Equipment Library and select the supported M4 sight setup.";
   }
   if (!authorityPackage || !authorityPackage.clicks || authorityPackage.mechanicalValidation?.status !== "calculated") {
-    return "This sight setup does not provide a verified click adjustment. Review the sight setup in Weapon Library, then try again.";
+    return "This sight setup does not provide a verified click adjustment. Review the sight setup in Equipment Library, then try again.";
   }
   return "A correction could not be calculated from this group. Check the session setup and try Show Results again.";
 }

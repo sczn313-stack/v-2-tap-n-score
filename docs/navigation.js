@@ -8,7 +8,7 @@
 
   const DESKTOP_DESTINATIONS = [
     { page: "index.html", label: "Home" },
-    { page: "matrix.html", label: "Weapon Setup" },
+    { page: "matrix.html", label: "Equipment" },
     { page: "shoot.html", label: "Target" },
     { page: "records.html", label: "History", preserve: true }
   ];

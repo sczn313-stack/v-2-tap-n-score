@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Weapon Library</title>
+<title>Equipment Library</title>
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
 <script src="navigation.js" defer></script>
@@ -36,8 +36,8 @@
   <section class="matrix-only">
     <form class="panel matrix-form is-profile-collapsed" id="matrixForm">
       <div class="weapon-top-row">
-        <button class="button primary weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Weapon Library</button>
-        <button class="button" type="button" id="newSetup">New Weapon Setup</button>
+        <button class="button primary weapon-list-toggle" type="button" id="weaponListToggle" aria-expanded="false" aria-controls="weaponListPanel">▼ View My Equipment Library</button>
+        <button class="button" type="button" id="newSetup">New Equipment</button>
         <button class="button" type="submit">Go To Target</button>
       </div>
       <div class="target-mode-pill is-hidden" id="targetModePill"></div>
@@ -51,18 +51,18 @@
         <dl class="standard-setup-values" id="standardSetupValues"></dl>
         <div class="standard-setup-actions">
           <button class="button primary" type="button" id="continueStandardSetup">Continue with Standard Setup</button>
-          <button class="button" type="button" id="chooseWeaponSetup">Weapon Setup</button>
+          <button class="button" type="button" id="chooseWeaponSetup">Equipment</button>
         </div>
       </section>
 
-      <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Weapon Library">
-        <h2 class="weapon-library-title">MY WEAPON LIBRARY</h2>
+      <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Equipment Library">
+        <h2 class="weapon-library-title">MY EQUIPMENT LIBRARY</h2>
         <div class="weapon-list-grid" id="weaponListGrid"></div>
       </section>
 
       <section class="form-section primary-weapon-path">
-        <h2>New Weapon Setup</h2>
-        <div class="category-pill-row" role="group" aria-label="Weapon Category">
+        <h2>New Equipment</h2>
+        <div class="category-pill-row" role="group" aria-label="Equipment Category">
           <button class="category-pill" type="button" data-weapon-category="Rifle">Rifle</button>
           <button class="category-pill" type="button" data-weapon-category="Pistol">Pistol</button>
           <button class="category-pill" type="button" data-weapon-category="Shotgun">Shotgun</button>
@@ -71,10 +71,10 @@
       </section>
 
       <details class="form-section secondary-profile-section">
-        <summary>Weapon Details</summary>
+        <summary>Equipment Details</summary>
         <div class="matrix-grid">
           <div class="weapon-photo-field">
-            <span class="weapon-photo-label">Weapon Photo <span class="optional-label">Optional</span></span>
+            <span class="weapon-photo-label">Equipment Photo <span class="optional-label">Optional</span></span>
             <div class="weapon-photo-preview is-empty" id="weaponPhotoPreview">No photo saved</div>
             <div class="weapon-photo-actions">
               <label class="button" for="weaponPhotoInput">Add Photo</label>
@@ -183,13 +183,13 @@
 
       <div hidden>
         <select id="savedSetupSelect">
-          <option value="">Select Weapon Profile</option>
+          <option value="">Select Equipment Profile</option>
         </select>
         <input id="setupName" />
       </div>
 
       <div class="setup-save-row">
-        <button class="button primary" type="button" id="saveSetup">Save Weapon Profile</button>
+        <button class="button primary" type="button" id="saveSetup">Save Equipment Profile</button>
       </div>
     </form>
   </section>
@@ -1292,7 +1292,7 @@ function renderWeaponPhotoPreview(photo = currentWeaponPhoto) {
   const dataUrl = photo && photo.dataUrl;
   preview.classList.toggle("is-empty", !dataUrl);
   preview.innerHTML = dataUrl
-    ? `<img src="${escapeHtml(dataUrl)}" alt="Saved weapon photo preview" />`
+    ? `<img src="${escapeHtml(dataUrl)}" alt="Saved equipment photo preview" />`
     : "No photo saved";
 }
 
@@ -1341,7 +1341,7 @@ async function setWeaponPhotoFromFile(file) {
 function setupLabel(snapshot) {
   return document.getElementById("setupName").value.trim()
     || [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.ammoCaliber, snapshot.opticType].filter(Boolean).join(" / ")
-    || "Weapon Profile";
+    || "Equipment Profile";
 }
 
 function setupPayload(snapshot) {
@@ -1406,7 +1406,7 @@ function setupPayload(snapshot) {
 function renderSavedSetups(selectedId = "") {
   const select = document.getElementById("savedSetupSelect");
   const setups = readSavedSetups();
-  select.innerHTML = `<option value="">Select Weapon Profile</option>` + setups
+  select.innerHTML = `<option value="">Select Equipment Profile</option>` + setups
     .map(setup => `<option value="${setup.setupId}">${setup.setupName}</option>`)
     .join("");
   select.value = selectedId;
@@ -1415,7 +1415,7 @@ function renderSavedSetups(selectedId = "") {
 
 function weaponCardTitle(setup) {
   const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(setup) : null;
-  return setup.setupName || (weapon && weapon.short) || [setup.weaponManufacturer, setup.weaponModelType].filter(Boolean).join(" ") || "Weapon Profile";
+  return setup.setupName || (weapon && weapon.short) || [setup.weaponManufacturer, setup.weaponModelType].filter(Boolean).join(" ") || "Equipment Profile";
 }
 
 function weaponCaliber(setup) {
@@ -1465,9 +1465,9 @@ function renderWeaponList() {
   if (!setups.length) {
     container.innerHTML = `
       <article class="weapon-library-empty-state">
-        <h3>Your Weapon Library Is Empty</h3>
-        <p>Set up your first weapon once and save it for future range sessions.</p>
-        <button class="button primary" type="button" data-empty-library-action="new-setup">🟨 New Weapon Setup</button>
+        <h3>Your Equipment Library Is Empty</h3>
+        <p>Set up your equipment once, then select it whenever you shoot.</p>
+        <button class="button primary" type="button" data-empty-library-action="new-setup">🟨 New Equipment</button>
       </article>
     `;
     return;
@@ -1483,7 +1483,7 @@ function renderWeaponList() {
         const catalogMeta = weaponCatalogMeta(setup);
         return `
         <article class="weapon-card">
-          ${photo ? `<div class="weapon-card-photo"><img src="${escapeHtml(photo.dataUrl)}" alt="${escapeHtml(weaponCardTitle(setup))} weapon photo" /></div>` : ""}
+          ${photo ? `<div class="weapon-card-photo"><img src="${escapeHtml(photo.dataUrl)}" alt="${escapeHtml(weaponCardTitle(setup))} equipment photo" /></div>` : ""}
           <div>
             <strong>${escapeHtml(weaponCardTitle(setup))}</strong>
             <span>${escapeHtml(weaponCaliber(setup))}</span>
@@ -1539,7 +1539,7 @@ function setWeaponListExpanded(isExpanded) {
   const toggle = document.getElementById("weaponListToggle");
   panel.classList.toggle("is-collapsed", !isExpanded);
   toggle.setAttribute("aria-expanded", String(isExpanded));
-  toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Weapon Library`;
+  toggle.textContent = `${isExpanded ? "▲" : "▼"} View My Equipment Library`;
 }
 
 function renderTargetModePill() {
@@ -1824,7 +1824,7 @@ function sessionAuthorityShooterMessage(error, stage = "start") {
   if (stage === "prepare") {
     return "The setup requirements could not be loaded. Your target selection is preserved. Try again.";
   }
-  return "A session could not be created. Your target and weapon selections are preserved. Try again.";
+  return "A session could not be created. Your target and equipment selections are preserved. Try again.";
 }
 
 function compatibilityMessage(result) {
@@ -2221,7 +2221,7 @@ function renderSessionBar() {
     .map(displayValue)
     .filter(Boolean)
     .join(" / ");
-  document.getElementById("activeSessionBar").innerHTML = `<strong>${setup || "Weapon profile not selected"}</strong><span>${optic || "Weapon Profile"}</span>`;
+  document.getElementById("activeSessionBar").innerHTML = `<strong>${setup || "Equipment profile not selected"}</strong><span>${optic || "Equipment Profile"}</span>`;
 }
 
 function loadMatrix() {
