@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tap-n-score.com/schemas/smart-target-identity-registry-v1.json",
+  "title": "SCZN3 Smart Target Identity Registry",
+  "type": "object",
+  "required": [
+    "registryId",
+    "schemaVersion",
+    "publicationStatus",
+    "records"
+  ],
+  "properties": {
+    "registryId": {
+      "const": "SCZN3-SMART-TARGET-IDENTITY-REGISTRY"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "publicationStatus": {
+      "enum": ["draft", "founder_review", "production"]
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identityRecord"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "identityRecord": {
+      "type": "object",
+      "required": [
+        "recordId",
+        "recordType",
+        "recordStatus",
+        "immutableAfterApproval",
+        "smartTargetId",
+        "identityVersion",
+        "printer",
+        "product",
+        "launchVariant",
+        "deferredVariants",
+        "productSource",
+        "qrIdentityStrategy",
+        "launchCapabilityDeclaration",
+        "unsupportedCapabilityDeclaration",
+        "runtimeExecution",
+        "validationRequirements"
+      ],
+      "properties": {
+        "recordId": { "type": "string", "minLength": 1 },
+        "recordType": { "const": "smart_target_identity" },
+        "recordStatus": {
+          "enum": ["draft", "founder_review", "approved", "retired"]
+        },
+        "immutableAfterApproval": { "const": true },
+        "smartTargetId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "identityVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "printer": {
+          "type": "object",
+          "required": ["printerId", "brandName", "businessName"],
+          "properties": {
+            "printerId": { "type": "string", "minLength": 1 },
+            "brandName": { "type": "string", "minLength": 1 },
+            "businessName": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "product": {
+          "type": "object",
+          "required": [
+            "productName",
+            "sku",
+            "bulkSku",
+            "productUrl",
+            "countryOfManufacture",
+            "sczn3Positioning"
+          ],
+          "properties": {
+            "productName": { "type": "string", "minLength": 1 },
+            "sku": { "type": "string", "minLength": 1 },
+            "bulkSku": { "type": "string", "minLength": 1 },
+            "productUrl": { "type": "string", "format": "uri" },
+            "countryOfManufacture": { "type": "string", "minLength": 1 },
+            "sczn3Positioning": { "const": "practice" }
+          },
+          "additionalProperties": false
+        },
+        "launchVariant": { "$ref": "#/$defs/variant" },
+        "deferredVariants": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/variant" }
+        },
+        "productSource": {
+          "type": "object",
+          "required": ["printerProduct", "geometrySource", "scoringModel"],
+          "properties": {
+            "printerProduct": { "type": "string", "minLength": 1 },
+            "geometrySource": { "type": "string", "minLength": 1 },
+            "scoringModel": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "qrIdentityStrategy": {
+          "type": "object",
+          "required": ["status", "identityTuple", "rules"],
+          "properties": {
+            "status": { "const": "declared_not_implemented" },
+            "identityTuple": {
+              "type": "object",
+              "required": [
+                "printerId",
+                "smartTargetId",
+                "variantId",
+                "identityVersion"
+              ],
+              "properties": {
+                "printerId": { "type": "string", "minLength": 1 },
+                "smartTargetId": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9_]+$"
+                },
+                "variantId": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9_]+$"
+                },
+                "identityVersion": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "launchCapabilityDeclaration": {
+          "type": "object",
+          "required": ["status", "capabilities"],
+          "properties": {
+            "status": { "const": "pending_governed_dependencies" },
+            "capabilities": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "unsupportedCapabilityDeclaration": {
+          "type": "object",
+          "required": ["policy", "capabilities"],
+          "properties": {
+            "policy": {
+              "const": "Capabilities not supported by the printer's product are unavailable."
+            },
+            "capabilities": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "runtimeExecution": {
+          "type": "object",
+          "required": ["status", "blockingDependency"],
+          "properties": {
+            "status": { "const": "unavailable" },
+            "blockingDependency": { "const": "ugo_observation" }
+          },
+          "additionalProperties": false
+        },
+        "validationRequirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "variant": {
+      "type": "object",
+      "required": [
+        "variantId",
+        "width",
+        "height",
+        "unit",
+        "materialDescription",
+        "identityStatus",
+        "runtimeSupportStatus"
+      ],
+      "properties": {
+        "variantId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "const": "inch" },
+        "materialDescription": { "type": "string", "minLength": 1 },
+        "identityStatus": {
+          "enum": ["registered", "deferred"]
+        },
+        "runtimeSupportStatus": { "const": "unavailable_pending_ugo" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

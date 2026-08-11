@@ -1,0 +1,112 @@
+{
+  "registryId": "SCZN3-SMART-TARGET-IDENTITY-REGISTRY",
+  "schemaVersion": "1.0.0",
+  "publicationStatus": "founder_review",
+  "records": [
+    {
+      "recordId": "BAKER_SL_ST1_IDENTITY_V1",
+      "recordType": "smart_target_identity",
+      "recordStatus": "founder_review",
+      "immutableAfterApproval": true,
+      "smartTargetId": "BAKER_SL_ST1",
+      "identityVersion": 1,
+      "printer": {
+        "printerId": "baker",
+        "brandName": "Baker Targets",
+        "businessName": "The Baker Press, Inc."
+      },
+      "product": {
+        "productName": "Silhouette Target (USPSA)",
+        "sku": "SL-ST1",
+        "bulkSku": "SL-ST1-Bulk",
+        "productUrl": "https://bakertargets.com/product/silhouette-target-uspsa/",
+        "countryOfManufacture": "United States",
+        "sczn3Positioning": "practice"
+      },
+      "launchVariant": {
+        "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+        "width": 23,
+        "height": 35,
+        "unit": "inch",
+        "materialDescription": "standard white paper",
+        "identityStatus": "registered",
+        "runtimeSupportStatus": "unavailable_pending_ugo"
+      },
+      "deferredVariants": [
+        {
+          "variantId": "BAKER_SL_ST1_17_5X23_HEAVYWEIGHT",
+          "width": 17.5,
+          "height": 23,
+          "unit": "inch",
+          "materialDescription": "heavyweight paper",
+          "identityStatus": "deferred",
+          "runtimeSupportStatus": "unavailable_pending_ugo"
+        }
+      ],
+      "productSource": {
+        "printerProduct": "Baker offered-for-sale product",
+        "geometrySource": "pending UGO observation",
+        "scoringModel": "pending product implementation"
+      },
+      "qrIdentityStrategy": {
+        "status": "declared_not_implemented",
+        "identityTuple": {
+          "printerId": "baker",
+          "smartTargetId": "BAKER_SL_ST1",
+          "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+          "identityVersion": 1
+        },
+        "rules": [
+          "The QR identifies the printer product and exact supported variant.",
+          "The QR establishes pending Smart Target identity only.",
+          "The QR does not contain scoring, mission, geometry, or session behavior.",
+          "The backend will resolve the identity when QR integration is separately approved.",
+          "Unknown, altered, deferred, or retired identities must fail visibly."
+        ]
+      },
+      "launchCapabilityDeclaration": {
+        "status": "pending_governed_dependencies",
+        "capabilities": [
+          "Exact Baker product recognition",
+          "Smart Target admission",
+          "Governed QR entry",
+          "Target photograph or image intake",
+          "Impact registration",
+          "Evidence preservation",
+          "UGO registration against visible printed geometry",
+          "Classification against visibly identifiable printed zones",
+          "Shot count and supported distribution presentation",
+          "Digital scoring using the product's scoring model",
+          "Practice analysis",
+          "Backend-created session",
+          "Universal SEC",
+          "Ballistic Vault preservation and reopening"
+        ]
+      },
+      "unsupportedCapabilityDeclaration": {
+        "policy": "Capabilities not supported by the printer's product are unavailable.",
+        "capabilities": [
+          "Capabilities beyond visible and validated product features",
+          "Unregistered product variants",
+          "Unprinted mission, course, timer, penalty, distance, firearm, caliber, or shot-count requirements",
+          "External organization endorsement, licensing, sanction, ranking, or classification claims",
+          "Zeroing or sight-correction behavior",
+          "Automatic equivalence between physical product variants"
+        ]
+      },
+      "runtimeExecution": {
+        "status": "unavailable",
+        "blockingDependency": "ugo_observation"
+      },
+      "validationRequirements": [
+        "Product name, SKUs, printer identity, dimensions, and paper descriptions match the locked Founder specification.",
+        "Smart Target and variant identities are unique and versioned.",
+        "Product, Smart Target, variant, mission, QR, and session identities remain separate.",
+        "The QR strategy declares identity only and grants no runtime behavior.",
+        "The deferred variant cannot be treated as the launch variant.",
+        "Runtime execution remains unavailable until UGO observation is separately approved.",
+        "No target artwork, ATP, Target Page, SEC, QR route, scoring implementation, or session behavior is created by Phase 1."
+      ]
+    }
+  ]
+}

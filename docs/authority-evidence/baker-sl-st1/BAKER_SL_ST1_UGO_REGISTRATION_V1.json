@@ -1,0 +1,259 @@
+{
+  "registrationSchema": "ugo-observable-geometry-v1",
+  "registrationId": "UGO_BAKER_SL_ST1_23X35_V1",
+  "registrationStatus": "founder_review",
+  "phaseName": "UGO Observation",
+  "registrationPurpose": "Teach SCZN3 to understand observable geometry from the printer's truthful product image without assigning meaning.",
+  "measurementFramework": "UGO establishes SCZN3's governed measurement framework. No claim is made about the printer's manufacturing geometry beyond what is observable in the printed product.",
+  "smartTargetIdentity": {
+    "recordId": "BAKER_SL_ST1_IDENTITY_V1",
+    "smartTargetId": "BAKER_SL_ST1",
+    "identityVersion": 1,
+    "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE"
+  },
+  "sourceEvidence": {
+    "sourceType": "printer_published_product_image",
+    "printer": "Baker Targets",
+    "productName": "Silhouette Target (USPSA)",
+    "sku": "SL-ST1",
+    "sourceUrl": "https://bakertargets.com/wp-content/uploads/2017/09/SL-ST1-2.jpg",
+    "localEvidenceAsset": "authority-evidence/baker-sl-st1/BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp",
+    "sha256": "8f3f4a7e371549466dcfd00d95981704f51cf977e5e5ffba288d097efb008429",
+    "mediaType": "image/webp",
+    "pixelWidth": 1141,
+    "pixelHeight": 1500,
+    "retrievedAt": "2026-08-11",
+    "qualification": {
+      "status": "qualifying",
+      "reason": "The printer-published image faithfully preserves the complete observable ink used by this observation.",
+      "paperBoundary": "not_observable",
+      "physicalCoordinateMapping": "not_claimed",
+      "productChangeAssumption": "Valid while the printer's offered product ink remains unchanged."
+    }
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_IMAGE_PLANE_TOP_LEFT_V1",
+    "origin": "top_left_source_pixel",
+    "xAxis": "positive_right",
+    "yAxis": "positive_down",
+    "pixelBounds": {
+      "minX": 0,
+      "minY": 0,
+      "maxX": 1140,
+      "maxY": 1499
+    },
+    "normalizedBounds": {
+      "minX": 0,
+      "minY": 0,
+      "maxX": 1,
+      "maxY": 1
+    },
+    "normalization": {
+      "x": "xPx / 1140",
+      "y": "yPx / 1499"
+    },
+    "physicalUnit": "unavailable",
+    "physicalMappingReason": "The image preserves the printed ink but does not independently establish the paper edge."
+  },
+  "observableGeometry": {
+    "featureMeaning": "unassigned",
+    "traceMethod": "threshold-assisted observation of printer-published image",
+    "boundaries": [
+      {
+        "featureId": "printed_boundary_001",
+        "observation": "closed black boundary",
+        "geometryType": "closed_polyline",
+        "observedLineWidthPx": 10,
+        "traceTolerancePx": 5,
+        "points": [
+          { "xPx": 416, "yPx": 112, "xNorm": 0.364912, "yNorm": 0.074716 },
+          { "xPx": 723, "yPx": 112, "xNorm": 0.634211, "yNorm": 0.074716 },
+          { "xPx": 723, "yPx": 375, "xNorm": 0.634211, "yNorm": 0.250167 },
+          { "xPx": 886, "yPx": 375, "xNorm": 0.777193, "yNorm": 0.250167 },
+          { "xPx": 986, "yPx": 475, "xNorm": 0.864912, "yNorm": 0.316878 },
+          { "xPx": 986, "yPx": 1186, "xNorm": 0.864912, "yNorm": 0.791194 },
+          { "xPx": 851, "yPx": 1458, "xNorm": 0.746491, "yNorm": 0.972648 },
+          { "xPx": 289, "yPx": 1458, "xNorm": 0.253509, "yNorm": 0.972648 },
+          { "xPx": 154, "yPx": 1186, "xNorm": 0.135088, "yNorm": 0.791194 },
+          { "xPx": 154, "yPx": 475, "xNorm": 0.135088, "yNorm": 0.316878 },
+          { "xPx": 254, "yPx": 375, "xNorm": 0.222807, "yNorm": 0.250167 },
+          { "xPx": 416, "yPx": 375, "xNorm": 0.364912, "yNorm": 0.250167 }
+        ]
+      },
+      {
+        "featureId": "printed_boundary_002",
+        "observation": "closed gray boundary",
+        "geometryType": "closed_polyline",
+        "observedLineWidthPx": 5,
+        "traceTolerancePx": 3,
+        "points": [
+          { "xPx": 438, "yPx": 133, "xNorm": 0.384211, "yNorm": 0.088726 },
+          { "xPx": 701, "yPx": 133, "xNorm": 0.614912, "yNorm": 0.088726 },
+          { "xPx": 701, "yPx": 394, "xNorm": 0.614912, "yNorm": 0.262842 },
+          { "xPx": 877, "yPx": 394, "xNorm": 0.769298, "yNorm": 0.262842 },
+          { "xPx": 965, "yPx": 482, "xNorm": 0.846491, "yNorm": 0.321548 },
+          { "xPx": 965, "yPx": 1178, "xNorm": 0.846491, "yNorm": 0.785857 },
+          { "xPx": 835, "yPx": 1444, "xNorm": 0.732456, "yNorm": 0.963309 },
+          { "xPx": 306, "yPx": 1444, "xNorm": 0.268421, "yNorm": 0.963309 },
+          { "xPx": 176, "yPx": 1178, "xNorm": 0.154386, "yNorm": 0.785857 },
+          { "xPx": 176, "yPx": 482, "xNorm": 0.154386, "yNorm": 0.321548 },
+          { "xPx": 264, "yPx": 394, "xNorm": 0.231579, "yNorm": 0.262842 },
+          { "xPx": 438, "yPx": 394, "xNorm": 0.384211, "yNorm": 0.262842 }
+        ]
+      },
+      {
+        "featureId": "printed_boundary_003",
+        "observation": "closed gray polygonal boundary",
+        "geometryType": "closed_polyline",
+        "observedLineWidthPx": 5,
+        "traceTolerancePx": 3,
+        "points": [
+          { "xPx": 438, "yPx": 395, "xNorm": 0.384211, "yNorm": 0.263509 },
+          { "xPx": 702, "yPx": 395, "xNorm": 0.615789, "yNorm": 0.263509 },
+          { "xPx": 834, "yPx": 482, "xNorm": 0.731579, "yNorm": 0.321548 },
+          { "xPx": 834, "yPx": 974, "xNorm": 0.731579, "yNorm": 0.649767 },
+          { "xPx": 746, "yPx": 1184, "xNorm": 0.654386, "yNorm": 0.78986 },
+          { "xPx": 394, "yPx": 1184, "xNorm": 0.345614, "yNorm": 0.78986 },
+          { "xPx": 306, "yPx": 974, "xNorm": 0.268421, "yNorm": 0.649767 },
+          { "xPx": 306, "yPx": 482, "xNorm": 0.268421, "yNorm": 0.321548 }
+        ]
+      },
+      {
+        "featureId": "printed_boundary_004",
+        "observation": "closed gray rectangular boundary",
+        "geometryType": "closed_polyline",
+        "observedLineWidthPx": 5,
+        "traceTolerancePx": 3,
+        "points": [
+          { "xPx": 438, "yPx": 482, "xNorm": 0.384211, "yNorm": 0.321548 },
+          { "xPx": 702, "yPx": 482, "xNorm": 0.615789, "yNorm": 0.321548 },
+          { "xPx": 702, "yPx": 975, "xNorm": 0.615789, "yNorm": 0.650434 },
+          { "xPx": 438, "yPx": 975, "xNorm": 0.384211, "yNorm": 0.650434 }
+        ]
+      },
+      {
+        "featureId": "printed_boundary_005",
+        "observation": "closed gray rectangular boundary",
+        "geometryType": "closed_polyline",
+        "observedLineWidthPx": 5,
+        "traceTolerancePx": 3,
+        "points": [
+          { "xPx": 482, "yPx": 177, "xNorm": 0.422807, "yNorm": 0.118079 },
+          { "xPx": 658, "yPx": 177, "xNorm": 0.577193, "yNorm": 0.118079 },
+          { "xPx": 658, "yPx": 265, "xNorm": 0.577193, "yNorm": 0.176785 },
+          { "xPx": 482, "yPx": 265, "xNorm": 0.422807, "yNorm": 0.176785 }
+        ]
+      }
+    ],
+    "printedBoundaryRegions": [
+      {
+        "featureId": "printed_boundary_region_001",
+        "observation": "printed table and cell boundaries",
+        "geometryType": "grid",
+        "boundsPx": { "left": 936, "top": 26, "right": 1116, "bottom": 240 },
+        "verticalLinesPx": [936, 978, 1056, 1116],
+        "horizontalLinesPx": [26, 50, 74, 98, 122, 146, 168, 192, 216, 240],
+        "traceTolerancePx": 2
+      },
+      {
+        "featureId": "printed_boundary_region_002",
+        "observation": "printed form lines",
+        "geometryType": "bounded_region",
+        "boundsPx": { "left": 934, "top": 254, "right": 1119, "bottom": 393 },
+        "traceTolerancePx": 3
+      },
+      {
+        "featureId": "printed_boundary_region_003",
+        "observation": "printer identity block",
+        "geometryType": "bounded_region",
+        "boundsPx": { "left": 25, "top": 27, "right": 406, "bottom": 141 },
+        "traceTolerancePx": 3
+      }
+    ],
+    "printedTextAndSymbols": [
+      {
+        "featureId": "printed_text_001",
+        "observedContent": [
+          "BakerTargets.com",
+          "Made with pride in the U.S.A.",
+          "The Baker Press, Inc. © 2013",
+          "SL-ST1"
+        ],
+        "boundsPx": { "left": 25, "top": 27, "right": 406, "bottom": 141 }
+      },
+      {
+        "featureId": "printed_text_002",
+        "observedContent": ["A", "B", "D", "C", "A", "C", "D"],
+        "boundsPx": { "left": 221, "top": 198, "right": 925, "bottom": 758 }
+      },
+      {
+        "featureId": "printed_text_003",
+        "observedContent": [
+          "Number of Hits",
+          "Shot Value",
+          "X",
+          "10",
+          "9",
+          "8",
+          "7",
+          "0",
+          "Missing",
+          "Totals"
+        ],
+        "boundsPx": { "left": 936, "top": 26, "right": 1116, "bottom": 240 }
+      },
+      {
+        "featureId": "printed_text_004",
+        "observedContent": [
+          "Scorer's Initials",
+          "Competitor's Signature",
+          "Range Officer's signature",
+          "Match #",
+          "Relay #",
+          "Target #",
+          "Stage #"
+        ],
+        "boundsPx": { "left": 934, "top": 254, "right": 1119, "bottom": 393 }
+      }
+    ]
+  },
+  "registrationTolerances": {
+    "sourceIdentity": {
+      "sha256Match": "exact",
+      "pixelDimensions": "exact"
+    },
+    "boundaryTrace": {
+      "method": "Half the observed printed line width, rounded outward to the nearest source pixel.",
+      "blackBoundaryPx": 5,
+      "grayBoundaryPx": 3,
+      "gridBoundaryPx": 2,
+      "regionBoundaryPx": 3
+    },
+    "physicalMapping": "not_claimed",
+    "runtimeEvidenceRegistration": "not_implemented_in_phase_2"
+  },
+  "validation": {
+    "sourceHashVerified": true,
+    "sourceDimensionsVerified": true,
+    "completeObservableInkPresent": true,
+    "paperBoundaryRequired": false,
+    "physicalMappingClaimed": false,
+    "featureMeaningAssigned": false,
+    "scoringIntroduced": false,
+    "runtimeRegistrationIntroduced": false,
+    "deferredVariantAccepted": false,
+    "result": "pass_for_founder_review"
+  },
+  "failureConditions": [
+    "Source hash does not match the registered printer image.",
+    "Source pixel dimensions do not match the registered image plane.",
+    "The observable ink is cropped, altered, obscured, or materially different.",
+    "A different product or deferred product variant is presented as this registration.",
+    "A feature requires inference rather than observation.",
+    "Meaning, scoring, mission, or runtime behavior is assigned during UGO registration."
+  ],
+  "runtimeExecution": {
+    "status": "unavailable",
+    "reason": "Phase 2 observes geometry only."
+  }
+}
