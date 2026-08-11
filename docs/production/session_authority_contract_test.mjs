@@ -38,6 +38,7 @@ const backendPackage = {
   authoritativeSessionId: "sczn3-session-contract-001",
   createdAt: "2026-08-05T12:00:00+00:00",
   sessionLifecycle: "created",
+  sessionMode: "target_evidence",
   target: {
     targetId: "m4_25m_zero",
     targetAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
@@ -50,6 +51,15 @@ const backendPackage = {
     missionId: "M4_25M_300M_ZERO",
     resultPackageType: "zeroCorrectionResult"
   },
+  targetAdmission: { status: "admitted", targetId: "m4_25m_zero" },
+  officialMission: { status: "authority_unavailable", restrictionIds: [] },
+  capabilities: {
+    evidence: { status: "available" },
+    measurement: { status: "available" },
+    correction: { status: "available", scope: "equipment_correction_only" },
+    officialScore: { status: "not_applicable" }
+  },
+  restrictions: [],
   governedDistance: { value: 25, unit: "M", locked: true },
   selectedEquipment: {
     candidateId: "weapon-1",
@@ -71,6 +81,11 @@ const session = context.window.SCZN3M4.createAuthoritativeSession(backendPackage
 assert.equal(session.sessionId, backendPackage.authoritativeSessionId);
 assert.equal(session.authoritativeSessionId, backendPackage.authoritativeSessionId);
 assert.equal(session.sessionIdAuthority, "backend");
+assert.equal(session.sessionMode, "target_evidence");
+assert.equal(session.targetAdmission.status, "admitted");
+assert.equal(session.officialMission.status, "authority_unavailable");
+assert.equal(session.authoritativeCapabilities.correction.scope, "equipment_correction_only");
+assert.equal(session.restrictions.length, 0);
 assert.equal(session.sessionNumberAuthority, "device-local-temporary");
 assert.equal(session.sessionLabel, "Session #001");
 assert.equal(session.mission_family, "zeroingCorrection");
@@ -99,6 +114,9 @@ assert(targetExperiences.includes('tag = available ? "a" : "article"'));
 assert(targetExperiences.includes("SCZN3_TARGET_CATALOG_VIEW_COUNT_V1"));
 assert(indexHtml.includes("<strong>TAP</strong><span>your target below</span>"));
 assert(shootHtml.includes("window.location.replace(`matrix.html"));
+assert(shootHtml.includes("unavailableResultCapabilityMessage"));
+assert(shootHtml.includes("Official GSSF scoring is not available for this equipment"));
+assert(shootHtml.includes("A sight correction is not available for this equipment setup"));
 assert(netlifyConfig.includes('from = "/api/session/prepare"'));
 assert(netlifyConfig.includes('from = "/api/session/start"'));
 assert(redirects.includes("/api/session/prepare"));
@@ -107,7 +125,9 @@ assert(matrixHtml.includes("This target will use the Standard Setup shown below.
 assert(matrixHtml.includes("Continue with Standard Setup"));
 assert(matrixHtml.includes(">Equipment</button>"));
 assert(matrixHtml.includes("JSON.stringify({ targetId })"));
-assert(matrixHtml.includes("preferredCompatibleSavedSetup"));
+assert(matrixHtml.includes("preferredGovernedSavedSetup"));
+assert(matrixHtml.includes("equipmentAssessments"));
+assert(!matrixHtml.includes("selected_equipment_incompatible"));
 assert(matrixHtml.includes("initializeOneTimeSetupFromAuthority"));
 assert(!matrixHtml.includes("standardSetup: {"));
 

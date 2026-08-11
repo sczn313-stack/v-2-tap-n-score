@@ -1,4 +1,23 @@
-# Backend Session Authority Contract
+# Backend Session and Equipment Capability Authority Contract
+
+## Governing separation
+
+The backend evaluates three independent questions. A failure in one question
+must not silently answer another:
+
+1. **Target Admission** — whether the registered Smart Target may enter the
+   shooter workflow.
+2. **Official Mission Eligibility** — whether registered authority supports an
+   official mission claim for the selected equipment.
+3. **Capability Availability** — which evidence, measurement, correction, and
+   official-score capabilities are supported for that session.
+
+A resolved active target returns `targetAdmission.status: "admitted"`.
+Equipment does not become an ownership gate for a Smart Target. An official
+mission restriction returns `ineligible` only when the restriction itself has
+registered provenance. Without that provenance the status is
+`authority_unavailable`; the backend returns no fabricated restriction ID or
+source.
 
 ## `POST /api/session/prepare`
 
@@ -12,13 +31,23 @@ When `equipmentCandidates` is absent or empty, Backend Target Authority returns:
 - governed distance;
 - target equipment requirements;
 - a governed `standardSetup`;
-- compatibility results for that Standard Setup;
+- an `equipmentAssessments` result for that Standard Setup;
 - `setupMode: "standard"`; and
 - a short-lived preparation token.
 
 When candidates are present, the same response includes the backend Standard
-Setup for presentation/reference, evaluates the submitted candidates, and
+Setup for presentation/reference, assesses the submitted candidates, and
 returns `setupMode: "shooter-selected"`.
+
+Each equipment assessment contains:
+
+- the prepared equipment fingerprint;
+- `officialMission.status` (`eligible`, `ineligible`, or
+  `authority_unavailable`);
+- independent `evidence`, `measurement`, `correction`, and `officialScore`
+  capability statuses;
+- registered restrictions, if any; and
+- shooter-facing guidance that does not claim unsupported authority.
 
 ## `POST /api/session/start`
 
@@ -28,10 +57,16 @@ candidate. The request requires an `Idempotency-Key` header. The backend:
 1. reloads the durable preparation;
 2. verifies its expiry and unused state;
 3. re-resolves Target ID through the ATP;
-4. verifies the target profile, ATP fingerprint, Standard Setup authority, and
-   equipment compatibility;
-5. creates one durable backend-owned session; and
-6. returns the authoritative session ID and selected setup.
+4. verifies the target profile, ATP fingerprint, and Standard Setup authority;
+5. re-assesses official mission eligibility and capability availability;
+6. creates one durable backend-owned session; and
+7. returns the authoritative session ID, selected setup, assessment, and
+   `sessionMode`.
+
+`sessionMode` is `official_mission` only when official mission eligibility is
+established. Otherwise it is `target_evidence`. Both modes retain truthful
+evidence and supported measurements. Unsupported official scores or correction
+claims remain unavailable.
 
 Retries with the same key and request return the existing session. Reusing a
 key with a different request fails with `409`. Offline operation fails closed;

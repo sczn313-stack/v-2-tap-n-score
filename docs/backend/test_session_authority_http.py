@@ -63,6 +63,9 @@ def main():
         })
         assert status == 200 and preparation["status"] == "prepared"
         assert preparation["missionIdentity"]["missionFamily"] == "zeroingCorrection"
+        assert preparation["targetAdmission"]["status"] == "admitted"
+        assert preparation["equipmentAssessments"][0]["officialMission"]["status"] == "authority_unavailable"
+        assert preparation["equipmentAssessments"][0]["officialMission"]["restrictionIds"] == []
 
         start_payload = {
             "preparationToken": preparation["preparationToken"],
@@ -75,6 +78,9 @@ def main():
             {"Idempotency-Key": "http-contract-idem-1"},
         )
         assert status == 201 and session["authoritativeSessionId"].startswith("sczn3-session-")
+        assert session["sessionMode"] == "target_evidence"
+        assert session["capabilities"]["evidence"]["status"] == "available"
+        assert session["restrictions"] == []
 
         status, replay = request(
             "POST",

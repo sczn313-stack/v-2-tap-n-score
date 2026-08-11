@@ -842,7 +842,13 @@
     session.sessionIdAuthority = "backend";
     session.legacyDeviceLocalSession = false;
     session.sessionLifecycle = authorityPackage.sessionLifecycle || "created";
+    session.sessionMode = authorityPackage.sessionMode || "";
     session.backendSessionAuthority = authorityPackage;
+    session.targetAdmission = authorityPackage.targetAdmission || {};
+    session.officialMission = authorityPackage.officialMission || {};
+    session.authoritativeCapabilities = authorityPackage.capabilities || {};
+    session.equipmentAssessment = authorityPackage.equipmentAssessment || {};
+    session.restrictions = Array.isArray(authorityPackage.restrictions) ? authorityPackage.restrictions : [];
     session.targetProfileVersion = target.targetProfileVersion || "";
     session.atpId = target.atpId || "";
     session.targetAuthority = {

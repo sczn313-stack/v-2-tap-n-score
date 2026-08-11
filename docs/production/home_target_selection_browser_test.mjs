@@ -25,9 +25,14 @@ try {
     };
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
       ok: true, status: "prepared", preparationToken: `prepare-${targetId}`, expiresAt: "2026-08-05T23:59:59+00:00",
-      target: { targetId }, missionIdentity: {}, governedDistance: {},
+      target: { targetId }, targetAdmission: { status: "admitted", targetId }, missionIdentity: {}, governedDistance: {},
       equipmentRequirements: { weaponCategories: [category] }, standardSetup: candidate, setupMode: "standard",
-      compatibilityResults: [{ candidateId: candidate.candidateId, compatible: true, reasons: ["requirements_satisfied"] }]
+      equipmentAssessments: [{
+        candidateId: candidate.candidateId,
+        officialMission: { status: "eligible", restrictionIds: [] },
+        capabilities: { evidence: { status: "available" }, measurement: { status: "available" } },
+        restrictions: []
+      }]
     }) });
   });
 

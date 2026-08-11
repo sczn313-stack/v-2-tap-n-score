@@ -1,8 +1,9 @@
 """Backend-owned session preparation and creation authority.
 
 The browser may propose a Target ID and equipment candidates. This module owns
-Target ID -> ATP -> mission resolution, compatibility, durable session identity,
-and idempotency. Runtime authority requires Postgres through ``DATABASE_URL``;
+Target ID -> ATP -> mission resolution, target admission, official-mission
+eligibility, capability availability, durable session identity, and idempotency.
+Runtime authority requires Postgres through ``DATABASE_URL``;
 there is intentionally no in-memory, filesystem, or browser fallback.
 """
 from __future__ import annotations
@@ -284,45 +285,133 @@ def standard_setup_for(profile: Mapping[str, Any]) -> Dict[str, Any]:
         "displayFields": display_fields,
     })
     normalized = normalize_equipment(candidate, allow_backend_standard=True)
-    compatibility = evaluate_compatibility(profile, normalized)
-    if not compatibility["compatible"]:
+    assessment = assess_equipment(profile, normalized)
+    correction = assessment["capabilities"]["correction"]
+    official_score = assessment["capabilities"]["officialScore"]
+    if (
+        assessment["capabilities"]["evidence"]["status"] != "available"
+        or (
+            profile["missionIdentity"]["missionFamily"] == "zeroingCorrection"
+            and correction["status"] != "available"
+        )
+        or (
+            profile["missionIdentity"]["missionFamily"] == "gssf"
+            and official_score["status"] != "available"
+        )
+    ):
         raise SessionAuthorityError(
             "authority_unavailable", "standard_setup_incompatible_with_target_authority", 503,
-            compatibility=compatibility,
+            equipmentAssessment=assessment,
         )
     return normalized
 
 
-def evaluate_compatibility(profile: Mapping[str, Any], candidate: Mapping[str, Any]) -> Dict[str, Any]:
-    requirements = profile["equipmentRequirements"]
-    reasons = []
+def target_admission(profile: Mapping[str, Any]) -> Dict[str, Any]:
+    return {
+        "status": "admitted",
+        "targetId": profile["targetId"],
+        "reason": "registered_active_smart_target",
+    }
+
+
+def official_mission_eligibility(profile: Mapping[str, Any], candidate: Mapping[str, Any]) -> Dict[str, Any]:
+    target_id = profile["targetId"]
     category = clean_text(candidate.get("weaponCategory"))
-    if category not in requirements["weaponCategories"]:
-        reasons.append("weapon_category_incompatible")
+    equipment_authority_id = clean_text(candidate.get("equipmentAuthorityRecordId"))
 
-    model_families = requirements.get("modelFamilies") or []
-    model_type = clean_text(candidate.get("modelType")).lower()
-    if model_families and not any(family.lower() in model_type for family in model_families):
-        reasons.append("weapon_model_family_incompatible")
+    if target_id == "m4_25m_zero":
+        if equipment_authority_id == M4_STANDARD_EQUIPMENT_AUTHORITY_ID:
+            return {
+                "status": "eligible",
+                "missionId": profile["missionIdentity"]["missionId"],
+                "reasons": ["registered_m4_equipment_authority_satisfied"],
+                "restrictionIds": [],
+            }
+        return {
+            "status": "authority_unavailable",
+            "missionId": profile["missionIdentity"]["missionId"],
+            "reasons": ["official_m4_equipment_eligibility_not_registered_for_selected_equipment"],
+            "restrictionIds": [],
+        }
 
-    if requirements.get("requiresAdjustmentSystem"):
-        unit = clean_text(candidate.get("adjustmentUnit")).upper()
-        click_value = candidate.get("clickValue")
-        if unit not in requirements.get("allowedAdjustmentUnits", []):
-            reasons.append("adjustment_unit_required")
-        axis_adjustment = candidate.get("axisAdjustment") or {}
-        has_axis_adjustment = all(
-            isinstance(axis_adjustment.get(axis), (int, float)) and axis_adjustment.get(axis) > 0
-            for axis in ("windagePerClick", "elevationPerClick")
+    if target_id == "gssf_ac_1":
+        if category == "Pistol":
+            return {
+                "status": "eligible",
+                "missionId": profile["missionIdentity"]["missionId"],
+                "reasons": ["registered_gssf_pistol_mission_profile_satisfied"],
+                "restrictionIds": [],
+            }
+        return {
+            "status": "authority_unavailable",
+            "missionId": profile["missionIdentity"]["missionId"],
+            "reasons": ["official_gssf_equipment_eligibility_not_registered_for_selected_equipment"],
+            "restrictionIds": [],
+        }
+
+    return {
+        "status": "eligible",
+        "missionId": profile["missionIdentity"]["missionId"],
+        "reasons": ["no_registered_equipment_restriction"],
+        "restrictionIds": [],
+    }
+
+
+def correction_capability(profile: Mapping[str, Any], candidate: Mapping[str, Any], mission: Mapping[str, Any]) -> Dict[str, Any]:
+    if profile["missionIdentity"]["missionFamily"] != "zeroingCorrection":
+        return {"status": "not_applicable"}
+
+    unit = clean_text(candidate.get("adjustmentUnit")).upper()
+    click_value = candidate.get("clickValue")
+    axis_adjustment = candidate.get("axisAdjustment") or {}
+    has_axis_adjustment = all(
+        isinstance(axis_adjustment.get(axis), (int, float)) and axis_adjustment.get(axis) > 0
+        for axis in ("windagePerClick", "elevationPerClick")
+    )
+    if unit not in ("MOA", "MRAD"):
+        return {"status": "unavailable", "reason": "adjustment_unit_not_available"}
+    if (not isinstance(click_value, (int, float)) or click_value <= 0) and not has_axis_adjustment:
+        return {"status": "unavailable", "reason": "positive_click_or_axis_adjustment_not_available"}
+
+    if clean_text(candidate.get("equipmentAuthorityRecordId")):
+        provenance = "registered_equipment_authority"
+    elif candidate.get("source") == "backend_standard_setup":
+        provenance = "backend_standard_setup_authority"
+    else:
+        provenance = "shooter_confirmed_configuration"
+    return {
+        "status": "available",
+        "scope": "official_mission" if mission["status"] == "eligible" else "equipment_correction_only",
+        "provenance": provenance,
+        "physicalControlDirectionsAvailable": has_axis_adjustment,
+    }
+
+
+def assess_equipment(profile: Mapping[str, Any], candidate: Mapping[str, Any]) -> Dict[str, Any]:
+    mission = official_mission_eligibility(profile, candidate)
+    official_score = {"status": "not_applicable"}
+    if profile["missionIdentity"]["missionFamily"] == "gssf":
+        official_score = (
+            {"status": "available", "scope": "official_mission"}
+            if mission["status"] == "eligible"
+            else {"status": "unavailable", "reason": "official_mission_eligibility_not_established"}
         )
-        if (not isinstance(click_value, (int, float)) or click_value <= 0) and not has_axis_adjustment:
-            reasons.append("positive_click_value_required")
-
+    guidance = []
+    if mission["status"] == "authority_unavailable":
+        guidance.append("Official mission eligibility is not established for this equipment.")
+        guidance.append("Target evidence and supported measurements remain available.")
     return {
         "candidateId": candidate["candidateId"],
         "equipmentFingerprint": candidate["equipmentFingerprint"],
-        "compatible": not reasons,
-        "reasons": reasons or ["requirements_satisfied"],
+        "officialMission": mission,
+        "capabilities": {
+            "evidence": {"status": "available"},
+            "measurement": {"status": "available"},
+            "correction": correction_capability(profile, candidate, mission),
+            "officialScore": official_score,
+        },
+        "restrictions": [],
+        "guidance": guidance,
     }
 
 
@@ -356,7 +445,7 @@ def prepare_session(payload: Any, store: Any, *, now: Optional[datetime] = None)
     candidates = [standard_setup] if use_standard_setup else [
         normalize_equipment(candidate, index) for index, candidate in enumerate(candidates_raw, start=1)
     ]
-    results = [evaluate_compatibility(profile, candidate) for candidate in candidates]
+    assessments = [assess_equipment(profile, candidate) for candidate in candidates]
     issued_at = now or utc_now()
     expires_at = issued_at + timedelta(seconds=PREPARATION_TTL_SECONDS)
     token = secrets.token_urlsafe(32)
@@ -374,7 +463,8 @@ def prepare_session(payload: Any, store: Any, *, now: Optional[datetime] = None)
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetup": standard_setup,
         "equipmentCandidates": candidates,
-        "compatibilityResults": results,
+        "compatibilityResults": assessments,
+        "equipmentAssessments": assessments,
         "createdAt": iso(issued_at),
         "expiresAt": iso(expires_at),
     }
@@ -391,13 +481,15 @@ def prepare_session(payload: Any, store: Any, *, now: Optional[datetime] = None)
             "targetProfileVersion": profile["targetProfileVersion"],
             "atpId": profile["atpId"],
         },
+        "targetAdmission": target_admission(profile),
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetup": standard_setup,
         "setupMode": "standard" if use_standard_setup else "shooter-selected",
-        "compatibilityResults": results,
+        "equipmentAssessments": assessments,
+        "restrictions": [],
     }
 
 
@@ -459,14 +551,12 @@ def start_session(
         raise SessionAuthorityError("preparation_stale", "atp_changed_reconfirmation_required", 409)
 
     candidate = _candidate_for(preparation, selected)
-    compatibility = evaluate_compatibility(current_profile, candidate)
-    if not compatibility["compatible"]:
-        raise SessionAuthorityError(
-            "equipment_incompatible",
-            "selected_equipment_incompatible",
-            422,
-            compatibility=compatibility,
-        )
+    equipment_assessment = assess_equipment(current_profile, candidate)
+    session_mode = (
+        "official_mission"
+        if equipment_assessment["officialMission"]["status"] == "eligible"
+        else "target_evidence"
+    )
 
     session_id = f"sczn3-session-{uuid.uuid4()}"
     created_at = iso(current_time)
@@ -476,6 +566,7 @@ def start_session(
         "authoritativeSessionId": session_id,
         "createdAt": created_at,
         "sessionLifecycle": "created",
+        "sessionMode": session_mode,
         "target": {
             "targetId": current_profile["targetId"],
             "targetAuthorityId": current_profile["targetAuthorityId"],
@@ -483,7 +574,12 @@ def start_session(
             "targetProfileVersion": current_profile["targetProfileVersion"],
             "atpId": current_profile["atpId"],
         },
+        "targetAdmission": target_admission(current_profile),
         "missionIdentity": current_profile["missionIdentity"],
+        "officialMission": equipment_assessment["officialMission"],
+        "capabilities": equipment_assessment["capabilities"],
+        "restrictions": equipment_assessment["restrictions"],
+        "equipmentAssessment": equipment_assessment,
         "governedDistance": current_profile["governedDistance"],
         "confirmationAuthority": current_profile.get("confirmationAuthority"),
         "selectedEquipment": candidate,
@@ -498,6 +594,11 @@ def start_session(
         "targetProfileVersion": current_profile["targetProfileVersion"],
         "atpId": current_profile["atpId"],
         "missionIdentity": current_profile["missionIdentity"],
+        "sessionMode": session_mode,
+        "officialMission": equipment_assessment["officialMission"],
+        "capabilities": equipment_assessment["capabilities"],
+        "restrictions": equipment_assessment["restrictions"],
+        "equipmentAssessment": equipment_assessment,
         "governedDistance": current_profile["governedDistance"],
         "selectedEquipment": candidate,
         "response": response,
@@ -580,6 +681,7 @@ class PostgresSessionStore:
             "standardSetup": row["standard_setup"],
             "equipmentCandidates": row["equipment_candidates"],
             "compatibilityResults": row["compatibility_results"],
+            "equipmentAssessments": row["compatibility_results"],
             "createdAt": iso(row["created_at"]),
             "expiresAt": iso(row["expires_at"]),
             "consumedAt": iso(row["consumed_at"]) if row["consumed_at"] else None,

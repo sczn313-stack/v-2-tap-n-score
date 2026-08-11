@@ -85,12 +85,18 @@ try {
           preparationToken: `test-preparation-${targetId}`,
           expiresAt: "2026-08-05T23:59:59+00:00",
           target: { targetId, ...profile },
+          targetAdmission: { status: "admitted", targetId },
           missionIdentity: profile.missionIdentity,
           governedDistance: profile.governedDistance,
           equipmentRequirements: profile.equipmentRequirements,
           standardSetup: preparedCandidate,
           setupMode: "standard",
-          compatibilityResults: [{ candidateId: preparedCandidate.candidateId, compatible: true, reasons: ["requirements_satisfied"] }]
+          equipmentAssessments: [{
+            candidateId: preparedCandidate.candidateId,
+            officialMission: { status: "eligible", restrictionIds: [] },
+            capabilities: { evidence: { status: "available" }, measurement: { status: "available" } },
+            restrictions: []
+          }]
         })
       });
     });
@@ -108,6 +114,7 @@ try {
           authoritativeSessionId: `sczn3-session-browser-${targetId}`,
           createdAt: "2026-08-05T12:00:00+00:00",
           sessionLifecycle: "created",
+          sessionMode: "official_mission",
           target: {
             targetId,
             targetAuthorityId: profile.targetAuthorityId,
@@ -116,6 +123,10 @@ try {
             atpId: profile.atpId
           },
           missionIdentity: profile.missionIdentity,
+          targetAdmission: { status: "admitted", targetId },
+          officialMission: { status: "eligible", restrictionIds: [] },
+          capabilities: { evidence: { status: "available" }, measurement: { status: "available" } },
+          restrictions: [],
           governedDistance: profile.governedDistance,
           selectedEquipment: preparedCandidate
         })
@@ -236,10 +247,15 @@ try {
       const candidate = profile.standardSetup;
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
         ok: true, status: "prepared", preparationToken: `desktop-${targetId}`, expiresAt: "2026-08-05T23:59:59+00:00",
-        target: { targetId, ...profile }, missionIdentity: profile.missionIdentity,
+        target: { targetId, ...profile }, targetAdmission: { status: "admitted", targetId }, missionIdentity: profile.missionIdentity,
         governedDistance: profile.governedDistance, equipmentRequirements: profile.equipmentRequirements,
         standardSetup: candidate, setupMode: "standard",
-        compatibilityResults: [{ candidateId: candidate.candidateId, compatible: true, reasons: ["requirements_satisfied"] }]
+        equipmentAssessments: [{
+          candidateId: candidate.candidateId,
+          officialMission: { status: "eligible", restrictionIds: [] },
+          capabilities: { evidence: { status: "available" }, measurement: { status: "available" } },
+          restrictions: []
+        }]
       }) });
     });
     const desktopPage = await desktopContext.newPage();
@@ -263,9 +279,14 @@ try {
     const profile = profiles.gssf_ac_1;
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
       ok: true, status: "prepared", preparationToken: "weapon-setup-choice", expiresAt: "2026-08-05T23:59:59+00:00",
-      target: { targetId: "gssf_ac_1", ...profile }, missionIdentity: profile.missionIdentity,
+      target: { targetId: "gssf_ac_1", ...profile }, targetAdmission: { status: "admitted", targetId: "gssf_ac_1" }, missionIdentity: profile.missionIdentity,
       governedDistance: profile.governedDistance, equipmentRequirements: profile.equipmentRequirements, standardSetup: profile.standardSetup,
-      setupMode: "standard", compatibilityResults: [{ candidateId: profile.standardSetup.candidateId, compatible: true, reasons: ["requirements_satisfied"] }]
+      setupMode: "standard", equipmentAssessments: [{
+        candidateId: profile.standardSetup.candidateId,
+        officialMission: { status: "eligible", restrictionIds: [] },
+        capabilities: { evidence: { status: "available" }, measurement: { status: "available" } },
+        restrictions: []
+      }]
     }) });
   });
   const setupChoicePage = await setupChoiceContext.newPage();
@@ -278,7 +299,7 @@ try {
   assert.notEqual(await setupChoicePage.locator("#weaponModelType").inputValue(), "M4/M4A1 Carbine");
   assert.equal(await setupChoicePage.evaluate(() => sessionStorage.getItem("SCZN3_PENDING_BACKEND_SESSION_START")), null);
   await setupChoiceContext.close();
-  console.log("PASS GSSF Weapon Setup initializes backend-compatible pistol requirements");
+  console.log("PASS GSSF Equipment initializes the governed pistol profile");
 
   const savedSetupContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
   let savedSetupStartRequests = 0;
@@ -307,13 +328,21 @@ try {
     assert.equal(request.equipmentCandidates.length, 3);
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
       ok: true, status: "prepared", preparationToken: "saved-compatible-choice", expiresAt: "2026-08-05T23:59:59+00:00",
-      target: { targetId: "gssf_ac_1", ...profiles.gssf_ac_1 }, missionIdentity: profiles.gssf_ac_1.missionIdentity,
+      target: { targetId: "gssf_ac_1", ...profiles.gssf_ac_1 }, targetAdmission: { status: "admitted", targetId: "gssf_ac_1" }, missionIdentity: profiles.gssf_ac_1.missionIdentity,
       governedDistance: profiles.gssf_ac_1.governedDistance, equipmentRequirements: profiles.gssf_ac_1.equipmentRequirements,
       standardSetup: profiles.gssf_ac_1.standardSetup, setupMode: "shooter-selected",
-      compatibilityResults: request.equipmentCandidates.map(candidate => ({
+      equipmentAssessments: request.equipmentCandidates.map(candidate => ({
         candidateId: candidate.candidateId,
-        compatible: candidate.weaponCategory === "Pistol",
-        reasons: candidate.weaponCategory === "Pistol" ? ["requirements_satisfied"] : ["weapon_category_incompatible"]
+        officialMission: {
+          status: candidate.weaponCategory === "Pistol" ? "eligible" : "authority_unavailable",
+          restrictionIds: []
+        },
+        capabilities: {
+          evidence: { status: "available" },
+          measurement: { status: "available" },
+          officialScore: { status: candidate.weaponCategory === "Pistol" ? "available" : "unavailable" }
+        },
+        restrictions: []
       }))
     }) });
   });
@@ -323,12 +352,84 @@ try {
   });
   const savedSetupPage = await savedSetupContext.newPage();
   await savedSetupPage.goto(`${baseUrl}/matrix.html?target_profile_id=gssf_ac_1`, { waitUntil: "networkidle" });
-  await savedSetupPage.waitForFunction(() => /Most Recent Compatible Pistol is compatible and selected/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  await savedSetupPage.waitForFunction(() => /Most Recent Compatible Pistol supports the official mission and is selected/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
   assert.equal(await savedSetupPage.locator("#savedSetupSelect").inputValue(), "pistol-recent");
   assert.equal(await savedSetupPage.locator("#weaponCategory").inputValue(), "Pistol");
   assert.equal(savedSetupStartRequests, 0, "preselection must not create a session before shooter confirmation");
   await savedSetupContext.close();
-  console.log("PASS most recently used backend-compatible weapon is preselected without session creation");
+  console.log("PASS most recently used officially eligible equipment is preselected without session creation");
+
+  const admittedContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await admittedContext.addInitScript(() => {
+    localStorage.setItem("SCZN3_BAKER_SAVED_SETUPS", JSON.stringify([{
+      setupId: "ruger-1022", setupName: "Ruger 10/22", updatedAt: "2026-08-10T12:00:00Z",
+      weaponCategory: "Rifle", weaponManufacturer: "Ruger", weaponModelType: "10/22", weaponModelCaliber: ".22 LR",
+      opticType: "Scope", opticAdjustmentUnit: "MOA", opticClickValue: "0.25"
+    }]));
+  });
+  let admittedCandidate = null;
+  await admittedContext.route("**/api/session/prepare", async route => {
+    const request = route.request().postDataJSON();
+    admittedCandidate = request.equipmentCandidates[0];
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+      ok: true, status: "prepared", preparationToken: "m4-ruger-admission", expiresAt: "2026-08-10T23:59:59+00:00",
+      target: { targetId: "m4_25m_zero", ...profiles.m4_25m_zero },
+      targetAdmission: { status: "admitted", targetId: "m4_25m_zero" },
+      missionIdentity: profiles.m4_25m_zero.missionIdentity,
+      governedDistance: profiles.m4_25m_zero.governedDistance,
+      equipmentRequirements: profiles.m4_25m_zero.equipmentRequirements,
+      standardSetup: profiles.m4_25m_zero.standardSetup,
+      setupMode: "shooter-selected",
+      equipmentAssessments: [{
+        candidateId: admittedCandidate.candidateId,
+        officialMission: { status: "authority_unavailable", restrictionIds: [] },
+        capabilities: {
+          evidence: { status: "available" }, measurement: { status: "available" },
+          correction: { status: "available", scope: "equipment_correction_only" }, officialScore: { status: "not_applicable" }
+        },
+        restrictions: []
+      }],
+      restrictions: []
+    }) });
+  });
+  await admittedContext.route("**/api/session/start", async route => {
+    const request = route.request().postDataJSON();
+    assert.equal(request.selectedEquipment.candidateId, admittedCandidate.candidateId);
+    await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({
+      ok: true, status: "created", authoritativeSessionId: "sczn3-session-m4-ruger", createdAt: "2026-08-10T12:00:00+00:00",
+      sessionLifecycle: "created", sessionMode: "target_evidence",
+      target: {
+        targetId: "m4_25m_zero", targetAuthorityId: profiles.m4_25m_zero.targetAuthorityId,
+        targetName: profiles.m4_25m_zero.targetName, targetProfileVersion: profiles.m4_25m_zero.targetProfileVersion,
+        atpId: profiles.m4_25m_zero.atpId
+      },
+      targetAdmission: { status: "admitted", targetId: "m4_25m_zero" },
+      missionIdentity: profiles.m4_25m_zero.missionIdentity,
+      officialMission: { status: "authority_unavailable", restrictionIds: [] },
+      capabilities: {
+        evidence: { status: "available" }, measurement: { status: "available" },
+        correction: { status: "available", scope: "equipment_correction_only" }, officialScore: { status: "not_applicable" }
+      },
+      restrictions: [], selectedEquipment: admittedCandidate, governedDistance: profiles.m4_25m_zero.governedDistance
+    }) });
+  });
+  const admittedPage = await admittedContext.newPage();
+  await admittedPage.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "networkidle" });
+  await admittedPage.waitForFunction(() => /Yes—you can use this Smart Target with Ruger 10\/22/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /preserve your target evidence, provide supported measurements, and provide sight corrections/);
+  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /Official mission completion cannot be confirmed because this equipment has not been verified for that mission/);
+  await admittedPage.locator('#matrixForm button[type="submit"]').click();
+  await admittedPage.waitForURL(url => url.pathname.endsWith("/shoot.html"));
+  const admittedSession = await admittedPage.evaluate(() => {
+    const ref = JSON.parse(localStorage.getItem("SCZN3_BAKER_ACTIVE_SESSION"));
+    return JSON.parse(localStorage.getItem(`SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(ref.sessionId)}`));
+  });
+  assert.equal(admittedSession.sessionMode, "target_evidence");
+  assert.equal(admittedSession.officialMission.status, "authority_unavailable");
+  assert.equal(admittedSession.authoritativeCapabilities.correction.scope, "equipment_correction_only");
+  assert.equal(admittedSession.restrictions.length, 0);
+  await admittedContext.close();
+  console.log("PASS M4 target admission remains open when official equipment eligibility is authority unavailable");
 
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   await context.route("**/api/session/prepare", route => route.abort("failed"));
@@ -344,8 +445,9 @@ try {
     opticClickValue: "0.5"
   }));
   await page.locator('#matrixForm button[type="submit"]').click();
-  await page.waitForFunction(() => /selections are preserved/i.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
-  assert.match(await page.locator("#sessionAuthorityStatus").textContent(), /selections are preserved/i);
+  await page.waitForFunction(() => /cannot reach the session service/i.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  assert.match(await page.locator("#sessionAuthorityStatus").textContent(), /cannot reach the session service/i);
+  assert.equal(await page.locator("#weaponModelType").inputValue(), "AR Platform");
   assert(page.url().includes("matrix.html"));
   assert.equal(await page.evaluate(() => localStorage.getItem("SCZN3_BAKER_ACTIVE_SESSION")), null);
   await context.close();

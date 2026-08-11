@@ -857,6 +857,23 @@ function isGssfAuthoritySession() {
   return activeTargetProfileId() === "gssf_ac_1" || activeMissionFamily() === "gssf";
 }
 
+function sessionCapability(name) {
+  const capabilities = session && (
+    session.authoritativeCapabilities
+    || session.backendSessionAuthority && session.backendSessionAuthority.capabilities
+  );
+  return capabilities && capabilities[name] || null;
+}
+
+function unavailableResultCapabilityMessage() {
+  const capabilityName = isGssfAuthoritySession() ? "officialScore" : "correction";
+  const capability = sessionCapability(capabilityName);
+  if (!capability || capability.status !== "unavailable") return "";
+  return isGssfAuthoritySession()
+    ? "Official GSSF scoring is not available for this equipment. Your target evidence remains available."
+    : "A sight correction is not available for this equipment setup. Your target evidence remains available.";
+}
+
 function isBaker100YardSession() {
   return activeTargetProfileId() === "baker_st_100yd_smart_zero";
 }
@@ -4208,6 +4225,13 @@ document.getElementById("clearMarks").addEventListener("click", () => {
 document.getElementById("showResults").addEventListener("click", async () => {
   if ((!isGssfAuthoritySession() && !isDotTortureAuthoritySession() && !currentAimPoint) || (!isDotTortureAuthoritySession() && !currentImpactPoints.length)) return;
   if (authorityRequestInFlight) return;
+  const unavailableCapabilityMessage = unavailableResultCapabilityMessage();
+  if (unavailableCapabilityMessage) {
+    authorityStatusMessage = unavailableCapabilityMessage;
+    renderResults();
+    renderMarkStatus();
+    return;
+  }
   cancelHoleEntryReadiness();
   holeEntrySettled = true;
   if (FOUNDER_WORKSPACE_TEST_MODE && isM4AuthoritySession() && !resultsShown) {

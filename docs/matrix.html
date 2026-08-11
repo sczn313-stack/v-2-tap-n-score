@@ -1638,11 +1638,48 @@ function savedSetupCandidatesByRecency() {
     .map(setup => ({ setup, candidate: equipmentCandidateFrom(setup) }));
 }
 
-function preferredCompatibleSavedSetup(preparation, candidates) {
-  const compatibleIds = new Set((preparation.compatibilityResults || [])
-    .filter(result => result && result.compatible === true)
-    .map(result => String(result.candidateId || "")));
-  return candidates.find(item => compatibleIds.has(String(item.candidate.candidateId || item.candidate.setupId || ""))) || null;
+function equipmentAssessmentFor(preparation, candidate) {
+  const candidateId = String(candidate && (candidate.candidateId || candidate.setupId) || "");
+  return (preparation.equipmentAssessments || [])
+    .find(assessment => String(assessment && assessment.candidateId || "") === candidateId) || null;
+}
+
+function equipmentAssessmentRank(assessment) {
+  const missionStatus = assessment && assessment.officialMission && assessment.officialMission.status;
+  const missionRank = missionStatus === "eligible" ? 3 : missionStatus === "authority_unavailable" ? 2 : missionStatus === "not_applicable" ? 1 : 0;
+  const capabilityRank = Object.values(assessment && assessment.capabilities || {})
+    .filter(capability => capability && capability.status === "available").length;
+  return (missionRank * 10) + capabilityRank;
+}
+
+function preferredGovernedSavedSetup(preparation, candidates) {
+  return candidates
+    .map((item, index) => ({ item, index, assessment: equipmentAssessmentFor(preparation, item.candidate) }))
+    .filter(entry => entry.assessment)
+    .sort((left, right) => equipmentAssessmentRank(right.assessment) - equipmentAssessmentRank(left.assessment) || left.index - right.index)[0] || null;
+}
+
+function equipmentAssessmentGuidance(assessment, setupName = "This equipment") {
+  const missionStatus = assessment && assessment.officialMission && assessment.officialMission.status;
+  if (missionStatus === "eligible") {
+    return `${setupName} supports the official mission and is selected. Confirm with Go To Target, or choose other equipment.`;
+  }
+  if (missionStatus === "authority_unavailable") {
+    const capabilities = assessment && assessment.capabilities || {};
+    const supportedHelp = [
+      capabilities.evidence && capabilities.evidence.status === "available" ? "preserve your target evidence" : "",
+      capabilities.measurement && capabilities.measurement.status === "available" ? "provide supported measurements" : "",
+      capabilities.correction && capabilities.correction.status === "available" ? "provide sight corrections for this equipment setup" : ""
+    ].filter(Boolean);
+    const availableText = supportedHelp.length > 1
+      ? `${supportedHelp.slice(0, -1).join(", ")}, and ${supportedHelp[supportedHelp.length - 1]}`
+      : supportedHelp[0] || "preserve your target evidence";
+    const unavailableText = capabilities.officialScore && capabilities.officialScore.status === "unavailable"
+      ? "Official mission scoring is not available because this equipment has not been verified for that mission."
+      : "Official mission completion cannot be confirmed because this equipment has not been verified for that mission.";
+    return `Yes—you can use this Smart Target with ${setupName}. SCZN3 will ${availableText}. ${unavailableText}`;
+  }
+  return `${setupName} is selected. SCZN3 will provide only the capabilities supported by Target Authority.`;
 }
 
 function governedWeaponCategory() {
@@ -1673,8 +1710,8 @@ async function prepareStandardSetup(targetId) {
 function presentStandardSetup(targetId, preparation) {
   latestTargetPreparation = preparation;
   const standardSetup = preparation.standardSetup;
-  const compatibility = preparation.compatibilityResults && preparation.compatibilityResults[0];
-  if (!standardSetup || !compatibility || compatibility.compatible !== true) {
+  const assessment = equipmentAssessmentFor(preparation, standardSetup);
+  if (!standardSetup || !assessment || !preparation.targetAdmission || preparation.targetAdmission.status !== "admitted") {
     throw new Error("standard_setup_unavailable");
   }
   const pending = {
@@ -1699,7 +1736,7 @@ async function offerGovernedSetupChoices() {
   const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || snapshot.targetId || "").trim();
   if (!targetId) return;
   writePendingSessionStart(null);
-  authorityStatus("Checking compatible equipment for this target…", "pending");
+  authorityStatus("Checking available equipment capabilities for this target…", "pending");
   try {
     const savedCandidates = savedSetupCandidatesByRecency();
     if (savedCandidates.length) {
@@ -1712,13 +1749,14 @@ async function offerGovernedSetupChoices() {
         })
       });
       latestTargetPreparation = preparation;
-      const compatible = preferredCompatibleSavedSetup(preparation, savedCandidates);
-      if (compatible) {
-        loadSavedSetup(compatible.setup.setupId);
+      const governed = preferredGovernedSavedSetup(preparation, savedCandidates);
+      if (governed) {
+        loadSavedSetup(governed.item.setup.setupId);
         const pending = {
           targetId,
-          equipmentKey: equipmentKey(compatible.candidate),
-          candidate: compatible.candidate,
+          equipmentKey: equipmentKey(governed.item.candidate),
+          candidate: governed.item.candidate,
+          equipmentAssessment: governed.assessment,
           setupMode: "saved",
           preparationToken: preparation.preparationToken,
           idempotencyKey: idempotencyKey(),
@@ -1728,7 +1766,7 @@ async function offerGovernedSetupChoices() {
         setStandardSetupPromptVisible(false);
         setProfileEditorVisible(false);
         setWeaponListExpanded(false);
-        authorityStatus(`${weaponCardTitle(compatible.setup)} is compatible and selected. Confirm with Go To Target, or choose another weapon.`, "ready");
+        authorityStatus(equipmentAssessmentGuidance(governed.assessment, weaponCardTitle(governed.item.setup)), "ready");
         return;
       }
     }
@@ -1827,14 +1865,6 @@ function sessionAuthorityShooterMessage(error, stage = "start") {
   return "A session could not be created. Your target and equipment selections are preserved. Try again.";
 }
 
-function compatibilityMessage(result) {
-  const reasons = result && Array.isArray(result.reasons) ? result.reasons : [];
-  if (reasons.includes("weapon_category_incompatible")) return "This weapon type is not compatible with the selected target. Choose a compatible weapon and try again.";
-  if (reasons.includes("weapon_model_family_incompatible")) return "This target requires an M4, M16, or AR-platform rifle. Choose a compatible weapon and try again.";
-  if (reasons.includes("adjustment_unit_required") || reasons.includes("positive_click_value_required")) return "Complete the sight adjustment unit and click value before starting this zeroing session.";
-  return "The selected equipment does not meet this target's requirements.";
-}
-
 async function goToTarget(options = {}) {
   if (sessionStartInFlight) return;
   const snapshot = collectForm();
@@ -1869,15 +1899,16 @@ async function goToTarget(options = {}) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetId, equipmentCandidates: [candidate] })
       });
-      const compatibility = preparation.compatibilityResults && preparation.compatibilityResults[0];
-      if (!compatibility || compatibility.compatible !== true) {
-        authorityStatus(compatibilityMessage(compatibility), "error");
+      const assessment = equipmentAssessmentFor(preparation, candidate);
+      if (!preparation.targetAdmission || preparation.targetAdmission.status !== "admitted" || !assessment) {
+        authorityStatus("This Smart Target could not be admitted. Your selections are preserved; try again.", "error");
         return;
       }
       pending = {
         targetId,
         equipmentKey: candidateKey,
         candidate,
+        equipmentAssessment: assessment,
         preparationToken: preparation.preparationToken,
         idempotencyKey: idempotencyKey(),
         expiresAt: preparation.expiresAt
@@ -1912,9 +1943,6 @@ async function goToTarget(options = {}) {
     if (reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {
       writePendingSessionStart(null);
       authorityStatus("The target requirements changed or the confirmation expired. Review your setup, then tap Go To Target again.", "error");
-    } else if (reason === "selected_equipment_incompatible") {
-      writePendingSessionStart(null);
-      authorityStatus("This equipment is not compatible with the selected target. Choose another setup and try again.", "error");
     } else {
       authorityStatus(sessionAuthorityShooterMessage(error, "start"), "error");
     }

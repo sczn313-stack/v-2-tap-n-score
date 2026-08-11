@@ -87,20 +87,26 @@ def test_prepare_resolves_backend_mission_and_ignores_client_mission():
     assert result["missionIdentity"]["missionFamily"] == "zeroingCorrection"
     assert result["missionIdentity"]["missionFamily"] != "client-spoof-must-be-ignored"
     assert result["target"]["targetProfileVersion"] == "M4_TARGET_AUTHORITY_v1_ORIGINAL"
-    assert result["compatibilityResults"][0]["compatible"] is True
+    assert result["targetAdmission"]["status"] == "admitted"
+    assessment = result["equipmentAssessments"][0]
+    assert assessment["officialMission"]["status"] == "authority_unavailable"
+    assert assessment["officialMission"]["restrictionIds"] == []
+    assert assessment["capabilities"]["evidence"]["status"] == "available"
+    assert assessment["capabilities"]["measurement"]["status"] == "available"
 
 
 def test_prepare_normalizes_three_supported_targets():
     cases = [
-        ("m4_25m_zero", equipment(), "zeroingCorrection", 25),
-        ("baker_st_100yd_smart_zero", equipment(model="Bolt Action"), "zeroingCorrection", 100),
-        ("gssf_ac_1", equipment(category="Pistol", model="GLOCK Catalog"), "gssf", None),
+        ("m4_25m_zero", equipment(), "zeroingCorrection", 25, "authority_unavailable"),
+        ("baker_st_100yd_smart_zero", equipment(model="Bolt Action"), "zeroingCorrection", 100, "eligible"),
+        ("gssf_ac_1", equipment(category="Pistol", model="GLOCK Catalog"), "gssf", None, "eligible"),
     ]
-    for target, candidate, family, distance in cases:
+    for target, candidate, family, distance, mission_status in cases:
         result = prepared(TestStore(), target, candidate)
         assert result["missionIdentity"]["missionFamily"] == family
         assert result["governedDistance"]["value"] == distance
-        assert result["compatibilityResults"][0]["compatible"] is True
+        assert result["targetAdmission"]["status"] == "admitted"
+        assert result["equipmentAssessments"][0]["officialMission"]["status"] == mission_status
 
 
 def test_100_yard_confirmation_authority_remains_explicitly_unavailable():
@@ -135,7 +141,7 @@ def test_prepare_without_saved_equipment_returns_backend_standard_setup_for_all_
         assert result["standardSetup"]["weaponCategory"] == category
         assert result["standardSetup"]["source"] == source
         assert result["standardSetup"]["setupAuthority"] == "backend-target-authority"
-        assert result["compatibilityResults"][0]["compatible"] is True
+        assert result["equipmentAssessments"][0]["officialMission"]["status"] == "eligible"
 
 
 def test_m4_standard_setup_uses_exact_proven_axis_authority_and_can_start():
@@ -154,6 +160,8 @@ def test_m4_standard_setup_uses_exact_proven_axis_authority_and_can_start():
         "selectedEquipment": standard,
     }, store, idempotency_key="idem-standard-m4", now=NOW)
     assert result["setupMode"] == "standard"
+    assert result["sessionMode"] == "official_mission"
+    assert result["officialMission"]["status"] == "eligible"
     assert result["selectedEquipment"]["setupAuthorityId"] == "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
 
 
@@ -171,16 +179,84 @@ def test_client_cannot_claim_backend_standard_setup_authority():
     assert "setupAuthorityId" not in prepared_candidate
 
 
-def test_incompatible_equipment_is_explained_and_cannot_start():
+def test_unproven_m4_restriction_admits_target_without_inventing_ineligibility():
     store = TestStore()
     candidate = equipment(category="Pistol", model="GLOCK Catalog")
     result = prepared(store, "m4_25m_zero", candidate)
-    assert result["compatibilityResults"][0]["compatible"] is False
-    assert "weapon_category_incompatible" in result["compatibilityResults"][0]["reasons"]
-    expect_error(lambda: start_session({
+    assessment = result["equipmentAssessments"][0]
+    assert result["targetAdmission"]["status"] == "admitted"
+    assert assessment["officialMission"]["status"] == "authority_unavailable"
+    assert assessment["officialMission"]["restrictionIds"] == []
+    assert assessment["restrictions"] == []
+    started = start_session({
         "preparationToken": result["preparationToken"],
         "selectedEquipment": {**candidate, "source": "weapon_library"},
-    }, store, idempotency_key="idem-incompatible", now=NOW), "selected_equipment_incompatible", 422)
+    }, store, idempotency_key="idem-unproven-m4-restriction", now=NOW)
+    assert started["sessionMode"] == "target_evidence"
+    assert started["officialMission"]["status"] == "authority_unavailable"
+    assert started["restrictions"] == []
+
+
+def test_capabilities_are_independent_from_official_mission_eligibility():
+    store = TestStore()
+    candidate = equipment(category="Rifle", model="Ruger 10/22", click=0.25)
+    preparation = prepared(store, "m4_25m_zero", candidate)
+    assessment = preparation["equipmentAssessments"][0]
+    assert assessment["officialMission"]["status"] == "authority_unavailable"
+    assert assessment["capabilities"]["evidence"]["status"] == "available"
+    assert assessment["capabilities"]["measurement"]["status"] == "available"
+    assert assessment["capabilities"]["correction"] == {
+        "status": "available",
+        "scope": "equipment_correction_only",
+        "provenance": "shooter_confirmed_configuration",
+        "physicalControlDirectionsAvailable": False,
+    }
+
+
+def test_missing_adjustment_data_withholds_correction_without_blocking_session():
+    store = TestStore()
+    candidate = equipment(category="Rifle", model="Ruger 10/22", unit="", click=None)
+    preparation = prepared(store, "m4_25m_zero", candidate)
+    assessment = preparation["equipmentAssessments"][0]
+    assert assessment["capabilities"]["correction"]["status"] == "unavailable"
+    started = start_session({
+        "preparationToken": preparation["preparationToken"],
+        "selectedEquipment": {**candidate, "source": "weapon_library"},
+    }, store, idempotency_key="idem-no-adjustment", now=NOW)
+    assert started["targetAdmission"]["status"] == "admitted"
+    assert started["sessionMode"] == "target_evidence"
+    assert started["capabilities"]["correction"]["status"] == "unavailable"
+
+
+def test_gssf_non_pistol_is_admitted_but_official_score_is_withheld():
+    store = TestStore()
+    candidate = equipment(category="Rifle", model="Ruger 10/22")
+    preparation = prepared(store, "gssf_ac_1", candidate)
+    assessment = preparation["equipmentAssessments"][0]
+    assert preparation["targetAdmission"]["status"] == "admitted"
+    assert assessment["officialMission"]["status"] == "authority_unavailable"
+    assert assessment["officialMission"]["restrictionIds"] == []
+    assert assessment["capabilities"]["officialScore"]["status"] == "unavailable"
+    started = start_session({
+        "preparationToken": preparation["preparationToken"],
+        "selectedEquipment": {**candidate, "source": "weapon_library"},
+    }, store, idempotency_key="idem-gssf-rifle", now=NOW)
+    assert started["sessionMode"] == "target_evidence"
+    assert started["restrictions"] == []
+
+
+def test_100_yard_admission_is_not_blocked_by_equipment_category():
+    store = TestStore()
+    candidate = equipment(category="Pistol", model="Target Pistol")
+    preparation = prepared(store, "baker_st_100yd_smart_zero", candidate)
+    assessment = preparation["equipmentAssessments"][0]
+    assert assessment["officialMission"]["status"] == "eligible"
+    assert assessment["capabilities"]["correction"]["status"] == "available"
+    started = start_session({
+        "preparationToken": preparation["preparationToken"],
+        "selectedEquipment": {**candidate, "source": "weapon_library"},
+    }, store, idempotency_key="idem-100-yard-pistol", now=NOW)
+    assert started["sessionMode"] == "official_mission"
 
 
 def test_start_issues_backend_id_and_idempotent_retry_returns_same_session():
