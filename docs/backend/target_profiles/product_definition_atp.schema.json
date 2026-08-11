@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.com/schemas/product-definition-atp-v1.json",
+  "title": "SCZN3 Product Definition ATP",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "atpId",
+    "targetProfileId",
+    "targetProfileVersion",
+    "phaseName",
+    "status",
+    "role",
+    "bindings",
+    "productDefinitions",
+    "scoringModel",
+    "capabilityDeclaration",
+    "equipmentPolicy",
+    "traceability",
+    "validationRequirements",
+    "runtimeExecution"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "product-definition-atp-v1" },
+    "atpId": { "type": "string", "minLength": 1 },
+    "targetProfileId": { "type": "string", "minLength": 1 },
+    "targetProfileVersion": { "type": "integer", "minimum": 1 },
+    "phaseName": { "const": "ATP Product Definitions" },
+    "status": { "enum": ["founder_review", "approved", "retired"] },
+    "role": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["purpose", "doesNot"],
+      "properties": {
+        "purpose": { "type": "string", "minLength": 1 },
+        "doesNot": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["smartTargetIdentity", "launchVariant", "ugoObservation"],
+      "properties": {
+        "smartTargetIdentity": { "$ref": "#/$defs/artifactBinding" },
+        "launchVariant": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["variantId", "identityVersion"],
+          "properties": {
+            "variantId": { "type": "string", "minLength": 1 },
+            "identityVersion": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "ugoObservation": { "$ref": "#/$defs/artifactBinding" }
+      }
+    },
+    "productDefinitions": { "type": "object" },
+    "scoringModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "status", "numericScoring", "verifiedRules"],
+      "properties": {
+        "source": { "const": "printer_product" },
+        "status": { "const": "founder_verification_pending" },
+        "numericScoring": { "const": "unavailable_pending_founder_verification" },
+        "verifiedRules": { "type": "array", "maxItems": 0 }
+      }
+    },
+    "capabilityDeclaration": { "type": "object" },
+    "equipmentPolicy": { "type": "object" },
+    "traceability": { "type": "object" },
+    "validationRequirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "runtimeExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": { "const": "unavailable" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "relativePath", "sha256"],
+      "properties": {
+        "artifactId": { "type": "string", "minLength": 1 },
+        "relativePath": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

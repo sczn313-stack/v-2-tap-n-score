@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "product-definition-atp-v1",
+  "atpId": "ATP_BAKER_SL_ST1_PRACTICE_V1",
+  "targetProfileId": "baker_sl_st1_practice",
+  "targetProfileVersion": 1,
+  "phaseName": "ATP Product Definitions",
+  "status": "founder_review",
+  "role": {
+    "purpose": "Record the printer-product definitions required for SCZN3 to understand and later score the Baker SL-ST1 consistently.",
+    "doesNot": [
+      "create authority",
+      "invent product meaning",
+      "redefine the printer product",
+      "create runtime behavior"
+    ]
+  },
+  "bindings": {
+    "smartTargetIdentity": {
+      "artifactId": "BAKER_SL_ST1_IDENTITY_V1",
+      "relativePath": "backend/registries/smart_target_identity_registry.json",
+      "sha256": "eb051b99930e7d9d3e3b90f87b3274ba642deb1752ffc39372ddd9ba512fd2a6"
+    },
+    "launchVariant": {
+      "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+      "identityVersion": 1
+    },
+    "ugoObservation": {
+      "artifactId": "UGO_BAKER_SL_ST1_23X35_V1",
+      "relativePath": "authority-evidence/baker-sl-st1/BAKER_SL_ST1_UGO_REGISTRATION_V1.json",
+      "sha256": "56bd04da875f07a51d92bbaa476eef30d2c8fb7f7db8fadfcf48e9953c836d7f"
+    }
+  },
+  "productDefinitions": {
+    "source": "printer_product",
+    "printerProduct": {
+      "printer": "Baker Targets",
+      "productName": "Silhouette Target (USPSA)",
+      "sku": "SL-ST1"
+    },
+    "observableTargetSurface": {
+      "coordinateSystemId": "UGO_IMAGE_PLANE_TOP_LEFT_V1",
+      "physicalMapping": "not_claimed",
+      "outerPrintedBoundaryFeatureId": "printed_boundary_001",
+      "nestedPrintedBoundaryFeatureIds": [
+        "printed_boundary_002",
+        "printed_boundary_003",
+        "printed_boundary_004",
+        "printed_boundary_005"
+      ],
+      "boundaryRelationships": [
+        {
+          "containerFeatureId": "printed_boundary_001",
+          "containedFeatureIds": [
+            "printed_boundary_002",
+            "printed_boundary_003",
+            "printed_boundary_004",
+            "printed_boundary_005"
+          ],
+          "relationship": "observable_containment"
+        },
+        {
+          "containerFeatureId": "printed_boundary_002",
+          "containedFeatureIds": [
+            "printed_boundary_003",
+            "printed_boundary_004",
+            "printed_boundary_005"
+          ],
+          "relationship": "observable_containment"
+        },
+        {
+          "containerFeatureId": "printed_boundary_003",
+          "containedFeatureIds": ["printed_boundary_004"],
+          "relationship": "observable_containment"
+        }
+      ]
+    },
+    "printedIdentifiers": {
+      "featureId": "printed_text_002",
+      "observedContent": ["A", "B", "D", "C", "A", "C", "D"],
+      "interpretationStatus": "unassigned_pending_founder_verification"
+    },
+    "printedScoringTable": {
+      "boundaryFeatureId": "printed_boundary_region_001",
+      "textFeatureId": "printed_text_003",
+      "observedContent": [
+        "Number of Hits",
+        "Shot Value",
+        "X",
+        "10",
+        "9",
+        "8",
+        "7",
+        "0",
+        "Missing",
+        "Totals"
+      ],
+      "interpretationStatus": "founder_verification_pending"
+    },
+    "printedForm": {
+      "boundaryFeatureId": "printed_boundary_region_002",
+      "textFeatureId": "printed_text_004",
+      "role": "observed_product_form_only",
+      "digitalRequirement": "not_established"
+    }
+  },
+  "scoringModel": {
+    "source": "printer_product",
+    "status": "founder_verification_pending",
+    "numericScoring": "unavailable_pending_founder_verification",
+    "verifiedRules": []
+  },
+  "capabilityDeclaration": {
+    "definedAtThisPhase": [
+      "exact Smart Target identity binding",
+      "exact launch-variant binding",
+      "exact UGO Observation binding",
+      "traceable reference to observable printed boundaries",
+      "traceable reference to observable printed text and symbols"
+    ],
+    "unavailable": [
+      "numeric scoring",
+      "semantic scoring-region classification",
+      "runtime evidence classification",
+      "Target Page behavior",
+      "Universal SEC behavior",
+      "QR routing",
+      "session creation"
+    ]
+  },
+  "equipmentPolicy": {
+    "restrictions": [],
+    "statement": "The printer product establishes no equipment, caliber, distance, timer, or shot-count restriction in this ATP phase."
+  },
+  "traceability": {
+    "ugoFeatureIds": [
+      "printed_boundary_001",
+      "printed_boundary_002",
+      "printed_boundary_003",
+      "printed_boundary_004",
+      "printed_boundary_005",
+      "printed_boundary_region_001",
+      "printed_boundary_region_002",
+      "printed_text_002",
+      "printed_text_003",
+      "printed_text_004"
+    ],
+    "rules": [
+      "Every product definition references an existing UGO feature ID.",
+      "UGO coordinates remain unchanged and are not copied into the ATP.",
+      "Product meaning remains pending unless verified from the printer product.",
+      "No external competition rules are substituted for the printer product."
+    ]
+  },
+  "validationRequirements": [
+    "The ATP binds exactly to BAKER_SL_ST1 identity version 1.",
+    "The ATP binds exactly to BAKER_SL_ST1_23X35_STANDARD_WHITE.",
+    "The ATP binds exactly to UGO_BAKER_SL_ST1_23X35_V1 and its recorded artifact hash.",
+    "Every referenced feature ID exists in the bound UGO Observation.",
+    "No UGO coordinates or observable geometry are altered.",
+    "Numeric scoring remains unavailable while Founder verification is pending.",
+    "Unsupported runtime capabilities remain unavailable.",
+    "No frontend interpretation or runtime behavior is introduced.",
+    "No external competition rules or equipment restrictions are introduced."
+  ],
+  "runtimeExecution": {
+    "status": "unavailable",
+    "reason": "Phase 3 records product definitions only; later runtime phases are not authorized."
+  }
+}
