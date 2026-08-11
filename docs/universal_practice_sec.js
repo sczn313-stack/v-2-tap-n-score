@@ -64,35 +64,6 @@
     );
   }
 
-  function noticeHtml() {
-    return `
-      <aside class="sec-practice-notice" aria-label="${PRACTICE_NOTICE.title}">
-        <strong>${PRACTICE_NOTICE.title}</strong>
-        ${PRACTICE_NOTICE.paragraphs.map(text => `<p>${text}</p>`).join("")}
-      </aside>
-    `;
-  }
-
-  function blockedItemsHtml() {
-    const items = [
-      ["Overall Practice Result", "Definition and calculation authority are not approved."],
-      ["Group Center and POIB", "Aim-point, geometry, and group-center methods are not approved."],
-      ["Group Size", "The measurement method, units, and physical scale are not approved."],
-      ["Consistency and Improvement", "Comparable-session and analysis authority are not approved."]
-    ];
-    return `
-      <div class="sec-practice-blocked-grid" aria-label="Intentionally blocked Practice Analysis fields">
-        ${items.map(([label, reason]) => `
-          <div>
-            <span>${label}</span>
-            <strong>Unavailable</strong>
-            <small>${reason}</small>
-          </div>
-        `).join("")}
-      </div>
-    `;
-  }
-
   function sessionSummaryHtml(session) {
     const snapshot = session && session.matrixSnapshot || {};
     const timestamp = cleanText(session && (session.preservedAt || session.timestamp));
@@ -130,6 +101,9 @@
           ? BLOCKED_REASONS.calculated_authority_not_registered
           : "The Universal Practice authority package is incomplete or mismatched.");
     const recordId = cleanText(session.sessionId) || "st-001-authority-unavailable";
+    const shooterGuidance = global.SCZN3Presentation
+      ? global.SCZN3Presentation.blockedTargetGuidance("this practice target")
+      : "You can choose another available Smart Target. SCZN3 cannot analyze this practice target yet. Return Home to continue.";
 
     return global.SCZN3SEC.render({
       schemaVersion: "1.2",
@@ -152,11 +126,10 @@
             <section class="sec-v1-adapter-block sec-practice-evidence" aria-labelledby="st001-evidence">
               <div class="sec-workspace-heading">
                 <div><h3 class="sec-v1-region-title" id="st001-evidence">Target Evidence</h3></div>
-                <small>Registered evidence is required before analysis can begin.</small>
               </div>
               <div class="sec-practice-evidence-unavailable" role="status">
-                <strong>Evidence unavailable</strong>
-                <span>ST-001 has no approved canonical asset, Registration Package, or Geometry Profile.</span>
+                <strong>This target is not ready for analysis.</strong>
+                <span>${escapeHtml(shooterGuidance)}</span>
               </div>
             </section>
           `
@@ -168,14 +141,7 @@
           contentHtml: `
             <section class="sec-session-section"><h3>Session Details</h3>${sessionSummaryHtml(session)}</section>
             <details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel">
-            <div class="sec-primary-result-grid"><div class="sec-primary-result-value"><span>Practice Analysis</span><strong class="sec-v1-result-value">Unavailable</strong></div><div class="sec-supporting-metric"><span>Measurements</span><strong>None calculated</strong><small>Missing authority remains unavailable. It is never converted to zero.</small></div></div>
-            <section class="sec-v1-adapter-block sec-v1-explanation-primary sec-practice-explanation" aria-labelledby="st001-explanation">
-              <span class="sec-component-label">Why results are unavailable</span><h3 class="sec-v1-region-title" id="st001-explanation">Authority must precede measurement</h3><p>${escapeHtml(reason)}</p><p>No score, group measurement, POIB, consistency value, or improvement claim has been fabricated.</p>
-            </section>
-            <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="st001-authority-state"><span>Authority State</span><h3 id="st001-authority-state">Practice Analysis</h3><strong>Blocked</strong></section>
-            <section class="sec-v1-adapter-block sec-v1-performance-detail sec-practice-performance" aria-labelledby="st001-blocked-fields"><h3 class="sec-v1-region-title" id="st001-blocked-fields">Intentionally Blocked</h3>${blockedItemsHtml()}</section>
-            ${global.SCZN3SEC.renderAchievementScale("Unavailable — no approved achievement authority")}
-            ${noticeHtml()}
+            <div class="sec-primary-result-grid"><div class="sec-primary-result-value"><span>Practice Analysis</span><strong class="sec-v1-result-value">Not available</strong></div><div class="sec-supporting-metric"><span>Measurements</span><strong>Not available</strong></div></div>
             </div></details>
           `
         },
@@ -185,7 +151,7 @@
           ariaLabel: "Shooter Action Bar",
           contentHtml: `
             <div class="sec-v1-record-actions" aria-label="SEC actions">
-              <span class="sec-save-status">Export unavailable</span>
+              <span class="sec-save-status">Export not available</span>
             </div>
           `
         }

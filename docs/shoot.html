@@ -135,7 +135,7 @@ window.addEventListener("error", event => {
     new ResizeObserver(syncWorkspaceTopOverlayGeometry).observe(workspaceStage);
   }
 </script>
-<script src="presentation_labels.js?v=universal-sec-1"></script>
+<script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="smart_target_identity.js"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
@@ -869,9 +869,14 @@ function unavailableResultCapabilityMessage() {
   const capabilityName = isGssfAuthoritySession() ? "officialScore" : "correction";
   const capability = sessionCapability(capabilityName);
   if (!capability || capability.status !== "unavailable") return "";
-  return isGssfAuthoritySession()
-    ? "Official GSSF scoring is not available for this equipment. Your target evidence remains available."
-    : "A sight correction is not available for this equipment setup. Your target evidence remains available.";
+  const snapshot = session && session.matrixSnapshot || {};
+  const opticType = String(snapshot.opticType || "").trim();
+  const clickValue = Number(snapshot.opticClickValue);
+  return SCZN3Presentation.capabilityGuidance({
+    targetProfileId: activeTargetProfileId(),
+    missionFamily: activeMissionFamily(),
+    sightClickDataMissing: !!opticType && (!Number.isFinite(clickValue) || clickValue <= 0)
+  });
 }
 
 function isBaker100YardSession() {
@@ -2169,10 +2174,10 @@ function correctionUnavailableShooterMessage(authorityPackage = backendAuthority
     return "The optic adjustment value is missing. Return to Equipment Library, complete the optic setup, then try again.";
   }
   if (context.sightSystem === "iron" && !context.equipmentAuthorityRecordId) {
-    return "This iron-sight setup is not registered for click adjustments. Return to Equipment Library and select the supported M4 sight setup.";
+    return "Your group measurement is ready. Select the M4 iron-sight setup in Equipment, then try again to receive Sight Correction.";
   }
   if (!authorityPackage || !authorityPackage.clicks || authorityPackage.mechanicalValidation?.status !== "calculated") {
-    return "This sight setup does not provide a verified click adjustment. Review the sight setup in Equipment Library, then try again.";
+    return "Your group measurement is ready. Review the sight setup in Equipment, then try again to receive Sight Correction.";
   }
   return "A correction could not be calculated from this group. Check the session setup and try Show Results again.";
 }
@@ -2850,7 +2855,7 @@ async function requestBackendAuthority() {
 
 function applyBackendAuthorityPackage(authorityPackage) {
   authorityStatusMessage = isGssfAuthoritySession() && !isGssfAuthorityPackage(authorityPackage)
-    ? "GSSF result unavailable: authoritative paper-penalty seconds are missing or invalid."
+    ? "Your confirmed impacts are saved. SCZN3 could not calculate the Paper Penalty. Review the impacts, then tap Show Results again."
     : "";
   backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
   syncAuthorityDerivedState();
@@ -3300,14 +3305,14 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
   const result = gssfOfficialCompetitionResult(authorityPackage);
   const hasTimerTime = result.officialMatchTimeSeconds !== null;
   const finalText = result.finalScoreStatus === "authority_unavailable"
-    ? "Authority unavailable"
+    ? "Score not available"
     : (result.officialFinalScoreSeconds === null
       ? gssfFormatSeconds(result.totalPaperPenaltySeconds)
       : gssfFormatSeconds(result.officialFinalScoreSeconds));
   const inputValue = result.officialMatchTimeSeconds === null ? "" : Number(result.officialMatchTimeSeconds).toFixed(2);
   const officialTimeText = hasTimerTime ? gssfFormatSeconds(result.officialMatchTimeSeconds) : "Not entered";
   const paperPenaltyText = result.totalPaperPenaltySeconds === null
-    ? "Authority unavailable"
+    ? "Not available"
     : `+${gssfFormatSeconds(result.totalPaperPenaltySeconds)}`;
   return `
     <section class="gssf-final-score-panel" aria-label="Competition paper target result">
@@ -3344,7 +3349,7 @@ function updateGssfOfficialFinalScoreDisplay(authorityPackage) {
   const result = gssfOfficialCompetitionResult(authorityPackage);
   const hasTimerTime = result.officialMatchTimeSeconds !== null;
   finalScore.textContent = result.finalScoreStatus === "authority_unavailable"
-    ? "Authority unavailable"
+    ? "Score not available"
     : (result.officialFinalScoreSeconds === null
       ? gssfFormatSeconds(result.totalPaperPenaltySeconds)
       : gssfFormatSeconds(result.officialFinalScoreSeconds));

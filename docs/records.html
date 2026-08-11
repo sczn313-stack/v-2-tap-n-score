@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="ballistic-vault.css" />
 <link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
-<link rel="stylesheet" href="m4-sec.css?v=episode46-gssf-reference-candidate-1" />
+<link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
 <script src="navigation.js" defer></script>
 </head>
@@ -40,7 +40,7 @@
     </div>
   </section>
 </main>
-<script src="presentation_labels.js?v=universal-sec-1"></script>
+<script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
@@ -649,14 +649,14 @@ function renderGssfSecCard(session, index, pkg) {
     ? pkg.display.summary.trim()
     : "Scoring distribution unavailable";
   const observationCount = pkg.inputs && Number.isInteger(pkg.inputs.observationCount)
-    ? `${pkg.inputs.observationCount} authoritative ${pkg.inputs.observationCount === 1 ? "shot" : "shots"}`
+    ? `${pkg.inputs.observationCount} confirmed ${pkg.inputs.observationCount === 1 ? "shot" : "shots"}`
     : "Shot count unavailable";
   const nextStep = hasTimerTime
-    ? "Save or export this governed record."
+    ? "Save or export this result."
     : "Enter the official timer time to complete Final Time.";
   const confidence = pkg.canonicalAssetScoring === "accepted"
     ? "Canonical evidence accepted"
-    : "Authority unavailable";
+    : "Score not available";
   return SCZN3SEC.render({
     schemaVersion: "1.1",
     recordId: String(session.sessionId || `gssf-session-${index}`),
@@ -998,7 +998,7 @@ function authorityDetailLine(pkg, simulationSession = false) {
     metrics.push(["POIB", "Unavailable"]);
   }
   return metrics.length ? `
-    <div class="sec-authority-detail" aria-label="Authoritative group measurements">
+    <div class="sec-authority-detail" aria-label="Group measurements">
       ${metrics.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
     </div>
   ` : "";
@@ -1006,7 +1006,7 @@ function authorityDetailLine(pkg, simulationSession = false) {
 
 function zeroingValidationDetailsHtml(pkg, hasAuthority) {
   const evidenceLine = hasAuthority && pkg.evidenceHash ? `<div>Evidence ID: ${escapeHtml(pkg.evidenceHash.slice(0, 12))}</div>` : "";
-  const sourceLine = hasAuthority ? `<div>Scoring source: Backend</div>` : `<div>Scoring details unavailable.</div>`;
+  const sourceLine = hasAuthority ? `<div>Result verified by SCZN3</div>` : `<div>SCZN3 could not verify this result.</div>`;
   return `
     <details class="sec-gssf-validation-details">
       <summary>Validation</summary>
@@ -1236,7 +1236,7 @@ function renderBaker100YardReferenceSec(session, pkg) {
   ].join("");
   const confirmationOutcome = confirmationPackage && confirmationPackage.validation
     ? confirmationPackage.validation.status === "authority_unavailable"
-      ? `<strong>Confirmation evidence preserved</strong><span>A confirmation decision is not available because this target's official confirmation standard has not been registered.</span>`
+      ? `<strong>Your confirmation group is saved.</strong><span>SCZN3 cannot confirm this zero yet. No additional action is required.</span>`
       : `<strong>${escapeHtml(confirmationPackage.validation.outcome || (confirmationPackage.validation.confirmed ? "CONFIRMED" : "REQUIRES ANOTHER GROUP"))}</strong><span>Saved confirmation result</span>`
     : `<strong>Confirmation not recorded</strong><span>This preserved event contains the initial 100 Yard group and correction only.</span>`;
   const sessionDate = session.timestamp ? new Date(session.timestamp) : null;
@@ -1445,7 +1445,7 @@ function renderHistory() {
     `, `Score ${scoreDisplay}`);
     const sightCorrectionStage = correctionDisplay.length ? universalSecStageHtml("sight-correction", "Sight Correction", `
       <div class="sec-sight-correction-story"><div class="sec-sight-correction-grid">${correctionDisplay.map((instruction, correctionIndex) => `<div class="sec-sight-correction-axis"><span>${correctionIndex === 0 ? "Elevation" : "Windage"}</span><strong>${escapeHtml(instruction)}</strong></div>`).join("")}</div></div>
-      <section class="sec-confirmation-summary"><h3>How to Confirm</h3><div class="sec-validation-calculation">${simulationSession ? "Simulation result — no governed validation claim." : zeroingValidationDetailsHtml(pkg, hasAuthority)}</div></section>
+      <section class="sec-confirmation-summary"><h3>How to Confirm</h3><div class="sec-validation-calculation">${simulationSession ? "You can practice this workflow in Simulation. Start a live target session when you are ready to record a confirmed result." : zeroingValidationDetailsHtml(pkg, hasAuthority)}</div></section>
     `) : "";
     const actionBar = universalShooterActionBarHtml(session);
     return `

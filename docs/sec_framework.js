@@ -153,7 +153,10 @@
     const integrity = verifyCalculationChain(authorityPackage);
     const unit = String(adjustment.unit || "MOA").toUpperCase();
     if (mechanical.status !== "calculated" || integrity.status !== "reconciled") {
-      return `<div class="sec-sight-correction-unavailable"><span>Sight correction</span><strong>${integrity.status === "mismatch" ? "Unavailable — result could not be verified" : "Unavailable for this sight setup"}</strong></div>`;
+      const guidance = global.SCZN3Presentation
+        ? global.SCZN3Presentation.sightCorrectionGuidance({ integrityStatus: integrity.status })
+        : "Your target and group measurement are saved. Review your sight setup in Equipment to receive Sight Correction.";
+      return `<div class="sec-sight-correction-unavailable"><span>Sight Correction</span><strong>${escapeHtml(guidance)}</strong></div>`;
     }
     const axisCard = axis => {
       const label = axis[0].toUpperCase() + axis.slice(1);
@@ -209,8 +212,10 @@
     const mechanical = authorityPackage.mechanicalValidation || {};
     const integrity = verifyCalculationChain(authorityPackage);
     if (mechanical.status !== "calculated" || integrity.status !== "reconciled") {
-      return `<div><span>Target measurement</span><strong>${escapeHtml((authorityPackage.geometryValidation || {}).status === "calculated" ? "Complete" : "Unavailable")}</strong></div>
-        <div><span>Sight adjustment</span><strong>${integrity.status === "mismatch" ? "Unavailable — result could not be verified" : "Unavailable for this sight setup"}</strong></div>`;
+      const guidance = global.SCZN3Presentation
+        ? global.SCZN3Presentation.sightCorrectionGuidance({ integrityStatus: integrity.status })
+        : "Your target and group measurement are saved. Review your sight setup in Equipment to receive Sight Correction.";
+      return `<div><span>Next step</span><strong>${escapeHtml(guidance)}</strong></div>`;
     }
     return `<div><span>Adjustment system</span><strong>${escapeHtml(adjustment.label || "Unavailable")}</strong></div>
       <div><span>Elevation</span><strong>Apply ${escapeHtml(correction.elevation || "Unavailable")}${authorityPackage.clicks.elevationTurnDirection ? ` · turn ${escapeHtml(authorityPackage.clicks.elevationTurnDirection)}` : ""}</strong></div>

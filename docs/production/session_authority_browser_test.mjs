@@ -352,7 +352,9 @@ try {
   });
   const savedSetupPage = await savedSetupContext.newPage();
   await savedSetupPage.goto(`${baseUrl}/matrix.html?target_profile_id=gssf_ac_1`, { waitUntil: "networkidle" });
-  await savedSetupPage.waitForFunction(() => /Most Recent Compatible Pistol supports the official mission and is selected/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  await savedSetupPage.waitForFunction(() => /You can use this Smart Target with Most Recent Compatible Pistol/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  assert.match(await savedSetupPage.locator("#sessionAuthorityStatus").textContent(), /calculate your Official GSSF Score/);
+  assert.match(await savedSetupPage.locator("#sessionAuthorityStatus").textContent(), /Tap Go To Target to begin/);
   assert.equal(await savedSetupPage.locator("#savedSetupSelect").inputValue(), "pistol-recent");
   assert.equal(await savedSetupPage.locator("#weaponCategory").inputValue(), "Pistol");
   assert.equal(savedSetupStartRequests, 0, "preselection must not create a session before shooter confirmation");
@@ -415,9 +417,10 @@ try {
   });
   const admittedPage = await admittedContext.newPage();
   await admittedPage.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "networkidle" });
-  await admittedPage.waitForFunction(() => /Yes—you can use this Smart Target with Ruger 10\/22/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
-  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /preserve your target evidence, provide supported measurements, and provide sight corrections/);
-  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /Official mission completion cannot be confirmed because this equipment has not been verified for that mission/);
+  await admittedPage.waitForFunction(() => /You can use this Smart Target with Ruger 10\/22/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /save your target evidence, measure your group, and provide Sight Correction/);
+  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /Ready to shoot\. Tap Go To Target\./);
+  assert.doesNotMatch(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /official mission|authority|verified for that mission/i);
   await admittedPage.locator('#matrixForm button[type="submit"]').click();
   await admittedPage.waitForURL(url => url.pathname.endsWith("/shoot.html"));
   const admittedSession = await admittedPage.evaluate(() => {

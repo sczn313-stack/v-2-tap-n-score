@@ -66,36 +66,6 @@
     return BLOCKED_REASONS[code] || BLOCKED_REASONS.unresolved_product_mapping;
   }
 
-  function researchNoticeHtml() {
-    return `
-      <aside class="sec-practice-notice" aria-label="Research authority notice">
-        <strong>Research Authority</strong>
-        <p>The M4 target is recognized as an Episode 37 portfolio product, but its exact physical reference and current authority chain are not approved.</p>
-        <p>This review card does not represent a measured zero, an authorized correction, or a completed shooting result.</p>
-      </aside>
-    `;
-  }
-
-  function blockedItemsHtml() {
-    const items = [
-      ["Exact Product Identity", "The portfolio product is not yet mapped to a registered physical reference."],
-      ["Evidence and Geometry", "No approved canonical asset, complete geometry, or physical scale is registered."],
-      ["Group Center and POIB", "The impact, aim-point, and group-center evidence contract is not approved."],
-      ["Zeroing Corrections", "No M4 measurement profile or execution contract authorizes correction values."]
-    ];
-    return `
-      <div class="sec-practice-blocked-grid" aria-label="Intentionally blocked M4 fields">
-        ${items.map(([label, reason]) => `
-          <div>
-            <span>${label}</span>
-            <strong>Unavailable</strong>
-            <small>${reason}</small>
-          </div>
-        `).join("")}
-      </div>
-    `;
-  }
-
   function sessionSummaryHtml(session) {
     const snapshot = session && session.matrixSnapshot || {};
     const timestamp = cleanText(session && (session.preservedAt || session.timestamp));
@@ -133,6 +103,9 @@
           ? BLOCKED_REASONS.calculated_authority_not_registered
           : "The M4 authority package is incomplete or mismatched.");
     const recordId = cleanText(session.sessionId) || "m4-authority-unavailable";
+    const shooterGuidance = global.SCZN3Presentation
+      ? global.SCZN3Presentation.blockedTargetGuidance("this M4 Smart Target")
+      : "You can choose another available Smart Target. SCZN3 cannot analyze this M4 Smart Target yet. Return Home to continue.";
 
     return global.SCZN3SEC.render({
       schemaVersion: "1.2",
@@ -155,14 +128,11 @@
           contentHtml: `
             <section class="sec-v1-adapter-block sec-practice-evidence" aria-labelledby="m4-evidence">
               <div class="sec-workspace-heading">
-                <div>
-                  <h3 class="sec-v1-region-title" id="m4-evidence">Evidence Workspace</h3>
-                </div>
-                <small>Registered M4 evidence is required before analysis can begin.</small>
+                <div><h3 class="sec-v1-region-title" id="m4-evidence">Target Evidence</h3></div>
               </div>
               <div class="sec-practice-evidence-unavailable" role="status">
-                <strong>Evidence unavailable</strong>
-                <span>No approved M4 canonical asset, Registration Package, complete geometry, or execution authority exists.</span>
+                <strong>This target is not ready for analysis.</strong>
+                <span>${escapeHtml(shooterGuidance)}</span>
               </div>
             </section>
           `
@@ -175,12 +145,9 @@
             <section class="sec-session-section"><h3>Session Details</h3>${sessionSummaryHtml(session)}</section>
             <details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel">
             <div class="sec-primary-result-grid">
-              <div class="sec-primary-result-value"><span>Zeroing Analysis</span><strong class="sec-v1-result-value">Unavailable</strong></div>
-              <div class="sec-supporting-metric"><span>Measurements</span><strong>None calculated</strong><small>Missing authority remains unavailable. It is never converted to zero.</small></div>
+              <div class="sec-primary-result-value"><span>Zeroing Analysis</span><strong class="sec-v1-result-value">Not available</strong></div>
+              <div class="sec-supporting-metric"><span>Measurements</span><strong>Not available</strong></div>
             </div>
-            <section class="sec-v1-adapter-block sec-v1-performance-detail sec-practice-performance" aria-labelledby="m4-blocked-fields"><h3 class="sec-v1-region-title" id="m4-blocked-fields">Intentionally Blocked</h3>${blockedItemsHtml()}</section>
-            ${global.SCZN3SEC.renderAchievementScale("Unavailable — no approved M4 achievement authority")}
-            ${researchNoticeHtml()}
             </div></details>
           `
         },
@@ -190,13 +157,8 @@
           ariaLabel: "Sight Correction",
           contentHtml: `
             <section class="sec-v1-adapter-block sec-v1-explanation-primary sec-practice-explanation" aria-labelledby="m4-explanation">
-              <span class="sec-component-label">Why results are unavailable</span>
-              <h3 class="sec-v1-region-title" id="m4-explanation">Sight correction unavailable</h3>
-              <p>${escapeHtml(reason)}</p>
-              <p>The legacy M4 candidate and the separately supported Baker 100-yard product have not been substituted for one another.</p>
-            </section>
-            <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="m4-authority-state">
-              <span>Correction status</span><h3 id="m4-authority-state">Unavailable</h3><strong>No adjustment shown</strong>
+              <span class="sec-component-label">Sight Correction</span>
+              <h3 class="sec-v1-region-title" id="m4-explanation">No adjustment available</h3>
             </section>
           `
         },
@@ -206,7 +168,7 @@
           ariaLabel: "Shooter Action Bar",
           contentHtml: `
             <div class="sec-v1-record-actions" aria-label="SEC actions">
-              <span class="sec-save-status">Export unavailable</span>
+              <span class="sec-save-status">Export not available</span>
             </div>
           `
         }

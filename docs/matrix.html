@@ -44,7 +44,7 @@
       <div class="session-authority-status is-hidden" id="sessionAuthorityStatus" role="status" aria-live="polite"></div>
       <section class="standard-setup-panel is-hidden" id="standardSetupPanel" aria-labelledby="standardSetupTitle">
         <div>
-          <span class="standard-setup-kicker">Backend Target Authority</span>
+          <span class="standard-setup-kicker">Ready to Begin</span>
           <h2 id="standardSetupTitle">Standard Setup</h2>
           <p>This target will use the Standard Setup shown below.</p>
         </div>
@@ -194,7 +194,7 @@
     </form>
   </section>
 </main>
-<script src="presentation_labels.js?v=universal-sec-1"></script>
+<script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="smart_target_identity.js"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
@@ -214,6 +214,7 @@ let currentWeaponPhoto = null;
 let sessionStartInFlight = false;
 let standardSetupPromptActive = false;
 let latestTargetPreparation = null;
+let equipmentLibraryExplicitlyOpened = false;
 const WEAPON_CATEGORY_MANUFACTURERS = {
   Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
   Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Canik", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
@@ -1659,27 +1660,20 @@ function preferredGovernedSavedSetup(preparation, candidates) {
     .sort((left, right) => equipmentAssessmentRank(right.assessment) - equipmentAssessmentRank(left.assessment) || left.index - right.index)[0] || null;
 }
 
-function equipmentAssessmentGuidance(assessment, setupName = "This equipment") {
-  const missionStatus = assessment && assessment.officialMission && assessment.officialMission.status;
-  if (missionStatus === "eligible") {
-    return `${setupName} supports the official mission and is selected. Confirm with Go To Target, or choose other equipment.`;
-  }
-  if (missionStatus === "authority_unavailable") {
-    const capabilities = assessment && assessment.capabilities || {};
-    const supportedHelp = [
-      capabilities.evidence && capabilities.evidence.status === "available" ? "preserve your target evidence" : "",
-      capabilities.measurement && capabilities.measurement.status === "available" ? "provide supported measurements" : "",
-      capabilities.correction && capabilities.correction.status === "available" ? "provide sight corrections for this equipment setup" : ""
-    ].filter(Boolean);
-    const availableText = supportedHelp.length > 1
-      ? `${supportedHelp.slice(0, -1).join(", ")}, and ${supportedHelp[supportedHelp.length - 1]}`
-      : supportedHelp[0] || "preserve your target evidence";
-    const unavailableText = capabilities.officialScore && capabilities.officialScore.status === "unavailable"
-      ? "Official mission scoring is not available because this equipment has not been verified for that mission."
-      : "Official mission completion cannot be confirmed because this equipment has not been verified for that mission.";
-    return `Yes—you can use this Smart Target with ${setupName}. SCZN3 will ${availableText}. ${unavailableText}`;
-  }
-  return `${setupName} is selected. SCZN3 will provide only the capabilities supported by Target Authority.`;
+function equipmentAssessmentGuidance(assessment, setupName = "This equipment", candidate = {}) {
+  const target = latestTargetPreparation && latestTargetPreparation.target || {};
+  const missionIdentity = latestTargetPreparation && latestTargetPreparation.missionIdentity || {};
+  const opticType = String(candidate.opticType || "").trim();
+  const clickValue = Number(candidate.opticClickValue);
+  const sightClickDataMissing = !!opticType && (!Number.isFinite(clickValue) || clickValue <= 0);
+  return SCZN3Presentation.equipmentGuidance({
+    assessment,
+    setupName,
+    targetProfileId: target.targetId || target.targetProfileId || "",
+    missionFamily: missionIdentity.missionFamily || missionIdentity.mission_family || "",
+    nextAction: "Go To Target",
+    sightClickDataMissing
+  });
 }
 
 function governedWeaponCategory() {
@@ -1736,7 +1730,7 @@ async function offerGovernedSetupChoices() {
   const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || snapshot.targetId || "").trim();
   if (!targetId) return;
   writePendingSessionStart(null);
-  authorityStatus("Checking available equipment capabilities for this target…", "pending");
+  authorityStatus("Checking what SCZN3 can do with your equipment…", "pending");
   try {
     const savedCandidates = savedSetupCandidatesByRecency();
     if (savedCandidates.length) {
@@ -1749,6 +1743,10 @@ async function offerGovernedSetupChoices() {
         })
       });
       latestTargetPreparation = preparation;
+      if (equipmentLibraryExplicitlyOpened) {
+        authorityStatus("", "");
+        return;
+      }
       const governed = preferredGovernedSavedSetup(preparation, savedCandidates);
       if (governed) {
         loadSavedSetup(governed.item.setup.setupId);
@@ -1766,11 +1764,17 @@ async function offerGovernedSetupChoices() {
         setStandardSetupPromptVisible(false);
         setProfileEditorVisible(false);
         setWeaponListExpanded(false);
-        authorityStatus(equipmentAssessmentGuidance(governed.assessment, weaponCardTitle(governed.item.setup)), "ready");
+        authorityStatus(equipmentAssessmentGuidance(governed.assessment, weaponCardTitle(governed.item.setup), governed.item.candidate), "ready");
         return;
       }
     }
-    presentStandardSetup(targetId, await prepareStandardSetup(targetId));
+    const preparation = await prepareStandardSetup(targetId);
+    latestTargetPreparation = preparation;
+    if (equipmentLibraryExplicitlyOpened) {
+      authorityStatus("", "");
+      return;
+    }
+    presentStandardSetup(targetId, preparation);
   } catch (error) {
     latestTargetPreparation = null;
     setStandardSetupPromptVisible(false);
@@ -1851,7 +1855,7 @@ function sessionAuthorityShooterMessage(error, stage = "start") {
     return "The session service is temporarily unavailable. Your selections are preserved. Try again shortly.";
   }
   if (reason === "target_id_not_registered" || reason === "target_not_found" || status === 404) {
-    return "This target is not currently ready to start a governed session. Choose another supported target.";
+    return "This Smart Target is not ready to begin. Choose another available Smart Target.";
   }
   if (reason === "session_authority_response_invalid" || reason === "invalid_response") {
     return "The session service returned an incomplete response. Your selections are preserved. Try again.";
@@ -1870,7 +1874,7 @@ async function goToTarget(options = {}) {
   const snapshot = collectForm();
   const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || "").trim();
   if (!targetId) {
-    authorityStatus("Select a supported target before confirming your weapon.", "error");
+    authorityStatus("Select an available Smart Target before confirming Equipment.", "error");
     return;
   }
   const useStandardSetup = options.useStandardSetup === true;
@@ -1901,7 +1905,7 @@ async function goToTarget(options = {}) {
       });
       const assessment = equipmentAssessmentFor(preparation, candidate);
       if (!preparation.targetAdmission || preparation.targetAdmission.status !== "admitted" || !assessment) {
-        authorityStatus("This Smart Target could not be admitted. Your selections are preserved; try again.", "error");
+        authorityStatus("This Smart Target could not be started. Your selections are preserved. Try again.", "error");
         return;
       }
       pending = {
@@ -1953,6 +1957,7 @@ async function goToTarget(options = {}) {
 }
 
 function selectWeaponFromList(setupId, action = "edit") {
+  equipmentLibraryExplicitlyOpened = false;
   setStandardSetupPromptVisible(false);
   writePendingSessionStart(null);
   loadSavedSetup(setupId);
@@ -2297,6 +2302,7 @@ document.getElementById("saveSetup").addEventListener("click", () => {
 });
 
 document.getElementById("newSetup").addEventListener("click", () => {
+  equipmentLibraryExplicitlyOpened = false;
   setStandardSetupPromptVisible(false);
   setWeaponListExpanded(false);
   setProfileEditorVisible(true);
@@ -2304,6 +2310,7 @@ document.getElementById("newSetup").addEventListener("click", () => {
 });
 document.getElementById("continueStandardSetup").addEventListener("click", () => goToTarget({ useStandardSetup: true }));
 document.getElementById("chooseWeaponSetup").addEventListener("click", () => {
+  equipmentLibraryExplicitlyOpened = false;
   writePendingSessionStart(null);
   setStandardSetupPromptVisible(false);
   setWeaponListExpanded(false);
@@ -2314,6 +2321,7 @@ document.getElementById("savedSetupSelect").addEventListener("change", event => 
 document.getElementById("weaponListToggle").addEventListener("click", () => {
   const isExpanded = document.getElementById("weaponListToggle").getAttribute("aria-expanded") === "true";
   const shouldOpen = !isExpanded;
+  equipmentLibraryExplicitlyOpened = shouldOpen;
   if (shouldOpen) setProfileEditorVisible(false);
   setWeaponListExpanded(shouldOpen);
 });
