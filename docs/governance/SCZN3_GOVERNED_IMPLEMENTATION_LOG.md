@@ -2,6 +2,72 @@
 
 This record tracks implementation items completed under the Founder Controlled Implementation Workflow.
 
+## Item 5 — Universal Presentation Guidance
+
+- Status: Closed
+- Closed: 2026-08-11
+- Founder requirement: Approved
+- Pre-implementation inventory: Approved
+- Founder specification approval: Approved
+- Implementation: Complete
+- Local validation: Passed
+- Founder product review: Approved with presentation refinements
+- Implementation commit: `17c66cd7234df998d60e894b1302ea0b04872fe0`
+- Release correction commit: `cee546a6ff859ee334dad68cf6896f6009ce81c3`
+- Release branch: `codex/final-home-setup-20260805`
+- GitHub remote: `sczn313-stack/v-2-tap-n-score`
+- Push: Confirmed
+- Backend deployment: Not required; no backend files changed
+- Netlify site: `sczn3-tap-n-score`
+- Netlify site ID: `dddf7c77-9e52-4324-82f4-cce20b55ea4e`
+- Netlify deployment ID: `6a7b50ac89ea7d98746d8413`
+- Production URL: `https://tap-n-score.com`
+- Cache-busted release URL: `https://tap-n-score.com/?release=cee546a`
+- Immutable deploy URL: `https://6a7b50ac89ea7d98746d8413--sczn3-tap-n-score.netlify.app`
+- Production verification: Passed at desktop, tablet, and 390px mobile
+- Console verification: No errors or warnings
+- Working tree: Clean after closeout commit and push
+
+### Governed scope
+
+Standardized shooter-facing guidance across current and reopened SECs, Equipment setup, GSSF entry, and shared future adapters. Messages now state what the shooter can do, what SCZN3 will do, and the next action without exposing authority architecture. The Equipment Library respects an explicit shooter expansion across asynchronous setup responses. Universal SEC pills retain their 38px geometry and one-line layout while increasing section-title and primary-result emphasis. GSSF retains the universal `2 · SESSION` heading, and its public entry recovery state no longer falsely describes the operational target as unavailable.
+
+### Production evidence
+
+- Production frontend: HTTP 200 over HTTPS
+- `www` canonical redirect: HTTP 301 to `https://tap-n-score.com/`
+- GSSF public entry: HTTP 200 and resolves to the GSSF Equipment flow
+- Equipment Library: Expands consistently at desktop, tablet, and 390px mobile
+- Shooter guidance: No visible `official mission` or internal authority terminology
+- Ready state: `Ready to shoot. Tap Go To Target.`
+- Universal SESSION heading: Visible with mission result retained inside the pill
+- Universal pill typography: 12px / 950-weight titles; 15px desktop and 13px mobile primary values
+- Universal pill geometry: 38px height and one-line presentation preserved
+- Horizontal overflow: None at desktop, tablet, or 390px mobile
+- Console errors or warnings: None
+
+### Validation evidence
+
+- Presentation guidance contract: Passed
+- Authority: 77/77
+- M4 Authority: 10/10
+- Session Authority: 16/16
+- Python / JavaScript parity: 57/57
+- Integration contract: Passed
+- Zeroing SOP: Passed
+- GSSF Show Results: Passed
+- Universal SEC conformance: Passed
+- SEC / Ballistic Vault architecture contract: Passed
+- Persistence normalization: Passed
+- Smart Target identity: Passed
+- Episode 53 Batch 1 governed contract: Passed
+- Netlify production build: Passed with the GSSF public entry included
+- Founder browser verification: Passed at desktop, tablet, and 390px mobile
+
+### Governance boundary
+
+Item 5 changed presentation, recovery wording, responsive picker interaction, and shared pill typography only. Backend authority, eligibility, capabilities, calculations, scoring, APIs, session creation, evidence truth, persistence, mission identity, and compatibility decisions were not changed. No Item 6 or flagship-target implementation was started during Item 5 implementation, release, verification, or closure.
+
 ## Item 4 — Universal SEC Information Architecture
 
 - Status: Closed
