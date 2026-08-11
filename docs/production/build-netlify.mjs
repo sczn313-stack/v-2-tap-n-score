@@ -13,6 +13,7 @@ const publicFiles = [
   "shoot.html",
   "sec.html",
   "records.html",
+  "t/gssf/ac1/index.html",
   "app_state.js",
   "smart_target_identity.js",
   "m4_sec_config.js",

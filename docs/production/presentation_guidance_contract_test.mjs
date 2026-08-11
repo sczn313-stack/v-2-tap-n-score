@@ -95,6 +95,7 @@ const sec = await readFile(new URL("../sec.html", import.meta.url), "utf8");
 const records = await readFile(new URL("../records.html", import.meta.url), "utf8");
 const secStyles = await readFile(new URL("../m4-sec.css", import.meta.url), "utf8");
 const gssfEntry = await readFile(new URL("../t/gssf/ac1/index.html", import.meta.url), "utf8");
+const netlifyBuild = await readFile(new URL("./build-netlify.mjs", import.meta.url), "utf8");
 const m4Adapter = await readFile(new URL("../m4_smart_target_sec.js", import.meta.url), "utf8");
 const practiceAdapter = await readFile(new URL("../universal_practice_sec.js", import.meta.url), "utf8");
 
@@ -105,6 +106,7 @@ assert.match(records, /Your confirmation group is saved\.[\s\S]*?SCZN3 cannot co
 assert.match(gssfEntry, /SCZN3Presentation\.targetEntryGuidance\("GSSF AC-1"\)/);
 assert.match(gssfEntry, /presentation_labels\.js\?v=universal-guidance-3/);
 assert.doesNotMatch(gssfEntry, /GSSF AC-1 is not available/);
+assert.match(netlifyBuild, /"t\/gssf\/ac1\/index\.html"/);
 assert.match(records, /universalSecStageHtml\("session", "Session", sessionDetails, scoreDisplay\)/);
 assert.match(secStyles, /\.sec-universal-stage-heading:not\(\.sec-stage-pill\) h2/);
 assert.match(secStyles, /\.sec-stage-pill h2\{[^}]*font-size:12px[^}]*font-weight:950[^}]*white-space:nowrap/);
