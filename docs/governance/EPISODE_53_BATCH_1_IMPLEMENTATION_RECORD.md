@@ -1,6 +1,6 @@
 # Episode 53 — Batch 1 Implementation Record
 
-Status: Founder Status Review and Founder Render Review approved; released for the governed commit, push, deploy, verification, and archive sequence.
+Status: Archived and locked. The governed release, production verification, Item 1–3 closure, checkpoint, and restore-point sequence is complete.
 
 ## Accounting baseline
 
@@ -35,7 +35,7 @@ No value was inferred or synthesized.
 
 ## Acceptance boundary
 
-Founder Render Approval was granted on 2026-08-07. Production designation remains contingent on successful deployment verification. Batch 2 remains outside this authorization.
+Founder Render Approval was granted on 2026-08-07. Production verification passed. The final Episode 53 closure is preserved in [`SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10`](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md). Batch 2 and Publisher OS remain outside this authorization.
 
 ## Founder Render Review
 

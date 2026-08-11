@@ -19,6 +19,7 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 27 | Target Authority Phase 1 Architecture Lock | 2026-07-14 | [M-007](../milestones/README.md#m-007--target-authority-phase-1) | Architecture Locked; Implementation Pending |
 | Needs Review | Universal SEC Architecture Baseline | 2026-07-14 | [M-008](../milestones/README.md#m-008--universal-sec-architecture) | Architecture Baseline |
 | Episode 30 | Composable Target Authority | 2026-07-14 | [M-009](../milestones/README.md#m-009--composable-target-authority) | Architecture Locked |
+| Episode 53 | Governed Implementation and Equipment Compatibility Authority | 2026-08-10 | [Checkpoint](../../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md) | Locked |
 
 ## Episode records
 
@@ -277,6 +278,34 @@ Composable Target Authority.
 **Related commits:** `Lock Episode 30 — Adopt Composable Target Authority` documentation checkpoint
 
 **Status:** Architecture Locked
+
+### Governed Implementation and Equipment Compatibility Authority
+
+**Episode number:** Episode 53
+
+**Title:** Governed Implementation and Equipment Compatibility Authority
+
+**Date:** 2026-08-10
+
+**Summary:** SCZN3 proved the Founder Controlled Implementation Workflow through three fully closed implementation items and locked a compatibility architecture that separates Smart Target admission, official-mission eligibility, and capability availability.
+
+**Problem:** Overlapping implementation, unapproved refinements, and equipment ownership gates could create rework or prevent shooters from using admitted Smart Targets before truth required a restriction.
+
+**Discovery:** Implementation requires a closed, auditable lifecycle. Compatibility decisions also require separate authoritative owners: a shooter may be admitted to a registered target while an official mission claim remains unavailable and independently supported capabilities continue.
+
+**Governance decisions:** No implementation begins before Founder specification approval. No implementation item remains open when another begins. Every change earns authorization. Presentation may guide but may not alter authority. `ineligible` requires registered restriction provenance; otherwise the official-mission result is `authority_unavailable`.
+
+**Outcome:** Items 1–3 closed through production verification. Equipment Compatibility Authority became locked architecture. Production remained stable, the repository synchronized, and open implementation items returned to zero.
+
+**Related checkpoint:** [Episode 53 — Governed Implementation Closure](../../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md)
+
+**Related governance:** [Founder Controlled Implementation Workflow](../../governance/SCZN3_FOUNDER_CONTROLLED_IMPLEMENTATION_WORKFLOW.md)
+
+**Related architecture:** [Equipment Compatibility Authority](../../architecture/EQUIPMENT_COMPATIBILITY_AUTHORITY.md)
+
+**Related commits:** `abb6ba3`, `9a90be3`, `22e0fa9`, `d60d2f8`, `5d58ccd`
+
+**Status:** Locked
 
 ## Episode entry template
 

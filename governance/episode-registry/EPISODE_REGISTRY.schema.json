@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tap-n-score.com/governance/episode-registry.schema.json",
+  "title": "SCZN3 Authoritative Episode Registry",
+  "type": "object",
+  "required": ["schemaVersion", "registryId", "authority", "status", "governance", "episodes"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"type": "string", "const": "1.0.0"},
+    "registryId": {"type": "string", "const": "SCZN3_EPISODE_REGISTRY"},
+    "authority": {"type": "string", "const": "single-authoritative-owner"},
+    "status": {"type": "string", "const": "authoritative"},
+    "effectiveDate": {"type": "string", "format": "date"},
+    "governance": {
+      "type": "object",
+      "required": ["rule", "lastClosedEpisode", "activeEpisode", "nextEpisodeNumber", "governanceEffectiveAfterEpisode"],
+      "additionalProperties": false,
+      "properties": {
+        "rule": {"type": "string", "const": "No episode may be created until the previous episode has been authoritatively closed."},
+        "lastClosedEpisode": {"type": "integer", "minimum": 1},
+        "activeEpisode": {"type": ["integer", "null"], "minimum": 1},
+        "nextEpisodeNumber": {"type": "integer", "minimum": 2},
+        "governanceEffectiveAfterEpisode": {"type": "integer", "minimum": 1}
+      }
+    },
+    "historicalCandidateMilestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["milestone", "title", "date", "episodeNumber"],
+        "additionalProperties": false,
+        "properties": {
+          "milestone": {"type": "string"},
+          "title": {"type": "string"},
+          "date": {"type": "string"},
+          "episodeNumber": {"type": "null"}
+        }
+      }
+    },
+    "episodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["episodeNumber", "title", "status", "date", "checkpoint", "zip", "commits", "productionRelease", "archiveLocation", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "episodeNumber": {"type": "integer", "minimum": 1},
+          "title": {"type": ["string", "null"]},
+          "status": {
+            "type": "string",
+            "enum": [
+              "historical-unresolved",
+              "architecture-locked",
+              "closed",
+              "locked",
+              "story-locked",
+              "documentation-closed",
+              "founder-review-draft",
+              "founder-review",
+              "documentation-complete-founder-review",
+              "founder-review-prototype",
+              "founder-approved-planning",
+              "active"
+            ]
+          },
+          "date": {"type": ["string", "null"]},
+          "checkpoint": {"type": ["string", "null"]},
+          "zip": {"type": ["string", "null"]},
+          "commits": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "productionRelease": {"type": ["object", "null"]},
+          "archiveLocation": {"type": ["string", "null"]},
+          "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "legacyAliases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "relatedArtifacts": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}

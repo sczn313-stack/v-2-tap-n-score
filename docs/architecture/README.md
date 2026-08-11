@@ -7,8 +7,9 @@ This index is the front door to SCZN3 architecture. Read the documents in order 
 1. [Smart Target Catalog](./SMART_TARGET_CATALOG.md)
 2. [Mission Family Routing governance](../history/milestones/README.md#m-003--mission-family-routing)
 3. [SCZN3 Target Authority — Phase 1](./SCZN3_Target_Authority_Phase1.md), together with the existing [Backend Authority](../history/milestones/README.md#m-002--backend-authority) and zeroing-isolation boundary
-4. [SCZN3 Universal Shooter Experience Card Architecture](./SCZN3_Universal_SEC_Architecture.md)
-5. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
+4. [Equipment Compatibility Authority](./EQUIPMENT_COMPATIBILITY_AUTHORITY.md)
+5. [SCZN3 Universal Shooter Experience Card Architecture](./SCZN3_Universal_SEC_Architecture.md)
+6. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
 
 ### Adopted architecture decision
 
@@ -34,6 +35,10 @@ Phase 1 owns the locked contract for Authoritative Target Profiles, Registration
 ### Zeroing Authority — Active
 
 Zeroing Authority is the existing independent backend pipeline selected by `missionFamily == zeroingCorrection` and represented by `zeroCorrectionResult`. It owns zeroing geometry, group and point-of-impact calculations, correction vectors, clicks, and shooter guidance. Target Authority documents may define isolation and interoperability boundaries, but they do not redefine zeroing calculations or contracts.
+
+### [Equipment Compatibility Authority](./EQUIPMENT_COMPATIBILITY_AUTHORITY.md) — Locked
+
+Equipment Compatibility Authority separates Target Admission, Official Mission Eligibility, and Capability Availability. Registered active Smart Targets remain admissible independently of equipment ownership. Official mission claims require registered provenance, while evidence, measurement, correction, and score capabilities remain independently governed. The backend owns the truth; the frontend translates it into shooter guidance.
 
 ### [SCZN3 Universal SEC Architecture](./SCZN3_Universal_SEC_Architecture.md) — Active
 
@@ -80,3 +85,4 @@ No core document in this reading order is currently Draft. USPSA/IPSC and IBS ex
 - Backend and Zeroing Authority: [episode](../history/episodes/README.md#backend-authority) · [milestone M-002](../history/milestones/README.md#m-002--backend-authority)
 - Target Authority Phase 1: [Episode 27](../history/episodes/README.md#target-authority-phase-1-architecture-lock) · [milestone M-007](../history/milestones/README.md#m-007--target-authority-phase-1)
 - Universal SEC Architecture: [episode](../history/episodes/README.md#universal-sec-architecture-baseline) · [milestone M-008](../history/milestones/README.md#m-008--universal-sec-architecture)
+- Equipment Compatibility Authority: [Episode 53](../history/episodes/README.md#governed-implementation-and-equipment-compatibility-authority) · [checkpoint](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md)

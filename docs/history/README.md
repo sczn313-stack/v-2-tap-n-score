@@ -6,6 +6,13 @@ This directory is the living historical record for SCZN3. It separates the story
 
 - [Episode Index](./episodes/README.md) — the narrative history of SCZN3
 - [Milestone Index](./milestones/README.md) — major engineering and governance checkpoints
+- [Episode Registry](../../governance/episode-registry/EPISODE_REGISTRY.json) — the single authoritative owner of episode identity
+- [Governance Index](../governance/README.md) — active implementation and presentation governance
+
+## Current locked archive
+
+- [Episode 53 — Governed Implementation Closure](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md)
+- [Episode 53 Restore Point](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/RESTORE_POINT.md)
 
 ## Evidence policy
 
