@@ -1,0 +1,178 @@
+:root{
+  --sl-black:#06070a;
+  --sl-panel:#101116;
+  --sl-panel-soft:#171920;
+  --sl-gold:#d7aa2f;
+  --sl-gold-bright:#f4c64f;
+  --sl-white:#f7f4ec;
+  --sl-muted:#bcb8ad;
+}
+
+*{box-sizing:border-box}
+
+html,body{margin:0;min-height:100%;background:var(--sl-black);color:var(--sl-white)}
+
+.sl-target-page{font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
+
+.sl-app-header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  min-height:58px;
+  padding:7px max(14px,env(safe-area-inset-right)) 7px max(14px,env(safe-area-inset-left));
+  border-bottom:1px solid rgba(215,170,47,.42);
+  background:rgba(6,7,10,.96);
+  backdrop-filter:blur(14px);
+}
+
+.sl-app-header .vendor-slot{display:flex;align-items:center;gap:10px}
+.sl-app-header .vendor-slot img{width:38px;height:38px;object-fit:contain}
+.sl-app-header .vendor-name{color:var(--sl-white);font-size:17px;font-weight:900;text-decoration:none}
+
+.sl-app-header .mobile-platform-menu{position:relative;top:auto;right:auto;margin-left:auto;transform:none}
+.sl-app-header .mobile-platform-menu summary{
+  display:grid;
+  place-content:center;
+  gap:5px;
+  width:44px;
+  height:44px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.34);
+  border-radius:10px;
+  background:#101010;
+  cursor:pointer;
+  list-style:none;
+}
+.sl-app-header .mobile-platform-menu summary::-webkit-details-marker{display:none}
+.sl-app-header .mobile-platform-menu summary span{display:block;width:20px;height:2px;border-radius:99px;background:var(--sl-white)}
+.sl-app-header .mobile-platform-menu>a{
+  position:absolute;
+  z-index:2;
+  right:0;
+  display:block;
+  min-width:190px;
+  padding:13px 16px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+  color:var(--sl-white);
+  font-weight:800;
+  text-decoration:none;
+}
+.sl-app-header .mobile-platform-menu>a:nth-of-type(1){top:49px}
+.sl-app-header .mobile-platform-menu>a:nth-of-type(2){top:93px}
+.sl-app-header .mobile-platform-menu>a:nth-of-type(3){top:137px}
+.sl-app-header .mobile-platform-menu[open]{
+  position:relative;
+}
+.sl-app-header .mobile-platform-menu[open]::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:48px;
+  right:0;
+  width:190px;
+  height:132px;
+  border:1px solid rgba(215,170,47,.45);
+  border-radius:12px;
+  background:#0d0e12;
+  box-shadow:0 18px 42px rgba(0,0,0,.48);
+}
+
+.sl-page-shell{width:min(100% - 28px,860px);margin:0 auto;padding:30px 0 64px}
+
+.sl-target-introduction{text-align:center;margin-bottom:20px}
+.sl-printer{margin:0 0 7px;color:var(--sl-gold-bright);font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.sl-target-introduction h1{margin:0;font-size:clamp(28px,5vw,44px);line-height:1.05}
+.sl-instruction{margin:12px 0 0;color:var(--sl-white);font-size:clamp(17px,2.4vw,21px);font-weight:800}
+
+.sl-load-card,.sl-workspace,.sl-results{
+  border:1px solid rgba(215,170,47,.42);
+  border-radius:18px;
+  background:linear-gradient(145deg,var(--sl-panel),var(--sl-panel-soft));
+  box-shadow:0 18px 50px rgba(0,0,0,.3);
+}
+
+.sl-load-card{padding:24px;text-align:center}
+.sl-load-card h2{margin:0 0 18px;font-size:21px;text-transform:uppercase}
+.sl-load-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;margin:0 auto}
+.sl-load-actions .button,.sl-control-grid .button{display:flex;align-items:center;justify-content:center;margin:0;cursor:pointer;text-decoration:none}
+
+.sl-workspace{padding:16px}
+.sl-image-frame{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  background:#e9e7e1;
+  touch-action:manipulation;
+}
+.sl-image-frame img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.sl-impact-layer,.sl-tap-surface{position:absolute;inset:0}
+.sl-impact-layer{z-index:2;pointer-events:none}
+.sl-tap-surface{z-index:3;width:100%;height:100%;padding:0;border:0;background:transparent!important;box-shadow:none!important;cursor:crosshair}
+.sl-impact-marker{
+  position:absolute;
+  width:20px;
+  height:20px;
+  border:3px solid var(--sl-gold-bright);
+  border-radius:50%;
+  background:rgba(6,7,10,.62);
+  box-shadow:0 0 0 2px rgba(0,0,0,.75),0 0 14px rgba(244,198,79,.55);
+  transform:translate(-50%,-50%);
+}
+
+.sl-workspace-status{display:grid;gap:5px;padding:16px 2px 12px}
+.sl-workspace-status strong{font-size:19px;color:var(--sl-gold-bright)}
+.sl-workspace-status span{color:var(--sl-white);font-size:15px;line-height:1.4}
+
+.sl-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sl-control-grid .sl-show-results{grid-column:1/-1}
+.sl-control-grid .button:disabled{cursor:not-allowed;opacity:.42}
+
+.sl-results{margin-top:16px;padding:22px}
+.sl-results-label{margin:0 0 5px;color:var(--sl-gold-bright);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.sl-results h2{margin:0 0 12px;font-size:24px}
+.sl-results strong{display:block;margin-bottom:8px;font-size:clamp(24px,4vw,34px);color:var(--sl-gold-bright)}
+.sl-results p{margin:0;color:var(--sl-muted);line-height:1.5}
+
+.sl-confirm-dialog{
+  position:fixed;
+  z-index:300;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(0,0,0,.78);
+}
+.sl-confirm-dialog[hidden]{display:none}
+.sl-confirm-card{
+  width:min(100%,430px);
+  padding:24px;
+  border:1px solid var(--sl-gold);
+  border-radius:16px;
+  background:#101116;
+  box-shadow:0 24px 70px rgba(0,0,0,.65);
+}
+.sl-confirm-card h2{margin:0 0 10px;font-size:22px}
+.sl-confirm-card p{margin:0;color:var(--sl-white);line-height:1.5}
+.sl-confirm-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+
+@media (max-width:520px){
+  .sl-page-shell{width:min(100% - 20px,860px);padding-top:22px}
+  .sl-load-card,.sl-workspace,.sl-results{border-radius:14px}
+  .sl-load-card{padding:18px 14px}
+  .sl-load-actions{grid-template-columns:1fr}
+  .sl-workspace{padding:10px}
+  .sl-control-grid{gap:8px}
+  .sl-control-grid .button{padding-inline:8px;font-size:11px}
+  .sl-impact-marker{width:18px;height:18px}
+  .sl-confirm-actions{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070a" />
+  <meta name="sczn3-baker-sl-st1-endpoint" content="https://sczn3-authority.onrender.com/api/target/baker-sl-st1/analyze" />
+  <title>Silhouette Target (USPSA) · Tap-n-Score</title>
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="../../../universal-ui.css" />
+  <link rel="stylesheet" href="target-page.css" />
+  <script src="../../../navigation.js" defer></script>
+  <script src="target-page.js" defer></script>
+</head>
+<body class="platform-page target-page sl-target-page">
+  <header class="m4-header universal-app-header sl-app-header">
+    <div class="vendor-slot">
+      <img src="../../../assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
+      <div class="brand-lockup">
+        <a class="vendor-name" href="../../../index.html">Tap-n-Score™</a>
+      </div>
+    </div>
+    <details class="mobile-platform-menu universal-header-menu">
+      <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+      <a href="../../../index.html">Home</a>
+      <a href="../../../matrix.html">Equipment Library</a>
+      <a href="../../../records.html" data-preserve-active-session>History</a>
+    </details>
+  </header>
+
+  <main class="sl-page-shell">
+    <section class="sl-target-introduction" aria-labelledby="targetName">
+      <p class="sl-printer">Baker Targets</p>
+      <h1 id="targetName">Silhouette Target (USPSA)</h1>
+      <p class="sl-instruction" id="targetInstruction" aria-live="polite">Load your target photo to begin.</p>
+    </section>
+
+    <section class="sl-load-card" id="loadCard" aria-label="Load target photo">
+      <h2>Load Target</h2>
+      <div class="sl-load-actions">
+        <label class="button primary" for="cameraInput">Take Photo</label>
+        <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden />
+        <label class="button" for="libraryInput">Choose Photo</label>
+        <input id="libraryInput" type="file" accept="image/*" hidden />
+      </div>
+    </section>
+
+    <section class="sl-workspace" id="targetWorkspace" aria-label="Target evidence workspace" hidden>
+      <div class="sl-image-frame" id="imageFrame">
+        <img id="targetImage" alt="Loaded Baker silhouette target" />
+        <div class="sl-impact-layer" id="impactLayer" aria-hidden="true"></div>
+        <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Tap every visible bullet hole"></button>
+      </div>
+
+      <div class="sl-workspace-status">
+        <strong id="impactCount">0 impacts recorded.</strong>
+        <span id="workspaceFeedback" role="status" aria-live="polite">Target ready. Tap every bullet hole you can see.</span>
+      </div>
+
+      <div class="sl-control-grid" aria-label="Target evidence controls">
+        <label class="button" for="retakeInput">Retake Photo</label>
+        <input id="retakeInput" type="file" accept="image/*" capture="environment" hidden />
+        <label class="button" for="replaceInput">Choose Another</label>
+        <input id="replaceInput" type="file" accept="image/*" hidden />
+        <button class="button" id="undoImpact" type="button" disabled>Undo Last Mark</button>
+        <button class="button" id="clearImpacts" type="button" disabled>Clear Impacts</button>
+        <button class="button primary sl-show-results" id="showResults" type="button" disabled>Show Results</button>
+      </div>
+    </section>
+
+    <section class="sl-results" id="supportedResults" aria-labelledby="resultsTitle" hidden>
+      <p class="sl-results-label">Results</p>
+      <h2 id="resultsTitle">Your impacts are ready to review.</h2>
+      <strong id="resultImpactCount">0 impacts recorded.</strong>
+      <p>Review the marked target above.</p>
+    </section>
+  </main>
+
+  <div class="sl-confirm-dialog" id="confirmationDialog" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" aria-describedby="confirmationMessage" hidden>
+    <section class="sl-confirm-card">
+      <h2 id="confirmationTitle">Confirm Action</h2>
+      <p id="confirmationMessage"></p>
+      <div class="sl-confirm-actions">
+        <button class="button" id="confirmationCancel" type="button">Keep Current</button>
+        <button class="button primary" id="confirmationAccept" type="button">Continue</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

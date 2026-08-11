@@ -6,6 +6,7 @@ import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
+from baker_sl_st1_target_page import BakerSLST1EvidenceError, analyze_baker_sl_st1_evidence
 from m4_authority.authority_service import build_authority_package as build_m4_authority_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
@@ -24,7 +25,9 @@ DEFAULT_ALLOWED_ORIGINS = (
     "https://BakerTargets.com,"
     "https://www.BakerTargets.com,"
     "http://127.0.0.1:8101,"
-    "http://localhost:8101"
+    "http://localhost:8101,"
+    "http://127.0.0.1:8096,"
+    "http://localhost:8096"
 )
 ALLOWED_ORIGINS = {
     origin.strip()
@@ -53,6 +56,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     PRODUCT_ROUTE_PATHS = {"/api/catalog/product-route", "/api/catalog/product-route/"}
     SESSION_PREPARE_PATHS = {"/api/session/prepare", "/api/session/prepare/"}
     SESSION_START_PATHS = {"/api/session/start", "/api/session/start/"}
+    BAKER_SL_ST1_ANALYZE_PATHS = {"/api/target/baker-sl-st1/analyze", "/api/target/baker-sl-st1/analyze/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -91,7 +95,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         if path in self.M4_AUTHORITY_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
-        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS:
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -121,6 +125,17 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.BAKER_SL_ST1_ANALYZE_PATHS:
+            try:
+                self._send_json(200, analyze_baker_sl_st1_evidence(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except BakerSLST1EvidenceError as exc:
+                status = 503 if exc.payload["status"] == "configuration_error" else 400
+                self._send_json(status, exc.payload)
+            except Exception:  # pragma: no cover - defensive evidence boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "evidence_analysis_failed"})
+            return
         if path in self.SESSION_PREPARE_PATHS:
             try:
                 self._send_json(200, prepare_session(self._read_json_body(), runtime_store()))
