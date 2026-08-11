@@ -2,6 +2,71 @@
 
 This record tracks implementation items completed under the Founder Controlled Implementation Workflow.
 
+## Item 4 — Universal SEC Information Architecture
+
+- Status: Closed
+- Closed: 2026-08-11
+- Founder requirement: Approved
+- Pre-implementation inventory: Approved
+- Founder specification approval: Approved with universal-family refinement
+- Implementation: Complete
+- Local validation: Passed
+- Founder product review: Approved
+- Release commit: `9665505698a512dbf0e5119c68f547608f6f4607`
+- Release branch: `codex/final-home-setup-20260805`
+- GitHub remote: `sczn313-stack/v-2-tap-n-score`
+- Push: Confirmed
+- Backend deployment: Not required; no backend files changed
+- Netlify site: `sczn3-tap-n-score`
+- Netlify site ID: `dddf7c77-9e52-4324-82f4-cce20b55ea4e`
+- Netlify deployment ID: `6a7b17ee1fa93508b182630b`
+- Production URL: `https://tap-n-score.com`
+- Cache-busted release URL: `https://tap-n-score.com/?release=9665505`
+- Immutable deploy URL: `https://6a7b17ee1fa93508b182630b--sczn3-tap-n-score.netlify.app`
+- Production verification: Passed at desktop and 390px
+- Console verification: No errors or warnings
+- Working tree: Clean after closeout commit and push
+
+### Governed scope
+
+Established one universal SEC information architecture across live and saved/reopened M4, 100 Yard, GSSF, and shared SEC presentations. The numbered structure is TARGET, SESSION, and—only for correction missions—SIGHT CORRECTION. Score remains visible on the SESSION surface; Session Details own Firearm, Equipment, Ammunition, Distance, Date, Time, and Shooter without repeating Target identity. Analysis retains shooter-useful Group Size and Aim vs. Bull information without POIB X/Y. The Shooter Action Bar remains below the numbered sections and is unnumbered. Sight correction communicates the governed correction and confirmation story once.
+
+### Production evidence
+
+- Production SEC: HTTP 200 over HTTPS
+- Immutable Netlify deploy: HTTP 200 over HTTPS
+- `www` canonical redirect: HTTP 301 to `https://tap-n-score.com/`
+- Live M4 SEC: TARGET opens initially; SESSION and SIGHT CORRECTION obey one-open-at-a-time behavior
+- Live M4 SESSION: Score always visible; Session Details contain Firearm, Equipment, Ammunition, Distance, Date, Time, and Shooter; no repeated Target field
+- Live M4 SIGHT CORRECTION: One governed elevation/windage correction presentation with integrated confirmation guidance
+- Save workflow: SEC preserved successfully
+- Ballistic Vault: Saved session rendered and reopened successfully
+- Reopened M4 SEC: TARGET, SESSION, SIGHT CORRECTION, and unnumbered Shooter Action Bar verified
+- Reopened 100 Yard SEC: TARGET, SESSION, SIGHT CORRECTION, and unnumbered Shooter Action Bar verified
+- Reopened GSSF SEC: TARGET, SESSION, and unnumbered Shooter Action Bar verified; no inapplicable SIGHT CORRECTION section
+- Horizontal overflow: None at desktop or 390px
+- Console errors or warnings: None
+
+### Validation evidence
+
+- Authority: 77/77
+- M4 Authority: 10/10
+- Session Authority: 16/16
+- Python / JavaScript parity: 57/57
+- Integration contract: Passed
+- Zeroing SOP: Passed
+- GSSF Show Results: Passed
+- Universal SEC conformance: Passed
+- SEC / Ballistic Vault architecture contract: Passed
+- Persistence normalization: Passed
+- Smart Target identity: Passed
+- Netlify production build: Passed
+- Founder browser verification: Passed at desktop and 390px
+
+### Governance boundary
+
+Item 4 changed presentation and information architecture only. Backend authority, eligibility, capability determination, calculations, APIs, compatibility, session logic, evidence truth, and mission identity were not changed. No Item 5, Baker lettering, or Publisher OS implementation was started during Item 4 implementation, release, verification, or closure.
+
 ## Item 3 — Equipment Compatibility Authority
 
 - Status: Closed
