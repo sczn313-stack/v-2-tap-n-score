@@ -13,8 +13,12 @@ const [sec, records, appState, navigation, secCss, vaultCss, futureAuthority] = 
 
 // Current SEC: TARGET first, every stage in one true accordion.
 assert.match(sec, /<span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong>/);
-assert.match(sec, /data-sec-stage="evidence" open/);
-assert.equal((sec.match(/class="[^"]*sec-accordion-stage/g) || []).length, 6);
+assert.match(sec, /data-sec-stage="target" open/);
+assert.equal((sec.match(/class="[^"]*sec-accordion-stage/g) || []).length, 3);
+assert.match(sec, /<h2>Session<\/h2>/);
+assert.match(sec, /<h2>Sight Correction<\/h2>/);
+assert.match(sec, /class="sec-session-score" id="secSessionScore"/);
+assert.match(sec, /aria-label="Shooter Action Bar"/);
 assert.match(sec, /if \(otherStage !== stage\) otherStage\.open = false/);
 assert.doesNotMatch(sec, /Before and After/);
 

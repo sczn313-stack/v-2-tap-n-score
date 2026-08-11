@@ -44,7 +44,7 @@
 
   <article id="secCard" class="sec-experience is-hidden">
     <section class="sec-target-story" aria-label="Initial and confirmation target story">
-      <details class="sec-universal-stage sec-universal-stage-evidence sec-accordion-stage" data-sec-stage="evidence" open>
+      <details class="sec-universal-stage sec-universal-stage-target sec-accordion-stage" data-sec-stage="target" open>
         <summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · TARGET</span><strong id="secSessionIdentifier"></strong></summary>
         <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
           <figure>
@@ -63,53 +63,40 @@
         </div>
       </details>
 
-      <details class="sec-universal-stage sec-universal-stage-measurement sec-collapsible-stage sec-accordion-stage" data-sec-stage="measurement">
-        <summary class="sec-universal-stage-heading sec-stage-pill"><span>2</span><h2>Group Analysis</h2><b aria-hidden="true"></b></summary>
+      <details class="sec-universal-stage sec-universal-stage-session sec-collapsible-stage sec-accordion-stage" data-sec-stage="session">
+        <summary class="sec-universal-stage-heading sec-stage-pill sec-session-pill"><span>2</span><h2>Session</h2><strong class="sec-session-score" id="secSessionScore">Score --</strong><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body">
-          <div class="sec-metric-grid" id="summaryMeasurementGrid"></div>
-          <details class="correction-context-drawer sec-correction-context sec-measurement-session-details">
-            <summary>Session Details</summary>
-            <div class="correction-context-panel sec-session-record">
-              <div class="sec-session-record-fields">
-                <div class="sec-session-target"><span>Target</span><strong id="secSessionTarget"></strong></div>
-                <div><span>Distance</span><strong id="secSessionDistance"></strong></div>
-                <div><span>Firearm</span><strong id="secSessionFirearm"></strong></div>
-                <div><span>Ammo</span><strong id="secSessionAmmo"></strong></div>
-                <div><span>Date</span><strong id="secSessionDate"></strong></div>
-                <div><span>Time</span><strong id="secSessionTime"></strong></div>
-                <div><span>Shooter</span><strong id="secSessionShooter"></strong></div>
-              </div>
+          <section class="sec-session-section" aria-labelledby="secSessionDetailsHeading">
+            <h3 id="secSessionDetailsHeading">Session Details</h3>
+            <div class="sec-session-record-fields">
+              <div><span>Firearm</span><strong id="secSessionFirearm"></strong></div>
+              <div><span>Equipment</span><strong id="secSessionEquipment"></strong></div>
+              <div><span>Ammunition</span><strong id="secSessionAmmo"></strong></div>
+              <div><span>Distance</span><strong id="secSessionDistance"></strong></div>
+              <div><span>Date</span><strong id="secSessionDate"></strong></div>
+              <div><span>Time</span><strong id="secSessionTime"></strong></div>
+              <div><span>Shooter</span><strong id="secSessionShooter"></strong></div>
             </div>
+          </section>
+          <details class="correction-context-drawer sec-correction-context sec-measurement-session-details">
+            <summary>Analysis</summary>
+            <div class="correction-context-panel sec-session-record"><div class="sec-metric-grid" id="summaryMeasurementGrid"></div></div>
           </details>
         </div>
       </details>
 
-      <details class="sec-universal-stage sec-universal-stage-recommendation sec-collapsible-stage sec-accordion-stage" data-sec-stage="recommendation">
-        <summary class="sec-universal-stage-heading sec-stage-pill"><span>3</span><h2>Measurements</h2><b aria-hidden="true"></b></summary>
-        <div class="sec-stage-body"><div class="sec-metric-grid" id="summaryAngularGrid"></div></div>
-      </details>
-
-      <details class="sec-universal-stage sec-universal-stage-execution sec-collapsible-stage sec-accordion-stage" data-sec-stage="execution">
-        <summary class="sec-universal-stage-heading sec-stage-pill"><span>4</span><h2>Zero Correction</h2><b aria-hidden="true"></b></summary>
-        <div class="sec-stage-body"><div class="sec-correction-call" id="summaryRecommendationCall"></div></div>
-      </details>
-
-      <details class="sec-universal-stage sec-universal-stage-validation sec-collapsible-stage sec-accordion-stage" data-sec-stage="validation">
-        <summary class="sec-universal-stage-heading sec-stage-pill"><span>5</span><h2>Mechanical Adjustment</h2><b aria-hidden="true"></b></summary>
-        <div class="sec-stage-body"><div class="sec-execution" id="summaryExecutionInstructions"></div></div>
-      </details>
-
-      <details class="sec-universal-stage sec-universal-stage-preservation sec-collapsible-stage sec-accordion-stage" data-sec-stage="preservation">
-        <summary class="sec-universal-stage-heading sec-stage-pill"><span>6</span><h2>Confirmation</h2><b aria-hidden="true"></b></summary>
+      <details class="sec-universal-stage sec-universal-stage-correction sec-collapsible-stage sec-accordion-stage" data-sec-stage="sight-correction">
+        <summary class="sec-universal-stage-heading sec-stage-pill"><span>3</span><h2>Sight Correction</h2><b aria-hidden="true"></b></summary>
         <div class="sec-stage-body">
-          <div class="sec-validation-calculation" id="summaryValidationOutcome"></div>
-          <div class="sec-story-command-bar" aria-label="Shooter Experience Card actions">
-            <div class="sec-preservation-actions"><button class="button primary" type="button" id="saveSEC">Save SEC</button><button class="button" type="button" id="shareSEC">Share</button><button class="button" type="button" id="exportSEC">Export / Print PDF</button><button class="button" type="button" id="addNote">Add Note</button><a class="button" href="records.html">View History</a></div>
-            <div class="sec-note-editor is-hidden" id="noteEditor"><label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label><button class="button" type="button" id="saveNote">Save Note</button></div>
-            <div class="sec-preserved-history-row is-hidden"></div><span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
-          </div>
+          <div id="summarySightCorrection"></div>
+          <section class="sec-confirmation-summary" aria-labelledby="secConfirmationHeading"><h3 id="secConfirmationHeading">How to Confirm</h3><div class="sec-validation-calculation" id="summaryValidationOutcome"></div></section>
         </div>
       </details>
+      <div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar">
+        <div class="sec-preservation-actions"><button class="button primary" type="button" id="saveSEC">Save SEC</button><button class="button" type="button" id="shareSEC">Share</button><button class="button" type="button" id="exportSEC">Export / Print PDF</button><button class="button" type="button" id="addNote">Add Note</button><a class="button" href="records.html">View History</a></div>
+        <div class="sec-note-editor is-hidden" id="noteEditor"><label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label><button class="button" type="button" id="saveNote">Save Note</button></div>
+        <div class="sec-preserved-history-row is-hidden"></div><span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
+      </div>
     </section>
 
   </article>
@@ -402,7 +389,6 @@ function renderSEC() {
   const score = authority.score || {};
   const group = authority.group || {};
   const evidenceCard = SCZN3SEC.EvidenceCard(authority);
-  const recommendationCard = SCZN3SEC.RecommendationCard(authority);
   const savedContext = session.correctionContextSnapshot || {};
 
   document.getElementById("secSessionIdentifier").textContent = session.sessionLabel || "Session";
@@ -410,33 +396,28 @@ function renderSEC() {
   document.getElementById("beforeEvidenceImage").src =
     initialEvidence.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
   setEvidencePlaneAspect(document.getElementById("beforeEvidencePlane"), initialEvidence, 2550, 3300);
-  const measurementHtml = SCZN3SEC.GroupAnalysisCard(authority);
-  const executionHtml = SCZN3SEC.ExecutionCard(authority);
+  const measurementHtml = SCZN3SEC.ShooterAnalysisCard(authority);
   document.getElementById("summaryMeasurementGrid").innerHTML = measurementHtml;
-  document.getElementById("summaryRecommendationCall").innerHTML = recommendationCard.call;
-  document.getElementById("summaryAngularGrid").innerHTML = recommendationCard.angular;
-  document.getElementById("summaryExecutionInstructions").innerHTML = executionHtml;
+  document.getElementById("summarySightCorrection").innerHTML = SCZN3SEC.SightCorrectionCard(authority);
   const distanceValue = savedContext.distanceValue || session.targetDistanceValue || 25;
   const distanceLabel = savedContext.distanceUnit === "YDS" ? "yards" : "meters";
   const sessionTimestamp = new Date(session.preservedAt || session.savedAt || session.timestamp || session.createdAt || "");
   const hasSessionTimestamp = Number.isFinite(sessionTimestamp.getTime());
-  const targetIdentity =
-    session.targetName
-    || session.product
-    || session.targetFamily
-    || setup.targetName
-    || "M4/M16 Series Weapons 25M Zero";
   const weaponProfile = SCZN3M4.weaponProfileDisplay(setup);
   const firearmIdentity = weaponProfile.short || setup.rifle || "Not recorded";
+  const equipmentIdentity = [setup.opticType, setup.opticBrand, setup.opticModel]
+    .filter(value => typeof value === "string" && value.trim())
+    .join(" / ") || setup.adjustmentSystem || "Not recorded";
   const ammoIdentity =
     setup.ammoLoad
     || setup.ammoManufacturer
     || setup.ammoCaliber
     || setup.caliber
     || "Not recorded";
-  document.getElementById("secSessionTarget").textContent = targetIdentity;
+  document.getElementById("secSessionScore").textContent = `Score ${score.value === null || score.value === undefined ? "Unavailable" : score.value}`;
   document.getElementById("secSessionDistance").textContent = `${distanceValue} ${distanceLabel}`;
   document.getElementById("secSessionFirearm").textContent = firearmIdentity;
+  document.getElementById("secSessionEquipment").textContent = equipmentIdentity;
   document.getElementById("secSessionAmmo").textContent = ammoIdentity;
   document.getElementById("secSessionShooter").textContent =
     session.shooterName || setup.shooterName || "Not recorded";

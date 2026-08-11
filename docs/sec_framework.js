@@ -131,22 +131,44 @@
     };
   }
 
-  function GroupAnalysisCard(authorityPackage) {
-    const score = authorityPackage.score || {};
+  function ShooterAnalysisCard(authorityPackage) {
     const group = authorityPackage.group || {};
-    const poib = authorityPackage.poib || {};
     const discrepancy = authorityPackage.aimPointDiscrepancy || {};
     return [
-      metric("Score", score.value === null || score.value === undefined ? "Unavailable" : score.value, "group placement"),
-      metric("Group", group.display || "Unavailable", "confirmed impact spread"),
-      metric("POIB X", Number.isFinite(Number(poib.xPercent)) ? `${Number(poib.xPercent).toFixed(2)}%` : "Unavailable", "confirmed impacts"),
-      metric("POIB Y", Number.isFinite(Number(poib.yPercent)) ? `${Number(poib.yPercent).toFixed(2)}%` : "Unavailable", "confirmed impacts"),
+      metric("Group Size", group.display || "Unavailable", "confirmed impact spread"),
       metric(
         "Aim vs Bull",
-        Number.isFinite(Number(discrepancy.magnitudeInches)) ? `${Number(discrepancy.magnitudeInches).toFixed(2)}"` : "Unavailable",
+        Number.isFinite(Number(discrepancy.magnitudeInches)) ? `${Number(discrepancy.magnitudeInches).toFixed(2)}\"` : "Unavailable",
         "recorded offset"
       )
     ].join("");
+  }
+
+  function SightCorrectionCard(authorityPackage) {
+    const correction = authorityPackage.correction || {};
+    const angular = authorityPackage.angular || {};
+    const clicks = authorityPackage.clicks || {};
+    const adjustment = clicks.model || {};
+    const mechanical = authorityPackage.mechanicalValidation || {};
+    const integrity = verifyCalculationChain(authorityPackage);
+    const unit = String(adjustment.unit || "MOA").toUpperCase();
+    if (mechanical.status !== "calculated" || integrity.status !== "reconciled") {
+      return `<div class="sec-sight-correction-unavailable"><span>Sight correction</span><strong>${integrity.status === "mismatch" ? "Unavailable — result could not be verified" : "Unavailable for this sight setup"}</strong></div>`;
+    }
+    const axisCard = axis => {
+      const label = axis[0].toUpperCase() + axis.slice(1);
+      const trace = integrity.axes[axis];
+      const direction = correction[axis] || `${clicks[`${axis}Clicks`]} clicks ${clicks[`${axis}Direction`] || "CENTER"}`;
+      const turn = clicks[`${axis}TurnDirection`];
+      const angularValue = unit === "MRAD" ? angular[`${axis}MRAD`] : angular[`${axis}MOA`];
+      const supporting = [
+        Number.isFinite(Number(angularValue)) ? `${Number(angularValue).toFixed(2)} ${unit} offset` : "",
+        trace && Number.isFinite(Number(trace.clickConstant)) ? `${trace.clickConstant} ${unit}/click` : "",
+        turn ? `turn ${turn}` : ""
+      ].filter(Boolean).join(" · ");
+      return `<div class="sec-sight-correction-axis"><span>${escapeHtml(label)}</span><strong>${escapeHtml(direction)}</strong>${supporting ? `<small>${escapeHtml(supporting)}</small>` : ""}</div>`;
+    };
+    return `<div class="sec-sight-correction-story"><div class="sec-sight-correction-system"><span>Adjustment system</span><strong>${escapeHtml(adjustment.label || "Recorded sight setup")}</strong></div><div class="sec-sight-correction-grid">${axisCard("elevation")}${axisCard("windage")}</div></div>`;
   }
 
   function RecommendationCard(authorityPackage) {
@@ -244,7 +266,8 @@
     vector,
     verifyCalculationChain,
     EvidenceCard,
-    GroupAnalysisCard,
+    ShooterAnalysisCard,
+    SightCorrectionCard,
     RecommendationCard,
     ExecutionCard,
     ValidationCard,

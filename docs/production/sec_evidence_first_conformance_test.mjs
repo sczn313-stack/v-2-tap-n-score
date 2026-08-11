@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const stageOrder = ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"];
+const zeroingStageOrder = ["target", "session", "sight-correction"];
 const sources = Object.fromEntries(await Promise.all(
   ["sec_v1.js", "sec.html", "records.html", "m4_smart_target_sec.js", "universal_practice_sec.js", "sec_framework.js"]
     .map(async file => [file, await readFile(file, "utf8")])
@@ -15,42 +15,33 @@ const serverBuild = await readFile("production/build-site.mjs", "utf8");
 
 assert.match(
   sources["sec_v1.js"],
-  /const REQUIRED_REGIONS = \["evidence", "measurement", "recommendation", "execution", "validation", "preservation"\]/
+  /const REQUIRED_REGIONS = \["target", "session", "actions"\]/
 );
+assert.match(sources["sec_v1.js"], /const OPTIONAL_REGIONS = \["sightCorrection"\]/);
 
-function positions(source, patternForStage) {
-  return stageOrder.map(stage => source.indexOf(patternForStage(stage)));
+function positions(source, stages, patternForStage) {
+  return stages.map(stage => source.indexOf(patternForStage(stage)));
 }
 
-function assertOrdered(label, values) {
-  values.forEach((position, index) => assert.ok(position >= 0, `${label}: missing ${stageOrder[index]}`));
+function assertOrdered(label, stages, values) {
+  values.forEach((position, index) => assert.ok(position >= 0, `${label}: missing ${stages[index]}`));
   values.slice(1).forEach((position, index) => {
-    assert.ok(position > values[index], `${label}: ${stageOrder[index + 1]} must follow ${stageOrder[index]}`);
+    assert.ok(position > values[index], `${label}: ${stages[index + 1]} must follow ${stages[index]}`);
   });
 }
 
-assertOrdered("M4 live SEC", positions(sources["sec.html"], stage => `data-sec-stage="${stage}"`));
-assert.match(sources["sec.html"], /<details class="sec-universal-stage sec-universal-stage-evidence sec-accordion-stage" data-sec-stage="evidence" open>/, "Evidence is the initially open accordion stage");
-for (const label of ["Group Analysis", "Measurements", "Zero Correction", "Mechanical Adjustment", "Confirmation"]) {
-  assert.match(sources["sec.html"], new RegExp(`<h2>${label}<\\/h2>`), `M4 live SEC: missing ${label} disclosure pill`);
-}
-assert.equal((sources["sec.html"].match(/sec-collapsible-stage/g) || []).length, 5, "M4 live SEC must expose five collapsible stages");
-assert.equal((sources["sec.html"].match(/class="[^"]*sec-accordion-stage/g) || []).length, 6, "M4 live SEC must bind all six stages to one accordion");
-assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage(?! sec-universal-stage-evidence)[^>]*\sopen(?:\s|>)/, "Sections 2–6 must be collapsed on initial load");
+assertOrdered("M4 live SEC", zeroingStageOrder, positions(sources["sec.html"], zeroingStageOrder, stage => `data-sec-stage="${stage}"`));
+assert.match(sources["sec.html"], /<details class="sec-universal-stage sec-universal-stage-target sec-accordion-stage" data-sec-stage="target" open>/, "TARGET is the initially open accordion stage");
+for (const label of ["Session", "Sight Correction"]) assert.match(sources["sec.html"], new RegExp(`<h2>${label}<\\/h2>`), `M4 live SEC: missing ${label} disclosure pill`);
+assert.equal((sources["sec.html"].match(/sec-collapsible-stage/g) || []).length, 2, "M4 live SEC must expose two collapsible stages");
+assert.equal((sources["sec.html"].match(/class="[^"]*sec-accordion-stage/g) || []).length, 3, "M4 live SEC must bind three numbered stages to one accordion");
+assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage(?! sec-universal-stage-target)[^>]*\sopen(?:\s|>)/, "SESSION and SIGHT CORRECTION must be collapsed on initial load");
 assert.match(sources["sec.html"], /SEC_ACCORDION_STAGES\.forEach\(stage => \{[\s\S]*?if \(!stage\.open\) return;[\s\S]*?if \(otherStage !== stage\) otherStage\.open = false;/, "opening one SEC stage closes every other stage");
 assert.match(m4Styles, /\.sec-stage-pill\{[\s\S]*?min-height:var\(--sczn3-pill-height\)/, "SEC disclosure headers use the universal pill footprint");
-assertOrdered("GSSF Vault SEC", positions(sources["records.html"], stage => `key: "${stage}"`));
-assertOrdered("M4 unavailable SEC", positions(sources["m4_smart_target_sec.js"], stage => `key: "${stage}"`));
-assertOrdered("Universal Practice SEC", positions(sources["universal_practice_sec.js"], stage => `key: "${stage}"`));
-
-for (const stage of stageOrder) {
-  assert.match(sources["records.html"], new RegExp(`universalSecStageHtml\\("${stage}"`), `100 Yard Vault: missing ${stage}`);
-}
-assert.match(
-  sources["records.html"],
-  /universalSecStageHtml\("evidence", "Target Evidence", `[\s\S]*?<span>Smart Target<\/span><strong>\$\{escapeHtml\(targetName\)\}<\/strong>/,
-  "100 Yard SEC must present the preserved target identity before measurement and interpretation",
-);
+assertOrdered("M4 unavailable SEC", ["target", "session", "sightCorrection", "actions"], positions(sources["m4_smart_target_sec.js"], ["target", "session", "sightCorrection", "actions"], stage => `key: "${stage}"`));
+assertOrdered("Universal Practice SEC", ["target", "session", "actions"], positions(sources["universal_practice_sec.js"], ["target", "session", "actions"], stage => `key: "${stage}"`));
+for (const stage of zeroingStageOrder.slice(1)) assert.match(sources["records.html"], new RegExp(`universalSecStageHtml\\("${stage}"`), `Zeroing Vault: missing ${stage}`);
+assert.match(sources["records.html"], /function universalShooterActionBarHtml/, "every saved SEC uses the unnumbered Shooter Action Bar");
 assert.match(sources["records.html"], /function renderBaker100YardReferenceSec\(session, pkg\)/, "100 Yard uses the zeroing reference renderer");
 assert.match(sources["records.html"], /class="sec-experience m4-reference-sec-card zeroing-reference-sec-card"/, "100 Yard inherits the M4 SEC card shell");
 assert.match(sources["records.html"], /class="sec-target-story"/, "100 Yard inherits the M4 target-story layout");
@@ -58,23 +49,19 @@ assert.match(sources["records.html"], /class="sec-before-after" aria-label="Init
 assert.match(sources["records.html"], /Confirmation not recorded/, "100 Yard preserves the confirmation-target footprint when no group is saved");
 [
   "Initial and Confirmation Groups",
-  "Group Analysis",
+  "Session Details",
   "Sight Correction",
-  "Apply the Correction",
-  "Confirmation Outcome",
-  "Save the Complete Shooting Event",
+  "How to Confirm",
 ].forEach(heading => assert.match(sources["records.html"], new RegExp(heading), `100 Yard reference SEC: missing ${heading}`));
 assert.match(sources["records.html"], /function renderGssfM4ReferenceSec\(session, pkg\)/, "GSSF has an M4 reference renderer");
 assert.match(sources["records.html"], /class="sec-experience m4-reference-sec-card gssf-m4-reference-sec-card"/, "GSSF inherits the same M4 SEC card shell");
 assert.match(sources["records.html"], /if \(isGssfAuthorityPackage\(pkg\)\) return renderGssfM4ReferenceSec\(session, pkg\);/, "every governed GSSF result uses the universal SEC without a review-only query");
 [
   "Target and Scoring Analysis",
-  "Timer and Result Inputs",
-  "GSSF Score",
-  "Complete the Result",
-  "GSSF Final Results",
-  "Save the Complete Shooting Event",
+  "Session Details",
+  "Analysis",
 ].forEach(heading => assert.match(sources["records.html"], new RegExp(heading), `GSSF reference SEC: missing ${heading}`));
+assert.doesNotMatch(sources["records.html"].slice(sources["records.html"].indexOf("function renderGssfM4ReferenceSec"), sources["records.html"].indexOf("function renderHistory")), /universalSecStageHtml\("sight-correction"/, "GSSF must not receive a sight-correction stage");
 assert.match(sources["records.html"], /<span>Initial<\/span><strong>Confirmed Impacts<\/strong>/, "GSSF exposes the initial-target caption");
 assert.match(sources["records.html"], /<span>Analysis<\/span><strong>Shot Distribution<\/strong>/, "GSSF uses the approved scoring-analysis exception in the second evidence panel");
 assert.match(sources["records.html"], /Down Zero[\s\S]*?\+1[\s\S]*?\+3[\s\S]*?Miss \/ Other/, "GSSF analysis preserves the governed scoring buckets");
@@ -85,7 +72,7 @@ assert.doesNotMatch(sources["records.html"], /<span class="sec-save-status">Save
 assert.doesNotMatch(sources["records.html"], /Backend shot classifications|Diagnostic validation evidence|Marker coordinate validation/, "preserved GSSF SECs must not expose developer diagnostics");
 assert.match(sources["records.html"], /class="vault-record-summary[^"]*"[\s\S]*?OPEN SEC →/, "Vault browse cards must expose one full-SEC action");
 assert.match(m4Styles, /\.sec-before-after figcaption\{[^}]*min-height:42px/, "universal target captions share one footprint");
-assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-stage-evidence\{min-height:620px\}/, "reference SEC evidence stages share one desktop footprint");
+assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-stage-evidence,\.records-page \.m4-reference-sec-card \.sec-universal-stage-target\{min-height:620px\}/, "reference SEC target stages share one desktop footprint");
 
 [
   "--sczn3-control-height:42px",
@@ -140,15 +127,21 @@ assert.match(
   "the Ballistic Vault must collapse to one readable column at 390px",
 );
 
-const m4EvidenceEnd = sources["sec.html"].indexOf('data-sec-stage="measurement"');
+const m4EvidenceEnd = sources["sec.html"].indexOf('data-sec-stage="session"');
 assert.ok(sources["sec.html"].indexOf('id="beforeEvidenceImage"') < m4EvidenceEnd);
 assert.match(sources["sec.html"], /<summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong><\/summary>/, "the TARGET header contains only its label and session number");
-assert.doesNotMatch(sources["sec.html"].slice(0, m4EvidenceEnd), /secSessionTarget|secSessionDistance|secSessionFirearm|secSessionAmmo|secSessionDate|secSessionTime|secSessionShooter|evidenceDataStatus/, "Evidence contains no session metadata or status text");
-const m4MeasurementEnd = sources["sec.html"].indexOf('data-sec-stage="recommendation"');
-for (const id of ["secSessionTarget", "secSessionDistance", "secSessionFirearm", "secSessionAmmo", "secSessionDate", "secSessionTime", "secSessionShooter"]) {
+assert.doesNotMatch(sources["sec.html"].slice(0, m4EvidenceEnd), /secSessionDistance|secSessionFirearm|secSessionEquipment|secSessionAmmo|secSessionDate|secSessionTime|secSessionShooter|evidenceDataStatus/, "TARGET contains no session metadata or status text");
+const m4SessionEnd = sources["sec.html"].indexOf('data-sec-stage="sight-correction"');
+for (const id of ["secSessionDistance", "secSessionFirearm", "secSessionEquipment", "secSessionAmmo", "secSessionDate", "secSessionTime", "secSessionShooter"]) {
   const position = sources["sec.html"].indexOf(`id="${id}"`);
-  assert.ok(position > m4EvidenceEnd && position < m4MeasurementEnd, `Measurement must own ${id}`);
+  assert.ok(position > m4EvidenceEnd && position < m4SessionEnd, `SESSION must own ${id}`);
 }
+assert.doesNotMatch(sources["sec.html"], /id="secSessionTarget"/, "SESSION must not repeat target identity");
+assert.match(sources["sec.html"], /id="secSessionScore">Score --<\/strong>/, "SESSION score remains visible in the collapsed pill");
+assert.match(sources["sec.html"], /<h3[^>]*>Session Details<\/h3>[\s\S]*?<summary>Analysis<\/summary>/, "SESSION owns details and shooter-helpful analysis");
+assert.doesNotMatch(sources["sec.html"], /POIB X|POIB Y/, "SESSION analysis must not expose coordinate components");
+assert.doesNotMatch(sources["sec.html"], /<h2>(?:Group Analysis|Measurements|Zero Correction|Mechanical Adjustment|Confirmation)<\/h2>/, "legacy M4 accordion sections are removed");
+assert.match(sources["sec.html"], /class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar"/, "actions remain unnumbered below the accordion");
 assert.doesNotMatch(sources["sec.html"], /id="secSessionConfiguration"|Preserved Session Setup|Preserved Shooting Setup/, "the legacy metadata strip is removed");
 assert.doesNotMatch(sources["sec.html"], /Authority version|Evidence hash|Confirmation authority|backend authority/, "the preserved M4 SEC must not expose internal authority terminology");
 assert.doesNotMatch(sources["sec.html"], /Engineering Traceability/, "the shooter-facing SEC must not expose engineering terminology");

@@ -94,20 +94,20 @@
   }
 
   function sessionSummaryHtml(session) {
-    const sessionId = cleanText(session && session.sessionId);
-    const timestamp = cleanText(session && session.timestamp);
+    const snapshot = session && session.matrixSnapshot || {};
+    const timestamp = cleanText(session && (session.preservedAt || session.timestamp));
     const rows = [
-      ["Smart Target", "ST-001 — Universal Smart Target"],
-      ["Mission", "Universal Practice"],
-      ["Authority", "Practice Analysis"],
-      ["Runtime Status", "Authority unavailable"],
-      ["Session Identifier", sessionId || "Unavailable"],
-      ["Date and Time", timestamp || "Unavailable"]
+      ["Firearm", cleanText(snapshot.rifle) || "Not recorded"],
+      ["Equipment", cleanText(snapshot.opticModel || snapshot.opticType) || "Not recorded"],
+      ["Ammunition", cleanText(snapshot.ammoLoad || snapshot.ammoCaliber) || "Not recorded"],
+      ["Distance", cleanText(session && session.targetDistanceLabel) || "Not recorded"],
+      ["Date / Time", timestamp || "Not recorded"],
+      ["Shooter", cleanText(snapshot.shooterName) || "Not recorded"]
     ];
     return `
       <div class="sec-session-summary-grid">
         ${rows.map(([label, value]) => `
-          <div${label === "Session Identifier" ? ' class="is-wide"' : ""}>
+          <div>
             <span>${label}</span>
             <strong>${escapeHtml(value)}</strong>
           </div>
@@ -132,9 +132,11 @@
     const recordId = cleanText(session.sessionId) || "st-001-authority-unavailable";
 
     return global.SCZN3SEC.render({
-      schemaVersion: "1.1",
+      schemaVersion: "1.2",
       recordId,
       missionFamily: MISSION_FAMILY,
+      sessionLabel: session.sessionLabel || "Session",
+      scoreDisplay: "Score Unavailable",
       articleClassName: "history-card universal-practice-sec-card is-authority-blocked",
       articleAttributes: {
         "data-authority-classification": AUTHORITY_CLASSIFICATION,
@@ -143,13 +145,13 @@
       },
       regions: [
         {
-          key: "evidence",
+          key: "target",
           className: "sec-v1-evidence-content",
-          ariaLabel: "Evidence",
+          ariaLabel: "Target",
           contentHtml: `
             <section class="sec-v1-adapter-block sec-practice-evidence" aria-labelledby="st001-evidence">
               <div class="sec-workspace-heading">
-                <div><span>1 · Evidence</span><h3 class="sec-v1-region-title" id="st001-evidence">Evidence Workspace</h3></div>
+                <div><h3 class="sec-v1-region-title" id="st001-evidence">Target Evidence</h3></div>
                 <small>Registered evidence is required before analysis can begin.</small>
               </div>
               <div class="sec-practice-evidence-unavailable" role="status">
@@ -160,60 +162,28 @@
           `
         },
         {
-          key: "measurement",
+          key: "session",
           className: "sec-v1-measurement-content",
-          ariaLabel: "Measurement",
+          ariaLabel: "Session",
           contentHtml: `
-            <div class="sec-experience-heading"><span>2 · Measurement</span><h3 class="sec-v1-region-title">Measured Result</h3></div>
+            <section class="sec-session-section"><h3>Session Details</h3>${sessionSummaryHtml(session)}</section>
+            <details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel">
             <div class="sec-primary-result-grid"><div class="sec-primary-result-value"><span>Practice Analysis</span><strong class="sec-v1-result-value">Unavailable</strong></div><div class="sec-supporting-metric"><span>Measurements</span><strong>None calculated</strong><small>Missing authority remains unavailable. It is never converted to zero.</small></div></div>
-          `
-        },
-        {
-          key: "recommendation",
-          className: "sec-v1-recommendation-content",
-          ariaLabel: "Recommendation or Score",
-          contentHtml: `
-            <div class="sec-experience-heading"><span>3 · Recommendation / Score</span><h3 class="sec-v1-region-title">Analysis Status</h3></div>
             <section class="sec-v1-adapter-block sec-v1-explanation-primary sec-practice-explanation" aria-labelledby="st001-explanation">
               <span class="sec-component-label">Why results are unavailable</span><h3 class="sec-v1-region-title" id="st001-explanation">Authority must precede measurement</h3><p>${escapeHtml(reason)}</p><p>No score, group measurement, POIB, consistency value, or improvement claim has been fabricated.</p>
             </section>
-          `
-        },
-        {
-          key: "execution",
-          className: "sec-v1-execution-content",
-          ariaLabel: "Execution",
-          contentHtml: `
-            <span>4 · Execution</span>
-            <strong>Complete and approve ST-001 authority before Practice Analysis begins.</strong>
-            <i aria-hidden="true">→</i>
-          `
-        },
-        {
-          key: "validation",
-          className: "sec-v1-validation-content",
-          ariaLabel: "Validation",
-          contentHtml: `
-            <div class="sec-experience-heading"><span>5 · Validation</span><h3 class="sec-v1-region-title">Authority State</h3></div>
             <section class="sec-v1-adapter-block sec-secondary-result" aria-labelledby="st001-authority-state"><span>Authority State</span><h3 id="st001-authority-state">Practice Analysis</h3><strong>Blocked</strong></section>
             <section class="sec-v1-adapter-block sec-v1-performance-detail sec-practice-performance" aria-labelledby="st001-blocked-fields"><h3 class="sec-v1-region-title" id="st001-blocked-fields">Intentionally Blocked</h3>${blockedItemsHtml()}</section>
             ${global.SCZN3SEC.renderAchievementScale("Unavailable — no approved achievement authority")}
             ${noticeHtml()}
+            </div></details>
           `
         },
         {
-          key: "preservation",
+          key: "actions",
           className: "sec-v1-preservation-content",
-          ariaLabel: "Preservation",
+          ariaLabel: "Shooter Action Bar",
           contentHtml: `
-            <section class="sec-v1-adapter-block sec-v1-history-content" aria-labelledby="st001-session-summary"><span>6 · Preservation</span><h3 class="sec-v1-region-title" id="st001-session-summary">Session Summary</h3>${sessionSummaryHtml(session)}</section>
-            <div class="sec-v1-wordmark"><span>SEC</span><small>Shooter Experience Card</small></div>
-            <div class="sec-identity-ledger">
-              <div><span>Smart Target</span><strong>ST-001</strong></div>
-              <div><span>SEC Version</span><strong>1.1</strong></div>
-              <div><span>Authority</span><strong>Practice Analysis</strong></div>
-              <div><span>Confidence</span><strong>Authority unavailable</strong></div>
-            </div>
             <div class="sec-v1-record-actions" aria-label="SEC actions">
               <span class="sec-save-status">Export unavailable</span>
             </div>
