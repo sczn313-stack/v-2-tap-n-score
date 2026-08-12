@@ -2,7 +2,7 @@ services:
   - type: web
     name: sczn3-authority
     runtime: python
-    plan: free
+    plan: starter
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python docs/backend/server.py"
     healthCheckPath: "/health"
