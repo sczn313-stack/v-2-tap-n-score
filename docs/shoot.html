@@ -3273,6 +3273,29 @@ function gssfPaperPenaltySeconds(authorityPackage) {
   return isGssfAuthorityPackage(authorityPackage) ? authorityPackage.totalPaperPenaltySeconds : null;
 }
 
+function gssfTimerSelectorParts(value) {
+  const numericValue = Number(value);
+  const boundedTenths = Number.isFinite(numericValue)
+    ? Math.min(599, Math.max(0, Math.round(numericValue * 10)))
+    : 0;
+  return {
+    seconds: Math.floor(boundedTenths / 10),
+    tenths: boundedTenths % 10
+  };
+}
+
+function gssfTimerSelectorOptions(maximum, selectedValue) {
+  return Array.from({ length: maximum + 1 }, (_, value) => (
+    `<option value="${value}"${value === selectedValue ? " selected" : ""}>${value}</option>`
+  )).join("");
+}
+
+function gssfTimerSelectorValue(seconds, tenths) {
+  const safeSeconds = Math.min(59, Math.max(0, Number.parseInt(seconds, 10) || 0));
+  const safeTenths = Math.min(9, Math.max(0, Number.parseInt(tenths, 10) || 0));
+  return safeSeconds + (safeTenths / 10);
+}
+
 function gssfOfficialCompetitionResult(authorityPackage) {
   const hasAuthority = isGssfAuthorityPackage(authorityPackage);
   const officialMatchTimeSeconds = hasAuthority
@@ -3310,6 +3333,8 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
       ? gssfFormatSeconds(result.totalPaperPenaltySeconds)
       : gssfFormatSeconds(result.officialFinalScoreSeconds));
   const inputValue = result.officialMatchTimeSeconds === null ? "" : Number(result.officialMatchTimeSeconds).toFixed(2);
+  const selectorParts = gssfTimerSelectorParts(result.officialMatchTimeSeconds);
+  const selectorTimeText = `${gssfTimerSelectorValue(selectorParts.seconds, selectorParts.tenths).toFixed(2)} sec`;
   const officialTimeText = hasTimerTime ? gssfFormatSeconds(result.officialMatchTimeSeconds) : "Not entered";
   const paperPenaltyText = result.totalPaperPenaltySeconds === null
     ? "Not available"
@@ -3337,6 +3362,23 @@ function gssfOfficialFinalScoreHtml(authorityPackage) {
       <small>Enter the official timer value from the range.</small>
       <em id="gssfOfficialTimeSource">Entered manually</em>
     </label>
+    <section class="gssf-mobile-time-selector" aria-label="Timer Time selector">
+      <strong id="gssfMobileTimerTimeDisplay">Timer Time: ${escapeHtml(selectorTimeText)}</strong>
+      <div class="gssf-mobile-time-dials">
+        <label>
+          <span>Seconds</span>
+          <select id="gssfTimerSeconds" aria-label="Timer seconds">
+            ${gssfTimerSelectorOptions(59, selectorParts.seconds)}
+          </select>
+        </label>
+        <label>
+          <span>Tenths</span>
+          <select id="gssfTimerTenths" aria-label="Timer tenths">
+            ${gssfTimerSelectorOptions(9, selectorParts.tenths)}
+          </select>
+        </label>
+      </div>
+    </section>
   `;
 }
 
@@ -3364,13 +3406,20 @@ function updateGssfOfficialFinalScoreDisplay(authorityPackage) {
 
 function bindGssfOfficialTimeInput(authorityPackage) {
   const input = document.getElementById("gssfOfficialMatchTime");
-  if (!input || input.dataset.gssfOfficialTimeBound) return;
-  input.dataset.gssfOfficialTimeBound = "true";
-  input.addEventListener("input", () => {
+  const secondsDial = document.getElementById("gssfTimerSeconds");
+  const tenthsDial = document.getElementById("gssfTimerTenths");
+  const mobileDisplay = document.getElementById("gssfMobileTimerTimeDisplay");
+
+  function submitTimerValue(value) {
     markWorkspaceProgressUnsaved();
-    const rawValue = String(input.value || "").trim();
-    const value = Number(rawValue);
-    gssfOfficialMatchTimeSeconds = rawValue !== "" && Number.isFinite(value) && value >= 0 ? value : null;
+    gssfOfficialMatchTimeSeconds = Number.isFinite(value) && value >= 0 ? value : null;
+    if (mobileDisplay && gssfOfficialMatchTimeSeconds !== null) {
+      mobileDisplay.textContent = `Timer Time: ${gssfOfficialMatchTimeSeconds.toFixed(2)} sec`;
+    }
+    const officialTimeDisplay = document.getElementById("gssfOfficialTimeDisplay");
+    if (officialTimeDisplay && gssfOfficialMatchTimeSeconds !== null) {
+      officialTimeDisplay.textContent = gssfFormatSeconds(gssfOfficialMatchTimeSeconds);
+    }
     const requestToken = ++gssfTimerAuthorityRequestToken;
     window.clearTimeout(gssfTimerAuthorityRequestHandle);
     gssfTimerAuthorityRequestHandle = window.setTimeout(async () => {
@@ -3388,7 +3437,28 @@ function bindGssfOfficialTimeInput(authorityPackage) {
         renderResults();
       }
     }, 250);
-  });
+  }
+
+  if (input && !input.dataset.gssfOfficialTimeBound) {
+    input.dataset.gssfOfficialTimeBound = "true";
+    input.addEventListener("input", () => {
+      const rawValue = String(input.value || "").trim();
+      const value = Number(rawValue);
+      submitTimerValue(rawValue !== "" && Number.isFinite(value) && value >= 0 ? value : null);
+    });
+  }
+
+  if (secondsDial && tenthsDial && !secondsDial.dataset.gssfOfficialTimeBound) {
+    secondsDial.dataset.gssfOfficialTimeBound = "true";
+    tenthsDial.dataset.gssfOfficialTimeBound = "true";
+    const handleDialChange = () => {
+      const value = gssfTimerSelectorValue(secondsDial.value, tenthsDial.value);
+      if (input) input.value = value.toFixed(2);
+      submitTimerValue(value);
+    };
+    secondsDial.addEventListener("change", handleDialChange);
+    tenthsDial.addEventListener("change", handleDialChange);
+  }
 }
 
 function gssfBucketDefinitions() {

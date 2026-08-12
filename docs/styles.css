@@ -8564,6 +8564,10 @@ body.navigation-leave-dialog-open{
   font-weight:800;
 }
 
+.target-page .gssf-mobile-time-selector{
+  display:none;
+}
+
 .target-page .gssf-shooter-totals{
   display:grid;
   gap:4px;
@@ -12395,21 +12399,63 @@ body.navigation-leave-dialog-open{
 /* Founder-approved mobile Timer / Save containment. Presentation only. */
 @media (max-width:560px){
   .target-page[data-target-mission="gssf"] .gssf-official-time-entry{
-    gap:3px;
-    padding:8px;
+    display:none;
   }
 
-  .target-page[data-target-mission="gssf"] .gssf-official-time-entry input{
-    height:40px;
-    min-height:40px;
-    padding:4px 8px;
-    line-height:1;
+  .target-page[data-target-mission="gssf"] .gssf-mobile-time-selector{
+    display:grid;
+    gap:4px;
+    padding:7px 8px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:8px;
+    background:rgba(0,0,0,.18);
   }
 
-  .target-page[data-target-mission="gssf"] .gssf-official-time-entry small,
-  .target-page[data-target-mission="gssf"] .gssf-official-time-entry em{
+  .target-page[data-target-mission="gssf"] .gssf-mobile-time-selector > strong{
     margin:0;
+    color:#f5f1e8;
+    font-size:12px;
+    font-weight:900;
     line-height:1.1;
+    text-align:center;
+  }
+
+  .target-page[data-target-mission="gssf"] .gssf-mobile-time-dials{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+
+  .target-page[data-target-mission="gssf"] .gssf-mobile-time-dials label{
+    display:grid;
+    gap:2px;
+    min-width:0;
+  }
+
+  .target-page[data-target-mission="gssf"] .gssf-mobile-time-dials span{
+    color:#d9960b;
+    font-size:10px;
+    font-weight:900;
+    line-height:1;
+    text-align:center;
+    text-transform:uppercase;
+  }
+
+  .target-page[data-target-mission="gssf"] .gssf-mobile-time-dials select{
+    width:100%;
+    min-width:0;
+    height:44px;
+    min-height:44px;
+    padding:0 28px 0 12px;
+    border:1px solid rgba(217,150,11,.72);
+    border-radius:7px;
+    background:#070707;
+    color:#f5f1e8;
+    font-size:20px;
+    font-weight:900;
+    line-height:1;
+    text-align:center;
+    text-align-last:center;
   }
 
   .target-page[data-target-mission="gssf"] .save-session-status.is-visible{
@@ -12428,7 +12474,10 @@ body.navigation-leave-dialog-open{
     line-height:1.2;
   }
 
-  .target-page[data-target-mission="gssf"]:has(.save-session-status.is-visible) .evidence-meta{
+  .target-page[data-target-mission="gssf"][data-has-results="true"] .evidence-meta{
     bottom:calc(2% + 106px)!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
   }
 }

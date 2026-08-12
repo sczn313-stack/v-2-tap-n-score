@@ -7,6 +7,7 @@ const matrix = await readFile(new URL("../matrix.html", import.meta.url), "utf8"
 const redirects = await readFile(new URL("../_redirects", import.meta.url), "utf8");
 const netlify = await readFile(new URL("../netlify.toml", import.meta.url), "utf8");
 const labels = await readFile(new URL("../presentation_labels.js", import.meta.url), "utf8");
+const styles = await readFile(new URL("../styles.css", import.meta.url), "utf8");
 
 assert.match(
   shoot,
@@ -125,6 +126,35 @@ assert.match(
   shoot,
   /if \(isGssfAuthorityPackage\(authorityPackage\)\) \{[\s\S]*?renderMarkStatus\(\);[\s\S]*?document\.getElementById\("saveMarks"\)\.click\(\);[\s\S]*?\}/,
   "a governed GSSF result must preserve and open the universal SEC from the single Show Results action",
+);
+assert.match(shoot, /id="gssfTimerSeconds" aria-label="Timer seconds"/, "mobile Timer Time must expose an accessible seconds dial");
+assert.match(shoot, /id="gssfTimerTenths" aria-label="Timer tenths"/, "mobile Timer Time must expose an accessible tenths dial");
+assert.match(
+  shoot,
+  /return safeSeconds \+ \(safeTenths \/ 10\);/,
+  "the mobile selector must convert tenths without changing timer authority",
+);
+const selectorValueSource = shoot.match(/function gssfTimerSelectorValue\(seconds, tenths\) \{[\s\S]*?\n\}/)?.[0];
+assert.ok(selectorValueSource, "the governed Timer Time conversion must remain testable");
+const selectorContext = {};
+vm.runInNewContext(`${selectorValueSource}\nglobalThis.gssfTimerSelectorValue = gssfTimerSelectorValue;`, selectorContext);
+assert.equal(selectorContext.gssfTimerSelectorValue(0, 0), 0, "0 seconds + 0 tenths must equal 0.00 seconds");
+assert.equal(selectorContext.gssfTimerSelectorValue(7, 3), 7.3, "7 seconds + 3 tenths must equal 7.30 seconds");
+assert.equal(selectorContext.gssfTimerSelectorValue(59, 9), 59.9, "59 seconds + 9 tenths must equal 59.90 seconds");
+assert.match(
+  shoot,
+  /secondsDial\.addEventListener\("change", handleDialChange\);[\s\S]*?tenthsDial\.addEventListener\("change", handleDialChange\);/,
+  "either mobile dial must immediately submit the selected Timer Time",
+);
+assert.match(
+  styles,
+  /@media \(max-width:560px\)[\s\S]*?\.gssf-official-time-entry\{[\s\S]*?display:none;[\s\S]*?\.gssf-mobile-time-selector\{[\s\S]*?display:grid;/,
+  "the dial selector must replace the numeric input on mobile only",
+);
+assert.match(
+  styles,
+  /data-has-results="true"\] \.evidence-meta\{[\s\S]*?overflow-y:auto!important;/,
+  "mobile GSSF results must remain contained above the dedicated save-status region",
 );
 
 console.log("GSSF Show Results contract: PASS");
