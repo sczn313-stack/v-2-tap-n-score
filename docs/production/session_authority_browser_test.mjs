@@ -178,6 +178,57 @@ try {
         }) });
       });
     }
+    const gssfAuthorityRequests = [];
+    if (targetId === "gssf_ac_1") {
+      await context.route("**/api/authority/ugeo", async route => {
+        const request = route.request().postDataJSON();
+        const observations = Array.isArray(request.hitPixelCoordinates) ? request.hitPixelCoordinates : [];
+        const rawTime = typeof request.raw_time_seconds === "number" ? request.raw_time_seconds : null;
+        gssfAuthorityRequests.push(request);
+        const shotIds = observations.map((_, index) => index + 1);
+        const classifications = observations.map((point, index) => ({
+          shot: index + 1,
+          zone: index === 0 ? "plusOne" : "plusThree",
+          xPx: Number(point.xPx),
+          yPx: Number(point.yPx),
+        }));
+        const paperPenalty = observations.length ? 1 + Math.max(0, observations.length - 1) * 3 : 0;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: true,
+            status: "calculated",
+            target_profile_id: "gssf_ac_1",
+            targetProfileId: "gssf_ac_1",
+            mission_family: "gssf",
+            missionFamilyId: "gssf",
+            resultPackageType: "gssfPaperPenaltyResult",
+            resultSource: "backend",
+            totalPaperPenaltySeconds: paperPenalty,
+            rawTimeSeconds: rawTime,
+            finalTimeStatus: rawTime === null ? "unavailable_without_raw_time" : "calculated",
+            finalTimeSeconds: rawTime === null ? null : Number((rawTime + paperPenalty).toFixed(2)),
+            scoringBreakdown: [
+              { zone: "downZero", count: 0, penaltySecondsPerHit: 0, subtotalPenaltySeconds: 0, shotIds: [] },
+              { zone: "plusOne", count: observations.length ? 1 : 0, penaltySecondsPerHit: 1, subtotalPenaltySeconds: observations.length ? 1 : 0, shotIds: shotIds.slice(0, 1) },
+              { zone: "plusThree", count: Math.max(0, observations.length - 1), penaltySecondsPerHit: 3, subtotalPenaltySeconds: Math.max(0, observations.length - 1) * 3, shotIds: shotIds.slice(1) },
+              { zone: "miss", count: 0, penaltySecondsPerHit: 10, subtotalPenaltySeconds: 0, shotIds: [] },
+            ],
+            hitClassifications: classifications,
+            renderCoordinates: {
+              hits: observations.map((point, index) => ({
+                shot: index + 1,
+                zone: classifications[index].zone,
+                xPercent: Number(point.xPx) / 11.25,
+                yPercent: Number(point.yPx) / 13.73,
+              })),
+            },
+            display: { resultLines: [`Paper Penalty: ${paperPenalty.toFixed(2)} sec`] },
+          }),
+        });
+      });
+    }
 
     const page = await context.newPage();
     await page.goto(`${baseUrl}/matrix.html?target_profile_id=${encodeURIComponent(targetId)}`, { waitUntil: "networkidle" });
@@ -236,6 +287,42 @@ try {
       assert.equal(completed.confirmationImpactPoints.length, 3);
       assert.equal(completed.confirmationAuthorityPackage.validation.outcome, "CONFIRMATION RECORDED");
       console.log("PASS 100 Yard initial correction → confirmation → preserved SEC workflow");
+    }
+    if (targetId === "gssf_ac_1") {
+      await page.locator("#markSurface").waitFor();
+      const targetBox = await page.locator("#markSurface").boundingBox();
+      assert(targetBox, "GSSF target surface must be rendered");
+      const tap = async (x, y) => page.mouse.click(targetBox.x + targetBox.width * x, targetBox.y + targetBox.height * y);
+      await tap(0.50, 0.50);
+      await tap(0.52, 0.52);
+      await tap(0.54, 0.54);
+      await page.locator("#showResults").click();
+      await page.locator("#gssfTimerSeconds").waitFor();
+      assert.equal(new URL(page.url()).pathname.endsWith("/shoot.html"), true, "Show Results must remain on the GSSF Target Page");
+      assert.equal(await page.locator("#saveMarks").isDisabled(), true, "Save Session must wait for Timer Time");
+      const beforeTimer = await page.evaluate(sessionId => {
+        const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+        return JSON.parse(localStorage.getItem(key));
+      }, `sczn3-session-browser-${targetId}`);
+      assert.notEqual(beforeTimer.savedToSEC, true, "Show Results must not save the GSSF session automatically");
+      await page.locator("#gssfTimerSeconds").selectOption("7");
+      await page.locator("#gssfTimerTenths").selectOption("3");
+      await page.waitForFunction(() => document.getElementById("gssfOfficialFinalScore")?.textContent?.trim() === "14.30 sec");
+      assert.equal(await page.locator("#gssfMobileTimerTimeDisplay").textContent(), "Timer Time: 7.30 sec");
+      assert.equal(await page.locator("#saveMarks").isEnabled(), true, "verified Timer Time must enable explicit saving");
+      await page.waitForTimeout(600);
+      assert.equal(new URL(page.url()).pathname.endsWith("/shoot.html"), true, "verified Timer Time must not redirect automatically");
+      assert.equal(gssfAuthorityRequests.at(-1).raw_time_seconds, 7.3);
+      await page.locator("#saveMarks").click();
+      await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
+      const completed = await page.evaluate(sessionId => {
+        const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+        return JSON.parse(localStorage.getItem(key));
+      }, `sczn3-session-browser-${targetId}`);
+      assert.equal(completed.savedToSEC, true);
+      assert.equal(completed.officialMatchTimeSeconds, 7.3);
+      assert.equal(completed.officialFinalScoreSeconds, 14.3);
+      console.log("PASS GSSF Show Results → Timer Time → explicit Save Session workflow");
     }
     await context.close();
     console.log(`PASS browser session authority ${targetId}`);

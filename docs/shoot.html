@@ -3324,6 +3324,12 @@ function gssfOfficialCompetitionResult(authorityPackage) {
   };
 }
 
+function gssfTimerTimeReadyForSave(authorityPackage = backendAuthorityPackage) {
+  const result = gssfOfficialCompetitionResult(authorityPackage);
+  return result.officialMatchTimeSeconds !== null
+    && result.finalScoreStatus === "calculated";
+}
+
 function gssfOfficialFinalScoreHtml(authorityPackage) {
   const result = gssfOfficialCompetitionResult(authorityPackage);
   const hasTimerTime = result.officialMatchTimeSeconds !== null;
@@ -3961,6 +3967,7 @@ function rangeWorkflowState(canMark) {
   if (isGssfAuthoritySession()) {
     if (!currentImpactPoints.length) return "tap-holes";
     if (!resultsShown) return "show-results";
+    if (!gssfTimerTimeReadyForSave()) return "enter-timer-time";
     if (!sessionSaved) return "save-session";
     return "view-sec";
   }
@@ -4023,6 +4030,7 @@ function renderMarkStatus() {
   const isTraining = isDotTortureAuthoritySession();
   const hasEvidence = hasMarkableEvidence();
   const canProceed = hasEvidence || isTraining;
+  const gssfTimerTimePending = isGssf && resultsShown && !gssfTimerTimeReadyForSave();
   syncCorrectionContextGate();
   updateHitCounter();
   renderMissionWorkspaceChrome();
@@ -4035,6 +4043,7 @@ function renderMarkStatus() {
     || !resultsShown
     || correctionContextPending
     || awaitingNextConfirmationGroup()
+    || gssfTimerTimePending
     || (isTraining && !trainingDrillFinished);
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canProceed || (!isTraining && currentImpactPoints.length === 0);
   let nextStep = "chooseTargetButton";
@@ -4045,7 +4054,7 @@ function renderMarkStatus() {
   if (hasEvidence && !isTraining && currentImpactPoints.length && !resultsShown) {
     nextStep = resultsOfferReady() ? "showResults" : "addImpactMode";
   }
-  if (canProceed && resultsShown && (!isTraining || trainingDrillFinished)) nextStep = "saveMarks";
+  if (canProceed && resultsShown && !gssfTimerTimePending && (!isTraining || trainingDrillFinished)) nextStep = "saveMarks";
   if (correctionContextPending || founderContextAtResultsGate() || awaitingNextConfirmationGroup()) nextStep = null;
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
@@ -4341,10 +4350,6 @@ document.getElementById("showResults").addEventListener("click", async () => {
         !correctionContextPending && authorityPackage.validation.confirmed ? "saved" : ""
       );
     }
-    if (isGssfAuthorityPackage(authorityPackage)) {
-      renderMarkStatus();
-      document.getElementById("saveMarks").click();
-    }
   } catch (error) {
     console.warn("Backend authority request failed", error);
     currentClicks = null;
@@ -4376,6 +4381,10 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   }
   if (!backendAuthorityPackage) {
     setSaveSessionStatus("Show Results before saving so the complete result is preserved.", "error");
+    return;
+  }
+  if (isGssfAuthorityPackage(backendAuthorityPackage) && !gssfTimerTimeReadyForSave()) {
+    setSaveSessionStatus("Select Seconds and Tenths before saving.", "error");
     return;
   }
   if (

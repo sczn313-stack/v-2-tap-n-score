@@ -122,10 +122,25 @@ assert.match(
 );
 assert.match(shoot, /status >= 500[\s\S]*?analysis service is temporarily unavailable/, "backend failures must not be mislabeled as connection failures");
 assert.match(shoot, /data-authority-retry>Try Again</, "authority failure must expose an intentional retry action");
+assert.doesNotMatch(
+  shoot,
+  /if \(isGssfAuthorityPackage\(authorityPackage\)\) \{[\s\S]*?document\.getElementById\("saveMarks"\)\.click\(\);[\s\S]*?\}/,
+  "Show Results must not automatically save or leave the GSSF Target Page",
+);
 assert.match(
   shoot,
-  /if \(isGssfAuthorityPackage\(authorityPackage\)\) \{[\s\S]*?renderMarkStatus\(\);[\s\S]*?document\.getElementById\("saveMarks"\)\.click\(\);[\s\S]*?\}/,
-  "a governed GSSF result must preserve and open the universal SEC from the single Show Results action",
+  /function gssfTimerTimeReadyForSave\(authorityPackage = backendAuthorityPackage\) \{[\s\S]*?officialMatchTimeSeconds !== null[\s\S]*?finalScoreStatus === "calculated";/,
+  "GSSF saving must wait for backend-verified Timer Time and Final Time",
+);
+assert.match(
+  shoot,
+  /const gssfTimerTimePending = isGssf && resultsShown && !gssfTimerTimeReadyForSave\(\);[\s\S]*?document\.getElementById\("saveMarks"\)\.disabled =[\s\S]*?\|\| gssfTimerTimePending[\s\S]*?\|\| \(isTraining && !trainingDrillFinished\);/,
+  "Save Session must stay disabled while GSSF Timer Time is pending",
+);
+assert.match(
+  shoot,
+  /if \(isGssfAuthorityPackage\(backendAuthorityPackage\) && !gssfTimerTimeReadyForSave\(\)\) \{[\s\S]*?Select Seconds and Tenths before saving\.[\s\S]*?return;/,
+  "the explicit save handler must refuse an incomplete GSSF Timer Time",
 );
 assert.match(shoot, /id="gssfTimerSeconds" aria-label="Timer seconds"/, "mobile Timer Time must expose an accessible seconds dial");
 assert.match(shoot, /id="gssfTimerTenths" aria-label="Timer tenths"/, "mobile Timer Time must expose an accessible tenths dial");
