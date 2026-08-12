@@ -153,8 +153,8 @@ assert.match(
 );
 assert.match(
   styles,
-  /data-has-results="true"\] \.evidence-meta\{[\s\S]*?overflow-y:auto!important;/,
-  "mobile GSSF results must remain contained above the dedicated save-status region",
+  /data-has-results="true"\] \.evidence-meta\{[\s\S]*?top:14%!important;[\s\S]*?bottom:calc\(2% \+ 106px\)!important;[\s\S]*?overflow-y:auto!important;/,
+  "mobile GSSF summary, Timer selector, and scoring distribution must flow above the dedicated save-status region",
 );
 
 console.log("GSSF Show Results contract: PASS");
