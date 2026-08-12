@@ -24,7 +24,7 @@ function assertGuidance(message, expected) {
 
 const m4Ready = presentation.equipmentGuidance({
   targetProfileId: "m4_25m_zero",
-  setupName: "Ruger 10/22",
+  setupName: "Pistol / Glock / G19 MOS 9mm / Iron Sights",
   assessment: {
     officialMission: { status: "authority_unavailable" },
     capabilities: {
@@ -35,7 +35,7 @@ const m4Ready = presentation.equipmentGuidance({
     }
   }
 });
-assertGuidance(m4Ready, ["You can use", "save your target evidence", "measure your group", "provide Sight Correction", "Ready to shoot", "Tap Go To Target"]);
+assert.equal(m4Ready, "Ready to shoot. Tap Go To Target.");
 
 const zeroingNeedsClicks = presentation.equipmentGuidance({
   targetProfileId: "baker_st_100yd_smart_zero",

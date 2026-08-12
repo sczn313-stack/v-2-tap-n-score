@@ -417,9 +417,8 @@ try {
   });
   const admittedPage = await admittedContext.newPage();
   await admittedPage.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "networkidle" });
-  await admittedPage.waitForFunction(() => /You can use this Smart Target with Ruger 10\/22/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
-  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /save your target evidence, measure your group, and provide Sight Correction/);
-  assert.match(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /Ready to shoot\. Tap Go To Target\./);
+  await admittedPage.waitForFunction(() => /Ready to shoot\. Tap Go To Target\./.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
+  assert.equal((await admittedPage.locator("#sessionAuthorityStatus").textContent()).trim(), "Ready to shoot. Tap Go To Target.");
   assert.doesNotMatch(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /official mission|authority|verified for that mission/i);
   await admittedPage.locator('#matrixForm button[type="submit"]').click();
   await admittedPage.waitForURL(url => url.pathname.endsWith("/shoot.html"));

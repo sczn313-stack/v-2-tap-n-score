@@ -58,7 +58,7 @@
         : "Review your sight setup in Equipment to receive Sight Correction.";
       return `${opening} ${help} ${action}`;
     }
-    return `${opening} ${help} Ready to shoot. Tap ${nextAction}.`;
+    return `Ready to shoot. Tap ${nextAction}.`;
   }
 
   function capabilityGuidance(options = {}) {
