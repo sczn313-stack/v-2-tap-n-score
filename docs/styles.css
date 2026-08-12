@@ -12391,3 +12391,44 @@ body.navigation-leave-dialog-open{
     left:2.7%;
   }
 }
+
+/* Founder-approved mobile Timer / Save containment. Presentation only. */
+@media (max-width:560px){
+  .target-page[data-target-mission="gssf"] .gssf-official-time-entry{
+    gap:3px;
+    padding:8px;
+  }
+
+  .target-page[data-target-mission="gssf"] .gssf-official-time-entry input{
+    height:40px;
+    min-height:40px;
+    padding:4px 8px;
+    line-height:1;
+  }
+
+  .target-page[data-target-mission="gssf"] .gssf-official-time-entry small,
+  .target-page[data-target-mission="gssf"] .gssf-official-time-entry em{
+    margin:0;
+    line-height:1.1;
+  }
+
+  .target-page[data-target-mission="gssf"] .save-session-status.is-visible{
+    position:absolute!important;
+    z-index:79;
+    right:4%!important;
+    bottom:calc(2% + 52px)!important;
+    left:4%!important;
+    box-sizing:border-box;
+    min-height:28px;
+    max-height:48px;
+    margin:0;
+    padding:6px 8px;
+    overflow:auto;
+    font-size:10px;
+    line-height:1.2;
+  }
+
+  .target-page[data-target-mission="gssf"]:has(.save-session-status.is-visible) .evidence-meta{
+    bottom:calc(2% + 106px)!important;
+  }
+}
