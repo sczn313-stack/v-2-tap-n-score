@@ -55,7 +55,7 @@ assert.match(sources["records.html"], /Confirmation not recorded/, "100 Yard pre
 ].forEach(heading => assert.match(sources["records.html"], new RegExp(heading), `100 Yard reference SEC: missing ${heading}`));
 assert.match(sources["records.html"], /function renderGssfM4ReferenceSec\(session, pkg\)/, "GSSF has an M4 reference renderer");
 assert.match(sources["records.html"], /class="sec-experience m4-reference-sec-card gssf-m4-reference-sec-card"/, "GSSF inherits the same M4 SEC card shell");
-assert.match(sources["records.html"], /if \(isGssfAuthorityPackage\(pkg\)\) return renderGssfM4ReferenceSec\(session, pkg\);/, "every governed GSSF result uses the universal SEC without a review-only query");
+assert.match(sources["records.html"], /dispatch\.adapter === SCZN3SECDispatch\.ADAPTERS\.GSSF && isGssfAuthorityPackage\(pkg\)/, "every governed GSSF result uses the identity-selected universal SEC without a review-only query");
 [
   "Target and Scoring Analysis",
   "Session Details",

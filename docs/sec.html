@@ -111,6 +111,7 @@
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="sec_framework.js?v=founder-validation-refactor-0730"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
+<script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
 <script>
@@ -200,11 +201,21 @@ function isValidFounderReviewSession(candidate) {
 function isCompletedZeroingSession(candidate) {
   return Boolean(
     candidate &&
+    window.SCZN3SECDispatch &&
+    SCZN3SECDispatch.resolve(candidate).adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING &&
     window.SCZN3ZeroingPlatform &&
     window.SCZN3ZeroingPlatform.isCompletedSession(candidate) &&
     (candidate.m4AuthorityPackage || candidate.backendAuthorityPackage) &&
     candidate.confirmationAuthorityPackage
   );
+}
+
+const dispatchCandidate = requestedPersistedSession || (!founderReviewSession ? persistedSession : null);
+if (dispatchCandidate && window.SCZN3SECDispatch) {
+  const dispatch = SCZN3SECDispatch.resolve(dispatchCandidate);
+  if (dispatch.adapter !== SCZN3SECDispatch.ADAPTERS.M4_ZEROING) {
+    window.location.replace(SCZN3SECDispatch.destinationFor(dispatchCandidate));
+  }
 }
 
 const session = (isCompletedZeroingSession(requestedPersistedSession) ? requestedPersistedSession : null)

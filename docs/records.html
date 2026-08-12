@@ -44,6 +44,7 @@
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
+<script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="sec_v1.js"></script>
 <script src="universal_practice_sec.js"></script>
@@ -190,7 +191,9 @@ function authorityScoreValue(pkg) {
 }
 
 function authorityPackage(session) {
-  return session && (session.ugeoAuthorityPackage || session.backendAuthorityPackage) || null;
+  return window.SCZN3SECDispatch
+    ? SCZN3SECDispatch.canonicalPackage(session)
+    : session && (session.authorityPackage || session.backendAuthorityPackage || session.ugeoAuthorityPackage) || null;
 }
 
 function escapeHtml(value) {
@@ -1036,12 +1039,13 @@ function preservedSecUrl(session, thumbnail = false) {
 function isCompletedZeroingVaultSession(session, pkg = authorityPackage(session)) {
   return Boolean(
     session &&
-    pkg && pkg.status && pkg.status.hasCorrection === true &&
-    session.confirmationAuthorityPackage
+    window.SCZN3SECDispatch &&
+    SCZN3SECDispatch.resolve(session).adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING
   );
 }
 
 function historicalSecUrl(session, pkg = authorityPackage(session)) {
+  if (window.SCZN3SECDispatch) return SCZN3SECDispatch.destinationFor(session);
   if (isCompletedZeroingVaultSession(session, pkg)) return preservedSecUrl(session);
   return `records.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec`;
 }
@@ -1362,8 +1366,9 @@ function renderHistory() {
 
   const requestedSession = sessions[0];
   const requestedPackage = authorityPackage(requestedSession);
-  if (isCompletedZeroingVaultSession(requestedSession, requestedPackage)) {
-    window.location.replace(preservedSecUrl(requestedSession));
+  const requestedDispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(requestedSession) : null;
+  if (requestedDispatch && requestedDispatch.adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING) {
+    window.location.replace(SCZN3SECDispatch.destinationFor(requestedSession));
     return;
   }
   document.body.dataset.vaultView = "historical";
@@ -1380,24 +1385,27 @@ function renderHistory() {
     const simulationSession = isSimulationSession(session);
     const evidence = session.targetEvidenceImage;
     const pkg = authorityPackage(session);
-    if (session.m4AuthorityPackage && pkg && pkg.status && pkg.status.hasCorrection) {
+    const dispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(session) : null;
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING) {
       return renderM4VaultEntry(session);
     }
-    if (window.SCZN3M4SmartTargetSEC && SCZN3M4SmartTargetSEC.matches(pkg)) {
-      return SCZN3M4SmartTargetSEC.render({ session, package: pkg });
-    }
-    if (window.SCZN3UniversalPracticeSEC && SCZN3UniversalPracticeSEC.matches(pkg)) {
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.UNIVERSAL_PRACTICE && window.SCZN3UniversalPracticeSEC) {
       return SCZN3UniversalPracticeSEC.render({ session, package: pkg });
     }
-    if (isDotTortureTrainingPackage(pkg)) {
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.TRAINING) {
       return renderTrainingSecCard(session, index, pkg);
     }
-    if (isGssfAuthorityPackage(pkg)) return renderGssfM4ReferenceSec(session, pkg);
-    if (hasGssfAuthorityIdentity(pkg)) {
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF && isGssfAuthorityPackage(pkg)) {
+      return renderGssfM4ReferenceSec(session, pkg);
+    }
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF) {
       return renderInvalidGssfSecCard(session);
     }
-    if (isBaker100YardZeroingSession(session, pkg)) {
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_100YD_ZEROING) {
       return renderBaker100YardReferenceSec(session, pkg);
+    }
+    if (!dispatch || dispatch.adapter === SCZN3SECDispatch.ADAPTERS.UNAVAILABLE) {
+      return SCZN3SEC.renderUnavailable("Saved result unavailable: target identity does not match a registered SEC.");
     }
     const hasAuthority = !!(pkg && pkg.status);
     const rawImpactCount = hasAuthority && pkg.status ? pkg.status.impactCount : null;

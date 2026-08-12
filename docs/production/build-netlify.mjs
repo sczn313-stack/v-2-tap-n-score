@@ -18,6 +18,7 @@ const publicFiles = [
   "t/baker/sl-st1/target-page.css",
   "t/baker/sl-st1/target-page.js",
   "app_state.js",
+  "sec_dispatch.js",
   "smart_target_identity.js",
   "m4_sec_config.js",
   "m4_runtime.js",

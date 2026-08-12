@@ -140,6 +140,7 @@ window.addEventListener("error", event => {
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
+<script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
@@ -4706,7 +4707,9 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   setSaveSessionStatus(`Saved as ${saved.savedIdentifier}. Opening Shooter Experience Card…`, "saved");
   if (saved) {
     window.setTimeout(() => {
-      if (isM4AuthoritySession()) {
+      if (window.SCZN3SECDispatch) {
+        window.location.href = SCZN3SECDispatch.destinationFor(saved);
+      } else if (isM4AuthoritySession()) {
         window.location.href = "sec.html?v=stay-on-screen-002";
       } else {
         const recordQuery = new URLSearchParams();
