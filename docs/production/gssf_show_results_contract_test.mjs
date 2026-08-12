@@ -153,8 +153,8 @@ assert.match(
 );
 assert.match(
   styles,
-  /data-has-results="true"\] \.evidence-meta\{[\s\S]*?top:14%!important;[\s\S]*?bottom:calc\(2% \+ 106px\)!important;[\s\S]*?overflow-y:auto!important;/,
-  "mobile GSSF summary, Timer selector, and scoring distribution must flow above the dedicated save-status region",
+  /\.gssf-mobile-time-selector\{[\s\S]*?display:grid;[\s\S]*?order:-2;[\s\S]*?\.gssf-final-score-panel\{[\s\S]*?order:-1;/,
+  "the mobile Timer selector must be the first actionable result before detailed scoring",
 );
 
 console.log("GSSF Show Results contract: PASS");
