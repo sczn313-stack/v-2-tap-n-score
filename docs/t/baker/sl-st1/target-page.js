@@ -18,6 +18,7 @@
     results: document.getElementById("supportedResults"), resultCount: document.getElementById("resultImpactCount"),
     continueToSec: document.getElementById("continueToSec"), secView: document.getElementById("bakerSecView"),
     secRoot: document.getElementById("bakerSecRoot"), pageShell: document.querySelector(".sl-page-shell"),
+    workflowDock: document.getElementById("workflowDock"),
     confirmation: document.getElementById("confirmationDialog"), confirmationTitle: document.getElementById("confirmationTitle"),
     confirmationMessage: document.getElementById("confirmationMessage"), confirmationCancel: document.getElementById("confirmationCancel"),
     confirmationAccept: document.getElementById("confirmationAccept"), inputs: Array.from(document.querySelectorAll('input[type="file"]'))
@@ -98,8 +99,16 @@
   function fitTargetEvidence() {
     if (elements.workspace.hidden || !state.imageEvidence) return;
     const frameTop = Math.max(0, elements.imageFrame.getBoundingClientRect().top);
-    const availableHeight = Math.max(1, window.innerHeight - frameTop - 16);
+    const viewportHeight = window.visualViewport && Number.isFinite(window.visualViewport.height)
+      ? window.visualViewport.height
+      : window.innerHeight;
+    const dockHeight = Math.ceil(elements.workflowDock.getBoundingClientRect().height);
+    const availableHeight = Math.max(180, Math.floor(viewportHeight - frameTop - dockHeight - 18));
     elements.imageFrame.style.setProperty("--sl-target-fit-height", `${availableHeight}px`);
+  }
+
+  function queueTargetFit() {
+    requestAnimationFrame(() => requestAnimationFrame(fitTargetEvidence));
   }
 
   async function loadImage(file) {
@@ -122,7 +131,7 @@
       elements.imageFrame.style.aspectRatio = `${dimensions.widthPx} / ${dimensions.heightPx}`;
       elements.loadCard.hidden = true;
       elements.workspace.hidden = false;
-      requestAnimationFrame(fitTargetEvidence);
+      queueTargetFit();
       elements.instruction.textContent = "Target ready. Tap every bullet hole you can see.";
       setFeedback("Target ready. Tap every bullet hole you can see.");
       renderImpacts();
@@ -225,12 +234,14 @@
     const rect = elements.tapSurface.getBoundingClientRect();
     state.impacts.push({ xNorm: Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width)), yNorm: Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height)) });
     state.preserved = false;
-    invalidateResults(); renderImpacts(); setFeedback(impactMessage(state.impacts.length));
+    invalidateResults();
+    renderImpacts();
+    setFeedback(`${impactMessage(state.impacts.length)} Add another impact, undo or clear a mark, or show results.`);
   });
-  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("Last mark removed."); } });
+  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback(state.impacts.length ? `Last mark removed. ${impactMessage(state.impacts.length)} Add another impact, clear the marks, or show results.` : "Last mark removed. Tap every bullet hole you can see."); queueTargetFit(); } });
   elements.clear.addEventListener("click", async () => {
     if (!state.impacts.length || state.pending || !await requestConfirmation({ title: "Clear Impact Marks?", message: "This removes every impact mark from the current photo.", acceptLabel: "Clear Marks" })) return;
-    state.impacts = []; state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("All impact marks cleared.");
+    state.impacts = []; state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("All impact marks cleared. Tap every bullet hole you can see."); queueTargetFit();
   });
   elements.showResults.addEventListener("click", async () => {
     if (!state.imageEvidence || !state.impacts.length || state.pending) return;
@@ -260,7 +271,8 @@
   });
 
   window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return !state.preserved && Boolean(state.imageEvidence || state.impacts.length); } });
-  window.addEventListener("resize", fitTargetEvidence);
+  window.addEventListener("resize", queueTargetFit);
+  window.visualViewport?.addEventListener("resize", queueTargetFit);
   window.addEventListener("pagehide", () => { if (state.imageUrl) URL.revokeObjectURL(state.imageUrl); });
   renderImpacts();
 })();

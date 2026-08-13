@@ -60,19 +60,21 @@
         <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Tap every visible bullet hole"></button>
       </div>
 
-      <div class="sl-workspace-status">
-        <strong id="impactCount">0 impacts recorded.</strong>
-        <span id="workspaceFeedback" role="status" aria-live="polite">Target ready. Tap every bullet hole you can see.</span>
-      </div>
+      <div class="sl-workflow-dock" id="workflowDock">
+        <div class="sl-workspace-status">
+          <strong id="impactCount">0 impacts recorded.</strong>
+          <span id="workspaceFeedback" role="status" aria-live="polite">Target ready. Tap every bullet hole you can see.</span>
+        </div>
 
-      <div class="sl-control-grid" aria-label="Target evidence controls">
-        <label class="button" for="retakeInput">Retake Photo</label>
-        <input id="retakeInput" type="file" accept="image/*" capture="environment" hidden />
-        <label class="button" for="replaceInput">Choose Another</label>
-        <input id="replaceInput" type="file" accept="image/*" hidden />
-        <button class="button" id="undoImpact" type="button" disabled>Undo Last Mark</button>
-        <button class="button" id="clearImpacts" type="button" disabled>Clear Impacts</button>
-        <button class="button primary sl-show-results" id="showResults" type="button" disabled>Show Results</button>
+        <div class="sl-control-grid" aria-label="Target evidence controls">
+          <label class="button" for="retakeInput">Retake Photo</label>
+          <input id="retakeInput" type="file" accept="image/*" capture="environment" hidden />
+          <label class="button" for="replaceInput">Choose Another</label>
+          <input id="replaceInput" type="file" accept="image/*" hidden />
+          <button class="button" id="undoImpact" type="button" disabled>Undo Last Mark</button>
+          <button class="button" id="clearImpacts" type="button" disabled>Clear Impacts</button>
+          <button class="button primary sl-show-results" id="showResults" type="button" disabled>Show Results</button>
+        </div>
       </div>
     </section>
 

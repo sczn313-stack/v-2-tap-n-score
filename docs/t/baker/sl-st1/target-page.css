@@ -100,9 +100,9 @@ html,body{margin:0;min-height:100%;background:var(--sl-black);color:var(--sl-whi
 .sl-load-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;margin:0 auto}
 .sl-load-actions .button,.sl-control-grid .button{display:flex;align-items:center;justify-content:center;margin:0;cursor:pointer;text-decoration:none}
 
-.sl-workspace{padding:16px}
+.sl-workspace{padding:12px}
 .sl-image-frame{
-  --sl-target-fit-height:calc(100svh - 88px);
+  --sl-target-fit-height:calc(100svh - 260px);
   position:relative;
   display:grid;
   width:fit-content;
@@ -147,6 +147,20 @@ html,body{margin:0;min-height:100%;background:var(--sl-black);color:var(--sl-whi
 .sl-control-grid .sl-show-results{grid-column:1/-1}
 .sl-control-grid .button:disabled{cursor:not-allowed;opacity:.42}
 
+.sl-workflow-dock{
+  position:sticky;
+  z-index:20;
+  bottom:max(8px,env(safe-area-inset-bottom));
+  margin-top:10px;
+  padding:10px;
+  border:1px solid rgba(215,170,47,.42);
+  border-radius:14px;
+  background:rgba(6,7,10,.97);
+  box-shadow:0 14px 34px rgba(0,0,0,.46);
+  backdrop-filter:blur(14px);
+}
+.sl-workflow-dock .sl-workspace-status{padding:0 2px 10px}
+
 .sl-results{margin-top:16px;padding:22px}
 .sl-results-label{margin:0 0 5px;color:var(--sl-gold-bright);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
 .sl-results h2{margin:0 0 12px;font-size:24px}
@@ -182,7 +196,11 @@ html,body{margin:0;min-height:100%;background:var(--sl-black);color:var(--sl-whi
   .sl-load-card,.sl-workspace,.sl-results{border-radius:14px}
   .sl-load-card{padding:18px 14px}
   .sl-load-actions{grid-template-columns:1fr}
-  .sl-workspace{padding:10px}
+  .sl-workspace{padding:8px}
+  .sl-workflow-dock{margin-top:8px;padding:8px;border-radius:12px}
+  .sl-workflow-dock .sl-workspace-status{gap:3px;padding:0 2px 8px}
+  .sl-workspace-status strong{font-size:17px}
+  .sl-workspace-status span{font-size:13px;line-height:1.25}
   .sl-control-grid{gap:8px}
   .sl-control-grid .button{padding-inline:8px;font-size:11px}
   .sl-impact-marker{width:18px;height:18px}
