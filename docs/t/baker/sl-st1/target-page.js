@@ -154,18 +154,14 @@
   }
 
   function fitTargetEvidence() {
-    if (elements.workspace.hidden || !state.imageEvidence) return;
     const visualViewport = window.visualViewport;
     const viewportHeight = visualViewport && Number.isFinite(visualViewport.height)
       ? visualViewport.height
       : window.innerHeight;
     const viewportTop = visualViewport && Number.isFinite(visualViewport.offsetTop) ? visualViewport.offsetTop : 0;
     const headerBottom = elements.header ? elements.header.getBoundingClientRect().bottom : viewportTop;
-    const frameTop = Math.max(viewportTop, headerBottom, elements.imageFrame.getBoundingClientRect().top);
-    const activeDock = elements.results.hidden ? elements.workflowDock : elements.results;
-    const dockHeight = Math.ceil(activeDock.getBoundingClientRect().height);
-    const availableHeight = Math.max(72, Math.floor(viewportTop + viewportHeight - frameTop - dockHeight - 18));
-    elements.imageFrame.style.setProperty("--sl-target-fit-height", `${availableHeight}px`);
+    const workspaceHeight = Math.max(0, Math.floor(viewportTop + viewportHeight - Math.max(viewportTop, headerBottom)));
+    document.documentElement.style.setProperty("--sl-workspace-viewport-height", `${workspaceHeight}px`);
   }
 
   function queueTargetFit() {

@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8137";
-const targetPhoto = path.resolve("assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg");
+const targetPhoto = path.resolve("authority-evidence/baker-sl-st1/BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp");
 const TARGET_ID = "BAKER_SL_ST1";
 const resultPackageType = "smartEvidenceResult";
 const missionFamily = "smartEvidenceCapture";
@@ -19,9 +19,12 @@ async function assertTransitionVisible(page, viewport, label) {
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const results = document.getElementById("supportedResults").getBoundingClientRect();
       const action = document.getElementById("continueToSec").getBoundingClientRect();
+      const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
       return {
         targetUnobscured: frame.top >= Math.max(viewportTop, headerBottom),
         targetBottomVisible: frame.bottom <= viewportBottom,
+        targetDoesNotOverlapAction: frame.bottom <= results.top,
+        targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
         resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
         actionVisible: action.top >= viewportTop && action.bottom <= viewportBottom,
         horizontalOverflow: document.documentElement.scrollWidth > innerWidth
@@ -30,6 +33,8 @@ async function assertTransitionVisible(page, viewport, label) {
     assert.deepEqual(visible, {
       targetUnobscured: true,
       targetBottomVisible: true,
+      targetDoesNotOverlapAction: true,
+      targetProbeUnobscured: true,
       resultsVisible: true,
       actionVisible: true,
       horizontalOverflow: false
@@ -84,13 +89,18 @@ const browser = await chromium.launch({
 
 try {
   for (const viewport of [
-    { width: 1440, height: 1000 },
+    { width: 1050, height: 417, deviceScaleFactor: 2 },
+    { width: 1050, height: 380, deviceScaleFactor: 2 },
+    { width: 1440, height: 1000, deviceScaleFactor: 1 },
     { width: 390, height: 844 },
     { width: 390, height: 720 },
     { width: 390, height: 667 },
     { width: 390, height: 568 }
   ]) {
-    const context = await browser.newContext({ viewport });
+    const context = await browser.newContext({
+      viewport: { width: viewport.width, height: viewport.height },
+      deviceScaleFactor: viewport.deviceScaleFactor || 1
+    });
     const pageErrors = [];
     const consoleErrors = [];
     const preparation = sessionPreparation();
@@ -170,6 +180,7 @@ try {
       const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const dock = document.getElementById("workflowDock").getBoundingClientRect();
+      const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
       const controls = ["undoImpact", "clearImpacts", "showResults"].map(id => {
         const rect = document.getElementById(id).getBoundingClientRect();
         return { id, top: rect.top, bottom: rect.bottom };
@@ -177,12 +188,16 @@ try {
       return {
         viewportHeight: visualViewport?.height || innerHeight,
         fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
+        targetDoesNotOverlapAction: frame.bottom <= dock.top,
+        targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
         dockVisible: dock.top >= viewportTop && dock.bottom <= viewportBottom,
         controlsVisible: controls.every(rect => rect.top >= viewportTop && rect.bottom <= viewportBottom),
         horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth
       };
     });
     assert.equal(fit.fullTargetVisible, true, `${viewport.width}px complete target visibility`);
+    assert.equal(fit.targetDoesNotOverlapAction, true, `${viewport.width}px target must not overlap the workflow dock`);
+    assert.equal(fit.targetProbeUnobscured, true, `${viewport.width}px lower target edge must remain unobscured`);
     assert.equal(fit.dockVisible, true, `${viewport.width}px workflow dock visibility`);
     assert.equal(fit.controlsVisible, true, `${viewport.width}px Undo/Clear/Show Results visibility`);
     assert.equal(fit.horizontalOverflow, false, `${viewport.width}px horizontal containment`);
@@ -221,13 +236,16 @@ try {
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const results = document.getElementById("supportedResults").getBoundingClientRect();
       const next = document.getElementById("continueToSec").getBoundingClientRect();
+      const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
       return {
         fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
+        targetDoesNotOverlapAction: frame.bottom <= results.top,
+        targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
         resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
         nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom
       };
     });
-    assert.deepEqual(resultsFit, { fullTargetVisible: true, resultsVisible: true, nextActionVisible: true }, `${viewport.width}x${viewport.height} results gate visibility`);
+    assert.deepEqual(resultsFit, { fullTargetVisible: true, targetDoesNotOverlapAction: true, targetProbeUnobscured: true, resultsVisible: true, nextActionVisible: true }, `${viewport.width}x${viewport.height} results gate visibility`);
 
     await page.evaluate(() => {
       const saveEvidence = SCZN3M4.saveTargetEvidenceImage.bind(SCZN3M4);
@@ -247,8 +265,11 @@ try {
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const results = document.getElementById("supportedResults").getBoundingClientRect();
       const next = document.getElementById("continueToSec").getBoundingClientRect();
+      const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
       return {
         fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
+        targetDoesNotOverlapAction: frame.bottom <= results.top,
+        targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
         resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
         nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom,
         impactCount: document.querySelectorAll(".sl-impact-marker").length,
@@ -256,6 +277,8 @@ try {
       };
     });
     assert.equal(recoveredFit.fullTargetVisible, true, `${viewport.width}px retry preserves complete target visibility`);
+    assert.equal(recoveredFit.targetDoesNotOverlapAction, true, `${viewport.width}px retry preserves target/action separation`);
+    assert.equal(recoveredFit.targetProbeUnobscured, true, `${viewport.width}px retry preserves unobscured target evidence`);
     assert.equal(recoveredFit.resultsVisible, true, `${viewport.width}px retry preserves results visibility`);
     assert.equal(recoveredFit.nextActionVisible, true, `${viewport.width}px retry preserves next-action visibility`);
     assert.equal(recoveredFit.impactCount, 3, `${viewport.width}px retry preserves impact evidence`);
@@ -276,7 +299,7 @@ try {
     assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /3 Impacts/);
     const evidenceRecord = await page.evaluate(() => SCZN3M4.read(SCZN3M4.KEYS.activeSession, null).targetEvidenceImage);
     assert.equal(evidenceRecord.sha256.length, 64, "original evidence hash must be preserved");
-    assert.equal(evidenceRecord.persistedRepresentation, "geometry-preserving-display-derivative");
+    assert.match(evidenceRecord.persistedRepresentation, /^(?:original|geometry-preserving-display-derivative)$/);
     assert.ok(evidenceRecord.dataUrl.length < 430000, "persisted target representation must remain quota-safe");
     assert.equal(await page.getByRole("link", { name: /Back to Vault/i }).isVisible(), true, "Reopened SEC must expose a Vault return path");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
