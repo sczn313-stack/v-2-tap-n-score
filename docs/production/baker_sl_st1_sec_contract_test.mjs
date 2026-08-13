@@ -46,6 +46,8 @@ assert.equal(context.window.SCZN3SECDispatch.resolve(session).adapter, context.w
 assert.deepEqual(Array.from(adapter.missingOptionalDetails(session), item => item.key), ["firearm", "ammunition", "distance", "shooter"]);
 const html = adapter.render({ session, package: pkg, mode: "live" });
 assert.match(html, /2 Impacts/);
+assert.match(html, /left:20%;top:30%[^>]*>1<\/span>/);
+assert.match(html, /left:60%;top:70%[^>]*>2<\/span>/);
 assert.match(html, /Add firearm, ammunition, distance and shooter/);
 assert.doesNotMatch(html, /Not recorded|founder_verification_pending|UGO|ATP|numeric score|SIGHT CORRECTION/i);
 assert.doesNotMatch(html, /<span>Firearm<\/span>|<span>Ammunition<\/span>|<span>Distance<\/span>|<span>Shooter<\/span>/);

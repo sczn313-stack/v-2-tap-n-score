@@ -54,9 +54,14 @@ const poisoned302 = record("session-302", 302, "gssf_ac_1", "gssf", "gssfPaperPe
     { shot: 2, zone: "plusThree", xPx: 600, yPx: 710 },
     { shot: 3, zone: "plusThree", xPx: 620, yPx: 730 }
   ],
-  renderCoordinates: { hits: [] },
+  renderCoordinates: { hits: [
+    { shotId: 1, xPercent: 40, yPercent: 42 },
+    { shotId: 2, xPercent: 45, yPercent: 47 },
+    { shotId: 3, xPercent: 50, yPercent: 52 }
+  ] },
   inputs: { observationCount: 3 }
 }, {
+  targetEvidenceImage: { evidenceType: "uploaded-target-image", dataUrl: "data:image/png;base64,Z3NzZi1ldmlkZW5jZQ==", widthPx: 1125, heightPx: 1373 },
   officialMatchTimeSeconds: 7,
   gssfOfficialMatchTimeSeconds: 7,
   officialFinalScoreSeconds: 14,
@@ -172,6 +177,16 @@ try {
     await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-302");
     await page.locator(".gssf-m4-reference-sec-card").waitFor();
     assert.match(await page.locator(".gssf-m4-reference-sec-card").textContent(), /14\.00 sec/);
+    const gssfMarkers = await page.locator(".gssf-m4-reference-sec-card .history-gssf-impact").evaluateAll(markers => markers.map(marker => ({
+      label: marker.textContent.trim(),
+      left: marker.style.left,
+      top: marker.style.top
+    })));
+    assert.deepEqual(gssfMarkers, [
+      { label: "1", left: "40%", top: "42%" },
+      { label: "2", left: "45%", top: "47%" },
+      { label: "3", left: "50%", top: "52%" }
+    ], "GSSF historical SEC count identifiers match visible impacts without moving markers");
     assert.equal(await page.locator('[data-sec-stage="sight-correction"]').count(), 0, "Session #302 must not inherit Sight Correction");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px GSSF SEC must not overflow`);
 

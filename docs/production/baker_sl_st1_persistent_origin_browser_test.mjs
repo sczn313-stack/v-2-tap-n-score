@@ -187,6 +187,7 @@ try {
     throw error;
   });
   assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /1 Impact/);
+  assert.deepEqual(await page.locator(".sec-baker-impact-marker").evaluateAll(markers => markers.map(marker => marker.textContent.trim())), ["1"], "preserved historical SEC confirms its captured impact count");
   assert.equal(await page.evaluate(id => {
     const record = JSON.parse(localStorage.getItem(`SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(id)}`));
     return record.savedToSEC === true && record.authorityPackage.impacts[0].impactId === "preserved-impact-1";

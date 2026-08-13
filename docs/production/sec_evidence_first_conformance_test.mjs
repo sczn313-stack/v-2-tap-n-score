@@ -13,6 +13,8 @@ const shooterWorkspace = await readFile("shoot.html", "utf8");
 const netlifyBuild = await readFile("production/build-netlify.mjs", "utf8");
 const serverBuild = await readFile("production/build-site.mjs", "utf8");
 
+assert.match(sources["sec_framework.js"], /impacts\.map\(\(point, index\) => marker\(point, "impact-marker", index \+ 1\)\)/, "M4 SEC markers expose contiguous count identifiers");
+
 assert.match(
   sources["sec_v1.js"],
   /const REQUIRED_REGIONS = \["target", "session", "actions"\]/
@@ -65,7 +67,7 @@ assert.doesNotMatch(sources["records.html"].slice(sources["records.html"].indexO
 assert.match(sources["records.html"], /<span>Initial<\/span><strong>Confirmed Impacts<\/strong>/, "GSSF exposes the initial-target caption");
 assert.match(sources["records.html"], /<span>Analysis<\/span><strong>Shot Distribution<\/strong>/, "GSSF uses the approved scoring-analysis exception in the second evidence panel");
 assert.match(sources["records.html"], /Down Zero[\s\S]*?\+1[\s\S]*?\+3[\s\S]*?Miss \/ Other/, "GSSF analysis preserves the governed scoring buckets");
-assert.match(sources["records.html"], /function gssfEvidenceVisualForPackage\(pkg\)[\s\S]*?renderedHits\.map[\s\S]*?authorityPoint\(renderedHit\)[\s\S]*?shotNumber[\s\S]*?gssf-zone-\$\{gssfZoneTone\(hit\.zone\)\}/, "GSSF evidence markers must preserve backend coordinate, shot number, and score color alignment");
+assert.match(sources["records.html"], /function gssfEvidenceVisualForPackage\(pkg\)[\s\S]*?renderedHits\.map[\s\S]*?authorityPoint\(renderedHit\)[\s\S]*?gssf-zone-\$\{gssfZoneTone\(hit\.zone\)\}[\s\S]*?String\(index \+ 1\)/, "GSSF evidence markers must preserve backend coordinates while exposing contiguous count identifiers");
 assert.match(sources["records.html"], /Array\.isArray\(result\.shotIds\)[\s\S]*?<b>Shots:<\/b>[\s\S]*?shotIds\.join\(", "\)/, "GSSF scoring buckets must preserve authoritative shot-number lineage");
 assert.doesNotMatch(sources["records.html"], /<div class="sec-correction-call">\$\{scoreBreakdown\}<\/div>/, "GSSF must not use the oversized score hero");
 assert.doesNotMatch(sources["records.html"], /<span class="sec-save-status">Saved SEC<\/span>/, "preservation sections must not repeat the saved-state label");

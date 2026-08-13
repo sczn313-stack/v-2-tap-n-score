@@ -289,6 +289,12 @@ try {
     await assertTransitionVisible(page, viewport, "successful transition pending interval");
     await page.locator("#bakerSecView:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
+    const liveSecMarkers = await page.locator(".sec-baker-impact-marker").evaluateAll(markers => markers.map(marker => ({
+      label: marker.textContent.trim(),
+      left: marker.style.left,
+      top: marker.style.top
+    })));
+    assert.deepEqual(liveSecMarkers.map(marker => marker.label), ["1", "2", "3"], "live SEC marker identifiers must confirm the captured impact count");
     const secFit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
@@ -319,6 +325,12 @@ try {
     await page.locator(`[data-session-id="${authoritativeSessionId}"] .vault-record-link`).click();
     await page.locator(".baker-sl-st1-sec-card").waitFor();
     assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /3 Impacts/);
+    const reopenedSecMarkers = await page.locator(".sec-baker-impact-marker").evaluateAll(markers => markers.map(marker => ({
+      label: marker.textContent.trim(),
+      left: marker.style.left,
+      top: marker.style.top
+    })));
+    assert.deepEqual(reopenedSecMarkers, liveSecMarkers, "reopened SEC must preserve count identifiers and exact marker coordinates");
     const evidenceRecord = await page.evaluate(() => SCZN3M4.read(SCZN3M4.KEYS.activeSession, null).targetEvidenceImage);
     assert.equal(evidenceRecord.sha256.length, 64, "original evidence hash must be preserved");
     assert.match(evidenceRecord.persistedRepresentation, /^(?:original|geometry-preserving-display-derivative)$/);

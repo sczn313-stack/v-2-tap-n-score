@@ -123,9 +123,10 @@
       summary: `${Number(status.impactCount || 0)} confirmed impacts established the initial group. SCZN3 calculated the correction from that group's POIB to the confirmed aim point.`,
       sourceIds: lineage.sourceShotIds || [],
       overlay(render = authorityPackage.renderCoordinates || {}) {
+        const impacts = Array.isArray(render.impacts) ? render.impacts : [];
         return vector(render.vector) +
           marker(render.aim, "aim-marker", "") +
-          (render.impacts || []).map((point, index) => marker(point, "impact-marker", index + 1)).join("") +
+          impacts.map((point, index) => marker(point, "impact-marker", index + 1)).join("") +
           marker(render.poib, "poib-marker", "POIB");
       }
     };

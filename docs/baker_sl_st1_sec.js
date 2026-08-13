@@ -112,10 +112,10 @@
     const evidence = session && session.targetEvidenceImage || {};
     const imageUrl = clean(evidence.dataUrl);
     if (!imageUrl) return '<div class="sec-comparison-pending">Target photograph unavailable</div>';
-    const markers = pkg.impacts.map(impact => {
+    const markers = pkg.impacts.map((impact, index) => {
       const x = Math.max(0, Math.min(100, Number(impact.xNorm) * 100));
       const y = Math.max(0, Math.min(100, Number(impact.yNorm) * 100));
-      return `<span class="sec-baker-impact-marker" style="left:${x}%;top:${y}%" aria-hidden="true"></span>`;
+      return `<span class="sec-baker-impact-marker" style="left:${x}%;top:${y}%" aria-hidden="true">${index + 1}</span>`;
     }).join("");
     return `<div class="sec-baker-evidence-viewport"><div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker Silhouette Target with recorded impacts" /><div class="sec-baker-impact-layer">${markers}</div></div></div>`;
   }

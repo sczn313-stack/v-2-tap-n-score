@@ -890,17 +890,16 @@ function authorityVisualForPackage(pkg, { includeAim = true } = {}) {
   const parts = [];
   if (isGssfAuthorityPackage(pkg)) {
     const classifications = backendHitClassifications(pkg);
-    backendRenderedHitCoordinates(pkg).forEach((point, index) => {
+    const coordinates = backendRenderedHitCoordinates(pkg);
+    coordinates.forEach((point, index) => {
       const hit = classifications[index] || {};
-      const renderedHit = backendRenderedHitEntries(pkg)[index];
-      const shotNumber = hit.shot || (renderedHit && renderedHit.shot);
       const zoneClass = `gssf-zone-${gssfZoneTone(hit.zone)}`;
-      const label = shotNumber === undefined || shotNumber === null ? "" : String(shotNumber);
-      parts.push(markerHtml(`history-thumb-impact history-gssf-impact ${zoneClass}`, point, label, `data-backend-zone="${escapeHtml(hit.zone || "")}"`));
+      parts.push(markerHtml(`history-thumb-impact history-gssf-impact ${zoneClass}`, point, String(index + 1), `data-backend-zone="${escapeHtml(hit.zone || "")}"`));
     });
     return parts.join("");
   }
-  (render.impacts || []).forEach((point, index) => {
+  const impacts = Array.isArray(render.impacts) ? render.impacts : [];
+  impacts.forEach((point, index) => {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
   });
   if (includeAim) parts.push(markerHtml("aim-arrow", render.aim, ""));
@@ -916,12 +915,11 @@ function gssfEvidenceVisualForPackage(pkg) {
     const point = authorityPoint(renderedHit);
     if (!point) return "";
     const hit = classifications[index] || {};
-    const shotNumber = hit.shot || renderedHit.shot || index + 1;
     const zoneClass = `gssf-zone-${gssfZoneTone(hit.zone)}`;
     return markerHtml(
       `history-thumb-impact history-gssf-impact ${zoneClass}`,
       point,
-      escapeHtml(String(shotNumber)),
+      escapeHtml(String(index + 1)),
       `data-backend-zone="${escapeHtml(hit.zone || "other")}"`
     );
   }).join("");
