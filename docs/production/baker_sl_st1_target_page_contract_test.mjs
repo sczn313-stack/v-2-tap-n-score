@@ -37,7 +37,7 @@ for (const forbidden of [
 ]) {
   assert.doesNotMatch(visibleMarkup, new RegExp(forbidden, "i"));
 }
-assert.doesNotMatch(visibleMarkup, /Continue to (?:SEC|Shooter Experience Card)/i);
+assert.match(visibleMarkup, /Continue to SEC/i);
 assert.doesNotMatch(visibleMarkup, /Shot 1|order fired|firing order/i);
 assert.doesNotMatch(visibleMarkup, /scoring model|pending verification|supported analysis/i);
 assert.match(script, /Tap every bullet hole you can see\./);
@@ -47,6 +47,9 @@ assert.match(script, /requestConfirmation/);
 assert.doesNotMatch(script, /window\.confirm|\bconfirm\(/);
 assert.match(script, /xNorm/);
 assert.match(script, /yNorm/);
+assert.match(script, /authorityRequest\("prepare"/);
+assert.match(script, /authorityRequest\("start"/);
+assert.match(script, /ADAPTERS\.BAKER_SL_ST1/);
 assert.doesNotMatch(script, /function\s+(?:score|classify)|calculateScore|scoreImpact/i);
 
 assert.match(server, /\/api\/target\/baker-sl-st1\/analyze/);

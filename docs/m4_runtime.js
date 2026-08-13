@@ -185,7 +185,28 @@
     const session = sourceSession && (!active || active.sessionId !== sourceSession.sessionId)
       ? sourceSession
       : active;
-    if (!session || !session.confirmationAuthorityPackage) return null;
+    const evidencePackage = session && (session.authorityPackage || session.backendAuthorityPackage);
+    const dispatch = session && window.SCZN3SECDispatch
+      ? window.SCZN3SECDispatch.resolve(session)
+      : null;
+    const impacts = Array.isArray(evidencePackage && evidencePackage.impacts) ? evidencePackage.impacts : [];
+    const impactCount = Number(evidencePackage && evidencePackage.supportedAnalysis && evidencePackage.supportedAnalysis.impactCount);
+    const evidence = session && session.targetEvidenceImage;
+    const supportedConfirmationResult = dispatch && (
+      dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.M4_ZEROING
+      || dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.BAKER_100YD_ZEROING
+    ) && session.confirmationAuthorityPackage;
+    const supportedEvidenceResult = dispatch
+      && dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1
+      && evidencePackage
+      && evidencePackage.ok === true
+      && evidencePackage.status === "supported_analysis_ready"
+      && Number.isInteger(impactCount)
+      && impactCount >= 0
+      && impactCount === impacts.length
+      && evidence
+      && (evidence.dataUrl || evidence.mediaId);
+    if (!session || (!supportedConfirmationResult && !supportedEvidenceResult)) return null;
     const timestamp = nowStamp();
     return state.replaceSession({
       ...session,

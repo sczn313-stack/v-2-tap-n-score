@@ -109,6 +109,26 @@ def test_prepare_normalizes_three_supported_targets():
         assert result["equipmentAssessments"][0]["officialMission"]["status"] == mission_status
 
 
+def test_baker_sl_st1_uses_backend_session_authority_without_equipment_gate():
+    store = TestStore()
+    preparation = prepare_session({"targetId": "BAKER_SL_ST1", "equipmentCandidates": []}, store, now=NOW)
+    assert preparation["target"]["targetAuthorityId"] == "BAKER_SL_ST1"
+    assert preparation["missionIdentity"] == {
+        "missionFamily": "smartEvidenceCapture",
+        "missionId": "BAKER_SL_ST1_PRACTICE_EVIDENCE",
+        "resultPackageType": "smartEvidenceResult",
+    }
+    assert preparation["targetAdmission"]["status"] == "admitted"
+    assert preparation["equipmentAssessments"][0]["officialMission"]["status"] == "not_applicable"
+    result = start_session({
+        "preparationToken": preparation["preparationToken"],
+        "selectedEquipment": preparation["standardSetup"],
+    }, store, idempotency_key="idem-baker-sl-st1", now=NOW)
+    assert result["authoritativeSessionId"].startswith("sczn3-session-")
+    assert result["sessionMode"] == "target_evidence"
+    assert result["selectedEquipment"]["source"] == "backend_standard_setup"
+
+
 def test_100_yard_confirmation_authority_remains_explicitly_unavailable():
     store = TestStore()
     result = prepared(store, "baker_st_100yd_smart_zero", equipment(model="Bolt Action"))

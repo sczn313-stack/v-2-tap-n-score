@@ -23,6 +23,9 @@ function session(targetProfileId, missionFamily, resultPackageType, extra = {}) 
 const cases = [
   ["m4_25m_zero", "zeroingCorrection", "zeroCorrectionResult", dispatch.ADAPTERS.M4_ZEROING],
   ["baker_st_100yd_smart_zero", "zeroingCorrection", "zeroCorrectionResult", dispatch.ADAPTERS.BAKER_100YD_ZEROING],
+  ["BAKER_SL_ST1", "smartEvidenceCapture", "smartEvidenceResult", dispatch.ADAPTERS.BAKER_SL_ST1],
+  ["baker_sl_st1_practice", "smartEvidenceCapture", "smartEvidenceResult", dispatch.ADAPTERS.BAKER_SL_ST1],
+  ["baker-sl-st1", "smartEvidenceCapture", "smartEvidenceResult", dispatch.ADAPTERS.BAKER_SL_ST1],
   ["gssf_ac_1", "gssf", "gssfPaperPenaltyResult", dispatch.ADAPTERS.GSSF],
   ["dot_torture_ez2c_style_17", "marksmanshipTraining", "marksmanshipTrainingResult", dispatch.ADAPTERS.TRAINING],
   ["dot_torture_lite_ez2c", "marksmanshipTraining", "marksmanshipTrainingResult", dispatch.ADAPTERS.TRAINING],
@@ -58,6 +61,7 @@ const staleMatrix = [
   [session("baker_st_100yd_smart_zero", "zeroingCorrection", "zeroCorrectionResult", { totalPaperPenaltySeconds: 7, officialFinalScoreSeconds: 14 }), dispatch.ADAPTERS.BAKER_100YD_ZEROING],
   [session("dot_torture_ez2c_style_17", "marksmanshipTraining", "marksmanshipTrainingResult", { correctionData: { status: "backend-authority-calculated" }, confirmationAuthorityPackage: {} }), dispatch.ADAPTERS.TRAINING],
   [session("st_001_universal_bullseye", "universalPractice", "universalPracticeAnalysisResult", { workflowStage: "preservation", confirmationAuthorityPackage: {} }), dispatch.ADAPTERS.UNIVERSAL_PRACTICE]
+  ,[session("BAKER_SL_ST1", "smartEvidenceCapture", "smartEvidenceResult", { workflowStage: "preservation", confirmationAuthorityPackage: {}, correctionData: { status: "backend-authority-calculated" } }), dispatch.ADAPTERS.BAKER_SL_ST1]
 ];
 for (const [record, adapter] of staleMatrix) {
   assert.strictEqual(dispatch.resolve(record).adapter, adapter, `stale mission fields must not override ${adapter}`);
@@ -67,6 +71,11 @@ const conflict = session("gssf_ac_1", "gssf", "gssfPaperPenaltyResult");
 conflict.backendSessionAuthority = { target: { targetId: "m4_25m_zero" }, missionIdentity: { missionFamily: "zeroingCorrection", resultPackageType: "zeroCorrectionResult" } };
 assert.strictEqual(dispatch.resolve(conflict).adapter, dispatch.ADAPTERS.UNAVAILABLE, "contradictory authoritative identity must fail closed");
 assert.strictEqual(dispatch.resolve(conflict).reason, "identity_conflict");
+
+for (const [mission, result] of [["zeroingCorrection", "smartEvidenceResult"], ["smartEvidenceCapture", "zeroCorrectionResult"]]) {
+  const mismatchedBaker = session("BAKER_SL_ST1", mission, result);
+  assert.strictEqual(dispatch.resolve(mismatchedBaker).adapter, dispatch.ADAPTERS.UNAVAILABLE, "Baker identity must fail closed when mission or result type is wrong");
+}
 
 const unknown = session("unknown_target", "zeroingCorrection", "zeroCorrectionResult", {
   workflowStage: "preservation",

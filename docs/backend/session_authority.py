@@ -119,6 +119,30 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             "kind": "target_standard_pistol",
         },
     },
+    "baker_sl_st1": {
+        "targetId": "BAKER_SL_ST1",
+        "targetAuthorityId": "BAKER_SL_ST1",
+        "targetName": "Silhouette Target (USPSA)",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_BAKER_SL_ST1_PRACTICE_V1",
+        "missionIdentity": {
+            "missionFamily": "smartEvidenceCapture",
+            "missionId": "BAKER_SL_ST1_PRACTICE_EVIDENCE",
+            "resultPackageType": "smartEvidenceResult",
+        },
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "equipmentRequirements": {
+            "weaponCategories": [],
+            "requiresAdjustmentSystem": False,
+            "allowedAdjustmentUnits": [],
+        },
+        "standardSetupAuthority": {
+            "setupId": "baker-sl-st1-optional-equipment",
+            "authorityId": "ATP_BAKER_SL_ST1_PRACTICE_V1",
+            "kind": "target_optional_equipment",
+        },
+        "officialMissionRequired": False,
+    },
 }
 
 TARGET_ID_ALIASES = {
@@ -126,6 +150,8 @@ TARGET_ID_ALIASES = {
     "st-m16a2/m4": "m4_25m_zero",
     "baker_st_100yd_smart": "baker_st_100yd_smart_zero",
     "gssf-ac-1": "gssf_ac_1",
+    "baker_sl_st1": "baker_sl_st1",
+    "baker-sl-st1": "baker_sl_st1",
 }
 
 
@@ -275,6 +301,17 @@ def standard_setup_for(profile: Mapping[str, Any]) -> Dict[str, Any]:
             "adjustmentUnit": "",
             "clickValue": None,
         }
+    elif kind == "target_optional_equipment":
+        candidate = {
+            "candidateId": authority["setupId"],
+            "weaponCategory": "",
+            "manufacturer": "",
+            "modelType": "",
+            "modelCaliber": "",
+            "opticType": "",
+            "adjustmentUnit": "",
+            "clickValue": None,
+        }
     else:
         raise SessionAuthorityError("authority_unavailable", "standard_setup_authority_unavailable", 503)
 
@@ -318,6 +355,14 @@ def official_mission_eligibility(profile: Mapping[str, Any], candidate: Mapping[
     target_id = profile["targetId"]
     category = clean_text(candidate.get("weaponCategory"))
     equipment_authority_id = clean_text(candidate.get("equipmentAuthorityRecordId"))
+
+    if profile.get("officialMissionRequired") is False:
+        return {
+            "status": "not_applicable",
+            "missionId": profile["missionIdentity"]["missionId"],
+            "reasons": ["product_supports_practice_evidence_without_official_mission_claim"],
+            "restrictionIds": [],
+        }
 
     if target_id == "m4_25m_zero":
         if equipment_authority_id == M4_STANDARD_EQUIPMENT_AUTHORITY_ID:

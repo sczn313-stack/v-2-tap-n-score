@@ -122,6 +122,8 @@ def analyze_baker_sl_st1_evidence(payload: Any) -> Dict[str, Any]:
     return {
         "ok": True,
         "status": "supported_analysis_ready",
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
         "target": {
             "smartTargetId": identity["smartTargetId"],
             "variantId": expected_variant,
@@ -149,7 +151,7 @@ def analyze_baker_sl_st1_evidence(payload: Any) -> Dict[str, Any]:
             "reason": "printer_product_scoring_model_founder_verification_pending",
         },
         "continuation": {
-            "status": "unavailable",
-            "reason": "universal_sec_phase_not_implemented",
+            "status": "available",
+            "nextAction": "continue_to_universal_sec",
         },
     }

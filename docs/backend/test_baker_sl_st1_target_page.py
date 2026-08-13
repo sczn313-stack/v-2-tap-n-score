@@ -32,6 +32,8 @@ def run():
     result = analyze_baker_sl_st1_evidence(evidence_payload())
     assert result["ok"] is True
     assert result["status"] == "supported_analysis_ready"
+    assert result["missionFamily"] == "smartEvidenceCapture"
+    assert result["resultPackageType"] == "smartEvidenceResult"
     assert result["target"] == {
         "smartTargetId": "BAKER_SL_ST1",
         "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
@@ -45,7 +47,10 @@ def run():
     ]
     assert result["productRegionDistribution"]["status"] == "unavailable"
     assert result["scoring"]["status"] == "unavailable"
-    assert result["continuation"]["status"] == "unavailable"
+    assert result["continuation"] == {
+        "status": "available",
+        "nextAction": "continue_to_universal_sec",
+    }
     assert "score" not in result["supportedAnalysis"]
 
     wrong_target = evidence_payload()

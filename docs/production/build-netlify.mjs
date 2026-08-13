@@ -31,6 +31,7 @@ const publicFiles = [
   "sec_v1.js",
   "universal_practice_sec.js",
   "m4_smart_target_sec.js",
+  "baker_sl_st1_sec.js",
   "founder_review_session_003.js",
   "vendor/html2canvas-1.4.1.min.js",
   "shell.js",
@@ -43,6 +44,7 @@ const publicFiles = [
   "workspace_correction_context.css",
   "m4-sec.css",
   "sec-universal.css",
+  "baker-sl-st1-sec.css",
   "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
   "authority-evidence/m4-target-reconstruction/M4_M16_25M_WORKSPACE_PRESENTATION.svg",
 ];

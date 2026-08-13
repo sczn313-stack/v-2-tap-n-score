@@ -74,6 +74,17 @@ const poisoned302 = record("session-302", 302, "gssf_ac_1", "gssf", "gssfPaperPe
 
 const records = [
   poisoned302,
+  record("session-baker-sl", 303, "BAKER_SL_ST1", "smartEvidenceCapture", "smartEvidenceResult", {
+    status: "supported_analysis_ready",
+    target: { smartTargetId: "BAKER_SL_ST1", variantId: "BAKER_SL_ST1_23X35_STANDARD_WHITE" },
+    supportedAnalysis: { impactCount: 2 },
+    impacts: [{ impactId: "impact-001", xNorm: .42, yNorm: .35 }, { impactId: "impact-002", xNorm: .55, yNorm: .52 }]
+  }, {
+    targetEvidenceImage: { dataUrl: "data:image/png;base64,c2wtc3Qx", widthPx: 1141, heightPx: 1500 },
+    workflowStage: "preservation",
+    confirmationAuthorityPackage: { status: { hasCorrection: true } },
+    correctionData: { status: "backend-authority-calculated", clicks: { elevation: 4 } }
+  }),
   record("session-m4", 301, "m4_25m_zero", "zeroingCorrection", "zeroCorrectionResult", { status: { hasCorrection: true } }, {
     workflowStage: "preservation", confirmationAuthorityPackage: { status: { hasCorrection: true } }, confirmationImpactPoints: [{ x: 1, y: 1 }]
   }),
@@ -121,15 +132,41 @@ try {
     }));
     assert.equal(storageProbe.history.length, records.length, "browser fixture must preserve every session history reference");
     assert.equal(storageProbe.record302 && storageProbe.record302.sessionId, "session-302", "browser fixture must preserve Session #302");
+    const preservationProbe = await page.evaluate(() => {
+      const baker = window.SCZN3M4.getSessionHistory().find(session => session.sessionId === "session-baker-sl");
+      const saved = window.SCZN3M4.preserveActiveSEC("", baker);
+      const generic = JSON.parse(JSON.stringify(baker));
+      generic.sessionId = "session-unregistered-evidence";
+      generic.authoritativeSessionId = generic.sessionId;
+      generic.matrixSnapshot.target_profile_id = "unknown_target";
+      generic.authorityPackage.target_profile_id = "unknown_target";
+      generic.authorityPackage.target.smartTargetId = "unknown_target";
+      return {
+        saved: Boolean(saved && saved.savedToSEC && saved.sessionId === "session-baker-sl"),
+        rejectedGeneric: window.SCZN3M4.preserveActiveSEC("", generic) === null
+      };
+    });
+    assert.deepEqual(preservationProbe, { saved: true, rejectedGeneric: true }, "only a dispatch-validated Baker evidence result may be preserved");
     const renderedRecordCount = await page.locator("[data-session-id]").count();
     assert.equal(renderedRecordCount, records.length, `Vault must render every fixture record; app history: ${storageProbe.appHistory && storageProbe.appHistory.length}; page errors: ${pageErrors.join(" | ")}; body: ${storageProbe.bodyText}`);
     const href = async id => page.locator(`[data-session-id="${id}"] .vault-record-link`).getAttribute("href");
     assert.match(await href("session-302"), /^records\.html\?session=session-302&view=sec$/, "Session #302 must select the GSSF historical SEC");
+    assert.match(await href("session-baker-sl"), /^records\.html\?session=session-baker-sl&view=sec$/, "Baker SL-ST1 must select its historical SEC");
     assert.match(await href("session-m4"), /^sec\.html\?sessionId=session-m4/, "M4 must select the preserved zeroing SEC");
     assert.match(await href("session-100"), /^records\.html\?session=session-100&view=sec$/, "100 Yard must select its records adapter");
     assert.match(await href("session-training"), /^records\.html\?session=session-training&view=sec$/, "training must select its records adapter");
     assert.match(await href("session-practice"), /^records\.html\?session=session-practice&view=sec$/, "Universal Practice must select its records adapter");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px Vault must not overflow`);
+
+    await page.locator('[data-session-id="session-baker-sl"] .vault-record-link').click();
+    await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-baker-sl");
+    await page.locator(".baker-sl-st1-sec-card").waitFor();
+    assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /2 Impacts/);
+    assert.equal(await page.locator('[data-sec-stage="sight-correction"]').count(), 0, "Baker SL-ST1 must not inherit Sight Correction");
+    assert.equal((await page.locator(".baker-sl-st1-sec-card").textContent()).includes("Confirmation not recorded"), false, "Baker SL-ST1 must not report missing confirmation");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px Baker SL-ST1 SEC must not overflow`);
+
+    await page.goto(`${baseUrl}/records.html?release=universal-sec-dispatch`, { waitUntil: "networkidle" });
 
     await page.locator('[data-session-id="session-302"] .vault-record-link').click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-302");

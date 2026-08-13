@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="ballistic-vault.css" />
 <link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
+<link rel="stylesheet" href="baker-sl-st1-sec.css?v=item6-phase5-dispatch" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
 <script src="navigation.js" defer></script>
 </head>
@@ -49,6 +50,7 @@
 <script src="sec_v1.js"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
+<script src="baker_sl_st1_sec.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
@@ -1072,8 +1074,16 @@ function vaultScoringPanel(pkg) {
   return `<div class="vault-target-panel vault-scoring-panel" aria-label="Saved GSSF scoring analysis">${breakdown.slice(0, 4).map(bucket => `<span><b>${escapeHtml(bucket.zone === "downZero" ? "Down Zero" : bucket.zone === "plusOne" ? "+1" : bucket.zone === "plusThree" ? "+3" : "Miss / Other")}</b><strong>${escapeHtml(bucket.source && bucket.source.count || 0)}</strong></span>`).join("")}</div>`;
 }
 
+function vaultBakerImpactPanel(pkg) {
+  const count = window.SCZN3BakerSLST1SEC ? SCZN3BakerSLST1SEC.impactCount(pkg) : null;
+  if (count === null) return `<div class="vault-target-panel vault-scoring-panel"><strong>Impact analysis</strong><span>Saved result unavailable</span></div>`;
+  return `<div class="vault-target-panel vault-scoring-panel" aria-label="Saved Baker impact analysis"><strong>${escapeHtml(count)}</strong><span>${escapeHtml(count === 1 ? "Impact recorded" : "Impacts recorded")}</span></div>`;
+}
+
 function renderCompactVaultRecord(session) {
   const pkg = authorityPackage(session);
+  const dispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(session) : null;
+  const bakerSLST1 = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1;
   const evidence = session.targetEvidenceImage || {};
   const confirmationEvidence = session.confirmationEvidenceImage || {};
   const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
@@ -1093,6 +1103,8 @@ function renderCompactVaultRecord(session) {
   );
   const after = isGssfAuthorityPackage(pkg)
     ? vaultScoringPanel(pkg)
+    : bakerSLST1
+      ? vaultBakerImpactPanel(pkg)
     : confirmationEvidence.dataUrl
       ? vaultTargetPanel(confirmationEvidence.dataUrl, `${sessionLabel} saved confirmation evidence`, authorityVisualForPackage(session.confirmationAuthorityPackage, { includeAim: false }), "", confirmationEvidence)
       : vaultTargetPanel("", "", "", "Confirmation not recorded");
@@ -1102,7 +1114,7 @@ function renderCompactVaultRecord(session) {
         <header><strong>${escapeHtml(sessionLabel)}</strong><time datetime="${escapeHtml(vaultDateTimeAttribute(preservedAt))}">${escapeHtml(cleanVaultDate(preservedAt))}</time></header>
         <div class="vault-evidence-pair">
           <figure><figcaption>BEFORE</figcaption>${before}</figure>
-          <figure><figcaption>${isGssfAuthorityPackage(pkg) ? "ANALYSIS" : "AFTER"}</figcaption>${after}</figure>
+          <figure><figcaption>${isGssfAuthorityPackage(pkg) || bakerSLST1 ? "ANALYSIS" : "AFTER"}</figcaption>${after}</figure>
         </div>
         <span class="vault-open-label">OPEN SEC →</span>
       </a>
@@ -1388,6 +1400,9 @@ function renderHistory() {
     const dispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(session) : null;
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING) {
       return renderM4VaultEntry(session);
+    }
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
+      return SCZN3BakerSLST1SEC.render({ session, package: pkg, mode: "historical" });
     }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.UNIVERSAL_PRACTICE && window.SCZN3UniversalPracticeSEC) {
       return SCZN3UniversalPracticeSEC.render({ session, package: pkg });

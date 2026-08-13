@@ -8,8 +8,16 @@
   <title>Silhouette Target (USPSA) · Tap-n-Score</title>
   <link rel="stylesheet" href="../../../styles.css" />
   <link rel="stylesheet" href="../../../universal-ui.css" />
+  <link rel="stylesheet" href="../../../m4-sec.css" />
+  <link rel="stylesheet" href="../../../sec-universal.css" />
+  <link rel="stylesheet" href="../../../baker-sl-st1-sec.css" />
   <link rel="stylesheet" href="target-page.css" />
   <script src="../../../navigation.js" defer></script>
+  <script src="../../../app_state.js" defer></script>
+  <script src="../../../sec_dispatch.js?v=universal-sec-dispatch-2" defer></script>
+  <script src="../../../m4_runtime.js" defer></script>
+  <script src="../../../sec_v1.js" defer></script>
+  <script src="../../../baker_sl_st1_sec.js" defer></script>
   <script src="target-page.js" defer></script>
 </head>
 <body class="platform-page target-page sl-target-page">
@@ -73,7 +81,12 @@
       <h2 id="resultsTitle">Your impacts are ready to review.</h2>
       <strong id="resultImpactCount">0 impacts recorded.</strong>
       <p>Review the marked target above.</p>
+      <button class="button primary" id="continueToSec" type="button">Continue to SEC</button>
     </section>
+  </main>
+
+  <main class="sl-sec-shell" id="bakerSecView" hidden>
+    <div id="bakerSecRoot"></div>
   </main>
 
   <div class="sl-confirm-dialog" id="confirmationDialog" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" aria-describedby="confirmationMessage" hidden>

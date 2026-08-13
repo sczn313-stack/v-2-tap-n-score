@@ -4,6 +4,7 @@
   const ADAPTERS = Object.freeze({
     M4_ZEROING: "m4-zeroing",
     BAKER_100YD_ZEROING: "baker-100yd-zeroing",
+    BAKER_SL_ST1: "baker-sl-st1",
     GSSF: "gssf",
     TRAINING: "marksmanship-training",
     UNIVERSAL_PRACTICE: "universal-practice",
@@ -11,7 +12,9 @@
   });
 
   const TARGET_ALIASES = Object.freeze({
-    baker_st_100yd_smart: "baker_st_100yd_smart_zero"
+    baker_st_100yd_smart: "baker_st_100yd_smart_zero",
+    baker_sl_st1_practice: "baker_sl_st1",
+    "baker-sl-st1": "baker_sl_st1"
   });
 
   const TRAINING_TARGETS = new Set([
@@ -111,6 +114,9 @@
     }
     if (target === "baker_st_100yd_smart_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.BAKER_100YD_ZEROING;
+    }
+    if (target === "baker_sl_st1" && mission === "smartevidencecapture" && result === "smartevidenceresult") {
+      return ADAPTERS.BAKER_SL_ST1;
     }
     if (target === "gssf_ac_1" && mission === "gssf" && result === "gssfpaperpenaltyresult") {
       return ADAPTERS.GSSF;
