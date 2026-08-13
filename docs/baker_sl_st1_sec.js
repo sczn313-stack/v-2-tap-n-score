@@ -117,7 +117,7 @@
       const y = Math.max(0, Math.min(100, Number(impact.yNorm) * 100));
       return `<span class="sec-baker-impact-marker" style="left:${x}%;top:${y}%" aria-hidden="true"></span>`;
     }).join("");
-    return `<div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker Silhouette Target with recorded impacts" /><div class="sec-baker-impact-layer">${markers}</div></div>`;
+    return `<div class="sec-baker-evidence-viewport"><div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker Silhouette Target with recorded impacts" /><div class="sec-baker-impact-layer">${markers}</div></div></div>`;
   }
 
   function detailsInvitationHtml(session, mode, dismissed) {

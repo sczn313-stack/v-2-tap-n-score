@@ -16,7 +16,7 @@ const browser = await chromium.launch({
 });
 
 try {
-  const context = await browser.newContext({ viewport: { width: 1050, height: 417 }, deviceScaleFactor: 2 });
+  const context = await browser.newContext({ viewport: { width: 1238, height: 887 }, deviceScaleFactor: 2 });
   const page = await context.newPage();
   const consoleMessages = [];
   page.on("console", message => consoleMessages.push(message.text()));
@@ -150,6 +150,27 @@ try {
 
   assert.equal(await page.locator("#bakerSecView:not([hidden])").count(), 1,
     `dirty-origin continuation failed: ${consoleMessages.filter(message => /continuation failed|QuotaExceeded/i.test(message)).join(" | ")}`);
+  const secFit = await page.evaluate(() => {
+    const viewportTop = visualViewport?.offsetTop || 0;
+    const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+    const evidence = document.querySelector(".sec-baker-evidence-frame").getBoundingClientRect();
+    const action = document.querySelector("[data-baker-save-sec]").getBoundingClientRect();
+    const evidenceProbe = document.elementFromPoint(evidence.left + (evidence.width / 2), evidence.bottom - 2);
+    return {
+      completeEvidenceVisible: evidence.top >= viewportTop && evidence.bottom <= viewportBottom,
+      nextActionVisible: action.top >= viewportTop && action.bottom <= viewportBottom,
+      evidenceDoesNotOverlapAction: evidence.bottom <= action.top,
+      evidenceProbeUnobscured: document.querySelector(".sec-baker-evidence-frame").contains(evidenceProbe),
+      horizontalOverflow: document.documentElement.scrollWidth > innerWidth
+    };
+  });
+  assert.deepEqual(secFit, {
+    completeEvidenceVisible: true,
+    nextActionVisible: true,
+    evidenceDoesNotOverlapAction: true,
+    evidenceProbeUnobscured: true,
+    horizontalOverflow: false
+  }, "dirty-origin SEC evidence and preservation-action visibility");
   const reports = await page.evaluate(() => window.__SCZN3_STORAGE_GC_REPORTS__ || []);
   const report = reports.find(candidate => candidate.removedSessionKeys.length > 0 || candidate.removedMediaKeys.length > 0);
   assert.ok(report && report.removedSessionKeys.length > 0, "orphan session records must be reclaimed");

@@ -89,6 +89,7 @@ const browser = await chromium.launch({
 
 try {
   for (const viewport of [
+    { width: 1238, height: 887, deviceScaleFactor: 2 },
     { width: 1050, height: 417, deviceScaleFactor: 2 },
     { width: 1050, height: 380, deviceScaleFactor: 2 },
     { width: 1440, height: 1000, deviceScaleFactor: 1 },
@@ -288,6 +289,27 @@ try {
     await assertTransitionVisible(page, viewport, "successful transition pending interval");
     await page.locator("#bakerSecView:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
+    const secFit = await page.evaluate(() => {
+      const viewportTop = visualViewport?.offsetTop || 0;
+      const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+      const evidence = document.querySelector(".sec-baker-evidence-frame").getBoundingClientRect();
+      const action = document.querySelector("[data-baker-save-sec]").getBoundingClientRect();
+      const evidenceProbe = document.elementFromPoint(evidence.left + (evidence.width / 2), evidence.bottom - 2);
+      return {
+        completeEvidenceVisible: evidence.top >= viewportTop && evidence.bottom <= viewportBottom,
+        nextActionVisible: action.top >= viewportTop && action.bottom <= viewportBottom,
+        evidenceDoesNotOverlapAction: evidence.bottom <= action.top,
+        evidenceProbeUnobscured: document.querySelector(".sec-baker-evidence-frame").contains(evidenceProbe),
+        horizontalOverflow: document.documentElement.scrollWidth > innerWidth
+      };
+    });
+    assert.deepEqual(secFit, {
+      completeEvidenceVisible: true,
+      nextActionVisible: true,
+      evidenceDoesNotOverlapAction: true,
+      evidenceProbeUnobscured: true,
+      horizontalOverflow: false
+    }, `${viewport.width}x${viewport.height} SEC evidence and preservation-action visibility`);
     await page.locator("[data-baker-save-sec]").click();
     await page.locator("[data-baker-sec-status]").waitFor();
     assert.match(await page.locator("[data-baker-sec-status]").textContent(), /saved to Ballistic Vault/i);

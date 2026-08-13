@@ -16,6 +16,7 @@
 .baker-sl-st1-sec-card .sec-baker-target-evidence figure{margin:0;display:grid;gap:10px}
 .baker-sl-st1-sec-card .sec-baker-target-evidence figcaption{color:#f4c64f;font-weight:900;text-align:center}
 .sec-baker-evidence-frame{position:relative;width:100%;aspect-ratio:23/35;overflow:hidden;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:#e9e7e1}
+.sec-baker-evidence-viewport{min-width:0;min-height:0}
 .sec-baker-evidence-frame img{display:block;width:100%;height:100%;object-fit:contain}
 .sec-baker-impact-layer{position:absolute;inset:0;pointer-events:none}
 .sec-baker-impact-marker{position:absolute;width:18px;height:18px;border:3px solid #f4c64f;border-radius:50%;background:rgba(6,7,10,.62);box-shadow:0 0 0 2px rgba(0,0,0,.72);transform:translate(-50%,-50%)}
@@ -30,5 +31,83 @@
 .sec-baker-details-form label{display:grid;gap:6px;color:#111;font-size:12px;font-weight:900;text-transform:uppercase}
 .sec-baker-details-form input{min-width:0;height:42px;padding:8px 10px;border:1px solid rgba(255,255,255,.22);border-radius:10px;background:#090a0d;color:#fff}
 .sec-baker-details-form>div{grid-column:1/-1}
+
+/* Live SECs continue the visible-viewport contract established by the Target Workspace. */
+.sl-target-page.sl-workspace-active .sl-sec-shell:not([hidden]){
+  height:var(--sl-workspace-viewport-height,calc(100dvh - 58px));
+  margin:0 auto;
+  padding:8px 0;
+  overflow:hidden;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"],
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-flow{
+  height:calc(var(--sl-workspace-viewport-height,calc(100dvh - 58px)) - 16px)!important;
+  max-height:calc(var(--sl-workspace-viewport-height,calc(100dvh - 58px)) - 16px);
+  min-height:0;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-flow{
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr) auto auto;
+  gap:10px;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-target{
+  grid-column:1;
+  grid-row:1;
+  position:relative;
+  display:block;
+  min-height:0;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-target>.sec-historical-target-body,
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-baker-target-evidence,
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-baker-target-evidence figure{
+  min-height:0;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-target>.sec-historical-target-body{
+  position:absolute;
+  inset:46px 0 0;
+  overflow:hidden;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-baker-target-evidence{
+  height:100%;
+  grid-template-rows:auto minmax(0,1fr);
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-baker-target-evidence figure{
+  height:100%;
+  grid-template-rows:minmax(0,1fr) auto;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-baker-evidence-viewport{
+  position:relative;
+  overflow:hidden;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-baker-evidence-frame{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:auto;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  transform:translateX(-50%);
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-actions{
+  grid-column:1;
+  grid-row:2;
+  min-width:0;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-session{
+  grid-column:1;
+  grid-row:3;
+  min-width:0;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-actions .sec-preservation-actions{
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  overscroll-behavior-inline:contain;
+}
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-actions .sec-preservation-actions .button,
+.sl-target-page .baker-sl-st1-sec-card[data-sec-mode="live"] .sec-v1-actions .sec-preservation-actions a{
+  flex:0 0 auto;
+}
 @media(max-width:520px){.baker-sl-st1-sec-card .sec-baker-target-evidence>header{align-items:flex-start;flex-direction:column;gap:4px}.baker-sl-st1-sec-card .sec-baker-target-evidence>header strong{text-align:left}.sec-baker-details-form{grid-template-columns:1fr}.sec-baker-impact-marker{width:16px;height:16px}}
 @media(max-width:520px){.baker-sl-st1-sec-card .sec-v1-flow{grid-template-columns:1fr}.baker-sl-st1-sec-card .sec-v1-target,.baker-sl-st1-sec-card .sec-collapsible-stage{grid-column:1}}
