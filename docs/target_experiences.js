@@ -48,9 +48,11 @@
       id: "uspsa-practice-target",
       name: "USPSA Practice Target",
       description: "Practice scoring your USPSA shooting.",
-      status: "coming-soon",
+      status: "available",
       thumbnail: "assets/landing-package-range-card-2.png",
-      thumbnailAlt: "USPSA practice target preview"
+      thumbnailAlt: "USPSA practice target preview",
+      targetId: "BAKER_SL_ST1",
+      href: "t/baker/sl-st1/"
     },
     {
       id: "idpa-practice-target",

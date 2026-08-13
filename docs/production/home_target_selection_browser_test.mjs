@@ -39,10 +39,14 @@ try {
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
   assert.match(await page.locator("#catalogTitle").textContent(), /TAP\s*your target below/);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').count(), 3);
+  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').count(), 4);
   assert.equal(await page.locator('.ecosystem-target-card[data-status="coming-soon"]').evaluateAll(cards => cards.every(card => card.tagName === "ARTICLE" && getComputedStyle(card).cursor !== "pointer")), true);
   assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').evaluateAll(cards => cards.every(card => card.tagName === "A" && /Tap to Begin/.test(card.textContent))), true);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count(), 3);
+  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count(), 4);
+  const slSt1Card = page.locator('[data-experience-id="uspsa-practice-target"]');
+  assert.equal(await slSt1Card.getAttribute("data-status"), "available");
+  assert.equal(await slSt1Card.getAttribute("href"), "t/baker/sl-st1/");
+  assert.match(await slSt1Card.textContent(), /Tap to Begin/);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
 
   await page.locator('[data-experience-id="gssf-practice-target"]').click();
@@ -73,7 +77,7 @@ try {
   for (let visit = 1; visit <= 4; visit += 1) {
     await visitPage.goto(`${baseUrl}/index.html?catalog_test_view=${visit}`, { waitUntil: "domcontentloaded" });
     const cueCount = await visitPage.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count();
-    assert.equal(cueCount, visit <= 3 ? 3 : 0, `catalog view ${visit} discovery cue state`);
+    assert.equal(cueCount, visit <= 3 ? 4 : 0, `catalog view ${visit} discovery cue state`);
   }
   assert.equal(await visitPage.evaluate(() => localStorage.getItem("SCZN3_TARGET_CATALOG_VIEW_COUNT_V1")), "4");
   await visitContext.close();
