@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8137";
-const targetPhoto = path.resolve("assets/gssf_ac_1_clean_reference.png");
+const targetPhoto = path.resolve("assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg");
 const TARGET_ID = "BAKER_SL_ST1";
 const resultPackageType = "smartEvidenceResult";
 const missionFamily = "smartEvidenceCapture";
@@ -62,9 +62,12 @@ try {
     const preparation = sessionPreparation();
     const authoritativeSessionId = `sl-st1-flow-${viewport.width}`;
     const page = await context.newPage();
+    let startAttempts = 0;
 
     page.on("pageerror", error => pageErrors.push(error.message));
-    page.on("console", message => { if (message.type() === "error") consoleErrors.push(message.text()); });
+    page.on("console", message => {
+      if (message.type() === "error" && !message.text().includes("503 (Service Unavailable)")) consoleErrors.push(message.text());
+    });
 
     await context.route("**/api/target/baker-sl-st1/analyze", async route => {
       const request = route.request().postDataJSON();
@@ -90,6 +93,11 @@ try {
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(preparation.body) });
     });
     await context.route("**/api/session/start", async route => {
+      startAttempts += 1;
+      if (startAttempts === 1) {
+        await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false, error: "intentional-recovery-test" }) });
+        return;
+      }
       const request = route.request().postDataJSON();
       assert.equal(request.preparationToken, "prepare-baker-sl-st1");
       assert.deepEqual(request.selectedEquipment, preparation.standardSetup);
@@ -167,6 +175,25 @@ try {
     assert.match(await page.locator("#resultImpactCount").textContent(), /^3 impacts/);
 
     await page.locator("#continueToSec").click();
+    await page.getByText("Your target is ready. Try Continue to SEC again.").waitFor();
+    const recoveredFit = await page.evaluate(() => {
+      const frame = document.getElementById("imageFrame").getBoundingClientRect();
+      const dock = document.getElementById("workflowDock").getBoundingClientRect();
+      const controls = ["undoImpact", "clearImpacts", "showResults"].map(id => document.getElementById(id).getBoundingClientRect());
+      return {
+        fullTargetVisible: frame.top >= 0 && frame.bottom <= window.innerHeight,
+        dockVisible: dock.top >= 0 && dock.bottom <= window.innerHeight,
+        controlsVisible: controls.every(rect => rect.top >= 0 && rect.bottom <= window.innerHeight),
+        impactCount: document.querySelectorAll(".sl-impact-marker").length,
+        resultsVisible: !document.getElementById("supportedResults").hidden
+      };
+    });
+    assert.equal(recoveredFit.fullTargetVisible, true, `${viewport.width}px retry preserves complete target visibility`);
+    assert.equal(recoveredFit.dockVisible, true, `${viewport.width}px retry preserves workflow visibility`);
+    assert.equal(recoveredFit.controlsVisible, true, `${viewport.width}px retry preserves workflow controls`);
+    assert.equal(recoveredFit.impactCount, 3, `${viewport.width}px retry preserves impact evidence`);
+    assert.equal(recoveredFit.resultsVisible, true, `${viewport.width}px retry preserves results`);
+    await page.locator("#continueToSec").click();
     await page.locator("#bakerSecView:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
     await page.locator("[data-baker-save-sec]").click();
@@ -178,6 +205,10 @@ try {
     await page.locator(`[data-session-id="${authoritativeSessionId}"] .vault-record-link`).click();
     await page.locator(".baker-sl-st1-sec-card").waitFor();
     assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /3 Impacts/);
+    const evidenceRecord = await page.evaluate(() => SCZN3M4.read(SCZN3M4.KEYS.activeSession, null).targetEvidenceImage);
+    assert.equal(evidenceRecord.sha256.length, 64, "original evidence hash must be preserved");
+    assert.equal(evidenceRecord.persistedRepresentation, "geometry-preserving-display-derivative");
+    assert.ok(evidenceRecord.dataUrl.length < 430000, "persisted target representation must remain quota-safe");
     assert.equal(await page.getByRole("link", { name: /Back to Vault/i }).isVisible(), true, "Reopened SEC must expose a Vault return path");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     assert.deepEqual(pageErrors, []);

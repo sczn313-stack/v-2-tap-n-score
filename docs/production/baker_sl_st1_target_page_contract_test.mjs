@@ -65,6 +65,9 @@ assert.match(html, /id="workflowDock"/);
 assert.match(css, /\.sl-workflow-dock\{[\s\S]*?position:sticky/);
 assert.match(script, /dockHeight = Math\.ceil\(elements\.workflowDock\.getBoundingClientRect\(\)\.height\)/);
 assert.match(script, /viewportHeight - frameTop - dockHeight/);
+assert.match(script, /getBoundingClientRect\(\)\.top \+ window\.scrollY/);
+assert.match(script, /geometry-preserving-display-derivative/);
+assert.match(script, /maximumStoredBytes = 320000/);
 assert.match(script, /Add another impact, undo or clear a mark, or show results\./);
 
 console.log("PASS Baker SL-ST1 Phase 4 Target Page presentation contract");

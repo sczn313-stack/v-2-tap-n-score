@@ -24,7 +24,7 @@
     confirmationAccept: document.getElementById("confirmationAccept"), inputs: Array.from(document.querySelectorAll('input[type="file"]'))
   };
 
-  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", impacts: [], pending: false, result: null, preserved: false };
+  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false };
   const impactMessage = count => `${count} ${count === 1 ? "impact" : "impacts"} recorded.`;
   const setFeedback = message => { elements.feedback.textContent = message; };
 
@@ -96,9 +96,58 @@
     });
   }
 
+  function blobDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function canvasBlob(canvas, quality) {
+    return new Promise((resolve, reject) => canvas.toBlob(blob => {
+      if (blob) resolve(blob);
+      else reject(new Error("evidence_representation_unavailable"));
+    }, "image/jpeg", quality));
+  }
+
+  async function persistenceRepresentation(url, dimensions, originalDataUrl) {
+    const maximumStoredBytes = 320000;
+    if (new TextEncoder().encode(originalDataUrl).byteLength <= maximumStoredBytes) {
+      return { dataUrl: originalDataUrl, mediaType: originalDataUrl.slice(5, originalDataUrl.indexOf(";")), derivative: false };
+    }
+    const source = new Image();
+    await new Promise((resolve, reject) => {
+      source.onload = resolve;
+      source.onerror = reject;
+      source.src = url;
+    });
+    let maximumDimension = 1200;
+    let quality = 0.82;
+    let best = null;
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      const scale = Math.min(1, maximumDimension / Math.max(dimensions.widthPx, dimensions.heightPx));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(dimensions.widthPx * scale));
+      canvas.height = Math.max(1, Math.round(dimensions.heightPx * scale));
+      const context = canvas.getContext("2d", { alpha: false });
+      context.fillStyle = "#fff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(source, 0, 0, canvas.width, canvas.height);
+      const blob = await canvasBlob(canvas, quality);
+      const dataUrl = await blobDataUrl(blob);
+      best = { dataUrl, mediaType: "image/jpeg", widthPx: canvas.width, heightPx: canvas.height, sizeBytes: blob.size, derivative: true };
+      if (new TextEncoder().encode(dataUrl).byteLength <= maximumStoredBytes) return best;
+      if (quality > 0.58) quality -= 0.08;
+      else maximumDimension = Math.max(720, Math.round(maximumDimension * 0.82));
+    }
+    return best;
+  }
+
   function fitTargetEvidence() {
     if (elements.workspace.hidden || !state.imageEvidence) return;
-    const frameTop = Math.max(0, elements.imageFrame.getBoundingClientRect().top);
+    const frameTop = Math.max(0, elements.imageFrame.getBoundingClientRect().top + window.scrollY);
     const viewportHeight = window.visualViewport && Number.isFinite(window.visualViewport.height)
       ? window.visualViewport.height
       : window.innerHeight;
@@ -120,10 +169,23 @@
     const nextUrl = URL.createObjectURL(file);
     try {
       const [sha256, dimensions, dataUrl] = await Promise.all([digestFile(file), imageDimensions(nextUrl), fileDataUrl(file)]);
+      const storedRepresentation = await persistenceRepresentation(nextUrl, dimensions, dataUrl);
       if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
       state.imageUrl = nextUrl;
       state.imageDataUrl = dataUrl;
-      state.imageEvidence = { sha256, mediaType: file.type, widthPx: dimensions.widthPx, heightPx: dimensions.heightPx };
+      state.persistedImageDataUrl = storedRepresentation.dataUrl;
+      state.imageEvidence = {
+        sha256,
+        mediaType: file.type,
+        widthPx: dimensions.widthPx,
+        heightPx: dimensions.heightPx,
+        originalSizeBytes: file.size,
+        persistedRepresentation: storedRepresentation.derivative ? "geometry-preserving-display-derivative" : "original",
+        persistedMediaType: storedRepresentation.mediaType,
+        persistedWidthPx: storedRepresentation.widthPx || dimensions.widthPx,
+        persistedHeightPx: storedRepresentation.heightPx || dimensions.heightPx,
+        persistedSizeBytes: storedRepresentation.sizeBytes || file.size
+      };
       state.impacts = [];
       state.preserved = false;
       invalidateResults();
@@ -261,12 +323,17 @@
     state.pending = true; elements.continueToSec.disabled = true; setFeedback("Opening your Shooter Experience Card…");
     try {
       const session = await ensureAuthoritativeSession();
-      const evidence = { ...state.imageEvidence, dataUrl: state.imageDataUrl };
-      SCZN3M4.saveTargetEvidenceImage(evidence);
+      const evidence = { ...state.imageEvidence, dataUrl: state.persistedImageDataUrl || state.imageDataUrl };
+      const evidenceSession = SCZN3M4.saveTargetEvidenceImage(evidence);
+      if (!evidenceSession) throw new Error("target_evidence_persistence_failed");
       const updated = SCZN3M4.updateActiveSession({ authorityPackage: state.result, impactPoints: state.impacts.map(point => ({ xPercent: point.xNorm * 100, yPercent: point.yNorm * 100 })), shotData: { impactPoints: state.impacts, shotCount: state.impacts.length, hits: state.impacts.length, status: "supported-analysis-ready" }, savedToSEC: false });
+      if (!updated) throw new Error("session_result_persistence_failed");
       renderSec(updated || session);
     } catch (error) {
+      console.warn("SL-ST1 continuation failed", error && error.message || error);
       setFeedback("Your target is ready. Try Continue to SEC again.");
+      elements.workspace.scrollIntoView({ block: "start", behavior: "auto" });
+      queueTargetFit();
     } finally { state.pending = false; elements.continueToSec.disabled = false; }
   });
 
