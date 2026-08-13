@@ -17,7 +17,7 @@
     clear: document.getElementById("clearImpacts"), showResults: document.getElementById("showResults"),
     results: document.getElementById("supportedResults"), resultCount: document.getElementById("resultImpactCount"), resultFeedback: document.getElementById("resultFeedback"),
     continueToSec: document.getElementById("continueToSec"), secView: document.getElementById("bakerSecView"),
-    secRoot: document.getElementById("bakerSecRoot"), pageShell: document.querySelector(".sl-page-shell"),
+    secRoot: document.getElementById("bakerSecRoot"), pageShell: document.querySelector(".sl-page-shell"), header: document.querySelector(".sl-app-header"),
     workflowDock: document.getElementById("workflowDock"),
     confirmation: document.getElementById("confirmationDialog"), confirmationTitle: document.getElementById("confirmationTitle"),
     confirmationMessage: document.getElementById("confirmationMessage"), confirmationCancel: document.getElementById("confirmationCancel"),
@@ -34,6 +34,9 @@
   function invalidateResults() {
     state.result = null;
     elements.results.hidden = true;
+    elements.results.dataset.continuationState = "idle";
+    elements.results.removeAttribute("aria-busy");
+    elements.continueToSec.textContent = "Continue to SEC";
     elements.workflowDock.hidden = false;
     queueTargetFit();
   }
@@ -157,7 +160,8 @@
       ? visualViewport.height
       : window.innerHeight;
     const viewportTop = visualViewport && Number.isFinite(visualViewport.offsetTop) ? visualViewport.offsetTop : 0;
-    const frameTop = Math.max(viewportTop, elements.imageFrame.getBoundingClientRect().top);
+    const headerBottom = elements.header ? elements.header.getBoundingClientRect().bottom : viewportTop;
+    const frameTop = Math.max(viewportTop, headerBottom, elements.imageFrame.getBoundingClientRect().top);
     const activeDock = elements.results.hidden ? elements.workflowDock : elements.results;
     const dockHeight = Math.ceil(activeDock.getBoundingClientRect().height);
     const availableHeight = Math.max(72, Math.floor(viewportTop + viewportHeight - frameTop - dockHeight - 18));
@@ -322,7 +326,7 @@
       const response = await fetch(analyzeEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ targetId: TARGET_ID, variantId: VARIANT_ID, imageEvidence: state.imageEvidence, impacts: state.impacts }) });
       const result = await response.json();
       if (!response.ok || result.ok !== true || result.status !== "supported_analysis_ready") throw new Error("unsupported_result");
-      state.result = result; elements.resultCount.textContent = impactMessage(result.supportedAnalysis.impactCount); elements.workflowDock.hidden = true; elements.results.hidden = false;
+      state.result = result; elements.resultCount.textContent = impactMessage(result.supportedAnalysis.impactCount); elements.results.dataset.continuationState = "ready"; elements.continueToSec.textContent = "Continue to SEC"; elements.workflowDock.hidden = true; elements.results.hidden = false;
       elements.instruction.textContent = "Your impacts are ready to review."; setFeedback("Your impacts are ready to review."); elements.workspace.scrollIntoView({ behavior: "auto", block: "start" }); queueTargetFit();
     } catch (error) {
       state.result = null; elements.results.hidden = true; elements.instruction.textContent = "Your impact marks are still here. Try Show Results again."; setFeedback("Your impact marks are still here. Try Show Results again.");
@@ -330,21 +334,36 @@
   });
   elements.continueToSec.addEventListener("click", async () => {
     if (!state.result || state.pending) return;
-    state.pending = true; elements.continueToSec.disabled = true; setFeedback("Opening your Shooter Experience Card…");
+    state.pending = true;
+    elements.results.dataset.continuationState = "pending";
+    elements.results.setAttribute("aria-busy", "true");
+    elements.continueToSec.disabled = true;
+    elements.continueToSec.textContent = "Opening SEC…";
+    setFeedback("Opening your Shooter Experience Card…");
+    fitTargetEvidence();
     try {
       const session = await ensureAuthoritativeSession();
       const evidence = { ...state.imageEvidence, dataUrl: state.persistedImageDataUrl || state.imageDataUrl };
-      const evidenceSession = SCZN3M4.saveTargetEvidenceImage(evidence);
+      const evidenceSession = await Promise.resolve(SCZN3M4.saveTargetEvidenceImage(evidence));
       if (!evidenceSession) throw new Error("target_evidence_persistence_failed");
-      const updated = SCZN3M4.updateActiveSession({ authorityPackage: state.result, impactPoints: state.impacts.map(point => ({ xPercent: point.xNorm * 100, yPercent: point.yNorm * 100 })), shotData: { impactPoints: state.impacts, shotCount: state.impacts.length, hits: state.impacts.length, status: "supported-analysis-ready" }, savedToSEC: false });
+      const updated = await Promise.resolve(SCZN3M4.updateActiveSession({ authorityPackage: state.result, impactPoints: state.impacts.map(point => ({ xPercent: point.xNorm * 100, yPercent: point.yNorm * 100 })), shotData: { impactPoints: state.impacts, shotCount: state.impacts.length, hits: state.impacts.length, status: "supported-analysis-ready" }, savedToSEC: false }));
       if (!updated) throw new Error("session_result_persistence_failed");
+      elements.results.dataset.continuationState = "complete";
       renderSec(updated || session);
     } catch (error) {
       console.warn("SL-ST1 continuation failed", error && error.message || error);
+      elements.results.dataset.continuationState = "failed";
       setFeedback("Your target is ready. Try Continue to SEC again.");
-      elements.workspace.scrollIntoView({ block: "start", behavior: "auto" });
-      queueTargetFit();
-    } finally { state.pending = false; elements.continueToSec.disabled = false; }
+      fitTargetEvidence();
+    } finally {
+      state.pending = false;
+      elements.results.removeAttribute("aria-busy");
+      elements.continueToSec.disabled = false;
+      if (!elements.pageShell.hidden) {
+        elements.continueToSec.textContent = elements.results.dataset.continuationState === "failed" ? "Try Continue to SEC Again" : "Continue to SEC";
+        fitTargetEvidence();
+      }
+    }
   });
 
   window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return !state.preserved && Boolean(state.imageEvidence || state.impacts.length); } });

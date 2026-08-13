@@ -103,7 +103,7 @@ html,body{margin:0;min-height:100%;background:var(--sl-black);color:var(--sl-whi
 .sl-load-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;margin:0 auto}
 .sl-load-actions .button,.sl-control-grid .button{display:flex;align-items:center;justify-content:center;margin:0;cursor:pointer;text-decoration:none}
 
-.sl-workspace{padding:12px}
+.sl-workspace{padding:12px;scroll-margin-top:66px}
 .sl-image-frame{
   --sl-target-fit-height:calc(100svh - 260px);
   position:relative;
@@ -172,6 +172,7 @@ html,body{margin:0;min-height:100%;background:var(--sl-black);color:var(--sl-whi
 .sl-results p{margin:0;color:var(--sl-muted);line-height:1.5}
 .sl-results .sl-result-feedback{margin-top:3px;color:var(--sl-white);font-size:13px;font-weight:700}
 .sl-results .button{margin:0;white-space:nowrap}
+.sl-results[data-continuation-state="pending"] .button:disabled{cursor:wait;opacity:1}
 .sl-sec-shell{width:min(1180px,calc(100% - 32px));margin:24px auto 56px}
 
 .sl-confirm-dialog{

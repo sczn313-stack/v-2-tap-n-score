@@ -72,6 +72,11 @@ assert.match(script, /geometry-preserving-display-derivative/);
 assert.match(script, /maximumStoredBytes = 320000/);
 assert.match(script, /ResizeObserver/);
 assert.match(css, /\.sl-target-page\.sl-workspace-active \.sl-target-introduction\{display:none\}/);
+assert.match(css, /scroll-margin-top:66px/);
+assert.match(script, /headerBottom/);
+assert.match(script, /continuationState = "pending"/);
+assert.match(script, /Opening SEC…/);
+assert.doesNotMatch(script, /catch \(error\) \{[\s\S]{0,500}workspace\.scrollIntoView/);
 assert.match(script, /Add another impact, undo or clear a mark, or show results\./);
 
 console.log("PASS Baker SL-ST1 Phase 4 Target Page presentation contract");

@@ -10,6 +10,34 @@ const TARGET_ID = "BAKER_SL_ST1";
 const resultPackageType = "smartEvidenceResult";
 const missionFamily = "smartEvidenceCapture";
 
+async function assertTransitionVisible(page, viewport, label) {
+  for (let sample = 0; sample < 6; sample += 1) {
+    const visible = await page.evaluate(() => {
+      const viewportTop = visualViewport?.offsetTop || 0;
+      const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+      const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
+      const frame = document.getElementById("imageFrame").getBoundingClientRect();
+      const results = document.getElementById("supportedResults").getBoundingClientRect();
+      const action = document.getElementById("continueToSec").getBoundingClientRect();
+      return {
+        targetUnobscured: frame.top >= Math.max(viewportTop, headerBottom),
+        targetBottomVisible: frame.bottom <= viewportBottom,
+        resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
+        actionVisible: action.top >= viewportTop && action.bottom <= viewportBottom,
+        horizontalOverflow: document.documentElement.scrollWidth > innerWidth
+      };
+    });
+    assert.deepEqual(visible, {
+      targetUnobscured: true,
+      targetBottomVisible: true,
+      resultsVisible: true,
+      actionVisible: true,
+      horizontalOverflow: false
+    }, `${viewport.width}x${viewport.height} ${label} sample ${sample + 1}`);
+    await page.waitForTimeout(75);
+  }
+}
+
 function sessionPreparation() {
   const standardSetup = {
     candidateId: "standard-baker-sl-st1",
@@ -96,10 +124,12 @@ try {
     });
     await context.route("**/api/session/prepare", async route => {
       assert.equal(route.request().postDataJSON().targetId, TARGET_ID);
+      await new Promise(resolve => setTimeout(resolve, 350));
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(preparation.body) });
     });
     await context.route("**/api/session/start", async route => {
       startAttempts += 1;
+      await new Promise(resolve => setTimeout(resolve, 500));
       if (startAttempts === 1) {
         await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false, error: "intentional-recovery-test" }) });
         return;
@@ -137,6 +167,7 @@ try {
     const fit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+      const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const dock = document.getElementById("workflowDock").getBoundingClientRect();
       const controls = ["undoImpact", "clearImpacts", "showResults"].map(id => {
@@ -145,7 +176,7 @@ try {
       });
       return {
         viewportHeight: visualViewport?.height || innerHeight,
-        fullTargetVisible: frame.top >= viewportTop && frame.bottom <= viewportBottom,
+        fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
         dockVisible: dock.top >= viewportTop && dock.bottom <= viewportBottom,
         controlsVisible: controls.every(rect => rect.top >= viewportTop && rect.bottom <= viewportBottom),
         horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth
@@ -186,27 +217,38 @@ try {
     const resultsFit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+      const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const results = document.getElementById("supportedResults").getBoundingClientRect();
       const next = document.getElementById("continueToSec").getBoundingClientRect();
       return {
-        fullTargetVisible: frame.top >= viewportTop && frame.bottom <= viewportBottom,
+        fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
         resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
         nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom
       };
     });
     assert.deepEqual(resultsFit, { fullTargetVisible: true, resultsVisible: true, nextActionVisible: true }, `${viewport.width}x${viewport.height} results gate visibility`);
 
+    await page.evaluate(() => {
+      const saveEvidence = SCZN3M4.saveTargetEvidenceImage.bind(SCZN3M4);
+      const updateSession = SCZN3M4.updateActiveSession.bind(SCZN3M4);
+      SCZN3M4.saveTargetEvidenceImage = value => new Promise(resolve => setTimeout(() => resolve(saveEvidence(value)), 350));
+      SCZN3M4.updateActiveSession = value => new Promise(resolve => setTimeout(() => resolve(updateSession(value)), 350));
+    });
+
     await page.locator("#continueToSec").click();
+    await page.locator("#continueToSec").getByText("Opening SEC…").waitFor();
+    await assertTransitionVisible(page, viewport, "failed transition pending interval");
     await page.locator("#resultFeedback").getByText("Your target is ready. Try Continue to SEC again.").waitFor();
     const recoveredFit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+      const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const results = document.getElementById("supportedResults").getBoundingClientRect();
       const next = document.getElementById("continueToSec").getBoundingClientRect();
       return {
-        fullTargetVisible: frame.top >= viewportTop && frame.bottom <= viewportBottom,
+        fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
         resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
         nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom,
         impactCount: document.querySelectorAll(".sl-impact-marker").length,
@@ -219,6 +261,8 @@ try {
     assert.equal(recoveredFit.impactCount, 3, `${viewport.width}px retry preserves impact evidence`);
     assert.equal(recoveredFit.resultStatePreserved, true, `${viewport.width}px retry preserves results`);
     await page.locator("#continueToSec").click();
+    await page.locator("#continueToSec").getByText("Opening SEC…").waitFor();
+    await assertTransitionVisible(page, viewport, "successful transition pending interval");
     await page.locator("#bakerSecView:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
     await page.locator("[data-baker-save-sec]").click();
