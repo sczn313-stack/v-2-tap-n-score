@@ -95,6 +95,13 @@
     });
   }
 
+  function fitTargetEvidence() {
+    if (elements.workspace.hidden || !state.imageEvidence) return;
+    const frameTop = Math.max(0, elements.imageFrame.getBoundingClientRect().top);
+    const availableHeight = Math.max(1, window.innerHeight - frameTop - 16);
+    elements.imageFrame.style.setProperty("--sl-target-fit-height", `${availableHeight}px`);
+  }
+
   async function loadImage(file) {
     if (!file || !String(file.type || "").startsWith("image/")) {
       elements.instruction.textContent = "We couldn’t use this photo. Retake it or choose another.";
@@ -114,6 +121,7 @@
       elements.imageFrame.style.aspectRatio = `${dimensions.widthPx} / ${dimensions.heightPx}`;
       elements.loadCard.hidden = true;
       elements.workspace.hidden = false;
+      requestAnimationFrame(fitTargetEvidence);
       elements.instruction.textContent = "Target ready. Tap every bullet hole you can see.";
       setFeedback("Target ready. Tap every bullet hole you can see.");
       renderImpacts();
@@ -249,6 +257,7 @@
   });
 
   window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return Boolean(state.imageEvidence || state.impacts.length); } });
+  window.addEventListener("resize", fitTargetEvidence);
   window.addEventListener("pagehide", () => { if (state.imageUrl) URL.revokeObjectURL(state.imageUrl); });
   renderImpacts();
 })();
