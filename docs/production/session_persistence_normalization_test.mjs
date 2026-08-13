@@ -22,6 +22,10 @@ class MemoryStorage {
   setItem(key, value) {
     this.values.set(String(key), String(value));
   }
+
+  removeItem(key) {
+    this.values.delete(String(key));
+  }
 }
 
 const localStorage = new MemoryStorage();

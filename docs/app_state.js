@@ -44,6 +44,188 @@
     return value.length * 2;
   }
 
+  function storageEntryCharacters(key, serializedValue) {
+    return String(key || "").length + String(serializedValue || "").length;
+  }
+
+  function publishStorageGcReport(report) {
+    window.__SCZN3_STORAGE_GC_REPORT__ = report;
+    window.__SCZN3_STORAGE_GC_REPORTS__ = [...(window.__SCZN3_STORAGE_GC_REPORTS__ || []), report].slice(-20);
+    try {
+      if (typeof document !== "undefined" && document.documentElement) {
+        document.documentElement.setAttribute("data-sczn3-storage-gc-report", JSON.stringify(report));
+      }
+    } catch (error) {
+      console.warn("SCZN3 storage cleanup report publication failed", error);
+    }
+  }
+
+  function collectMediaReferences(value, references) {
+    if (Array.isArray(value)) {
+      value.forEach(entry => collectMediaReferences(entry, references));
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    if (typeof value.mediaRef === "string" && value.mediaRef) references.add(value.mediaRef);
+    Object.values(value).forEach(child => collectMediaReferences(child, references));
+  }
+
+  function storedKeysWithPrefix(prefix) {
+    const keys = [];
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      if (key && key.startsWith(prefix)) keys.push(key);
+    }
+    return keys;
+  }
+
+  function referencedSessionIds() {
+    const ids = new Set();
+    [rawRead(KEYS.activeSession, null), rawRead(KEYS.activeZeroSession, null)].forEach(value => {
+      if (isSessionReference(value)) ids.add(String(value.sessionId));
+      else if (value && value.sessionId) ids.add(String(value.sessionId));
+    });
+    const history = rawRead(KEYS.sessionHistory, []);
+    if (Array.isArray(history)) history.forEach(value => {
+      if (value && value.sessionId) ids.add(String(value.sessionId));
+    });
+    return ids;
+  }
+
+  function garbageCollectOrphanedStorage(reason = "storage-capacity-preflight") {
+    const protectedSessionIds = referencedSessionIds();
+    const sessionEntries = [];
+    let safeToCollectMedia = true;
+    storedKeysWithPrefix(KEYS.sessionRecordPrefix).forEach(key => {
+      const record = rawRead(key, null);
+      if (!record || !record.sessionId) {
+        safeToCollectMedia = false;
+        return;
+      }
+      if (record.savedToSEC === true) protectedSessionIds.add(String(record.sessionId));
+      sessionEntries.push({ key, record });
+    });
+
+    const removedSessionKeys = [];
+    sessionEntries.forEach(({ key, record }) => {
+      if (protectedSessionIds.has(String(record.sessionId)) || record.savedToSEC === true) return;
+      localStorage.removeItem(key);
+      removedSessionKeys.push(key);
+    });
+
+    const referencedMediaIds = new Set();
+    const retainedSessionKeys = new Set(sessionEntries
+      .filter(({ key }) => !removedSessionKeys.includes(key))
+      .map(({ key }) => key));
+    sessionEntries.forEach(({ key, record }) => {
+      if (retainedSessionKeys.has(key)) collectMediaReferences(record, referencedMediaIds);
+    });
+    collectMediaReferences(rawRead(KEYS.activeSession, null), referencedMediaIds);
+    collectMediaReferences(rawRead(KEYS.activeZeroSession, null), referencedMediaIds);
+    collectMediaReferences(rawRead(KEYS.sessionHistory, []), referencedMediaIds);
+    const activeMatrix = rawRead(KEYS.activeMatrix, null);
+    if (activeMatrix) collectMediaReferences(activeMatrix, referencedMediaIds);
+
+    const removedMediaKeys = [];
+    if (safeToCollectMedia) {
+      storedKeysWithPrefix(KEYS.mediaPrefix).forEach(key => {
+        const encodedId = key.slice(KEYS.mediaPrefix.length);
+        let mediaId = encodedId;
+        try { mediaId = decodeURIComponent(encodedId); } catch (error) {}
+        if (referencedMediaIds.has(mediaId)) return;
+        localStorage.removeItem(key);
+        removedMediaKeys.push(key);
+      });
+    }
+
+    const report = {
+      reason,
+      removedSessionKeys,
+      removedMediaKeys,
+      preservedSessionIds: [...protectedSessionIds].sort(),
+      mediaCleanupSkipped: !safeToCollectMedia,
+      completedAt: nowStamp()
+    };
+    publishStorageGcReport(report);
+    console.info("SCZN3 orphan storage cleanup", report);
+    return report;
+  }
+
+  function normalizedWriteEntries(entries) {
+    const byKey = new Map();
+    entries.forEach(entry => {
+      if (!entry || !entry.key) return;
+      byKey.set(entry.key, {
+        ...entry,
+        serialized: entry.serialized === undefined ? JSON.stringify(entry.value) : entry.serialized
+      });
+    });
+    return [...byKey.values()];
+  }
+
+  function preflightStorageWrites(entries, operation) {
+    const writes = normalizedWriteEntries(entries);
+    const additionalCharacters = writes.reduce((total, entry) => {
+      const current = localStorage.getItem(entry.key);
+      const currentCharacters = current === null ? 0 : storageEntryCharacters(entry.key, current);
+      const nextCharacters = storageEntryCharacters(entry.key, entry.serialized);
+      return total + Math.max(0, nextCharacters - currentCharacters);
+    }, 0);
+    if (!additionalCharacters) return { operation, additionalCharacters: 0, ok: true };
+    const probeKey = "SCZN3_STORAGE_CAPACITY_PREFLIGHT";
+    const previousProbe = localStorage.getItem(probeKey);
+    try {
+      localStorage.setItem(probeKey, "0".repeat(additionalCharacters + 2048));
+      if (previousProbe === null) localStorage.removeItem(probeKey);
+      else localStorage.setItem(probeKey, previousProbe);
+      return { operation, additionalCharacters, ok: true };
+    } catch (error) {
+      if (previousProbe === null) localStorage.removeItem(probeKey);
+      else {
+        try { localStorage.setItem(probeKey, previousProbe); } catch (restoreError) {}
+      }
+      const failure = {
+        operation,
+        key: probeKey,
+        ok: false,
+        exceptionName: error && error.name || "Error",
+        exceptionMessage: error && error.message || String(error),
+        attemptedPayloadBytes: additionalCharacters,
+        failedAt: nowStamp()
+      };
+      publishSaveDiagnostic(failure);
+      const unavailable = new Error("storage_capacity_unavailable");
+      unavailable.cause = error;
+      throw unavailable;
+    }
+  }
+
+  function writeStorageTransaction(entries, operation) {
+    const writes = normalizedWriteEntries(entries);
+    preflightStorageWrites(writes, operation);
+    const previousValues = new Map(writes.map(entry => [entry.key, localStorage.getItem(entry.key)]));
+    const completed = [];
+    try {
+      writes.forEach(entry => {
+        writeSaveDiagnostic(entry.key, JSON.parse(entry.serialized), entry.operation || operation);
+        completed.push(entry.key);
+      });
+      return writes;
+    } catch (error) {
+      [...completed].reverse().forEach(key => {
+        const previous = previousValues.get(key);
+        try {
+          if (previous === null) localStorage.removeItem(key);
+          else localStorage.setItem(key, previous);
+        } catch (rollbackError) {
+          console.error("SCZN3 storage transaction rollback failed", { operation, key, rollbackError });
+        }
+      });
+      console.error("SCZN3 storage transaction rolled back", { operation, completedKeys: completed, error });
+      throw error;
+    }
+  }
+
   function sessionRecordKey(sessionId) {
     return `${KEYS.sessionRecordPrefix}${encodeURIComponent(String(sessionId || ""))}`;
   }
@@ -147,6 +329,43 @@
     }
     compact.persistenceSchema = SESSION_RECORD_SCHEMA;
     return { compact, mediaRecords };
+  }
+
+  function canonicalSessionStoragePlan(session, activeMatrix = null, operation = "persist-canonical-session") {
+    const originalSerialized = JSON.stringify(session);
+    const { compact, mediaRecords } = compactSessionRecord(session);
+    const compactMatrix = activeMatrix ? compactMediaValue(activeMatrix, mediaRecords) : null;
+    const entries = [...mediaRecords.entries()].map(([mediaId, media]) => ({
+      key: mediaKey(mediaId),
+      value: media,
+      operation: `${operation}-media`
+    }));
+    entries.push({ key: sessionRecordKey(session.sessionId), value: compact, operation });
+    if (compactMatrix) entries.push({ key: KEYS.activeMatrix, value: compactMatrix, operation: `${operation}-active-matrix` });
+    return {
+      compact,
+      compactMatrix,
+      mediaRecords,
+      entries,
+      report: {
+        sessionId: session.sessionId,
+        originalPayloadBytes: serializedByteSize(originalSerialized),
+        canonicalRecordBytes: serializedByteSize(JSON.stringify(compact)),
+        mediaAssetBytes: [...mediaRecords.values()].reduce((sum, media) => sum + serializedByteSize(JSON.stringify(media)), 0),
+        mediaAssetCount: mediaRecords.size,
+        completedAt: nowStamp()
+      }
+    };
+  }
+
+  function publishNormalizationReport(report) {
+    window.__SCZN3_SESSION_NORMALIZATION_REPORT__ = report;
+    try {
+      if (typeof document === "undefined" || !document.documentElement) return;
+      document.documentElement.setAttribute("data-sczn3-session-normalization-report", JSON.stringify(report));
+    } catch (diagnosticError) {
+      console.warn("SCZN3 normalization diagnostic publication failed", diagnosticError);
+    }
   }
 
   function derivedClicks(authorityPackage) {
@@ -279,34 +498,12 @@
 
   function persistCanonicalSession(session, operation = "persist-canonical-session") {
     if (!session || !session.sessionId) return null;
-    const originalSerialized = JSON.stringify(session);
-    const { compact, mediaRecords } = compactSessionRecord(session);
     const storedMatrix = rawRead(KEYS.activeMatrix, null);
-    const compactMatrix = storedMatrix ? compactMediaValue(storedMatrix, mediaRecords) : null;
-    mediaRecords.forEach((media, mediaId) => {
-      writeSaveDiagnostic(mediaKey(mediaId), media, `${operation}-media`);
-    });
-    writeSaveDiagnostic(sessionRecordKey(session.sessionId), compact, operation);
-    if (compactMatrix) rawWrite(KEYS.activeMatrix, compactMatrix);
-    window.__SCZN3_SESSION_NORMALIZATION_REPORT__ = {
-      sessionId: session.sessionId,
-      originalPayloadBytes: serializedByteSize(originalSerialized),
-      canonicalRecordBytes: serializedByteSize(JSON.stringify(compact)),
-      mediaAssetBytes: [...mediaRecords.values()]
-        .reduce((sum, media) => sum + serializedByteSize(JSON.stringify(media)), 0),
-      mediaAssetCount: mediaRecords.size,
-      completedAt: nowStamp()
-    };
-    try {
-      if (typeof document === "undefined" || !document.documentElement) return hydrateSessionRecord(compact);
-      document.documentElement.setAttribute(
-        "data-sczn3-session-normalization-report",
-        JSON.stringify(window.__SCZN3_SESSION_NORMALIZATION_REPORT__)
-      );
-    } catch (diagnosticError) {
-      console.warn("SCZN3 normalization diagnostic publication failed", diagnosticError);
-    }
-    return hydrateSessionRecord(compact);
+    garbageCollectOrphanedStorage(`${operation}-orphan-preflight`);
+    const plan = canonicalSessionStoragePlan(session, storedMatrix, operation);
+    writeStorageTransaction(plan.entries, operation);
+    publishNormalizationReport(plan.report);
+    return hydrateSessionRecord(plan.compact);
   }
 
   function ensureCanonicalHistory(sessions, operation = "migrate-history-session") {
@@ -711,8 +908,8 @@
     };
   }
 
-  function buildSession(matrixSnapshot) {
-    const sessionNumber = getNextSessionNumber();
+  function buildSession(matrixSnapshot, governedSessionNumber = null) {
+    const sessionNumber = governedSessionNumber === null ? getNextSessionNumber() : governedSessionNumber;
     const timestamp = nowStamp();
     const targetIdentity = {
       vendor: matrixSnapshot.vendor || "",
@@ -835,8 +1032,14 @@
       targetDistanceLocked: distance.locked === true,
       sessionAuthorityOwner: "backend"
     };
-    const frozenMatrix = saveMatrixSnapshot(authoritySnapshot);
-    const session = buildSession(frozenMatrix);
+    garbageCollectOrphanedStorage("create-authoritative-session-orphan-preflight");
+    const frozenMatrix = {
+      ...TARGET_AUTHORITY,
+      ...authoritySnapshot,
+      updatedAt: nowStamp()
+    };
+    const nextSessionNumber = Number(read(KEYS.sessionCounter, 0)) + 1;
+    const session = buildSession(frozenMatrix, nextSessionNumber);
     session.sessionId = authorityPackage.authoritativeSessionId;
     session.authoritativeSessionId = authorityPackage.authoritativeSessionId;
     session.sessionIdAuthority = "backend";
@@ -879,31 +1082,43 @@
         authorityStatus: "backend-session-authority"
       };
     }
-    const canonical = persistCanonicalSession(session, "create-authoritative-session");
-    const history = ensureCanonicalHistory([canonical, ...getSessionHistory()]
+    const history = [session, ...getSessionHistory()]
       .filter((item, index, source) => item && source.findIndex(candidate => candidate.sessionId === item.sessionId) === index)
-      .slice(0, MAX_SESSION_HISTORY), "migrate-authoritative-history-session");
-    rawWrite(KEYS.activeSession, sessionReference(session.sessionId));
+      .slice(0, MAX_SESSION_HISTORY);
+    const plan = canonicalSessionStoragePlan(session, frozenMatrix, "create-authoritative-session");
+    const entries = [
+      ...plan.entries,
+      { key: KEYS.sessionCounter, value: nextSessionNumber, operation: "create-authoritative-session-counter" },
+      { key: KEYS.activeSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-active-reference" },
+      { key: KEYS.sessionHistory, value: history.map(historyReference), operation: "create-authoritative-session-history" }
+    ];
     if (frozenMatrix.experienceMode !== "simulation") {
-      rawWrite(KEYS.activeZeroSession, sessionReference(session.sessionId));
+      entries.push({ key: KEYS.activeZeroSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-zero-reference" });
     }
-    rawWrite(KEYS.sessionHistory, history.map(historyReference));
-    return canonical;
+    writeStorageTransaction(entries, "create-authoritative-session-transaction");
+    publishNormalizationReport(plan.report);
+    return hydrateSessionRecord(plan.compact);
   }
 
   function replaceSession(updatedSession) {
     const history = getSessionHistory();
-    const canonical = persistCanonicalSession(updatedSession, "persist-canonical-session");
-    const nextHistory = history.some(session => session.sessionId === canonical.sessionId)
-      ? history.map(session => session.sessionId === canonical.sessionId ? canonical : session)
-      : [canonical, ...history].slice(0, MAX_SESSION_HISTORY);
-    const canonicalHistory = ensureCanonicalHistory(nextHistory, "migrate-save-history-session");
-    writeSaveDiagnostic(KEYS.sessionHistory, canonicalHistory.map(historyReference), "persist-session-history-references");
-    writeSaveDiagnostic(KEYS.activeSession, sessionReference(canonical.sessionId), "persist-active-session-reference");
-    if (canonical.experienceMode !== "simulation") {
-      writeSaveDiagnostic(KEYS.activeZeroSession, sessionReference(canonical.sessionId), "persist-active-zero-session-reference");
+    garbageCollectOrphanedStorage("replace-session-orphan-preflight");
+    const storedMatrix = rawRead(KEYS.activeMatrix, null);
+    const plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-canonical-session");
+    const nextHistory = history.some(session => session.sessionId === updatedSession.sessionId)
+      ? history.map(session => session.sessionId === updatedSession.sessionId ? updatedSession : session)
+      : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
+    const entries = [
+      ...plan.entries,
+      { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-history-references" },
+      { key: KEYS.activeSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-session-reference" }
+    ];
+    if (updatedSession.experienceMode !== "simulation") {
+      entries.push({ key: KEYS.activeZeroSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-zero-session-reference" });
     }
-    return canonical;
+    writeStorageTransaction(entries, "replace-session-transaction");
+    publishNormalizationReport(plan.report);
+    return hydrateSessionRecord(plan.compact);
   }
 
   function updateActiveSession(patch) {
