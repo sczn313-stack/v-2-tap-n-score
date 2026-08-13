@@ -63,11 +63,15 @@ assert.match(css, /overflow-x:hidden/);
 assert.match(css, /touch-action:manipulation/);
 assert.match(html, /id="workflowDock"/);
 assert.match(css, /\.sl-workflow-dock\{[\s\S]*?position:sticky/);
-assert.match(script, /dockHeight = Math\.ceil\(elements\.workflowDock\.getBoundingClientRect\(\)\.height\)/);
+assert.match(script, /activeDock = elements\.results\.hidden \? elements\.workflowDock : elements\.results/);
+assert.match(script, /dockHeight = Math\.ceil\(activeDock\.getBoundingClientRect\(\)\.height\)/);
 assert.match(script, /viewportHeight - frameTop - dockHeight/);
-assert.match(script, /getBoundingClientRect\(\)\.top \+ window\.scrollY/);
+assert.match(script, /visualViewport\.offsetTop/);
+assert.match(script, /viewportTop \+ viewportHeight - frameTop - dockHeight/);
 assert.match(script, /geometry-preserving-display-derivative/);
 assert.match(script, /maximumStoredBytes = 320000/);
+assert.match(script, /ResizeObserver/);
+assert.match(css, /\.sl-target-page\.sl-workspace-active \.sl-target-introduction\{display:none\}/);
 assert.match(script, /Add another impact, undo or clear a mark, or show results\./);
 
 console.log("PASS Baker SL-ST1 Phase 4 Target Page presentation contract");

@@ -15,7 +15,7 @@
     tapSurface: document.getElementById("tapSurface"), count: document.getElementById("impactCount"),
     feedback: document.getElementById("workspaceFeedback"), undo: document.getElementById("undoImpact"),
     clear: document.getElementById("clearImpacts"), showResults: document.getElementById("showResults"),
-    results: document.getElementById("supportedResults"), resultCount: document.getElementById("resultImpactCount"),
+    results: document.getElementById("supportedResults"), resultCount: document.getElementById("resultImpactCount"), resultFeedback: document.getElementById("resultFeedback"),
     continueToSec: document.getElementById("continueToSec"), secView: document.getElementById("bakerSecView"),
     secRoot: document.getElementById("bakerSecRoot"), pageShell: document.querySelector(".sl-page-shell"),
     workflowDock: document.getElementById("workflowDock"),
@@ -26,11 +26,16 @@
 
   const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false };
   const impactMessage = count => `${count} ${count === 1 ? "impact" : "impacts"} recorded.`;
-  const setFeedback = message => { elements.feedback.textContent = message; };
+  const setFeedback = message => {
+    elements.feedback.textContent = message;
+    if (elements.resultFeedback) elements.resultFeedback.textContent = message;
+  };
 
   function invalidateResults() {
     state.result = null;
     elements.results.hidden = true;
+    elements.workflowDock.hidden = false;
+    queueTargetFit();
   }
 
   function requestConfirmation({ title, message, acceptLabel }) {
@@ -147,12 +152,15 @@
 
   function fitTargetEvidence() {
     if (elements.workspace.hidden || !state.imageEvidence) return;
-    const frameTop = Math.max(0, elements.imageFrame.getBoundingClientRect().top + window.scrollY);
-    const viewportHeight = window.visualViewport && Number.isFinite(window.visualViewport.height)
-      ? window.visualViewport.height
+    const visualViewport = window.visualViewport;
+    const viewportHeight = visualViewport && Number.isFinite(visualViewport.height)
+      ? visualViewport.height
       : window.innerHeight;
-    const dockHeight = Math.ceil(elements.workflowDock.getBoundingClientRect().height);
-    const availableHeight = Math.max(180, Math.floor(viewportHeight - frameTop - dockHeight - 18));
+    const viewportTop = visualViewport && Number.isFinite(visualViewport.offsetTop) ? visualViewport.offsetTop : 0;
+    const frameTop = Math.max(viewportTop, elements.imageFrame.getBoundingClientRect().top);
+    const activeDock = elements.results.hidden ? elements.workflowDock : elements.results;
+    const dockHeight = Math.ceil(activeDock.getBoundingClientRect().height);
+    const availableHeight = Math.max(72, Math.floor(viewportTop + viewportHeight - frameTop - dockHeight - 18));
     elements.imageFrame.style.setProperty("--sl-target-fit-height", `${availableHeight}px`);
   }
 
@@ -193,6 +201,8 @@
       elements.imageFrame.style.aspectRatio = `${dimensions.widthPx} / ${dimensions.heightPx}`;
       elements.loadCard.hidden = true;
       elements.workspace.hidden = false;
+      document.body.classList.add("sl-workspace-active");
+      elements.workspace.scrollIntoView({ block: "start", behavior: "auto" });
       queueTargetFit();
       elements.instruction.textContent = "Target ready. Tap every bullet hole you can see.";
       setFeedback("Target ready. Tap every bullet hole you can see.");
@@ -312,8 +322,8 @@
       const response = await fetch(analyzeEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ targetId: TARGET_ID, variantId: VARIANT_ID, imageEvidence: state.imageEvidence, impacts: state.impacts }) });
       const result = await response.json();
       if (!response.ok || result.ok !== true || result.status !== "supported_analysis_ready") throw new Error("unsupported_result");
-      state.result = result; elements.resultCount.textContent = impactMessage(result.supportedAnalysis.impactCount); elements.results.hidden = false;
-      elements.instruction.textContent = "Your impacts are ready to review."; setFeedback("Your impacts are ready to review."); elements.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      state.result = result; elements.resultCount.textContent = impactMessage(result.supportedAnalysis.impactCount); elements.workflowDock.hidden = true; elements.results.hidden = false;
+      elements.instruction.textContent = "Your impacts are ready to review."; setFeedback("Your impacts are ready to review."); elements.workspace.scrollIntoView({ behavior: "auto", block: "start" }); queueTargetFit();
     } catch (error) {
       state.result = null; elements.results.hidden = true; elements.instruction.textContent = "Your impact marks are still here. Try Show Results again."; setFeedback("Your impact marks are still here. Try Show Results again.");
     } finally { state.pending = false; renderImpacts(); }
@@ -340,6 +350,9 @@
   window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return !state.preserved && Boolean(state.imageEvidence || state.impacts.length); } });
   window.addEventListener("resize", queueTargetFit);
   window.visualViewport?.addEventListener("resize", queueTargetFit);
+  window.visualViewport?.addEventListener("scroll", queueTargetFit);
+  new ResizeObserver(queueTargetFit).observe(elements.workflowDock);
+  new ResizeObserver(queueTargetFit).observe(elements.results);
   window.addEventListener("pagehide", () => { if (state.imageUrl) URL.revokeObjectURL(state.imageUrl); });
   renderImpacts();
 })();

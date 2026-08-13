@@ -76,14 +76,15 @@
           <button class="button primary sl-show-results" id="showResults" type="button" disabled>Show Results</button>
         </div>
       </div>
-    </section>
-
-    <section class="sl-results" id="supportedResults" aria-labelledby="resultsTitle" hidden>
-      <p class="sl-results-label">Results</p>
-      <h2 id="resultsTitle">Your impacts are ready to review.</h2>
-      <strong id="resultImpactCount">0 impacts recorded.</strong>
-      <p>Review the marked target above.</p>
-      <button class="button primary" id="continueToSec" type="button">Continue to SEC</button>
+      <section class="sl-results" id="supportedResults" aria-labelledby="resultsTitle" hidden>
+        <div>
+          <p class="sl-results-label">Results</p>
+          <h2 id="resultsTitle">Your impacts are ready to review.</h2>
+          <strong id="resultImpactCount">0 impacts recorded.</strong>
+          <p class="sl-result-feedback" id="resultFeedback" role="status" aria-live="polite"></p>
+        </div>
+        <button class="button primary" id="continueToSec" type="button">Continue to SEC</button>
+      </section>
     </section>
   </main>
 

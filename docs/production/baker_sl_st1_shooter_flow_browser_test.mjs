@@ -55,12 +55,18 @@ const browser = await chromium.launch({
 });
 
 try {
-  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+    { width: 390, height: 720 },
+    { width: 390, height: 667 },
+    { width: 390, height: 568 }
+  ]) {
     const context = await browser.newContext({ viewport });
     const pageErrors = [];
     const consoleErrors = [];
     const preparation = sessionPreparation();
-    const authoritativeSessionId = `sl-st1-flow-${viewport.width}`;
+    const authoritativeSessionId = `sl-st1-flow-${viewport.width}-${viewport.height}`;
     const page = await context.newPage();
     let startAttempts = 0;
 
@@ -123,12 +129,14 @@ try {
       });
     });
 
-    await page.goto(`${baseUrl}/t/baker/sl-st1/?flow=${viewport.width}`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}/t/baker/sl-st1/?flow=${viewport.width}-${viewport.height}`, { waitUntil: "networkidle" });
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "Load Photo must expose navigation");
     await page.locator("#libraryInput").setInputFiles(targetPhoto);
     await page.locator("#targetWorkspace:not([hidden])").waitFor();
 
     const fit = await page.evaluate(() => {
+      const viewportTop = visualViewport?.offsetTop || 0;
+      const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
       const dock = document.getElementById("workflowDock").getBoundingClientRect();
       const controls = ["undoImpact", "clearImpacts", "showResults"].map(id => {
@@ -136,10 +144,10 @@ try {
         return { id, top: rect.top, bottom: rect.bottom };
       });
       return {
-        viewportHeight: window.innerHeight,
-        fullTargetVisible: frame.top >= 0 && frame.bottom <= window.innerHeight,
-        dockVisible: dock.top >= 0 && dock.bottom <= window.innerHeight,
-        controlsVisible: controls.every(rect => rect.top >= 0 && rect.bottom <= window.innerHeight),
+        viewportHeight: visualViewport?.height || innerHeight,
+        fullTargetVisible: frame.top >= viewportTop && frame.bottom <= viewportBottom,
+        dockVisible: dock.top >= viewportTop && dock.bottom <= viewportBottom,
+        controlsVisible: controls.every(rect => rect.top >= viewportTop && rect.bottom <= viewportBottom),
         horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth
       };
     });
@@ -149,7 +157,9 @@ try {
     assert.equal(fit.horizontalOverflow, false, `${viewport.width}px horizontal containment`);
 
     const tap = page.locator("#tapSurface");
-    await tap.click({ position: { x: 120, y: 130 } });
+    const tapBox = await tap.boundingBox();
+    const point = (x, y) => ({ x: tapBox.width * x, y: tapBox.height * y });
+    await tap.click({ position: point(.3, .3) });
     assert.equal(await page.locator("#undoImpact").isEnabled(), true);
     assert.equal(await page.locator("#clearImpacts").isEnabled(), true);
     assert.equal(await page.locator("#showResults").isEnabled(), true);
@@ -157,8 +167,8 @@ try {
     await page.locator("#undoImpact").click();
     assert.match(await page.locator("#impactCount").textContent(), /^0 impacts/);
 
-    await tap.click({ position: { x: 120, y: 130 } });
-    await tap.click({ position: { x: 150, y: 170 } });
+    await tap.click({ position: point(.3, .3) });
+    await tap.click({ position: point(.45, .45) });
     await page.locator("#clearImpacts").click();
     await page.locator("#confirmationCancel").click();
     assert.match(await page.locator("#impactCount").textContent(), /^2 impacts/);
@@ -166,33 +176,48 @@ try {
     await page.locator("#confirmationAccept").click();
     assert.match(await page.locator("#impactCount").textContent(), /^0 impacts/);
 
-    await tap.click({ position: { x: 110, y: 120 } });
-    await tap.click({ position: { x: 145, y: 155 } });
-    await tap.click({ position: { x: 175, y: 190 } });
+    await tap.click({ position: point(.3, .3) });
+    await tap.click({ position: point(.5, .5) });
+    await tap.click({ position: point(.7, .7) });
     await page.locator("#showResults").click();
     await page.locator("#supportedResults:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "Results must expose navigation");
     assert.match(await page.locator("#resultImpactCount").textContent(), /^3 impacts/);
+    const resultsFit = await page.evaluate(() => {
+      const viewportTop = visualViewport?.offsetTop || 0;
+      const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
+      const frame = document.getElementById("imageFrame").getBoundingClientRect();
+      const results = document.getElementById("supportedResults").getBoundingClientRect();
+      const next = document.getElementById("continueToSec").getBoundingClientRect();
+      return {
+        fullTargetVisible: frame.top >= viewportTop && frame.bottom <= viewportBottom,
+        resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
+        nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom
+      };
+    });
+    assert.deepEqual(resultsFit, { fullTargetVisible: true, resultsVisible: true, nextActionVisible: true }, `${viewport.width}x${viewport.height} results gate visibility`);
 
     await page.locator("#continueToSec").click();
-    await page.getByText("Your target is ready. Try Continue to SEC again.").waitFor();
+    await page.locator("#resultFeedback").getByText("Your target is ready. Try Continue to SEC again.").waitFor();
     const recoveredFit = await page.evaluate(() => {
+      const viewportTop = visualViewport?.offsetTop || 0;
+      const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
-      const dock = document.getElementById("workflowDock").getBoundingClientRect();
-      const controls = ["undoImpact", "clearImpacts", "showResults"].map(id => document.getElementById(id).getBoundingClientRect());
+      const results = document.getElementById("supportedResults").getBoundingClientRect();
+      const next = document.getElementById("continueToSec").getBoundingClientRect();
       return {
-        fullTargetVisible: frame.top >= 0 && frame.bottom <= window.innerHeight,
-        dockVisible: dock.top >= 0 && dock.bottom <= window.innerHeight,
-        controlsVisible: controls.every(rect => rect.top >= 0 && rect.bottom <= window.innerHeight),
+        fullTargetVisible: frame.top >= viewportTop && frame.bottom <= viewportBottom,
+        resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
+        nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom,
         impactCount: document.querySelectorAll(".sl-impact-marker").length,
-        resultsVisible: !document.getElementById("supportedResults").hidden
+        resultStatePreserved: !document.getElementById("supportedResults").hidden
       };
     });
     assert.equal(recoveredFit.fullTargetVisible, true, `${viewport.width}px retry preserves complete target visibility`);
-    assert.equal(recoveredFit.dockVisible, true, `${viewport.width}px retry preserves workflow visibility`);
-    assert.equal(recoveredFit.controlsVisible, true, `${viewport.width}px retry preserves workflow controls`);
+    assert.equal(recoveredFit.resultsVisible, true, `${viewport.width}px retry preserves results visibility`);
+    assert.equal(recoveredFit.nextActionVisible, true, `${viewport.width}px retry preserves next-action visibility`);
     assert.equal(recoveredFit.impactCount, 3, `${viewport.width}px retry preserves impact evidence`);
-    assert.equal(recoveredFit.resultsVisible, true, `${viewport.width}px retry preserves results`);
+    assert.equal(recoveredFit.resultStatePreserved, true, `${viewport.width}px retry preserves results`);
     await page.locator("#continueToSec").click();
     await page.locator("#bakerSecView:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
@@ -215,7 +240,7 @@ try {
     assert.deepEqual(consoleErrors, []);
 
     await context.close();
-    console.log(`PASS Baker SL-ST1 Load → impacts → edit → results → SEC → Vault → reopen at ${viewport.width}px`);
+    console.log(`PASS Baker SL-ST1 Load → impacts → edit → results → SEC → Vault → reopen at ${viewport.width}x${viewport.height}`);
   }
 } finally {
   await browser.close();
