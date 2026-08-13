@@ -62,6 +62,8 @@ assert.match(targetJs, /authorityRequest\("start"/);
 assert.match(targetJs, /createAuthoritativeSession/);
 assert.match(targetJs, /saveTargetEvidenceImage/);
 assert.match(targetJs, /authorityPackage: state\.result/);
+assert.match(targetJs, /state\.preserved = Boolean\(saved\)/);
+assert.match(targetJs, /!state\.preserved && Boolean\(state\.imageEvidence \|\| state\.impacts\.length\)/);
 assert.doesNotMatch(targetJs, /createSession\(/);
 assert.match(records, /SCZN3BakerSLST1SEC\.render/);
 assert.match(records, /ADAPTERS\.BAKER_SL_ST1/);

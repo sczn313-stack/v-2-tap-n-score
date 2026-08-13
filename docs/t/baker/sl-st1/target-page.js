@@ -23,7 +23,7 @@
     confirmationAccept: document.getElementById("confirmationAccept"), inputs: Array.from(document.querySelectorAll('input[type="file"]'))
   };
 
-  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", impacts: [], pending: false, result: null };
+  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", impacts: [], pending: false, result: null, preserved: false };
   const impactMessage = count => `${count} ${count === 1 ? "impact" : "impacts"} recorded.`;
   const setFeedback = message => { elements.feedback.textContent = message; };
 
@@ -116,6 +116,7 @@
       state.imageDataUrl = dataUrl;
       state.imageEvidence = { sha256, mediaType: file.type, widthPx: dimensions.widthPx, heightPx: dimensions.heightPx };
       state.impacts = [];
+      state.preserved = false;
       invalidateResults();
       elements.image.src = nextUrl;
       elements.imageFrame.style.aspectRatio = `${dimensions.widthPx} / ${dimensions.heightPx}`;
@@ -206,6 +207,7 @@
     });
     root.querySelector("[data-baker-save-sec]")?.addEventListener("click", () => {
       const saved = SCZN3M4.preserveActiveSEC("", SCZN3M4.read(SCZN3M4.KEYS.activeSession, session));
+      state.preserved = Boolean(saved);
       const status = root.querySelector("[data-baker-sec-status]");
       if (status) status.textContent = saved ? "SEC saved to Ballistic Vault." : "SEC could not be saved.";
     });
@@ -222,12 +224,13 @@
     if (!state.imageEvidence || state.pending) return;
     const rect = elements.tapSurface.getBoundingClientRect();
     state.impacts.push({ xNorm: Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width)), yNorm: Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height)) });
+    state.preserved = false;
     invalidateResults(); renderImpacts(); setFeedback(impactMessage(state.impacts.length));
   });
-  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); invalidateResults(); renderImpacts(); setFeedback("Last mark removed."); } });
+  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("Last mark removed."); } });
   elements.clear.addEventListener("click", async () => {
     if (!state.impacts.length || state.pending || !await requestConfirmation({ title: "Clear Impact Marks?", message: "This removes every impact mark from the current photo.", acceptLabel: "Clear Marks" })) return;
-    state.impacts = []; invalidateResults(); renderImpacts(); setFeedback("All impact marks cleared.");
+    state.impacts = []; state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("All impact marks cleared.");
   });
   elements.showResults.addEventListener("click", async () => {
     if (!state.imageEvidence || !state.impacts.length || state.pending) return;
@@ -256,7 +259,7 @@
     } finally { state.pending = false; elements.continueToSec.disabled = false; }
   });
 
-  window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return Boolean(state.imageEvidence || state.impacts.length); } });
+  window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return !state.preserved && Boolean(state.imageEvidence || state.impacts.length); } });
   window.addEventListener("resize", fitTargetEvidence);
   window.addEventListener("pagehide", () => { if (state.imageUrl) URL.revokeObjectURL(state.imageUrl); });
   renderImpacts();
