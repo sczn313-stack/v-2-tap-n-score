@@ -33,7 +33,7 @@ assert.match(sec, /records\.html\?selected=/);
 
 // Vault browse: compact library records only; full SEC opens on a separate route.
 assert.match(records, /if \(!HISTORICAL_DETAIL_MODE\) \{[\s\S]*?sessions\.map\(renderCompactVaultRecord\)[\s\S]*?return;/);
-assert.match(records, /class="vault-record-summary"/);
+assert.match(records, /class="vault-record-summary/);
 assert.match(records, /class="vault-evidence-pair"/);
 assert.match(records, /data-preserve-active-session/);
 assert.match(records, /function historicalSecUrl/);

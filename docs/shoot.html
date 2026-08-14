@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="styles.css?v=workspace-template-v1" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=episode45-ui-polish-v1" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-1" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -20,6 +21,7 @@ window.addEventListener("error", event => {
 });
 </script>
 <script src="navigation.js" defer></script>
+<script src="experience_frame_processing.js?v=universal-processing-1"></script>
 </head>
 <body class="platform-page target-page">
 <main class="shell">
@@ -98,7 +100,7 @@ window.addEventListener("error", event => {
             </div>
           </details>
           <p class="save-session-status" id="saveSessionStatus" role="status" aria-live="polite"></p>
-          <div class="workflow-control-row" aria-label="Primary Action Bar">
+          <div class="workflow-control-row" aria-label="Primary Action Bar" data-processing-host>
             <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
               <strong>0</strong>
               <span>Holes</span>
@@ -144,6 +146,11 @@ window.addEventListener("error", event => {
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
+const beginExperienceProcessing = (id, message, trigger, scope) => window.SCZN3Processing?.begin({ id, message, trigger, scope }) || "";
+const finishExperienceProcessing = (operationId, succeeded = true) => {
+  if (!operationId || !window.SCZN3Processing) return;
+  (succeeded ? SCZN3Processing.succeed : SCZN3Processing.fail)(operationId);
+};
 const TARGET_QUERY = new URLSearchParams(window.location.search);
 const REQUESTED_SESSION_ID = String(TARGET_QUERY.get("session") || "").trim();
 const REQUESTED_TARGET_PROFILE_ID = String(
@@ -4218,6 +4225,8 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
   if (!ensureTargetSession()) return;
   const file = event.target.files && event.target.files[0];
   if (!file) return;
+  const processingId = beginExperienceProcessing("target-photo", "Preparing your target photo…", document.getElementById("chooseTargetButton"), document.querySelector(".workflow-control-row"));
+  let processingSucceeded = false;
   readFileAsDataUrl(file).then(dataUrl => downsizeImageDataUrl(dataUrl)).then(dataUrl => {
     resetWorkspaceStageGeometry();
     cancelHoleEntryReadiness();
@@ -4244,9 +4253,10 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
     renderEvidencePreview(pendingEvidence);
     setMode(isGssfAuthoritySession() ? "impact" : "aim");
     renderMarkStatus();
+    processingSucceeded = true;
   }).catch(error => {
     console.warn("Target image read failed", error);
-  });
+  }).finally(() => finishExperienceProcessing(processingId, processingSucceeded));
 });
 
 document.getElementById("showGridCoordinates").addEventListener("change", event => {
@@ -4326,6 +4336,11 @@ document.getElementById("showResults").addEventListener("click", async () => {
     return;
   }
   if (isDotTortureAuthoritySession() && !session && !ensureTargetSession()) return;
+  const processingMessage = isM4AuthoritySession()
+    ? "Calculating your correction…"
+    : "Calculating your score…";
+  const processingId = beginExperienceProcessing("show-results", processingMessage, document.getElementById("showResults"), document.querySelector(".workflow-control-row"));
+  let processingSucceeded = false;
   authorityRequestInFlight = true;
   authorityStatusMessage = "";
   renderResults();
@@ -4351,6 +4366,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
         !correctionContextPending && authorityPackage.validation.confirmed ? "saved" : ""
       );
     }
+    processingSucceeded = resultsShown;
   } catch (error) {
     console.warn("Backend authority request failed", error);
     currentClicks = null;
@@ -4361,6 +4377,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
   } finally {
     authorityRequestInFlight = false;
+    finishExperienceProcessing(processingId, processingSucceeded);
     renderResults();
   }
   renderMarkStatus();
@@ -4405,6 +4422,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     renderMarkStatus();
     return;
   }
+  const saveProcessingId = beginExperienceProcessing("save-sec", "Preserving your Shooter Experience Card…", saveButton, document.querySelector(".workflow-control-row"));
   setSaveSessionStatus("Saving session…", "saving");
   saveButton.disabled = true;
   saveButton.textContent = "Saving…";
@@ -4426,6 +4444,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       saveButton.disabled = false;
       saveButton.textContent = "Save Session";
       setSaveSessionStatus(manualRead.message, "error");
+      finishExperienceProcessing(saveProcessingId, false);
       return;
     }
     trainingManualResult = {
@@ -4665,12 +4684,14 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     saveButton.disabled = false;
     saveButton.textContent = "Save Session";
     setSaveSessionStatus("Save failed. Your marks remain on this screen; try again.", "error");
+    finishExperienceProcessing(saveProcessingId, false);
     return;
   }
   if (!saved || !saved.savedIdentifier || !saved.authorityPackage) {
     saveButton.disabled = false;
     saveButton.textContent = "Save Session";
     setSaveSessionStatus("Save failed. The complete session was not preserved.", "error");
+    finishExperienceProcessing(saveProcessingId, false);
     return;
   }
   if (saved && saved.targetEvidenceImage) {
@@ -4699,12 +4720,14 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     renderResults();
     renderMarkStatus();
     setSaveSessionStatus("");
+    finishExperienceProcessing(saveProcessingId, true);
     return;
   }
   renderMarkStatus();
   renderResults();
   saveButton.textContent = "Saved ✓";
   setSaveSessionStatus(`Saved as ${saved.savedIdentifier}. Opening Shooter Experience Card…`, "saved");
+  finishExperienceProcessing(saveProcessingId, true);
   if (saved) {
     window.setTimeout(() => {
       if (window.SCZN3SECDispatch) {

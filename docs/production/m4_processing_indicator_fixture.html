@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../experience_frame_processing.css" />
+  <script>window.SCZN3M4 = {}; window.SCZN3_M4_CONFIG = {};</script>
+  <script src="../experience_frame_processing.js"></script>
+  <script src="../m4_runtime.js"></script>
+</head>
+<body>
+  <button id="calculate" type="button">Calculate Correction</button>
+  <p id="result" role="status"></p>
+  <script>
+    calculate.addEventListener("click", async () => {
+      try {
+        await SCZN3M4.requestAuthority({ fixture: true });
+        result.textContent = "Correction ready.";
+      } catch (error) {
+        result.textContent = "Correction unavailable.";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -10,16 +10,18 @@
   <link rel="stylesheet" href="../../../universal-ui.css" />
   <link rel="stylesheet" href="../../../m4-sec.css" />
   <link rel="stylesheet" href="../../../sec-universal.css" />
-  <link rel="stylesheet" href="../../../baker-sl-st1-sec.css" />
+  <link rel="stylesheet" href="../../../experience_frame_processing.css?v=universal-processing-1" />
+  <link rel="stylesheet" href="../../../baker-sl-st1-sec.css?v=mission-a-fresh-score-0814" />
   <link rel="stylesheet" href="target-page.css" />
   <script src="../../../navigation.js" defer></script>
-  <script src="../../../app_state.js" defer></script>
-  <script src="../../../sec_dispatch.js?v=universal-sec-dispatch-2" defer></script>
-  <script src="../../../m4_runtime.js" defer></script>
+  <script src="../../../experience_frame_processing.js?v=universal-processing-1"></script>
+  <script src="../../../app_state.js?v=mission-a-fresh-score-0814" defer></script>
+  <script src="../../../sec_dispatch.js?v=mission-a-fresh-score-0814" defer></script>
+  <script src="../../../m4_runtime.js?v=mission-a-fresh-score-0814" defer></script>
   <script src="../../../sec_reopen_lifecycle.js?v=universal-sec-reopen-1" defer></script>
-  <script src="../../../sec_v1.js" defer></script>
-  <script src="../../../baker_sl_st1_sec.js" defer></script>
-  <script src="target-page.js" defer></script>
+  <script src="../../../sec_v1.js?v=mission-a-fresh-score-0814" defer></script>
+  <script src="../../../baker_sl_st1_sec.js?v=mission-a-fresh-score-0814" defer></script>
+  <script src="target-page.js?v=mission-a-fresh-score-0814" defer></script>
 </head>
 <body class="platform-page target-page sl-target-page">
   <header class="m4-header universal-app-header sl-app-header">
@@ -29,6 +31,7 @@
         <a class="vendor-name" href="../../../index.html">Tap-n-Score™</a>
       </div>
     </div>
+    <span class="sl-header-target-identity">Baker SL-ST1 <span aria-hidden="true">•</span> USPSA</span>
     <details class="mobile-platform-menu universal-header-menu">
       <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
       <a href="../../../index.html">Home</a>
@@ -61,9 +64,9 @@
         <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Tap every visible bullet hole"></button>
       </div>
 
-      <div class="sl-workflow-dock" id="workflowDock">
+      <div class="sl-workflow-dock" id="workflowDock" data-processing-host>
         <div class="sl-workspace-status">
-          <strong id="impactCount">0 impacts recorded.</strong>
+          <strong id="impactCount">0 bullet holes recorded.</strong>
           <span id="workspaceFeedback" role="status" aria-live="polite">Target ready. Tap every bullet hole you can see.</span>
         </div>
 
@@ -73,15 +76,20 @@
           <label class="button" for="replaceInput">Choose Another</label>
           <input id="replaceInput" type="file" accept="image/*" hidden />
           <button class="button" id="undoImpact" type="button" disabled>Undo Last Mark</button>
-          <button class="button" id="clearImpacts" type="button" disabled>Clear Impacts</button>
+          <button class="button" id="clearImpacts" type="button" disabled>Clear Bullet Holes</button>
           <button class="button primary sl-show-results" id="showResults" type="button" disabled>Show Results</button>
         </div>
       </div>
-      <section class="sl-results" id="supportedResults" aria-labelledby="resultsTitle" hidden>
+      <section class="sl-results" id="supportedResults" aria-labelledby="resultsTitle" data-processing-host hidden>
         <div>
           <p class="sl-results-label">Results</p>
-          <h2 id="resultsTitle">Your impacts are ready to review.</h2>
-          <strong id="resultImpactCount">0 impacts recorded.</strong>
+          <h2 id="resultsTitle">Your bullet holes are ready to review.</h2>
+          <strong id="resultImpactCount">0 bullet holes recorded.</strong>
+          <section class="sl-authoritative-score" id="authoritativeScore" aria-label="Backend-authoritative score" hidden>
+            <p class="sl-score-objective">Highest score wins</p>
+            <div class="sl-zone-breakdown" id="zoneBreakdown"></div>
+            <p class="sl-score-total"><span>Total Score</span><strong id="totalScore"></strong></p>
+          </section>
           <p class="sl-result-feedback" id="resultFeedback" role="status" aria-live="polite"></p>
         </div>
         <button class="button primary" id="continueToSec" type="button">Continue to SEC</button>

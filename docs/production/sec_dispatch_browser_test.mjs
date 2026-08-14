@@ -111,6 +111,11 @@ const browser = await chromium.launch({
 try {
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     const context = await browser.newContext({ viewport });
+    await context.route("**/api/session/sec*", route => route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true, sessions: [] })
+    }));
     await context.addInitScript(savedRecords => {
       localStorage.clear();
       savedRecords.forEach(saved => {
@@ -166,7 +171,7 @@ try {
     await page.locator('[data-session-id="session-baker-sl"] .vault-record-link').click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-baker-sl");
     await page.locator(".baker-sl-st1-sec-card").waitFor();
-    assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /2 Impacts/);
+    assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /2 Bullet Holes/);
     assert.equal(await page.locator('[data-sec-stage="sight-correction"]').count(), 0, "Baker SL-ST1 must not inherit Sight Correction");
     assert.equal((await page.locator(".baker-sl-st1-sec-card").textContent()).includes("Confirmation not recorded"), false, "Baker SL-ST1 must not report missing confirmation");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px Baker SL-ST1 SEC must not overflow`);

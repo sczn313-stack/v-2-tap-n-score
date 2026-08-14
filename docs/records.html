@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ballistic Vault - Tap-n-Score</title>
 <link rel="stylesheet" href="styles.css" />
-<link rel="stylesheet" href="ballistic-vault.css" />
+<link rel="stylesheet" href="ballistic-vault.css?v=universal-vault-result-summary-1" />
 <link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
-<link rel="stylesheet" href="baker-sl-st1-sec.css?v=item6-phase5-dispatch" />
+<link rel="stylesheet" href="baker-sl-st1-sec.css?v=mission-a-fresh-score-0814" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-1" />
 <script src="navigation.js" defer></script>
+<script src="experience_frame_processing.js?v=universal-processing-1"></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
 <main class="shell">
@@ -44,14 +46,14 @@
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
-<script src="app_state.js?v=session-normalization-0727"></script>
-<script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
-<script src="m4_runtime.js?v=shared-results-gate-0803"></script>
+<script src="app_state.js?v=mission-a-fresh-score-0814"></script>
+<script src="sec_dispatch.js?v=mission-a-fresh-score-0814"></script>
+<script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
-<script src="sec_v1.js"></script>
+<script src="sec_v1.js?v=mission-a-fresh-score-0814"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
-<script src="baker_sl_st1_sec.js"></script>
+<script src="baker_sl_st1_sec.js?v=universal-vault-result-summary-1"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
@@ -61,6 +63,9 @@ const SIMULATION_MODE = RECORD_QUERY.get("simulation") === "1";
 const REQUESTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("session") || RECORD_QUERY.get("sessionId") || "").trim();
 const SELECTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("selected") || "").trim();
 const HISTORICAL_DETAIL_MODE = Boolean(REQUESTED_RECORD_SESSION_ID);
+const RECORDS_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+const PRESERVED_SEC_ENDPOINT = `${RECORDS_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
+let serverSavedSessions = [];
 const VAULT_RETURN_STATE_KEY = "SCZN3_BALLISTIC_VAULT_RETURN_STATE";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
@@ -1073,16 +1078,51 @@ function vaultScoringPanel(pkg) {
   return `<div class="vault-target-panel vault-scoring-panel" aria-label="Saved GSSF scoring analysis">${breakdown.slice(0, 4).map(bucket => `<span><b>${escapeHtml(bucket.zone === "downZero" ? "Down Zero" : bucket.zone === "plusOne" ? "+1" : bucket.zone === "plusThree" ? "+3" : "Miss / Other")}</b><strong>${escapeHtml(bucket.source && bucket.source.count || 0)}</strong></span>`).join("")}</div>`;
 }
 
-function vaultBakerImpactPanel(pkg) {
-  const count = window.SCZN3BakerSLST1SEC ? SCZN3BakerSLST1SEC.impactCount(pkg) : null;
-  if (count === null) return `<div class="vault-target-panel vault-scoring-panel"><strong>Impact analysis</strong><span>Saved result unavailable</span></div>`;
-  return `<div class="vault-target-panel vault-scoring-panel" aria-label="Saved Baker impact analysis"><strong>${escapeHtml(count)}</strong><span>${escapeHtml(count === 1 ? "Impact recorded" : "Impacts recorded")}</span></div>`;
+function normalizedVaultResultSummary(summary) {
+  if (!summary || !["complete", "unavailable"].includes(summary.status)) return null;
+  const evidenceLabel = String(summary.evidenceLabel || "").trim();
+  if (!evidenceLabel) return null;
+  if (summary.status === "unavailable") {
+    return {
+      status: "unavailable",
+      primaryLabel: String(summary.primaryLabel || "SCORE UNAVAILABLE").trim(),
+      objectiveLabel: String(summary.objectiveLabel || "Open SEC for details").trim(),
+      evidenceLabel
+    };
+  }
+  const primaryValue = String(summary.primaryValue || "").trim();
+  const primaryUnit = String(summary.primaryUnit || "").trim();
+  const objectiveLabel = String(summary.objectiveLabel || "").trim();
+  const breakdown = Array.isArray(summary.breakdown) ? summary.breakdown.map(item => ({
+    label: String(item && item.label || "").trim(),
+    value: String(item && item.value || "").trim()
+  })).filter(item => item.label && item.value) : [];
+  if (!primaryValue || !primaryUnit || !objectiveLabel || !breakdown.length) return null;
+  return { status: "complete", primaryValue, primaryUnit, objectiveLabel, breakdown, evidenceLabel };
+}
+
+function resolveVaultResultSummary(session, pkg, dispatch) {
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
+    return normalizedVaultResultSummary(SCZN3BakerSLST1SEC.vaultResultSummary(pkg));
+  }
+  return null;
+}
+
+function vaultResultSummaryPanel(summary) {
+  if (!summary || summary.status !== "complete") {
+    const primary = summary && summary.primaryLabel || "RESULT PRESERVED";
+    const detail = summary && summary.objectiveLabel || "Open SEC for details";
+    const evidence = summary && summary.evidenceLabel || "Evidence preserved";
+    return `<div class="vault-target-panel vault-result-summary vault-result-summary--unavailable" aria-label="Saved result unavailable"><strong>${escapeHtml(primary)}</strong><small>${escapeHtml(detail)}</small><span>${escapeHtml(evidence)}</span></div>`;
+  }
+  return `<div class="vault-target-panel vault-result-summary" aria-label="Saved authoritative result"><header><strong>${escapeHtml(summary.primaryValue)}</strong><span>${escapeHtml(summary.primaryUnit)}</span></header><small>${escapeHtml(summary.objectiveLabel)}</small><div class="vault-result-breakdown" aria-label="Authoritative result breakdown">${summary.breakdown.map(item => `<span><b>${escapeHtml(item.label)}</b>${escapeHtml(item.value)}</span>`).join('<i aria-hidden="true">•</i>')}</div><p>${escapeHtml(summary.evidenceLabel)}</p></div>`;
 }
 
 function renderCompactVaultRecord(session) {
   const pkg = authorityPackage(session);
   const dispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(session) : null;
   const bakerSLST1 = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1;
+  const resultSummary = resolveVaultResultSummary(session, pkg, dispatch);
   const evidence = session.targetEvidenceImage || {};
   const confirmationEvidence = session.confirmationEvidenceImage || {};
   const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
@@ -1103,17 +1143,17 @@ function renderCompactVaultRecord(session) {
   const after = isGssfAuthorityPackage(pkg)
     ? vaultScoringPanel(pkg)
     : bakerSLST1
-      ? vaultBakerImpactPanel(pkg)
+      ? vaultResultSummaryPanel(resultSummary)
     : confirmationEvidence.dataUrl
       ? vaultTargetPanel(confirmationEvidence.dataUrl, `${sessionLabel} saved confirmation evidence`, authorityVisualForPackage(session.confirmationAuthorityPackage, { includeAim: false }), "", confirmationEvidence)
       : vaultTargetPanel("", "", "", "Confirmation not recorded");
   return `
-    <article class="vault-record-summary" data-session-id="${escapeHtml(session.sessionId || "")}" data-session-number-authority="${escapeHtml(session.sessionNumberAuthority || "device-local-temporary")}" id="vault-session-${escapeHtml(session.sessionId || "")}">
+    <article class="vault-record-summary${bakerSLST1 ? " vault-record-summary--baker-scored" : ""}" data-session-id="${escapeHtml(session.sessionId || "")}" data-session-number-authority="${escapeHtml(session.sessionNumberAuthority || "device-local-temporary")}" id="vault-session-${escapeHtml(session.sessionId || "")}">
       <a class="vault-record-link" href="${escapeHtml(destination)}" data-preserve-active-session aria-label="Open ${escapeHtml(sessionLabel)} preserved Shooter Experience Card">
         <header><strong>${escapeHtml(sessionLabel)}</strong><time datetime="${escapeHtml(vaultDateTimeAttribute(preservedAt))}">${escapeHtml(cleanVaultDate(preservedAt))}</time></header>
         <div class="vault-evidence-pair">
           <figure><figcaption>BEFORE</figcaption>${before}</figure>
-          <figure><figcaption>${isGssfAuthorityPackage(pkg) || bakerSLST1 ? "ANALYSIS" : "AFTER"}</figcaption>${after}</figure>
+          <figure><figcaption>${bakerSLST1 ? "RESULT" : isGssfAuthorityPackage(pkg) ? "ANALYSIS" : "AFTER"}</figcaption>${after}</figure>
         </div>
         <span class="vault-open-label">OPEN SEC →</span>
       </a>
@@ -1347,7 +1387,8 @@ function renderGssfM4ReferenceSec(session, pkg) {
 }
 
 function renderHistory() {
-  const allSavedSessions = SCZN3M4.getSessionHistory().slice()
+  const allSavedSessions = [...serverSavedSessions, ...SCZN3M4.getSessionHistory()]
+    .filter((session, index, source) => session && source.findIndex(candidate => String(candidate.sessionId || "") === String(session.sessionId || "")) === index)
     .filter(session => session && session.savedToSEC === true)
     .sort((a, b) => {
       const timeDelta = new Date(b.preservedAt || b.savedAt || b.timestamp || 0) - new Date(a.preservedAt || a.savedAt || a.timestamp || 0);
@@ -1529,17 +1570,69 @@ function prepareHistoricalSec(session) {
   window.SCZN3SECReopenLifecycle?.normalize(story);
 }
 
-renderHistory();
-if (HISTORICAL_DETAIL_MODE) {
-  const detailSession = SCZN3M4.getSessionHistory().find(session => String(session.sessionId || "") === REQUESTED_RECORD_SESSION_ID);
-  if (detailSession) prepareHistoricalSec(detailSession);
+async function loadPreservedSECRecords() {
+  const processingId = window.SCZN3Processing?.begin({
+    id: HISTORICAL_DETAIL_MODE ? "reopen-preserved-sec" : "open-vault",
+    message: HISTORICAL_DETAIL_MODE ? "Opening your preserved Shooter Experience Card…" : "Opening your Ballistic Vault…",
+    trigger: document.querySelector(".vault-loading strong"),
+    scope: historyList
+  }) || "";
+  let processingSucceeded = false;
+  const requestedLocalSession = REQUESTED_RECORD_SESSION_ID
+    ? SCZN3M4.getSessionHistory().find(session =>
+        session
+        && session.savedToSEC === true
+        && session.sessionIdAuthority === "backend"
+        && String(session.sessionId || "") === REQUESTED_RECORD_SESSION_ID)
+    : null;
+  if (requestedLocalSession) {
+    try {
+      await fetch(PRESERVED_SEC_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({ session: requestedLocalSession })
+      });
+    } catch (error) {
+      // Keep the already-preserved local SEC readable if the durable store is unavailable.
+    }
+  }
+  try {
+    const endpoint = REQUESTED_RECORD_SESSION_ID
+      ? `${PRESERVED_SEC_ENDPOINT}?session=${encodeURIComponent(REQUESTED_RECORD_SESSION_ID)}`
+      : PRESERVED_SEC_ENDPOINT;
+    const response = await fetch(endpoint, { headers: { Accept: "application/json" } });
+    const packageData = await response.json().catch(() => null);
+    if (response.ok && packageData && packageData.ok === true) {
+      serverSavedSessions = packageData.session ? [packageData.session] : (Array.isArray(packageData.sessions) ? packageData.sessions : []);
+      processingSucceeded = true;
+    }
+  } catch (error) {
+    serverSavedSessions = [];
+  }
+  renderHistory();
+  if (HISTORICAL_DETAIL_MODE) {
+    const detailSession = [...serverSavedSessions, ...SCZN3M4.getSessionHistory()]
+      .find(session => String(session.sessionId || "") === REQUESTED_RECORD_SESSION_ID);
+    if (detailSession) prepareHistoricalSec(detailSession);
+  }
+  if (processingId && window.SCZN3Processing) {
+    (processingSucceeded ? SCZN3Processing.succeed : SCZN3Processing.fail)(processingId);
+  }
 }
+
+loadPreservedSECRecords();
 syncSecShareCapability();
 window.addEventListener("resize", syncSecEvidenceLayers);
 document.getElementById("saveSecPage")?.addEventListener("click", event => saveSecPageImage({ button: event.currentTarget }));
 historyList.addEventListener("click", event => {
   const vaultRecordLink = event.target.closest(".vault-record-link");
   if (vaultRecordLink) {
+    window.SCZN3Processing?.begin({
+      id: "reopen-preserved-sec",
+      message: "Opening your preserved Shooter Experience Card…",
+      trigger: vaultRecordLink,
+      scope: vaultRecordLink.closest("[data-session-id]") || historyList
+    });
     const record = vaultRecordLink.closest("[data-session-id]");
     sessionStorage.setItem(VAULT_RETURN_STATE_KEY, JSON.stringify({
       sessionId: record && record.dataset.sessionId || "",

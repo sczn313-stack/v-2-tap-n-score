@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "sczn3-registration-validation-fixture-v1",
+  "fixtureId": "BAKER_SL_ST1_CAPTURE_008_INSUFFICIENT_GEOMETRY",
+  "status": "preserved_expected_fail_closed",
+  "capturedAt": "2026-08-14",
+  "provenance": {
+    "source": "Founder-provided Messages attachment",
+    "originalFilename": "IMG_2396.jpeg",
+    "attachmentId": "E70FA3CB-9888-4DB0-81FA-33692153DE2D",
+    "preservation": "Exact supplied JPEG bytes copied without transcoding, rotation, cropping, or modification"
+  },
+  "evidence": {
+    "filename": "BAKER_SL_ST1_CAPTURE_008_INSUFFICIENT_GEOMETRY.jpeg",
+    "sha256": "3c638b1f91e9e463837bb200d5b011073a7254b552e22a0344e63753522bdd67",
+    "mediaType": "image/jpeg",
+    "pixelWidth": 3024,
+    "pixelHeight": 3024,
+    "sizeBytes": 2568499,
+    "colorProfile": "Display P3"
+  },
+  "claimedIdentity": {
+    "targetId": "BAKER_SL_ST1",
+    "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+    "publisher": "Baker Targets",
+    "sku": "SL-ST1"
+  },
+  "identityObservation": {
+    "status": "identity_may_pass",
+    "visibleEvidence": [
+      "BakerTargets.com publisher identity",
+      "SL-ST1 product marking",
+      "small partial segment of registered printed boundary"
+    ],
+    "backendIdentityVerification": "pending"
+  },
+  "corpusRole": {
+    "classification": "intentional_fail_closed_registration_fixture",
+    "variation": "most authoritative target geometry lies outside the photograph",
+    "positiveIdentityFixture": false,
+    "replacesExistingFixture": false,
+    "runtimeRegistrationMeasurement": "pending"
+  },
+  "expectedResult": {
+    "identity": "may_pass_if_publisher_and_product evidence satisfies the governed identity verifier",
+    "registration": "fail",
+    "registrationReason": "insufficient_authoritative_geometry",
+    "scoring": "unavailable",
+    "numericScore": false
+  },
+  "governance": {
+    "scoringAuthorized": false,
+    "missionBImplementationAuthorized": false,
+    "runtimeToleranceAuthorized": false,
+    "notes": "This fixture proves that recognizable publisher identity cannot substitute for sufficient registration geometry. Identity acceptance must never permit scoring when registration fails."
+  }
+}

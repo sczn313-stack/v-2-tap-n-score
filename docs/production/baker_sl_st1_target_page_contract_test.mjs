@@ -18,7 +18,7 @@ for (const control of [
   "Retake Photo",
   "Choose Another",
   "Undo Last Mark",
-  "Clear Impacts",
+  "Clear Bullet Holes",
   "Show Results"
 ]) {
   assert.match(html, new RegExp(`>${control}<`), `Missing shooter control: ${control}`);
@@ -42,7 +42,7 @@ assert.doesNotMatch(visibleMarkup, /Shot 1|order fired|firing order/i);
 assert.doesNotMatch(visibleMarkup, /scoring model|pending verification|supported analysis/i);
 assert.match(script, /Tap every bullet hole you can see\./);
 assert.match(script, /Last mark removed\./);
-assert.match(script, /Your impact marks are still here\. Try Show Results again\./);
+assert.match(script, /Your bullet-hole marks are still here\. Try Show Results again\./);
 assert.match(script, /requestConfirmation/);
 assert.doesNotMatch(script, /window\.confirm|\bconfirm\(/);
 assert.match(script, /xNorm/);
@@ -75,8 +75,17 @@ assert.match(css, /\.sl-target-page\.sl-workspace-active \.sl-target-introductio
 assert.match(css, /scroll-margin-top:66px/);
 assert.match(script, /headerBottom/);
 assert.match(script, /continuationState = "pending"/);
-assert.match(script, /Opening SEC…/);
+assert.match(script, /Opening your Shooter Experience Card…/);
 assert.doesNotMatch(script, /catch \(error\) \{[\s\S]{0,500}workspace\.scrollIntoView/);
-assert.match(script, /Add another impact, undo or clear a mark, or show results\./);
+assert.match(script, /Add another bullet hole, undo or clear a mark, or show results\./);
+assert.match(html, /Highest score wins/);
+assert.match(script, /classificationAuthority === "backend"/);
+assert.match(script, /distribution\.zoneCounts\[zone\]/);
+assert.match(script, /scoring\.zoneValues\[zone\]/);
+assert.match(script, /scoring\.subtotals\[zone\]/);
+assert.match(script, /totalScore\.textContent = String\(scoring\.total\)/);
+assert.match(script, /founderReview.*mission-a-canonical/);
+assert.match(script, /BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE\.webp/);
+assert.match(script, /loadImage\(new File/);
 
 console.log("PASS Baker SL-ST1 Phase 4 Target Page presentation contract");

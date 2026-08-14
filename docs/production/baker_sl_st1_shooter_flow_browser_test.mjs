@@ -108,6 +108,7 @@ try {
     const authoritativeSessionId = `sl-st1-flow-${viewport.width}-${viewport.height}`;
     const page = await context.newPage();
     let startAttempts = 0;
+    let preservedSession = null;
 
     page.on("pageerror", error => pageErrors.push(error.message));
     page.on("console", message => {
@@ -169,6 +170,25 @@ try {
         })
       });
     });
+    await context.route("**/api/session/sec**", async route => {
+      if (route.request().method() === "POST") {
+        preservedSession = route.request().postDataJSON().session;
+        await route.fulfill({
+          status: 201,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: true, session: preservedSession })
+        });
+        return;
+      }
+      const requestedSessionId = new URL(route.request().url()).searchParams.get("session");
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(requestedSessionId
+          ? { ok: true, session: preservedSession }
+          : { ok: true, sessions: preservedSession ? [preservedSession] : [] })
+      });
+    });
 
     await page.goto(`${baseUrl}/t/baker/sl-st1/?flow=${viewport.width}-${viewport.height}`, { waitUntil: "networkidle" });
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "Load Photo must expose navigation");
@@ -212,16 +232,16 @@ try {
     assert.equal(await page.locator("#showResults").isEnabled(), true);
     assert.match(await page.locator("#workspaceFeedback").textContent(), /undo or clear a mark, or show results/i);
     await page.locator("#undoImpact").click();
-    assert.match(await page.locator("#impactCount").textContent(), /^0 impacts/);
+    assert.match(await page.locator("#impactCount").textContent(), /^0 bullet holes/);
 
     await tap.click({ position: point(.3, .3) });
     await tap.click({ position: point(.45, .45) });
     await page.locator("#clearImpacts").click();
     await page.locator("#confirmationCancel").click();
-    assert.match(await page.locator("#impactCount").textContent(), /^2 impacts/);
+    assert.match(await page.locator("#impactCount").textContent(), /^2 bullet holes/);
     await page.locator("#clearImpacts").click();
     await page.locator("#confirmationAccept").click();
-    assert.match(await page.locator("#impactCount").textContent(), /^0 impacts/);
+    assert.match(await page.locator("#impactCount").textContent(), /^0 bullet holes/);
 
     await tap.click({ position: point(.3, .3) });
     await tap.click({ position: point(.5, .5) });
@@ -229,7 +249,7 @@ try {
     await page.locator("#showResults").click();
     await page.locator("#supportedResults:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "Results must expose navigation");
-    assert.match(await page.locator("#resultImpactCount").textContent(), /^3 impacts/);
+    assert.match(await page.locator("#resultImpactCount").textContent(), /^3 bullet holes/);
     const resultsFit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
@@ -256,7 +276,7 @@ try {
     });
 
     await page.locator("#continueToSec").click();
-    await page.locator("#continueToSec").getByText("Opening SEC…").waitFor();
+    await page.locator("#continueToSec").getByText("Opening your Shooter Experience Card…").waitFor();
     await assertTransitionVisible(page, viewport, "failed transition pending interval");
     await page.locator("#resultFeedback").getByText("Your target is ready. Try Continue to SEC again.").waitFor();
     const recoveredFit = await page.evaluate(() => {
@@ -285,7 +305,7 @@ try {
     assert.equal(recoveredFit.impactCount, 3, `${viewport.width}px retry preserves impact evidence`);
     assert.equal(recoveredFit.resultStatePreserved, true, `${viewport.width}px retry preserves results`);
     await page.locator("#continueToSec").click();
-    await page.locator("#continueToSec").getByText("Opening SEC…").waitFor();
+    await page.locator("#continueToSec").getByText("Opening your Shooter Experience Card…").waitFor();
     await assertTransitionVisible(page, viewport, "successful transition pending interval");
     await page.locator("#bakerSecView:not([hidden])").waitFor();
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
@@ -317,14 +337,13 @@ try {
       horizontalOverflow: false
     }, `${viewport.width}x${viewport.height} SEC evidence and preservation-action visibility`);
     await page.locator("[data-baker-save-sec]").click();
-    await page.locator("[data-baker-sec-status]").waitFor();
-    assert.match(await page.locator("[data-baker-sec-status]").textContent(), /saved to Ballistic Vault/i);
+    await page.locator("[data-baker-sec-status]").getByText("SEC saved to Ballistic Vault.").waitFor();
     await page.getByRole("link", { name: "View History" }).click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"));
     assert.equal(await page.getByLabel("Open menu").isVisible(), true, "Vault must expose navigation");
     await page.locator(`[data-session-id="${authoritativeSessionId}"] .vault-record-link`).click();
     await page.locator(".baker-sl-st1-sec-card").waitFor();
-    assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /3 Impacts/);
+    assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /3 Bullet Holes/);
     const reopenedSecMarkers = await page.locator(".sec-baker-impact-marker").evaluateAll(markers => markers.map(marker => ({
       label: marker.textContent.trim(),
       left: marker.style.left,
@@ -341,7 +360,7 @@ try {
     assert.deepEqual(consoleErrors, []);
 
     await context.close();
-    console.log(`PASS Baker SL-ST1 Load → impacts → edit → results → SEC → Vault → reopen at ${viewport.width}x${viewport.height}`);
+    console.log(`PASS Baker SL-ST1 Load → bullet holes → edit → results → SEC → Vault → reopen at ${viewport.width}x${viewport.height}`);
   }
 } finally {
   await browser.close();

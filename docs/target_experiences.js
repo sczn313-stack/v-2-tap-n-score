@@ -46,11 +46,13 @@
     },
     {
       id: "uspsa-practice-target",
-      name: "USPSA Practice Target",
-      description: "Practice scoring your USPSA shooting.",
-      status: "coming-soon",
+      name: "Baker SL-ST1 — USPSA",
+      description: "Tap your bullet holes, see your A/B/C/D score, and save your Shooter Experience Card.",
+      status: "available",
       thumbnail: "assets/landing-package-range-card-2.png",
-      thumbnailAlt: "USPSA practice target preview"
+      thumbnailAlt: "Baker SL-ST1 USPSA target preview",
+      targetId: "BAKER_SL_ST1",
+      href: "t/baker/sl-st1/"
     },
     {
       id: "idpa-practice-target",

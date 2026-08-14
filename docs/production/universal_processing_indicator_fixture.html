@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../experience_frame_processing.css" />
+  <style>
+    body { margin: 0; font: 16px system-ui; }
+    main { min-height: 100svh; display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+    .evidence { min-height: 0; display: grid; place-items: center; background: #eee; }
+    .evidence > div { width: min(70vw, 420px); aspect-ratio: 23 / 35; background: #fff; border: 2px solid #111; }
+    .actions { padding: 12px; display: flex; gap: 8px; }
+    button { min-height: 48px; padding: 8px 16px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="evidence" aria-label="Target evidence"><div></div></section>
+    <section class="actions" data-processing-host>
+      <button id="success" type="button">Show Results</button>
+      <button id="failure" type="button">Save SEC</button>
+    </section>
+  </main>
+  <script src="../experience_frame_processing.js"></script>
+  <script>
+    let originalHandlerCount = 0;
+    success.addEventListener("click", () => { originalHandlerCount += 1; });
+    window.fixture = {
+      beginSuccess(reassuranceAfter = 8000) {
+        return SCZN3Processing.begin({ id: "show-results", message: "Calculating your score…", trigger: success, scope: success.closest("[data-processing-host]"), reassuranceAfter });
+      },
+      beginFailure() {
+        return SCZN3Processing.begin({ id: "save-sec", message: "Preserving your Shooter Experience Card…", trigger: failure, scope: failure.closest("[data-processing-host]") });
+      },
+      handlerCount: () => originalHandlerCount
+    };
+  </script>
+</body>
+</html>

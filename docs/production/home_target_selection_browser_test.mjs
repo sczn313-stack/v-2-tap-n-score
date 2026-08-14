@@ -39,10 +39,19 @@ try {
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
   assert.match(await page.locator("#catalogTitle").textContent(), /TAP\s*your target below/);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').count(), 3);
+  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').count(), 4);
   assert.equal(await page.locator('.ecosystem-target-card[data-status="coming-soon"]').evaluateAll(cards => cards.every(card => card.tagName === "ARTICLE" && getComputedStyle(card).cursor !== "pointer")), true);
   assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').evaluateAll(cards => cards.every(card => card.tagName === "A" && /Tap to Begin/.test(card.textContent))), true);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count(), 3);
+  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count(), 4);
+  const bakerSLST1 = page.locator('[data-experience-id="uspsa-practice-target"]');
+  assert.equal(await bakerSLST1.getAttribute("data-status"), "available");
+  assert.match(await bakerSLST1.textContent(), /Baker SL-ST1 — USPSA/);
+  assert.match(await bakerSLST1.textContent(), /Available now/);
+  assert.match(await bakerSLST1.textContent(), /Tap to Begin/);
+  assert.match(await bakerSLST1.textContent(), /Tap your bullet holes, see your A\/B\/C\/D score, and save your Shooter Experience Card\./);
+  assert.doesNotMatch(await bakerSLST1.textContent(), /Coming Soon/i);
+  assert.equal(await bakerSLST1.getAttribute("href"), "t/baker/sl-st1/");
+  assert.equal(await bakerSLST1.getAttribute("data-target-id"), "BAKER_SL_ST1");
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
 
   await page.locator('[data-experience-id="gssf-practice-target"]').click();
@@ -73,7 +82,7 @@ try {
   for (let visit = 1; visit <= 4; visit += 1) {
     await visitPage.goto(`${baseUrl}/index.html?catalog_test_view=${visit}`, { waitUntil: "domcontentloaded" });
     const cueCount = await visitPage.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count();
-    assert.equal(cueCount, visit <= 3 ? 3 : 0, `catalog view ${visit} discovery cue state`);
+    assert.equal(cueCount, visit <= 3 ? 4 : 0, `catalog view ${visit} discovery cue state`);
   }
   assert.equal(await visitPage.evaluate(() => localStorage.getItem("SCZN3_TARGET_CATALOG_VIEW_COUNT_V1")), "4");
   await visitContext.close();

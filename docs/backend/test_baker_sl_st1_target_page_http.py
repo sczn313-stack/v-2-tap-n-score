@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """HTTP boundary test for the Baker SL-ST1 Phase 4 endpoint."""
+import base64
 import json
+from pathlib import Path
 
 import server as server_module
 
@@ -48,6 +50,32 @@ def main():
     assert status == 200
     assert response["supportedAnalysis"] == {"impactCount": 1}
     assert response["scoring"]["status"] == "unavailable"
+
+    canonical_path = Path(__file__).resolve().parents[1] / "authority-evidence" / "baker-sl-st1" / "BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp"
+    canonical_bytes = canonical_path.read_bytes()
+    canonical = {
+        "targetId": "BAKER_SL_ST1",
+        "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+        "imageEvidence": {
+            "sha256": "8f3f4a7e371549466dcfd00d95981704f51cf977e5e5ffba288d097efb008429",
+            "mediaType": "image/webp",
+            "widthPx": 1141,
+            "heightPx": 1500,
+            "dataUrl": "data:image/webp;base64," + base64.b64encode(canonical_bytes).decode("ascii"),
+        },
+        "impacts": [
+            {"xNorm": 570 / 1140, "yNorm": 221 / 1499, "zone": "D", "score": 9999},
+            {"xNorm": 570 / 1140, "yNorm": 330 / 1499},
+            {"xNorm": 350 / 1140, "yNorm": 700 / 1499},
+            {"xNorm": 220 / 1140, "yNorm": 700 / 1499},
+        ],
+    }
+    status, response = request("POST", "/api/target/baker-sl-st1/analyze", canonical)
+    assert status == 200
+    assert [item["zone"] for item in response["impacts"]] == ["A", "B", "C", "D"]
+    assert response["scoring"]["subtotals"] == {"A": 10, "B": 9, "C": 8, "D": 7}
+    assert response["scoring"]["total"] == 34
+    assert response["authorityTrace"]["classificationAuthority"] == "backend"
 
     status, response = request(
         "POST",

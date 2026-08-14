@@ -42,7 +42,77 @@
   }
 
   function impactLabel(count) {
-    return `${count} ${count === 1 ? "Impact" : "Impacts"}`;
+    return `${count} ${count === 1 ? "Bullet Hole" : "Bullet Holes"}`;
+  }
+
+  function scoringSummary(pkg) {
+    const scoring = pkg && pkg.scoring;
+    const distribution = pkg && pkg.productRegionDistribution;
+    const trace = pkg && pkg.authorityTrace;
+    if (!scoring || scoring.status !== "complete" || !distribution || distribution.status !== "complete") return null;
+    if (!trace || trace.classificationAuthority !== "backend" || trace.geometryAuthorityId !== "UGO_BAKER_SL_ST1_23X35_V1" || trace.coordinateSystemId !== "UGO_IMAGE_PLANE_TOP_LEFT_V1" || trace.scoringAuthorityId !== "BAKER_SL_ST1_SCORING_V1") return null;
+    const values = scoring.zoneValues;
+    const subtotals = scoring.subtotals;
+    const counts = distribution.zoneCounts;
+    if (!values || !subtotals || !counts || scoring.objective !== "highest_score_wins") return null;
+    const governed = { A: 10, B: 9, C: 8, D: 7 };
+    let total = 0;
+    let classified = 0;
+    for (const zone of ["A", "B", "C", "D"]) {
+      if (values[zone] !== governed[zone] || !Number.isInteger(counts[zone]) || counts[zone] < 0) return null;
+      if (!Number.isInteger(subtotals[zone]) || subtotals[zone] !== counts[zone] * values[zone]) return null;
+      total += subtotals[zone];
+      classified += counts[zone];
+    }
+    if (counts.outside !== 0 || counts.indeterminate_boundary !== 0) return null;
+    if (classified !== impactCount(pkg) || distribution.classifiedImpactCount !== classified) return null;
+    const observedCounts = { A: 0, B: 0, C: 0, D: 0 };
+    for (const impact of pkg.impacts) {
+      if (!Object.hasOwn(observedCounts, impact.zone) || impact.zoneValue !== values[impact.zone]) return null;
+      observedCounts[impact.zone] += 1;
+    }
+    for (const zone of ["A", "B", "C", "D"]) if (observedCounts[zone] !== counts[zone]) return null;
+    if (!distribution.reconciliation || distribution.reconciliation.countsMatchCapturedImpactCount !== true) return null;
+    if (scoring.total !== total) return null;
+    return { counts, values, subtotals, total: scoring.total, capturedCount: classified };
+  }
+
+  function scoringHtml(summary) {
+    if (!summary) return "";
+    const rows = ["A", "B", "C", "D"].map(zone =>
+      `<div class="sec-baker-zone-row" data-zone="${zone}" aria-label="${zone}: ${summary.counts[zone]} times ${summary.values[zone]} equals ${summary.subtotals[zone]}"><strong class="sec-baker-zone-name">${zone}</strong><span class="sec-baker-zone-equation"><b>${summary.counts[zone]}</b><i aria-hidden="true">×</i><b>${summary.values[zone]}</b></span><i class="sec-baker-zone-equals" aria-hidden="true">=</i><strong class="sec-baker-zone-subtotal">${summary.subtotals[zone]}</strong></div>`
+    ).join("");
+    return `<section class="sec-baker-performance" aria-label="SL-ST1 score and zone performance">
+      <header class="sec-baker-score-hero"><span>Total Score</span><strong>${summary.total}</strong><small>Highest score wins</small></header>
+      <div class="sec-baker-zone-performance"><h3>Zone Performance</h3><div class="sec-baker-zone-rows">${rows}</div></div>
+      <p class="sec-baker-count-reconciliation"><strong>${summary.capturedCount}</strong> numbered ${summary.capturedCount === 1 ? "bullet hole" : "bullet holes"} <span aria-hidden="true">•</span> all accounted for</p>
+    </section>`;
+  }
+
+  function vaultResultSummary(pkg) {
+    if (!matches(pkg)) return null;
+    const count = impactCount(pkg);
+    if (count === null) return null;
+    const score = scoringSummary(pkg);
+    if (!score) {
+      return Object.freeze({
+        status: "unavailable",
+        primaryLabel: "SCORE UNAVAILABLE",
+        objectiveLabel: "Open SEC for details",
+        evidenceLabel: `${count} ${count === 1 ? "bullet hole" : "bullet holes"}`
+      });
+    }
+    return Object.freeze({
+      status: "complete",
+      primaryValue: String(score.total),
+      primaryUnit: "POINTS",
+      objectiveLabel: "HIGHEST SCORE WINS",
+      breakdown: Object.freeze(["A", "B", "C", "D"].map(zone => Object.freeze({
+        label: zone,
+        value: String(score.counts[zone])
+      }))),
+      evidenceLabel: `${score.capturedCount} ${score.capturedCount === 1 ? "bullet hole" : "bullet holes"}`
+    });
   }
 
   function displayDateTime(session) {
@@ -113,11 +183,15 @@
     const imageUrl = clean(evidence.dataUrl);
     if (!imageUrl) return '<div class="sec-comparison-pending">Target photograph unavailable</div>';
     const markers = pkg.impacts.map((impact, index) => {
-      const x = Math.max(0, Math.min(100, Number(impact.xNorm) * 100));
-      const y = Math.max(0, Math.min(100, Number(impact.yNorm) * 100));
+      // A Mission B package carries both coordinate truths: the source point
+      // places the marker on the photographed evidence, while xNorm/yNorm are
+      // the backend-derived canonical coordinates used by Mission A scoring.
+      const evidencePoint = impact && impact.sourceEvidencePoint || impact;
+      const x = Math.max(0, Math.min(100, Number(evidencePoint.xNorm) * 100));
+      const y = Math.max(0, Math.min(100, Number(evidencePoint.yNorm) * 100));
       return `<span class="sec-baker-impact-marker" style="left:${x}%;top:${y}%" aria-hidden="true">${index + 1}</span>`;
     }).join("");
-    return `<div class="sec-baker-evidence-viewport"><div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker Silhouette Target with recorded impacts" /><div class="sec-baker-impact-layer">${markers}</div></div></div>`;
+    return `<div class="sec-baker-evidence-viewport"><div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker SL-ST1 target with numbered evidence markers" /><div class="sec-baker-impact-layer">${markers}</div></div></div>`;
   }
 
   function detailsInvitationHtml(session, mode, dismissed) {
@@ -154,12 +228,13 @@
     const count = impactCount(pkg);
     if (count === null) return global.SCZN3SEC.renderUnavailable("Results unavailable");
     const label = impactLabel(count);
+    const score = scoringSummary(pkg);
     return global.SCZN3SEC.render({
       schemaVersion: "1.2",
       recordId: clean(session.sessionId) || "baker-sl-st1-sec",
       missionFamily: "smartEvidenceCapture",
       sessionLabel: clean(session.sessionLabel) || "Session",
-      scoreDisplay: label,
+      scoreDisplay: score ? `${score.total} Points` : label,
       articleClassName: "history-card baker-sl-st1-sec-card",
       articleAttributes: { "data-target-id": TARGET_ID, "data-sec-mode": mode },
       regions: [
@@ -167,13 +242,13 @@
           key: "target",
           className: "sec-v1-evidence-content",
           ariaLabel: "Target",
-          contentHtml: `<section class="sec-baker-target-evidence"><header><span>Baker Targets</span><strong>Silhouette Target (USPSA)</strong></header><figure>${evidenceHtml(session, pkg)}<figcaption>${escapeHtml(label)} recorded</figcaption></figure></section>`
+          contentHtml: `<section class="sec-baker-performance-stage"><section class="sec-baker-target-evidence"><header><span>Target Evidence</span><strong>Baker SL-ST1</strong></header><figure>${evidenceHtml(session, pkg)}</figure></section>${score ? scoringHtml(score) : `<section class="sec-baker-score-unavailable"><span>Score</span><strong>Unavailable</strong><small>${escapeHtml(label)} preserved</small></section>`}</section>`
         },
         {
           key: "session",
           className: "sec-v1-measurement-content",
           ariaLabel: "Session",
-          contentHtml: `<section class="sec-baker-supported-result"><span>Recorded Impacts</span><strong>${escapeHtml(String(count))}</strong></section><section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields">${sessionDetailsHtml(session)}</div></section>${detailsInvitationHtml(session, mode, detailsDismissed)}`
+          contentHtml: `<section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields">${sessionDetailsHtml(session)}</div></section>${detailsInvitationHtml(session, mode, detailsDismissed)}`
         },
         {
           key: "actions",
@@ -192,6 +267,8 @@
     resultPackageType: RESULT_PACKAGE_TYPE,
     matches,
     impactCount,
+    scoringSummary,
+    vaultResultSummary,
     missingOptionalDetails,
     render
   });

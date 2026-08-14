@@ -87,10 +87,12 @@ assert.strictEqual(dispatch.resolve(unknown).adapter, dispatch.ADAPTERS.UNAVAILA
 const records = fs.readFileSync(path.join(docs, "records.html"), "utf8");
 const shoot = fs.readFileSync(path.join(docs, "shoot.html"), "utf8");
 const sec = fs.readFileSync(path.join(docs, "sec.html"), "utf8");
+const bakerSLST1 = fs.readFileSync(path.join(docs, "t", "baker", "sl-st1", "index.html"), "utf8");
 const buildSite = fs.readFileSync(path.join(docs, "production", "build-site.mjs"), "utf8");
 const buildNetlify = fs.readFileSync(path.join(docs, "production", "build-netlify.mjs"), "utf8");
-for (const [name, html] of [["records", records], ["shoot", shoot], ["sec", sec]]) {
-  assert(html.includes("sec_dispatch.js?v=universal-sec-dispatch-1"), `${name} must load the shared SEC dispatcher`);
+const sharedDispatcherScript = /<script\b[^>]*\bsrc=["'](?:\.\.\/|\.\/)*sec_dispatch\.js(?:\?[^"']*)?["'][^>]*><\/script>/i;
+for (const [name, html] of [["records", records], ["shoot", shoot], ["sec", sec], ["baker SL-ST1", bakerSLST1]]) {
+  assert(sharedDispatcherScript.test(html), `${name} must load the shared SEC dispatcher; cache-version metadata is not dispatcher identity`);
 }
 assert(records.includes("SCZN3SECDispatch.destinationFor(session)"), "Vault links must use shared SEC dispatch");
 assert(shoot.includes("SCZN3SECDispatch.destinationFor(saved)"), "post-save handoff must use shared SEC dispatch");

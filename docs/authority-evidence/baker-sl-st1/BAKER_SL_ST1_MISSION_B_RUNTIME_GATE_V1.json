@@ -1,0 +1,45 @@
+{
+  "authorityId": "BAKER_SL_ST1_MISSION_B_RUNTIME_GATE_V1",
+  "targetId": "BAKER_SL_ST1",
+  "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+  "status": "founder_approved_initial_runtime_gate",
+  "approvedAt": "2026-08-14",
+  "canonicalAssetSha256": "8f3f4a7e371549466dcfd00d95981704f51cf977e5e5ffba288d097efb008429",
+  "coordinateSystemId": "UGO_IMAGE_PLANE_TOP_LEFT_V1",
+  "registrationId": "UGO_BAKER_SL_ST1_23X35_V1",
+  "identityAndCorrespondence": {
+    "publisherRegionMatchesMin": 12,
+    "scoringTableMatchesMin": 6,
+    "exteriorBoundaryMatchesMin": 6,
+    "homographyInliersMin": 24,
+    "homographyInlierRatioMin": 0.70
+  },
+  "independentResidualPx": {
+    "rmsMax": 6,
+    "p95Max": 17,
+    "maximumMax": 20
+  },
+  "bootstrapStabilityPx": {
+    "rmsMax": 6,
+    "p95Max": 7,
+    "maximumMax": 50
+  },
+  "perImpactTruthProtection": {
+    "uncertaintyRadius": "measured_maximum_registration_residual_px",
+    "onOrInsideRadiusResult": "indeterminate_boundary"
+  },
+  "sourceEvidence": {
+    "report": {
+      "path": "registration-validation/MISSION_B_EMPIRICAL_REGISTRATION_REPORT_DRAFT_001.md",
+      "sha256": "1799610451d8619c7367a7c7088c094e2aaf57eca87b751af5ab00eb91b0761f"
+    },
+    "measurements": {
+      "path": "registration-validation/MISSION_B_EMPIRICAL_REGISTRATION_MEASUREMENTS_DRAFT_001.json",
+      "sha256": "93511c60af776761da5740089ee85ac894f91a480c5680ede5c4c6b41336a2b3"
+    },
+    "primaryAcceptanceFixture": {
+      "path": "registration-validation/session-002/BAKER_SL_ST1_SESSION_002_MANIFEST.json",
+      "sha256": "2baebf80ef1ab7f7073c44802f1ffdd8ba94c1ea4b70d2f10f9e5fd21f35b325"
+    }
+  }
+}

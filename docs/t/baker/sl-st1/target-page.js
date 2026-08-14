@@ -7,6 +7,12 @@
   const local = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
   const authorityOrigin = local ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com";
   const analyzeEndpoint = `${authorityOrigin}/api/target/baker-sl-st1/analyze`;
+  const fixtureCaptureEndpoint = `${authorityOrigin}/api/target/baker-sl-st1/founder-fixture`;
+  const preservedSecEndpoint = `${authorityOrigin}/api/session/sec`;
+  const query = new URLSearchParams(location.search);
+  const founderFixtureMode = query.get("founderFixture") === "sl-st1-scoring-v1";
+  const canonicalFounderReviewMode = query.get("founderReview") === "mission-a-canonical";
+  const canonicalAssetUrl = "../../../authority-evidence/baker-sl-st1/BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp";
 
   const elements = {
     instruction: document.getElementById("targetInstruction"), loadCard: document.getElementById("loadCard"),
@@ -16,6 +22,7 @@
     feedback: document.getElementById("workspaceFeedback"), undo: document.getElementById("undoImpact"),
     clear: document.getElementById("clearImpacts"), showResults: document.getElementById("showResults"),
     results: document.getElementById("supportedResults"), resultCount: document.getElementById("resultImpactCount"), resultFeedback: document.getElementById("resultFeedback"),
+    resultsTitle: document.getElementById("resultsTitle"), authoritativeScore: document.getElementById("authoritativeScore"), zoneBreakdown: document.getElementById("zoneBreakdown"), totalScore: document.getElementById("totalScore"),
     continueToSec: document.getElementById("continueToSec"), secView: document.getElementById("bakerSecView"),
     secRoot: document.getElementById("bakerSecRoot"), pageShell: document.querySelector(".sl-page-shell"), header: document.querySelector(".sl-app-header"),
     workflowDock: document.getElementById("workflowDock"),
@@ -24,11 +31,16 @@
     confirmationAccept: document.getElementById("confirmationAccept"), inputs: Array.from(document.querySelectorAll('input[type="file"]'))
   };
 
-  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false };
-  const impactMessage = count => `${count} ${count === 1 ? "impact" : "impacts"} recorded.`;
+  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false, fixtureLocked: false, fixtureDownloadUrl: "", authoritativeSessionId: "" };
+  const bulletHoleMessage = count => `${count} ${count === 1 ? "bullet hole" : "bullet holes"} recorded.`;
   const setFeedback = message => {
     elements.feedback.textContent = message;
     if (elements.resultFeedback) elements.resultFeedback.textContent = message;
+  };
+  const beginProcessing = (id, message, trigger, scope) => window.SCZN3Processing?.begin({ id, message, trigger, scope }) || "";
+  const finishProcessing = (operationId, succeeded = true) => {
+    if (!operationId || !window.SCZN3Processing) return;
+    (succeeded ? SCZN3Processing.succeed : SCZN3Processing.fail)(operationId);
   };
 
   function invalidateResults() {
@@ -74,10 +86,41 @@
       marker.style.top = `${impact.yNorm * 100}%`;
       return marker;
     }));
-    elements.count.textContent = impactMessage(state.impacts.length);
-    elements.undo.disabled = state.impacts.length === 0 || state.pending;
-    elements.clear.disabled = state.impacts.length === 0 || state.pending;
-    elements.showResults.disabled = state.impacts.length === 0 || state.pending;
+    elements.count.textContent = bulletHoleMessage(state.impacts.length);
+    elements.undo.disabled = state.impacts.length === 0 || state.pending || state.fixtureLocked;
+    elements.clear.disabled = state.impacts.length === 0 || state.pending || state.fixtureLocked;
+    elements.showResults.disabled = state.pending || state.fixtureLocked || state.impacts.length === 0;
+    if (founderFixtureMode && !state.fixtureLocked) elements.showResults.textContent = "Preserve Founder Scoring Fixture";
+  }
+
+  function renderBackendResult(result) {
+    const scoring = result && result.scoring;
+    const distribution = result && result.productRegionDistribution;
+    const trace = result && result.authorityTrace;
+    const complete = scoring?.status === "complete"
+      && distribution?.status === "complete"
+      && trace?.classificationAuthority === "backend"
+      && scoring.objective === "highest_score_wins";
+    elements.authoritativeScore.hidden = !complete;
+    elements.zoneBreakdown.replaceChildren();
+    elements.totalScore.textContent = "";
+    if (!complete) {
+      elements.resultsTitle.textContent = "Your bullet holes are ready to review.";
+      elements.resultFeedback.textContent = "A complete authoritative score is not available for this target evidence.";
+      return;
+    }
+    for (const zone of ["A", "B", "C", "D"]) {
+      const row = document.createElement("div");
+      const label = document.createElement("span");
+      const value = document.createElement("strong");
+      label.textContent = zone;
+      value.textContent = `${distribution.zoneCounts[zone]} × ${scoring.zoneValues[zone]} = ${scoring.subtotals[zone]}`;
+      row.append(label, value);
+      elements.zoneBreakdown.append(row);
+    }
+    elements.totalScore.textContent = String(scoring.total);
+    elements.resultsTitle.textContent = "Your authoritative score is ready.";
+    elements.resultFeedback.textContent = "Every recorded bullet hole is included in the zone count and total score.";
   }
 
   async function digestFile(file) {
@@ -174,6 +217,8 @@
       return;
     }
     if (state.impacts.length && !await requestConfirmation({ title: "Replace Target Photo?", message: "Replacing this photo will clear its impact marks.", acceptLabel: "Replace Photo" })) return;
+    const initiatingLabel = document.querySelector(`label[for="${CSS.escape(document.activeElement?.id || "")}"]`);
+    const processingId = beginProcessing("target-photo", "Preparing your target photo…", initiatingLabel, elements.loadCard);
     const nextUrl = URL.createObjectURL(file);
     try {
       const [sha256, dimensions, dataUrl] = await Promise.all([digestFile(file), imageDimensions(nextUrl), fileDataUrl(file)]);
@@ -195,6 +240,7 @@
         persistedSizeBytes: storedRepresentation.sizeBytes || file.size
       };
       state.impacts = [];
+      state.fixtureLocked = false;
       state.preserved = false;
       invalidateResults();
       elements.image.src = nextUrl;
@@ -207,9 +253,11 @@
       elements.instruction.textContent = "Target ready. Tap every bullet hole you can see.";
       setFeedback("Target ready. Tap every bullet hole you can see.");
       renderImpacts();
+      finishProcessing(processingId, true);
     } catch (error) {
       URL.revokeObjectURL(nextUrl);
       elements.instruction.textContent = "We couldn’t use this photo. Retake it or choose another.";
+      finishProcessing(processingId, false);
     }
   }
 
@@ -224,7 +272,13 @@
     const session = window.SCZN3M4 && SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
     const snapshot = session && session.matrixSnapshot || {};
     const identity = String(snapshot.targetId || snapshot.target_profile_id || snapshot.targetProfileId || "").toUpperCase();
-    return session && session.sessionIdAuthority === "backend" && (identity === TARGET_ID || identity === SESSION_TARGET_ID.toUpperCase()) ? session : null;
+    return session
+      && state.authoritativeSessionId
+      && session.sessionId === state.authoritativeSessionId
+      && session.sessionIdAuthority === "backend"
+      && (identity === TARGET_ID || identity === SESSION_TARGET_ID.toUpperCase())
+      ? session
+      : null;
   }
 
   async function ensureAuthoritativeSession() {
@@ -239,7 +293,9 @@
       headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
       body: JSON.stringify({ preparationToken: preparation.preparationToken, selectedEquipment: preparation.standardSetup, idempotencyKey })
     });
-    return SCZN3M4.createAuthoritativeSession(backendSession, { targetName: "Silhouette Target (USPSA)", targetId: TARGET_ID });
+    const created = SCZN3M4.createAuthoritativeSession(backendSession, { targetName: "Silhouette Target (USPSA)", targetId: TARGET_ID });
+    state.authoritativeSessionId = created.sessionId;
+    return created;
   }
 
   function dismissedKey(session) { return `SCZN3_BAKER_SL_ST1_DETAILS_DISMISSED_${session.sessionId}`; }
@@ -287,15 +343,44 @@
       const status = root.querySelector("[data-baker-sec-status]");
       if (status) status.textContent = updated ? "Note saved." : "Note could not be saved.";
     });
-    root.querySelector("[data-baker-save-sec]")?.addEventListener("click", () => {
-      const saved = SCZN3M4.preserveActiveSEC("", SCZN3M4.read(SCZN3M4.KEYS.activeSession, session));
-      state.preserved = Boolean(saved);
+    root.querySelector("[data-baker-save-sec]")?.addEventListener("click", async event => {
+      const button = event.currentTarget;
+      const processingId = beginProcessing("save-sec", "Preserving your Shooter Experience Card…", button, button.closest("[data-processing-host]") || root);
+      button.disabled = true;
+      const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, session);
+      const saved = activeSession && activeSession.savedToSEC === true
+        ? activeSession
+        : SCZN3M4.preserveActiveSEC("", activeSession);
       const status = root.querySelector("[data-baker-sec-status]");
-      if (status) status.textContent = saved ? "SEC saved to Ballistic Vault." : "SEC could not be saved.";
+      if (!saved) {
+        state.preserved = false;
+        if (status) status.textContent = "SEC could not be saved.";
+        button.disabled = false;
+        finishProcessing(processingId, false);
+        return;
+      }
+      try {
+        const response = await fetch(preservedSecEndpoint, {
+          method: "POST",
+          headers: { Accept: "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify({ session: saved })
+        });
+        const packageData = await response.json().catch(() => null);
+        if (!response.ok || !packageData || packageData.ok !== true) throw new Error("preserved_sec_persistence_failed");
+        state.preserved = true;
+        if (status) status.textContent = "SEC saved to Ballistic Vault.";
+        finishProcessing(processingId, true);
+      } catch (error) {
+        state.preserved = false;
+        if (status) status.textContent = "SEC could not be saved. Your session remains available; try again.";
+        finishProcessing(processingId, false);
+      } finally {
+        button.disabled = false;
+      }
     });
     root.querySelector("[data-sec-export]")?.addEventListener("click", () => window.print());
     root.querySelector("[data-sec-share]")?.addEventListener("click", async () => {
-      const shareData = { title: "Baker Silhouette Target SEC", text: `${state.result.supportedAnalysis.impactCount} impacts recorded with Tap-n-Score.`, url: location.href };
+      const shareData = { title: "Baker Silhouette Target SEC", text: `${state.result.supportedAnalysis.impactCount} bullet holes recorded with Tap-n-Score.`, url: location.href };
       if (navigator.share) await navigator.share(shareData).catch(() => {});
       else if (navigator.clipboard) await navigator.clipboard.writeText(location.href).catch(() => {});
     });
@@ -303,39 +388,93 @@
 
   elements.inputs.forEach(input => input.addEventListener("change", async () => { const file = input.files && input.files[0]; await loadImage(file); input.value = ""; }));
   elements.tapSurface.addEventListener("click", event => {
-    if (!state.imageEvidence || state.pending) return;
+    if (!state.imageEvidence || state.pending || state.fixtureLocked) return;
     const rect = elements.tapSurface.getBoundingClientRect();
     state.impacts.push({ xNorm: Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width)), yNorm: Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height)) });
     state.preserved = false;
     invalidateResults();
     renderImpacts();
-    setFeedback(`${impactMessage(state.impacts.length)} Add another impact, undo or clear a mark, or show results.`);
+    setFeedback(`${bulletHoleMessage(state.impacts.length)} Add another bullet hole, undo or clear a mark, or show results.`);
+    if (founderFixtureMode) setFeedback(`${bulletHoleMessage(state.impacts.length)} Review the complete captured set, then preserve the Founder Scoring Fixture.`);
   });
-  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback(state.impacts.length ? `Last mark removed. ${impactMessage(state.impacts.length)} Add another impact, clear the marks, or show results.` : "Last mark removed. Tap every bullet hole you can see."); queueTargetFit(); } });
+  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback(state.impacts.length ? `Last mark removed. ${bulletHoleMessage(state.impacts.length)} Add another bullet hole, clear the marks, or show results.` : "Last mark removed. Tap every bullet hole you can see."); queueTargetFit(); } });
   elements.clear.addEventListener("click", async () => {
     if (!state.impacts.length || state.pending || !await requestConfirmation({ title: "Clear Impact Marks?", message: "This removes every impact mark from the current photo.", acceptLabel: "Clear Marks" })) return;
     state.impacts = []; state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("All impact marks cleared. Tap every bullet hole you can see."); queueTargetFit();
   });
   elements.showResults.addEventListener("click", async () => {
     if (!state.imageEvidence || !state.impacts.length || state.pending) return;
-    state.pending = true; renderImpacts(); setFeedback("Reviewing your impacts…");
+    if (founderFixtureMode) {
+      if (!state.impacts.length || state.fixtureLocked) return;
+      const processingId = beginProcessing("fixture-preservation", "Preserving the Founder Scoring Fixture…", elements.showResults, elements.workflowDock);
+      let processingSucceeded = false;
+      state.pending = true; renderImpacts(); setFeedback("Backend is sealing the Founder Scoring Fixture…");
+      try {
+        const response = await fetch(fixtureCaptureEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            purpose: "founder_scoring_fixture_registration_validation",
+            targetId: TARGET_ID,
+            variantId: VARIANT_ID,
+            imageEvidence: { ...state.imageEvidence, dataUrl: state.imageDataUrl },
+            impacts: state.impacts
+          })
+        });
+        const fixture = await response.json();
+        if (!response.ok || fixture.ok !== true || fixture.status !== "preserved_for_registration_validation") throw new Error(fixture.reason || "fixture_capture_failed");
+        const blob = new Blob([JSON.stringify(fixture, null, 2)], { type: "application/json" });
+        if (state.fixtureDownloadUrl) URL.revokeObjectURL(state.fixtureDownloadUrl);
+        const href = URL.createObjectURL(blob);
+        state.fixtureDownloadUrl = href;
+        const link = document.createElement("a");
+        link.href = href;
+        link.download = `${fixture.fixtureId}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        state.fixtureLocked = true;
+        state.preserved = true;
+        elements.instruction.textContent = "Founder fixture preserved.";
+        setFeedback(`Fixture ${fixture.fixtureId} is sealed and downloaded. No additional impacts can alter it.`);
+        const downloadAgain = document.createElement("a");
+        downloadAgain.href = href;
+        downloadAgain.download = `${fixture.fixtureId}.json`;
+        downloadAgain.textContent = "Download Sealed Fixture";
+        downloadAgain.className = "button";
+        elements.feedback.append(" ", downloadAgain);
+        processingSucceeded = true;
+      } catch (error) {
+        setFeedback(`Fixture was not preserved: ${error && error.message || "unknown error"}. Your captured marks remain editable.`);
+      } finally {
+        state.pending = false;
+        finishProcessing(processingId, processingSucceeded);
+        renderImpacts();
+      }
+      return;
+    }
+    const processingId = beginProcessing("show-results", "Analyzing your target and calculating your score…", elements.showResults, elements.workflowDock);
+    let processingSucceeded = false;
+    state.pending = true; renderImpacts(); setFeedback("Analyzing your target and calculating your score…");
     try {
-      const response = await fetch(analyzeEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ targetId: TARGET_ID, variantId: VARIANT_ID, imageEvidence: state.imageEvidence, impacts: state.impacts }) });
+      const response = await fetch(analyzeEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ targetId: TARGET_ID, variantId: VARIANT_ID, imageEvidence: { ...state.imageEvidence, dataUrl: state.imageDataUrl }, impacts: state.impacts }) });
       const result = await response.json();
       if (!response.ok || result.ok !== true || result.status !== "supported_analysis_ready") throw new Error("unsupported_result");
-      state.result = result; elements.resultCount.textContent = impactMessage(result.supportedAnalysis.impactCount); elements.results.dataset.continuationState = "ready"; elements.continueToSec.textContent = "Continue to SEC"; elements.workflowDock.hidden = true; elements.results.hidden = false;
-      elements.instruction.textContent = "Your impacts are ready to review."; setFeedback("Your impacts are ready to review."); elements.workspace.scrollIntoView({ behavior: "auto", block: "start" }); queueTargetFit();
+      state.result = result; elements.resultCount.textContent = bulletHoleMessage(result.supportedAnalysis.impactCount); renderBackendResult(result); elements.results.dataset.continuationState = "ready"; elements.continueToSec.textContent = "Continue to SEC"; elements.workflowDock.hidden = true; elements.results.hidden = false;
+      elements.instruction.textContent = "Your bullet holes and score are ready to review."; setFeedback("Your bullet holes and score are ready to review."); elements.workspace.scrollIntoView({ behavior: "auto", block: "start" }); queueTargetFit();
+      processingSucceeded = true;
     } catch (error) {
-      state.result = null; elements.results.hidden = true; elements.instruction.textContent = "Your impact marks are still here. Try Show Results again."; setFeedback("Your impact marks are still here. Try Show Results again.");
-    } finally { state.pending = false; renderImpacts(); }
+      state.result = null; elements.results.hidden = true; elements.instruction.textContent = "Your bullet-hole marks are still here. Try Show Results again."; setFeedback("Your bullet-hole marks are still here. Try Show Results again.");
+    } finally { state.pending = false; finishProcessing(processingId, processingSucceeded); renderImpacts(); }
   });
   elements.continueToSec.addEventListener("click", async () => {
     if (!state.result || state.pending) return;
     state.pending = true;
+    const processingId = beginProcessing("continue-to-sec", "Opening your Shooter Experience Card…", elements.continueToSec, elements.results);
+    let processingSucceeded = false;
     elements.results.dataset.continuationState = "pending";
     elements.results.setAttribute("aria-busy", "true");
     elements.continueToSec.disabled = true;
-    elements.continueToSec.textContent = "Opening SEC…";
     setFeedback("Opening your Shooter Experience Card…");
     fitTargetEvidence();
     try {
@@ -347,6 +486,7 @@
       if (!updated) throw new Error("session_result_persistence_failed");
       elements.results.dataset.continuationState = "complete";
       renderSec(updated || session);
+      processingSucceeded = true;
     } catch (error) {
       console.warn("SL-ST1 continuation failed", error && error.message || error);
       elements.results.dataset.continuationState = "failed";
@@ -354,6 +494,7 @@
       fitTargetEvidence();
     } finally {
       state.pending = false;
+      finishProcessing(processingId, processingSucceeded);
       elements.results.removeAttribute("aria-busy");
       elements.continueToSec.disabled = false;
       if (!elements.pageShell.hidden) {
@@ -369,6 +510,27 @@
   window.visualViewport?.addEventListener("scroll", queueTargetFit);
   new ResizeObserver(queueTargetFit).observe(elements.workflowDock);
   new ResizeObserver(queueTargetFit).observe(elements.results);
-  window.addEventListener("pagehide", () => { if (state.imageUrl) URL.revokeObjectURL(state.imageUrl); });
+  window.addEventListener("pagehide", () => {
+    if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+    if (state.fixtureDownloadUrl) URL.revokeObjectURL(state.fixtureDownloadUrl);
+  });
   renderImpacts();
+  if (founderFixtureMode) {
+    elements.instruction.textContent = "Founder Scoring Fixture Mode — load the actual Baker SL-ST1 photograph and select every captured impact.";
+    setFeedback("Capture the complete impact set. Review it, then preserve the immutable Founder Scoring Fixture.");
+    renderImpacts();
+  } else if (canonicalFounderReviewMode) {
+    elements.instruction.textContent = "Mission A Founder Flow — tap every visible bullet hole, then show the authoritative score.";
+    setFeedback("Loading the governed Baker SL-ST1 target…");
+    fetch(canonicalAssetUrl, { cache: "no-store" })
+      .then(response => {
+        if (!response.ok) throw new Error("canonical_target_unavailable");
+        return response.blob();
+      })
+      .then(blob => loadImage(new File([blob], "BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp", { type: "image/webp" })))
+      .catch(() => {
+        elements.instruction.textContent = "The governed Baker target could not be loaded.";
+        setFeedback("Founder review target unavailable. Restart the local review environment and try again.");
+      });
+  }
 })();

@@ -9,7 +9,9 @@
 <link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
 <link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-1" />
 <script src="navigation.js" defer></script>
+<script src="experience_frame_processing.js?v=universal-processing-1"></script>
 </head>
 <body>
 <main class="shell app-shell sec-shell">
@@ -92,7 +94,7 @@
           <section class="sec-confirmation-summary" aria-labelledby="secConfirmationHeading"><h3 id="secConfirmationHeading">How to Confirm</h3><div class="sec-validation-calculation" id="summaryValidationOutcome"></div></section>
         </div>
       </details>
-      <div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar">
+      <div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar" data-processing-host>
         <div class="sec-preservation-actions"><button class="button primary" type="button" id="saveSEC">Save SEC</button><button class="button" type="button" id="shareSEC">Share</button><button class="button" type="button" id="exportSEC">Export / Print PDF</button><button class="button" type="button" id="addNote">Add Note</button><a class="button" href="records.html">View History</a></div>
         <div class="sec-note-editor is-hidden" id="noteEditor"><label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label><button class="button" type="button" id="saveNote">Save Note</button></div>
         <div class="sec-preserved-history-row is-hidden"></div><span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
@@ -492,12 +494,21 @@ document.getElementById("saveNote")?.addEventListener("click", () => {
 });
 
 document.getElementById("saveSEC")?.addEventListener("click", () => {
+  const button = document.getElementById("saveSEC");
+  const processingId = window.SCZN3Processing?.begin({
+    id: "save-sec",
+    message: "Preserving your Shooter Experience Card…",
+    trigger: button,
+    scope: button?.closest("[data-processing-host]")
+  }) || "";
   const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
   if (saved) {
+    if (processingId) SCZN3Processing.succeed(processingId);
     renderPreservationState(saved.preservedAt);
     document.getElementById("secActionStatus").textContent = "";
   } else {
     document.getElementById("secActionStatus").textContent = "SEC could not be preserved.";
+    if (processingId) SCZN3Processing.fail(processingId);
   }
 });
 

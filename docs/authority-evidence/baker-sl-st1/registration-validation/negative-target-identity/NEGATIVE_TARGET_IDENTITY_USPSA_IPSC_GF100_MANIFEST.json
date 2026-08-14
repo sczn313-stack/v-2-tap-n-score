@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "sczn3-negative-target-identity-fixture-v1",
+  "fixtureId": "NEGATIVE_TARGET_IDENTITY_USPSA_IPSC_GF100_V1",
+  "purpose": "Prove that an SL-ST1 route/session claim does not establish Baker SL-ST1 target identity.",
+  "expectedDecision": {
+    "targetIdentity": "rejected",
+    "registration": "unavailable",
+    "classification": "unavailable",
+    "scoring": "unavailable",
+    "reason": "photograph_does_not_verify_as_registered_baker_sl_st1"
+  },
+  "claimedRouteIdentity": {
+    "targetId": "BAKER_SL_ST1",
+    "variantId": "BAKER_SL_ST1_23X35_STANDARD_WHITE",
+    "sessionId": "sczn3-session-8ca606ae-06c3-455f-a59d-e826a207de8f"
+  },
+  "observedPhotographIdentity": {
+    "publisher": "GUNFUN.com",
+    "productMarking": "23 x 35 SERIES USPSA/IPSC",
+    "license": "GF-100",
+    "orderNumber": "22470",
+    "bakerIdentityVerified": false
+  },
+  "evidence": {
+    "imageFile": "NEGATIVE_USPSA_IPSC_GF100_IMAGE.jpeg",
+    "imageSha256": "2855f69a40434a940c9d9d294bac7947f17d44d3367b4d7d0e6c08429912947a",
+    "imageByteLength": 115493,
+    "sessionFile": "NEGATIVE_USPSA_IPSC_GF100_SESSION.json",
+    "sessionSha256": "a42f7ded95de1ea663ed41470365e4f1bb80130bc0a0b57e0d21c4330e72bad1",
+    "survivingImpactCount": 22,
+    "mediaRef": "media-b7317bbe-154015"
+  },
+  "chainOfCustody": {
+    "source": "Read-only copy of Founder Chrome production origin https://tap-n-score.com",
+    "preservedAt": "2026-08-13T18:15:35.205Z",
+    "note": "This is the surviving mismatched session. It is a negative target-identity fixture and is not a positive Founder Scoring Fixture."
+  }
+}

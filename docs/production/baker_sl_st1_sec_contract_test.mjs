@@ -6,6 +6,7 @@ const root = new URL("../", import.meta.url);
 const secSource = await readFile(new URL("sec_v1.js", root), "utf8");
 const dispatchSource = await readFile(new URL("sec_dispatch.js", root), "utf8");
 const adapterSource = await readFile(new URL("baker_sl_st1_sec.js", root), "utf8");
+const adapterCss = await readFile(new URL("baker-sl-st1-sec.css", root), "utf8");
 const targetHtml = await readFile(new URL("t/baker/sl-st1/index.html", root), "utf8");
 const targetJs = await readFile(new URL("t/baker/sl-st1/target-page.js", root), "utf8");
 const records = await readFile(new URL("records.html", root), "utf8");
@@ -45,7 +46,7 @@ assert.equal(adapter.impactCount(pkg), 2);
 assert.equal(context.window.SCZN3SECDispatch.resolve(session).adapter, context.window.SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1);
 assert.deepEqual(Array.from(adapter.missingOptionalDetails(session), item => item.key), ["firearm", "ammunition", "distance", "shooter"]);
 const html = adapter.render({ session, package: pkg, mode: "live" });
-assert.match(html, /2 Impacts/);
+assert.match(html, /2 Bullet Holes/);
 assert.match(html, /left:20%;top:30%[^>]*>1<\/span>/);
 assert.match(html, /left:60%;top:70%[^>]*>2<\/span>/);
 assert.match(html, /Add firearm, ammunition, distance and shooter/);
@@ -56,6 +57,112 @@ assert.doesNotMatch(dismissed, /data-baker-details-invitation/);
 const historical = adapter.render({ session, package: pkg, mode: "historical" });
 assert.doesNotMatch(historical, /Add Details|Not Now/);
 
+const scored = structuredClone(pkg);
+scored.supportedAnalysis.impactCount = 4;
+scored.impacts = [
+  { impactId: "impact-001", xNorm: .5, yNorm: .15, zone: "A", zoneValue: 10 },
+  { impactId: "impact-002", xNorm: .5, yNorm: .22, zone: "B", zoneValue: 9 },
+  { impactId: "impact-003", xNorm: .3, yNorm: .47, zone: "C", zoneValue: 8 },
+  { impactId: "impact-004", xNorm: .19, yNorm: .47, zone: "D", zoneValue: 7 }
+];
+scored.productRegionDistribution = {
+  status: "complete",
+  zoneCounts: { A: 1, B: 1, C: 1, D: 1, outside: 0, indeterminate_boundary: 0 },
+  classifiedImpactCount: 4,
+  capturedImpactCount: 4,
+  reconciliation: { classifiedImpactCount: 4, unresolvedImpactCount: 0, capturedImpactCount: 4, countsMatchCapturedImpactCount: true }
+};
+scored.scoring = {
+  status: "complete",
+  objective: "highest_score_wins",
+  zoneValues: { A: 10, B: 9, C: 8, D: 7 },
+  subtotals: { A: 10, B: 9, C: 8, D: 7 },
+  total: 34
+};
+scored.authorityTrace = {
+  classificationAuthority: "backend",
+  geometryAuthorityId: "UGO_BAKER_SL_ST1_23X35_V1",
+  coordinateSystemId: "UGO_IMAGE_PLANE_TOP_LEFT_V1",
+  scoringAuthorityId: "BAKER_SL_ST1_SCORING_V1"
+};
+assert.equal(adapter.scoringSummary(scored).total, 34);
+assert.deepEqual(JSON.parse(JSON.stringify(adapter.vaultResultSummary(scored))), {
+  status: "complete",
+  primaryValue: "34",
+  primaryUnit: "POINTS",
+  objectiveLabel: "HIGHEST SCORE WINS",
+  breakdown: [
+    { label: "A", value: "1" },
+    { label: "B", value: "1" },
+    { label: "C", value: "1" },
+    { label: "D", value: "1" }
+  ],
+  evidenceLabel: "4 bullet holes"
+});
+const scoredHtml = adapter.render({ session, package: scored, mode: "live" });
+assert.match(scoredHtml, /34 Points/);
+assert.match(scoredHtml, /aria-label="A: 1 times 10 equals 10"/);
+assert.match(scoredHtml, /aria-label="B: 1 times 9 equals 9"/);
+assert.match(scoredHtml, /aria-label="C: 1 times 8 equals 8"/);
+assert.match(scoredHtml, /aria-label="D: 1 times 7 equals 7"/);
+assert.match(scoredHtml, /Highest score wins/);
+assert.match(scoredHtml, /<span>Total Score<\/span><strong>34<\/strong><small>Highest score wins<\/small>/);
+assert.match(scoredHtml, /Zone Performance/);
+assert.match(scoredHtml, /4<\/strong> numbered bullet holes <span aria-hidden="true">•<\/span> all accounted for/);
+assert.match(scoredHtml, /sec-baker-performance-stage/);
+assert.match(scoredHtml, /Target Evidence/);
+assert.doesNotMatch(scoredHtml, /Recorded Bullet Holes/i);
+
+const inconsistent = structuredClone(scored);
+inconsistent.scoring.total = 99;
+assert.equal(adapter.scoringSummary(inconsistent), null);
+assert.deepEqual(JSON.parse(JSON.stringify(adapter.vaultResultSummary(inconsistent))), {
+  status: "unavailable",
+  primaryLabel: "SCORE UNAVAILABLE",
+  objectiveLabel: "Open SEC for details",
+  evidenceLabel: "4 bullet holes"
+});
+assert.doesNotMatch(adapter.render({ session, package: inconsistent, mode: "live" }), /99 Points|<span>Total Score<\/span>/);
+
+const firstScoreboard = structuredClone(scored);
+const scoreboardZones = ["A", "A", "A", "A", "A", "A", "C", "C", "C", "C", "C", "C", "C", "C", "C", "D", "D", "D", "D", "D", "D"];
+firstScoreboard.supportedAnalysis.impactCount = scoreboardZones.length;
+firstScoreboard.impacts = scoreboardZones.map((zone, index) => ({
+  impactId: `scoreboard-${String(index + 1).padStart(2, "0")}`,
+  xNorm: .2 + ((index % 5) * .1),
+  yNorm: .2 + (Math.floor(index / 5) * .1),
+  zone,
+  zoneValue: { A: 10, B: 9, C: 8, D: 7 }[zone]
+}));
+firstScoreboard.productRegionDistribution = {
+  status: "complete",
+  zoneCounts: { A: 6, B: 0, C: 9, D: 6, outside: 0, indeterminate_boundary: 0 },
+  classifiedImpactCount: 21,
+  capturedImpactCount: 21,
+  reconciliation: { classifiedImpactCount: 21, unresolvedImpactCount: 0, capturedImpactCount: 21, countsMatchCapturedImpactCount: true }
+};
+firstScoreboard.scoring = {
+  status: "complete",
+  objective: "highest_score_wins",
+  zoneValues: { A: 10, B: 9, C: 8, D: 7 },
+  subtotals: { A: 60, B: 0, C: 72, D: 42 },
+  total: 174
+};
+const firstScoreboardHtml = adapter.render({ session, package: firstScoreboard, mode: "live" });
+assert.match(firstScoreboardHtml, /<span>Total Score<\/span><strong>174<\/strong><small>Highest score wins<\/small>/);
+assert.match(firstScoreboardHtml, /aria-label="A: 6 times 10 equals 60"/);
+assert.match(firstScoreboardHtml, /aria-label="B: 0 times 9 equals 0"/);
+assert.match(firstScoreboardHtml, /aria-label="C: 9 times 8 equals 72"/);
+assert.match(firstScoreboardHtml, /aria-label="D: 6 times 7 equals 42"/);
+assert.match(firstScoreboardHtml, /<strong>21<\/strong> numbered bullet holes/);
+assert.equal((firstScoreboardHtml.match(/class="sec-baker-impact-marker"/g) || []).length, 21);
+assert.doesNotMatch(firstScoreboardHtml, /Recorded Bullet Holes|trend|comparison|improvement recommendation|shooting DNA/i);
+
+assert.match(adapterCss, /\.sec-baker-performance-stage\{[^}]*grid-template-columns:minmax\(0,1\.65fr\) minmax\(260px,\.85fr\)/, "desktop target evidence remains visually dominant beside score");
+assert.match(adapterCss, /\.sec-baker-evidence-frame img\{[^}]*object-fit:contain/, "complete target evidence remains contained");
+assert.match(adapterCss, /grid-template-rows:minmax\(0,1fr\) auto auto/, "live SEC preserves constrained evidence, action, and session rows");
+assert.match(adapterCss, /@media\(max-width:520px\)\{\.sec-baker-performance-stage,[^}]*grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto minmax\(0,1fr\)/, "390px SEC presents score first and complete target evidence next");
+
 assert.match(targetHtml, /baker_sl_st1_sec\.js/);
 assert.match(targetHtml, /sec_dispatch\.js/);
 assert.match(targetHtml, /id="continueToSec"/);
@@ -64,11 +171,16 @@ assert.match(targetJs, /authorityRequest\("start"/);
 assert.match(targetJs, /createAuthoritativeSession/);
 assert.match(targetJs, /saveTargetEvidenceImage/);
 assert.match(targetJs, /authorityPackage: state\.result/);
-assert.match(targetJs, /state\.preserved = Boolean\(saved\)/);
+assert.match(targetJs, /body:\s*JSON\.stringify\(\{ session: saved \}\)/, "Save SEC sends the exact preserved artifact to the durable backend store");
+assert.match(targetJs, /state\.preserved = true/);
 assert.match(targetJs, /!state\.preserved && Boolean\(state\.imageEvidence \|\| state\.impacts\.length\)/);
 assert.doesNotMatch(targetJs, /createSession\(/);
 assert.match(records, /SCZN3BakerSLST1SEC\.render/);
 assert.match(records, /ADAPTERS\.BAKER_SL_ST1/);
+assert.match(records, /function resolveVaultResultSummary/);
+assert.match(records, /SCZN3BakerSLST1SEC\.vaultResultSummary\(pkg\)/);
+assert.match(records, /aria-label="Saved authoritative result"/);
+assert.match(records, /vault-record-summary--baker-scored/);
 assert.match(runtime, /ADAPTERS\.BAKER_SL_ST1/);
 
 console.log("PASS Baker SL-ST1 Phase 5 Universal SEC contract");

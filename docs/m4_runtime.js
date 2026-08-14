@@ -32,13 +32,21 @@
   }
 
   async function requestAuthority(payload) {
-    const response = await fetch(AUTHORITY_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (!response.ok) throw new Error(`M4 authority failed: ${response.status}`);
-    return response.json();
+    const operationId = window.SCZN3Processing?.begin({ id: "m4-correction", message: "Calculating your correction…" }) || "";
+    try {
+      const response = await fetch(AUTHORITY_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error(`M4 authority failed: ${response.status}`);
+      const result = await response.json();
+      if (operationId) SCZN3Processing.succeed(operationId);
+      return result;
+    } catch (error) {
+      if (operationId) SCZN3Processing.fail(operationId);
+      throw error;
+    }
   }
 
   function authorityRequest(session, aimPoint, impactPoints, phase = "initial") {

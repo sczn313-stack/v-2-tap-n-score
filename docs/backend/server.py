@@ -7,9 +7,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
 from baker_sl_st1_target_page import BakerSLST1EvidenceError, analyze_baker_sl_st1_evidence
+from baker_sl_st1_fixture_capture import BakerSLST1FixtureError, preserve_founder_fixture
 from m4_authority.authority_service import build_authority_package as build_m4_authority_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
+from preserved_sec_store import (
+    PreservedSECError,
+    list_preserved_secs,
+    preserve_sec,
+    read_preserved_sec,
+    runtime_store as preserved_sec_runtime_store,
+)
 from session_authority import (
     SessionAuthorityError,
     prepare_session,
@@ -56,7 +64,9 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     PRODUCT_ROUTE_PATHS = {"/api/catalog/product-route", "/api/catalog/product-route/"}
     SESSION_PREPARE_PATHS = {"/api/session/prepare", "/api/session/prepare/"}
     SESSION_START_PATHS = {"/api/session/start", "/api/session/start/"}
+    PRESERVED_SEC_PATHS = {"/api/session/sec", "/api/session/sec/"}
     BAKER_SL_ST1_ANALYZE_PATHS = {"/api/target/baker-sl-st1/analyze", "/api/target/baker-sl-st1/analyze/"}
+    BAKER_SL_ST1_FIXTURE_PATHS = {"/api/target/baker-sl-st1/founder-fixture", "/api/target/baker-sl-st1/founder-fixture/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -95,7 +105,22 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         if path in self.M4_AUTHORITY_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
-        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS:
+        if path in self.PRESERVED_SEC_PATHS:
+            try:
+                query = parse_qs(urlparse(self.path).query)
+                session_id = query.get("session", query.get("sessionId", [""]))[0]
+                package = (
+                    read_preserved_sec(session_id, preserved_sec_runtime_store())
+                    if session_id
+                    else list_preserved_secs(preserved_sec_runtime_store())
+                )
+                self._send_json(200, package)
+            except PreservedSECError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_read_failed"})
+            return
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -125,6 +150,26 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.PRESERVED_SEC_PATHS:
+            try:
+                self._send_json(201, preserve_sec(self._read_json_body(), preserved_sec_runtime_store()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except PreservedSECError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_persistence_failed"})
+            return
+        if path in self.BAKER_SL_ST1_FIXTURE_PATHS:
+            try:
+                self._send_json(200, preserve_founder_fixture(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except BakerSLST1FixtureError as exc:
+                self._send_json(400, exc.payload)
+            except Exception:  # pragma: no cover - defensive evidence boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "fixture_capture_failed"})
+            return
         if path in self.BAKER_SL_ST1_ANALYZE_PATHS:
             try:
                 self._send_json(200, analyze_baker_sl_st1_evidence(self._read_json_body()))
