@@ -113,6 +113,7 @@
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
+<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
 <script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
 <script>
 const SEC_QUERY = new URLSearchParams(window.location.search);
@@ -513,6 +514,7 @@ document.getElementById("shareSEC").addEventListener("click", async () => {
 document.getElementById("exportSEC").addEventListener("click", () => window.print());
 
 SEC_ACCORDION_STAGES.forEach((stage, index) => { stage.open = index === 0; });
+window.SCZN3SECReopenLifecycle?.normalize(document.querySelector(".sec-target-story"));
 renderSEC();
 </script>
 </body>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SEC reopen lifecycle fixture</title>
+  <script src="../sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
+</head>
+<body>
+  <main id="fixtureFamily">
+    <div class="sec-v1-flow">
+      <details class="sec-accordion-stage" data-sec-region="target" open><summary>Target</summary><p>Evidence</p></details>
+      <details class="sec-accordion-stage" data-sec-region="session"><summary>Session</summary><p>Context</p></details>
+      <details class="sec-accordion-stage" data-sec-stage="sight-correction"><summary>Correction</summary><p>Detail</p></details>
+    </div>
+  </main>
+  <script>
+    fixtureFamily.dataset.family = new URLSearchParams(location.search).get("family") || "unknown";
+    const stages = [...document.querySelectorAll("details.sec-accordion-stage")];
+    stages.forEach(stage => stage.addEventListener("toggle", () => {
+      if (!stage.open) return;
+      stages.forEach(other => { if (other !== stage) other.open = false; });
+    }));
+  </script>
+</body>
+</html>

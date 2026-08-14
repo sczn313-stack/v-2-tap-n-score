@@ -47,6 +47,7 @@
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
+<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
 <script src="sec_v1.js"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
@@ -1525,6 +1526,7 @@ function prepareHistoricalSec(session) {
     if (!stage.open) return;
     accordionStages.forEach(otherStage => { if (otherStage !== stage) otherStage.open = false; });
   }));
+  window.SCZN3SECReopenLifecycle?.normalize(story);
 }
 
 renderHistory();

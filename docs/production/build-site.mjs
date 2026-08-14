@@ -27,6 +27,7 @@ const publicFiles = [
   "analytics.js",
   "navigation.js",
   "ops.js",
+  "sec_reopen_lifecycle.js",
   "sec_v1.js",
   "universal_practice_sec.js",
   "m4_smart_target_sec.js",

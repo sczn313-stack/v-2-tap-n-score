@@ -251,6 +251,7 @@
       throw new Error("baker_sec_identity_unavailable");
     }
     elements.secRoot.innerHTML = SCZN3BakerSLST1SEC.render({ session, package: state.result || session.authorityPackage, mode: "live", detailsDismissed: detailsDismissed(session) });
+    window.SCZN3SECReopenLifecycle?.normalize(elements.secRoot);
     elements.pageShell.hidden = true;
     elements.secView.hidden = false;
     bindSecInteractions(session);
