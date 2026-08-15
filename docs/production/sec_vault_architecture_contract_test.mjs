@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [sec, records, appState, navigation, secCss, vaultCss, futureAuthority] = await Promise.all([
+const [sec, records, lifecycle, appState, navigation, secCss, vaultCss, futureAuthority] = await Promise.all([
   readFile("sec.html", "utf8"),
   readFile("records.html", "utf8"),
+  readFile("sec_reopen_lifecycle.js", "utf8"),
   readFile("app_state.js", "utf8"),
   readFile("navigation.js", "utf8"),
   readFile("m4-sec.css", "utf8"),
@@ -19,7 +20,8 @@ assert.match(sec, /<h2>Session<\/h2>/);
 assert.match(sec, /<h2>Sight Correction<\/h2>/);
 assert.match(sec, /class="sec-session-score" id="secSessionScore"/);
 assert.match(sec, /aria-label="Shooter Action Bar"/);
-assert.match(sec, /if \(otherStage !== stage\) otherStage\.open = false/);
+assert.match(sec, /SCZN3SECReopenLifecycle\?\.initialize/);
+assert.match(lifecycle, /if \(otherStage !== stage\) otherStage\.open = false/);
 assert.doesNotMatch(sec, /Before and After/);
 
 // Historical zeroing SEC: a requested preserved snapshot is read-only and never replaces active work.
@@ -37,8 +39,12 @@ assert.match(records, /class="vault-record-summary/);
 assert.match(records, /class="vault-evidence-pair"/);
 assert.match(records, /data-preserve-active-session/);
 assert.match(records, /function historicalSecUrl/);
+assert.match(records, /function resolveVaultEvidenceModel/);
+assert.match(records, /function vaultEvidenceOverlay/);
+assert.match(records, /completedEvidence \? vaultEvidenceOverlay\(completedEvidence\)/);
 assert.match(records, /function prepareHistoricalSec/);
-assert.match(records, /details\.open = index === 0/);
+assert.match(records, /SCZN3SECReopenLifecycle\?\.initialize\(story\)/);
+assert.doesNotMatch(records, /accordionStages\.forEach\(stage => stage\.addEventListener\("toggle"/);
 assert.match(secCss, /\.historical-sec-detail \.sec-target-story>details\.sec-accordion-stage\{[^}]*min-height:0!important/);
 
 // Back restores the same library context and selected record without replacing the active session.

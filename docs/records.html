@@ -6,13 +6,13 @@
 <title>Ballistic Vault - Tap-n-Score</title>
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="ballistic-vault.css?v=universal-vault-result-summary-1" />
-<link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
+<link rel="stylesheet" href="sec-universal.css?v=universal-sec-final-gap-1" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
 <link rel="stylesheet" href="baker-sl-st1-sec.css?v=mission-a-fresh-score-0814" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
-<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-1" />
-<script src="navigation.js" defer></script>
-<script src="experience_frame_processing.js?v=universal-processing-1"></script>
+<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
+<script src="navigation.js?v=universal-equipment-nav-1" defer></script>
+<script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
 <main class="shell">
@@ -49,11 +49,11 @@
 <script src="app_state.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_dispatch.js?v=mission-a-fresh-score-0814"></script>
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
-<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
+<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="sec_v1.js?v=mission-a-fresh-score-0814"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
-<script src="baker_sl_st1_sec.js?v=universal-vault-result-summary-1"></script>
+<script src="baker_sl_st1_sec.js?v=vault-completed-evidence-3"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
@@ -1108,6 +1108,39 @@ function resolveVaultResultSummary(session, pkg, dispatch) {
   return null;
 }
 
+function normalizedVaultEvidenceModel(model) {
+  if (!model || model.status !== "complete" || !String(model.imageUrl || "").trim()) return null;
+  const markers = Array.isArray(model.markers) ? model.markers.map(marker => ({
+    point: authorityPoint(marker),
+    label: String(marker && marker.label || "").trim()
+  })) : [];
+  if (!markers.length || markers.some(marker => !marker.point || !marker.label)) return null;
+  return {
+    status: "complete",
+    imageUrl: String(model.imageUrl),
+    imageAlt: String(model.imageAlt || "Saved completed target evidence"),
+    evidence: model.evidence && typeof model.evidence === "object" ? model.evidence : {},
+    markers
+  };
+}
+
+function resolveVaultEvidenceModel(session, pkg, dispatch) {
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
+    return normalizedVaultEvidenceModel(SCZN3BakerSLST1SEC.vaultEvidenceModel(session, pkg));
+  }
+  return null;
+}
+
+function vaultEvidenceOverlay(model) {
+  if (!model || model.status !== "complete") return "";
+  return model.markers.map(marker => markerHtml(
+    "history-thumb-impact",
+    marker.point,
+    escapeHtml(marker.label),
+    `aria-label="Bullet hole ${escapeHtml(marker.label)}"`
+  )).join("");
+}
+
 function vaultResultSummaryPanel(summary) {
   if (!summary || summary.status !== "complete") {
     const primary = summary && summary.primaryLabel || "RESULT PRESERVED";
@@ -1115,7 +1148,7 @@ function vaultResultSummaryPanel(summary) {
     const evidence = summary && summary.evidenceLabel || "Evidence preserved";
     return `<div class="vault-target-panel vault-result-summary vault-result-summary--unavailable" aria-label="Saved result unavailable"><strong>${escapeHtml(primary)}</strong><small>${escapeHtml(detail)}</small><span>${escapeHtml(evidence)}</span></div>`;
   }
-  return `<div class="vault-target-panel vault-result-summary" aria-label="Saved authoritative result"><header><strong>${escapeHtml(summary.primaryValue)}</strong><span>${escapeHtml(summary.primaryUnit)}</span></header><small>${escapeHtml(summary.objectiveLabel)}</small><div class="vault-result-breakdown" aria-label="Authoritative result breakdown">${summary.breakdown.map(item => `<span><b>${escapeHtml(item.label)}</b>${escapeHtml(item.value)}</span>`).join('<i aria-hidden="true">•</i>')}</div><p>${escapeHtml(summary.evidenceLabel)}</p></div>`;
+  return `<div class="vault-target-panel vault-result-summary" aria-label="Saved result"><header><strong>${escapeHtml(summary.primaryValue)}</strong><span>${escapeHtml(summary.primaryUnit)}</span></header><small>${escapeHtml(summary.objectiveLabel)}</small><div class="vault-result-breakdown" aria-label="Score breakdown">${summary.breakdown.map(item => `<span><b>${escapeHtml(item.label)}</b>${escapeHtml(item.value)}</span>`).join('<i aria-hidden="true">•</i>')}</div><p>${escapeHtml(summary.evidenceLabel)}</p></div>`;
 }
 
 function renderCompactVaultRecord(session) {
@@ -1123,6 +1156,7 @@ function renderCompactVaultRecord(session) {
   const dispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(session) : null;
   const bakerSLST1 = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1;
   const resultSummary = resolveVaultResultSummary(session, pkg, dispatch);
+  const completedEvidence = resolveVaultEvidenceModel(session, pkg, dispatch);
   const evidence = session.targetEvidenceImage || {};
   const confirmationEvidence = session.confirmationEvidenceImage || {};
   const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
@@ -1134,11 +1168,11 @@ function renderCompactVaultRecord(session) {
       ? { imageWidth: 1102, imageHeight: 1713 }
       : evidence;
   const before = vaultTargetPanel(
-    evidence.dataUrl || (isBaker100YardZeroingSession(session, pkg) ? "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" : ""),
-    `${sessionLabel} saved target evidence`,
-    pkg ? authorityVisualForPackage(pkg) : "",
+    completedEvidence ? completedEvidence.imageUrl : evidence.dataUrl || (isBaker100YardZeroingSession(session, pkg) ? "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" : ""),
+    completedEvidence ? completedEvidence.imageAlt : `${sessionLabel} saved target evidence`,
+    completedEvidence ? vaultEvidenceOverlay(completedEvidence) : pkg ? authorityVisualForPackage(pkg) : "",
     "",
-    compactEvidence
+    completedEvidence ? completedEvidence.evidence : compactEvidence
   );
   const after = isGssfAuthorityPackage(pkg)
     ? vaultScoringPanel(pkg)
@@ -1560,14 +1594,9 @@ function prepareHistoricalSec(session) {
     }
     details.classList.add("sec-accordion-stage");
     if (index > 0) details.classList.add("sec-collapsible-stage");
-    details.open = index === 0;
     return details;
   });
-  accordionStages.forEach(stage => stage.addEventListener("toggle", () => {
-    if (!stage.open) return;
-    accordionStages.forEach(otherStage => { if (otherStage !== stage) otherStage.open = false; });
-  }));
-  window.SCZN3SECReopenLifecycle?.normalize(story);
+  window.SCZN3SECReopenLifecycle?.initialize(story);
 }
 
 async function loadPreservedSECRecords() {

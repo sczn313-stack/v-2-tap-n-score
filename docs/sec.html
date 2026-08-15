@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
-<link rel="stylesheet" href="sec-universal.css?v=founder-review-1" />
+<link rel="stylesheet" href="sec-universal.css?v=universal-sec-final-gap-1" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
-<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-1" />
-<script src="navigation.js" defer></script>
-<script src="experience_frame_processing.js?v=universal-processing-1"></script>
+<link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
+<script src="navigation.js?v=universal-equipment-nav-1" defer></script>
+<script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
 </head>
 <body>
 <main class="shell app-shell sec-shell">
@@ -115,7 +115,7 @@
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
-<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
+<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
 <script>
 const SEC_QUERY = new URLSearchParams(window.location.search);
@@ -123,15 +123,6 @@ const reviewSessionId = SEC_QUERY.get("reviewSession");
 const requestedSessionId = SEC_QUERY.get("sessionId");
 const historicalSnapshotMode = Boolean(requestedSessionId);
 const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
-const SEC_ACCORDION_STAGES = [...document.querySelectorAll(".sec-target-story > details.sec-accordion-stage")];
-SEC_ACCORDION_STAGES.forEach(stage => {
-  stage.addEventListener("toggle", () => {
-    if (!stage.open) return;
-    SEC_ACCORDION_STAGES.forEach(otherStage => {
-      if (otherStage !== stage) otherStage.open = false;
-    });
-  });
-});
 const persistedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 const requestedPersistedSession = requestedSessionId
   ? SCZN3M4.getSessionHistory().find(candidate => candidate && candidate.sessionId === requestedSessionId) || null
@@ -524,8 +515,7 @@ document.getElementById("shareSEC").addEventListener("click", async () => {
 
 document.getElementById("exportSEC").addEventListener("click", () => window.print());
 
-SEC_ACCORDION_STAGES.forEach((stage, index) => { stage.open = index === 0; });
-window.SCZN3SECReopenLifecycle?.normalize(document.querySelector(".sec-target-story"));
+window.SCZN3SECReopenLifecycle?.initialize(document.querySelector(".sec-target-story"));
 renderSEC();
 </script>
 </body>

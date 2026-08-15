@@ -253,6 +253,11 @@ body[data-vault-thumbnail="true"] .sec-target-story{padding:10px;box-shadow:none
 body[data-vault-thumbnail="true"] .sec-target-story>.sec-universal-stage:not(.sec-universal-stage-target){display:none!important}
 body[data-vault-thumbnail="true"] .sec-universal-stage-heading{display:none}
 
+@media screen{
+  .sec-accordion-stage:not([open])>.sec-historical-target-body,
+  .sec-accordion-stage:not([open])>.sec-stage-body{display:none!important}
+}
+
 @media(max-width:640px){
   .sec-target-story>.sec-universal-stage{padding:11px 9px}
   .sec-universal-stage-heading h2{font-size:20px}

@@ -22,7 +22,7 @@
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="analytics.js"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
-<script src="navigation.js" defer></script>
+<script src="navigation.js?v=universal-equipment-nav-1" defer></script>
 </head>
 <body class="package-landing-page ecosystem-landing-page">
 <a class="ecosystem-skip-link" href="#targetExperiences">Skip to Target Experiences</a>
@@ -42,9 +42,10 @@
   </header>
 
   <nav class="package-menu-drawer ecosystem-menu-drawer" id="packageMenuDrawer" aria-label="Experience navigation" hidden>
-    <a href="?v=baker&amp;sku=ST-M16A2%2FM4">M4 Smart Target</a>
-    <a href="matrix.html?target_profile_id=baker_st_100yd_smart_zero&amp;targetName=Baker%20100%20Yard%20Smart%20Target">100 Yard Bullseye</a>
-    <a href="matrix.html?target_profile_id=gssf_ac_1&amp;targetName=GSSF%20AC-1" data-target-profile-id="gssf_ac_1" data-target-name="GSSF AC-1">GSSF Practice Target</a>
+    <a href="?v=baker&amp;sku=ST-M16A2%2FM4" data-discovery-experience="m4-zeroing">M4 Smart Target</a>
+    <a href="matrix.html?target_profile_id=baker_st_100yd_smart_zero&amp;targetName=Baker%20100%20Yard%20Smart%20Target" data-discovery-experience="100-yard-zeroing">100 Yard Bullseye</a>
+    <a href="matrix.html?target_profile_id=gssf_ac_1&amp;targetName=GSSF%20AC-1" data-discovery-experience="gssf-practice" data-target-profile-id="gssf_ac_1" data-target-name="GSSF AC-1">GSSF Practice Target</a>
+    <a href="t/baker/sl-st1/" data-discovery-experience="uspsa-practice">USPSA PRACTICE TARGET</a>
     <a href="records.html">Ballistic Vault</a>
   </nav>
 
@@ -100,6 +101,6 @@
   </footer>
 </main>
 
-<script src="target_experiences.js"></script>
+<script src="target_experiences.js?v=uspsa-fc-01"></script>
 </body>
 </html>

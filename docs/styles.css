@@ -30,6 +30,18 @@
   --sczn3-pill-font-size:11px;
 }
 
+/* Docked workflow actions remain present in their reserved universal slots.
+   State changes availability, not the layout footprint. */
+.target-page .workflow-control-row.workflow-control-row--docked > .button{
+  display:inline-flex!important;
+  visibility:visible!important;
+}
+
+.target-page .workflow-control-row.workflow-control-row--docked #undoImpact{
+  display:inline-flex!important;
+  visibility:visible!important;
+}
+
 /* Workspace Template v1.0 — stable target reference implementation */
 .target-page{
   min-height:100svh;
@@ -442,6 +454,121 @@
     right:2.7%;
     bottom:10.2%;
     left:2.7%;
+  }
+}
+
+/* Universal compact Target Workspace dock.
+   Missions provide evidence and actions; SCZN3 owns their handheld grammar. */
+.target-page .workflow-support-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-width:0;
+  gap:8px;
+  padding:0 2px 6px;
+  color:rgba(255,255,255,.82);
+  font-size:12px;
+  line-height:1.25;
+}
+
+.target-page .workflow-dock--compact{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  overflow:hidden;
+}
+
+.target-page .workflow-support-row > [role="status"]{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.target-page .workflow-secondary-actions{
+  display:flex;
+  flex:0 0 auto;
+  align-items:center;
+  gap:4px;
+}
+
+.target-page .workflow-secondary-action{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  padding:2px 7px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;
+  color:rgba(255,255,255,.82);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.05em;
+  line-height:1;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+
+.target-page .workflow-control-row.workflow-control-row--docked{
+  position:static;
+  inset:auto;
+  width:100%;
+  height:50px;
+  min-height:50px;
+  padding:4px;
+  grid-template-columns:52px minmax(0,1fr) 52px 52px;
+  grid-template-rows:1fr;
+  gap:4px;
+}
+
+.target-page .workflow-control-row--docked .target-hit-counter,
+.target-page .workflow-control-row--docked > .button{
+  width:100%;
+  min-width:0;
+  height:100%;
+  min-height:0;
+  padding:3px;
+}
+
+.target-page .workflow-control-row--docked > .button{
+  display:inline-flex!important;
+  visibility:visible!important;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+  font-size:11px;
+  letter-spacing:0;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.target-page .workflow-control-row--docked > .button:disabled{
+  cursor:not-allowed;
+  opacity:.42;
+}
+
+@media (max-width:560px){
+  .target-page .workflow-support-row{
+    gap:5px;
+    padding-bottom:4px;
+    font-size:11px;
+  }
+
+  .target-page .workflow-secondary-action{
+    min-height:22px;
+    padding-inline:6px;
+    font-size:9px;
+  }
+
+  .target-page .workflow-control-row.workflow-control-row--docked{
+    height:44px;
+    min-height:44px;
+    grid-template-columns:42px minmax(0,1fr) 42px 42px;
+    padding:3px;
+    gap:3px;
+  }
+
+  .target-page .workflow-control-row--docked > .button{
+    font-size:9px;
   }
 }
 

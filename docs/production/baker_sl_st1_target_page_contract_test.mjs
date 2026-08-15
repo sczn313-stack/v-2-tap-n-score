@@ -15,10 +15,10 @@ assert.match(html, /Load your target photo to begin\./);
 for (const control of [
   "Take Photo",
   "Choose Photo",
-  "Retake Photo",
-  "Choose Another",
-  "Undo Last Mark",
-  "Clear Bullet Holes",
+  "Retake",
+  "Replace",
+  "Undo",
+  "Clear",
   "Show Results"
 ]) {
   assert.match(html, new RegExp(`>${control}<`), `Missing shooter control: ${control}`);
@@ -37,10 +37,11 @@ for (const forbidden of [
 ]) {
   assert.doesNotMatch(visibleMarkup, new RegExp(forbidden, "i"));
 }
-assert.match(visibleMarkup, /Continue to SEC/i);
+assert.doesNotMatch(visibleMarkup, /Continue to SEC|supportedResults|Backend-authoritative score/i);
+assert.doesNotMatch(script, /Mission A Founder Flow|show the authoritative score|Loading the governed Baker|The governed Baker target/);
 assert.doesNotMatch(visibleMarkup, /Shot 1|order fired|firing order/i);
 assert.doesNotMatch(visibleMarkup, /scoring model|pending verification|supported analysis/i);
-assert.match(script, /Tap every bullet hole you can see\./);
+assert.match(script, /Tap every bullet hole you see\./);
 assert.match(script, /Last mark removed\./);
 assert.match(script, /Your bullet-hole marks are still here\. Try Show Results again\./);
 assert.match(script, /requestConfirmation/);
@@ -70,20 +71,21 @@ assert.match(script, /viewportTop \+ viewportHeight - Math\.max\(viewportTop, he
 assert.doesNotMatch(script, /Math\.max\(72,/);
 assert.match(script, /geometry-preserving-display-derivative/);
 assert.match(script, /maximumStoredBytes = 320000/);
+assert.match(script, /await decodeDisplayedImage\(elements\.image\)/, "selected photograph decodes before the Target Workspace is revealed");
 assert.match(script, /ResizeObserver/);
 assert.match(css, /\.sl-target-page\.sl-workspace-active \.sl-target-introduction\{display:none\}/);
 assert.match(css, /scroll-margin-top:66px/);
 assert.match(script, /headerBottom/);
-assert.match(script, /continuationState = "pending"/);
 assert.match(script, /Opening your Shooter Experience Card…/);
+assert.match(script, /async function persistResultAndOpenSec\(processingId\)/);
+assert.match(script, /SCZN3Processing\?\.update\(processingId, "Opening your Shooter Experience Card…"\)/);
+assert.match(script, /await persistResultAndOpenSec\(processingId\)/);
+assert.match(script, /state\.result \? "Opening your Shooter Experience Card…" : "Analyzing your target and calculating your score…"/);
+assert.doesNotMatch(script, /continueToSec|supportedResults|renderBackendResult/);
 assert.doesNotMatch(script, /catch \(error\) \{[\s\S]{0,500}workspace\.scrollIntoView/);
-assert.match(script, /Add another bullet hole, undo or clear a mark, or show results\./);
-assert.match(html, /Highest score wins/);
-assert.match(script, /classificationAuthority === "backend"/);
-assert.match(script, /distribution\.zoneCounts\[zone\]/);
-assert.match(script, /scoring\.zoneValues\[zone\]/);
-assert.match(script, /scoring\.subtotals\[zone\]/);
-assert.match(script, /totalScore\.textContent = String\(scoring\.total\)/);
+assert.match(script, /Add another, Undo, Clear, or Show Results\./);
+assert.doesNotMatch(html, /Highest score wins|class="sl-authoritative-score"/);
+assert.doesNotMatch(script, /classificationAuthority === "backend"|distribution\.zoneCounts\[zone\]|totalScore\.textContent/, "Target Page must not duplicate SEC scoring presentation");
 assert.match(script, /founderReview.*mission-a-canonical/);
 assert.match(script, /BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE\.webp/);
 assert.match(script, /loadImage\(new File/);

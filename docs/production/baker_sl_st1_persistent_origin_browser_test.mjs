@@ -144,8 +144,6 @@ try {
     await target.click({ position: { x: box.width * x, y: box.height * y } });
   }
   await page.locator("#showResults").click();
-  await page.locator("#supportedResults:not([hidden])").waitFor();
-  await page.locator("#continueToSec").click();
   await page.locator("#bakerSecView:not([hidden])").waitFor({ timeout: 10000 }).catch(() => {});
 
   assert.equal(await page.locator("#bakerSecView:not([hidden])").count(), 1,

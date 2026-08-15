@@ -3,23 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <title>SEC reopen lifecycle fixture</title>
-  <script src="../sec_reopen_lifecycle.js?v=universal-sec-reopen-1"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../universal-ui.css" />
+  <link rel="stylesheet" href="../m4-sec.css" />
+  <link rel="stylesheet" href="../sec-universal.css?v=universal-sec-final-gap-1" />
+  <script src="../sec_v1.js"></script>
+  <script src="../sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 </head>
-<body>
-  <main id="fixtureFamily">
-    <div class="sec-v1-flow">
-      <details class="sec-accordion-stage" data-sec-region="target" open><summary>Target</summary><p>Evidence</p></details>
-      <details class="sec-accordion-stage" data-sec-region="session"><summary>Session</summary><p>Context</p></details>
-      <details class="sec-accordion-stage" data-sec-stage="sight-correction"><summary>Correction</summary><p>Detail</p></details>
-    </div>
+<body class="platform-page records-page">
+  <main class="sec-live-host" id="fixtureFamily">
+    <div id="fixtureRoot"></div>
   </main>
   <script>
-    fixtureFamily.dataset.family = new URLSearchParams(location.search).get("family") || "unknown";
-    const stages = [...document.querySelectorAll("details.sec-accordion-stage")];
-    stages.forEach(stage => stage.addEventListener("toggle", () => {
-      if (!stage.open) return;
-      stages.forEach(other => { if (other !== stage) other.open = false; });
-    }));
+    const family = new URLSearchParams(location.search).get("family") || "neutral";
+    const labels = {
+      baker: ["Baker SL-ST1", "174 Points", "Zone performance"],
+      m4: ["M4 25 Meter Zero", "Zero Confirmed", "Sight correction"],
+      gssf: ["GSSF AC-1", "18.42 Seconds", "Time and penalties"],
+      neutral: ["Universal Practice", "Session Complete", "Mission result"]
+    };
+    const [targetLabel, scoreDisplay, resultLabel] = labels[family] || labels.neutral;
+    fixtureFamily.dataset.family = family;
+    fixtureRoot.innerHTML = SCZN3SEC.render({
+      schemaVersion: "1.2",
+      recordId: `shell-fixture-${family}`,
+      missionFamily: family,
+      sessionLabel: targetLabel,
+      scoreDisplay,
+      articleAttributes: { "data-sec-mode": "live", "data-fixture-family": family },
+      regions: [
+        { key: "target", ariaLabel: "Target", contentHtml: `<section><h3>${targetLabel}</h3><p>${resultLabel}</p><p>Evidence <span data-evidence-marker data-x="0.25" data-y="0.75">1</span></p></section>` },
+        { key: "session", ariaLabel: "Session", contentHtml: `<section class="sec-session-section"><h3>Session Details</h3><p>${family.toUpperCase()} session context</p></section>` },
+        { key: "sightCorrection", ariaLabel: "Mission Detail", contentHtml: `<section><h3>${resultLabel}</h3><p>Target-defined content inside a universal section.</p></section>` },
+        { key: "actions", ariaLabel: "Shooter Action Bar", contentHtml: '<div class="sec-preservation-actions"><button class="button primary" type="button">Save SEC</button><button class="button" type="button">View History</button></div>' }
+      ]
+    });
+    SCZN3SECReopenLifecycle.initialize(fixtureRoot);
   </script>
 </body>
 </html>

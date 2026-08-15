@@ -92,6 +92,9 @@ try {
     await card.waitFor();
     const summary = card.locator(".vault-result-summary");
     assert.match((await summary.innerText()).replace(/\s+/g, " "), /158 POINTS HIGHEST SCORE WINS A5 • B3 • C4 • D7 19 bullet holes/);
+    const completedMarkers = card.locator(".vault-evidence-pair figure:first-child .history-thumb-impact");
+    assert.equal(await completedMarkers.count(), zones.length, "Vault thumbnail must show every preserved bullet hole");
+    assert.deepEqual(await completedMarkers.allTextContents(), zones.map((_, index) => String(index + 1)), "Vault thumbnail markers must reconcile to the preserved impact count");
     assert.equal(await card.getByText("OPEN SEC →", { exact: true }).count(), 1);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px Vault must not overflow`);
     const geometry = await card.evaluate(element => {

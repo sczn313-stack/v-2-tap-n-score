@@ -115,6 +115,29 @@
     });
   }
 
+  function vaultEvidenceModel(session, pkg) {
+    if (!matches(pkg)) return null;
+    const count = impactCount(pkg);
+    const evidence = session && session.targetEvidenceImage || {};
+    const imageUrl = clean(evidence.dataUrl);
+    if (count === null || !imageUrl) return null;
+    const markers = pkg.impacts.map((impact, index) => {
+      const point = impact && impact.sourceEvidencePoint || impact;
+      const xNorm = Number(point && point.xNorm);
+      const yNorm = Number(point && point.yNorm);
+      if (!Number.isFinite(xNorm) || !Number.isFinite(yNorm) || xNorm < 0 || xNorm > 1 || yNorm < 0 || yNorm > 1) return null;
+      return Object.freeze({ xPercent: xNorm * 100, yPercent: yNorm * 100, label: String(index + 1) });
+    });
+    if (markers.some(marker => !marker) || markers.length !== count) return null;
+    return Object.freeze({
+      status: "complete",
+      imageUrl,
+      imageAlt: `${clean(session && session.sessionLabel) || "Saved session"} completed target with ${count} numbered ${count === 1 ? "bullet hole" : "bullet holes"}`,
+      evidence,
+      markers: Object.freeze(markers)
+    });
+  }
+
   function displayDateTime(session) {
     const raw = clean(session && (session.preservedAt || session.createdAt || session.timestamp));
     const date = raw ? new Date(raw) : null;
@@ -191,7 +214,7 @@
       const y = Math.max(0, Math.min(100, Number(evidencePoint.yNorm) * 100));
       return `<span class="sec-baker-impact-marker" style="left:${x}%;top:${y}%" aria-hidden="true">${index + 1}</span>`;
     }).join("");
-    return `<div class="sec-baker-evidence-viewport"><div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker SL-ST1 target with numbered evidence markers" /><div class="sec-baker-impact-layer">${markers}</div></div></div>`;
+    return `<div class="sec-baker-evidence-viewport"><div class="sec-baker-evidence-frame"><img src="${escapeHtml(imageUrl)}" alt="Baker SL-ST1 target with numbered bullet-hole markers" /><div class="sec-baker-impact-layer">${markers}</div></div></div>`;
   }
 
   function detailsInvitationHtml(session, mode, dismissed) {
@@ -269,6 +292,7 @@
     impactCount,
     scoringSummary,
     vaultResultSummary,
+    vaultEvidenceModel,
     missingOptionalDetails,
     render
   });

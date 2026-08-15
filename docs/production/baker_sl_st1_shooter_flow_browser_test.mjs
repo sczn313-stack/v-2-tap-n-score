@@ -17,15 +17,15 @@ async function assertTransitionVisible(page, viewport, label) {
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
       const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
-      const results = document.getElementById("supportedResults").getBoundingClientRect();
-      const action = document.getElementById("continueToSec").getBoundingClientRect();
+      const actionRegion = document.getElementById("workflowDock").getBoundingClientRect();
+      const action = document.getElementById("showResults").getBoundingClientRect();
       const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
       return {
         targetUnobscured: frame.top >= Math.max(viewportTop, headerBottom),
         targetBottomVisible: frame.bottom <= viewportBottom,
-        targetDoesNotOverlapAction: frame.bottom <= results.top,
+        targetDoesNotOverlapAction: frame.bottom <= actionRegion.top,
         targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
-        resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
+        actionRegionVisible: actionRegion.top >= viewportTop && actionRegion.bottom <= viewportBottom,
         actionVisible: action.top >= viewportTop && action.bottom <= viewportBottom,
         horizontalOverflow: document.documentElement.scrollWidth > innerWidth
       };
@@ -35,7 +35,7 @@ async function assertTransitionVisible(page, viewport, label) {
       targetBottomVisible: true,
       targetDoesNotOverlapAction: true,
       targetProbeUnobscured: true,
-      resultsVisible: true,
+      actionRegionVisible: true,
       actionVisible: true,
       horizontalOverflow: false
     }, `${viewport.width}x${viewport.height} ${label} sample ${sample + 1}`);
@@ -190,10 +190,52 @@ try {
       });
     });
 
-    await page.goto(`${baseUrl}/t/baker/sl-st1/?flow=${viewport.width}-${viewport.height}`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}/index.html?fc=04-${viewport.width}-${viewport.height}`, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    const homepageDrawer = page.locator("#packageMenuDrawer");
+    await homepageDrawer.waitFor({ state: "visible" });
+    assert.equal(await homepageDrawer.getByRole("link", { name: "USPSA PRACTICE TARGET" }).getAttribute("href"), "t/baker/sl-st1/", "FC-04 homepage drawer exposes neutral USPSA discovery identity");
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await homepageDrawer.waitFor({ state: "hidden" });
+    const catalogCards = await page.locator(".ecosystem-target-card").evaluateAll(cards => cards.map(card => ({ id: card.dataset.experienceId, status: card.dataset.status })));
+    const bakerIndex = catalogCards.findIndex(card => card.id === "uspsa-practice-target");
+    const firstComingSoonIndex = catalogCards.findIndex(card => card.status === "coming-soon");
+    assert.ok(bakerIndex >= 0 && bakerIndex < firstComingSoonIndex, "USPSA appears in the homepage Available Now lineup before Coming Soon targets");
+    await page.locator('[data-experience-id="uspsa-practice-target"]').click();
+    await page.waitForURL(url => url.pathname.endsWith("/t/baker/sl-st1/"));
+    assert.match(await page.locator(".sl-header-target-identity").textContent(), /Baker SL-ST1\s*•\s*USPSA/, "selected experience restores precise Baker SL-ST1 product identity");
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "Load Photo must expose navigation");
+    const preselectionWorkspace = await page.locator("#targetWorkspace").evaluate(workspace => {
+      const image = workspace.querySelector("#targetImage");
+      const bounds = workspace.getBoundingClientRect();
+      return {
+        hidden: workspace.hidden,
+        display: getComputedStyle(workspace).display,
+        width: bounds.width,
+        height: bounds.height,
+        imageSource: image?.getAttribute("src") || ""
+      };
+    });
+    assert.equal(preselectionWorkspace.hidden, true, "pre-selection workspace retains its hidden state");
+    assert.equal(preselectionWorkspace.display, "none", "pre-selection workspace is not visibly rendered");
+    assert.equal(preselectionWorkspace.width, 0, "pre-selection workspace reserves no visible width");
+    assert.equal(preselectionWorkspace.height, 0, "pre-selection workspace reserves no visible height");
+    assert.equal(preselectionWorkspace.imageSource, "", "pre-selection image has no fabricated source");
     await page.locator("#libraryInput").setInputFiles(targetPhoto);
     await page.locator("#targetWorkspace:not([hidden])").waitFor();
+    const selectedPhoto = await page.locator("#targetImage").evaluate(image => ({
+      complete: image.complete,
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight,
+      src: image.currentSrc || image.src,
+      visible: Boolean(image.getClientRects().length && image.getBoundingClientRect().width && image.getBoundingClientRect().height),
+      workspaceDisplay: getComputedStyle(image.closest("#targetWorkspace")).display
+    }));
+    assert.equal(selectedPhoto.complete, true, "selected target photograph is decoded before the workspace is revealed");
+    assert.ok(selectedPhoto.naturalWidth > 0 && selectedPhoto.naturalHeight > 0, "selected target photograph renders with real dimensions");
+    assert.match(selectedPhoto.src, /^blob:/, "workspace renders the shooter-selected photograph");
+    assert.equal(selectedPhoto.visible, true, "selected target photograph is visibly rendered in the Target Workspace");
+    assert.equal(selectedPhoto.workspaceDisplay, "grid", "decoded photograph reveals the Target Workspace");
 
     const fit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
@@ -230,44 +272,24 @@ try {
     assert.equal(await page.locator("#undoImpact").isEnabled(), true);
     assert.equal(await page.locator("#clearImpacts").isEnabled(), true);
     assert.equal(await page.locator("#showResults").isEnabled(), true);
-    assert.match(await page.locator("#workspaceFeedback").textContent(), /undo or clear a mark, or show results/i);
+    assert.match(await page.locator("#workspaceFeedback").textContent(), /undo, clear, or show results/i);
     await page.locator("#undoImpact").click();
-    assert.match(await page.locator("#impactCount").textContent(), /^0 bullet holes/);
+    assert.equal(await page.locator("#impactCount").textContent(), "0");
+    assert.match(await page.locator("#impactCounter").getAttribute("aria-label"), /^0 bullet holes/);
 
     await tap.click({ position: point(.3, .3) });
     await tap.click({ position: point(.45, .45) });
     await page.locator("#clearImpacts").click();
     await page.locator("#confirmationCancel").click();
-    assert.match(await page.locator("#impactCount").textContent(), /^2 bullet holes/);
+    assert.equal(await page.locator("#impactCount").textContent(), "2");
+    assert.match(await page.locator("#impactCounter").getAttribute("aria-label"), /^2 bullet holes/);
     await page.locator("#clearImpacts").click();
     await page.locator("#confirmationAccept").click();
-    assert.match(await page.locator("#impactCount").textContent(), /^0 bullet holes/);
+    assert.equal(await page.locator("#impactCount").textContent(), "0");
 
     await tap.click({ position: point(.3, .3) });
     await tap.click({ position: point(.5, .5) });
     await tap.click({ position: point(.7, .7) });
-    await page.locator("#showResults").click();
-    await page.locator("#supportedResults:not([hidden])").waitFor();
-    assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "Results must expose navigation");
-    assert.match(await page.locator("#resultImpactCount").textContent(), /^3 bullet holes/);
-    const resultsFit = await page.evaluate(() => {
-      const viewportTop = visualViewport?.offsetTop || 0;
-      const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
-      const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
-      const frame = document.getElementById("imageFrame").getBoundingClientRect();
-      const results = document.getElementById("supportedResults").getBoundingClientRect();
-      const next = document.getElementById("continueToSec").getBoundingClientRect();
-      const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
-      return {
-        fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
-        targetDoesNotOverlapAction: frame.bottom <= results.top,
-        targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
-        resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
-        nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom
-      };
-    });
-    assert.deepEqual(resultsFit, { fullTargetVisible: true, targetDoesNotOverlapAction: true, targetProbeUnobscured: true, resultsVisible: true, nextActionVisible: true }, `${viewport.width}x${viewport.height} results gate visibility`);
-
     await page.evaluate(() => {
       const saveEvidence = SCZN3M4.saveTargetEvidenceImage.bind(SCZN3M4);
       const updateSession = SCZN3M4.updateActiveSession.bind(SCZN3M4);
@@ -275,39 +297,89 @@ try {
       SCZN3M4.updateActiveSession = value => new Promise(resolve => setTimeout(() => resolve(updateSession(value)), 350));
     });
 
-    await page.locator("#continueToSec").click();
-    await page.locator("#continueToSec").getByText("Opening your Shooter Experience Card…").waitFor();
+    await page.locator("#showResults").click();
+    await page.locator("#showResults").getByText("Opening your Shooter Experience Card…").waitFor();
     await assertTransitionVisible(page, viewport, "failed transition pending interval");
-    await page.locator("#resultFeedback").getByText("Your target is ready. Try Continue to SEC again.").waitFor();
+    await page.locator("#workspaceFeedback").getByText("Your score is ready. Try Show Results again.").waitFor();
     const recoveredFit = await page.evaluate(() => {
       const viewportTop = visualViewport?.offsetTop || 0;
       const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
       const headerBottom = document.querySelector(".sl-app-header").getBoundingClientRect().bottom;
       const frame = document.getElementById("imageFrame").getBoundingClientRect();
-      const results = document.getElementById("supportedResults").getBoundingClientRect();
-      const next = document.getElementById("continueToSec").getBoundingClientRect();
+      const actionRegion = document.getElementById("workflowDock").getBoundingClientRect();
+      const next = document.getElementById("showResults").getBoundingClientRect();
       const targetProbe = document.elementFromPoint(frame.left + (frame.width / 2), frame.bottom - 2);
       return {
         fullTargetVisible: frame.top >= Math.max(viewportTop, headerBottom) && frame.bottom <= viewportBottom,
-        targetDoesNotOverlapAction: frame.bottom <= results.top,
+        targetDoesNotOverlapAction: frame.bottom <= actionRegion.top,
         targetProbeUnobscured: document.getElementById("imageFrame").contains(targetProbe),
-        resultsVisible: results.top >= viewportTop && results.bottom <= viewportBottom,
+        actionRegionVisible: actionRegion.top >= viewportTop && actionRegion.bottom <= viewportBottom,
         nextActionVisible: next.top >= viewportTop && next.bottom <= viewportBottom,
-        impactCount: document.querySelectorAll(".sl-impact-marker").length,
-        resultStatePreserved: !document.getElementById("supportedResults").hidden
+        impactCount: document.querySelectorAll(".sl-impact-marker").length
       };
     });
     assert.equal(recoveredFit.fullTargetVisible, true, `${viewport.width}px retry preserves complete target visibility`);
     assert.equal(recoveredFit.targetDoesNotOverlapAction, true, `${viewport.width}px retry preserves target/action separation`);
     assert.equal(recoveredFit.targetProbeUnobscured, true, `${viewport.width}px retry preserves unobscured target evidence`);
-    assert.equal(recoveredFit.resultsVisible, true, `${viewport.width}px retry preserves results visibility`);
+    assert.equal(recoveredFit.actionRegionVisible, true, `${viewport.width}px retry preserves action-region visibility`);
     assert.equal(recoveredFit.nextActionVisible, true, `${viewport.width}px retry preserves next-action visibility`);
     assert.equal(recoveredFit.impactCount, 3, `${viewport.width}px retry preserves impact evidence`);
-    assert.equal(recoveredFit.resultStatePreserved, true, `${viewport.width}px retry preserves results`);
-    await page.locator("#continueToSec").click();
-    await page.locator("#continueToSec").getByText("Opening your Shooter Experience Card…").waitFor();
+    await page.locator("#showResults").click();
+    await page.locator("#showResults").getByText("Opening your Shooter Experience Card…").waitFor();
     await assertTransitionVisible(page, viewport, "successful transition pending interval");
     await page.locator("#bakerSecView:not([hidden])").waitFor();
+    assert.equal(await page.locator(".sec-v1-flow").getAttribute("data-sec-open-region"), "target", "direct SEC opens with the shared Target-first lifecycle state");
+    await page.locator('[data-sec-region="session"] summary').click();
+    await page.waitForFunction(() => {
+      const flow = document.querySelector(".sec-v1-flow");
+      const target = flow?.querySelector('[data-sec-region="target"]');
+      const session = flow?.querySelector('[data-sec-region="session"]');
+      return flow?.dataset.secOpenRegion === "session" && target?.open === false && session?.open === true;
+    });
+    const sessionAccordion = await page.evaluate(() => {
+      const flow = document.querySelector(".sec-v1-flow");
+      const target = flow.querySelector('[data-sec-region="target"]');
+      const targetBody = target.querySelector(":scope > .sec-historical-target-body");
+      const session = flow.querySelector('[data-sec-region="session"]');
+      const targetRect = target.getBoundingClientRect();
+      const targetSummaryRect = target.querySelector(":scope > summary").getBoundingClientRect();
+      return {
+        openRegion: flow.dataset.secOpenRegion,
+        targetOpen: target.open,
+        sessionOpen: session.open,
+        targetBodyDisplay: getComputedStyle(targetBody).display,
+        collapsedTargetHeight: targetRect.height,
+        targetSummaryHeight: targetSummaryRect.height
+      };
+    });
+    assert.equal(sessionAccordion.openRegion, "session", "direct SEC Session uses the shared accordion lifecycle");
+    assert.equal(sessionAccordion.targetOpen, false, "opening Session closes Target");
+    assert.equal(sessionAccordion.sessionOpen, true, "Session opens");
+    assert.equal(sessionAccordion.targetBodyDisplay, "none", "closed Target body is removed from layout");
+    assert.ok(Math.abs(sessionAccordion.collapsedTargetHeight - sessionAccordion.targetSummaryHeight) <= 2.5, "closed Target container collapses to its summary plus border height");
+    assert.ok(Math.abs(sessionAccordion.targetSummaryHeight - 34) <= 1, "closed SEC section preserves the approved 34px height");
+    const sessionFieldLayout = await page.locator(".sec-session-record-fields > div").evaluateAll(rows => rows
+      .map(row => {
+        const label = row.querySelector("span");
+        const value = row.querySelector("strong");
+        if (!label || !value) return null;
+        const labelRect = label.getBoundingClientRect();
+        const valueRect = value.getBoundingClientRect();
+        return { label: label.textContent.trim(), gap: valueRect.left - labelRect.right, baselineDelta: Math.abs(valueRect.bottom - labelRect.bottom) };
+      })
+      .filter(Boolean));
+    for (const field of sessionFieldLayout.filter(field => field.label === "Date" || field.label === "Time")) {
+      assert.ok(field.gap >= 8, `${field.label} label and value remain visibly separated`);
+      assert.ok(field.baselineDelta <= 4, `${field.label} label and value remain aligned`);
+    }
+    await page.locator('[data-sec-region="target"] summary').click();
+    await page.waitForFunction(() => {
+      const flow = document.querySelector(".sec-v1-flow");
+      const target = flow?.querySelector('[data-sec-region="target"]');
+      const session = flow?.querySelector('[data-sec-region="session"]');
+      return flow?.dataset.secOpenRegion === "target" && target?.open === true && session?.open === false;
+    });
+    assert.equal(await page.locator(".sec-v1-flow").getAttribute("data-sec-open-region"), "target", "reopening Target restores the shared lifecycle state");
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true, "SEC must expose navigation");
     const liveSecMarkers = await page.locator(".sec-baker-impact-marker").evaluateAll(markers => markers.map(marker => ({
       label: marker.textContent.trim(),
@@ -336,8 +408,12 @@ try {
       evidenceProbeUnobscured: true,
       horizontalOverflow: false
     }, `${viewport.width}x${viewport.height} SEC evidence and preservation-action visibility`);
+    const liveSecUrl = page.url();
     await page.locator("[data-baker-save-sec]").click();
     await page.locator("[data-baker-sec-status]").getByText("SEC saved to Ballistic Vault.").waitFor();
+    assert.equal(page.url(), liveSecUrl, "Save SEC must remain on the current SEC");
+    assert.equal((await page.locator("[data-baker-save-sec]").textContent()).trim(), "SEC Preserved", "Save SEC confirms preservation in place");
+    assert.equal(await page.locator("[data-baker-save-sec]").isDisabled(), true, "preserved SEC cannot be submitted twice");
     await page.getByRole("link", { name: "View History" }).click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"));
     assert.equal(await page.getByLabel("Open menu").isVisible(), true, "Vault must expose navigation");

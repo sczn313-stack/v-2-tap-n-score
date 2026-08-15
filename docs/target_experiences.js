@@ -37,22 +37,22 @@
       }
     },
     {
+      id: "uspsa-practice-target",
+      name: "Baker SL-ST1 — USPSA",
+      description: "Tap your bullet holes, see your A/B/C/D score, and save your Shooter Experience Card.",
+      status: "available",
+      thumbnail: "authority-evidence/baker-sl-st1/BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp",
+      thumbnailAlt: "Baker SL-ST1 USPSA target preview",
+      targetId: "BAKER_SL_ST1",
+      href: "t/baker/sl-st1/"
+    },
+    {
       id: "dot-torture",
       name: "Dot Torture",
       description: "Improve your shooting one target at a time.",
       status: "coming-soon",
       thumbnail: "assets/landing-package-range-card-3.png",
       thumbnailAlt: "Dot training target preview"
-    },
-    {
-      id: "uspsa-practice-target",
-      name: "Baker SL-ST1 — USPSA",
-      description: "Tap your bullet holes, see your A/B/C/D score, and save your Shooter Experience Card.",
-      status: "available",
-      thumbnail: "assets/landing-package-range-card-2.png",
-      thumbnailAlt: "Baker SL-ST1 USPSA target preview",
-      targetId: "BAKER_SL_ST1",
-      href: "t/baker/sl-st1/"
     },
     {
       id: "idpa-practice-target",

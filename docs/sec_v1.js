@@ -71,7 +71,8 @@
       .map(([name, value]) => `${name}="${escapeAttribute(value)}"`)
       .join(" ");
     const regions = normalized.regions.map(region => {
-      const regionClasses = ["sec-v1-region", `sec-v1-${region.key}`, region.className].filter(Boolean).join(" ");
+      const universalRegionName = region.key === "sightCorrection" ? "sight-correction" : region.key;
+      const regionClasses = ["sec-v1-region", `sec-v1-${region.key}`, `sec-universal-stage-${universalRegionName}`, region.className].filter(Boolean).join(" ");
       if (region.key === "actions") {
         return `<div class="${escapeAttribute(regionClasses)} sec-story-command-bar sec-shooter-action-bar" data-sec-region="actions" aria-label="Shooter Action Bar">${region.contentHtml}</div>`;
       }
@@ -85,8 +86,8 @@
     }).join("");
 
     return `
-      <article class="${escapeAttribute(classes)}" data-sec-version="${VERSION}" data-sec-record-id="${escapeAttribute(normalized.recordId)}" data-sec-mission-family="${escapeAttribute(normalized.missionFamily)}"${attributes ? ` ${attributes}` : ""}>
-        <div class="sec-v1-flow">${regions}</div>
+      <article class="${escapeAttribute(classes)}" data-sec-shell="universal-v1" data-sec-version="${VERSION}" data-sec-record-id="${escapeAttribute(normalized.recordId)}" data-sec-mission-family="${escapeAttribute(normalized.missionFamily)}"${attributes ? ` ${attributes}` : ""}>
+        <div class="sec-target-story sec-v1-flow">${regions}</div>
         ${normalized.afterHtml}
       </article>
     `;

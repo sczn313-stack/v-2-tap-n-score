@@ -15,6 +15,9 @@ assert.match(component, /Still working\. Your evidence is safe\./);
 assert.match(component, /aria-live/);
 assert.match(component, /event\.persisted/);
 assert.match(componentCss, /prefers-reduced-motion/);
+assert.match(componentCss, /--sczn3-processing-blue:\s*#2367e8/, "shared processing motion must use the governed blue activity color");
+assert.match(componentCss, /\[data-sczn3-processing="true"\][\s\S]*?opacity:\s*1\s*!important/, "active processing must remain fully visible when its host control is disabled");
+assert.doesNotMatch(componentCss, /background:\s*currentColor/, "processing motion cannot inherit inconsistent host-control colors");
 
 for (const copy of [
   "Preparing your target photo…",

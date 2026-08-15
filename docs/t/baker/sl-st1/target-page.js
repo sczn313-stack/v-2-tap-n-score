@@ -21,9 +21,7 @@
     tapSurface: document.getElementById("tapSurface"), count: document.getElementById("impactCount"),
     feedback: document.getElementById("workspaceFeedback"), undo: document.getElementById("undoImpact"),
     clear: document.getElementById("clearImpacts"), showResults: document.getElementById("showResults"),
-    results: document.getElementById("supportedResults"), resultCount: document.getElementById("resultImpactCount"), resultFeedback: document.getElementById("resultFeedback"),
-    resultsTitle: document.getElementById("resultsTitle"), authoritativeScore: document.getElementById("authoritativeScore"), zoneBreakdown: document.getElementById("zoneBreakdown"), totalScore: document.getElementById("totalScore"),
-    continueToSec: document.getElementById("continueToSec"), secView: document.getElementById("bakerSecView"),
+    secView: document.getElementById("bakerSecView"),
     secRoot: document.getElementById("bakerSecRoot"), pageShell: document.querySelector(".sl-page-shell"), header: document.querySelector(".sl-app-header"),
     workflowDock: document.getElementById("workflowDock"),
     confirmation: document.getElementById("confirmationDialog"), confirmationTitle: document.getElementById("confirmationTitle"),
@@ -33,10 +31,7 @@
 
   const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false, fixtureLocked: false, fixtureDownloadUrl: "", authoritativeSessionId: "" };
   const bulletHoleMessage = count => `${count} ${count === 1 ? "bullet hole" : "bullet holes"} recorded.`;
-  const setFeedback = message => {
-    elements.feedback.textContent = message;
-    if (elements.resultFeedback) elements.resultFeedback.textContent = message;
-  };
+  const setFeedback = message => { elements.feedback.textContent = message; };
   const beginProcessing = (id, message, trigger, scope) => window.SCZN3Processing?.begin({ id, message, trigger, scope }) || "";
   const finishProcessing = (operationId, succeeded = true) => {
     if (!operationId || !window.SCZN3Processing) return;
@@ -45,11 +40,6 @@
 
   function invalidateResults() {
     state.result = null;
-    elements.results.hidden = true;
-    elements.results.dataset.continuationState = "idle";
-    elements.results.removeAttribute("aria-busy");
-    elements.continueToSec.textContent = "Continue to SEC";
-    elements.workflowDock.hidden = false;
     queueTargetFit();
   }
 
@@ -86,41 +76,12 @@
       marker.style.top = `${impact.yNorm * 100}%`;
       return marker;
     }));
-    elements.count.textContent = bulletHoleMessage(state.impacts.length);
+    elements.count.textContent = String(state.impacts.length);
+    document.getElementById("impactCounter")?.setAttribute("aria-label", bulletHoleMessage(state.impacts.length));
     elements.undo.disabled = state.impacts.length === 0 || state.pending || state.fixtureLocked;
     elements.clear.disabled = state.impacts.length === 0 || state.pending || state.fixtureLocked;
     elements.showResults.disabled = state.pending || state.fixtureLocked || state.impacts.length === 0;
     if (founderFixtureMode && !state.fixtureLocked) elements.showResults.textContent = "Preserve Founder Scoring Fixture";
-  }
-
-  function renderBackendResult(result) {
-    const scoring = result && result.scoring;
-    const distribution = result && result.productRegionDistribution;
-    const trace = result && result.authorityTrace;
-    const complete = scoring?.status === "complete"
-      && distribution?.status === "complete"
-      && trace?.classificationAuthority === "backend"
-      && scoring.objective === "highest_score_wins";
-    elements.authoritativeScore.hidden = !complete;
-    elements.zoneBreakdown.replaceChildren();
-    elements.totalScore.textContent = "";
-    if (!complete) {
-      elements.resultsTitle.textContent = "Your bullet holes are ready to review.";
-      elements.resultFeedback.textContent = "A complete authoritative score is not available for this target evidence.";
-      return;
-    }
-    for (const zone of ["A", "B", "C", "D"]) {
-      const row = document.createElement("div");
-      const label = document.createElement("span");
-      const value = document.createElement("strong");
-      label.textContent = zone;
-      value.textContent = `${distribution.zoneCounts[zone]} × ${scoring.zoneValues[zone]} = ${scoring.subtotals[zone]}`;
-      row.append(label, value);
-      elements.zoneBreakdown.append(row);
-    }
-    elements.totalScore.textContent = String(scoring.total);
-    elements.resultsTitle.textContent = "Your authoritative score is ready.";
-    elements.resultFeedback.textContent = "Every recorded bullet hole is included in the zone count and total score.";
   }
 
   async function digestFile(file) {
@@ -161,6 +122,18 @@
       if (blob) resolve(blob);
       else reject(new Error("evidence_representation_unavailable"));
     }, "image/jpeg", quality));
+  }
+
+  async function decodeDisplayedImage(image) {
+    if (typeof image.decode === "function") {
+      await image.decode();
+      return;
+    }
+    if (image.complete && image.naturalWidth > 0) return;
+    await new Promise((resolve, reject) => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", reject, { once: true });
+    });
   }
 
   async function persistenceRepresentation(url, dimensions, originalDataUrl) {
@@ -216,14 +189,17 @@
       elements.instruction.textContent = "We couldn’t use this photo. Retake it or choose another.";
       return;
     }
-    if (state.impacts.length && !await requestConfirmation({ title: "Replace Target Photo?", message: "Replacing this photo will clear its impact marks.", acceptLabel: "Replace Photo" })) return;
+    if (state.impacts.length && !await requestConfirmation({ title: "Replace Target Photo?", message: "Replacing this photo will clear your bullet-hole markers.", acceptLabel: "Replace Photo" })) return;
     const initiatingLabel = document.querySelector(`label[for="${CSS.escape(document.activeElement?.id || "")}"]`);
     const processingId = beginProcessing("target-photo", "Preparing your target photo…", initiatingLabel, elements.loadCard);
     const nextUrl = URL.createObjectURL(file);
     try {
       const [sha256, dimensions, dataUrl] = await Promise.all([digestFile(file), imageDimensions(nextUrl), fileDataUrl(file)]);
       const storedRepresentation = await persistenceRepresentation(nextUrl, dimensions, dataUrl);
-      if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+      const previousImageUrl = state.imageUrl;
+      elements.image.src = nextUrl;
+      await decodeDisplayedImage(elements.image);
+      if (previousImageUrl) URL.revokeObjectURL(previousImageUrl);
       state.imageUrl = nextUrl;
       state.imageDataUrl = dataUrl;
       state.persistedImageDataUrl = storedRepresentation.dataUrl;
@@ -243,7 +219,6 @@
       state.fixtureLocked = false;
       state.preserved = false;
       invalidateResults();
-      elements.image.src = nextUrl;
       elements.imageFrame.style.aspectRatio = `${dimensions.widthPx} / ${dimensions.heightPx}`;
       elements.loadCard.hidden = true;
       elements.workspace.hidden = false;
@@ -251,10 +226,11 @@
       elements.workspace.scrollIntoView({ block: "start", behavior: "auto" });
       queueTargetFit();
       elements.instruction.textContent = "Target ready. Tap every bullet hole you can see.";
-      setFeedback("Target ready. Tap every bullet hole you can see.");
+      setFeedback("Tap every bullet hole you see.");
       renderImpacts();
       finishProcessing(processingId, true);
     } catch (error) {
+      elements.image.src = state.imageUrl || "";
       URL.revokeObjectURL(nextUrl);
       elements.instruction.textContent = "We couldn’t use this photo. Retake it or choose another.";
       finishProcessing(processingId, false);
@@ -307,19 +283,27 @@
       throw new Error("baker_sec_identity_unavailable");
     }
     elements.secRoot.innerHTML = SCZN3BakerSLST1SEC.render({ session, package: state.result || session.authorityPackage, mode: "live", detailsDismissed: detailsDismissed(session) });
-    window.SCZN3SECReopenLifecycle?.normalize(elements.secRoot);
+    window.SCZN3SECReopenLifecycle?.initialize(elements.secRoot);
     elements.pageShell.hidden = true;
     elements.secView.hidden = false;
     bindSecInteractions(session);
     elements.secView.scrollIntoView({ block: "start" });
   }
 
+  async function persistResultAndOpenSec(processingId) {
+    window.SCZN3Processing?.update(processingId, "Opening your Shooter Experience Card…");
+    setFeedback("Opening your Shooter Experience Card…");
+    const session = await ensureAuthoritativeSession();
+    const evidence = { ...state.imageEvidence, dataUrl: state.persistedImageDataUrl || state.imageDataUrl };
+    const evidenceSession = await Promise.resolve(SCZN3M4.saveTargetEvidenceImage(evidence));
+    if (!evidenceSession) throw new Error("target_evidence_persistence_failed");
+    const updated = await Promise.resolve(SCZN3M4.updateActiveSession({ authorityPackage: state.result, impactPoints: state.impacts.map(point => ({ xPercent: point.xNorm * 100, yPercent: point.yNorm * 100 })), shotData: { impactPoints: state.impacts, shotCount: state.impacts.length, hits: state.impacts.length, status: "supported-analysis-ready" }, savedToSEC: false }));
+    if (!updated) throw new Error("session_result_persistence_failed");
+    renderSec(updated || session);
+  }
+
   function bindSecInteractions(session) {
     const root = elements.secRoot;
-    root.querySelectorAll("details[data-sec-region]").forEach(details => details.addEventListener("toggle", () => {
-      if (!details.open) return;
-      root.querySelectorAll("details[data-sec-region]").forEach(other => { if (other !== details) other.open = false; });
-    }));
     const add = root.querySelector("[data-baker-add-details]");
     const form = root.querySelector("[data-baker-details-form]");
     if (add && form) add.addEventListener("click", () => { form.hidden = false; add.closest(".sec-baker-details-invitation-actions").hidden = true; });
@@ -346,6 +330,7 @@
     root.querySelector("[data-baker-save-sec]")?.addEventListener("click", async event => {
       const button = event.currentTarget;
       const processingId = beginProcessing("save-sec", "Preserving your Shooter Experience Card…", button, button.closest("[data-processing-host]") || root);
+      let saveSucceeded = false;
       button.disabled = true;
       const activeSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, session);
       const saved = activeSession && activeSession.savedToSEC === true
@@ -368,14 +353,20 @@
         const packageData = await response.json().catch(() => null);
         if (!response.ok || !packageData || packageData.ok !== true) throw new Error("preserved_sec_persistence_failed");
         state.preserved = true;
+        saveSucceeded = true;
         if (status) status.textContent = "SEC saved to Ballistic Vault.";
-        finishProcessing(processingId, true);
       } catch (error) {
         state.preserved = false;
         if (status) status.textContent = "SEC could not be saved. Your session remains available; try again.";
-        finishProcessing(processingId, false);
       } finally {
-        button.disabled = false;
+        finishProcessing(processingId, saveSucceeded);
+        if (saveSucceeded) {
+          button.textContent = "SEC Preserved";
+          button.classList.add("is-preserved");
+          button.disabled = true;
+        } else {
+          button.disabled = false;
+        }
       }
     });
     root.querySelector("[data-sec-export]")?.addEventListener("click", () => window.print());
@@ -394,13 +385,13 @@
     state.preserved = false;
     invalidateResults();
     renderImpacts();
-    setFeedback(`${bulletHoleMessage(state.impacts.length)} Add another bullet hole, undo or clear a mark, or show results.`);
+    setFeedback("Add another, Undo, Clear, or Show Results.");
     if (founderFixtureMode) setFeedback(`${bulletHoleMessage(state.impacts.length)} Review the complete captured set, then preserve the Founder Scoring Fixture.`);
   });
-  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback(state.impacts.length ? `Last mark removed. ${bulletHoleMessage(state.impacts.length)} Add another bullet hole, clear the marks, or show results.` : "Last mark removed. Tap every bullet hole you can see."); queueTargetFit(); } });
+  elements.undo.addEventListener("click", () => { if (state.impacts.length && !state.pending) { state.impacts.pop(); state.preserved = false; invalidateResults(); renderImpacts(); setFeedback(state.impacts.length ? "Last mark removed. Continue or Show Results." : "Last mark removed. Tap every bullet hole you see."); queueTargetFit(); } });
   elements.clear.addEventListener("click", async () => {
-    if (!state.impacts.length || state.pending || !await requestConfirmation({ title: "Clear Impact Marks?", message: "This removes every impact mark from the current photo.", acceptLabel: "Clear Marks" })) return;
-    state.impacts = []; state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("All impact marks cleared. Tap every bullet hole you can see."); queueTargetFit();
+    if (!state.impacts.length || state.pending || !await requestConfirmation({ title: "Clear Bullet Holes?", message: "This removes every bullet-hole marker from the current photo.", acceptLabel: "Clear Markers" })) return;
+    state.impacts = []; state.preserved = false; invalidateResults(); renderImpacts(); setFeedback("Marks cleared. Tap every bullet hole you see."); queueTargetFit();
   });
   elements.showResults.addEventListener("click", async () => {
     if (!state.imageEvidence || !state.impacts.length || state.pending) return;
@@ -453,55 +444,30 @@
       }
       return;
     }
-    const processingId = beginProcessing("show-results", "Analyzing your target and calculating your score…", elements.showResults, elements.workflowDock);
+    const processingMessage = state.result ? "Opening your Shooter Experience Card…" : "Analyzing your target and calculating your score…";
     let processingSucceeded = false;
-    state.pending = true; renderImpacts(); setFeedback("Analyzing your target and calculating your score…");
-    try {
-      const response = await fetch(analyzeEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ targetId: TARGET_ID, variantId: VARIANT_ID, imageEvidence: { ...state.imageEvidence, dataUrl: state.imageDataUrl }, impacts: state.impacts }) });
-      const result = await response.json();
-      if (!response.ok || result.ok !== true || result.status !== "supported_analysis_ready") throw new Error("unsupported_result");
-      state.result = result; elements.resultCount.textContent = bulletHoleMessage(result.supportedAnalysis.impactCount); renderBackendResult(result); elements.results.dataset.continuationState = "ready"; elements.continueToSec.textContent = "Continue to SEC"; elements.workflowDock.hidden = true; elements.results.hidden = false;
-      elements.instruction.textContent = "Your bullet holes and score are ready to review."; setFeedback("Your bullet holes and score are ready to review."); elements.workspace.scrollIntoView({ behavior: "auto", block: "start" }); queueTargetFit();
-      processingSucceeded = true;
-    } catch (error) {
-      state.result = null; elements.results.hidden = true; elements.instruction.textContent = "Your bullet-hole marks are still here. Try Show Results again."; setFeedback("Your bullet-hole marks are still here. Try Show Results again.");
-    } finally { state.pending = false; finishProcessing(processingId, processingSucceeded); renderImpacts(); }
-  });
-  elements.continueToSec.addEventListener("click", async () => {
-    if (!state.result || state.pending) return;
     state.pending = true;
-    const processingId = beginProcessing("continue-to-sec", "Opening your Shooter Experience Card…", elements.continueToSec, elements.results);
-    let processingSucceeded = false;
-    elements.results.dataset.continuationState = "pending";
-    elements.results.setAttribute("aria-busy", "true");
-    elements.continueToSec.disabled = true;
-    setFeedback("Opening your Shooter Experience Card…");
-    fitTargetEvidence();
+    renderImpacts();
+    setFeedback(processingMessage);
+    const processingId = beginProcessing("show-results", processingMessage, elements.showResults, elements.workflowDock);
     try {
-      const session = await ensureAuthoritativeSession();
-      const evidence = { ...state.imageEvidence, dataUrl: state.persistedImageDataUrl || state.imageDataUrl };
-      const evidenceSession = await Promise.resolve(SCZN3M4.saveTargetEvidenceImage(evidence));
-      if (!evidenceSession) throw new Error("target_evidence_persistence_failed");
-      const updated = await Promise.resolve(SCZN3M4.updateActiveSession({ authorityPackage: state.result, impactPoints: state.impacts.map(point => ({ xPercent: point.xNorm * 100, yPercent: point.yNorm * 100 })), shotData: { impactPoints: state.impacts, shotCount: state.impacts.length, hits: state.impacts.length, status: "supported-analysis-ready" }, savedToSEC: false }));
-      if (!updated) throw new Error("session_result_persistence_failed");
-      elements.results.dataset.continuationState = "complete";
-      renderSec(updated || session);
+      if (!state.result) {
+        const response = await fetch(analyzeEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ targetId: TARGET_ID, variantId: VARIANT_ID, imageEvidence: { ...state.imageEvidence, dataUrl: state.imageDataUrl }, impacts: state.impacts }) });
+        const result = await response.json();
+        if (!response.ok || result.ok !== true || result.status !== "supported_analysis_ready") throw new Error("unsupported_result");
+        state.result = result;
+      }
+      await persistResultAndOpenSec(processingId);
       processingSucceeded = true;
     } catch (error) {
-      console.warn("SL-ST1 continuation failed", error && error.message || error);
-      elements.results.dataset.continuationState = "failed";
-      setFeedback("Your target is ready. Try Continue to SEC again.");
+      console.warn("SL-ST1 Show Results failed", error && error.message || error);
+      const retryMessage = state.result
+        ? "Your score is ready. Try Show Results again."
+        : "Your bullet-hole marks are still here. Try Show Results again.";
+      elements.instruction.textContent = retryMessage;
+      setFeedback(retryMessage);
       fitTargetEvidence();
-    } finally {
-      state.pending = false;
-      finishProcessing(processingId, processingSucceeded);
-      elements.results.removeAttribute("aria-busy");
-      elements.continueToSec.disabled = false;
-      if (!elements.pageShell.hidden) {
-        elements.continueToSec.textContent = elements.results.dataset.continuationState === "failed" ? "Try Continue to SEC Again" : "Continue to SEC";
-        fitTargetEvidence();
-      }
-    }
+    } finally { state.pending = false; finishProcessing(processingId, processingSucceeded); renderImpacts(); }
   });
 
   window.SCZN3WorkspaceNavigationState = Object.freeze({ hasUnsavedProgress() { return !state.preserved && Boolean(state.imageEvidence || state.impacts.length); } });
@@ -509,7 +475,6 @@
   window.visualViewport?.addEventListener("resize", queueTargetFit);
   window.visualViewport?.addEventListener("scroll", queueTargetFit);
   new ResizeObserver(queueTargetFit).observe(elements.workflowDock);
-  new ResizeObserver(queueTargetFit).observe(elements.results);
   window.addEventListener("pagehide", () => {
     if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
     if (state.fixtureDownloadUrl) URL.revokeObjectURL(state.fixtureDownloadUrl);
@@ -520,8 +485,8 @@
     setFeedback("Capture the complete impact set. Review it, then preserve the immutable Founder Scoring Fixture.");
     renderImpacts();
   } else if (canonicalFounderReviewMode) {
-    elements.instruction.textContent = "Mission A Founder Flow — tap every visible bullet hole, then show the authoritative score.";
-    setFeedback("Loading the governed Baker SL-ST1 target…");
+    elements.instruction.textContent = "Tap every visible bullet hole, then choose Show Results.";
+    setFeedback("Loading Baker SL-ST1…");
     fetch(canonicalAssetUrl, { cache: "no-store" })
       .then(response => {
         if (!response.ok) throw new Error("canonical_target_unavailable");
@@ -529,8 +494,8 @@
       })
       .then(blob => loadImage(new File([blob], "BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp", { type: "image/webp" })))
       .catch(() => {
-        elements.instruction.textContent = "The governed Baker target could not be loaded.";
-        setFeedback("Founder review target unavailable. Restart the local review environment and try again.");
+        elements.instruction.textContent = "The Baker SL-ST1 target could not be loaded.";
+        setFeedback("Target unavailable. Restart the local review and try again.");
       });
   }
 })();

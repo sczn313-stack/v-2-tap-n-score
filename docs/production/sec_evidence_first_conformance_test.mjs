@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const zeroingStageOrder = ["target", "session", "sight-correction"];
 const sources = Object.fromEntries(await Promise.all(
-  ["sec_v1.js", "sec.html", "records.html", "m4_smart_target_sec.js", "universal_practice_sec.js", "sec_framework.js"]
+  ["sec_v1.js", "sec.html", "records.html", "sec_reopen_lifecycle.js", "m4_smart_target_sec.js", "universal_practice_sec.js", "sec_framework.js"]
     .map(async file => [file, await readFile(file, "utf8")])
 ));
 const styles = await readFile("styles.css", "utf8");
@@ -38,7 +38,9 @@ for (const label of ["Session", "Sight Correction"]) assert.match(sources["sec.h
 assert.equal((sources["sec.html"].match(/sec-collapsible-stage/g) || []).length, 2, "M4 live SEC must expose two collapsible stages");
 assert.equal((sources["sec.html"].match(/class="[^"]*sec-accordion-stage/g) || []).length, 3, "M4 live SEC must bind three numbered stages to one accordion");
 assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage(?! sec-universal-stage-target)[^>]*\sopen(?:\s|>)/, "SESSION and SIGHT CORRECTION must be collapsed on initial load");
-assert.match(sources["sec.html"], /SEC_ACCORDION_STAGES\.forEach\(stage => \{[\s\S]*?if \(!stage\.open\) return;[\s\S]*?if \(otherStage !== stage\) otherStage\.open = false;/, "opening one SEC stage closes every other stage");
+assert.match(sources["sec_reopen_lifecycle.js"], /function bind\(root = document\)[\s\S]*?stage\.addEventListener\("toggle"[\s\S]*?if \(stage\.open\)[\s\S]*?if \(otherStage !== stage\) otherStage\.open = false;[\s\S]*?syncGroupState\(group, stages\)/, "the universal lifecycle owns one-open-stage behavior and publishes the active region");
+assert.match(sources["sec.html"], /SCZN3SECReopenLifecycle\?\.initialize/, "M4 SEC consumes the universal accordion lifecycle");
+assert.doesNotMatch(sources["sec.html"], /SEC_ACCORDION_STAGES/, "M4 SEC does not install a competing accordion system");
 assert.match(m4Styles, /\.sec-stage-pill\{[\s\S]*?min-height:var\(--sczn3-pill-height\)/, "SEC disclosure headers use the universal pill footprint");
 assertOrdered("M4 unavailable SEC", ["target", "session", "sightCorrection", "actions"], positions(sources["m4_smart_target_sec.js"], ["target", "session", "sightCorrection", "actions"], stage => `key: "${stage}"`));
 assertOrdered("Universal Practice SEC", ["target", "session", "actions"], positions(sources["universal_practice_sec.js"], ["target", "session", "actions"], stage => `key: "${stage}"`));

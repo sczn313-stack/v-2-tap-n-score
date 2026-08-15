@@ -14,23 +14,31 @@
   ];
 
   function currentPage() {
-    const page = String(window.location.pathname || "").split("/").pop();
-    return page || "index.html";
+    const segments = String(window.location.pathname || "").split("/").filter(Boolean);
+    const page = segments.pop() || "index.html";
+    return page.includes(".") ? page : "";
+  }
+
+  function applicationRoot() {
+    const homeLink = document && document.querySelector('a[href$="index.html"]');
+    const homeHref = homeLink && homeLink.getAttribute("href");
+    return new URL(homeHref || "index.html", window.location.href);
   }
 
   function installDesktopNavigation() {
     if (!document || document.querySelector(".platform-quick-nav")) return;
     const activePage = currentPage();
     const existing = document.querySelector(".locked-nav");
-    const menuControl = document.querySelector("button.package-menu");
+    const menuControl = document.querySelector("button.package-menu") || document.querySelector("details.mobile-platform-menu");
     if (!existing && (!menuControl || !menuControl.parentNode)) return;
+    const rootUrl = applicationRoot();
     const nav = existing || document.createElement("nav");
     nav.classList.add("platform-quick-nav");
     nav.setAttribute("aria-label", "Quick navigation");
     nav.replaceChildren();
     DESKTOP_DESTINATIONS.filter(item => item.page !== activePage).forEach(item => {
       const link = document.createElement("a");
-      link.href = item.page;
+      link.href = new URL(item.page, rootUrl).href;
       link.textContent = item.label;
       if (item.preserve) link.setAttribute("data-preserve-active-session", "");
       nav.append(link);

@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 const files = [
   "index.html", "matrix.html", "shoot.html", "sec.html", "records.html",
   "app_state.js", "m4_runtime.js", "sec_framework.js", "navigation.js",
-  "zeroing_platform.js", "ballistic-vault.css", "styles.css", "backend/server.py"
+  "zeroing_platform.js", "sec_reopen_lifecycle.js", "ballistic-vault.css", "styles.css", "backend/server.py"
 ];
 const source = Object.fromEntries(await Promise.all(
   files.map(async file => [file, await readFile(file, "utf8")])
@@ -39,7 +39,9 @@ assert.match(source["sec.html"], /<figcaption><strong>BEFORE<\/strong><\/figcapt
 assert.match(source["sec.html"], /<figcaption><strong>AFTER<\/strong><\/figcaption>/);
 assert.match(source["sec.html"], /<span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong>/);
 assert.match(source["sec.html"], /const historicalSnapshotMode = Boolean\(requestedSessionId\)/);
-assert.match(source["sec.html"], /SEC_ACCORDION_STAGES\.forEach/);
+assert.match(source["sec.html"], /SCZN3SECReopenLifecycle\?\.initialize/);
+assert.match(source["sec_reopen_lifecycle.js"], /function bind\(root = document\)/);
+assert.doesNotMatch(source["sec.html"], /SEC_ACCORDION_STAGES/);
 assert.match(source["sec.html"], /isCompletedZeroingSession/);
 assert.doesNotMatch(source["sec.html"], /Choose Confirmation Target/);
 assert.doesNotMatch(source["sec.html"], /id="validateConfirmation"/);

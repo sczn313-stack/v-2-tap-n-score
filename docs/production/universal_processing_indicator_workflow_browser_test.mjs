@@ -32,7 +32,9 @@ try {
     const context = await browser.newContext({ viewport, deviceScaleFactor: 2 });
     const page = await context.newPage();
     let analyzeShouldFail = false;
+    let analyzeRequestCount = 0;
     await context.route("**/api/target/baker-sl-st1/analyze", async route => {
+      analyzeRequestCount += 1;
       await new Promise(resolve => setTimeout(resolve, 300));
       if (analyzeShouldFail) {
         await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false, reason: "deliberate_failure" }) });
@@ -42,7 +44,7 @@ try {
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(resultFor(request.impacts)) });
     });
     await context.route("**/api/session/prepare", async route => {
-      await new Promise(resolve => setTimeout(resolve, 220));
+      await new Promise(resolve => setTimeout(resolve, 800));
       await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false, reason: "deliberate_continuation_failure" }) });
     });
 
@@ -53,21 +55,18 @@ try {
     await tap.click({ position: { x: 40, y: 40 } });
 
     await page.locator("#showResults").click();
+    await page.locator("#showResults").evaluate(button => { button.click(); button.click(); });
     assert.match(await page.locator("#showResults").innerText(), /Analyzing your target and calculating your score/i);
     assert.equal(await page.locator("#showResults").isDisabled(), true);
-    await page.locator("#supportedResults:not([hidden])").waitFor();
-    assert.equal(await page.locator("#totalScore").innerText(), "10");
-    assert.equal(await page.locator("#showResults").innerText(), "Show Results");
-
-    await page.locator("#continueToSec").click();
-    assert.match(await page.locator("#continueToSec").innerText(), /Opening your Shooter Experience Card/i);
-    await page.locator("#resultFeedback").getByText("Your target is ready. Try Continue to SEC again.").waitFor();
-    assert.equal((await page.locator("#continueToSec").innerText()).toLowerCase(), "try continue to sec again");
-    assert.equal(await page.locator(".sl-impact-marker").count(), 1, "continuation failure preserves evidence");
+    await page.locator("#showResults").getByText("Opening your Shooter Experience Card…").waitFor();
+    await page.locator("#workspaceFeedback").getByText("Your score is ready. Try Show Results again.").waitFor();
+    assert.match(await page.locator("#showResults").innerText(), /^Show Results$/i);
+    assert.equal(await page.locator(".sl-impact-marker").count(), 1, "direct SEC transition failure preserves evidence");
+    assert.equal(analyzeRequestCount, 1, "processing lock prevents duplicate Show Results submissions");
 
     const visible = await page.evaluate(() => {
       const frame = document.querySelector("#imageFrame").getBoundingClientRect();
-      const action = document.querySelector("#supportedResults").getBoundingClientRect();
+      const action = document.querySelector("#workflowDock").getBoundingClientRect();
       const viewportBottom = (visualViewport?.offsetTop || 0) + (visualViewport?.height || innerHeight);
       return {
         targetBeforeAction: frame.bottom <= action.top,

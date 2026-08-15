@@ -7,6 +7,7 @@ const secSource = await readFile(new URL("sec_v1.js", root), "utf8");
 const dispatchSource = await readFile(new URL("sec_dispatch.js", root), "utf8");
 const adapterSource = await readFile(new URL("baker_sl_st1_sec.js", root), "utf8");
 const adapterCss = await readFile(new URL("baker-sl-st1-sec.css", root), "utf8");
+const universalSecCss = await readFile(new URL("sec-universal.css", root), "utf8");
 const targetHtml = await readFile(new URL("t/baker/sl-st1/index.html", root), "utf8");
 const targetJs = await readFile(new URL("t/baker/sl-st1/target-page.js", root), "utf8");
 const records = await readFile(new URL("records.html", root), "utf8");
@@ -43,6 +44,18 @@ const session = {
 
 assert.equal(adapter.matches(pkg), true);
 assert.equal(adapter.impactCount(pkg), 2);
+const vaultEvidence = adapter.vaultEvidenceModel(session, pkg);
+assert.equal(vaultEvidence.status, "complete");
+assert.equal(vaultEvidence.markers.length, 2);
+assert.deepEqual(vaultEvidence.markers.map(marker => marker.label), ["1", "2"]);
+assert.deepEqual(vaultEvidence.markers.map(marker => [marker.xPercent, marker.yPercent]), pkg.impacts.map(impact => [impact.xNorm * 100, impact.yNorm * 100]));
+const registeredPhotoPackage = structuredClone(pkg);
+registeredPhotoPackage.impacts[0].sourceEvidencePoint = { xNorm: .31, yNorm: .41 };
+const registeredPhotoEvidence = adapter.vaultEvidenceModel(session, registeredPhotoPackage);
+assert.deepEqual([registeredPhotoEvidence.markers[0].xPercent, registeredPhotoEvidence.markers[0].yPercent], [31, 41]);
+const invalidVaultPackage = structuredClone(pkg);
+invalidVaultPackage.impacts[0].xNorm = 1.2;
+assert.equal(adapter.vaultEvidenceModel(session, invalidVaultPackage), null);
 assert.equal(context.window.SCZN3SECDispatch.resolve(session).adapter, context.window.SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1);
 assert.deepEqual(Array.from(adapter.missingOptionalDetails(session), item => item.key), ["firearm", "ammunition", "distance", "shooter"]);
 const html = adapter.render({ session, package: pkg, mode: "live" });
@@ -111,6 +124,7 @@ assert.match(scoredHtml, /Zone Performance/);
 assert.match(scoredHtml, /4<\/strong> numbered bullet holes <span aria-hidden="true">•<\/span> all accounted for/);
 assert.match(scoredHtml, /sec-baker-performance-stage/);
 assert.match(scoredHtml, /Target Evidence/);
+assert.doesNotMatch(scoredHtml, /authoritative|backend|canonical|governed|result package/i);
 assert.doesNotMatch(scoredHtml, /Recorded Bullet Holes/i);
 
 const inconsistent = structuredClone(scored);
@@ -160,12 +174,18 @@ assert.doesNotMatch(firstScoreboardHtml, /Recorded Bullet Holes|trend|comparison
 
 assert.match(adapterCss, /\.sec-baker-performance-stage\{[^}]*grid-template-columns:minmax\(0,1\.65fr\) minmax\(260px,\.85fr\)/, "desktop target evidence remains visually dominant beside score");
 assert.match(adapterCss, /\.sec-baker-evidence-frame img\{[^}]*object-fit:contain/, "complete target evidence remains contained");
-assert.match(adapterCss, /grid-template-rows:minmax\(0,1fr\) auto auto/, "live SEC preserves constrained evidence, action, and session rows");
+assert.match(universalSecCss, /data-sec-open-region="target"\]\{grid-template-rows:minmax\(0,1fr\) auto auto\}/, "universal shell preserves constrained Target, Session, and action rows");
+assert.match(universalSecCss, /\.sec-session-record-fields>div\{[^}]*grid-template-columns:max-content minmax\(0,1fr\)[^}]*column-gap:10px/, "Session labels and values use readable universal spacing");
+assert.match(targetJs, /button\.textContent = "SEC Preserved"/, "Save SEC confirms preservation in place");
+assert.doesNotMatch(targetJs, /window\.location\.(?:href|assign)[\s\S]{0,160}records\.html/, "Save SEC does not navigate to the Vault");
+assert.doesNotMatch(adapterCss, /\.sec-v1-(?:flow|region|target|session|actions)|\.sec-accordion-stage/, "Baker CSS does not control SEC shell geometry");
 assert.match(adapterCss, /@media\(max-width:520px\)\{\.sec-baker-performance-stage,[^}]*grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto minmax\(0,1fr\)/, "390px SEC presents score first and complete target evidence next");
 
 assert.match(targetHtml, /baker_sl_st1_sec\.js/);
 assert.match(targetHtml, /sec_dispatch\.js/);
-assert.match(targetHtml, /id="continueToSec"/);
+assert.doesNotMatch(targetHtml, /id="continueToSec"|id="supportedResults"/);
+assert.match(targetJs, /async function persistResultAndOpenSec\(processingId\)/);
+assert.match(targetJs, /await persistResultAndOpenSec\(processingId\)/);
 assert.match(targetJs, /authorityRequest\("prepare"/);
 assert.match(targetJs, /authorityRequest\("start"/);
 assert.match(targetJs, /createAuthoritativeSession/);
@@ -179,7 +199,8 @@ assert.match(records, /SCZN3BakerSLST1SEC\.render/);
 assert.match(records, /ADAPTERS\.BAKER_SL_ST1/);
 assert.match(records, /function resolveVaultResultSummary/);
 assert.match(records, /SCZN3BakerSLST1SEC\.vaultResultSummary\(pkg\)/);
-assert.match(records, /aria-label="Saved authoritative result"/);
+assert.match(records, /aria-label="Saved result"/);
+assert.match(records, /aria-label="Score breakdown"/);
 assert.match(records, /vault-record-summary--baker-scored/);
 assert.match(runtime, /ADAPTERS\.BAKER_SL_ST1/);
 

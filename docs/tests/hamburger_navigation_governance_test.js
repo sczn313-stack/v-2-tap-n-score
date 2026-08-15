@@ -8,7 +8,7 @@ const pages = ["index.html", "matrix.html", "shoot.html", "sec.html", "records.h
 
 pages.forEach(page => {
   const html = fs.readFileSync(path.join(docs, page), "utf8");
-  assert(html.includes('<script src="navigation.js" defer></script>'), `${page} loads shared navigation behavior`);
+  assert(/<script src="navigation\.js(?:\?[^\"]+)?" defer><\/script>/.test(html), `${page} loads shared navigation behavior`);
   assert(!html.includes('querySelectorAll(".mobile-platform-menu").forEach'), `${page} has no page-specific details-menu controller`);
 });
 
@@ -44,5 +44,7 @@ assert(navigation.includes('"Escape"'), "desktop Escape closes menus");
 assert(navigation.includes('document.body.classList.remove("package-menu-open")'), "drawer body state is cleared");
 assert(navigation.includes("closeAll();"), "menus initialize closed");
 assert(!navigation.includes("localStorage") && !navigation.includes("sessionStorage"), "menu state is never persisted");
+assert(navigation.includes('document.querySelector("details.mobile-platform-menu")'), "details-based headers inherit the same desktop quick navigation");
+assert(navigation.includes("function applicationRoot()"), "nested target routes resolve universal destinations from the application root");
 
 console.log("PASS shared hamburger navigation governance");

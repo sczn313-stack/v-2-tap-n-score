@@ -6,22 +6,22 @@
   <meta name="theme-color" content="#06070a" />
   <meta name="sczn3-baker-sl-st1-endpoint" content="https://sczn3-authority.onrender.com/api/target/baker-sl-st1/analyze" />
   <title>Silhouette Target (USPSA) · Tap-n-Score</title>
-  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="../../../styles.css?v=universal-target-controls-6" />
   <link rel="stylesheet" href="../../../universal-ui.css" />
   <link rel="stylesheet" href="../../../m4-sec.css" />
-  <link rel="stylesheet" href="../../../sec-universal.css" />
-  <link rel="stylesheet" href="../../../experience_frame_processing.css?v=universal-processing-1" />
-  <link rel="stylesheet" href="../../../baker-sl-st1-sec.css?v=mission-a-fresh-score-0814" />
-  <link rel="stylesheet" href="target-page.css" />
-  <script src="../../../navigation.js" defer></script>
-  <script src="../../../experience_frame_processing.js?v=universal-processing-1"></script>
+  <link rel="stylesheet" href="../../../sec-universal.css?v=universal-sec-final-gap-1" />
+  <link rel="stylesheet" href="../../../experience_frame_processing.css?v=universal-processing-visual-2" />
+  <link rel="stylesheet" href="../../../baker-sl-st1-sec.css?v=founder-punch-list-1" />
+  <link rel="stylesheet" href="target-page.css?v=universal-target-controls-1" />
+  <script src="../../../navigation.js?v=universal-equipment-nav-1" defer></script>
+  <script src="../../../experience_frame_processing.js?v=universal-processing-visual-2"></script>
   <script src="../../../app_state.js?v=mission-a-fresh-score-0814" defer></script>
   <script src="../../../sec_dispatch.js?v=mission-a-fresh-score-0814" defer></script>
   <script src="../../../m4_runtime.js?v=mission-a-fresh-score-0814" defer></script>
-  <script src="../../../sec_reopen_lifecycle.js?v=universal-sec-reopen-1" defer></script>
+  <script src="../../../sec_reopen_lifecycle.js?v=universal-sec-reopen-3" defer></script>
   <script src="../../../sec_v1.js?v=mission-a-fresh-score-0814" defer></script>
-  <script src="../../../baker_sl_st1_sec.js?v=mission-a-fresh-score-0814" defer></script>
-  <script src="target-page.js?v=mission-a-fresh-score-0814" defer></script>
+  <script src="../../../baker_sl_st1_sec.js?v=shooter-language-1" defer></script>
+  <script src="target-page.js?v=uspsa-fc-01" defer></script>
 </head>
 <body class="platform-page target-page sl-target-page">
   <header class="m4-header universal-app-header sl-app-header">
@@ -64,40 +64,31 @@
         <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Tap every visible bullet hole"></button>
       </div>
 
-      <div class="sl-workflow-dock" id="workflowDock" data-processing-host>
-        <div class="sl-workspace-status">
-          <strong id="impactCount">0 bullet holes recorded.</strong>
-          <span id="workspaceFeedback" role="status" aria-live="polite">Target ready. Tap every bullet hole you can see.</span>
+      <div class="sl-workflow-dock workflow-dock--compact" id="workflowDock" data-processing-host>
+        <div class="workflow-support-row">
+          <span id="workspaceFeedback" role="status" aria-live="polite">Tap every bullet hole you see.</span>
+          <div class="workflow-secondary-actions" aria-label="Target photo actions">
+            <label class="workflow-secondary-action" for="retakeInput">Retake</label>
+            <input id="retakeInput" type="file" accept="image/*" capture="environment" hidden />
+            <label class="workflow-secondary-action" for="replaceInput">Replace</label>
+            <input id="replaceInput" type="file" accept="image/*" hidden />
+          </div>
         </div>
 
-        <div class="sl-control-grid" aria-label="Target evidence controls">
-          <label class="button" for="retakeInput">Retake Photo</label>
-          <input id="retakeInput" type="file" accept="image/*" capture="environment" hidden />
-          <label class="button" for="replaceInput">Choose Another</label>
-          <input id="replaceInput" type="file" accept="image/*" hidden />
-          <button class="button" id="undoImpact" type="button" disabled>Undo Last Mark</button>
-          <button class="button" id="clearImpacts" type="button" disabled>Clear Bullet Holes</button>
-          <button class="button primary sl-show-results" id="showResults" type="button" disabled>Show Results</button>
+        <div class="workflow-control-row workflow-control-row--docked" aria-label="Target evidence controls">
+          <div class="target-hit-counter" id="impactCounter" aria-label="0 bullet holes recorded">
+            <strong id="impactCount">0</strong>
+            <span>Holes</span>
+          </div>
+          <button class="button primary" id="showResults" type="button" disabled>Show Results</button>
+          <button class="button" id="undoImpact" type="button" disabled>Undo</button>
+          <button class="button" id="clearImpacts" type="button" disabled>Clear</button>
         </div>
       </div>
-      <section class="sl-results" id="supportedResults" aria-labelledby="resultsTitle" data-processing-host hidden>
-        <div>
-          <p class="sl-results-label">Results</p>
-          <h2 id="resultsTitle">Your bullet holes are ready to review.</h2>
-          <strong id="resultImpactCount">0 bullet holes recorded.</strong>
-          <section class="sl-authoritative-score" id="authoritativeScore" aria-label="Backend-authoritative score" hidden>
-            <p class="sl-score-objective">Highest score wins</p>
-            <div class="sl-zone-breakdown" id="zoneBreakdown"></div>
-            <p class="sl-score-total"><span>Total Score</span><strong id="totalScore"></strong></p>
-          </section>
-          <p class="sl-result-feedback" id="resultFeedback" role="status" aria-live="polite"></p>
-        </div>
-        <button class="button primary" id="continueToSec" type="button">Continue to SEC</button>
-      </section>
     </section>
   </main>
 
-  <main class="sl-sec-shell" id="bakerSecView" hidden>
+  <main class="sl-sec-shell sec-live-host" id="bakerSecView" hidden>
     <div id="bakerSecRoot"></div>
   </main>
 
