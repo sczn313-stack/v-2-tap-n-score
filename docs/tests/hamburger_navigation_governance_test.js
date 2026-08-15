@@ -46,5 +46,11 @@ assert(navigation.includes("closeAll();"), "menus initialize closed");
 assert(!navigation.includes("localStorage") && !navigation.includes("sessionStorage"), "menu state is never persisted");
 assert(navigation.includes('document.querySelector("details.mobile-platform-menu")'), "details-based headers inherit the same desktop quick navigation");
 assert(navigation.includes("function applicationRoot()"), "nested target routes resolve universal destinations from the application root");
+assert(navigation.includes('{ page: "index.html", label: "Home" }'), "universal navigation includes Home");
+assert(navigation.includes('{ page: "matrix.html?view=library", label: "Equipment" }'), "universal navigation routes Equipment to the neutral library view");
+assert(navigation.includes('{ page: "index.html#targetExperiences", label: "Smart Targets" }'), "Smart Targets universally routes to the homepage catalog");
+assert(navigation.includes('{ page: "records.html", label: "History", preserve: true }'), "universal navigation includes History");
+assert(!navigation.includes('{ page: "shoot.html", label: "Target" }'), "universal navigation never conflates Smart Target discovery with the active workspace");
+assert(navigation.includes("installUniversalMenuDestinations(rootUrl)"), "shared navigation owns every application drawer destination");
 
 console.log("PASS shared hamburger navigation governance");

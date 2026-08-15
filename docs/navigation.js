@@ -8,16 +8,10 @@
 
   const DESKTOP_DESTINATIONS = [
     { page: "index.html", label: "Home" },
-    { page: "matrix.html", label: "Equipment" },
-    { page: "shoot.html", label: "Target" },
+    { page: "matrix.html?view=library", label: "Equipment" },
+    { page: "index.html#targetExperiences", label: "Smart Targets" },
     { page: "records.html", label: "History", preserve: true }
   ];
-
-  function currentPage() {
-    const segments = String(window.location.pathname || "").split("/").filter(Boolean);
-    const page = segments.pop() || "index.html";
-    return page.includes(".") ? page : "";
-  }
 
   function applicationRoot() {
     const homeLink = document && document.querySelector('a[href$="index.html"]');
@@ -25,9 +19,31 @@
     return new URL(homeHref || "index.html", window.location.href);
   }
 
+  function appendUniversalDestinations(container, rootUrl) {
+    DESKTOP_DESTINATIONS.forEach(item => {
+      const link = document.createElement("a");
+      link.href = new URL(item.page, rootUrl).href;
+      link.textContent = item.label;
+      if (item.preserve) link.setAttribute("data-preserve-active-session", "");
+      container.append(link);
+    });
+  }
+
+  function installUniversalMenuDestinations(rootUrl) {
+    document.querySelectorAll("details.mobile-platform-menu").forEach(details => {
+      details.querySelectorAll(":scope > a").forEach(link => link.remove());
+      appendUniversalDestinations(details, rootUrl);
+    });
+    document.querySelectorAll("button.package-menu[aria-controls]").forEach(button => {
+      const drawer = document.getElementById(button.getAttribute("aria-controls"));
+      if (!drawer) return;
+      drawer.replaceChildren();
+      appendUniversalDestinations(drawer, rootUrl);
+    });
+  }
+
   function installDesktopNavigation() {
     if (!document || document.querySelector(".platform-quick-nav")) return;
-    const activePage = currentPage();
     const existing = document.querySelector(".locked-nav");
     const menuControl = document.querySelector("button.package-menu") || document.querySelector("details.mobile-platform-menu");
     if (!existing && (!menuControl || !menuControl.parentNode)) return;
@@ -36,13 +52,7 @@
     nav.classList.add("platform-quick-nav");
     nav.setAttribute("aria-label", "Quick navigation");
     nav.replaceChildren();
-    DESKTOP_DESTINATIONS.filter(item => item.page !== activePage).forEach(item => {
-      const link = document.createElement("a");
-      link.href = new URL(item.page, rootUrl).href;
-      link.textContent = item.label;
-      if (item.preserve) link.setAttribute("data-preserve-active-session", "");
-      nav.append(link);
-    });
+    appendUniversalDestinations(nav, rootUrl);
     if (!existing) menuControl.parentNode.insertBefore(nav, menuControl);
   }
 
@@ -78,6 +88,8 @@
   function install() {
     if (!document || !window || document.documentElement.dataset.sczn3NavigationReady === "true") return;
     document.documentElement.dataset.sczn3NavigationReady = "true";
+    const rootUrl = applicationRoot();
+    installUniversalMenuDestinations(rootUrl);
     installDesktopNavigation();
     const menus = platformMenus();
 

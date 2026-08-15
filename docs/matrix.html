@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Equipment Library</title>
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=universal-equipment-library-1" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
-<script src="navigation.js?v=universal-equipment-nav-1" defer></script>
+<script src="navigation.js?v=universal-smart-targets-nav-1" defer></script>
 </head>
 <body class="platform-page matrix-page">
 <main class="shell">
@@ -203,6 +203,11 @@ const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
+const HAS_EXPLICIT_TARGET_INTENT = [
+  "target_profile_id", "targetProfileId", "mission_family", "missionFamily",
+  "missionFamilyId", "target", "targetName", "qr_id", "qrId"
+].some(key => MATRIX_QUERY.has(key));
+const UNIVERSAL_EQUIPMENT_LIBRARY_VIEW = MATRIX_QUERY.get("view") === "library" || !HAS_EXPLICIT_TARGET_INTENT;
 const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
 const PENDING_SESSION_START_KEY = "SCZN3_PENDING_BACKEND_SESSION_START";
 const SESSION_AUTHORITY_BASE = window.SCZN3_SESSION_AUTHORITY_BASE || (
@@ -1726,6 +1731,7 @@ function presentStandardSetup(targetId, preparation) {
 }
 
 async function offerGovernedSetupChoices() {
+  if (UNIVERSAL_EQUIPMENT_LIBRARY_VIEW) return;
   const snapshot = collectFormSnapshot();
   const targetId = String(snapshot.target_profile_id || snapshot.targetProfileId || snapshot.targetId || "").trim();
   if (!targetId) return;
@@ -2070,6 +2076,7 @@ function collectForm() {
 }
 
 function targetAttributionFromContext(data = {}) {
+  if (UNIVERSAL_EQUIPMENT_LIBRARY_VIEW) return {};
   const scannedIdentity = window.SCZN3SmartTargetIdentity
     ? SCZN3SmartTargetIdentity.resolve(MATRIX_QUERY)
     : null;
@@ -2290,6 +2297,17 @@ function loadMatrix() {
   applyM4MissionDefaults();
 }
 
+function activateUniversalEquipmentLibraryView() {
+  if (!UNIVERSAL_EQUIPMENT_LIBRARY_VIEW) return;
+  document.body.classList.add("equipment-library-neutral");
+  equipmentLibraryExplicitlyOpened = true;
+  writePendingSessionStart(null);
+  setStandardSetupPromptVisible(false);
+  setProfileEditorVisible(false);
+  setWeaponListExpanded(true);
+  authorityStatus("", "");
+}
+
 form.addEventListener("submit", event => {
   event.preventDefault();
   goToTarget();
@@ -2411,6 +2429,7 @@ loadMatrix();
 renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
 renderWeaponList();
 renderSessionBar();
+activateUniversalEquipmentLibraryView();
 offerGovernedSetupChoices();
 </script>
 </body>

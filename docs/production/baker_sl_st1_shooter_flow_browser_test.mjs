@@ -194,7 +194,10 @@ try {
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     const homepageDrawer = page.locator("#packageMenuDrawer");
     await homepageDrawer.waitFor({ state: "visible" });
-    assert.equal(await homepageDrawer.getByRole("link", { name: "USPSA PRACTICE TARGET" }).getAttribute("href"), "t/baker/sl-st1/", "FC-04 homepage drawer exposes neutral USPSA discovery identity");
+    const homepageNavigationLabels = await homepageDrawer.locator("a").allTextContents();
+    assert.deepEqual(homepageNavigationLabels.map(label => label.trim()), ["Home", "Equipment", "Smart Targets", "History"], "FC-04 homepage drawer inherits universal application navigation");
+    const smartTargetsHref = await homepageDrawer.getByRole("link", { name: "Smart Targets", exact: true }).getAttribute("href");
+    assert.equal(new URL(smartTargetsHref).hash, "#targetExperiences", "FC-04 Smart Targets navigation returns to the catalog instead of an active target");
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await homepageDrawer.waitFor({ state: "hidden" });
     const catalogCards = await page.locator(".ecosystem-target-card").evaluateAll(cards => cards.map(card => ({ id: card.dataset.experienceId, status: card.dataset.status })));

@@ -46,16 +46,14 @@ try {
     href: link.getAttribute("href")
   })));
   assert.deepEqual(drawerEntries.map(entry => entry.label), [
-    "M4 Smart Target",
-    "100 Yard Bullseye",
-    "GSSF Practice Target",
-    "USPSA PRACTICE TARGET",
-    "Ballistic Vault"
-  ], "homepage navigation drawer lists every available target before the Vault");
-  assert.equal(drawerEntries.find(entry => entry.label === "USPSA PRACTICE TARGET")?.href, "t/baker/sl-st1/", "homepage drawer neutral USPSA entry launches the completed experience");
-  const discoveryLabels = await drawer.locator("a[data-discovery-experience]").allTextContents();
-  assert.equal(discoveryLabels.length, 4, "every available target-navigation entry declares a neutral discovery identity");
-  assert.equal(discoveryLabels.some(label => /Baker|SL-ST1/.test(label)), false, "homepage target discovery does not expose manufacturer or exact product identity");
+    "Home",
+    "Equipment",
+    "Smart Targets",
+    "History"
+  ], "homepage drawer uses the locked universal application navigation");
+  const smartTargetsDestination = new URL(drawerEntries.find(entry => entry.label === "Smart Targets")?.href);
+  assert.equal(smartTargetsDestination.pathname.endsWith("/index.html"), true, "Smart Targets routes to the homepage");
+  assert.equal(smartTargetsDestination.hash, "#targetExperiences", "Smart Targets routes directly to the Available Now and Coming Soon catalog");
   await page.getByRole("button", { name: "Open navigation menu" }).click();
   await drawer.waitFor({ state: "hidden" });
   assert.match(await page.locator("#catalogTitle").textContent(), /TAP\s*your target below/);
@@ -111,7 +109,7 @@ try {
   assert.deepEqual(await page.evaluate(() => JSON.parse(sessionStorage.getItem("SCZN3_PENDING_TARGET_PROFILE"))), { targetId: "gssf_ac_1" });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   await context.close();
-  console.log("PASS homepage drawer, Catalog discovery, pending identity, inactive Coming Soon, and Browser Back contracts");
+  console.log("PASS universal homepage navigation, Catalog discovery, pending identity, inactive Coming Soon, and Browser Back contracts");
 
   const reducedContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const reducedPage = await reducedContext.newPage();
