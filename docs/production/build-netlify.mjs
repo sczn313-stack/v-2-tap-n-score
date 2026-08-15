@@ -48,6 +48,7 @@ const publicFiles = [
   "m4-sec.css",
   "sec-universal.css",
   "baker-sl-st1-sec.css",
+  "authority-evidence/baker-sl-st1/BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE.webp",
   "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
   "authority-evidence/m4-target-reconstruction/M4_M16_25M_WORKSPACE_PRESENTATION.svg",
 ];
