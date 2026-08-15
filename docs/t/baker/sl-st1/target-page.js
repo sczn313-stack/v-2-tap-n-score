@@ -29,7 +29,7 @@
     confirmationAccept: document.getElementById("confirmationAccept"), inputs: Array.from(document.querySelectorAll('input[type="file"]'))
   };
 
-  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false, fixtureLocked: false, fixtureDownloadUrl: "", authoritativeSessionId: "" };
+  const state = { imageEvidence: null, imageUrl: "", imageDataUrl: "", persistedImageDataUrl: "", impacts: [], pending: false, result: null, preserved: false, fixtureLocked: false, fixtureDownloadUrl: "", authoritativeSessionId: "", timelineRecords: null };
   const bulletHoleMessage = count => `${count} ${count === 1 ? "bullet hole" : "bullet holes"} recorded.`;
   const setFeedback = message => { elements.feedback.textContent = message; };
   const beginProcessing = (id, message, trigger, scope) => window.SCZN3Processing?.begin({ id, message, trigger, scope }) || "";
@@ -277,12 +277,34 @@
   function dismissedKey(session) { return `SCZN3_BAKER_SL_ST1_DETAILS_DISMISSED_${session.sessionId}`; }
   function detailsDismissed(session) { return localStorage.getItem(dismissedKey(session)) === "1"; }
 
-  function renderSec(session) {
+  async function loadTimelineRecords(refresh = false) {
+    if (!refresh && Array.isArray(state.timelineRecords)) return state.timelineRecords;
+    if (!window.SCZN3SECSessionTimeline) return [];
+    try {
+      const response = await fetch(preservedSecEndpoint, { headers: { Accept: "application/json" } });
+      const payload = await response.json().catch(() => null);
+      state.timelineRecords = response.ok ? [...SCZN3SECSessionTimeline.preservedRecords(payload)] : [];
+    } catch (error) {
+      state.timelineRecords = [];
+    }
+    return state.timelineRecords;
+  }
+
+  async function renderSec(session, { refreshTimeline = false } = {}) {
     const dispatch = window.SCZN3SECDispatch && window.SCZN3SECDispatch.resolve(session);
     if (!dispatch || dispatch.adapter !== window.SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1) {
       throw new Error("baker_sec_identity_unavailable");
     }
-    elements.secRoot.innerHTML = SCZN3BakerSLST1SEC.render({ session, package: state.result || session.authorityPackage, mode: "live", detailsDismissed: detailsDismissed(session) });
+    const timelineRecords = await loadTimelineRecords(refreshTimeline);
+    elements.secRoot.innerHTML = SCZN3BakerSLST1SEC.render({
+      session,
+      package: state.result || session.authorityPackage,
+      mode: "live",
+      detailsDismissed: detailsDismissed(session),
+      timelineRecords,
+      timelineRecordsHref: "../../../records.html",
+      preserved: state.preserved || session.savedToSEC === true
+    });
     window.SCZN3SECReopenLifecycle?.initialize(elements.secRoot);
     elements.pageShell.hidden = true;
     elements.secView.hidden = false;
@@ -299,7 +321,7 @@
     if (!evidenceSession) throw new Error("target_evidence_persistence_failed");
     const updated = await Promise.resolve(SCZN3M4.updateActiveSession({ authorityPackage: state.result, impactPoints: state.impacts.map(point => ({ xPercent: point.xNorm * 100, yPercent: point.yNorm * 100 })), shotData: { impactPoints: state.impacts, shotCount: state.impacts.length, hits: state.impacts.length, status: "supported-analysis-ready" }, savedToSEC: false }));
     if (!updated) throw new Error("session_result_persistence_failed");
-    renderSec(updated || session);
+    await renderSec(updated || session, { refreshTimeline: true });
   }
 
   function bindSecInteractions(session) {
@@ -307,8 +329,8 @@
     const add = root.querySelector("[data-baker-add-details]");
     const form = root.querySelector("[data-baker-details-form]");
     if (add && form) add.addEventListener("click", () => { form.hidden = false; add.closest(".sec-baker-details-invitation-actions").hidden = true; });
-    root.querySelector("[data-baker-cancel-details]")?.addEventListener("click", () => renderSec(SCZN3M4.read(SCZN3M4.KEYS.activeSession, session)));
-    root.querySelector("[data-baker-dismiss-details]")?.addEventListener("click", () => { localStorage.setItem(dismissedKey(session), "1"); renderSec(session); });
+    root.querySelector("[data-baker-cancel-details]")?.addEventListener("click", () => { void renderSec(SCZN3M4.read(SCZN3M4.KEYS.activeSession, session)); });
+    root.querySelector("[data-baker-dismiss-details]")?.addEventListener("click", () => { localStorage.setItem(dismissedKey(session), "1"); void renderSec(session); });
     form?.addEventListener("submit", event => {
       event.preventDefault();
       const data = new FormData(form);
@@ -318,13 +340,14 @@
       if (String(data.get("distance") || "").trim()) snapshot.targetDistanceValue = String(data.get("distance")).trim();
       if (String(data.get("shooter") || "").trim()) snapshot.shooterName = String(data.get("shooter")).trim();
       const updated = SCZN3M4.updateActiveSession({ matrixSnapshot: snapshot });
-      renderSec(updated || session);
+      void renderSec(updated || session);
     });
     root.querySelector("[data-baker-add-note]")?.addEventListener("click", () => { const editor = root.querySelector("[data-baker-note-editor]"); if (editor) editor.hidden = false; });
     root.querySelector("[data-baker-save-note]")?.addEventListener("click", () => {
       const note = root.querySelector("[data-baker-note]")?.value.trim() || "";
       const updated = SCZN3M4.updateActiveSession({ secNote: note });
       const status = root.querySelector("[data-baker-sec-status]");
+      let preservedSession = null;
       if (status) status.textContent = updated ? "Note saved." : "Note could not be saved.";
     });
     root.querySelector("[data-baker-save-sec]")?.addEventListener("click", async event => {
@@ -354,6 +377,7 @@
         if (!response.ok || !packageData || packageData.ok !== true) throw new Error("preserved_sec_persistence_failed");
         state.preserved = true;
         saveSucceeded = true;
+        preservedSession = packageData.session || saved;
         if (status) status.textContent = "SEC saved to Ballistic Vault.";
       } catch (error) {
         state.preserved = false;
@@ -367,6 +391,11 @@
         } else {
           button.disabled = false;
         }
+      }
+      if (saveSucceeded && preservedSession) {
+        await renderSec(preservedSession, { refreshTimeline: true });
+        const refreshedStatus = elements.secRoot.querySelector("[data-baker-sec-status]");
+        if (refreshedStatus) refreshedStatus.textContent = "SEC saved to Ballistic Vault.";
       }
     });
     root.querySelector("[data-sec-export]")?.addEventListener("click", () => window.print());

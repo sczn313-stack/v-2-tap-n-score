@@ -10,6 +10,40 @@ const TARGET_ID = "BAKER_SL_ST1";
 const resultPackageType = "smartEvidenceResult";
 const missionFamily = "smartEvidenceCapture";
 
+function scoredPackage(impacts) {
+  const scoredImpacts = impacts.map((impact, index) => ({ impactId: `impact-${index + 1}`, ...impact, zone: "A", zoneValue: 10 }));
+  const count = scoredImpacts.length;
+  return {
+    ok: true,
+    status: "supported_analysis_ready",
+    resultPackageType,
+    missionFamily,
+    target: { smartTargetId: TARGET_ID, variantId: "BAKER_SL_ST1_23X35_STANDARD_WHITE" },
+    supportedAnalysis: { impactCount: count },
+    impacts: scoredImpacts,
+    productRegionDistribution: {
+      status: "complete",
+      zoneCounts: { A: count, B: 0, C: 0, D: 0, outside: 0, indeterminate_boundary: 0 },
+      classifiedImpactCount: count,
+      capturedImpactCount: count,
+      reconciliation: { classifiedImpactCount: count, unresolvedImpactCount: 0, capturedImpactCount: count, countsMatchCapturedImpactCount: true }
+    },
+    scoring: {
+      status: "complete",
+      objective: "highest_score_wins",
+      zoneValues: { A: 10, B: 9, C: 8, D: 7 },
+      subtotals: { A: count * 10, B: 0, C: 0, D: 0 },
+      total: count * 10
+    },
+    authorityTrace: {
+      classificationAuthority: "backend",
+      geometryAuthorityId: "UGO_BAKER_SL_ST1_23X35_V1",
+      coordinateSystemId: "UGO_IMAGE_PLANE_TOP_LEFT_V1",
+      scoringAuthorityId: "BAKER_SL_ST1_SCORING_V1"
+    }
+  };
+}
+
 async function assertTransitionVisible(page, viewport, label) {
   for (let sample = 0; sample < 6; sample += 1) {
     const visible = await page.evaluate(() => {
@@ -109,6 +143,19 @@ try {
     const page = await context.newPage();
     let startAttempts = 0;
     let preservedSession = null;
+    const priorPreservedSessions = Array.from({ length: 12 }, (_, index) => ({
+      sessionId: `prior-${String(index + 1).padStart(2, "0")}`,
+      sessionIdAuthority: "backend",
+      savedToSEC: true,
+      sessionLabel: `Session #${String(index + 1).padStart(3, "0")}`,
+      authorityPackage: scoredPackage([{ xNorm: .5, yNorm: .5 }]),
+      targetEvidenceImage: { dataUrl: "data:image/png;base64,AA==" }
+    }));
+    const preservationArtifacts = priorPreservedSessions.map((session, index) => ({
+      sessionId: session.sessionId,
+      artifactSha256: `artifact-prior-${index + 1}`,
+      preservedAt: `2026-07-${String(index + 1).padStart(2, "0")}T12:00:00Z`
+    }));
 
     page.on("pageerror", error => pageErrors.push(error.message));
     page.on("console", message => {
@@ -122,16 +169,7 @@ try {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          ok: true,
-          status: "supported_analysis_ready",
-          resultPackageType,
-          missionFamily,
-          target: { smartTargetId: TARGET_ID, variantId: "BAKER_SL_ST1_23X35_STANDARD_WHITE" },
-          supportedAnalysis: { impactCount: request.impacts.length },
-          impacts: request.impacts.map((impact, index) => ({ impactId: `impact-${index + 1}`, ...impact })),
-          scoring: { status: "unavailable" }
-        })
+        body: JSON.stringify(scoredPackage(request.impacts))
       });
     });
     await context.route("**/api/session/prepare", async route => {
@@ -172,21 +210,26 @@ try {
     });
     await context.route("**/api/session/sec**", async route => {
       if (route.request().method() === "POST") {
-        preservedSession = route.request().postDataJSON().session;
+        preservedSession = { ...route.request().postDataJSON().session, savedToSEC: true };
+        const preservedAt = "2026-08-15T12:00:00Z";
+        preservationArtifacts.push({ sessionId: preservedSession.sessionId, artifactSha256: "artifact-current", preservedAt });
         await route.fulfill({
           status: 201,
           contentType: "application/json",
-          body: JSON.stringify({ ok: true, session: preservedSession })
+          body: JSON.stringify({ ok: true, session: preservedSession, artifactSha256: "artifact-current", preservedAt })
         });
         return;
       }
       const requestedSessionId = new URL(route.request().url()).searchParams.get("session");
+      const allSessions = [...priorPreservedSessions, ...(preservedSession ? [preservedSession] : [])];
+      const requestedSession = allSessions.find(session => session.sessionId === requestedSessionId) || null;
+      const requestedArtifact = preservationArtifacts.find(artifact => artifact.sessionId === requestedSessionId) || null;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
         body: JSON.stringify(requestedSessionId
-          ? { ok: true, session: preservedSession }
-          : { ok: true, sessions: preservedSession ? [preservedSession] : [] })
+          ? { ok: true, session: requestedSession, artifactSha256: requestedArtifact?.artifactSha256, preservedAt: requestedArtifact?.preservedAt }
+          : { ok: true, sessions: allSessions, artifacts: preservationArtifacts })
       });
     });
 
@@ -364,6 +407,10 @@ try {
     assert.equal(sessionAccordion.targetBodyDisplay, "none", "closed Target body is removed from layout");
     assert.ok(Math.abs(sessionAccordion.collapsedTargetHeight - sessionAccordion.targetSummaryHeight) <= 2.5, "closed Target container collapses to its summary plus border height");
     assert.ok(Math.abs(sessionAccordion.targetSummaryHeight - 34) <= 1, "closed SEC section preserves the approved 34px height");
+    const unsavedTimelineIds = await page.locator(".sec-session-timeline-point").evaluateAll(points => points.map(point => point.dataset.sessionId));
+    assert.deepEqual(unsavedTimelineIds, ["prior-03", "prior-04", "prior-05", "prior-06", "prior-07", "prior-08", "prior-09", "prior-10", "prior-11", "prior-12"], "unsaved current SEC is excluded and only the newest 10 preserved scores appear oldest to newest");
+    assert.equal(unsavedTimelineIds.includes(authoritativeSessionId), false, "current SEC does not join Session 2 before preservation");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px Session 2 has no horizontal overflow`);
     const sessionFieldLayout = await page.locator(".sec-session-record-fields > div").evaluateAll(rows => rows
       .map(row => {
         const label = row.querySelector("span");
@@ -420,6 +467,10 @@ try {
     assert.equal(page.url(), liveSecUrl, "Save SEC must remain on the current SEC");
     assert.equal((await page.locator("[data-baker-save-sec]").textContent()).trim(), "SEC Preserved", "Save SEC confirms preservation in place");
     assert.equal(await page.locator("[data-baker-save-sec]").isDisabled(), true, "preserved SEC cannot be submitted twice");
+    const savedTimelineIds = await page.locator(".sec-session-timeline-point").evaluateAll(points => points.map(point => point.dataset.sessionId));
+    assert.deepEqual(savedTimelineIds, ["prior-04", "prior-05", "prior-06", "prior-07", "prior-08", "prior-09", "prior-10", "prior-11", "prior-12", authoritativeSessionId], "successful preservation adds the current SEC as the newest point and retains only the newest 10");
+    assert.equal(await page.locator(`.sec-session-timeline-point[data-session-id="${authoritativeSessionId}"]`).getAttribute("class").then(value => value.includes("is-current")), true, "newly preserved current SEC is identified as the newest current point");
+    assert.match(await page.locator('.sec-session-timeline-point[data-session-id="prior-12"]').getAttribute("href"), /records\.html\?session=prior-12&view=sec$/, "historical score point resolves to its exact preserved SEC");
     await page.getByRole("link", { name: "View History" }).click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"));
     assert.equal(await page.getByLabel("Open menu").isVisible(), true, "Vault must expose navigation");
@@ -438,6 +489,11 @@ try {
     assert.ok(evidenceRecord.dataUrl.length < 430000, "persisted target representation must remain quota-safe");
     assert.equal(await page.getByRole("link", { name: /Back to Vault/i }).isVisible(), true, "Reopened SEC must expose a Vault return path");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+    await page.locator('[data-sec-region="session"] summary').click();
+    await page.locator('.sec-session-timeline-point[data-session-id="prior-12"]').click();
+    await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "prior-12");
+    assert.equal(await page.locator('.baker-sl-st1-sec-card[data-sec-mode="historical"]').getAttribute("data-record-id"), null, "historical point opens the historical SEC renderer");
+    assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /Session #012/, "historical point opens the exact preserved SEC identity");
     assert.deepEqual(pageErrors, []);
     assert.deepEqual(consoleErrors, []);
 

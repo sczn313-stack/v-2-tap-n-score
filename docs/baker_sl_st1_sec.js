@@ -35,6 +35,36 @@
     );
   }
 
+  function authorityPackage(session) {
+    return session && (
+      session.authorityPackage
+      || session.backendAuthorityPackage
+      || session.ugeoAuthorityPackage
+      || session.m4AuthorityPackage
+    ) || null;
+  }
+
+  function authoritativeTargetVersion(session) {
+    const pkg = authorityPackage(session);
+    return matches(pkg) ? `${TARGET_ID}::${VARIANT_ID}` : "";
+  }
+
+  function preservedScoreMetric(session) {
+    const summary = scoringSummary(authorityPackage(session));
+    return summary ? summary.total : Number.NaN;
+  }
+
+  function sessionTimelineModel(records, currentSessionId = "") {
+    if (!global.SCZN3SECSessionTimeline) return Object.freeze({ points: Object.freeze([]), currentSessionId: clean(currentSessionId) });
+    return global.SCZN3SECSessionTimeline.build({
+      records,
+      expectedIdentity: `${TARGET_ID}::${VARIANT_ID}`,
+      identityResolver: authoritativeTargetVersion,
+      metricResolver: preservedScoreMetric,
+      currentSessionId
+    });
+  }
+
   function impactCount(pkg) {
     const count = Number(pkg && pkg.supportedAnalysis && pkg.supportedAnalysis.impactCount);
     const impacts = Array.isArray(pkg && pkg.impacts) ? pkg.impacts : [];
@@ -236,15 +266,15 @@
     </aside>`;
   }
 
-  function actionBarHtml(mode) {
+  function actionBarHtml(mode, preserved = false) {
     if (mode === "historical") {
       return `<div class="sec-preservation-actions"><button class="button" type="button" data-sec-export>Export SEC</button><button class="button" type="button" data-sec-share>Share SEC</button><a class="button primary" href="records.html">Back to Vault</a></div>`;
     }
-    return `<div class="sec-preservation-actions"><button class="button primary" type="button" data-baker-save-sec>Save SEC</button><button class="button" type="button" data-sec-share>Share</button><button class="button" type="button" data-sec-export>Export / Print PDF</button><button class="button" type="button" data-baker-add-note>Add Note</button><a class="button" href="../../../records.html">View History</a></div>
+    return `<div class="sec-preservation-actions"><button class="button${preserved ? " is-preserved" : " primary"}" type="button" data-baker-save-sec${preserved ? " disabled" : ""}>${preserved ? "SEC Preserved" : "Save SEC"}</button><button class="button" type="button" data-sec-share>Share</button><button class="button" type="button" data-sec-export>Export / Print PDF</button><button class="button" type="button" data-baker-add-note>Add Note</button><a class="button" href="../../../records.html">View History</a></div>
       <div class="sec-note-editor" data-baker-note-editor hidden><label>Session note<textarea rows="3" data-baker-note></textarea></label><button class="button" type="button" data-baker-save-note>Save Note</button></div><span class="sec-action-status" data-baker-sec-status role="status" aria-live="polite"></span>`;
   }
 
-  function render({ session = {}, package: pkg = null, mode = "live", detailsDismissed = false } = {}) {
+  function render({ session = {}, package: pkg = null, mode = "live", detailsDismissed = false, timelineRecords = [], timelineRecordsHref = "records.html", preserved = session.savedToSEC === true } = {}) {
     if (!global.SCZN3SEC || !matches(pkg)) {
       return global.SCZN3SEC ? global.SCZN3SEC.renderUnavailable("Results unavailable") : "";
     }
@@ -252,6 +282,12 @@
     if (count === null) return global.SCZN3SEC.renderUnavailable("Results unavailable");
     const label = impactLabel(count);
     const score = scoringSummary(pkg);
+    const timeline = global.SCZN3SECSessionTimeline
+      ? global.SCZN3SECSessionTimeline.render(
+          sessionTimelineModel(timelineRecords, clean(session.sessionId)),
+          { title: "Last 10 Scores", valueUnit: "points", recordsHref: timelineRecordsHref }
+        )
+      : "";
     return global.SCZN3SEC.render({
       schemaVersion: "1.2",
       recordId: clean(session.sessionId) || "baker-sl-st1-sec",
@@ -271,13 +307,13 @@
           key: "session",
           className: "sec-v1-measurement-content",
           ariaLabel: "Session",
-          contentHtml: `<section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields">${sessionDetailsHtml(session)}</div></section>${detailsInvitationHtml(session, mode, detailsDismissed)}`
+          contentHtml: `${timeline}<section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields">${sessionDetailsHtml(session)}</div></section>${detailsInvitationHtml(session, mode, detailsDismissed)}`
         },
         {
           key: "actions",
           className: "sec-v1-preservation-content",
           ariaLabel: "Shooter Action Bar",
-          contentHtml: actionBarHtml(mode)
+          contentHtml: actionBarHtml(mode, preserved)
         }
       ]
     });
@@ -293,6 +329,9 @@
     scoringSummary,
     vaultResultSummary,
     vaultEvidenceModel,
+    authoritativeTargetVersion,
+    preservedScoreMetric,
+    sessionTimelineModel,
     missingOptionalDetails,
     render
   });

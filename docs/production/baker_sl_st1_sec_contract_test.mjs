@@ -4,6 +4,7 @@ import vm from "node:vm";
 
 const root = new URL("../", import.meta.url);
 const secSource = await readFile(new URL("sec_v1.js", root), "utf8");
+const timelineSource = await readFile(new URL("sec_session_timeline.js", root), "utf8");
 const dispatchSource = await readFile(new URL("sec_dispatch.js", root), "utf8");
 const adapterSource = await readFile(new URL("baker_sl_st1_sec.js", root), "utf8");
 const adapterCss = await readFile(new URL("baker-sl-st1-sec.css", root), "utf8");
@@ -17,6 +18,7 @@ const context = { window: {} };
 vm.createContext(context);
 vm.runInContext(secSource, context);
 vm.runInContext(dispatchSource, context);
+vm.runInContext(timelineSource, context);
 vm.runInContext(adapterSource, context);
 const adapter = context.window.SCZN3BakerSLST1SEC;
 const pkg = {
@@ -127,6 +129,49 @@ assert.match(scoredHtml, /Target Evidence/);
 assert.doesNotMatch(scoredHtml, /authoritative|backend|canonical|governed|result package/i);
 assert.doesNotMatch(scoredHtml, /Recorded Bullet Holes/i);
 
+const preservedSessions = [1, 2, 3].map(index => ({
+  ...session,
+  sessionId: `preserved-${index}`,
+  sessionIdAuthority: "backend",
+  savedToSEC: true,
+  authorityPackage: structuredClone(scored)
+}));
+const preservedPayload = {
+  ok: true,
+  sessions: preservedSessions,
+  artifacts: preservedSessions.map((item, index) => ({
+    sessionId: item.sessionId,
+    artifactSha256: `artifact-${index + 1}`,
+    preservedAt: `2026-08-${String(index + 1).padStart(2, "0")}T12:00:00Z`
+  }))
+};
+const timelineRecords = context.window.SCZN3SECSessionTimeline.preservedRecords(preservedPayload);
+const timelineModel = adapter.sessionTimelineModel(timelineRecords, "preserved-3");
+assert.deepEqual(Array.from(timelineModel.points, point => [point.sessionId, point.value]), [["preserved-1", 34], ["preserved-2", 34], ["preserved-3", 34]]);
+assert.equal(timelineModel.points[2].current, true);
+const timelineHtml = adapter.render({ session: preservedSessions[2], package: scored, mode: "historical", timelineRecords });
+assert.match(timelineHtml, /Last 10 Scores/);
+assert.match(timelineHtml, /records\.html\?session=preserved-1&amp;view=sec/);
+assert.equal((timelineHtml.match(/class="sec-session-timeline-point/g) || []).length, 3);
+const wrongVersion = structuredClone(preservedSessions[0]);
+wrongVersion.sessionId = "wrong-version";
+wrongVersion.authorityPackage.target.variantId = "BAKER_SL_ST1_OTHER";
+const wrongVersionRecords = context.window.SCZN3SECSessionTimeline.preservedRecords({
+  ok: true,
+  sessions: [wrongVersion],
+  artifacts: [{ sessionId: "wrong-version", artifactSha256: "artifact-wrong", preservedAt: "2026-08-04T12:00:00Z" }]
+});
+assert.equal(adapter.sessionTimelineModel(wrongVersionRecords).points.length, 0, "timeline isolates authoritative target identity and version");
+const clientClaimOnly = structuredClone(preservedSessions[0]);
+clientClaimOnly.sessionId = "client-claim";
+clientClaimOnly.authorityPackage.scoring = { total: 999, status: "complete" };
+const clientClaimRecords = context.window.SCZN3SECSessionTimeline.preservedRecords({
+  ok: true,
+  sessions: [clientClaimOnly],
+  artifacts: [{ sessionId: "client-claim", artifactSha256: "artifact-client", preservedAt: "2026-08-05T12:00:00Z" }]
+});
+assert.equal(adapter.sessionTimelineModel(clientClaimRecords).points.length, 0, "timeline ignores invalid or client-only score claims");
+
 const inconsistent = structuredClone(scored);
 inconsistent.scoring.total = 99;
 assert.equal(adapter.scoringSummary(inconsistent), null);
@@ -182,6 +227,7 @@ assert.doesNotMatch(adapterCss, /\.sec-v1-(?:flow|region|target|session|actions)
 assert.match(adapterCss, /@media\(max-width:520px\)\{\.sec-baker-performance-stage,[^}]*grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto minmax\(0,1fr\)/, "390px SEC presents score first and complete target evidence next");
 
 assert.match(targetHtml, /baker_sl_st1_sec\.js/);
+assert.match(targetHtml, /sec_session_timeline\.js/);
 assert.match(targetHtml, /sec_dispatch\.js/);
 assert.doesNotMatch(targetHtml, /id="continueToSec"|id="supportedResults"/);
 assert.match(targetJs, /async function persistResultAndOpenSec\(processingId\)/);
@@ -192,6 +238,8 @@ assert.match(targetJs, /createAuthoritativeSession/);
 assert.match(targetJs, /saveTargetEvidenceImage/);
 assert.match(targetJs, /authorityPackage: state\.result/);
 assert.match(targetJs, /body:\s*JSON\.stringify\(\{ session: saved \}\)/, "Save SEC sends the exact preserved artifact to the durable backend store");
+assert.match(targetJs, /SCZN3SECSessionTimeline\.preservedRecords\(payload\)/, "live timeline consumes backend preservation records");
+assert.match(targetJs, /await renderSec\(preservedSession, \{ refreshTimeline: true \}\)/, "successful preservation refreshes Session 2");
 assert.match(targetJs, /state\.preserved = true/);
 assert.match(targetJs, /!state\.preserved && Boolean\(state\.imageEvidence \|\| state\.impacts\.length\)/);
 assert.doesNotMatch(targetJs, /createSession\(/);

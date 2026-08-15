@@ -31,6 +31,7 @@ const publicFiles = [
   "sec_reopen_lifecycle.js",
   "experience_frame_processing.js",
   "sec_v1.js",
+  "sec_session_timeline.js",
   "universal_practice_sec.js",
   "m4_smart_target_sec.js",
   "baker_sl_st1_sec.js",

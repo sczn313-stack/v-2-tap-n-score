@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="ballistic-vault.css?v=universal-vault-result-summary-1" />
 <link rel="stylesheet" href="sec-universal.css?v=universal-sec-final-gap-1" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
-<link rel="stylesheet" href="baker-sl-st1-sec.css?v=mission-a-fresh-score-0814" />
+<link rel="stylesheet" href="baker-sl-st1-sec.css?v=session-2-uspsa-1" />
 <link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <script src="navigation.js?v=universal-smart-targets-nav-1" defer></script>
@@ -51,9 +51,10 @@
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="sec_v1.js?v=mission-a-fresh-score-0814"></script>
+<script src="sec_session_timeline.js?v=session-2-uspsa-1"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
-<script src="baker_sl_st1_sec.js?v=vault-completed-evidence-3"></script>
+<script src="baker_sl_st1_sec.js?v=session-2-uspsa-1"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
@@ -66,6 +67,7 @@ const HISTORICAL_DETAIL_MODE = Boolean(REQUESTED_RECORD_SESSION_ID);
 const RECORDS_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
 const PRESERVED_SEC_ENDPOINT = `${RECORDS_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
 let serverSavedSessions = [];
+let serverTimelineRecords = [];
 const VAULT_RETURN_STATE_KEY = "SCZN3_BALLISTIC_VAULT_RETURN_STATE";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
@@ -1476,7 +1478,13 @@ function renderHistory() {
       return renderM4VaultEntry(session);
     }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
-      return SCZN3BakerSLST1SEC.render({ session, package: pkg, mode: "historical" });
+      return SCZN3BakerSLST1SEC.render({
+        session,
+        package: pkg,
+        mode: "historical",
+        timelineRecords: serverTimelineRecords,
+        timelineRecordsHref: "records.html"
+      });
     }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.UNIVERSAL_PRACTICE && window.SCZN3UniversalPracticeSEC) {
       return SCZN3UniversalPracticeSEC.render({ session, package: pkg });
@@ -1633,10 +1641,21 @@ async function loadPreservedSECRecords() {
     const packageData = await response.json().catch(() => null);
     if (response.ok && packageData && packageData.ok === true) {
       serverSavedSessions = packageData.session ? [packageData.session] : (Array.isArray(packageData.sessions) ? packageData.sessions : []);
+      serverTimelineRecords = window.SCZN3SECSessionTimeline
+        ? [...SCZN3SECSessionTimeline.preservedRecords(packageData)]
+        : [];
+      if (HISTORICAL_DETAIL_MODE && window.SCZN3SECSessionTimeline) {
+        const timelineResponse = await fetch(PRESERVED_SEC_ENDPOINT, { headers: { Accept: "application/json" } });
+        const timelinePayload = await timelineResponse.json().catch(() => null);
+        serverTimelineRecords = timelineResponse.ok
+          ? [...SCZN3SECSessionTimeline.preservedRecords(timelinePayload)]
+          : [];
+      }
       processingSucceeded = true;
     }
   } catch (error) {
     serverSavedSessions = [];
+    serverTimelineRecords = [];
   }
   renderHistory();
   if (HISTORICAL_DETAIL_MODE) {
