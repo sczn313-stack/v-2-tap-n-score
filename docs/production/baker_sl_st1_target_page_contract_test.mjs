@@ -13,7 +13,6 @@ assert.match(html, /Silhouette Target \(USPSA\)/);
 assert.match(html, /Baker Targets/);
 assert.match(html, /Load your target photo to begin\./);
 for (const control of [
-  "Take Photo",
   "Choose Photo",
   "Retake",
   "Replace",
@@ -23,6 +22,9 @@ for (const control of [
 ]) {
   assert.match(html, new RegExp(`>${control}<`), `Missing shooter control: ${control}`);
 }
+assert.equal((html.match(/type="file"/g) || []).length, 3, "one initial photo chooser plus Retake and Replace inputs");
+assert.equal((html.match(/for="libraryInput"/g) || []).length, 1, "one visible initial photo-entry action");
+assert.doesNotMatch(html, />Take Photo</, "duplicate camera-only entry action is not presented");
 
 const visibleMarkup = html.replace(/<script[\s\S]*?<\/script>/gi, "");
 for (const forbidden of [

@@ -221,6 +221,9 @@ try {
     assert.equal(preselectionWorkspace.width, 0, "pre-selection workspace reserves no visible width");
     assert.equal(preselectionWorkspace.height, 0, "pre-selection workspace reserves no visible height");
     assert.equal(preselectionWorkspace.imageSource, "", "pre-selection image has no fabricated source");
+    const visiblePhotoEntryActions = page.locator("#loadCard .sl-load-actions label:visible");
+    assert.equal(await visiblePhotoEntryActions.count(), 1, "pre-selection presents exactly one photo-entry action");
+    assert.equal((await visiblePhotoEntryActions.first().textContent()).trim(), "Choose Photo", "photo entry uses one neutral system chooser");
     await page.locator("#libraryInput").setInputFiles(targetPhoto);
     await page.locator("#targetWorkspace:not([hidden])").waitFor();
     const selectedPhoto = await page.locator("#targetImage").evaluate(image => ({
