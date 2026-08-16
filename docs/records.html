@@ -1564,13 +1564,16 @@ function renderHistory() {
 }
 
 function prepareHistoricalSec(session) {
-  const card = historyList.querySelector(`[data-session-id="${CSS.escape(String(session.sessionId || ""))}"]`)
+  const recordId = String(session.sessionId || "");
+  const escapedRecordId = CSS.escape(recordId);
+  const card = historyList.querySelector(`[data-sec-shell="universal-v1"][data-sec-record-id="${escapedRecordId}"]`)
+    || historyList.querySelector(`.history-card[data-session-id="${escapedRecordId}"]`)
     || historyList.querySelector(".sec-experience, .history-card");
   if (!card) return;
   card.dataset.readOnly = "true";
   card.classList.add("historical-sec-detail");
   card.querySelectorAll(".sec-target-session-identity").forEach(label => label.remove());
-  card.querySelectorAll('a[href*="records.html?session="]').forEach(link => link.remove());
+  card.querySelectorAll('a[href*="records.html?session="]:not(.sec-session-timeline-point)').forEach(link => link.remove());
   const story = card.querySelector(".sec-target-story") || card.querySelector(".sec-v1-flow") || card;
   const stages = [...story.children].filter(element => element.matches(".sec-universal-stage"));
   const accordionStages = stages.map((stage, index) => {
