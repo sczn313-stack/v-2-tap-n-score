@@ -15,12 +15,12 @@ pages.forEach(page => {
 const primaryApplicationPages = ["index.html", "matrix.html", "shoot.html", "sec.html", "records.html"];
 primaryApplicationPages.forEach(page => {
   const html = fs.readFileSync(path.join(docs, page), "utf8");
-  assert(html.includes("universal-app-header"), `${page} uses the governed application header placement`);
+  assert(html.includes("app-header"), `${page} uses the governed application header placement`);
 });
 
-const universalUi = fs.readFileSync(path.join(docs, "universal-ui.css"), "utf8");
-assert(universalUi.includes(".universal-app-header > .package-menu"), "button hamburgers use the universal top-header position");
-assert(universalUi.includes(".universal-header-menu"), "details hamburgers use the same universal top-header position");
+const universalUi = fs.readFileSync(path.join(docs, "platform-ui.css"), "utf8");
+assert(universalUi.includes(".app-header > .package-menu"), "button hamburgers use the universal top-header position");
+assert(universalUi.includes(".app-header-menu"), "details hamburgers use the same universal top-header position");
 assert(universalUi.includes("right:12px"), "the hamburger has one governed right-edge placement");
 
 const survey = fs.readFileSync(path.join(docs, "survey.html"), "utf8");
@@ -46,10 +46,10 @@ assert(navigation.includes("closeAll();"), "menus initialize closed");
 assert(!navigation.includes("localStorage") && !navigation.includes("sessionStorage"), "menu state is never persisted");
 assert(navigation.includes('document.querySelector("details.mobile-platform-menu")'), "details-based headers inherit the same desktop quick navigation");
 assert(navigation.includes("function applicationRoot()"), "nested target routes resolve universal destinations from the application root");
-assert(navigation.includes('{ page: "index.html", label: "Home" }'), "universal navigation includes Home");
-assert(navigation.includes('{ page: "matrix.html?view=library", label: "Equipment" }'), "universal navigation routes Equipment to the neutral library view");
+assert(!navigation.includes('label: "Home"'), "universal navigation removes Home because the logo owns home");
+assert(navigation.includes('{ page: "matrix.html?view=library", label: "Equipment Library" }'), "universal navigation routes Equipment Library to the neutral library view");
 assert(navigation.includes('{ page: "index.html#targetExperiences", label: "Smart Targets" }'), "Smart Targets universally routes to the homepage catalog");
-assert(navigation.includes('{ page: "records.html", label: "History", preserve: true }'), "universal navigation includes History");
+assert(navigation.includes('{ page: "records.html", label: "Ballistic Vault", preserve: true }'), "universal navigation includes Ballistic Vault");
 assert(!navigation.includes('{ page: "shoot.html", label: "Target" }'), "universal navigation never conflates Smart Target discovery with the active workspace");
 assert(navigation.includes("installUniversalMenuDestinations(rootUrl)"), "shared navigation owns every application drawer destination");
 

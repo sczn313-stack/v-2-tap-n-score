@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_GUNFUN_21110_SINK_A_SUB_CANDIDATE_V1",
+  "status": "registration_candidate_not_implementation_authority",
+  "experimentId": "E56-T07",
+  "publisherSku": "21110",
+  "sourceEvidence": {
+    "path": "../publisher-representations/E56-T07_SKU-21110.jpg",
+    "sourceUrl": "https://gunfun.com/wpgfcanow/wp-content/uploads/2016/12/21110-1009x1536.jpg",
+    "sha256": "a02833c85119ed01e5d8391ef5d97cd52b90e2baa51343e8d72cc2e0ef21725f",
+    "pixelWidth": 1009,
+    "pixelHeight": 1536
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_GUNFUN_21110_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_color_segmentation_v1",
+    "boundaryUncertaintyPx": 8,
+    "fleetHitRingCenterLandmarksPx": {
+      "upperFleet": [[259, 224], [499, 223], [781, 224], [261, 428], [746, 428], [260, 631], [500, 630], [782, 631]],
+      "lowerFleet": [[222, 846], [503, 846], [744, 846], [257, 1049], [742, 1049], [222, 1252], [504, 1253], [744, 1252]]
+    },
+    "hitBoundaryStatus": "candidate_ring_boundaries_require_independent_trace",
+    "publisherLineTouchRule": true,
+    "playerFleetBinding": "explicit_session_setup_required"
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "validationRequirements": ["independent hit-ring boundary trace", "line-touch adjudication test", "representative-photo homography test", "explicit player-to-fleet setup test"],
+  "claimBoundary": "Publisher-printed alternate-turn, line-touch, fleet-sink, and win-condition evidence only; player identity may not be inferred from target position."
+}

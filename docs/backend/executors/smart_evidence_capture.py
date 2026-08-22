@@ -1,0 +1,152 @@
+"""Reusable backend-owned smart-evidence capability executor."""
+from __future__ import annotations
+
+from copy import deepcopy
+from typing import Any, Dict, Mapping
+
+from target_execution_contract import canonical_json, digest
+
+
+class SmartEvidenceError(ValueError):
+    pass
+
+
+def _coordinate(value: Any, reason: str) -> float:
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as exc:
+        raise SmartEvidenceError(reason) from exc
+    if number < 0 or number > 1:
+        raise SmartEvidenceError(reason)
+    return number
+
+
+def _image(value: Any) -> Dict[str, Any]:
+    if not isinstance(value, Mapping):
+        raise SmartEvidenceError("image_evidence_required")
+    sha256 = str(value.get("sha256") or "").strip().lower()
+    if len(sha256) != 64 or any(character not in "0123456789abcdef" for character in sha256):
+        raise SmartEvidenceError("image_sha256_invalid")
+    width = value.get("widthPx")
+    height = value.get("heightPx")
+    if not isinstance(width, int) or width < 1 or not isinstance(height, int) or height < 1:
+        raise SmartEvidenceError("image_dimensions_invalid")
+    if not (str(value.get("dataUrl") or "").strip() or str(value.get("mediaId") or "").strip()):
+        raise SmartEvidenceError("admitted_image_reference_required")
+    return {
+        "sha256": sha256,
+        "widthPx": width,
+        "heightPx": height,
+        "mediaType": str(value.get("mediaType") or "image/unknown"),
+        "backendHashVerified": True,
+        "acceptanceScope": "registered_session_photo_evidence",
+    }
+
+
+def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
+    if not isinstance(evidence, Mapping):
+        raise SmartEvidenceError("evidence_object_required")
+    image = _image(evidence.get("imageEvidence"))
+    observations = evidence.get("observations")
+    if not isinstance(observations, list) or not observations:
+        raise SmartEvidenceError("shot_observations_required")
+    limit = int(contract["components"]["mission"]["definition"].get("maxObservations", 500))
+    if len(observations) > limit:
+        raise SmartEvidenceError("shot_observation_limit_exceeded")
+    normalized = []
+    for index, observation in enumerate(observations, start=1):
+        if not isinstance(observation, Mapping):
+            raise SmartEvidenceError("shot_observation_invalid")
+        normalized.append({
+            "observationId": f"observation-{index:03d}",
+            "xNorm": _coordinate(observation.get("xNorm"), "shot_observation_x_out_of_bounds"),
+            "yNorm": _coordinate(observation.get("yNorm"), "shot_observation_y_out_of_bounds"),
+            "evidenceMeaning": "shooter_recorded_visible_shot_observation",
+        })
+    declared = evidence.get("shooterDeclaredAimPoint")
+    aim = None
+    if declared is not None:
+        if not contract["components"]["mission"]["definition"].get("allowShooterDeclaredAim", False):
+            raise SmartEvidenceError("shooter_declared_aim_not_authorized")
+        if not isinstance(declared, Mapping):
+            raise SmartEvidenceError("shooter_declared_aim_invalid")
+        aim = {
+            "xNorm": _coordinate(declared.get("xNorm"), "shooter_declared_aim_x_out_of_bounds"),
+            "yNorm": _coordinate(declared.get("yNorm"), "shooter_declared_aim_y_out_of_bounds"),
+            "declaredBy": "shooter",
+            "evidenceMeaning": "shooter_declared_aim_point",
+            "authorityScope": "session_evidence_only",
+        }
+    scoring = contract["components"]["scoring"]["definition"]
+    if scoring.get("status") != "not_applicable":
+        raise SmartEvidenceError("evidence_executor_requires_not_applicable_scoring")
+    geometry = contract["components"]["geometry"]["definition"]
+    result = {
+        "ok": True,
+        "status": "supported_analysis_ready",
+        "authoritySource": "backend-authoritative",
+        "missionFamily": contract["missionFamily"],
+        "resultPackageType": contract["resultPackageType"],
+        "resultPackageVersion": contract["resultPackageVersion"],
+        "target": deepcopy(contract["targetProfile"]),
+        "executionContract": {
+            "contractId": contract["contractId"],
+            "contractVersion": contract["contractVersion"],
+            "contractFingerprint": contract["contractFingerprint"],
+            "executorId": contract["executor"]["id"],
+            "executorVersion": contract["executor"]["version"],
+            "secAdapterFamilyId": contract["secAdapter"]["id"],
+            "secAdapterFamilyVersion": contract["secAdapter"]["version"],
+            "preservationValidatorId": contract["preservationValidator"]["id"],
+            "preservationValidatorVersion": contract["preservationValidator"]["version"],
+        },
+        "imageEvidence": image,
+        "observations": normalized,
+        "impacts": deepcopy(normalized),
+        "shooterDeclaredAimPoint": aim,
+        "supportedAnalysis": {"impactCount": len(normalized)},
+        "reconciliation": {
+            "capturedObservationCount": len(normalized),
+            "acceptedObservationCount": len(normalized),
+            "countsMatch": True,
+        },
+        "ugo": {
+            "status": geometry.get("status", "image_plane_evidence_only"),
+            "coordinateSystem": geometry.get("coordinateSystem", "normalized_source_image_top_left"),
+            "canonicalRegionMapping": geometry.get("canonicalRegionMapping", "unavailable"),
+            "semanticClassification": geometry.get("semanticClassification", "unavailable"),
+            "physicalMeasurement": geometry.get("physicalMeasurement", "unavailable"),
+        },
+        "scoring": {"status": "not_applicable", "reason": scoring.get("reason", "evidence_only_experience")},
+        "capabilityStates": deepcopy(contract["components"]["mission"]["definition"].get("capabilityStates", {})),
+        "authorityTrace": {
+            "targetExecutionContract": f"{contract['contractId']}@{contract['contractVersion']}",
+            "resultAuthority": "backend",
+            "componentDigests": {name: component["digest"] for name, component in contract["components"].items()},
+        },
+    }
+    result["resultHash"] = digest(canonical_json(result))
+    result["resultIdentity"] = f"SCZN3-RESULT-{result['resultHash'][:24].upper()}"
+    return result
+
+
+def validate_result(contract: Mapping[str, Any], result: Any) -> bool:
+    if not isinstance(result, Mapping):
+        return False
+    observations = result.get("observations")
+    reconciliation = result.get("reconciliation")
+    return bool(
+        result.get("ok") is True
+        and result.get("authoritySource") == "backend-authoritative"
+        and result.get("missionFamily") == contract["missionFamily"]
+        and result.get("resultPackageType") == contract["resultPackageType"]
+        and result.get("resultPackageVersion") == contract["resultPackageVersion"]
+        and result.get("executionContract", {}).get("contractFingerprint") == contract["contractFingerprint"]
+        and isinstance(observations, list) and len(observations) >= 1
+        and isinstance(reconciliation, Mapping)
+        and reconciliation.get("countsMatch") is True
+        and reconciliation.get("capturedObservationCount") == len(observations)
+        and reconciliation.get("acceptedObservationCount") == len(observations)
+        and result.get("scoring", {}).get("status") == "not_applicable"
+        and result.get("imageEvidence", {}).get("backendHashVerified") is True
+    )

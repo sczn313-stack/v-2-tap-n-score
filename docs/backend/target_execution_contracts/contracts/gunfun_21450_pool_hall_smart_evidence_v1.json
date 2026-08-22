@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_21450_pool_hall-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-GUNFUN-FULL-CATALOG-STRESS-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T11:14:31-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T11:14:31-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_21450_pool_hall",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_21450_POOL_HALL_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-089",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-21450",
+      "name": "Pool Hall",
+      "sku": "21450",
+      "dimensions": {
+        "width": 23,
+        "height": 35,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_21450_pool_hall-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      },
+      "digest": "47b9ecd9ef2f24e2482c48c5aa0a406a09a9d105814680f47810eac3f8fadffa"
+    },
+    "registration": {
+      "id": "gunfun_21450_pool_hall-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/21450.jpg",
+        "assetSha256": "f8dad3eccb5344c107669e0163f03fa7a309f2666d5cb8d8f5f2b4d8449a7202",
+        "assetAlt": "GunFun Pool Hall, SKU 21450",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "3798ee03970234c8cc6c859d76ce4f21043486d58d99367c91587999208c9fbb"
+    },
+    "scoring": {
+      "id": "gunfun_21450_pool_hall-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      },
+      "digest": "f2c7e6001d25e42fe5652bae086b84984b3d681ab5ccac8ad32093e8e40a98f5"
+    },
+    "mission": {
+      "id": "gunfun_21450_pool_hall-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "unavailable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      },
+      "digest": "7cf720073470e2f53e3909667c00524fa410ee8b17ae1936a57d617f3fbdebd7"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "unavailable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

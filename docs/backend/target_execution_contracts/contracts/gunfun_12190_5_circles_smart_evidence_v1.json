@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_12190_5_circles-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-GUNFUN-FULL-CATALOG-STRESS-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T11:14:31-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T11:14:31-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_12190_5_circles",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_12190_5_CIRCLES_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-023",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-12190",
+      "name": "5 Circles",
+      "sku": "12190",
+      "dimensions": {
+        "width": 19,
+        "height": 25,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_12190_5_circles-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      },
+      "digest": "283188cf28affbef8a886decf52a4266c36ab3f8167acb906164cb893d877d34"
+    },
+    "registration": {
+      "id": "gunfun_12190_5_circles-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/12190.jpg",
+        "assetSha256": "a16a4c100ccda85997e7a178df46f3b762ff6f54213a75fd678173d8e9a559d1",
+        "assetAlt": "GunFun 5 Circles, SKU 12190",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "20d6fed5e5548e057ffade543e7bbac21e098d2cfa348e87e8c837135386540d"
+    },
+    "scoring": {
+      "id": "gunfun_12190_5_circles-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      },
+      "digest": "131d062acae27f279382c4f36a1eb03a10668297c7de818b48351d613ebaa669"
+    },
+    "mission": {
+      "id": "gunfun_12190_5_circles-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "unavailable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      },
+      "digest": "fa08675ade85a046c5543d444b02ec7526f14ac7815ae98faf10fdf245bba051"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "unavailable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

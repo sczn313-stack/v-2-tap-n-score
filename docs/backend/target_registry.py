@@ -11,6 +11,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from target_execution_contract import TargetExecutionContractResolver, runtime_resolver
+
 ROOT = Path(__file__).resolve().parent
 MANIFEST_DIR = ROOT / "target_knowledge" / "manifests"
 
@@ -56,6 +58,23 @@ IMPLEMENTED_TARGET_OVERRIDES: Dict[str, Dict[str, Any]] = {
         "resultPackageType": "gssfPaperPenaltyResult",
         "evidenceModel": "photo-plus-hit-coordinates",
         "registrySupportNotes": "Current GSSF AC-1 backend scoring authority is explicitly supported.",
+    },
+    "idpa_silhouette_sl_st2": {
+        "targetId": "idpa_silhouette_sl_st2",
+        "targetName": "Silhouette Target (IDPA)",
+        "targetFamily": "Baker SL-ST2",
+        "targetType": "timed-practice-selected-center",
+        "manufacturer": "Baker Targets",
+        "discipline": "timed pistol practice",
+        "lifecycleStatus": "supported",
+        "supportedStatus": "supported",
+        "geometryAuthorityStatus": CONFIRMED,
+        "scoringAuthorityStatus": CONFIRMED,
+        "instructionAuthorityStatus": CONFIRMED,
+        "missionFamilyId": "idpaTimedPractice",
+        "resultPackageType": "idpaTimeScoreResult",
+        "evidenceModel": "registered-photo-plus-selected-centers-plus-reported-time",
+        "registrySupportNotes": "Founder-approved SL-ST2 Timed Pair practice authority under KTIS.",
     },
     "dot_torture_ez2c_style_17": {
         "lifecycleStatus": "supported",
@@ -227,7 +246,7 @@ def _apply_override(entry: Dict[str, Any], override: Dict[str, Any]) -> Dict[str
     return updated
 
 
-def target_registry_entries() -> Dict[str, Dict[str, Any]]:
+def target_registry_entries(execution_contract_resolver: Optional[TargetExecutionContractResolver] = None) -> Dict[str, Dict[str, Any]]:
     entries: Dict[str, Dict[str, Any]] = {}
     for manifest_path in sorted(MANIFEST_DIR.glob("*.json")):
         manifest = _load_manifest(manifest_path)
@@ -255,17 +274,48 @@ def target_registry_entries() -> Dict[str, Dict[str, Any]]:
         normalized = normalize_target_id(key)
         base = entries.get(normalized, {"targetId": override.get("targetId") or key})
         entries[normalized] = _apply_override(base, override)
+    resolver = execution_contract_resolver or runtime_resolver()
+    for contract in resolver.contracts():
+        target = contract["targetProfile"]
+        product = target["product"]
+        publisher = target["publisher"]
+        normalized = normalize_target_id(target["id"])
+        base = entries.get(normalized, {})
+        entries[normalized] = {
+            **deepcopy(base),
+            "targetId": target["id"],
+            "targetName": product["name"],
+            "targetFamily": base.get("targetFamily") or "Registered Publisher Product",
+            "targetType": base.get("targetType") or contract["missionFamily"],
+            "manufacturer": publisher["name"],
+            "sku": product["sku"],
+            "missionFamilyId": contract["missionFamily"],
+            "resultPackageType": contract["resultPackageType"],
+            "lifecycleStatus": "supported",
+            "supportedStatus": "supported",
+            "geometryAuthorityStatus": CONFIRMED,
+            "scoringAuthorityStatus": CONFIRMED if contract["components"]["scoring"]["definition"].get("status") != "not_applicable" else "not_applicable",
+            "authorityStatus": "supported",
+            "registryRecognized": True,
+            "registrySource": "target_execution_contract",
+            "executionContractStatus": "authorized",
+            "targetExecutionContractId": contract["contractId"],
+            "targetExecutionContractVersion": contract["contractVersion"],
+            "targetExecutionContractFingerprint": contract["contractFingerprint"],
+        }
     return entries
 
 
-def get_target_registry_entry(target_id: Any) -> Optional[Dict[str, Any]]:
-    entry = target_registry_entries().get(normalize_target_id(target_id))
+def get_target_registry_entry(target_id: Any, execution_contract_resolver: Optional[TargetExecutionContractResolver] = None) -> Optional[Dict[str, Any]]:
+    entry = target_registry_entries(execution_contract_resolver).get(normalize_target_id(target_id))
     return deepcopy(entry) if entry else None
 
 
 def is_target_execution_authorized(entry: Optional[Dict[str, Any]]) -> bool:
     if not entry:
         return False
+    if entry.get("executionContractStatus") == "authorized":
+        return True
     return (
         entry.get("lifecycleStatus") == "supported"
         and entry.get("supportedStatus") == "supported"
@@ -274,8 +324,8 @@ def is_target_execution_authorized(entry: Optional[Dict[str, Any]]) -> bool:
     )
 
 
-def registry_profile_for_target(target_id: Any) -> Optional[Dict[str, Any]]:
-    entry = get_target_registry_entry(target_id)
+def registry_profile_for_target(target_id: Any, execution_contract_resolver: Optional[TargetExecutionContractResolver] = None) -> Optional[Dict[str, Any]]:
+    entry = get_target_registry_entry(target_id, execution_contract_resolver)
     if not entry:
         return None
     profile = deepcopy(entry)

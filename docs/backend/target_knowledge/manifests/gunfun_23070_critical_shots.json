@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "gunfun_23070_critical_shots",
+    "targetName": "Critical Shots",
+    "targetFamily": "GunFun Batch 2",
+    "targetType": "marked-zone-silhouette",
+    "discipline": "target shooting",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "23070",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Critical Shots",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "resultPackageType": "smartEvidenceResult",
+    "guidanceMode": "evidence_only"
+  },
+  "uteRouting": {
+    "targetId": "gunfun_23070_critical_shots",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "23070",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Critical Shots",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "geometryAuthorityStatus": "image_plane_evidence_only",
+    "scoringAuthorityStatus": "not_applicable",
+    "resultPackageType": "smartEvidenceResult",
+    "authorityStatus": "supported_by_exact_target_execution_contract",
+    "rulesSource": "Preserve visible observations only; marked shapes receive no inferred semantic significance.",
+    "geometryStatus": "image_plane_evidence_only",
+    "instructionStatus": "unavailable",
+    "scoringStatus": "not_applicable_for_approved_evidence_contract",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "registered-photo-plus-shooter-declared-image-plane-observations"
+  },
+  "executionComposition": {
+    "targetProfileRef": {
+      "id": "gunfun_23070_critical_shots",
+      "version": "1"
+    },
+    "geometryComponentRef": {
+      "id": "gunfun_23070_critical_shots-geometry",
+      "version": "1"
+    },
+    "registrationComponentRef": {
+      "id": "gunfun_23070_critical_shots-registration",
+      "version": "1"
+    },
+    "scoringComponentRef": {
+      "id": "gunfun_23070_critical_shots-scoring",
+      "version": "1"
+    },
+    "missionComponentRef": {
+      "id": "gunfun_23070_critical_shots-mission",
+      "version": "1"
+    },
+    "executionContractRef": {
+      "id": "tec-gunfun_23070_critical_shots-smart-evidence-v1",
+      "version": "1"
+    }
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "publisher_target_profile_plus_founder_approved_evidence_contract",
+    "geometryAuthorityLevel": "image-plane-evidence-only",
+    "instructionAuthorityLevel": "unavailable",
+    "sourceConfidence": "publisher-product-and-artwork-confirmed"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "Critical Shots"
+    ],
+    "officialRules": [],
+    "courseOfFire": [],
+    "intendedUse": "Preserve visible observations only; marked shapes receive no inferred semantic significance.",
+    "shotCount": null,
+    "distance": null,
+    "passFailOrScoringRules": []
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "targetWidthInches": 23,
+      "targetHeightInches": 35
+    },
+    "gridSpacing": null,
+    "bullCount": null,
+    "zoneCount": null,
+    "aimPointRules": [
+      "Optional aim is shooter-declared session evidence only."
+    ],
+    "scoringZones": [],
+    "ringGeometry": "unavailable_for_canonical_classification"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": "one_or_more_visible_observations",
+    "requiredDistance": false,
+    "requiredSetupFields": [
+      "admitted evidence image"
+    ],
+    "minimumConfidenceRequirements": [
+      "backend-verified image hash",
+      "normalized observations in image bounds",
+      "reconciled observation counts"
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "numeric scoring meaning",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "mission or shot requirements",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "semantic or anatomical significance of marked zones",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "publisher_product_page",
+      "source": "https://gunfun.com/shop/critical-shots-23070/",
+      "authorityType": "product_identity_sku_dimensions_categories_and_published_description",
+      "notes": "Current GunFun product page inspected after the Batch 2 cohort was frozen."
+    },
+    {
+      "sourceType": "publisher_product_representation",
+      "source": "authority-evidence/gunfun/episode56/batch2/publisher-representations/23070.jpg",
+      "authorityType": "visible_artwork_and_printed_text",
+      "notes": "SHA-256 ee71e687b9ccfd9afbb3c00613962a10d67a8cdc5878f3e819734ef7a2f5b483; admitted as evidence-capture asset, not as canonical scoring geometry."
+    }
+  ]
+}

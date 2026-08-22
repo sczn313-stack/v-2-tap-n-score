@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_71010_splatter_carnival_reveal-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-GUNFUN-FULL-CATALOG-STRESS-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T11:14:31-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T11:14:31-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_71010_splatter_carnival_reveal",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_71010_SPLATTER_CARNIVAL_REVEAL_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-218",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-71010",
+      "name": "Splatter Carnival Reveal",
+      "sku": "71010",
+      "dimensions": {
+        "width": 19,
+        "height": 24,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_71010_splatter_carnival_reveal-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      },
+      "digest": "75f8f32c8bbf717d1cf70fcd90772aa70cc9d994d007050309183521504d52d1"
+    },
+    "registration": {
+      "id": "gunfun_71010_splatter_carnival_reveal-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/71010.jpg",
+        "assetSha256": "6af87733f3ff730211a47e110c343113ef74bbc14840105742760779062735fd",
+        "assetAlt": "GunFun Splatter Carnival Reveal, SKU 71010",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "9135f39ca6ef904929a714ebb9e49d05596f0270ba7cead35dba4b3fa5313c91"
+    },
+    "scoring": {
+      "id": "gunfun_71010_splatter_carnival_reveal-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      },
+      "digest": "2c77979fd13533f184f3c792a8964c04fba4c857820cd5d1a3fa56c593b4b634"
+    },
+    "mission": {
+      "id": "gunfun_71010_splatter_carnival_reveal-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "unavailable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      },
+      "digest": "1e9439afa560f39b538f446e92b0da771fa99306e5c30c3311b57e36e4545258"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "unavailable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 const [html, script, css, server, backend] = await Promise.all([
   readFile("t/baker/sl-st1/index.html", "utf8"),
   readFile("t/baker/sl-st1/target-page.js", "utf8"),
-  readFile("t/baker/sl-st1/target-page.css", "utf8"),
+  readFile("smart_target_workspace.css", "utf8"),
   readFile("backend/server.py", "utf8"),
   readFile("backend/baker_sl_st1_target_page.py", "utf8")
 ]);
@@ -61,23 +61,25 @@ assert.match(backend, /"numeric scoring"|"scoring"/i);
 assert.match(backend, /"status": "unavailable"/);
 assert.doesNotMatch(backend, /score\s*[+\-*\/]=|score\s*=\s*\d/i);
 
-assert.match(css, /@media \(max-width:520px\)/);
+assert.match(css, /@media\s*\(max-width:520px\)/);
 assert.match(css, /overflow-x:hidden/);
 assert.match(css, /touch-action:manipulation/);
 assert.match(html, /id="workflowDock"/);
-assert.match(css, /\.sl-workspace\{[\s\S]*?grid-template-rows:minmax\(0,1fr\) auto/);
-assert.match(css, /\.sl-workflow-dock\{[\s\S]*?position:relative/);
+assert.match(css, /\[data-sczn3-workspace="platform-v1"\]\[data-sczn3-workspace-layout="contained-rows"\]\{[\s\S]*?grid-template-rows:minmax\(0,1fr\) auto/);
+assert.match(css, /\[data-sczn3-workspace="platform-v1"\]\[data-sczn3-workspace-layout="contained-rows"\] > \[data-sczn3-workspace-actions="true"\]\{[\s\S]*?position:relative/);
 assert.match(css, /height:var\(--sl-workspace-viewport-height/);
-assert.match(script, /visualViewport\.offsetTop/);
-assert.match(script, /viewportTop \+ viewportHeight - Math\.max\(viewportTop, headerBottom\)/);
+assert.match(html, /smart_target_workspace\.js\?v=episode54-item6-1/);
+assert.match(script, /SCZN3SmartTargetWorkspace\.create/);
+assert.match(script, /workspace\.syncVisibleViewport\(\)/);
 assert.doesNotMatch(script, /Math\.max\(72,/);
 assert.match(script, /geometry-preserving-display-derivative/);
 assert.match(script, /maximumStoredBytes = 320000/);
-assert.match(script, /await decodeDisplayedImage\(elements\.image\)/, "selected photograph decodes before the Target Workspace is revealed");
-assert.match(script, /ResizeObserver/);
+assert.match(script, /await workspace\.decodeImage\(elements\.image\)/, "selected photograph decodes through the platform workspace before reveal");
+assert.match(script, /await workspace\.revealAfterDecode\(elements\.image\)/);
+assert.match(script, /workspace\.bindViewportLifecycle\(\)/);
 assert.match(css, /\.sl-target-page\.sl-workspace-active \.sl-target-introduction\{display:none\}/);
 assert.match(css, /scroll-margin-top:66px/);
-assert.match(script, /headerBottom/);
+assert.match(script, /workspace\.scheduleLayout\(\)/);
 assert.match(script, /Opening your Shooter Experience Card…/);
 assert.match(script, /async function persistResultAndOpenSec\(processingId\)/);
 assert.match(script, /SCZN3Processing\?\.update\(processingId, "Opening your Shooter Experience Card…"\)/);

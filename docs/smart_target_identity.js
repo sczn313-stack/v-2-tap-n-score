@@ -65,9 +65,16 @@
     return next;
   }
 
+  function targetProfileId(identity) {
+    return String(identity && (identity.target_profile_id || identity.targetProfileId || identity.targetId) || "").trim();
+  }
+
   function writePending(identity) {
+    if (window.SCZN3TargetProfiles && window.SCZN3TargetProfiles.writePending !== writePending) {
+      return window.SCZN3TargetProfiles.writePending(identity);
+    }
     if (!identity) return;
-    const targetId = String(identity.target_profile_id || identity.targetProfileId || identity.targetId || "").trim();
+    const targetId = targetProfileId(identity);
     if (!targetId) return;
     const encoded = JSON.stringify({ targetId });
     try {
@@ -86,6 +93,36 @@
     return `matrix.html?${params.toString()}`;
   }
 
+  // Item 2 keeps the governed profile registry owned by platform_contracts.js.
+  // Pending-profile navigation remains a compatibility helper here and never
+  // reconstructs display identity from publisher or product strings.
+  window.SCZN3TargetProfileNavigation = Object.freeze({
+    PENDING_TARGET_PROFILE_KEY,
+    targetProfileId,
+    writePending
+  });
+  if (!window.SCZN3TargetProfiles) {
+    window.SCZN3TargetProfiles = Object.freeze({
+      PENDING_TARGET_PROFILE_KEY,
+      targetProfileId,
+      writePending
+    });
+  }
+
+  window.SCZN3PartnerProducts = Object.freeze({
+    BAKER_M4: Object.freeze({
+      sku: BAKER_M4_SKU,
+      qrUrl: BAKER_M4_QR_URL,
+      identity: BAKER_M4_IDENTITY,
+      resolve,
+      matches: isM4,
+      preserve,
+      matrixUrl
+    })
+  });
+
+  // Backward-compatible facade. Platform profile state and Baker product
+  // resolution are owned by the separate namespaces above.
   window.SCZN3SmartTargetIdentity = Object.freeze({
     PENDING_TARGET_PROFILE_KEY,
     BAKER_M4_SKU,

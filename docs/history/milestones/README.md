@@ -17,6 +17,11 @@ The Milestone Index records major engineering and governance checkpoints. Milest
 | M-007 | Target Authority Phase 1 | 2026-07-14 | Episode 27 | Architecture Locked; Implementation Pending |
 | M-008 | Universal SEC Architecture | 2026-07-14 | Episode number Needs Review | Architecture Baseline |
 | M-009 | Composable Target Authority | 2026-07-14 | Episode 30 | Architecture Locked |
+| M-010 | Episode 56 Publisher Product Boundary | 2026-08-18 | Episode 56 | Architecture Boundary Locked; Playable Proof Validated |
+| M-011 | Behavioral Primitive Dependency Order | 2026-08-19 | Episode 56 | Founder Locked / Implemented |
+| M-012 | Independent Multi-Capability Resolution | 2026-08-19 | Episode 56 | Founder Locked / Implemented |
+| M-013 | Catalog-Scale Capability Inheritance | 2026-08-19 | Episode 56 | Founder Locked / Validated |
+| M-014 | Publisher OS 11-Publisher Knowledge Baseline | 2026-08-21 | Post-Episode 56 / Episode 57 working context | Founder Directed / Validated |
 
 ## Milestone records
 
@@ -237,6 +242,84 @@ The Milestone Index records major engineering and governance checkpoints. Milest
 **Related commits:** `Lock Episode 30 — Adopt Composable Target Authority` documentation checkpoint
 
 **Status:** Architecture Locked
+
+### M-010 — Episode 56 Publisher Product Boundary
+
+**Milestone number:** M-010
+
+**Title:** Episode 56 Publisher Product Boundary
+
+**Date:** 2026-08-18
+
+**Summary:** Episode 56 established that the publisher owns the existing product, SCZN3 owns its governed digital relationship to that product, shooter evidence establishes the session, backend authority governs the result, and the Universal SEC presents and preserves only supported claims.
+
+**Why it mattered:** A publisher's existing product can become a useful Smart Target without SCZN3 redesigning the product or inventing scoring, anatomy, tactics, qualification, penalties, shot requirements, completion rules, or publisher intent.
+
+**Architecture impact:** Separates publisher product authority, SCZN3 target/session authority, shooter evidence, governed results, and SEC presentation. It admits evidence-only experiences and explicit unavailable/not-applicable states as correct architecture.
+
+**Governance impact:** Product registration does not automatically grant execution or scoring authority. Target-specific proofs must preserve exact identity and refuse unsupported claims. The generalized Target Execution Contract may standardize later composition but cannot manufacture missing authority.
+
+**Related episodes:** [Episode 56 — GunFun 12-Target Scale Experiment](../episodes/episode56-gunfun-scale-experiment/README.md)
+
+**Primary record:** [Episode 56 Publisher Product Boundary](../episodes/episode56-gunfun-scale-experiment/PUBLISHER_PRODUCT_BOUNDARY_MILESTONE.md)
+
+**Status:** Architecture Boundary Locked; Playable Proof Validated
+
+### M-011 — Behavioral Primitive Dependency Order
+
+**Milestone number:** M-011
+
+**Title:** Behavioral Primitive Dependency Order
+
+**Date:** 2026-08-19
+
+**Summary:** SCZN3 locked the rule that shared behavioral primitives must be built before higher-order mission executors that depend on them. Cue/Drill established authority-neutral stage/event mechanics before Qualification and Decision consumed those mechanics through independent owners.
+
+**Architecture impact:** Prevents sequencing, timing policy, event association, durable state, and reconciliation from becoming hidden inside one mission-shaped executor.
+
+**Governance impact:** Reuse transfers mechanics, never authority. Every family retains its exact Profile, executor, result package, SEC family, and preservation validator.
+
+**Primary record:** [Episode 56 Capability Engine Principles](../episodes/episode56-target-capability-coverage/EPISODE56_CAPABILITY_ENGINE_PRINCIPLES.md)
+
+**Status:** Founder Locked / Implemented
+
+### M-012 — Independent Multi-Capability Resolution
+
+**Milestone number:** M-012
+
+**Title:** Independent Multi-Capability Resolution
+
+**Date:** 2026-08-19
+
+**Summary:** One registered publisher product may expose multiple governed capabilities, but `targetProfileId + missionFamily` resolves and executes one exact Target Execution Contract at a time.
+
+**Architecture impact:** Preserves independent capability composition without target-specific routing or executor crossover.
+
+**Governance impact:** Multi-capability does not mean multi-authority execution. Shared primitives cannot silently grant another family's claims.
+
+**Primary record:** [Episode 56 Capability Engine Principles](../episodes/episode56-target-capability-coverage/EPISODE56_CAPABILITY_ENGINE_PRINCIPLES.md)
+
+**Status:** Founder Locked / Implemented
+
+### M-013 — Catalog-Scale Capability Inheritance
+
+**Milestone number:** M-013
+
+**Title:** Catalog-Scale Capability Inheritance
+
+**Date:** 2026-08-19
+
+**Summary:** SCZN3 proved that publisher catalogs are compositions of governed product identity, registration, and reusable shooter behaviors—not catalogs of target-specific software implementations.
+
+**Architecture impact:** The locked Target Execution Contract resolver and reusable capability-family owners allow an authority-complete product to become executable through Profile/contract data with zero target-ID/SKU production routing. The previously missing catalog behavior collapsed into six reusable families: Cue/Drill, Qualification, Diagnostic, Decision, SEC Progression, and Collection/Hand.
+
+**Governance impact:** Authority gaps remain fail-closed and do not count as architecture failures. Website discovery and QR identity converge on the same governed relationship. Publisher OS remains a separately controlled future publication/QR mechanism and was not implemented by this milestone.
+
+**Scale evidence:** GunFun + Baker analysis examined 663 offerings; 69 offerings outside the previously demonstrated set collapsed into six families. All six reusable owners passed data-only inheritance fixtures with zero target-ID/SKU production edits. Combined active implementation time was 59m 31s. The frozen architecture also processed 12/12 blind Batch 2 products and 237/258 distinct GunFun catalog SKUs through exact reopen without target-specific production code.
+
+**Primary record:** [M-013 — Catalog-Scale Capability Inheritance](./M-013_CATALOG_SCALE_CAPABILITY_INHERITANCE.md)
+
+**Status:** Founder Locked / Validated
 
 ## Milestone entry template
 

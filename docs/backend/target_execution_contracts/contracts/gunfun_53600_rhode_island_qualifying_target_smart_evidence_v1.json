@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_53600_rhode_island_qualifying_target-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-GUNFUN-FULL-CATALOG-STRESS-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T11:14:31-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T11:14:31-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_53600_rhode_island_qualifying_target",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_53600_RHODE_ISLAND_QUALIFYING_TARGET_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-199",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-53600",
+      "name": "Rhode Island Qualifying Target",
+      "sku": "53600",
+      "dimensions": {
+        "width": 28,
+        "height": 28,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_53600_rhode_island_qualifying_target-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      },
+      "digest": "dae34eccfc5f6f01a92020f162e2e524aa140f2bff19699ffad0f311418ae367"
+    },
+    "registration": {
+      "id": "gunfun_53600_rhode_island_qualifying_target-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/53600.jpg",
+        "assetSha256": "5781bda28d6c31b0ae1367d9fc529fc3265f4abd82911377eb772d7108c798bd",
+        "assetAlt": "GunFun Rhode Island Qualifying Target, SKU 53600",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f9eb795e0c20d14b4e1c4562989a513d0e6cbcfee512e3dbb1ebee3f924e4935"
+    },
+    "scoring": {
+      "id": "gunfun_53600_rhode_island_qualifying_target-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      },
+      "digest": "ded80a12d02c3eddd46ac9363d6c169bd11b1e8545a4982f53b9d15885c92edf"
+    },
+    "mission": {
+      "id": "gunfun_53600_rhode_island_qualifying_target-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "unavailable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      },
+      "digest": "fe9217b40d5ceca0b638eb3a79723bd9b1f294aa7451832b8943119ae8d26bc0"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "unavailable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

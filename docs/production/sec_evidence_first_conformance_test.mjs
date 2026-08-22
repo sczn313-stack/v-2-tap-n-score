@@ -3,12 +3,12 @@ import { readFile } from "node:fs/promises";
 
 const zeroingStageOrder = ["target", "session", "sight-correction"];
 const sources = Object.fromEntries(await Promise.all(
-  ["sec_v1.js", "sec.html", "records.html", "sec_reopen_lifecycle.js", "m4_smart_target_sec.js", "universal_practice_sec.js", "sec_framework.js"]
+  ["sec_v1.js", "sec.html", "m4_zeroing_sec.js", "records.html", "sec_reopen_lifecycle.js", "m4_smart_target_sec.js", "universal_practice_sec.js", "sec_framework.js", "platform_actions.js"]
     .map(async file => [file, await readFile(file, "utf8")])
 ));
 const styles = await readFile("styles.css", "utf8");
 const m4Styles = await readFile("m4-sec.css", "utf8");
-const universalUi = await readFile("universal-ui.css", "utf8");
+const universalUi = await readFile("platform-ui.css", "utf8");
 const shooterWorkspace = await readFile("shoot.html", "utf8");
 const netlifyBuild = await readFile("production/build-netlify.mjs", "utf8");
 const serverBuild = await readFile("production/build-site.mjs", "utf8");
@@ -32,23 +32,21 @@ function assertOrdered(label, stages, values) {
   });
 }
 
-assertOrdered("M4 live SEC", zeroingStageOrder, positions(sources["sec.html"], zeroingStageOrder, stage => `data-sec-stage="${stage}"`));
-assert.match(sources["sec.html"], /<details class="sec-universal-stage sec-universal-stage-target sec-accordion-stage" data-sec-stage="target" open>/, "TARGET is the initially open accordion stage");
-for (const label of ["Session", "Sight Correction"]) assert.match(sources["sec.html"], new RegExp(`<h2>${label}<\\/h2>`), `M4 live SEC: missing ${label} disclosure pill`);
-assert.equal((sources["sec.html"].match(/sec-collapsible-stage/g) || []).length, 2, "M4 live SEC must expose two collapsible stages");
-assert.equal((sources["sec.html"].match(/class="[^"]*sec-accordion-stage/g) || []).length, 3, "M4 live SEC must bind three numbered stages to one accordion");
-assert.doesNotMatch(sources["sec.html"], /<details class="sec-universal-stage(?! sec-universal-stage-target)[^>]*\sopen(?:\s|>)/, "SESSION and SIGHT CORRECTION must be collapsed on initial load");
+assertOrdered("M4 live SEC", ["target", "session", "sightCorrection", "actions"], positions(sources["m4_zeroing_sec.js"], ["target", "session", "sightCorrection", "actions"], stage => `key: "${stage}"`));
+assert.match(sources["m4_zeroing_sec.js"], /global\.SCZN3SEC\.render\(\{/, "M4 consumes the shared SEC renderer");
+assert.match(sources["sec_v1.js"], /region\.key === "target" \? " open" : ""/, "TARGET is the initially open shared-shell region");
+assert.match(sources["sec_v1.js"], /region\.key === "target" \? "TARGET" : region\.key === "session" \? "SESSION" : "SIGHT CORRECTION"/, "shared-shell labels preserve the M4 disclosure grammar");
 assert.match(sources["sec_reopen_lifecycle.js"], /function bind\(root = document\)[\s\S]*?stage\.addEventListener\("toggle"[\s\S]*?if \(stage\.open\)[\s\S]*?if \(otherStage !== stage\) otherStage\.open = false;[\s\S]*?syncGroupState\(group, stages\)/, "the universal lifecycle owns one-open-stage behavior and publishes the active region");
 assert.match(sources["sec.html"], /SCZN3SECReopenLifecycle\?\.initialize/, "M4 SEC consumes the universal accordion lifecycle");
 assert.doesNotMatch(sources["sec.html"], /SEC_ACCORDION_STAGES/, "M4 SEC does not install a competing accordion system");
 assert.match(m4Styles, /\.sec-stage-pill\{[\s\S]*?min-height:var\(--sczn3-pill-height\)/, "SEC disclosure headers use the universal pill footprint");
 assertOrdered("M4 unavailable SEC", ["target", "session", "sightCorrection", "actions"], positions(sources["m4_smart_target_sec.js"], ["target", "session", "sightCorrection", "actions"], stage => `key: "${stage}"`));
 assertOrdered("Universal Practice SEC", ["target", "session", "actions"], positions(sources["universal_practice_sec.js"], ["target", "session", "actions"], stage => `key: "${stage}"`));
-for (const stage of zeroingStageOrder.slice(1)) assert.match(sources["records.html"], new RegExp(`universalSecStageHtml\\("${stage}"`), `Zeroing Vault: missing ${stage}`);
-assert.match(sources["records.html"], /function universalShooterActionBarHtml/, "every saved SEC uses the unnumbered Shooter Action Bar");
-assert.match(sources["records.html"], /function renderBaker100YardReferenceSec\(session, pkg\)/, "100 Yard uses the zeroing reference renderer");
-assert.match(sources["records.html"], /class="sec-experience m4-reference-sec-card zeroing-reference-sec-card"/, "100 Yard inherits the M4 SEC card shell");
-assert.match(sources["records.html"], /class="sec-target-story"/, "100 Yard inherits the M4 target-story layout");
+for (const stage of zeroingStageOrder.slice(1)) assert.match(sources["records.html"], new RegExp(`secFrameworkStageHtml\\("${stage}"`), `Zeroing Vault: missing ${stage}`);
+assert.match(sources["records.html"], /function secFrameworkActionBarHtml/, "every saved SEC uses the unnumbered Shooter Action Bar");
+assert.match(sources["records.html"], /const SCZN3Baker100YardSEC = \(\(\) => \{/, "100 Yard owns target-specific SEC mapping through its adapter namespace");
+assert.match(sources["records.html"], /return SCZN3SEC\.render\(\{/, "100 Yard inherits the SCZN3 SEC shell");
+assert.match(sources["records.html"], /articleClassName: "sec-experience m4-reference-sec-card zeroing-reference-sec-card"/, "100 Yard preserves its approved zeroing presentation classes inside the shared shell");
 assert.match(sources["records.html"], /class="sec-before-after" aria-label="Initial and confirmation group comparison"/, "100 Yard uses the fixed M4 before/after evidence component");
 assert.match(sources["records.html"], /Confirmation not recorded/, "100 Yard preserves the confirmation-target footprint when no group is saved");
 [
@@ -57,15 +55,16 @@ assert.match(sources["records.html"], /Confirmation not recorded/, "100 Yard pre
   "Sight Correction",
   "How to Confirm",
 ].forEach(heading => assert.match(sources["records.html"], new RegExp(heading), `100 Yard reference SEC: missing ${heading}`));
-assert.match(sources["records.html"], /function renderGssfM4ReferenceSec\(session, pkg\)/, "GSSF has an M4 reference renderer");
-assert.match(sources["records.html"], /class="sec-experience m4-reference-sec-card gssf-m4-reference-sec-card"/, "GSSF inherits the same M4 SEC card shell");
+assert.match(sources["records.html"], /const SCZN3GSSFSEC = \(\(\) => \{/, "GSSF owns target-specific SEC mapping through its adapter namespace");
+assert.match(sources["records.html"], /articleClassName: "sec-experience m4-reference-sec-card gssf-m4-reference-sec-card"/, "GSSF preserves its approved presentation classes inside the shared SEC shell");
+assert.match(sources["records.html"], /SCZN3GSSFSEC\.render\(session\)/, "GSSF historical SECs consume the registered adapter renderer");
 assert.match(sources["records.html"], /dispatch\.adapter === SCZN3SECDispatch\.ADAPTERS\.GSSF && isGssfAuthorityPackage\(pkg\)/, "every governed GSSF result uses the identity-selected universal SEC without a review-only query");
 [
   "Target and Scoring Analysis",
   "Session Details",
   "Analysis",
 ].forEach(heading => assert.match(sources["records.html"], new RegExp(heading), `GSSF reference SEC: missing ${heading}`));
-assert.doesNotMatch(sources["records.html"].slice(sources["records.html"].indexOf("function renderGssfM4ReferenceSec"), sources["records.html"].indexOf("function renderHistory")), /universalSecStageHtml\("sight-correction"/, "GSSF must not receive a sight-correction stage");
+assert.doesNotMatch(sources["records.html"].slice(sources["records.html"].indexOf("const SCZN3GSSFSEC"), sources["records.html"].indexOf("function renderHistory")), /key: "sightCorrection"/, "GSSF must not receive a sight-correction region");
 assert.match(sources["records.html"], /<span>Initial<\/span><strong>Confirmed Impacts<\/strong>/, "GSSF exposes the initial-target caption");
 assert.match(sources["records.html"], /<span>Analysis<\/span><strong>Shot Distribution<\/strong>/, "GSSF uses the approved scoring-analysis exception in the second evidence panel");
 assert.match(sources["records.html"], /Down Zero[\s\S]*?\+1[\s\S]*?\+3[\s\S]*?Miss \/ Other/, "GSSF analysis preserves the governed scoring buckets");
@@ -76,7 +75,7 @@ assert.doesNotMatch(sources["records.html"], /<span class="sec-save-status">Save
 assert.doesNotMatch(sources["records.html"], /Backend shot classifications|Diagnostic validation evidence|Marker coordinate validation/, "preserved GSSF SECs must not expose developer diagnostics");
 assert.match(sources["records.html"], /class="vault-record-summary[^"]*"[\s\S]*?OPEN SEC →/, "Vault browse cards must expose one full-SEC action");
 assert.match(m4Styles, /\.sec-before-after figcaption\{[^}]*min-height:42px/, "universal target captions share one footprint");
-assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-stage-evidence,\.records-page \.m4-reference-sec-card \.sec-universal-stage-target\{min-height:620px\}/, "reference SEC target stages share one desktop footprint");
+assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-framework-stage-evidence,\.records-page \.m4-reference-sec-card \.sec-framework-stage-target\{min-height:620px\}/, "reference SEC target stages share one desktop footprint");
 
 [
   "--sczn3-control-height:42px",
@@ -88,8 +87,8 @@ assert.match(m4Styles, /\.records-page \.m4-reference-sec-card \.sec-universal-s
   "--sczn3-pill-radius:999px",
 ].forEach(token => assert.ok(styles.includes(token), `universal UI standard: missing ${token}`));
 assert.match(universalUi, /Founder UI Standard — one control language across every mission and preserved SEC/, "universal button and pill standard must be declared once");
-assert.match(netlifyBuild, /"universal-ui\.css"/, "the Netlify artifact must include the governing UI standard");
-assert.match(serverBuild, /"universal-ui\.css"/, "the server artifact must include the governing UI standard");
+assert.match(netlifyBuild, /"platform-ui\.css"/, "the Netlify artifact must include the governing UI standard");
+assert.match(serverBuild, /"platform-ui\.css"/, "the server artifact must include the governing UI standard");
 assert.match(universalUi, /\.records-page \.sec-v1-record-actions button,[\s\S]*?height:var\(--sczn3-control-height\)/, "Vault actions inherit the universal button footprint");
 assert.match(universalUi, /\.workflow-control-row \.button\.next-step,[\s\S]*?background:var\(--sczn3-control-active-background\)/, "active workflow actions inherit the universal gold state");
 assert.match(universalUi, /\.status-pill,[\s\S]*?\.vendor-pill,[\s\S]*?height:var\(--sczn3-pill-height\)/, "SEC pills inherit the universal pill footprint");
@@ -98,24 +97,25 @@ assert.match(universalUi, /\.proof-pill,[\s\S]*?\.ops-live-pill[\s\S]*?height:va
 assert.match(universalUi, /\.ecosystem-family-actions \.button,[\s\S]*?\.matrix-page \.weapon-top-row \.button,[\s\S]*?height:var\(--sczn3-control-height\)/, "landing and equipment actions inherit the universal button footprint");
 assert.match(universalUi, /\.target-page \.workflow-control-row > \.button\.next-step,[\s\S]*?background:var\(--sczn3-control-active-background\)/, "the Target Workspace height exception must retain the universal active colors");
 for (const page of ["analytics.html", "backend-authority-proof.html", "buy-targets.html", "index.html", "matrix.html", "ops.html", "records.html", "sec.html", "shoot.html", "survey.html"]) {
-  assert.match(await readFile(page, "utf8"), /<link rel="stylesheet" href="universal-ui\.css\?v=founder-ui-standard-1" \/>/, `${page} must load the governing UI standard`);
+  assert.match(await readFile(page, "utf8"), /<link rel="stylesheet" href="platform-ui\.css\?v=founder-ui-standard-1" \/>/, `${page} must load the governing UI standard`);
 }
 for (const page of ["backend-authority-proof.html", "ops.html"]) {
   const source = await readFile(page, "utf8");
-  assert.ok(source.lastIndexOf("universal-ui.css") > source.lastIndexOf("</style>"), `${page} must load the governing UI standard after page-local CSS`);
+  assert.ok(source.lastIndexOf("platform-ui.css") > source.lastIndexOf("</style>"), `${page} must load the governing UI standard after page-local CSS`);
 }
 
 assert.match(sources["records.html"], /data-sec-export/, "preserved SECs expose Export where supported");
 assert.match(sources["records.html"], /data-sec-share/, "preserved SECs expose Share where supported");
 assert.match(
-  sources["records.html"],
-  /button\.hidden = !shareSupported;[\s\S]*?button\.disabled = !shareSupported;/,
-  "Share is exposed only when the browser supports the native share capability",
+  sources["platform_actions.js"],
+  /trigger\.hidden = !supported;[\s\S]*?trigger\.disabled = !supported;/,
+  "the shared action owner governs capability presentation",
 );
+assert.match(sources["records.html"], /SCZN3Actions\.syncAvailability\(historyList,[\s\S]*?typeof navigator\.share === "function"/, "preserved SEC file sharing supplies its native capability requirement to the shared owner");
 assert.match(
-  sources["records.html"],
-  /delivery === "shared"[\s\S]*?delivery === "downloaded"[\s\S]*?"Share Unavailable"/,
-  "SEC delivery status must report the real browser outcome",
+  sources["platform_actions.js"],
+  /result\.value === "shared"[\s\S]*?result\.value === "downloaded"[\s\S]*?"Share Unavailable"/,
+  "the shared action owner reports the real SEC delivery outcome",
 );
 assert.match(
   sources["records.html"],
@@ -131,21 +131,20 @@ assert.match(
   "the Ballistic Vault must collapse to one readable column at 390px",
 );
 
-const m4EvidenceEnd = sources["sec.html"].indexOf('data-sec-stage="session"');
-assert.ok(sources["sec.html"].indexOf('id="beforeEvidenceImage"') < m4EvidenceEnd);
-assert.match(sources["sec.html"], /<summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong><\/summary>/, "the TARGET header contains only its label and session number");
-assert.doesNotMatch(sources["sec.html"].slice(0, m4EvidenceEnd), /secSessionDistance|secSessionFirearm|secSessionEquipment|secSessionAmmo|secSessionDate|secSessionTime|secSessionShooter|evidenceDataStatus/, "TARGET contains no session metadata or status text");
-const m4SessionEnd = sources["sec.html"].indexOf('data-sec-stage="sight-correction"');
+const m4EvidenceEnd = sources["m4_zeroing_sec.js"].indexOf("function sessionContent");
+assert.ok(sources["m4_zeroing_sec.js"].indexOf('id="beforeEvidenceImage"') < m4EvidenceEnd);
+assert.doesNotMatch(sources["m4_zeroing_sec.js"].slice(0, m4EvidenceEnd), /secSessionDistance|secSessionFirearm|secSessionEquipment|secSessionAmmo|secSessionDate|secSessionTime|secSessionShooter|evidenceDataStatus/, "TARGET contains no session metadata or status text");
+const m4SessionEnd = sources["m4_zeroing_sec.js"].indexOf("function correctionContent");
 for (const id of ["secSessionDistance", "secSessionFirearm", "secSessionEquipment", "secSessionAmmo", "secSessionDate", "secSessionTime", "secSessionShooter"]) {
-  const position = sources["sec.html"].indexOf(`id="${id}"`);
+  const position = sources["m4_zeroing_sec.js"].indexOf(`id: "${id}"`);
   assert.ok(position > m4EvidenceEnd && position < m4SessionEnd, `SESSION must own ${id}`);
 }
 assert.doesNotMatch(sources["sec.html"], /id="secSessionTarget"/, "SESSION must not repeat target identity");
-assert.match(sources["sec.html"], /id="secSessionScore">Score --<\/strong>/, "SESSION score remains visible in the collapsed pill");
-assert.match(sources["sec.html"], /<h3[^>]*>Session Details<\/h3>[\s\S]*?<summary>Analysis<\/summary>/, "SESSION owns details and shooter-helpful analysis");
+assert.match(sources["sec_v1.js"], /class="sec-session-score"/, "SESSION score remains visible in the collapsed pill");
+assert.match(sources["m4_zeroing_sec.js"], /SCZN3SECComponents\.SessionDetails\(\{[\s\S]*?afterHtml: `<details[^`]*?<summary>Analysis<\/summary>/, "SESSION owns shared details and shooter-helpful analysis");
 assert.doesNotMatch(sources["sec.html"], /POIB X|POIB Y/, "SESSION analysis must not expose coordinate components");
 assert.doesNotMatch(sources["sec.html"], /<h2>(?:Group Analysis|Measurements|Zero Correction|Mechanical Adjustment|Confirmation)<\/h2>/, "legacy M4 accordion sections are removed");
-assert.match(sources["sec.html"], /class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar"/, "actions remain unnumbered below the accordion");
+assert.match(sources["sec_v1.js"], /sec-story-command-bar sec-shooter-action-bar/, "actions remain unnumbered below the accordion");
 assert.doesNotMatch(sources["sec.html"], /id="secSessionConfiguration"|Preserved Session Setup|Preserved Shooting Setup/, "the legacy metadata strip is removed");
 assert.doesNotMatch(sources["sec.html"], /Authority version|Evidence hash|Confirmation authority|backend authority/, "the preserved M4 SEC must not expose internal authority terminology");
 assert.doesNotMatch(sources["sec.html"], /Engineering Traceability/, "the shooter-facing SEC must not expose engineering terminology");

@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_82080_shooter_tutor-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-B2-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T10:33:13-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T10:33:13-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_82080_shooter_tutor",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_82080_SHOOTER_TUTOR_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_BATCH2_AUTHORITY_AUDIT_V1:E56-B2-T03",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-82080",
+      "name": "Shooter Tutor",
+      "sku": "82080",
+      "dimensions": {
+        "width": 14,
+        "height": 20,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+    "id": "gunfun_82080_shooter_tutor-geometry",
+    "version": "1",
+    "status": "approved",
+    "digest": "92c4f69acc62541e52d4ca49219ba69c722edf5bc159f010f2eec7354490f4fb",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      }
+    },
+    "registration": {
+    "id": "gunfun_82080_shooter_tutor-registration",
+    "version": "1",
+    "status": "approved",
+    "digest": "592c7bff568656efeabc75ff3773eca264077853eca3813662cf2380be8021de",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/82080.jpg",
+        "assetSha256": "b3ae05095c65f46e556a5c0841f9707ed185dcdc0b61541eaa8e791f845a8e8c",
+        "assetAlt": "GunFun Shooter Tutor, SKU 82080",
+        "coordinateConvention": "normalized_source_image_top_left"
+      }
+    },
+    "scoring": {
+    "id": "gunfun_82080_shooter_tutor-scoring",
+    "version": "1",
+    "status": "approved",
+    "digest": "bbd44099a19558c37c5963b5aa2edd921f5454aa35bc06b0293a60f5ed8e09d5",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      }
+    },
+    "mission": {
+    "id": "gunfun_82080_shooter_tutor-mission",
+    "version": "1",
+    "status": "approved",
+    "digest": "f4511f83f35dcb4842faea6a3a9b5457a82582cdc041639806fb60640fe80006",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      }
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

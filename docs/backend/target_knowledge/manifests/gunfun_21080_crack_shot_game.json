@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "gunfun_21080_crack_shot_game",
+    "targetName": "Crack Shot Game",
+    "targetFamily": "GunFun Batch 2",
+    "targetType": "two-player-numeric-ring-game",
+    "discipline": "target shooting",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "21080",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Crack Shot Game",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "resultPackageType": "smartEvidenceResult",
+    "guidanceMode": "evidence_only"
+  },
+  "uteRouting": {
+    "targetId": "gunfun_21080_crack_shot_game",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "21080",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Crack Shot Game",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "geometryAuthorityStatus": "image_plane_evidence_only",
+    "scoringAuthorityStatus": "not_applicable",
+    "resultPackageType": "smartEvidenceResult",
+    "authorityStatus": "supported_by_exact_target_execution_contract",
+    "rulesSource": "Publisher game and printed values are preserved; frozen families cannot execute its complete quota-and-score game.",
+    "geometryStatus": "image_plane_evidence_only",
+    "instructionStatus": "unavailable",
+    "scoringStatus": "not_applicable_for_approved_evidence_contract",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "registered-photo-plus-shooter-declared-image-plane-observations"
+  },
+  "executionComposition": {
+    "targetProfileRef": {
+      "id": "gunfun_21080_crack_shot_game",
+      "version": "1"
+    },
+    "geometryComponentRef": {
+      "id": "gunfun_21080_crack_shot_game-geometry",
+      "version": "1"
+    },
+    "registrationComponentRef": {
+      "id": "gunfun_21080_crack_shot_game-registration",
+      "version": "1"
+    },
+    "scoringComponentRef": {
+      "id": "gunfun_21080_crack_shot_game-scoring",
+      "version": "1"
+    },
+    "missionComponentRef": {
+      "id": "gunfun_21080_crack_shot_game-mission",
+      "version": "1"
+    },
+    "executionContractRef": {
+      "id": "tec-gunfun_21080_crack_shot_game-smart-evidence-v1",
+      "version": "1"
+    }
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "publisher_target_profile_plus_founder_approved_evidence_contract",
+    "geometryAuthorityLevel": "image-plane-evidence-only",
+    "instructionAuthorityLevel": "unavailable",
+    "sourceConfidence": "publisher-product-and-artwork-confirmed"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "Crack Shot Game",
+      "2 Player Game - 5 Shots Per Player Per Target",
+      "25",
+      "50",
+      "75",
+      "100"
+    ],
+    "officialRules": [
+      "two-player game",
+      "5 shots per player per target"
+    ],
+    "courseOfFire": [
+      "two-player game",
+      "5 shots per player per target"
+    ],
+    "intendedUse": "Publisher game and printed values are preserved; frozen families cannot execute its complete quota-and-score game.",
+    "shotCount": "5 per player per target",
+    "distance": null,
+    "passFailOrScoringRules": [
+      "Printed numeric or mission features exist, but complete executable scoring authority is unavailable under the frozen contract."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "targetWidthInches": 23,
+      "targetHeightInches": 35
+    },
+    "gridSpacing": null,
+    "bullCount": null,
+    "zoneCount": null,
+    "aimPointRules": [
+      "Optional aim is shooter-declared session evidence only."
+    ],
+    "scoringZones": [],
+    "ringGeometry": "unavailable_for_canonical_classification"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": "one_or_more_visible_observations",
+    "requiredDistance": false,
+    "requiredSetupFields": [
+      "admitted evidence image"
+    ],
+    "minimumConfidenceRequirements": [
+      "backend-verified image hash",
+      "normalized observations in image bounds",
+      "reconciled observation counts"
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "frozen challenge executor lacks fixed shot quotas and numeric sum winner",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "outside-ring score and boundary treatment",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "validated four-bull UGO",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "publisher_product_page",
+      "source": "https://gunfun.com/shop/crack-shot-game-21080/",
+      "authorityType": "product_identity_sku_dimensions_categories_and_published_description",
+      "notes": "Current GunFun product page inspected after the Batch 2 cohort was frozen."
+    },
+    {
+      "sourceType": "publisher_product_representation",
+      "source": "authority-evidence/gunfun/episode56/batch2/publisher-representations/21080.jpg",
+      "authorityType": "visible_artwork_and_printed_text",
+      "notes": "SHA-256 24fdfafa8d9f4f00ac1d2e42629c6a22c4cc971713b004065ddcedc693b7af13; admitted as evidence-capture asset, not as canonical scoring geometry."
+    }
+  ]
+}

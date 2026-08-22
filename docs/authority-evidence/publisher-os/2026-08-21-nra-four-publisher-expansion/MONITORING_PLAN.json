@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "structure_only_no_monitoring_service_implemented",
+  "baselineObservationDate": "2026-08-21",
+  "publishers": ["american-target", "national-target", "speedwell", "us-target"],
+  "governingRule": "Revisit preserved identities and sources; do not rediscover or silently overwrite history.",
+  "cadence": {
+    "catalog_price_availability_package": "monthly_or_before_publisher_meeting",
+    "nra_directory_and_manufacturer_sheets": "monthly",
+    "organization_rules_manuals_and_target_specs": "on_new_version_signal_or_quarterly",
+    "ownership_manufacturing_distribution": "quarterly_or_on_signal",
+    "retailer_dealer_market_presence": "quarterly",
+    "artwork_and_recognition_assets": "on_catalog_image_or_product_identity_change"
+  },
+  "signals": [
+    {"name": "product_added_or_removed", "keys": ["publisher", "sourceProductId", "sku", "productUrl"], "rule": "Absence from one listing is not discontinuation."},
+    {"name": "sku_designation_or_package_changed", "keys": ["publisher", "sourceProductId"], "preserve": ["oldValue", "newValue", "source", "observedAt"]},
+    {"name": "price_or_availability_changed", "keys": ["sku", "publisherDesignation", "packageQuantity"], "preserve": ["oldValue", "newValue", "currency", "observedAt"]},
+    {"name": "artwork_or_label_changed", "keys": ["publisher", "sourceProductId", "imageDigest"], "preserve": ["oldImage", "newImage", "visibleDesignations", "recognitionImpact"]},
+    {"name": "nra_licensee_or_spec_sheet_changed", "keys": ["publisher", "nraSpecification"], "rule": "Preserve current and historical status separately; do not infer renewal."},
+    {"name": "organization_evidence_changed", "keys": ["publisher", "organization", "claimType"], "rule": "Labeling is not endorsement and product availability is not course authority."},
+    {"name": "rules_profile_authority_changed", "keys": ["organization", "document", "version"], "preserve": ["digest", "effectiveDate", "affectedSpecifications", "capabilityImpact"]},
+    {"name": "manufacturing_or_ownership_changed", "keys": ["publisher", "claimScope"], "preserve": ["priorEvidence", "newEvidence", "confidence"]},
+    {"name": "recognition_trait_changed", "keys": ["publisher", "sourceProductId"], "preserve": ["dimensions", "visibleIdentifiers", "imageRefs", "artworkVersion"]}
+  ],
+  "seededSignals": [
+    {"publisherId": "american-target", "signal": "public_sku_gap", "disposition": "monitor for exposed publisher model/SKU separate from designation"},
+    {"publisherId": "national-target", "signal": "variable_product_detail_gap", "disposition": "monitor exact option-level SKU/package exposure"},
+    {"publisherId": "speedwell", "signal": "legacy_commerce_platform", "disposition": "monitor sitemap and page continuity; preserve page snapshots"},
+    {"publisherId": "us-target", "signal": "public_sku_gap", "disposition": "monitor store/API for exact publisher SKU/model"},
+    {"publisherId": "champion-targets", "signal": "current_nra_license_status_unresolved", "disposition": "monitor NRA directory and first-party Champion evidence without assuming renewal"}
+  ]
+}

@@ -7,15 +7,17 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
-<link rel="stylesheet" href="sec-universal.css?v=universal-sec-final-gap-1" />
-<link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="sec-framework.css?v=episode55-inheritance-audit-1" />
+<link rel="stylesheet" href="platform-ui.css?v=founder-ui-standard-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
+<link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
 <script src="navigation.js?v=universal-smart-targets-nav-1" defer></script>
 <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
+<script src="platform_actions.js?v=episode54-item7-1"></script>
 </head>
 <body>
 <main class="shell app-shell sec-shell">
-  <header class="package-header sec-document-header universal-app-header" aria-label="Tap-N-Score header">
+  <header class="package-header sec-document-header app-header" aria-label="Tap-N-Score header">
     <div class="package-brand-lockup">
       <img class="package-emblem" src="assets/crosshair-cross-emblem.png" alt="" />
       <div class="package-brand-copy">
@@ -32,10 +34,11 @@
     <a href="shoot.html">Target</a>
     <a href="records.html">History</a>
   </nav>
-  <div class="sec-publisher-bar" aria-label="Baker target publisher">
+  <div class="sec-publisher-bar" aria-label="Target publisher" data-sczn3-partnership-surface="m4_25m_zero">
     <span>Buy more targets like this</span>
-    <a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer">BakerTargets.com</a>
+    <a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer" data-sczn3-publisher-link>BakerTargets.com</a>
   </div>
+  <div class="sec-mission-bar sec-target-profile-identity" data-sczn3-target-profile-identity="m4_25m_zero">M4 25m Zero • 25 Meter Zero</div>
   <a class="sec-vault-back" id="secVaultBack" href="records.html" data-preserve-active-session hidden>← Back to Ballistic Vault</a>
 
   <div id="missingState" class="panel is-hidden">
@@ -44,64 +47,7 @@
     <a class="button primary" href="shoot.html">Return to Target</a>
   </div>
 
-  <article id="secCard" class="sec-experience is-hidden">
-    <section class="sec-target-story" aria-label="Initial and confirmation target story">
-      <details class="sec-universal-stage sec-universal-stage-target sec-accordion-stage" data-sec-stage="target" open>
-        <summary class="sec-universal-stage-heading sec-evidence-toggle"><span>1 · TARGET</span><strong id="secSessionIdentifier"></strong></summary>
-        <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
-          <figure>
-            <figcaption><strong>BEFORE</strong></figcaption>
-            <div class="sec-comparison-target">
-              <div class="sec-evidence-plane" id="beforeEvidencePlane">
-                <img id="beforeEvidenceImage" alt="Initial group target evidence" />
-                <div class="marker-layer" id="beforeEvidenceMarkers"></div>
-              </div>
-            </div>
-          </figure>
-          <figure id="confirmationWorkspace">
-            <figcaption><strong>AFTER</strong></figcaption>
-            <div class="sec-comparison-target"><div class="sec-evidence-plane" id="confirmationEvidencePlane"><img id="confirmationImage" alt="Confirmation-group target evidence" /><div class="marker-layer" id="confirmationMarkers"></div></div><span class="sec-comparison-pending is-hidden" id="confirmationPending" hidden></span></div>
-          </figure>
-        </div>
-      </details>
-
-      <details class="sec-universal-stage sec-universal-stage-session sec-collapsible-stage sec-accordion-stage" data-sec-stage="session">
-        <summary class="sec-universal-stage-heading sec-stage-pill sec-session-pill"><span>2</span><h2>Session</h2><strong class="sec-session-score" id="secSessionScore">Score --</strong><b aria-hidden="true"></b></summary>
-        <div class="sec-stage-body">
-          <section class="sec-session-section" aria-labelledby="secSessionDetailsHeading">
-            <h3 id="secSessionDetailsHeading">Session Details</h3>
-            <div class="sec-session-record-fields">
-              <div><span>Firearm</span><strong id="secSessionFirearm"></strong></div>
-              <div><span>Equipment</span><strong id="secSessionEquipment"></strong></div>
-              <div><span>Ammunition</span><strong id="secSessionAmmo"></strong></div>
-              <div><span>Distance</span><strong id="secSessionDistance"></strong></div>
-              <div><span>Date</span><strong id="secSessionDate"></strong></div>
-              <div><span>Time</span><strong id="secSessionTime"></strong></div>
-              <div><span>Shooter</span><strong id="secSessionShooter"></strong></div>
-            </div>
-          </section>
-          <details class="correction-context-drawer sec-correction-context sec-measurement-session-details">
-            <summary>Analysis</summary>
-            <div class="correction-context-panel sec-session-record"><div class="sec-metric-grid" id="summaryMeasurementGrid"></div></div>
-          </details>
-        </div>
-      </details>
-
-      <details class="sec-universal-stage sec-universal-stage-correction sec-collapsible-stage sec-accordion-stage" data-sec-stage="sight-correction">
-        <summary class="sec-universal-stage-heading sec-stage-pill"><span>3</span><h2>Sight Correction</h2><b aria-hidden="true"></b></summary>
-        <div class="sec-stage-body">
-          <div id="summarySightCorrection"></div>
-          <section class="sec-confirmation-summary" aria-labelledby="secConfirmationHeading"><h3 id="secConfirmationHeading">How to Confirm</h3><div class="sec-validation-calculation" id="summaryValidationOutcome"></div></section>
-        </div>
-      </details>
-      <div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar" data-processing-host>
-        <div class="sec-preservation-actions"><button class="button primary" type="button" id="saveSEC">Save SEC</button><button class="button" type="button" id="shareSEC">Share</button><button class="button" type="button" id="exportSEC">Export / Print PDF</button><button class="button" type="button" id="addNote">Add Note</button><a class="button" href="records.html">View History</a></div>
-        <div class="sec-note-editor is-hidden" id="noteEditor"><label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label><button class="button" type="button" id="saveNote">Save Note</button></div>
-        <div class="sec-preserved-history-row is-hidden"></div><span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>
-      </div>
-    </section>
-
-  </article>
+  <div id="secCardHost"></div>
   <footer class="package-footer" aria-label="SCZN3 footer">
     <strong>⊙ SCZN3</strong>
     <span>FAITH • ORDER • PRECISION</span>
@@ -111,7 +57,11 @@
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
-<script src="sec_framework.js?v=sec-impact-count-identifiers-1"></script>
+<script src="platform_contracts.js?v=episode54-item2-1"></script>
+<script src="sec_v1.js?v=episode54-item4d-1"></script>
+<script src="sec_adapter_model.js?v=episode54-item4a-1"></script>
+<script src="sec_framework.js?v=episode55-lowest-score-1"></script>
+<script src="m4_zeroing_sec.js?v=episode54-item4d-1"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
@@ -219,7 +169,9 @@ const session = (isCompletedZeroingSession(requestedPersistedSession) ? requeste
       ? null
       : isCompletedZeroingSession(persistedSession) ? persistedSession : null);
 const authority = session && (session.m4AuthorityPackage || session.backendAuthorityPackage);
-const card = document.getElementById("secCard");
+const cardHost = document.getElementById("secCardHost");
+if (session && window.SCZN3M4SEC) cardHost.innerHTML = SCZN3M4SEC.render(session);
+const card = cardHost.querySelector('[data-sec-shell="universal-v1"]');
 document.body.dataset.vaultThumbnail = vaultThumbnailMode ? "true" : "false";
 document.body.dataset.secMode = historicalSnapshotMode ? "historical" : "current";
 const secVaultBack = document.getElementById("secVaultBack");
@@ -230,7 +182,8 @@ if (historicalSnapshotMode && session && secVaultBack) {
 let confirmationEvidence = session && session.confirmationEvidenceImage || null;
 let confirmationImpacts = session && Array.isArray(session.confirmationImpactPoints) ? [...session.confirmationImpactPoints] : [];
 let confirmationAuthority = session && session.confirmationAuthorityPackage || null;
-document.querySelector(".sec-preservation-actions").innerHTML = SCZN3SEC.PreservationCard({
+document.querySelector(".sec-preservation-actions")?.replaceChildren();
+if (document.querySelector(".sec-preservation-actions")) document.querySelector(".sec-preservation-actions").innerHTML = SCZN3SECComponents.PreservationCard({
   save: !historicalSnapshotMode,
   validation: false,
   share: true,
@@ -238,14 +191,14 @@ document.querySelector(".sec-preservation-actions").innerHTML = SCZN3SEC.Preserv
   note: !historicalSnapshotMode,
   history: true
 });
-document.querySelector(".sec-preserved-history-row").append(document.getElementById("viewHistory"));
+document.querySelector(".sec-preserved-history-row")?.append(document.getElementById("viewHistory"));
 
 function esc(value) {
-  return SCZN3SEC.escapeHtml(value);
+  return SCZN3SECComponents.escapeHtml(value);
 }
 
 function marker(point, className, label) {
-  return SCZN3SEC.marker(point, className, label);
+  return SCZN3SECComponents.marker(point, className, label);
 }
 
 function authoritativeClickItems(authorityPackage) {
@@ -373,7 +326,7 @@ function renderSEC() {
     document.getElementById("missingState").classList.remove("is-hidden");
     return;
   }
-  const calculationIntegrity = SCZN3SEC.verifyCalculationChain(authority);
+  const calculationIntegrity = SCZN3SECComponents.verifyCalculationChain(authority);
   if (
     authority.status.hasMechanicalRecommendation === true
     && calculationIntegrity.status !== "reconciled"
@@ -386,6 +339,7 @@ function renderSEC() {
     missingState.classList.remove("is-hidden");
     return;
   }
+  if (!card) return;
   card.classList.remove("is-hidden");
   card.dataset.sessionNumberAuthority = session.sessionNumberAuthority || "device-local-temporary";
   const setup = session.matrixSnapshot || {};
@@ -394,17 +348,16 @@ function renderSEC() {
   const angular = authority.angular;
   const score = authority.score || {};
   const group = authority.group || {};
-  const evidenceCard = SCZN3SEC.EvidenceCard(authority);
+  const evidenceCard = SCZN3SECComponents.EvidenceCard(authority);
   const savedContext = session.correctionContextSnapshot || {};
 
-  document.getElementById("secSessionIdentifier").textContent = session.sessionLabel || "Session";
   const initialEvidence = session.targetEvidenceImage || {};
   document.getElementById("beforeEvidenceImage").src =
     initialEvidence.dataUrl || "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg";
   setEvidencePlaneAspect(document.getElementById("beforeEvidencePlane"), initialEvidence, 2550, 3300);
-  const measurementHtml = SCZN3SEC.ShooterAnalysisCard(authority);
+  const measurementHtml = SCZN3SECComponents.ShooterAnalysisCard(authority);
   document.getElementById("summaryMeasurementGrid").innerHTML = measurementHtml;
-  document.getElementById("summarySightCorrection").innerHTML = SCZN3SEC.SightCorrectionCard(authority);
+  document.getElementById("summarySightCorrection").innerHTML = SCZN3SECComponents.SightCorrectionCard(authority);
   const distanceValue = savedContext.distanceValue || session.targetDistanceValue || 25;
   const distanceLabel = savedContext.distanceUnit === "YDS" ? "yards" : "meters";
   const sessionTimestamp = new Date(session.preservedAt || session.savedAt || session.timestamp || session.createdAt || "");
@@ -420,7 +373,6 @@ function renderSEC() {
     || setup.ammoCaliber
     || setup.caliber
     || "Not recorded";
-  document.getElementById("secSessionScore").textContent = `Score ${score.value === null || score.value === undefined ? "Unavailable" : score.value}`;
   document.getElementById("secSessionDistance").textContent = `${distanceValue} ${distanceLabel}`;
   document.getElementById("secSessionFirearm").textContent = firearmIdentity;
   document.getElementById("secSessionEquipment").textContent = equipmentIdentity;
@@ -463,7 +415,7 @@ function renderConfirmation() {
       "<strong>Confirmation group pending</strong><span>Fire and record the confirmation group to validate the correction.</span>";
     return;
   }
-  const validationCard = SCZN3SEC.ValidationCard(confirmationAuthority, authority);
+  const validationCard = SCZN3SECComponents.ValidationCard(confirmationAuthority, authority);
   document.getElementById("summaryValidationOutcome").innerHTML =
     `<strong>${esc(validationCard.outcome)}</strong><span>${esc(validationCard.detail)}</span>`;
 }
@@ -475,47 +427,38 @@ function setEvidencePlaneAspect(plane, evidence, fallbackWidth, fallbackHeight) 
   plane.style.setProperty("--evidence-aspect", `${width} / ${height}`);
 }
 
-document.getElementById("addNote")?.addEventListener("click", () => {
-  document.getElementById("noteEditor").classList.toggle("is-hidden");
-});
-
-document.getElementById("saveNote")?.addEventListener("click", () => {
-  SCZN3M4.updateActiveSession({ secNote: document.getElementById("secNote").value.trim() });
-  document.getElementById("secActionStatus").textContent = "Note saved to the active session.";
-});
-
-document.getElementById("saveSEC")?.addEventListener("click", () => {
-  const button = document.getElementById("saveSEC");
-  const processingId = window.SCZN3Processing?.begin({
+if (card) SCZN3Actions.bind(card, {
+  save: {
     id: "save-sec",
     message: "Preserving your Shooter Experience Card…",
-    trigger: button,
-    scope: button?.closest("[data-processing-host]")
-  }) || "";
-  const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
-  if (saved) {
-    if (processingId) SCZN3Processing.succeed(processingId);
-    renderPreservationState(saved.preservedAt);
-    document.getElementById("secActionStatus").textContent = "";
-  } else {
-    document.getElementById("secActionStatus").textContent = "SEC could not be preserved.";
-    if (processingId) SCZN3Processing.fail(processingId);
+    run: () => {
+      const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
+      document.getElementById("secActionStatus").textContent = saved ? "" : "SEC could not be preserved.";
+      return saved || false;
+    },
+    complete: result => {
+      if (result.ok && result.value) renderPreservationState(result.value.preservedAt);
+    }
+  },
+  share: {
+    message: "Preparing your Shooter Experience Card…",
+    run: async () => {
+      const outcome = await SCZN3Actions.share({ title: "M4 Shooter Experience Card", text: session.sessionLabel, url: location.href });
+      if (outcome === "copied") document.getElementById("secActionStatus").textContent = "SEC link copied.";
+      return outcome !== "unavailable";
+    }
+  },
+  "note-save": {
+    message: "Saving your note…",
+    run: () => {
+      const updated = SCZN3M4.updateActiveSession({ secNote: document.getElementById("secNote").value.trim() });
+      document.getElementById("secActionStatus").textContent = updated ? "Note saved to the active session." : "Note could not be saved.";
+      return Boolean(updated);
+    }
   }
-});
+}, { noteEditorSelector: "[data-sczn3-note-editor]" });
 
-document.getElementById("shareSEC").addEventListener("click", async () => {
-  const data = { title: "M4 Shooter Experience Card", text: session.sessionLabel, url: location.href };
-  if (navigator.share) {
-    await navigator.share(data);
-  } else {
-    await navigator.clipboard.writeText(location.href);
-    document.getElementById("secActionStatus").textContent = "SEC link copied.";
-  }
-});
-
-document.getElementById("exportSEC").addEventListener("click", () => window.print());
-
-window.SCZN3SECReopenLifecycle?.initialize(document.querySelector(".sec-target-story"));
+window.SCZN3SECReopenLifecycle?.initialize(card);
 renderSEC();
 </script>
 </body>

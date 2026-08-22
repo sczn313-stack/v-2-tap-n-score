@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_21080_crack_shot_game-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-B2-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T10:33:13-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T10:33:13-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_21080_crack_shot_game",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_21080_CRACK_SHOT_GAME_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_BATCH2_AUTHORITY_AUDIT_V1:E56-B2-T09",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-21080",
+      "name": "Crack Shot Game",
+      "sku": "21080",
+      "dimensions": {
+        "width": 23,
+        "height": 35,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+    "id": "gunfun_21080_crack_shot_game-geometry",
+    "version": "1",
+    "status": "approved",
+    "digest": "931e4d9f8def8f4e70adf6df94a1db3431986b1b32369e5c74f518481034be12",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      }
+    },
+    "registration": {
+    "id": "gunfun_21080_crack_shot_game-registration",
+    "version": "1",
+    "status": "approved",
+    "digest": "bc82984125ea0c18b35f9cb7c13feb2134eb29fb217d9a5579a3846d1a08dc06",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/21080.jpg",
+        "assetSha256": "24fdfafa8d9f4f00ac1d2e42629c6a22c4cc971713b004065ddcedc693b7af13",
+        "assetAlt": "GunFun Crack Shot Game, SKU 21080",
+        "coordinateConvention": "normalized_source_image_top_left"
+      }
+    },
+    "scoring": {
+    "id": "gunfun_21080_crack_shot_game-scoring",
+    "version": "1",
+    "status": "approved",
+    "digest": "50544ff2102f89d6a0cc6adfd75d2f0eff43f4405f69cae5f14a706abee5bd1b",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      }
+    },
+    "mission": {
+    "id": "gunfun_21080_crack_shot_game-mission",
+    "version": "1",
+    "status": "approved",
+    "digest": "2edb8bbc2f5f83173e314e8d7a6752bd743b76a56beaa957830267a1855ba362",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "unavailable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      }
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "unavailable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

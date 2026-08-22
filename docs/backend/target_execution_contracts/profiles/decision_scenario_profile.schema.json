@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/decision-scenario-profile-v1.json",
+  "title": "SCZN3 Decision Scenario Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["missionFamily", "resultPackageType", "resultPackageVersion", "profileId", "profileVersion", "publisherAuthority", "sourceDocuments", "approval", "effective", "lifecycle", "componentBindings", "claimGrade", "presentationMode", "timingPolicy", "presentations", "capabilityStates"],
+  "properties": {
+    "missionFamily": {"const": "decisionScenarioEvaluation"},
+    "resultPackageType": {"const": "decisionScenarioResult"},
+    "resultPackageVersion": {"const": "1"},
+    "profileId": {"type": "string", "minLength": 1},
+    "profileVersion": {"type": "string", "minLength": 1},
+    "publisherAuthority": {"type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}}},
+    "sourceDocuments": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "title", "revision", "reference", "effectiveFrom", "sha256"], "properties": {"id": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1}, "revision": {"type": "string", "minLength": 1}, "reference": {"type": "string", "minLength": 1}, "effectiveFrom": {"type": "string", "format": "date-time"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}},
+    "approval": {"type": "object", "additionalProperties": false, "required": ["status", "authorityId"], "properties": {"status": {"const": "approved"}, "authorityId": {"type": "string", "minLength": 1}}},
+    "effective": {"type": "object", "additionalProperties": false, "required": ["from", "until"], "properties": {"from": {"type": "string", "format": "date-time"}, "until": {"type": ["string", "null"], "format": "date-time"}}},
+    "lifecycle": {"type": "object", "additionalProperties": false, "required": ["status", "supersededBy", "suspended", "revoked"], "properties": {"status": {"const": "active"}, "supersededBy": {"type": ["string", "null"]}, "suspended": {"const": false}, "revoked": {"const": false}}},
+    "componentBindings": {"type": "object", "additionalProperties": false, "required": ["targetProfileId", "targetProfileVersion", "registrationDigest", "geometryDigest"], "properties": {"targetProfileId": {"type": "string", "minLength": 1}, "targetProfileVersion": {"type": "string", "minLength": 1}, "registrationDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "geometryDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "claimGrade": {"const": "publisher_designation_response_match"},
+    "presentationMode": {"const": "fixed_profile_order"},
+    "timingPolicy": {"type": "object", "additionalProperties": false, "required": ["mode", "clockSource", "physicalShotTiming"], "properties": {"mode": {"enum": ["untimed", "fixed_practice_window"]}, "clockSource": {"enum": ["backend_orchestration_clock", "client_practice_clock"]}, "physicalShotTiming": {"const": "unavailable"}, "windowMs": {"type": "integer", "minimum": 1, "maximum": 3600000}}},
+    "presentations": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["scenarioId", "presentationId", "title", "publisherDesignation", "responsePolicy", "transition"], "properties": {"scenarioId": {"type": "string", "minLength": 1}, "presentationId": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1}, "publisherDesignation": {"type": "object", "additionalProperties": false, "required": ["id", "label", "expectedResponse", "sourceReference"], "properties": {"id": {"type": "string", "minLength": 1}, "label": {"type": "string", "minLength": 1}, "expectedResponse": {"enum": ["observation_required", "no_observation_expected"]}, "sourceReference": {"type": "string", "minLength": 1}}}, "responsePolicy": {"type": "object", "additionalProperties": false, "required": ["minimumObservations", "maximumObservations", "allowExplicitNoObservation", "authorizedEntityIds"], "properties": {"minimumObservations": {"type": "integer", "minimum": 0, "maximum": 500}, "maximumObservations": {"type": "integer", "minimum": 0, "maximum": 500}, "allowExplicitNoObservation": {"type": "boolean"}, "authorizedEntityIds": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}}}, "transition": {"enum": ["advance", "complete"]}}}},
+    "capabilityStates": {"type": "object"}
+  }
+}

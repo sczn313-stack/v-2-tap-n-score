@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/qualification-profile-v1.json",
+  "title": "SCZN3 Qualification Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["missionFamily", "resultPackageType", "resultPackageVersion", "profileId", "profileVersion", "courseName", "courseMode", "claimantClass", "governingAuthority", "sourceDocuments", "approval", "effective", "lifecycle", "componentBindings", "resultVocabulary", "allowedClaimGrades", "timingPolicy", "targetInstances", "stages", "threshold", "incompleteCourseOutcome", "capabilityStates"],
+  "properties": {
+    "missionFamily": {"const": "qualificationCourseEvaluation"},
+    "resultPackageType": {"const": "qualificationResult"},
+    "resultPackageVersion": {"const": "1"},
+    "profileId": {"type": "string", "minLength": 1},
+    "profileVersion": {"type": "string", "minLength": 1},
+    "courseName": {"type": "string", "minLength": 1},
+    "courseMode": {"type": "string", "minLength": 1},
+    "claimantClass": {"type": "string", "minLength": 1},
+    "governingAuthority": {"type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "authorityScope": {"type": "string", "minLength": 1}}},
+    "sourceDocuments": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "title", "revision", "reference", "sha256", "effectiveFrom"], "properties": {"id": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1}, "revision": {"type": "string", "minLength": 1}, "reference": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "effectiveFrom": {"type": "string", "format": "date-time"}}}},
+    "approval": {"type": "object", "additionalProperties": false, "required": ["status", "authorityId"], "properties": {"status": {"const": "approved"}, "authorityId": {"type": "string", "minLength": 1}}},
+    "effective": {"type": "object", "additionalProperties": false, "required": ["from", "until"], "properties": {"from": {"type": "string", "format": "date-time"}, "until": {"type": ["string", "null"], "format": "date-time"}}},
+    "lifecycle": {"type": "object", "additionalProperties": false, "required": ["status", "supersededBy", "suspended", "revoked"], "properties": {"status": {"const": "active"}, "supersededBy": {"type": ["string", "null"]}, "suspended": {"const": false}, "revoked": {"const": false}}},
+    "componentBindings": {"type": "object", "additionalProperties": false, "required": ["targetProfileId", "targetProfileVersion", "geometryDigest", "scoringDigest"], "properties": {"targetProfileId": {"type": "string", "minLength": 1}, "targetProfileVersion": {"type": "string", "minLength": 1}, "geometryDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "scoringDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "resultVocabulary": {"const": ["pass", "fail", "incomplete", "not_evaluable"]},
+    "allowedClaimGrades": {"type": "array", "items": {"enum": ["practice_simulation", "official_qualification"]}, "minItems": 1, "uniqueItems": true},
+    "timingPolicy": {"type": "object", "additionalProperties": false, "required": ["clockSource", "physicalShotTiming"], "properties": {"clockSource": {"enum": ["backend_orchestration_clock", "client_practice_clock", "external_reported_timer"]}, "physicalShotTiming": {"const": "unavailable"}}},
+    "targetInstances": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["targetInstanceId"], "properties": {"targetInstanceId": {"type": "string", "minLength": 1}, "targetProfileId": {"type": "string", "minLength": 1}}}},
+    "stages": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["stageId", "title", "distance", "requiredRounds", "targetInstanceId", "allowedZoneIds"], "properties": {"stageId": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1}, "instruction": {"type": "string"}, "distance": {"type": "object", "additionalProperties": false, "required": ["value", "unit"], "properties": {"value": {"type": "number", "exclusiveMinimum": 0}, "unit": {"enum": ["yd", "m"]}}}, "requiredRounds": {"type": "integer", "minimum": 1}, "targetInstanceId": {"type": "string", "minLength": 1}, "allowedZoneIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}, "timeLimitMs": {"type": "integer", "minimum": 1}}}},
+    "threshold": {"type": "object", "additionalProperties": false, "required": ["operator", "value"], "properties": {"operator": {"const": "greater_than_or_equal"}, "value": {"type": "number"}}},
+    "incompleteCourseOutcome": {"enum": ["fail", "incomplete"]},
+    "capabilityStates": {"type": "object"}
+  }
+}

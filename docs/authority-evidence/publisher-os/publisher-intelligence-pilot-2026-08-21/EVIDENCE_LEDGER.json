@@ -1,0 +1,278 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-21T16:00:00-04:00",
+  "observationDate": "2026-08-21",
+  "classificationVocabulary": [
+    "existing_fact_confirmed",
+    "newly_discovered_fact",
+    "changed_fact",
+    "new_supporting_evidence",
+    "conflicting_evidence",
+    "still_unknown",
+    "monitoring_candidate"
+  ],
+  "evidenceStatusVocabulary": ["confirmed", "evidence_suggests", "unknown"],
+  "authorityRule": "A source establishes only the claim it actually supports. Product labeling is not organizational endorsement; a possible experience is not authorized capability; retail presence is not publisher authority.",
+  "claims": [
+    {
+      "claimId": "BAK-T1-001", "publisherId": "baker-targets", "tier": 1, "topic": "company_identity", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "Baker Targets is a side project of The Baker Press, Inc., an Orlando printing company in business since 1968.",
+      "sourceUrl": "https://bakertargets.com/about-us/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BAK-T1-002", "publisherId": "baker-targets", "tier": 1, "topic": "manufacturing", "classification": "new_supporting_evidence", "evidenceStatus": "confirmed",
+      "claim": "Baker identifies its own pressmen, graphic artists, custom-target workflow, and Orlando printing operation; in-house design and printing are confirmed for the described operation.",
+      "sourceUrl": "https://bakertargets.com/about-us/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BAK-T1-003", "publisherId": "baker-targets", "tier": 1, "topic": "game_rules", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "A six-page publisher-authored Game Target Instructions PDF defines bounded rules for six products: Arcade (GF-Arc), Battleship (GF-Battleship), Dartboard (GF-DB; two games), Pinball (GF-Pinball), Candyville (GF-Candyville), and Primary (GF-Primary).",
+      "ruleSummary": {
+        "GF-Arc": "Thirteen-shot multiplayer point accumulation with explicit region values, miss penalty, and highest-total winner.",
+        "GF-Battleship": "Two-player opponent-board ship collection with declared bonus-circle attempts, replacement hits, whole-ship effect, and lost-turn penalty.",
+        "GF-DB": "A declared-number points game with double/triple rings and bullseye finale, plus an ordered 1-through-20 progression game.",
+        "GF-Pinball": "Two-round points, extra-shot, bonus-shot, and final Collect Man win state.",
+        "GF-Candyville": "Color-owned ordered path traversal with turns, opponent-color benefit, slide branches, color reassignment, and reset-to-start penalty.",
+        "GF-Primary": "Multi-player memory/repetition sequence with optional caller and color, number, or combined cue modes."
+      },
+      "sourceUrl": "https://bakertargets.com/wp-content/uploads/2025/06/Game-Target-Instructions.pdf", "localSource": "sources/baker/Game-Target-Instructions.pdf", "sha256": "478d216d5be0e126395dee5bc42445b73ca03a1b2d70ae883fecddf524406d43", "sourceType": "publisher_pdf", "authorityOwner": "publisher", "observedAt": "2026-08-21",
+      "capabilityImpact": "Closes the public publisher-rules evidence gap for these six product experiences. It does not activate any capability until exact profile, UGO, registration, and governance validation are approved."
+    },
+    {
+      "claimId": "BAK-T1-006", "publisherId": "baker-targets", "tier": 1, "topic": "behavior_family_candidate", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Candyville supplies the first direct publisher-rule evidence in the seven-publisher corpus for ordered path traversal with branching slides, mutable player color, and reset-to-start state.",
+      "sourceUrl": "https://bakertargets.com/wp-content/uploads/2025/06/Game-Target-Instructions.pdf", "localSource": "sources/baker/Game-Target-Instructions.pdf", "sourceType": "publisher_pdf", "authorityOwner": "publisher", "observedAt": "2026-08-21",
+      "capabilityImpact": "Genuine new behavior-family candidate: publisher-defined path traversal. Gear 6 explicitly excluded path behavior, so this cannot be silently assigned to collection/hand or activated without a Founder specification."
+    },
+    {
+      "claimId": "BAK-T1-004", "publisherId": "baker-targets", "tier": 1, "topic": "qualification", "classification": "new_supporting_evidence", "evidenceStatus": "evidence_suggests",
+      "claim": "Baker says its B29 Florida G target is used for the Florida G firearms license and references a page in a Florida manual; this establishes publisher product intent, not the current government course or an official relationship.",
+      "sourceUrl": "https://bakertargets.com/product/b29-florida-g-license-qualification-target/", "sourceType": "publisher", "authorityOwner": "publisher_for_product_only", "observedAt": "2026-08-21",
+      "capabilityImpact": "Qualification remains authority-gated pending the applicable government course profile and official-claim authorities."
+    },
+    {
+      "claimId": "BAK-T1-005", "publisherId": "baker-targets", "tier": 1, "topic": "organization", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "No publisher or organization source reviewed in this bounded pilot established an NRA, GSSF, USPSA, IDPA, CMP, military, or law-enforcement endorsement of Baker as a company.",
+      "sourceUrl": "https://bakertargets.com/", "sourceType": "bounded_search_result", "authorityOwner": "external_organization", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BAK-T2-001", "publisherId": "baker-targets", "tier": 2, "topic": "owned_media", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Baker maintains an active publisher blog with promotions, surveys, giveaways, product discussion, and publisher-linked video content.",
+      "sourceUrl": "https://bakertargets.com/blog/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BAK-T2-002", "publisherId": "baker-targets", "tier": 2, "topic": "market_route", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "Direct ecommerce and custom-target sales are the confirmed purchase routes; major-retailer prominence was not established in the bounded pilot.",
+      "sourceUrl": "https://bakertargets.com/shop/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T1-001", "publisherId": "gunfun", "tier": 1, "topic": "company_identity", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "The exact company identity is GunFun Shooting Targets, Inc.; the public contact address is 3724 County Road 31, Killen, Alabama.",
+      "sourceUrl": "https://gunfun.com/contact-us/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T1-002", "publisherId": "gunfun", "tier": 1, "topic": "manufacturing", "classification": "new_supporting_evidence", "evidenceStatus": "confirmed",
+      "claim": "GunFun documents its own production press and headquarters construction and says its products are made in Alabama; publisher evidence supports manufacturer status.",
+      "sourceUrl": "https://gunfun.com/category/news/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T1-003", "publisherId": "gunfun", "tier": 1, "topic": "location", "classification": "conflicting_evidence", "evidenceStatus": "confirmed",
+      "claim": "The contact page identifies Killen, Alabama, while the homepage describes products as made in Huntsville, Alabama; both statements are preserved without inferring that the sites are identical.",
+      "sourceUrl": "https://gunfun.com/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T1-004", "publisherId": "gunfun", "tier": 1, "topic": "organization", "classification": "existing_fact_confirmed", "evidenceStatus": "evidence_suggests",
+      "claim": "GunFun product names and categories reference IDPA, USPSA/IPSC, NCJA and government qualification forms, but the bounded evidence establishes product labeling only—not endorsement, current rules, or an official organizational relationship.",
+      "sourceUrl": "https://gunfun.com/product-category/paper-target/", "sourceType": "publisher", "authorityOwner": "publisher_for_product_label_only", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T1-005", "publisherId": "gunfun", "tier": 1, "topic": "catalog", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "The live shop exposes 257 current results while the preserved Episode 56 corpus contains 258 published SKU records; this is a monitoring difference, not a deletion conclusion.",
+      "sourceUrl": "https://gunfun.com/shop/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T2-001", "publisherId": "gunfun", "tier": 2, "topic": "owned_media", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "GunFun maintains a publisher news archive documenting products, production capacity, headquarters, and historical Facebook activity.",
+      "sourceUrl": "https://gunfun.com/category/news/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "GF-T2-002", "publisherId": "gunfun", "tier": 2, "topic": "market_route", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "Direct ecommerce and publisher quantity discounts are confirmed; major-retailer prominence was not established in the bounded pilot.",
+      "sourceUrl": "https://gunfun.com/conditions-of-use/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "SB-T1-001", "publisherId": "splatterburst", "tier": 1, "topic": "company_identity", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "Splatterburst Targets describes itself as family owned and operated, founded in 2012, with public contact details in Ham Lake, Minnesota.",
+      "sourceUrl": "https://splatterbursttargets.com/company/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "SB-T1-002", "publisherId": "splatterburst", "tier": 1, "topic": "manufacturing", "classification": "new_supporting_evidence", "evidenceStatus": "confirmed",
+      "claim": "The publisher says it manufactures its patented targets in Minnesota, USA.",
+      "sourceUrl": "https://splatterbursttargets.com/company/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "SB-T1-003", "publisherId": "splatterburst", "tier": 1, "topic": "organization", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "No NRA, GSSF, USPSA, IDPA, CMP, military, or law-enforcement relationship was established in the bounded pilot.",
+      "sourceUrl": "https://splatterbursttargets.com/", "sourceType": "bounded_search_result", "authorityOwner": "external_organization", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "SB-T2-001", "publisherId": "splatterburst", "tier": 2, "topic": "dealer_route", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Splatterburst maintains a separate verified-dealer ordering route with case quantities and dealer terms.",
+      "sourceUrl": "https://splatterburstdealer.com/item/12-x-18-sight-in-splatter-target-dealer-pack/", "sourceType": "publisher_dealer_site", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "SB-T2-002", "publisherId": "splatterburst", "tier": 2, "topic": "media", "classification": "new_supporting_evidence", "evidenceStatus": "evidence_suggests",
+      "claim": "The homepage identifies filming at Military Heritage Alliance; this proves a filming location only, not a partnership, sponsorship, or endorsement.",
+      "sourceUrl": "https://splatterbursttargets.com/", "sourceType": "publisher", "authorityOwner": "publisher_for_statement_only", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "SB-T2-003", "publisherId": "splatterburst", "tier": 2, "topic": "major_retail", "classification": "new_supporting_evidence", "evidenceStatus": "evidence_suggests",
+      "claim": "Independent marketplace/user evidence suggests Amazon distribution, but no authoritative major-retailer roster was established; retailer prominence remains partial.",
+      "sourceUrl": "https://splatterbursttargets.com/products/", "sourceType": "publisher_plus_bounded_search", "authorityOwner": "retailer", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "HW-T1-001", "publisherId": "highwild", "tier": 1, "topic": "company_identity", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "The official site identifies Highwild Inc. and provides a public support email.",
+      "sourceUrl": "https://www.highwildoutdoors.com/pages/1highwild-inc", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "HW-T1-002", "publisherId": "highwild", "tier": 1, "topic": "location", "classification": "newly_discovered_fact", "evidenceStatus": "evidence_suggests",
+      "claim": "The refund policy exposes an Irvine, California return address; it is recorded only as a return address, not headquarters or manufacturing location.",
+      "sourceUrl": "https://www.highwildoutdoors.com/pages/refund-policy", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "HW-T1-003", "publisherId": "highwild", "tier": 1, "topic": "manufacturing_import", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "The bounded publisher evidence does not establish manufacturing country, importer status, or distribution status for Highwild as a company.",
+      "sourceUrl": "https://www.highwildoutdoors.com/", "sourceType": "publisher", "authorityOwner": "publisher_or_importer", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "HW-T1-004", "publisherId": "highwild", "tier": 1, "topic": "organization", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "No NRA, GSSF, USPSA, IDPA, CMP, military, or law-enforcement relationship was established in the bounded pilot.",
+      "sourceUrl": "https://www.highwildoutdoors.com/", "sourceType": "bounded_search_result", "authorityOwner": "external_organization", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "HW-T2-001", "publisherId": "highwild", "tier": 2, "topic": "distribution", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Highwild publicly recruits US distributors and sales partners; this establishes a wholesale recruitment path, not existing distributor relationships.",
+      "sourceUrl": "https://www.highwildoutdoors.com/pages/distributors-welcome", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "HW-T2-002", "publisherId": "highwild", "tier": 2, "topic": "major_retail", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Walmart currently exposes a Highwild steel-target brand category with target-system listings; this establishes observed retailer presence only.",
+      "sourceUrl": "https://www.walmart.com/browse/sports-outdoors/steel-gun-targets/highwild/4125_546956_1107532_5299809_1080264_8006219/YnJhbmQ6SGlnaHdpbGQie", "sourceType": "retailer", "authorityOwner": "retailer", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BC-T1-001", "publisherId": "birchwood-casey", "tier": 1, "topic": "company_identity", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "Birchwood Casey states that its shooting and gun-care business dates to 1948 and provides direct ecommerce and customer contact.",
+      "sourceUrl": "https://www.birchwoodcasey.com/about-us", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BC-T1-002", "publisherId": "birchwood-casey", "tier": 1, "topic": "parent_brand", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "GSM Outdoors lists Birchwood Casey in its official brand portfolio.",
+      "sourceUrl": "https://www.gsmoutdoors.com/our-brands/", "sourceType": "associated_company", "authorityOwner": "associated_company", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BC-T1-003", "publisherId": "birchwood-casey", "tier": 1, "topic": "organization", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "No authoritative NRA, GSSF, USPSA, IDPA, CMP, military, or law-enforcement organizational relationship was established. A customer review mentioning NRA B-8 scoring is not publisher or NRA authority.",
+      "sourceUrl": "https://www.birchwoodcasey.com/products/shoot-n-c-6-inch-x-bulls-eye-60-targets-720-pasters.html", "sourceType": "publisher_customer_review", "authorityOwner": "external_organization", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BC-T1-004", "publisherId": "birchwood-casey", "tier": 1, "topic": "manufacturing", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "The bounded company-level publisher evidence did not establish a universal manufacturing or import status; product-specific country claims must remain product scoped.",
+      "sourceUrl": "https://www.birchwoodcasey.com/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BC-T2-001", "publisherId": "birchwood-casey", "tier": 2, "topic": "major_retail", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Current Birchwood Casey target listings were observed at Brownells, Academy, Palmetto State Armory, MidwayUSA, and Bass Pro; each listing is retailer evidence, not publisher meaning authority.",
+      "sourceUrl": "https://www.brownells.com/gear/targets/paper-targets/shoot-n-c-targets/", "additionalSourceUrls": ["https://www.academy.com/p/birchwood-casey-8-shoot-n-c-bulls-eye-targets-6-pack", "https://palmettostatearmory.com/brands/birchwood-casey.html", "https://www.midwayusa.com/product/1017553296", "https://www.basspro.com/shop/en/shooting/birchwood-casey-pregame-novelty-splattering-gun-targets"],
+      "sourceType": "retailer", "authorityOwner": "retailer", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "BC-T2-002", "publisherId": "birchwood-casey", "tier": 2, "topic": "media", "classification": "new_supporting_evidence", "evidenceStatus": "evidence_suggests",
+      "claim": "Historical advertising and social-channel evidence exists, but current channel cadence and market reach were not quantified in this bounded pilot.",
+      "sourceUrl": "https://www.ispot.tv/brands/okw/birchwood-casey", "sourceType": "media_index", "authorityOwner": "media_index", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T1-001", "publisherId": "ez-aim-allen", "tier": 1, "topic": "company_identity", "classification": "existing_fact_confirmed", "evidenceStatus": "confirmed",
+      "claim": "EZ Aim is a target brand/family sold by The Allen Company; Allen Company, Inc. publishes its Louisville, Colorado address and direct contact paths.",
+      "sourceUrl": "https://byallen.com/pages/contact-us", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T1-002", "publisherId": "ez-aim-allen", "tier": 1, "topic": "history", "classification": "new_supporting_evidence", "evidenceStatus": "confirmed",
+      "claim": "Allen says the company began more than 50 years ago in Broomfield, Colorado, and designs/tests outdoor products with outdoor experts.",
+      "sourceUrl": "https://byallen.com/pages/about-us", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T1-003", "publisherId": "ez-aim-allen", "tier": 1, "topic": "organization", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Allen explicitly identifies NSSF and other associations, conservation partners, and separately identifies officially licensed brand partnerships including Ruger and Girls With Guns; these claim types are preserved separately.",
+      "sourceUrl": "https://byallen.com/pages/partners-and-conservation", "sourceType": "publisher", "authorityOwner": "publisher_for_relationship_claim", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T1-004", "publisherId": "ez-aim-allen", "tier": 1, "topic": "nra", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "The page mentions an individual partner's NRA instructor credential; it does not establish an Allen/EZ Aim relationship with NRA or NRA authority for EZ Aim targets.",
+      "sourceUrl": "https://byallen.com/pages/partners-and-conservation", "sourceType": "publisher", "authorityOwner": "nra", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T1-005", "publisherId": "ez-aim-allen", "tier": 1, "topic": "manufacturing", "classification": "newly_discovered_fact", "evidenceStatus": "evidence_suggests",
+      "claim": "An Allen catalog labels specific EZ Aim paper products 'Made in USA with domestic and imported components'; the status is product scoped and not generalized to the company catalog.",
+      "sourceUrl": "https://www.nigavasports.ca/medias/995-%20ALLEN%202022%20DigitalCatalog_compressed.pdf", "sourceType": "archived_publisher_catalog_at_distributor", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T2-001", "publisherId": "ez-aim-allen", "tier": 2, "topic": "major_retail", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Academy currently carries EZ Aim branded target offerings; this is observed retailer availability only.",
+      "sourceUrl": "https://www.academy.com/p/allen-company-ez-aim-125in-splash-reactive-bullseye-paper-shooting-target-100-pack", "sourceType": "retailer", "authorityOwner": "retailer", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T2-002", "publisherId": "ez-aim-allen", "tier": 2, "topic": "owned_media", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Allen links official Facebook, YouTube, Twitter/X, LinkedIn, Pinterest, and Instagram channels from its publisher site.",
+      "sourceUrl": "https://byallen.com/pages/about-us", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "EA-T3-001", "publisherId": "ez-aim-allen", "tier": 3, "topic": "new_product_signal", "classification": "monitoring_candidate", "evidenceStatus": "evidence_suggests",
+      "claim": "The current Allen homepage promotes an EZ Aim Sasquatch target not present by name in the preserved August 20 EZ Aim normalized corpus; this is a catalog-change candidate, not an ingested product record.",
+      "sourceUrl": "https://byallen.com/", "sourceType": "publisher", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "CH-T1-001", "publisherId": "champion-targets", "tier": 1, "topic": "current_storefront", "classification": "changed_fact", "evidenceStatus": "confirmed",
+      "claim": "Champion products are currently sold through a Primos-hosted collection containing 78 listed items across paper targets, steel targets, throwers, protective gear, and accessories.",
+      "sourceUrl": "https://www.primos.com/collections/champion", "sourceType": "current_brand_storefront", "authorityOwner": "storefront_operator", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "CH-T1-002", "publisherId": "champion-targets", "tier": 1, "topic": "ownership", "classification": "conflicting_evidence", "evidenceStatus": "unknown",
+      "claim": "The current Primos storefront, legacy Vista brand pages, and a 2025 sale of Champion Clay Targets LLC describe different operating or product-line relationships; the present owner of the entire Champion target portfolio is not established by this bounded evidence.",
+      "sourceUrl": "https://www.primos.com/collections/champion", "additionalSourceUrls": ["https://www.media.vistaoutdoor.com/brands/champion/default.aspx", "https://theclaytargetcompany.com/TCTC_Acquisition_PR.pdf"],
+      "sourceType": "current_storefront_legacy_brand_release", "authorityOwner": "corporate_owner", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "CH-T1-003", "publisherId": "champion-targets", "tier": 1, "topic": "nra_labeling", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Champion's 2023 product guide has an explicit 'NRA Targets' category and lists GB-16, B-16, GB-2 and GB-3 forms with dimensions and pack counts.",
+      "sourceUrl": "https://www.championtarget.com/on/demandware.static/-/Library-Sites-HuntShootAccessoriesSharedLibrary/default/v0135f0bf6be8791175f8093310c3d2a00580aefa/productPdfFiles/championPdf/CH-2023_Champion_Product_Guide-WEB.pdf", "sourceType": "publisher_catalog", "authorityOwner": "publisher_for_label_only", "observedAt": "2026-08-21",
+      "capabilityImpact": "Establishes publisher labeling and product metadata, not NRA endorsement or current NRA course authority."
+    },
+    {
+      "claimId": "CH-T1-004", "publisherId": "champion-targets", "tier": 1, "topic": "organization", "classification": "still_unknown", "evidenceStatus": "unknown",
+      "claim": "No NRA organizational endorsement or official relationship was established; the publisher catalog's NRA label must not be promoted beyond the product designation.",
+      "sourceUrl": "https://www.championtarget.com/on/demandware.static/-/Library-Sites-HuntShootAccessoriesSharedLibrary/default/v0135f0bf6be8791175f8093310c3d2a00580aefa/productPdfFiles/championPdf/CH-2023_Champion_Product_Guide-WEB.pdf", "sourceType": "publisher_catalog", "authorityOwner": "nra", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "CH-T1-005", "publisherId": "champion-targets", "tier": 1, "topic": "meaning", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "The 2023 guide preserves printed product meaning for ScoreKeeper data fields, VisiColor zone-color behavior, target distances, dimensions, pack counts, LE forms, and Train & Qualify labels.",
+      "sourceUrl": "https://www.championtarget.com/on/demandware.static/-/Library-Sites-HuntShootAccessoriesSharedLibrary/default/v0135f0bf6be8791175f8093310c3d2a00580aefa/productPdfFiles/championPdf/CH-2023_Champion_Product_Guide-WEB.pdf", "sourceType": "publisher_catalog", "authorityOwner": "publisher", "observedAt": "2026-08-21",
+      "capabilityImpact": "Improves authority packaging candidates but does not supply external qualification rules."
+    },
+    {
+      "claimId": "CH-T1-006", "publisherId": "champion-targets", "tier": 1, "topic": "manufacturing", "classification": "new_supporting_evidence", "evidenceStatus": "evidence_suggests",
+      "claim": "The 2023 guide marks multiple specific paper targets Made/Printed in USA; the claim is product scoped and historical, not a universal current manufacturing assertion.",
+      "sourceUrl": "https://www.championtarget.com/on/demandware.static/-/Library-Sites-HuntShootAccessoriesSharedLibrary/default/v0135f0bf6be8791175f8093310c3d2a00580aefa/productPdfFiles/championPdf/CH-2023_Champion_Product_Guide-WEB.pdf", "sourceType": "publisher_catalog", "authorityOwner": "publisher", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "CH-T2-001", "publisherId": "champion-targets", "tier": 2, "topic": "major_retail", "classification": "newly_discovered_fact", "evidenceStatus": "confirmed",
+      "claim": "Current Champion target listings were observed at Palmetto State Armory and Walmart in addition to the Primos storefront; retailer evidence does not establish ownership or publisher meaning.",
+      "sourceUrl": "https://palmettostatearmory.com/brands/champion/targets.html", "additionalSourceUrls": ["https://www.walmart.com/cp/gun-safety/3891038"], "sourceType": "retailer", "authorityOwner": "retailer", "observedAt": "2026-08-21"
+    },
+    {
+      "claimId": "CH-T2-002", "publisherId": "champion-targets", "tier": 2, "topic": "owned_media", "classification": "new_supporting_evidence", "evidenceStatus": "evidence_suggests",
+      "claim": "Legacy Champion media pages link product videos and YouTube; current social ownership/cadence was not independently resolved.",
+      "sourceUrl": "https://media.vistaoutdoor.com/brands/champion/videos.aspx", "sourceType": "legacy_brand_media", "authorityOwner": "legacy_operator", "observedAt": "2026-08-21"
+    }
+  ]
+}

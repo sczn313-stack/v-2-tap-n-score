@@ -7,8 +7,10 @@
 <title>Target</title>
 <link rel="stylesheet" href="styles.css?v=workspace-template-v1" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=episode45-ui-polish-v1" />
-<link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="platform-ui.css?v=founder-ui-standard-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
+<link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode54-item6-1" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -22,17 +24,19 @@ window.addEventListener("error", event => {
 </script>
 <script src="navigation.js?v=universal-smart-targets-nav-1" defer></script>
 <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
+<script src="platform_actions.js?v=episode54-item7-1"></script>
+<script src="smart_target_workspace.js?v=episode54-item6-1"></script>
 </head>
 <body class="platform-page target-page">
 <main class="shell">
-  <header class="m4-header universal-app-header target-application-header">
+  <header class="m4-header app-header target-application-header">
     <div class="vendor-slot">
       <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
         <a class="vendor-name" href="index.html">Tap-n-Score™</a>
       </div>
     </div>
-    <details class="mobile-platform-menu universal-header-menu">
+    <details class="mobile-platform-menu app-header-menu">
       <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
       <a href="index.html">Home</a>
       <a href="matrix.html" data-simulation-hide>Equipment Library</a>
@@ -41,8 +45,8 @@ window.addEventListener("error", event => {
   <section class="shoot-workflow">
     <div class="panel">
       <section class="upload-panel" aria-label="Upload or capture target evidence">
-        <div class="workspace-stage-shell" id="workspaceStageShell">
-          <div class="evidence-preview evidence-workspace" id="targetEvidencePreview">
+        <div class="workspace-stage-shell" id="workspaceStageShell" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="stage-overlay">
+          <div class="evidence-preview evidence-workspace" id="targetEvidencePreview" data-sczn3-workspace-evidence="true">
             <div class="evidence-meta evidence-status-stack">
               <div class="target-intel-stack" id="resultsGrid"></div>
             </div>
@@ -100,7 +104,7 @@ window.addEventListener("error", event => {
             </div>
           </details>
           <p class="save-session-status" id="saveSessionStatus" role="status" aria-live="polite"></p>
-          <div class="workflow-control-row" aria-label="Primary Action Bar" data-processing-host>
+          <div class="workflow-control-row" aria-label="Primary Action Bar" data-processing-host data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1">
             <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
               <strong>0</strong>
               <span>Holes</span>
@@ -138,6 +142,7 @@ window.addEventListener("error", event => {
   }
 </script>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
+<script src="platform_contracts.js?v=episode54-item2-1"></script>
 <script src="smart_target_identity.js"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
@@ -146,11 +151,14 @@ window.addEventListener("error", event => {
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
-const beginExperienceProcessing = (id, message, trigger, scope) => window.SCZN3Processing?.begin({ id, message, trigger, scope }) || "";
-const finishExperienceProcessing = (operationId, succeeded = true) => {
-  if (!operationId || !window.SCZN3Processing) return;
-  (succeeded ? SCZN3Processing.succeed : SCZN3Processing.fail)(operationId);
-};
+const beginExperienceProcessing = (id, message, trigger, scope) => SCZN3Actions.begin({ id, message, trigger, scope });
+const finishExperienceProcessing = (operationId, succeeded = true) => SCZN3Actions.finish(operationId, succeeded);
+const smartTargetWorkspace = SCZN3SmartTargetWorkspace.create({
+  root: document.getElementById("workspaceStageShell"),
+  evidenceRegion: document.getElementById("targetEvidencePreview"),
+  actionRegion: document.querySelector(".workflow-control-row"),
+  header: document.querySelector(".target-application-header")
+}).bindViewportLifecycle();
 const TARGET_QUERY = new URLSearchParams(window.location.search);
 const REQUESTED_SESSION_ID = String(TARGET_QUERY.get("session") || "").trim();
 const REQUESTED_TARGET_PROFILE_ID = String(
@@ -562,6 +570,8 @@ function authoritativeTargetName(value) {
 }
 
 function displayTargetName(value, targetProfileId = "") {
+  const profileIdentity = window.SCZN3TargetProfiles && SCZN3TargetProfiles.identityRecord(targetProfileId);
+  if (profileIdentity) return SCZN3TargetProfiles.display(profileIdentity);
   return SCZN3Presentation.targetLabel(targetProfileId, authoritativeTargetName(value) || "Not Known");
 }
 
@@ -617,7 +627,8 @@ function renderTargetHeaderIdentity() {
   const header = document.getElementById("targetHeaderIdentity");
   if (!header) return;
   const identity = activeTargetIdentity();
-  header.textContent = `Target: ${displayTargetName(identity.targetName, identity.targetProfileId)}`;
+  const profileIdentity = window.SCZN3TargetProfiles && SCZN3TargetProfiles.apply(header, identity);
+  if (!profileIdentity) header.textContent = `Target: ${displayTargetName(identity.targetName, identity.targetProfileId)}`;
   header.title = [
     identity.targetProfileId ? `Target Profile: ${identity.targetProfileId}` : "",
     identity.missionFamily ? `Type: ${identity.missionFamily}` : "",
@@ -2505,23 +2516,13 @@ function configureWorkspaceStage(evidence, image = null) {
       : null
   );
   if (!dimensions) return;
-  const viewportWidth = Math.max(1, document.documentElement.clientWidth || window.innerWidth || dimensions.width);
-  const viewportHeight = Math.max(1, document.documentElement.clientHeight || window.innerHeight || dimensions.height);
-  const width = Math.floor(Math.min(viewportWidth, viewportHeight * (dimensions.width / dimensions.height)));
-  const height = Math.floor(width * (dimensions.height / dimensions.width));
-  stage.style.setProperty("--workspace-stage-width", `${width}px`);
-  stage.style.setProperty("--workspace-stage-height", `${height}px`);
-  stage.style.setProperty("--workspace-target-ratio", `${dimensions.width} / ${dimensions.height}`);
-  stage.dataset.geometryLocked = "true";
+  SCZN3SmartTargetWorkspace.configureContainedStage(stage, dimensions);
 }
 
 function resetWorkspaceStageGeometry() {
   const stage = document.getElementById("workspaceStageShell");
   if (!stage) return;
-  stage.dataset.geometryLocked = "false";
-  stage.style.removeProperty("--workspace-stage-width");
-  stage.style.removeProperty("--workspace-stage-height");
-  stage.style.removeProperty("--workspace-target-ratio");
+  SCZN3SmartTargetWorkspace.resetContainedStage(stage);
 }
 
 function renderEvidencePreview(image) {
@@ -2560,7 +2561,7 @@ function renderEvidencePreview(image) {
     return;
   }
   preview.innerHTML = `
-    <div class="mark-surface" id="markSurface">
+    <div class="mark-surface" id="markSurface" data-sczn3-workspace-evidence="true" hidden>
       <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
       <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
       <div class="marker-layer" id="markerLayer"></div>
@@ -2571,19 +2572,14 @@ function renderEvidencePreview(image) {
   bindGuidanceCard();
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");
-  if (targetImage.complete) {
+  smartTargetWorkspace.decodeImage(targetImage).then(() => {
     configureWorkspaceStage(evidence, targetImage);
+    markSurface.hidden = false;
     requestAnimationFrame(() => {
       syncOverlayLayerToDisplayedImage();
       renderMarkers();
     });
-  } else {
-    targetImage.addEventListener("load", () => {
-      configureWorkspaceStage(evidence, targetImage);
-      syncOverlayLayerToDisplayedImage();
-      renderMarkers();
-    }, { once: true });
-  }
+  }).catch(() => { markSurface.hidden = true; });
   markSurface.addEventListener("pointerdown", handleMarkPointerDown, { passive: true });
   markSurface.addEventListener("pointerup", handleMarkPointerUp, { passive: true });
   markSurface.addEventListener("pointercancel", handleMarkPointerCancel, { passive: true });

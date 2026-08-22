@@ -22,6 +22,7 @@ from m4_authority.weapon_equipment_registry import (
     authority_model_from_record,
     resolve_proven_equipment_record,
 )
+from target_execution_contract import TargetExecutionContractError, TargetExecutionContractResolver, runtime_resolver
 
 
 PREPARATION_TTL_SECONDS = int(os.environ.get("SCZN3_SESSION_PREPARATION_TTL_SECONDS", "900"))
@@ -143,6 +144,118 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         },
         "officialMissionRequired": False,
     },
+    "idpa_silhouette_sl_st2": {
+        "targetId": "idpa_silhouette_sl_st2",
+        "targetAuthorityId": "BAKER_SL_ST2_23X35_PRODUCT_AUTHORITY_V1",
+        "targetName": "Silhouette Target (IDPA)",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_BAKER_SL_ST2_TIMED_PAIR_7YD_V1",
+        "missionIdentity": {
+            "missionFamily": "idpaTimedPractice",
+            "missionId": "SCZN3_SL_ST2_TIMED_PAIR_7YD_V1",
+            "resultPackageType": "idpaTimeScoreResult",
+        },
+        "governedDistance": {"value": 7, "unit": "YDS", "locked": True},
+        "equipmentRequirements": {
+            "weaponCategories": ["Pistol"],
+            "requiresAdjustmentSystem": False,
+            "allowedAdjustmentUnits": [],
+        },
+        "standardSetupAuthority": {
+            "setupId": "baker-sl-st2-optional-pistol",
+            "authorityId": "SCZN3_SL_ST2_TIMED_PAIR_7YD_V1",
+            "kind": "target_optional_equipment",
+        },
+        "officialMissionRequired": False,
+    },
+    "baker_gf_db": {
+        "targetId": "baker_gf_db",
+        "targetAuthorityId": "BAKER_GF_DB_PRODUCT_AUTHORITY_V1",
+        "targetName": "Dartboard Target",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_BAKER_GF_DB_V1",
+        "missionIdentity": {
+            "missionFamily": "bakerFunGame",
+            "missionId": "BAKER_GF_DB_RANGE_GAMES_V1",
+            "resultPackageType": "bakerDartboardGameResult",
+        },
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "equipmentRequirements": {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []},
+        "standardSetupAuthority": {"setupId": "baker-gf-db-optional-equipment", "authorityId": "BAKER_GF_DB_PRODUCT_AUTHORITY_V1", "kind": "target_optional_equipment"},
+        "officialMissionRequired": False,
+    },
+    "baker_gf_bp": {
+        "targetId": "baker_gf_bp",
+        "targetAuthorityId": "BAKER_GF_BP_PRODUCT_AUTHORITY_V1",
+        "targetName": "Bowling Pins Target",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_BAKER_GF_BP_V1",
+        "missionIdentity": {
+            "missionFamily": "bakerFunGame",
+            "missionId": "BAKER_GF_BP_TEN_SHOT_CHALLENGE_V1",
+            "resultPackageType": "bakerBowlingPinsResult",
+        },
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "equipmentRequirements": {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []},
+        "standardSetupAuthority": {"setupId": "baker-gf-bp-optional-equipment", "authorityId": "BAKER_GF_BP_PRODUCT_AUTHORITY_V1", "kind": "target_optional_equipment"},
+        "officialMissionRequired": False,
+    },
+    "ez2c_dot_torture_17": {
+        "targetId": "ez2c_dot_torture_17",
+        "targetAuthorityId": "EZ2C_STYLE_17_DOT_TORTURE_PRODUCT_AUTHORITY_V1",
+        "targetName": "Dot Torture",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_EZ2C_STYLE_17_DOT_TORTURE_V1",
+        "missionIdentity": {"missionFamily": "catalogFunGame", "missionId": "EZ2C_STYLE_17_PUBLISHED_COURSE_V1", "resultPackageType": "dotTortureCourseResult"},
+        "governedDistance": {"value": 3, "unit": "YDS", "locked": True},
+        "equipmentRequirements": {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []},
+        "standardSetupAuthority": {"setupId": "ez2c-style-17-optional-equipment", "authorityId": "EZ2C_STYLE_17_DOT_TORTURE_PRODUCT_AUTHORITY_V1", "kind": "target_optional_equipment"},
+        "officialMissionRequired": False,
+    },
+    "baker_gf_bb_c": {
+        "targetId": "baker_gf_bb_c",
+        "targetAuthorityId": "BAKER_GF_BB_C_PRODUCT_AUTHORITY_V1",
+        "targetName": "Billiard Balls",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_BAKER_GF_BB_C_V1",
+        "missionIdentity": {"missionFamily": "catalogFunGame", "missionId": "BAKER_GF_BB_C_PUBLISHED_GAME_V1", "resultPackageType": "bakerBilliardSequenceResult"},
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "equipmentRequirements": {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []},
+        "standardSetupAuthority": {"setupId": "baker-gf-bb-c-optional-equipment", "authorityId": "BAKER_GF_BB_C_PRODUCT_AUTHORITY_V1", "kind": "target_optional_equipment"},
+        "officialMissionRequired": False,
+    },
+    "baker_gf_battleship": {
+        "targetId": "baker_gf_battleship",
+        "targetAuthorityId": "BAKER_GF_BATTLESHIP_PRODUCT_AUTHORITY_V1",
+        "targetName": "Battleship Target",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_BAKER_GF_BATTLESHIP_V1",
+        "missionIdentity": {"missionFamily": "catalogFunGame", "missionId": "BAKER_GF_BATTLESHIP_PUBLISHED_GAME_V1", "resultPackageType": "bakerBattleshipGameResult"},
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "equipmentRequirements": {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []},
+        "standardSetupAuthority": {"setupId": "baker-gf-battleship-optional-equipment", "authorityId": "BAKER_GF_BATTLESHIP_PRODUCT_AUTHORITY_V1", "kind": "target_optional_equipment"},
+        "officialMissionRequired": False,
+    },
+    "gunfun_22740_vital_dude": {
+        "targetId": "gunfun_22740_vital_dude",
+        "targetAuthorityId": "ATP_GUNFUN_22740_VITAL_DUDE_EVIDENCE_V1",
+        "targetName": "GunFun Vital Dude",
+        "targetProfileVersion": "1",
+        "atpId": "ATP_GUNFUN_22740_VITAL_DUDE_EVIDENCE_V1",
+        "missionIdentity": {
+            "missionFamily": "smartEvidenceCapture",
+            "missionId": "GUNFUN_22740_EVIDENCE_CAPTURE_V1",
+            "resultPackageType": "smartEvidenceResult",
+        },
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "equipmentRequirements": {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []},
+        "standardSetupAuthority": {
+            "setupId": "gunfun-vital-dude-optional-equipment",
+            "authorityId": "ATP_GUNFUN_22740_VITAL_DUDE_EVIDENCE_V1",
+            "kind": "target_optional_equipment",
+        },
+        "officialMissionRequired": False,
+    },
 }
 
 TARGET_ID_ALIASES = {
@@ -152,6 +265,28 @@ TARGET_ID_ALIASES = {
     "gssf-ac-1": "gssf_ac_1",
     "baker_sl_st1": "baker_sl_st1",
     "baker-sl-st1": "baker_sl_st1",
+    "baker_sl_st2": "idpa_silhouette_sl_st2",
+    "baker-sl-st2": "idpa_silhouette_sl_st2",
+    "idpa_silhouette_sl_st2": "idpa_silhouette_sl_st2",
+    "baker_gf_db": "baker_gf_db",
+    "baker-gf-db": "baker_gf_db",
+    "gf-db": "baker_gf_db",
+    "baker_gf_bp": "baker_gf_bp",
+    "baker-gf-bp": "baker_gf_bp",
+    "gf-bp": "baker_gf_bp",
+    "ez2c_style_17": "ez2c_dot_torture_17",
+    "dot-torture": "ez2c_dot_torture_17",
+    "dot_torture_ez2c_style_17": "ez2c_dot_torture_17",
+    "baker_gf_bb_c": "baker_gf_bb_c",
+    "baker-gf-bb-c": "baker_gf_bb_c",
+    "gf-bb-c": "baker_gf_bb_c",
+    "baker_gf_battleship": "baker_gf_battleship",
+    "baker-gf-battleship": "baker_gf_battleship",
+    "gf-battleship": "baker_gf_battleship",
+    "gunfun_22740_vital_dude": "gunfun_22740_vital_dude",
+    "gunfun-22740-vital-dude": "gunfun_22740_vital_dude",
+    "gunfun_22740": "gunfun_22740_vital_dude",
+    "gunfun-22740": "gunfun_22740_vital_dude",
 }
 
 
@@ -183,13 +318,56 @@ def digest(value: Any) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-def resolve_target_authority(target_id: Any) -> Dict[str, Any]:
+def _profile_from_execution_contract(contract: Mapping[str, Any]) -> Dict[str, Any]:
+    target = contract["targetProfile"]
+    session = contract.get("session") or {}
+    contract_identity = {
+        "contractId": contract["contractId"],
+        "contractVersion": contract["contractVersion"],
+        "contractFingerprint": contract["contractFingerprint"],
+    }
+    return {
+        "targetId": target["id"],
+        "targetAuthorityId": target["authorityId"],
+        "targetName": target["product"]["name"],
+        "targetProfileVersion": target["version"],
+        "atpId": target["atpId"],
+        "missionIdentity": {
+            "missionFamily": contract["missionFamily"],
+            "missionId": contract["components"]["mission"]["id"],
+            "resultPackageType": contract["resultPackageType"],
+            "resultPackageVersion": contract["resultPackageVersion"],
+            "executionContract": contract_identity,
+        },
+        "executionContract": contract_identity,
+        "executionCapabilityStates": deepcopy(session.get("capabilityStates") or {}),
+        "governedDistance": deepcopy(session.get("governedDistance") or {"value": None, "unit": None, "locked": False}),
+        "equipmentRequirements": deepcopy(session.get("equipmentRequirements") or {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []}),
+        "standardSetupAuthority": deepcopy(session.get("standardSetupAuthority") or {"setupId": f"{contract['contractId']}-optional-equipment", "authorityId": contract["contractId"], "kind": "target_optional_equipment"}),
+        "officialMissionRequired": bool(session.get("officialMissionRequired", False)),
+        "publisherIdentity": deepcopy(target["publisher"]),
+        "productIdentity": deepcopy(target["product"]),
+    }
+
+
+def resolve_target_authority(
+    target_id: Any,
+    *,
+    execution_contract_resolver: Optional[TargetExecutionContractResolver] = None,
+    mission_family: Any = None,
+) -> Dict[str, Any]:
     requested = clean_text(target_id).lower()
     canonical = TARGET_ID_ALIASES.get(requested, requested)
     profile = TARGET_AUTHORITY_PROFILES.get(canonical)
-    if not profile:
-        raise SessionAuthorityError("target_unavailable", "target_id_not_registered", 404)
-    return deepcopy(profile)
+    if profile:
+        return deepcopy(profile)
+    resolver = execution_contract_resolver or runtime_resolver()
+    try:
+        return _profile_from_execution_contract(resolver.resolve(canonical, mission_family))
+    except TargetExecutionContractError as exc:
+        if exc.payload.get("reason") == "execution_contract_unavailable":
+            raise SessionAuthorityError("target_unavailable", "target_id_not_registered", 404) from exc
+        raise SessionAuthorityError(exc.payload.get("status", "authority_unavailable"), exc.payload["reason"], 409) from exc
 
 
 def _candidate_id(candidate: Mapping[str, Any], index: int) -> str:
@@ -435,6 +613,22 @@ def correction_capability(profile: Mapping[str, Any], candidate: Mapping[str, An
 def assess_equipment(profile: Mapping[str, Any], candidate: Mapping[str, Any]) -> Dict[str, Any]:
     mission = official_mission_eligibility(profile, candidate)
     official_score = {"status": "not_applicable"}
+    if profile.get("executionContract"):
+        registered = profile.get("executionCapabilityStates") or {}
+        capabilities = {
+            "evidence": deepcopy(registered.get("evidence") or {"status": "available"}),
+            "measurement": deepcopy(registered.get("measurement") or {"status": "unavailable", "reason": "measurement_authority_not_registered"}),
+            "correction": deepcopy(registered.get("correction") or {"status": "not_applicable"}),
+            "officialScore": deepcopy(registered.get("officialScore") or {"status": "not_applicable"}),
+        }
+        return {
+            "candidateId": candidate["candidateId"],
+            "equipmentFingerprint": candidate["equipmentFingerprint"],
+            "officialMission": mission,
+            "capabilities": capabilities,
+            "restrictions": [],
+            "guidance": [] if mission["status"] != "authority_unavailable" else ["Optional capability authority is unavailable; target admission remains independent."],
+        }
     if profile["missionIdentity"]["missionFamily"] == "gssf":
         official_score = (
             {"status": "available", "scope": "official_mission"}
@@ -475,13 +669,25 @@ def atp_fingerprint(profile: Mapping[str, Any]) -> str:
     return digest(governed)
 
 
-def prepare_session(payload: Any, store: Any, *, now: Optional[datetime] = None) -> Dict[str, Any]:
+def prepare_session(
+    payload: Any,
+    store: Any,
+    *,
+    now: Optional[datetime] = None,
+    execution_contract_resolver: Optional[TargetExecutionContractResolver] = None,
+) -> Dict[str, Any]:
     if not isinstance(payload, Mapping):
         raise SessionAuthorityError("invalid_request", "payload_must_be_an_object")
     target_id = payload.get("targetId") or payload.get("target_id")
     if not clean_text(target_id):
         raise SessionAuthorityError("invalid_request", "target_id_required")
-    profile = resolve_target_authority(target_id)
+    profile = resolve_target_authority(
+        target_id,
+        execution_contract_resolver=execution_contract_resolver,
+        mission_family=payload.get("missionFamily") or payload.get("mission_family"),
+    )
+    if profile["missionIdentity"]["missionFamily"] == "secProgressionEvaluation":
+        raise SessionAuthorityError("authority_unavailable", "cross_session_progression_route_required", 409)
     candidates_raw = payload.get("equipmentCandidates") or payload.get("equipment_candidates")
     use_standard_setup = candidates_raw is None or candidates_raw == []
     if candidates_raw is not None and not isinstance(candidates_raw, list):
@@ -528,6 +734,7 @@ def prepare_session(payload: Any, store: Any, *, now: Optional[datetime] = None)
         },
         "targetAdmission": target_admission(profile),
         "missionIdentity": profile["missionIdentity"],
+        "executionContract": profile.get("executionContract"),
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "equipmentRequirements": profile["equipmentRequirements"],
@@ -555,6 +762,7 @@ def start_session(
     *,
     idempotency_key: Any = None,
     now: Optional[datetime] = None,
+    execution_contract_resolver: Optional[TargetExecutionContractResolver] = None,
 ) -> Dict[str, Any]:
     if not isinstance(payload, Mapping):
         raise SessionAuthorityError("invalid_request", "payload_must_be_an_object")
@@ -588,7 +796,11 @@ def start_session(
     if preparation.get("consumedAt"):
         raise SessionAuthorityError("preparation_invalid", "preparation_already_consumed", 409)
 
-    current_profile = resolve_target_authority(preparation["targetId"])
+    current_profile = resolve_target_authority(
+        preparation["targetId"],
+        execution_contract_resolver=execution_contract_resolver,
+        mission_family=preparation["missionIdentity"].get("missionFamily"),
+    )
     if (
         current_profile["targetProfileVersion"] != preparation["targetProfileVersion"]
         or atp_fingerprint(current_profile) != preparation["atpFingerprint"]
@@ -621,6 +833,7 @@ def start_session(
         },
         "targetAdmission": target_admission(current_profile),
         "missionIdentity": current_profile["missionIdentity"],
+        "executionContract": current_profile.get("executionContract"),
         "officialMission": equipment_assessment["officialMission"],
         "capabilities": equipment_assessment["capabilities"],
         "restrictions": equipment_assessment["restrictions"],
@@ -744,6 +957,23 @@ class PostgresSessionStore:
             "requestFingerprint": row["request_fingerprint"],
             "response": row["response_package"],
         } if row else None
+
+    def get_authoritative_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        with self._connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select target_id, mission_identity, response_package from authoritative_sessions where authoritative_session_id = %s",
+                    (session_id,),
+                )
+                row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "authoritativeSessionId": session_id,
+            "targetId": row["target_id"],
+            "missionIdentity": row["mission_identity"],
+            "response": row["response_package"],
+        }
 
     def create_session(self, record: Mapping[str, Any], preparation_id: str, consumed_at: str) -> Dict[str, Any]:
         try:

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "gunfun_22920_friendly_competition",
+    "targetName": "Friendly Competition",
+    "targetFamily": "GunFun Batch 2",
+    "targetType": "two-player-scored-competition",
+    "discipline": "target shooting",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "22920",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Friendly Competition",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "resultPackageType": "smartEvidenceResult",
+    "guidanceMode": "evidence_only"
+  },
+  "uteRouting": {
+    "targetId": "gunfun_22920_friendly_competition",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "22920",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Friendly Competition",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "geometryAuthorityStatus": "image_plane_evidence_only",
+    "scoringAuthorityStatus": "not_applicable",
+    "resultPackageType": "smartEvidenceResult",
+    "authorityStatus": "supported_by_exact_target_execution_contract",
+    "rulesSource": "Publisher rules are preserved, but the frozen executors cannot execute the complete rule set.",
+    "geometryStatus": "image_plane_evidence_only",
+    "instructionStatus": "unavailable",
+    "scoringStatus": "not_applicable_for_approved_evidence_contract",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "registered-photo-plus-shooter-declared-image-plane-observations"
+  },
+  "executionComposition": {
+    "targetProfileRef": {
+      "id": "gunfun_22920_friendly_competition",
+      "version": "1"
+    },
+    "geometryComponentRef": {
+      "id": "gunfun_22920_friendly_competition-geometry",
+      "version": "1"
+    },
+    "registrationComponentRef": {
+      "id": "gunfun_22920_friendly_competition-registration",
+      "version": "1"
+    },
+    "scoringComponentRef": {
+      "id": "gunfun_22920_friendly_competition-scoring",
+      "version": "1"
+    },
+    "missionComponentRef": {
+      "id": "gunfun_22920_friendly_competition-mission",
+      "version": "1"
+    },
+    "executionContractRef": {
+      "id": "tec-gunfun_22920_friendly_competition-smart-evidence-v1",
+      "version": "1"
+    }
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "publisher_target_profile_plus_founder_approved_evidence_contract",
+    "geometryAuthorityLevel": "image-plane-evidence-only",
+    "instructionAuthorityLevel": "unavailable",
+    "sourceConfidence": "publisher-product-and-artwork-confirmed"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "Each player takes 10 shots per target using both hands, strong (dominant) hand and weak (non-dominant) hand as noted.",
+      "Shots on the line count.",
+      "Highest score wins!",
+      "Weak Hand",
+      "Strong Hand",
+      "Both Hands"
+    ],
+    "officialRules": [
+      "10 shots per player per labeled target",
+      "shots on the line count",
+      "highest score wins"
+    ],
+    "courseOfFire": [
+      "10 shots per player per labeled target",
+      "shots on the line count",
+      "highest score wins"
+    ],
+    "intendedUse": "Publisher rules are preserved, but the frozen executors cannot execute the complete rule set.",
+    "shotCount": "10 per player per target",
+    "distance": null,
+    "passFailOrScoringRules": [
+      "Printed numeric or mission features exist, but complete executable scoring authority is unavailable under the frozen contract."
+    ]
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "targetWidthInches": 23,
+      "targetHeightInches": 35
+    },
+    "gridSpacing": null,
+    "bullCount": null,
+    "zoneCount": null,
+    "aimPointRules": [
+      "Optional aim is shooter-declared session evidence only."
+    ],
+    "scoringZones": [],
+    "ringGeometry": "unavailable_for_canonical_classification"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": "one_or_more_visible_observations",
+    "requiredDistance": false,
+    "requiredSetupFields": [
+      "admitted evidence image"
+    ],
+    "minimumConfidenceRequirements": [
+      "backend-verified image hash",
+      "normalized observations in image bounds",
+      "reconciled observation counts"
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "frozen challenge executor lacks the combined shot-quota, hand-group, numeric aggregation, and highest-score semantics",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "validated rounded-rectangle UGO boundaries",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "publisher_product_page",
+      "source": "https://gunfun.com/shop/friendly-competition-22920/",
+      "authorityType": "product_identity_sku_dimensions_categories_and_published_description",
+      "notes": "Current GunFun product page inspected after the Batch 2 cohort was frozen."
+    },
+    {
+      "sourceType": "publisher_product_representation",
+      "source": "authority-evidence/gunfun/episode56/batch2/publisher-representations/22920.jpg",
+      "authorityType": "visible_artwork_and_printed_text",
+      "notes": "SHA-256 37124f01331ab81b8274838fbaac6dcad33fabbca591e6f611d5f1f2fd8c96f6; admitted as evidence-capture asset, not as canonical scoring geometry."
+    }
+  ]
+}

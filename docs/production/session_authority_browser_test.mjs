@@ -241,7 +241,7 @@ try {
     await page.locator("#continueStandardSetup").click();
     await page.waitForURL(url => url.pathname.endsWith("/shoot.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
     const stored = await page.evaluate(sessionId => {
-      const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+      const key = `SCZN3_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
       return JSON.parse(localStorage.getItem(key));
     }, `sczn3-session-browser-${targetId}`);
     assert.equal(stored.authoritativeSessionId, `sczn3-session-browser-${targetId}`);
@@ -279,7 +279,7 @@ try {
       await page.locator("#saveMarks").click();
       await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
       const completed = await page.evaluate(sessionId => {
-        const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+        const key = `SCZN3_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
         return JSON.parse(localStorage.getItem(key));
       }, `sczn3-session-browser-${targetId}`);
       assert.equal(completed.savedToSEC, true);
@@ -301,7 +301,7 @@ try {
       assert.equal(new URL(page.url()).pathname.endsWith("/shoot.html"), true, "Show Results must remain on the GSSF Target Page");
       assert.equal(await page.locator("#saveMarks").isDisabled(), true, "Save Session must wait for Timer Time");
       const beforeTimer = await page.evaluate(sessionId => {
-        const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+        const key = `SCZN3_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
         return JSON.parse(localStorage.getItem(key));
       }, `sczn3-session-browser-${targetId}`);
       assert.notEqual(beforeTimer.savedToSEC, true, "Show Results must not save the GSSF session automatically");
@@ -316,7 +316,7 @@ try {
       await page.locator("#saveMarks").click();
       await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
       const completed = await page.evaluate(sessionId => {
-        const key = `SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
+        const key = `SCZN3_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
         return JSON.parse(localStorage.getItem(key));
       }, `sczn3-session-browser-${targetId}`);
       assert.equal(completed.savedToSEC, true);
@@ -511,7 +511,7 @@ try {
   await admittedPage.waitForURL(url => url.pathname.endsWith("/shoot.html"));
   const admittedSession = await admittedPage.evaluate(() => {
     const ref = JSON.parse(localStorage.getItem("SCZN3_BAKER_ACTIVE_SESSION"));
-    return JSON.parse(localStorage.getItem(`SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(ref.sessionId)}`));
+    return JSON.parse(localStorage.getItem(`SCZN3_SESSION_RECORD_${encodeURIComponent(ref.sessionId)}`));
   });
   assert.equal(admittedSession.sessionMode, "target_evidence");
   assert.equal(admittedSession.officialMission.status, "authority_unavailable");

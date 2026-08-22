@@ -11,8 +11,14 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
-- [Episode 53 — Governed Implementation Closure](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md)
-- [Episode 53 Restore Point](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/RESTORE_POINT.md)
+- [Episode 57 — Landing Page Closure](../../CHECKPOINTS/SCZN3_EP57_LANDING_PAGE_CLOSURE_2026-08-22/CHECKPOINT.md)
+- [Episode 57 Restore Point](../../CHECKPOINTS/SCZN3_EP57_LANDING_PAGE_CLOSURE_2026-08-22/RESTORE_POINT.md)
+
+## Current working knowledge baseline
+
+- [M-014 — Publisher OS 11-Publisher Knowledge Baseline](./milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md)
+- [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
+- No active episode. Survey remains not Founder Approved. Publisher expansion remains capped at 11 until the Founder explicitly reopens it.
 
 ## Evidence policy
 

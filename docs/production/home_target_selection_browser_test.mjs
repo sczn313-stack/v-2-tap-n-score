@@ -4,131 +4,179 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8101";
+const navigationLabels = ["Equipment Library", "Smart Targets", "Ballistic Vault"];
+const doorNames = [
+  "DIAGNOSE & ZERO", "PRACTICE", "COMPETE", "QUALIFY",
+  "LAW ENFORCEMENT", "FUN & GAMES", "JUST SHOOT", "MILITARY"
+];
 
-const browser = await chromium.launch({
-  headless: true,
-  executablePath: process.env.SCZN3_CHROME_EXECUTABLE || undefined
-});
-
+const browser = await chromium.launch({ headless: true, executablePath: process.env.SCZN3_CHROME_EXECUTABLE || undefined });
 try {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "no-preference" });
-  await context.route("**/api/session/prepare", async route => {
-    const request = route.request().postDataJSON();
-    const targetId = request.targetId;
-    const category = targetId === "gssf_ac_1" ? "Pistol" : "Rifle";
-    const candidate = {
-      candidateId: `standard-${targetId}`, weaponCategory: category, manufacturer: "Standard Setup",
-      modelType: category, modelCaliber: "Shooter ammunition", opticType: category === "Pistol" ? "Pistol sights" : "Scope",
-      adjustmentUnit: category === "Pistol" ? "" : "MOA", clickValue: category === "Pistol" ? null : 0.25,
-      source: "backend_standard_setup", setupAuthority: "backend-target-authority", setupAuthorityId: `authority-${targetId}`,
-      displayFields: [{ label: "Firearm", value: category }]
-    };
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
-      ok: true, status: "prepared", preparationToken: `prepare-${targetId}`, expiresAt: "2026-08-05T23:59:59+00:00",
-      target: { targetId }, targetAdmission: { status: "admitted", targetId }, missionIdentity: {}, governedDistance: {},
-      equipmentRequirements: { weaponCategories: [category] }, standardSetup: candidate, setupMode: "standard",
-      equipmentAssessments: [{
-        candidateId: candidate.candidateId,
-        officialMission: { status: "eligible", restrictionIds: [] },
-        capabilities: { evidence: { status: "available" }, measurement: { status: "available" } },
-        restrictions: []
-      }]
+  for (const viewport of [{ width: 1280, height: 1000 }, { width: 390, height: 844 }]) {
+    const context = await browser.newContext({ viewport, reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.addInitScript(() => {
+      window.__speechCancelCount = 0;
+      window.__speechSpeakCount = 0;
+      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: {
+        cancel() { window.__speechCancelCount += 1; },
+        speak() { window.__speechSpeakCount += 1; }
+      } });
+      window.SpeechSynthesisUtterance = class { constructor(message) { this.text = message; } };
+    });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(`${baseUrl}/index.html?episode57=${viewport.width}`, { waitUntil: "networkidle" });
+    await page.waitForFunction(() => document.documentElement.dataset.sczn3NavigationReady === "true");
+
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    const drawer = page.locator("#packageMenuDrawer");
+    assert.deepEqual((await drawer.locator("a").allTextContents()).map(value => value.trim()), navigationLabels);
+    assert.equal(await page.locator(".ecosystem-brand").getAttribute("href"), "index.html");
+    const smartTargetsUrl = new URL(await drawer.getByRole("link", { name: "Smart Targets", exact: true }).getAttribute("href"));
+    assert.equal(smartTargetsUrl.hash, "#targetExperiences");
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await drawer.waitFor({ state: "hidden" });
+
+    const hero = await page.locator(".ecosystem-hero-line").evaluateAll(lines => lines.map(line => ({
+      text: line.textContent.replace(/\s+/g, " ").trim(),
+      lead: getComputedStyle(line.querySelector("strong")).color,
+      finish: getComputedStyle(line.querySelector(":scope > span")).color
+    })));
+    assert.deepEqual(hero.map(line => line.text), ["ZERO FASTER.", "SHOOT SMARTER.", "KEEP GETTING BETTER."]);
+    assert.ok(hero.every(line => line.lead !== line.finish));
+
+    const bodyText = await page.locator("body").innerText();
+    assert.doesNotMatch(bodyText, /Available Now|Coming Soon|Recommended Targets/i);
+    const cameraPhoto = page.locator("#landingCameraInput");
+    const libraryPhoto = page.locator("#landingPhotoInput");
+    assert.equal(await cameraPhoto.getAttribute("accept"), "image/*");
+    assert.equal(await cameraPhoto.getAttribute("capture"), "environment");
+    assert.equal(await libraryPhoto.getAttribute("accept"), "image/*");
+    assert.equal(await libraryPhoto.getAttribute("capture"), null);
+    const entryPositions = await page.locator("[data-guided-entry]").evaluateAll(entries => Object.fromEntries(entries.map(entry => {
+      const bounds = entry.getBoundingClientRect();
+      return [entry.dataset.guidedEntry, { top: bounds.top, left: bounds.left }];
+    })));
+    assert.equal(viewport.width > 700
+      ? entryPositions.choose.left < entryPositions.photo.left
+      : entryPositions.photo.top < entryPositions.choose.top, true, "entry cards use the Founder-approved responsive order");
+    assert.match(bodyText, /CHOOSE OUR TARGET\s+Tap here to select a target below\./);
+    assert.match(bodyText, /SHOW US YOUR TARGET\s+Tap here to take or choose a photo\s+of the target you already have\./i);
+    assert.match(bodyText, /LET THE TARGET TALK\.\s+Tap-n-Score will visually and verbally walk you through your target\./);
+    assert.equal(await page.locator(".ecosystem-talk-action").count(), 0, "the oversized standalone Talk action is removed");
+    let prematureChooser = false;
+    page.once("filechooser", () => { prematureChooser = true; });
+    await page.locator('[data-guided-entry="photo"]').click();
+    await page.waitForTimeout(100);
+    assert.equal(prematureChooser, false, "the green card does not bypass the Founder-approved source picker");
+    assert.equal(await page.locator("#landingPhotoPicker").isVisible(), true);
+    assert.deepEqual((await page.locator(".ecosystem-photo-picker-action").allTextContents()).map(value => value.trim()), ["Take Photo", "Choose Existing Photo"]);
+    const [cameraChooser] = await Promise.all([page.waitForEvent("filechooser"), page.getByText("Take Photo", { exact: true }).click()]);
+    assert.equal(cameraChooser.isMultiple(), false);
+    const [libraryChooser] = await Promise.all([page.waitForEvent("filechooser"), page.getByText("Choose Existing Photo", { exact: true }).click()]);
+    assert.equal(libraryChooser.isMultiple(), false);
+    await page.locator('[data-guided-entry="choose"]').click();
+    assert.match(await page.locator("[data-talk-status]").textContent(), /experience this target authorizes/i);
+    assert.equal(await page.locator("body").evaluate(body => body.classList.contains("ecosystem-talk-enabled")), true);
+
+    const doors = page.locator("[data-door-id]");
+    assert.equal(await doors.count(), 8);
+    assert.deepEqual((await page.locator("[data-door-item] .ecosystem-door-title").allTextContents()).map(value => value.trim()), doorNames);
+    assert.equal(await page.locator("[data-representative-target-id] .ecosystem-qrc").count(), 8);
+    const renderedTargetIds = await page.locator("[data-target-id]").evaluateAll(nodes => nodes.map(node => node.dataset.targetId.toLowerCase()));
+    assert.equal(new Set(renderedTargetIds).size, renderedTargetIds.length, "every target identity appears exactly once across representatives and all expanded choices");
+    assert.equal(renderedTargetIds.filter(id => id === "m4_25m_zero").length, 1, "M4 appears only as the Military representative");
+    assert.equal(await page.locator(".ecosystem-representative-start").count(), 0, "the duplicate representative start row is removed");
+    const shooterDescriptions = await page.locator(".ecosystem-door-choice [data-shooter-description]").allTextContents();
+    assert.ok(shooterDescriptions.length > 0 && shooterDescriptions.every(value => value.trim().length > 0), "every expanded target has dedicated shooter-facing copy");
+    assert.ok(shooterDescriptions.every(value => !/\b(?:registered|authority|admitted|capabilit(?:y|ies)|evidence|unavailable|scoring rules)\b/i.test(value)), "expanded target copy does not expose machine or governance terminology");
+    assert.equal(await page.evaluate(() => Object.values(window.SCZN3TargetExperiences.experiences).every(experience => typeof experience.shooterDescription === "string" && !("description" in experience))), true, "target presentation data uses an explicit shooterDescription field");
+    const columns = await page.locator(".ecosystem-door-grid").evaluate(grid => getComputedStyle(grid).gridTemplateColumns.split(" ").length);
+    assert.equal(columns, viewport.width > 700 ? 2 : 1);
+    const compete = page.locator('[data-door-item="compete"]');
+    assert.match((await compete.locator("[data-door-id]").innerText()).replace(/\s+/g, " "), /SEE TARGETS ↓/);
+    await compete.locator("[data-door-id]").click();
+    assert.equal(await compete.locator(".ecosystem-door-targets").isVisible(), true);
+    assert.match((await compete.locator("[data-door-id]").innerText()).replace(/\s+/g, " "), /CLOSE ↑/);
+    assert.equal(await compete.locator('[data-experience-id="uspsa-practice-target"]').count(), 0, "the representative target is not repeated as an additional target card");
+    assert.equal(await compete.locator('.ecosystem-door-representative-entry[data-target-id="BAKER_SL_ST1"]').getAttribute("href"), "t/baker/sl-st1/");
+    assert.equal(await page.locator("[data-printer-explore]").getAttribute("href"), "https://bakertargets.com/shop/");
+    const cancelBeforeClose = await page.evaluate(() => window.__speechCancelCount);
+    await compete.locator("[data-door-id]").click();
+    assert.equal(await compete.locator(".ecosystem-door-targets").isHidden(), true);
+    assert.match((await compete.locator("[data-door-id]").innerText()).replace(/\s+/g, " "), /SEE TARGETS ↓/);
+    assert.ok(await page.evaluate(() => window.__speechCancelCount) > cancelBeforeClose, "CLOSE cancels active activity narration immediately");
+
+    const diagnose = page.locator('[data-door-item="diagnose-zero"]');
+    await diagnose.locator("[data-door-id]").click();
+    assert.equal(await diagnose.locator('[data-experience-id="hundred-yard-bullseye"]').count(), 0);
+    await diagnose.locator('[data-experience-id="gunfun-five-circles"]').hover();
+    assert.equal(await page.locator("[data-printer-explore]").getAttribute("href"), "https://gunfun.com/shop/");
+
+    const practiceNames = await page.locator(".ecosystem-practice-name span:last-child").allTextContents();
+    assert.ok(practiceNames.length >= 3 && practiceNames.every(value => value.trim() === "Practice Target"));
+
+    assert.match(bodyText, /EVERY TARGET\. EVERY SESSION\. YOUR HISTORY\./);
+    assert.match(bodyText, /Save your SEC and shooting history\./);
+    assert.equal(await page.locator(".ecosystem-payoff-half--vault").getAttribute("href"), "records.html");
+    assert.match(await page.locator("[data-printer-explore-title]").textContent(), /Explore More from GunFun Shooting Targets/);
+    assert.equal(await page.locator(".ecosystem-family-card").isVisible(), true);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+    assert.equal(await page.locator(".ecosystem-entry-card, .ecosystem-door-representative-entry, [data-door-id], .ecosystem-preservation-payoff a").evaluateAll(controls => controls.filter(control => {
+      const style = getComputedStyle(control);
+      return style.display !== "none" && style.visibility !== "hidden";
+    }).every(control => {
+      const bounds = control.getBoundingClientRect();
+      return bounds.width >= 44 && bounds.height >= 44;
+    })), true, `${viewport.width}px visible primary actions meet the 44px tap target minimum`);
+    assert.deepEqual(errors, []);
+    await context.close();
+    console.log(`PASS Episode 57 landing contracts at ${viewport.width}px`);
+  }
+
+  const standardContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const standardSetup = {
+    candidateId: "standard-gssf-pistol", weaponCategory: "Pistol", manufacturer: "Standard Setup",
+    modelType: "Pistol", modelCaliber: "Shooter ammunition", opticType: "Pistol sights",
+    adjustmentUnit: "", clickValue: null, source: "backend_standard_setup",
+    setupAuthority: "backend-target-authority", setupAuthorityId: "GSSF_AC_1_STANDARD_SETUP_v1",
+    displayFields: [{ label: "Firearm", value: "Pistol" }]
+  };
+  let selectedEquipment = null;
+  await standardContext.route("**/api/session/prepare", route => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify({
+      ok: true, status: "prepared", preparationToken: "landing-standard-gssf", expiresAt: "2026-08-25T00:00:00Z",
+      target: { targetId: "gssf_ac_1", targetName: "GSSF AC-1" },
+      targetAdmission: { status: "admitted", targetId: "gssf_ac_1" },
+      missionIdentity: { missionFamily: "gssf", missionId: "GSSF_AC_1_PAPER_PENALTY", resultPackageType: "gssfPaperPenaltyResult" },
+      governedDistance: { value: null, unit: null, locked: false },
+      equipmentRequirements: { weaponCategories: ["Pistol"] },
+      standardSetup, setupMode: "standard",
+      equipmentAssessments: [{ candidateId: standardSetup.candidateId, officialMission: { status: "eligible", restrictionIds: [] }, capabilities: { evidence: { status: "available" } }, restrictions: [] }]
+    })
+  }));
+  await standardContext.route("**/api/session/start", async route => {
+    selectedEquipment = route.request().postDataJSON().selectedEquipment;
+    await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({
+      ok: true, status: "created", authoritativeSessionId: "landing-standard-session", createdAt: "2026-08-21T22:30:00Z",
+      sessionLifecycle: "created", sessionMode: "official_mission",
+      target: { targetId: "gssf_ac_1", targetAuthorityId: "gssf_ac_1", targetName: "GSSF AC-1", targetProfileVersion: "1", atpId: "gssf-ac-1-atp-v1" },
+      missionIdentity: { missionFamily: "gssf", missionId: "GSSF_AC_1_PAPER_PENALTY", resultPackageType: "gssfPaperPenaltyResult" },
+      targetAdmission: { status: "admitted", targetId: "gssf_ac_1" },
+      officialMission: { status: "eligible", restrictionIds: [] },
+      capabilities: { evidence: { status: "available" } }, restrictions: [],
+      governedDistance: { value: null, unit: null, locked: false }, selectedEquipment: standardSetup
     }) });
   });
-
-  const page = await context.newPage();
-  await page.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Open navigation menu" }).click();
-  const drawer = page.locator("#packageMenuDrawer");
-  await drawer.waitFor({ state: "visible" });
-  const drawerEntries = await drawer.locator("a").evaluateAll(links => links.map(link => ({
-    label: link.textContent.trim(),
-    href: link.getAttribute("href")
-  })));
-  assert.deepEqual(drawerEntries.map(entry => entry.label), [
-    "Home",
-    "Equipment",
-    "Smart Targets",
-    "History"
-  ], "homepage drawer uses the locked universal application navigation");
-  const smartTargetsDestination = new URL(drawerEntries.find(entry => entry.label === "Smart Targets")?.href);
-  assert.equal(smartTargetsDestination.pathname.endsWith("/index.html"), true, "Smart Targets routes to the homepage");
-  assert.equal(smartTargetsDestination.hash, "#targetExperiences", "Smart Targets routes directly to the Available Now and Coming Soon catalog");
-  await page.getByRole("button", { name: "Open navigation menu" }).click();
-  await drawer.waitFor({ state: "hidden" });
-  assert.match(await page.locator("#catalogTitle").textContent(), /TAP\s*your target below/);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').count(), 4);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="coming-soon"]').evaluateAll(cards => cards.every(card => card.tagName === "ARTICLE" && getComputedStyle(card).cursor !== "pointer")), true);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"]').evaluateAll(cards => cards.every(card => card.tagName === "A" && /Tap to Begin/.test(card.textContent))), true);
-  assert.equal(await page.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count(), 4);
-  const catalogOrder = await page.locator(".ecosystem-target-card").evaluateAll(cards => cards.map(card => ({
-    id: card.dataset.experienceId,
-    status: card.dataset.status
-  })));
-  assert.ok(
-    catalogOrder.findIndex(card => card.id === "uspsa-practice-target") < catalogOrder.findIndex(card => card.id === "dot-torture"),
-    "available Baker SL-ST1 must appear before Coming Soon Dot Torture"
-  );
-  const firstComingSoon = catalogOrder.findIndex(card => card.status === "coming-soon");
-  assert.equal(catalogOrder.slice(0, firstComingSoon).every(card => card.status === "available"), true, "available targets stay grouped before Coming Soon targets");
-  const bakerSLST1 = page.locator('[data-experience-id="uspsa-practice-target"]');
-  assert.equal(await bakerSLST1.getAttribute("data-status"), "available");
-  assert.match(await bakerSLST1.textContent(), /Baker SL-ST1 — USPSA/);
-  assert.match(await bakerSLST1.textContent(), /Available now/);
-  assert.match(await bakerSLST1.textContent(), /Tap to Begin/);
-  assert.match(await bakerSLST1.textContent(), /Tap your bullet holes, see your A\/B\/C\/D score, and save your Shooter Experience Card\./);
-  assert.doesNotMatch(await bakerSLST1.textContent(), /Coming Soon/i);
-  assert.equal(await bakerSLST1.getAttribute("href"), "t/baker/sl-st1/");
-  assert.equal(await bakerSLST1.getAttribute("data-target-id"), "BAKER_SL_ST1");
-  const bakerThumbnail = bakerSLST1.locator(".ecosystem-target-thumbnail img");
-  assert.match(await bakerThumbnail.getAttribute("src"), /authority-evidence\/baker-sl-st1\/BAKER_SL_ST1_PRINTER_PRODUCT_IMAGE\.webp$/);
-  const bakerThumbnailGeometry = await bakerThumbnail.evaluate(image => ({
-    complete: image.complete,
-    naturalWidth: image.naturalWidth,
-    naturalHeight: image.naturalHeight,
-    objectFit: getComputedStyle(image).objectFit,
-    renderedWidth: image.getBoundingClientRect().width,
-    renderedHeight: image.getBoundingClientRect().height
-  }));
-  assert.equal(bakerThumbnailGeometry.complete, true, "USPSA catalog artwork loads");
-  assert.ok(bakerThumbnailGeometry.naturalWidth > 0 && bakerThumbnailGeometry.naturalHeight > 0, "USPSA catalog artwork has real image dimensions");
-  assert.equal(bakerThumbnailGeometry.objectFit, "contain", "USPSA catalog artwork fills without distortion or geometry loss");
-  assert.ok(bakerThumbnailGeometry.renderedWidth > 0 && bakerThumbnailGeometry.renderedHeight > 0, "USPSA catalog artwork occupies its thumbnail");
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
-
-  await page.locator('[data-experience-id="gssf-practice-target"]').click();
-  await page.waitForURL(url => url.pathname.endsWith("/matrix.html") && url.searchParams.get("target_profile_id") === "gssf_ac_1");
-  await page.locator("#standardSetupPanel:not(.is-hidden)").waitFor();
-  const pending = await page.evaluate(() => JSON.parse(sessionStorage.getItem("SCZN3_PENDING_TARGET_PROFILE")));
-  assert.deepEqual(pending, { targetId: "gssf_ac_1" });
-  assert.equal(await page.evaluate(() => localStorage.getItem("SCZN3_BAKER_ACTIVE_SESSION")), null);
-
-  await page.goBack({ waitUntil: "networkidle" });
-  assert.equal(await page.locator('[data-experience-id="gssf-practice-target"]').count(), 1);
-  assert.equal(await page.evaluate(() => localStorage.getItem("SCZN3_BAKER_ACTIVE_SESSION")), null);
-  assert.deepEqual(await page.evaluate(() => JSON.parse(sessionStorage.getItem("SCZN3_PENDING_TARGET_PROFILE"))), { targetId: "gssf_ac_1" });
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
-  await context.close();
-  console.log("PASS universal homepage navigation, Catalog discovery, pending identity, inactive Coming Soon, and Browser Back contracts");
-
-  const reducedContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
-  const reducedPage = await reducedContext.newPage();
-  await reducedPage.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
-  const reducedAnimation = await reducedPage.locator('.ecosystem-target-card[data-status="available"]').first().evaluate(card => getComputedStyle(card).animationName);
-  assert.equal(reducedAnimation, "none");
-  await reducedContext.close();
-  console.log("PASS reduced-motion discovery cue contract");
-
-  const visitContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  const visitPage = await visitContext.newPage();
-  for (let visit = 1; visit <= 4; visit += 1) {
-    await visitPage.goto(`${baseUrl}/index.html?catalog_test_view=${visit}`, { waitUntil: "domcontentloaded" });
-    const cueCount = await visitPage.locator('.ecosystem-target-card[data-status="available"].is-discovery-cued').count();
-    assert.equal(cueCount, visit <= 3 ? 4 : 0, `catalog view ${visit} discovery cue state`);
-  }
-  assert.equal(await visitPage.evaluate(() => localStorage.getItem("SCZN3_TARGET_CATALOG_VIEW_COUNT_V1")), "4");
-  await visitContext.close();
-  console.log("PASS discovery cue appears on the first three Target Catalog views only");
+  const standardPage = await standardContext.newPage();
+  await standardPage.goto(`${baseUrl}/index.html?standard-equipment=1`, { waitUntil: "networkidle" });
+  const qualify = standardPage.locator('[data-door-item="qualify"]');
+  await qualify.locator('.ecosystem-door-representative-entry[data-target-id="gssf_ac_1"]').click();
+  await standardPage.waitForURL(url => url.pathname.endsWith("/shoot.html"));
+  assert.deepEqual(selectedEquipment, standardSetup, "landing target selection defaults to the backend-governed Standard setup");
+  await standardContext.close();
+  console.log("PASS landing target selection inherits Standard equipment without an equipment roadblock");
 } finally {
   await browser.close();
 }

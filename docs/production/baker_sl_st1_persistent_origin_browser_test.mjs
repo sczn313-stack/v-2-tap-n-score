@@ -151,14 +151,14 @@ try {
   const secFit = await page.evaluate(() => {
     const viewportTop = visualViewport?.offsetTop || 0;
     const viewportBottom = viewportTop + (visualViewport?.height || innerHeight);
-    const evidence = document.querySelector(".sec-baker-evidence-frame").getBoundingClientRect();
+    const evidence = document.querySelector(".sec-target-evidence-frame").getBoundingClientRect();
     const action = document.querySelector("[data-baker-save-sec]").getBoundingClientRect();
     const evidenceProbe = document.elementFromPoint(evidence.left + (evidence.width / 2), evidence.bottom - 2);
     return {
       completeEvidenceVisible: evidence.top >= viewportTop && evidence.bottom <= viewportBottom,
       nextActionVisible: action.top >= viewportTop && action.bottom <= viewportBottom,
       evidenceDoesNotOverlapAction: evidence.bottom <= action.top,
-      evidenceProbeUnobscured: document.querySelector(".sec-baker-evidence-frame").contains(evidenceProbe),
+      evidenceProbeUnobscured: document.querySelector(".sec-target-evidence-frame").contains(evidenceProbe),
       horizontalOverflow: document.documentElement.scrollWidth > innerWidth
     };
   });
@@ -185,7 +185,7 @@ try {
     throw error;
   });
   assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /1 Impact/);
-  assert.deepEqual(await page.locator(".sec-baker-impact-marker").evaluateAll(markers => markers.map(marker => marker.textContent.trim())), ["1"], "preserved historical SEC confirms its captured impact count");
+  assert.deepEqual(await page.locator(".sec-target-impact-marker").evaluateAll(markers => markers.map(marker => marker.textContent.trim())), ["1"], "preserved historical SEC confirms its captured impact count");
   assert.equal(await page.evaluate(id => {
     const record = JSON.parse(localStorage.getItem(`SCZN3_BAKER_SESSION_RECORD_${encodeURIComponent(id)}`));
     return record.savedToSEC === true && record.authorityPackage.impacts[0].impactId === "preserved-impact-1";

@@ -8,6 +8,9 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any, Dict, Mapping, Optional
 
+from execution_capability_registry import CapabilityRegistryError, validate_result
+from target_execution_contract import TargetExecutionContractError, TargetExecutionContractResolver, runtime_resolver
+
 
 class PreservedSECError(Exception):
     def __init__(self, status: str, reason: str, http_status: int = 400, **details: Any):
@@ -40,7 +43,40 @@ def _target_id(session: Mapping[str, Any]) -> str:
     )
 
 
-def preserve_sec(payload: Any, store: Any, *, now: Optional[datetime] = None) -> Dict[str, Any]:
+def _validate_contract_backed_artifact(
+    session: Mapping[str, Any],
+    governed_target_id: str,
+    resolver: TargetExecutionContractResolver,
+) -> None:
+    result = session.get("authorityPackage") or session.get("backendAuthorityPackage")
+    if not isinstance(result, Mapping) or not isinstance(result.get("executionContract"), Mapping):
+        return
+    if result.get("authoritySource") != "backend-authoritative":
+        raise PreservedSECError("authority_unavailable", "backend_result_authority_required", 409)
+    try:
+        contract = resolver.resolve_identity(result["executionContract"])
+        valid = validate_result(contract, result)
+    except (TargetExecutionContractError, CapabilityRegistryError) as exc:
+        reason = getattr(exc, "payload", {}).get("reason") or str(exc)
+        raise PreservedSECError("authority_unavailable", reason, 409) from exc
+    if contract["targetProfile"]["id"].lower() != _text(governed_target_id).lower():
+        raise PreservedSECError("identity_mismatch", "execution_contract_target_mismatch", 409)
+    if _text(result.get("authoritativeSessionId")) != _text(session.get("sessionId") or session.get("authoritativeSessionId")):
+        raise PreservedSECError("identity_mismatch", "result_session_identity_mismatch", 409)
+    evidence = session.get("targetEvidenceImage")
+    if not isinstance(evidence, Mapping) or not (_text(evidence.get("dataUrl")) or _text(evidence.get("mediaId"))):
+        raise PreservedSECError("invalid_request", "admitted_evidence_image_required")
+    if not valid:
+        raise PreservedSECError("authority_unavailable", "result_package_validation_failed", 409)
+
+
+def preserve_sec(
+    payload: Any,
+    store: Any,
+    *,
+    now: Optional[datetime] = None,
+    execution_contract_resolver: Optional[TargetExecutionContractResolver] = None,
+) -> Dict[str, Any]:
     if not isinstance(payload, Mapping) or not isinstance(payload.get("session"), Mapping):
         raise PreservedSECError("invalid_request", "session_required")
     session = deepcopy(dict(payload["session"]))
@@ -56,6 +92,7 @@ def preserve_sec(payload: Any, store: Any, *, now: Optional[datetime] = None) ->
             "identity_mismatch", "target_identity_mismatch", 409,
             expectedTargetId=governed_target_id, receivedTargetId=submitted_target_id,
         )
+    _validate_contract_backed_artifact(session, governed_target_id, execution_contract_resolver or runtime_resolver())
     preserved_at = (now or datetime.now(timezone.utc)).isoformat()
     session["sessionId"] = session_id
     session["authoritativeSessionId"] = session_id

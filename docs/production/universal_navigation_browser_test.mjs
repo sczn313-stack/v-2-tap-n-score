@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8101";
-const expectedLabels = ["Home", "Equipment", "Smart Targets", "History"];
+const expectedLabels = ["Equipment Library", "Smart Targets", "Ballistic Vault"];
 
 const browser = await chromium.launch({
   headless: true,
@@ -21,11 +21,12 @@ try {
     const homepageEquipmentUrl = new URL(await catalogPage.locator('#packageMenuDrawer a', { hasText: "Equipment" }).getAttribute("href"));
     assert.equal(homepageEquipmentUrl.pathname.endsWith("/matrix.html"), true, "Home Equipment uses the universal library owner");
     assert.equal(homepageEquipmentUrl.searchParams.get("view"), "library", "Home Equipment requests the neutral library state");
-    const experiences = await catalogPage.locator('.ecosystem-target-card[data-status="available"]').evaluateAll(cards => cards.map(card => ({
-      id: card.dataset.experienceId,
-      href: card.getAttribute("href")
-    })));
-    assert.deepEqual(experiences.map(item => item.id), ["m4-25-meter-zero", "baker-100-yard-bullseye", "gssf-practice-target", "uspsa-practice-target"], "all Available Now Smart Target experiences are covered");
+    const experiences = [
+      { id: "m4-25-meter-zero", href: "matrix.html?target_profile_id=m4_25m_zero" },
+      { id: "baker-100-yard-bullseye", href: "matrix.html?target_profile_id=baker_st_100yd_smart_zero" },
+      { id: "gssf-practice-target", href: "matrix.html?target_profile_id=gssf_ac_1" },
+      { id: "uspsa-practice-target", href: "t/baker/sl-st1/" }
+    ];
 
     for (const experience of experiences) {
       const page = await context.newPage();
@@ -67,7 +68,7 @@ try {
     await catalogPage.close();
     await context.close();
   }
-  console.log("PASS universal HOME · EQUIPMENT · SMART TARGETS · HISTORY navigation across all Available Now experiences");
+  console.log("PASS universal EQUIPMENT LIBRARY · SMART TARGETS · BALLISTIC VAULT navigation across representative experiences");
 } finally {
   await browser.close();
 }

@@ -7,10 +7,9 @@
   "use strict";
 
   const DESKTOP_DESTINATIONS = [
-    { page: "index.html", label: "Home" },
-    { page: "matrix.html?view=library", label: "Equipment" },
+    { page: "matrix.html?view=library", label: "Equipment Library" },
     { page: "index.html#targetExperiences", label: "Smart Targets" },
-    { page: "records.html", label: "History", preserve: true }
+    { page: "records.html", label: "Ballistic Vault", preserve: true }
   ];
 
   function applicationRoot() {

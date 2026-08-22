@@ -13,7 +13,7 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.goto(`${baseUrl}/sec.html?reviewSession=003&v=impact-count-identifiers`, { waitUntil: "networkidle" });
-    await page.locator("#secCard:not(.is-hidden)").waitFor();
+    await page.locator('[data-sec-shell="universal-v1"][data-sec-adapter-id="m4-zeroing"]:not(.is-hidden)').waitFor();
     const markers = async selector => page.locator(selector).evaluateAll(nodes => nodes.map(node => ({
       label: node.textContent.trim(),
       left: node.style.left,

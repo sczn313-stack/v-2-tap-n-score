@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/cue-drill-profile-v1.json",
+  "title": "SCZN3 Cue/Drill Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "missionFamily", "resultPackageType", "resultPackageVersion",
+    "profileId", "profileVersion", "cueSelectionMode", "sequenceRule",
+    "timingPolicy", "stages", "capabilityStates"
+  ],
+  "properties": {
+    "missionFamily": {"const": "cueDrillOrchestration"},
+    "resultPackageType": {"const": "cueDrillResult"},
+    "resultPackageVersion": {"const": "1"},
+    "profileId": {"type": "string", "minLength": 1},
+    "profileVersion": {"type": "string", "minLength": 1},
+    "cueSelectionMode": {"enum": ["fixed_order", "seeded_random", "external_command"]},
+    "sequenceRule": {"enum": ["single_pass", "fixed_repeat", "memory_repeat"]},
+    "repeatCount": {"type": "integer", "minimum": 1, "maximum": 100},
+    "timingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "clockSource", "physicalShotTiming"],
+      "properties": {
+        "mode": {"enum": ["untimed", "fixed_practice_window"]},
+        "windowMs": {"type": "integer", "minimum": 1, "maximum": 3600000},
+        "clockSource": {"enum": ["backend_orchestration_clock", "client_practice_clock", "external_reported_timer"]},
+        "physicalShotTiming": {"const": "unavailable"}
+      }
+    },
+    "stages": {
+      "type": "array", "minItems": 1, "maxItems": 100,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["stageId", "title", "cues"],
+        "properties": {
+          "stageId": {"type": "string", "minLength": 1},
+          "title": {"type": "string", "minLength": 1},
+          "instruction": {"type": "string"},
+          "cues": {
+            "type": "array", "minItems": 1, "maxItems": 500,
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["cueId", "label", "responsePolicy"],
+              "properties": {
+                "cueId": {"type": "string", "minLength": 1},
+                "label": {"type": "string", "minLength": 1},
+                "entityIds": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                "responsePolicy": {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["expectedObservationCount", "allowNoObservation"],
+                  "properties": {
+                    "expectedObservationCount": {"type": "integer", "minimum": 0, "maximum": 500},
+                    "allowNoObservation": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "capabilityStates": {"type": "object"}
+  }
+}

@@ -8,7 +8,8 @@
 <meta name="description" content="Select a supported Smart Target Experience and turn paper evidence into authoritative shooter intelligence." />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="landing.css" />
-<link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="platform-ui.css?v=founder-ui-standard-1" />
+<script src="platform_contracts.js?v=episode54-item2-1"></script>
 <script src="smart_target_identity.js"></script>
 <script>
 (function () {
@@ -28,7 +29,7 @@
 <a class="ecosystem-skip-link" href="#targetExperiences">Skip to Target Experiences</a>
 
 <main class="package-landing-shell" data-ecosystem-shell>
-  <header class="ecosystem-header universal-app-header" aria-label="Tap-n-Score header">
+  <header class="ecosystem-header app-header" aria-label="Tap-n-Score header">
     <div class="ecosystem-brand-lockup">
       <img class="ecosystem-brand-mark" src="assets/SCZN3_GOLD_CROSSHAIR_FOUNDER_APPROVED.jpeg" alt="" aria-hidden="true" />
       <a class="ecosystem-brand" href="index.html" aria-label="Tap-n-Score home">
@@ -46,6 +47,9 @@
     <a href="matrix.html?target_profile_id=baker_st_100yd_smart_zero&amp;targetName=Baker%20100%20Yard%20Smart%20Target" data-discovery-experience="100-yard-zeroing">100 Yard Bullseye</a>
     <a href="matrix.html?target_profile_id=gssf_ac_1&amp;targetName=GSSF%20AC-1" data-discovery-experience="gssf-practice" data-target-profile-id="gssf_ac_1" data-target-name="GSSF AC-1">GSSF Practice Target</a>
     <a href="t/baker/sl-st1/" data-discovery-experience="uspsa-practice">USPSA PRACTICE TARGET</a>
+    <a href="t/baker/sl-st2/" data-discovery-experience="idpa-practice">IDPA PRACTICE TARGET</a>
+    <a href="t/baker/fun/?target=gf-db" data-discovery-experience="dartboard-target">DARTBOARD TARGET</a>
+    <a href="t/baker/fun/?target=gf-bp" data-discovery-experience="bowling-pins-target">BOWLING PINS TARGET</a>
     <a href="records.html">Ballistic Vault</a>
   </nav>
 
@@ -53,29 +57,79 @@
     <img class="ecosystem-hero-image" src="assets/landing-hero-visual-scene-img1429.jpeg" alt="Precision rifle positioned on a mountain range" />
     <div class="ecosystem-hero-shade" aria-hidden="true"></div>
     <div class="ecosystem-hero-message" id="ecosystemHeroTitle">
-      <span>ZERO FASTER.</span>
-      <strong>SHOOT SMARTER.</strong>
-      <span>KEEP GETTING BETTER.</span>
+      <span class="ecosystem-hero-line"><strong>ZERO</strong> <span>FASTER.</span></span>
+      <span class="ecosystem-hero-line"><strong>SHOOT</strong> <span>SMARTER.</span></span>
+      <span class="ecosystem-hero-line"><strong>KEEP GETTING</strong> <span>BETTER.</span></span>
     </div>
   </section>
 
-  <section class="ecosystem-catalog-section" id="targetExperiences" aria-labelledby="catalogTitle">
+  <section class="ecosystem-catalog-section" aria-labelledby="catalogTitle">
     <div class="ecosystem-intro">
       <p class="ecosystem-kicker">THE SMART TARGET ECOSYSTEM</p>
       <h1>Come Be Part of the<br />Smart Target Family.</h1>
       <span class="ecosystem-gold-rule" aria-hidden="true"></span>
     </div>
 
-    <header class="ecosystem-catalog-heading">
-      <h2 class="ecosystem-target-instruction" id="catalogTitle"><strong>TAP</strong><span>your target below</span></h2>
-      <p class="ecosystem-availability-heading"><span class="ecosystem-availability-now">Available Now</span> &amp; Coming Soon</p>
-      <p>We’re continually adding support for more of your family’s favorite targets.</p>
-    </header>
+    <section class="ecosystem-entry-area" aria-labelledby="catalogTitle">
+      <div class="ecosystem-primary-entry-row">
+        <a class="ecosystem-entry-card ecosystem-entry-card--choose" href="#targetExperiences" id="catalogTitle" data-guided-entry="choose">
+          <span class="ecosystem-entry-icon" aria-hidden="true">🎯</span>
+          <strong>CHOOSE OUR TARGET</strong>
+          <span>Tap here to select a target below.</span>
+        </a>
+        <span class="ecosystem-entry-or" aria-hidden="true">OR</span>
+        <button class="ecosystem-entry-card ecosystem-entry-card--photo" type="button" data-guided-entry="photo" aria-expanded="false" aria-controls="landingPhotoPicker">
+          <span class="ecosystem-entry-icon" aria-hidden="true">📷</span>
+          <strong>SHOW US YOUR TARGET</strong>
+          <span>Tap here to take or choose a photo<br /><em>of the target you already have.</em></span>
+        </button>
+      </div>
 
-    <div class="ecosystem-target-grid" data-target-experiences aria-live="polite"></div>
+      <div class="ecosystem-photo-picker" id="landingPhotoPicker" role="group" aria-label="Show us your target photo source" hidden>
+        <p>How would you like to show us your target?</p>
+        <div class="ecosystem-photo-picker-actions">
+          <label class="ecosystem-photo-picker-action ecosystem-photo-picker-action--camera" for="landingCameraInput">Take Photo</label>
+          <input id="landingCameraInput" class="ecosystem-photo-input" type="file" accept="image/*" capture="environment" aria-describedby="landingPhotoHelp landingPhotoStatus" />
+          <label class="ecosystem-photo-picker-action ecosystem-photo-picker-action--library" for="landingPhotoInput">Choose Existing Photo</label>
+          <input id="landingPhotoInput" class="ecosystem-photo-input" type="file" accept="image/*" aria-describedby="landingPhotoHelp landingPhotoStatus" />
+        </div>
+        <span class="ecosystem-visually-hidden" id="landingPhotoHelp">Recognition does not create authority or access.</span>
+      </div>
+
+      <div class="ecosystem-talk-payoff" data-talk-entry>
+        <span class="ecosystem-talk-icon" aria-hidden="true">🗣️</span>
+        <div>
+          <p class="ecosystem-talk-tagline">LET THE TARGET TALK.</p>
+          <p class="ecosystem-talk-support">Tap-n-Score will visually and verbally walk you through your target.</p>
+          <p class="ecosystem-talk-status" id="landingPhotoStatus" data-talk-status aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ecosystem-door-section" id="targetExperiences" aria-labelledby="doorTitle">
+      <header class="ecosystem-door-heading">
+        <p class="ecosystem-kicker">WHAT DO YOU WANT TO DO?</p>
+        <h2 id="doorTitle">What do you want to shoot today?</h2>
+        <p>Pick an activity, choose your target, then listen.</p>
+      </header>
+      <div class="ecosystem-target-grid ecosystem-door-grid" data-target-experiences aria-live="polite"></div>
+    </section>
     <noscript>
       <p class="ecosystem-noscript">JavaScript is required to load the Target Experience catalog.</p>
     </noscript>
+
+    <section class="ecosystem-preservation-payoff" aria-label="Your history and target printer">
+      <a class="ecosystem-payoff-half ecosystem-payoff-half--vault" href="records.html">
+        <span class="ecosystem-payoff-kicker">BALLISTIC VAULT</span>
+        <h2 id="preservationPayoffTitle">EVERY TARGET. EVERY SESSION. YOUR HISTORY.</h2>
+        <p>Save your SEC and shooting history.</p>
+      </a>
+      <a class="ecosystem-payoff-half ecosystem-payoff-half--printer" href="https://bakertargets.com/shop/" target="_blank" rel="noopener" data-printer-explore>
+        <span class="ecosystem-payoff-kicker">LIKE THIS TARGET?</span>
+        <h2 data-printer-explore-title>Explore More from Baker Targets <span aria-hidden="true">→</span></h2>
+        <p data-printer-explore-note>Publisher catalog. Supported Smart Target experiences vary.</p>
+      </a>
+    </section>
 
     <aside class="ecosystem-family-card" aria-labelledby="familyTitle">
       <img src="assets/sarg-range-photo.png" alt="Shooter working from a range bench" />

@@ -7,33 +7,39 @@
   <meta name="sczn3-baker-sl-st1-endpoint" content="https://sczn3-authority.onrender.com/api/target/baker-sl-st1/analyze" />
   <title>Silhouette Target (USPSA) · Tap-n-Score</title>
   <link rel="stylesheet" href="../../../styles.css?v=universal-target-controls-6" />
-  <link rel="stylesheet" href="../../../universal-ui.css" />
+  <link rel="stylesheet" href="../../../platform-ui.css" />
   <link rel="stylesheet" href="../../../m4-sec.css" />
-  <link rel="stylesheet" href="../../../sec-universal.css?v=universal-sec-final-gap-1" />
+  <link rel="stylesheet" href="../../../sec-framework.css?v=episode55-inheritance-audit-1" />
   <link rel="stylesheet" href="../../../experience_frame_processing.css?v=universal-processing-visual-2" />
+  <link rel="stylesheet" href="../../../platform_actions.css?v=episode54-item7-1" />
   <link rel="stylesheet" href="../../../baker-sl-st1-sec.css?v=session-2-uspsa-1" />
-  <link rel="stylesheet" href="target-page.css?v=single-photo-entry-1" />
+  <link rel="stylesheet" href="../../../smart_target_workspace.css?v=episode55-inheritance-audit-1" />
   <script src="../../../navigation.js?v=universal-smart-targets-nav-1" defer></script>
   <script src="../../../experience_frame_processing.js?v=universal-processing-visual-2"></script>
+  <script src="../../../platform_actions.js?v=episode54-item7-1"></script>
+  <script src="../../../smart_target_workspace.js?v=episode54-item6-1"></script>
+  <script src="../../../platform_contracts.js?v=episode54-item3-1" defer></script>
+  <script src="../../../sec_adapter_model.js?v=episode54-item4a-1" defer></script>
   <script src="../../../app_state.js?v=mission-a-fresh-score-0814" defer></script>
   <script src="../../../sec_dispatch.js?v=mission-a-fresh-score-0814" defer></script>
   <script src="../../../m4_runtime.js?v=mission-a-fresh-score-0814" defer></script>
   <script src="../../../sec_reopen_lifecycle.js?v=universal-sec-reopen-3" defer></script>
   <script src="../../../sec_v1.js?v=mission-a-fresh-score-0814" defer></script>
+  <script src="../../../sec_framework.js?v=episode55-lowest-score-1" defer></script>
   <script src="../../../sec_session_timeline.js?v=session-2-uspsa-1" defer></script>
   <script src="../../../baker_sl_st1_sec.js?v=session-2-uspsa-1" defer></script>
   <script src="target-page.js?v=session-2-uspsa-1" defer></script>
 </head>
 <body class="platform-page target-page sl-target-page">
-  <header class="m4-header universal-app-header sl-app-header">
+  <header class="m4-header app-header sl-app-header">
     <div class="vendor-slot">
       <img src="../../../assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
         <a class="vendor-name" href="../../../index.html">Tap-n-Score™</a>
       </div>
     </div>
-    <span class="sl-header-target-identity">Baker SL-ST1 <span aria-hidden="true">•</span> USPSA</span>
-    <details class="mobile-platform-menu universal-header-menu">
+    <span class="sl-header-target-identity" data-sczn3-target-profile-identity="baker_sl_st1_practice">USPSA Practice Target</span>
+    <details class="mobile-platform-menu app-header-menu">
       <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
       <a href="../../../index.html">Home</a>
       <a href="../../../matrix.html">Equipment Library</a>
@@ -43,7 +49,7 @@
 
   <main class="sl-page-shell">
     <section class="sl-target-introduction" aria-labelledby="targetName">
-      <p class="sl-printer">Baker Targets</p>
+      <p class="sl-printer" data-sczn3-partnership-surface="baker_sl_st1_practice"><span data-sczn3-publisher-label>Baker Targets</span></p>
       <h1 id="targetName">Silhouette Target (USPSA)</h1>
       <p class="sl-instruction" id="targetInstruction" aria-live="polite">Load your target photo to begin.</p>
     </section>
@@ -56,14 +62,14 @@
       </div>
     </section>
 
-    <section class="sl-workspace" id="targetWorkspace" aria-label="Target evidence workspace" hidden>
-      <div class="sl-image-frame" id="imageFrame">
+    <section class="sl-workspace" id="targetWorkspace" aria-label="Target evidence workspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
+      <div class="sl-image-frame" id="imageFrame" data-sczn3-workspace-evidence="true">
         <img id="targetImage" alt="Loaded Baker silhouette target" />
         <div class="sl-impact-layer" id="impactLayer" aria-hidden="true"></div>
         <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Tap every visible bullet hole"></button>
       </div>
 
-      <div class="sl-workflow-dock workflow-dock--compact" id="workflowDock" data-processing-host>
+      <div class="sl-workflow-dock workflow-dock--compact" id="workflowDock" data-processing-host data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1">
         <div class="workflow-support-row">
           <span id="workspaceFeedback" role="status" aria-live="polite">Tap every bullet hole you see.</span>
           <div class="workflow-secondary-actions" aria-label="Target photo actions">

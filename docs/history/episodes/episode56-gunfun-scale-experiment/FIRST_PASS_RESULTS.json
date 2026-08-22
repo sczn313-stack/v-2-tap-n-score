@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "sczn3-e56-gunfun-first-pass-results-v1",
+  "episode": 56,
+  "status": "governed_first_pass_complete_at_founder_decision_boundary",
+  "classificationScope": "end-to-end runtime target registration",
+  "populationControl": {
+    "existingSczn3Baseline": 10,
+    "episode55InheritanceEvidenceCountedInCohort": false,
+    "episode56GunFunCohort": 12
+  },
+  "metrics": {
+    "cohortSize": 12,
+    "knowledgeRegisteredWithoutNewApplicationCode": 12,
+    "ugoRegistrationCandidatesPackaged": 6,
+    "endToEndRegisteredWithoutNewApplicationCode": 0,
+    "registrationReadyButBlockedByAuthorityGap": 6,
+    "genuineTargetSpecificException": 0,
+    "requiresProposedNewApplicationCodeFounderApprovalRequired": 6,
+    "executionAuthorized": 0
+  },
+  "sharedApplicationCodeBoundary": {
+    "status": "confirmed_founder_decision_required",
+    "affectedTargets": ["E56-T02", "E56-T03", "E56-T05", "E56-T06", "E56-T07", "E56-T10"],
+    "finding": "New target manifests are recognized but forced unavailable. Execution support, mission admission, session authority, UGO classifier dispatch, and result dispatch require application-code target IDs or branches.",
+    "prohibitedBaselineResponse": "Do not add six one-off overrides or target-ID branches merely to move this cohort.",
+    "proposedDecision": "Founder approval is required before designing or implementing a validated data-driven execution-registration contract."
+  },
+  "ugoCandidateBoundary": {
+    "status": "data_only_candidates_not_implementation_authority",
+    "affectedTargets": ["E56-T02", "E56-T03", "E56-T05", "E56-T06", "E56-T07", "E56-T10"],
+    "finding": "Publisher-grounded target-plane candidates were packaged before stopping at the inherited runtime boundary. They preserve observed geometry and explicit validation requirements; none authorizes runtime execution.",
+    "path": "docs/authority-evidence/gunfun/episode56/ugo/"
+  },
+  "targets": [
+    {
+      "experimentId": "E56-T01",
+      "sku": "32110",
+      "productName": "M16 A2 and A4 Zeroing Target Red",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Registration-ready but blocked by an authority gap",
+      "reason": "Side A has publisher-printed zeroing authority, but side B is available only as a 100 x 100 thumbnail and the exact two-sided A2/A4 identity cannot be governed from current evidence.",
+      "nextAuthority": "Full publisher representation or governed physical evidence for side B and confirmation of the two-sided identity relationship.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T02",
+      "sku": "82030",
+      "productName": "100 Yd Rifle Target",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Requires proposed new application code — Founder approval required",
+      "ugoCandidateAuthorityId": "UGO_GUNFUN_82030_100YD_RIFLE_CANDIDATE_V1",
+      "reason": "Publisher identity, dimensions, grid, aim regions, and sighting purpose are adequate for inherited zeroing/correction behavior. Runtime admission still requires hard-coded support and session entries.",
+      "proposedCodeBoundary": "Data-driven support/admission for an existing zeroingCorrection mission family.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T03",
+      "sku": "12190",
+      "productName": "5 Circles",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Requires proposed new application code — Founder approval required",
+      "ugoCandidateAuthorityId": "UGO_GUNFUN_12190_5_CIRCLES_CANDIDATE_V1",
+      "reason": "Five bulls and printed 5 through 10 values authorize observed-hit ring scoring without inventing a course, shot count, or qualification claim. Generic precision-ring execution is not declaratively dispatchable.",
+      "proposedCodeBoundary": "Data-driven precisionRingScore geometry and result dispatch.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T04",
+      "sku": "22130",
+      "productName": "Qualify x5",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Registration-ready but blocked by an authority gap",
+      "reason": "The five bulls and 7, 8, 9, and X labels are authoritative, but the numeric meaning of X and any qualification procedure are not published.",
+      "nextAuthority": "Publisher scoring authority for X and any intended qualification course, or explicit authority for nonnumeric evidence-only treatment.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T05",
+      "sku": "21420",
+      "productName": "The Emoji Target",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Requires proposed new application code — Founder approval required",
+      "ugoCandidateAuthorityId": "UGO_GUNFUN_21420_EMOJI_CANDIDATE_V1",
+      "reason": "The printed target supplies complete per-hit values of +1000, 0, and -1000. SCZN3 can preserve shooter-controlled completion without inventing a shot count, but generic zone scoring is not declaratively dispatchable.",
+      "proposedCodeBoundary": "Data-driven precision scoring with arbitrary signed zone values and no imposed completion claim.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T06",
+      "sku": "21090",
+      "productName": "Horizontal or Vertical",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Requires proposed new application code — Founder approval required",
+      "ugoCandidateAuthorityId": "UGO_GUNFUN_21090_HORIZONTAL_VERTICAL_CANDIDATE_V1",
+      "reason": "The printed target authorizes 7 through 10 scoring and horizontal/vertical pair totals. Generic grouped precision scoring is not declaratively dispatchable.",
+      "proposedCodeBoundary": "Data-driven precisionRingScore regions and publisher-defined aggregation groups.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T07",
+      "sku": "21110",
+      "productName": "Sink-A-Sub",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Requires proposed new application code — Founder approval required",
+      "ugoCandidateAuthorityId": "UGO_GUNFUN_21110_SINK_A_SUB_CANDIDATE_V1",
+      "reason": "The printed target supplies alternate-turn, line-touch hit, and first-to-sink-all rules. Player-to-fleet binding can be explicit setup data, but recreational-challenge execution remains target-ID-coded.",
+      "proposedCodeBoundary": "Data-driven recreationalChallenge state, fleet geometry, player binding, and win-condition dispatch.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T08",
+      "sku": "22740",
+      "productName": "Vital Dude",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Registration-ready but blocked by an authority gap",
+      "reason": "Identity, dimensions, artwork, and contextual provenance are governed, but no scoring, mission, anatomical semantics, or detailed high-resolution boundaries are published.",
+      "nextAuthority": "Publisher-authored intended experience and region semantics plus higher-resolution publisher or governed physical evidence. Founder photographs may support evidence but cannot invent meaning.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T09",
+      "sku": "22790",
+      "productName": "Hostage Dude",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Registration-ready but blocked by an authority gap",
+      "reason": "Identity, dimensions, figures, and blank score table are visible, but friend/foe meaning, hostage penalties, scoring values, and detailed geometry are not authoritative.",
+      "nextAuthority": "Publisher rules and a higher-resolution governed representation.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T10",
+      "sku": "22470",
+      "productName": "USPSA/IPSC",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Requires proposed new application code — Founder approval required",
+      "ugoCandidateAuthorityId": "UGO_GUNFUN_22470_USPSA_IPSC_CANDIDATE_V1",
+      "reason": "GunFun identity, GF-100, dimensions, and A/B/C/D regions authorize publisher-specific evidence capture without importing numeric scoring or Baker SL-ST1 identity. Generic smart-evidence execution is target-ID allowlisted.",
+      "proposedCodeBoundary": "Data-driven smartEvidenceCapture admission using GunFun-specific UGO and identity while numeric scoring remains unavailable.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T11",
+      "sku": "53510",
+      "productName": "OPOTA",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Registration-ready but blocked by an authority gap",
+      "reason": "OPOTA-RQT2 and partial printed +1/-1 rules are governed, but required rounds, time limit, passing threshold, current version, and qualification course are missing.",
+      "nextAuthority": "Current Ohio qualification authority or a separately authorized non-qualification practice mission.",
+      "newApplicationCodeImplemented": false
+    },
+    {
+      "experimentId": "E56-T12",
+      "sku": "53900",
+      "productName": "B21F KY Qualifying Target",
+      "knowledgeRegistration": "registered_without_new_application_code",
+      "classification": "Registration-ready but blocked by an authority gap",
+      "reason": "B21F identity and visible region codes are governed, but the Kentucky scoring legend/course/version is absent and the available publisher image is inadequate for detailed UGO.",
+      "nextAuthority": "Current Kentucky qualification authority and a higher-resolution publisher or governed physical representation.",
+      "newApplicationCodeImplemented": false
+    }
+  ]
+}

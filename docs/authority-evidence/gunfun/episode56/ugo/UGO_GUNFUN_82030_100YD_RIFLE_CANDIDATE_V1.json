@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_GUNFUN_82030_100YD_RIFLE_CANDIDATE_V1",
+  "status": "registration_candidate_not_implementation_authority",
+  "experimentId": "E56-T02",
+  "publisherSku": "82030",
+  "sourceEvidence": {
+    "path": "../publisher-representations/E56-T02_SKU-82030.jpg",
+    "sourceUrl": "https://gunfun.com/wpgfcanow/wp-content/uploads/2016/07/100-yd-Rifle-Target-RED-1.jpg",
+    "sha256": "376b13f30b925ee2892e7a11f37c5714ebbf81f1b2f17dbefbf981e6565b9f60",
+    "pixelWidth": 1116,
+    "pixelHeight": 1500
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_GUNFUN_82030_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_color_segmentation_and_symmetry_review_v1",
+    "boundaryUncertaintyPx": 8,
+    "correctionGridBoundsPx": [99, 313, 915, 1066],
+    "aimPointCentersPx": [
+      {"id": "upper_left", "centerPx": [253, 469]},
+      {"id": "upper_right", "centerPx": [861, 469]},
+      {"id": "center", "centerPx": [558, 849]},
+      {"id": "lower_left", "centerPx": [253, 1230]},
+      {"id": "lower_right", "centerPx": [861, 1230]}
+    ]
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "validationRequirements": ["independent landmark review", "representative-photo homography test", "grid-number direction verification"],
+  "claimBoundary": "Publisher-representation registration and aim-point/correction-grid localization only; no shot count, course, firearm, zero claim, or result claim is authorized."
+}

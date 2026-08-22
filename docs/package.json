@@ -22,9 +22,40 @@
     "test:home-onboarding": "node production/home_target_selection_browser_test.mjs",
     "test:universal-navigation": "node production/universal_navigation_browser_test.mjs",
     "test:universal-equipment": "node production/universal_equipment_library_browser_test.mjs",
+    "test:episode54-item1": "node production/episode54_item1_ownership_contract_test.mjs",
+    "test:episode54-item2": "node production/episode54_item2_identity_contract_test.mjs",
+    "test:episode54-item2-browser": "node production/episode54_item2_identity_browser_test.mjs",
+    "test:episode54-item3": "node production/episode54_item3_sec_adapter_contract_test.mjs",
+    "test:episode54-item4a": "node production/episode54_item4a_baker_sec_adapter_migration_test.mjs",
+    "test:episode54-item4b": "node production/episode54_item4b_100yard_sec_adapter_migration_test.mjs",
+    "test:episode54-item4c": "node production/episode54_item4c_gssf_sec_adapter_migration_test.mjs",
+    "test:episode54-item4d": "node production/episode54_item4d_m4_sec_adapter_migration_test.mjs",
+    "test:episode54-item4d-browser": "node production/episode54_item4d_m4_sec_browser_test.mjs",
+    "test:episode54-item5": "node production/episode54_item5_shared_sec_components_test.mjs",
+    "test:episode54-item6": "node production/episode54_item6_smart_target_workspace_contract_test.mjs",
+    "test:episode54-item6-browser": "node production/episode54_item6_smart_target_workspace_browser_test.mjs",
+    "test:episode54-item7": "node production/episode54_item7_shared_responsive_actions_contract_test.mjs",
+    "test:episode54-item7-browser": "node production/episode54_item7_shared_responsive_actions_browser_test.mjs",
+    "test:episode54-item8": "node production/episode54_item8_duplicate_retirement_naming_contract_test.mjs",
+    "test:episode55-idpa": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_baker_sl_st2_idpa_authority.py && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_baker_sl_st2_idpa_http.py && node production/episode55_idpa_adapter_sec_contract_test.mjs",
+    "test:episode55-baker-fun": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_baker_fun_target_authority.py && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_baker_fun_http.py && node production/episode55_baker_fun_inheritance_contract_test.mjs",
     "test:episode53-batch1": "node production/episode53_batch1_contract_test.mjs",
     "test:presentation-guidance": "node production/presentation_guidance_contract_test.mjs",
     "test:baker-sl-st1-flow": "node production/baker_sl_st1_shooter_flow_browser_test.mjs",
-    "test:baker-sl-st1-persistent-origin": "node production/baker_sl_st1_persistent_origin_browser_test.mjs"
+    "test:baker-sl-st1-persistent-origin": "node production/baker_sl_st1_persistent_origin_browser_test.mjs",
+    "test:target-execution-scale": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_target_execution_scale_architecture.py",
+    "test:target-execution-scale-browser": "node production/target_execution_scale_browser_test.mjs",
+    "test:cue-drill": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_cue_drill_orchestrator.py",
+    "test:cue-drill-browser": "node production/cue_drill_family_browser_test.mjs",
+    "test:qualification": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_qualification_executor.py",
+    "test:qualification-browser": "node production/qualification_family_browser_test.mjs",
+    "test:diagnostic-feedback": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_diagnostic_feedback_evaluator.py",
+    "test:diagnostic-feedback-browser": "node production/diagnostic_feedback_family_browser_test.mjs",
+    "test:decision-scenario": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_decision_scenario_evaluator.py",
+    "test:decision-scenario-browser": "node production/decision_scenario_family_browser_test.mjs"
+    ,"test:sec-progression": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_sec_progression_evaluator.py"
+    ,"test:sec-progression-browser": "node production/sec_progression_family_browser_test.mjs"
+    ,"test:collection-hand": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_collection_hand_evaluator.py"
+    ,"test:collection-hand-browser": "node production/collection_hand_family_browser_test.mjs"
   }
 }

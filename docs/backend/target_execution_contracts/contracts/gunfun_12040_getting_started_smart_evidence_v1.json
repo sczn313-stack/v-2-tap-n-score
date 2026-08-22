@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_12040_getting_started-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-B2-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T10:33:13-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T10:33:13-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_12040_getting_started",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_12040_GETTING_STARTED_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_BATCH2_AUTHORITY_AUDIT_V1:E56-B2-T06",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-12040",
+      "name": "Getting Started",
+      "sku": "12040",
+      "dimensions": {
+        "width": 19,
+        "height": 25,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+    "id": "gunfun_12040_getting_started-geometry",
+    "version": "1",
+    "status": "approved",
+    "digest": "57f0ef1ec5d05b0d55cf3f6fe5f31ead3a9ccc0f1574ad0a658bdc38679458c0",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      }
+    },
+    "registration": {
+    "id": "gunfun_12040_getting_started-registration",
+    "version": "1",
+    "status": "approved",
+    "digest": "47ed9074300438db2b6125628c74e7de76f28b528a3cbbd4a17cfe16c3c8c315",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/12040.jpg",
+        "assetSha256": "720250a9ef8a4b53ac0bfc637a23c15d9fc60a07de65e0d54641165c4b8aa723",
+        "assetAlt": "GunFun Getting Started, SKU 12040",
+        "coordinateConvention": "normalized_source_image_top_left"
+      }
+    },
+    "scoring": {
+    "id": "gunfun_12040_getting_started-scoring",
+    "version": "1",
+    "status": "approved",
+    "digest": "6d800a11290996b9e72f96643f2320130e742296eba516e453da1681f2297451",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      }
+    },
+    "mission": {
+    "id": "gunfun_12040_getting_started-mission",
+    "version": "1",
+    "status": "approved",
+    "digest": "32a7fb26a13a8c39f9b29007ab96d617de01c9e5e7911b358518b0556502e546",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "unavailable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "unavailable"
+          }
+        }
+      }
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "unavailable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "unavailable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

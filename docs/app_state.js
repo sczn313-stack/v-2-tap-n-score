@@ -1,7 +1,18 @@
 (function () {
   "use strict";
 
-  const KEYS = {
+  const KEYS = Object.freeze({
+    targetAuthority: "SCZN3_TARGET_AUTHORITY",
+    activeMatrix: "SCZN3_ACTIVE_MATRIX",
+    activeSession: "SCZN3_ACTIVE_SESSION",
+    sessionHistory: "SCZN3_SESSION_HISTORY",
+    sessionCounter: "SCZN3_SESSION_COUNTER",
+    activeZeroSession: "SCZN3_ACTIVE_ZERO_SESSION",
+    sessionRecordPrefix: "SCZN3_SESSION_RECORD_",
+    mediaPrefix: "SCZN3_MEDIA_",
+    savedEquipment: "SCZN3_SAVED_EQUIPMENT_PROFILES"
+  });
+  const LEGACY_KEYS = Object.freeze({
     targetAuthority: "SCZN3_BAKER_TARGET_AUTHORITY",
     activeMatrix: "SCZN3_BAKER_ACTIVE_MATRIX",
     activeSession: "SCZN3_BAKER_ACTIVE_SESSION",
@@ -9,8 +20,10 @@
     sessionCounter: "SCZN3_BAKER_SESSION_COUNTER",
     activeZeroSession: "SCZN3_BAKER_ACTIVE_ZERO_SESSION",
     sessionRecordPrefix: "SCZN3_BAKER_SESSION_RECORD_",
-    mediaPrefix: "SCZN3_BAKER_MEDIA_"
-  };
+    mediaPrefix: "SCZN3_BAKER_MEDIA_",
+    savedEquipment: "SCZN3_BAKER_SAVED_SETUPS"
+  });
+  const STATE_MIGRATION_VERSION = "sczn3-platform-state-v1";
 
   const TARGET_AUTHORITY = {
     targetFamily: "Baker 100 Yard Smart Target",
@@ -27,12 +40,59 @@
     return value;
   }
 
+  function legacyKeyFor(key) {
+    const scalar = Object.keys(KEYS).find(name => !name.endsWith("Prefix") && KEYS[name] === key);
+    if (scalar) return LEGACY_KEYS[scalar] || "";
+    for (const name of ["sessionRecordPrefix", "mediaPrefix"]) {
+      if (key.startsWith(KEYS[name])) return `${LEGACY_KEYS[name]}${key.slice(KEYS[name].length)}`;
+    }
+    return "";
+  }
+
+  function migrateRawValue(canonicalKey, legacyKey) {
+    if (!legacyKey || localStorage.getItem(canonicalKey) !== null) return false;
+    const legacyValue = localStorage.getItem(legacyKey);
+    if (legacyValue === null) return false;
+    localStorage.setItem(canonicalKey, legacyValue);
+    return true;
+  }
+
+  function migrateLegacyPlatformState() {
+    const copied = [];
+    Object.keys(KEYS).filter(name => !name.endsWith("Prefix")).forEach(name => {
+      if (migrateRawValue(KEYS[name], LEGACY_KEYS[name])) copied.push({ from: LEGACY_KEYS[name], to: KEYS[name] });
+    });
+    if (Number.isFinite(Number(localStorage.length)) && typeof localStorage.key === "function") {
+      const existingKeys = [];
+      for (let index = 0; index < localStorage.length; index += 1) existingKeys.push(localStorage.key(index));
+      existingKeys.filter(Boolean).forEach(key => {
+        for (const name of ["sessionRecordPrefix", "mediaPrefix"]) {
+          if (!key.startsWith(LEGACY_KEYS[name])) continue;
+          const canonicalKey = `${KEYS[name]}${key.slice(LEGACY_KEYS[name].length)}`;
+          if (migrateRawValue(canonicalKey, key)) copied.push({ from: key, to: canonicalKey });
+        }
+      });
+    }
+    return Object.freeze({
+      version: STATE_MIGRATION_VERSION,
+      strategy: "copy-once-preserve-legacy-canonical-writes-only",
+      copied: Object.freeze(copied.map(entry => Object.freeze(entry))),
+      legacyKeysRetained: true
+    });
+  }
+
+  const STATE_MIGRATION_REPORT = migrateLegacyPlatformState();
+
   function rawRead(key, fallback = null) {
     try {
-      const raw = localStorage.getItem(key);
+      let raw = localStorage.getItem(key);
+      if (raw === null) {
+        const legacyKey = legacyKeyFor(key);
+        if (legacyKey && migrateRawValue(key, legacyKey)) raw = localStorage.getItem(key);
+      }
       return raw ? JSON.parse(raw) : fallback;
     } catch (error) {
-      console.warn("SCZN3 Baker state read failed", key, error);
+      console.warn("SCZN3 platform state read failed", key, error);
       return fallback;
     }
   }
@@ -911,6 +971,9 @@
   function buildSession(matrixSnapshot, governedSessionNumber = null) {
     const sessionNumber = governedSessionNumber === null ? getNextSessionNumber() : governedSessionNumber;
     const timestamp = nowStamp();
+    const governedProfileIdentity = window.SCZN3TargetProfiles
+      ? window.SCZN3TargetProfiles.identityRecord(matrixSnapshot)
+      : null;
     const targetIdentity = {
       vendor: matrixSnapshot.vendor || "",
       sku: matrixSnapshot.sku || "",
@@ -922,7 +985,8 @@
       missionFamilyId: matrixSnapshot.missionFamilyId || matrixSnapshot.mission_family || matrixSnapshot.missionFamily || "",
       targetId: matrixSnapshot.targetId || matrixSnapshot.target_profile_id || matrixSnapshot.targetProfileId || "",
       targetName: matrixSnapshot.targetName || "",
-      targetFamily: matrixSnapshot.targetFamily || matrixSnapshot.targetName || ""
+      targetFamily: matrixSnapshot.targetFamily || matrixSnapshot.targetName || "",
+      ...(governedProfileIdentity || {})
     };
     const hasMissionIdentity = !!(targetIdentity.target_profile_id || targetIdentity.mission_family || targetIdentity.targetName);
     const targetAuthority = hasMissionIdentity
@@ -994,6 +1058,9 @@
     const mission = authorityPackage.missionIdentity || {};
     const distance = authorityPackage.governedDistance || {};
     const selectedEquipment = authorityPackage.selectedEquipment || {};
+    const governedProfileIdentity = window.SCZN3TargetProfiles
+      ? window.SCZN3TargetProfiles.identityRecord(target, authorityPackage, matrixSnapshot)
+      : null;
     const standardSetup = selectedEquipment.source === "backend_standard_setup" ? {
       setupId: "",
       setupName: "Standard Setup",
@@ -1019,6 +1086,7 @@
       targetId: target.targetAuthorityId || target.targetId || "",
       targetName: target.targetName || matrixSnapshot.targetName || "",
       targetProfileVersion: target.targetProfileVersion || "",
+      ...(governedProfileIdentity || {}),
       atpId: target.atpId || "",
       mission_family: mission.missionFamily || "",
       missionFamily: mission.missionFamily || "",
@@ -1053,6 +1121,7 @@
     session.equipmentAssessment = authorityPackage.equipmentAssessment || {};
     session.restrictions = Array.isArray(authorityPackage.restrictions) ? authorityPackage.restrictions : [];
     session.targetProfileVersion = target.targetProfileVersion || "";
+    if (governedProfileIdentity) Object.assign(session, governedProfileIdentity);
     session.atpId = target.atpId || "";
     session.targetAuthority = {
       ...session.targetAuthority,
@@ -1060,6 +1129,7 @@
       target_profile_id: target.targetId || "",
       targetProfileId: target.targetId || "",
       targetProfileVersion: target.targetProfileVersion || "",
+      ...(governedProfileIdentity || {}),
       atpId: target.atpId || "",
       mission_family: mission.missionFamily || "",
       missionFamilyId: mission.missionFamily || "",
@@ -1691,8 +1761,18 @@
     });
   }
 
+  window.SCZN3PlatformState = Object.freeze({
+    version: STATE_MIGRATION_VERSION,
+    keys: KEYS,
+    legacyKeys: LEGACY_KEYS,
+    migration: STATE_MIGRATION_REPORT,
+    read: rawRead,
+    write: rawWrite
+  });
+
   window.SCZN3M4 = {
     KEYS,
+    LEGACY_KEYS,
     TARGET_AUTHORITY,
     UGEO,
     read,

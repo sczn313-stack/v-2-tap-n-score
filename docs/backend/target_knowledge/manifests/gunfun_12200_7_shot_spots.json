@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "gunfun_12200_7_shot_spots",
+    "targetName": "7 Shot Spots",
+    "targetFamily": "GunFun Batch 2",
+    "targetType": "multi-aim-sighting",
+    "discipline": "target shooting",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "12200",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "7 Shot Spots",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "resultPackageType": "smartEvidenceResult",
+    "guidanceMode": "evidence_only"
+  },
+  "uteRouting": {
+    "targetId": "gunfun_12200_7_shot_spots",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "12200",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "7 Shot Spots",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "geometryAuthorityStatus": "image_plane_evidence_only",
+    "scoringAuthorityStatus": "not_applicable",
+    "resultPackageType": "smartEvidenceResult",
+    "authorityStatus": "supported_by_exact_target_execution_contract",
+    "rulesSource": "Sighting target; no zeroing correction or numeric scoring is claimed.",
+    "geometryStatus": "image_plane_evidence_only",
+    "instructionStatus": "not_applicable",
+    "scoringStatus": "not_applicable_for_approved_evidence_contract",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "registered-photo-plus-shooter-declared-image-plane-observations"
+  },
+  "executionComposition": {
+    "targetProfileRef": {
+      "id": "gunfun_12200_7_shot_spots",
+      "version": "1"
+    },
+    "geometryComponentRef": {
+      "id": "gunfun_12200_7_shot_spots-geometry",
+      "version": "1"
+    },
+    "registrationComponentRef": {
+      "id": "gunfun_12200_7_shot_spots-registration",
+      "version": "1"
+    },
+    "scoringComponentRef": {
+      "id": "gunfun_12200_7_shot_spots-scoring",
+      "version": "1"
+    },
+    "missionComponentRef": {
+      "id": "gunfun_12200_7_shot_spots-mission",
+      "version": "1"
+    },
+    "executionContractRef": {
+      "id": "tec-gunfun_12200_7_shot_spots-smart-evidence-v1",
+      "version": "1"
+    }
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "publisher_target_profile_plus_founder_approved_evidence_contract",
+    "geometryAuthorityLevel": "image-plane-evidence-only",
+    "instructionAuthorityLevel": "not_applicable",
+    "sourceConfidence": "publisher-product-and-artwork-confirmed"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "Sighting Series",
+      "7 up Shot Spot"
+    ],
+    "officialRules": [],
+    "courseOfFire": [],
+    "intendedUse": "Sighting target; no zeroing correction or numeric scoring is claimed.",
+    "shotCount": null,
+    "distance": null,
+    "passFailOrScoringRules": []
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "targetWidthInches": 19,
+      "targetHeightInches": 25
+    },
+    "gridSpacing": null,
+    "bullCount": null,
+    "zoneCount": null,
+    "aimPointRules": [
+      "Optional aim is shooter-declared session evidence only."
+    ],
+    "scoringZones": [],
+    "ringGeometry": "unavailable_for_canonical_classification"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": "one_or_more_visible_observations",
+    "requiredDistance": false,
+    "requiredSetupFields": [
+      "admitted evidence image"
+    ],
+    "minimumConfidenceRequirements": [
+      "backend-verified image hash",
+      "normalized observations in image bounds",
+      "reconciled observation counts"
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "zeroing correction authority",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "numeric scoring rules",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    },
+    {
+      "field": "physical ring and grid dimensions",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "publisher_product_page",
+      "source": "https://gunfun.com/shop/7-shot-spots/",
+      "authorityType": "product_identity_sku_dimensions_categories_and_published_description",
+      "notes": "Current GunFun product page inspected after the Batch 2 cohort was frozen."
+    },
+    {
+      "sourceType": "publisher_product_representation",
+      "source": "authority-evidence/gunfun/episode56/batch2/publisher-representations/12200.jpg",
+      "authorityType": "visible_artwork_and_printed_text",
+      "notes": "SHA-256 dc4a809dbc2a120ad1ba13e33f9848fdfc21beca01d1180ba1a72a89cdfbef94; admitted as evidence-capture asset, not as canonical scoring geometry."
+    }
+  ]
+}

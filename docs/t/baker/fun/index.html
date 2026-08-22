@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070a" />
+  <title>Baker Fun Target · Tap-n-Score</title>
+  <link rel="stylesheet" href="../../../styles.css?v=episode55-catalog-fun-2" />
+  <link rel="stylesheet" href="../../../platform-ui.css" />
+  <link rel="stylesheet" href="../../../m4-sec.css" />
+  <link rel="stylesheet" href="../../../sec-framework.css" />
+  <link rel="stylesheet" href="../../../experience_frame_processing.css" />
+  <link rel="stylesheet" href="../../../platform_actions.css" />
+  <link rel="stylesheet" href="../../../baker-fun-sec.css?v=episode55-catalog-fun-2" />
+  <link rel="stylesheet" href="../sl-st2/target-page.css" />
+  <link rel="stylesheet" href="target-page.css" />
+  <link rel="stylesheet" href="../../../smart_target_workspace.css" />
+  <script src="../../../navigation.js" defer></script>
+  <script src="../../../experience_frame_processing.js"></script>
+  <script src="../../../platform_actions.js"></script>
+  <script src="../../../smart_target_workspace.js"></script>
+  <script src="../../../platform_contracts.js" defer></script>
+  <script src="../../../sec_adapter_model.js" defer></script>
+  <script src="../../../app_state.js" defer></script>
+  <script src="../../../sec_dispatch.js" defer></script>
+  <script src="../../../m4_runtime.js?v=episode55-baker-fun-1" defer></script>
+  <script src="../../../sec_reopen_lifecycle.js" defer></script>
+  <script src="../../../sec_v1.js" defer></script>
+  <script src="../../../sec_framework.js" defer></script>
+  <script src="../../../baker_fun_sec.js" defer></script>
+  <script src="target-page.js" defer></script>
+</head>
+<body class="platform-page target-page sl-target-page baker-fun-target-page">
+  <header class="m4-header app-header sl-app-header">
+    <div class="vendor-slot"><img src="../../../assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" /><div class="brand-lockup"><a class="vendor-name" href="../../../index.html">Tap-n-Score™</a></div></div>
+    <span class="sl-header-target-identity" id="profileIdentity">Baker Fun Target</span>
+    <details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary><a href="../../../index.html">Home</a><a href="../../../matrix.html">Equipment Library</a><a href="../../../index.html#packages">Smart Targets</a><a href="../../../records.html" data-preserve-active-session>History</a></details>
+  </header>
+
+  <main class="sl-page-shell">
+    <section class="sl-target-introduction" aria-labelledby="targetName">
+      <p class="sl-printer" id="publisherSurface"><span>Baker Targets</span></p>
+      <h1 id="targetName">Baker Fun Target</h1>
+      <p class="fun-mission-label" id="missionLabel"></p>
+      <p class="sl-instruction" id="targetInstruction" aria-live="polite">Choose a game, set up the players, and load the completed target.</p>
+    </section>
+
+    <section class="sl-load-card fun-setup-card" id="loadCard" aria-label="Game setup and target photo">
+      <h2>Game Setup</h2>
+      <div class="fun-setup-fields" id="dartSetup">
+        <label>Game<select id="gameMode"><option value="game_of_points">Game of Points</option><option value="game_of_numbers">Game of Numbers</option></select></label>
+        <label class="fun-player-list">Players <span>one name per line · Game of Numbers requires exactly two</span><textarea id="playerNames" rows="2" maxlength="800">Player 1
+Player 2</textarea></label>
+        <label data-points-only>Shots Per Player<input id="shotsPerPlayer" type="number" min="1" max="100" value="10" /></label>
+        <label data-points-only>Play Order<select id="playOrder"><option value="player_at_a_time">One player at a time</option><option value="alternating">Alternate shots</option></select></label>
+      </div>
+      <p class="fun-rules-summary" id="rulesSummary"></p>
+      <div class="sl-load-actions"><label class="button primary" for="libraryInput">Choose Target Photo</label><input id="libraryInput" type="file" accept="image/*" hidden /></div>
+    </section>
+
+    <section class="sl-workspace" id="targetWorkspace" aria-label="Target evidence workspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
+      <div class="sl-image-frame" id="imageFrame" data-sczn3-workspace-evidence="true">
+        <img id="targetImage" alt="Loaded Baker game target" />
+        <div class="sl-impact-layer" id="impactLayer" aria-hidden="true"></div>
+        <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Record the current shot on the target"></button>
+      </div>
+      <div class="sl-workflow-dock workflow-dock--compact" id="workflowDock" data-processing-host data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1">
+        <div class="workflow-support-row"><span id="workspaceFeedback" role="status" aria-live="polite">Record the first shot.</span><div class="workflow-secondary-actions"><label class="workflow-secondary-action" for="replaceInput">Replace Photo</label><input id="replaceInput" type="file" accept="image/*" hidden /></div></div>
+        <div class="fun-current-turn" id="currentTurn" aria-live="polite"></div>
+        <div class="fun-announcement" id="announcementField"><label>Announced Number<select id="announcedNumber"></select></label></div>
+        <div class="workflow-control-row workflow-control-row--docked" aria-label="Game evidence controls">
+          <div class="target-hit-counter" aria-label="Recorded shot events"><strong id="eventCount">0</strong><span>Shots</span></div>
+          <button class="button primary" id="showResults" type="button" disabled>Show Results</button>
+          <button class="button" id="recordMiss" type="button">Record Miss</button>
+          <button class="button" id="undoEvent" type="button" disabled>Undo</button>
+          <button class="button" id="clearEvents" type="button" disabled>Clear</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <main class="sl-sec-shell sec-live-host" id="funSecView" hidden><div id="funSecRoot"></div></main>
+</body>
+</html>

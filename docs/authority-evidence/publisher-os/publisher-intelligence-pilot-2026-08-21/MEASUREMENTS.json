@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-08-21T16:00:00-04:00",
+  "publisherCount": 7,
+  "catalogBaseline": {
+    "publisherProductRecordsOrPages": 1451,
+    "commercialOfferingRecords": 1584,
+    "targetIdentities": 907,
+    "targetOrTargetSystemOfferings": 1168,
+    "accessoriesConsumablesAndNonTargetOfferings": 302,
+    "olderFormatPackBundleExclusions": 114,
+    "recognitionReadyTargetIdentities": 907,
+    "recognitionReadyTargetOfferings": 1168,
+    "note": "Unchanged from the pre-pilot cumulative reconciliation; this was enrichment, not ingestion."
+  },
+  "incrementalClaims": {
+    "total": 49,
+    "byTier": {"tier1": 33, "tier2": 15, "tier3": 1},
+    "byClassification": {
+      "existing_fact_confirmed": 10,
+      "newly_discovered_fact": 17,
+      "changed_fact": 1,
+      "new_supporting_evidence": 10,
+      "conflicting_evidence": 2,
+      "still_unknown": 8,
+      "monitoring_candidate": 1
+    }
+  },
+  "authorityImpact": {
+    "publisherRuleDocumentsNewlyPreserved": 1,
+    "productExperiencesWithNewPublicPublisherRules": 6,
+    "affectedPublisherSkus": ["GF-Arc", "GF-Battleship", "GF-DB", "GF-Pinball", "GF-Candyville", "GF-Primary"],
+    "authorityGapsClosedAtEvidenceLevel": 6,
+    "capabilitiesActivated": 0,
+    "newBehaviorFamiliesImplemented": 0,
+    "newBehaviorFamilyCandidates": 1,
+    "newBehaviorFamilyCandidateName": "publisherDefinedPathTraversal",
+    "candidateReason": "Candyville provides direct path/slide/color-transfer/reset rules; Gear 6 explicitly excluded path behavior."
+  },
+  "commercialImpact": {
+    "newRetailerOrDealerRouteClaims": 6,
+    "newOwnedOrLegacyMediaClaims": 6,
+    "newManufacturingOrSourcingEvidenceClaims": 6,
+    "newOrganizationOrRelationshipPrecisionClaims": 8,
+    "salesEstimatesCreated": 0
+  },
+  "tier3Structure": {
+    "standardSignalTypes": 13,
+    "seededSignals": 4,
+    "automaticMonitoringServiceImplemented": false
+  }
+}

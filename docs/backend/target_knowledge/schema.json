@@ -85,6 +85,26 @@
         "evidenceModel": { "type": "string" }
       }
     },
+    "executionComposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetProfileRef",
+        "geometryComponentRef",
+        "registrationComponentRef",
+        "scoringComponentRef",
+        "missionComponentRef",
+        "executionContractRef"
+      ],
+      "properties": {
+        "targetProfileRef": { "$ref": "#/$defs/versionedReference" },
+        "geometryComponentRef": { "$ref": "#/$defs/versionedReference" },
+        "registrationComponentRef": { "$ref": "#/$defs/versionedReference" },
+        "scoringComponentRef": { "$ref": "#/$defs/versionedReference" },
+        "missionComponentRef": { "$ref": "#/$defs/versionedReference" },
+        "executionContractRef": { "$ref": "#/$defs/versionedReference" }
+      }
+    },
     "authorityClassification": {
       "type": "object",
       "additionalProperties": false,
@@ -190,6 +210,17 @@
           "authorityType": { "type": "string" },
           "notes": { "type": "string" }
         }
+      }
+    }
+  },
+  "$defs": {
+    "versionedReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 }
       }
     }
   }

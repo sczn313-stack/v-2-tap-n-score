@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "sczn3-publisher-product-authority-v1",
+  "authorityId": "EZ2C_STYLE_17_DOT_TORTURE_PRODUCT_AUTHORITY_V1",
+  "status": "publisher_authority_registered",
+  "publisherIdentity": {
+    "publisherId": "ez2c-targets",
+    "publisherLabel": "EZ2C Targets",
+    "publisherUrl": "https://www.ez2ctargets.com"
+  },
+  "productIdentity": {
+    "productId": "EZ2C_STYLE_17",
+    "sku": "Style 17",
+    "productLabel": "Dot Torture Target",
+    "productUrl": "https://www.ez2ctargets.com/Item/17"
+  },
+  "variants": [
+    {"variantId": "EZ2C-17-11x17", "widthInches": 11, "heightInches": 17, "paper": "white paper"}
+  ],
+  "publisherRepresentation": {
+    "path": "EZ2C_STYLE_17_DOT_TORTURE_PUBLISHER_IMAGE_V1.jpg",
+    "sha256": "5f1c7604e9fa70e3b07d4e9c3d0fbbeae7d9b1a43e80f860b7746f3d6ed361f3",
+    "pixelWidth": 1000,
+    "pixelHeight": 1000,
+    "sourceUrl": "https://www.ez2ctargets.com/media/ecom/prodlg/17.jpg"
+  },
+  "rulesAuthority": {
+    "authorityId": "EZ2C_STYLE_17_PUBLISHED_COURSE_V1",
+    "sourceUrl": "https://www.ez2ctargets.com/Item/17",
+    "paperSizeInches": [11, 17],
+    "dotDiameterInches": 2,
+    "recommendedDistanceYards": 3,
+    "maximumScore": 50,
+    "hitRule": "Only shots completely inside the circle count",
+    "stages": [
+      {"stage": 1, "dots": [1], "shotPattern": [1], "rounds": 5, "instruction": "5 shots slow fire"},
+      {"stage": 2, "dots": [2], "shotPattern": [2], "rounds": 5, "instruction": "Draw and fire one shot, repeat 5 times"},
+      {"stage": 3, "dots": [3, 4], "shotPattern": [3, 4], "rounds": 8, "instruction": "Draw and fire one shot on 3 and one shot on 4, repeat 4 times"},
+      {"stage": 4, "dots": [5], "shotPattern": [5], "rounds": 5, "instruction": "5 shots, strong hand only"},
+      {"stage": 5, "dots": [6, 7], "shotPattern": [6, 6, 7, 7], "rounds": 16, "instruction": "Draw and fire 2 shots on 6 and 2 shots on 7, repeat 4 times"},
+      {"stage": 6, "dots": [8], "shotPattern": [8], "rounds": 5, "instruction": "5 shots, weak hand only"},
+      {"stage": 7, "dots": [9, 10], "shotPattern": [9, 10], "rounds": 6, "instruction": "Draw and fire one shot on 9, reload, one shot on 10, repeat 3 times"}
+    ]
+  },
+  "evidenceContract": {
+    "physicalHoleExtentSource": "shooter_reported_complete_inside",
+    "coordinatePurpose": "expected_dot_identity_and_traceability",
+    "claimBoundary": "SCZN3 does not infer physical bullet-hole edge extent from a selected center"
+  },
+  "claimBoundary": "EZ2C-published product identity, dimensions, representation, and course instructions only"
+}

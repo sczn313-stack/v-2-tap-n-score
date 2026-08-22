@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_12200_7_shot_spots-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-E56-B2-AUTHORIZATION-2026-08-19",
+    "approvedAt": "2026-08-19T10:33:13-04:00"
+  },
+  "effective": {
+    "from": "2026-08-19T10:33:13-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_12200_7_shot_spots",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_12200_7_SHOT_SPOTS_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_BATCH2_AUTHORITY_AUDIT_V1:E56-B2-T01",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-12200",
+      "name": "7 Shot Spots",
+      "sku": "12200",
+      "dimensions": {
+        "width": 19,
+        "height": 25,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+    "id": "gunfun_12200_7_shot_spots-geometry",
+    "version": "1",
+    "status": "approved",
+    "digest": "c98b9cf2297904609c5335d1c8dd985492200187a33bd1eb2d40672f13bbf7a5",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "unavailable",
+        "physicalMeasurement": "unavailable"
+      }
+    },
+    "registration": {
+    "id": "gunfun_12200_7_shot_spots-registration",
+    "version": "1",
+    "status": "approved",
+    "digest": "19fbf79f8f8f085722424d4a7a59a175d8f2317c7b669e4e04068029637e7c3e",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/12200.jpg",
+        "assetSha256": "dc4a809dbc2a120ad1ba13e33f9848fdfc21beca01d1180ba1a72a89cdfbef94",
+        "assetAlt": "GunFun 7 Shot Spots, SKU 12200",
+        "coordinateConvention": "normalized_source_image_top_left"
+      }
+    },
+    "scoring": {
+    "id": "gunfun_12200_7_shot_spots-scoring",
+    "version": "1",
+    "status": "approved",
+    "digest": "8ed37459cc5b3828d5e2f17db680c16e1b3a8931d6d2412767a90ba40b24bd2b",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+      }
+    },
+    "mission": {
+    "id": "gunfun_12200_7_shot_spots-mission",
+    "version": "1",
+    "status": "approved",
+    "digest": "9f0ac6847e39a14e9d8ee0bcbc50672bde45ab205b4fc0db7b1cc51ef8199ee9",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "unavailable"
+          },
+          "correction": {
+            "status": "unavailable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      }
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "unavailable"
+      },
+      "correction": {
+        "status": "unavailable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_scoring",
+    "qualification_or_pass_fail",
+    "anatomical_medical_tactical_or_diagnostic_interpretation",
+    "physical_measurement",
+    "zeroing_correction",
+    "uncontracted_mission_completion"
+  ]
+}

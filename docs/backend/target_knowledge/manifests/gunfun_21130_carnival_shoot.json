@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "target-knowledge-v1",
+  "targetIdentity": {
+    "targetId": "gunfun_21130_carnival_shoot",
+    "targetName": "Carnival Shoot",
+    "targetFamily": "GunFun Batch 2",
+    "targetType": "illustrated-carnival-objects",
+    "discipline": "target shooting",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "21130",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Carnival Shoot",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "resultPackageType": "smartEvidenceResult",
+    "guidanceMode": "evidence_only"
+  },
+  "uteRouting": {
+    "targetId": "gunfun_21130_carnival_shoot",
+    "manufacturer": "GunFun Shooting Targets, Inc.",
+    "sku": "21130",
+    "missionFamilyId": "smartEvidenceCapture",
+    "targetDisplayName": "Carnival Shoot",
+    "lifecycleStatus": "supported",
+    "supportedStatus": "supported",
+    "geometryAuthorityStatus": "image_plane_evidence_only",
+    "scoringAuthorityStatus": "not_applicable",
+    "resultPackageType": "smartEvidenceResult",
+    "authorityStatus": "supported_by_exact_target_execution_contract",
+    "rulesSource": "Evidence-only recreational use; no game mechanics or score are established.",
+    "geometryStatus": "image_plane_evidence_only",
+    "instructionStatus": "unavailable",
+    "scoringStatus": "not_applicable_for_approved_evidence_contract",
+    "qualificationStatus": "not_applicable",
+    "evidenceModel": "registered-photo-plus-shooter-declared-image-plane-observations"
+  },
+  "executionComposition": {
+    "targetProfileRef": {
+      "id": "gunfun_21130_carnival_shoot",
+      "version": "1"
+    },
+    "geometryComponentRef": {
+      "id": "gunfun_21130_carnival_shoot-geometry",
+      "version": "1"
+    },
+    "registrationComponentRef": {
+      "id": "gunfun_21130_carnival_shoot-registration",
+      "version": "1"
+    },
+    "scoringComponentRef": {
+      "id": "gunfun_21130_carnival_shoot-scoring",
+      "version": "1"
+    },
+    "missionComponentRef": {
+      "id": "gunfun_21130_carnival_shoot-mission",
+      "version": "1"
+    },
+    "executionContractRef": {
+      "id": "tec-gunfun_21130_carnival_shoot-smart-evidence-v1",
+      "version": "1"
+    }
+  },
+  "authorityClassification": {
+    "primaryAuthorityType": "publisher_target_profile_plus_founder_approved_evidence_contract",
+    "geometryAuthorityLevel": "image-plane-evidence-only",
+    "instructionAuthorityLevel": "unavailable",
+    "sourceConfidence": "publisher-product-and-artwork-confirmed"
+  },
+  "instructionAuthority": {
+    "designerInstructions": [],
+    "printedTargetText": [
+      "Carnival Shoot"
+    ],
+    "officialRules": [],
+    "courseOfFire": [],
+    "intendedUse": "Evidence-only recreational use; no game mechanics or score are established.",
+    "shotCount": null,
+    "distance": null,
+    "passFailOrScoringRules": []
+  },
+  "geometryAuthority": {
+    "knownGeometryFields": {
+      "targetWidthInches": 23,
+      "targetHeightInches": 35
+    },
+    "gridSpacing": null,
+    "bullCount": null,
+    "zoneCount": null,
+    "aimPointRules": [
+      "Optional aim is shooter-declared session evidence only."
+    ],
+    "scoringZones": [],
+    "ringGeometry": "unavailable_for_canonical_classification"
+  },
+  "evidenceRequirements": {
+    "requiredAimPoint": false,
+    "requiredImpactCount": "one_or_more_visible_observations",
+    "requiredDistance": false,
+    "requiredSetupFields": [
+      "admitted evidence image"
+    ],
+    "minimumConfidenceRequirements": [
+      "backend-verified image hash",
+      "normalized observations in image bounds",
+      "reconciled observation counts"
+    ]
+  },
+  "unknowns": [
+    {
+      "field": "publisher rules, scoring, hit meaning, completion, and winner condition",
+      "status": "UNKNOWN / REQUIRES OFFICIAL SOURCE",
+      "neededSource": "Complete publisher/governing authority and a compatible frozen capability-family binding are required before this richer claim may execute."
+    }
+  ],
+  "sourceAudit": [
+    {
+      "sourceType": "publisher_product_page",
+      "source": "https://gunfun.com/shop/carnival-shoot-21130/",
+      "authorityType": "product_identity_sku_dimensions_categories_and_published_description",
+      "notes": "Current GunFun product page inspected after the Batch 2 cohort was frozen."
+    },
+    {
+      "sourceType": "publisher_product_representation",
+      "source": "authority-evidence/gunfun/episode56/batch2/publisher-representations/21130.jpg",
+      "authorityType": "visible_artwork_and_printed_text",
+      "notes": "SHA-256 3902cd2344553d36da22e77adbf23f43ade641f062f3a3b2e90658f7932fdcad; admitted as evidence-capture asset, not as canonical scoring geometry."
+    }
+  ]
+}

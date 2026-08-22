@@ -72,17 +72,17 @@
       .join(" ");
     const regions = normalized.regions.map(region => {
       const universalRegionName = region.key === "sightCorrection" ? "sight-correction" : region.key;
-      const regionClasses = ["sec-v1-region", `sec-v1-${region.key}`, `sec-universal-stage-${universalRegionName}`, region.className].filter(Boolean).join(" ");
+      const regionClasses = ["sec-v1-region", `sec-v1-${region.key}`, `sec-framework-stage-${universalRegionName}`, region.className].filter(Boolean).join(" ");
       if (region.key === "actions") {
         return `<div class="${escapeAttribute(regionClasses)} sec-story-command-bar sec-shooter-action-bar" data-sec-region="actions" aria-label="Shooter Action Bar">${region.contentHtml}</div>`;
       }
       const position = region.key === "target" ? 1 : region.key === "session" ? 2 : 3;
       const title = region.key === "target" ? "TARGET" : region.key === "session" ? "SESSION" : "SIGHT CORRECTION";
-      const summaryClass = region.key === "target" ? "sec-universal-stage-heading sec-evidence-toggle" : `sec-universal-stage-heading sec-stage-pill${region.key === "session" ? " sec-session-pill" : ""}`;
+      const summaryClass = region.key === "target" ? "sec-framework-stage-heading sec-evidence-toggle" : `sec-framework-stage-heading sec-stage-pill${region.key === "session" ? " sec-session-pill" : ""}`;
       const summary = region.key === "target"
         ? `<summary class="${summaryClass}"><span>1 · TARGET</span><strong>${escapeAttribute(normalized.sessionLabel)}</strong></summary>`
         : `<summary class="${summaryClass}"><span>${position}</span><h2>${title}</h2>${region.key === "session" ? `<strong class="sec-session-score">${escapeAttribute(normalized.scoreDisplay)}</strong>` : ""}<b aria-hidden="true"></b></summary>`;
-      return `<details class="${escapeAttribute(regionClasses)} sec-universal-stage sec-accordion-stage${region.key === "target" ? "" : " sec-collapsible-stage"}" data-sec-region="${escapeAttribute(region.key)}" data-sec-stage="${escapeAttribute(region.key === "sightCorrection" ? "sight-correction" : region.key)}" aria-label="${escapeAttribute(region.ariaLabel)}"${region.key === "target" ? " open" : ""}>${summary}<div class="${region.key === "target" ? "sec-historical-target-body" : "sec-stage-body"}">${region.contentHtml}</div></details>`;
+      return `<details class="${escapeAttribute(regionClasses)} sec-framework-stage sec-accordion-stage${region.key === "target" ? "" : " sec-collapsible-stage"}" data-sec-region="${escapeAttribute(region.key)}" data-sec-stage="${escapeAttribute(region.key === "sightCorrection" ? "sight-correction" : region.key)}" aria-label="${escapeAttribute(region.ariaLabel)}"${region.key === "target" ? " open" : ""}>${summary}<div class="${region.key === "target" ? "sec-historical-target-body" : "sec-stage-body"}">${region.contentHtml}</div></details>`;
     }).join("");
 
     return `

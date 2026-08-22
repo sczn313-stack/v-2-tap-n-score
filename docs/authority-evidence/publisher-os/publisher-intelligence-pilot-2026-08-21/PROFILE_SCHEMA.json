@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.example/schemas/publisher-intelligence-profile-v1.json",
+  "title": "P-OS Publisher Intelligence Profile v1",
+  "type": "object",
+  "required": ["publisherId", "identity", "tier1", "tier2", "tier3", "corpusReferences", "meetingFacts"],
+  "properties": {
+    "publisherId": {"type": "string"},
+    "identity": {
+      "type": "object",
+      "required": ["displayName", "officialWebsite", "observationDate"],
+      "properties": {
+        "displayName": {"type": "string"},
+        "officialWebsite": {"type": "string", "format": "uri"},
+        "observationDate": {"type": "string", "format": "date"},
+        "legalOrCompanyIdentity": {"type": ["string", "null"]},
+        "location": {"type": ["string", "null"]},
+        "parentOrAssociatedBrands": {"type": "array", "items": {"type": "string"}},
+        "directContactOrPurchasePath": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "tier1": {"$ref": "#/$defs/tierStatus"},
+    "tier2": {"$ref": "#/$defs/tierStatus"},
+    "tier3": {"$ref": "#/$defs/tierStatus"},
+    "corpusReferences": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "claimIds": {"type": "array", "items": {"type": "string"}},
+    "meetingFacts": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "string"}},
+    "founderMeetingReadiness": {"enum": ["ready", "ready_with_named_gaps", "not_ready"]}
+  },
+  "$defs": {
+    "tierStatus": {
+      "type": "object",
+      "required": ["status", "completeDomains", "partialDomains", "unknownDomains"],
+      "properties": {
+        "status": {"enum": ["complete", "substantially_complete", "partial", "structure_only"]},
+        "completeDomains": {"type": "array", "items": {"type": "string"}},
+        "partialDomains": {"type": "array", "items": {"type": "string"}},
+        "unknownDomains": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

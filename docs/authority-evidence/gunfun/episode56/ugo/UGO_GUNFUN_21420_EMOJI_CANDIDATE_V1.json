@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_GUNFUN_21420_EMOJI_CANDIDATE_V1",
+  "status": "registration_candidate_not_implementation_authority",
+  "experimentId": "E56-T05",
+  "publisherSku": "21420",
+  "sourceEvidence": {
+    "path": "../publisher-representations/E56-T05_SKU-21420.jpg",
+    "sourceUrl": "https://gunfun.com/wpgfcanow/wp-content/uploads/2025/05/EmojiTarget-21420-1009x1536.jpg",
+    "sha256": "d763f86c064b9a5a7c592347d57b9671e14fc52e3ba919cb67b67284946025c7",
+    "pixelWidth": 1009,
+    "pixelHeight": 1536
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_GUNFUN_21420_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_color_segmentation_and_radial_trace_v1",
+    "centerPx": [501, 796],
+    "boundaryUncertaintyPx": 8,
+    "zonesOutsideToInside": [
+      {"id": "sick", "outerRadiusPx": 468, "printedPerHitValue": -1000},
+      {"id": "neutral", "outerRadiusPx": 383, "printedPerHitValue": 0},
+      {"id": "smile", "outerRadiusPx": 235, "printedPerHitValue": 1000}
+    ],
+    "classificationPrecedence": ["smile", "neutral", "sick", "outside"]
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "validationRequirements": ["independent zone-boundary review", "representative-photo homography test", "printed score-table reconciliation"],
+  "claimBoundary": "Selected-hit zone classification and publisher-printed signed arithmetic only; no shot count, distance, completion, or proficiency claim."
+}

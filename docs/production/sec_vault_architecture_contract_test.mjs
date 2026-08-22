@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [sec, records, lifecycle, appState, navigation, secCss, vaultCss, futureAuthority] = await Promise.all([
+const [sec, m4Adapter, sharedShell, records, lifecycle, appState, navigation, secCss, vaultCss, futureAuthority] = await Promise.all([
   readFile("sec.html", "utf8"),
+  readFile("m4_zeroing_sec.js", "utf8"),
+  readFile("sec_v1.js", "utf8"),
   readFile("records.html", "utf8"),
   readFile("sec_reopen_lifecycle.js", "utf8"),
   readFile("app_state.js", "utf8"),
@@ -13,13 +15,11 @@ const [sec, records, lifecycle, appState, navigation, secCss, vaultCss, futureAu
 ]);
 
 // Current SEC: TARGET first, every stage in one true accordion.
-assert.match(sec, /<span>1 · TARGET<\/span><strong id="secSessionIdentifier"><\/strong>/);
-assert.match(sec, /data-sec-stage="target" open/);
-assert.equal((sec.match(/class="[^"]*sec-accordion-stage/g) || []).length, 3);
-assert.match(sec, /<h2>Session<\/h2>/);
-assert.match(sec, /<h2>Sight Correction<\/h2>/);
-assert.match(sec, /class="sec-session-score" id="secSessionScore"/);
-assert.match(sec, /aria-label="Shooter Action Bar"/);
+assert.match(m4Adapter, /global\.SCZN3SEC\.render\(\{/);
+assert.match(sharedShell, /<span>1 · TARGET<\/span>/);
+assert.match(sharedShell, /region\.key === "target" \? " open" : ""/);
+assert.match(sharedShell, /class="sec-session-score"/);
+assert.match(sharedShell, /aria-label="Shooter Action Bar"/);
 assert.match(sec, /SCZN3SECReopenLifecycle\?\.initialize/);
 assert.match(lifecycle, /if \(otherStage !== stage\) otherStage\.open = false/);
 assert.doesNotMatch(sec, /Before and After/);

@@ -3,6 +3,9 @@ const fs = require("fs");
 const vm = require("vm");
 
 const renderer = fs.readFileSync(require("path").join(__dirname, "..", "baker_sl_st1_sec.js"), "utf8");
+const platformContracts = fs.readFileSync(require("path").join(__dirname, "..", "platform_contracts.js"), "utf8");
+const adapterModel = fs.readFileSync(require("path").join(__dirname, "..", "sec_adapter_model.js"), "utf8");
+const components = fs.readFileSync(require("path").join(__dirname, "..", "sec_framework.js"), "utf8");
 const context = {
   window: {
     SCZN3SEC: {
@@ -11,6 +14,9 @@ const context = {
     }
   }
 };
+vm.runInNewContext(platformContracts, context);
+vm.runInNewContext(adapterModel, context);
+vm.runInNewContext(components, context);
 vm.runInNewContext(renderer, context);
 
 const impacts = [
@@ -48,7 +54,7 @@ const pkg = {
   }
 };
 const html = context.window.SCZN3BakerSLST1SEC.render({
-  session: { sessionId: "session-002", targetEvidenceImage: { dataUrl: "data:image/jpeg;base64,fixture" } },
+  session: { sessionId: "session-002", targetProfileId: "baker_sl_st1_practice", targetProfileVersion: "1", authorityPackage: pkg, targetEvidenceImage: { dataUrl: "data:image/jpeg;base64,fixture" } },
   package: pkg,
   mode: "live"
 });
@@ -58,6 +64,6 @@ assert(html.includes(">18<"));
 assert(html.includes("left:20%;top:30%"), "SEC must place marker 1 on source photo evidence coordinates");
 assert(html.includes("left:40%;top:50%"), "SEC must place marker 2 on source photo evidence coordinates");
 assert(!html.includes("left:80%;top:70%"), "SEC must not render canonical scoring coordinates over the source photograph");
-assert((html.match(/sec-baker-impact-marker/g) || []).length === 2, "SEC impact count must equal visible numbered marker count");
+assert((html.match(/sec-target-impact-marker/g) || []).length === 2, "SEC impact count must equal visible numbered marker count");
 
 console.log("PASS Baker SL-ST1 Mission B SEC evidence/scoring contract");

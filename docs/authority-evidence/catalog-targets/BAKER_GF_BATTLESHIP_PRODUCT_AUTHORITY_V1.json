@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "sczn3-publisher-product-authority-v1",
+  "authorityId": "BAKER_GF_BATTLESHIP_PRODUCT_AUTHORITY_V1",
+  "status": "publisher_authority_registered",
+  "publisherIdentity": {
+    "publisherId": "baker-targets",
+    "publisherLabel": "Baker Targets",
+    "publisherUrl": "https://bakertargets.com"
+  },
+  "productIdentity": {
+    "productId": "BAKER_GF_BATTLESHIP",
+    "sku": "GF-Battleship",
+    "productLabel": "Battleship Target",
+    "productUrl": "https://bakertargets.com/product/battleship-target/"
+  },
+  "variants": [
+    {"variantId": "GF-Battleship-FullSize", "widthInches": 23, "heightInches": 35, "paper": "standard white"},
+    {"variantId": "GF-Battleship-HalfSize", "widthInches": 17.5, "heightInches": 23, "paper": "heavyweight"}
+  ],
+  "publisherRepresentation": {
+    "path": "BAKER_GF_BATTLESHIP_PUBLISHER_IMAGE_V1.jpg",
+    "sha256": "2b8c38a3aeae6c944886753ef2bf45b99c4908b79d94ba162f9a7ef1df65eb89",
+    "pixelWidth": 432,
+    "pixelHeight": 568,
+    "sourceUrl": "https://bakertargets.com/wp-content/uploads/2023/06/GF-Battleship-e1687797342409.jpg"
+  },
+  "rulesAuthority": {
+    "authorityId": "BAKER_GF_BATTLESHIP_PUBLISHED_GAME_V1",
+    "path": "BAKER_GAME_TARGET_INSTRUCTIONS_2025_06.pdf",
+    "sha256": "478d216d5be0e126395dee5bc42445b73ca03a1b2d70ae883fecddf524406d43",
+    "sourceUrl": "https://bakertargets.com/wp-content/uploads/2025/06/Game-Target-Instructions.pdf",
+    "players": 2,
+    "objective": "Take down the opponent's ships; the board whose ship squares are all hit first loses.",
+    "shipSquareRule": "A hit includes any part of a square that has part of a ship in it.",
+    "shipOrderRequired": false,
+    "challengeCirclesOptional": true,
+    "challengeRules": {
+      "declarationRequiredBeforeShot": true,
+      "darkCircleHit": "Choose any square of any ship as a replacement hit.",
+      "whiteCenterHit": "Sink the next largest ship on the board that is not fully sunk.",
+      "outsideCircle": "Lose the entire next turn; the other player shoots twice in a row."
+    }
+  },
+  "claimBoundary": "Baker-published Battleship product identity, variants, representation, and game instructions only; no additional turn, scoring, or competition rules inferred"
+}

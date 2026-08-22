@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_GUNFUN_21090_HORIZONTAL_VERTICAL_CANDIDATE_V1",
+  "status": "registration_candidate_not_implementation_authority",
+  "experimentId": "E56-T06",
+  "publisherSku": "21090",
+  "sourceEvidence": {
+    "path": "../publisher-representations/E56-T06_SKU-21090.jpg",
+    "sourceUrl": "https://gunfun.com/wpgfcanow/wp-content/uploads/2025/04/HorizontalVertical-21090-1009x1536.jpg",
+    "sha256": "6cc5aa947dc4ff42fb4686aa72768902fe8a77815004128cc0fdd8a5c4818a1b",
+    "pixelWidth": 1009,
+    "pixelHeight": 1536
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_GUNFUN_21090_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_color_segmentation_v1",
+    "boundaryUncertaintyPx": 7,
+    "bulls": [
+      {"id": "horizontal_a", "centerPx": [502, 304], "outerBoundsPx": [225, 113, 557, 385], "group": "horizontal"},
+      {"id": "horizontal_b", "centerPx": [502, 1293], "outerBoundsPx": [225, 1101, 557, 385], "group": "horizontal"},
+      {"id": "vertical_a", "centerPx": [248, 803], "outerBoundsPx": [57, 526, 385, 555], "group": "vertical"},
+      {"id": "vertical_b", "centerPx": [743, 803], "outerBoundsPx": [552, 526, 385, 555], "group": "vertical"}
+    ],
+    "printedRingValuesOutsideToInside": [7, 8, 9, 10],
+    "publisherAggregationGroups": {"horizontal": ["horizontal_a", "horizontal_b"], "vertical": ["vertical_a", "vertical_b"]}
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "validationRequirements": ["independent ring-boundary trace", "representative-photo homography test", "printed group-total reconciliation"],
+  "claimBoundary": "Selected-hit ring classification and separate publisher-printed horizontal/vertical group totals only; no comparison winner, shot count, distance, or completion claim."
+}

@@ -92,6 +92,11 @@
   };
 
   const initialAuthority = {
+    resultPackageType: "zeroCorrectionResult",
+    authoritySource: "backend-authoritative",
+    target_profile_id: "m4_25m_zero",
+    targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    mission_family: "zeroingCorrection",
     authorityVersion: "m4-authority-v1.2",
     authorityRoute: "/api/authority/m4",
     target,
@@ -197,6 +202,11 @@
   };
 
   const confirmationAuthority = {
+    resultPackageType: "zeroCorrectionResult",
+    authoritySource: "backend-authoritative",
+    target_profile_id: "m4_25m_zero",
+    targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    mission_family: "zeroingCorrection",
     authorityVersion: "m4-authority-v1.2",
     authorityRoute: "/api/authority/m4",
     target,
@@ -308,6 +318,8 @@
     isTestData: true,
     savedToSEC: true,
     targetId,
+    targetProfileId: "m4_25m_zero",
+    targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
     vendor: "Baker",
     sku: targetId,
     product: targetName,

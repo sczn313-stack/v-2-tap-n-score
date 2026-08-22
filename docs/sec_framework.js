@@ -145,6 +145,16 @@
     ].join("");
   }
 
+  function ZeroingCorrection(model = {}) {
+    const axes = Array.isArray(model.axes) ? model.axes : [];
+    const axisHtml = axes.map(axis => {
+      if (!axis || !axis.label || !axis.direction) return "";
+      return `<div class="sec-sight-correction-axis"><span>${escapeHtml(axis.label)}</span><strong>${escapeHtml(axis.direction)}</strong>${axis.supporting ? `<small>${escapeHtml(axis.supporting)}</small>` : ""}</div>`;
+    }).join("");
+    if (!axisHtml) return "";
+    return `<div class="sec-sight-correction-story"><div class="sec-sight-correction-system"><span>Adjustment system</span><strong>${escapeHtml(model.systemLabel || "Recorded sight setup")}</strong></div><div class="sec-sight-correction-grid">${axisHtml}</div></div>`;
+  }
+
   function SightCorrectionCard(authorityPackage) {
     const correction = authorityPackage.correction || {};
     const angular = authorityPackage.angular || {};
@@ -159,7 +169,7 @@
         : "Your target and group measurement are saved. Review your sight setup in Equipment to receive Sight Correction.";
       return `<div class="sec-sight-correction-unavailable"><span>Sight Correction</span><strong>${escapeHtml(guidance)}</strong></div>`;
     }
-    const axisCard = axis => {
+    const axisModel = axis => {
       const label = axis[0].toUpperCase() + axis.slice(1);
       const trace = integrity.axes[axis];
       const direction = correction[axis] || `${clicks[`${axis}Clicks`]} clicks ${clicks[`${axis}Direction`] || "CENTER"}`;
@@ -170,9 +180,12 @@
         trace && Number.isFinite(Number(trace.clickConstant)) ? `${trace.clickConstant} ${unit}/click` : "",
         turn ? `turn ${turn}` : ""
       ].filter(Boolean).join(" · ");
-      return `<div class="sec-sight-correction-axis"><span>${escapeHtml(label)}</span><strong>${escapeHtml(direction)}</strong>${supporting ? `<small>${escapeHtml(supporting)}</small>` : ""}</div>`;
+      return { label, direction, supporting };
     };
-    return `<div class="sec-sight-correction-story"><div class="sec-sight-correction-system"><span>Adjustment system</span><strong>${escapeHtml(adjustment.label || "Recorded sight setup")}</strong></div><div class="sec-sight-correction-grid">${axisCard("elevation")}${axisCard("windage")}</div></div>`;
+    return ZeroingCorrection({
+      systemLabel: adjustment.label || "Recorded sight setup",
+      axes: [axisModel("elevation"), axisModel("windage")]
+    });
   }
 
   function RecommendationCard(authorityPackage) {
@@ -256,16 +269,108 @@
 
   function PreservationCard(capabilities) {
     return [
-      capabilities.save ? '<button class="button primary" type="button" id="saveSEC">Save SEC</button>' : "",
+      capabilities.save ? '<button class="button primary" type="button" id="saveSEC" data-sczn3-action="save">Save SEC</button>' : "",
       capabilities.validation ? '<button class="button" type="button" id="openValidation">Validation</button>' : "",
-      capabilities.share ? '<button class="button" type="button" id="shareSEC">Share</button>' : "",
-      capabilities.print ? '<button class="button" type="button" id="exportSEC">Export / Print PDF</button>' : "",
-      capabilities.note ? '<button class="button" type="button" id="addNote">Add Note</button>' : "",
-      capabilities.history ? '<a class="button" id="viewHistory" href="records.html?from=preserved-sec">View History</a>' : ""
+      capabilities.share ? '<button class="button" type="button" id="shareSEC" data-sczn3-action="share">Share</button>' : "",
+      capabilities.print ? '<button class="button" type="button" id="exportSEC" data-sczn3-action="export">Export / Print PDF</button>' : "",
+      capabilities.note ? '<button class="button" type="button" id="addNote" data-sczn3-action="note">Add Note</button>' : "",
+      capabilities.history ? '<a class="button" id="viewHistory" href="records.html?from=preserved-sec" data-sczn3-action="history">View History</a>' : ""
     ].join("");
   }
 
-  window.SCZN3SEC = Object.freeze({
+  const SEMANTIC_ORDER = Object.freeze([
+    "evidence",
+    "measurement",
+    "recommendation",
+    "execution",
+    "validation",
+    "preservation"
+  ]);
+  const RESULT_FAMILIES = Object.freeze([
+    "zeroing-correction",
+    "highest-score-wins",
+    "lowest-score-wins",
+    "qualification-pass-fail"
+  ]);
+  const ACTION_NAMES = Object.freeze(["save", "share", "export", "note", "note-save", "history", "session-details"]);
+
+  function semanticPresentation(stage, model = {}) {
+    if (!SEMANTIC_ORDER.includes(stage)) return "";
+    const contentHtml = typeof model.contentHtml === "string" ? model.contentHtml : "";
+    if (!contentHtml.trim()) return "";
+    const className = typeof model.className === "string" && model.className.trim()
+      ? ` ${escapeHtml(model.className.trim())}`
+      : "";
+    return `<div class="sec-component sec-component-${stage}${className}" data-sec-component="${stage}">${contentHtml}</div>`;
+  }
+
+  function Result(model = {}) {
+    const family = String(model.family || "").trim();
+    const contentHtml = typeof model.contentHtml === "string" ? model.contentHtml : "";
+    if (!RESULT_FAMILIES.includes(family) || !contentHtml.trim()) return "";
+    const className = typeof model.className === "string" && model.className.trim()
+      ? ` ${escapeHtml(model.className.trim())}`
+      : "";
+    return `<div class="sec-component sec-component-result${className}" data-sec-component="result" data-result-family="${escapeHtml(family)}">${contentHtml}</div>`;
+  }
+
+  function LowestScoreWinsPanel(model = {}) {
+    const metrics = Array.isArray(model.metrics) ? model.metrics.map(metric => ({
+      label: String(metric && metric.label || "").trim(),
+      value: String(metric && metric.value || "").trim()
+    })).filter(metric => metric.label && metric.value).slice(0, 4) : [];
+    if (!metrics.length) return "";
+    const ariaLabel = String(model.ariaLabel || "Lowest score wins analysis").trim();
+    return `<div class="vault-target-panel vault-scoring-panel" data-lowest-score-wins-presentation="platform-v1" aria-label="${escapeHtml(ariaLabel)}">${metrics.map(metric => `<span><b>${escapeHtml(metric.label)}</b><strong>${escapeHtml(metric.value)}</strong></span>`).join("")}</div>`;
+  }
+
+  function SessionDetails(model = {}) {
+    const fields = Array.isArray(model.fields) ? model.fields : [];
+    const rows = fields.map(field => {
+      const label = String(field && field.label || "").trim();
+      if (!label) return "";
+      const id = String(field && field.id || "").trim();
+      const value = field && field.value !== undefined && field.value !== null ? String(field.value) : "";
+      if (!value && model.includeEmpty !== true && !id) return "";
+      return `<div><span>${escapeHtml(label)}</span><strong${id ? ` id="${escapeHtml(id)}"` : ""}>${escapeHtml(value)}</strong></div>`;
+    }).join("");
+    const heading = String(model.heading || "Session Details").trim() || "Session Details";
+    const headingId = String(model.headingId || "").trim();
+    const afterHtml = typeof model.afterHtml === "string" ? model.afterHtml : "";
+    return `<section class="sec-session-section"${headingId ? ` aria-labelledby="${escapeHtml(headingId)}"` : ""}><h3${headingId ? ` id="${escapeHtml(headingId)}"` : ""}>${escapeHtml(heading)}</h3><div class="sec-session-record-fields">${rows}</div></section>${afterHtml}`;
+  }
+
+  function ActionBar(model = {}) {
+    const actions = Array.isArray(model.actions) ? model.actions : [];
+    const controls = actions.map(action => {
+      if (!action || !action.label) return "";
+      const tag = action.href ? "a" : "button";
+      const attributes = action.attributes && typeof action.attributes === "object"
+        ? Object.entries(action.attributes)
+          .filter(([name, value]) => /^(?:data|aria)-[a-z0-9-]+$/.test(name) && value !== false && value !== null && value !== undefined)
+          .map(([name, value]) => value === true ? name : `${name}="${escapeHtml(value)}"`)
+          .join(" ")
+        : "";
+      const id = action.id ? ` id="${escapeHtml(action.id)}"` : "";
+      const governedAction = ACTION_NAMES.includes(String(action.action || "").trim().toLowerCase())
+        ? ` data-sczn3-action="${escapeHtml(String(action.action).trim().toLowerCase())}"`
+        : "";
+      const classes = ["button", action.primary ? "primary" : "", action.className || ""].filter(Boolean).join(" ");
+      if (tag === "a") return `<a class="${escapeHtml(classes)}"${id} href="${escapeHtml(action.href)}"${governedAction}${attributes ? ` ${attributes}` : ""}>${escapeHtml(action.label)}</a>`;
+      return `<button class="${escapeHtml(classes)}"${id} type="button"${action.disabled ? " disabled" : ""}${governedAction}${attributes ? ` ${attributes}` : ""}>${escapeHtml(action.label)}</button>`;
+    }).join("");
+    const afterHtml = typeof model.afterHtml === "string" ? model.afterHtml : "";
+    return `<div class="sec-preservation-actions" data-sczn3-action-region="platform-v1">${controls}</div>${afterHtml}`;
+  }
+
+  const Evidence = model => semanticPresentation("evidence", model);
+  const Measurement = model => semanticPresentation("measurement", model);
+  const Recommendation = model => semanticPresentation("recommendation", model);
+  const Execution = model => semanticPresentation("execution", model);
+  const Validation = model => semanticPresentation("validation", model);
+  const Preservation = model => semanticPresentation("preservation", model);
+
+  window.SCZN3SECComponents = Object.freeze({
     escapeHtml,
     metric,
     marker,
@@ -273,10 +378,23 @@
     verifyCalculationChain,
     EvidenceCard,
     ShooterAnalysisCard,
+    ZeroingCorrection,
     SightCorrectionCard,
     RecommendationCard,
     ExecutionCard,
     ValidationCard,
-    PreservationCard
+    PreservationCard,
+    semanticOrder: SEMANTIC_ORDER,
+    resultFamilies: RESULT_FAMILIES,
+    Evidence,
+    Measurement,
+    Result,
+    LowestScoreWinsPanel,
+    Recommendation,
+    Execution,
+    Validation,
+    Preservation,
+    SessionDetails,
+    ActionBar
   });
 })();

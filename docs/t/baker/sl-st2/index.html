@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070a" />
+  <meta name="sczn3-baker-sl-st2-endpoint" content="https://sczn3-authority.onrender.com/api/target/baker-sl-st2/analyze" />
+  <title>Silhouette Target (IDPA) · Tap-n-Score</title>
+  <link rel="stylesheet" href="../../../styles.css?v=episode55-idpa-2" />
+  <link rel="stylesheet" href="../../../platform-ui.css" />
+  <link rel="stylesheet" href="../../../m4-sec.css" />
+  <link rel="stylesheet" href="../../../sec-framework.css?v=episode55-inheritance-audit-1" />
+  <link rel="stylesheet" href="../../../experience_frame_processing.css?v=episode55-idpa-2" />
+  <link rel="stylesheet" href="../../../platform_actions.css?v=episode55-idpa-2" />
+  <link rel="stylesheet" href="../../../baker-sl-st2-idpa-sec.css?v=episode55-idpa-2" />
+  <link rel="stylesheet" href="target-page.css?v=episode55-idpa-2" />
+  <link rel="stylesheet" href="../../../smart_target_workspace.css?v=episode55-inheritance-audit-1" />
+  <script src="../../../navigation.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../experience_frame_processing.js?v=episode55-idpa-2"></script>
+  <script src="../../../platform_actions.js?v=episode55-idpa-2"></script>
+  <script src="../../../smart_target_workspace.js?v=episode55-idpa-2"></script>
+  <script src="../../../platform_contracts.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../sec_adapter_model.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../app_state.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../sec_dispatch.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../m4_runtime.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../sec_reopen_lifecycle.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../sec_v1.js?v=episode55-idpa-2" defer></script>
+  <script src="../../../sec_framework.js?v=episode55-lowest-score-1" defer></script>
+  <script src="../../../baker_sl_st2_idpa_sec.js?v=episode55-idpa-2" defer></script>
+  <script src="target-page.js?v=episode55-idpa-2" defer></script>
+</head>
+<body class="platform-page target-page sl-target-page idpa-target-page">
+  <header class="m4-header app-header sl-app-header">
+    <div class="vendor-slot"><img src="../../../assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" /><div class="brand-lockup"><a class="vendor-name" href="../../../index.html">Tap-n-Score™</a></div></div>
+    <span class="sl-header-target-identity" data-sczn3-target-profile-identity="idpa_silhouette_sl_st2">Silhouette Target (IDPA) • Timed Pair — 7 Yards</span>
+    <details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary><a href="../../../index.html">Home</a><a href="../../../matrix.html">Equipment Library</a><a href="../../../index.html#packages">Smart Targets</a><a href="../../../records.html" data-preserve-active-session>History</a></details>
+  </header>
+
+  <main class="sl-page-shell">
+    <section class="sl-target-introduction" aria-labelledby="targetName">
+      <p class="sl-printer" data-sczn3-partnership-surface="idpa_silhouette_sl_st2"><span data-sczn3-publisher-label>Baker Targets</span></p>
+      <h1 id="targetName">Silhouette Target (IDPA)</h1>
+      <p class="idpa-mission-label">Timed Pair — 7 Yards</p>
+      <p class="sl-instruction" id="targetInstruction" aria-live="polite">Enter your reported raw time, then load the completed target.</p>
+    </section>
+
+    <section class="sl-load-card idpa-setup-card" id="loadCard" aria-label="Session setup and target photo">
+      <h2>Session Setup</h2>
+      <div class="idpa-setup-fields">
+        <label>Reported Raw Time <span>seconds from your shot timer</span><input id="reportedRawTime" inputmode="decimal" autocomplete="off" placeholder="8.50" aria-describedby="rawTimeHelp" /></label>
+        <p id="rawTimeHelp">One target · one string · best two hits · Unlimited scoring</p>
+      </div>
+      <div class="sl-load-actions"><label class="button primary" for="libraryInput">Choose Target Photo</label><input id="libraryInput" type="file" accept="image/*" hidden /></div>
+    </section>
+
+    <section class="sl-workspace" id="targetWorkspace" aria-label="Target evidence workspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
+      <div class="sl-image-frame" id="imageFrame" data-sczn3-workspace-evidence="true">
+        <img id="targetImage" alt="Loaded SL-ST2 target" />
+        <div class="sl-impact-layer" id="impactLayer" aria-hidden="true"></div>
+        <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Tap every visible bullet hole"></button>
+      </div>
+      <div class="sl-workflow-dock workflow-dock--compact" id="workflowDock" data-processing-host data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1">
+        <div class="workflow-support-row"><span id="workspaceFeedback" role="status" aria-live="polite">Tap every bullet hole you see.</span><div class="workflow-secondary-actions" aria-label="Target photo actions"><label class="workflow-secondary-action" for="retakeInput">Retake</label><input id="retakeInput" type="file" accept="image/*" capture="environment" hidden /><label class="workflow-secondary-action" for="replaceInput">Replace</label><input id="replaceInput" type="file" accept="image/*" hidden /></div></div>
+        <label class="idpa-completeness"><input id="evidenceComplete" type="checkbox" /> I marked every bullet hole from this string.</label>
+        <div class="workflow-control-row workflow-control-row--docked" aria-label="Target evidence controls">
+          <div class="target-hit-counter" id="impactCounter" aria-label="0 bullet holes recorded"><strong id="impactCount">0</strong><span>Holes</span></div>
+          <button class="button primary" id="showResults" type="button" disabled>Show Results</button>
+          <button class="button" id="undoImpact" type="button" disabled>Undo</button>
+          <button class="button" id="clearImpacts" type="button" disabled>Clear</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <main class="sl-sec-shell sec-live-host" id="idpaSecView" hidden><div id="idpaSecRoot"></div></main>
+  <div class="sl-confirm-dialog" id="confirmationDialog" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" aria-describedby="confirmationMessage" hidden><section class="sl-confirm-card"><h2 id="confirmationTitle">Confirm Action</h2><p id="confirmationMessage"></p><div class="sl-confirm-actions"><button class="button" id="confirmationCancel" type="button">Keep Current</button><button class="button primary" id="confirmationAccept" type="button">Continue</button></div></section></div>
+</body>
+</html>

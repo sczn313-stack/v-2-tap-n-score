@@ -214,7 +214,104 @@
       && impactCount === impacts.length
       && evidence
       && (evidence.dataUrl || evidence.mediaId);
-    if (!session || (!supportedConfirmationResult && !supportedEvidenceResult)) return null;
+    const vitalDudeTarget = evidencePackage && evidencePackage.target;
+    const vitalDudeReconciliation = evidencePackage && evidencePackage.reconciliation;
+    const vitalDudeAim = evidencePackage && evidencePackage.shooterDeclaredAimPoint;
+    const vitalDudePointIsValid = point => {
+      const xNorm = Number(point && point.xNorm);
+      const yNorm = Number(point && point.yNorm);
+      return Number.isFinite(xNorm) && xNorm >= 0 && xNorm <= 1
+        && Number.isFinite(yNorm) && yNorm >= 0 && yNorm <= 1;
+    };
+    const vitalDudeAimIsValid = vitalDudeAim === null || vitalDudeAim === undefined || (
+      vitalDudePointIsValid(vitalDudeAim)
+      && vitalDudeAim.declaredBy === "shooter"
+      && vitalDudeAim.evidenceMeaning === "shooter_declared_aim_point"
+      && vitalDudeAim.authorityScope === "session_evidence_only"
+    );
+    const supportedVitalDudeResult = dispatch
+      && dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE
+      && evidencePackage
+      && evidencePackage.ok === true
+      && evidencePackage.status === "supported_analysis_ready"
+      && evidencePackage.authoritySource === "backend-authoritative"
+      && evidencePackage.missionFamily === "smartEvidenceCapture"
+      && evidencePackage.missionId === "GUNFUN_22740_EVIDENCE_CAPTURE_V1"
+      && evidencePackage.resultPackageType === "smartEvidenceResult"
+      && vitalDudeTarget
+      && vitalDudeTarget.smartTargetId === "GUNFUN_22740_VITAL_DUDE"
+      && vitalDudeTarget.variantId === "GUNFUN_22740_VITAL_DUDE_23X35"
+      && vitalDudeTarget.targetProfileId === "gunfun_22740_vital_dude"
+      && String(vitalDudeTarget.targetProfileVersion) === "1"
+      && vitalDudeTarget.sku === "22740"
+      && evidencePackage.authorityTrace
+      && evidencePackage.authorityTrace.resultAuthority === "backend"
+      && evidencePackage.imageEvidence
+      && evidencePackage.imageEvidence.backendHashVerified === true
+      && evidencePackage.imageEvidence.acceptanceScope === "shooter_declared_registered_photo_evidence"
+      && evidencePackage.scoring
+      && evidencePackage.scoring.status === "not_applicable"
+      && evidencePackage.ugo
+      && evidencePackage.ugo.status === "image_plane_evidence_only"
+      && evidencePackage.ugo.canonicalRegionMapping === "unavailable"
+      && evidencePackage.ugo.semanticClassification === "unavailable"
+      && evidencePackage.ugo.physicalMeasurement === "unavailable"
+      && Number.isInteger(impactCount)
+      && impactCount >= 1
+      && impactCount === impacts.length
+      && impacts.every(impact => vitalDudePointIsValid(impact)
+        && impact.evidenceMeaning === "shooter_recorded_visible_shot_observation")
+      && vitalDudeReconciliation
+      && vitalDudeReconciliation.countsMatch === true
+      && Number.isInteger(vitalDudeReconciliation.capturedObservationCount)
+      && Number.isInteger(vitalDudeReconciliation.acceptedObservationCount)
+      && vitalDudeReconciliation.capturedObservationCount === impactCount
+      && vitalDudeReconciliation.acceptedObservationCount === impactCount
+      && vitalDudeAimIsValid
+      && evidence
+      && (evidence.dataUrl || evidence.mediaId);
+    const idpaReconciliation = evidencePackage && evidencePackage.reconciliation;
+    const supportedIdpaResult = dispatch
+      && dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST2_IDPA
+      && evidencePackage
+      && evidencePackage.ok === true
+      && evidencePackage.status === "supported_analysis_ready"
+      && evidencePackage.authoritySource === "backend-authoritative"
+      && evidencePackage.resultPackageType === "idpaTimeScoreResult"
+      && evidencePackage.scoring
+      && evidencePackage.scoring.status === "complete"
+      && idpaReconciliation
+      && idpaReconciliation.selectionReconciles === true
+      && idpaReconciliation.timeReconciles === true
+      && Number.isInteger(idpaReconciliation.capturedImpactCount)
+      && idpaReconciliation.capturedImpactCount === impacts.length
+      && evidence
+      && (evidence.dataUrl || evidence.mediaId);
+    const bakerFunAdapters = window.SCZN3SECDispatch ? [
+      window.SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_POINTS,
+      window.SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_NUMBERS,
+      window.SCZN3SECDispatch.ADAPTERS.BAKER_GF_BP,
+      window.SCZN3SECDispatch.ADAPTERS.EZ2C_DOT_TORTURE,
+      window.SCZN3SECDispatch.ADAPTERS.BAKER_GF_BB_C
+    ] : [];
+    const supportedBakerFunResult = dispatch
+      && bakerFunAdapters.includes(dispatch.adapter)
+      && evidencePackage
+      && evidencePackage.ok === true
+      && evidencePackage.status === "complete"
+      && ["bakerFunGame", "catalogFunGame"].includes(evidencePackage.missionFamily)
+      && ["bakerDartboardGameResult", "bakerBowlingPinsResult", "dotTortureCourseResult", "bakerBilliardSequenceResult", "bakerBattleshipGameResult"].includes(evidencePackage.resultPackageType)
+      && evidencePackage.authorityTrace
+      && evidencePackage.authorityTrace.classificationAuthority === "backend"
+      && evidencePackage.authorityTrace.scoringAuthority === "backend"
+      && evidencePackage.reconciliation
+      && evidencePackage.reconciliation.status === "reconciled"
+      && evidencePackage.reconciliation.recordedEventCount === evidencePackage.reconciliation.evidenceObservationCount
+      && evidence
+      && (evidence.dataUrl || evidence.mediaId);
+    const supportedContractResult = window.SCZN3TargetExecutionRuntime
+      && window.SCZN3TargetExecutionRuntime.canPreserve(session) === true;
+    if (!session || (!supportedConfirmationResult && !supportedEvidenceResult && !supportedVitalDudeResult && !supportedIdpaResult && !supportedBakerFunResult && !supportedContractResult)) return null;
     const timestamp = nowStamp();
     return state.replaceSession({
       ...session,

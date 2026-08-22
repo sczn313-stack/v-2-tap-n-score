@@ -18,15 +18,15 @@ try {
     page.on("pageerror", error => errors.push(error.message));
 
     await page.goto(`${baseUrl}/index.html?release-readiness=${viewport.width}`, { waitUntil: "networkidle" });
-    const card = page.locator('[data-experience-id="uspsa-practice-target"]');
-    assert.equal(await card.getAttribute("data-status"), "available");
-    assert.match(await card.getAttribute("aria-label"), /Tap to begin Baker SL-ST1 — USPSA/);
+    const compete = page.locator('[data-door-item="compete"]');
+    await compete.locator("[data-door-id]").click();
+    const card = compete.locator('.ecosystem-door-representative-entry[data-target-id="BAKER_SL_ST1"]');
     assert.doesNotMatch(await card.textContent(), /Coming Soon/i);
     await card.click();
     await page.waitForURL(url => url.pathname.endsWith("/t/baker/sl-st1/"));
 
     const identity = page.locator(".sl-header-target-identity");
-    assert.equal((await identity.textContent()).replace(/\s+/g, " ").trim(), "Baker SL-ST1 • USPSA");
+    assert.equal((await identity.textContent()).replace(/\s+/g, " ").trim(), "USPSA Practice Target");
     assert.equal(await identity.isVisible(), true);
     assert.equal(await page.getByLabel("Open navigation").isVisible(), true);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);

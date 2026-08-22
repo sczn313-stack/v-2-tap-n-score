@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_BAKER_SL_ST2_23X35_TARGET_PLANE_V1",
+  "status": "founder_approved_implementation_artifact",
+  "productAuthorityId": "BAKER_SL_ST2_23X35_PRODUCT_AUTHORITY_V1",
+  "sourceEvidence": {
+    "path": "BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg",
+    "sha256": "9fb11d843c09336bce46e93a7c163eb9f8653e439ad0f4950d419d75d7faf5e9",
+    "pixelWidth": 1074,
+    "pixelHeight": 1393
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_BAKER_SL_ST2_23X35_TARGET_PLANE_V1",
+    "origin": "published_sheet_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "inch",
+    "extent": {"width": 23, "height": 35}
+  },
+  "representationToTargetPlane": {
+    "method": "governed_four_corner_projective_mapping",
+    "sheetCornersPx": [
+      {"id": "sheet_tl", "x": 23, "y": 20},
+      {"id": "sheet_tr", "x": 1049, "y": 20},
+      {"id": "sheet_br", "x": 1049, "y": 1378},
+      {"id": "sheet_bl", "x": 23, "y": 1378}
+    ],
+    "sheetCornersInches": [
+      {"id": "sheet_tl", "x": 0, "y": 0},
+      {"id": "sheet_tr", "x": 23, "y": 0},
+      {"id": "sheet_br", "x": 23, "y": 35},
+      {"id": "sheet_bl", "x": 0, "y": 35}
+    ],
+    "sourceCornerResidualPx": {"rms": 0, "maximum": 0}
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_boundary_trace_v1",
+    "lineOwnership": {
+      "scoringBoundary": "innermost_closed_region_line",
+      "pairedOuterStroke": "reference_or_print_structure_not_used_for_classification"
+    },
+    "boundaryUncertaintyPx": 1.5,
+    "regionsPx": {
+      "headExterior": [[411,137],[652,137],[652,365],[411,365]],
+      "bodyExterior": [[263,366],[801,366],[876,480],[876,1120],[778,1328],[286,1328],[187,1120],[187,480]],
+      "headZero": {"type":"circle","center":[531,255],"radius":80},
+      "torsoZero": {"type":"circle","center":[531,644],"radius":159},
+      "torsoDownOne": [[411,365],[294,484],[294,879],[411,1078],[651,1078],[769,879],[769,484],[652,365]]
+    },
+    "classificationPrecedence": ["down_zero", "down_one", "down_three", "outside"],
+    "regionSemantics": {
+      "down_zero": "inside headZero or torsoZero",
+      "down_one": "inside headExterior or torsoDownOne after down_zero exclusion",
+      "down_three": "inside bodyExterior after down_zero and down_one exclusion",
+      "outside": "outside headExterior and bodyExterior"
+    }
+  },
+  "registrationLandmarks": {
+    "fit": [
+      {"id":"head_tl","x":411,"y":137},
+      {"id":"head_tr","x":652,"y":137},
+      {"id":"left_shoulder","x":263,"y":366},
+      {"id":"right_shoulder","x":801,"y":366},
+      {"id":"left_lower_break","x":187,"y":1120},
+      {"id":"right_lower_break","x":876,"y":1120},
+      {"id":"body_bl","x":286,"y":1328},
+      {"id":"body_br","x":778,"y":1328}
+    ],
+    "validation": [
+      {"id":"head_zero_top","x":531,"y":175},
+      {"id":"head_zero_bottom","x":531,"y":335},
+      {"id":"torso_zero_left","x":372,"y":644},
+      {"id":"torso_zero_right","x":690,"y":644},
+      {"id":"inner_bl","x":411,"y":1078},
+      {"id":"inner_br","x":651,"y":1078}
+    ]
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "minimumTargetCoverage": 0.45,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "claimBoundary": "selected_center_practice_classification_only"
+}

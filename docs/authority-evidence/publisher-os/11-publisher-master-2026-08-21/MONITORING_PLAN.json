@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "structure_only_no_automatic_monitoring_service_implemented",
+  "baselineObservationDate": "2026-08-21",
+  "publisherExpansionCap": 11,
+  "governingRule": "P-OS preserves dated evidence and compares observations; it does not repeatedly rediscover a publisher or treat one missing page as proof of retirement.",
+  "publishers": [
+    "baker-targets",
+    "gunfun",
+    "splatterburst",
+    "highwild",
+    "birchwood-casey",
+    "ez-aim-allen",
+    "champion-targets",
+    "american-target",
+    "national-target",
+    "speedwell",
+    "us-target"
+  ],
+  "signals": [
+    "product_added",
+    "product_removed_or_retired",
+    "sku_or_identifier_changed",
+    "price_or_availability_changed",
+    "package_quantity_changed",
+    "dimensions_or_material_changed",
+    "artwork_or_label_changed",
+    "rules_manual_or_printed_instruction_changed",
+    "organization_evidence_changed",
+    "authority_gap_closed_or_conflicted",
+    "ownership_or_brand_relationship_changed",
+    "manufacturing_import_distribution_changed",
+    "retailer_dealer_or_wholesale_route_changed",
+    "advertising_media_sponsorship_or_event_changed",
+    "recognition_evidence_changed"
+  ],
+  "historyRule": "Never overwrite a prior observation. Preserve old value, new value, source, observation date, and confidence/evidence status.",
+  "absenceRule": "Absence from one listing is not proof of discontinuation.",
+  "authorityRule": "Organization labeling is not endorsement, and a newly found rule is not capability activation.",
+  "cadence": {
+    "catalog_price_and_availability": "monthly_or_before_publisher_meeting",
+    "rules_manuals_and_authority": "monthly",
+    "ownership_manufacturing_and_distribution": "quarterly_or_on_signal",
+    "retail_media_sponsorship_and_events": "quarterly",
+    "recognition_evidence": "when_artwork_or_product_identity_changes"
+  },
+  "implementation": "not_implemented"
+}

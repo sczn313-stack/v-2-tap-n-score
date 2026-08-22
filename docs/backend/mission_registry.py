@@ -8,6 +8,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Dict, Optional
 
+from target_execution_contract import TargetExecutionContractResolver
+
 from target_registry import (
     GOVERNED_UNAVAILABLE_MESSAGE,
     registry_profile_for_target,
@@ -29,6 +31,7 @@ MISSION_FAMILY_IDS = {
     "recreationalChallenge",
     "smartEvidenceCapture",
     "gssf",
+    "idpaTimedPractice",
 }
 
 RESULT_PACKAGE_IDS = {
@@ -43,6 +46,7 @@ RESULT_PACKAGE_IDS = {
     "challengeResult",
     "smartEvidenceResult",
     "gssfPaperPenaltyResult",
+    "idpaTimeScoreResult",
 }
 
 MISSION_RESULT_PACKAGE_MAP = {
@@ -60,6 +64,7 @@ MISSION_RESULT_PACKAGE_MAP = {
     "recreationalChallenge": "challengeResult",
     "smartEvidenceCapture": "smartEvidenceResult",
     "gssf": "gssfPaperPenaltyResult",
+    "idpaTimedPractice": "idpaTimeScoreResult",
 }
 
 BAKER_TARGET_IDS = {"BAKER_ST_100YD_SMART"}
@@ -339,7 +344,7 @@ DOT_TORTURE_TARGET_PROFILES = {
 }
 
 
-def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
+def normalize_target_profile(payload: Dict[str, Any], execution_contract_resolver: Optional[TargetExecutionContractResolver] = None) -> Dict[str, Any]:
     supplied = payload.get("targetProfile") if isinstance(payload.get("targetProfile"), dict) else {}
     target_id = str(
         payload.get("targetId")
@@ -360,7 +365,7 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
     elif target_id in DOT_TORTURE_TARGET_IDS or target_id_key in DOT_TORTURE_TARGET_PROFILES:
         profile = deepcopy(DOT_TORTURE_TARGET_PROFILES[target_id_key])
     else:
-        registry_profile = registry_profile_for_target(target_id)
+        registry_profile = registry_profile_for_target(target_id, execution_contract_resolver)
         mission_family = (
             supplied.get("missionFamilyId")
             or supplied.get("mission_family")
@@ -405,6 +410,12 @@ def normalize_target_profile(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def is_supported_profile(profile: Dict[str, Any]) -> bool:
+    if (
+        profile.get("registryExecutionAuthorized") is True
+        and profile.get("executionContractStatus") == "authorized"
+        and MISSION_RESULT_PACKAGE_MAP.get(profile.get("missionFamilyId")) == profile.get("resultPackageType")
+    ):
+        return True
     if (
         profile.get("targetId") in BAKER_TARGET_IDS
         and profile.get("missionFamilyId") == "zeroingCorrection"

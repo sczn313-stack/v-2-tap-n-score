@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_GUNFUN_12190_5_CIRCLES_CANDIDATE_V1",
+  "status": "registration_candidate_not_implementation_authority",
+  "experimentId": "E56-T03",
+  "publisherSku": "12190",
+  "sourceEvidence": {
+    "path": "../publisher-representations/E56-T03_SKU-12190.jpg",
+    "sourceUrl": "https://gunfun.com/wpgfcanow/wp-content/uploads/2013/03/5-Circles-12190-770x1024.jpg",
+    "sha256": "96fb77e23ada5d9eaaf734d973b86a96efa6218dfa9ed2d481bab16bde48485e",
+    "pixelWidth": 770,
+    "pixelHeight": 1024
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_GUNFUN_12190_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_color_segmentation_v1",
+    "boundaryUncertaintyPx": 6,
+    "bulls": [
+      {"bullNumber": 1, "centerPx": [164, 312], "outerBoundsPx": [4, 151, 322, 323]},
+      {"bullNumber": 2, "centerPx": [598, 312], "outerBoundsPx": [438, 151, 322, 323]},
+      {"bullNumber": 3, "centerPx": [382, 566], "outerBoundsPx": [221, 406, 323, 322]},
+      {"bullNumber": 4, "centerPx": [164, 820], "outerBoundsPx": [4, 660, 322, 322]},
+      {"bullNumber": 5, "centerPx": [598, 820], "outerBoundsPx": [438, 660, 322, 322]}
+    ],
+    "printedRingValuesOutsideToInside": [5, 6, 7, 8, 9, 10]
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "validationRequirements": ["independent ring-boundary trace", "representative-photo homography test", "boundary-hit policy confirmation"],
+  "claimBoundary": "Observed selected-hit classification against publisher-printed bull and ring identities only; no shot count, distance, aggregation, qualification, or completion claim."
+}

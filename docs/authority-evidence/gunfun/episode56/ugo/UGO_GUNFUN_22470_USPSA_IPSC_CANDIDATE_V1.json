@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_GUNFUN_22470_USPSA_IPSC_CANDIDATE_V1",
+  "status": "registration_candidate_not_implementation_authority",
+  "experimentId": "E56-T10",
+  "publisherSku": "22470",
+  "sourceEvidence": {
+    "path": "../publisher-representations/E56-T10_SKU-22470.jpg",
+    "sourceUrl": "https://gunfun.com/wpgfcanow/wp-content/uploads/2013/09/USPSA-IDPA-22470.jpg",
+    "sha256": "47e0fff82342d2055d9798b422462ccdc018f628a9d59459667071fcc3cfb278",
+    "pixelWidth": 1941,
+    "pixelHeight": 3000
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_GUNFUN_22470_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_label_and_silhouette_review_v1",
+    "boundaryUncertaintyPx": 12,
+    "targetSilhouetteBoundsPx": [175, 184, 1591, 2630],
+    "publisherPrintedRegionLabelAnchorsNormalized": [
+      {"region": "A_head", "anchor": [0.50, 0.13]},
+      {"region": "B_head", "anchor": [0.50, 0.215]},
+      {"region": "A_body", "anchor": [0.50, 0.55]},
+      {"region": "C_body_left", "anchor": [0.30, 0.55]},
+      {"region": "C_body_right", "anchor": [0.70, 0.55]},
+      {"region": "D_body_left", "anchor": [0.15, 0.55]},
+      {"region": "D_body_right", "anchor": [0.85, 0.55]}
+    ],
+    "semanticBoundaryStatus": "candidate_requires_independent_polygon_trace",
+    "numericValuesAuthorized": false
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "validationRequirements": ["independent A/B/C/D polygon trace", "representative-photo homography test", "boundary uncertainty must be reduced to runtime-gate maximum"],
+  "claimBoundary": "GunFun SKU 22470 publisher-specific smart evidence capture for visible A/B/C/D labels only; no numeric scoring, penalty, stage, timing, Baker identity, or target equivalence."
+}

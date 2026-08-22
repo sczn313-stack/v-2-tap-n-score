@@ -4,12 +4,15 @@ This index is the front door to SCZN3 architecture. Read the documents in order 
 
 ## 1. Recommended reading order
 
-1. [Smart Target Catalog](./SMART_TARGET_CATALOG.md)
-2. [Mission Family Routing governance](../history/milestones/README.md#m-003--mission-family-routing)
-3. [SCZN3 Target Authority — Phase 1](./SCZN3_Target_Authority_Phase1.md), together with the existing [Backend Authority](../history/milestones/README.md#m-002--backend-authority) and zeroing-isolation boundary
-4. [Equipment Compatibility Authority](./EQUIPMENT_COMPATIBILITY_AUTHORITY.md)
-5. [SCZN3 Universal Shooter Experience Card Architecture](./SCZN3_Universal_SEC_Architecture.md)
-6. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
+1. [SCZN3 — Shortest Correct Mental Model](./SCZN3_SHORTEST_CORRECT_MENTAL_MODEL.md)
+2. [Smart Target Catalog](./SMART_TARGET_CATALOG.md)
+3. [Mission Family Routing governance](../history/milestones/README.md#m-003--mission-family-routing)
+4. [SCZN3 Target Authority — Phase 1](./SCZN3_Target_Authority_Phase1.md), together with the existing [Backend Authority](../history/milestones/README.md#m-002--backend-authority) and zeroing-isolation boundary
+5. [Equipment Compatibility Authority](./EQUIPMENT_COMPATIBILITY_AUTHORITY.md)
+6. [SCZN3 Universal Shooter Experience Card Architecture](./SCZN3_Universal_SEC_Architecture.md)
+7. [SCZN3 Known Target Integration Standard — KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md)
+8. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
+9. For publisher-corpus work, [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
 
 ### Adopted architecture decision
 
@@ -19,6 +22,10 @@ This index is the front door to SCZN3 architecture. Read the documents in order 
 These documents are locked architecture. They generalize the Phase 1 model without changing Phase 1 runtime behavior or independently authorizing implementation.
 
 ## 2. Document roles and authority boundaries
+
+### [SCZN3 — Shortest Correct Mental Model](./SCZN3_SHORTEST_CORRECT_MENTAL_MODEL.md) — Active
+
+The Shortest Correct Mental Model is the living operational onboarding brief for incoming agents. It states what SCZN3 knows now, distinguishes production from current working candidates, identifies locked owners and authority boundaries, preserves the failures that changed operating behavior, and directs agents to use SCZN3 knowledge before general model knowledge. It summarizes current truth but does not replace the Episode Registry, architecture contracts, target/mission authority, checkpoints, or backend result packages.
 
 ### [Smart Target Catalog](./SMART_TARGET_CATALOG.md) — Active
 
@@ -44,9 +51,17 @@ Equipment Compatibility Authority separates Target Admission, Official Mission E
 
 The Universal SEC owns the presentation and strict renderer-selection boundary. It receives a validated mission-specific result package and presents the result, explanation, performance detail, governed evidence, session context, and next actions. It does not calculate official scores, classify observations, repair malformed authority, substitute evidence, or make conceptual targets executable.
 
+### [SCZN3 Known Target Integration Standard — KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md) — Active
+
+KTIS governs integration of existing printer/publisher targets. The publisher's offered product, identity, published dimensions, artwork, and variants remain physical-target authority; SCZN3 adds QR identity, UGO registration, target/mission-specific backend authority, and inherits the existing platform experience. KTIS prevents target redesign, repeated platform re-specification, and unnecessary Founder gates while preserving explicit stop conditions for real authority or architecture conflicts.
+
 ### [SCZN3 History](../history/README.md) — Active
 
 The [Episode Index](../history/episodes/README.md) preserves the problems, discoveries, decisions, and outcomes that shaped SCZN3. The [Milestone Index](../history/milestones/README.md) records major engineering and governance checkpoints with commit evidence. History explains why decisions were made, but it does not define runtime authority and cannot override an architecture contract, mission registry, target profile, or backend result package.
+
+### [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md) — Current detailed P-OS authority
+
+The master summary owns the current eleven-publisher corpus denominators, shared Tier 1/2/3 intelligence status, organization-authority findings, recognition-ready boundary, monitoring model, and Publisher #12 expansion cap. The Shortest Correct Mental Model carries only the minimum operational context; historical batch reports remain evidence of how the final baseline was reached.
 
 ## 3. How the documents relate
 
@@ -86,3 +101,4 @@ No core document in this reading order is currently Draft. USPSA/IPSC and IBS ex
 - Target Authority Phase 1: [Episode 27](../history/episodes/README.md#target-authority-phase-1-architecture-lock) · [milestone M-007](../history/milestones/README.md#m-007--target-authority-phase-1)
 - Universal SEC Architecture: [episode](../history/episodes/README.md#universal-sec-architecture-baseline) · [milestone M-008](../history/milestones/README.md#m-008--universal-sec-architecture)
 - Equipment Compatibility Authority: [Episode 53](../history/episodes/README.md#governed-implementation-and-equipment-compatibility-authority) · [checkpoint](../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md)
+- Publisher OS 11-Publisher Knowledge Baseline: [milestone M-014](../history/milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md) · [Founder master summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)

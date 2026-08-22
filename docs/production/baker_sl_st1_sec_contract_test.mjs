@@ -3,12 +3,15 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const root = new URL("../", import.meta.url);
+const platformContractsSource = await readFile(new URL("platform_contracts.js", root), "utf8");
+const secAdapterModelSource = await readFile(new URL("sec_adapter_model.js", root), "utf8");
 const secSource = await readFile(new URL("sec_v1.js", root), "utf8");
+const secFrameworkSource = await readFile(new URL("sec_framework.js", root), "utf8");
 const timelineSource = await readFile(new URL("sec_session_timeline.js", root), "utf8");
 const dispatchSource = await readFile(new URL("sec_dispatch.js", root), "utf8");
 const adapterSource = await readFile(new URL("baker_sl_st1_sec.js", root), "utf8");
 const adapterCss = await readFile(new URL("baker-sl-st1-sec.css", root), "utf8");
-const universalSecCss = await readFile(new URL("sec-universal.css", root), "utf8");
+const universalSecCss = await readFile(new URL("sec-framework.css", root), "utf8");
 const targetHtml = await readFile(new URL("t/baker/sl-st1/index.html", root), "utf8");
 const targetJs = await readFile(new URL("t/baker/sl-st1/target-page.js", root), "utf8");
 const records = await readFile(new URL("records.html", root), "utf8");
@@ -16,7 +19,10 @@ const runtime = await readFile(new URL("m4_runtime.js", root), "utf8");
 
 const context = { window: {} };
 vm.createContext(context);
+vm.runInContext(platformContractsSource, context);
+vm.runInContext(secAdapterModelSource, context);
 vm.runInContext(secSource, context);
+vm.runInContext(secFrameworkSource, context);
 vm.runInContext(dispatchSource, context);
 vm.runInContext(timelineSource, context);
 vm.runInContext(adapterSource, context);
@@ -43,6 +49,12 @@ const session = {
   },
   matrixSnapshot: { target_profile_id: "BAKER_SL_ST1", mission_family: "smartEvidenceCapture", resultPackageType: "smartEvidenceResult" }
 };
+const renderPackage = (packageValue, options = {}) => adapter.render({
+  session: { ...session, authorityPackage: packageValue },
+  package: packageValue,
+  mode: "live",
+  ...options
+});
 
 assert.equal(adapter.matches(pkg), true);
 assert.equal(adapter.impactCount(pkg), 2);
@@ -67,6 +79,11 @@ assert.match(html, /left:60%;top:70%[^>]*>2<\/span>/);
 assert.match(html, /Add firearm, ammunition, distance and shooter/);
 assert.doesNotMatch(html, /Not recorded|founder_verification_pending|UGO|ATP|numeric score|SIGHT CORRECTION/i);
 assert.doesNotMatch(html, /<span>Firearm<\/span>|<span>Ammunition<\/span>|<span>Distance<\/span>|<span>Shooter<\/span>/);
+assert.match(html, /data-sec-adapter-id="baker-sl-st1"/);
+assert.match(html, /data-scoring-presentation-family="highest-score-wins"/);
+assert.match(html, /data-target-profile-id="baker_sl_st1_practice"/);
+assert.match(html, /data-publisher-id="baker-targets"/);
+assert.match(html, /data-product-id="BAKER_SL_ST1"/);
 const dismissed = adapter.render({ session, package: pkg, mode: "live", detailsDismissed: true });
 assert.doesNotMatch(dismissed, /data-baker-details-invitation/);
 const historical = adapter.render({ session, package: pkg, mode: "historical" });
@@ -114,7 +131,7 @@ assert.deepEqual(JSON.parse(JSON.stringify(adapter.vaultResultSummary(scored))),
   ],
   evidenceLabel: "4 bullet holes"
 });
-const scoredHtml = adapter.render({ session, package: scored, mode: "live" });
+const scoredHtml = renderPackage(scored);
 assert.match(scoredHtml, /34 Points/);
 assert.match(scoredHtml, /aria-label="A: 1 times 10 equals 10"/);
 assert.match(scoredHtml, /aria-label="B: 1 times 9 equals 9"/);
@@ -124,7 +141,7 @@ assert.match(scoredHtml, /Highest score wins/);
 assert.match(scoredHtml, /<span>Total Score<\/span><strong>34<\/strong><small>Highest score wins<\/small>/);
 assert.match(scoredHtml, /Zone Performance/);
 assert.match(scoredHtml, /4<\/strong> numbered bullet holes <span aria-hidden="true">•<\/span> all accounted for/);
-assert.match(scoredHtml, /sec-baker-performance-stage/);
+assert.match(scoredHtml, /sec-evidence-result-layout/);
 assert.match(scoredHtml, /Target Evidence/);
 assert.doesNotMatch(scoredHtml, /authoritative|backend|canonical|governed|result package/i);
 assert.doesNotMatch(scoredHtml, /Recorded Bullet Holes/i);
@@ -149,7 +166,7 @@ const timelineRecords = context.window.SCZN3SECSessionTimeline.preservedRecords(
 const timelineModel = adapter.sessionTimelineModel(timelineRecords, "preserved-3");
 assert.deepEqual(Array.from(timelineModel.points, point => [point.sessionId, point.value]), [["preserved-1", 34], ["preserved-2", 34], ["preserved-3", 34]]);
 assert.equal(timelineModel.points[2].current, true);
-const timelineHtml = adapter.render({ session: preservedSessions[2], package: scored, mode: "historical", timelineRecords });
+const timelineHtml = adapter.render({ session: preservedSessions[2], package: preservedSessions[2].authorityPackage, mode: "historical", timelineRecords });
 assert.match(timelineHtml, /Last 10 Scores/);
 assert.match(timelineHtml, /records\.html\?session=preserved-1&amp;view=sec/);
 assert.equal((timelineHtml.match(/class="sec-session-timeline-point/g) || []).length, 3);
@@ -181,7 +198,7 @@ assert.deepEqual(JSON.parse(JSON.stringify(adapter.vaultResultSummary(inconsiste
   objectiveLabel: "Open SEC for details",
   evidenceLabel: "4 bullet holes"
 });
-assert.doesNotMatch(adapter.render({ session, package: inconsistent, mode: "live" }), /99 Points|<span>Total Score<\/span>/);
+assert.doesNotMatch(renderPackage(inconsistent), /99 Points|<span>Total Score<\/span>/);
 
 const firstScoreboard = structuredClone(scored);
 const scoreboardZones = ["A", "A", "A", "A", "A", "A", "C", "C", "C", "C", "C", "C", "C", "C", "C", "D", "D", "D", "D", "D", "D"];
@@ -207,24 +224,25 @@ firstScoreboard.scoring = {
   subtotals: { A: 60, B: 0, C: 72, D: 42 },
   total: 174
 };
-const firstScoreboardHtml = adapter.render({ session, package: firstScoreboard, mode: "live" });
+const firstScoreboardHtml = renderPackage(firstScoreboard);
 assert.match(firstScoreboardHtml, /<span>Total Score<\/span><strong>174<\/strong><small>Highest score wins<\/small>/);
 assert.match(firstScoreboardHtml, /aria-label="A: 6 times 10 equals 60"/);
 assert.match(firstScoreboardHtml, /aria-label="B: 0 times 9 equals 0"/);
 assert.match(firstScoreboardHtml, /aria-label="C: 9 times 8 equals 72"/);
 assert.match(firstScoreboardHtml, /aria-label="D: 6 times 7 equals 42"/);
 assert.match(firstScoreboardHtml, /<strong>21<\/strong> numbered bullet holes/);
-assert.equal((firstScoreboardHtml.match(/class="sec-baker-impact-marker"/g) || []).length, 21);
+assert.equal((firstScoreboardHtml.match(/class="sec-target-impact-marker"/g) || []).length, 21);
 assert.doesNotMatch(firstScoreboardHtml, /Recorded Bullet Holes|trend|comparison|improvement recommendation|shooting DNA/i);
 
-assert.match(adapterCss, /\.sec-baker-performance-stage\{[^}]*grid-template-columns:minmax\(0,1\.65fr\) minmax\(260px,\.85fr\)/, "desktop target evidence remains visually dominant beside score");
-assert.match(adapterCss, /\.sec-baker-evidence-frame img\{[^}]*object-fit:contain/, "complete target evidence remains contained");
+assert.match(universalSecCss, /\.sec-evidence-result-layout\{[^}]*grid-template-columns:minmax\(0,1\.65fr\) minmax\(260px,\.85fr\)/, "desktop target evidence remains visually dominant beside score through the platform owner");
+assert.match(universalSecCss, /\.sec-target-evidence-frame img\{[^}]*object-fit:contain/, "complete target evidence remains contained through the platform owner");
 assert.match(universalSecCss, /data-sec-open-region="target"\]\{grid-template-rows:minmax\(0,1fr\) auto auto\}/, "universal shell preserves constrained Target, Session, and action rows");
 assert.match(universalSecCss, /\.sec-session-record-fields>div\{[^}]*grid-template-columns:max-content minmax\(0,1fr\)[^}]*column-gap:10px/, "Session labels and values use readable universal spacing");
-assert.match(targetJs, /button\.textContent = "SEC Preserved"/, "Save SEC confirms preservation in place");
+assert.match(targetJs, /SEC saved to Ballistic Vault\./, "Save SEC confirms preservation in place");
+assert.match(adapterSource, /preserved \? "SEC Preserved" : "Save SEC"/, "the rerendered platform action confirms the preserved state");
 assert.doesNotMatch(targetJs, /window\.location\.(?:href|assign)[\s\S]{0,160}records\.html/, "Save SEC does not navigate to the Vault");
 assert.doesNotMatch(adapterCss, /\.sec-v1-(?:flow|region|target|session|actions)|\.sec-accordion-stage/, "Baker CSS does not control SEC shell geometry");
-assert.match(adapterCss, /@media\(max-width:520px\)\{\.sec-baker-performance-stage,[^}]*grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto minmax\(0,1fr\)/, "390px SEC presents score first and complete target evidence next");
+assert.match(universalSecCss, /@media\(max-width:520px\)\{\.sec-evidence-result-layout,[^}]*grid-template-columns:minmax\(0,1fr\);grid-template-rows:auto minmax\(0,1fr\)/, "390px SEC presents score first and complete target evidence next through the platform owner");
 
 assert.match(targetHtml, /baker_sl_st1_sec\.js/);
 assert.match(targetHtml, /sec_session_timeline\.js/);

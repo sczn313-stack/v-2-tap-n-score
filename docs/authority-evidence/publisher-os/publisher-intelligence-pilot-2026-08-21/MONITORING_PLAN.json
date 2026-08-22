@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "structure_only_no_monitoring_service_implemented",
+  "governingRule": "P-OS should get smarter about a publisher over time, not repeatedly rediscover the publisher from scratch.",
+  "baselineObservationDate": "2026-08-21",
+  "proposedCadence": {
+    "publisher_catalog_and_price": "monthly_or_before_publisher_meeting",
+    "rules_manuals_and_authority": "monthly",
+    "ownership_manufacturing_distribution": "quarterly_or_on_signal",
+    "retailer_presence": "quarterly",
+    "advertising_social_and_events": "quarterly",
+    "recognition_evidence": "when_artwork_or_product_identity_changes"
+  },
+  "signalTypes": [
+    {"signal": "product_added", "comparisonKeys": ["publisher", "publisherProductId", "sku", "productUrl"], "preserve": ["firstObservedAt", "source", "classification"]},
+    {"signal": "product_removed_or_discontinued", "comparisonKeys": ["publisherProductId", "sku", "productUrl"], "preserve": ["lastSeenAt", "priorEvidence", "publisherStatusIfAny"], "failClosedRule": "absence_from_one_listing_is_not_discontinuation"},
+    {"signal": "sku_or_identifier_changed", "comparisonKeys": ["publisherProductId", "productName"], "preserve": ["oldValue", "newValue", "source", "observedAt"]},
+    {"signal": "price_changed", "comparisonKeys": ["sku", "variant", "packageQuantity"], "preserve": ["oldAmount", "newAmount", "currency", "availability", "source", "observedAt"]},
+    {"signal": "package_or_dimension_changed", "comparisonKeys": ["sku", "variant"], "preserve": ["oldValue", "newValue", "source", "observedAt"]},
+    {"signal": "artwork_or_label_changed", "comparisonKeys": ["sku", "imageDigest"], "preserve": ["oldImage", "newImage", "visibleIdentifiers", "recognitionImpact"]},
+    {"signal": "rules_or_manual_changed", "comparisonKeys": ["sourceUrl", "documentTitle"], "preserve": ["oldDigest", "newDigest", "versionDate", "authorityOwner", "capabilityImpact"]},
+    {"signal": "organization_evidence_changed", "comparisonKeys": ["publisher", "organization", "claimType"], "preserve": ["labeling", "publisherClaim", "organizationClaim", "independentlyEstablishedRelationship"]},
+    {"signal": "authority_gap_resolved_or_conflicted", "comparisonKeys": ["publisherProductId", "missionFamily"], "preserve": ["oldStatus", "newStatus", "authorityOwner", "source", "governanceDisposition"]},
+    {"signal": "retailer_presence_changed", "comparisonKeys": ["publisher", "retailer", "sku"], "preserve": ["firstObservedAt", "lastSeenAt", "availability", "source"]},
+    {"signal": "advertising_media_event_changed", "comparisonKeys": ["publisher", "channel", "contentId"], "preserve": ["contentType", "publisherCreated", "paidOrSponsored", "partnershipStatus", "observedAt"]},
+    {"signal": "manufacturing_import_distribution_changed", "comparisonKeys": ["publisher", "claimScope"], "preserve": ["oldStatus", "newStatus", "evidenceStatus", "source"]},
+    {"signal": "ownership_or_brand_relationship_changed", "comparisonKeys": ["publisher", "relatedEntity"], "preserve": ["relationshipType", "effectiveDate", "source", "conflicts"]}
+  ],
+  "seededSignals": [
+    {
+      "publisherId": "gunfun",
+      "signal": "catalog_count_difference",
+      "baseline": 258,
+      "currentObserved": 257,
+      "disposition": "monitor_only_no_deletion_conclusion"
+    },
+    {
+      "publisherId": "ez-aim-allen",
+      "signal": "product_added_candidate",
+      "candidate": "EZ Aim Sasquatch",
+      "disposition": "future_catalog_reconciliation_required_not_ingested"
+    },
+    {
+      "publisherId": "champion-targets",
+      "signal": "ownership_or_product_line_split",
+      "candidate": "Current Primos storefront versus legacy Vista materials versus 2025 Champion Clay Targets LLC transaction",
+      "disposition": "conflict_preserved_corporate_owner_unresolved"
+    },
+    {
+      "publisherId": "baker-targets",
+      "signal": "new_rules_authority",
+      "candidate": "Six-product Game Target Instructions PDF",
+      "disposition": "authority_preserved_profile_and_ugo_validation_required"
+    }
+  ]
+}

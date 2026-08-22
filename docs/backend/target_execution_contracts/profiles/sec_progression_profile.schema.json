@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/sec-progression-profile-v1.json",
+  "title": "SCZN3 SEC Progression Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["missionFamily", "resultPackageType", "resultPackageVersion", "profileId", "profileVersion", "programId", "programName", "publisherAuthority", "sourceDocuments", "approval", "effective", "lifecycle", "componentBindings", "claimGrade", "subjectContinuity", "inputEligibility", "consumptionPolicy", "startingLevelId", "levels", "capabilityStates"],
+  "properties": {
+    "missionFamily": {"const": "secProgressionEvaluation"}, "resultPackageType": {"const": "secProgressionResult"}, "resultPackageVersion": {"const": "1"},
+    "profileId": {"type": "string", "minLength": 1}, "profileVersion": {"type": "string", "minLength": 1}, "programId": {"type": "string", "minLength": 1}, "programName": {"type": "string", "minLength": 1},
+    "publisherAuthority": {"type": "object"}, "sourceDocuments": {"type": "array", "minItems": 1}, "approval": {"type": "object"}, "effective": {"type": "object"}, "lifecycle": {"type": "object"}, "componentBindings": {"type": "object"},
+    "claimGrade": {"const": "governed_progression_result"},
+    "subjectContinuity": {"const": {"authority": "backend_required", "verifiedRealWorldIdentity": "not_established"}},
+    "inputEligibility": {"type": "object", "required": ["factAdapterId", "allowedTuples"], "properties": {"factAdapterId": {"enum": ["precision_score_total", "qualification_practice_outcome", "cue_terminal_status", "diagnostic_publisher_match_count", "decision_publisher_match_count"]}, "allowedTuples": {"type": "array", "minItems": 1}}},
+    "consumptionPolicy": {"const": "single_use_within_profile_lineage"}, "startingLevelId": {"type": "string", "minLength": 1}, "levels": {"type": "array", "minItems": 2}, "capabilityStates": {"type": "object"}
+  }
+}

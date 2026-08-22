@@ -1,0 +1,82 @@
+{
+  "analysisId": "EP56-TARGET-CAPABILITY-COVERAGE-GUNFUN-BAKER-V1",
+  "status": "founder_review",
+  "analysisDate": "2026-08-19",
+  "implementationPerformed": false,
+  "populations": {
+    "existingSczn3BaselineTargets": 10,
+    "gunfunPublishedRecords": 258,
+    "gunfunIndividualTargetOfferings": 241,
+    "gunfunExcludedPhysicalOrBundleRecords": 17,
+    "bakerPublishedRecords": 536,
+    "bakerIndividualTargetOfferings": 422,
+    "bakerCanonicalProductLineages": 238,
+    "bakerExcludedVarietyPacks": 58,
+    "bakerExcludedGetTenPacks": 53,
+    "bakerExcludedNonTargetMerchandiseOrInstructions": 3,
+    "combinedPublishedRecords": 794,
+    "combinedIndividualTargetOfferings": 663,
+    "combinedCanonicalProductLineages": 479
+  },
+  "capabilitySummary": {
+    "distinctCatalogEstablishedFamilies": 16,
+    "behaviorFamiliesDemonstratedBySczn3": 10,
+    "reusableCapabilityOwnersToday": 4,
+    "demonstratedButTargetShapedFamilies": 6,
+    "genuinelyMissingFamilies": 6,
+    "sharedOwnerClosuresForFullReusableCoverage": 12
+  },
+  "productLeverage": {
+    "offeringsMappedToDemonstratedFamilies": 594,
+    "offeringsMappedToDemonstratedFamiliesPercent": 89.59,
+    "offeringsRequiringGenuinelyMissingFamilies": 69,
+    "offeringsRequiringGenuinelyMissingFamiliesPercent": 10.41,
+    "lineagesMappedToDemonstratedFamilies": 424,
+    "lineagesMappedToDemonstratedFamiliesPercent": 88.52,
+    "lineagesRequiringGenuinelyMissingFamilies": 55,
+    "lineagesRequiringGenuinelyMissingFamiliesPercent": 11.48,
+    "architecturalCompositionCoverageAfterClosuresPercent": 100.0,
+    "authorityDisclaimer": "Architectural family coverage does not grant product execution authority."
+  },
+  "families": [
+    {"id": "CF-01", "name": "smart evidence capture and observation reconciliation", "maturity": "reusable_owner"},
+    {"id": "CF-02", "name": "registered geometry with open numeric region/ring scoring", "maturity": "reusable_owner"},
+    {"id": "CF-03", "name": "bounded entity-completion recreational challenge", "maturity": "reusable_owner"},
+    {"id": "CF-04", "name": "zeroing, group measurement, correction, and confirmation", "maturity": "reusable_shared_owner"},
+    {"id": "CF-05", "name": "time-plus-penalty scoring", "maturity": "demonstrated_target_shaped"},
+    {"id": "CF-06", "name": "timed selected-hit / points-down practice", "maturity": "demonstrated_target_shaped"},
+    {"id": "CF-07", "name": "fixed published course and shot-allocation progression", "maturity": "demonstrated_target_shaped"},
+    {"id": "CF-08", "name": "multiplayer point accumulation", "maturity": "demonstrated_target_shaped"},
+    {"id": "CF-09", "name": "ordered sequence with miss-driven turn transfer", "maturity": "demonstrated_target_shaped"},
+    {"id": "CF-10", "name": "adversarial board state with opponent entities and special events", "maturity": "demonstrated_target_shaped"},
+    {"id": "CF-11", "name": "governed diagnostic feedback", "maturity": "genuinely_missing", "gunfunOfferings": 10, "bakerOfferings": 6},
+    {"id": "CF-12", "name": "qualification and staged-course evaluation", "maturity": "genuinely_missing", "gunfunOfferings": 15, "bakerOfferings": 12},
+    {"id": "CF-13", "name": "commanded, cued, randomized, or timed drill orchestration", "maturity": "genuinely_missing", "gunfunOfferings": 8, "bakerOfferings": 9},
+    {"id": "CF-14", "name": "decision discrimination and paired/multi-target scenario state", "maturity": "genuinely_missing", "gunfunOfferings": 0, "bakerOfferings": 8},
+    {"id": "CF-15", "name": "longitudinal progression across sessions", "maturity": "genuinely_missing", "gunfunOfferings": 0, "bakerOfferings": 2},
+    {"id": "CF-16", "name": "declarative collection/hand/path game state", "maturity": "genuinely_missing", "gunfunOfferingsEstablished": 0, "bakerOfferings": 2}
+  ],
+  "overlap": {
+    "multiLabelMissingFamilyAssignments": 72,
+    "uniqueOfferingsRequiringMissingFamilies": 69,
+    "overlappingOfferings": [
+      {"publisher": "GunFun", "sku": "22460", "families": ["CF-11", "CF-12"]},
+      {"publisher": "Baker", "sku": "ST-CTQ", "families": ["CF-12", "CF-13"]},
+      {"publisher": "Baker", "sku": "ST-CTQ-Bulk", "families": ["CF-12", "CF-13"]}
+    ]
+  },
+  "authorityWatchlistNotCounted": [
+    "shotgun pattern analysis",
+    "USPSA/IDPA hit factor or official match execution",
+    "anatomical, medical, tactical, or hunting interpretation",
+    "multi-physical-target arrays from commerce packs",
+    "automatic reactive/splatter interpretation"
+  ],
+  "sourceSnapshot": {
+    "gunfun": "docs/authority-evidence/gunfun/episode56/full-catalog-stress-test/FULL_CATALOG_AUTHORITY_AUDIT.json",
+    "bakerStoreApi": "https://bakertargets.com/wp-json/wc/store/v1/products",
+    "bakerResponseTimestamp": "2026-08-19T19:04:42Z",
+    "bakerUniqueSkus": 536,
+    "bakerPages": 6
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "validatedAt": "2026-08-21T17:37:04.839619+00:00",
+  "input": "normalized/all-publishers.json",
+  "inputSha256": "1d8dde25ae0158e9b2d06a60866639a1d03ee4e954989ca62f19a9bd4b2fa6b4",
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "publisher_set",
+      "status": "PASS",
+      "detail": "observed=['birchwood-casey', 'champion', 'ez-aim-allen', 'highwild', 'splatterburst']"
+    },
+    {
+      "check": "record_count",
+      "status": "PASS",
+      "detail": "observed=790"
+    },
+    {
+      "check": "required_fields",
+      "status": "PASS",
+      "detail": "every record has the common P-OS evidence envelope"
+    },
+    {
+      "check": "record_id_uniqueness",
+      "status": "PASS",
+      "detail": "unique=790/790"
+    },
+    {
+      "check": "publisher_sku_uniqueness",
+      "status": "PASS",
+      "detail": "unique=750/750"
+    },
+    {
+      "check": "classification_closed_set",
+      "status": "PASS",
+      "detail": "classes=['maintenance_consumable', 'non_target_catalog_product', 'shootable_target', 'shootable_target_system', 'target_accessory']"
+    },
+    {
+      "check": "target_boolean_reconciles",
+      "status": "PASS",
+      "detail": "targets=505"
+    },
+    {
+      "check": "target_evidence_floor",
+      "status": "PASS",
+      "detail": "covered=505/505"
+    },
+    {
+      "check": "target_image_references",
+      "status": "PASS",
+      "detail": "covered=505/505"
+    },
+    {
+      "check": "recognition_trait_envelope",
+      "status": "PASS",
+      "detail": "covered=505/505"
+    },
+    {
+      "check": "non_targets_have_no_execution_mapping",
+      "status": "PASS",
+      "detail": "non-target/accessory records=285"
+    },
+    {
+      "check": "known_capability_families_only",
+      "status": "PASS",
+      "detail": "no new capability family identifiers"
+    },
+    {
+      "check": "richer_capabilities_fail_closed",
+      "status": "PASS",
+      "detail": "no discovery candidate was admitted as executable authority"
+    },
+    {
+      "check": "authority_gap_on_missing_sku",
+      "status": "PASS",
+      "detail": "missing SKU records=40"
+    },
+    {
+      "check": "source_files_present",
+      "status": "PASS",
+      "detail": "referenced paths=7"
+    },
+    {
+      "check": "no_unrelated_personal_cookie_headers",
+      "status": "PASS",
+      "detail": "captured response headers were sanitized"
+    }
+  ],
+  "counts": {
+    "records": 790,
+    "targets": 505,
+    "nonTargetsAccessoriesConsumables": 285,
+    "publishers": 5,
+    "exactSkuRecords": 750,
+    "missingSkuRecords": 40,
+    "classCounts": {
+      "maintenance_consumable": 6,
+      "non_target_catalog_product": 157,
+      "shootable_target": 397,
+      "shootable_target_system": 108,
+      "target_accessory": 122
+    }
+  }
+}

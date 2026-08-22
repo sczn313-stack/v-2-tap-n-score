@@ -20,8 +20,14 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Needs Review | Universal SEC Architecture Baseline | 2026-07-14 | [M-008](../milestones/README.md#m-008--universal-sec-architecture) | Architecture Baseline |
 | Episode 30 | Composable Target Authority | 2026-07-14 | [M-009](../milestones/README.md#m-009--composable-target-authority) | Architecture Locked |
 | Episode 53 | Governed Implementation and Equipment Compatibility Authority | 2026-08-10 | [Checkpoint](../../../CHECKPOINTS/SCZN3_EP53_GOVERNED_IMPLEMENTATION_CLOSURE_2026-08-10/CHECKPOINT.md) | Locked |
+| Episode 54 | Universal Inheritance Hierarchy | 2026-08-16 | [Post-Universality checkpoint](../../../CHECKPOINTS/SCZN3_EP54_POST_UNIVERSALITY_BASELINE_2026-08-16/CHECKPOINT.md) | CLOSED — Founder Approved |
+| Episode 55 | IDPA: The First Inherited Smart Target | 2026-08-18 | [Locked record](./EPISODE_55_IDPA_FIRST_INHERITED_SMART_TARGET.md) | CLOSED / ARCHIVED / LOCKED |
+| Episode 56 | The Shortest Correct Mental Model | 2026-08-18 through 2026-08-19 | [Locked record](./EPISODE_56_SHORTEST_CORRECT_MENTAL_MODEL.md) | CLOSED / ARCHIVED / LOCKED |
+| Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
 
 ## Episode records
+
+Episodes 55, 56, and 57 are closed, archived, and locked. Snapshot 9 and SCZN3 Shortest Correct Mental Model v1.3 preserve the Founder-approved Episode 57 landing-page state. Survey remains explicitly outside the approval boundary. Episode 58 is reserved and no episode is active.
 
 ### First Stable Zeroing Pipeline
 
@@ -306,6 +312,28 @@ Composable Target Authority.
 **Related commits:** `abb6ba3`, `9a90be3`, `22e0fa9`, `d60d2f8`, `5d58ccd`
 
 **Status:** Locked
+
+### Universal Inheritance Hierarchy
+
+**Episode number:** Episode 54
+
+**Title:** Universal Inheritance Hierarchy
+
+**Date:** 2026-08-16
+
+**Summary:** SCZN3 defines universality as one authoritative shared implementation inherited by every applicable Smart Target. The proposed hierarchy separates universal shooter-facing shells and components from target-specific geometry, mission, scoring, correction, and evidence authority.
+
+**Problem:** Similar-looking implementations do not scale. If shared behavior must be corrected independently for each target, the platform has duplication rather than inheritance.
+
+**Discovery:** Existing Baker, M4, and GSSF work contains strong source patterns that can become shared owners without universalizing target-specific authority.
+
+**Governance decisions:** Founder review is required before implementation. Snapshot 5 remains the restore boundary. IDPA remains on hold until the hierarchy is approved and the four current experiences pass the inheritance test.
+
+**Outcome:** [Episode 54 Universal Inheritance Specification](./EPISODE_54_UNIVERSAL_INHERITANCE_HIERARCHY.md) is recorded as a Founder Review Draft. No implementation is authorized.
+
+**Related commits:** None
+
+**Status:** Active — Founder Review Draft
 
 ## Episode entry template
 

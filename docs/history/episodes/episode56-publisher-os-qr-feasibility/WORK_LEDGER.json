@@ -1,0 +1,139 @@
+{
+  "recordType": "Episode 56 Command 2 Publisher OS timing reconciliation",
+  "recordStatus": "authoritative_reconstructed_from_contemporaneous_local_evidence",
+  "timezone": "America/New_York",
+  "timezoneAbbreviation": "EDT",
+  "utcOffset": "-04:00",
+  "scope": "Timing reconciliation only; no architecture, implementation, QR, catalog-registration, or production-state change.",
+  "timingPolicy": {
+    "officialStartAnchor": "Founder-specified experiment boundary",
+    "completionBoundary": "Codex task_complete event after specification persistence and validation",
+    "activeCodyWork": "Elapsed intervals in which Cody was reading, reasoning, inspecting evidence, simulating the catalog, designing the specification, packaging the specification, or validating the result.",
+    "permissionEnvironmentFriction": "Human permission prompts, permission failures, environment errors, or blocked retries. None occurred.",
+    "unattendedWaiting": "Time inside the official interval when Cody had not begun the task, context compaction was running, or a tool/process was executing without requiring active Cody work.",
+    "founderResponseWaiting": "Time awaiting a Founder response after Cody surfaced a decision boundary. None occurred during Command 2.",
+    "rounding": "Raw evidence is retained to the millisecond. Reported durations are rounded to the nearest whole second and decimal minutes to two places. Rounded categories reconcile to rounded total elapsed time."
+  },
+  "authoritativeTiming": {
+    "officialStart": "2026-08-19T11:36:00.000-04:00",
+    "actualTaskStart": "2026-08-19T11:37:07.678-04:00",
+    "specificationPersisted": "2026-08-19T11:42:21.372-04:00",
+    "validationComplete": "2026-08-19T11:42:28.852-04:00",
+    "actualCompletion": "2026-08-19T11:42:33.133-04:00",
+    "totalElapsedSecondsRaw": 393.133,
+    "totalElapsedSecondsRounded": 393,
+    "totalElapsedDisplay": "6 minutes 33 seconds",
+    "totalElapsedMinutesRounded": 6.55,
+    "activeCodySecondsRaw": 253.232,
+    "activeCodySecondsRounded": 253,
+    "activeCodyDisplay": "4 minutes 13 seconds",
+    "activeCodyMinutesRounded": 4.22,
+    "permissionEnvironmentFrictionSeconds": 0,
+    "permissionEnvironmentFrictionDisplay": "0 seconds",
+    "unattendedWaitingSecondsRaw": 139.901,
+    "unattendedWaitingSecondsRounded": 140,
+    "unattendedWaitingDisplay": "2 minutes 20 seconds",
+    "unattendedWaitingMinutesRounded": 2.33,
+    "founderResponseWaitingSeconds": 0,
+    "founderResponseWaitingDisplay": "0 seconds",
+    "rawReconciliationSeconds": 393.133
+  },
+  "activeWorkReconstruction": [
+    {
+      "segmentId": "E56-C2-W001",
+      "workPerformed": "Read Command 2; inspected Command 1 evidence and existing catalog, identity, routing, registration, and authority owners; established the governed population boundary.",
+      "workCategory": "Authority lookup and architecture inspection",
+      "activeSecondsRaw": 76.719,
+      "activeSecondsRounded": 77,
+      "activeMinutesRounded": 1.28,
+      "sharedOrTargetSpecific": "shared full-catalog work",
+      "requiredNewApplicationCode": false,
+      "cause": "The feasibility result had to be grounded in existing SCZN3 authority owners and the fixed Command 1 evidence rather than inferred from product names or routes."
+    },
+    {
+      "segmentId": "E56-C2-W002",
+      "workPerformed": "Simulated the complete 258-record publisher/SKU identity and route population; checked collisions and exception classes; designed the minimum immutable catalog, generic resolver, and QR-package mechanism.",
+      "workCategory": "Full-library simulation and specification design",
+      "activeSecondsRaw": 99.711,
+      "activeSecondsRounded": 100,
+      "activeMinutesRounded": 1.67,
+      "sharedOrTargetSpecific": "shared full-catalog work",
+      "requiredNewApplicationCode": false,
+      "cause": "The Publisher OS feasibility claim required a full-denominator uniqueness and authority simulation plus a smallest-correct reusable mechanism."
+    },
+    {
+      "segmentId": "E56-C2-W003",
+      "workPerformed": "Packaged the Founder specification, reconciled counts and boundaries, persisted the documentation artifact, validated the fixed denominator and documentation-only scope, and returned the governed completion report.",
+      "workCategory": "Authority packaging and validation/testing",
+      "activeSecondsRaw": 76.802,
+      "activeSecondsRounded": 76,
+      "activeMinutesRounded": 1.27,
+      "sharedOrTargetSpecific": "shared full-catalog work",
+      "requiredNewApplicationCode": false,
+      "cause": "The result required a durable Founder-review artifact and proof that no implementation or production mutation occurred."
+    }
+  ],
+  "waitingReconstruction": [
+    {
+      "segmentId": "E56-C2-WAIT001",
+      "waitingType": "unattended_waiting",
+      "start": "2026-08-19T11:36:00.000-04:00",
+      "end": "2026-08-19T11:37:07.678-04:00",
+      "secondsRaw": 67.678,
+      "secondsRounded": 68,
+      "explanation": "Official Founder anchor to recorded Codex task start. The attachment was created at 11:36:59 EDT; no active Cody work is claimed before the task_started event."
+    },
+    {
+      "segmentId": "E56-C2-WAIT002",
+      "waitingType": "unattended_waiting",
+      "start": "2026-08-19T11:40:05.355-04:00",
+      "end": "2026-08-19T11:41:12.318-04:00",
+      "secondsRaw": 66.963,
+      "secondsRounded": 67,
+      "explanation": "Recorded context-compaction interval; excluded from active Cody work."
+    },
+    {
+      "segmentId": "E56-C2-WAIT003",
+      "waitingType": "unattended_waiting",
+      "secondsRaw": 5.260,
+      "secondsRounded": 5,
+      "explanation": "Cumulative execution latency for read-only inspection, persistence, and validation tool calls. No human permission or retry was required."
+    }
+  ],
+  "reconciliation": {
+    "founderApproximateCompletion": "2026-08-19T12:42:00-04:00",
+    "evidenceEstablishedCompletion": "2026-08-19T11:42:33.133-04:00",
+    "differenceFromApproximation": "Approximately 59 minutes 27 seconds earlier than the recollection.",
+    "explanation": "The task event log records specification work from 11:37:07 through task completion at 11:42:33 EDT. The specification file was created at 11:42:21 EDT. The independent event-log and filesystem evidence agree on the 11:42 minute. The later 12:42 recollection therefore reflects a one-hour recollection or report-paste discrepancy, not Command 2 execution time.",
+    "ledgerAvailability": "No standalone Command 2 Work Ledger existed before this reconciliation. This ledger is explicitly reconstructed from contemporaneous event records and filesystem metadata; it does not represent invented contemporaneous entries."
+  },
+  "evidence": [
+    {
+      "type": "Founder start anchor",
+      "value": "2026-08-19 11:36:00 AM EDT"
+    },
+    {
+      "type": "Command 2 attachment filesystem metadata",
+      "path": "/Users/ronnieseay/.codex/attachments/21a04ff1-e973-4d01-8179-fb78bd3a9d81/pasted-text.txt",
+      "createdAndModified": "2026-08-19T11:36:59-04:00"
+    },
+    {
+      "type": "Codex task event log",
+      "path": "/Users/ronnieseay/.codex/sessions/2026/08/18/rollout-2026-08-18T19-49-21-01a01747-935a-7fb1-aa54-8d1a02bcbd2a.jsonl",
+      "events": {
+        "taskStarted": "2026-08-19T15:37:07.678Z",
+        "contextCompactionBoundary": "2026-08-19T15:40:05.355Z to 2026-08-19T15:41:12.318Z",
+        "specificationPersisted": "2026-08-19T15:42:21.372Z",
+        "validationComplete": "2026-08-19T15:42:28.852Z",
+        "finalAnswer": "2026-08-19T15:42:33.115Z",
+        "taskComplete": "2026-08-19T15:42:33.133Z"
+      },
+      "conversion": "UTC event timestamps converted using America/New_York EDT offset -04:00."
+    },
+    {
+      "type": "Founder specification filesystem metadata",
+      "path": "docs/history/episodes/episode56-publisher-os-qr-feasibility/PUBLISHER_OS_FULL_CATALOG_QR_FEASIBILITY_FOUNDER_SPEC.md",
+      "createdAndModified": "2026-08-19T11:42:21-04:00"
+    }
+  ]
+}

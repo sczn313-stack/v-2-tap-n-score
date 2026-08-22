@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/target-execution-contract-v1.json",
+  "title": "SCZN3 Target Execution Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "contractId", "contractVersion", "authorityContractVersion",
+    "lifecycleStatus", "supportStatus", "approval", "effective",
+    "targetProfile", "components", "missionFamily", "resultPackageType", "resultPackageVersion",
+    "executor", "secAdapter", "preservationValidator", "session", "unsupportedUses"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "sczn3-target-execution-contract-v1"},
+    "contractId": {"type": "string", "minLength": 1},
+    "contractVersion": {"type": "string", "minLength": 1},
+    "authorityContractVersion": {"type": "string", "minLength": 1},
+    "lifecycleStatus": {"enum": ["draft", "validation", "supported", "suspended", "revoked", "retired"]},
+    "supportStatus": {"enum": ["unavailable", "supported"]},
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authorityId", "approvedAt"],
+      "properties": {
+        "status": {"enum": ["approved", "unapproved"]},
+        "authorityId": {"type": "string", "minLength": 1},
+        "approvedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "effective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "until"],
+      "properties": {
+        "from": {"type": "string", "format": "date-time"},
+        "until": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "targetProfile": {"$ref": "#/$defs/targetProfile"},
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry", "registration", "scoring", "mission"],
+      "properties": {
+        "geometry": {"$ref": "#/$defs/component"},
+        "registration": {"$ref": "#/$defs/component"},
+        "scoring": {"$ref": "#/$defs/component"},
+        "mission": {"$ref": "#/$defs/component"}
+      }
+    },
+    "missionFamily": {"enum": ["collectionHandEvaluation", "cueDrillOrchestration", "decisionScenarioEvaluation", "diagnosticFeedbackEvaluation", "qualificationCourseEvaluation", "precisionRingScore", "recreationalChallenge", "secProgressionEvaluation", "smartEvidenceCapture"]},
+    "resultPackageType": {"enum": ["collectionHandResult", "cueDrillResult", "decisionScenarioResult", "diagnosticFeedbackResult", "qualificationResult", "precisionScoreResult", "challengeResult", "secProgressionResult", "smartEvidenceResult"]},
+    "resultPackageVersion": {"type": "string", "minLength": 1},
+    "executor": {"$ref": "#/$defs/versionedOwner"},
+    "secAdapter": {"$ref": "#/$defs/secAdapter"},
+    "preservationValidator": {"$ref": "#/$defs/versionedOwner"},
+    "session": {"type": "object"},
+    "unsupportedUses": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+  },
+  "$defs": {
+    "versionedOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    },
+    "secAdapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "scoringPresentationFamily"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "scoringPresentationFamily": {"type": "string", "minLength": 1}
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "status", "digest", "definition"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "status": {"enum": ["approved", "unavailable", "suspended", "revoked"]},
+        "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "definition": {"type": "object"}
+      }
+    },
+    "targetProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "atpId", "authorityId", "publisher", "product"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "atpId": {"type": "string", "minLength": 1},
+        "authorityId": {"type": "string", "minLength": 1},
+        "publisher": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "name"],
+          "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "url": {"type": "string"}}
+        },
+        "product": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "name", "sku"],
+          "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "sku": {"type": "string", "minLength": 1}, "dimensions": {"type": "object"}}
+        }
+      }
+    }
+  }
+}

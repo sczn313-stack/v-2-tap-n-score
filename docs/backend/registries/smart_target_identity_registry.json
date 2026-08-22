@@ -107,6 +107,130 @@
         "Runtime execution remains unavailable until UGO observation is separately approved.",
         "No target artwork, ATP, Target Page, SEC, QR route, scoring implementation, or session behavior is created by Phase 1."
       ]
+    },
+    {
+      "recordId": "BAKER_SL_ST2_IDENTITY_V1",
+      "recordType": "smart_target_identity",
+      "recordStatus": "founder_approved",
+      "immutableAfterApproval": true,
+      "smartTargetId": "BAKER_SL_ST2",
+      "identityVersion": 1,
+      "targetProfileId": "idpa_silhouette_sl_st2",
+      "targetProfileVersion": "1",
+      "printer": {
+        "printerId": "baker",
+        "brandName": "Baker Targets",
+        "businessName": "The Baker Press, Inc."
+      },
+      "product": {
+        "productName": "Silhouette Target (IDPA)",
+        "sku": "SL-ST2",
+        "productUrl": "https://bakertargets.com/product/silhouette-target-idpa/",
+        "sczn3Positioning": "timed practice"
+      },
+      "launchVariant": {
+        "variantId": "BAKER_SL_ST2_23X35_STANDARD_WHITE",
+        "width": 23,
+        "height": 35,
+        "unit": "inch",
+        "materialDescription": "standard paper",
+        "identityStatus": "registered",
+        "runtimeSupportStatus": "supported"
+      },
+      "deferredVariants": [
+        {
+          "variantId": "BAKER_SL_ST2_17_5X23_HEAVYWEIGHT",
+          "width": 17.5,
+          "height": 23,
+          "unit": "inch",
+          "materialDescription": "heavyweight paper",
+          "identityStatus": "deferred",
+          "runtimeSupportStatus": "unavailable_separate_geometry_required"
+        }
+      ],
+      "productSource": {
+        "authorityId": "BAKER_SL_ST2_23X35_PRODUCT_AUTHORITY_V1",
+        "geometrySource": "UGO_BAKER_SL_ST2_23X35_TARGET_PLANE_V1",
+        "scoringModel": "SCZN3_SL_ST2_TIMED_PAIR_7YD_V1"
+      },
+      "qrIdentityStrategy": {
+        "status": "registered",
+        "identityTuple": {
+          "printerId": "baker",
+          "smartTargetId": "BAKER_SL_ST2",
+          "variantId": "BAKER_SL_ST2_23X35_STANDARD_WHITE",
+          "identityVersion": 1
+        },
+        "rules": [
+          "The QR identifies the printer product and exact supported variant.",
+          "Target, mission, geometry, rules, result, and session authority remain separate.",
+          "Unknown, altered, deferred, or retired identities fail visibly."
+        ]
+      },
+      "runtimeExecution": {
+        "status": "supported",
+        "missionAuthorityId": "SCZN3_SL_ST2_TIMED_PAIR_7YD_V1",
+        "resultPackageType": "idpaTimeScoreResult"
+      },
+      "unsupportedCapabilityDeclaration": {
+        "policy": "Timed-practice capability only.",
+        "capabilities": [
+          "Official or match-official score claims",
+          "Qualification or classifier claims",
+          "Physical bullet-hole edge or line-touch adjudication",
+          "Behavioral or non-threat penalty adjudication",
+          "Automatic equivalence with the 17.5 x 23 variant"
+        ]
+      }
+    },
+    {
+      "recordId": "GUNFUN_22740_VITAL_DUDE_IDENTITY_V1",
+      "recordType": "smart_target_identity",
+      "recordStatus": "founder_approved",
+      "immutableAfterApproval": true,
+      "smartTargetId": "GUNFUN_22740_VITAL_DUDE",
+      "identityVersion": 1,
+      "targetProfileId": "gunfun_22740_vital_dude",
+      "targetProfileVersion": "1",
+      "printer": {
+        "printerId": "gunfun",
+        "brandName": "GunFun",
+        "businessName": "GunFun Shooting Targets, Inc."
+      },
+      "product": {
+        "productName": "Vital Dude",
+        "sku": "22740",
+        "productUrl": "https://gunfun.com/shop/vital-dude-22740/",
+        "sczn3Positioning": "evidence capture"
+      },
+      "launchVariant": {
+        "variantId": "GUNFUN_22740_VITAL_DUDE_23X35",
+        "width": 23,
+        "height": 35,
+        "unit": "inch",
+        "identityStatus": "registered",
+        "runtimeSupportStatus": "supported_evidence_only"
+      },
+      "productSource": {
+        "authorityId": "GUNFUN_EP56_COHORT_PUBLISHER_AUTHORITY_AUDIT_V1:E56-T08",
+        "geometrySource": "publisher dimensions; session image-plane evidence only",
+        "scoringModel": "not_applicable"
+      },
+      "runtimeExecution": {
+        "status": "supported",
+        "scope": "controlled_e56_t08_evidence_only_proof",
+        "missionAuthorityId": "GUNFUN_22740_EVIDENCE_CAPTURE_V1",
+        "resultPackageType": "smartEvidenceResult"
+      },
+      "unsupportedCapabilityDeclaration": {
+        "policy": "Only shooter-declared image evidence and backend count reconciliation are supported.",
+        "capabilities": [
+          "Scoring, qualification, penalties, or course completion",
+          "Canonical regions, anatomical or medical meaning, or tactical priority",
+          "Physical measurement, zeroing, correction, or inferred aim",
+          "Publisher mission or intent not expressly established"
+        ]
+      }
     }
   ]
 }

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "ugo-target-plane-v1",
+  "ugoAuthorityId": "UGO_BAKER_GF_DB_V1",
+  "status": "implementation_authority",
+  "productAuthorityId": "BAKER_GF_DB_PRODUCT_AUTHORITY_V1",
+  "sourceEvidence": {
+    "path": "BAKER_GF_DB_PUBLISHER_PRODUCT_IMAGE_V1.jpg",
+    "sha256": "7c5b0f448eee83c0638f182e0faaa2791f0ec4cd41f9b7d26aaf4908e829648e",
+    "pixelWidth": 1141,
+    "pixelHeight": 1500
+  },
+  "coordinateSystem": {
+    "coordinateSystemId": "UGO_BAKER_GF_DB_CANONICAL_IMAGE_PLANE_V1",
+    "origin": "publisher_representation_upper_left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "unit": "canonical_pixel"
+  },
+  "geometryObservation": {
+    "extractionMethod": "publisher_representation_ring_and_sector_trace_v1",
+    "boardCenterPx": [572.5, 758.5],
+    "boundaryUncertaintyPx": 2,
+    "ringsPx": {
+      "innerBullMax": 22,
+      "outerBullMax": 63,
+      "innerRingMin": 250,
+      "innerRingMax": 273,
+      "outerRingMin": 395,
+      "outerRingMax": 419
+    },
+    "sectorOrderClockwiseFromTop": [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5],
+    "sectorWidthDegrees": 18,
+    "classificationPrecedence": ["inner_bull", "outer_bull", "triple", "double", "single", "outside"]
+  },
+  "runtimeGate": {
+    "minimumMutualMatches": 18,
+    "minimumInliers": 12,
+    "minimumInlierRatio": 0.35,
+    "maximumReprojectionRmsPx": 6,
+    "maximumReprojectionP95Px": 12,
+    "maximumBoundaryUncertaintyPx": 8
+  },
+  "claimBoundary": "selected bullet-hole center classification against Baker-published representation"
+}

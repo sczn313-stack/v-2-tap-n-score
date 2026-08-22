@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070a" />
+  <meta name="sczn3-vital-dude-endpoint" content="https://sczn3-authority.onrender.com/api/target/gunfun/vital-dude/analyze" />
+  <title>GunFun Vital Dude · Evidence Capture</title>
+  <link rel="stylesheet" href="../../../styles.css?v=vital-dude-1" />
+  <link rel="stylesheet" href="../../../platform-ui.css" />
+  <link rel="stylesheet" href="../../../m4-sec.css" />
+  <link rel="stylesheet" href="../../../sec-framework.css?v=vital-dude-1" />
+  <link rel="stylesheet" href="../../../experience_frame_processing.css" />
+  <link rel="stylesheet" href="../../../platform_actions.css" />
+  <link rel="stylesheet" href="../../../baker-sl-st1-sec.css" />
+  <link rel="stylesheet" href="../../../gunfun-vital-dude-sec.css?v=vital-dude-1" />
+  <link rel="stylesheet" href="../../../smart_target_workspace.css" />
+  <link rel="stylesheet" href="target-page.css?v=vital-dude-1" />
+  <script src="../../../navigation.js" defer></script>
+  <script src="../../../experience_frame_processing.js"></script>
+  <script src="../../../platform_actions.js"></script>
+  <script src="../../../smart_target_workspace.js"></script>
+  <script src="../../../platform_contracts.js?v=vital-dude-1" defer></script>
+  <script src="../../../sec_adapter_model.js?v=vital-dude-1" defer></script>
+  <script src="../../../app_state.js" defer></script>
+  <script src="../../../sec_dispatch.js?v=vital-dude-1" defer></script>
+  <script src="../../../m4_runtime.js" defer></script>
+  <script src="../../../sec_reopen_lifecycle.js" defer></script>
+  <script src="../../../sec_v1.js" defer></script>
+  <script src="../../../sec_framework.js" defer></script>
+  <script src="../../../gunfun_vital_dude_sec.js?v=vital-dude-1" defer></script>
+  <script src="target-page.js?v=vital-dude-1" defer></script>
+</head>
+<body class="platform-page target-page sl-target-page vital-dude-target-page">
+  <header class="m4-header app-header sl-app-header">
+    <div class="vendor-slot"><img src="../../../assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" /><div class="brand-lockup"><a class="vendor-name" href="../../../index.html">Tap-n-Score™</a></div></div>
+    <span class="sl-header-target-identity" data-sczn3-target-profile-identity="gunfun_22740_vital_dude">Vital Dude</span>
+    <details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary><a href="../../../index.html">Home</a><a href="../../../matrix.html">Equipment Library</a><a href="../../../records.html" data-preserve-active-session>History</a></details>
+  </header>
+
+  <main class="sl-page-shell">
+    <section class="sl-target-introduction" aria-labelledby="targetName">
+      <p class="sl-printer" data-sczn3-partnership-surface="gunfun_22740_vital_dude"><span data-sczn3-publisher-label>GunFun</span> · SKU 22740 · 23 × 35 in</p>
+      <h1 id="targetName">Vital Dude</h1>
+      <p class="sl-instruction" id="targetInstruction" aria-live="polite">Start an evidence session. No score or printed-feature meaning will be assigned.</p>
+    </section>
+
+    <section class="sl-load-card vital-dude-start-card" id="startCard" aria-label="Start Vital Dude evidence session">
+      <h2>Evidence Capture</h2>
+      <p>Record visible shot observations on your target. You may also declare where you aimed.</p>
+      <button class="button primary" id="startExperience" type="button">Start</button>
+    </section>
+
+    <section class="sl-load-card" id="loadCard" aria-label="Load target photo" hidden>
+      <h2>Load Target</h2>
+      <div class="sl-load-actions">
+        <label class="button primary" for="cameraInput">Capture Photo</label><input id="cameraInput" type="file" accept="image/*" capture="environment" hidden />
+        <label class="button" for="libraryInput">Choose Photo</label><input id="libraryInput" type="file" accept="image/*" hidden />
+      </div>
+    </section>
+
+    <section class="sl-workspace" id="targetWorkspace" aria-label="Vital Dude evidence workspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
+      <div class="sl-image-frame" id="imageFrame" data-sczn3-workspace-evidence="true">
+        <img id="targetImage" alt="Loaded GunFun Vital Dude target" />
+        <div class="sl-impact-layer" id="impactLayer" aria-hidden="true"></div>
+        <button class="sl-tap-surface" id="tapSurface" type="button" aria-label="Record a visible shot observation"></button>
+      </div>
+      <div class="sl-workflow-dock workflow-dock--compact" id="workflowDock" data-processing-host data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1">
+        <div class="workflow-support-row"><span id="workspaceFeedback" role="status" aria-live="polite">Tap each visible shot observation.</span><div class="workflow-secondary-actions" aria-label="Target photo actions"><label class="workflow-secondary-action" for="retakeInput">Retake</label><input id="retakeInput" type="file" accept="image/*" capture="environment" hidden /><label class="workflow-secondary-action" for="replaceInput">Replace</label><input id="replaceInput" type="file" accept="image/*" hidden /></div></div>
+        <div class="vital-dude-aim-state" id="aimState">Aim point: not declared</div>
+        <div class="workflow-control-row workflow-control-row--docked" aria-label="Target evidence controls">
+          <div class="target-hit-counter" id="impactCounter" aria-label="0 shot observations recorded"><strong id="impactCount">0</strong><span>Observations</span></div>
+          <button class="button" id="markAim" type="button">Mark Aim</button>
+          <button class="button primary" id="showResults" type="button" disabled>Show Evidence Result</button>
+          <button class="button" id="undoImpact" type="button" disabled>Undo</button>
+          <button class="button" id="clearImpacts" type="button" disabled>Clear</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main class="sl-sec-shell sec-live-host" id="vitalDudeSecView" hidden><div id="vitalDudeSecRoot"></div></main>
+  <div class="sl-confirm-dialog" id="confirmationDialog" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" aria-describedby="confirmationMessage" hidden><section class="sl-confirm-card"><h2 id="confirmationTitle">Confirm Action</h2><p id="confirmationMessage"></p><div class="sl-confirm-actions"><button class="button" id="confirmationCancel" type="button">Keep Current</button><button class="button primary" id="confirmationAccept" type="button">Continue</button></div></section></div>
+</body>
+</html>

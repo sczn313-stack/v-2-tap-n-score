@@ -44,6 +44,8 @@ function record(sessionId, number, target, mission, resultType, pkgExtra = {}, r
 }
 
 const poisoned302 = record("session-302", 302, "gssf_ac_1", "gssf", "gssfPaperPenaltyResult", {
+  authoritySource: "backend-authoritative",
+  evidenceHash: "gssf-evidence-hash",
   totalPaperPenaltySeconds: 7,
   rawTimeSeconds: 7,
   finalTimeSeconds: 14,
@@ -61,7 +63,7 @@ const poisoned302 = record("session-302", 302, "gssf_ac_1", "gssf", "gssfPaperPe
   ] },
   inputs: { observationCount: 3 }
 }, {
-  targetEvidenceImage: { evidenceType: "uploaded-target-image", dataUrl: "data:image/png;base64,Z3NzZi1ldmlkZW5jZQ==", widthPx: 1125, heightPx: 1373 },
+  targetEvidenceImage: { evidenceType: "uploaded-target-image", dataUrl: "data:image/png;base64,Z3NzZi1ldmlkZW5jZQ==", widthPx: 1125, heightPx: 1373, sha256: "gssf-photo-hash" },
   officialMatchTimeSeconds: 7,
   gssfOfficialMatchTimeSeconds: 7,
   officialFinalScoreSeconds: 14,
@@ -93,8 +95,25 @@ const records = [
   record("session-m4", 301, "m4_25m_zero", "zeroingCorrection", "zeroCorrectionResult", { status: { hasCorrection: true } }, {
     workflowStage: "preservation", confirmationAuthorityPackage: { status: { hasCorrection: true } }, confirmationImpactPoints: [{ x: 1, y: 1 }]
   }),
-  record("session-100", 300, "baker_st_100yd_smart_zero", "zeroingCorrection", "zeroCorrectionResult", { status: { hasCorrection: true } }, {
-    workflowStage: "preservation", confirmationAuthorityPackage: { status: { hasCorrection: true } }, confirmationImpactPoints: [{ x: 1, y: 1 }]
+  record("session-100", 300, "baker_st_100yd_smart_zero", "zeroingCorrection", "zeroCorrectionResult", {
+    evidenceHash: "100-yard-evidence-hash",
+    status: { hasCorrection: true, impactCount: 3 },
+    group: { display: "1.25 inches" },
+    aimPointDiscrepancy: { magnitudeInches: 1.5 },
+    correction: { elevation: "4 clicks UP", windage: "2 clicks LEFT" },
+    clicks: { elevation: "4 clicks UP", windage: "2 clicks LEFT", model: { unit: "MOA", label: "Quarter MOA Scope", elevationPerClick: .25, windagePerClick: .25 } },
+    angular: { elevationMOA: 1, windageMOA: .5 },
+    renderCoordinates: {
+      impacts: [{ xPercent: 40, yPercent: 45 }, { xPercent: 50, yPercent: 55 }, { xPercent: 60, yPercent: 65 }],
+      aim: { xPercent: 50, yPercent: 50 },
+      poib: { xPercent: 52, yPercent: 54 }
+    }
+  }, {
+    targetProfileVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    targetEvidenceImage: { dataUrl: "data:image/png;base64,MTAwLXlhcmQtZXZpZGVuY2U=", sha256: "100-yard-photo-hash", widthPx: 1102, heightPx: 1713 },
+    workflowStage: "preservation",
+    confirmationAuthorityPackage: { status: { hasCorrection: true }, validation: { outcome: "CONFIRMED", confirmed: true } },
+    confirmationImpactPoints: [{ x: 1, y: 1 }]
   }),
   record("session-training", 299, "dot_torture_ez2c_style_17", "marksmanshipTraining", "marksmanshipTrainingResult", {
     mission_group: "dotTortureFamily", mission_name: "dotTorture", sec_template: "trainingSEC"
@@ -172,17 +191,84 @@ try {
     await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-baker-sl");
     await page.locator(".baker-sl-st1-sec-card").waitFor();
     assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /2 Bullet Holes/);
+    assert.deepEqual(await page.locator(".baker-sl-st1-sec-card [data-sec-component]").evaluateAll(nodes => [...new Set(nodes.map(node => node.dataset.secComponent))]), ["evidence", "result", "validation", "measurement", "preservation"], "USPSA consumes shared applicable components in presentation order");
     assert.equal(await page.locator('[data-sec-stage="sight-correction"]').count(), 0, "Baker SL-ST1 must not inherit Sight Correction");
     assert.equal((await page.locator(".baker-sl-st1-sec-card").textContent()).includes("Confirmation not recorded"), false, "Baker SL-ST1 must not report missing confirmation");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px Baker SL-ST1 SEC must not overflow`);
 
     await page.goto(`${baseUrl}/records.html?release=universal-sec-dispatch`, { waitUntil: "networkidle" });
 
+    await page.locator('[data-session-id="session-100"] .vault-record-link').click();
+    await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-100");
+    const hundredYard = page.locator('[data-sec-shell="universal-v1"][data-sec-record-id="session-100"]');
+    await hundredYard.waitFor();
+    assert.equal(await hundredYard.getAttribute("data-sec-adapter-id"), "baker-100yd-zeroing");
+    assert.equal(await hundredYard.getAttribute("data-scoring-presentation-family"), "zeroing-correction");
+    assert.equal(await hundredYard.getAttribute("data-target-profile-id"), "baker_st_100yd_smart_zero");
+    assert.equal(await hundredYard.getAttribute("data-target-profile-version"), "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL");
+    assert.equal(await hundredYard.getAttribute("data-publisher-id"), "baker-targets");
+    assert.equal(await hundredYard.getAttribute("data-product-id"), "ST-100YD-SMART");
+    assert.match(await hundredYard.textContent(), /100 Yard Bullseye • 100 Yard Zero/);
+    assert.deepEqual(await hundredYard.locator("[data-sec-component]").evaluateAll(nodes => [...new Set(nodes.map(node => node.dataset.secComponent))]), ["evidence", "measurement", "result", "recommendation", "execution", "validation", "preservation"], "100 Yard consumes the complete shared zeroing component set");
+    const hundredYardTargetStage = hundredYard.locator('[data-sec-region="target"]');
+    const hundredYardSessionStage = hundredYard.locator('[data-sec-region="session"]');
+    assert.equal(await hundredYardTargetStage.getAttribute("open"), "", "100 Yard SEC starts with Target open");
+    assert.equal(await hundredYardSessionStage.getAttribute("open"), null, "100 Yard SEC starts with Session closed");
+    await hundredYardSessionStage.locator(":scope > summary").click();
+    await page.waitForFunction(() => {
+      const shell = document.querySelector('[data-sec-shell="universal-v1"][data-sec-record-id="session-100"]');
+      return shell && !shell.querySelector('[data-sec-region="target"]')?.open && shell.querySelector('[data-sec-region="session"]')?.open;
+    });
+    assert.equal(await hundredYardTargetStage.getAttribute("open"), null, "opening Session closes Target through the shared shell lifecycle");
+    await hundredYardTargetStage.locator(":scope > summary").click();
+    await page.waitForFunction(() => {
+      const shell = document.querySelector('[data-sec-shell="universal-v1"][data-sec-record-id="session-100"]');
+      return shell && shell.querySelector('[data-sec-region="target"]')?.open && !shell.querySelector('[data-sec-region="session"]')?.open;
+    });
+    assert.equal(await hundredYardSessionStage.getAttribute("open"), null, "reopening Target closes Session through the shared shell lifecycle");
+    const hundredYardMarkers = await hundredYard.locator(".history-thumb-impact").evaluateAll(markers => markers.map(marker => ({ label: marker.textContent.trim(), left: marker.style.left, top: marker.style.top })));
+    assert.deepEqual(hundredYardMarkers, [
+      { label: "1", left: "40%", top: "45%" },
+      { label: "2", left: "50%", top: "55%" },
+      { label: "3", left: "60%", top: "65%" }
+    ], "100 Yard migrated SEC preserves numbered evidence coordinates");
+    const hundredYardStored = await page.evaluate(() => window.SCZN3M4.getSessionHistory().find(session => session.sessionId === "session-100"));
+    assert.equal(hundredYardStored.authorityPackage.evidenceHash, "100-yard-evidence-hash");
+    assert.equal(hundredYardStored.targetEvidenceImage.sha256, "100-yard-photo-hash");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px 100 Yard SEC must not overflow`);
+
+    await page.goto(`${baseUrl}/records.html?release=universal-sec-dispatch`, { waitUntil: "networkidle" });
+
     await page.locator('[data-session-id="session-302"] .vault-record-link').click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === "session-302");
-    await page.locator(".gssf-m4-reference-sec-card").waitFor();
-    assert.match(await page.locator(".gssf-m4-reference-sec-card").textContent(), /14\.00 sec/);
-    const gssfMarkers = await page.locator(".gssf-m4-reference-sec-card .history-gssf-impact").evaluateAll(markers => markers.map(marker => ({
+    const gssf = page.locator('[data-sec-shell="universal-v1"][data-sec-record-id="session-302"]');
+    await gssf.waitFor();
+    assert.equal(await gssf.getAttribute("data-sec-adapter-id"), "gssf");
+    assert.equal(await gssf.getAttribute("data-scoring-presentation-family"), "lowest-score-wins");
+    assert.equal(await gssf.getAttribute("data-target-profile-id"), "gssf_ac_1");
+    assert.equal(await gssf.getAttribute("data-target-profile-version"), "1");
+    assert.equal(await gssf.getAttribute("data-publisher-id"), "gssf");
+    assert.equal(await gssf.getAttribute("data-product-id"), "gssf_ac_1");
+    assert.match(await gssf.textContent(), /GSSF Practice/);
+    assert.match(await gssf.textContent(), /14\.00 sec/);
+    assert.deepEqual(await gssf.locator("[data-sec-component]").evaluateAll(nodes => [...new Set(nodes.map(node => node.dataset.secComponent))]), ["evidence", "measurement", "result", "execution", "validation", "preservation"], "GSSF consumes shared applicable components without inventing Recommendation");
+    const gssfTargetStage = gssf.locator('[data-sec-region="target"]');
+    const gssfSessionStage = gssf.locator('[data-sec-region="session"]');
+    assert.equal(await gssfTargetStage.getAttribute("open"), "", "GSSF SEC starts with Target open");
+    assert.equal(await gssfSessionStage.getAttribute("open"), null, "GSSF SEC starts with Session closed");
+    await gssfSessionStage.locator(":scope > summary").click();
+    await page.waitForFunction(() => {
+      const shell = document.querySelector('[data-sec-shell="universal-v1"][data-sec-record-id="session-302"]');
+      return shell && !shell.querySelector('[data-sec-region="target"]')?.open && shell.querySelector('[data-sec-region="session"]')?.open;
+    });
+    assert.equal(await gssfTargetStage.getAttribute("open"), null, "opening Session closes Target through the shared shell lifecycle");
+    await gssfTargetStage.locator(":scope > summary").click();
+    await page.waitForFunction(() => {
+      const shell = document.querySelector('[data-sec-shell="universal-v1"][data-sec-record-id="session-302"]');
+      return shell && shell.querySelector('[data-sec-region="target"]')?.open && !shell.querySelector('[data-sec-region="session"]')?.open;
+    });
+    assert.equal(await gssfSessionStage.getAttribute("open"), null, "reopening Target closes Session through the shared shell lifecycle");
+    const gssfMarkers = await gssf.locator(".history-gssf-impact").evaluateAll(markers => markers.map(marker => ({
       label: marker.textContent.trim(),
       left: marker.style.left,
       top: marker.style.top
@@ -193,6 +279,11 @@ try {
       { label: "3", left: "50%", top: "52%" }
     ], "GSSF historical SEC count identifiers match visible impacts without moving markers");
     assert.equal(await page.locator('[data-sec-stage="sight-correction"]').count(), 0, "Session #302 must not inherit Sight Correction");
+    const gssfStored = await page.evaluate(() => window.SCZN3M4.getSessionHistory().find(session => session.sessionId === "session-302"));
+    assert.equal(gssfStored.authorityPackage.totalPaperPenaltySeconds, 7);
+    assert.equal(gssfStored.authorityPackage.finalTimeSeconds, 14);
+    assert.equal(gssfStored.authorityPackage.evidenceHash, "gssf-evidence-hash");
+    assert.equal(gssfStored.targetEvidenceImage.sha256, "gssf-photo-hash");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px GSSF SEC must not overflow`);
 
     await page.goto(`${baseUrl}/sec.html?sessionId=session-302&release=universal-sec-dispatch`, { waitUntil: "networkidle" });

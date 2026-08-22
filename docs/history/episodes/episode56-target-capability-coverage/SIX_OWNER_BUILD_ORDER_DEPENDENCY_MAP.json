@@ -1,0 +1,99 @@
+{
+  "analysisId": "EP56-SIX-OWNER-BUILD-ORDER-DEPENDENCY-MAP-V1",
+  "status": "founder_review",
+  "implementationPerformed": false,
+  "recommendedSerialOrder": [
+    "CF-13 cueDrillOrchestration",
+    "CF-12 qualificationEvaluation",
+    "CF-11 diagnosticFeedback",
+    "CF-14 decisionScenario",
+    "CF-15 longitudinalProgression",
+    "CF-16 collectionHandGameState"
+  ],
+  "parallelization": {
+    "independentTrack": "CF-11 diagnosticFeedback may proceed beside CF-13 cueDrillOrchestration",
+    "hardConstraint": "CF-12 qualificationEvaluation waits for shared stage/event primitives established with CF-13"
+  },
+  "population": {
+    "combinedOfferings": 663,
+    "offeringsRequiringMissingFamilies": 69,
+    "canonicalLineagesRequiringMissingFamilies": 55
+  },
+  "owners": [
+    {
+      "rank": 1,
+      "familyId": "CF-13",
+      "profile": "Cue/Drill Profile",
+      "owner": "Cue/Drill Orchestrator",
+      "offerings": 17,
+      "lineages": 13,
+      "dependsOn": ["Target Execution Contract", "Session Authority", "backend event identity", "evidence reconciliation"],
+      "unlocks": ["CF-12 stage/timing primitives", "CF-14 presentation/response primitives"]
+    },
+    {
+      "rank": 2,
+      "familyId": "CF-12",
+      "profile": "Qualification Profile",
+      "owner": "Qualification Executor",
+      "offerings": 27,
+      "lineages": 21,
+      "dependsOn": ["CF-13 shared stage/event primitives", "UGO", "Scoring Profile", "Session Authority"],
+      "unlocks": ["governed evidence/practice/official course results", "future progression inputs"]
+    },
+    {
+      "rank": 3,
+      "familyId": "CF-11",
+      "profile": "Diagnostic Feedback Profile",
+      "owner": "Diagnostic Feedback Evaluator",
+      "offerings": 16,
+      "lineages": 13,
+      "dependsOn": ["UGO classification", "observation reconciliation"],
+      "unlocks": ["publisher-governed diagnostic labels"]
+    },
+    {
+      "rank": 4,
+      "familyId": "CF-14",
+      "profile": "Decision Scenario Profile",
+      "owner": "Decision Scenario Evaluator",
+      "offerings": 8,
+      "lineages": 8,
+      "dependsOn": ["CF-13 shared presentation/response primitives", "session state", "no-response evidence"],
+      "unlocks": ["publisher-governed scenario response results"]
+    },
+    {
+      "rank": 5,
+      "familyId": "CF-15",
+      "profile": "Progression Profile",
+      "owner": "SEC Progression Evaluator",
+      "offerings": 2,
+      "lineages": 1,
+      "dependsOn": ["immutable SEC history", "shooter identity", "stable family result schemas", "exact reopen"],
+      "unlocks": ["profile-versioned cross-session advancement"]
+    },
+    {
+      "rank": 6,
+      "familyId": "CF-16",
+      "profile": "Collection/Hand Game Profile",
+      "owner": "Collection/Hand Evaluator",
+      "offerings": 2,
+      "lineages": 1,
+      "dependsOn": ["recreationalChallenge player/turn/entity primitives", "UGO classification"],
+      "unlocks": ["governed collection and hand ranking"]
+    }
+  ],
+  "compositionBoundary": {
+    "activePipelineRule": "missionFamily selects exactly one authority pipeline",
+    "multiCapabilityProductRule": "one target may expose multiple exact contracts, one per supported mission family",
+    "forbidden": [
+      "ambiguous multi-family execution",
+      "one executor silently invoking another mission family",
+      "target artwork selecting a capability",
+      "generic authority or rules bypass"
+    ]
+  },
+  "refinements": [
+    "CF-16 supports collection/hand state only; path state remains unsupported",
+    "CF-15 and CF-16 each require a second independent fixture before broad generality is accepted",
+    "official qualification issuance and external reporting remain separate from qualification calculation"
+  ]
+}

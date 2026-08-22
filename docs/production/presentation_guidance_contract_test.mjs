@@ -107,8 +107,8 @@ assert.match(gssfEntry, /SCZN3Presentation\.targetEntryGuidance\("GSSF AC-1"\)/)
 assert.match(gssfEntry, /presentation_labels\.js\?v=universal-guidance-3/);
 assert.doesNotMatch(gssfEntry, /GSSF AC-1 is not available/);
 assert.match(netlifyBuild, /"t\/gssf\/ac1\/index\.html"/);
-assert.match(records, /universalSecStageHtml\("session", "Session", sessionDetails, scoreDisplay\)/);
-assert.match(secStyles, /\.sec-universal-stage-heading:not\(\.sec-stage-pill\) h2/);
+assert.match(records, /secFrameworkStageHtml\("session", "Session",/);
+assert.match(secStyles, /\.sec-framework-stage-heading:not\(\.sec-stage-pill\) h2/);
 assert.match(secStyles, /\.sec-stage-pill h2\{[^}]*font-size:12px[^}]*font-weight:950[^}]*white-space:nowrap/);
 assert.match(secStyles, /\.sec-session-score\{[^}]*font-size:15px/);
 assert.match(matrix, /equipmentLibraryExplicitlyOpened/);

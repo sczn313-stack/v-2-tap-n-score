@@ -8,6 +8,12 @@ from urllib.parse import parse_qs, urlparse
 from authority_service import build_authority_package, build_distance_click_query
 from baker_sl_st1_target_page import BakerSLST1EvidenceError, analyze_baker_sl_st1_evidence
 from baker_sl_st1_fixture_capture import BakerSLST1FixtureError, preserve_founder_fixture
+from baker_sl_st2_idpa_authority import BakerSLST2AuthorityError, analyze_baker_sl_st2_evidence
+from baker_fun_target_authority import BakerFunAuthorityError, analyze_fun_target_evidence
+from gunfun_vital_dude_evidence_authority import VitalDudeEvidenceError, analyze_vital_dude_evidence
+from execution_authority import ExecutionAuthorityError, execute_authoritative_action, execute_authoritative_session
+from stage_event_store import runtime_stage_event_store
+from target_execution_contract import runtime_resolver as target_execution_runtime_resolver
 from m4_authority.authority_service import build_authority_package as build_m4_authority_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
@@ -17,6 +23,13 @@ from preserved_sec_store import (
     preserve_sec,
     read_preserved_sec,
     runtime_store as preserved_sec_runtime_store,
+)
+from progression_record_store import runtime_progression_record_store
+from sec_progression_authority import (
+    SECProgressionAuthorityError,
+    evaluate_progression,
+    reopen_progression,
+    runtime_progression_subject_authority,
 )
 from session_authority import (
     SessionAuthorityError,
@@ -67,6 +80,13 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     PRESERVED_SEC_PATHS = {"/api/session/sec", "/api/session/sec/"}
     BAKER_SL_ST1_ANALYZE_PATHS = {"/api/target/baker-sl-st1/analyze", "/api/target/baker-sl-st1/analyze/"}
     BAKER_SL_ST1_FIXTURE_PATHS = {"/api/target/baker-sl-st1/founder-fixture", "/api/target/baker-sl-st1/founder-fixture/"}
+    BAKER_SL_ST2_ANALYZE_PATHS = {"/api/target/baker-sl-st2/analyze", "/api/target/baker-sl-st2/analyze/"}
+    BAKER_FUN_ANALYZE_PATHS = {"/api/target/baker-fun/analyze", "/api/target/baker-fun/analyze/", "/api/target/fun/analyze", "/api/target/fun/analyze/"}
+    VITAL_DUDE_ANALYZE_PATHS = {"/api/target/gunfun/vital-dude/analyze", "/api/target/gunfun/vital-dude/analyze/"}
+    TARGET_EXECUTION_PATHS = {"/api/target-execution", "/api/target-execution/"}
+    TARGET_EXECUTION_ACTION_PATHS = {"/api/target-execution/action", "/api/target-execution/action/"}
+    TARGET_EXECUTION_CATALOG_PATHS = {"/api/target-execution/catalog", "/api/target-execution/catalog/"}
+    SEC_PROGRESSION_PATHS = {"/api/sec-progression/evaluate", "/api/sec-progression/evaluate/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -120,7 +140,24 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             except Exception:
                 self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_read_failed"})
             return
-        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS:
+        if path in self.SEC_PROGRESSION_PATHS:
+            try:
+                query = parse_qs(urlparse(self.path).query)
+                package = reopen_progression(query.get("evaluation", [""])[0], runtime_progression_record_store())
+                self._send_json(200, package)
+            except SECProgressionAuthorityError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "progression_record_read_failed"})
+            return
+        if path in self.TARGET_EXECUTION_CATALOG_PATHS:
+            self._send_json(200, {
+                "ok": True,
+                "status": "approved_execution_contract_catalog",
+                "targets": target_execution_runtime_resolver().catalog(),
+            })
+            return
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS or path in self.BAKER_SL_ST2_ANALYZE_PATHS or path in self.BAKER_FUN_ANALYZE_PATHS or path in self.VITAL_DUDE_ANALYZE_PATHS or path in self.TARGET_EXECUTION_PATHS or path in self.SEC_PROGRESSION_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -150,6 +187,17 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.SEC_PROGRESSION_PATHS:
+            try:
+                package = evaluate_progression(self._read_json_body(), preserved_sec_runtime_store(), runtime_progression_record_store(), runtime_progression_subject_authority())
+                self._send_json(201, package)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except SECProgressionAuthorityError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "progression_evaluation_failed"})
+            return
         if path in self.PRESERVED_SEC_PATHS:
             try:
                 self._send_json(201, preserve_sec(self._read_json_body(), preserved_sec_runtime_store()))
@@ -180,6 +228,59 @@ class AuthorityHandler(BaseHTTPRequestHandler):
                 self._send_json(status, exc.payload)
             except Exception:  # pragma: no cover - defensive evidence boundary
                 self._send_json(503, {"ok": False, "status": "service_error", "reason": "evidence_analysis_failed"})
+            return
+        if path in self.BAKER_SL_ST2_ANALYZE_PATHS:
+            try:
+                self._send_json(200, analyze_baker_sl_st2_evidence(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except BakerSLST2AuthorityError as exc:
+                status = 503 if exc.payload["status"] == "configuration_error" else 400
+                self._send_json(status, exc.payload)
+            except Exception:  # pragma: no cover - defensive evidence boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "idpa_evidence_analysis_failed"})
+            return
+        if path in self.BAKER_FUN_ANALYZE_PATHS:
+            try:
+                self._send_json(200, analyze_fun_target_evidence(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except BakerFunAuthorityError as exc:
+                status = 503 if exc.payload["status"] == "configuration_error" else 400
+                self._send_json(status, exc.payload)
+            except Exception:  # pragma: no cover - defensive evidence boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "baker_fun_evidence_analysis_failed"})
+            return
+        if path in self.VITAL_DUDE_ANALYZE_PATHS:
+            try:
+                self._send_json(200, analyze_vital_dude_evidence(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except VitalDudeEvidenceError as exc:
+                status = 503 if exc.payload["status"] == "configuration_error" else 400
+                self._send_json(status, exc.payload)
+            except Exception:  # pragma: no cover - defensive evidence boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "vital_dude_evidence_analysis_failed"})
+            return
+        if path in self.TARGET_EXECUTION_ACTION_PATHS:
+            try:
+                self._send_json(200, execute_authoritative_action(self._read_json_body(), runtime_store(), runtime_stage_event_store()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except ExecutionAuthorityError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:  # pragma: no cover - defensive shared execution boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "target_execution_action_failed"})
+            return
+        if path in self.TARGET_EXECUTION_PATHS:
+            try:
+                self._send_json(200, execute_authoritative_session(self._read_json_body(), runtime_store()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except ExecutionAuthorityError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:  # pragma: no cover - defensive shared execution boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "target_execution_failed"})
             return
         if path in self.SESSION_PREPARE_PATHS:
             try:

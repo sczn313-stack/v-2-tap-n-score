@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Equipment Library</title>
 <link rel="stylesheet" href="styles.css?v=universal-equipment-library-1" />
-<link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="platform-ui.css?v=founder-ui-standard-1" />
 <script src="navigation.js?v=universal-smart-targets-nav-1" defer></script>
 </head>
 <body class="platform-page matrix-page">
 <main class="shell">
-  <header class="m4-header universal-app-header">
+  <header class="m4-header app-header">
     <div class="vendor-slot">
       <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
@@ -23,7 +23,7 @@
       <a class="locked-nav-item" href="records.html"><span class="nav-dot"></span><span>History</span></a>
       <a class="locked-nav-item" href="survey.html"><span class="nav-dot"></span><span>Survey</span></a>
     </nav>
-    <details class="mobile-platform-menu universal-header-menu">
+    <details class="mobile-platform-menu app-header-menu">
       <summary aria-label="Open navigation menu"><span></span><span></span><span></span></summary>
       <a href="index.html">Home</a>
       <a href="shoot.html">Target</a>
@@ -195,12 +195,15 @@
   </section>
 </main>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
+<script src="platform_contracts.js?v=episode54-item2-1"></script>
 <script src="smart_target_identity.js"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script>
 const form = document.getElementById("matrixForm");
-const SAVED_SETUPS_KEY = "SCZN3_BAKER_SAVED_SETUPS";
+const SAVED_SETUPS_KEY = window.SCZN3PlatformState
+  ? SCZN3PlatformState.keys.savedEquipment
+  : "SCZN3_SAVED_EQUIPMENT_PROFILES";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
 const HAS_EXPLICIT_TARGET_INTENT = [
@@ -208,6 +211,7 @@ const HAS_EXPLICIT_TARGET_INTENT = [
   "missionFamilyId", "target", "targetName", "qr_id", "qrId"
 ].some(key => MATRIX_QUERY.has(key));
 const UNIVERSAL_EQUIPMENT_LIBRARY_VIEW = MATRIX_QUERY.get("view") === "library" || !HAS_EXPLICIT_TARGET_INTENT;
+const LANDING_STANDARD_EQUIPMENT_DEFAULT = MATRIX_QUERY.get("equipment") === "standard";
 const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
 const PENDING_SESSION_START_KEY = "SCZN3_PENDING_BACKEND_SESSION_START";
 const SESSION_AUTHORITY_BASE = window.SCZN3_SESSION_AUTHORITY_BASE || (
@@ -1739,7 +1743,7 @@ async function offerGovernedSetupChoices() {
   authorityStatus("Checking what SCZN3 can do with your equipment…", "pending");
   try {
     const savedCandidates = savedSetupCandidatesByRecency();
-    if (savedCandidates.length) {
+    if (!LANDING_STANDARD_EQUIPMENT_DEFAULT && savedCandidates.length) {
       const preparation = await sessionAuthorityRequest("prepare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1781,6 +1785,9 @@ async function offerGovernedSetupChoices() {
       return;
     }
     presentStandardSetup(targetId, preparation);
+    if (LANDING_STANDARD_EQUIPMENT_DEFAULT) {
+      await goToTarget({ useStandardSetup: true });
+    }
   } catch (error) {
     latestTargetPreparation = null;
     setStandardSetupPromptVisible(false);

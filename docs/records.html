@@ -6,17 +6,22 @@
 <title>Ballistic Vault - Tap-n-Score</title>
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="ballistic-vault.css?v=universal-vault-result-summary-1" />
-<link rel="stylesheet" href="sec-universal.css?v=universal-sec-final-gap-1" />
+<link rel="stylesheet" href="sec-framework.css?v=episode55-inheritance-audit-1" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
 <link rel="stylesheet" href="baker-sl-st1-sec.css?v=session-2-uspsa-1" />
-<link rel="stylesheet" href="universal-ui.css?v=founder-ui-standard-1" />
+<link rel="stylesheet" href="gunfun-vital-dude-sec.css?v=vital-dude-1" />
+<link rel="stylesheet" href="baker-sl-st2-idpa-sec.css?v=episode55-idpa-3" />
+<link rel="stylesheet" href="baker-fun-sec.css?v=episode55-baker-fun-1" />
+<link rel="stylesheet" href="platform-ui.css?v=founder-ui-standard-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
+<link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
 <script src="navigation.js?v=universal-smart-targets-nav-1" defer></script>
 <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
+<script src="platform_actions.js?v=episode54-item7-1"></script>
 </head>
 <body class="platform-page records-page" data-sec-state="empty">
 <main class="shell">
-  <header class="m4-header universal-app-header">
+  <header class="m4-header app-header">
     <div class="vendor-slot">
       <img src="assets/crosshair-cross-emblem.png" alt="Tap-n-Score emblem" />
       <div class="brand-lockup">
@@ -33,7 +38,7 @@
     <a href="shoot.html" data-simulation-target-link>Target</a>
     <a href="survey.html">Survey</a>
   </nav>
-  <div class="records-historical-promo" id="recordsHistoricalPromo" hidden><span>Buy more targets like this</span><a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer">BakerTargets.com</a></div>
+  <div class="records-historical-promo" id="recordsHistoricalPromo" hidden><span data-sczn3-publisher-label>Target publisher</span><a href="https://bakertargets.com" target="_blank" rel="noopener noreferrer" data-sczn3-publisher-link>BakerTargets.com</a></div>
   <a class="records-vault-back" id="recordsVaultBack" href="records.html" hidden>← Back to Ballistic Vault</a>
   <section class="panel history-panel ballistic-vault">
     <div class="history-list vault-gallery" id="historyList">
@@ -46,15 +51,22 @@
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
+<script src="platform_contracts.js?v=episode54-item3-1"></script>
+<script src="sec_adapter_model.js?v=episode54-item4a-1"></script>
 <script src="app_state.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_dispatch.js?v=mission-a-fresh-score-0814"></script>
+<script src="target_execution_runtime.js?v=episode56-scale-1"></script>
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="sec_v1.js?v=mission-a-fresh-score-0814"></script>
+<script src="sec_framework.js?v=episode55-lowest-score-1"></script>
 <script src="sec_session_timeline.js?v=session-2-uspsa-1"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
 <script src="baker_sl_st1_sec.js?v=session-2-uspsa-1"></script>
+<script src="gunfun_vital_dude_sec.js?v=vital-dude-1"></script>
+<script src="baker_sl_st2_idpa_sec.js?v=episode55-idpa-1"></script>
+<script src="baker_fun_sec.js?v=episode55-baker-fun-1"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
 <script src="vendor/html2canvas-1.4.1.min.js"></script>
 <script>
@@ -784,9 +796,9 @@ function renderGssfSecCard(session, index, pkg) {
             <div><span>Confidence</span><strong>${escapeHtml(confidence)}</strong></div>
             <div><span>SCZN3 Signature</span><strong>Tap-n-Score™</strong></div>
           </div>
-          <div class="sec-v1-record-actions" aria-label="SEC actions">
-            <button type="button" data-sec-export>Export SEC</button>
-            <button type="button" data-sec-share>Share SEC</button>
+          <div class="sec-v1-record-actions" data-sczn3-action-region="platform-v1" aria-label="SEC actions">
+            <button type="button" data-sczn3-action="export" data-sec-export>Export SEC</button>
+            <button type="button" data-sczn3-action="share" data-sec-share>Share SEC</button>
             <a class="sec-action-link button primary" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a>
           </div>
         `
@@ -1074,10 +1086,26 @@ function vaultTargetPanel(imageUrl, alt, overlay = "", pending = "", evidence = 
   return `<div class="vault-target-panel">${evidencePlane(imageUrl, alt, overlay, evidence, 2550, 3300)}${pending ? `<span class="vault-target-unavailable">${escapeHtml(pending)}</span>` : ""}</div>`;
 }
 
-function vaultScoringPanel(pkg) {
+function gssfLowestScoreWinsVaultModel(pkg) {
   const breakdown = gssfAuthoritativeBreakdown(pkg);
-  if (!breakdown.length) return `<div class="vault-target-panel vault-scoring-panel"><strong>Scoring analysis</strong><span>Saved result</span></div>`;
-  return `<div class="vault-target-panel vault-scoring-panel" aria-label="Saved GSSF scoring analysis">${breakdown.slice(0, 4).map(bucket => `<span><b>${escapeHtml(bucket.zone === "downZero" ? "Down Zero" : bucket.zone === "plusOne" ? "+1" : bucket.zone === "plusThree" ? "+3" : "Miss / Other")}</b><strong>${escapeHtml(bucket.source && bucket.source.count || 0)}</strong></span>`).join("")}</div>`;
+  if (!breakdown.length) return null;
+  return {
+    ariaLabel: "Saved GSSF lowest score wins analysis",
+    metrics: breakdown.slice(0, 4).map(bucket => ({
+      label: bucket.zone === "downZero" ? "Down Zero" : bucket.zone === "plusOne" ? "+1" : bucket.zone === "plusThree" ? "+3" : "Miss / Other",
+      value: String(bucket.source && bucket.source.count || 0)
+    }))
+  };
+}
+
+function resolveLowestScoreWinsVaultModel(pkg, dispatch) {
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF) {
+    return gssfLowestScoreWinsVaultModel(pkg);
+  }
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST2_IDPA && window.SCZN3BakerSLST2IDPASEC) {
+    return SCZN3BakerSLST2IDPASEC.vaultLowestScoreWinsModel(pkg);
+  }
+  return null;
 }
 
 function normalizedVaultResultSummary(summary) {
@@ -1104,8 +1132,20 @@ function normalizedVaultResultSummary(summary) {
 }
 
 function resolveVaultResultSummary(session, pkg, dispatch) {
+  if (dispatch && [SCZN3SECDispatch.ADAPTERS.CONTRACT_SMART_EVIDENCE, SCZN3SECDispatch.ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, SCZN3SECDispatch.ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE].includes(dispatch.adapter) && window.SCZN3TargetExecutionRuntime) {
+    return normalizedVaultResultSummary(SCZN3TargetExecutionRuntime.vaultResultSummary(pkg));
+  }
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE && window.SCZN3GunFunVitalDudeSEC) {
+    return normalizedVaultResultSummary(SCZN3GunFunVitalDudeSEC.vaultResultSummary(pkg));
+  }
   if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
     return normalizedVaultResultSummary(SCZN3BakerSLST1SEC.vaultResultSummary(pkg));
+  }
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST2_IDPA && window.SCZN3BakerSLST2IDPASEC) {
+    return normalizedVaultResultSummary(SCZN3BakerSLST2IDPASEC.vaultResultSummary(pkg));
+  }
+  if (dispatch && [SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_POINTS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_NUMBERS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BP, SCZN3SECDispatch.ADAPTERS.EZ2C_DOT_TORTURE, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BB_C].includes(dispatch.adapter) && window.SCZN3BakerFunSEC) {
+    return normalizedVaultResultSummary(SCZN3BakerFunSEC.vaultResultSummary(pkg));
   }
   return null;
 }
@@ -1122,25 +1162,39 @@ function normalizedVaultEvidenceModel(model) {
     imageUrl: String(model.imageUrl),
     imageAlt: String(model.imageAlt || "Saved completed target evidence"),
     evidence: model.evidence && typeof model.evidence === "object" ? model.evidence : {},
-    markers
+    markers,
+    aimPoint: model.aimPoint ? { point: authorityPoint(model.aimPoint), label: String(model.aimPoint.label || "Aim") } : null
   };
 }
 
 function resolveVaultEvidenceModel(session, pkg, dispatch) {
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE && window.SCZN3GunFunVitalDudeSEC) {
+    return normalizedVaultEvidenceModel(SCZN3GunFunVitalDudeSEC.vaultEvidenceModel(session, pkg));
+  }
   if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
     return normalizedVaultEvidenceModel(SCZN3BakerSLST1SEC.vaultEvidenceModel(session, pkg));
+  }
+  if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST2_IDPA && window.SCZN3BakerSLST2IDPASEC) {
+    return normalizedVaultEvidenceModel(SCZN3BakerSLST2IDPASEC.vaultEvidenceModel(session, pkg));
+  }
+  if (dispatch && [SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_POINTS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_NUMBERS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BP, SCZN3SECDispatch.ADAPTERS.EZ2C_DOT_TORTURE, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BB_C].includes(dispatch.adapter) && window.SCZN3BakerFunSEC) {
+    return normalizedVaultEvidenceModel(SCZN3BakerFunSEC.vaultEvidenceModel(session, pkg));
   }
   return null;
 }
 
 function vaultEvidenceOverlay(model) {
   if (!model || model.status !== "complete") return "";
-  return model.markers.map(marker => markerHtml(
+  const observations = model.markers.map(marker => markerHtml(
     "history-thumb-impact",
     marker.point,
     escapeHtml(marker.label),
     `aria-label="Bullet hole ${escapeHtml(marker.label)}"`
   )).join("");
+  const aim = model.aimPoint && model.aimPoint.point
+    ? markerHtml("history-thumb-aim vital-dude-aim-marker", model.aimPoint.point, "", 'aria-label="Shooter-declared aim point"')
+    : "";
+  return observations + aim;
 }
 
 function vaultResultSummaryPanel(summary) {
@@ -1157,7 +1211,14 @@ function renderCompactVaultRecord(session) {
   const pkg = authorityPackage(session);
   const dispatch = window.SCZN3SECDispatch ? SCZN3SECDispatch.resolve(session) : null;
   const bakerSLST1 = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1;
+  const vitalDude = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE;
+  const bakerSLST2IDPA = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST2_IDPA;
+  const bakerFun = dispatch && [SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_POINTS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_NUMBERS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BP, SCZN3SECDispatch.ADAPTERS.EZ2C_DOT_TORTURE, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BB_C].includes(dispatch.adapter);
+  const gssf = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF;
+  const lowestScoreTarget = gssf || bakerSLST2IDPA;
+  const scoredEvidenceTarget = bakerSLST1 || vitalDude || bakerSLST2IDPA || bakerFun;
   const resultSummary = resolveVaultResultSummary(session, pkg, dispatch);
+  const lowestScoreModel = resolveLowestScoreWinsVaultModel(pkg, dispatch);
   const completedEvidence = resolveVaultEvidenceModel(session, pkg, dispatch);
   const evidence = session.targetEvidenceImage || {};
   const confirmationEvidence = session.confirmationEvidenceImage || {};
@@ -1176,20 +1237,20 @@ function renderCompactVaultRecord(session) {
     "",
     completedEvidence ? completedEvidence.evidence : compactEvidence
   );
-  const after = isGssfAuthorityPackage(pkg)
-    ? vaultScoringPanel(pkg)
-    : bakerSLST1
+  const after = lowestScoreTarget
+    ? SCZN3SECComponents.LowestScoreWinsPanel(lowestScoreModel || {})
+    : scoredEvidenceTarget
       ? vaultResultSummaryPanel(resultSummary)
     : confirmationEvidence.dataUrl
       ? vaultTargetPanel(confirmationEvidence.dataUrl, `${sessionLabel} saved confirmation evidence`, authorityVisualForPackage(session.confirmationAuthorityPackage, { includeAim: false }), "", confirmationEvidence)
       : vaultTargetPanel("", "", "", "Confirmation not recorded");
   return `
-    <article class="vault-record-summary${bakerSLST1 ? " vault-record-summary--baker-scored" : ""}" data-session-id="${escapeHtml(session.sessionId || "")}" data-session-number-authority="${escapeHtml(session.sessionNumberAuthority || "device-local-temporary")}" id="vault-session-${escapeHtml(session.sessionId || "")}">
+    <article class="vault-record-summary${bakerSLST1 ? " vault-record-summary--baker-scored" : ""}${lowestScoreTarget ? " vault-record-summary--lowest-score-wins" : ""}" data-session-id="${escapeHtml(session.sessionId || "")}" data-session-number-authority="${escapeHtml(session.sessionNumberAuthority || "device-local-temporary")}" id="vault-session-${escapeHtml(session.sessionId || "")}">
       <a class="vault-record-link" href="${escapeHtml(destination)}" data-preserve-active-session aria-label="Open ${escapeHtml(sessionLabel)} preserved Shooter Experience Card">
         <header><strong>${escapeHtml(sessionLabel)}</strong><time datetime="${escapeHtml(vaultDateTimeAttribute(preservedAt))}">${escapeHtml(cleanVaultDate(preservedAt))}</time></header>
         <div class="vault-evidence-pair">
-          <figure><figcaption>BEFORE</figcaption>${before}</figure>
-          <figure><figcaption>${bakerSLST1 ? "RESULT" : isGssfAuthorityPackage(pkg) ? "ANALYSIS" : "AFTER"}</figcaption>${after}</figure>
+          <figure><figcaption>${lowestScoreTarget ? "TARGET EVIDENCE" : "BEFORE"}</figcaption>${before}</figure>
+          <figure><figcaption>${lowestScoreTarget ? "ANALYSIS" : scoredEvidenceTarget ? "RESULT" : "AFTER"}</figcaption>${after}</figure>
         </div>
         <span class="vault-open-label">OPEN SEC →</span>
       </a>
@@ -1248,21 +1309,21 @@ function renderM4VaultEntry(session) {
   `;
 }
 
-const UNIVERSAL_SEC_STAGES = Object.freeze(["target", "session", "sight-correction"]);
+const SEC_FRAMEWORK_STAGES = Object.freeze(["target", "session", "sight-correction"]);
 
-function universalSecStageHtml(stage, title, contentHtml, scoreDisplay = "") {
-  const position = UNIVERSAL_SEC_STAGES.indexOf(stage) + 1;
+function secFrameworkStageHtml(stage, title, contentHtml, scoreDisplay = "") {
+  const position = SEC_FRAMEWORK_STAGES.indexOf(stage) + 1;
   const label = stage === "sight-correction" ? "Sight Correction" : stage[0].toUpperCase() + stage.slice(1);
   return `
-    <section class="sec-universal-stage sec-universal-stage-${escapeHtml(stage)}" data-sec-stage="${escapeHtml(stage)}"${scoreDisplay ? ` data-sec-score="${escapeHtml(scoreDisplay)}"` : ""} aria-label="${escapeHtml(label)}">
-      <header class="sec-universal-stage-heading"><span>${position} · ${escapeHtml(label)}</span><h3>${escapeHtml(title)}</h3></header>
-      <div class="sec-universal-stage-content">${contentHtml}</div>
+    <section class="sec-framework-stage sec-framework-stage-${escapeHtml(stage)}" data-sec-stage="${escapeHtml(stage)}"${scoreDisplay ? ` data-sec-score="${escapeHtml(scoreDisplay)}"` : ""} aria-label="${escapeHtml(label)}">
+      <header class="sec-framework-stage-heading"><span>${position} · ${escapeHtml(label)}</span><h3>${escapeHtml(title)}</h3></header>
+      <div class="sec-framework-stage-content">${contentHtml}</div>
     </section>
   `;
 }
 
-function universalShooterActionBarHtml(session) {
-  return `<div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar"><div class="sec-preservation-actions"><button class="button" type="button" data-sec-export>Export SEC</button><button class="button" type="button" data-sec-share>Share SEC</button><a class="button primary" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a></div></div>`;
+function secFrameworkActionBarHtml(session) {
+  return `<div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar"><div class="sec-preservation-actions" data-sczn3-action-region="platform-v1"><button class="button" type="button" data-sczn3-action="export" data-sec-export>Export SEC</button><button class="button" type="button" data-sczn3-action="share" data-sec-share>Share SEC</button><a class="button primary" data-sczn3-action="history" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a></div></div>`;
 }
 
 function isBaker100YardZeroingSession(session, pkg) {
@@ -1273,10 +1334,6 @@ function isBaker100YardZeroingSession(session, pkg) {
     pkg && (pkg.target_profile_id || pkg.targetProfileId) || ""
   ).toLowerCase();
   return profileId === "baker_st_100yd_smart_zero";
-}
-
-function zeroingReferenceMetric(label, value, detail = "") {
-  return `<div class="sec-metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</div>`;
 }
 
 function zeroingSightCorrectionHtml(pkg, confirmationOutcome) {
@@ -1295,12 +1352,35 @@ function zeroingSightCorrectionHtml(pkg, confirmationOutcome) {
       Number.isFinite(Number(model[`${name}PerClick`])) ? `${model[`${name}PerClick`]} ${unit}/click` : "",
       turn ? `turn ${turn}` : ""
     ].filter(Boolean).join(" · ");
-    return `<div class="sec-sight-correction-axis"><span>${escapeHtml(label)}</span><strong>${escapeHtml(direction)}</strong>${supporting ? `<small>${escapeHtml(supporting)}</small>` : ""}</div>`;
+    return { label, direction, supporting };
   };
-  return `<div class="sec-sight-correction-story"><div class="sec-sight-correction-system"><span>Adjustment system</span><strong>${escapeHtml(model.label || "Recorded sight setup")}</strong></div><div class="sec-sight-correction-grid">${axis("elevation")}${axis("windage")}</div></div><section class="sec-confirmation-summary"><h3>How to Confirm</h3><div class="sec-validation-calculation">${confirmationOutcome}</div></section>`;
+  return {
+    recommendation: SCZN3SECComponents.ZeroingCorrection({ systemLabel: model.label || "Recorded sight setup", axes: [axis("elevation"), axis("windage")] }),
+    execution: `<section class="sec-confirmation-summary"><h3>How to Confirm</h3>${SCZN3SECComponents.Validation({ contentHtml: `<div class="sec-validation-calculation">${confirmationOutcome}</div>` })}</section>`
+  };
 }
 
-function renderBaker100YardReferenceSec(session, pkg) {
+const SCZN3Baker100YardSEC = (() => {
+const SEC_ADAPTER_ID = "baker-100yd-zeroing";
+const REQUIRED_SEMANTIC_STAGES = Object.freeze(["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]);
+
+function secAdapterViewModel(session) {
+  const registry = window.SCZN3TargetAdapters;
+  if (!registry || !session || typeof session !== "object") return null;
+  const mapped = registry.createViewModel(SEC_ADAPTER_ID, { session });
+  if (!mapped.ok || !mapped.value) return null;
+  const stages = mapped.value.semanticComponents.map(component => component.stage);
+  if (stages.length !== REQUIRED_SEMANTIC_STAGES.length || stages.some((stage, index) => stage !== REQUIRED_SEMANTIC_STAGES[index])) return null;
+  if (mapped.value.scoringPresentationFamily !== registry.scoringPresentationFamilies.ZEROING_CORRECTION) return null;
+  return mapped.value;
+}
+
+function render(session) {
+  const adapterView = secAdapterViewModel(session);
+  if (!window.SCZN3SEC || !adapterView) {
+    return window.SCZN3SEC ? window.SCZN3SEC.renderUnavailable("Results unavailable") : "";
+  }
+  const pkg = adapterView.result.package;
   const snapshot = session.matrixSnapshot || {};
   const evidence = session.targetEvidenceImage || {};
   const confirmationEvidence = session.confirmationEvidenceImage || {};
@@ -1314,7 +1394,6 @@ function renderBaker100YardReferenceSec(session, pkg) {
     correctionInstruction(clicks.elevation, "elevation"),
     correctionInstruction(clicks.windage, "windage")
   ].filter(Boolean);
-  const targetName = snapshot.targetName || snapshot.targetFamily || session.targetName || session.product || "Baker 100 Yard Smart Target";
   const targetImage = evidence.dataUrl || "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png";
   const rawImpactCount = hasAuthority && pkg.status ? pkg.status.impactCount : null;
   const impactCount = Number.isInteger(rawImpactCount) ? rawImpactCount : null;
@@ -1322,8 +1401,8 @@ function renderBaker100YardReferenceSec(session, pkg) {
   const distance = distanceDisplay(session);
   const discrepancy = pkg && pkg.aimPointDiscrepancy || {};
   const analysisMetrics = [
-    zeroingReferenceMetric("Group Size", groupDisplay, impactCount === null ? "confirmed evidence" : `${impactCount} confirmed ${impactCount === 1 ? "impact" : "impacts"}`),
-    zeroingReferenceMetric("Aim vs Bull", Number.isFinite(Number(discrepancy.magnitudeInches)) ? `${Number(discrepancy.magnitudeInches).toFixed(2)}\"` : "Unavailable", "recorded offset")
+    SCZN3SECComponents.metric("Group Size", groupDisplay, impactCount === null ? "confirmed evidence" : `${impactCount} confirmed ${impactCount === 1 ? "impact" : "impacts"}`),
+    SCZN3SECComponents.metric("Aim vs Bull", Number.isFinite(Number(discrepancy.magnitudeInches)) ? `${Number(discrepancy.magnitudeInches).toFixed(2)}\"` : "Unavailable", "recorded offset")
   ].join("");
   const confirmationOutcome = confirmationPackage && confirmationPackage.validation
     ? confirmationPackage.validation.status === "authority_unavailable"
@@ -1338,27 +1417,96 @@ function renderBaker100YardReferenceSec(session, pkg) {
   const equipment = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.adjustmentSystem || "Not recorded";
   const ammunition = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ") || "Not recorded";
   const scoreDisplay = score === null ? "Score --" : `Score ${score}`;
-  const sessionDetails = `<section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields"><div><span>Firearm</span><strong>${escapeHtml(firearm)}</strong></div><div><span>Equipment</span><strong>${escapeHtml(equipment)}</strong></div><div><span>Ammunition</span><strong>${escapeHtml(ammunition)}</strong></div><div><span>Distance</span><strong>${escapeHtml(distance)}</strong></div><div><span>Date</span><strong>${escapeHtml(dateLabel)}</strong></div><div><span>Time</span><strong>${escapeHtml(timeLabel)}</strong></div><div><span>Shooter</span><strong>${escapeHtml(snapshot.shooterName || "Not recorded")}</strong></div></div></section><details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel"><div class="sec-metric-grid">${analysisMetrics}</div></div></details>`;
-  return `
-    <article class="sec-experience m4-reference-sec-card zeroing-reference-sec-card" data-session-id="${escapeHtml(session.sessionId || "")}">
-      <div class="sec-mission-bar" aria-label="100 Yard zeroing mission"><strong>Baker's Targets</strong><span aria-hidden="true">•</span><span>100 Yard Bullseye</span><span aria-hidden="true">•</span><span>100 Yard Zero</span></div>
-      <section class="sec-target-story" aria-label="100 Yard zeroing target story">
-        <section class="sec-universal-stage sec-universal-stage-target" data-sec-stage="target" aria-label="Target">
-          <header class="sec-universal-stage-heading"><span>1 · Target</span><h2>Initial and Confirmation Groups</h2></header>
-          <div class="sec-before-after" aria-label="Initial and confirmation group comparison">
-            <figure><figcaption><span>Before</span><strong>Initial Group</strong></figcaption><div class="sec-comparison-target history-thumb">${evidencePlane(targetImage, "100 Yard initial group target evidence", authorityVisualForPackage(pkg), evidence, 1102, 1713, `<span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span>`)}</div></figure>
-            <figure><figcaption><span>After</span><strong>Confirmation Group</strong></figcaption><div class="sec-comparison-target history-thumb">${evidencePlane(hasConfirmationEvidence ? confirmationEvidence.dataUrl : targetImage, "100 Yard confirmation group target evidence", hasConfirmationEvidence ? authorityVisualForPackage(confirmationPackage, { includeAim: false }) : "", hasConfirmationEvidence ? confirmationEvidence : evidence, 1102, 1713)}${hasConfirmationEvidence ? "" : `<span class="sec-comparison-pending">Confirmation not recorded</span>`}</div></figure>
-          </div>
-        </section>
-        ${universalSecStageHtml("session", "Session", sessionDetails, scoreDisplay)}
-        ${universalSecStageHtml("sight-correction", "Sight Correction", zeroingSightCorrectionHtml(pkg, confirmationOutcome))}
-        ${universalShooterActionBarHtml(session)}
-      </section>
-    </article>
-  `;
+  const sessionDetails = SCZN3SECComponents.SessionDetails({
+    fields: [
+      { label: "Firearm", value: firearm }, { label: "Equipment", value: equipment },
+      { label: "Ammunition", value: ammunition }, { label: "Distance", value: distance },
+      { label: "Date", value: dateLabel }, { label: "Time", value: timeLabel },
+      { label: "Shooter", value: snapshot.shooterName || "Not recorded" }
+    ],
+    afterHtml: `<details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel"><div class="sec-metric-grid">${analysisMetrics}</div></div></details>`
+  });
+  const targetProfileLabel = SCZN3TargetProfiles.display(adapterView.targetProfileIdentity);
+  const sightCorrection = zeroingSightCorrectionHtml(pkg, confirmationOutcome);
+  const actionsHtml = SCZN3SECComponents.ActionBar({ actions: [
+    { label: "Export SEC", action: "export", attributes: { "data-sec-export": true } },
+    { label: "Share SEC", action: "share", attributes: { "data-sec-share": true } },
+    { label: "Reopen SEC", href: `records.html?session=${encodeURIComponent(session.sessionId || "")}`, primary: true }
+  ] });
+  return SCZN3SEC.render({
+    schemaVersion: "1.2",
+    recordId: String(session.sessionId || "baker-100yd-zeroing-sec"),
+    missionFamily: "zeroingCorrection",
+    sessionLabel: session.sessionLabel || vaultSessionNumber(session),
+    scoreDisplay,
+    articleClassName: "sec-experience m4-reference-sec-card zeroing-reference-sec-card",
+    articleAttributes: {
+      "data-session-id": session.sessionId || "",
+      "data-sec-adapter-id": SEC_ADAPTER_ID,
+      "data-scoring-presentation-family": adapterView.scoringPresentationFamily,
+      "data-target-profile-id": adapterView.targetProfileIdentity.targetProfileId,
+      "data-target-profile-version": adapterView.targetProfileIdentity.targetProfileVersion,
+      "data-publisher-id": adapterView.publisherIdentity && adapterView.publisherIdentity.publisherId || "",
+      "data-product-id": adapterView.productIdentity && adapterView.productIdentity.productId || ""
+    },
+    regions: [
+      {
+        key: "target",
+        className: "sec-v1-evidence-content",
+        ariaLabel: "Target",
+        contentHtml: SCZN3SECComponents.Evidence({ contentHtml: `<div class="sec-mission-bar" aria-label="Target profile" data-sczn3-target-profile-identity="baker_st_100yd_smart_zero">${escapeHtml(targetProfileLabel)}</div><h2 class="sec-zeroing-target-title">Initial and Confirmation Groups</h2><div class="sec-before-after" aria-label="Initial and confirmation group comparison"><figure><figcaption><span>Before</span><strong>Initial Group</strong></figcaption><div class="sec-comparison-target history-thumb">${evidencePlane(targetImage, "100 Yard initial group target evidence", authorityVisualForPackage(pkg), evidence, 1102, 1713, `<span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span>`)}</div></figure><figure><figcaption><span>After</span><strong>Confirmation Group</strong></figcaption><div class="sec-comparison-target history-thumb">${evidencePlane(hasConfirmationEvidence ? confirmationEvidence.dataUrl : targetImage, "100 Yard confirmation group target evidence", hasConfirmationEvidence ? authorityVisualForPackage(confirmationPackage, { includeAim: false }) : "", hasConfirmationEvidence ? confirmationEvidence : evidence, 1102, 1713)}${hasConfirmationEvidence ? "" : `<span class="sec-comparison-pending">Confirmation not recorded</span>`}</div></figure></div>` })
+      },
+      {
+        key: "session",
+        className: "sec-v1-measurement-content",
+        ariaLabel: "Session",
+        contentHtml: SCZN3SECComponents.Measurement({ contentHtml: sessionDetails })
+      },
+      {
+        key: "sightCorrection",
+        className: "sec-v1-recommendation-content sec-v1-execution-content sec-v1-validation-content",
+        ariaLabel: "Sight Correction",
+        contentHtml: SCZN3SECComponents.Result({ family: "zeroing-correction", contentHtml: SCZN3SECComponents.Recommendation({ contentHtml: sightCorrection.recommendation }) }) + SCZN3SECComponents.Execution({ contentHtml: sightCorrection.execution })
+      },
+      {
+        key: "actions",
+        className: "sec-v1-preservation-content",
+        ariaLabel: "Shooter Action Bar",
+        contentHtml: SCZN3SECComponents.Preservation({ contentHtml: actionsHtml })
+      }
+    ]
+  });
 }
 
-function renderGssfM4ReferenceSec(session, pkg) {
+return Object.freeze({
+  secAdapterId: SEC_ADAPTER_ID,
+  secAdapterViewModel,
+  render
+});
+})();
+window.SCZN3Baker100YardSEC = SCZN3Baker100YardSEC;
+
+const SCZN3GSSFSEC = (() => {
+const SEC_ADAPTER_ID = "gssf";
+const REQUIRED_SEMANTIC_STAGES = ["evidence", "measurement", "execution", "validation", "preservation"];
+
+function secAdapterViewModel(session) {
+  const registry = window.SCZN3TargetAdapters;
+  if (!registry) return null;
+  const mapped = registry.createViewModel(SEC_ADAPTER_ID, { session });
+  if (!mapped.ok) return null;
+  const stages = mapped.value.semanticComponents.map(component => component.stage);
+  if (JSON.stringify(stages) !== JSON.stringify(REQUIRED_SEMANTIC_STAGES)) return null;
+  if (mapped.value.scoringPresentationFamily !== registry.scoringPresentationFamilies.LOWEST_SCORE_WINS) return null;
+  return mapped.value;
+}
+
+function render(session) {
+  const adapterView = secAdapterViewModel(session);
+  if (!window.SCZN3SEC || !adapterView) {
+    return window.SCZN3SEC ? window.SCZN3SEC.renderUnavailable("Results unavailable") : "";
+  }
+  const pkg = adapterView.result.package;
   const snapshot = session.matrixSnapshot || {};
   const evidenceUrl = gssfSavedEvidenceDataUrl(session, pkg);
   const buckets = new Map(gssfAuthoritativeBreakdown(pkg).map(bucket => [bucket.zone, bucket.source]));
@@ -1384,12 +1532,12 @@ function renderGssfM4ReferenceSec(session, pkg) {
     return `<div><span>${escapeHtml(label)}</span><strong><b class="sec-gssf-hit-count">${escapeHtml(result.count)}</b><small class="sec-gssf-hit-label">Hits</small></strong><small><b>Shots:</b> ${escapeHtml(shotIds.length ? shotIds.join(", ") : "None")}</small><small>${escapeHtml(`${result.subtotalPenaltySeconds} sec`)}</small></div>`;
   }).join("");
   const measurementMetrics = [
-    zeroingReferenceMetric("Confirmed Shots", String(observationCount), "saved impacts"),
-    zeroingReferenceMetric("Paper Penalty", paperPenalty, "from scored zones"),
-    zeroingReferenceMetric("Official Timer", officialTime, competition.officialMatchTimeSeconds === null ? "timer entry needed" : "entered time"),
-    zeroingReferenceMetric("Final Time", finalTime, competition.officialFinalScoreSeconds === null ? "waiting for timer" : "lowest time wins")
+    SCZN3SECComponents.metric("Confirmed Shots", String(observationCount), "saved impacts"),
+    SCZN3SECComponents.metric("Paper Penalty", paperPenalty, "from scored zones"),
+    SCZN3SECComponents.metric("Official Timer", officialTime, competition.officialMatchTimeSeconds === null ? "timer entry needed" : "entered time"),
+    SCZN3SECComponents.metric("Final Time", finalTime, competition.officialFinalScoreSeconds === null ? "waiting for timer" : "lowest time wins")
   ].join("");
-  const scoreBreakdown = `<div class="sec-gssf-compact-score"><span>GSSF Result</span><strong>${escapeHtml(competition.officialFinalScoreSeconds === null ? `${paperPenalty} paper penalty` : `${finalTime} final time`)}</strong><small>${escapeHtml(competition.officialFinalScoreSeconds === null ? "Enter the official timer time to complete the result." : "Lowest time wins.")}</small></div>`;
+  const scoreBreakdown = SCZN3SECComponents.Result({ family: "lowest-score-wins", contentHtml: `<div class="sec-gssf-compact-score"><span>GSSF Result</span><strong>${escapeHtml(competition.officialFinalScoreSeconds === null ? `${paperPenalty} paper penalty` : `${finalTime} final time`)}</strong><small>${escapeHtml(competition.officialFinalScoreSeconds === null ? "Enter the official timer time to complete the result." : "Lowest time wins.")}</small></div>` });
   const execution = competition.officialMatchTimeSeconds === null
     ? `<div><span>Official Timer</span><strong>Enter the official timer time.</strong></div><div><span>Final Result</span><strong>Add the paper penalty to complete Final Time.</strong></div>`
     : `<div><span>Official Timer</span><strong>${escapeHtml(officialTime)}</strong></div><div><span>Final Result</span><strong>Preserve the calculated Final Time.</strong></div>`;
@@ -1403,24 +1551,67 @@ function renderGssfM4ReferenceSec(session, pkg) {
   const dateLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : "Unavailable";
   const timeLabel = sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "Unavailable";
   const scoreDisplay = competition.officialFinalScoreSeconds === null ? `${paperPenalty} penalty` : `${finalTime} final`;
-  const sessionDetails = `<section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields"><div><span>Firearm</span><strong>${escapeHtml(weapon)}</strong></div><div><span>Equipment</span><strong>${escapeHtml(equipment)}</strong></div><div><span>Ammunition</span><strong>${escapeHtml(ammunition)}</strong></div><div><span>Distance</span><strong>${escapeHtml(distanceDisplay(session))}</strong></div><div><span>Date</span><strong>${escapeHtml(dateLabel)}</strong></div><div><span>Time</span><strong>${escapeHtml(timeLabel)}</strong></div><div><span>Shooter</span><strong>${escapeHtml(snapshot.shooterName || "Not recorded")}</strong></div></div></section><details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel"><div class="sec-metric-grid">${measurementMetrics}</div>${scoreBreakdown}<div class="sec-execution">${execution}</div><div class="sec-validation-calculation"><strong>${escapeHtml(resultLabel)}</strong><span>${escapeHtml(`${confidence} · ${observationCount} impacts preserved`)}</span></div></div></details>`;
-  return `
-    <article class="sec-experience m4-reference-sec-card gssf-m4-reference-sec-card" data-session-id="${escapeHtml(session.sessionId || "")}">
-      <div class="sec-mission-bar" aria-label="GSSF scoring mission"><strong>SCZN3</strong><span aria-hidden="true">•</span><span>GSSF AC-1</span><span aria-hidden="true">•</span><span>Scoring Mission</span></div>
-      <section class="sec-target-story" aria-label="GSSF scoring target story">
-        <section class="sec-universal-stage sec-universal-stage-target" data-sec-stage="target" aria-label="Target">
-          <header class="sec-universal-stage-heading"><span>1 · Target</span><h2>Target and Scoring Analysis</h2></header>
-          <div class="sec-before-after sec-gssf-evidence-grid" aria-label="GSSF target evidence and scoring analysis">
-            <figure><figcaption><span>Initial</span><strong>Confirmed Impacts</strong></figcaption><div class="sec-comparison-target history-thumb">${evidenceUrl ? evidencePlane(evidenceUrl, "GSSF AC-1 initial target", gssfEvidenceVisualForPackage(pkg), session.targetEvidenceImage || {}, 1125, 1373, `<span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span>`) : `<span class="sec-comparison-pending">Target image unavailable</span>`}</div></figure>
-            <figure><figcaption><span>Analysis</span><strong>Shot Distribution</strong></figcaption><div class="sec-comparison-target sec-gssf-analysis-panel" aria-label="GSSF shot distribution"><div class="sec-gssf-analysis-grid">${scoringAnalysis}</div></div></figure>
-          </div>
-        </section>
-        ${universalSecStageHtml("session", "Session", sessionDetails, scoreDisplay)}
-        ${universalShooterActionBarHtml(session)}
-      </section>
-    </article>
-  `;
+  const sessionDetails = SCZN3SECComponents.SessionDetails({
+    fields: [
+      { label: "Firearm", value: weapon }, { label: "Equipment", value: equipment },
+      { label: "Ammunition", value: ammunition }, { label: "Distance", value: distanceDisplay(session) },
+      { label: "Date", value: dateLabel }, { label: "Time", value: timeLabel },
+      { label: "Shooter", value: snapshot.shooterName || "Not recorded" }
+    ],
+    afterHtml: `<details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel"><div class="sec-metric-grid">${measurementMetrics}</div>${scoreBreakdown}${SCZN3SECComponents.Execution({ contentHtml: `<div class="sec-execution">${execution}</div>` })}${SCZN3SECComponents.Validation({ contentHtml: `<div class="sec-validation-calculation"><strong>${escapeHtml(resultLabel)}</strong><span>${escapeHtml(`${confidence} · ${observationCount} impacts preserved`)}</span></div>` })}</div></details>`
+  });
+  const targetProfileLabel = SCZN3TargetProfiles.display(adapterView.targetProfileIdentity);
+  const actionsHtml = SCZN3SECComponents.ActionBar({ actions: [
+    { label: "Export SEC", action: "export", attributes: { "data-sec-export": true } },
+    { label: "Share SEC", action: "share", attributes: { "data-sec-share": true } },
+    { label: "Reopen SEC", href: `records.html?session=${encodeURIComponent(session.sessionId || "")}`, primary: true }
+  ] });
+  return SCZN3SEC.render({
+    schemaVersion: "1.2",
+    recordId: String(session.sessionId || "gssf-sec"),
+    missionFamily: "gssf",
+    sessionLabel: session.sessionLabel || vaultSessionNumber(session),
+    scoreDisplay,
+    articleClassName: "sec-experience m4-reference-sec-card gssf-m4-reference-sec-card",
+    articleAttributes: {
+      "data-session-id": session.sessionId || "",
+      "data-sec-adapter-id": SEC_ADAPTER_ID,
+      "data-scoring-presentation-family": adapterView.scoringPresentationFamily,
+      "data-target-profile-id": adapterView.targetProfileIdentity.targetProfileId,
+      "data-target-profile-version": adapterView.targetProfileIdentity.targetProfileVersion,
+      "data-publisher-id": adapterView.publisherIdentity && adapterView.publisherIdentity.publisherId || "",
+      "data-product-id": adapterView.productIdentity && adapterView.productIdentity.productId || ""
+    },
+    regions: [
+      {
+        key: "target",
+        className: "sec-v1-evidence-content",
+        ariaLabel: "Target",
+        contentHtml: SCZN3SECComponents.Evidence({ contentHtml: `<div class="sec-mission-bar" aria-label="Target profile" data-sczn3-target-profile-identity="gssf_ac_1">${escapeHtml(targetProfileLabel)}</div><h2>Target and Scoring Analysis</h2><div class="sec-before-after sec-gssf-evidence-grid" aria-label="GSSF target evidence and scoring analysis"><figure><figcaption><span>Initial</span><strong>Confirmed Impacts</strong></figcaption><div class="sec-comparison-target history-thumb">${evidenceUrl ? evidencePlane(evidenceUrl, "GSSF AC-1 initial target", gssfEvidenceVisualForPackage(pkg), session.targetEvidenceImage || {}, 1125, 1373, `<span class="sec-target-session-identity"><strong>${escapeHtml(session.sessionLabel || vaultSessionNumber(session))}</strong></span>`) : `<span class="sec-comparison-pending">Target image unavailable</span>`}</div></figure><figure><figcaption><span>Analysis</span><strong>Shot Distribution</strong></figcaption><div class="sec-comparison-target sec-gssf-analysis-panel" aria-label="GSSF shot distribution"><div class="sec-gssf-analysis-grid">${scoringAnalysis}</div></div></figure></div>` })
+      },
+      {
+        key: "session",
+        className: "sec-v1-measurement-content sec-v1-execution-content sec-v1-validation-content",
+        ariaLabel: "Session",
+        contentHtml: SCZN3SECComponents.Measurement({ contentHtml: sessionDetails })
+      },
+      {
+        key: "actions",
+        className: "sec-v1-preservation-content",
+        ariaLabel: "Shooter Action Bar",
+        contentHtml: SCZN3SECComponents.Preservation({ contentHtml: actionsHtml })
+      }
+    ]
+  });
 }
+
+return Object.freeze({
+  secAdapterId: SEC_ADAPTER_ID,
+  secAdapterViewModel,
+  render
+});
+})();
+window.SCZN3GSSFSEC = SCZN3GSSFSEC;
 
 function renderHistory() {
   const allSavedSessions = [...serverSavedSessions, ...SCZN3M4.getSessionHistory()]
@@ -1447,6 +1638,7 @@ function renderHistory() {
   if (!HISTORICAL_DETAIL_MODE) {
     document.body.dataset.vaultView = "browse";
     historyList.innerHTML = sessions.map(renderCompactVaultRecord).join("");
+    SCZN3Actions.syncAvailability(historyList, { share: () => typeof navigator.share === "function" && typeof File === "function" });
     requestAnimationFrame(syncSecEvidenceLayers);
     requestAnimationFrame(restoreVaultReturnState);
     return;
@@ -1459,9 +1651,14 @@ function renderHistory() {
     window.location.replace(SCZN3SECDispatch.destinationFor(requestedSession));
     return;
   }
+  if (requestedDispatch && [SCZN3SECDispatch.ADAPTERS.CONTRACT_SMART_EVIDENCE, SCZN3SECDispatch.ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, SCZN3SECDispatch.ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE].includes(requestedDispatch.adapter)) {
+    window.location.replace(SCZN3SECDispatch.destinationFor(requestedSession));
+    return;
+  }
   document.body.dataset.vaultView = "historical";
   document.querySelector(".vault-header-title").textContent = "SHOOTER EXPERIENCE CARD";
-  document.getElementById("recordsHistoricalPromo").hidden = false;
+  const partnershipSurface = document.getElementById("recordsHistoricalPromo");
+  window.SCZN3PartnershipIdentity?.apply(partnershipSurface, requestedSession, authorityPackage(requestedSession));
   const vaultBack = document.getElementById("recordsVaultBack");
   vaultBack.hidden = false;
   vaultBack.href = `records.html?selected=${encodeURIComponent(requestedSession.sessionId || "")}`;
@@ -1477,6 +1674,9 @@ function renderHistory() {
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING) {
       return renderM4VaultEntry(session);
     }
+    if (dispatch && [SCZN3SECDispatch.ADAPTERS.CONTRACT_SMART_EVIDENCE, SCZN3SECDispatch.ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, SCZN3SECDispatch.ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE].includes(dispatch.adapter) && window.SCZN3TargetExecutionRuntime) {
+      return SCZN3TargetExecutionRuntime.renderSEC({ session, package: pkg, mode: "historical", preserved: true });
+    }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1 && window.SCZN3BakerSLST1SEC) {
       return SCZN3BakerSLST1SEC.render({
         session,
@@ -1486,6 +1686,15 @@ function renderHistory() {
         timelineRecordsHref: "records.html"
       });
     }
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE && window.SCZN3GunFunVitalDudeSEC) {
+      return SCZN3GunFunVitalDudeSEC.render({ session, package: pkg, mode: "historical", preserved: true });
+    }
+    if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST2_IDPA && window.SCZN3BakerSLST2IDPASEC) {
+      return SCZN3BakerSLST2IDPASEC.render({ session, package: pkg, mode: "historical", preserved: true });
+    }
+    if (dispatch && [SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_POINTS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_NUMBERS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BP, SCZN3SECDispatch.ADAPTERS.EZ2C_DOT_TORTURE, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BB_C].includes(dispatch.adapter) && window.SCZN3BakerFunSEC) {
+      return SCZN3BakerFunSEC.render({ session, package: pkg, mode: "historical", preserved: true });
+    }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.UNIVERSAL_PRACTICE && window.SCZN3UniversalPracticeSEC) {
       return SCZN3UniversalPracticeSEC.render({ session, package: pkg });
     }
@@ -1493,13 +1702,13 @@ function renderHistory() {
       return renderTrainingSecCard(session, index, pkg);
     }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF && isGssfAuthorityPackage(pkg)) {
-      return renderGssfM4ReferenceSec(session, pkg);
+      return SCZN3GSSFSEC.render(session);
     }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF) {
       return renderInvalidGssfSecCard(session);
     }
     if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.BAKER_100YD_ZEROING) {
-      return renderBaker100YardReferenceSec(session, pkg);
+      return SCZN3Baker100YardSEC.render(session);
     }
     if (!dispatch || dispatch.adapter === SCZN3SECDispatch.ADAPTERS.UNAVAILABLE) {
       return SCZN3SEC.renderUnavailable("Saved result unavailable: target identity does not match a registered SEC.");
@@ -1530,11 +1739,11 @@ function renderHistory() {
       correctionInstruction(clicks.windage, "windage")
     ].filter(Boolean);
     const impactsDisplay = shotCount === null ? "Unavailable" : `${shotCount} ${shotCount === 1 ? "impact" : "impacts"}`;
-    const evidenceStage = universalSecStageHtml("target", "Target", `
+    const evidenceStage = secFrameworkStageHtml("target", "Target", `
       <div class="history-thumb">${evidencePlane(thumbnail, "Uploaded target evidence thumbnail", authorityVisual(session), evidence)}</div>
     `);
     const equipment = simulationSession ? "Simulation" : (optic || "Not recorded");
-    const sessionStage = universalSecStageHtml("session", "Session", `
+    const sessionStage = secFrameworkStageHtml("session", "Session", `
       ${simulationSession ? `<div class="sec-simulation-banner"><span>Simulation</span><strong>Try Before You Buy</strong></div>${simulationPublisherHtml()}` : ""}
       <section class="sec-session-section"><h3>Session Details</h3><div class="sec-session-record-fields">
         <div><span>Firearm</span><strong>${simulationSession ? "Simulation" : escapeHtml(weapon || "--")}</strong></div>
@@ -1548,17 +1757,19 @@ function renderHistory() {
       ${simulationSession ? "" : attributionLine(snapshot)}
       ${simulationSession && index === 0 ? simulationCompletionHtml(simulationCount) : ""}
     `, `Score ${scoreDisplay}`);
-    const sightCorrectionStage = correctionDisplay.length ? universalSecStageHtml("sight-correction", "Sight Correction", `
+    const sightCorrectionStage = correctionDisplay.length ? secFrameworkStageHtml("sight-correction", "Sight Correction", `
       <div class="sec-sight-correction-story"><div class="sec-sight-correction-grid">${correctionDisplay.map((instruction, correctionIndex) => `<div class="sec-sight-correction-axis"><span>${correctionIndex === 0 ? "Elevation" : "Windage"}</span><strong>${escapeHtml(instruction)}</strong></div>`).join("")}</div></div>
       <section class="sec-confirmation-summary"><h3>How to Confirm</h3><div class="sec-validation-calculation">${simulationSession ? "You can practice this workflow in Simulation. Start a live target session when you are ready to record a confirmed result." : zeroingValidationDetailsHtml(pkg, hasAuthority)}</div></section>
     `) : "";
-    const actionBar = universalShooterActionBarHtml(session);
+    const actionBar = secFrameworkActionBarHtml(session);
     return `
-      <article class="history-card zeroing-sec-card sec-universal-flow${simulationSession ? " is-simulation" : ""}" data-session-id="${session.sessionId}">
+      <article class="history-card zeroing-sec-card sec-framework-flow${simulationSession ? " is-simulation" : ""}" data-session-id="${session.sessionId}">
         ${evidenceStage}${sessionStage}${sightCorrectionStage}${actionBar}
       </article>
     `;
   }).join("");
+  window.SCZN3TargetProfileIdentity?.hydrate(historyList);
+  window.SCZN3PartnershipIdentity?.hydrate(historyList);
   requestAnimationFrame(syncSecEvidenceLayers);
   requestAnimationFrame(syncGssfScoringRails);
 }
@@ -1575,7 +1786,7 @@ function prepareHistoricalSec(session) {
   card.querySelectorAll(".sec-target-session-identity").forEach(label => label.remove());
   card.querySelectorAll('a[href*="records.html?session="]:not(.sec-session-timeline-point)').forEach(link => link.remove());
   const story = card.querySelector(".sec-target-story") || card.querySelector(".sec-v1-flow") || card;
-  const stages = [...story.children].filter(element => element.matches(".sec-universal-stage"));
+  const stages = [...story.children].filter(element => element.matches(".sec-framework-stage"));
   const accordionStages = stages.map((stage, index) => {
     let details = stage;
     if (stage.tagName !== "DETAILS") {
@@ -1584,15 +1795,15 @@ function prepareHistoricalSec(session) {
       [...stage.attributes].forEach(attribute => {
         if (attribute.name !== "class") details.setAttribute(attribute.name, attribute.value);
       });
-      const heading = stage.querySelector(":scope > .sec-universal-stage-heading");
+      const heading = stage.querySelector(":scope > .sec-framework-stage-heading");
       const title = heading && heading.querySelector("h2,h3")?.textContent.trim() || "Section";
       const summary = document.createElement("summary");
       if (index === 0) {
-        summary.className = "sec-universal-stage-heading sec-evidence-toggle";
+        summary.className = "sec-framework-stage-heading sec-evidence-toggle";
         summary.innerHTML = `<span>1 · TARGET</span><strong>${escapeHtml(session.sessionLabel || `Session ${vaultSessionNumber(session)}`)}</strong>`;
       } else {
         const scoreDisplay = stage.dataset.secScore || "";
-        summary.className = `sec-universal-stage-heading sec-stage-pill${stage.dataset.secStage === "session" ? " sec-session-pill" : ""}`;
+        summary.className = `sec-framework-stage-heading sec-stage-pill${stage.dataset.secStage === "session" ? " sec-session-pill" : ""}`;
         summary.innerHTML = `<span>${index + 1}</span><h2>${escapeHtml(title)}</h2>${scoreDisplay ? `<strong class="sec-session-score">${escapeHtml(scoreDisplay)}</strong>` : ""}<b aria-hidden="true"></b>`;
       }
       const body = document.createElement("div");
@@ -1608,6 +1819,7 @@ function prepareHistoricalSec(session) {
     return details;
   });
   window.SCZN3SECReopenLifecycle?.initialize(story);
+  SCZN3Actions.syncAvailability(historyList, { share: () => typeof navigator.share === "function" && typeof File === "function" });
 }
 
 async function loadPreservedSECRecords() {
@@ -1672,7 +1884,6 @@ async function loadPreservedSECRecords() {
 }
 
 loadPreservedSECRecords();
-syncSecShareCapability();
 window.addEventListener("resize", syncSecEvidenceLayers);
 document.getElementById("saveSecPage")?.addEventListener("click", event => saveSecPageImage({ button: event.currentTarget }));
 historyList.addEventListener("click", event => {
@@ -1696,15 +1907,6 @@ historyList.addEventListener("click", event => {
     window.location.href = `sec.html?sessionId=${encodeURIComponent(m4Button.dataset.openM4Sec || "")}`;
     return;
   }
-  const exportButton = event.target.closest("[data-sec-export]");
-  const shareButton = event.target.closest("[data-sec-share]");
-  const actionButton = exportButton || shareButton;
-  if (!actionButton) return;
-  saveSecPageImage({
-    button: actionButton,
-    card: actionButton.closest(".history-card"),
-    mode: shareButton ? "share" : "download"
-  });
 });
 
 document.getElementById("recordsVaultBack")?.addEventListener("click", event => {
@@ -1716,15 +1918,6 @@ document.getElementById("recordsVaultBack")?.addEventListener("click", event => 
 });
 
 const GSSF_SEC_EXPORT_WIDTH = 390;
-
-function syncSecShareCapability() {
-  const shareSupported = typeof navigator.share === "function" && typeof File === "function";
-  document.querySelectorAll("[data-sec-share]").forEach(button => {
-    button.hidden = !shareSupported;
-    button.disabled = !shareSupported;
-    button.setAttribute("aria-hidden", shareSupported ? "false" : "true");
-  });
-}
 
 function cloneGssfExportSection(card, selector) {
   const section = card.querySelector(selector);
@@ -1868,12 +2061,6 @@ async function saveGssfSecTwoPageImages(card) {
 }
 
 async function saveSecPageImage({ button = null, card = null, mode = "download" } = {}) {
-  const actionButton = button || document.getElementById("saveSecPage");
-  const originalLabel = actionButton ? actionButton.textContent : "";
-  if (actionButton) {
-    actionButton.disabled = true;
-    actionButton.textContent = "Preparing…";
-  }
   const gssfCard = card && card.matches('.gssf-sec-card[data-gssf-export-ready="true"]')
     ? card
     : (!card ? document.querySelector('.gssf-sec-card[data-gssf-export-ready="true"]') : null);
@@ -1899,30 +2086,30 @@ async function saveSecPageImage({ button = null, card = null, mode = "download" 
     document.body.dataset.secSaveDelivery = delivery;
     document.body.dataset.gssfExportDeliveryStatus = delivery;
     if (gssfCard) document.body.dataset.gssfExportStatus = "complete";
-    if (actionButton) {
-      actionButton.textContent = delivery === "shared"
-        ? "Shared"
-        : delivery === "downloaded"
-          ? "Exported"
-          : "Share Unavailable";
-    }
+    return delivery;
   } catch (error) {
     if (error && error.name === "AbortError") {
       document.body.dataset.secSaveDelivery = "cancelled";
-      if (actionButton) actionButton.textContent = originalLabel;
-      return;
+      return false;
     }
     document.body.dataset.secSaveDelivery = "failed";
     document.body.dataset.gssfExportDeliveryStatus = "failed";
     if (gssfCard) document.body.dataset.gssfExportStatus = "failed";
-    if (actionButton) actionButton.textContent = "Try Again";
     console.error("SEC save failed", error);
-    return;
-  } finally {
-    if (actionButton) actionButton.disabled = false;
+    throw error;
   }
-  if (actionButton) setTimeout(() => { actionButton.textContent = originalLabel; }, 1600);
 }
+
+SCZN3Actions.bind(historyList, {
+  export: {
+    message: "Preparing your Shooter Experience Card…",
+    run: ({ trigger }) => saveSecPageImage({ button: trigger, card: trigger.closest(".history-card"), mode: "download" })
+  },
+  share: {
+    message: "Preparing your Shooter Experience Card…",
+    run: ({ trigger }) => saveSecPageImage({ button: trigger, card: trigger.closest(".history-card"), mode: "share" })
+  }
+});
 </script>
 </body>
 </html>

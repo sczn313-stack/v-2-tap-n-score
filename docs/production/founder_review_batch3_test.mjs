@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 const shoot = await readFile("shoot.html", "utf8");
 const styles = await readFile("styles.css", "utf8");
 const contextStyles = await readFile("workspace_correction_context.css", "utf8");
-const universalUi = await readFile("universal-ui.css", "utf8");
+const universalUi = await readFile("platform-ui.css", "utf8");
 
 assert.match(shoot, /class="authority-recovery-state"/, "failed scoring uses a dedicated recovery state");
 assert.match(shoot, /data-authority-retry>Try Again</, "recovery preserves a direct retry action");

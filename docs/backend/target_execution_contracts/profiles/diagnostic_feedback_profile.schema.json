@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/diagnostic-feedback-profile-v1.json",
+  "title": "SCZN3 Diagnostic Feedback Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["missionFamily", "resultPackageType", "resultPackageVersion", "profileId", "profileVersion", "publisherAuthority", "sourceDocuments", "approval", "effective", "lifecycle", "componentBindings", "claimGrade", "applicability", "evaluationPolicy", "regionLabelMap", "capabilityStates"],
+  "properties": {
+    "missionFamily": {"const": "diagnosticFeedbackEvaluation"},
+    "resultPackageType": {"const": "diagnosticFeedbackResult"},
+    "resultPackageVersion": {"const": "1"},
+    "profileId": {"type": "string", "minLength": 1},
+    "profileVersion": {"type": "string", "minLength": 1},
+    "publisherAuthority": {"type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}}},
+    "sourceDocuments": {"type": "array", "minItems": 1},
+    "approval": {"type": "object"},
+    "effective": {"type": "object"},
+    "lifecycle": {"type": "object"},
+    "componentBindings": {"type": "object"},
+    "claimGrade": {"const": "publisher_label_match"},
+    "applicability": {"type": "object", "additionalProperties": false, "required": ["handedness", "declarationRequired", "orientation", "allowRotation", "allowMirroring"], "properties": {"handedness": {"enum": ["left", "right", "ambidextrous", "not_applicable"]}, "declarationRequired": {"type": "boolean"}, "orientation": {"const": "registered_publisher_orientation"}, "allowRotation": {"const": false}, "allowMirroring": {"const": false}}},
+    "evaluationPolicy": {"const": {"mode": "per_observation_region_match", "summary": "count_by_label", "dominantLabel": "unavailable"}},
+    "regionLabelMap": {"type": "array", "minItems": 1},
+    "capabilityStates": {"type": "object"}
+  }
+}
