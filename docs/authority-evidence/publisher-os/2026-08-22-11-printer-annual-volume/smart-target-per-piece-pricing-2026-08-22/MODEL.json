@@ -1,0 +1,37 @@
+{
+  "modelId": "POS-SMART-TARGET-PER-PIECE-PRICING-2026-08-22-V1",
+  "observationDate": "2026-08-22",
+  "currency": "USD",
+  "relationshipBeingPriced": "Smart Target platform relationship",
+  "notBeingPriced": ["physical target printing", "ink", "QR image", "QR label"],
+  "volumeModelRef": "../MODEL.json",
+  "annualPieceVolumeCases": {
+    "low": 12050000,
+    "base": 24550000,
+    "high": 45000000
+  },
+  "testedFeesPerPiece": [0.05, 0.075, 0.10, 0.15, 0.20],
+  "testedPenetrations": [0.01, 0.05, 0.10, 0.25, 0.50, 1.00],
+  "publisherPriceSummaries": [
+    {"publisher":"Baker Targets","lowObservedPerPiece":0.26,"medianObservedPerPiece":0.386,"representativePerPiece":0.376,"dominantObservedChannel":"publisher wholesale 250-piece packs","coverage":"sampled current wholesale catalog","tenCentAssessment":"requires tiering"},
+    {"publisher":"GunFun Shooting Targets","lowObservedPerPiece":0.26,"medianObservedPerPiece":1.06,"representativePerPiece":1.06,"dominantObservedChannel":"publisher unit price with minimum-multiple ordering","coverage":"12 preserved current product pages","tenCentAssessment":"comfortable for standard/large products; tier small commodity products"},
+    {"publisher":"Splatterburst","lowObservedPerPiece":0.049,"medianObservedPerPiece":1.199,"representativePerPiece":0.52,"dominantObservedChannel":"direct retail and dealer cases","coverage":"30 corpus products plus official dealer cases","tenCentAssessment":"comfortable for standard/large reactive targets; inappropriate for micro-target rolls"},
+    {"publisher":"Highwild","lowObservedPerPiece":0.1998,"medianObservedPerPiece":0.6999,"representativePerPiece":0.4998,"dominantObservedChannel":"direct retail multi-packs","coverage":"paper/cardboard subset only","tenCentAssessment":"generally passable at retail; tier cheapest packs"},
+    {"publisher":"Birchwood Casey","lowObservedPerPiece":0.0176,"medianObservedPerPiece":0.5196,"representativePerPiece":0.5196,"dominantObservedChannel":"direct retail reactive multi-packs","coverage":"supported package-count sample","tenCentAssessment":"comfortable on medium/large reactive targets; inappropriate for tiny multi-target packs"},
+    {"publisher":"EZ Aim / Allen Company","lowObservedPerPiece":0.1799,"medianObservedPerPiece":0.4396,"representativePerPiece":0.4396,"dominantObservedChannel":"direct retail multi-packs","coverage":"supported paper/cardboard sample","tenCentAssessment":"comfortable on large/reactive/single targets; tier commodity 100-packs"},
+    {"publisher":"Champion Targets","lowObservedPerPiece":0.2095,"medianObservedPerPiece":0.4992,"representativePerPiece":0.3799,"dominantObservedChannel":"direct retail 10/12/100-packs","coverage":"27 exact package-price pairs before material exclusions; representative paper subset used","tenCentAssessment":"reasonable on small packs; tier 100-pack commodity paper"},
+    {"publisher":"American Target Company","lowObservedPerPiece":0.0325,"medianObservedPerPiece":0.217,"representativePerPiece":0.217,"dominantObservedChannel":"direct bulk 25/100/250/500/1000-piece pricing","coverage":"518 exact shootable package-price pairs","tenCentAssessment":"requires tiering"},
+    {"publisher":"The National Target Company","lowObservedPerPiece":0.0382,"medianObservedPerPiece":0.28135,"representativePerPiece":0.28135,"dominantObservedChannel":"direct institutional/retail packs","coverage":"18 exact package-price pairs; many pages lack normalized package quantity","tenCentAssessment":"requires tiering"},
+    {"publisher":"Speedwell Targets","lowObservedPerPiece":0.0484,"medianObservedPerPiece":0.5252,"representativePerPiece":0.5252,"dominantObservedChannel":"direct bulk/institutional cases","coverage":"146 exact shootable package-price pairs","tenCentAssessment":"requires tiering for inexpensive bulk; workable on large/specialty products"},
+    {"publisher":"U.S. Target Inc.","lowObservedPerPiece":0.1547,"medianObservedPerPiece":0.4795,"representativePerPiece":0.4795,"dominantObservedChannel":"direct 100-piece packs","coverage":"official category sample; normalized package parsing was incomplete","tenCentAssessment":"requires tiering for low-price repair/commodity centers"}
+  ],
+  "founderTenCentVerdict": "REQUIRES TIERING",
+  "recommendedCommercialStructure": {
+    "name": "credited platform minimum plus price-guardrailed per-piece fee",
+    "perPieceFormula": "min(0.10 USD, 10% of publisher net selling price per physical piece)",
+    "annualMinimum": "Set from measured publisher onboarding/support cost; fully credited against per-piece usage fees; no numeric amount established by this evidence.",
+    "reporting": "quarterly enabled-piece count and auditable net per-piece selling-price class",
+    "reason": "Preserves a simple 10-cent headline for normal targets while preventing the platform fee from overwhelming inexpensive bulk paper."
+  }
+}
+

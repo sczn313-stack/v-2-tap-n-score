@@ -2,14 +2,14 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.3  
-**Current through:** 2026-08-22  
-**Status:** Episode 57 Founder-approved discovery-driven landing-page baseline + 11-publisher P-OS knowledge baseline  
+**Version:** 1.4 — Founder Approved / LOCKED
+**Current through:** 2026-08-23
+**Status:** Episode 57 Founder-approved discovery-driven landing-page baseline + 12-publisher P-OS evidence baseline + Founder-approved General Shooting Knowledge model
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
 >
-> Before applying general model knowledge, outside research, generic software practices, shooting knowledge, or independent interpretation, determine whether SCZN3's existing authority, governance, architecture, evidence, Target Profiles, prior Founder decisions, or operating standards already answer the question.
+> Before applying outside research, generic software practices, outside shooting knowledge, or independent interpretation, determine whether SCZN3's existing authority, governance, architecture, evidence, General Shooting Knowledge, Target Profiles, prior Founder decisions, or operating standards already answer the question.
 >
 > If SCZN3 already answers it, use the SCZN3 answer.
 >
@@ -26,10 +26,11 @@
 | Production | `https://tap-n-score.com` at commit `bfce363643eff364e43d7d71a6b1e42c0262ca42` |
 | Production platform | Netlify frontend + Render authority service; four released targets |
 | Current development | Episode 54–57 approved local work is preserved in the Episode 57 closeout commit and archive ahead of production |
-| Latest locked snapshot | Snapshot 9 — Episode 57 Landing Page Baseline |
-| Latest checkpoint | `SCZN3_EP57_LANDING_PAGE_CLOSURE_2026-08-22` |
-| Current P-OS baseline | **11 publishers; 1,683 publisher target implementation identities; 2,416 commercial target offerings** |
-| Next active priority | **None authorized. Survey is not Founder Approved.** Publisher expansion remains capped at 11 until the Founder explicitly reopens it. |
+| Latest locked snapshot | Snapshot 10 — SCMM v1.4 General Shooting Knowledge Baseline |
+| Latest checkpoint | `SCZN3_SCMM_V1_4_GENERAL_SHOOTING_KNOWLEDGE_LOCK_2026-08-23` |
+| Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
+| Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
+| Next active priority | **None authorized. Survey is not Founder Approved.** This reconciliation does not authorize Publisher #13, production work, or knowledge-feature implementation. |
 
 Do not confuse production, the Episode 57 closeout commit, checkpoint archives, and deployment state. The Episode 57 closeout is committed and recoverable locally but is not pushed, deployed, or production-promoted.
 
@@ -63,6 +64,10 @@ Current local working candidate additionally includes:
 - Evidence, authority identities, result packages, and preserved SECs remain traceable.
 - Registration establishes the digital relationship; authority determines which capabilities and claims are available.
 - P-OS preserves publisher/product facts, provenance, observation history, authority ownership, and uncertainty; it does not convert inference into fact.
+- **Respect the target. Commonize the knowledge.** Target-specific meaning remains faithful to its product/source; general shooting knowledge is mined, commonized, reconciled, and synthesized across sources.
+- Sources are knowledge inputs. Accumulated understanding becomes source-neutral **SCZN3 General Shooting Knowledge** organized around shooters and shooting.
+- SCZN3's knowledge loop is **MINE → COMMONIZE → RECONCILE → SYNTHESIZE → DELIVER → LEARN**.
+- SCZN3's authority in knowledge delivery is to always tell the truth to its audience: use strong knowledge, preserve plausible alternatives, and say when it does not know enough.
 - The image is evidence of the target; it is not automatically the geometry authority.
 - No evidence, no claim. Missing authority fails closed.
 - Reality gets the final vote.
@@ -99,7 +104,37 @@ For a known target, accept the publisher's product as published. Preserve Produc
 
 Publisher product authority does not automatically establish scoring, mission, qualification, diagnostic, tactical, coaching, or external-authority claims. A product can be a valid registered Smart Target at the identity/evidence level while a richer capability is unavailable or `not_applicable`.
 
-### Publisher OS denominator and organization-authority boundary
+### Respect the target. Commonize the knowledge.
+
+> **Respect the target. Commonize the knowledge.**
+
+Target-specific authority remains exact and source-bound: product identity, geometry, scoring, printed instructions, drill/game rules, intended behavior, course definitions, and other product-specific meaning must be represented faithfully. SCZN3 does not reconstruct missing printer intent or turn synthesized knowledge into target authority.
+
+General shooting knowledge is different. Targets, publishers, programs, organizations, manuals, training systems, credible research, shooter evidence, and future sources are knowledge inputs. SCZN3 may mine the underlying concepts, commonize equivalent teachings, preserve meaningful context, reconcile apparent conflicts, and synthesize original, neutral, useful **SCZN3 General Shooting Knowledge**.
+
+> **Learn the knowledge. Don't copy the expression.**
+
+General shooting knowledge has **no governing-authority hierarchy**. Evaluate it by meaning, context, consistency, applicability, corroboration, usefulness, uncertainty, and subsequent learning—not by automatically ranking military, competition, publisher, manufacturer, instructor, program, or other source labels.
+
+This does not weaken execution authority. Official scoring, qualification, product identity, courses of fire, licensed source expression, and other source-specific claims remain governed by their applicable owners. The current Target Execution Contract and capability claim boundaries remain unchanged; knowledge synthesis alone does not activate a capability or expand a result claim.
+
+The continuous learning loop is:
+
+> **MINE → COMMONIZE → RECONCILE → SYNTHESIZE → DELIVER → LEARN**
+
+Organize accumulated knowledge around shooter objectives, observable evidence, fundamentals, accuracy/grouping, optics, trigger, grip/control, recoil, zeroing, diagnostics, drills, speed/accuracy, progression, firearm type, competition/qualification preparation, beginner development, corrective actions, improvement measurement, useful next actions, and newly discovered domains—not around publisher libraries.
+
+> **SCZN3's authority is to always tell the truth in its delivery to its audience.**
+
+Give the shooter the best useful guidance the total accumulated knowledge supports. Use strong knowledge when it is strong, preserve multiple plausible explanations when uncertainty remains, and say when SCZN3 does not know enough. New evidence may strengthen, qualify, or replace prior synthesis.
+
+The long-range learning relationship is:
+
+> **Shooter objective → evidence → accumulated knowledge → useful guidance → next evidence → learning**
+
+The usefulness test is: **Did the guidance help the shooter?** Where future capabilities can truthfully compare guidance with later evidence, those outcomes become new learning inputs. General knowledge is not limited to what SCZN3 can implement today.
+
+### Publisher OS denominator, product authority, and knowledge responsibility
 
 > **Governed Target Specification ≠ Publisher Target Implementation Identity ≠ Commercial Target Offering.**
 
@@ -110,6 +145,13 @@ Where an external organization owns meaning, preserve:
 > **Organization Authority → Governed Target Specification → Publisher Implementation → Commercial SKU/package.**
 
 One NRA specification may therefore have several publisher implementations and many commercial offerings without requiring separate SCZN3 scoring software. Product labeling is evidence of a connection; it is not automatically endorsement, current licensing, course authority, or executable rules.
+
+Every future P-OS/source investigation asks two independent questions:
+
+- **Product:** What is this target/product/program, and how does SCZN3 faithfully support it?
+- **Knowledge:** What can this source teach SCZN3 about shooters and shooting?
+
+Report whether new knowledge adds, strengthens, refines, contradicts, contextualizes, or fills a gap. P-OS should increasingly report **what SCZN3 learned**, not merely what a source said.
 
 ### KTIS — Known Target Integration Standard
 
@@ -200,50 +242,50 @@ An adapter maps authoritative content into shared presentation. It may not creat
 
 ### Declared Universality ≠ Enforced Universality
 
-**What we believed:** Shared-looking target experiences were universal.  
-**What reality exposed:** Baker and IDPA still owned structural CSS and behavior independently.  
+**What we believed:** Shared-looking target experiences were universal.
+**What reality exposed:** Baker and IDPA still owned structural CSS and behavior independently.
 **Permanent lesson:** Prove inheritance at the shared owner. One shared change must propagate without target edits.
 
 ### Metadata ≠ Shared Presentation Ownership
 
-**What we believed:** Registering IDPA as `lowest-score-wins` meant it inherited GSSF's established presentation.  
-**What reality exposed:** IDPA rendered a separate Lowest Score Wins panel.  
+**What we believed:** Registering IDPA as `lowest-score-wins` meant it inherited GSSF's established presentation.
+**What reality exposed:** IDPA rendered a separate Lowest Score Wins panel.
 **Permanent lesson:** Presentation-family metadata is insufficient. Applicable targets must consume the same shared component owner.
 
 ### Test Names ≠ Evidence
 
-**What we believed:** Tests named “homepage navigation,” “image renders,” or “viewport visibility” proved those claims.  
-**What reality exposed:** Some asserted the Catalog instead of the homepage drawer, decode instead of visible rendering, or DOM geometry instead of the Founder's visible browser.  
+**What we believed:** Tests named “homepage navigation,” “image renders,” or “viewport visibility” proved those claims.
+**What reality exposed:** Some asserted the Catalog instead of the homepage drawer, decode instead of visible rendering, or DOM geometry instead of the Founder's visible browser.
 **Permanent lesson:** The asserted surface, runtime, state, and visible outcome are the evidence.
 
 ### Fixtures ≠ Founder Flow
 
-**What we believed:** Canonical-asset and automated probe success established real-photo readiness.  
-**What reality exposed:** Real photographs correctly returned `canonical_registration_required`; local origins also diverged through CORS, stale processes, migrations, provenance hashes, and persistence configuration.  
+**What we believed:** Canonical-asset and automated probe success established real-photo readiness.
+**What reality exposed:** Real photographs correctly returned `canonical_registration_required`; local origins also diverged through CORS, stale processes, migrations, provenance hashes, and persistence configuration.
 **Permanent lesson:** A valid fixture proves only its path. Acceptance must exercise the Founder's actual front door, origin, authority service, persistence path, asynchronous states, and reopen behavior.
 
 ### Appearance ≠ Target Identity
 
-**What we believed:** Similar A/B/C/D geometry and route/session labels could identify Baker evidence.  
-**What reality exposed:** GUNFUN USPSA/IPSC evidence was not Baker SL-ST1 and became the required negative identity fixture.  
+**What we believed:** Similar A/B/C/D geometry and route/session labels could identify Baker evidence.
+**What reality exposed:** GUNFUN USPSA/IPSC evidence was not Baker SL-ST1 and became the required negative identity fixture.
 **Permanent lesson:** Identity requires governed product/profile/registration evidence—not resemblance.
 
 ### Shared defects belong to shared owners
 
-**What we believed:** New-target defects could be corrected locally.  
-**What reality exposed:** Episode 55 found shared preservation admission, compact action-region capacity, workspace ownership, SEC Evidence/Result layout, Lowest Score Wins presentation, and mobile ordering defects.  
+**What we believed:** New-target defects could be corrected locally.
+**What reality exposed:** Episode 55 found shared preservation admission, compact action-region capacity, workspace ownership, SEC Evidence/Result layout, Lowest Score Wins presentation, and mobile ordering defects.
 **Permanent lesson:** Repair the platform owner once, regression-test every applicable target, and forbid target-specific workarounds.
 
 ### Functional correctness ≠ Founder product approval
 
-**What we believed:** The 174 First Scoreboard completed USPSA.  
-**What reality exposed:** Scoring worked, but the SEC initially spoke like a database and some Founder/browser lifecycle paths still failed.  
+**What we believed:** The 174 First Scoreboard completed USPSA.
+**What reality exposed:** Scoring worked, but the SEC initially spoke like a database and some Founder/browser lifecycle paths still failed.
 **Permanent lesson:** Backend truth, product comprehension, and real front-door reliability are separate acceptance gates.
 
 ### Drag University
 
-**What we believed:** More drafts and sub-gates always increased rigor.  
-**What reality exposed:** Repeatedly restating settled authority delayed implementation without improving truth.  
+**What we believed:** More drafts and sub-gates always increased rigor.
+**What reality exposed:** Repeatedly restating settled authority delayed implementation without improving truth.
 **Permanent lesson:** KTIS resolves known-target questions. Build the required artifacts, test them, and move unless a real contradiction appears.
 
 ## 6. Current Targets / Missions
@@ -277,7 +319,7 @@ Current release boundaries:
 - IDPA and the five-target catalog/Fun candidate are not committed, pushed, deployed, or production-promoted.
 - The consolidated five-target Founder Flow remains pending.
 - The P-OS evidence corpus and Publisher Intelligence baseline exist. Automated monitoring, production QR issuance, and authority-blocked real-world programs remain separately governed and unimplemented.
-- Publisher expansion remains capped at 11 until the Founder explicitly reopens it; landing-page completion does not itself add Publisher #12.
+- The former 11-publisher expansion cap was superseded when the Founder authorized Thompson as Publisher #12. This reconciliation does not authorize Publisher #13 or additional expansion.
 - Survey is not Founder Approved. It is excluded from the Episode 57 landing-page approval boundary and no implementation is authorized by this closeout.
 - Production authority activation for new photo-upload target paths requires explicit deployment/external-data authorization.
 
@@ -287,19 +329,27 @@ Do not invent additional risks or silently fold these footnotes into unrelated w
 
 > **A publisher catalog is not a catalog of software implementations. Publisher products inherit governed SCZN3 capabilities through authoritative data.**
 
-### Current Publisher OS corpus
+### Current Publisher OS corpus and first knowledge synthesis
 
-The detailed current authority is the [11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md). The minimum operating context is:
+The preserved eleven-publisher denominator baseline remains detailed in the [11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md). [Thompson Publisher #12](../authority-evidence/publisher-os/2026-08-23-thompson-publisher-12/REPORT.md) is additive. The minimum current context is:
 
-- **11 publishers**; no Publisher #12 until the Founder reopens expansion.
-- **1,683 publisher target implementation identities / 2,416 commercial target offerings** are recognition-ready evidence.
-- **1,680 identities / 2,413 offerings** are Smart Evidence eligible; three GunFun authority holds remain explicit.
+- **12 publishers** are represented. This revision does not authorize Publisher #13 or further catalog expansion.
+- **1,792 publisher target implementation identities / 2,709 commercial target or target-system offerings** are recognition-ready evidence.
+- **1,789 identities / 2,705 offerings** are Smart Evidence eligible; three GunFun authority holds and Thompson's unspecified Quik-Stand target count remain explicit.
 - **136 unique NRA-governed specifications** have been established, with **266 exact current publisher/NRA mappings**.
 - The original seven-publisher 907/1,168 baseline was re-audited to **939 identities / 1,265 offerings**.
 - The former cumulative 1,748/2,332 claim and interim 1,651/2,319 correction are obsolete as current truth; historical reports preserve why those numbers existed.
 - All **16 behavioral families** are implemented. Baker Candyville's publisher-defined path traversal is one evidenced candidate, not an implemented or generalized seventeenth family.
 - P-OS Publisher Intelligence uses the locked precision-controlled Tier 1, Tier 2, and Tier 3 structure. Unknown facts remain unknown and dated evidence is not timeless fact.
 - Future organization-authority work may apply the NRA method to IBS, USPSA, IDPA, GSSF, CMP, and other evidenced governing organizations, but it remains deferred until the Founder explicitly reopens that work.
+
+The [first holistic General Shooting Knowledge synthesis](../authority-evidence/publisher-os/2026-08-23-shooting-knowledge-first-synthesis/REPORT.md) establishes the initial living baseline:
+
+- **12 publisher/source inputs → 20 commonized knowledge domains → 6 contextual conflicts reconciled → 9 deliberate learning priorities.**
+- Current strengths: zeroing, grouping, visible feedback, formal scoring, drills, qualification boundaries, and pistol diagnostics.
+- Current thin areas: shotgun instruction, recoil development, movement/manipulation, rifle fieldcraft, accessibility, and validated diagnostic thresholds.
+- These gaps are deliberate learning opportunities, not architecture failures.
+- The detailed synthesis is knowledge organized around shooters and shooting; the [source ledger](../authority-evidence/publisher-os/2026-08-23-shooting-knowledge-first-synthesis/SOURCE_LEDGER.md) remains underneath for validation, integrity, licensing, and correction.
 
 Recognition-ready means SCZN3 possesses evidence capable of supporting a future recognition relationship. It does **not** mean photo recognition has been implemented or validated.
 
@@ -356,7 +406,7 @@ GunFun + Baker analysis examined 663 offerings. Approximately 90% mapped to beha
 
 The approved landing asks:
 
-> **What do you want to shoot today?**  
+> **What do you want to shoot today?**
 > **Pick an activity, choose your target, then listen.**
 
 ### Two front-door entry paths
@@ -472,7 +522,10 @@ Do not reopen or recreate these settled foundations without contradictory author
 - data-only inheritance as the scale acceptance standard
 - authority gaps as fail-closed authority states, not architecture failures
 - P-OS's four-layer denominator ontology and organization-authority chain
-- the 11-publisher expansion cap until the Founder explicitly reopens publisher expansion
+- Thompson as additive Publisher #12; no Publisher #13 or further expansion without Founder direction
+- **Respect the target. Commonize the knowledge.** Target-specific authority remains exact; General Shooting Knowledge is source-neutral and continuously accumulated.
+- **MINE → COMMONIZE → RECONCILE → SYNTHESIZE → DELIVER → LEARN** as the standing knowledge loop
+- P-OS's independent Product question and Knowledge question for every future source investigation
 - recognition-ready evidence as evidence, not a claim that photo recognition is implemented
 - website discovery, photo recognition, and QR declaration as three identity paths with distinct authorized access levels
 - the Episode 57 landing page as the discovery-driven front door with two entrances and eight Founder-approved activity doors
@@ -500,7 +553,7 @@ Standard invocation:
 
 When invoked, read this file before advising, researching, designing, or making SCZN3 decisions. Then consult the linked architecture, Episode Registry, active episode, checkpoint, authority records, and tests only to resolve the current task.
 
-> **SCZN3 first → existing authority first → KTIS for known targets → Publisher Product Boundary → governed registration → UGO → Target Execution Contract → exact capability owner → inherit through data before building → fix shared problems at shared owners → backend owns truth → Universal SEC → exact reopen → tests must prove the actual surface → stop only for genuine contradictions → reality gets the final vote.**
+> **SCZN3 first → respect the target → commonize the knowledge → existing authority first for source-specific claims → KTIS for known targets → Publisher Product Boundary → governed registration → UGO → Target Execution Contract → exact capability owner → inherit through data before building → fix shared problems at shared owners → backend owns execution truth → Universal SEC → exact reopen → learn from subsequent evidence → tests must prove the actual surface → stop only for genuine contradictions → reality gets the final vote.**
 
 ## Living-File Rule
 
@@ -522,7 +575,11 @@ Primary current records:
 - [Episode 56 Capability Engine Status](../history/episodes/episode56-target-capability-coverage/CAPABILITY_ENGINE_STATUS.md)
 - [M-014 — Publisher OS 11-Publisher Knowledge Baseline](../history/milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md)
 - [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
+- [Thompson — Publisher #12](../authority-evidence/publisher-os/2026-08-23-thompson-publisher-12/REPORT.md)
+- [SCZN3 Shooting Knowledge — First Synthesis](../authority-evidence/publisher-os/2026-08-23-shooting-knowledge-first-synthesis/REPORT.md)
+- [General Shooting Knowledge Source Ledger](../authority-evidence/publisher-os/2026-08-23-shooting-knowledge-first-synthesis/SOURCE_LEDGER.md)
 - [Snapshot 9 — Episode 57 Landing Page Baseline](../history/snapshots/SNAPSHOT_009_EPISODE_57_LANDING_PAGE_BASELINE.md)
+- [Snapshot 10 — SCMM v1.4 General Shooting Knowledge Baseline](../history/snapshots/SNAPSHOT_010_SCMM_V1_4_GENERAL_SHOOTING_KNOWLEDGE_BASELINE.md)
 - [KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md)
 - [Composable Target Authority](./decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md)
 - [Authority Ownership Matrix](./COMPOSABLE_TARGET_AUTHORITY_OWNERSHIP_MATRIX.md)
