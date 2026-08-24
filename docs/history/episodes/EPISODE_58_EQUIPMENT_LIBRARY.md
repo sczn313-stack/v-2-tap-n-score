@@ -1,9 +1,12 @@
 # Episode 58 — Equipment Library
 
-**Status:** ACTIVE — Founder-approved continuity baseline locked
+**Status:** CLOSED / ARCHIVED / LOCKED — Founder Approved
 **Opened:** 2026-08-23
 **Founder-approved title:** Equipment Library
-**Implementation:** Not authorized by this continuity lock
+**Implementation:** Founder Approved and preserved by Snapshot 13
+**Closed:** 2026-08-24
+**Snapshot:** Snapshot 13 — Episode 58 Equipment Library Closure
+**Checkpoint:** `SCZN3_EP58_EQUIPMENT_LIBRARY_CLOSURE_2026-08-24`
 **Locked inherited baseline commit:** `6846450752277eaad24e64b6d4a40578714fe85d`
 **Previous episode:** [Episode 57 — Discovery-Driven Smart Target Landing Page](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md)
 
@@ -96,6 +99,49 @@ Equipment facts remain structured, provenance-bearing, time-scoped, and uncertai
 
 The next deliverable should be a Founder Specification, not implementation. It should determine the normalized owner, minimum truthful shooter inputs, inference/confirmation boundaries, treatment of saved equipment profiles, and acceptance tests before any UI or runtime change.
 
+## Shooter-facing implementation candidate — 2026-08-23
+
+The implementation extends the existing universal Equipment Library rather than creating a second equipment owner:
+
+- New equipment follows a phone-first firearm/category path, with optic, ammunition, distance, photo, and personal details remaining optional.
+- A saved profile receives a stable equipment profile ID, schema version, catalog version, evidence status/source, and creation/update provenance.
+- One saved profile may be explicitly active. Applicable target experiences offer that profile to backend Session Authority first, reducing repeated shooter input without bypassing compatibility or mission authority.
+- Profiles survive browser reload/re-entry and reopen exactly through `equipment_profile_id=<stable profile ID>`.
+- Backend Session Authority now normalizes, fingerprints, assesses, and preserves the submitted firearm, catalog, optic, ammunition, and profile-provenance facts in the authoritative session package.
+- Unknown sight adjustment and distance values remain unknown. The former silent generic `1/4 MOA` and `100 yds` new-profile assumptions were removed.
+- Manufacturer/model behavior remains driven by the existing Episode 58 census/catalog data structures. No manufacturer-, model-, SKU-, or target-specific runtime admission branch was added.
+
+Validation covers create, save, reload, exact reopen, active selection, target-experience inheritance without re-entry, 390px presentation, backend fingerprint reconciliation, existing Equipment Library routing, M4 equipment authority, Smart Target identity, Target Execution Scale Architecture, and shared Smart Target workspace ownership.
+
+## Coordinated knowledge-ingestion pass — 2026-08-24
+
+The [Episode 58 Equipment Library Knowledge Ingestion](../../authority-evidence/publisher-os/2026-08-24-equipment-library-knowledge-ingestion/README.md) reconciles the Founder walkthrough with the existing Glock, Canik, M4/military, and 28-manufacturer evidence.
+
+It confirms:
+
+> **Glock and Canik prove catalog breadth. M4/military proves authority depth. The 28-manufacturer census proves scale.**
+
+The smallest correct reusable owner is a normalized equipment graph beneath a minimum-touch shooter projection. Missing knowledge, known-but-unexposed knowledge, presentation defects, freshness problems, authority conflicts, and schema limitations remain explicitly different conditions. MC9 PRIME is preserved as a current first-party-evidenced but locally unexposed catalog gap; no model-specific runtime branch was added. The M4 `1.5`/`1.75 MOA` evidence remains an unresolved source-scoped conflict, and locked runtime authority remains unchanged.
+
+The only implementation change made during this knowledge-ingestion pass is the Founder-approved bright-green `ACTIVE` visual treatment. It changes no equipment identity or authority.
+
+Founder Gate 1 locked `sczn3-equipment-knowledge-v1.1` as the approved Episode 58 ingestion contract after four exact-contract clarifications: technical `entityType` versus commercial `offeringType`; scoped organization ownership/marketing/licensing relationships; fact-level and relationship-level provenance envelopes; and governed `zeroDistance`/`confirmationDistance` separated from transient `sessionDistance`. The minimum-touch shooter projection is unchanged.
+
+Founder Gate 2 then produced a [PASS](../../authority-evidence/publisher-os/2026-08-24-equipment-library-knowledge-ingestion/GATE2_DATA_ADMISSION_PILOT.md). Canik METE MC9 PRIME and the official Glock G17/G19/G45 Gen6 launch set entered through evidence-bearing registry data. The existing Equipment Library inherited search, select, save, reload, exact reopen, active-profile reuse, and applicable target-experience consumption with zero pilot product identities in production routing. Backend Session Authority resolves the canonical record and rejects identity tampering generically.
+
+## Founder-review footnotes
+
+1. **Cross-device subject continuity remains unimplemented.** Saved library profiles remain browser-persistent shooter input because SCZN3 does not yet possess a governed backend shooter identity/subject-continuity owner. Backend Authority begins at preparation/start, where the selected profile is normalized, fingerprinted, reconciled, assessed, and durably preserved with the session. Creating an account-like backend equipment store without that authority would silently invent a new identity owner.
+2. **M4 front-sight evidence remains an inherited baseline discrepancy.** The Episode 58 study describes front-sight movement around `1.75 MOA`, while the locked proven M4 registry currently carries `1.5 MOA`. This implementation preserves the existing registry and does not choose between those authorities locally.
+
 ## Current boundary
 
-This record opens the governed Episode 58 work context. Snapshot 12 and the Episode 58 continuity checkpoint preserve this exact starting state. They do not approve Equipment Library implementation, production registration, push, deployment, production change, or episode closure.
+Snapshot 12 remains the immutable starting baseline. Snapshot 13 preserves the Founder-approved final Equipment Library state. Episode 58 is closed, archived, and locked; no push, deployment, or production promotion is authorized by this record.
+
+The [Episode 58 Closeout Readiness Reconciliation](./EPISODE_58_CLOSEOUT_READINESS_RECONCILIATION.md) is the current Founder-review handoff. It reconciles the approved ingestion contract, data-only admission proof, Founder walkthrough, issue taxonomy, and Episode 57/58 Try Before You Buy bridge.
+
+The reconciliation found and the Founder authorized one bounded closure correction: separate transient session distance, personal/organization/instructor, environmental, and target/QR context from durable equipment identity. Equipment Profile V2 applies that boundary, migrates V1 profiles without requiring an equipment rebuild, and presents only explicitly governed zero/confirmation relationships as durable zero information.
+
+The closed result is governed by:
+
+> **Enter the equipment once. SCZN3 carries the knowledge forward—but only the knowledge that actually belongs to the equipment.**

@@ -10,7 +10,8 @@
     activeZeroSession: "SCZN3_ACTIVE_ZERO_SESSION",
     sessionRecordPrefix: "SCZN3_SESSION_RECORD_",
     mediaPrefix: "SCZN3_MEDIA_",
-    savedEquipment: "SCZN3_SAVED_EQUIPMENT_PROFILES"
+    savedEquipment: "SCZN3_SAVED_EQUIPMENT_PROFILES",
+    activeEquipmentProfile: "SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID"
   });
   const LEGACY_KEYS = Object.freeze({
     targetAuthority: "SCZN3_BAKER_TARGET_AUTHORITY",
@@ -21,7 +22,8 @@
     activeZeroSession: "SCZN3_BAKER_ACTIVE_ZERO_SESSION",
     sessionRecordPrefix: "SCZN3_BAKER_SESSION_RECORD_",
     mediaPrefix: "SCZN3_BAKER_MEDIA_",
-    savedEquipment: "SCZN3_BAKER_SAVED_SETUPS"
+    savedEquipment: "SCZN3_BAKER_SAVED_SETUPS",
+    activeEquipmentProfile: "SCZN3_BAKER_ACTIVE_EQUIPMENT_PROFILE_ID"
   });
   const STATE_MIGRATION_VERSION = "sczn3-platform-state-v1";
 

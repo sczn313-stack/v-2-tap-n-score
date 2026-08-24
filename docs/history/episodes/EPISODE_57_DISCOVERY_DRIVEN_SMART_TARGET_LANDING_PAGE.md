@@ -50,3 +50,7 @@ No production deployment or push is part of this closeout.
 On 2026-08-23, the Founder separately approved the voluntary Rate Us experience and focused shared-platform cleanup preserved by [Snapshot 11](../snapshots/SNAPSHOT_011_RATE_US_FOUNDER_CLEANUP_BASELINE.md). That work added first-party contextual feedback, restored Home on non-Home shared navigation, normalized the universal header, simplified the lower Smart Target Family invitation, clarified Baker outbound presentation, and made the Ballistic Vault payoff deliberately three lines.
 
 This later snapshot does not reopen Episode 57, add Survey to its approval boundary, or authorize deployment.
+
+## Episode 58 continuity
+
+The later [Try Before You Buy continuity record](./EPISODE_57_58_TRY_BEFORE_YOU_BUY_CONTINUITY.md) connects Episode 57 discovery with Episode 58 equipment reuse, Universal SEC, Ballistic Vault, and voluntary Rate Us. It is preserved for a future Founder Specification and does not reopen Episode 57 or claim implemented behavior.

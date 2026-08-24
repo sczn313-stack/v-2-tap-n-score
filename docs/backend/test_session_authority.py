@@ -109,6 +109,76 @@ def test_prepare_normalizes_three_supported_targets():
         assert result["equipmentAssessments"][0]["officialMission"]["status"] == mission_status
 
 
+def test_equipment_library_profile_identity_and_reusable_facts_survive_backend_handoff():
+    store = TestStore()
+    candidate = {
+        **equipment(),
+        "equipmentProfileSchemaVersion": "sczn3-equipment-profile-v1",
+        "equipmentCatalogVersion": "episode58-snapshot12-2026-08-23",
+        "equipmentIdentityStatus": "publisher_catalog_match",
+        "equipmentIdentitySource": "episode58_publisher_census",
+        "equipmentProfileCreatedAt": "2026-08-23T12:00:00.000Z",
+        "equipmentProfileUpdatedAt": "2026-08-23T12:05:00.000Z",
+        "weaponCatalogManufacturer": "Test Manufacturer",
+        "weaponCatalogModel": "Test Model",
+        "weaponCatalogCaliber": "5.56 NATO",
+        "weaponFrameCategory": "Rifle",
+        "barrelLength": "16 in",
+        "opticBrand": "Test Optics",
+        "opticModel": "Test Dot",
+        "magnification": "1x",
+        "ammoCaliber": "5.56 NATO",
+        "ammoManufacturer": "Test Ammunition",
+        "ammoLoad": "FMJ",
+        "bulletWeight": "55 gr",
+    }
+    preparation = prepared(store, "baker_st_100yd_smart_zero", candidate)
+    normalized = store.preparations[digest(preparation["preparationToken"])]["equipmentCandidates"][0]
+    assert normalized["candidateId"] == "weapon-1"
+    assert normalized["equipmentProfileSchemaVersion"] == "sczn3-equipment-profile-v1"
+    assert normalized["equipmentCatalogVersion"] == "episode58-snapshot12-2026-08-23"
+    assert normalized["equipmentIdentityStatus"] == "publisher_catalog_match"
+    assert normalized["catalogModel"] == "Test Model"
+    assert normalized["opticModel"] == "Test Dot"
+    assert normalized["ammoManufacturer"] == "Test Ammunition"
+    result = start_session({
+        "preparationToken": preparation["preparationToken"],
+        "selectedEquipment": {**candidate, "source": "weapon_library"},
+    }, store, idempotency_key="idem-equipment-library-v1", now=NOW)
+    assert result["selectedEquipment"] == normalized
+
+
+def test_data_admitted_equipment_is_resolved_by_generic_backend_registry_and_tampering_fails_closed():
+    store = TestStore()
+    candidate = {
+        **equipment(category="Pistol", model="CANIK Catalog"),
+        "equipmentCatalogVersion": "episode58-gate2-pilot-2026-08-24",
+        "equipmentCatalogAuthorityRecordId": "canik-mete-mc9-prime-9mm-current",
+        "equipmentConfigurationId": "canik-mete-mc9-prime-9mm",
+        "equipmentEntityType": "complete_firearm",
+        "weaponCatalogManufacturer": "Canik",
+        "weaponCatalogModel": "METE MC9 PRIME",
+        "weaponCatalogCaliber": "9mm",
+    }
+    preparation = prepared(store, "baker_sl_st1", candidate)
+    normalized = store.preparations[digest(preparation["preparationToken"])]["equipmentCandidates"][0]
+    assert normalized["equipmentIdentitySource"] == "equipment_knowledge_registry"
+    assert normalized["equipmentConfigurationId"] == "canik-mete-mc9-prime-9mm"
+    assert normalized["equipmentEntityType"] == "complete_firearm"
+    assert normalized["catalogModel"] == "METE MC9 PRIME"
+    assert normalized["barrelLength"] == "3.64 in"
+    assert normalized["equipmentKnowledgeSchemaId"] == "sczn3-equipment-knowledge-v1.1"
+    assert normalized["equipmentKnowledgeFacts"]
+    assert normalized["equipmentKnowledgeRelationships"]
+
+    tampered = {**candidate, "weaponCatalogModel": "Different Model"}
+    try:
+        prepared(TestStore(), "baker_sl_st1", tampered)
+        raise AssertionError("tampered catalog identity must fail closed")
+    except SessionAuthorityError as exc:
+        assert exc.payload["reason"] == "equipment_catalog_weaponCatalogModel_mismatch"
+
+
 def test_baker_sl_st1_uses_backend_session_authority_without_equipment_gate():
     store = TestStore()
     preparation = prepare_session({"targetId": "BAKER_SL_ST1", "equipmentCandidates": []}, store, now=NOW)

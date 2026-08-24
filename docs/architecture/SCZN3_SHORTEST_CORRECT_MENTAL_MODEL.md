@@ -2,9 +2,9 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.5 — Founder Approved / LOCKED
-**Current through:** 2026-08-23
-**Status:** Episode 58 — Equipment Library active canonical continuity context over the locked Episode 57, Rate Us, 12-publisher P-OS, and General Shooting Knowledge baselines; Equipment Library implementation not authorized by this lock
+**Version:** 1.6 — Founder Approved / LOCKED
+**Current through:** 2026-08-24
+**Status:** Episode 58 — Equipment Library closed, archived, and locked; no episode active; Episode 59 reserved
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -19,21 +19,21 @@
 
 | State | Current truth |
 |---|---|
-| Active episode | **Episode 58 — Equipment Library** |
-| Last closed episode | **Episode 57 — Discovery-Driven Smart Target Landing Page** — closed, archived, and locked; Survey excluded |
+| Active episode | **None** |
+| Last closed episode | **Episode 58 — Equipment Library** — closed, archived, and locked |
 | Next reserved episode | **Episode 59** |
-| Episode Registry | PASS — 58 continuous slots; Episode 58 active |
+| Episode Registry | PASS — 58 continuous slots; Episode 58 locked; no active episode |
 | Production | `https://tap-n-score.com` at commit `bfce363643eff364e43d7d71a6b1e42c0262ca42` |
 | Production platform | Netlify frontend + Render authority service; four released targets |
-| Current development | Rate Us + Founder cleanup is the canonical local state; it is committed and recoverable ahead of production |
-| Prior implementation baseline commit | `6846450752277eaad24e64b6d4a40578714fe85d` — Snapshot 11 / Rate Us + Founder cleanup |
-| Latest locked snapshot | Snapshot 12 — Episode 58 Equipment Library Continuity Baseline |
-| Latest checkpoint | `SCZN3_EP58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE_2026-08-23` |
+| Current development | Episode 58 Equipment Library closure is the canonical local state; committed and recoverable ahead of production |
+| Prior continuity baseline commit | `9bc55aa6c58bc07cfa3cd8b341bc6df9b62dc4a4` — Snapshot 12 / Episode 58 starting context |
+| Latest locked snapshot | Snapshot 13 — Episode 58 Equipment Library Closure |
+| Latest checkpoint | `SCZN3_EP58_EQUIPMENT_LIBRARY_CLOSURE_2026-08-24` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Episode 58 Founder discussion and specification:** turn deep equipment knowledge into the simplest possible Equipment Library selection experience. No Equipment Library implementation is authorized by this continuity lock. |
+| Next active priority | **Founder determines Episode 59.** Try Before You Buy is preserved as Episode 57/58 continuity but remains unimplemented and requires its own Founder Specification. |
 
-Do not confuse production, the Episode 57 closeout, Snapshot 11, checkpoint archives, and deployment state. The Rate Us + Founder cleanup state is committed and recoverable locally but is not pushed, deployed, or production-promoted.
+Do not confuse production, Episode 58 closure, Snapshot 13, checkpoint archives, and deployment state. The Episode 58 state is committed and recoverable locally but is not pushed, deployed, or production-promoted.
 
 Current released production targets:
 
@@ -526,6 +526,8 @@ The final shooter-facing model is:
 
 > **Build enormous structured equipment knowledge underneath while keeping shooter equipment selection simple.**
 
+> **Enter the equipment once. SCZN3 carries the knowledge forward—but only the knowledge that actually belongs to the equipment.**
+
 Episode 58 transforms the Equipment Library from a shallow manufacturer/category selector into a deeply informed, normalized equipment system capable of identifying the shooter's actual firearm, sight/optic, ammunition, and relevant configuration while preserving minimum taps and touches. Research depth does not determine dropdown depth.
 
 The starting evidence is the completed [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md), which establishes:
@@ -550,11 +552,21 @@ P-OS may continue accumulating exact firearm families/variants, optic/reticle/ad
 
 Equipment facts and compatibility remain factual, structured, time-scoped, and provenance-bearing. Generalizable shooting knowledge enters the living commonized knowledge system.
 
-The first Founder discussion is:
+The closed reusable model is:
 
-> **How do we turn deep equipment knowledge into the simplest possible Equipment Library selection experience?**
+> **Canonical equipment graph → evidence-bearing relationships → minimum truthful shooter projection → composed saved Equipment Profile**
 
-See the [Episode 58 working record](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md) and [new-agent handoff](../history/episodes/EPISODE_58_NEW_AGENT_HANDOFF.md).
+The minimum shooter path is:
+
+> **equipmentType → manufacturer → searchOrSelectModel → materialUnresolvedConfigurationOnly**
+
+`sczn3-equipment-knowledge-v1.1` preserves manufacturer, platform family, exact model, technical configuration, commercial offering, sight/optic, mount/installation, ammunition, target/zero/confirmation relationships, and the composed Equipment Profile. MC9 PRIME and Glock Gen6 proved that newly admitted products inherit through governed data without manufacturer/model/SKU production branches.
+
+Equipment Profile V2 owns durable equipment identity/configuration, provenance, shooter label/photo, stable profile identity/timestamps, and active state. Session Authority owns what the shooter is doing now. The SEC owns preserved shooting history. A session distance never becomes equipment zero authority by implication. Existing V1 profiles migrate without rebuild while transient session, personal, environmental, target, and QR fields are stripped from equipment identity.
+
+Equipment cards do not show `Saved Distance`. `Zero` appears only for an explicitly governed zero/confirmation relationship carrying the required provenance envelope.
+
+See the [closed Episode 58 record](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md), [Snapshot 13](../history/snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md), and [Gate 1/Gate 2 evidence](../authority-evidence/publisher-os/2026-08-24-equipment-library-knowledge-ingestion/README.md).
 
 ## 11. Do Not Redo
 
@@ -601,6 +613,9 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not treat each firearm, optic, ammunition product, or configuration as a separate software implementation
 - do not patch M4 adjustment values locally before identifying the universal equipment/configuration owner
 - do not redesign Equipment Library dropdowns before reasoning from the completed catalog-depth study and the minimum-tap objective
+- do not persist session distance, personal/organizational context, weather, target identity, or QR attribution as durable Equipment Profile identity
+- do not display a session distance as equipment zero knowledge
+- do not grandfather V1 transient fields into Equipment Profile V2 authority
 
 ## 12. New Agent Operating Directive
 
@@ -631,6 +646,8 @@ Primary current records:
 - [Episode 57 — Discovery-Driven Smart Target Landing Page](../history/episodes/EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md)
 - [Episode 58 — Equipment Library](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md)
 - [Episode 58 New-Agent Handoff](../history/episodes/EPISODE_58_NEW_AGENT_HANDOFF.md)
+- [Episode 58 Closeout Readiness Reconciliation](../history/episodes/EPISODE_58_CLOSEOUT_READINESS_RECONCILIATION.md)
+- [Episode 57/58 Try Before You Buy Continuity](../history/episodes/EPISODE_57_58_TRY_BEFORE_YOU_BUY_CONTINUITY.md)
 - [Episode 56 Capability Engine Status](../history/episodes/episode56-target-capability-coverage/CAPABILITY_ENGINE_STATUS.md)
 - [M-014 — Publisher OS 11-Publisher Knowledge Baseline](../history/milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md)
 - [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
@@ -641,6 +658,7 @@ Primary current records:
 - [Snapshot 10 — SCMM v1.4 General Shooting Knowledge Baseline](../history/snapshots/SNAPSHOT_010_SCMM_V1_4_GENERAL_SHOOTING_KNOWLEDGE_BASELINE.md)
 - [Snapshot 11 — Rate Us + Founder Cleanup Baseline](../history/snapshots/SNAPSHOT_011_RATE_US_FOUNDER_CLEANUP_BASELINE.md)
 - [Snapshot 12 — Episode 58 Equipment Library Continuity Baseline](../history/snapshots/SNAPSHOT_012_EPISODE_58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE.md)
+- [Snapshot 13 — Episode 58 Equipment Library Closure](../history/snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md)
 - [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md)
 - [KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md)
 - [Composable Target Authority](./decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md)

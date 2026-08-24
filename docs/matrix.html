@@ -56,12 +56,20 @@
       </section>
 
       <section class="weapon-list-panel is-collapsed" id="weaponListPanel" aria-label="My Equipment Library">
-        <h2 class="weapon-library-title">MY EQUIPMENT LIBRARY</h2>
+        <div class="weapon-library-heading">
+          <div>
+            <span class="weapon-library-kicker">Your reusable setup</span>
+            <h2 class="weapon-library-title">MY EQUIPMENT LIBRARY</h2>
+          </div>
+          <p>Add equipment once. Select it whenever you shoot.</p>
+        </div>
         <div class="weapon-list-grid" id="weaponListGrid"></div>
       </section>
 
       <section class="form-section primary-weapon-path">
-        <h2>New Equipment</h2>
+        <span class="weapon-library-kicker">New equipment</span>
+        <h2>What do you shoot?</h2>
+        <p class="equipment-step-copy">Choose the basics first. Add only the details that help you later.</p>
         <div class="category-pill-row" role="group" aria-label="Equipment Category">
           <button class="category-pill" type="button" data-weapon-category="Rifle">Rifle</button>
           <button class="category-pill" type="button" data-weapon-category="Pistol">Pistol</button>
@@ -70,8 +78,8 @@
         <input type="hidden" name="weaponCategory" id="weaponCategory" value="Rifle" />
       </section>
 
-      <details class="form-section secondary-profile-section">
-        <summary>Equipment Details</summary>
+      <details class="form-section secondary-profile-section" open>
+        <summary>Firearm</summary>
         <div class="matrix-grid">
           <div class="weapon-photo-field">
             <span class="weapon-photo-label">Equipment Photo <span class="optional-label">Optional</span></span>
@@ -102,6 +110,11 @@
           <input type="hidden" name="weaponSightRadius" id="weaponSightRadius" />
           <input type="hidden" name="weaponVariantFlags" id="weaponVariantFlags" />
           <input type="hidden" name="weaponCatalogNotes" id="weaponCatalogNotes" />
+          <input type="hidden" name="equipmentCatalogAuthorityRecordId" id="equipmentCatalogAuthorityRecordId" />
+          <input type="hidden" name="equipmentConfigurationId" id="equipmentConfigurationId" />
+          <input type="hidden" name="equipmentEntityType" id="equipmentEntityType" />
+          <input type="hidden" name="equipmentKnowledgeSchemaId" id="equipmentKnowledgeSchemaId" />
+          <input type="hidden" name="equipmentKnowledgeRegistryVersion" id="equipmentKnowledgeRegistryVersion" />
           <label class="is-hidden">Custom Model Caliber<input name="customWeaponModelCaliber" id="customWeaponModelCaliber" placeholder="Optional custom model caliber" /></label>
           <label>Barrel Length <span class="optional-label">Optional</span><input name="barrelLength" placeholder="Optional" /></label>
         </div>
@@ -126,8 +139,8 @@
             <option>1x</option><option>1-4x</option><option>1-6x</option><option>1-8x</option><option>2-10x</option><option>3-9x</option><option>4-12x</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Magnification<input name="customMagnification" id="customMagnification" placeholder="Optional custom magnification" /></label>
-          <label>Click Value<select name="opticClickValue" id="opticClickValue">
-            <option value="0.25" selected>1/4 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option><option value="Custom">Custom</option>
+          <label>Click Value <span class="optional-label">If known</span><select name="opticClickValue" id="opticClickValue">
+            <option value="" selected>Select Click Value</option><option value="0.25">1/4 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option><option value="Custom">Custom</option>
           </select></label>
           <label class="is-hidden">Custom Click Value<input name="customOpticClickValue" id="customOpticClickValue" inputmode="decimal" placeholder="0.25" /></label>
           <label>Adjustment Unit<select name="opticAdjustmentUnit" id="opticAdjustmentUnit">
@@ -161,8 +174,8 @@
       <details class="form-section secondary-profile-section" open>
         <summary>Session Distance</summary>
         <div class="matrix-grid distance-setup-grid">
-          <label>Distance<select name="targetDistanceValue" id="matrixDistanceValue">
-            <option>25</option><option>50</option><option selected>100</option><option>200</option><option>300</option><option>400</option><option>500</option><option>Other</option>
+          <label>Distance <span class="optional-label">If useful</span><select name="targetDistanceValue" id="matrixDistanceValue">
+            <option value="" selected>Select Distance</option><option>25</option><option>50</option><option>100</option><option>200</option><option>300</option><option>400</option><option>500</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Distance<input name="customTargetDistanceValue" id="customTargetDistanceValue" inputmode="numeric" pattern="[0-9]*" /></label>
           <label>Unit<select name="targetDistanceUnit" id="matrixDistanceUnit">
@@ -189,7 +202,7 @@
       </div>
 
       <div class="setup-save-row">
-        <button class="button primary" type="button" id="saveSetup">Save Equipment Profile</button>
+        <button class="button primary" type="button" id="saveSetup">Save to My Equipment</button>
       </div>
     </form>
   </section>
@@ -199,11 +212,26 @@
 <script src="smart_target_identity.js"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
+<script src="equipment_knowledge_registry.js?v=episode58-gate2-pilot-1"></script>
 <script>
 const form = document.getElementById("matrixForm");
 const SAVED_SETUPS_KEY = window.SCZN3PlatformState
   ? SCZN3PlatformState.keys.savedEquipment
   : "SCZN3_SAVED_EQUIPMENT_PROFILES";
+const ACTIVE_EQUIPMENT_PROFILE_KEY = window.SCZN3PlatformState
+  ? SCZN3PlatformState.keys.activeEquipmentProfile
+  : "SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID";
+const EQUIPMENT_PROFILE_SCHEMA_VERSION = "sczn3-equipment-profile-v2";
+const LEGACY_EQUIPMENT_PROFILE_SCHEMA_VERSION = "sczn3-equipment-profile-v1";
+const EQUIPMENT_PROFILE_TRANSIENT_FIELDS = Object.freeze([
+  "targetDistanceValue", "targetDistanceUnit", "targetDistance", "distance", "sessionDistance",
+  "shooterName", "unit", "agency", "instructor", "temperature", "wind", "weather",
+  "target_profile_id", "targetProfileId", "qr_id", "qrId", "mission_family", "missionFamily",
+  "missionFamilyId", "targetId", "targetName", "targetFamily", "targetVersion", "targetDistanceLocked",
+  "targetDistanceSource", "vendor", "sku", "product", "authority"
+]);
+const EQUIPMENT_KNOWLEDGE_REGISTRY = window.SCZN3EquipmentKnowledgeRegistry || { schemaId: "", registryVersion: "", records: [] };
+const EQUIPMENT_CATALOG_VERSION = EQUIPMENT_KNOWLEDGE_REGISTRY.registryVersion || "episode58-snapshot12-2026-08-23";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
 const HAS_EXPLICIT_TARGET_INTENT = [
@@ -240,14 +268,9 @@ const WEAPON_CATEGORY_AMMO_CALIBERS = {
   Shotgun: ["Select Gauge", "12 Gauge", "20 Gauge", "16 Gauge", ".410 Bore", "Other"]
 };
 const WEAPON_CATEGORY_DISTANCES = {
-  Rifle: ["25", "50", "100", "200", "300", "400", "500", "Other"],
-  Pistol: ["7", "10", "15", "25", "50", "Other"],
-  Shotgun: ["7", "10", "15", "25", "50", "100", "Other"]
-};
-const WEAPON_CATEGORY_DEFAULT_DISTANCE = {
-  Rifle: "100",
-  Pistol: "25",
-  Shotgun: "25"
+  Rifle: ["Select Distance", "25", "50", "100", "200", "300", "400", "500", "Other"],
+  Pistol: ["Select Distance", "7", "10", "15", "25", "50", "Other"],
+  Shotgun: ["Select Distance", "7", "10", "15", "25", "50", "100", "Other"]
 };
 const OPTIC_CLICK_VALUES = {
   MOA: [
@@ -510,7 +533,6 @@ const GLOCK_GSSF_CATALOG = [
   { model: "G48 MOS", caliber: "9mm", frameCategory: "Slimline", barrelLength: "4.17 in", sightRadius: "5.98 in", flags: ["MOS", "Slimline"], notes: "Optics-ready slimline variant" },
   { model: "G49 MOS", caliber: "9mm", frameCategory: "Crossover", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["MOS", "Crossover"], notes: "Optics-ready crossover variant" }
 ];
-const GLOCK_GSSF_MODEL_OPTIONS = GLOCK_GSSF_CATALOG.map(item => `${item.model} ${item.caliber}`);
 const CANIK_GSSF_CATALOG = [
   { model: "TP9SA", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.47 in", sightRadius: "6.69 in", flags: ["TP9"], notes: "Striker-fired full-size model" },
   { model: "TP9DA", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.07 in", sightRadius: "6.50 in", flags: ["TP9", "DA"], notes: "Double-action/single-action variant" },
@@ -536,19 +558,58 @@ const CANIK_GSSF_CATALOG = [
   { model: "SFx Rival-S Dark Side", caliber: "9mm", frameCategory: "Competition", barrelLength: "5.00 in", sightRadius: "7.28 in", flags: ["Rival", "Steel Frame"], notes: "Dark Side steel-frame Rival variant" },
   { model: "TTI Combat", caliber: "9mm", frameCategory: "Competition", barrelLength: "4.60 in", sightRadius: "6.70 in", flags: ["TTI", "Competition"], notes: "Taran Tactical Innovations collaboration model" }
 ];
-const CANIK_GSSF_MODEL_OPTIONS = CANIK_GSSF_CATALOG.map(item => `${item.model} ${item.caliber}`);
-const GOVERNED_PISTOL_CATALOGS = {
+const LEGACY_GOVERNED_PISTOL_CATALOGS = {
   Glock: {
     modelType: "GLOCK Catalog",
-    catalog: GLOCK_GSSF_CATALOG,
-    options: GLOCK_GSSF_MODEL_OPTIONS
+    catalog: GLOCK_GSSF_CATALOG
   },
   Canik: {
     modelType: "CANIK Catalog",
-    catalog: CANIK_GSSF_CATALOG,
-    options: CANIK_GSSF_MODEL_OPTIONS
+    catalog: CANIK_GSSF_CATALOG
   }
 };
+function projectRegisteredEquipmentRecord(record) {
+  return {
+    model: record.model || "",
+    caliber: record.caliber || "",
+    frameCategory: record.frameCategory || "",
+    barrelLength: record.barrelLength || "",
+    sightRadius: record.sightRadius || "",
+    flags: Array.isArray(record.flags) ? record.flags : [],
+    notes: record.notes || "",
+    aliases: Array.isArray(record.aliases) ? record.aliases : [],
+    authorityRecordId: record.recordId || "",
+    configurationId: record.configurationId || "",
+    entityType: record.entityType || "",
+    knowledgeSchemaId: EQUIPMENT_KNOWLEDGE_REGISTRY.schemaId || "",
+    knowledgeRegistryVersion: EQUIPMENT_KNOWLEDGE_REGISTRY.registryVersion || ""
+  };
+}
+const REGISTERED_EQUIPMENT_RECORDS = Array.isArray(EQUIPMENT_KNOWLEDGE_REGISTRY.records)
+  ? EQUIPMENT_KNOWLEDGE_REGISTRY.records
+  : [];
+const GOVERNED_PISTOL_CATALOGS = Object.fromEntries(
+  [...new Set([
+    ...Object.keys(LEGACY_GOVERNED_PISTOL_CATALOGS),
+    ...REGISTERED_EQUIPMENT_RECORDS.map(record => record.manufacturer).filter(Boolean)
+  ])].map(manufacturer => {
+    const legacy = LEGACY_GOVERNED_PISTOL_CATALOGS[manufacturer] || {};
+    const registered = REGISTERED_EQUIPMENT_RECORDS
+      .filter(record => record.manufacturer === manufacturer && record.entityType === "complete_firearm")
+      .map(projectRegisteredEquipmentRecord);
+    const byIdentity = new Map();
+    [...(legacy.catalog || []), ...registered].forEach(entry => {
+      const identity = entry.configurationId || `${entry.model}|${entry.caliber}`;
+      byIdentity.set(identity, entry);
+    });
+    const catalog = [...byIdentity.values()];
+    return [manufacturer, {
+      modelType: legacy.modelType || `${manufacturer.toUpperCase()} Catalog`,
+      catalog,
+      options: catalog.map(item => `${item.model} ${item.caliber}`)
+    }];
+  })
+);
 const OPTIC_MODELS = {
   "Iron Sights": ["Iron Sights", "Other"],
   "Bead Sight": ["Bead Sight", "Other"],
@@ -1079,7 +1140,12 @@ function updateGlockCatalogDetails() {
     weaponFrameCategory: "",
     weaponSightRadius: "",
     weaponVariantFlags: "",
-    weaponCatalogNotes: ""
+    weaponCatalogNotes: "",
+    equipmentCatalogAuthorityRecordId: "",
+    equipmentConfigurationId: "",
+    equipmentEntityType: "",
+    equipmentKnowledgeSchemaId: "",
+    equipmentKnowledgeRegistryVersion: ""
   };
   const entry = isGovernedCatalog ? selectedGovernedCatalogEntry() : null;
   if (entry) {
@@ -1090,17 +1156,23 @@ function updateGlockCatalogDetails() {
     fields.weaponSightRadius = entry.sightRadius;
     fields.weaponVariantFlags = entry.flags.join(", ");
     fields.weaponCatalogNotes = entry.notes;
+    fields.equipmentCatalogAuthorityRecordId = entry.authorityRecordId || "";
+    fields.equipmentConfigurationId = entry.configurationId || "";
+    fields.equipmentEntityType = entry.entityType || "";
+    fields.equipmentKnowledgeSchemaId = entry.knowledgeSchemaId || "";
+    fields.equipmentKnowledgeRegistryVersion = entry.knowledgeRegistryVersion || "";
     const barrelLength = document.querySelector('[name="barrelLength"]');
     if (barrelLength && !barrelLength.value) barrelLength.value = entry.barrelLength;
     if (details) {
-      details.innerHTML = `
-        <span><strong>${entry.model}</strong></span>
-        <span>${entry.caliber}</span>
-        <span>${entry.frameCategory}</span>
-        <span>${entry.barrelLength}</span>
-        <span>${entry.sightRadius}</span>
-        <span>${entry.flags.join(" / ") || "Standard"}</span>
-      `;
+      const presentation = [
+        `<strong>${entry.model}</strong>`,
+        entry.caliber,
+        entry.frameCategory,
+        entry.barrelLength,
+        entry.sightRadius,
+        entry.flags.join(" / ") || "Standard"
+      ].filter(Boolean);
+      details.innerHTML = presentation.map(value => `<span>${value}</span>`).join("");
     }
   } else if (details) {
     details.innerHTML = isGovernedCatalog ? `<span>Search or select a ${manufacturer} model.</span>` : "";
@@ -1150,8 +1222,7 @@ function updateMagnifications(selectedValue = "") {
 function updateDistanceOptions(selectedValue = "") {
   const category = selectedWeaponCategory();
   const options = WEAPON_CATEGORY_DISTANCES[category] || WEAPON_CATEGORY_DISTANCES.Rifle;
-  const fallback = WEAPON_CATEGORY_DEFAULT_DISTANCE[category] || "100";
-  setOptions(document.getElementById("matrixDistanceValue"), options, selectedValue || fallback, false);
+  setOptions(document.getElementById("matrixDistanceValue"), options, selectedValue, false);
   toggleCustom("customTargetDistanceValue", document.getElementById("matrixDistanceValue").value === "Other");
 }
 
@@ -1160,9 +1231,9 @@ function updateOpticClickValues(selectedValue = "") {
   const options = OPTIC_CLICK_VALUES[unit] || OPTIC_CLICK_VALUES.MOA;
   const selectedString = String(selectedValue || "");
   const hasPreset = selectedString && options.some(option => option.value === selectedString);
-  const selected = hasPreset ? selectedString : selectedString ? "Custom" : options[0].value;
+  const selected = hasPreset ? selectedString : selectedString ? "Custom" : "";
   const select = document.getElementById("opticClickValue");
-  select.innerHTML = options.map(option => `<option value="${option.value}">${option.label}</option>`).join("");
+  select.innerHTML = `<option value="">Select Click Value</option>` + options.map(option => `<option value="${option.value}">${option.label}</option>`).join("");
   select.value = selected;
   const customInput = document.getElementById("customOpticClickValue");
   if (customInput && selected === "Custom" && selectedString !== "Custom") customInput.value = selectedString;
@@ -1209,12 +1280,13 @@ function displayValue(value) {
 function readSavedSetups() {
   try {
     const stored = JSON.parse(localStorage.getItem(SAVED_SETUPS_KEY) || "[]");
-    if (JSON.stringify(stored).includes("\"dataUrl\":\"data:")) {
-      writeSavedSetups(stored);
+    const migrated = stored.map(migrateEquipmentProfile);
+    if (JSON.stringify(migrated) !== JSON.stringify(stored) || JSON.stringify(migrated).includes("\"dataUrl\":\"data:")) {
+      writeSavedSetups(migrated);
     }
     return window.SCZN3M4 && SCZN3M4.hydrateStoredMedia
-      ? SCZN3M4.hydrateStoredMedia(stored)
-      : stored;
+      ? SCZN3M4.hydrateStoredMedia(migrated)
+      : migrated;
   } catch (error) {
     console.warn("Weapon profile read failed", error);
     return [];
@@ -1227,6 +1299,15 @@ function writeSavedSetups(setups) {
     ? SCZN3M4.storeMediaReferences(source)
     : source;
   localStorage.setItem(SAVED_SETUPS_KEY, JSON.stringify(stored));
+}
+
+function activeEquipmentProfileId() {
+  return localStorage.getItem(ACTIVE_EQUIPMENT_PROFILE_KEY) || "";
+}
+
+function setActiveEquipmentProfile(setupId) {
+  if (setupId) localStorage.setItem(ACTIVE_EQUIPMENT_PROFILE_KEY, setupId);
+  else localStorage.removeItem(ACTIVE_EQUIPMENT_PROFILE_KEY);
 }
 
 function escapeHtml(value = "") {
@@ -1358,6 +1439,12 @@ function setupPayload(snapshot) {
   const allowed = [
     "setupId",
     "setupName",
+    "equipmentProfileSchemaVersion",
+    "equipmentCatalogVersion",
+    "equipmentIdentityStatus",
+    "equipmentIdentitySource",
+    "equipmentProfileCreatedAt",
+    "equipmentProfileUpdatedAt",
     "weaponCategory",
     "weaponManufacturer",
     "weaponModelType",
@@ -1369,6 +1456,11 @@ function setupPayload(snapshot) {
     "weaponSightRadius",
     "weaponVariantFlags",
     "weaponCatalogNotes",
+    "equipmentCatalogAuthorityRecordId",
+    "equipmentConfigurationId",
+    "equipmentEntityType",
+    "equipmentKnowledgeSchemaId",
+    "equipmentKnowledgeRegistryVersion",
     "barrelLength",
     "rifle",
     "caliber",
@@ -1385,32 +1477,46 @@ function setupPayload(snapshot) {
     "ammoManufacturer",
     "ammoLoad",
     "bulletWeight",
-    "targetDistanceValue",
-    "targetDistanceUnit",
-    "targetDistance",
-    "distance",
-    "shooterName",
-    "unit",
-    "agency",
-    "instructor",
-    "temperature",
-    "wind",
-    "weather",
     "weaponPhoto",
-    "target_profile_id",
-    "targetProfileId",
-    "qr_id",
-    "qrId",
-    "mission_family",
-    "missionFamilyId",
-    "targetId",
-    "targetName",
-    "targetFamily"
+    "targetZeroRelationship",
+    "equipmentProfileMigration"
   ];
   return allowed.reduce((payload, key) => {
-    if (snapshot[key]) payload[key] = snapshot[key];
+    if (snapshot[key] !== undefined && snapshot[key] !== null && snapshot[key] !== "") payload[key] = snapshot[key];
     return payload;
   }, {});
+}
+
+function sessionContextPayload(snapshot = {}) {
+  return EQUIPMENT_PROFILE_TRANSIENT_FIELDS.reduce((context, key) => {
+    if (snapshot[key] !== undefined && snapshot[key] !== null && snapshot[key] !== "") context[key] = snapshot[key];
+    return context;
+  }, {});
+}
+
+function migrateEquipmentProfile(profile = {}) {
+  const transientFieldsRemoved = EQUIPMENT_PROFILE_TRANSIENT_FIELDS.filter(key => (
+    profile[key] !== undefined && profile[key] !== null && profile[key] !== ""
+  ));
+  const requiresMigration = profile.equipmentProfileSchemaVersion !== EQUIPMENT_PROFILE_SCHEMA_VERSION || transientFieldsRemoved.length > 0;
+  if (!requiresMigration) return profile;
+  const durable = setupPayload(profile);
+  return {
+    ...durable,
+    setupId: profile.setupId || "",
+    setupName: profile.setupName || "Equipment Profile",
+    equipmentProfileSchemaVersion: EQUIPMENT_PROFILE_SCHEMA_VERSION,
+    equipmentProfileCreatedAt: profile.equipmentProfileCreatedAt || profile.createdAt || "",
+    equipmentProfileUpdatedAt: profile.equipmentProfileUpdatedAt || profile.updatedAt || "",
+    createdAt: profile.createdAt || profile.equipmentProfileCreatedAt || "",
+    updatedAt: profile.updatedAt || profile.equipmentProfileUpdatedAt || "",
+    equipmentProfileMigration: {
+      fromSchemaVersion: profile.equipmentProfileSchemaVersion || LEGACY_EQUIPMENT_PROFILE_SCHEMA_VERSION,
+      toSchemaVersion: EQUIPMENT_PROFILE_SCHEMA_VERSION,
+      transientFieldsRemoved,
+      rule: "equipment_identity_only"
+    }
+  };
 }
 
 function renderSavedSetups(selectedId = "") {
@@ -1441,10 +1547,29 @@ function weaponCatalogMeta(setup) {
     .join(" / ");
 }
 
-function weaponDistance(setup) {
-  const distance = setup.targetDistance || setup.distance || (setup.targetDistanceValue ? `${setup.targetDistanceValue} ${setup.targetDistanceUnit === "M" ? "m" : "yds"}` : "Distance not set");
-  const adjustmentUnit = setup.opticAdjustmentUnit === "MRAD" ? "MRAD" : setup.opticAdjustmentUnit === "MOA" ? "MOA" : "";
-  return adjustmentUnit && !new RegExp(`\\b${adjustmentUnit}\\b`, "i").test(distance) ? `${distance} ${adjustmentUnit}` : distance;
+function governedZeroRelationship(setup = {}) {
+  const relationship = setup.targetZeroRelationship;
+  if (!relationship || typeof relationship !== "object" || !relationship.relationshipId || relationship.authorityStatus !== "governed") return null;
+  const envelope = relationship.zeroDistanceEnvelope || relationship.envelope || (relationship.zeroDistance && relationship.zeroDistance.envelope);
+  const requiredEnvelopeFields = ["source", "sourceOwner", "observedAt", "factGrade", "scope", "status"];
+  if (!envelope || requiredEnvelopeFields.some(key => !envelope[key])) return null;
+  if (["shooter_declared", "inference", "unknown"].includes(envelope.factGrade) || envelope.status !== "active") return null;
+  const zeroDistance = relationship.zeroDistance && typeof relationship.zeroDistance === "object"
+    ? relationship.zeroDistance.value
+    : relationship.zeroDistance;
+  return zeroDistance ? { ...relationship, zeroDistance } : null;
+}
+
+function governedZeroDisplay(setup) {
+  const relationship = governedZeroRelationship(setup);
+  if (!relationship) return "";
+  const zeroUnit = relationship.zeroDistanceUnit || (relationship.zeroDistance && relationship.zeroDistance.unit) || "";
+  const zero = `${relationship.zeroDistance}${zeroUnit ? ` ${zeroUnit}` : ""}`;
+  const confirmationValue = relationship.confirmationDistance && typeof relationship.confirmationDistance === "object"
+    ? relationship.confirmationDistance.value
+    : relationship.confirmationDistance;
+  const confirmationUnit = relationship.confirmationDistanceUnit || (relationship.confirmationDistance && relationship.confirmationDistance.unit) || zeroUnit;
+  return confirmationValue ? `${zero} · Confirm ${confirmationValue}${confirmationUnit ? ` ${confirmationUnit}` : ""}` : zero;
 }
 
 function setupUsageStats(setup) {
@@ -1465,6 +1590,7 @@ function renderWeaponList() {
   const container = document.getElementById("weaponListGrid");
   if (!container) return;
   const setups = readSavedSetups();
+  const activeId = activeEquipmentProfileId();
   const groups = {
     Rifle: setups.filter(setup => inferWeaponCategory(setup) === "Rifle"),
     Pistol: setups.filter(setup => inferWeaponCategory(setup) === "Pistol"),
@@ -1491,21 +1617,22 @@ function renderWeaponList() {
         const usage = setupUsageStats(setup);
         const photo = setup.weaponPhoto && setup.weaponPhoto.dataUrl ? setup.weaponPhoto : null;
         const catalogMeta = weaponCatalogMeta(setup);
+        const zeroDisplay = governedZeroDisplay(setup);
         return `
-        <article class="weapon-card">
+        <article class="weapon-card${setup.setupId === activeId ? " is-active" : ""}" data-equipment-profile-id="${escapeHtml(setup.setupId)}">
           ${photo ? `<div class="weapon-card-photo"><img src="${escapeHtml(photo.dataUrl)}" alt="${escapeHtml(weaponCardTitle(setup))} equipment photo" /></div>` : ""}
           <div>
-            <strong>${escapeHtml(weaponCardTitle(setup))}</strong>
+            <div class="weapon-card-title-row"><strong>${escapeHtml(weaponCardTitle(setup))}</strong>${setup.setupId === activeId ? `<span class="active-equipment-badge">ACTIVE</span>` : ""}</div>
             <span>${escapeHtml(weaponCaliber(setup))}</span>
             ${catalogMeta ? `<span class="weapon-card-catalog-meta">${escapeHtml(catalogMeta)}</span>` : ""}
           </div>
           <dl>
-            <div><dt>Session Distance Zeroed At</dt><dd>${escapeHtml(weaponDistance(setup))}</dd></div>
+            ${zeroDisplay ? `<div><dt>Zero</dt><dd>${escapeHtml(zeroDisplay)}</dd></div>` : ""}
             <div><dt>Last Used</dt><dd>${escapeHtml(usage.lastUsed)}</dd></div>
             <div><dt>Sessions</dt><dd>${escapeHtml(usage.sessionCount)}</dd></div>
           </dl>
           <div class="weapon-card-actions">
-            <button class="button primary" type="button" data-setup-action="use" data-setup-id="${escapeHtml(setup.setupId)}">Use</button>
+            <button class="button primary" type="button" data-setup-action="use" data-setup-id="${escapeHtml(setup.setupId)}">${UNIVERSAL_EQUIPMENT_LIBRARY_VIEW ? (setup.setupId === activeId ? "Selected" : "Use This Equipment") : "Use & Continue"}</button>
             <button class="button" type="button" data-setup-action="edit" data-setup-id="${escapeHtml(setup.setupId)}">Edit</button>
           </div>
         </article>
@@ -1516,27 +1643,52 @@ function renderWeaponList() {
 
 function saveCurrentSetupToLibrary() {
   const snapshot = collectForm();
+  const missing = [
+    [snapshot.weaponManufacturer, "manufacturer"],
+    [snapshot.weaponModelType, "model"],
+    [snapshot.weaponModelCaliber, selectedWeaponCategory() === "Shotgun" ? "gauge" : "caliber"]
+  ].filter(([value]) => !value).map(([, label]) => label);
+  if (missing.length) {
+    authorityStatus(`Add the ${missing.join(", ")} before saving this equipment.`, "error");
+    return null;
+  }
   const setupId = document.getElementById("savedSetupSelect").value || snapshot.setupId || `setup-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const previous = readSavedSetups().find(setup => setup.setupId === setupId) || {};
+  const now = new Date().toISOString();
   const savedSetup = {
     ...setupPayload(snapshot),
     setupId,
     setupName: setupLabel(snapshot),
-    updatedAt: new Date().toISOString()
+    equipmentProfileSchemaVersion: EQUIPMENT_PROFILE_SCHEMA_VERSION,
+    equipmentCatalogVersion: EQUIPMENT_CATALOG_VERSION,
+    equipmentIdentityStatus: snapshot.weaponCatalogModel ? "publisher_catalog_match" : "shooter_declared",
+    equipmentIdentitySource: snapshot.equipmentCatalogAuthorityRecordId
+      ? "equipment_knowledge_registry"
+      : (snapshot.weaponCatalogModel ? "episode58_publisher_census" : "shooter_entry"),
+    equipmentProfileCreatedAt: previous.equipmentProfileCreatedAt || previous.createdAt || now,
+    equipmentProfileUpdatedAt: now,
+    createdAt: previous.createdAt || now,
+    updatedAt: now
   };
   const existing = readSavedSetups().filter(setup => setup.setupId !== setupId);
   writeSavedSetups([savedSetup, ...existing]);
+  setActiveEquipmentProfile(setupId);
   document.getElementById("setupName").value = savedSetup.setupName;
   renderSavedSetups(setupId);
   SCZN3M4.saveMatrixSnapshot({ ...snapshot, setupId, setupName: savedSetup.setupName });
+  authorityStatus("Saved. This equipment is ready to use again.", "ready");
   return savedSetup;
 }
 
 function loadSavedSetup(setupId) {
   const setup = readSavedSetups().find(item => item.setupId === setupId);
   if (!setup) return;
+  const sessionContext = UNIVERSAL_EQUIPMENT_LIBRARY_VIEW
+    ? {}
+    : sessionContextPayload({ ...collectFormSnapshot(), ...targetAttributionFromContext(collectFormSnapshot()) });
   document.getElementById("setupName").value = setup.setupName || "";
-  setForm(setup);
-  SCZN3M4.saveMatrixSnapshot(setupPayload(setup));
+  setForm({ ...setup, ...sessionContext });
+  SCZN3M4.saveMatrixSnapshot({ ...setupPayload(setup), ...sessionContext });
   renderSavedSetups(setupId);
 }
 
@@ -1642,9 +1794,10 @@ function savedSetupLastUsedAt(setup) {
 }
 
 function savedSetupCandidatesByRecency() {
+  const activeId = activeEquipmentProfileId();
   return readSavedSetups()
     .slice()
-    .sort((left, right) => savedSetupLastUsedAt(right) - savedSetupLastUsedAt(left))
+    .sort((left, right) => Number(right.setupId === activeId) - Number(left.setupId === activeId) || savedSetupLastUsedAt(right) - savedSetupLastUsedAt(left))
     .map(setup => ({ setup, candidate: equipmentCandidateFrom(setup) }));
 }
 
@@ -1799,13 +1952,36 @@ function equipmentCandidateFrom(snapshot) {
   return {
     candidateId: snapshot.setupId || "temporary-current-setup",
     setupId: snapshot.setupId || "",
+    equipmentProfileSchemaVersion: snapshot.equipmentProfileSchemaVersion || EQUIPMENT_PROFILE_SCHEMA_VERSION,
+    equipmentCatalogVersion: snapshot.equipmentCatalogVersion || EQUIPMENT_CATALOG_VERSION,
+    equipmentIdentityStatus: snapshot.equipmentIdentityStatus || "shooter_declared",
+    equipmentIdentitySource: snapshot.equipmentIdentitySource || "shooter_entry",
+    equipmentProfileCreatedAt: snapshot.equipmentProfileCreatedAt || snapshot.createdAt || "",
+    equipmentProfileUpdatedAt: snapshot.equipmentProfileUpdatedAt || snapshot.updatedAt || "",
     weaponCategory: snapshot.weaponCategory || "",
     weaponManufacturer: snapshot.weaponManufacturer || "",
     weaponModelType: snapshot.weaponModelType || "",
     weaponModelCaliber: snapshot.weaponModelCaliber || "",
+    weaponCatalogManufacturer: snapshot.weaponCatalogManufacturer || "",
+    weaponCatalogModel: snapshot.weaponCatalogModel || "",
+    weaponCatalogCaliber: snapshot.weaponCatalogCaliber || "",
+    weaponFrameCategory: snapshot.weaponFrameCategory || "",
+    equipmentCatalogAuthorityRecordId: snapshot.equipmentCatalogAuthorityRecordId || "",
+    equipmentConfigurationId: snapshot.equipmentConfigurationId || "",
+    equipmentEntityType: snapshot.equipmentEntityType || "",
+    equipmentKnowledgeSchemaId: snapshot.equipmentKnowledgeSchemaId || "",
+    equipmentKnowledgeRegistryVersion: snapshot.equipmentKnowledgeRegistryVersion || "",
+    barrelLength: snapshot.barrelLength || "",
     opticType: snapshot.opticType || "",
+    opticBrand: snapshot.opticBrand || "",
+    opticModel: snapshot.opticModel || "",
+    magnification: snapshot.magnification || "",
     opticAdjustmentUnit: snapshot.opticAdjustmentUnit || "",
     opticClickValue: snapshot.opticClickValue || "",
+    ammoCaliber: snapshot.ammoCaliber || "",
+    ammoManufacturer: snapshot.ammoManufacturer || "",
+    ammoLoad: snapshot.ammoLoad || "",
+    bulletWeight: snapshot.bulletWeight || "",
     source: snapshot.setupId ? "weapon_library" : "one_time_setup"
   };
 }
@@ -1976,7 +2152,14 @@ function selectWeaponFromList(setupId, action = "edit") {
   loadSavedSetup(setupId);
   setWeaponListExpanded(false);
   if (action === "use") {
+    setActiveEquipmentProfile(setupId);
     setProfileEditorVisible(false);
+    renderSavedSetups(setupId);
+    if (UNIVERSAL_EQUIPMENT_LIBRARY_VIEW) {
+      setWeaponListExpanded(true);
+      authorityStatus("Selected. Applicable Smart Target experiences can now reuse this equipment.", "ready");
+      return;
+    }
     goToTarget();
     return;
   }
@@ -2061,14 +2244,14 @@ function collectForm() {
   data.ammoManufacturer = displayValue(data.ammoManufacturer);
   data.ammoLoad = displayValue(data.ammoLoad);
   data.bulletWeight = displayValue(data.bulletWeight);
-  data.targetDistanceValue = (data.targetDistanceValue || "100").replace(/\D/g, "") || "100";
+  data.targetDistanceValue = (data.targetDistanceValue || "").replace(/\D/g, "");
   data.targetDistanceUnit = data.targetDistanceUnit === "M" ? "M" : "YDS";
   data.opticAdjustmentUnit = data.opticAdjustmentUnit === "MRAD" ? "MRAD" : "MOA";
-  data.opticClickValue = Number(data.opticClickValue) > 0 ? String(Number(data.opticClickValue)) : (data.opticAdjustmentUnit === "MRAD" ? "0.1" : "0.25");
-  data.opticClickValueLabel = `${data.opticClickValue} ${data.opticAdjustmentUnit}`;
-  data.opticClickValueMOA = data.opticAdjustmentUnit === "MOA" ? Number(data.opticClickValue) : "";
-  data.opticClickValueMRAD = data.opticAdjustmentUnit === "MRAD" ? Number(data.opticClickValue) : "";
-  data.targetDistance = `${data.targetDistanceValue} ${data.targetDistanceUnit === "M" ? "m" : "yds"}`;
+  data.opticClickValue = Number(data.opticClickValue) > 0 ? String(Number(data.opticClickValue)) : "";
+  data.opticClickValueLabel = data.opticClickValue ? `${data.opticClickValue} ${data.opticAdjustmentUnit}` : "";
+  data.opticClickValueMOA = data.opticAdjustmentUnit === "MOA" && data.opticClickValue ? Number(data.opticClickValue) : "";
+  data.opticClickValueMRAD = data.opticAdjustmentUnit === "MRAD" && data.opticClickValue ? Number(data.opticClickValue) : "";
+  data.targetDistance = data.targetDistanceValue ? `${data.targetDistanceValue} ${data.targetDistanceUnit === "M" ? "m" : "yds"}` : "";
   data.distance = data.targetDistance;
   Object.keys(data).forEach(key => {
     if (key.startsWith("custom")) delete data[key];
@@ -2234,9 +2417,9 @@ function clearSetupFields() {
   updateWeaponManufacturers();
   updateOpticTypes();
   document.getElementById("opticAdjustmentUnit").value = "MOA";
-  updateOpticClickValues("0.25");
+  updateOpticClickValues("");
   updateAmmoCalibers();
-  updateDistanceOptions("100");
+  updateDistanceOptions("");
   applyM4MissionDefaults();
   renderSessionBar();
 }
@@ -2282,18 +2465,18 @@ function loadMatrix() {
     opticModel: "Iron Sights",
     magnification: "1x",
     opticAdjustmentUnit: "MOA",
-    opticClickValue: "0.25",
-    opticClickValueLabel: "0.25 MOA",
-    opticClickValueMOA: 0.25,
+    opticClickValue: "",
+    opticClickValueLabel: "",
+    opticClickValueMOA: "",
     opticClickValueMRAD: "",
     ammoCaliber: "Select Caliber",
     ammoManufacturer: "Select Manufacturer",
     ammoLoad: "Select Load",
     bulletWeight: "Select Grain",
-    targetDistanceValue: "100",
+    targetDistanceValue: "",
     targetDistanceUnit: "YDS",
-    targetDistance: "100 yds",
-    distance: "100 yds"
+    targetDistance: "",
+    distance: ""
   };
   const attribution = targetAttributionFromContext(snapshot);
   const nextSnapshot = attribution.target_profile_id ? { ...snapshot, ...attribution } : snapshot;
@@ -2321,7 +2504,8 @@ form.addEventListener("submit", event => {
 });
 
 document.getElementById("saveSetup").addEventListener("click", () => {
-  saveCurrentSetupToLibrary();
+  const saved = saveCurrentSetupToLibrary();
+  if (!saved) return;
   setProfileEditorVisible(false);
   setWeaponListExpanded(true);
 });
@@ -2433,7 +2617,12 @@ form.addEventListener("input", renderSessionBar);
 form.addEventListener("change", renderSessionBar);
 
 loadMatrix();
-renderSavedSetups((SCZN3M4.getActiveMatrix() || {}).setupId || "");
+const requestedEquipmentProfileId = MATRIX_QUERY.get("equipment_profile_id") || "";
+const initialEquipmentProfileId = requestedEquipmentProfileId || activeEquipmentProfileId() || (SCZN3M4.getActiveMatrix() || {}).setupId || "";
+if (requestedEquipmentProfileId && readSavedSetups().some(setup => setup.setupId === requestedEquipmentProfileId)) {
+  loadSavedSetup(requestedEquipmentProfileId);
+}
+renderSavedSetups(initialEquipmentProfileId);
 renderWeaponList();
 renderSessionBar();
 activateUniversalEquipmentLibraryView();

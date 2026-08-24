@@ -15,6 +15,7 @@ import secrets
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Optional
 
 from gssf_ac_1_authority import GSSF_AC_1_ATP, GSSF_AC_1_EXECUTION_CONTRACT
@@ -27,6 +28,24 @@ from target_execution_contract import TargetExecutionContractError, TargetExecut
 
 PREPARATION_TTL_SECONDS = int(os.environ.get("SCZN3_SESSION_PREPARATION_TTL_SECONDS", "900"))
 M4_STANDARD_EQUIPMENT_AUTHORITY_ID = "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+EQUIPMENT_KNOWLEDGE_REGISTRY_PATH = Path(__file__).resolve().parent / "registries" / "equipment_knowledge_registry.json"
+
+
+def _load_equipment_knowledge_registry() -> Dict[str, Any]:
+    with EQUIPMENT_KNOWLEDGE_REGISTRY_PATH.open("r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    records = payload.get("records")
+    if payload.get("schemaId") != "sczn3-equipment-knowledge-v1.1" or not isinstance(records, list):
+        raise RuntimeError("equipment_knowledge_registry_invalid")
+    return payload
+
+
+EQUIPMENT_KNOWLEDGE_REGISTRY = _load_equipment_knowledge_registry()
+EQUIPMENT_KNOWLEDGE_BY_RECORD_ID = {
+    record["recordId"]: record
+    for record in EQUIPMENT_KNOWLEDGE_REGISTRY["records"]
+    if isinstance(record, Mapping) and record.get("recordId")
+}
 
 
 TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
@@ -374,9 +393,31 @@ def _candidate_id(candidate: Mapping[str, Any], index: int) -> str:
     return clean_text(candidate.get("candidateId") or candidate.get("setupId")) or f"candidate-{index}"
 
 
+def _resolve_equipment_catalog_record(candidate: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    record_id = clean_text(candidate.get("equipmentCatalogAuthorityRecordId"))
+    if not record_id:
+        return None
+    record = EQUIPMENT_KNOWLEDGE_BY_RECORD_ID.get(record_id)
+    if not record:
+        raise SessionAuthorityError("authority_unavailable", "equipment_catalog_authority_record_not_registered", 409)
+    expected = {
+        "equipmentConfigurationId": clean_text(record.get("configurationId")),
+        "equipmentEntityType": clean_text(record.get("entityType")),
+        "weaponCatalogManufacturer": clean_text(record.get("manufacturer")),
+        "weaponCatalogModel": clean_text(record.get("model")),
+        "weaponCatalogCaliber": clean_text(record.get("caliber")),
+    }
+    for field, authoritative_value in expected.items():
+        claimed = clean_text(candidate.get(field))
+        if claimed and claimed.casefold() != authoritative_value.casefold():
+            raise SessionAuthorityError("authority_conflict", f"equipment_catalog_{field}_mismatch", 409)
+    return record
+
+
 def normalize_equipment(candidate: Any, index: int = 1, *, allow_backend_standard: bool = False) -> Dict[str, Any]:
     if not isinstance(candidate, Mapping):
         raise SessionAuthorityError("invalid_request", "equipment_candidate_must_be_an_object")
+    catalog_record = _resolve_equipment_catalog_record(candidate)
     adjustment_unit = clean_text(candidate.get("adjustmentUnit") or candidate.get("opticAdjustmentUnit")).upper()
     click_value_raw = candidate.get("clickValue") or candidate.get("opticClickValue")
     try:
@@ -389,13 +430,38 @@ def normalize_equipment(candidate: Any, index: int = 1, *, allow_backend_standar
     )
     normalized = {
         "candidateId": _candidate_id(candidate, index),
+        "equipmentProfileSchemaVersion": clean_text(candidate.get("equipmentProfileSchemaVersion")),
+        "equipmentCatalogVersion": clean_text(candidate.get("equipmentCatalogVersion")),
+        "equipmentIdentityStatus": "publisher_catalog_match" if catalog_record else clean_text(candidate.get("equipmentIdentityStatus")),
+        "equipmentIdentitySource": "equipment_knowledge_registry" if catalog_record else clean_text(candidate.get("equipmentIdentitySource")),
+        "equipmentProfileCreatedAt": clean_text(candidate.get("equipmentProfileCreatedAt")),
+        "equipmentProfileUpdatedAt": clean_text(candidate.get("equipmentProfileUpdatedAt")),
         "weaponCategory": clean_text(candidate.get("weaponCategory")),
         "manufacturer": clean_text(candidate.get("manufacturer") or candidate.get("weaponManufacturer")),
         "modelType": clean_text(candidate.get("modelType") or candidate.get("weaponModelType")),
         "modelCaliber": clean_text(candidate.get("modelCaliber") or candidate.get("weaponModelCaliber")),
+        "catalogManufacturer": clean_text(catalog_record.get("manufacturer")) if catalog_record else clean_text(candidate.get("catalogManufacturer") or candidate.get("weaponCatalogManufacturer")),
+        "catalogModel": clean_text(catalog_record.get("model")) if catalog_record else clean_text(candidate.get("catalogModel") or candidate.get("weaponCatalogModel")),
+        "catalogCaliber": clean_text(catalog_record.get("caliber")) if catalog_record else clean_text(candidate.get("catalogCaliber") or candidate.get("weaponCatalogCaliber")),
+        "frameCategory": clean_text(catalog_record.get("frameCategory")) if catalog_record else clean_text(candidate.get("frameCategory") or candidate.get("weaponFrameCategory")),
+        "barrelLength": clean_text(catalog_record.get("barrelLength")) if catalog_record else clean_text(candidate.get("barrelLength")),
+        "equipmentCatalogAuthorityRecordId": clean_text(catalog_record.get("recordId")) if catalog_record else "",
+        "equipmentConfigurationId": clean_text(catalog_record.get("configurationId")) if catalog_record else clean_text(candidate.get("equipmentConfigurationId")),
+        "equipmentEntityType": clean_text(catalog_record.get("entityType")) if catalog_record else clean_text(candidate.get("equipmentEntityType")),
+        "equipmentKnowledgeSchemaId": EQUIPMENT_KNOWLEDGE_REGISTRY["schemaId"] if catalog_record else clean_text(candidate.get("equipmentKnowledgeSchemaId")),
+        "equipmentKnowledgeRegistryVersion": EQUIPMENT_KNOWLEDGE_REGISTRY["registryVersion"] if catalog_record else clean_text(candidate.get("equipmentKnowledgeRegistryVersion")),
+        "equipmentKnowledgeFacts": deepcopy(catalog_record.get("facts") or []) if catalog_record else [],
+        "equipmentKnowledgeRelationships": deepcopy(catalog_record.get("relationships") or []) if catalog_record else [],
         "opticType": clean_text(candidate.get("opticType")),
+        "opticBrand": clean_text(candidate.get("opticBrand")),
+        "opticModel": clean_text(candidate.get("opticModel")),
+        "magnification": clean_text(candidate.get("magnification")),
         "adjustmentUnit": adjustment_unit,
         "clickValue": click_value,
+        "ammoCaliber": clean_text(candidate.get("ammoCaliber")),
+        "ammoManufacturer": clean_text(candidate.get("ammoManufacturer")),
+        "ammoLoad": clean_text(candidate.get("ammoLoad")),
+        "bulletWeight": clean_text(candidate.get("bulletWeight")),
         "source": source,
     }
     if allow_backend_standard and source == "backend_standard_setup":

@@ -1,6 +1,9 @@
-const assert = require("assert");
-const fs = require("fs");
-const path = require("path");
+import assert from "node:assert";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const matrix = fs.readFileSync(path.resolve(__dirname, "..", "matrix.html"), "utf8");
 

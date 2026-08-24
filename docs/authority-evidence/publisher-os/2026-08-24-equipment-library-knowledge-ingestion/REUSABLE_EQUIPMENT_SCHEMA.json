@@ -1,0 +1,76 @@
+{
+  "schemaId": "sczn3-equipment-knowledge-v1.1",
+  "status": "founder_approved_episode58_ingestion_contract",
+  "founderApproval": "Founder Gate 1 locked — 2026-08-24",
+  "principle": "The smallest schema that does not collapse meaningful equipment relationships.",
+  "entities": {
+    "manufacturer": ["manufacturerId", "displayName", "aliases", "officialUrl"],
+    "platformFamily": ["platformFamilyId", "canonicalName", "domain", "lineageRelations"],
+    "model": ["modelId", "manufacturerId", "platformFamilyId", "exactName", "aliases"],
+    "configuration": ["configurationId", "modelId", "entityType", "generation", "action", "chambering", "barrel", "frameReceiver", "materialFeatures"],
+    "commercialOffering": ["offeringId", "configurationReferences", "offeringType", "skuMpn", "upcGtin", "market", "includedEquipment", "commercialStatus"],
+    "sightConfiguration": ["sightConfigurationId", "manufacturerId", "modelId", "type", "reticle", "magnification", "adjustmentValue", "adjustmentUnit", "footprint"],
+    "mountInstallation": ["mountInstallationId", "hostConfigurationId", "sightConfigurationId", "interface", "adapterPlate", "height", "location", "installationFacts"],
+    "ammunitionConfiguration": ["ammunitionConfigurationId", "cartridgeGauge", "manufacturerId", "load", "projectileShot", "weight", "lotVelocityWhenKnown"],
+    "targetZeroRelationship": ["relationshipId", "equipmentConfigurationId", "sightConfigurationId", "ammunitionConfigurationId", "zeroDistance", "confirmationDistance", "targetProfileId", "aimPoint", "desiredImpact", "adjustmentProfileId", "confirmationProtocol"],
+    "equipmentProfile": ["equipmentProfileId", "schemaVersion", "componentReferences", "shooterDeclaredFacts", "activeStatus", "createdAt", "updatedAt", "provenanceSnapshot"]
+  },
+  "entityType": {
+    "purpose": "States what a technical configuration actually is so complete firearms, receivers, uppers, components, optics, mounts, ammunition, and bundles never collapse into one model identity.",
+    "allowed": ["complete_firearm", "receiver", "upper", "barrel_assembly", "component", "sight_or_optic", "mount_or_adapter", "ammunition", "bundle", "other"]
+  },
+  "offeringType": {
+    "purpose": "Separates the commercial package from the technical identity or identities it contains.",
+    "allowed": ["single_configuration", "component_package", "multi_configuration_bundle", "accessory_package", "other"]
+  },
+  "relationships": [
+    "organizationRelationship records owns, markets, or licenses with domain, market, interval, and evidence scope",
+    "model belongs_to platformFamily",
+    "configuration configures model",
+    "commercialOffering packages configuration",
+    "sightConfiguration fits host_configuration via mountInstallation",
+    "authority associates exact configuration for explicit scope and interval",
+    "targetZeroRelationship binds exact equipment, sight, ammunition, governed zero distance, target, and confirmation distance/protocol",
+    "successor supplements_or_replaces predecessor for explicit scope and interval",
+    "alias resolves_to one canonical entity or remains ambiguous"
+  ],
+  "relationshipRecords": {
+    "organizationRelationship": ["relationshipId", "subjectOrganizationId", "relationType", "objectEntityId", "domainScope", "marketScope", "effectiveFrom", "effectiveTo", "envelope"],
+    "allowedOrganizationRelationTypes": ["owns", "markets", "licenses"],
+    "rule": "Organization identity is stable. Ownership, marketing, and licensing are time-scoped evidence-bearing relationships, never a timeless manufacturer scalar."
+  },
+  "factEnvelope": {
+    "required": ["source", "sourceOwner", "observedAt", "factGrade", "scope", "status"],
+    "optional": ["unit", "effectiveAt", "expiresAt", "conflictSetId", "reconciliationNote"],
+    "factGrades": ["locked_runtime_authority", "official_current", "official_historical", "publisher_claim", "shooter_declared", "inference", "unknown"],
+    "statuses": ["active", "historical", "stale", "unexposed", "conflicted", "unknown"]
+  },
+  "factAttachment": {
+    "factRecord": ["factId", "subjectRef", "predicate", "value", "envelope"],
+    "relationshipRecord": ["relationshipId", "subjectRef", "predicate", "objectRef", "envelope"],
+    "rule": "Every authority-sensitive value and every asserted relationship carries its own factEnvelope. A record-level provenance snapshot alone is insufficient.",
+    "authoritySensitiveExamples": ["adjustmentValue", "adjustmentUnit", "commercialStatus", "opticCompatibility", "mountCompatibility", "zeroDistance", "confirmationDistance", "issuedOrAuthorizedConfiguration", "ownsMarketsOrLicenses"]
+  },
+  "distanceSemantics": {
+    "zeroDistance": "The governed distance at which the equipment/sight/ammunition/target zero relationship is established.",
+    "confirmationDistance": "The governed distance at which that zero relationship is confirmed, when authority defines one.",
+    "sessionDistance": "Transient distance for today's execution. It belongs to Session Authority/execution evidence and must not be stored as targetZeroRelationship.zeroDistance by implication."
+  },
+  "identityRules": [
+    "Action, form factor, platform, model, configuration, and commercial offering are distinct.",
+    "Complete firearm, receiver, upper, component, and bundle identities remain distinct through entityType and offeringType.",
+    "Organization ownership, marketing, and licensing are scoped relationships rather than timeless manufacturer facts.",
+    "Optics-ready does not establish optic compatibility.",
+    "Adjustment behavior belongs to the exact sight/configuration relationship.",
+    "A package, finish, or compliance SKU does not automatically create a new technical model.",
+    "Military platform identity, manufacturer implementation, commercial product, and issued configuration do not merge.",
+    "Unlike catalog-depth counts must not be summed into an exact-model denominator.",
+    "A conflicting fact never overrides locked runtime authority without governed reconciliation."
+  ],
+  "shooterProjection": {
+    "defaultSteps": ["equipmentType", "manufacturer", "searchOrSelectModel", "materialUnresolvedConfigurationOnly"],
+    "reuse": "Offer the active saved equipment profile wherever the selected experience can truthfully consume it.",
+    "unknownEscape": "Other / I don't see mine preserves a shooter declaration without creating catalog authority.",
+    "deferUnlessNeeded": ["opticDetails", "ammunitionDetails", "sessionDistance", "photo", "personalLabel"]
+  }
+}

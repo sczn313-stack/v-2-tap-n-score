@@ -1,0 +1,95 @@
+{
+  "schemaId": "sczn3-equipment-knowledge-v1.1",
+  "registryVersion": "episode58-gate2-pilot-2026-08-24",
+  "status": "founder_gate2_data_admission_pilot",
+  "records": [
+    {
+      "recordId": "canik-mete-mc9-prime-9mm-current",
+      "configurationId": "canik-mete-mc9-prime-9mm",
+      "entityType": "complete_firearm",
+      "manufacturer": "Canik",
+      "model": "METE MC9 PRIME",
+      "aliases": ["MC9 PRIME"],
+      "caliber": "9mm",
+      "frameCategory": "",
+      "barrelLength": "3.64 in",
+      "sightRadius": "",
+      "flags": ["METE", "MC9", "Optics Ready", "Tritium Sights"],
+      "notes": "A 17-round 9mm model with Night Fision tritium sights and a micro red-dot interface.",
+      "facts": [
+        {"factId": "mc9-prime-model", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "modelName", "value": "METE MC9 PRIME", "envelope": {"source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/METE_MC9_PRIME_Owner_s_Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "United States product/manual", "status": "active"}},
+        {"factId": "mc9-prime-caliber", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "caliber", "value": "9x19mm", "envelope": {"source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/METE_MC9_PRIME_Owner_s_Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "METE MC9 PRIME", "status": "active"}},
+        {"factId": "mc9-prime-barrel", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "barrelLength", "value": 3.64, "envelope": {"unit": "in", "source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/METE_MC9_PRIME_Owner_s_Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "METE MC9 PRIME", "status": "active"}},
+        {"factId": "mc9-prime-capacity", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "magazineCapacity", "value": 17, "envelope": {"unit": "rounds", "source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/METE_MC9_PRIME_Owner_s_Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "documented configuration; box content may vary", "status": "active"}},
+        {"factId": "mc9-prime-sights", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "installedSights", "value": "Night Fision tritium front and rear sights", "envelope": {"source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/METE_MC9_PRIME_Owner_s_Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "METE MC9 PRIME technical specification", "status": "active"}}
+      ],
+      "relationships": [
+        {"relationshipId": "mc9-prime-compatible-micro-optics", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "compatibleWith", "objectRef": ["MECANIK MO1", "MECANIK MO4", "Shield RMS", "SIG Romeo Zero"], "envelope": {"source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/METE_MC9_PRIME_Owner_s_Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "documented optic sights", "status": "active"}},
+        {"relationshipId": "mc9-prime-m04-fastener", "subjectRef": "canik-mete-mc9-prime-9mm", "predicate": "usesMountFastener", "objectRef": "M3x10", "envelope": {"source": "https://www.canikusa.com/media/wysiwyg/canik/manuals/MO4-Manual.pdf", "sourceOwner": "Canik USA", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "MO4 installation on MC9/MC9L/MC9LS/MC9 PRIME", "status": "active"}}
+      ]
+    },
+    {
+      "recordId": "glock-g17-gen6-9mm-current",
+      "configurationId": "glock-g17-gen6-9mm",
+      "entityType": "complete_firearm",
+      "manufacturer": "Glock",
+      "model": "G17 Gen6",
+      "aliases": ["GLOCK 17 Gen6"],
+      "caliber": "9mm",
+      "frameCategory": "Full Size",
+      "barrelLength": "",
+      "sightRadius": "",
+      "flags": ["Gen6", "Optic Ready"],
+      "notes": "Sixth-generation 9mm model with Glock's Gen6 optic-ready system.",
+      "facts": [
+        {"factId": "g17-gen6-identity", "subjectRef": "glock-g17-gen6-9mm", "predicate": "modelAndCaliber", "value": "G17 Gen6 / 9mm Luger", "envelope": {"source": "https://us.glock.com/en/press-release/news-page/gen6-announcement", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "United States Gen6 launch", "status": "active"}},
+        {"factId": "g17-platform-category", "subjectRef": "glock-g17-gen6-9mm", "predicate": "frameCategory", "value": "Full Size", "envelope": {"source": "https://us.glock.com/en/products/law-enforcement/pistols/g17", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "G17 platform-family display classification; not a Gen6 dimensional claim", "status": "active"}}
+      ],
+      "relationships": [
+        {"relationshipId": "g17-gen6-optic-system", "subjectRef": "glock-g17-gen6-9mm", "predicate": "usesOpticMountingSystem", "objectRef": "glock-gen6-optic-ready-system", "envelope": {"source": "https://us.glock.com/en/about/technology/optic-mounting", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "standard-frame Gen6 pistols", "status": "active"}}
+      ]
+    },
+    {
+      "recordId": "glock-g19-gen6-9mm-current",
+      "configurationId": "glock-g19-gen6-9mm",
+      "entityType": "complete_firearm",
+      "manufacturer": "Glock",
+      "model": "G19 Gen6",
+      "aliases": ["GLOCK 19 Gen6"],
+      "caliber": "9mm",
+      "frameCategory": "Compact",
+      "barrelLength": "",
+      "sightRadius": "",
+      "flags": ["Gen6", "Optic Ready"],
+      "notes": "Sixth-generation compact 9mm model with Glock's Gen6 optic-ready system.",
+      "facts": [
+        {"factId": "g19-gen6-identity", "subjectRef": "glock-g19-gen6-9mm", "predicate": "modelAndCaliber", "value": "G19 Gen6 / 9mm Luger", "envelope": {"source": "https://us.glock.com/en/press-release/news-page/gen6-announcement", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "United States Gen6 launch", "status": "active"}},
+        {"factId": "g19-platform-category", "subjectRef": "glock-g19-gen6-9mm", "predicate": "frameCategory", "value": "Compact", "envelope": {"source": "https://us.glock.com/en/products/law-enforcement/pistols/g19", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "G19 platform-family display classification; not a Gen6 dimensional claim", "status": "active"}}
+      ],
+      "relationships": [
+        {"relationshipId": "g19-gen6-optic-system", "subjectRef": "glock-g19-gen6-9mm", "predicate": "usesOpticMountingSystem", "objectRef": "glock-gen6-optic-ready-system", "envelope": {"source": "https://us.glock.com/en/about/technology/optic-mounting", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "standard-frame Gen6 pistols", "status": "active"}}
+      ]
+    },
+    {
+      "recordId": "glock-g45-gen6-9mm-current",
+      "configurationId": "glock-g45-gen6-9mm",
+      "entityType": "complete_firearm",
+      "manufacturer": "Glock",
+      "model": "G45 Gen6",
+      "aliases": ["GLOCK 45 Gen6"],
+      "caliber": "9mm",
+      "frameCategory": "Crossover",
+      "barrelLength": "",
+      "sightRadius": "",
+      "flags": ["Gen6", "Optic Ready", "Crossover"],
+      "notes": "Sixth-generation crossover 9mm model with Glock's Gen6 optic-ready system.",
+      "facts": [
+        {"factId": "g45-gen6-identity", "subjectRef": "glock-g45-gen6-9mm", "predicate": "modelAndCaliber", "value": "G45 Gen6 / 9mm Luger", "envelope": {"source": "https://us.glock.com/en/press-release/news-page/gen6-announcement", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "United States Gen6 launch", "status": "active"}},
+        {"factId": "g45-platform-category", "subjectRef": "glock-g45-gen6-9mm", "predicate": "frameCategory", "value": "Crossover", "envelope": {"source": "https://us.glock.com/en/products/law-enforcement/pistols/g45", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "G45 platform-family display classification; not a Gen6 dimensional claim", "status": "active"}}
+      ],
+      "relationships": [
+        {"relationshipId": "g45-gen6-optic-system", "subjectRef": "glock-g45-gen6-9mm", "predicate": "usesOpticMountingSystem", "objectRef": "glock-gen6-optic-ready-system", "envelope": {"source": "https://us.glock.com/en/about/technology/optic-mounting", "sourceOwner": "Glock, Inc.", "observedAt": "2026-08-24", "factGrade": "official_current", "scope": "standard-frame Gen6 pistols", "status": "active"}}
+      ]
+    }
+  ]
+}

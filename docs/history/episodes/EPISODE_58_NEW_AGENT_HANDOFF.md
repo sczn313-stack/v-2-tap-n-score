@@ -1,9 +1,11 @@
-# Episode 58 — New-Agent Handoff / Starting Point
+# Episode 58 — New-Agent Handoff
+
+> **Closure notice (2026-08-24):** This starting-point handoff is historical. Episode 58 is Founder Approved, closed, archived, and locked by [Snapshot 13](../snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md). Use SCMM v1.6 and the closed [Episode 58 record](./EPISODE_58_EQUIPMENT_LIBRARY.md) for current continuity.
 
 **Episode:** 58 — Equipment Library
-**Status:** Active; Founder-approved canonical continuity baseline
+**Status:** Historical starting-point record; Episode 58 is closed under Snapshot 13
 **Locked inherited baseline:** Snapshot 11 at `6846450752277eaad24e64b6d4a40578714fe85d`
-**Canonical brief:** [SCZN3 Shortest Correct Mental Model v1.5](../../architecture/SCZN3_SHORTEST_CORRECT_MENTAL_MODEL.md)
+**Current canonical brief:** [SCZN3 Shortest Correct Mental Model v1.6](../../architecture/SCZN3_SHORTEST_CORRECT_MENTAL_MODEL.md)
 **Working record:** [Episode 58 — Equipment Library](./EPISODE_58_EQUIPMENT_LIBRARY.md)
 
 ## Where SCZN3 stands
@@ -53,4 +55,4 @@ Begin here:
 
 > **How do we turn deep equipment knowledge into the simplest possible Equipment Library selection experience?**
 
-The immediate goal is a Founder-review specification. This handoff's preservation commit, Snapshot 12, checkpoint, ZIP, and restore point do not authorize Equipment Library implementation, push, deployment, or production change.
+This was the immediate goal at Snapshot 12. The specification and data-only admission pilot were subsequently approved and passed. This handoff's preservation commit, Snapshot 12, checkpoint, ZIP, and restore point still do not authorize push, deployment, or production change.

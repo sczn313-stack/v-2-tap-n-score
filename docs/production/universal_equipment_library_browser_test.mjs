@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8101";
-const expectedNavigation = ["Equipment Library", "Smart Targets", "Ballistic Vault"];
+const expectedNavigation = ["Home", "Equipment Library", "Smart Targets", "Ballistic Vault"];
 
 const browser = await chromium.launch({
   headless: true,
