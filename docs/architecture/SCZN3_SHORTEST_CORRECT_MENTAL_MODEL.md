@@ -2,9 +2,9 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.4 — Founder Approved / LOCKED
+**Version:** 1.5 — Founder Approved / LOCKED
 **Current through:** 2026-08-23
-**Status:** Episode 57 Founder-approved discovery-driven landing-page baseline + Founder-approved Rate Us/shared-cleanup canonical state + 12-publisher P-OS evidence baseline + Founder-approved General Shooting Knowledge model
+**Status:** Episode 58 — Equipment Library active canonical continuity context over the locked Episode 57, Rate Us, 12-publisher P-OS, and General Shooting Knowledge baselines; Equipment Library implementation not authorized by this lock
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -19,18 +19,19 @@
 
 | State | Current truth |
 |---|---|
-| Active episode | **None** |
+| Active episode | **Episode 58 — Equipment Library** |
 | Last closed episode | **Episode 57 — Discovery-Driven Smart Target Landing Page** — closed, archived, and locked; Survey excluded |
-| Next reserved episode | **Episode 58** |
-| Episode Registry | PASS — 57 continuous slots; no active episode |
+| Next reserved episode | **Episode 59** |
+| Episode Registry | PASS — 58 continuous slots; Episode 58 active |
 | Production | `https://tap-n-score.com` at commit `bfce363643eff364e43d7d71a6b1e42c0262ca42` |
 | Production platform | Netlify frontend + Render authority service; four released targets |
 | Current development | Rate Us + Founder cleanup is the canonical local state; it is committed and recoverable ahead of production |
-| Latest locked snapshot | Snapshot 11 — Rate Us + Founder Cleanup Baseline |
-| Latest checkpoint | `SCZN3_RATE_US_FOUNDER_CLEANUP_LOCK_2026-08-23` |
+| Prior implementation baseline commit | `6846450752277eaad24e64b6d4a40578714fe85d` — Snapshot 11 / Rate Us + Founder cleanup |
+| Latest locked snapshot | Snapshot 12 — Episode 58 Equipment Library Continuity Baseline |
+| Latest checkpoint | `SCZN3_EP58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE_2026-08-23` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **None authorized. Survey is not Founder Approved.** This reconciliation does not authorize Publisher #13, production work, or knowledge-feature implementation. |
+| Next active priority | **Episode 58 Founder discussion and specification:** turn deep equipment knowledge into the simplest possible Equipment Library selection experience. No Equipment Library implementation is authorized by this continuity lock. |
 
 Do not confuse production, the Episode 57 closeout, Snapshot 11, checkpoint archives, and deployment state. The Rate Us + Founder cleanup state is committed and recoverable locally but is not pushed, deployed, or production-promoted.
 
@@ -68,6 +69,7 @@ Current local working candidate additionally includes:
 - Sources are knowledge inputs. Accumulated understanding becomes source-neutral **SCZN3 General Shooting Knowledge** organized around shooters and shooting.
 - SCZN3's knowledge loop is **MINE → COMMONIZE → RECONCILE → SYNTHESIZE → DELIVER → LEARN**.
 - SCZN3's authority in knowledge delivery is to always tell the truth to its audience: use strong knowledge, preserve plausible alternatives, and say when it does not know enough.
+- **Simple on top. Smart underneath.** Deep structured knowledge should reduce shooter effort, not become a demand for more shooter input.
 - The image is evidence of the target; it is not automatically the geometry authority.
 - No evidence, no claim. Missing authority fails closed.
 - Reality gets the final vote.
@@ -93,6 +95,12 @@ The frontend may collect a photograph, shooter-selected centers, reported timer 
 ### Voluntary feedback = bounded evidence, not authority
 
 Rate Us asks only for a one-to-five rating and optional exact comment. It is voluntary, first-party, and never automatically prompted. SCZN3 may attach bounded context already available where the shooter chose to rate—route/view, activity, target, publisher, session, SEC state, stage, completion state, and browser-scoped new/returning evidence—without turning browser evidence into governed human identity or execution authority.
+
+> **Rate Your SCZN3 Experience → ★★★★★ → optional comment → Submit**
+
+> **Ask less. Derive more.**
+
+Preserve the shooter's exact submitted rating and comment as **unadulterated data**. Derived context stays distinguishable from what the shooter actually said.
 
 > **Feedback should never interrupt the shooter's journey.**
 
@@ -349,6 +357,7 @@ The preserved eleven-publisher denominator baseline remains detailed in the [11-
 - The original seven-publisher 907/1,168 baseline was re-audited to **939 identities / 1,265 offerings**.
 - The former cumulative 1,748/2,332 claim and interim 1,651/2,319 correction are obsolete as current truth; historical reports preserve why those numbers existed.
 - All **16 behavioral families** are implemented. Baker Candyville's publisher-defined path traversal is one evidenced candidate, not an implemented or generalized seventeenth family.
+- Thompson required **zero new behavioral families**.
 - P-OS Publisher Intelligence uses the locked precision-controlled Tier 1, Tier 2, and Tier 3 structure. Unknown facts remain unknown and dated evidence is not timeless fact.
 - Future organization-authority work may apply the NRA method to IBS, USPSA, IDPA, GSSF, CMP, and other evidenced governing organizations, but it remains deferred until the Founder explicitly reopens that work.
 
@@ -513,7 +522,41 @@ The final shooter-facing model is:
 
 > **The landing page asks what the shooter wants to shoot. Choose discovers a governed target; Show recognizes a target the shooter already has. Let the Target Talk guides the selected relationship. History lives in Ballistic Vault. Contextual printer discovery preserves the publisher relationship. QR declares identity and unlocks the complete supported Smart Target relationship. Unknown targets teach SCZN3 what to learn next. The catalog gets bigger while the shooter experience gets simpler.**
 
-## 10. Do Not Redo
+## 10. Episode 58 — Equipment Library
+
+> **Build enormous structured equipment knowledge underneath while keeping shooter equipment selection simple.**
+
+Episode 58 transforms the Equipment Library from a shallow manufacturer/category selector into a deeply informed, normalized equipment system capable of identifying the shooter's actual firearm, sight/optic, ammunition, and relevant configuration while preserving minimum taps and touches. Research depth does not determine dropdown depth.
+
+The starting evidence is the completed [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md), which establishes:
+
+- the current menu exposes **21 firearm manufacturers**, **7 optic manufacturers**, and **14 ammunition manufacturers**;
+- Glock has **54** structured local variant records and Canik has **23**, while the other firearm catalogs are materially shallower;
+- all **28 firearm/optic manufacturers** in the current selection universe received a catalog-depth pass;
+- the durable model should separate manufacturer, platform family, exact model, technical configuration, commercial offering, sight, mount, ammunition, zero/target relationship, and composed shooter equipment profile;
+- the study authorizes no menu, runtime, registry, production, or architecture implementation.
+
+The M4/M4A1 deep-platform proof exposed the governing relationship:
+
+> **Weapon variant → sight/optic → mount/configuration → ammunition → zero method → target → confirmation**
+
+Adjustment behavior belongs to the selected equipment/configuration, not a generic platform default. Current military evidence distinguishes M68/M150 context around **0.5 MOA**, M4/M4A1 rear sight around **0.75 MOA**, and front sight around **1.75 MOA**; a generic `1/4 MOA` value cannot truthfully represent them all. The solution must identify the universal equipment/configuration owner rather than patching M4 locally. A 25-meter grouping/zeroing stage and distance confirmation are distinct evidence.
+
+M17/M18, M500/M590, M16A4, M249, and M7/M250 are research context, not automatic menu admission. Military configurations may require deeper platform profiles than ordinary commercial selections.
+
+P-OS may continue accumulating exact firearm families/variants, optic/reticle/adjustment data, mounts, ammunition/load relationships, compatibility, military configuration facts, and useful shooting knowledge. Apply:
+
+> **Respect the product. Commonize the knowledge.**
+
+Equipment facts and compatibility remain factual, structured, time-scoped, and provenance-bearing. Generalizable shooting knowledge enters the living commonized knowledge system.
+
+The first Founder discussion is:
+
+> **How do we turn deep equipment knowledge into the simplest possible Equipment Library selection experience?**
+
+See the [Episode 58 working record](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md) and [new-agent handoff](../history/episodes/EPISODE_58_NEW_AGENT_HANDOFF.md).
+
+## 11. Do Not Redo
 
 Do not reopen or recreate these settled foundations without contradictory authority and Founder authorization:
 
@@ -553,8 +596,13 @@ Do not reopen or recreate these settled foundations without contradictory author
 - Baker SL-ST2 physical identity, 23 × 35 V1 scope, Timed Pair — 7 Yards mission, and selected-center claim boundary
 - existing publisher game rules for Dartboard, Bowling Pins, Dot Torture, Billiards, and Battleship
 - ST-001 removal from the current batch; do not resume its historical identity collision inside Episode 55 without new Founder direction
+- do not redesign Rate Us
+- do not re-audit the 12-publisher corpus or re-litigate General Shooting Knowledge source neutrality without a genuine contradiction
+- do not treat each firearm, optic, ammunition product, or configuration as a separate software implementation
+- do not patch M4 adjustment values locally before identifying the universal equipment/configuration owner
+- do not redesign Equipment Library dropdowns before reasoning from the completed catalog-depth study and the minimum-tap objective
 
-## 11. New Agent Operating Directive
+## 12. New Agent Operating Directive
 
 Standard invocation:
 
@@ -581,6 +629,8 @@ Primary current records:
 - [Episode 55 — IDPA: The First Inherited Smart Target](../history/episodes/EPISODE_55_IDPA_FIRST_INHERITED_SMART_TARGET.md)
 - [Episode 56 — The Shortest Correct Mental Model](../history/episodes/EPISODE_56_SHORTEST_CORRECT_MENTAL_MODEL.md)
 - [Episode 57 — Discovery-Driven Smart Target Landing Page](../history/episodes/EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md)
+- [Episode 58 — Equipment Library](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md)
+- [Episode 58 New-Agent Handoff](../history/episodes/EPISODE_58_NEW_AGENT_HANDOFF.md)
 - [Episode 56 Capability Engine Status](../history/episodes/episode56-target-capability-coverage/CAPABILITY_ENGINE_STATUS.md)
 - [M-014 — Publisher OS 11-Publisher Knowledge Baseline](../history/milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md)
 - [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
@@ -589,6 +639,9 @@ Primary current records:
 - [General Shooting Knowledge Source Ledger](../authority-evidence/publisher-os/2026-08-23-shooting-knowledge-first-synthesis/SOURCE_LEDGER.md)
 - [Snapshot 9 — Episode 57 Landing Page Baseline](../history/snapshots/SNAPSHOT_009_EPISODE_57_LANDING_PAGE_BASELINE.md)
 - [Snapshot 10 — SCMM v1.4 General Shooting Knowledge Baseline](../history/snapshots/SNAPSHOT_010_SCMM_V1_4_GENERAL_SHOOTING_KNOWLEDGE_BASELINE.md)
+- [Snapshot 11 — Rate Us + Founder Cleanup Baseline](../history/snapshots/SNAPSHOT_011_RATE_US_FOUNDER_CLEANUP_BASELINE.md)
+- [Snapshot 12 — Episode 58 Equipment Library Continuity Baseline](../history/snapshots/SNAPSHOT_012_EPISODE_58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE.md)
+- [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md)
 - [KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md)
 - [Composable Target Authority](./decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md)
 - [Authority Ownership Matrix](./COMPOSABLE_TARGET_AUTHORITY_OWNERSHIP_MATRIX.md)

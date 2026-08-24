@@ -19,7 +19,15 @@ This directory is the living historical record for SCZN3. It separates the story
 
 - [M-014 — Publisher OS 11-Publisher Knowledge Baseline](./milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md)
 - [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
-- No active episode. Rate Us + Founder cleanup is the canonical local development state. Survey remains not Founder Approved. Publisher expansion remains capped until the Founder explicitly reopens it.
+- [Thompson — Publisher #12](../authority-evidence/publisher-os/2026-08-23-thompson-publisher-12/REPORT.md) is additive to the historical 11-publisher master summary and establishes the current **12-publisher / 1,792-identity / 2,709-offering** P-OS baseline.
+
+## Current episode
+
+- [Episode 58 — Equipment Library](./episodes/EPISODE_58_EQUIPMENT_LIBRARY.md) is active.
+- [Episode 58 New-Agent Handoff](./episodes/EPISODE_58_NEW_AGENT_HANDOFF.md) is the concise starting point.
+- [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md) is the starting evidence baseline.
+- [Snapshot 12 — Episode 58 Equipment Library Continuity Baseline](./snapshots/SNAPSHOT_012_EPISODE_58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE.md) locks the Founder-approved Episode 58 starting context.
+- Rate Us + Founder cleanup remains the canonical locked implementation state beneath Episode 58. Survey remains not Founder Approved. The continuity lock authorizes no Equipment Library implementation, Publisher #13, push, deployment, or production change.
 
 ## Evidence policy
 

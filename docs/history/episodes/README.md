@@ -24,10 +24,11 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 55 | IDPA: The First Inherited Smart Target | 2026-08-18 | [Locked record](./EPISODE_55_IDPA_FIRST_INHERITED_SMART_TARGET.md) | CLOSED / ARCHIVED / LOCKED |
 | Episode 56 | The Shortest Correct Mental Model | 2026-08-18 through 2026-08-19 | [Locked record](./EPISODE_56_SHORTEST_CORRECT_MENTAL_MODEL.md) | CLOSED / ARCHIVED / LOCKED |
 | Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
+| Episode 58 | Equipment Library | 2026-08-23 onward | [Working record](./EPISODE_58_EQUIPMENT_LIBRARY.md) | ACTIVE — canonical continuity baseline locked; Founder specification next; implementation not authorized |
 
 ## Episode records
 
-Episodes 55, 56, and 57 are closed, archived, and locked. Snapshot 9 and SCZN3 Shortest Correct Mental Model v1.3 preserve the Founder-approved Episode 57 landing-page state. Survey remains explicitly outside the approval boundary. Episode 58 is reserved and no episode is active.
+Episodes 55, 56, and 57 are closed, archived, and locked. Snapshot 9 preserves the Founder-approved Episode 57 landing-page state, Snapshot 10 preserves SCMM v1.4 and General Shooting Knowledge, Snapshot 11 preserves Rate Us plus the Founder cleanup, and Snapshot 12 preserves the Episode 58 Equipment Library starting context. Survey remains explicitly outside the approval boundary. Episode 58 is active; its first implementation specification has not yet been authorized.
 
 ### First Stable Zeroing Pipeline
 

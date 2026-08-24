@@ -1,0 +1,138 @@
+{
+  "profileId": "pos-deep-platform-us-m4-m4a1-research-v1",
+  "status": "research_only_not_runtime_authority",
+  "observedAt": "2026-08-23",
+  "platformFamily": {
+    "canonicalName": "M4/M4A1 Carbine family",
+    "platformOwner": "United States Government",
+    "manufacturerBoundary": "Military platform identity is distinct from any Colt, FN or commercial M4-branded product identity.",
+    "variants": [
+      {
+        "name": "M4",
+        "fireControl": "semi-automatic / three-round burst",
+        "statusNote": "Historical and sustainment identity; Army conversion to M4A1 began in 2011."
+      },
+      {
+        "name": "M4A1",
+        "fireControl": "semi-automatic / fully automatic",
+        "caliber": "5.56 mm",
+        "barrelLength": "14.5 in",
+        "magazineCapacity": 30,
+        "length": {"stockClosed": "29.75 in", "stockOpen": "33 in"},
+        "weight": "7.62 lb with sling and loaded magazine",
+        "effectiveRange": "500 m",
+        "source": "https://cpeground.army.mil/Equipment/Equipment-Portfolio/PM-MBCT-Lethality-Portfolio/M4A1-Carbine/"
+      }
+    ]
+  },
+  "sightingSystems": [
+    {
+      "name": "Backup iron sight / front sight",
+      "relationship": "M4/M4A1 mechanical sight configuration",
+      "adjustmentEvidence": {"rearWindage": "0.75 MOA per click", "frontElevation": "1.75 MOA per click"},
+      "source": "https://www.first.army.mil/Portals/102/STP%2021-1-SMCT.pdf"
+    },
+    {
+      "name": "M68 Close Combat Optic",
+      "commercialLineage": "Aimpoint Comp family; Army source identifies Comp M2 and Comp M4/M4S configurations",
+      "magnification": "1x / none",
+      "adjustmentEvidence": "0.5 MOA per click for the governed configuration",
+      "role": "Standard issue M4/M16 unity-power red-dot sight; Army describes engagement support to 300 m",
+      "sources": [
+        "https://www.peosoldier.army.mil/Equipment/Equipment-Portfolio/Project-Manager-Soldier-Lethality-Portfolio/M68-Close-Combat-Optic/",
+        "https://www.first.army.mil/Portals/102/STP%2021-1-SMCT.pdf"
+      ]
+    },
+    {
+      "name": "M150 Rifle Combat Optic",
+      "commercialLineage": "Trijicon ACOG family",
+      "magnification": "4x",
+      "adjustmentEvidence": "0.5 MOA per click for the governed configuration",
+      "role": "Battery-free magnified optic with range estimation and bullet-drop-compensated reticle; Army describes trained engagements from 300 to 600 m",
+      "source": "https://cpeground.army.mil/Equipment/Equipment-Portfolio/PM-MBCT-Lethality-Portfolio/M150-Rifle-Combat-Optic/"
+    },
+    {
+      "name": "AN/PEQ-15 or AN/PEQ-15A multifunction aiming light",
+      "role": "Co-aligned visible and infrared aiming/illumination equipment",
+      "zeroRelationship": "Boresight/zero is configuration-specific and must not be inferred from the day optic",
+      "source": "https://www.peosoldier.army.mil/Equipment/Equipment-Portfolio/Project-Manager-Soldier-Maneuver-and-Precision-Targeting-Portfolio/Multifunctioning-Aiming-Light/"
+    },
+    {
+      "name": "Family of Weapon Sights – Individual",
+      "role": "Thermal in-line sighting relationship for M4 and other supported weapons",
+      "status": "Known military equipment relationship; outside ordinary commercial dropdown scope",
+      "source": "https://cpeground.army.mil/Equipment/Equipment-Portfolio/PM-MBCT-Lethality-Portfolio/Family-of-Weapon-Sights-Individual-FWS-I/"
+    }
+  ],
+  "mountingAndAncillaryEquipment": {
+    "rail": "M4 family integrated/accessory rail relationship supports mission-specific optics and enablers.",
+    "sling": "The official M4A1 weight explicitly includes a sling, but no universal sling make/model was established. Preserve sling type/model as unknown unless exact issue/configuration authority is supplied.",
+    "launchersAndModules": ["M203A2 grenade launcher", "M320A1 grenade launcher", "M26 Modular Accessory Shotgun System"],
+    "boundary": "These are platform relationships, not default shooter equipment. They require exact configuration evidence and generally do not belong in an ordinary range setup."
+  },
+  "zeroAndTargetChain": {
+    "trainingStrategy": [
+      "preliminary instruction/evaluation",
+      "simulation",
+      "drills",
+      "basic grouping/zeroing and confirmation",
+      "practice",
+      "qualification"
+    ],
+    "grouping": "Current Army training material describes two consecutive five-round groups, with four of five rounds within a 6-MOA threshold or 4-MOA objective at 25 m.",
+    "zeroing": "Place four of five rounds in two consecutive groups within the appropriate 6-MOA or 4-MOA area on the A8 zero target at 25 m.",
+    "confirmationAtDistance": "After the 25 m zero, confirm against the properly presented E-type target with at least four of five hits.",
+    "holdOffApplication": "Training material separately tests 100 m and 200 m E-type engagements after confirmation.",
+    "primarySources": [
+      "https://rdl.train.army.mil/catalog-ws/view/100.ATSC%2FD6C17734-DD08-40FD-A50B-09448575646F-1564595433375/tc3_20x40wc1.pdf",
+      "https://www.usar.army.mil/Portals/98/Documents/Marksmanship/ARM_FY20-2.pdf?ver=2020-01-02-085219-327"
+    ]
+  },
+  "existingSCZN3TargetRelationships": [
+    {
+      "identity": "Existing SCZN3 M4 25-meter zero target",
+      "relationship": "Implemented Zeroing Authority relationship",
+      "note": "Do not generalize its target geometry or adjustment authority to other products."
+    },
+    {
+      "identity": "GunFun M16 A2 and A4 Zeroing Target Red / SKU 32110",
+      "relationship": "Registered Smart Evidence; richer two-sided UGO/authority remains incomplete"
+    },
+    {
+      "identity": "GunFun M16 Zeroing Target / SKU 82020",
+      "relationship": "Registered catalog relationship; exact richer execution remains authority-dependent"
+    },
+    {
+      "identity": "GunFun Navy Qual – M4 / SKU 22460",
+      "relationship": "Multi-capability candidate for qualification and diagnostic profiles; printer product identity is not Navy course authority"
+    }
+  ],
+  "adjacentMilitaryPlatformsAlreadyConnectedToMenuManufacturers": [
+    {
+      "platform": "M16A4",
+      "menuConnection": "Colt/FN and existing M16 target identities",
+      "boundary": "Army platform has its own exact configuration and has been replaced across the Army by M4A1; commercial AR/M16 labels are not substitutes."
+    },
+    {
+      "platform": "M17/M18 Modular Handgun System",
+      "menuConnection": "SIG Sauer / P320 lineage",
+      "boundary": "M17 full-size and M18 compact issued configurations are exact military system identities, not generic P320 selections."
+    },
+    {
+      "platform": "M500/M590 shotgun",
+      "menuConnection": "Mossberg 500/590",
+      "boundary": "Issued configuration, barrel, capacity and role must remain distinct from commercial variants."
+    },
+    {
+      "platform": "M249",
+      "menuConnection": "FN",
+      "boundary": "Known military platform but no current SCZN3 automatic-weapon category; preserve as knowledge, not a menu admission."
+    },
+    {
+      "platform": "M7/M250 transition",
+      "menuConnection": "SIG Sauer",
+      "boundary": "Type-classified and fielding to the close combat force; this does not erase the large active M4A1/M249 installed base or authorize immediate menu exposure."
+    }
+  ],
+  "deepProfileConclusion": "A deep platform profile must resolve weapon variant plus exact sight/optic plus mount/configuration plus ammunition plus zero method plus target plus confirmation evidence. A single 'M4' dropdown value cannot carry that relationship truthfully."
+}

@@ -1,0 +1,57 @@
+{
+  "observedAt": "2026-08-23",
+  "source": "docs/matrix.html at canonical commit 6846450752277eaad24e64b6d4a40578714fe85d",
+  "hierarchy": [
+    "weaponCategory",
+    "weaponManufacturer",
+    "weaponModelType",
+    "weaponModelCaliber",
+    "optionalBarrelLength",
+    "opticType",
+    "opticManufacturer",
+    "opticModel",
+    "magnification",
+    "clickValue",
+    "adjustmentUnit",
+    "ammunitionCaliberOrGauge",
+    "ammunitionManufacturer",
+    "ammunitionLoad",
+    "ammunitionWeight"
+  ],
+  "weaponCategories": {
+    "Rifle": ["Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
+    "Pistol": ["Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Canik", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
+    "Shotgun": ["Mossberg", "Remington", "Benelli", "Beretta", "Winchester", "Stoeger", "FN", "Other"]
+  },
+  "uniqueFirearmManufacturers": 21,
+  "firearmManufacturers": ["Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Glock", "Canik", "Walther", "Beretta", "Mossberg", "Benelli", "Winchester", "Stoeger"],
+  "opticTypes": ["Iron Sights", "Bead Sight", "Red Dot", "Holographic", "Prism", "LPVO", "Scope", "Other"],
+  "uniqueOpticManufacturers": 7,
+  "opticManufacturers": ["Aimpoint", "Trijicon", "Holosun", "Vortex", "Primary Arms", "EOTech", "Leupold"],
+  "uniqueAmmunitionManufacturers": 14,
+  "ammunitionManufacturers": ["CCI", "Federal", "Hornady", "Winchester", "Remington", "Lake City", "PMC", "IMI", "Black Hills", "Sig Sauer", "Fiocchi", "Norma", "Sellier & Bellot", "Magtech"],
+  "structuredFirearmCatalogs": {
+    "Glock": {
+      "recordCount": 54,
+      "fields": ["model", "caliber", "frameCategory", "barrelLength", "sightRadius", "flags", "notes"],
+      "selectionBehavior": ["catalog search", "model-plus-caliber option", "catalog detail chips", "hidden normalized fields"],
+      "warning": "The local set mixes current, regional, limited, legacy and variant records; it is a useful reference structure, not a certified current U.S. commercial catalog."
+    },
+    "Canik": {
+      "recordCount": 23,
+      "fields": ["model", "caliber", "frameCategory", "barrelLength", "sightRadius", "flags", "notes"],
+      "selectionBehavior": ["catalog search", "model-plus-caliber option", "catalog detail chips", "hidden normalized fields"],
+      "warning": "The same governed-pistol implementation pattern is used, but catalog freshness still requires independent maintenance."
+    }
+  },
+  "genericSelectionPattern": {
+    "description": "All other firearm manufacturers use form-factor/platform buckets plus short hand-maintained display labels.",
+    "examples": ["AR Platform", "Full Size", "Compact", "Subcompact", "Pump Action", "Semi-Auto", "Bolt Action", "Rimfire"],
+    "limitation": "These values conflate action, form factor, product family and model identity."
+  },
+  "phase2ScopeDecision": {
+    "included": ["firearm manufacturers", "optic manufacturers and sight families", "military weapon/sight/target relationships"],
+    "inventoryOnly": ["ammunition manufacturers, loads and weights"],
+    "reason": "The assignment's Glock-level model-specificity objective concerns firearm/equipment identity. Ammunition already has a separate caliber-to-manufacturer-to-load-to-weight hierarchy and requires its own SKU-scale study rather than being silently mixed into firearm catalog completeness."
+  }
+}
