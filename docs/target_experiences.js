@@ -359,24 +359,36 @@
 
   function setPrinterContext(publisherKey) {
     const link = document.querySelector("[data-printer-explore]");
+    const kicker = document.querySelector("[data-printer-explore-kicker]");
     const title = document.querySelector("[data-printer-explore-title]");
     const note = document.querySelector("[data-printer-explore-note]");
-    if (!link || !title || !note) return;
+    if (!link || !kicker || !title || !note) return;
     const publisher = publishers[publisherKey];
     if (!publisher) {
       link.removeAttribute("href");
       link.removeAttribute("target");
       link.setAttribute("aria-disabled", "true");
+      kicker.textContent = "PUBLISHER NOT ESTABLISHED";
       title.textContent = "Printer relationship not established";
       note.textContent = "SCZN3 will not guess who printed this target.";
+      note.hidden = false;
       return;
     }
     link.href = publisher.catalogUrl;
     link.target = "_blank";
     link.rel = "noopener";
     link.removeAttribute("aria-disabled");
+    if (publisherKey === "baker") {
+      kicker.textContent = "LOOKING FOR MORE SMART TARGETS?";
+      title.innerHTML = "Visit BakerTargets.com <span aria-hidden=\"true\">→</span>";
+      note.textContent = "";
+      note.hidden = true;
+      return;
+    }
+    kicker.textContent = "LIKE THIS TARGET?";
     title.innerHTML = `Explore More from ${escapeHtml(publisher.name)} <span aria-hidden="true">→</span>`;
     note.textContent = "Publisher catalog. Supported Smart Target experiences vary.";
+    note.hidden = false;
   }
 
   function setDoorAction(button, open) {

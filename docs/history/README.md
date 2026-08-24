@@ -11,14 +11,15 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
-- [Episode 57 — Landing Page Closure](../../CHECKPOINTS/SCZN3_EP57_LANDING_PAGE_CLOSURE_2026-08-22/CHECKPOINT.md)
-- [Episode 57 Restore Point](../../CHECKPOINTS/SCZN3_EP57_LANDING_PAGE_CLOSURE_2026-08-22/RESTORE_POINT.md)
+- [Rate Us + Founder Cleanup Lock](../../CHECKPOINTS/SCZN3_RATE_US_FOUNDER_CLEANUP_LOCK_2026-08-23/CHECKPOINT.md)
+- [Rate Us + Founder Cleanup Restore Point](../../CHECKPOINTS/SCZN3_RATE_US_FOUNDER_CLEANUP_LOCK_2026-08-23/RESTORE_POINT.md)
+- Episode 57 remains closed under its [Landing Page Closure](../../CHECKPOINTS/SCZN3_EP57_LANDING_PAGE_CLOSURE_2026-08-22/CHECKPOINT.md); the Rate Us lock is a post-closeout canonical platform snapshot and does not reopen the episode.
 
 ## Current working knowledge baseline
 
 - [M-014 — Publisher OS 11-Publisher Knowledge Baseline](./milestones/M-014_PUBLISHER_OS_11_PUBLISHER_KNOWLEDGE_BASELINE.md)
 - [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
-- No active episode. Survey remains not Founder Approved. Publisher expansion remains capped at 11 until the Founder explicitly reopens it.
+- No active episode. Rate Us + Founder cleanup is the canonical local development state. Survey remains not Founder Approved. Publisher expansion remains capped until the Founder explicitly reopens it.
 
 ## Evidence policy
 

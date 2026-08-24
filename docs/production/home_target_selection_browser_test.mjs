@@ -48,6 +48,10 @@ try {
 
     const bodyText = await page.locator("body").innerText();
     assert.doesNotMatch(bodyText, /Available Now|Coming Soon|Recommended Targets/i);
+    assert.equal((await page.locator("[data-printer-explore-kicker]").textContent()).trim(), "LOOKING FOR MORE SMART TARGETS?");
+    assert.equal((await page.locator("[data-printer-explore-title]").textContent()).replace(/\s+/g, " ").trim(), "Visit BakerTargets.com →");
+    assert.equal(await page.locator("[data-printer-explore]").getAttribute("href"), "https://bakertargets.com/shop/");
+    assert.equal(await page.locator("[data-printer-explore-note]").isHidden(), true, "Baker outbound box carries no replacement disclaimer");
     const cameraPhoto = page.locator("#landingCameraInput");
     const libraryPhoto = page.locator("#landingPhotoInput");
     assert.equal(await cameraPhoto.getAttribute("accept"), "image/*");
@@ -117,11 +121,16 @@ try {
     const practiceNames = await page.locator(".ecosystem-practice-name span:last-child").allTextContents();
     assert.ok(practiceNames.length >= 3 && practiceNames.every(value => value.trim() === "Practice Target"));
 
-    assert.match(bodyText, /EVERY TARGET\. EVERY SESSION\. YOUR HISTORY\./);
+    assert.match(bodyText, /EVERY TARGET\.\s+EVERY SESSION\.\s+YOUR HISTORY\./);
+    assert.deepEqual((await page.locator("#preservationPayoffTitle > span").allTextContents()).map(value => value.trim()), ["EVERY TARGET.", "EVERY SESSION.", "YOUR HISTORY."], "Ballistic Vault payoff uses three deliberate lines");
     assert.match(bodyText, /Save your SEC and shooting history\./);
     assert.equal(await page.locator(".ecosystem-payoff-half--vault").getAttribute("href"), "records.html");
     assert.match(await page.locator("[data-printer-explore-title]").textContent(), /Explore More from GunFun Shooting Targets/);
     assert.equal(await page.locator(".ecosystem-family-card").isVisible(), true);
+    assert.match(bodyText, /COME BE PART OF THE\s+SMART TARGET FAMILY\./i);
+    assert.match(bodyText, /EXPLORE SMART TARGETS\s+→/i);
+    assert.doesNotMatch(bodyText, /HELP THE SMART TARGET FAMILY GROW|Tell us what targets you shoot|Help shape the next generation/i);
+    assert.equal(await page.locator('.ecosystem-family-card a[href="survey.html"]').count(), 0, "retired survey solicitation is absent from Home");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     assert.equal(await page.locator(".ecosystem-entry-card, .ecosystem-door-representative-entry, [data-door-id], .ecosystem-preservation-payoff a").evaluateAll(controls => controls.filter(control => {
       const style = getComputedStyle(control);

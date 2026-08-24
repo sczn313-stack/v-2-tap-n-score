@@ -9,8 +9,11 @@
   const DESKTOP_DESTINATIONS = [
     { page: "matrix.html?view=library", label: "Equipment Library" },
     { page: "index.html#targetExperiences", label: "Smart Targets" },
-    { page: "records.html", label: "Ballistic Vault", preserve: true }
+    { page: "records.html", label: "Ballistic Vault", preserve: true },
+    { action: "rate-us", label: "Rate Us" }
   ];
+  const HOME_DESTINATION = { page: "index.html", label: "Home" };
+  let rateUsLoadPromise = null;
 
   function applicationRoot() {
     const homeLink = document && document.querySelector('a[href$="index.html"]');
@@ -18,14 +21,56 @@
     return new URL(homeHref || "index.html", window.location.href);
   }
 
+  function isHomeView(rootUrl) {
+    const current = new URL(window.location.href);
+    return current.pathname === rootUrl.pathname
+      || current.pathname === new URL(".", rootUrl).pathname;
+  }
+
+  function universalDestinations(rootUrl) {
+    return isHomeView(rootUrl)
+      ? DESKTOP_DESTINATIONS
+      : [HOME_DESTINATION, ...DESKTOP_DESTINATIONS];
+  }
+
   function appendUniversalDestinations(container, rootUrl) {
-    DESKTOP_DESTINATIONS.forEach(item => {
+    universalDestinations(rootUrl).forEach(item => {
+      if (item.action === "rate-us") {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "navigation-rate-us";
+        button.dataset.rateUsOpen = "";
+        button.textContent = item.label;
+        container.append(button);
+        return;
+      }
       const link = document.createElement("a");
       link.href = new URL(item.page, rootUrl).href;
       link.textContent = item.label;
       if (item.preserve) link.setAttribute("data-preserve-active-session", "");
       container.append(link);
     });
+  }
+
+  function ensureRateUs(rootUrl) {
+    if (window.SCZN3RateUs) {
+      window.SCZN3RateUs.install();
+      return Promise.resolve(window.SCZN3RateUs);
+    }
+    if (rateUsLoadPromise) return rateUsLoadPromise;
+    rateUsLoadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = new URL("rate_us.js", rootUrl).href;
+      script.dataset.sczn3RateUsLoader = "";
+      script.addEventListener("load", () => {
+        if (!window.SCZN3RateUs) return reject(new Error("rate_us_owner_unavailable"));
+        window.SCZN3RateUs.install();
+        resolve(window.SCZN3RateUs);
+      }, { once: true });
+      script.addEventListener("error", () => reject(new Error("rate_us_owner_unavailable")), { once: true });
+      document.head.append(script);
+    });
+    return rateUsLoadPromise;
   }
 
   function installUniversalMenuDestinations(rootUrl) {
@@ -90,6 +135,7 @@
     const rootUrl = applicationRoot();
     installUniversalMenuDestinations(rootUrl);
     installDesktopNavigation();
+    ensureRateUs(rootUrl).catch(() => {});
     const menus = platformMenus();
 
     function activeSession() {
@@ -201,6 +247,15 @@
 
     document.addEventListener("click", protectActiveWorkspace, true);
 
+    document.addEventListener("click", event => {
+      const trigger = event.target.closest("[data-rate-us-open]");
+      if (!trigger) return;
+      event.preventDefault();
+      event.stopPropagation();
+      closeAll();
+      ensureRateUs(rootUrl).then(owner => owner.open()).catch(() => {});
+    }, true);
+
     function closeAll(except = null) {
       menus.forEach(menu => {
         if (menu !== except) menu.close();
@@ -251,5 +306,5 @@
     else install();
   }
 
-  return { install, platformMenus };
+  return { install, platformMenus, ensureRateUs };
 });

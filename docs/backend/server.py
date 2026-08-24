@@ -25,6 +25,7 @@ from preserved_sec_store import (
     runtime_store as preserved_sec_runtime_store,
 )
 from progression_record_store import runtime_progression_record_store
+from rating_store import RatingError, record_rating, runtime_store as rating_runtime_store
 from sec_progression_authority import (
     SECProgressionAuthorityError,
     evaluate_progression,
@@ -87,6 +88,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     TARGET_EXECUTION_ACTION_PATHS = {"/api/target-execution/action", "/api/target-execution/action/"}
     TARGET_EXECUTION_CATALOG_PATHS = {"/api/target-execution/catalog", "/api/target-execution/catalog/"}
     SEC_PROGRESSION_PATHS = {"/api/sec-progression/evaluate", "/api/sec-progression/evaluate/"}
+    EXPERIENCE_RATING_PATHS = {"/api/feedback/rating", "/api/feedback/rating/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -157,7 +159,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
                 "targets": target_execution_runtime_resolver().catalog(),
             })
             return
-        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS or path in self.BAKER_SL_ST2_ANALYZE_PATHS or path in self.BAKER_FUN_ANALYZE_PATHS or path in self.VITAL_DUDE_ANALYZE_PATHS or path in self.TARGET_EXECUTION_PATHS or path in self.SEC_PROGRESSION_PATHS:
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS or path in self.BAKER_SL_ST2_ANALYZE_PATHS or path in self.BAKER_FUN_ANALYZE_PATHS or path in self.VITAL_DUDE_ANALYZE_PATHS or path in self.TARGET_EXECUTION_PATHS or path in self.SEC_PROGRESSION_PATHS or path in self.EXPERIENCE_RATING_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -187,6 +189,21 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.EXPERIENCE_RATING_PATHS:
+            try:
+                package = record_rating(
+                    self._read_json_body(),
+                    rating_runtime_store(),
+                    idempotency_key=self.headers.get("Idempotency-Key"),
+                )
+                self._send_json(200 if package.get("duplicate") else 201, package)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except RatingError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "rating_persistence_failed"})
+            return
         if path in self.SEC_PROGRESSION_PATHS:
             try:
                 package = evaluate_progression(self._read_json_body(), preserved_sec_runtime_store(), runtime_progression_record_store(), runtime_progression_subject_authority())

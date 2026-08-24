@@ -44,3 +44,9 @@ This discovery requires its own Founder Specification. It is not implemented lan
 **Survey is explicitly not Founder Approved.** Survey design and implementation are excluded from the landing-page approval, Snapshot 9, and this lock. Preserving the repository or a pre-existing survey artifact does not confer Survey approval.
 
 No production deployment or push is part of this closeout.
+
+## Post-closeout canonical enhancement
+
+On 2026-08-23, the Founder separately approved the voluntary Rate Us experience and focused shared-platform cleanup preserved by [Snapshot 11](../snapshots/SNAPSHOT_011_RATE_US_FOUNDER_CLEANUP_BASELINE.md). That work added first-party contextual feedback, restored Home on non-Home shared navigation, normalized the universal header, simplified the lower Smart Target Family invitation, clarified Baker outbound presentation, and made the Ballistic Vault payoff deliberately three lines.
+
+This later snapshot does not reopen Episode 57, add Survey to its approval boundary, or authorize deployment.

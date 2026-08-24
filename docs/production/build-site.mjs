@@ -41,6 +41,7 @@ const publicFiles = [
   "presentation_labels.js",
   "analytics.js",
   "navigation.js",
+  "rate_us.js",
   "ops.js",
   "sec_reopen_lifecycle.js",
   "experience_frame_processing.js",

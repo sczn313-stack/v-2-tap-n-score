@@ -14,5 +14,6 @@ Development snapshots are numbered preservation and architecture records. They a
 | 8 | Episode 56 Catalog Scale + Capability Baseline | Locked | 2026-08-19 | [Snapshot 8](./SNAPSHOT_008_EPISODE_56_CATALOG_SCALE_CAPABILITY_BASELINE.md) |
 | 9 | Episode 57 Landing Page Baseline | Locked | 2026-08-22 | [Snapshot 9](./SNAPSHOT_009_EPISODE_57_LANDING_PAGE_BASELINE.md) |
 | 10 | SCMM v1.4 General Shooting Knowledge Baseline | Locked | 2026-08-23 | [Snapshot 10](./SNAPSHOT_010_SCMM_V1_4_GENERAL_SHOOTING_KNOWLEDGE_BASELINE.md) |
+| 11 | Rate Us + Founder Cleanup Baseline | Locked | 2026-08-23 | [Snapshot 11](./SNAPSHOT_011_RATE_US_FOUNDER_CLEANUP_BASELINE.md) |
 
-The authoritative Episode Registry remains separate. At Snapshot 10, Episode 57 is the last closed episode, no episode is active, and Episode 58 is reserved. Snapshot 10 locks the SCMM knowledge-model reconciliation; it does not open a new episode, approve Survey, activate a knowledge feature, authorize Publisher #13, or change production.
+The authoritative Episode Registry remains separate. At Snapshot 11, Episode 57 is the last closed episode, no episode is active, and Episode 58 is reserved. Snapshot 11 locks the post-closeout Rate Us and focused Founder-cleanup state; it does not reopen Episode 57, approve Survey, authorize a push/deployment, or change production.

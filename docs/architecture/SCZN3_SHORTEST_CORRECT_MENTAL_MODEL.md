@@ -4,7 +4,7 @@
 
 **Version:** 1.4 — Founder Approved / LOCKED
 **Current through:** 2026-08-23
-**Status:** Episode 57 Founder-approved discovery-driven landing-page baseline + 12-publisher P-OS evidence baseline + Founder-approved General Shooting Knowledge model
+**Status:** Episode 57 Founder-approved discovery-driven landing-page baseline + Founder-approved Rate Us/shared-cleanup canonical state + 12-publisher P-OS evidence baseline + Founder-approved General Shooting Knowledge model
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -25,14 +25,14 @@
 | Episode Registry | PASS — 57 continuous slots; no active episode |
 | Production | `https://tap-n-score.com` at commit `bfce363643eff364e43d7d71a6b1e42c0262ca42` |
 | Production platform | Netlify frontend + Render authority service; four released targets |
-| Current development | Episode 54–57 approved local work is preserved in the Episode 57 closeout commit and archive ahead of production |
-| Latest locked snapshot | Snapshot 10 — SCMM v1.4 General Shooting Knowledge Baseline |
-| Latest checkpoint | `SCZN3_SCMM_V1_4_GENERAL_SHOOTING_KNOWLEDGE_LOCK_2026-08-23` |
+| Current development | Rate Us + Founder cleanup is the canonical local state; it is committed and recoverable ahead of production |
+| Latest locked snapshot | Snapshot 11 — Rate Us + Founder Cleanup Baseline |
+| Latest checkpoint | `SCZN3_RATE_US_FOUNDER_CLEANUP_LOCK_2026-08-23` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
 | Next active priority | **None authorized. Survey is not Founder Approved.** This reconciliation does not authorize Publisher #13, production work, or knowledge-feature implementation. |
 
-Do not confuse production, the Episode 57 closeout commit, checkpoint archives, and deployment state. The Episode 57 closeout is committed and recoverable locally but is not pushed, deployed, or production-promoted.
+Do not confuse production, the Episode 57 closeout, Snapshot 11, checkpoint archives, and deployment state. The Rate Us + Founder cleanup state is committed and recoverable locally but is not pushed, deployed, or production-promoted.
 
 Current released production targets:
 
@@ -89,6 +89,14 @@ Geometry registration, classification, scoring, timing, penalties, correction, m
 ### Frontend = Evidence Collection + Display
 
 The frontend may collect a photograph, shooter-selected centers, reported timer data, session inputs, and explicit adjudications. It renders validated backend packages. It does not repair, infer, or recalculate them.
+
+### Voluntary feedback = bounded evidence, not authority
+
+Rate Us asks only for a one-to-five rating and optional exact comment. It is voluntary, first-party, and never automatically prompted. SCZN3 may attach bounded context already available where the shooter chose to rate—route/view, activity, target, publisher, session, SEC state, stage, completion state, and browser-scoped new/returning evidence—without turning browser evidence into governed human identity or execution authority.
+
+> **Feedback should never interrupt the shooter's journey.**
+
+Incomplete and ambiguous work returns exactly to origin. Completed work advances only when a clear permitted next destination already exists. Never guess.
 
 ### Target Authority ≠ Session Authority
 
@@ -221,6 +229,7 @@ Drag University is unnecessary delay caused by reopening settled authority, mult
 - `SCZN3Actions`
 - `SCZN3Processing` and duplicate-request presentation
 - shared navigation, header, responsive behavior, typography, spacing, and action regions
+- voluntary Rate Us collection, bounded journey context, idempotent submission, and deterministic return
 - Target Profile, Partnership, and Product identity contracts
 - Save state, Ballistic Vault entry, result-summary presentation, and exact historical reopen where authorized
 - shared Equipment Library routing where authorized
