@@ -1,6 +1,7 @@
 """HTTP server for SCZN3 backend authority."""
 from __future__ import annotations
 
+import hmac
 import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -13,10 +14,16 @@ from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
 from preserved_sec_store import (
     PreservedSECError,
-    list_preserved_secs,
     preserve_sec,
     read_preserved_sec,
     runtime_store as preserved_sec_runtime_store,
+)
+from sec_reopen_authority import (
+    CAPABILITY_HEADER,
+    SECReopenAuthorityError,
+    issue_reopen_capability,
+    signing_key as sec_reopen_signing_key,
+    verify_reopen_capability,
 )
 from session_authority import (
     SessionAuthorityError,
@@ -85,7 +92,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", cors_origin)
             self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Idempotency-Key")
+        self.send_header("Access-Control-Allow-Headers", f"Content-Type, Idempotency-Key, {CAPABILITY_HEADER}")
         self.end_headers()
         self.wfile.write(body)
 
@@ -109,13 +116,14 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             try:
                 query = parse_qs(urlparse(self.path).query)
                 session_id = query.get("session", query.get("sessionId", [""]))[0]
-                package = (
-                    read_preserved_sec(session_id, preserved_sec_runtime_store())
-                    if session_id
-                    else list_preserved_secs(preserved_sec_runtime_store())
-                )
+                if not session_id:
+                    raise SECReopenAuthorityError("preserved_sec_enumeration_not_authorized")
+                claims = verify_reopen_capability(self.headers.get(CAPABILITY_HEADER), session_id)
+                package = read_preserved_sec(session_id, preserved_sec_runtime_store())
+                if not hmac.compare_digest(package["artifactSha256"], claims["artifactSha256"]):
+                    raise SECReopenAuthorityError("preserved_sec_reopen_capability_invalid")
                 self._send_json(200, package)
-            except PreservedSECError as exc:
+            except (PreservedSECError, SECReopenAuthorityError) as exc:
                 self._send_json(exc.http_status, exc.payload)
             except Exception:
                 self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_read_failed"})
@@ -152,10 +160,15 @@ class AuthorityHandler(BaseHTTPRequestHandler):
         path = self._request_path()
         if path in self.PRESERVED_SEC_PATHS:
             try:
-                self._send_json(201, preserve_sec(self._read_json_body(), preserved_sec_runtime_store()))
+                sec_reopen_signing_key()
+                package = preserve_sec(self._read_json_body(), preserved_sec_runtime_store())
+                package["reopenCapability"] = issue_reopen_capability(
+                    package["session"]["sessionId"], package["artifactSha256"]
+                )
+                self._send_json(201, package)
             except (json.JSONDecodeError, UnicodeDecodeError):
                 self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
-            except PreservedSECError as exc:
+            except (PreservedSECError, SECReopenAuthorityError) as exc:
                 self._send_json(exc.http_status, exc.payload)
             except Exception:
                 self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_persistence_failed"})

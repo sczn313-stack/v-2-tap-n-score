@@ -280,13 +280,8 @@
   async function loadTimelineRecords(refresh = false) {
     if (!refresh && Array.isArray(state.timelineRecords)) return state.timelineRecords;
     if (!window.SCZN3SECSessionTimeline) return [];
-    try {
-      const response = await fetch(preservedSecEndpoint, { headers: { Accept: "application/json" } });
-      const payload = await response.json().catch(() => null);
-      state.timelineRecords = response.ok ? [...SCZN3SECSessionTimeline.preservedRecords(payload)] : [];
-    } catch (error) {
-      state.timelineRecords = [];
-    }
+    const localSessions = SCZN3M4.getSessionHistory().filter(session => session?.savedToSEC === true);
+    state.timelineRecords = [...SCZN3SECSessionTimeline.preservedRecords({ sessions: localSessions })];
     return state.timelineRecords;
   }
 
@@ -373,8 +368,9 @@
           headers: { Accept: "application/json", "Content-Type": "application/json" },
           body: JSON.stringify({ session: saved })
         });
-        const packageData = await response.json().catch(() => null);
-        if (!response.ok || !packageData || packageData.ok !== true) throw new Error("preserved_sec_persistence_failed");
+            const packageData = await response.json().catch(() => null);
+            if (!response.ok || !packageData || packageData.ok !== true) throw new Error("preserved_sec_persistence_failed");
+            window.SCZN3SECReopenAuthority?.remember(packageData);
         state.preserved = true;
         saveSucceeded = true;
         preservedSession = packageData.session || saved;

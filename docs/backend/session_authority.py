@@ -3,7 +3,8 @@
 The browser may propose a Target ID and equipment candidates. This module owns
 Target ID -> ATP -> mission resolution, target admission, official-mission
 eligibility, capability availability, durable session identity, and idempotency.
-Runtime authority requires Postgres through ``DATABASE_URL``;
+Runtime authority requires Postgres through the dedicated backend-only
+``SCZN3_SESSION_SEC_DATABASE_URL``;
 there is intentionally no in-memory, filesystem, or browser fallback.
 """
 from __future__ import annotations
@@ -655,7 +656,7 @@ def start_session(
 
 class PostgresSessionStore:
     def __init__(self, database_url: Optional[str] = None, connect_fn: Any = None):
-        self.database_url = database_url if database_url is not None else os.environ.get("DATABASE_URL", "")
+        self.database_url = database_url if database_url is not None else os.environ.get("SCZN3_SESSION_SEC_DATABASE_URL", "")
         self.connect_fn = connect_fn
 
     def _connect(self):

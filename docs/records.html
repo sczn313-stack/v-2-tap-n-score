@@ -48,6 +48,7 @@
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_dispatch.js?v=mission-a-fresh-score-0814"></script>
+<script src="sec_reopen_capability.js?v=security-hotfix-1"></script>
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="sec_v1.js?v=mission-a-fresh-score-0814"></script>
@@ -1627,33 +1628,24 @@ async function loadPreservedSECRecords() {
     : null;
   if (requestedLocalSession) {
     try {
-      await fetch(PRESERVED_SEC_ENDPOINT, {
-        method: "POST",
-        headers: { Accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({ session: requestedLocalSession })
-      });
+      await SCZN3SECReopenAuthority.provePossession(PRESERVED_SEC_ENDPOINT, requestedLocalSession);
     } catch (error) {
       // Keep the already-preserved local SEC readable if the durable store is unavailable.
     }
   }
   try {
-    const endpoint = REQUESTED_RECORD_SESSION_ID
-      ? `${PRESERVED_SEC_ENDPOINT}?session=${encodeURIComponent(REQUESTED_RECORD_SESSION_ID)}`
-      : PRESERVED_SEC_ENDPOINT;
-    const response = await fetch(endpoint, { headers: { Accept: "application/json" } });
-    const packageData = await response.json().catch(() => null);
-    if (response.ok && packageData && packageData.ok === true) {
+    if (REQUESTED_RECORD_SESSION_ID) {
+      const packageData = await SCZN3SECReopenAuthority.reopen(
+        PRESERVED_SEC_ENDPOINT, REQUESTED_RECORD_SESSION_ID, requestedLocalSession
+      );
       serverSavedSessions = packageData.session ? [packageData.session] : (Array.isArray(packageData.sessions) ? packageData.sessions : []);
       serverTimelineRecords = window.SCZN3SECSessionTimeline
         ? [...SCZN3SECSessionTimeline.preservedRecords(packageData)]
         : [];
-      if (HISTORICAL_DETAIL_MODE && window.SCZN3SECSessionTimeline) {
-        const timelineResponse = await fetch(PRESERVED_SEC_ENDPOINT, { headers: { Accept: "application/json" } });
-        const timelinePayload = await timelineResponse.json().catch(() => null);
-        serverTimelineRecords = timelineResponse.ok
-          ? [...SCZN3SECSessionTimeline.preservedRecords(timelinePayload)]
-          : [];
-      }
+      processingSucceeded = true;
+    } else {
+      serverSavedSessions = [];
+      serverTimelineRecords = [];
       processingSucceeded = true;
     }
   } catch (error) {

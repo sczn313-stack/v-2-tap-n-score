@@ -113,7 +113,7 @@ def list_preserved_secs(store: Any) -> Dict[str, Any]:
 
 class PostgresPreservedSECStore:
     def __init__(self, database_url: Optional[str] = None, connect_fn: Any = None):
-        self.database_url = database_url if database_url is not None else os.environ.get("DATABASE_URL", "")
+        self.database_url = database_url if database_url is not None else os.environ.get("SCZN3_SESSION_SEC_DATABASE_URL", "")
         self.connect_fn = connect_fn
 
     def _connect(self):
