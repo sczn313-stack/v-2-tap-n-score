@@ -7,6 +7,7 @@ const [owner, css, shoot] = await Promise.all([
   read("smart_target_workspace.css"),
   read("shoot.html")
 ]);
+const [records, secV1] = await Promise.all([read("records.html"), read("sec_v1.js")]);
 
 assert.match(owner, /function createPrecisionTap\(/, "shared workspace owns Precision Tap interaction");
 assert.match(owner, /pointers\.size >= 2/, "shared owner supports two-pointer pinch");
@@ -67,8 +68,7 @@ assert.match(css, /\.precision-tap-viewport\{/);
 assert.match(css, /touch-action:none/);
 assert.match(css, /--precision-tap-marker-size,18px/);
 assert.match(css, /background:rgba\(255,255,255,\.08\)/, "precision marker leaves the physical hole visible");
-assert.doesNotMatch(css, /data-range-state="tap-aim"\] #setAimMode[\s\S]*display:none!important/);
-assert.doesNotMatch(css, /data-range-state="tap-holes"\] #addImpactMode[\s\S]*display:none!important/);
+assert.match(css, /precision-tap-control-shell-content > \[hidden\][\s\S]*display:none!important/, "inactive workflow controls are removed from the active shell");
 assert.match(shoot, /Tap Your Aim Point/);
 assert.match(shoot, /Tap Your Shots/);
 assert.match(shoot, /nextStep = "setAimMode"/);
@@ -90,5 +90,16 @@ assert.match(css, /\.precision-tap-control-shell-content\{[\s\S]*width:100%;[\s\
 assert.match(css, /\.precision-tap-photo-picker\{[\s\S]*height:100%;[\s\S]*background:transparent/, "photo-source choices replace shell contents without adding a panel");
 assert.match(css, /precision-tap-photo-picker>div\{[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/, "photo choices share one row in the persistent shell");
 assert.match(css, /Defect #8[\s\S]*precision-tap-control-shell-content[\s\S]*border:0!important;[\s\S]*background:transparent!important;[\s\S]*box-shadow:none!important;/, "the workflow row remains the only painted visual shell");
+assert.match(shoot, /function isBakerSampleEvidence\(/, "Baker reference evidence is identified as a non-recording SAMPLE stage");
+assert.match(shoot, /if \(isBakerSampleEvidence\(activeEvidence\(\)\)\) return;/, "SAMPLE target taps cannot create shooter observations");
+assert.match(shoot, /🗣️ LET THE TARGET TALK/, "SAMPLE demonstration is repeatable from the waiting target");
+assert.match(shoot, /AIM → SHOOT → ADD PHOTO/, "SAMPLE stage teaches the shortest shooter path");
+assert.match(shoot, /if \(!sessionSaved\) return "Apply your clicks, then shoot your confirmation shots\.";/, "approved correction guidance is preserved");
+assert.match(shoot, />Begin Confirmation</, "confirmation action uses the approved concise label");
+assert.match(css, /\.baker-sample-watermark/, "SAMPLE evidence is visibly distinguished from shooter evidence");
+assert.match(css, /\.baker-sample-demo-layer\[data-demo-state="sec"\][\s\S]*\.baker-sample-demo-layer\[data-demo-state="vault"\]/, "SEC and Vault take the stationary stage during the demonstration");
+assert.match(records, /missionFamily: "zeroingCorrection",[\s\S]*showSessionScore: false,/, "zeroing SEC does not leak a score into its session header");
+assert.match(secV1, /showSessionScore: model\.showSessionScore !== false/, "universal SEC honors an explicit mission-owned score omission");
+assert.doesNotMatch(records.match(/const SCZN3Baker100YardSEC = \(\(\) => \{[\s\S]*?\n\}\)\(\);/)?.[0] || "", /SCZN3 cannot confirm this zero yet/, "stale zero-confirmation refusal is removed from Baker SEC");
 
 console.log("PASS Episode 59 Precision Tap production boundary contract");

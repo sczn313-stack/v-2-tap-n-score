@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="styles.css?v=episode59-sec-evidence-aim-1" />
 <link rel="stylesheet" href="ballistic-vault.css?v=universal-vault-result-summary-1" />
 <link rel="stylesheet" href="sec-framework.css?v=episode55-inheritance-audit-1" />
-<link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
+<link rel="stylesheet" href="m4-sec.css?v=episode59-baker-demo-cleanup-1" />
 <link rel="stylesheet" href="baker-sl-st1-sec.css?v=session-2-uspsa-1" />
 <link rel="stylesheet" href="gunfun-vital-dude-sec.css?v=vital-dude-1" />
 <link rel="stylesheet" href="baker-sl-st2-idpa-sec.css?v=episode55-idpa-3" />
@@ -59,7 +59,7 @@
 <script src="target_execution_runtime.js?v=episode56-scale-1"></script>
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
-<script src="sec_v1.js?v=mission-a-fresh-score-0814"></script>
+<script src="sec_v1.js?v=episode59-baker-demo-cleanup-1"></script>
 <script src="sec_framework.js?v=episode55-lowest-score-1"></script>
 <script src="sec_session_timeline.js?v=session-2-uspsa-1"></script>
 <script src="universal_practice_sec.js"></script>
@@ -1398,7 +1398,6 @@ function render(session) {
   const confirmationPackage = session.confirmationAuthorityPackage || null;
   const hasConfirmationEvidence = Boolean(confirmationEvidence.dataUrl);
   const hasAuthority = Boolean(pkg && pkg.status);
-  const score = hasAuthority ? authorityScoreValue(pkg) : null;
   const correction = hasAuthority ? pkg.correction || {} : {};
   const clicks = hasAuthority ? { ...(pkg.clicks || {}), elevation: correction.elevation, windage: correction.windage } : {};
   const correctionDisplay = [
@@ -1410,14 +1409,17 @@ function render(session) {
   const impactCount = Number.isInteger(rawImpactCount) ? rawImpactCount : null;
   const groupDisplay = pkg && pkg.group && pkg.group.display || "Unavailable";
   const distance = distanceDisplay(session);
-  const discrepancy = pkg && pkg.aimPointDiscrepancy || {};
-  const analysisMetrics = [
-    SCZN3SECComponents.metric("Group Size", groupDisplay, impactCount === null ? "confirmed evidence" : `${impactCount} confirmed ${impactCount === 1 ? "impact" : "impacts"}`),
-    SCZN3SECComponents.metric("Aim vs Bull", Number.isFinite(Number(discrepancy.magnitudeInches)) ? `${Number(discrepancy.magnitudeInches).toFixed(2)}\"` : "Unavailable", "recorded offset")
-  ].join("");
+  const angular = pkg && pkg.angular || {};
+  const measuredMetrics = [
+    impactCount === null ? "" : SCZN3SECComponents.metric("Confirmed Impacts", String(impactCount), "shooter observations"),
+    groupDisplay && groupDisplay !== "Unavailable" ? SCZN3SECComponents.metric("Group Size", groupDisplay, "measured spread") : "",
+    Number.isFinite(Number(angular.windageMOA)) ? SCZN3SECComponents.metric("Windage Offset", `${Number(angular.windageMOA).toFixed(2)} MOA`, "measured") : "",
+    Number.isFinite(Number(angular.elevationMOA)) ? SCZN3SECComponents.metric("Elevation Offset", `${Number(angular.elevationMOA).toFixed(2)} MOA`, "measured") : ""
+  ].filter(Boolean).join("");
+  const confirmationImpactCount = Number(confirmationPackage && confirmationPackage.status && confirmationPackage.status.impactCount);
   const confirmationOutcome = confirmationPackage && confirmationPackage.validation
     ? confirmationPackage.validation.status === "authority_unavailable"
-      ? `<strong>Your confirmation group is saved.</strong><span>SCZN3 cannot confirm this zero yet. No additional action is required.</span>`
+      ? `<strong>Confirmation recorded.</strong><span>${Number.isInteger(confirmationImpactCount) ? `${confirmationImpactCount} impacts preserved.` : "Confirmation impacts preserved."}</span>`
       : `<strong>${escapeHtml(confirmationPackage.validation.outcome || (confirmationPackage.validation.confirmed ? "CONFIRMED" : "REQUIRES ANOTHER GROUP"))}</strong><span>Saved confirmation result</span>`
     : `<strong>Confirmation not recorded</strong><span>This preserved event contains the initial 100 Yard group and correction only.</span>`;
   const sessionDate = session.timestamp ? new Date(session.timestamp) : null;
@@ -1427,7 +1429,6 @@ function render(session) {
   const firearm = weaponProfile ? weaponProfile.summary : [snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.rifle || "Not recorded";
   const equipment = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel].map(cleanSetupValue).filter(Boolean).join(" / ") || snapshot.adjustmentSystem || "Not recorded";
   const ammunition = [snapshot.ammoCaliber, snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight].map(cleanSetupValue).filter(Boolean).join(" / ") || "Not recorded";
-  const scoreDisplay = score === null ? "Score --" : `Score ${score}`;
   const sessionDetails = SCZN3SECComponents.SessionDetails({
     fields: [
       { label: "Firearm", value: firearm }, { label: "Equipment", value: equipment },
@@ -1435,7 +1436,7 @@ function render(session) {
       { label: "Date", value: dateLabel }, { label: "Time", value: timeLabel },
       { label: "Shooter", value: snapshot.shooterName || "Not recorded" }
     ],
-    afterHtml: `<details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel"><div class="sec-metric-grid">${analysisMetrics}</div></div></details>`
+    afterHtml: measuredMetrics ? `<section class="sec-zeroing-measurement" aria-label="Measured zeroing information"><span>Measured</span><div class="sec-metric-grid">${measuredMetrics}</div></section>` : ""
   });
   const targetProfileLabel = SCZN3TargetProfiles.display(adapterView.targetProfileIdentity);
   const sightCorrection = zeroingSightCorrectionHtml(pkg, confirmationOutcome);
@@ -1449,7 +1450,7 @@ function render(session) {
     recordId: String(session.sessionId || "baker-100yd-zeroing-sec"),
     missionFamily: "zeroingCorrection",
     sessionLabel: session.sessionLabel || vaultSessionNumber(session),
-    scoreDisplay,
+    showSessionScore: false,
     articleClassName: "sec-experience m4-reference-sec-card zeroing-reference-sec-card",
     articleAttributes: {
       "data-session-id": session.sessionId || "",

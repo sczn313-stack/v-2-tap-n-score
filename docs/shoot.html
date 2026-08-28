@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-defect-8-single-visual-shell-2" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-baker-demo-cleanup-1" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -370,6 +370,96 @@ let pendingEvidence = null;
 let displayedEvidence = null;
 let precisionTapController = null;
 let precisionTapReviewing = false;
+let bakerSampleDemoState = "waiting";
+let bakerSampleDemoTimers = [];
+
+function isBakerSampleEvidence(evidence = activeEvidence()) {
+  return isBaker100YardSession()
+    && !!evidence
+    && String(evidence.assetRole || "") === "registered-reference-target";
+}
+
+function clearBakerSampleDemoTimers() {
+  bakerSampleDemoTimers.forEach(handle => window.clearTimeout(handle));
+  bakerSampleDemoTimers = [];
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+
+function bakerSampleDemoNarration(message) {
+  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
+  window.speechSynthesis.cancel();
+  const utterance = new window.SpeechSynthesisUtterance(message);
+  utterance.rate = 0.94;
+  utterance.pitch = 1;
+  window.speechSynthesis.speak(utterance);
+}
+
+function bakerSampleHoleMarkup(points, confirmation = false) {
+  return points.map((point, index) => `<i class="baker-sample-hole${confirmation ? " is-confirmation" : ""}" style="--sample-x:${point[0]}%;--sample-y:${point[1]}%;--sample-delay:${index * 180}ms"><span>${index + 1}</span></i>`).join("");
+}
+
+function bakerSampleDemoScene(state) {
+  const initial = [[29,31],[34,33],[27,36],[32,38],[37,35]];
+  const confirmation = [[48,60],[51,59],[53,61],[52,63],[49,64]];
+  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>`;
+  if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Tap each shot on the photograph.</span></div>${bakerSampleHoleMarkup(initial)}`;
+  if (state === "results") return `<div class="baker-sample-demo-callout"><strong>RESULT</strong><span>SCZN3 measures the group and returns the correction.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>${bakerSampleHoleMarkup(initial)}<svg class="baker-sample-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="32" y1="35" x2="50" y2="61" /></svg><div class="baker-sample-clicks"><b>→</b><strong>12</strong><span>RIGHT</span><em>CLICKS</em><b>↓</b><strong>8</strong><span>DOWN</span><em>CLICKS</em></div>`;
+  if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRM</strong><span>Apply the clicks, then mark the confirmation group.</span></div>${bakerSampleHoleMarkup(confirmation, true)}`;
+  if (state === "sec") return `<div class="baker-sample-stage-card"><span>SEC</span><strong>SHOOTER EXPERIENCE CARD</strong><small>Your target, observations, and result stay together.</small></div>`;
+  if (state === "vault") return `<div class="baker-sample-stage-card"><span>VAULT</span><strong>BALLISTIC VAULT</strong><small>Your completed session is saved and ready to reopen.</small></div>`;
+  return `<div class="baker-sample-demo-waiting" aria-label="Sample workflow"><span><b>AIM</b><small>Mark your aim point</small></span><i aria-hidden="true">→</i><span><b>SHOOT</b><small>Mark your shots</small></span><i aria-hidden="true">→</i><span><b>📷 ADD PHOTO</b><small>Your turn</small></span></div>`;
+}
+
+function setBakerSampleDemoState(state, speak = true) {
+  const layer = document.getElementById("bakerSampleDemoLayer");
+  const scene = document.getElementById("bakerSampleDemoScene");
+  const replay = document.getElementById("bakerSampleDemoReplay");
+  if (!layer || !scene || !replay) return;
+  bakerSampleDemoState = state;
+  layer.dataset.demoState = state;
+  scene.innerHTML = bakerSampleDemoScene(state);
+  replay.hidden = state !== "waiting";
+  const narration = {
+    aim: "Aim. Tap the point you aimed at.",
+    shoot: "Shoot. Tap each shot on the photograph.",
+    results: "Tap-n-Score measures the group and gives you the sight correction.",
+    confirmation: "Apply your clicks, then shoot and mark your confirmation group.",
+    sec: "Your Shooter Experience Card keeps the target, observations, and result together.",
+    vault: "The completed session is saved in your Ballistic Vault and can be reopened exactly."
+  }[state];
+  if (speak && narration) bakerSampleDemoNarration(narration);
+}
+
+function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
+  clearBakerSampleDemoTimers();
+  if (returnToWaiting) setBakerSampleDemoState("waiting", false);
+}
+
+function startBakerSampleDemo() {
+  clearBakerSampleDemoTimers();
+  setBakerSampleDemoState("aim");
+  [
+    ["shoot", 1500],
+    ["results", 3600],
+    ["confirmation", 5700],
+    ["sec", 7700],
+    ["vault", 9400],
+    ["waiting", 11100]
+  ].forEach(([state, delay]) => {
+    bakerSampleDemoTimers.push(window.setTimeout(() => setBakerSampleDemoState(state, state !== "waiting"), delay));
+  });
+}
+
+function bakerSampleDemoMarkup() {
+  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting"><span class="baker-sample-watermark">SAMPLE</span><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button">🗣️ LET THE TARGET TALK</button></div>`;
+}
+
+function bindBakerSampleDemo() {
+  const replay = document.getElementById("bakerSampleDemoReplay");
+  if (!replay) return;
+  replay.addEventListener("click", startBakerSampleDemo);
+  setBakerSampleDemoState("waiting", false);
+}
 function sourceIsZeroingSession(source) {
   if (!source || typeof source !== "object") return false;
   const matrixSource = source.matrixSnapshot || {};
@@ -711,6 +801,7 @@ function simulationLimitReached() {
 }
 
 function zeroingMissionGuidance() {
+  if (isBakerSampleEvidence()) return "AIM → SHOOT → ADD PHOTO";
   if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
@@ -725,11 +816,12 @@ function zeroingMissionGuidance() {
   if (!resultsShown) return (!isM4AuthoritySession() || holeEntrySettled)
     ? "Tap Show Results when your shots are marked."
     : "Continue tapping bullet holes.";
-  if (!sessionSaved) return "Apply the correction, then begin confirmation.";
+  if (!sessionSaved) return "Apply your clicks, then shoot your confirmation shots.";
   return "View Record";
 }
 
 function zeroingMissionStatus() {
+  if (isBakerSampleEvidence()) return "Sample";
   if (!hasMarkableEvidence()) return "Ready";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation";
@@ -2607,6 +2699,7 @@ function resetWorkspaceStageGeometry() {
 function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
   const evidence = image && image.dataUrl ? image : null;
+  if (!isBakerSampleEvidence(evidence)) stopBakerSampleDemo();
   if (precisionTapController) {
     precisionTapController.destroy();
     precisionTapController = null;
@@ -2650,11 +2743,13 @@ function renderEvidencePreview(image) {
         <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
         <div class="marker-layer" id="markerLayer"></div>
       </div>
+      ${isBakerSampleEvidence(evidence) ? bakerSampleDemoMarkup() : ""}
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
   `;
   bindDistanceControl();
   bindGuidanceCard();
+  bindBakerSampleDemo();
   const precisionTapViewport = document.getElementById("precisionTapViewport");
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");
@@ -2665,7 +2760,7 @@ function renderEvidencePreview(image) {
       viewport: precisionTapViewport,
       plane: markSurface,
       image: targetImage,
-      canTap: () => !precisionTapReviewing && (!resultsShown || awaitingNextConfirmationGroup()),
+      canTap: () => !isBakerSampleEvidence(activeEvidence()) && !precisionTapReviewing && (!resultsShown || awaitingNextConfirmationGroup()),
       onTap: handleMarkTap
     });
     requestAnimationFrame(() => {
@@ -4472,7 +4567,7 @@ function renderMarkStatus() {
         ? "Fire Another Group"
         : zeroingLivePhase === "confirmation"
           ? "Save Session"
-          : "Apply the Correction, Then Begin Confirmation";
+          : "Begin Confirmation";
   } else if (saveButton) {
     saveButton.textContent = "Save Session";
   }
@@ -4498,7 +4593,7 @@ function renderMarkStatus() {
   document.getElementById("chooseTargetButton").textContent = shooterPhotoLoaded && !governedPrecisionTapRegistration()
     ? "Try Another Photo"
     : referenceEvidence
-      ? "Add Photo"
+      ? "📷 Add Photo"
       : hasEvidence
         ? "Choose Another Photo"
         : "Choose Target";
@@ -4519,6 +4614,7 @@ function setMode(mode) {
 
 function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
+  if (isBakerSampleEvidence(activeEvidence())) return;
   let restoreFullTargetContext = false;
   const beginsNextGroup = awaitingNextConfirmationGroup();
   if (resultsShown && !beginsNextGroup) return;
@@ -4574,6 +4670,7 @@ document.getElementById("chooseTargetButton").addEventListener("click", event =>
     installBakerSimulationEvidence();
     return;
   }
+  stopBakerSampleDemo({ returnToWaiting: true });
   if (!ensureTargetSession()) return;
   const picker = document.getElementById("precisionTapPhotoPicker");
   document.getElementById("targetImageInput").value = "";

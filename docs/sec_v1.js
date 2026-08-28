@@ -57,6 +57,7 @@
         : [],
       sessionLabel: validText(model.sessionLabel) ? model.sessionLabel.trim() : "Session",
       scoreDisplay: validText(model.scoreDisplay) ? model.scoreDisplay.trim() : "Score Unavailable",
+      showSessionScore: model.showSessionScore !== false,
       regions,
       afterHtml: typeof model.afterHtml === "string" ? model.afterHtml : ""
     };
@@ -81,7 +82,7 @@
       const summaryClass = region.key === "target" ? "sec-framework-stage-heading sec-evidence-toggle" : `sec-framework-stage-heading sec-stage-pill${region.key === "session" ? " sec-session-pill" : ""}`;
       const summary = region.key === "target"
         ? `<summary class="${summaryClass}"><span>1 · TARGET</span><strong>${escapeAttribute(normalized.sessionLabel)}</strong></summary>`
-        : `<summary class="${summaryClass}"><span>${position}</span><h2>${title}</h2>${region.key === "session" ? `<strong class="sec-session-score">${escapeAttribute(normalized.scoreDisplay)}</strong>` : ""}<b aria-hidden="true"></b></summary>`;
+        : `<summary class="${summaryClass}"><span>${position}</span><h2>${title}</h2>${region.key === "session" && normalized.showSessionScore ? `<strong class="sec-session-score">${escapeAttribute(normalized.scoreDisplay)}</strong>` : ""}<b aria-hidden="true"></b></summary>`;
       return `<details class="${escapeAttribute(regionClasses)} sec-framework-stage sec-accordion-stage${region.key === "target" ? "" : " sec-collapsible-stage"}" data-sec-region="${escapeAttribute(region.key)}" data-sec-stage="${escapeAttribute(region.key === "sightCorrection" ? "sight-correction" : region.key)}" aria-label="${escapeAttribute(region.ariaLabel)}"${region.key === "target" ? " open" : ""}>${summary}<div class="${region.key === "target" ? "sec-historical-target-body" : "sec-stage-body"}">${region.contentHtml}</div></details>`;
     }).join("");
 
