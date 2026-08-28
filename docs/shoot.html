@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-baker-demo-cleanup-1" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-smart-target-overlay-1" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -398,16 +398,21 @@ function bakerSampleHoleMarkup(points, confirmation = false) {
   return points.map((point, index) => `<i class="baker-sample-hole${confirmation ? " is-confirmation" : ""}" style="--sample-x:${point[0]}%;--sample-y:${point[1]}%;--sample-delay:${index * 180}ms"><span>${index + 1}</span></i>`).join("");
 }
 
+function sampleFeatureHighlightMarkup(feature, x, y) {
+  return `<i class="sample-feature-highlight is-active" data-sample-feature="${feature}" style="--sample-x:${x}%;--sample-y:${y}%" aria-hidden="true"></i>`;
+}
+
 function bakerSampleDemoScene(state) {
   const initial = [[29,31],[34,33],[27,36],[32,38],[37,35]];
-  const confirmation = [[48,60],[51,59],[53,61],[52,63],[49,64]];
-  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>`;
+  const confirmation = [[48,55.5],[51,55],[53,57],[52,58.5],[49,59]];
+  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
   if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Tap each shot on the photograph.</span></div>${bakerSampleHoleMarkup(initial)}`;
-  if (state === "results") return `<div class="baker-sample-demo-callout"><strong>RESULT</strong><span>SCZN3 measures the group and returns the correction.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>${bakerSampleHoleMarkup(initial)}<svg class="baker-sample-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="32" y1="35" x2="50" y2="61" /></svg><div class="baker-sample-clicks"><b>→</b><strong>12</strong><span>RIGHT</span><em>CLICKS</em><b>↓</b><strong>8</strong><span>DOWN</span><em>CLICKS</em></div>`;
+  if (state === "results") return `<div class="baker-sample-demo-callout"><strong>RESULT</strong><span>SCZN3 measures the group and returns the correction.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>${bakerSampleHoleMarkup(initial)}<svg class="baker-sample-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="32" y1="35" x2="50" y2="56.6" /></svg><div class="baker-sample-clicks"><b>→</b><strong>12</strong><span>RIGHT</span><em>CLICKS</em><b>↓</b><strong>8</strong><span>DOWN</span><em>CLICKS</em></div>`;
   if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRM</strong><span>Apply the clicks, then mark the confirmation group.</span></div>${bakerSampleHoleMarkup(confirmation, true)}`;
+  if (state === "add-photo") return `<div class="baker-sample-demo-callout baker-sample-camera-cue"><strong><span aria-hidden="true">📷</span> ADD PHOTO</strong><span>Add your target photograph when you are ready to shoot.</span></div>`;
   if (state === "sec") return `<div class="baker-sample-stage-card"><span>SEC</span><strong>SHOOTER EXPERIENCE CARD</strong><small>Your target, observations, and result stay together.</small></div>`;
   if (state === "vault") return `<div class="baker-sample-stage-card"><span>VAULT</span><strong>BALLISTIC VAULT</strong><small>Your completed session is saved and ready to reopen.</small></div>`;
-  return `<div class="baker-sample-demo-waiting" aria-label="Sample workflow"><span><b>AIM</b><small>Mark your aim point</small></span><i aria-hidden="true">→</i><span><b>SHOOT</b><small>Mark your shots</small></span><i aria-hidden="true">→</i><span><b>📷 ADD PHOTO</b><small>Your turn</small></span></div>`;
+  return "";
 }
 
 function setBakerSampleDemoState(state, speak = true) {
@@ -424,6 +429,7 @@ function setBakerSampleDemoState(state, speak = true) {
     shoot: "Shoot. Tap each shot on the photograph.",
     results: "Tap-n-Score measures the group and gives you the sight correction.",
     confirmation: "Apply your clicks, then shoot and mark your confirmation group.",
+    "add-photo": "Add photo. Add your target photograph when you are ready to shoot.",
     sec: "Your Shooter Experience Card keeps the target, observations, and result together.",
     vault: "The completed session is saved in your Ballistic Vault and can be reopened exactly."
   }[state];
@@ -442,16 +448,17 @@ function startBakerSampleDemo() {
     ["shoot", 1500],
     ["results", 3600],
     ["confirmation", 5700],
-    ["sec", 7700],
-    ["vault", 9400],
-    ["waiting", 11100]
+    ["add-photo", 7700],
+    ["sec", 9400],
+    ["vault", 11100],
+    ["waiting", 12800]
   ].forEach(([state, delay]) => {
     bakerSampleDemoTimers.push(window.setTimeout(() => setBakerSampleDemoState(state, state !== "waiting"), delay));
   });
 }
 
 function bakerSampleDemoMarkup() {
-  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting"><span class="baker-sample-watermark">SAMPLE</span><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button">🗣️ LET THE TARGET TALK</button></div>`;
+  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button">🗣️ LET THE TARGET TALK</button></div>`;
 }
 
 function bindBakerSampleDemo() {
@@ -801,7 +808,7 @@ function simulationLimitReached() {
 }
 
 function zeroingMissionGuidance() {
-  if (isBakerSampleEvidence()) return "AIM → SHOOT → ADD PHOTO";
+  if (isBakerSampleEvidence()) return "";
   if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
@@ -938,6 +945,7 @@ function missionWorkspaceDescriptor() {
 
 function renderMissionWorkspaceChrome() {
   const descriptor = missionWorkspaceDescriptor();
+  document.body.dataset.bakerSampleStage = isBakerSampleEvidence() ? "true" : "false";
   if (SIMULATION_MODE) {
     const remaining = Math.max(0, SIMULATION_LIMIT - simulationCompletedCount());
     descriptor.eyebrow = "Try Before You Buy";
