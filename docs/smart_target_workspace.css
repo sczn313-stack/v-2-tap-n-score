@@ -34,6 +34,215 @@
   min-height:0;
 }
 
+.precision-tap-viewport{
+  position:relative;
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+  touch-action:none;
+  cursor:crosshair;
+  overscroll-behavior:contain;
+}
+
+.precision-tap-viewport.is-panning{cursor:grabbing}
+.precision-tap-viewport[data-precision-tap-state="review"]{cursor:default}
+
+.precision-tap-plane{
+  position:absolute;
+  top:0;
+  left:0;
+  width:auto;
+  height:auto;
+  min-width:0;
+  min-height:0;
+  transform-origin:0 0;
+  will-change:transform;
+  contain:layout paint;
+}
+
+.precision-tap-plane>img{
+  position:absolute;
+  inset:0;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  border:0!important;
+  object-fit:fill!important;
+}
+
+.precision-tap-plane>.marker-layer,
+.precision-tap-plane>.grid-coordinate-layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+.precision-tap-plane .precision-tap-marker{
+  width:var(--precision-tap-marker-size,18px);
+  height:var(--precision-tap-marker-size,18px);
+  border-width:var(--precision-tap-marker-border,2px);
+  background:rgba(255,255,255,.08);
+  color:#10100e;
+  font-size:var(--precision-tap-marker-font,9px);
+  box-shadow:0 0 0 var(--precision-tap-marker-border,2px) rgba(0,0,0,.86);
+}
+
+.precision-tap-plane .precision-tap-marker::after{
+  content:attr(data-shot-index);
+  position:absolute;
+  top:-55%;
+  left:72%;
+  display:grid;
+  place-items:center;
+  width:calc(var(--precision-tap-marker-size,18px) * .72);
+  height:calc(var(--precision-tap-marker-size,18px) * .72);
+  border-radius:50%;
+  background:#f2c84b;
+  color:#10100e;
+  font-size:var(--precision-tap-marker-font,9px);
+  font-weight:900;
+  line-height:1;
+}
+
+.precision-tap-plane .precision-tap-aim-marker{
+  width:var(--precision-tap-aim-size,24px);
+  height:var(--precision-tap-aim-size,24px);
+  border:var(--precision-tap-marker-border,2px) solid #54d6ff;
+  background:rgba(84,214,255,.1);
+  box-shadow:0 0 0 var(--precision-tap-marker-border,2px) rgba(0,0,0,.8);
+}
+
+.precision-tap-plane .precision-tap-aim-marker::before,
+.precision-tap-plane .precision-tap-aim-marker::after{
+  content:none;
+  display:none;
+}
+
+/* The governed mechanical correction is the result, not supporting metadata. */
+.precision-tap-plane .workspace-axis-correction.sczn3-live-correction-card{
+  min-width:clamp(82px,24%,132px);
+  padding:clamp(5px,1.2vw,10px);
+  grid-template-columns:auto 1fr;
+  column-gap:clamp(4px,1vw,8px);
+}
+
+.precision-tap-plane .workspace-axis-correction.sczn3-live-correction-card strong{
+  font-size:clamp(22px,5.8vw,38px)!important;
+  font-weight:950!important;
+  line-height:.82!important;
+}
+
+.precision-tap-plane .workspace-axis-correction.sczn3-live-correction-card small{
+  font-size:clamp(10px,2.4vw,16px)!important;
+  font-weight:950!important;
+  letter-spacing:.04em!important;
+}
+
+.precision-tap-plane .workspace-axis-correction.sczn3-live-correction-card em{
+  font-size:clamp(7px,1.4vw,10px)!important;
+}
+
+.precision-tap-photo-picker{
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#fff;
+}
+
+.precision-tap-photo-picker[hidden]{display:none!important}
+.precision-tap-photo-picker>div{display:grid;width:100%;height:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.precision-tap-photo-picker .button{display:flex!important;align-items:center;justify-content:center;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:3px;cursor:pointer}
+
+.target-page[data-range-state="review-observations"] #showResults,
+.target-page[data-range-state="show-results"] #showResults{
+  display:inline-flex;
+}
+
+.target-page[data-precision-tap-registration="required"] #chooseTargetButton{display:inline-flex}
+
+.target-page[data-precision-tap-review="true"] #clearMarks{display:none!important}
+
+@media(max-width:560px){
+  .precision-tap-photo-picker>div{grid-template-columns:1fr}
+}
+
+.precision-tap-photo-picker{
+  flex:1 1 100%;
+  width:100%;
+  padding:10px;
+  border:1px solid rgba(217,150,11,.7);
+  border-radius:10px;
+  background:rgba(6,7,10,.97);
+  color:#fff;
+}
+
+.precision-tap-photo-picker[hidden]{display:none!important}
+.precision-tap-photo-picker>strong{display:block;margin-bottom:8px;color:#f7c45b;font-size:12px;text-transform:uppercase}
+.precision-tap-photo-picker>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.precision-tap-photo-picker .button{display:flex!important;align-items:center;justify-content:center;min-height:46px;margin:0;cursor:pointer}
+
+.target-page[data-range-state="tap-aim"] #setAimMode,
+.target-page[data-range-state="tap-holes"] #addImpactMode{
+  display:none!important;
+}
+
+.target-page[data-range-state="review-observations"] #showResults,
+.target-page[data-range-state="show-results"] #showResults{
+  display:inline-flex;
+}
+
+.target-page[data-range-state="review-observations"] #undoImpact{
+  display:inline-flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
+.target-page[data-precision-tap-registration="required"] #chooseTargetButton{display:inline-flex}
+.target-page[data-precision-tap-photo-source="reference"][data-range-state="tap-aim"] #chooseTargetButton,
+.target-page[data-precision-tap-photo-source="reference"][data-range-state="tap-holes"] #chooseTargetButton{
+  display:inline-flex;
+  grid-column:2 / -1;
+}
+
+.target-page[data-precision-tap-photo-source="shooter"][data-range-state="tap-aim"] #chooseTargetButton,
+.target-page[data-precision-tap-photo-source="shooter"][data-range-state="tap-holes"] #chooseTargetButton{
+  display:none!important;
+}
+
+.target-page[data-precision-tap-review="true"] #clearMarks{display:none!important}
+
+/* Precision Tap Review ends at the shooter's decision. Photo entry belongs to
+   evidence acquisition and must not compete with the governed result action. */
+.target-page[data-precision-tap-review="true"] #chooseTargetButton,
+.target-page[data-precision-tap-review="true"] #precisionTapPhotoPicker{
+  display:none!important;
+}
+
+.target-page[data-precision-tap-review="true"][data-range-state="show-results"] #showResults{
+  display:inline-flex!important;
+  visibility:visible!important;
+  grid-column:2 / 4;
+  align-items:center;
+  justify-content:center;
+}
+
+.target-page[data-precision-tap-review="true"][data-range-state="show-results"] #undoImpact{
+  display:inline-flex!important;
+  visibility:visible!important;
+  grid-column:4;
+  align-items:center;
+  justify-content:center;
+}
+
 [data-sczn3-workspace="platform-v1"] [data-sczn3-workspace-evidence="true"] img{
   display:block;
   width:100%;
@@ -99,6 +308,10 @@
   bottom:2.2%;
   left:3.4%;
   width:auto;
+  box-sizing:border-box;
+  height:clamp(50px, 5.5vw, 62px);
+  min-height:clamp(50px, 5.5vw, 62px);
+  max-height:clamp(50px, 5.5vw, 62px);
 }
 
 @media (max-width:560px){
@@ -113,5 +326,166 @@
     right:2.7%;
     bottom:2%;
     left:2.7%;
+    height:54px;
+    min-height:54px;
+    max-height:54px;
+  }
+}
+
+/* Episode 59 Stay-on-Screen control projection.
+   One state owns the anchored control region; prior/future controls leave layout. */
+.target-page .precision-tap-control-shell-content{
+  display:grid;
+  grid-column:1 / -1;
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  grid-template-columns:clamp(44px, 8%, 64px) minmax(0, 1fr) clamp(44px, 11%, 70px) clamp(44px, 11%, 70px);
+  grid-template-rows:1fr;
+  gap:4px;
+  align-items:stretch;
+}
+
+.target-page .precision-tap-control-shell-content > [hidden]{
+  display:none!important;
+}
+
+.target-page[data-precision-tap-control-state] .precision-tap-control-shell-content > .target-hit-counter,
+.target-page[data-precision-tap-control-state] .precision-tap-control-shell-content > .button,
+.target-page[data-precision-tap-control-state] .precision-tap-control-shell-content > .neon-file-button,
+.target-page[data-precision-tap-control-state] .precision-tap-control-shell-content > .precision-tap-photo-picker{
+  display:none!important;
+}
+
+.target-page .precision-tap-control-shell-content > .target-hit-counter,
+.target-page .precision-tap-control-shell-content > .button,
+.target-page .precision-tap-control-shell-content > .neon-file-button{
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:100%!important;
+  margin:0;
+  padding:3px;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:clamp(8px, 1.25vw, 12px);
+  line-height:1.05;
+}
+
+/* Defect #8 — the workflow row is the visual shell. Its state content must
+   never paint a second card, pill, or full-width bordered rectangle. */
+.target-page .precision-tap-control-shell-content > .button.next-step,
+.target-page .precision-tap-control-shell-content > .neon-file-button.next-step,
+.target-page .precision-tap-control-shell-content > .button:not(.next-step),
+.target-page .precision-tap-control-shell-content .precision-tap-photo-picker .button,
+.target-page .precision-tap-control-shell-content > .target-hit-counter{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+.target-page .precision-tap-control-shell-content > .button.next-step,
+.target-page .precision-tap-control-shell-content > .neon-file-button.next-step{
+  color:#f7c45b!important;
+}
+
+.target-page .precision-tap-control-shell-content .precision-tap-photo-picker .button + .button{
+  border-left:1px solid rgba(217,150,11,.6)!important;
+}
+
+.target-page[data-precision-tap-control-state="photo_entry"] #chooseTargetButton{
+  display:inline-flex!important;
+  grid-column:1 / -1!important;
+}
+
+.target-page[data-precision-tap-control-state="photo_entry"][data-precision-tap-photo-picker="open"] #chooseTargetButton{
+  display:none!important;
+}
+
+.target-page[data-precision-tap-control-state="photo_entry"] #precisionTapPhotoPicker:not([hidden]){
+  display:block!important;
+  grid-column:1 / -1!important;
+}
+
+.target-page[data-precision-tap-control-state="aim_entry"] #setAimMode{
+  display:inline-flex!important;
+  grid-column:1 / -1!important;
+}
+
+.target-page[data-precision-tap-control-state="shot_entry"] #targetHitCounter,
+.target-page[data-precision-tap-control-state="confirmation_entry"][data-range-state="tap-holes"] #targetHitCounter,
+.target-page[data-precision-tap-control-state="result"] #targetHitCounter{
+  display:flex!important;
+}
+
+.target-page[data-precision-tap-control-state="shot_entry"] #addImpactMode,
+.target-page[data-precision-tap-control-state="confirmation_entry"][data-range-state="tap-holes"] #addImpactMode{
+  display:inline-flex!important;
+  grid-column:2;
+}
+
+.target-page[data-precision-tap-control-state="shot_entry"][data-precision-tap-has-shots="true"] #undoImpact,
+.target-page[data-precision-tap-control-state="shot_entry"][data-precision-tap-has-shots="true"] #clearMarks,
+.target-page[data-precision-tap-control-state="confirmation_entry"][data-precision-tap-has-shots="true"] #undoImpact,
+.target-page[data-precision-tap-control-state="confirmation_entry"][data-precision-tap-has-shots="true"] #clearMarks{
+  display:inline-flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
+.target-page[data-precision-tap-control-state="result"] #showResults{
+  display:inline-flex!important;
+  visibility:visible!important;
+  grid-column:2;
+}
+
+.target-page[data-precision-tap-control-state="result"] #undoImpact{
+  display:inline-flex!important;
+  visibility:visible!important;
+  grid-column:3;
+}
+
+.target-page[data-precision-tap-control-state="result"][data-precision-tap-review="false"] #clearMarks{
+  display:inline-flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  grid-column:4;
+}
+
+.target-page[data-precision-tap-control-state="result"][data-precision-tap-review="true"] #showResults{
+  grid-column:2 / 4;
+}
+
+.target-page[data-precision-tap-control-state="result"][data-precision-tap-review="true"] #undoImpact{
+  grid-column:4;
+}
+
+.target-page[data-precision-tap-control-state="confirmation_entry"] #saveMarks,
+.target-page[data-precision-tap-control-state="save"] #saveMarks{
+  display:inline-flex!important;
+  grid-column:1 / -1!important;
+}
+
+@media (max-width:560px){
+  .target-page .precision-tap-control-shell-content{
+    grid-template-columns:42px minmax(0,1fr) 42px 42px;
+    gap:3px;
+  }
+
+  .target-page .precision-tap-control-shell-content > .target-hit-counter,
+  .target-page .precision-tap-control-shell-content > .button,
+  .target-page .precision-tap-control-shell-content > .neon-file-button{
+    min-height:0;
+    height:100%;
+    padding:2px;
+  }
+
+  .precision-tap-photo-picker>div{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:3px;
   }
 }

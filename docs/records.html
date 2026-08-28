@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ballistic Vault - Tap-n-Score</title>
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=episode59-sec-evidence-aim-1" />
 <link rel="stylesheet" href="ballistic-vault.css?v=universal-vault-result-summary-1" />
 <link rel="stylesheet" href="sec-framework.css?v=episode55-inheritance-audit-1" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
@@ -55,6 +55,7 @@
 <script src="sec_adapter_model.js?v=episode54-item4a-1"></script>
 <script src="app_state.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_dispatch.js?v=mission-a-fresh-score-0814"></script>
+<script src="sec_reopen_capability.js?v=supabase-security-repair-1"></script>
 <script src="target_execution_runtime.js?v=episode56-scale-1"></script>
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
@@ -922,7 +923,7 @@ function authorityVisualForPackage(pkg, { includeAim = true } = {}) {
   impacts.forEach((point, index) => {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));
   });
-  if (includeAim) parts.push(markerHtml("aim-arrow", render.aim, ""));
+  if (includeAim) parts.push(markerHtml("aim-arrow", render.aim, "", 'aria-label="Shooter-declared aim point"'));
   parts.push(markerHtml("poib-dot", render.poib, "<span>POIB</span>", 'aria-label="Point of impact balance"'));
   return parts.join("");
 }
@@ -953,6 +954,16 @@ function syncSecEvidenceLayers() {
   document.querySelectorAll(".history-thumb").forEach((frame) => {
     const image = frame.querySelector("img");
     const layer = frame.querySelector(".history-evidence-layer");
+    const projectionPlane = layer && layer.closest(".sec-evidence-plane");
+    if (image && layer && projectionPlane) {
+      const imageBox = image.getBoundingClientRect();
+      const planeBox = projectionPlane.getBoundingClientRect();
+      layer.style.left = `${imageBox.left - planeBox.left}px`;
+      layer.style.top = `${imageBox.top - planeBox.top}px`;
+      layer.style.width = `${imageBox.width}px`;
+      layer.style.height = `${imageBox.height}px`;
+      return;
+    }
     SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, frame);
   });
 }
@@ -1839,33 +1850,26 @@ async function loadPreservedSECRecords() {
     : null;
   if (requestedLocalSession) {
     try {
-      await fetch(PRESERVED_SEC_ENDPOINT, {
-        method: "POST",
-        headers: { Accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({ session: requestedLocalSession })
-      });
+      await SCZN3SECReopenAuthority.provePossession(PRESERVED_SEC_ENDPOINT, requestedLocalSession);
     } catch (error) {
       // Keep the already-preserved local SEC readable if the durable store is unavailable.
     }
   }
   try {
-    const endpoint = REQUESTED_RECORD_SESSION_ID
-      ? `${PRESERVED_SEC_ENDPOINT}?session=${encodeURIComponent(REQUESTED_RECORD_SESSION_ID)}`
-      : PRESERVED_SEC_ENDPOINT;
-    const response = await fetch(endpoint, { headers: { Accept: "application/json" } });
-    const packageData = await response.json().catch(() => null);
-    if (response.ok && packageData && packageData.ok === true) {
+    if (REQUESTED_RECORD_SESSION_ID) {
+      const packageData = await SCZN3SECReopenAuthority.reopen(
+        PRESERVED_SEC_ENDPOINT, REQUESTED_RECORD_SESSION_ID, requestedLocalSession
+      );
       serverSavedSessions = packageData.session ? [packageData.session] : (Array.isArray(packageData.sessions) ? packageData.sessions : []);
       serverTimelineRecords = window.SCZN3SECSessionTimeline
         ? [...SCZN3SECSessionTimeline.preservedRecords(packageData)]
         : [];
-      if (HISTORICAL_DETAIL_MODE && window.SCZN3SECSessionTimeline) {
-        const timelineResponse = await fetch(PRESERVED_SEC_ENDPOINT, { headers: { Accept: "application/json" } });
-        const timelinePayload = await timelineResponse.json().catch(() => null);
-        serverTimelineRecords = timelineResponse.ok
-          ? [...SCZN3SECSessionTimeline.preservedRecords(timelinePayload)]
-          : [];
-      }
+      processingSucceeded = true;
+    } else {
+      // The browser-owned Vault is derived from locally held SEC identities.
+      // Global server enumeration is intentionally unavailable.
+      serverSavedSessions = [];
+      serverTimelineRecords = [];
       processingSucceeded = true;
     }
   } catch (error) {

@@ -462,6 +462,7 @@
   }
 }
 
+
 /* Universal compact Target Workspace dock.
    Missions provide evidence and actions; SCZN3 owns their handheld grammar. */
 .target-page .workflow-support-row{
@@ -526,11 +527,18 @@
 
 .target-page .workflow-control-row--docked .target-hit-counter,
 .target-page .workflow-control-row--docked > .button{
-  width:100%;
   min-width:0;
   height:100%;
   min-height:0;
   padding:3px;
+}
+
+.target-page .workflow-control-row--docked .target-hit-counter{
+  width:100%;
+}
+
+.target-page .workflow-control-row--docked > .button{
+  width:auto;
 }
 
 .target-page .workflow-control-row--docked .target-hit-counter{
@@ -9607,7 +9615,7 @@ body.navigation-leave-dialog-open{
 .target-page .authority-recovery-state .button{min-width:112px}
 
 .target-page .authority-evidence-summary{
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:minmax(0,1fr) minmax(72px,auto) auto;
   align-items:stretch;
 }
 
@@ -10098,8 +10106,11 @@ body.navigation-leave-dialog-open{
 }
 
 .records-page .aim-arrow{
-  background:#0c0c0c;
-  box-shadow:0 0 0 1px rgba(255,255,255,.92), 0 0 0 3px rgba(217,150,11,.42);
+  width:12px;
+  height:12px;
+  border:2px solid #00dff6;
+  background:transparent;
+  box-shadow:0 0 0 1px rgba(0,0,0,.7);
 }
 
 .records-page .gssf-sec-card{
@@ -12686,4 +12697,20 @@ body.navigation-leave-dialog-open{
     overflow-y:auto!important;
     overscroll-behavior:contain;
   }
+}
+
+/* Episode 59 — one non-overlapping action layout for the saved-result gate. */
+.target-page[data-precision-tap-control-state="save"] .workflow-control-row,
+.target-page[data-range-state="save-session"] .workflow-control-row,
+.target-page[data-range-state="continue-confirmation"] .workflow-control-row,
+.target-page[data-range-state="view-sec"] .workflow-control-row{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+
+.target-page[data-precision-tap-control-state="save"] .workflow-control-row #saveMarks,
+.target-page[data-range-state="save-session"] .workflow-control-row #saveMarks,
+.target-page[data-range-state="continue-confirmation"] .workflow-control-row #saveMarks,
+.target-page[data-range-state="view-sec"] .workflow-control-row #saveMarks{
+  grid-column:1 / -1!important;
+  width:100%!important;
 }

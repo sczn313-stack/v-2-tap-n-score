@@ -1,6 +1,8 @@
 """HTTP server for SCZN3 backend authority."""
 from __future__ import annotations
 
+import hmac
+import hmac
 import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -14,15 +16,22 @@ from gunfun_vital_dude_evidence_authority import VitalDudeEvidenceError, analyze
 from execution_authority import ExecutionAuthorityError, execute_authoritative_action, execute_authoritative_session
 from stage_event_store import runtime_stage_event_store
 from target_execution_contract import runtime_resolver as target_execution_runtime_resolver
+from target_image_registration_authority import TargetImageRegistrationError, register_target_image
 from m4_authority.authority_service import build_authority_package as build_m4_authority_package
 from ops_store import record_event, summarize_events
 from product_catalog import product_resolution_http_status, resolve_product_route
 from preserved_sec_store import (
     PreservedSECError,
-    list_preserved_secs,
     preserve_sec,
     read_preserved_sec,
     runtime_store as preserved_sec_runtime_store,
+)
+from sec_reopen_authority import (
+    CAPABILITY_HEADER,
+    SECReopenAuthorityError,
+    issue_reopen_capability,
+    signing_key as sec_reopen_signing_key,
+    verify_reopen_capability,
 )
 from progression_record_store import runtime_progression_record_store
 from rating_store import RatingError, record_rating, runtime_store as rating_runtime_store
@@ -89,6 +98,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     TARGET_EXECUTION_CATALOG_PATHS = {"/api/target-execution/catalog", "/api/target-execution/catalog/"}
     SEC_PROGRESSION_PATHS = {"/api/sec-progression/evaluate", "/api/sec-progression/evaluate/"}
     EXPERIENCE_RATING_PATHS = {"/api/feedback/rating", "/api/feedback/rating/"}
+    TARGET_IMAGE_REGISTRATION_PATHS = {"/api/authority/target-image-registration", "/api/authority/target-image-registration/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -107,7 +117,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", cors_origin)
             self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Idempotency-Key")
+        self.send_header("Access-Control-Allow-Headers", f"Content-Type, Idempotency-Key, {CAPABILITY_HEADER}")
         self.end_headers()
         self.wfile.write(body)
 
@@ -131,13 +141,14 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             try:
                 query = parse_qs(urlparse(self.path).query)
                 session_id = query.get("session", query.get("sessionId", [""]))[0]
-                package = (
-                    read_preserved_sec(session_id, preserved_sec_runtime_store())
-                    if session_id
-                    else list_preserved_secs(preserved_sec_runtime_store())
-                )
+                if not session_id:
+                    raise SECReopenAuthorityError("preserved_sec_enumeration_not_authorized")
+                claims = verify_reopen_capability(self.headers.get(CAPABILITY_HEADER), session_id)
+                package = read_preserved_sec(session_id, preserved_sec_runtime_store())
+                if not hmac.compare_digest(package["artifactSha256"], claims["artifactSha256"]):
+                    raise SECReopenAuthorityError("preserved_sec_reopen_capability_invalid")
                 self._send_json(200, package)
-            except PreservedSECError as exc:
+            except (PreservedSECError, SECReopenAuthorityError) as exc:
                 self._send_json(exc.http_status, exc.payload)
             except Exception:
                 self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_read_failed"})
@@ -159,7 +170,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
                 "targets": target_execution_runtime_resolver().catalog(),
             })
             return
-        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS or path in self.BAKER_SL_ST2_ANALYZE_PATHS or path in self.BAKER_FUN_ANALYZE_PATHS or path in self.VITAL_DUDE_ANALYZE_PATHS or path in self.TARGET_EXECUTION_PATHS or path in self.SEC_PROGRESSION_PATHS or path in self.EXPERIENCE_RATING_PATHS:
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS or path in self.BAKER_SL_ST2_ANALYZE_PATHS or path in self.BAKER_FUN_ANALYZE_PATHS or path in self.VITAL_DUDE_ANALYZE_PATHS or path in self.TARGET_EXECUTION_PATHS or path in self.SEC_PROGRESSION_PATHS or path in self.EXPERIENCE_RATING_PATHS or path in self.TARGET_IMAGE_REGISTRATION_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -189,6 +200,16 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.TARGET_IMAGE_REGISTRATION_PATHS:
+            try:
+                self._send_json(200, register_target_image(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except TargetImageRegistrationError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:  # pragma: no cover - defensive registration boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "target_image_registration_failed"})
+            return
         if path in self.EXPERIENCE_RATING_PATHS:
             try:
                 package = record_rating(
@@ -217,10 +238,15 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             return
         if path in self.PRESERVED_SEC_PATHS:
             try:
-                self._send_json(201, preserve_sec(self._read_json_body(), preserved_sec_runtime_store()))
+                sec_reopen_signing_key()
+                package = preserve_sec(self._read_json_body(), preserved_sec_runtime_store())
+                package["reopenCapability"] = issue_reopen_capability(
+                    package["session"]["sessionId"], package["artifactSha256"]
+                )
+                self._send_json(201, package)
             except (json.JSONDecodeError, UnicodeDecodeError):
                 self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
-            except PreservedSECError as exc:
+            except (PreservedSECError, SECReopenAuthorityError) as exc:
                 self._send_json(exc.http_status, exc.payload)
             except Exception:
                 self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_persistence_failed"})

@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="sczn3-authority-endpoint" content="/api/authority/ugeo" />
 <title>Target</title>
-<link rel="stylesheet" href="styles.css?v=workspace-template-v1" />
+<link rel="stylesheet" href="styles.css?v=episode59-final-ui-cleanup-1" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=episode45-ui-polish-v1" />
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode54-item6-1" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-defect-8-single-visual-shell-2" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -25,7 +25,7 @@ window.addEventListener("error", event => {
 <script src="navigation.js?v=episode57-rate-us-cleanup-1" defer></script>
 <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
 <script src="platform_actions.js?v=episode54-item7-1"></script>
-<script src="smart_target_workspace.js?v=episode54-item6-1"></script>
+<script src="smart_target_workspace.js?v=episode59-stay-on-screen-1"></script>
 </head>
 <body class="platform-page target-page">
 <main class="shell">
@@ -105,19 +105,28 @@ window.addEventListener("error", event => {
           </details>
           <p class="save-session-status" id="saveSessionStatus" role="status" aria-live="polite"></p>
           <div class="workflow-control-row" aria-label="Primary Action Bar" data-processing-host data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1">
-            <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
-              <strong>0</strong>
-              <span>Holes</span>
+            <div class="precision-tap-control-shell-content" id="precisionTapControlShellContent" data-precision-tap-control-owner="true">
+              <div class="target-hit-counter" id="targetHitCounter" aria-live="polite">
+                <strong>0</strong>
+                <span>Holes</span>
+              </div>
+              <button class="button neon-file-button next-step" id="chooseTargetButton" type="button">Choose Target</button>
+              <div class="precision-tap-photo-picker" id="precisionTapPhotoPicker" role="group" aria-label="Choose target photo source" hidden>
+                <div>
+                  <label class="button" for="targetCameraInput">Take Photo</label>
+                  <label class="button" for="targetImageInput">Choose Existing Photo</label>
+                </div>
+              </div>
+              <input class="visually-hidden-file" id="targetCameraInput" type="file" accept="image/*" capture="environment" />
+              <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
+              <button class="button" type="button" id="setAimMode">Tap Your Aim Point</button>
+              <button class="button" type="button" id="addImpactMode">Tap Your Shots</button>
+              <button class="button" type="button" id="showResults">Show Results</button>
+              <button class="button" type="button" id="undoImpact">Undo</button>
+              <button class="button" type="button" id="clearMarks">Clear</button>
+              <button class="button" type="button" id="saveMarks">Begin Confirmation</button>
+              <input id="showGridCoordinates" type="checkbox" hidden />
             </div>
-            <label class="button neon-file-button next-step" id="chooseTargetButton" for="targetImageInput" role="button" tabindex="0">Choose Target</label>
-            <input class="visually-hidden-file" id="targetImageInput" type="file" accept="image/*" />
-            <button class="button" type="button" id="setAimMode">Tap Aim Point</button>
-            <button class="button" type="button" id="addImpactMode">Tap Holes</button>
-            <button class="button" type="button" id="showResults">Show Results</button>
-            <button class="button" type="button" id="undoImpact">Undo</button>
-            <button class="button" type="button" id="clearMarks">Clear</button>
-            <button class="button" type="button" id="saveMarks">Begin Confirmation</button>
-            <input id="showGridCoordinates" type="checkbox" hidden />
           </div>
         </div>
       </section>
@@ -237,6 +246,7 @@ const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.loca
 const FOUNDER_WORKSPACE_TEST_MODE = IS_LOCAL_FRONTEND && TARGET_QUERY.get("founder_review") === "1";
 const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
 const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
+const TARGET_IMAGE_REGISTRATION_ENDPOINT = window.SCZN3_TARGET_IMAGE_REGISTRATION_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/target-image-registration");
 const TARGET_PROFILE_LAUNCH_ID = TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || "";
 const GSSF_CANONICAL_EXPORT_ENABLED = TARGET_QUERY.get("gssf_canonical_export") === "1";
 const DOT_TORTURE_PROFILE_IDS = new Set([
@@ -326,6 +336,23 @@ const GSSF_CANONICAL_AUTHORITY = Object.freeze({
   imageHeightPx: 1373,
   dataUrl: "assets/gssf_ac_1_clean_reference.png"
 });
+const PRECISION_TAP_EXACT_ASSETS = Object.freeze({
+  gssf_ac_1: Object.freeze({
+    sha256: GSSF_CANONICAL_AUTHORITY.canonicalAssetSha256,
+    widthPx: GSSF_CANONICAL_AUTHORITY.imageWidthPx,
+    heightPx: GSSF_CANONICAL_AUTHORITY.imageHeightPx,
+    authorityId: GSSF_CANONICAL_AUTHORITY.registrationPackageId,
+    authoritySource: "registered_exact_asset",
+    coordinateSystemVersion: GSSF_CANONICAL_AUTHORITY.canonicalCoordinateSystemVersion
+  }),
+  m4_25m_zero: Object.freeze({
+    sha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
+    widthPx: 2550,
+    heightPx: 3300,
+    authorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    authoritySource: "governed_m4_workspace_asset"
+  })
+});
 let missionResolutionStatus = SESSION_ROUTE_MISS ? "unavailable" : (TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle");
 let missionResolutionMessage = SESSION_ROUTE_MISS
   ? "The requested session is unavailable. Return to Session Setup and start the session again."
@@ -341,9 +368,8 @@ let gssfTimerAuthorityRequestHandle = null;
 let gssfTimerAuthorityRequestToken = 0;
 let pendingEvidence = null;
 let displayedEvidence = null;
-const activeMarkPointers = new Set();
-let markTapCandidate = null;
-let markGestureCancelled = false;
+let precisionTapController = null;
+let precisionTapReviewing = false;
 function sourceIsZeroingSession(source) {
   if (!source || typeof source !== "object") return false;
   const matrixSource = source.matrixSnapshot || {};
@@ -392,6 +418,7 @@ let currentScore = backendScoreValue(backendAuthorityPackage);
 let resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
 let authorityStatusMessage = "";
 let authorityRequestInFlight = false;
+let activeShowResultsTiming = null;
 let sessionSaved = false;
 let workspaceHasUnsavedProgress = !!(
   session
@@ -684,19 +711,19 @@ function simulationLimitReached() {
 }
 
 function zeroingMissionGuidance() {
-  if (!hasMarkableEvidence()) return "Start With A Target Photo";
+  if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
-    if (!resultsShown) return "Review the group, then show confirmation results.";
+    if (!resultsShown) return "Tap Show Results for this confirmation group.";
     if (!isM4AuthoritySession()) return "Confirmation recorded. Save the completed session.";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero confirmed. Save the completed session."
       : "Apply the correction, then fire another confirmation group.";
   }
-  if (!currentAimPoint) return "Tap the point you aimed at.";
-  if (!currentImpactPoints.length) return "Tap each bullet hole in the initial group.";
+  if (!currentAimPoint) return "Tap your aim point on the photo.";
+  if (!currentImpactPoints.length) return "Tap your shots on the photo.";
   if (!resultsShown) return (!isM4AuthoritySession() || holeEntrySettled)
-    ? "Review the group, then show results."
+    ? "Tap Show Results when your shots are marked."
     : "Continue tapping bullet holes.";
   if (!sessionSaved) return "Apply the correction, then begin confirmation.";
   return "View Record";
@@ -720,7 +747,7 @@ function zeroingMissionStatus() {
 }
 
 function gssfMissionGuidance() {
-  if (!hasMarkableEvidence()) return "Start With A Target Photo";
+  if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (!currentImpactPoints.length) return "Record Impacts";
   if (!resultsShown) return "Show Results";
   if (!sessionSaved) return "Save Session";
@@ -736,7 +763,7 @@ function gssfMissionStatus() {
 }
 
 function trainingMissionGuidance(authorityPackage) {
-  if (!hasMarkableEvidence()) return "Start With A Target Photo";
+  if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (trainingDrillFinished) return "Save Results";
   return trainingStageGuidance(authorityPackage, trainingStageIndex);
 }
@@ -797,7 +824,7 @@ function missionWorkspaceDescriptor() {
       status: gssfMissionStatus(),
       guidance: gssfMissionGuidance(),
       chooseLabel: "Add Target Photo",
-      impactLabel: "Tap Stage Hits",
+      impactLabel: "Tap Your Shots",
       completeLabel: "Show Results"
     };
   }
@@ -812,7 +839,7 @@ function missionWorkspaceDescriptor() {
         ? "Tap up to 10 bullet holes"
         : zeroingMissionGuidance(),
     chooseLabel: "Add Target Photo",
-    impactLabel: SIMULATION_MODE ? "Tap up to 10 holes" : "Tap Holes",
+    impactLabel: SIMULATION_MODE ? "Tap up to 10 shots" : "Tap Your Shots",
     completeLabel: "Show Results"
   };
 }
@@ -852,23 +879,17 @@ function renderMissionWorkspaceChrome() {
   if (status) status.textContent = descriptor.status || "Ready";
   if (guidance) guidance.textContent = descriptor.guidance || "";
   if (chooseTarget) chooseTarget.textContent = descriptor.chooseLabel || "Add Target Photo";
-  if (aimButton) {
-    aimButton.textContent = SIMULATION_MODE
-      ? "Tap where you aimed"
-      : isM4AuthoritySession()
-        ? "Tap Where You Aimed"
-        : "Tap Aim Point";
-  }
-  if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Holes";
+  if (aimButton) aimButton.textContent = "Tap Your Aim Point";
+  if (impactButton) impactButton.textContent = descriptor.impactLabel || "Tap Your Shots";
   if (
     impactButton
     && isZeroingAuthoritySession()
     && zeroingLivePhase === "confirmation"
   ) {
-    impactButton.textContent = "Tap Your Confirmation Impacts";
+    impactButton.textContent = "Tap Your Confirmation Shots";
   }
   if (completeButton) completeButton.textContent = descriptor.completeLabel || "Show Results";
-  if (completeButton && authorityRequestInFlight) completeButton.textContent = "Scoring…";
+  if (completeButton && authorityRequestInFlight) completeButton.textContent = isZeroingAuthoritySession() ? "Calculating…" : "Scoring…";
   if (restartLink) restartLink.hidden = !simulationLimitReached();
 }
 
@@ -960,6 +981,20 @@ function isNonZeroingAuthorityPackage(authorityPackage) {
   return isGssfAuthorityPackage(authorityPackage) || isDotTortureTrainingPackage(authorityPackage);
 }
 
+function isZeroingAuthorityPackage(authorityPackage) {
+  if (!authorityPackage || typeof authorityPackage !== "object") return false;
+  const missionFamily = String(authorityPackage.mission_family || authorityPackage.missionFamily || authorityPackage.missionFamilyId || "");
+  const resultPackageType = String(authorityPackage.resultPackageType || "");
+  const status = authorityPackage.status;
+  return missionFamily === "zeroingCorrection"
+    && resultPackageType === "zeroCorrectionResult"
+    && !!status
+    && status.hasAim === true
+    && status.hasPOIB === true
+    && Number.isInteger(Number(status.impactCount))
+    && Number(status.impactCount) > 0;
+}
+
 function isMissionResolving() {
   return missionResolutionStatus === "resolving";
 }
@@ -1019,7 +1054,7 @@ function authorityPackageMissionKind(authorityPackage) {
   if (!authorityPackage) return "";
   if (isDotTortureTrainingPackage(authorityPackage)) return "dotTortureFamily";
   if (isGssfAuthorityPackage(authorityPackage)) return "gssf";
-  if (authorityPackage.status && authorityPackage.status.hasCorrection) return "zeroing";
+  if (isZeroingAuthorityPackage(authorityPackage)) return "zeroing";
   return "";
 }
 
@@ -1098,7 +1133,17 @@ function syncAuthorityDerivedState() {
   backendAuthorityPackage = compatibleAuthorityPackage(backendAuthorityPackage);
   currentClicks = zeroingClicksFromAuthorityPackage(backendAuthorityPackage);
   currentScore = backendScoreValue(backendAuthorityPackage);
-  resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage);
+  resultsShown = isAuthorityPackageCalculated(backendAuthorityPackage)
+    || isGovernedConfirmationEvidenceResult(backendAuthorityPackage);
+}
+
+function isGovernedConfirmationEvidenceResult(authorityPackage) {
+  return !!(
+    isZeroingAuthorityPackage(authorityPackage)
+    && String(authorityPackage.phase || "") === "confirmation"
+    && authorityPackage.validation
+    && authorityPackage.validation.evidenceStatus === "recorded"
+  );
 }
 
 function zeroingClicksFromAuthorityPackage(authorityPackage) {
@@ -1128,6 +1173,16 @@ function isAuthorityPackageCalculated(authorityPackage) {
     return authorityPackage.ok === true
       && authorityPackage.status === "calculated"
       && (classifications.length > 0 || renderHits.length > 0);
+  }
+  if (isZeroingAuthorityPackage(authorityPackage)) {
+    return !!(
+      authorityPackage.status
+      && (
+        authorityPackage.status.hasCorrection
+        || authorityPackage.status.hasResult
+        || (authorityPackage.status.hasAim && authorityPackage.status.hasPOIB && Number(authorityPackage.status.impactCount) > 0)
+      )
+    );
   }
   return !!(authorityPackage.status && authorityPackage.status.hasCorrection);
 }
@@ -1328,6 +1383,15 @@ function installBakerSimulationEvidence() {
     name: "Baker 100 Yard Smart Target",
     type: "image/png",
     assetRole: "simulation-reference-target",
+    registrationStatus: "complete",
+    registrationAuthoritySource: "registered_exact_asset",
+    registrationAuthorityId: "baker-st-100yd-smart-photo-registration-v1",
+    registrationPackageId: "baker-st-100yd-smart-photo-registration-v1",
+    registrationPackageVersion: "1",
+    canonicalCoordinateSystemVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    canonicalAssetSha256: "0731aed37dc1e2a6ab0f57517bded6a9b97110dc73cf8c1a7a20d516175e3fbf",
+    imageWidthPx: 1102,
+    imageHeightPx: 1713,
     targetProfileId: "baker_st_100yd_smart_zero",
     targetId: "BAKER_ST_100YD_SMART",
     publisher: "Baker Targets"
@@ -1351,16 +1415,21 @@ function installBaker100YardEvidence() {
     name: "Baker 100 Yard Smart Target",
     type: "image/png",
     assetRole: "registered-reference-target",
+    registrationStatus: "complete",
+    registrationAuthoritySource: "registered_exact_asset",
+    registrationAuthorityId: "baker-st-100yd-smart-photo-registration-v1",
+    registrationPackageId: "baker-st-100yd-smart-photo-registration-v1",
+    registrationPackageVersion: "1",
+    canonicalCoordinateSystemVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    canonicalAssetSha256: "0731aed37dc1e2a6ab0f57517bded6a9b97110dc73cf8c1a7a20d516175e3fbf",
+    imageWidthPx: 1102,
+    imageHeightPx: 1713,
     targetProfileId: "baker_st_100yd_smart_zero",
     targetId: "BAKER_ST_100YD_SMART",
     publisher: "Baker Targets"
   };
   session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
   pendingEvidence = null;
-  const chooseTarget = document.getElementById("chooseTargetButton");
-  const targetInput = document.getElementById("targetImageInput");
-  if (chooseTarget) chooseTarget.hidden = true;
-  if (targetInput) targetInput.disabled = true;
   return evidence;
 }
 
@@ -1372,6 +1441,8 @@ function installGssfCanonicalEvidence() {
     name: "GSSF AC-1 clean registered target",
     type: "image/png",
     assetRole: "scorable_canonical_asset",
+    registrationStatus: "complete",
+    registrationAuthoritySource: "registered_exact_asset",
     canonicalAssetId: GSSF_CANONICAL_AUTHORITY.canonicalAssetId,
     canonicalAssetSha256: GSSF_CANONICAL_AUTHORITY.canonicalAssetSha256,
     registrationPackageId: GSSF_CANONICAL_AUTHORITY.registrationPackageId,
@@ -1382,10 +1453,6 @@ function installGssfCanonicalEvidence() {
   };
   session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
   pendingEvidence = null;
-  const chooseTarget = document.getElementById("chooseTargetButton");
-  const targetInput = document.getElementById("targetImageInput");
-  if (chooseTarget) chooseTarget.hidden = true;
-  if (targetInput) targetInput.disabled = true;
   return evidence;
 }
 
@@ -1399,7 +1466,15 @@ function installM4CanonicalEvidence() {
     && Number(existingEvidence && existingEvidence.imageWidthPx) === 2550
     && Number(existingEvidence && existingEvidence.imageHeightPx) === 3300;
   if (existingEvidence && isFounderPrototypeTarget) {
-    return existingEvidence;
+    const registeredEvidence = {
+      ...existingEvidence,
+      registrationStatus: "complete",
+      registrationAuthoritySource: "governed_m4_workspace_asset",
+      registrationAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+      canonicalAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4"
+    };
+    session = SCZN3M4.updateActiveSession({ targetEvidenceImage: registeredEvidence }) || session;
+    return registeredEvidence;
   }
   const evidence = {
     dataUrl: founderPrototypeAsset,
@@ -1409,6 +1484,10 @@ function installM4CanonicalEvidence() {
     temporaryDevelopmentAsset: false,
     productionAuthorityPromotion: false,
     physicalValidationStatus: "passed-33-of-33",
+    registrationStatus: "complete",
+    registrationAuthoritySource: "governed_m4_workspace_asset",
+    registrationAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    canonicalAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
     validatedReconstruction: "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
     canonicalVisualReference: "authority-evidence/m4-target-reconstruction/founder-reference/IMG_2089_ORIGINAL.jpeg",
     rollbackAsset: "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg",
@@ -1425,10 +1504,6 @@ function installM4CanonicalEvidence() {
   };
   session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
   pendingEvidence = null;
-  const chooseTarget = document.getElementById("chooseTargetButton");
-  const targetInput = document.getElementById("targetImageInput");
-  if (chooseTarget) chooseTarget.hidden = true;
-  if (targetInput) targetInput.disabled = true;
   return evidence;
 }
 
@@ -1942,6 +2017,7 @@ function targetIntelStackHtml() {
       <div class="authority-results-panel" aria-label="Results">
         <div class="authority-evidence-summary">
           <div class="target-intel-item evidence-count"><strong id="hitsValue">0 Hits</strong></div>
+          <div class="target-intel-item evidence-group"><span>Group</span><strong id="groupValue">--</strong></div>
           <div class="target-intel-score score-pending" id="scoreCell"><span class="target-score-label">Score</span><strong id="scoreValue">--</strong></div>
         </div>
         <div class="authority-status-message is-hidden" id="authorityStatusMessage" role="status" aria-live="polite"></div>
@@ -2516,7 +2592,10 @@ function configureWorkspaceStage(evidence, image = null) {
       : null
   );
   if (!dimensions) return;
-  SCZN3SmartTargetWorkspace.configureContainedStage(stage, dimensions);
+  const availableViewport = smartTargetWorkspace.syncVisibleViewport();
+  SCZN3SmartTargetWorkspace.configureContainedStage(stage, dimensions, {
+    viewportHeight: availableViewport.height
+  });
 }
 
 function resetWorkspaceStageGeometry() {
@@ -2528,6 +2607,10 @@ function resetWorkspaceStageGeometry() {
 function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
   const evidence = image && image.dataUrl ? image : null;
+  if (precisionTapController) {
+    precisionTapController.destroy();
+    precisionTapController = null;
+  }
   displayedEvidence = evidence;
   configureWorkspaceStage(evidence);
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
@@ -2561,30 +2644,36 @@ function renderEvidencePreview(image) {
     return;
   }
   preview.innerHTML = `
-    <div class="mark-surface" id="markSurface" data-sczn3-workspace-evidence="true" hidden>
-      <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
-      <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
-      <div class="marker-layer" id="markerLayer"></div>
+    <div class="precision-tap-viewport" id="precisionTapViewport" data-sczn3-workspace-evidence="true" hidden>
+      <div class="mark-surface precision-tap-plane" id="markSurface">
+        <img src="${evidence.dataUrl}" alt="Uploaded target evidence preview" />
+        <div class="grid-coordinate-layer" id="gridCoordinateLayer"></div>
+        <div class="marker-layer" id="markerLayer"></div>
+      </div>
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
   `;
   bindDistanceControl();
   bindGuidanceCard();
+  const precisionTapViewport = document.getElementById("precisionTapViewport");
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");
   smartTargetWorkspace.decodeImage(targetImage).then(() => {
     configureWorkspaceStage(evidence, targetImage);
-    markSurface.hidden = false;
+    precisionTapViewport.hidden = false;
+    precisionTapController = SCZN3SmartTargetWorkspace.createPrecisionTap({
+      viewport: precisionTapViewport,
+      plane: markSurface,
+      image: targetImage,
+      canTap: () => !precisionTapReviewing && (!resultsShown || awaitingNextConfirmationGroup()),
+      onTap: handleMarkTap
+    });
     requestAnimationFrame(() => {
       syncOverlayLayerToDisplayedImage();
       renderMarkers();
     });
-  }).catch(() => { markSurface.hidden = true; });
-  markSurface.addEventListener("pointerdown", handleMarkPointerDown, { passive: true });
-  markSurface.addEventListener("pointerup", handleMarkPointerUp, { passive: true });
-  markSurface.addEventListener("pointercancel", handleMarkPointerCancel, { passive: true });
-  markSurface.addEventListener("touchmove", handleMarkTouchMove, { passive: false });
-  markSurface.addEventListener("contextmenu", event => event.preventDefault());
+  }).catch(() => { precisionTapViewport.hidden = true; });
+  precisionTapViewport.addEventListener("contextmenu", event => event.preventDefault());
   renderMarkers();
   renderMarkStatus();
 }
@@ -2623,9 +2712,175 @@ function downsizeImageDataUrl(dataUrl, maxSize = 1200) {
   });
 }
 
+async function inspectPrecisionTapImage(dataUrl) {
+  const encoded = String(dataUrl || "").split(",", 2)[1] || "";
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const sha256 = [...new Uint8Array(digest)].map(value => value.toString(16).padStart(2, "0")).join("");
+  const dimensions = await new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    image.onerror = reject;
+    image.src = dataUrl;
+  });
+  return { dataUrl, sha256, ...dimensions };
+}
+
+async function inspectPrecisionTapImage(dataUrl) {
+  const encoded = String(dataUrl || "").split(",", 2)[1] || "";
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const sha256 = [...new Uint8Array(digest)].map(value => value.toString(16).padStart(2, "0")).join("");
+  const dimensions = await new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    image.onerror = reject;
+    image.src = dataUrl;
+  });
+  return { dataUrl, sha256, ...dimensions };
+}
+
 function hasMarkableEvidence() {
   const evidence = activeEvidence();
   return !!(session && evidence && evidence.dataUrl);
+}
+
+function activeTargetImageRegistrationAuthority() {
+  const backend = session && session.backendSessionAuthority || {};
+  const authority = backend.registrationAuthority || session && session.registrationAuthority || null;
+  if (authority && authority.status === "available" && authority.registrationPackageId) return authority;
+  return null;
+}
+
+function activeTargetProfileVersion() {
+  const backend = session && session.backendSessionAuthority || {};
+  return String(
+    backend.target && backend.target.targetProfileVersion
+    || session && session.targetProfileVersion
+    || ""
+  );
+}
+
+function precisionTapRequiresCanonicalRegistration() {
+  return !!activeTargetImageRegistrationAuthority();
+}
+
+function precisionTapShooterEvidenceReady(evidence = activeEvidence()) {
+  if (!evidence || !evidence.dataUrl) return false;
+  if (SIMULATION_MODE) return true;
+  if (!String(evidence.assetRole || "").includes("shooter-captured")) return false;
+  if (!precisionTapRequiresCanonicalRegistration()) return true;
+  return ["exact", "estimated", "partial", "complete"].includes(String(evidence.registrationStatus || ""));
+}
+
+function governedPrecisionTapRegistration(evidence = activeEvidence()) {
+  if (!evidence || !["exact", "estimated", "partial", "complete"].includes(String(evidence.registrationStatus || ""))) return null;
+  const authorityId = String(evidence.registrationPackageId || evidence.registrationAuthorityId || "");
+  const sourceHash = String(evidence.sourceImageSha256 || evidence.canonicalAssetSha256 || "");
+  if (!authorityId || !/^[a-f0-9]{64}$/i.test(sourceHash)) return null;
+  return {
+    status: String(evidence.registrationStatus),
+    authorityId,
+    authorityVersion: String(evidence.registrationPackageVersion || ""),
+    authoritySource: String(evidence.registrationAuthoritySource || ""),
+    sourceImageSha256: sourceHash,
+    canonicalAssetSha256: String(evidence.canonicalAssetSha256 || "") || null,
+    coordinateSystemVersion: String(evidence.canonicalCoordinateSystemVersion || "") || null,
+    registrationEvidenceId: String(evidence.registrationEvidenceId || "") || null,
+    globalUncertaintyPx: Number(evidence.registrationGlobalUncertaintyPx) || 0
+  };
+}
+
+function registeredExactAssetForUpload(imageEvidence) {
+  const profileId = sessionTargetProfileId(session) || String(TARGET_PROFILE_LAUNCH_ID).toLowerCase();
+  const authority = PRECISION_TAP_EXACT_ASSETS[profileId];
+  if (!authority || !imageEvidence) return null;
+  if (imageEvidence.sha256 !== authority.sha256) return null;
+  if (Number(imageEvidence.width) !== authority.widthPx || Number(imageEvidence.height) !== authority.heightPx) return null;
+  return authority;
+}
+
+function precisionTapEvidenceEnvelope() {
+  const evidence = activeEvidence();
+  const registration = governedPrecisionTapRegistration(evidence);
+  const registrationAuthority = activeTargetImageRegistrationAuthority();
+  return {
+    schemaVersion: "sczn3-precision-tap-observations-v1",
+    observationAuthority: "shooter_declared",
+    coordinateConvention: "normalized_source_image_top_left",
+    sourceImageSha256: String(evidence && (evidence.sourceImageSha256 || evidence.canonicalAssetSha256) || ""),
+    sourceImageDimensions: evidence ? {
+      widthPx: Number(evidence.imageWidthPx) || null,
+      heightPx: Number(evidence.imageHeightPx) || null
+    } : null,
+    originalSourceImage: evidence ? {
+      sha256: String(evidence.originalSourceImageSha256 || evidence.sourceImageSha256 || evidence.canonicalAssetSha256 || ""),
+      widthPx: Number(evidence.originalImageWidthPx || evidence.imageWidthPx) || null,
+      heightPx: Number(evidence.originalImageHeightPx || evidence.imageHeightPx) || null
+    } : null,
+    sourceImageSha256: String(evidence && (evidence.sourceImageSha256 || evidence.canonicalAssetSha256) || ""),
+    sourceImageDimensions: evidence ? {
+      widthPx: Number(evidence.imageWidthPx) || null,
+      heightPx: Number(evidence.imageHeightPx) || null
+    } : null,
+    originalSourceImage: evidence ? {
+      sha256: String(evidence.originalSourceImageSha256 || evidence.sourceImageSha256 || evidence.canonicalAssetSha256 || ""),
+      widthPx: Number(evidence.originalImageWidthPx || evidence.imageWidthPx) || null,
+      heightPx: Number(evidence.originalImageHeightPx || evidence.imageHeightPx) || null
+    } : null,
+    targetProfileId: activeTargetProfileId(),
+    targetProfileVersion: activeTargetProfileVersion(),
+    registrationPackageId: registrationAuthority && registrationAuthority.registrationPackageId || evidence && evidence.registrationPackageId || null,
+    registrationPackageVersion: registrationAuthority && registrationAuthority.registrationPackageVersion || evidence && evidence.registrationPackageVersion || null,
+    imageEvidence: evidence && evidence.dataUrl ? {
+      sha256: String(evidence.sourceImageSha256 || evidence.canonicalAssetSha256 || ""),
+      widthPx: Number(evidence.imageWidthPx) || null,
+      heightPx: Number(evidence.imageHeightPx) || null,
+      dataUrl: evidence.dataUrl
+    } : null,
+    registration,
+    aimRequired: !isGssfAuthoritySession() && !isDotTortureAuthoritySession(),
+    aimObservation: currentAimPoint ? safePoint(currentAimPoint) : null,
+    impactObservations: currentImpactPoints.map((point, index) => ({
+      sequence: index + 1,
+      ...safePoint(point)
+    }))
+  };
+}
+
+function precisionTapRegistrationMessage() {
+  if (!precisionTapRequiresCanonicalRegistration()) return "";
+  if (governedPrecisionTapRegistration()) return "";
+  const evidence = activeEvidence();
+  if (evidence && evidence.registrationStatus === "pending") return "SCZN3 is still getting the target ready. Try again in a moment.";
+  return "We need a little more of the target in the picture. Take another photo. Your marks are still here.";
+}
+
+async function requestTargetImageRegistration(imageEvidence, observations = []) {
+  const authority = activeTargetImageRegistrationAuthority();
+  if (!authority) return null;
+  const response = await fetchAuthorityResponse(TARGET_IMAGE_REGISTRATION_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      registrationPackageId: authority.registrationPackageId,
+      registrationPackageVersion: authority.registrationPackageVersion,
+      targetProfileId: activeTargetProfileId(),
+      targetProfileVersion: activeTargetProfileVersion(),
+      imageEvidence: {
+        sha256: imageEvidence.sha256,
+        widthPx: imageEvidence.width,
+        heightPx: imageEvidence.height,
+        dataUrl: imageEvidence.dataUrl
+      },
+      observations
+    })
+  });
+  return response.json();
 }
 
 function safePoint(point) {
@@ -2663,12 +2918,15 @@ function backendTargetGeometry() {
 function backendAuthorityRequest() {
   const qrId = TARGET_QUERY.get("qr_id") || TARGET_QUERY.get("qrId") || (session && (session.qr_id || session.qrId)) || (matrix && (matrix.qr_id || matrix.qrId)) || "";
   if (isM4AuthoritySession()) {
-    return SCZN3M4.authorityRequest(
+    return {
+      ...SCZN3M4.authorityRequest(
       session,
       safePoint(currentAimPoint),
       currentImpactPoints.map(safePoint).filter(Boolean),
       zeroingLivePhase === "confirmation" ? "confirmation" : "initial"
-    );
+      ),
+      precisionTapEvidence: precisionTapEvidenceEnvelope()
+    };
   }
   if (isDotTortureAuthoritySession()) {
     return {
@@ -2703,7 +2961,8 @@ function backendAuthorityRequest() {
       imageWidthPx: GSSF_CANONICAL_AUTHORITY.imageWidthPx,
       imageHeightPx: GSSF_CANONICAL_AUTHORITY.imageHeightPx,
       hitPixelCoordinates: registeredAssetObservations,
-      observationCount: registeredAssetObservations.length
+      observationCount: registeredAssetObservations.length,
+      precisionTapEvidence: precisionTapEvidenceEnvelope()
     };
     const rawTime = gssfOfficialMatchTimeSeconds ?? source.raw_time_seconds ?? source.rawTimeSeconds ?? TARGET_QUERY.get("raw_time_seconds");
     if (rawTime !== null && rawTime !== undefined && rawTime !== "") {
@@ -2728,6 +2987,7 @@ function backendAuthorityRequest() {
     missionFamilyId: "zeroingCorrection",
     discipline: "zeroing",
     phase: zeroingLivePhase === "confirmation" ? "confirmation" : "initial",
+    precisionTapEvidence: precisionTapEvidenceEnvelope(),
     qr_id: qrId || undefined,
     targetAuthorityGeometry: backendTargetGeometry(),
     aimCoordinate: safePoint(currentAimPoint),
@@ -2826,11 +3086,17 @@ async function requestBackendAuthority() {
   const authorityEndpoint = isM4AuthoritySession()
     ? SCZN3M4.M4_AUTHORITY_ENDPOINT
     : BACKEND_AUTHORITY_ENDPOINT;
+  if (activeShowResultsTiming) activeShowResultsTiming.requestSentAt = Date.now();
   const response = await fetchAuthorityResponse(authorityEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: requestBody
   });
+  if (activeShowResultsTiming) {
+    activeShowResultsTiming.responseReturnedAt = Date.now();
+    activeShowResultsTiming.backendReceivedAt = Number(response.headers.get("X-SCZN3-Authority-Received-At")) || null;
+    activeShowResultsTiming.serverTiming = response.headers.get("Server-Timing") || "";
+  }
   const responseBody = await response.text();
   const authorityPackage = JSON.parse(responseBody);
   if (GSSF_CANONICAL_EXPORT_ENABLED && isGssfAuthoritySession()) {
@@ -2858,10 +3124,14 @@ async function requestBackendAuthority() {
 }
 
 function applyBackendAuthorityPackage(authorityPackage) {
+  backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
   authorityStatusMessage = isGssfAuthoritySession() && !isGssfAuthorityPackage(authorityPackage)
     ? "Your confirmed impacts are saved. SCZN3 could not calculate the Paper Penalty. Review the impacts, then tap Show Results again."
-    : "";
-  backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
+    : isZeroingAuthorityPackage(backendAuthorityPackage) && !backendAuthorityPackage.status.hasCorrection
+      ? String(backendAuthorityPackage.shooterGuidance && backendAuthorityPackage.shooterGuidance.message
+        || backendAuthorityPackage.validation && backendAuthorityPackage.validation.note
+        || "Your group was recorded, but SCZN3 cannot responsibly recommend a correction from this evidence.")
+      : "";
   syncAuthorityDerivedState();
   renderTargetHeaderIdentity();
   sessionSaved = false;
@@ -2960,6 +3230,26 @@ function correctionAxisDisplay(clicks, axis) {
   };
 }
 
+function correctionEstimateAxisDisplay(authorityPackage, axis) {
+  const estimate = authorityPackage && authorityPackage.correctionEstimate;
+  const assessment = estimate && estimate.axisAssessments && estimate.axisAssessments[axis];
+  const best = assessment && assessment.bestEstimate;
+  if (!assessment || !best) return null;
+  if (assessment.practicalFinding === "centered_within_one_click") {
+    return { direction: "CENTERED", arrow: "•", count: 0, unit: "within 1 click" };
+  }
+  const exact = correctionAxisDisplay({
+    [`${axis}Direction`]: best.direction,
+    [`${axis}Clicks`]: best.clicks,
+  }, axis);
+  const minimum = Number(assessment.minimumClicks);
+  const maximum = Number(assessment.maximumClicks);
+  const range = Number.isFinite(minimum) && Number.isFinite(maximum)
+    ? `${minimum}–${maximum} possible`
+    : "exact count withheld";
+  return { ...exact, unit: `estimate · ${range}` };
+}
+
 function renderCorrectionOverlay(correction) {
   const confirmedM4Group = isM4AuthoritySession()
     && zeroingLivePhase === "confirmation"
@@ -2970,13 +3260,18 @@ function renderCorrectionOverlay(correction) {
     !isZeroingAuthoritySession()
     || !resultsShown
     || confirmedM4Group
-    || !correction
-    || !currentClicks
+    || (!correction && !backendAuthorityPackage?.correctionEstimate)
   ) return "";
-  const windage = correctionAxisDisplay(currentClicks, "windage");
-  const elevation = correctionAxisDisplay(currentClicks, "elevation");
+  const estimated = !currentClicks && !!backendAuthorityPackage?.correctionEstimate;
+  const windage = estimated
+    ? correctionEstimateAxisDisplay(backendAuthorityPackage, "windage")
+    : correctionAxisDisplay(currentClicks, "windage");
+  const elevation = estimated
+    ? correctionEstimateAxisDisplay(backendAuthorityPackage, "elevation")
+    : correctionAxisDisplay(currentClicks, "elevation");
+  if (!windage || !elevation) return "";
   return `
-    <div class="workspace-result-overlay" aria-label="Mechanical correction">
+    <div class="workspace-result-overlay${estimated ? " is-estimate" : ""}" aria-label="${estimated ? "Best-supported adjustment estimate; exact click count withheld" : "Mechanical correction"}">
       <span class="workspace-axis-correction sczn3-live-correction-card" data-axis="windage">
         <b aria-hidden="true">${windage.arrow}</b>
         <strong>${escapeHtml(windage.count)}</strong>
@@ -3050,12 +3345,19 @@ function syncOverlayLayerToDisplayedImage() {
   if (!layer || !box) return null;
   const surface = document.getElementById("markSurface");
   const image = surface && surface.querySelector("img");
-  SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, surface);
+  if (surface && surface.dataset.precisionTapPlane === "true") {
+    layer.style.left = "0";
+    layer.style.top = "0";
+    layer.style.width = "100%";
+    layer.style.height = "100%";
+  } else {
+    SCZN3M4.UGEO.syncEvidenceLayerToImage(layer, image, surface);
+  }
   if (coordinateLayer) {
-    coordinateLayer.style.left = `${box.left}px`;
-    coordinateLayer.style.top = `${box.top}px`;
-    coordinateLayer.style.width = `${box.width}px`;
-    coordinateLayer.style.height = `${box.height}px`;
+    coordinateLayer.style.left = surface && surface.dataset.precisionTapPlane === "true" ? "0" : `${box.left}px`;
+    coordinateLayer.style.top = surface && surface.dataset.precisionTapPlane === "true" ? "0" : `${box.top}px`;
+    coordinateLayer.style.width = surface && surface.dataset.precisionTapPlane === "true" ? "100%" : `${box.width}px`;
+    coordinateLayer.style.height = surface && surface.dataset.precisionTapPlane === "true" ? "100%" : `${box.height}px`;
     renderGridCoordinateOverlay();
   }
   return box;
@@ -3106,11 +3408,10 @@ function syncArrowLayerToMarkerLayer() {
   const layer = document.getElementById("markerLayer");
   const arrowSvg = layer && layer.querySelector(".target-correction-vector");
   if (!layer || !arrowSvg) return;
-  const layerRect = layer.getBoundingClientRect();
-  arrowSvg.style.left = "0px";
-  arrowSvg.style.top = "0px";
-  arrowSvg.style.width = `${layerRect.width}px`;
-  arrowSvg.style.height = `${layerRect.height}px`;
+  arrowSvg.style.left = "0";
+  arrowSvg.style.top = "0";
+  arrowSvg.style.width = "100%";
+  arrowSvg.style.height = "100%";
 }
 
 function renderedPercentFromRect(childRect, parentRect) {
@@ -3532,17 +3833,18 @@ function vectorHtmlFromBackend(vector) {
 function renderPendingInputMarkers() {
   const parts = [];
   currentImpactPoints.map(safePoint).filter(Boolean).forEach((point, index) => {
-    parts.push(markerPointHtml("target-marker impact-marker", point, String(index + 1)));
+    parts.push(markerPointHtml("target-marker impact-marker precision-tap-marker", point, "", `data-shot-index="${index + 1}" aria-label="Shot ${index + 1}"`));
   });
   if (currentAimPoint && !(isZeroingAuthoritySession() && zeroingLivePhase === "confirmation")) {
-    parts.push(markerPointHtml("target-marker aim-marker", currentAimPoint, "", 'aria-label="Intended aim point"'));
+    parts.push(markerPointHtml("target-marker aim-marker precision-tap-aim-marker", currentAimPoint, "", 'aria-label="Intended aim point"'));
   }
   return parts.join("");
 }
 
 function backendPoibDisplayCoordinate(authorityPackage) {
   if (!authorityPackage) return null;
-  const backendPoib = safePoint(authorityPackage.poib || authorityPackage.groupCenter);
+  const render = authorityPackage.renderCoordinates || {};
+  const backendPoib = safePoint(render.poib || authorityPackage.poib || authorityPackage.groupCenter);
   if (backendPoib) return backendPoib;
   if (typeof console !== "undefined" && !backendPoibDisplayCoordinate.hasWarned) {
     console.warn("POIB unavailable from backend authority.");
@@ -3555,12 +3857,21 @@ function backendRenderedHitCoordinates(authorityPackage) {
   return backendRenderedHitEntries(authorityPackage).map(safePoint).filter(Boolean);
 }
 
+function governedCorrectionVector(authorityPackage) {
+  if (!authorityPackage) return null;
+  const render = authorityPackage.renderCoordinates || {};
+  const poib = backendPoibDisplayCoordinate(authorityPackage);
+  const aim = safePoint(render.aim);
+  if (!poib || !aim) return null;
+  return { start: poib, end: aim, intent: "POIB_TO_AIM" };
+}
+
 function renderBackendAuthorityMarkers(authorityPackage) {
   const render = authorityPackage && authorityPackage.renderCoordinates ? authorityPackage.renderCoordinates : {};
   const parts = [];
   const classifications = backendHitClassifications(authorityPackage);
   const confirmationEvidenceOnly = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
-  if (!confirmationEvidenceOnly) parts.push(vectorHtmlFromBackend(render.vector));
+  if (!confirmationEvidenceOnly) parts.push(vectorHtmlFromBackend(governedCorrectionVector(authorityPackage)));
   backendRenderedHitCoordinates(authorityPackage).forEach((point, index) => {
     const hit = classifications[index] || {};
     const shotNumber = backendShotIdForHit(authorityPackage, hit, index);
@@ -3570,7 +3881,7 @@ function renderBackendAuthorityMarkers(authorityPackage) {
     parts.push(markerPointHtml(`target-marker impact-marker${zoneClass}`, point, label, `data-shot-index="${escapeHtml(label)}" data-backend-zone="${zone}"`));
   });
   if (render.aim && !isM4AuthoritySession()) {
-    parts.push(markerPointHtml("target-marker aim-marker", render.aim, "", 'aria-label="Confirmed aim point"'));
+    parts.push(markerPointHtml("target-marker aim-marker precision-tap-aim-marker", render.aim, "", 'aria-label="Confirmed aim point"'));
   }
   if (render.bull && !isM4AuthoritySession()) {
     parts.push(markerPointHtml("target-marker bull-marker", render.bull, "", 'aria-label="Registered bull"'));
@@ -3849,6 +4160,11 @@ function renderResults() {
   }
   scoreCell.className = `target-intel-score ${scoreClass(numericScore)}`;
   document.getElementById("scoreValue").textContent = Number.isFinite(numericScore) ? String(numericScore) : "--";
+  const groupValue = document.getElementById("groupValue");
+  if (groupValue) {
+    const group = backendAuthorityPackage && backendAuthorityPackage.group;
+    groupValue.textContent = group && group.status === "calculated" && group.display ? String(group.display) : "--";
+  }
   const hitsParts = [SIMULATION_MODE
     ? `Shot group: ${impacts.length} ${impacts.length === 1 ? "impact" : "impacts"}`
     : `${impacts.length} Hits`];
@@ -3992,6 +4308,81 @@ function rangeWorkflowState(canMark) {
   return "view-sec";
 }
 
+function precisionTapControlState(rangeState, hasEvidence) {
+  if (!hasEvidence || rangeState === "choose-target") return "photo_entry";
+  if (rangeState === "tap-aim") return "aim_entry";
+  if (rangeState === "tap-holes" || rangeState === "training-drill") {
+    return isZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
+      ? "confirmation_entry"
+      : "shot_entry";
+  }
+  if (rangeState === "show-results" || rangeState === "review-context" || rangeState === "confirm-context") {
+    return "result";
+  }
+  if (rangeState === "await-next-group" || rangeState === "continue-confirmation") return "confirmation_entry";
+  if (rangeState === "save-session") {
+    return isZeroingAuthoritySession() && zeroingLivePhase !== "confirmation"
+      ? "confirmation_entry"
+      : "save";
+  }
+  if (rangeState === "view-sec") return "save";
+  return rangeState;
+}
+
+function renderPrecisionTapControls(controlState, rangeState) {
+  const visible = new Set();
+  const picker = document.getElementById("precisionTapPhotoPicker");
+  const pickerOpen = picker && !picker.hidden;
+  if (controlState === "photo_entry") {
+    visible.add(pickerOpen ? "precisionTapPhotoPicker" : "chooseTargetButton");
+  } else if (controlState === "aim_entry") {
+    visible.add("setAimMode");
+  } else if (controlState === "shot_entry") {
+    visible.add("targetHitCounter");
+    visible.add("addImpactMode");
+    if (currentImpactPoints.length) {
+      visible.add("undoImpact");
+      visible.add("clearMarks");
+    }
+  } else if (controlState === "result") {
+    visible.add("targetHitCounter");
+    visible.add("showResults");
+    visible.add("undoImpact");
+    if (currentImpactPoints.length) visible.add("clearMarks");
+  } else if (controlState === "confirmation_entry") {
+    if (rangeState === "tap-holes") {
+      visible.add("targetHitCounter");
+      visible.add("addImpactMode");
+      if (currentImpactPoints.length) {
+        visible.add("undoImpact");
+        visible.add("clearMarks");
+      }
+    } else {
+      visible.add("saveMarks");
+    }
+  } else if (controlState === "save") {
+    visible.add("saveMarks");
+  }
+  [
+    "targetHitCounter",
+    "chooseTargetButton",
+    "precisionTapPhotoPicker",
+    "setAimMode",
+    "addImpactMode",
+    "showResults",
+    "undoImpact",
+    "clearMarks",
+    "saveMarks"
+  ].forEach(id => {
+    const control = document.getElementById(id);
+    if (!control) return;
+    const isVisible = visible.has(id);
+    control.hidden = !isVisible;
+    if (isVisible) control.style.removeProperty("display");
+    else control.style.setProperty("display", "none", "important");
+  });
+}
+
 function renderMarkStatus() {
   renderTargetHeaderIdentity();
   if (isMissionResolving() || isMissionResolutionUnavailable()) {
@@ -4038,6 +4429,8 @@ function renderMarkStatus() {
   syncCorrectionContextGate();
   updateHitCounter();
   renderMissionWorkspaceChrome();
+  document.getElementById("chooseTargetButton").disabled = false;
+  document.getElementById("chooseTargetButton").removeAttribute("aria-disabled");
   document.getElementById("setAimMode").disabled = !hasEvidence || isGssf || isTraining;
   document.getElementById("addImpactMode").disabled = !hasEvidence || isTraining || (!currentAimPoint && !isGssf);
   document.getElementById("undoImpact").disabled = !hasEvidence || isTraining || currentImpactPoints.length === 0;
@@ -4050,6 +4443,7 @@ function renderMarkStatus() {
     || gssfTimerTimePending
     || (isTraining && !trainingDrillFinished);
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canProceed || (!isTraining && currentImpactPoints.length === 0);
+  document.getElementById("undoImpact").textContent = "Undo";
   let nextStep = "chooseTargetButton";
   if (canProceed && isTraining && !resultsShown) nextStep = "showResults";
   if (hasEvidence && isGssf && !currentImpactPoints.length) nextStep = "addImpactMode";
@@ -4082,10 +4476,32 @@ function renderMarkStatus() {
   } else if (saveButton) {
     saveButton.textContent = "Save Session";
   }
-  document.body.dataset.rangeState = rangeWorkflowState(canProceed);
+  const controlEvidence = displayedEvidence || activeEvidence();
+  const evidenceRole = String(controlEvidence && controlEvidence.assetRole || "");
+  const shooterPhotoLoaded = !!(controlEvidence && evidenceRole.includes("shooter-captured"));
+  const referenceEvidence = hasEvidence && !shooterPhotoLoaded;
+  const controlEvidenceReady = precisionTapShooterEvidenceReady();
+  const activeRangeState = rangeWorkflowState(canProceed);
+  document.body.dataset.rangeState = activeRangeState;
+  document.body.dataset.precisionTapControlState = precisionTapControlState(activeRangeState, controlEvidenceReady);
   document.body.dataset.m4LivePhase = isZeroingAuthoritySession() ? zeroingLivePhase : "";
   document.body.dataset.hasEvidence = hasEvidence ? "true" : "false";
+  document.body.dataset.precisionTapHasShots = currentImpactPoints.length ? "true" : "false";
   document.body.dataset.hasResults = resultsShown ? "true" : "false";
+  document.body.dataset.precisionTapReview = precisionTapReviewing ? "true" : "false";
+  document.body.dataset.precisionTapRegistration = governedPrecisionTapRegistration() ? "complete" : (hasEvidence ? "required" : "none");
+  if (hasEvidence && !governedPrecisionTapRegistration()) {
+    document.getElementById("chooseTargetButton").textContent = "Try Another Photo";
+  }
+  document.body.dataset.precisionTapRegistration = governedPrecisionTapRegistration() ? "complete" : (hasEvidence ? "required" : "none");
+  document.body.dataset.precisionTapPhotoSource = referenceEvidence ? "reference" : (shooterPhotoLoaded ? "shooter" : "none");
+  document.getElementById("chooseTargetButton").textContent = shooterPhotoLoaded && !governedPrecisionTapRegistration()
+    ? "Try Another Photo"
+    : referenceEvidence
+      ? "Add Photo"
+      : hasEvidence
+        ? "Choose Another Photo"
+        : "Choose Target";
   document.body.dataset.awaitingNextGroup = awaitingNextConfirmationGroup() ? "true" : "false";
   document.body.dataset.correctionContext = correctionContextPending
     ? "pending"
@@ -4093,6 +4509,7 @@ function renderMarkStatus() {
       ? "confirmed"
       : "unconfirmed";
   document.body.dataset.targetMission = isTraining ? "marksmanshipTraining" : (isGssf ? "gssf" : "zeroing");
+  renderPrecisionTapControls(document.body.dataset.precisionTapControlState, activeRangeState);
 }
 
 function setMode(mode) {
@@ -4102,9 +4519,11 @@ function setMode(mode) {
 
 function handleMarkTap(event) {
   if (!hasMarkableEvidence()) return;
+  let restoreFullTargetContext = false;
   const beginsNextGroup = awaitingNextConfirmationGroup();
   if (resultsShown && !beginsNextGroup) return;
   if (SIMULATION_MODE && (currentAimPoint || isGssfAuthoritySession()) && currentImpactPoints.length >= 10) return;
+  precisionTapReviewing = false;
   syncOverlayLayerToDisplayedImage();
   const point = evidencePointFromPointer(event);
   if (!point) return;
@@ -4129,6 +4548,7 @@ function handleMarkTap(event) {
     currentAimPoint = point;
     markMode = "impact";
     holeEntrySettled = false;
+    restoreFullTargetContext = true;
   } else {
     currentImpactPoints.push(point);
     correctionContextReviewDismissed = false;
@@ -4137,59 +4557,9 @@ function handleMarkTap(event) {
   markWorkspaceProgressUnsaved();
   clearCalculatedResults();
   setMode(markMode);
+  if (restoreFullTargetContext) precisionTapController?.resetView();
   renderMarkers();
   renderMarkStatus();
-}
-
-function resetMarkPointerState() {
-  activeMarkPointers.clear();
-  markTapCandidate = null;
-  markGestureCancelled = false;
-}
-
-function handleMarkPointerDown(event) {
-  if (resultsShown && !awaitingNextConfirmationGroup()) return;
-  if (!hasMarkableEvidence()) return;
-  activeMarkPointers.add(event.pointerId);
-  if (activeMarkPointers.size > 1) {
-    markGestureCancelled = true;
-    markTapCandidate = null;
-    return;
-  }
-  markGestureCancelled = false;
-  markTapCandidate = {
-    pointerId: event.pointerId,
-    pointerType: event.pointerType,
-    clientX: event.clientX,
-    clientY: event.clientY
-  };
-}
-
-function handleMarkPointerUp(event) {
-  const wasOnlyPointer = activeMarkPointers.size === 1 && activeMarkPointers.has(event.pointerId);
-  activeMarkPointers.delete(event.pointerId);
-  if ((resultsShown && !awaitingNextConfirmationGroup()) || !hasMarkableEvidence()) {
-    resetMarkPointerState();
-    return;
-  }
-  if (!wasOnlyPointer || markGestureCancelled || !markTapCandidate || markTapCandidate.pointerId !== event.pointerId) {
-    if (!activeMarkPointers.size) resetMarkPointerState();
-    return;
-  }
-  const moveDistance = Math.hypot(event.clientX - markTapCandidate.clientX, event.clientY - markTapCandidate.clientY);
-  const maxTapMove = markTapCandidate.pointerType === "touch" ? 24 : 8;
-  if (moveDistance <= maxTapMove) handleMarkTap(event);
-  resetMarkPointerState();
-}
-
-function handleMarkPointerCancel(event) {
-  activeMarkPointers.delete(event.pointerId);
-  if (!activeMarkPointers.size) resetMarkPointerState();
-}
-
-function handleMarkTouchMove(event) {
-  if ((resultsShown && !awaitingNextConfirmationGroup()) || !hasMarkableEvidence()) return;
-  if (event.touches && event.touches.length === 1) event.preventDefault();
 }
 
 if (TARGET_PROFILE_LAUNCH_ID) {
@@ -4204,31 +4574,38 @@ document.getElementById("chooseTargetButton").addEventListener("click", event =>
     installBakerSimulationEvidence();
     return;
   }
-  if (isGssfAuthoritySession()) return;
   if (!ensureTargetSession()) return;
-  const input = document.getElementById("targetImageInput");
-  input.value = "";
-});
-document.getElementById("chooseTargetButton").addEventListener("keydown", event => {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    event.currentTarget.click();
-  }
+  const picker = document.getElementById("precisionTapPhotoPicker");
+  document.getElementById("targetImageInput").value = "";
+  document.getElementById("targetCameraInput").value = "";
+  picker.hidden = !picker.hidden;
+  document.body.dataset.precisionTapPhotoPicker = picker.hidden ? "closed" : "open";
+  renderPrecisionTapControls(document.body.dataset.precisionTapControlState, document.body.dataset.rangeState);
 });
 
-document.getElementById("targetImageInput").addEventListener("change", event => {
-  if (isGssfAuthoritySession()) return;
+function handleTargetImageSelection(event) {
   if (!ensureTargetSession()) return;
   const file = event.target.files && event.target.files[0];
   if (!file) return;
   const processingId = beginExperienceProcessing("target-photo", "Preparing your target photo…", document.getElementById("chooseTargetButton"), document.querySelector(".workflow-control-row"));
   let processingSucceeded = false;
-  readFileAsDataUrl(file).then(dataUrl => downsizeImageDataUrl(dataUrl)).then(dataUrl => {
-    resetWorkspaceStageGeometry();
+  readFileAsDataUrl(file)
+    .then(async originalDataUrl => ({
+      original: await inspectPrecisionTapImage(originalDataUrl),
+      admitted: await downsizeImageDataUrl(originalDataUrl).then(inspectPrecisionTapImage)
+    }))
+    .then(async imageEvidenceBundle => {
+    const imageEvidence = imageEvidenceBundle.admitted;
+    const exactRegistration = registeredExactAssetForUpload(imageEvidenceBundle.original);
+    const registrationAuthority = activeTargetImageRegistrationAuthority();
+    const dataUrl = imageEvidence.dataUrl;
+    // Stay-on-Screen: changing evidence replaces the image inside the governed
+    // session workspace; it must not replace or resize the workspace itself.
     cancelHoleEntryReadiness();
     holeEntrySettled = false;
     currentAimPoint = null;
     currentImpactPoints = [];
+    precisionTapReviewing = false;
     markWorkspaceProgressUnsaved();
     unlockDistanceForNewTarget();
     if (isDotTortureAuthoritySession()) {
@@ -4244,16 +4621,61 @@ document.getElementById("targetImageInput").addEventListener("change", event => 
       name: file.name,
       type: file.type,
       size: dataUrl.length,
-      originalSize: file.size
+      originalSize: file.size,
+      assetRole: "shooter-captured-target-photo",
+      observationCoordinateConvention: "normalized_source_image_top_left",
+      observationAuthority: "shooter_declared",
+      registrationStatus: registrationAuthority ? "pending" : (exactRegistration ? "complete" : "not_required"),
+      registrationAuthoritySource: exactRegistration && exactRegistration.authoritySource,
+      registrationAuthorityId: registrationAuthority && registrationAuthority.registrationPackageId || exactRegistration && exactRegistration.authorityId,
+      registrationPackageId: registrationAuthority && registrationAuthority.registrationPackageId || exactRegistration && exactRegistration.authorityId,
+      registrationPackageVersion: registrationAuthority && registrationAuthority.registrationPackageVersion || exactRegistration && exactRegistration.authorityVersion,
+      canonicalAssetSha256: exactRegistration && exactRegistration.sha256,
+      canonicalCoordinateSystemVersion: exactRegistration && exactRegistration.coordinateSystemVersion,
+      sourceImageSha256: imageEvidence.sha256,
+      imageWidthPx: imageEvidence.width,
+      imageHeightPx: imageEvidence.height,
+      originalSourceImageSha256: imageEvidenceBundle.original.sha256,
+      originalImageWidthPx: imageEvidenceBundle.original.width,
+      originalImageHeightPx: imageEvidenceBundle.original.height
     };
     renderEvidencePreview(pendingEvidence);
+    document.getElementById("precisionTapPhotoPicker").hidden = true;
+    document.body.dataset.precisionTapPhotoPicker = "closed";
+    if (registrationAuthority) {
+      const registration = await requestTargetImageRegistration(imageEvidence);
+      pendingEvidence.registrationStatus = String(registration && registration.knowledgeState || "unavailable");
+      pendingEvidence.registrationAuthoritySource = registration && registration.registrationMethod;
+      pendingEvidence.registrationEvidenceId = registration && registration.registrationEvidenceId;
+      pendingEvidence.registrationGlobalUncertaintyPx = registration && registration.globalUncertaintyPx;
+      pendingEvidence.canonicalAssetSha256 = registration && registration.canonicalRepresentation && registration.canonicalRepresentation.sha256;
+      pendingEvidence.canonicalCoordinateSystemVersion = registration && registration.canonicalCoordinateSystemId;
+      pendingEvidence.registrationReason = registration && registration.reason;
+      renderEvidencePreview(pendingEvidence);
+      if (pendingEvidence.registrationStatus === "unavailable") {
+        authorityStatusMessage = registration && registration.recovery && registration.recovery.shooterMessage
+          || "We need a little more of the target in the picture. Take another photo.";
+        setSaveSessionStatus(authorityStatusMessage);
+      } else {
+        authorityStatusMessage = "";
+        setSaveSessionStatus("");
+      }
+    }
     setMode(isGssfAuthoritySession() ? "impact" : "aim");
     renderMarkStatus();
     processingSucceeded = true;
   }).catch(error => {
     console.warn("Target image read failed", error);
-  }).finally(() => finishExperienceProcessing(processingId, processingSucceeded));
-});
+  }).finally(() => {
+    finishExperienceProcessing(processingId, processingSucceeded);
+    // Processing restores the trigger's pre-operation label. Re-project the
+    // current Precision Tap state so recovery never regresses to yesterday's action.
+    renderMarkStatus();
+  });
+}
+
+document.getElementById("targetImageInput").addEventListener("change", handleTargetImageSelection);
+document.getElementById("targetCameraInput").addEventListener("change", handleTargetImageSelection);
 
 document.getElementById("showGridCoordinates").addEventListener("change", event => {
   showGridCoordinates = event.target.checked;
@@ -4266,6 +4688,7 @@ document.getElementById("addImpactMode").addEventListener("click", () => {
   if (currentAimPoint || isGssfAuthoritySession()) setMode("impact");
 });
 document.getElementById("undoImpact").addEventListener("click", () => {
+  if (resultsShown) return;
   markWorkspaceProgressUnsaved();
   cancelHoleEntryReadiness();
   currentImpactPoints.pop();
@@ -4277,45 +4700,66 @@ document.getElementById("undoImpact").addEventListener("click", () => {
   if (currentImpactPoints.length > 0) scheduleHoleEntryReadiness();
 });
 document.getElementById("clearMarks").addEventListener("click", () => {
+  precisionTapReviewing = false;
+  precisionTapController?.setReviewing(false);
   markWorkspaceProgressUnsaved();
   cancelHoleEntryReadiness();
   holeEntrySettled = false;
   correctionContextReviewDismissed = false;
-  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
-    currentImpactPoints = [];
-    clearCalculatedResults();
-    setMode("impact");
-    renderMarkers();
-    renderMarkStatus();
-    return;
-  }
-  currentAimPoint = null;
   currentImpactPoints = [];
   clearCalculatedResults();
-  SCZN3M4.updateActiveSession({
-    aimPoint: null,
-    impactPoints: [],
-    backendAuthorityPackage: null,
-    ugeoAuthorityPackage: null,
-    poib: null,
-    groupCenter: null,
-    clicks: null,
-    score: null,
-    rawScore: null,
-    qualityPossible: null,
-    hits: 0,
-    shotCount: 0,
-    correctionStatus: "not-calculated",
-    shotData: { shotCount: 0, hits: 0, score: null, status: "marks-cleared" },
-    correctionData: { status: "not-calculated", clicks: null, windage: null, elevation: null }
-  });
-  setMode("aim");
+  SCZN3M4.updateActiveSession(
+    isZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
+      ? { confirmationImpactPoints: [], confirmationAuthorityPackage: null }
+      : {
+          aimPoint: currentAimPoint,
+          impactPoints: [],
+          backendAuthorityPackage: null,
+          ugeoAuthorityPackage: null,
+          poib: null,
+          groupCenter: null,
+          clicks: null,
+          score: null,
+          rawScore: null,
+          qualityPossible: null,
+          hits: 0,
+          shotCount: 0,
+          correctionStatus: "not-calculated",
+          shotData: { shotCount: 0, hits: 0, score: null, status: "impacts-cleared" },
+          correctionData: { status: "not-calculated", clicks: null, windage: null, elevation: null }
+        }
+  );
+  setMode(currentAimPoint || isGssfAuthoritySession() ? "impact" : "aim");
   renderMarkers();
   renderMarkStatus();
 });
 document.getElementById("showResults").addEventListener("click", async () => {
   if ((!isGssfAuthoritySession() && !isDotTortureAuthoritySession() && !currentAimPoint) || (!isDotTortureAuthoritySession() && !currentImpactPoints.length)) return;
-  if (authorityRequestInFlight) return;
+  if (authorityRequestInFlight) {
+    authorityStatusMessage = isZeroingAuthoritySession()
+      ? "SCZN3 is still calculating your correction."
+      : "SCZN3 is still calculating your result.";
+    renderResults();
+    renderMarkStatus();
+    return;
+  }
+  if (!isDotTortureAuthoritySession()) {
+    cancelHoleEntryReadiness();
+    holeEntrySettled = true;
+    precisionTapReviewing = true;
+    precisionTapController?.setReviewing(true);
+    renderMarkers();
+    renderMarkStatus();
+  }
+  if (!isDotTortureAuthoritySession()) {
+    const registrationMessage = precisionTapRegistrationMessage();
+    if (registrationMessage) {
+      authorityStatusMessage = registrationMessage;
+      renderResults();
+      renderMarkStatus();
+      return;
+    }
+  }
   const unavailableCapabilityMessage = unavailableResultCapabilityMessage();
   if (unavailableCapabilityMessage) {
     authorityStatusMessage = unavailableCapabilityMessage;
@@ -4332,7 +4776,17 @@ document.getElementById("showResults").addEventListener("click", async () => {
     return;
   }
   if (isDotTortureAuthoritySession() && !session && !ensureTargetSession()) return;
-  const processingMessage = isM4AuthoritySession()
+  activeShowResultsTiming = {
+    phase: zeroingLivePhase === "confirmation" ? "confirmation" : "initial",
+    tapAt: Date.now(),
+    requestSentAt: null,
+    backendReceivedAt: null,
+    responseReturnedAt: null,
+    uiRenderedAt: null,
+    serverTiming: ""
+  };
+  window.__SCZN3_SHOW_RESULTS_TIMING__ = activeShowResultsTiming;
+  const processingMessage = isZeroingAuthoritySession()
     ? "Calculating your correction…"
     : "Calculating your score…";
   const processingId = beginExperienceProcessing("show-results", processingMessage, document.getElementById("showResults"), document.querySelector(".workflow-control-row"));
@@ -4377,6 +4831,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
   }
   renderMarkStatus();
+  if (activeShowResultsTiming) activeShowResultsTiming.uiRenderedAt = Date.now();
 });
 
 function setSaveSessionStatus(message = "", state = "") {
@@ -4569,7 +5024,11 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     },
     hits: currentImpactPoints.length,
     shotCount: currentImpactPoints.length,
-    correctionStatus: "backend-authority-calculated",
+    correctionStatus: authorityPackage.status && authorityPackage.status.hasCorrection
+      ? "backend-authority-calculated"
+      : authorityPackage.status && authorityPackage.status.hasCorrectionEstimate
+        ? "best-estimate-exact-click-count-withheld"
+        : "not-calculated",
     savedToSEC: true,
     targetDistance: targetDistanceValue(),
     targetDistanceValue: selectedDistanceValue,
@@ -4701,6 +5160,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "initial") {
     initialZeroingAuthorityPackage = authorityPackage;
     zeroingLivePhase = "confirmation";
+    precisionTapReviewing = false;
     markWorkspaceProgressUnsaved();
     currentImpactPoints = [];
     holeEntrySettled = false;

@@ -3,7 +3,8 @@
 The browser may propose a Target ID and equipment candidates. This module owns
 Target ID -> ATP -> mission resolution, target admission, official-mission
 eligibility, capability availability, durable session identity, and idempotency.
-Runtime authority requires Postgres through ``DATABASE_URL``;
+Runtime authority requires Postgres through the dedicated backend-only
+``SCZN3_SESSION_SEC_DATABASE_URL``;
 there is intentionally no in-memory, filesystem, or browser fallback.
 """
 from __future__ import annotations
@@ -79,6 +80,12 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         "targetName": "Baker 100 Yard Smart Target",
         "targetProfileVersion": "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
         "atpId": "baker-100-yard-smart-zero-atp-v1",
+        "registrationAuthority": {
+            "registrationPackageId": "baker-st-100yd-smart-photo-registration-v1",
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+            "status": "available",
+        },
         "missionIdentity": {
             "missionFamily": "zeroingCorrection",
             "missionId": "BAKER_100YD_ZERO",
@@ -128,6 +135,12 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             "resultPackageType": GSSF_AC_1_EXECUTION_CONTRACT["resultPackageType"],
         },
         "governedDistance": {"value": None, "unit": None, "locked": False},
+        "registrationAuthority": {
+            "registrationPackageId": "gssf-ac-1-photo-registration-fixture-v1",
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": "gssf-ac-1-canonical-coordinate-system-v1",
+            "status": "available",
+        },
         "equipmentRequirements": {
             "weaponCategories": ["Pistol"],
             "requiresAdjustmentSystem": False,
@@ -728,6 +741,7 @@ def atp_fingerprint(profile: Mapping[str, Any]) -> str:
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
+        "registrationAuthority": profile.get("registrationAuthority"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetupAuthority": profile["standardSetupAuthority"],
         "standardSetup": standard_setup_for(profile),
@@ -777,6 +791,7 @@ def prepare_session(
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
+        "registrationAuthority": profile.get("registrationAuthority"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetup": standard_setup,
         "equipmentCandidates": candidates,
@@ -803,6 +818,7 @@ def prepare_session(
         "executionContract": profile.get("executionContract"),
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
+        "registrationAuthority": profile.get("registrationAuthority"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetup": standard_setup,
         "setupMode": "standard" if use_standard_setup else "shooter-selected",
@@ -906,6 +922,7 @@ def start_session(
         "equipmentAssessment": equipment_assessment,
         "governedDistance": current_profile["governedDistance"],
         "confirmationAuthority": current_profile.get("confirmationAuthority"),
+        "registrationAuthority": current_profile.get("registrationAuthority"),
         "selectedEquipment": candidate,
         "setupMode": "standard" if candidate.get("source") == "backend_standard_setup" else "shooter-selected",
     }
@@ -924,6 +941,7 @@ def start_session(
         "restrictions": equipment_assessment["restrictions"],
         "equipmentAssessment": equipment_assessment,
         "governedDistance": current_profile["governedDistance"],
+        "registrationAuthority": current_profile.get("registrationAuthority"),
         "selectedEquipment": candidate,
         "response": response,
         "createdAt": created_at,
@@ -934,7 +952,7 @@ def start_session(
 
 class PostgresSessionStore:
     def __init__(self, database_url: Optional[str] = None, connect_fn: Any = None):
-        self.database_url = database_url if database_url is not None else os.environ.get("DATABASE_URL", "")
+        self.database_url = database_url if database_url is not None else os.environ.get("SCZN3_SESSION_SEC_DATABASE_URL", "")
         self.connect_fn = connect_fn
 
     def _connect(self):
