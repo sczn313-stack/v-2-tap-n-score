@@ -92,7 +92,9 @@ assert.match(css, /precision-tap-photo-picker>div\{[\s\S]*grid-template-columns:
 assert.match(css, /Defect #8[\s\S]*precision-tap-control-shell-content[\s\S]*border:0!important;[\s\S]*background:transparent!important;[\s\S]*box-shadow:none!important;/, "the workflow row remains the only painted visual shell");
 assert.match(shoot, /function isBakerSampleEvidence\(/, "Baker reference evidence is identified as a non-recording SAMPLE stage");
 assert.match(shoot, /if \(isBakerSampleEvidence\(activeEvidence\(\)\)\) return;/, "SAMPLE target taps cannot create shooter observations");
-assert.match(shoot, /🗣️ LET THE TARGET TALK/, "SAMPLE demonstration is repeatable from the waiting target");
+assert.match(shoot, /<strong>LET THE TARGET TALK<\/strong>/, "SAMPLE demonstration is repeatable from the waiting target");
+assert.match(shoot, /data-sczn3-live-control="target-talk"/, "LET THE TARGET TALK is the single live demonstration control");
+assert.match(shoot, /aria-label="Let the target talk\. Start sample demonstration\."/, "the live control states its action accessibly");
 assert.doesNotMatch(shoot, /baker-sample-demo-waiting/, "the SAMPLE target is not covered by a permanent instruction panel");
 assert.match(shoot, /if \(isBakerSampleEvidence\(\)\) return "";/, "the redundant permanent SAMPLE sequence bar is removed");
 assert.match(shoot, /function sampleFeatureHighlightMarkup\(/, "instructional target-feature emphasis is reusable overlay behavior");
@@ -104,6 +106,11 @@ assert.match(shoot, /if \(!sessionSaved\) return "Apply your clicks, then shoot 
 assert.match(shoot, />Begin Confirmation</, "confirmation action uses the approved concise label");
 assert.match(css, /\.baker-sample-watermark/, "SAMPLE evidence is visibly distinguished from shooter evidence");
 assert.match(css, /\.baker-sample-watermark\{[\s\S]*width:65%;/, "SAMPLE watermark spans the target working area");
+assert.match(css, /\.target-page \.baker-sample-demo-replay\{[\s\S]*background:linear-gradient\(145deg,#f6d05a/, "the live demonstration control remains gold");
+assert.match(css, /animation:baker-target-talk-breathe 2\.8s ease-in-out infinite/, "the live control uses restrained ambient illumination");
+assert.match(css, /\.target-page \.baker-sample-demo-replay:hover,[\s\S]*transform:translateY\(-2px\)/, "the live control responds to pointer and keyboard focus");
+assert.match(css, /\.target-page \.baker-sample-demo-replay:active\{[\s\S]*scale\(\.992\)/, "the live control responds physically to touch");
+assert.match(css, /@media\(prefers-reduced-motion:reduce\)[\s\S]*\.target-page \.baker-sample-demo-replay,[\s\S]*animation:none/, "the live treatment respects reduced-motion preference");
 assert.match(css, /\.sample-feature-highlight\.is-active\{[\s\S]*animation:sample-feature-heartbeat/, "target-feature emphasis gently pulses only while active");
 assert.match(css, /body\.target-page\[data-baker-sample-stage="true"\] \.workspace-stage-shell \.target-session-context\{display:none!important\}/, "the sample stage removes the redundant permanent guidance bar");
 assert.match(css, /\.baker-sample-demo-layer\[data-demo-state="sec"\][\s\S]*\.baker-sample-demo-layer\[data-demo-state="vault"\]/, "SEC and Vault take the stationary stage during the demonstration");

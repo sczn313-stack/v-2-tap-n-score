@@ -186,24 +186,90 @@
   inset:0;
 }
 
-.baker-sample-demo-replay{
+.target-page .baker-sample-demo-replay{
   position:absolute;
   top:13%;
   right:5%;
   left:5%;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  overflow:hidden;
   min-height:46px;
-  border:2px solid #d9960b;
+  border:1px solid #ffdb68;
   border-radius:12px;
-  background:rgba(7,10,8,.9);
-  color:#fff6d9;
+  background:linear-gradient(145deg,#f6d05a 0%,#dfa00f 56%,#bd7800 100%);
+  color:#161005;
   font:950 clamp(14px,2.8vw,21px)/1 Arial,sans-serif;
   letter-spacing:.035em;
+  text-shadow:0 1px 0 rgba(255,246,198,.62);
   pointer-events:auto;
   cursor:pointer;
-  box-shadow:0 10px 28px rgba(0,0,0,.35);
+  box-shadow:inset 0 1px 0 rgba(255,247,204,.82),inset 0 -2px 0 rgba(104,59,0,.24),0 10px 28px rgba(0,0,0,.38),0 0 0 1px rgba(217,150,11,.3),0 0 20px rgba(235,174,37,.24);
+  transform:translateY(0);
+  transition:transform .16s ease,box-shadow .2s ease,filter .2s ease;
+  animation:baker-target-talk-breathe 2.8s ease-in-out infinite;
 }
 
-.baker-sample-demo-replay[hidden]{display:none!important}
+.target-page .baker-sample-demo-replay::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:-65%;
+  bottom:-65%;
+  left:-30%;
+  width:18%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);
+  transform:skewX(-18deg);
+  animation:baker-target-talk-sheen 4.2s ease-in-out infinite;
+}
+
+.target-page .baker-sample-demo-replay span{
+  font-size:1.08em;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.5));
+  transform-origin:center;
+  animation:baker-target-talk-voice 2.8s ease-in-out infinite;
+}
+
+.target-page .baker-sample-demo-replay strong{font:inherit;letter-spacing:inherit}
+
+.target-page .baker-sample-demo-replay:hover,
+.target-page .baker-sample-demo-replay:focus-visible{
+  filter:saturate(1.08) brightness(1.035);
+  transform:translateY(-2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -2px 0 rgba(104,59,0,.22),0 13px 32px rgba(0,0,0,.43),0 0 0 2px rgba(255,224,123,.5),0 0 28px rgba(235,174,37,.42);
+}
+
+.target-page .baker-sample-demo-replay:focus-visible{outline:3px solid #fff7d5;outline-offset:3px}
+
+.target-page .baker-sample-demo-replay:active{
+  filter:saturate(1.03) brightness(.98);
+  transform:translateY(1px) scale(.992);
+  box-shadow:inset 0 2px 4px rgba(87,49,0,.2),0 5px 15px rgba(0,0,0,.34),0 0 0 1px rgba(255,224,123,.42);
+}
+
+@keyframes baker-target-talk-breathe{
+  0%,100%{box-shadow:inset 0 1px 0 rgba(255,247,204,.82),inset 0 -2px 0 rgba(104,59,0,.24),0 10px 28px rgba(0,0,0,.38),0 0 0 1px rgba(217,150,11,.3),0 0 15px rgba(235,174,37,.18)}
+  50%{box-shadow:inset 0 1px 0 rgba(255,247,204,.9),inset 0 -2px 0 rgba(104,59,0,.2),0 11px 30px rgba(0,0,0,.4),0 0 0 2px rgba(255,218,102,.34),0 0 27px rgba(235,174,37,.38)}
+}
+
+@keyframes baker-target-talk-sheen{
+  0%,58%{left:-30%;opacity:0}
+  64%{opacity:.6}
+  82%{left:112%;opacity:.22}
+  100%{left:112%;opacity:0}
+}
+
+@keyframes baker-target-talk-voice{
+  0%,100%{transform:scale(1);opacity:.88}
+  48%{transform:scale(1);opacity:.88}
+  56%{transform:scale(1.1);opacity:1}
+  64%{transform:scale(1);opacity:.9}
+}
+
+.target-page .baker-sample-demo-replay[hidden]{display:none!important}
 
 body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-session-context{display:none!important}
 
@@ -276,6 +342,9 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
 }
 
 @media(prefers-reduced-motion:reduce){
+  .target-page .baker-sample-demo-replay,
+  .target-page .baker-sample-demo-replay::before,
+  .target-page .baker-sample-demo-replay span{animation:none}
   .sample-feature-highlight.is-active{animation:none;opacity:.78}
 }
 
@@ -386,7 +455,7 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
 .precision-tap-viewport:has(.baker-sample-demo-layer[data-demo-state="vault"]) .precision-tap-plane{opacity:0}
 
 @media(max-width:560px){
-  .baker-sample-demo-replay{top:12%;right:3%;left:3%;min-height:40px}
+  .target-page .baker-sample-demo-replay{top:12%;right:3%;left:3%;min-height:40px}
   .baker-sample-demo-callout{top:4%;padding:7px 9px}
   .baker-sample-clicks{right:4%;bottom:16%;grid-template-columns:auto auto auto;gap:3px;padding:7px}
   .baker-sample-clicks em{grid-column:2 / 4}

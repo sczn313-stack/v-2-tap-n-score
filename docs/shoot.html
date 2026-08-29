@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-smart-target-overlay-1" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-target-talk-control-1" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -458,7 +458,7 @@ function startBakerSampleDemo() {
 }
 
 function bakerSampleDemoMarkup() {
-  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button">🗣️ LET THE TARGET TALK</button></div>`;
+  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button" data-sczn3-live-control="target-talk" aria-label="Let the target talk. Start sample demonstration."><span aria-hidden="true">🗣️</span><strong>LET THE TARGET TALK</strong></button></div>`;
 }
 
 function bindBakerSampleDemo() {
