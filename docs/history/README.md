@@ -8,6 +8,7 @@ This directory is the living historical record for SCZN3. It separates the story
 - [Milestone Index](./milestones/README.md) — major engineering and governance checkpoints
 - [Episode Registry](../../governance/episode-registry/EPISODE_REGISTRY.json) — the single authoritative owner of episode identity
 - [Governance Index](../governance/README.md) — active implementation and presentation governance
+- [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md) — durable map from version-controlled SCZN3 knowledge to the immutable Master Keepsake Vault artifacts
 
 ## Current locked archive
 

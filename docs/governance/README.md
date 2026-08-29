@@ -9,6 +9,7 @@ This index identifies the governing records for implementation control, episode 
 3. [Episode Governance](../../governance/episode-registry/EPISODE_GOVERNANCE.md) — permanent episode creation, closure, and preservation rules.
 4. [Authoritative Episode Registry](../../governance/episode-registry/EPISODE_REGISTRY.json) — single authoritative owner of episode identity.
 5. [Episode Reconciliation Report](../../governance/episode-registry/EPISODE_RECONCILIATION_REPORT.md) — evidence-backed reconciliation of historical episode references.
+6. [Keepsake Vault Index — Two Homes](./KEEPSAKE_VAULT_INDEX.md) — the Founder-approved artifact-authority/index model, immutable deposit lineage, recovery map, and dual-home preservation rule.
 
 ## Current locked checkpoint
 
