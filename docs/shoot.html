@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
 <link rel="stylesheet" href="smart_target_workspace.css?v=episode59-target-talk-control-1" />
+<link rel="preload" href="assets/audio/episode59/baker-aim.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-shoot.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-add-photo.wav" as="audio" type="audio/wav" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -372,6 +375,8 @@ let precisionTapController = null;
 let precisionTapReviewing = false;
 let bakerSampleDemoState = "waiting";
 let bakerSampleDemoTimers = [];
+let bakerSampleDemoRunToken = 0;
+let bakerSampleDemoAudio = null;
 
 function isBakerSampleEvidence(evidence = activeEvidence()) {
   return isBaker100YardSession()
@@ -382,16 +387,51 @@ function isBakerSampleEvidence(evidence = activeEvidence()) {
 function clearBakerSampleDemoTimers() {
   bakerSampleDemoTimers.forEach(handle => window.clearTimeout(handle));
   bakerSampleDemoTimers = [];
+  if (bakerSampleDemoAudio) {
+    bakerSampleDemoAudio.onended = null;
+    bakerSampleDemoAudio.onerror = null;
+    bakerSampleDemoAudio.pause();
+    bakerSampleDemoAudio.currentTime = 0;
+  }
+  document.body.dataset.bakerSampleNarration = "idle";
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
 }
 
-function bakerSampleDemoNarration(message) {
-  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
+function bakerSampleDemoSpeechFallback(message, finish, estimatedDuration) {
+  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") {
+    bakerSampleDemoTimers.push(window.setTimeout(finish, estimatedDuration));
+    return;
+  }
   window.speechSynthesis.cancel();
   const utterance = new window.SpeechSynthesisUtterance(message);
   utterance.rate = 0.94;
   utterance.pitch = 1;
+  utterance.onend = finish;
+  utterance.onerror = () => bakerSampleDemoTimers.push(window.setTimeout(finish, estimatedDuration));
   window.speechSynthesis.speak(utterance);
+}
+
+function bakerSampleDemoNarration(message, audioSource, onComplete) {
+  const estimatedDuration = Math.max(1500, 520 + String(message).trim().split(/\s+/).length * 360);
+  let settled = false;
+  const finish = () => {
+    if (settled) return;
+    settled = true;
+    document.body.dataset.bakerSampleNarration = "complete";
+    onComplete();
+  };
+  bakerSampleDemoAudio = bakerSampleDemoAudio || new window.Audio();
+  bakerSampleDemoAudio.onended = finish;
+  bakerSampleDemoAudio.onerror = () => bakerSampleDemoSpeechFallback(message, finish, estimatedDuration);
+  bakerSampleDemoAudio.src = audioSource;
+  bakerSampleDemoAudio.currentTime = 0;
+  bakerSampleDemoAudio.play()
+    .then(() => { document.body.dataset.bakerSampleNarration = "playing"; })
+    .catch(() => {
+      document.body.dataset.bakerSampleNarration = "fallback";
+      bakerSampleDemoSpeechFallback(message, finish, estimatedDuration);
+    });
+  bakerSampleDemoTimers.push(window.setTimeout(finish, estimatedDuration + 4000));
 }
 
 function bakerSampleHoleMarkup(points, confirmation = false) {
@@ -405,17 +445,17 @@ function sampleFeatureHighlightMarkup(feature, x, y) {
 function bakerSampleDemoScene(state) {
   const initial = [[29,31],[34,33],[27,36],[32,38],[37,35]];
   const confirmation = [[48,55.5],[51,55],[53,57],[52,58.5],[49,59]];
-  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
-  if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Tap each shot on the photograph.</span></div>${bakerSampleHoleMarkup(initial)}`;
+  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>This is your aim point.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
+  if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Aim here and fire your group.</span></div>${bakerSampleHoleMarkup(initial)}`;
   if (state === "results") return `<div class="baker-sample-demo-callout"><strong>RESULT</strong><span>SCZN3 measures the group and returns the correction.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>${bakerSampleHoleMarkup(initial)}<svg class="baker-sample-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="32" y1="35" x2="50" y2="56.6" /></svg><div class="baker-sample-clicks"><b>→</b><strong>12</strong><span>RIGHT</span><em>CLICKS</em><b>↓</b><strong>8</strong><span>DOWN</span><em>CLICKS</em></div>`;
   if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRM</strong><span>Apply the clicks, then mark the confirmation group.</span></div>${bakerSampleHoleMarkup(confirmation, true)}`;
-  if (state === "add-photo") return `<div class="baker-sample-demo-callout baker-sample-camera-cue"><strong><span aria-hidden="true">📷</span> ADD PHOTO</strong><span>Add your target photograph when you are ready to shoot.</span></div>`;
+  if (state === "add-photo") return `<div class="baker-sample-demo-callout baker-sample-camera-cue"><strong><span aria-hidden="true">📷</span> ADD PHOTO</strong><span>When you're finished shooting, add a photo of your target.</span></div>`;
   if (state === "sec") return `<div class="baker-sample-stage-card"><span>SEC</span><strong>SHOOTER EXPERIENCE CARD</strong><small>Your target, observations, and result stay together.</small></div>`;
   if (state === "vault") return `<div class="baker-sample-stage-card"><span>VAULT</span><strong>BALLISTIC VAULT</strong><small>Your completed session is saved and ready to reopen.</small></div>`;
   return "";
 }
 
-function setBakerSampleDemoState(state, speak = true) {
+function setBakerSampleDemoState(state) {
   const layer = document.getElementById("bakerSampleDemoLayer");
   const scene = document.getElementById("bakerSampleDemoScene");
   const replay = document.getElementById("bakerSampleDemoReplay");
@@ -424,37 +464,45 @@ function setBakerSampleDemoState(state, speak = true) {
   layer.dataset.demoState = state;
   scene.innerHTML = bakerSampleDemoScene(state);
   replay.hidden = state !== "waiting";
-  const narration = {
-    aim: "Aim. Tap the point you aimed at.",
-    shoot: "Shoot. Tap each shot on the photograph.",
-    results: "Tap-n-Score measures the group and gives you the sight correction.",
-    confirmation: "Apply your clicks, then shoot and mark your confirmation group.",
-    "add-photo": "Add photo. Add your target photograph when you are ready to shoot.",
-    sec: "Your Shooter Experience Card keeps the target, observations, and result together.",
-    vault: "The completed session is saved in your Ballistic Vault and can be reopened exactly."
-  }[state];
-  if (speak && narration) bakerSampleDemoNarration(narration);
 }
 
 function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
+  bakerSampleDemoRunToken += 1;
   clearBakerSampleDemoTimers();
-  if (returnToWaiting) setBakerSampleDemoState("waiting", false);
+  if (returnToWaiting) setBakerSampleDemoState("waiting");
+}
+
+function playBakerSampleDemoStep(index, runToken) {
+  if (runToken !== bakerSampleDemoRunToken) return;
+  const steps = [
+    { state: "aim", narration: "This is your aim point.", audio: "assets/audio/episode59/baker-aim.wav", after: 260 },
+    { state: "shoot", narration: "Aim here and fire your group.", audio: "assets/audio/episode59/baker-shoot.wav", after: 520 },
+    { state: "add-photo", narration: "When you're finished shooting, add a photo of your target.", audio: "assets/audio/episode59/baker-add-photo.wav", after: 650 },
+    { state: "results", duration: 1900 },
+    { state: "confirmation", duration: 1900 },
+    { state: "sec", duration: 1900 },
+    { state: "vault", duration: 1900 },
+    { state: "waiting" }
+  ];
+  const step = steps[index];
+  if (!step) return;
+  setBakerSampleDemoState(step.state);
+  if (step.state === "waiting") return;
+  const advance = () => {
+    if (runToken !== bakerSampleDemoRunToken) return;
+    bakerSampleDemoTimers.push(window.setTimeout(
+      () => playBakerSampleDemoStep(index + 1, runToken),
+      Number(step.after ?? step.duration ?? 0)
+    ));
+  };
+  if (step.narration) bakerSampleDemoNarration(step.narration, step.audio, advance);
+  else advance();
 }
 
 function startBakerSampleDemo() {
   clearBakerSampleDemoTimers();
-  setBakerSampleDemoState("aim");
-  [
-    ["shoot", 1500],
-    ["results", 3600],
-    ["confirmation", 5700],
-    ["add-photo", 7700],
-    ["sec", 9400],
-    ["vault", 11100],
-    ["waiting", 12800]
-  ].forEach(([state, delay]) => {
-    bakerSampleDemoTimers.push(window.setTimeout(() => setBakerSampleDemoState(state, state !== "waiting"), delay));
-  });
+  bakerSampleDemoRunToken += 1;
+  playBakerSampleDemoStep(0, bakerSampleDemoRunToken);
 }
 
 function bakerSampleDemoMarkup() {
@@ -464,8 +512,11 @@ function bakerSampleDemoMarkup() {
 function bindBakerSampleDemo() {
   const replay = document.getElementById("bakerSampleDemoReplay");
   if (!replay) return;
+  ["pointerdown", "pointerup", "pointercancel"].forEach(eventName => {
+    replay.addEventListener(eventName, event => event.stopPropagation());
+  });
   replay.addEventListener("click", startBakerSampleDemo);
-  setBakerSampleDemoState("waiting", false);
+  setBakerSampleDemoState("waiting");
 }
 function sourceIsZeroingSession(source) {
   if (!source || typeof source !== "object") return false;

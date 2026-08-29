@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 
 const read = path => readFile(path, "utf8");
 const [owner, css, shoot] = await Promise.all([
@@ -8,6 +8,11 @@ const [owner, css, shoot] = await Promise.all([
   read("shoot.html")
 ]);
 const [records, secV1] = await Promise.all([read("records.html"), read("sec_v1.js")]);
+const narrationAssets = await Promise.all([
+  stat("assets/audio/episode59/baker-aim.wav"),
+  stat("assets/audio/episode59/baker-shoot.wav"),
+  stat("assets/audio/episode59/baker-add-photo.wav")
+]);
 
 assert.match(owner, /function createPrecisionTap\(/, "shared workspace owns Precision Tap interaction");
 assert.match(owner, /pointers\.size >= 2/, "shared owner supports two-pointer pinch");
@@ -95,13 +100,22 @@ assert.match(shoot, /if \(isBakerSampleEvidence\(activeEvidence\(\)\)\) return;/
 assert.match(shoot, /<strong>LET THE TARGET TALK<\/strong>/, "SAMPLE demonstration is repeatable from the waiting target");
 assert.match(shoot, /data-sczn3-live-control="target-talk"/, "LET THE TARGET TALK is the single live demonstration control");
 assert.match(shoot, /aria-label="Let the target talk\. Start sample demonstration\."/, "the live control states its action accessibly");
+assert.match(shoot, /\["pointerdown", "pointerup", "pointercancel"\][\s\S]*event\.stopPropagation\(\)/, "the live control owns its pointer gesture instead of surrendering it to Precision Tap");
 assert.doesNotMatch(shoot, /baker-sample-demo-waiting/, "the SAMPLE target is not covered by a permanent instruction panel");
 assert.match(shoot, /if \(isBakerSampleEvidence\(\)\) return "";/, "the redundant permanent SAMPLE sequence bar is removed");
 assert.match(shoot, /function sampleFeatureHighlightMarkup\(/, "instructional target-feature emphasis is reusable overlay behavior");
 assert.match(shoot, /data-sample-feature="\$\{feature\}"/, "the active target feature is identified by reusable overlay data");
 assert.match(shoot, /if \(state === "aim"\)[\s\S]*sampleFeatureHighlightMarkup\("aim", 50, 56\.6\)/, "AIM activates the target crosshair highlight");
 assert.match(shoot, /if \(state === "add-photo"\)[\s\S]*baker-sample-camera-cue/, "ADD PHOTO receives its own camera-cue turn");
-assert.match(shoot, /\["add-photo", 7700\]/, "the ADD PHOTO instruction is part of the demonstration sequence");
+assert.ok(narrationAssets.every(asset => asset.size > 20000), "the exact Founder narration is bundled as audible browser media");
+assert.match(shoot, /function bakerSampleDemoNarration\(message, audioSource, onComplete\)/, "spoken instruction owns progression to the next visual turn");
+assert.match(shoot, /bakerSampleDemoAudio\.onended = finish/, "the next visual turn waits for audible media to finish");
+assert.match(shoot, /bakerSampleDemoAudio\.play\(\)[\s\S]*\.catch/, "browser playback failure has a safe sequencing fallback");
+assert.match(shoot, /dataset\.bakerSampleNarration = "playing"/, "browser-confirmed audible playback is externally testable");
+assert.match(shoot, /state: "aim", narration: "This is your aim point\."/, "AIM uses the Founder narration");
+assert.match(shoot, /state: "shoot", narration: "Aim here and fire your group\."/, "SHOOT uses the Founder narration");
+assert.match(shoot, /state: "add-photo", narration: "When you're finished shooting, add a photo of your target\."/, "ADD PHOTO uses the Founder narration");
+assert.match(shoot, /state: "aim"[\s\S]*state: "shoot"[\s\S]*state: "add-photo"[\s\S]*state: "results"/, "the spoken AIM, SHOOT, and ADD PHOTO turns lead into the existing platform demonstration");
 assert.match(shoot, /if \(!sessionSaved\) return "Apply your clicks, then shoot your confirmation shots\.";/, "approved correction guidance is preserved");
 assert.match(shoot, />Begin Confirmation</, "confirmation action uses the approved concise label");
 assert.match(css, /\.baker-sample-watermark/, "SAMPLE evidence is visibly distinguished from shooter evidence");
