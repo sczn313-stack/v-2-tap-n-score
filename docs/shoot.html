@@ -11,9 +11,26 @@
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
 <link rel="stylesheet" href="smart_target_workspace.css?v=episode59-target-talk-control-1" />
-<link rel="preload" href="assets/audio/episode59/baker-aim.wav" as="audio" type="audio/wav" />
-<link rel="preload" href="assets/audio/episode59/baker-shoot.wav" as="audio" type="audio/wav" />
-<link rel="preload" href="assets/audio/episode59/baker-add-photo.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-selected.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-photo-after-shooting.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-aim-intro.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-aim-explain.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-shot-group.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-add-photo-ready.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-group-center.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-vector.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-adjustment-explain.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-adjustment-act.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-confirmation-explain.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-save-session.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-save-own-photo.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-demo-complete.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-demo-next.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-sec-explain.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-sec-equipment-bridge.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-equipment-library-bridge.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-vault-explain.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-demo-return.wav" as="audio" type="audio/wav" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -162,6 +179,8 @@ window.addEventListener("error", event => {
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
+<script src="self_teaching_player.js?v=episode59-universal-player-1"></script>
+<script src="baker_talking_demo_session.js?v=episode59-real-sec-vault-1"></script>
 <script>
 const beginExperienceProcessing = (id, message, trigger, scope) => SCZN3Actions.begin({ id, message, trigger, scope });
 const finishExperienceProcessing = (operationId, succeeded = true) => SCZN3Actions.finish(operationId, succeeded);
@@ -374,9 +393,37 @@ let displayedEvidence = null;
 let precisionTapController = null;
 let precisionTapReviewing = false;
 let bakerSampleDemoState = "waiting";
-let bakerSampleDemoTimers = [];
-let bakerSampleDemoRunToken = 0;
-let bakerSampleDemoAudio = null;
+let bakerSampleDemoPlayer = null;
+let bakerSampleDemoActionRestore = null;
+const TALKING_TARGET_DEMO_SESSION_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_SESSION";
+const TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_EQUIPMENT_PROFILES";
+const SMART_TARGET_TALK_CHOREOGRAPHY = Object.freeze({
+  speechPauseMs: 850,
+  featureHighlight: Object.freeze({
+    heartbeatPeriodMs: 1000,
+    postSpeechBeats: 3
+  }),
+  observations: Object.freeze({
+    cadenceMs: 850,
+    confirmationCadenceMs: 850,
+    landingMs: 320,
+    completedGroupHoldMs: 1800,
+    completedConfirmationHoldMs: 1800
+  }),
+  resultTeaching: Object.freeze({
+    groupCenterComprehensionMs: 650,
+    vectorDrawMs: 520,
+    vectorComprehensionMs: 600,
+    adjustmentComprehensionMs: 700,
+    adjustmentActionMs: 850
+  }),
+  addPhotoReadyHoldMs: 900,
+  componentSettleMs: 500,
+  equipmentLibraryHoldMs: 5500,
+  equipmentDetailHoldMs: 5000,
+  vaultReadingHoldMs: 3000,
+  completionHoldMs: 1000
+});
 
 function isBakerSampleEvidence(evidence = activeEvidence()) {
   return isBaker100YardSession()
@@ -384,138 +431,332 @@ function isBakerSampleEvidence(evidence = activeEvidence()) {
     && String(evidence.assetRole || "") === "registered-reference-target";
 }
 
-function clearBakerSampleDemoTimers() {
-  bakerSampleDemoTimers.forEach(handle => window.clearTimeout(handle));
-  bakerSampleDemoTimers = [];
-  if (bakerSampleDemoAudio) {
-    bakerSampleDemoAudio.onended = null;
-    bakerSampleDemoAudio.onerror = null;
-    bakerSampleDemoAudio.pause();
-    bakerSampleDemoAudio.currentTime = 0;
-  }
-  document.body.dataset.bakerSampleNarration = "idle";
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+function smartTargetTalkObservationDuration(count, choreography = SMART_TARGET_TALK_CHOREOGRAPHY) {
+  const observationCount = Math.max(0, Number(count) || 0);
+  return Math.max(0, observationCount - 1) * choreography.observations.cadenceMs
+    + choreography.observations.landingMs
+    + choreography.observations.completedGroupHoldMs;
 }
 
-function bakerSampleDemoSpeechFallback(message, finish, estimatedDuration) {
-  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") {
-    bakerSampleDemoTimers.push(window.setTimeout(finish, estimatedDuration));
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new window.SpeechSynthesisUtterance(message);
-  utterance.rate = 0.94;
-  utterance.pitch = 1;
-  utterance.onend = finish;
-  utterance.onerror = () => bakerSampleDemoTimers.push(window.setTimeout(finish, estimatedDuration));
-  window.speechSynthesis.speak(utterance);
-}
-
-function bakerSampleDemoNarration(message, audioSource, onComplete) {
-  const estimatedDuration = Math.max(1500, 520 + String(message).trim().split(/\s+/).length * 360);
-  let settled = false;
-  const finish = () => {
-    if (settled) return;
-    settled = true;
-    document.body.dataset.bakerSampleNarration = "complete";
-    onComplete();
-  };
-  bakerSampleDemoAudio = bakerSampleDemoAudio || new window.Audio();
-  bakerSampleDemoAudio.onended = finish;
-  bakerSampleDemoAudio.onerror = () => bakerSampleDemoSpeechFallback(message, finish, estimatedDuration);
-  bakerSampleDemoAudio.src = audioSource;
-  bakerSampleDemoAudio.currentTime = 0;
-  bakerSampleDemoAudio.play()
-    .then(() => { document.body.dataset.bakerSampleNarration = "playing"; })
-    .catch(() => {
-      document.body.dataset.bakerSampleNarration = "fallback";
-      bakerSampleDemoSpeechFallback(message, finish, estimatedDuration);
-    });
-  bakerSampleDemoTimers.push(window.setTimeout(finish, estimatedDuration + 4000));
-}
-
-function bakerSampleHoleMarkup(points, confirmation = false) {
-  return points.map((point, index) => `<i class="baker-sample-hole${confirmation ? " is-confirmation" : ""}" style="--sample-x:${point[0]}%;--sample-y:${point[1]}%;--sample-delay:${index * 180}ms"><span>${index + 1}</span></i>`).join("");
+function bakerSampleHoleMarkup(points, confirmation = false, choreography = SMART_TARGET_TALK_CHOREOGRAPHY, cadenceMs = choreography.observations.cadenceMs, settled = false) {
+  return points.map((point, index) => `<i class="baker-sample-hole${confirmation ? " is-confirmation" : ""}${settled ? " is-settled" : ""}" style="--sample-x:${point[0]}%;--sample-y:${point[1]}%;--sample-delay:${index * cadenceMs}ms;--sample-landing-duration:${choreography.observations.landingMs}ms"><span>${index + 1}</span></i>`).join("");
 }
 
 function sampleFeatureHighlightMarkup(feature, x, y) {
   return `<i class="sample-feature-highlight is-active" data-sample-feature="${feature}" style="--sample-x:${x}%;--sample-y:${y}%" aria-hidden="true"></i>`;
 }
 
+function bakerSampleGroupAnalysisMarkup({ showVector = false, showAdjustment = false } = {}) {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  const authority = fixture.initialAuthorityPackage;
+  const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
+  const choreography = SMART_TARGET_TALK_CHOREOGRAPHY;
+  const settledGroup = bakerSampleHoleMarkup(initial, false, choreography, 0, true);
+  const centerCoordinate = authority.renderCoordinates.poib;
+  const center = `<i class="baker-sample-poib${showVector ? " is-settled" : ""}" style="--sample-x:${centerCoordinate.xPercent}%;--sample-y:${centerCoordinate.yPercent}%" aria-label="Center of the sample shot group"><span>GROUP CENTER</span></i>`;
+  const vectorCoordinates = authority.renderCoordinates.vector;
+  const vector = showVector
+    ? `<i class="baker-sample-aim" aria-hidden="true"></i><svg class="baker-sample-vector${showAdjustment ? "" : " is-drawing is-emphasized"}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Vector from group center to aim point" style="--sample-vector-draw-duration:${choreography.resultTeaching.vectorDrawMs}ms"><defs><marker id="bakerSampleVectorArrow" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 Z"></path></marker></defs><line pathLength="1" x1="${vectorCoordinates.start.xPercent}" y1="${vectorCoordinates.start.yPercent}" x2="${vectorCoordinates.end.xPercent}" y2="${vectorCoordinates.end.yPercent}" marker-end="url(#bakerSampleVectorArrow)" /></svg>`
+    : "";
+  const adjustment = showAdjustment
+    ? `<div class="baker-sample-result-context"><div class="baker-sample-measurement" aria-label="Authoritative measurement context"><span><small>DISTANCE</small><strong>100</strong><b>YARDS</b></span><span><small>MOA OFFSET</small><strong>${authority.moa.windageMOA.toFixed(2)} W</strong><b>${authority.moa.elevationMOA.toFixed(2)} E</b></span></div><div class="baker-sample-clicks is-emphasized"><b>→</b><strong>${authority.clicks.windageClicks}</strong><span>${authority.clicks.windageDirection}</span><em>CLICKS</em><b>↓</b><strong>${authority.clicks.elevationClicks}</strong><span>${authority.clicks.elevationDirection}</span><em>CLICKS</em></div></div>`
+    : "";
+  return `${settledGroup}${center}${vector}${adjustment}`;
+}
+
+function bakerSampleConfirmationResultMarkup() {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  const authority = fixture.confirmationAuthorityPackage;
+  const confirmation = fixture.confirmationImpacts.map(point => [point.xPercent, point.yPercent]);
+  const settledGroup = bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true);
+  const centerCoordinate = authority.renderCoordinates.poib;
+  const center = `<i class="baker-sample-poib is-settled" style="--sample-x:${centerCoordinate.xPercent}%;--sample-y:${centerCoordinate.yPercent}%" aria-label="Center of the sample confirmation group"><span>GROUP CENTER</span></i>`;
+  return `${settledGroup}${center}`;
+}
+
+function bakerTalkingDemoSession() {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  const timestamp = new Date().toISOString();
+  const evidence = {
+    dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+    name: "Baker 100 Yard Smart Target — SAMPLE",
+    type: "image/png",
+    assetRole: "simulation-reference-target",
+    imageWidthPx: 1102,
+    imageHeightPx: 1713,
+    widthPx: 1102,
+    heightPx: 1713,
+    registrationStatus: "complete",
+    registrationAuthoritySource: "registered_exact_asset",
+    targetProfileId: "baker_st_100yd_smart_zero"
+  };
+  return {
+    persistenceSchema: "sczn3-canonical-session-v1",
+    sessionId: fixture.sessionId,
+    authoritativeSessionId: fixture.sessionId,
+    sessionIdAuthority: "governed-demo-fixture",
+    sessionNumber: 0,
+    sessionLabel: "SAMPLE SESSION",
+    savedIdentifier: "SAMPLE SESSION",
+    savedToSEC: true,
+    savedAt: timestamp,
+    preservedAt: timestamp,
+    timestamp,
+    workflowStage: "preservation",
+    preservationStatus: "saved",
+    experienceMode: "simulation",
+    simulation: true,
+    simulationSessionId: fixture.simulationSessionId,
+    targetProfileVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    target_profile_id: "baker_st_100yd_smart_zero",
+    targetProfileId: "baker_st_100yd_smart_zero",
+    mission_family: "zeroingCorrection",
+    missionFamily: "zeroingCorrection",
+    resultPackageType: "zeroCorrectionResult",
+    targetName: "Baker 100 Yard Smart Target",
+    product: "Baker 100 Yard Smart Target",
+    targetDistanceValue: 100,
+    targetDistanceUnit: "YDS",
+    confirmationStatus: "Recorded",
+    aimPoint: fixture.aim,
+    impactPoints: fixture.initialImpacts,
+    confirmationImpactPoints: fixture.confirmationImpacts,
+    targetEvidenceImage: evidence,
+    confirmationEvidenceImage: { ...evidence, name: "Baker 100 Yard Smart Target — SAMPLE confirmation" },
+    authorityPackage: fixture.initialAuthorityPackage,
+    confirmationAuthorityPackage: fixture.confirmationAuthorityPackage,
+    matrixSnapshot: {
+      target_profile_id: "baker_st_100yd_smart_zero",
+      targetProfileId: "baker_st_100yd_smart_zero",
+      targetId: "BAKER_ST_100YD_SMART",
+      targetName: "Baker 100 Yard Smart Target",
+      targetFamily: "Baker Smart Target",
+      targetProfileVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+      mission_family: "zeroingCorrection",
+      missionFamily: "zeroingCorrection",
+      resultPackageType: "zeroCorrectionResult",
+      targetDistanceValue: 100,
+      targetDistanceUnit: "YDS",
+      setupName: "Standard Setup",
+      setupMode: "standard",
+      opticType: "Quarter-MOA Scope",
+      opticAdjustmentUnit: "MOA",
+      opticClickValue: 0.25,
+      experienceMode: "simulation"
+    }
+  };
+}
+
+function preserveBakerTalkingDemoSession() {
+  const demoSession = bakerTalkingDemoSession();
+  sessionStorage.setItem(TALKING_TARGET_DEMO_SESSION_STORAGE_KEY, JSON.stringify(demoSession));
+  localStorage.setItem(SIMULATION_SESSION_STORAGE_KEY, demoSession.simulationSessionId);
+  return demoSession;
+}
+
+function bakerTalkingDemoRecordsFrame(view) {
+  const demoSession = preserveBakerTalkingDemoSession();
+  const query = new URLSearchParams({ simulation: "1", talking_demo: "1" });
+  if (view === "sec") {
+    query.set("session", demoSession.sessionId);
+    query.set("view", "sec");
+  } else {
+    query.set("selected", demoSession.sessionId);
+  }
+  return `<iframe class="baker-sample-records-frame" src="records.html?${query}" title="${view === "sec" ? "Actual Shooter Experience Card" : "Actual Ballistic Vault containing the sample session"}" tabindex="0"></iframe>`;
+}
+
+function bakerTalkingDemoEquipmentFrame(view) {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  sessionStorage.setItem(TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY, JSON.stringify(fixture.equipmentProfiles));
+  const query = new URLSearchParams({
+    view: "library",
+    simulation: "1",
+    talking_demo: "1",
+    talking_demo_stage: view
+  });
+  if (view === "detail") query.set("equipment_profile_id", fixture.equipmentProfile.setupId);
+  return `<iframe class="baker-sample-equipment-frame" src="matrix.html?${query}" title="${view === "detail" ? "Actual saved equipment profile" : "Actual Equipment Library"}" tabindex="0"></iframe>`;
+}
+
 function bakerSampleDemoScene(state) {
-  const initial = [[29,31],[34,33],[27,36],[32,38],[37,35]];
-  const confirmation = [[48,55.5],[51,55],[53,57],[52,58.5],[49,59]];
-  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>This is your aim point.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
-  if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Aim here and fire your group.</span></div>${bakerSampleHoleMarkup(initial)}`;
-  if (state === "results") return `<div class="baker-sample-demo-callout"><strong>RESULT</strong><span>SCZN3 measures the group and returns the correction.</span></div><i class="baker-sample-aim" aria-hidden="true"></i>${bakerSampleHoleMarkup(initial)}<svg class="baker-sample-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="32" y1="35" x2="50" y2="56.6" /></svg><div class="baker-sample-clicks"><b>→</b><strong>12</strong><span>RIGHT</span><em>CLICKS</em><b>↓</b><strong>8</strong><span>DOWN</span><em>CLICKS</em></div>`;
-  if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRM</strong><span>Apply the clicks, then mark the confirmation group.</span></div>${bakerSampleHoleMarkup(confirmation, true)}`;
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
+  const confirmation = fixture.confirmationImpacts.map(point => [point.xPercent, point.yPercent]);
+  if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>BAKER 100 YARD SMART TARGET</strong><span>Listen as you need. Shoot when you please.</span></div>`;
+  if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
+  if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Shoot your initial group.</span></div>`;
+  if (state === "shoot-observations") return `<div class="baker-sample-demo-callout"><strong>MARK YOUR SHOTS</strong><span>Tap each bullet hole so Tap-n-Score can measure your group.</span></div>${bakerSampleHoleMarkup(initial)}`;
+  if (state === "show-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Submit the marked group for measurement.</span></div>${bakerSampleHoleMarkup(initial, false, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+  if (state === "group-center") return `<div class="baker-sample-demo-callout"><strong>GROUP CENTER</strong><span>Tap-n-Score finds the center of your shot group.</span></div>${bakerSampleGroupAnalysisMarkup()}`;
+  if (state === "vector") return `<div class="baker-sample-demo-callout"><strong>VECTOR</strong><span>Measured movement from group center to aim point.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true })}`;
+  if (state === "results") return `<div class="baker-sample-demo-callout"><strong>ADJUST</strong><span>The measured vector becomes your sight correction.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
+  if (state === "begin-confirmation") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>BEGIN CONFIRMATION</strong><span>Apply the clicks, then begin the confirmation group.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
+  if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRM</strong><span>Apply the clicks, then mark the confirmation group.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, SMART_TARGET_TALK_CHOREOGRAPHY.observations.confirmationCadenceMs)}`;
+  if (state === "show-confirmation-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Submit the confirmation group.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+  if (state === "save") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>CONFIRMATION RECORDED</strong><span>Save the completed shooting session.</span></div>${bakerSampleConfirmationResultMarkup()}`;
   if (state === "add-photo") return `<div class="baker-sample-demo-callout baker-sample-camera-cue"><strong><span aria-hidden="true">📷</span> ADD PHOTO</strong><span>When you're finished shooting, add a photo of your target.</span></div>`;
-  if (state === "sec") return `<div class="baker-sample-stage-card"><span>SEC</span><strong>SHOOTER EXPERIENCE CARD</strong><small>Your target, observations, and result stay together.</small></div>`;
-  if (state === "vault") return `<div class="baker-sample-stage-card"><span>VAULT</span><strong>BALLISTIC VAULT</strong><small>Your completed session is saved and ready to reopen.</small></div>`;
+  if (state === "sec") return bakerTalkingDemoRecordsFrame("sec");
+  if (state === "equipment-library") return bakerTalkingDemoEquipmentFrame("library");
+  if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
+  if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
+  if (state === "complete") return `<div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>`;
   return "";
 }
 
 function setBakerSampleDemoState(state) {
   const layer = document.getElementById("bakerSampleDemoLayer");
   const scene = document.getElementById("bakerSampleDemoScene");
-  const replay = document.getElementById("bakerSampleDemoReplay");
-  if (!layer || !scene || !replay) return;
+  if (!layer || !scene) return;
   bakerSampleDemoState = state;
   layer.dataset.demoState = state;
   scene.innerHTML = bakerSampleDemoScene(state);
-  replay.hidden = state !== "waiting";
+  syncBakerSampleDemoControls(bakerSampleDemoPlayer ? bakerSampleDemoPlayer.status : "idle");
 }
 
 function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
-  bakerSampleDemoRunToken += 1;
-  clearBakerSampleDemoTimers();
-  if (returnToWaiting) setBakerSampleDemoState("waiting");
+  if (bakerSampleDemoPlayer) bakerSampleDemoPlayer.stop({ reset: returnToWaiting });
+  else if (returnToWaiting) setBakerSampleDemoState("waiting");
 }
 
-function playBakerSampleDemoStep(index, runToken) {
-  if (runToken !== bakerSampleDemoRunToken) return;
-  const steps = [
-    { state: "aim", narration: "This is your aim point.", audio: "assets/audio/episode59/baker-aim.wav", after: 260 },
-    { state: "shoot", narration: "Aim here and fire your group.", audio: "assets/audio/episode59/baker-shoot.wav", after: 520 },
-    { state: "add-photo", narration: "When you're finished shooting, add a photo of your target.", audio: "assets/audio/episode59/baker-add-photo.wav", after: 650 },
-    { state: "results", duration: 1900 },
-    { state: "confirmation", duration: 1900 },
-    { state: "sec", duration: 1900 },
-    { state: "vault", duration: 1900 },
-    { state: "waiting" }
+function bakerSampleDemoSteps() {
+  const aimPostSpeechHold = SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs
+    * SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.postSpeechBeats;
+  return [
+    { state: "intro", narration: "You have selected the Baker 100 Yard Smart Target.", audio: "assets/audio/episode59/baker-selected.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "add-photo", narration: "After you're finished shooting this target, add a photo of your target.", audio: "assets/audio/episode59/baker-photo-after-shooting.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "add-photo", narration: "Tap Add Photo when you're ready.", audio: "assets/audio/episode59/baker-add-photo-ready.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.addPhotoReadyHoldMs },
+    { state: "aim", narration: "We'll start with your aim point.", audio: "assets/audio/episode59/baker-aim-intro.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "aim", narration: "The crosshairs should be where you aimed. Tap the spot you aimed at.", audio: "assets/audio/episode59/baker-aim-explain.wav", after: aimPostSpeechHold },
+    { state: "shoot-observations", narration: "Now you'll tap each bullet hole so Tap-n-Score can measure your group.", audio: "assets/audio/episode59/baker-shot-group.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedGroupHoldMs },
+    { state: "show-results", narration: "Tap Show Results when your shots are marked.", audio: "assets/audio/episode59/baker-show-results.wav", action: { id: "show-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "group-center", narration: "Tap-n-Score then calculates the center of your shot group.", audio: "assets/audio/episode59/baker-group-center.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.groupCenterComprehensionMs },
+    { state: "vector", narration: "The green arrow shows the measured movement from the center of your group to your aim point.", audio: "assets/audio/episode59/baker-vector.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.vectorComprehensionMs },
+    { state: "results", narration: "After Tap-n-Score calculates the center of your shot group, it gives you the suggested scope or sight clicks needed to move that center to your aim point.", audio: "assets/audio/episode59/baker-adjustment-explain.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
+    { state: "results", narration: "Go ahead and make your windage and elevation adjustments.", audio: "assets/audio/episode59/baker-adjustment-act.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentActionMs },
+    { state: "begin-confirmation", narration: "Apply your clicks, then tap Begin Confirmation.", audio: "assets/audio/episode59/baker-begin-confirmation.wav", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "confirmation", narration: "Then shoot three to five confirmation shots on your target and snap another picture for your Shooter Experience Card and Ballistic Vault history.", audio: "assets/audio/episode59/baker-confirmation-explain.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
+    { state: "show-confirmation-results", narration: "Tap Show Results when your confirmation shots are marked.", audio: "assets/audio/episode59/baker-show-confirmation-results.wav", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "save", narration: "Tap Save Session to preserve your completed shooting session.", audio: "assets/audio/episode59/baker-save-session.wav", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "sec", narration: "This is your Shooter Experience Card. It preserves the results from the shooting session you just completed.", audio: "assets/audio/episode59/baker-sec-explain.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "sec", narration: "Your Shooter Experience Card can also preserve the equipment you used for this session.", audio: "assets/audio/episode59/baker-sec-equipment-bridge.wav", preserveScene: true, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "equipment-library", narration: "Your firearms, sights, and other equipment are managed in your Equipment Library.", audio: "assets/audio/episode59/baker-equipment-library-bridge.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.equipmentLibraryHoldMs },
+    { state: "equipment-detail", narration: "And you can save a picture of your weapon in the Equipment Library as well.", audio: "assets/audio/episode59/baker-equipment-photo.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.equipmentDetailHoldMs },
+    { state: "vault", narration: "And this session is now saved in your Ballistic Vault, where you can open it again whenever you need it.", audio: "assets/audio/episode59/baker-vault-explain.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
+    { state: "complete", narration: "You have now completed the Tap-n-Score shooting demo. You can load your actual target and complete the Tap-n-Score process yourself, or replay the demo again.", audio: "assets/audio/episode59/baker-demo-return.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
+    { state: "waiting", terminal: true }
   ];
-  const step = steps[index];
-  if (!step) return;
-  setBakerSampleDemoState(step.state);
-  if (step.state === "waiting") return;
-  const advance = () => {
-    if (runToken !== bakerSampleDemoRunToken) return;
-    bakerSampleDemoTimers.push(window.setTimeout(
-      () => playBakerSampleDemoStep(index + 1, runToken),
-      Number(step.after ?? step.duration ?? 0)
-    ));
+}
+
+function waitForBakerSampleDemoSurface(step) {
+  if (!step.waitForSurface) return Promise.resolve();
+  const frame = document.querySelector("#bakerSampleDemoScene iframe");
+  if (!frame) return Promise.resolve();
+  try {
+    if (frame.contentDocument && frame.contentDocument.readyState === "complete") return Promise.resolve();
+  } catch (error) {
+    // The load event remains the readiness source if browser policy withholds the document.
+  }
+  return new Promise(resolve => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      resolve();
+    };
+    const timeout = window.setTimeout(finish, 5000);
+    frame.addEventListener("load", finish, { once: true });
+  });
+}
+
+function resolveBakerSampleDemoAction(action) {
+  const button = action && action.selector ? document.querySelector(action.selector) : null;
+  if (!button) return null;
+  clearBakerSampleDemoAction();
+  bakerSampleDemoActionRestore = {
+    button,
+    text: button.textContent,
+    hidden: button.hidden,
+    disabled: button.disabled
   };
-  if (step.narration) bakerSampleDemoNarration(step.narration, step.audio, advance);
-  else advance();
+  document.body.dataset.bakerDemoAction = action.id || "action";
+  button.dataset.selfTeachingPlayerDemoAction = "true";
+  button.hidden = false;
+  button.disabled = false;
+  button.textContent = action.label || button.textContent;
+  return button;
+}
+
+function demonstrateBakerSampleDemoAction(action, button) {
+  if (!button || button.dataset.selfTeachingPlayerDemoAction !== "true") return;
+  button.click();
+}
+
+function clearBakerSampleDemoAction() {
+  const restore = bakerSampleDemoActionRestore;
+  if (!restore) {
+    delete document.body.dataset.bakerDemoAction;
+    return;
+  }
+  restore.button.classList.remove("self-teaching-player-action-highlight", "is-demonstrated-tap", "is-player-paused");
+  delete restore.button.dataset.selfTeachingPlayerDemoAction;
+  restore.button.textContent = restore.text;
+  restore.button.hidden = restore.hidden;
+  restore.button.disabled = restore.disabled;
+  bakerSampleDemoActionRestore = null;
+  delete document.body.dataset.bakerDemoAction;
+}
+
+function syncBakerSampleDemoControls(status = "idle") {
+  const talk = document.getElementById("bakerSampleDemoReplay");
+  if (!talk) return;
+  talk.hidden = bakerSampleDemoState !== "waiting" || status === "completed";
 }
 
 function startBakerSampleDemo() {
-  clearBakerSampleDemoTimers();
-  bakerSampleDemoRunToken += 1;
-  playBakerSampleDemoStep(0, bakerSampleDemoRunToken);
+  if (bakerSampleDemoPlayer) bakerSampleDemoPlayer.play();
 }
 
 function bakerSampleDemoMarkup() {
-  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button" data-sczn3-live-control="target-talk" aria-label="Let the target talk. Start sample demonstration."><span aria-hidden="true">🗣️</span><strong>LET THE TARGET TALK</strong></button></div>`;
+  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting" data-player-status="idle" style="--smart-target-heartbeat-period:${SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs}ms"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button" data-sczn3-live-control="target-talk" aria-label="Let the target talk. Start sample demonstration."><span aria-hidden="true">🗣️</span><strong>LET THE TARGET TALK</strong></button>${SCZN3SelfTeachingPlayer.controlsMarkup("Let the Target Talk player")}</div>`;
 }
 
 function bindBakerSampleDemo() {
-  const replay = document.getElementById("bakerSampleDemoReplay");
-  if (!replay) return;
-  ["pointerdown", "pointerup", "pointercancel"].forEach(eventName => {
-    replay.addEventListener(eventName, event => event.stopPropagation());
+  const layer = document.getElementById("bakerSampleDemoLayer");
+  const talk = document.getElementById("bakerSampleDemoReplay");
+  const controls = layer && layer.querySelector("[data-self-teaching-player-controls]");
+  if (!layer || !talk || !controls) return;
+  bakerSampleDemoPlayer = SCZN3SelfTeachingPlayer.create({
+    root: layer,
+    steps: bakerSampleDemoSteps(),
+    renderStep: step => {
+      if (bakerSampleDemoState !== step.state || !step.preserveScene) setBakerSampleDemoState(step.state);
+    },
+    prepareStep: waitForBakerSampleDemoSurface,
+    renderReset: () => {
+      clearBakerSampleDemoAction();
+      setBakerSampleDemoState("waiting");
+    },
+    resolveAction: resolveBakerSampleDemoAction,
+    demonstrateAction: demonstrateBakerSampleDemoAction,
+    clearAction: clearBakerSampleDemoAction,
+    onNarrationStatus: status => { document.body.dataset.bakerSampleNarration = status; },
+    onStatusChange: status => syncBakerSampleDemoControls(status)
   });
-  replay.addEventListener("click", startBakerSampleDemo);
+  bakerSampleDemoPlayer.bindControls(controls);
+  const workflow = document.querySelector(".workflow-control-row");
+  if (workflow) {
+    workflow.addEventListener("click", event => {
+      if (!event.target.closest('[data-self-teaching-player-demo-action="true"]')) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }, true);
+  }
+  ["pointerdown", "pointerup", "pointercancel"].forEach(eventName => {
+    talk.addEventListener(eventName, event => event.stopPropagation());
+  });
+  talk.addEventListener("click", startBakerSampleDemo);
   setBakerSampleDemoState("waiting");
 }
 function sourceIsZeroingSession(source) {

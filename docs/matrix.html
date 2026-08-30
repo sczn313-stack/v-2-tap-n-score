@@ -234,6 +234,9 @@ const EQUIPMENT_KNOWLEDGE_REGISTRY = window.SCZN3EquipmentKnowledgeRegistry || {
 const EQUIPMENT_CATALOG_VERSION = EQUIPMENT_KNOWLEDGE_REGISTRY.registryVersion || "episode58-snapshot12-2026-08-23";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
+const TALKING_TARGET_DEMO_MODE = MATRIX_QUERY.get("simulation") === "1" && MATRIX_QUERY.get("talking_demo") === "1";
+const TALKING_TARGET_DEMO_STAGE = TALKING_TARGET_DEMO_MODE ? MATRIX_QUERY.get("talking_demo_stage") || "library" : "";
+const TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_EQUIPMENT_PROFILES";
 const HAS_EXPLICIT_TARGET_INTENT = [
   "target_profile_id", "targetProfileId", "mission_family", "missionFamily",
   "missionFamilyId", "target", "targetName", "qr_id", "qrId"
@@ -1279,6 +1282,10 @@ function displayValue(value) {
 
 function readSavedSetups() {
   try {
+    if (TALKING_TARGET_DEMO_MODE) {
+      const demoProfiles = JSON.parse(sessionStorage.getItem(TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY) || "[]");
+      return Array.isArray(demoProfiles) ? demoProfiles : [];
+    }
     const stored = JSON.parse(localStorage.getItem(SAVED_SETUPS_KEY) || "[]");
     const migrated = stored.map(migrateEquipmentProfile);
     if (JSON.stringify(migrated) !== JSON.stringify(stored) || JSON.stringify(migrated).includes("\"dataUrl\":\"data:")) {
@@ -1294,6 +1301,10 @@ function readSavedSetups() {
 }
 
 function writeSavedSetups(setups) {
+  if (TALKING_TARGET_DEMO_MODE) {
+    sessionStorage.setItem(TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY, JSON.stringify(setups));
+    return;
+  }
   const source = setups.slice(0, MAX_SAVED_SETUPS);
   const stored = window.SCZN3M4 && SCZN3M4.storeMediaReferences
     ? SCZN3M4.storeMediaReferences(source)
@@ -1302,10 +1313,15 @@ function writeSavedSetups(setups) {
 }
 
 function activeEquipmentProfileId() {
+  if (TALKING_TARGET_DEMO_MODE) {
+    const profile = readSavedSetups()[0];
+    return profile ? profile.setupId : "";
+  }
   return localStorage.getItem(ACTIVE_EQUIPMENT_PROFILE_KEY) || "";
 }
 
 function setActiveEquipmentProfile(setupId) {
+  if (TALKING_TARGET_DEMO_MODE) return;
   if (setupId) localStorage.setItem(ACTIVE_EQUIPMENT_PROFILE_KEY, setupId);
   else localStorage.removeItem(ACTIVE_EQUIPMENT_PROFILE_KEY);
 }
@@ -1547,6 +1563,13 @@ function weaponCatalogMeta(setup) {
     .join(" / ");
 }
 
+function weaponSightConfiguration(setup) {
+  return [setup.opticBrand, setup.opticModel || setup.opticType, setup.magnification]
+    .filter(value => value && !isSelectedPlaceholder(value))
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .join(" · ");
+}
+
 function governedZeroRelationship(setup = {}) {
   const relationship = setup.targetZeroRelationship;
   if (!relationship || typeof relationship !== "object" || !relationship.relationshipId || relationship.authorityStatus !== "governed") return null;
@@ -1617,6 +1640,7 @@ function renderWeaponList() {
         const usage = setupUsageStats(setup);
         const photo = setup.weaponPhoto && setup.weaponPhoto.dataUrl ? setup.weaponPhoto : null;
         const catalogMeta = weaponCatalogMeta(setup);
+        const sightConfiguration = weaponSightConfiguration(setup);
         const zeroDisplay = governedZeroDisplay(setup);
         return `
         <article class="weapon-card${setup.setupId === activeId ? " is-active" : ""}" data-equipment-profile-id="${escapeHtml(setup.setupId)}">
@@ -1624,6 +1648,7 @@ function renderWeaponList() {
           <div>
             <div class="weapon-card-title-row"><strong>${escapeHtml(weaponCardTitle(setup))}</strong>${setup.setupId === activeId ? `<span class="active-equipment-badge">ACTIVE</span>` : ""}</div>
             <span>${escapeHtml(weaponCaliber(setup))}</span>
+            ${sightConfiguration ? `<span class="weapon-card-optic">${escapeHtml(sightConfiguration)}</span>` : ""}
             ${catalogMeta ? `<span class="weapon-card-catalog-meta">${escapeHtml(catalogMeta)}</span>` : ""}
           </div>
           <dl>
@@ -2496,6 +2521,28 @@ function activateUniversalEquipmentLibraryView() {
   setProfileEditorVisible(false);
   setWeaponListExpanded(true);
   authorityStatus("", "");
+  if (TALKING_TARGET_DEMO_MODE) {
+    document.body.classList.add(`talking-target-equipment-${TALKING_TARGET_DEMO_STAGE}`);
+    window.requestAnimationFrame(() => {
+      if (TALKING_TARGET_DEMO_STAGE === "detail") {
+        setWeaponListExpanded(false);
+        setProfileEditorVisible(true);
+        const selectedProfile = readSavedSetups().find(profile => profile.setupId === requestedEquipmentProfileId);
+        const profileSection = document.querySelector(".primary-weapon-path");
+        const profileKicker = profileSection && profileSection.querySelector(".weapon-library-kicker");
+        const profileTitle = profileSection && profileSection.querySelector("h2");
+        const profileCopy = profileSection && profileSection.querySelector(".equipment-step-copy");
+        if (selectedProfile) {
+          if (profileKicker) profileKicker.textContent = "Saved equipment";
+          if (profileTitle) profileTitle.textContent = selectedProfile.setupName || "Equipment profile";
+          if (profileCopy) profileCopy.textContent = "This saved profile carries the equipment details Tap-n-Score can reuse.";
+        }
+        document.querySelector(".primary-weapon-path")?.scrollIntoView({ block: "start" });
+      } else {
+        document.getElementById("weaponListPanel")?.scrollIntoView({ block: "start" });
+      }
+    });
+  }
 }
 
 form.addEventListener("submit", event => {

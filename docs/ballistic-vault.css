@@ -148,6 +148,22 @@
   color:#fff;
   text-align:center;
 }
+
+/* Talking Target reuses the actual Universal SEC/Vault inside its stationary stage. */
+body[data-talking-target-demo-stage="true"] .shell{width:100%;max-width:none;padding:0}
+body[data-talking-target-demo-stage="true"] .m4-header,
+body[data-talking-target-demo-stage="true"] .records-historical-promo,
+body[data-talking-target-demo-stage="true"] .records-vault-back{display:none!important}
+body[data-talking-target-demo-stage="true"] .history-panel.ballistic-vault{
+  margin:0;
+  padding:8px;
+  border:0;
+  border-radius:0;
+  background:#07080a;
+  box-shadow:none;
+}
+body[data-talking-target-demo-stage="true"] .vault-gallery{grid-template-columns:1fr;gap:8px}
+body[data-talking-target-demo-stage="true"][data-vault-view="browse"] .vault-record-summary{max-width:900px;margin:0 auto}
 @media(max-width:720px){
   .records-page .m4-header{
     grid-template-columns:minmax(0,1fr) auto auto 46px;

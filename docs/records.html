@@ -84,8 +84,11 @@ let serverTimelineRecords = [];
 const VAULT_RETURN_STATE_KEY = "SCZN3_BALLISTIC_VAULT_RETURN_STATE";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
+const TALKING_TARGET_DEMO_SESSION_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_SESSION";
+const TALKING_TARGET_DEMO_MODE = SIMULATION_MODE && RECORD_QUERY.get("talking_demo") === "1";
 const SIMULATION_SESSION_ID = SIMULATION_MODE ? (localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY) || "") : "";
 document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
+if (TALKING_TARGET_DEMO_MODE) document.body.dataset.talkingTargetDemoStage = "true";
 if (SIMULATION_MODE) {
   document.querySelectorAll("[data-simulation-target-link]").forEach(link => { link.href = "shoot.html?simulation=1"; });
   document.querySelectorAll("[data-simulation-sec-link]").forEach(link => { link.href = "records.html?simulation=1"; });
@@ -99,6 +102,16 @@ function isCurrentSimulationSession(session) {
   return isSimulationSession(session)
     && !!SIMULATION_SESSION_ID
     && session.simulationSessionId === SIMULATION_SESSION_ID;
+}
+
+function talkingTargetDemoSession() {
+  if (!TALKING_TARGET_DEMO_MODE) return null;
+  try {
+    const parsed = JSON.parse(sessionStorage.getItem(TALKING_TARGET_DEMO_SESSION_STORAGE_KEY) || "null");
+    return parsed && parsed.sessionId && parsed.savedToSEC === true ? parsed : null;
+  } catch (error) {
+    return null;
+  }
 }
 
 function simulationCompletionHtml(completedCount) {
@@ -1626,7 +1639,8 @@ return Object.freeze({
 window.SCZN3GSSFSEC = SCZN3GSSFSEC;
 
 function renderHistory() {
-  const allSavedSessions = [...serverSavedSessions, ...SCZN3M4.getSessionHistory()]
+  const demoSession = talkingTargetDemoSession();
+  const allSavedSessions = [demoSession, ...serverSavedSessions, ...SCZN3M4.getSessionHistory()]
     .filter((session, index, source) => session && source.findIndex(candidate => String(candidate.sessionId || "") === String(session.sessionId || "")) === index)
     .filter(session => session && session.savedToSEC === true)
     .sort((a, b) => {
@@ -1635,7 +1649,9 @@ function renderHistory() {
       return Number(b.sessionNumber || 0) - Number(a.sessionNumber || 0);
     });
   const simulationCount = allSavedSessions.filter(isCurrentSimulationSession).length;
-  const modeSessions = SIMULATION_MODE ? allSavedSessions.filter(isCurrentSimulationSession) : allSavedSessions;
+  const modeSessions = SIMULATION_MODE
+    ? allSavedSessions.filter(isCurrentSimulationSession)
+    : allSavedSessions.filter(session => !isSimulationSession(session));
   const savedSessions = REQUESTED_RECORD_SESSION_ID
     ? modeSessions.filter(session => String(session.sessionId || "") === REQUESTED_RECORD_SESSION_ID)
     : modeSessions;
