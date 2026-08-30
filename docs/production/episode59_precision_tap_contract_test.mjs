@@ -40,6 +40,7 @@ const narrationAssets = await Promise.all([
   ,"baker-equipment-library-bridge.wav"
   ,"baker-vault-explain.wav"
   ,"baker-demo-return.wav"
+  ,"baker-replenishment.wav"
 ].map(asset => stat(`assets/audio/episode59/${asset}`)));
 
 assert.match(owner, /function createPrecisionTap\(/, "shared workspace owns Precision Tap interaction");
@@ -143,6 +144,8 @@ assert.match(selfTeachingPlayer, /this\.logicalElapsedMs[\s\S]*this\.stepHistory
 assert.match(selfTeachingPlayer, /this\.audio\.onended = finish/, "the next visual turn waits for audible media to finish");
 assert.match(selfTeachingPlayer, /this\.audio\.play\(\)[\s\S]*\.catch/, "browser playback failure has a safe sequencing fallback");
 assert.match(selfTeachingPlayer, /this\.timer\.pause\(\)/, "PAUSE freezes the active choreography timer");
+assert.match(shoot, /self_teaching_player\.js\?v=episode59-founder-player-lock-1/, "the Founder-locked PLAYER vocabulary is cache-busted into the served shooter path");
+assert.match(shoot, /smart_target_workspace\.css\?v=episode59-player-continuity-3/, "the corrected PLAYER/action and platform-surface layout is cache-busted into the served shooter path");
 assert.match(selfTeachingPlayer, /this\.audio && !this\.audio\.paused[\s\S]*this\.audio\.pause\(\)/, "PAUSE freezes bundled narration");
 assert.match(selfTeachingPlayer, /renderReset:|this\.renderReset\(\)/, "RESTART and rewind restore demo-only presentation coherently");
 assert.match(selfTeachingPlayer, /action-highlight[\s\S]*is-demonstrated-tap/, "the universal player owns reusable shooter-action emphasis and tap choreography");
@@ -156,6 +159,21 @@ assert.match(shoot, /completedGroupHoldMs: 1800/, "the complete sample group rem
 assert.match(shoot, /resultTeaching: Object\.freeze\(/, "group center, vector, and adjustment use reusable choreography settings");
 assert.match(shoot, /vectorDrawMs: 520/, "the vector uses a tightened local draw time");
 assert.match(shoot, /state: "intro", narration: "You have selected the Baker 100 Yard Smart Target\."/, "the target confirms the shooter's selection");
+assert.doesNotMatch(shoot, /state: "publisher"|smartTargetPublisherRecognitionMarkup/, "the separate early Baker recognition turn is removed without replacement");
+assert.match(records, /YOUR SHOOTING SESSION\. PRESERVED\./, "the actual SEC teaches the universal preserved-session memory association");
+assert.match(records, /Target • Initial Group • Confirmation Group • Results/, "the SEC reinforcement names the preserved session evidence concisely");
+assert.match(records, /YOUR RANGE HISTORY\. SAVED\./, "the actual Vault teaches the universal range-history memory association");
+assert.match(records, /Your shooting sessions\. Ready when you want them\./, "the Vault reinforcement explains exact future usefulness without paragraph copy");
+assert.doesNotMatch(records, /TARGET BY BAKER TARGETS/, "Baker publisher recognition does not leak into the universal SEC/Vault teaching surface");
+assert.match(shoot, /function smartTargetReplenishmentMarkup\(\.\.\.identitySources\)/, "replenishment is a reusable publisher/product relationship instead of a Baker branch");
+assert.match(shoot, /SCZN3TargetProfiles\.identityRecord\(\.\.\.identitySources\)/, "replenishment resolves the registered originating target identity");
+assert.match(shoot, /if \(!publisher \|\| !publisher\.publisherUrl\) return "";/, "replenishment fails closed when governed publisher routing is unavailable");
+assert.match(shoot, /BUY MORE TARGETS LIKE THIS/, "the completed demonstration presents the approved replenishment invitation");
+assert.match(shoot, /smartTargetReplenishmentMarkup\(bakerTalkingDemoSession\(\)\)/, "the Baker proof supplies session identity to the reusable replenishment surface");
+assert.doesNotMatch(shoot.match(/function smartTargetReplenishmentMarkup[\s\S]*?\n\}/)?.[0] || "", /Baker/, "the universal replenishment renderer contains no Baker-coded identity");
+assert.match(shoot, /state: "complete", narration: "You can also buy more targets like this directly from Baker Targets\."[\s\S]*preserveScene: true[\s\S]*after: SMART_TARGET_TALK_CHOREOGRAPHY\.replenishmentHoldMs/, "the final replenishment card is already visible for Baker's one spoken commercial moment");
+assert.match(shoot, /replenishmentHoldMs: 4200/, "the final Baker replenishment receives a deliberate post-speech viewing hold");
+assert.match(shoot, /visualLeadMs: 900/, "shot demonstrations begin after a short spoken lead-in rather than racing the narration");
 assert.match(shoot, /After you're finished shooting this target, add a photo of your target\./, "the opening explains the real-photo handoff");
 assert.match(shoot, /state: "aim", narration: "We'll start with your aim point\."/, "AIM opens conversationally");
 assert.match(shoot, /The crosshairs should be where you aimed\. Tap the spot you aimed at\./, "AIM explains the highlighted feature and shooter action");
@@ -171,12 +189,13 @@ assert.match(shoot, /state: "show-confirmation-results"[\s\S]*selector: "#showRe
 assert.match(shoot, /state: "save"[\s\S]*selector: "#saveMarks"[\s\S]*label: "Save Session"/, "the player teaches and demonstrates the actual SAVE SESSION control");
 assert.match(shoot, /This is your Shooter Experience Card\. It preserves the results from the shooting session you just completed\./, "the real SEC turn explains the preserved session");
 assert.match(shoot, /state: "sec", narration: "Your Shooter Experience Card can also preserve the equipment you used for this session\."/, "the Equipment Library bridge begins on the actual SEC");
-assert.match(shoot, /state: "equipment-library", narration: "Your firearms, sights, and other equipment are managed in your Equipment Library\."/, "the matching narration reveals the actual Equipment Library");
-assert.match(shoot, /equipmentLibraryHoldMs: 5500/, "the fully rendered Equipment Library receives five to six useful seconds of inspection time");
-assert.match(shoot, /state: "equipment-detail", narration: "And you can save a picture of your weapon in the Equipment Library as well\."[\s\S]*waitForSurface: true[\s\S]*after: SMART_TARGET_TALK_CHOREOGRAPHY\.equipmentDetailHoldMs/, "the actual saved equipment view explains its visible photo control, then leaves inspection time");
+assert.match(shoot, /state: "equipment-detail", narration: "Your firearms, sights, and other equipment are managed in your Equipment Library\."[\s\S]*waitForSurface: true[\s\S]*after: SMART_TARGET_TALK_CHOREOGRAPHY\.equipmentLibraryHoldMs/, "the Equipment Library bridge now reveals the useful populated Equipment Profile directly");
+assert.match(shoot, /equipmentLibraryHoldMs: 5500/, "the populated Equipment Profile receives five to six useful seconds of initial inspection time");
+assert.match(shoot, /state: "equipment-detail", narration: "And you can save a picture of your weapon in the Equipment Library as well\."[\s\S]*preserveScene: true[\s\S]*after: SMART_TARGET_TALK_CHOREOGRAPHY\.equipmentDetailHoldMs/, "the same actual saved profile explains its firearm photo without reloading or substituting the surface");
 assert.match(shoot, /waitForBakerSampleDemoSurface/, "real component loading time does not consume the viewing hold");
-assert.match(shoot, /state: "sec"[\s\S]*state: "equipment-library"[\s\S]*state: "equipment-detail"[\s\S]*state: "vault"/, "the visual bridge advances directly from the SEC through equipment into Vault");
-assert.doesNotMatch(shoot, /state: "equipment-detail"[\s\S]*?state: "sec"[\s\S]*?state: "vault"/, "the choreography does not repeat the SEC between Equipment Library and Vault");
+assert.match(shoot, /state: "sec"[\s\S]*state: "equipment-detail"[\s\S]*state: "vault"/, "the visual bridge advances directly from the SEC through the populated equipment profile into Vault");
+assert.doesNotMatch(shoot, /\{ state: "equipment-library", narration:/, "the redundant problematic Library-list turn is no longer part of the Talking Smart Target road");
+assert.doesNotMatch(shoot, /state: "equipment-detail"[\s\S]*?state: "sec"[\s\S]*?state: "vault"/, "the choreography does not repeat the SEC between Equipment Profile and Vault");
 assert.match(shoot, /src="matrix\.html\?\$\{query\}"/, "the talking target embeds the actual Equipment Library instead of a substitute");
 assert.match(matrix, /TALKING_TARGET_DEMO_MODE[\s\S]*sessionStorage\.getItem\(TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY\)/, "the real Equipment Library reads an isolated simulation profile without touching shooter data");
 assert.match(matrix, /if \(TALKING_TARGET_DEMO_MODE\) return;/, "the isolated Equipment Library flash cannot change the shooter's active equipment");
@@ -194,15 +213,23 @@ assert.match(css, /\.baker-sample-records-frame,[\s\S]*\.baker-sample-equipment-
 assert.match(css, /\.self-teaching-player-controls\{/, "the universal player controls remain visually quiet and separate from Baker content");
 assert.match(css, /\.self-teaching-player-action-highlight\{[\s\S]*self-teaching-action-invite/, "required shooter actions receive reusable tasteful emphasis");
 assert.match(css, /\.baker-sample-demo-layer\{[\s\S]*z-index:26;/, "the talking-target layer remains above evidence overlays");
-assert.match(css, /\.self-teaching-player-controls\{[\s\S]*bottom:2%;/, "player controls occupy a compact bottom lane without hiding target teaching content");
-assert.match(css, /data-demo-state="equipment-detail"\] \.self-teaching-player-controls,[\s\S]*data-demo-state="vault"\] \.self-teaching-player-controls\{[\s\S]*top:1\.5%;[\s\S]*bottom:auto/, "player controls move to a dedicated top lane while real platform components are shown");
-assert.match(css, /data-demo-state="equipment-detail"\] \.baker-sample-equipment-frame,[\s\S]*data-demo-state="vault"\] \.baker-sample-records-frame\{[\s\S]*top:58px;[\s\S]*height:calc\(166\.6667% - 97px\)/, "component surfaces reserve their own visible area instead of being covered or shrunk by PLAYER");
+assert.match(shoot, /id="targetEvidencePreview"[\s\S]*id="smartTargetPlayerHost" data-player-owner="workspace-stage"/, "the universal PLAYER host is owned by the stable workspace parent outside the replaceable evidence preview");
+assert.match(shoot, /if \(!bakerSampleDemoPlayer\) \{[\s\S]*root,[\s\S]*bakerSampleDemoPlayer\.bindControls\(controls\);/, "evidence rerenders reuse one parent-owned PLAYER instead of constructing a new idle player");
+assert.match(shoot, /setBakerSampleDemoState\(bakerSampleDemoPlayer\.status === "idle" \? "waiting" : bakerSampleDemoState\)/, "a rebuilt target surface resumes the active teaching scene without resetting PLAYER continuity");
+assert.match(css, /\.self-teaching-player-host\{[\s\S]*z-index:40;[\s\S]*pointer-events:none;/, "the persistent PLAYER host remains above replaceable target and component surfaces without blocking them");
+assert.match(css, /\.self-teaching-player-controls\{[\s\S]*bottom:calc\(2\.2% \+ clamp\(50px, 5\.5vw, 62px\) \+ 8px\);/, "PLAYER occupies a dedicated lane above the persistent live-session action row");
+assert.match(css, /@media\(max-width:560px\)[\s\S]*\.self-teaching-player-controls\{right:2%;bottom:calc\(2% \+ 54px \+ 8px\);left:2%/, "390px preserves the same separate PLAYER and live-action lanes");
+assert.match(css, /data-smart-target-demo-state="equipment-detail"\] \.self-teaching-player-host \.self-teaching-player-controls,[\s\S]*data-smart-target-demo-state="vault"\] \.self-teaching-player-host \.self-teaching-player-controls\{[\s\S]*top:10px;[\s\S]*bottom:auto;[\s\S]*width:min\(60%,520px\)/, "PLAYER remains identifiable and accessible in a dedicated top lane while real platform components are shown");
+assert.match(css, /data-smart-target-demo-state="sec"\] > \[data-sczn3-workspace-actions="true"\],[\s\S]*data-smart-target-demo-state="equipment-detail"\] > \[data-sczn3-workspace-actions="true"\],[\s\S]*data-smart-target-demo-state="vault"\] > \[data-sczn3-workspace-actions="true"\][\s\S]*display:none!important;/, "real-session ADD PHOTO and action controls cannot leak across demonstrated platform surfaces");
+assert.match(css, /data-demo-state="equipment-detail"\] \.baker-sample-equipment-frame,[\s\S]*data-demo-state="vault"\] \.baker-sample-records-frame\{[\s\S]*top:70px;[\s\S]*height:calc\(166\.6667% - 117px\)/, "component surfaces reserve their own visible area without shrinking their content scale");
+assert.match(css, /@media\(max-width:560px\)[\s\S]*data-smart-target-demo-state="equipment-detail"\] \.self-teaching-player-host \.self-teaching-player-controls,[\s\S]*top:27px;right:2%;left:2%;width:auto/, "390px receives the same persistent PLAYER shell without hiding the component");
+assert.match(css, /\.smart-target-completion-layout\{[\s\S]*grid-template-columns:minmax\(0,1\.12fr\) minmax\(250px,\.88fr\)/, "completion and replenishment occupy one non-overlapping terminal layout");
 assert.match(shoot, /if \(state === "show-results"\) return `<div class="baker-sample-demo-callout is-action-guidance"/, "initial result teaching uses temporary action guidance");
 assert.match(shoot, /if \(state === "begin-confirmation"\) return `<div class="baker-sample-demo-callout is-action-guidance"/, "confirmation teaching uses temporary action guidance");
 assert.match(shoot, /if \(state === "show-confirmation-results"\) return `<div class="baker-sample-demo-callout is-action-guidance"/, "confirmation result teaching uses temporary action guidance");
 assert.match(shoot, /if \(state === "save"\) return `<div class="baker-sample-demo-callout is-action-guidance"/, "save teaching uses temporary action guidance");
 assert.match(css, /\.baker-sample-demo-callout\.is-action-guidance\{[\s\S]*background:linear-gradient\(145deg,#f6d05a/, "action teaching uses the temporary gold guidance treatment");
-assert.match(css, /\.baker-sample-demo-layer\.is-player-paused[\s\S]*animation-play-state:paused!important/, "PAUSE freezes active target choreography");
+assert.match(css, /\.workspace-stage-shell\.is-player-paused[\s\S]*animation-play-state:paused!important/, "the parent-owned PAUSE state freezes the replaceable target choreography beneath it");
 assert.match(css, /\.baker-sample-equipment-frame\{[\s\S]*pointer-events:auto;[\s\S]*touch-action:pan-x pan-y/, "real component surfaces preserve mouse, trackpad, and finger inspection");
 assert.match(shoot, /state: "intro"[\s\S]*state: "add-photo"[\s\S]*state: "aim"[\s\S]*state: "shoot-observations"[\s\S]*state: "show-results"[\s\S]*state: "group-center"[\s\S]*state: "vector"[\s\S]*state: "results"[\s\S]*state: "begin-confirmation"[\s\S]*state: "confirmation"[\s\S]*state: "show-confirmation-results"[\s\S]*state: "save"[\s\S]*state: "sec"[\s\S]*state: "vault"[\s\S]*state: "complete"[\s\S]*state: "waiting"/, "the complete Founder teaching sequence demonstrates required taps and returns to the clean waiting target");
 assert.match(shoot, /if \(!sessionSaved\) return "Apply your clicks, then shoot your confirmation shots\.";/, "approved correction guidance is preserved");

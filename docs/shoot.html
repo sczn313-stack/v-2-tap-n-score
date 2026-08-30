@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-target-talk-control-1" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-player-continuity-3" />
 <link rel="preload" href="assets/audio/episode59/baker-selected.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-photo-after-shooting.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-aim-intro.wav" as="audio" type="audio/wav" />
@@ -31,6 +31,7 @@
 <link rel="preload" href="assets/audio/episode59/baker-equipment-library-bridge.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-vault-explain.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-demo-return.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode59/baker-replenishment.wav" as="audio" type="audio/wav" />
 <script>
 window.__SCZN3_WORKSPACE_RUNTIME_ERRORS__ = [];
 window.addEventListener("error", event => {
@@ -71,6 +72,7 @@ window.addEventListener("error", event => {
               <div class="target-intel-stack" id="resultsGrid"></div>
             </div>
           </div>
+          <div class="self-teaching-player-host" id="smartTargetPlayerHost" data-player-owner="workspace-stage"></div>
           <div class="workspace-top-overlay" aria-label="Workspace controls">
             <a class="workspace-target-identity" id="targetHeaderIdentity" href="index.html">Target: Not Known</a>
           </div>
@@ -179,7 +181,7 @@ window.addEventListener("error", event => {
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="ops.js?v=ops-v3-0623"></script>
-<script src="self_teaching_player.js?v=episode59-universal-player-1"></script>
+<script src="self_teaching_player.js?v=episode59-founder-player-lock-1"></script>
 <script src="baker_talking_demo_session.js?v=episode59-real-sec-vault-1"></script>
 <script>
 const beginExperienceProcessing = (id, message, trigger, scope) => SCZN3Actions.begin({ id, message, trigger, scope });
@@ -404,6 +406,7 @@ const SMART_TARGET_TALK_CHOREOGRAPHY = Object.freeze({
     postSpeechBeats: 3
   }),
   observations: Object.freeze({
+    visualLeadMs: 900,
     cadenceMs: 850,
     confirmationCadenceMs: 850,
     landingMs: 320,
@@ -422,7 +425,8 @@ const SMART_TARGET_TALK_CHOREOGRAPHY = Object.freeze({
   equipmentLibraryHoldMs: 5500,
   equipmentDetailHoldMs: 5000,
   vaultReadingHoldMs: 3000,
-  completionHoldMs: 1000
+  completionHoldMs: 900,
+  replenishmentHoldMs: 4200
 });
 
 function isBakerSampleEvidence(evidence = activeEvidence()) {
@@ -433,13 +437,15 @@ function isBakerSampleEvidence(evidence = activeEvidence()) {
 
 function smartTargetTalkObservationDuration(count, choreography = SMART_TARGET_TALK_CHOREOGRAPHY) {
   const observationCount = Math.max(0, Number(count) || 0);
-  return Math.max(0, observationCount - 1) * choreography.observations.cadenceMs
+  return choreography.observations.visualLeadMs
+    + Math.max(0, observationCount - 1) * choreography.observations.cadenceMs
     + choreography.observations.landingMs
     + choreography.observations.completedGroupHoldMs;
 }
 
 function bakerSampleHoleMarkup(points, confirmation = false, choreography = SMART_TARGET_TALK_CHOREOGRAPHY, cadenceMs = choreography.observations.cadenceMs, settled = false) {
-  return points.map((point, index) => `<i class="baker-sample-hole${confirmation ? " is-confirmation" : ""}${settled ? " is-settled" : ""}" style="--sample-x:${point[0]}%;--sample-y:${point[1]}%;--sample-delay:${index * cadenceMs}ms;--sample-landing-duration:${choreography.observations.landingMs}ms"><span>${index + 1}</span></i>`).join("");
+  const visualLeadMs = settled ? 0 : choreography.observations.visualLeadMs;
+  return points.map((point, index) => `<i class="baker-sample-hole${confirmation ? " is-confirmation" : ""}${settled ? " is-settled" : ""}" style="--sample-x:${point[0]}%;--sample-y:${point[1]}%;--sample-delay:${visualLeadMs + index * cadenceMs}ms;--sample-landing-duration:${choreography.observations.landingMs}ms"><span>${index + 1}</span></i>`).join("");
 }
 
 function sampleFeatureHighlightMarkup(feature, x, y) {
@@ -579,6 +585,28 @@ function bakerTalkingDemoEquipmentFrame(view) {
   return `<iframe class="baker-sample-equipment-frame" src="matrix.html?${query}" title="${view === "detail" ? "Actual saved equipment profile" : "Actual Equipment Library"}" tabindex="0"></iframe>`;
 }
 
+function smartTargetReplenishmentMarkup(...identitySources) {
+  const identity = window.SCZN3TargetProfiles && SCZN3TargetProfiles.identityRecord(...identitySources);
+  const publisher = identity && identity.publisherIdentity;
+  const product = identity && identity.productIdentity;
+  if (!publisher || !publisher.publisherUrl) return "";
+  let sourceUrl;
+  try {
+    sourceUrl = new URL(publisher.publisherUrl, window.location.href);
+    if (!["http:", "https:"].includes(sourceUrl.protocol)) return "";
+  } catch (error) {
+    return "";
+  }
+  const escapeMarkup = value => String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+  const publisherLabel = escapeMarkup(publisher.publisherLabel);
+  const linkLabel = escapeMarkup(publisher.publisherLinkLabel || sourceUrl.hostname);
+  return `<aside class="smart-target-replenishment" data-publisher-id="${escapeMarkup(publisher.publisherId)}" data-product-id="${escapeMarkup(product && product.productId)}"><span>BUY MORE TARGETS LIKE THIS</span><strong>${publisherLabel}</strong><a href="${escapeMarkup(sourceUrl.href)}" target="_blank" rel="noopener noreferrer">${linkLabel}</a></aside>`;
+}
+
 function bakerSampleDemoScene(state) {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
   const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
@@ -600,15 +628,17 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-library") return bakerTalkingDemoEquipmentFrame("library");
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
-  if (state === "complete") return `<div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>`;
+  if (state === "complete") return `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }
 
 function setBakerSampleDemoState(state) {
+  bakerSampleDemoState = state;
+  const stage = document.getElementById("workspaceStageShell");
   const layer = document.getElementById("bakerSampleDemoLayer");
   const scene = document.getElementById("bakerSampleDemoScene");
+  if (stage) stage.dataset.smartTargetDemoState = state;
   if (!layer || !scene) return;
-  bakerSampleDemoState = state;
   layer.dataset.demoState = state;
   scene.innerHTML = bakerSampleDemoScene(state);
   syncBakerSampleDemoControls(bakerSampleDemoPlayer ? bakerSampleDemoPlayer.status : "idle");
@@ -640,10 +670,11 @@ function bakerSampleDemoSteps() {
     { state: "save", narration: "Tap Save Session to preserve your completed shooting session.", audio: "assets/audio/episode59/baker-save-session.wav", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "sec", narration: "This is your Shooter Experience Card. It preserves the results from the shooting session you just completed.", audio: "assets/audio/episode59/baker-sec-explain.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "sec", narration: "Your Shooter Experience Card can also preserve the equipment you used for this session.", audio: "assets/audio/episode59/baker-sec-equipment-bridge.wav", preserveScene: true, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "equipment-library", narration: "Your firearms, sights, and other equipment are managed in your Equipment Library.", audio: "assets/audio/episode59/baker-equipment-library-bridge.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.equipmentLibraryHoldMs },
-    { state: "equipment-detail", narration: "And you can save a picture of your weapon in the Equipment Library as well.", audio: "assets/audio/episode59/baker-equipment-photo.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.equipmentDetailHoldMs },
+    { state: "equipment-detail", narration: "Your firearms, sights, and other equipment are managed in your Equipment Library.", audio: "assets/audio/episode59/baker-equipment-library-bridge.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.equipmentLibraryHoldMs },
+    { state: "equipment-detail", narration: "And you can save a picture of your weapon in the Equipment Library as well.", audio: "assets/audio/episode59/baker-equipment-photo.wav", preserveScene: true, after: SMART_TARGET_TALK_CHOREOGRAPHY.equipmentDetailHoldMs },
     { state: "vault", narration: "And this session is now saved in your Ballistic Vault, where you can open it again whenever you need it.", audio: "assets/audio/episode59/baker-vault-explain.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
     { state: "complete", narration: "You have now completed the Tap-n-Score shooting demo. You can load your actual target and complete the Tap-n-Score process yourself, or replay the demo again.", audio: "assets/audio/episode59/baker-demo-return.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
+    { state: "complete", narration: "You can also buy more targets like this directly from Baker Targets.", audio: "assets/audio/episode59/baker-replenishment.wav", preserveScene: true, after: SMART_TARGET_TALK_CHOREOGRAPHY.replenishmentHoldMs },
     { state: "waiting", terminal: true }
   ];
 }
@@ -719,32 +750,39 @@ function startBakerSampleDemo() {
 }
 
 function bakerSampleDemoMarkup() {
-  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting" data-player-status="idle" style="--smart-target-heartbeat-period:${SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs}ms"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button" data-sczn3-live-control="target-talk" aria-label="Let the target talk. Start sample demonstration."><span aria-hidden="true">🗣️</span><strong>LET THE TARGET TALK</strong></button>${SCZN3SelfTeachingPlayer.controlsMarkup("Let the Target Talk player")}</div>`;
+  return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting" style="--smart-target-heartbeat-period:${SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs}ms"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button" data-sczn3-live-control="target-talk" aria-label="Let the target talk. Start sample demonstration."><span aria-hidden="true">🗣️</span><strong>LET THE TARGET TALK</strong></button></div>`;
 }
 
 function bindBakerSampleDemo() {
+  const root = document.getElementById("workspaceStageShell");
   const layer = document.getElementById("bakerSampleDemoLayer");
   const talk = document.getElementById("bakerSampleDemoReplay");
-  const controls = layer && layer.querySelector("[data-self-teaching-player-controls]");
-  if (!layer || !talk || !controls) return;
-  bakerSampleDemoPlayer = SCZN3SelfTeachingPlayer.create({
-    root: layer,
-    steps: bakerSampleDemoSteps(),
-    renderStep: step => {
-      if (bakerSampleDemoState !== step.state || !step.preserveScene) setBakerSampleDemoState(step.state);
-    },
-    prepareStep: waitForBakerSampleDemoSurface,
-    renderReset: () => {
-      clearBakerSampleDemoAction();
-      setBakerSampleDemoState("waiting");
-    },
-    resolveAction: resolveBakerSampleDemoAction,
-    demonstrateAction: demonstrateBakerSampleDemoAction,
-    clearAction: clearBakerSampleDemoAction,
-    onNarrationStatus: status => { document.body.dataset.bakerSampleNarration = status; },
-    onStatusChange: status => syncBakerSampleDemoControls(status)
-  });
-  bakerSampleDemoPlayer.bindControls(controls);
+  const host = document.getElementById("smartTargetPlayerHost");
+  if (!root || !layer || !talk || !host) return;
+  if (!host.querySelector("[data-self-teaching-player-controls]")) {
+    host.innerHTML = SCZN3SelfTeachingPlayer.controlsMarkup("Let the Target Talk player");
+  }
+  const controls = host.querySelector("[data-self-teaching-player-controls]");
+  if (!bakerSampleDemoPlayer) {
+    bakerSampleDemoPlayer = SCZN3SelfTeachingPlayer.create({
+      root,
+      steps: bakerSampleDemoSteps(),
+      renderStep: step => {
+        if (bakerSampleDemoState !== step.state || !step.preserveScene) setBakerSampleDemoState(step.state);
+      },
+      prepareStep: waitForBakerSampleDemoSurface,
+      renderReset: () => {
+        clearBakerSampleDemoAction();
+        setBakerSampleDemoState("waiting");
+      },
+      resolveAction: resolveBakerSampleDemoAction,
+      demonstrateAction: demonstrateBakerSampleDemoAction,
+      clearAction: clearBakerSampleDemoAction,
+      onNarrationStatus: status => { document.body.dataset.bakerSampleNarration = status; },
+      onStatusChange: status => syncBakerSampleDemoControls(status)
+    });
+    bakerSampleDemoPlayer.bindControls(controls);
+  }
   const workflow = document.querySelector(".workflow-control-row");
   if (workflow) {
     workflow.addEventListener("click", event => {
@@ -757,7 +795,8 @@ function bindBakerSampleDemo() {
     talk.addEventListener(eventName, event => event.stopPropagation());
   });
   talk.addEventListener("click", startBakerSampleDemo);
-  setBakerSampleDemoState("waiting");
+  setBakerSampleDemoState(bakerSampleDemoPlayer.status === "idle" ? "waiting" : bakerSampleDemoState);
+  syncBakerSampleDemoControls(bakerSampleDemoPlayer.status);
 }
 function sourceIsZeroingSession(source) {
   if (!source || typeof source !== "object") return false;

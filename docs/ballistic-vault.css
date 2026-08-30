@@ -164,6 +164,18 @@ body[data-talking-target-demo-stage="true"] .history-panel.ballistic-vault{
 }
 body[data-talking-target-demo-stage="true"] .vault-gallery{grid-template-columns:1fr;gap:8px}
 body[data-talking-target-demo-stage="true"][data-vault-view="browse"] .vault-record-summary{max-width:900px;margin:0 auto}
+.talking-target-memory-reinforcement{
+  display:grid;
+  width:min(92%,980px);
+  gap:5px;
+  margin:8px auto 4px;
+  padding:9px 15px 10px;
+  border-left:3px solid rgba(244,198,79,.74);
+  background:linear-gradient(90deg,rgba(244,198,79,.1),rgba(244,198,79,0));
+  color:#fff;
+}
+.talking-target-memory-reinforcement strong{font-size:clamp(20px,4.2vw,38px);font-weight:950;letter-spacing:.045em;line-height:1}
+.talking-target-memory-reinforcement span{color:#d9cfb7;font-size:clamp(10px,1.8vw,15px);font-weight:850;letter-spacing:.025em}
 @media(max-width:720px){
   .records-page .m4-header{
     grid-template-columns:minmax(0,1fr) auto auto 46px;
@@ -180,6 +192,9 @@ body[data-talking-target-demo-stage="true"][data-vault-view="browse"] .vault-rec
   .vault-card-footer strong{font-size:11px}
   .vault-card-footer a{padding-inline:8px;font-size:8px}
   .records-historical-promo{gap:6px;padding:7px 8px;font-size:10px}
+  .talking-target-memory-reinforcement{width:calc(100% - 16px);margin:6px 8px 2px;padding:8px 10px}
+  .talking-target-memory-reinforcement strong{font-size:clamp(17px,6vw,25px)}
+  .talking-target-memory-reinforcement span{font-size:10px;line-height:1.25}
   .vault-evidence-pair{gap:8px;padding:8px}
   .vault-record-summary--baker-scored .vault-evidence-pair{grid-template-columns:1fr}
   .vault-record-summary--baker-scored .vault-result-summary{min-height:142px}

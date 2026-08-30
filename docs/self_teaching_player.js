@@ -76,7 +76,7 @@
     }
 
     static controlsMarkup(label = "Self-teaching player") {
-      return `<div class="self-teaching-player-controls" data-self-teaching-player-controls aria-label="${label}" hidden><button type="button" data-player-action="rewind">↶ <span>10 SEC</span></button><button type="button" data-player-action="toggle">▶ <span>PLAY</span></button><button type="button" data-player-action="restart">↻ <span>RESTART</span></button></div>`;
+      return `<div class="self-teaching-player-controls" data-self-teaching-player-controls aria-label="${label}" hidden><button type="button" data-player-action="rewind"><span aria-hidden="true">◀</span> <span>10 SEC</span></button><button type="button" data-player-action="toggle"><span data-player-icon aria-hidden="true">▶</span> <span data-player-label>PLAY</span></button><button type="button" data-player-action="restart"><span aria-hidden="true">↻</span> <span>RESTART</span></button></div>`;
     }
 
     bindControls(element) {
@@ -348,9 +348,11 @@
       if (!this.controls) return;
       const toggle = this.controls.querySelector('[data-player-action="toggle"]');
       const rewind = this.controls.querySelector('[data-player-action="rewind"]');
-      const toggleLabel = toggle && toggle.querySelector("span");
+      const toggleIcon = toggle && toggle.querySelector("[data-player-icon]");
+      const toggleLabel = toggle && toggle.querySelector("[data-player-label]");
       this.controls.hidden = this.status === "idle";
       if (toggleLabel) toggleLabel.textContent = this.status === "playing" ? "PAUSE" : (this.status === "paused" ? "RESUME" : "PLAY");
+      if (toggleIcon) toggleIcon.textContent = this.status === "playing" ? "⏸" : "▶";
       if (toggle) toggle.setAttribute("aria-label", toggleLabel ? toggleLabel.textContent : "Play");
       if (rewind) rewind.disabled = this.stepIndex < 0;
     }

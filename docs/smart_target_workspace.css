@@ -166,6 +166,14 @@
   pointer-events:none;
 }
 
+.self-teaching-player-host{
+  position:absolute;
+  z-index:40;
+  inset:0;
+  overflow:visible;
+  pointer-events:none;
+}
+
 .baker-sample-watermark{
   position:absolute;
   top:45%;
@@ -276,7 +284,10 @@
   position:absolute;
   z-index:20;
   right:4%;
-  bottom:2%;
+  /* Keep the universal PLAYER clear of the persistent live-session action row.
+     Both controls previously occupied the same bottom band, so action stages
+     could paint over the PLAYER even though it remained present in the DOM. */
+  bottom:calc(2.2% + clamp(50px, 5.5vw, 62px) + 8px);
   left:4%;
   display:flex;
   align-items:center;
@@ -361,8 +372,8 @@ body.target-page[data-baker-demo-action] .precision-tap-control-shell-content > 
   100%{opacity:0;transform:scale(1.08)}
 }
 
-.baker-sample-demo-layer.is-player-paused .baker-sample-demo-scene *,
-.baker-sample-demo-layer.is-player-paused .baker-sample-watermark{
+.workspace-stage-shell.is-player-paused .baker-sample-demo-scene *,
+.workspace-stage-shell.is-player-paused .baker-sample-watermark{
   animation-play-state:paused!important;
 }
 
@@ -652,10 +663,74 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
 .baker-sample-stage-card strong{font-size:clamp(23px,5vw,38px)}
 .baker-sample-stage-card small{color:#eee1bc;font-size:14px;font-weight:700;line-height:1.4}
 
+.smart-target-replenishment{
+  position:absolute;
+  z-index:5;
+  right:4%;
+  bottom:5%;
+  display:grid;
+  width:min(42%,360px);
+  gap:5px;
+  padding:14px 16px;
+  border:1px solid rgba(217,150,11,.72);
+  border-radius:13px;
+  background:linear-gradient(145deg,rgba(16,17,22,.96),rgba(27,28,32,.94));
+  color:#fff;
+  text-align:left;
+  box-shadow:0 12px 30px rgba(0,0,0,.4);
+  pointer-events:none;
+}
+
+.smart-target-replenishment span{color:#f4c64f;font-size:clamp(10px,1.8vw,13px);font-weight:950;letter-spacing:.08em}
+.smart-target-replenishment strong{font-size:clamp(18px,3.4vw,29px);font-weight:950}
+.smart-target-replenishment a{justify-self:start;color:#fff0b7;font-size:clamp(12px,2vw,16px);font-weight:900;pointer-events:auto;text-underline-offset:3px}
+.smart-target-replenishment a:hover,.smart-target-replenishment a:focus-visible{color:#fff;outline-color:#f4c64f}
+
+.smart-target-completion-layout{
+  position:absolute;
+  z-index:5;
+  inset:10% 4% 4%;
+  display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(250px,.88fr);
+  align-items:center;
+  gap:clamp(14px,3vw,28px);
+  pointer-events:none;
+}
+
+.smart-target-completion-layout .baker-sample-stage-card,
+.smart-target-completion-layout .smart-target-replenishment{
+  position:static;
+  width:100%;
+  max-width:none;
+  transform:none;
+}
+
 .baker-sample-demo-layer[data-demo-state="sec"],
 .baker-sample-demo-layer[data-demo-state="equipment-library"],
 .baker-sample-demo-layer[data-demo-state="equipment-detail"],
 .baker-sample-demo-layer[data-demo-state="vault"]{background:#07080a}
+
+.baker-sample-demo-layer[data-demo-state="sec"]::before,
+.baker-sample-demo-layer[data-demo-state="equipment-library"]::before,
+.baker-sample-demo-layer[data-demo-state="equipment-detail"]::before,
+.baker-sample-demo-layer[data-demo-state="vault"]::before{
+  content:"TALKING SMART TARGET";
+  position:absolute;
+  z-index:18;
+  top:0;
+  right:0;
+  left:0;
+  display:flex;
+  align-items:center;
+  height:68px;
+  padding:0 3%;
+  border-bottom:1px solid rgba(217,150,11,.7);
+  background:linear-gradient(180deg,#050608,#0a0b0e);
+  color:#f4c64f;
+  font:950 clamp(10px,1.6vw,13px)/1 Arial,sans-serif;
+  letter-spacing:.09em;
+  pointer-events:none;
+}
 
 .baker-sample-records-frame,
 .baker-sample-equipment-frame{
@@ -672,20 +747,36 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   transform-origin:top left;
 }
 
-.baker-sample-demo-layer[data-demo-state="sec"] .self-teaching-player-controls,
-.baker-sample-demo-layer[data-demo-state="equipment-library"] .self-teaching-player-controls,
-.baker-sample-demo-layer[data-demo-state="equipment-detail"] .self-teaching-player-controls,
-.baker-sample-demo-layer[data-demo-state="vault"] .self-teaching-player-controls{
-  top:1.5%;
+.workspace-stage-shell[data-smart-target-demo-state="sec"] .self-teaching-player-host .self-teaching-player-controls,
+.workspace-stage-shell[data-smart-target-demo-state="equipment-library"] .self-teaching-player-host .self-teaching-player-controls,
+.workspace-stage-shell[data-smart-target-demo-state="equipment-detail"] .self-teaching-player-host .self-teaching-player-controls,
+.workspace-stage-shell[data-smart-target-demo-state="vault"] .self-teaching-player-host .self-teaching-player-controls{
+  top:10px;
+  right:2%;
   bottom:auto;
+  left:auto;
+  width:min(60%,520px);
+  border:2px solid rgba(244,198,79,.78);
+  background:rgba(4,5,7,.98);
+  box-shadow:0 8px 24px rgba(0,0,0,.6),0 0 0 1px rgba(244,198,79,.18);
+}
+
+/* Demonstrated platform surfaces own the stage. The real-session action row
+   remains available before and after the demo, but must not leak across the
+   SEC, Equipment Profile, or Vault presentation. */
+.workspace-stage-shell[data-smart-target-demo-state="sec"] > [data-sczn3-workspace-actions="true"],
+.workspace-stage-shell[data-smart-target-demo-state="equipment-library"] > [data-sczn3-workspace-actions="true"],
+.workspace-stage-shell[data-smart-target-demo-state="equipment-detail"] > [data-sczn3-workspace-actions="true"],
+.workspace-stage-shell[data-smart-target-demo-state="vault"] > [data-sczn3-workspace-actions="true"]{
+  display:none!important;
 }
 
 .baker-sample-demo-layer[data-demo-state="sec"] .baker-sample-records-frame,
 .baker-sample-demo-layer[data-demo-state="equipment-library"] .baker-sample-equipment-frame,
 .baker-sample-demo-layer[data-demo-state="equipment-detail"] .baker-sample-equipment-frame,
 .baker-sample-demo-layer[data-demo-state="vault"] .baker-sample-records-frame{
-  top:58px;
-  height:calc(166.6667% - 97px);
+  top:70px;
+  height:calc(166.6667% - 117px);
 }
 
 .precision-tap-viewport:has(.baker-sample-demo-layer[data-demo-state="sec"]) .precision-tap-plane,
@@ -701,9 +792,26 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   .baker-sample-clicks{grid-template-columns:auto auto auto;gap:3px}
   .baker-sample-clicks em{grid-column:2 / 4}
   .baker-sample-measurement small{font-size:7px}
-  .self-teaching-player-controls{right:2%;bottom:2%;left:2%;gap:4px;padding:5px}
+  .self-teaching-player-controls{right:2%;bottom:calc(2% + 54px + 8px);left:2%;gap:4px;padding:5px}
   .self-teaching-player-controls button{flex:1;padding:7px 5px;font-size:9px}
   .baker-sample-measurement b{font-size:8px}
+  .smart-target-replenishment{right:4%;bottom:4%;width:92%;padding:11px 12px;text-align:center}
+  .smart-target-replenishment a{justify-self:center}
+  .smart-target-completion-layout{inset:6% 4% 3%;grid-template-columns:1fr;align-content:center;gap:12px}
+  .smart-target-completion-layout .baker-sample-stage-card,
+  .smart-target-completion-layout .smart-target-replenishment{width:100%}
+  .baker-sample-demo-layer[data-demo-state="sec"]::before,
+  .baker-sample-demo-layer[data-demo-state="equipment-library"]::before,
+  .baker-sample-demo-layer[data-demo-state="equipment-detail"]::before,
+  .baker-sample-demo-layer[data-demo-state="vault"]::before{height:84px;align-items:flex-start;justify-content:center;padding-top:7px;font-size:9px}
+  .workspace-stage-shell[data-smart-target-demo-state="sec"] .self-teaching-player-host .self-teaching-player-controls,
+  .workspace-stage-shell[data-smart-target-demo-state="equipment-library"] .self-teaching-player-host .self-teaching-player-controls,
+  .workspace-stage-shell[data-smart-target-demo-state="equipment-detail"] .self-teaching-player-host .self-teaching-player-controls,
+  .workspace-stage-shell[data-smart-target-demo-state="vault"] .self-teaching-player-host .self-teaching-player-controls{top:27px;right:2%;left:2%;width:auto}
+  .baker-sample-demo-layer[data-demo-state="sec"] .baker-sample-records-frame,
+  .baker-sample-demo-layer[data-demo-state="equipment-library"] .baker-sample-equipment-frame,
+  .baker-sample-demo-layer[data-demo-state="equipment-detail"] .baker-sample-equipment-frame,
+  .baker-sample-demo-layer[data-demo-state="vault"] .baker-sample-records-frame{top:86px;height:calc(166.6667% - 143px)}
 }
 
 .precision-tap-photo-picker{

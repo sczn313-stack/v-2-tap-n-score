@@ -130,5 +130,8 @@ assert.equal(actionClasses.size, 0, "demonstrated action emphasis clears before 
 
 const controlsMarkup = context.SCZN3SelfTeachingPlayer.controlsMarkup();
 assert.match(controlsMarkup, /10 SEC[\s\S]*PLAY[\s\S]*RESTART/, "the universal control shell exposes rewind, one play-state control, and restart");
+assert.match(controlsMarkup, /data-player-action="rewind">[\s\S]*◀[\s\S]*10 SEC/, "rewind uses the Founder-locked media-style reverse triangle");
+assert.doesNotMatch(controlsMarkup, /data-player-action="rewind">[^<]*(?:←|↶)/, "rewind does not regress to navigation-arrow or circular-rewind vocabulary");
+assert.match(source, /toggleIcon\.textContent = this\.status === "playing" \? "⏸" : "▶"/, "the play-state icon changes from forward play/resume to pause while playing");
 assert.doesNotMatch(controlsMarkup, />REPLAY</, "full replay is no longer a primary control");
 console.log("PASS universal self-teaching player rewind, pause, resume, restart, action demonstration, and narration continuity contract");

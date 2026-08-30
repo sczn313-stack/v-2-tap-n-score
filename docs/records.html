@@ -89,6 +89,25 @@ const TALKING_TARGET_DEMO_MODE = SIMULATION_MODE && RECORD_QUERY.get("talking_de
 const SIMULATION_SESSION_ID = SIMULATION_MODE ? (localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY) || "") : "";
 document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
 if (TALKING_TARGET_DEMO_MODE) document.body.dataset.talkingTargetDemoStage = "true";
+if (TALKING_TARGET_DEMO_MODE) {
+  const reinforcement = document.createElement("section");
+  const reinforcementCopy = HISTORICAL_DETAIL_MODE
+    ? {
+        kind: "sec",
+        title: "YOUR SHOOTING SESSION. PRESERVED.",
+        support: "Target • Initial Group • Confirmation Group • Results"
+      }
+    : {
+        kind: "vault",
+        title: "YOUR RANGE HISTORY. SAVED.",
+        support: "Your shooting sessions. Ready when you want them."
+      };
+  reinforcement.className = "talking-target-memory-reinforcement";
+  reinforcement.dataset.memoryKind = reinforcementCopy.kind;
+  reinforcement.setAttribute("aria-label", reinforcementCopy.title);
+  reinforcement.innerHTML = `<strong>${reinforcementCopy.title}</strong><span>${reinforcementCopy.support}</span>`;
+  document.querySelector(".history-panel.ballistic-vault")?.before(reinforcement);
+}
 if (SIMULATION_MODE) {
   document.querySelectorAll("[data-simulation-target-link]").forEach(link => { link.href = "shoot.html?simulation=1"; });
   document.querySelectorAll("[data-simulation-sec-link]").forEach(link => { link.href = "records.html?simulation=1"; });
