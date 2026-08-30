@@ -2,9 +2,9 @@
 
 Status: **ACTIVE — FOUNDER APPROVED**
 
-Index version: **1.0**
+Index version: **1.1**
 
-Last reconciled against the Master Keepsake Vault: **2026-08-28**
+Last reconciled against the Master Keepsake Vault: **2026-08-30**
 
 ## The Two Homes
 
@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#5 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#7 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -34,9 +34,9 @@ Recovery rule:
 
 ## Current recommended known-good recovery floor
 
-**Keepsake #5 — First Talking Smart Target** is the current recommended recovery floor for Episode 59 Baker work.
+**Keepsake #6 — Baker Talking Smart Target** is the current recommended executable recovery floor for Episode 59 Baker work.
 
-It contains the complete proven Baker road inherited from Keepsakes #1–#4 plus the first working audible, synchronized LET THE TARGET TALK experience. Its milestone status does not claim final polish or Episode 59 closure; it identifies the latest fully preserved and restore-verified known-good state.
+It contains the complete Founder-approved Baker teaching road, the reusable PLAYER integration, and the proven real Baker operational road. **Keepsake #7 — Talking Smart Target Capability** is the current inheritance floor for teaching another Smart Target how to talk without dismantling Baker.
 
 For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 
@@ -105,17 +105,43 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **SHA-256:** `b45765a9591c4a37f410b1c6bf09627ed8be86a9fba1ba723a1ed033c6ca624a`
 - **Restore:** Run `Deposit_005_First_Talking_Smart_Target/START_BAKER_REVIEW.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md` in the same deposit.
 - **Restore verification:** PASS — final ZIP checksum, fresh extraction, complete Git bundle, contracts, both services, bundled audio, physical-pointer audible sequence, clean return, and the real Baker road were verified.
-- **Relationship:** Predecessor: Keepsake #4; successor: none; current recommended known-good recovery floor.
+- **Relationship:** Predecessor: Keepsake #4; successor: Keepsake #6; historical first-talking milestone.
+
+### Keepsake #6 — Baker Talking Smart Target
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · CURRENT BAKER KNOWN-GOOD FLOOR
+- **Purpose / capability proven:** Complete Founder-approved Baker teaching asset: SAMPLE → AIM → SHOTS → GROUP CENTER → VECTOR → CORRECTION → CONFIRMATION → SEC → EQUIPMENT LIBRARY → EQUIPMENT PROFILE → BALLISTIC VAULT → single completion → clean SAMPLE. Preserves narration, choreography, PLAYER controls, inspection behavior, demo isolation, and the real Baker operational road through exact reopen.
+- **Source commit:** `fc353adafb0a169457297ae59ae3ff7643d8b263`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_006_Baker_Talking_Smart_Target/`
+- **Archive:** `SCZN3_KEEP_006_BAKER_TALKING_SMART_TARGET_fc353ad.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_006_BAKER_TALKING_SMART_TARGET_fc353ad.zip`
+- **SHA-256:** `55f537344c7c88bbce4a512da3df6805a88d63ddbb7f3fe68854885981bb547f`
+- **Restore:** Run `Deposit_006_Baker_Talking_Smart_Target/START_BAKER_REVIEW.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md` in the same deposit.
+- **Restore verification:** PASS — final ZIP extraction, exact Git-bundle clone, focused contracts, isolated frontend/backend service health, two complete teaching runs, and the real Baker road were verified.
+- **Relationship:** Predecessor: Keepsake #5; related reusable inheritance asset: Keepsake #7; supersedes #5 as the current Baker recovery floor without erasing #5's milestone proof.
+
+### Keepsake #7 — Talking Smart Target Capability
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · CURRENT TALKING-TARGET CAPABILITY FLOOR
+- **Purpose / capability proven:** Reusable machinery for SPEAK → HIGHLIGHT → TAP/DEMONSTRATE → CLEAR → CONTINUE, including narration sequencing, choreography, temporary guidance, real-control demonstrations, Pause/Resume, 10-second logical rewind, Restart, inspection holds, scrolling while paused, cross-screen continuity, Target → SEC → Equipment Library/Profile → Vault transitions, and clean demo-state isolation.
+- **Source commit:** `fc353adafb0a169457297ae59ae3ff7643d8b263`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_007_Talking_Smart_Target_Capability/`
+- **Archive:** `SCZN3_KEEP_007_TALKING_SMART_TARGET_CAPABILITY_fc353ad.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_007_TALKING_SMART_TARGET_CAPABILITY_fc353ad.zip`
+- **SHA-256:** `ead88227d66ee9c209057460518efcb5943bf385082e0b164dd2663ac6c68896`
+- **Restore:** Run `Deposit_007_Talking_Smart_Target_Capability/VERIFY_CAPABILITY.sh`; read `CAPABILITY_CONTRACT.md` before integrating a new target.
+- **Restore verification:** PASS — final ZIP extraction, exact Git-bundle clone, universal PLAYER contract, and Baker-content boundary review passed.
+- **Relationship:** Extracted inheritance asset proven by Keepsake #6; predecessor: Keepsake #6 as reference implementation; successor: none.
 
 ## Physical-vault reconciliation
 
-The 2026-08-28 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#5 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#7 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#5 verify as complete histories and resolve to their recorded source commits.
-- Restore records report PASS for all five deposits.
-- Keepsakes #1–#5 retain their original numbers and directories.
+- Git bundles #1–#7 resolve to their recorded source commits; the new #6 and #7 bundles were also cloned independently from their final extracted archives.
+- Restore records report PASS for all seven deposits.
+- Keepsakes #1–#7 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
