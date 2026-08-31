@@ -2,7 +2,7 @@
 
 Status: **ACTIVE — FOUNDER APPROVED**
 
-Index version: **1.2**
+Index version: **1.3**
 
 Last reconciled against the Master Keepsake Vault: **2026-08-30**
 
@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#8 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#9 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -37,6 +37,8 @@ Recovery rule:
 **Keepsake #8 — Baker Talking Smart Target Final Founder Audit** is the current recommended executable recovery floor for Episode 59 Baker work.
 
 It contains the exact final Founder-audit candidate, the complete approved Baker teaching road, the reusable PLAYER integration, and the proven real Baker operational road. **Keepsake #7 — Talking Smart Target Capability** remains the current inheritance floor for teaching another Smart Target how to talk without dismantling Baker.
+
+**Keepsake #9 — Baker Post-Lock Production Routing Patch** is the current recommended deployable Baker commit. It adds only the exact governed Baker 100 Yard product destination and the shared product-first / publisher-fallback route above Keepsake #8. Production rollback returns to Keepsake #8.
 
 For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 
@@ -148,15 +150,30 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Evidence qualification:** Founder audit and preservation authorization are complete. Cody's first complete desktop cycle passed. Cody's second complete cycle and manual 390px cycle were interrupted by review-tab disconnection. Cody verified the generated audio asset/configuration but did not personally judge audible quality.
 - **Relationship:** Predecessor: Keepsake #6; reusable sibling/inheritance floor: Keepsake #7; supersedes #6 as the Baker recovery floor without altering #6 or #7.
 
+### Keepsake #9 — Baker Post-Lock Production Routing Patch
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · CURRENT DEPLOYABLE BAKER FLOOR
+- **Purpose / capability proven:** Bounded post-lock production routing from the completed Talking Smart Target replenishment card to the exact governed Baker ST-100YD-SMART product page. The shared renderer prefers a governed product URL and falls back to the governed publisher homepage without a Baker-specific runtime branch.
+- **Source commit:** `41faa4d001234cbbdfc685ea42494dd68112f7fc`
+- **Exact destination:** `https://bakertargets.com/product/100-yard-bulls-eye-rifle-target-smart-target-version/`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_009_Baker_Post_Lock_Production_Routing_Patch/`
+- **Archive:** `SCZN3_KEEP_009_BAKER_POST_LOCK_PRODUCTION_ROUTING_PATCH_41faa4d.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_009_BAKER_POST_LOCK_PRODUCTION_ROUTING_PATCH_41faa4d.zip`
+- **SHA-256:** `b19c8058bae035d4a6fa9c75b9a8c4bbdd7ee225aee5a63eb597b3748f801aae`
+- **Size:** `113812332` bytes
+- **Restore:** Run `Deposit_009_Baker_Post_Lock_Production_Routing_Patch/VERIFY_PATCH.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md` in the same deposit.
+- **Restore verification:** PASS — the canonical archive was freshly extracted; its complete Git bundle was independently cloned at the exact source commit; governed route data, shared renderer preference, focused routing contract, and Netlify build all passed.
+- **Relationship:** Post-lock successor to Keepsake #8 for deployment only. Keepsake #8 remains the immutable complete Episode 59 recovery and rollback floor.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#8 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#9 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#8 resolve to their recorded source commits; #6, #7, and #8 were cloned independently from their final extracted archives.
-- Restore records report PASS for all eight deposits.
-- Keepsakes #1–#8 retain their assigned numbers and directories.
+- Git bundles #1–#9 resolve to their recorded source commits; #6, #7, #8, and #9 were cloned independently from their final extracted archives.
+- Restore records report PASS for all nine deposits.
+- Keepsakes #1–#9 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
