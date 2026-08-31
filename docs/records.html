@@ -1660,7 +1660,7 @@ window.SCZN3GSSFSEC = SCZN3GSSFSEC;
 function renderHistory() {
   const demoSession = talkingTargetDemoSession();
   const allSavedSessions = [demoSession, ...serverSavedSessions, ...SCZN3M4.getSessionHistory()]
-    .filter((session, index, source) => session && source.findIndex(candidate => String(candidate.sessionId || "") === String(session.sessionId || "")) === index)
+    .filter((session, index, source) => session && source.findIndex(candidate => candidate && String(candidate.sessionId || "") === String(session.sessionId || "")) === index)
     .filter(session => session && session.savedToSEC === true)
     .sort((a, b) => {
       const timeDelta = new Date(b.preservedAt || b.savedAt || b.timestamp || 0) - new Date(a.preservedAt || a.savedAt || a.timestamp || 0);

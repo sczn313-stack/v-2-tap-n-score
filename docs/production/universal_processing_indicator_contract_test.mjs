@@ -32,6 +32,7 @@ assert.ok(shoot.includes("Preserving your Shooter Experience Card…"));
 assert.ok(sec.includes("Preserving your Shooter Experience Card…"));
 assert.ok(vault.includes("Opening your Ballistic Vault…"));
 assert.ok(vault.includes("Opening your preserved Shooter Experience Card…"));
+assert.match(vault, /source\.findIndex\(candidate => candidate && String\(candidate\.sessionId \|\| ""\)/, "Vault rendering must tolerate an absent Talking Smart Target demo session while reopening a real preserved SEC");
 
 for (const page of [shoot, sec, vault]) {
   assert.ok(page.includes("experience_frame_processing.js"), "governed page must load the shared Experience Frame component");
