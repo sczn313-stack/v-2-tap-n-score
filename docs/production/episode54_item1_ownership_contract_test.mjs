@@ -113,14 +113,24 @@ assert.equal(platformState.keys.savedEquipment, "SCZN3_SAVED_EQUIPMENT_PROFILES"
 assert.equal(storage.getItem("SCZN3_ACTIVE_SESSION"), legacySession);
 assert.equal(storage.getItem("SCZN3_SESSION_HISTORY"), legacyHistory);
 assert.equal(storage.getItem("SCZN3_SAVED_EQUIPMENT_PROFILES"), legacyEquipment);
-assert.equal(storage.getItem("SCZN3_SESSION_RECORD_legacy-session-001"), legacySession);
-assert.equal(storage.getItem("SCZN3_MEDIA_legacy-media-001"), legacyMedia);
+assert.equal(storage.getItem("SCZN3_SESSION_RECORD_legacy-session-001"), null, "legacy session records remain readable in place without a duplicate canonical copy");
+assert.equal(storage.getItem("SCZN3_MEDIA_legacy-media-001"), null, "legacy evidence remains readable in place without a duplicate canonical copy");
 assert.equal(storage.getItem("SCZN3_ACTIVE_ZERO_SESSION"), canonicalExisting, "canonical state must win over legacy state");
 assert.equal(storage.getItem("SCZN3_BAKER_ACTIVE_SESSION"), legacySession, "migration must retain legacy data");
 assert.equal(storage.getItem(legacyRecordKey), legacySession, "migration must retain legacy records");
 assert.equal(storage.getItem(legacyMediaKey), legacyMedia, "migration must retain legacy evidence media");
 assert.equal(platformState.migration.legacyKeysRetained, true);
-assert.equal(platformState.migration.strategy, "copy-once-preserve-legacy-canonical-writes-only");
+assert.equal(platformState.migration.strategy, "scalar-copy-lazy-prefixed-fallback-preserve-legacy");
+assert.equal(
+  JSON.stringify(stateBrowser.window.SCZN3M4.read("SCZN3_SESSION_RECORD_legacy-session-001", null)),
+  legacySession,
+  "legacy sessions remain readable through the universal namespace without eager duplication"
+);
+assert.equal(
+  JSON.stringify(stateBrowser.window.SCZN3M4.read("SCZN3_MEDIA_legacy-media-001", null)),
+  legacyMedia,
+  "legacy evidence remains readable through the universal namespace without eager duplication"
+);
 
 const beforeLegacyKeys = [...storage.values.keys()].filter(key => key.startsWith("SCZN3_BAKER_")).sort();
 stateBrowser.window.SCZN3M4.write(platformState.keys.activeMatrix, { targetProfileId: "m4_25m_zero" });

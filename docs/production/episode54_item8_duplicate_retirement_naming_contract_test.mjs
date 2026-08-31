@@ -60,7 +60,7 @@ assert.doesNotMatch(secFrameworkCss, />\.sec-v1-actions \.sec-preservation-actio
 assert.match(appState, /SCZN3_BAKER_SESSION_RECORD_/);
 assert.match(appState, /SCZN3_SESSION_RECORD_/);
 assert.match(appState, /function migrateLegacyPlatformState/);
-assert.match(appState, /copy-once-preserve-legacy-canonical-writes-only/);
+assert.match(appState, /scalar-copy-lazy-prefixed-fallback-preserve-legacy/);
 assert.match(records, /data-sec-shell="universal-v1"/);
 
 // Legitimate target/partner ownership remains explicit rather than being erased.
