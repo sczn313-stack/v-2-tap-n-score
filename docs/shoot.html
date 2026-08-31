@@ -173,7 +173,7 @@ window.addEventListener("error", event => {
   }
 </script>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
-<script src="platform_contracts.js?v=episode54-item2-1"></script>
+<script src="platform_contracts.js?v=episode59-baker-product-route-1"></script>
 <script src="smart_target_identity.js"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
@@ -589,10 +589,11 @@ function smartTargetReplenishmentMarkup(...identitySources) {
   const identity = window.SCZN3TargetProfiles && SCZN3TargetProfiles.identityRecord(...identitySources);
   const publisher = identity && identity.publisherIdentity;
   const product = identity && identity.productIdentity;
-  if (!publisher || !publisher.publisherUrl) return "";
+  const governedRoute = (product && product.productUrl) || (publisher && publisher.publisherUrl);
+  if (!publisher || !governedRoute) return "";
   let sourceUrl;
   try {
-    sourceUrl = new URL(publisher.publisherUrl, window.location.href);
+    sourceUrl = new URL(governedRoute, window.location.href);
     if (!["http:", "https:"].includes(sourceUrl.protocol)) return "";
   } catch (error) {
     return "";

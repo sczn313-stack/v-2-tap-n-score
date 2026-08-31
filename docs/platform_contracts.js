@@ -67,7 +67,7 @@
       missionLabel: "100 Yard Zero",
       aliases: Object.freeze(["BAKER_ST_100YD_SMART"]),
       publisherIdentity: Object.freeze({ publisherId: "baker-targets", publisherLabel: "Baker Targets", publisherUrl: "https://bakertargets.com", publisherLinkLabel: "BakerTargets.com" }),
-      productIdentity: Object.freeze({ productId: "ST-100YD-SMART", sku: "ST-100YD-SMART", productLabel: "Baker 100 Yard Smart Target" })
+      productIdentity: Object.freeze({ productId: "ST-100YD-SMART", sku: "ST-100YD-SMART", productLabel: "Baker 100 Yard Smart Target", productUrl: "https://bakertargets.com/product/100-yard-bulls-eye-rifle-target-smart-target-version/" })
     }),
     Object.freeze({
       targetProfileId: "gssf_ac_1",

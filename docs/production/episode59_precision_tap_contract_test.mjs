@@ -15,6 +15,7 @@ const [records, secV1, talkingDemoFixture, vaultCss] = await Promise.all([
   read("ballistic-vault.css")
 ]);
 const selfTeachingPlayer = await read("self_teaching_player.js");
+const platformContracts = await read("platform_contracts.js");
 const narrationAssets = await Promise.all([
   "baker-selected.wav",
   "baker-photo-after-shooting.wav",
@@ -167,7 +168,10 @@ assert.match(records, /Your shooting sessions\. Ready when you want them\./, "th
 assert.doesNotMatch(records, /TARGET BY BAKER TARGETS/, "Baker publisher recognition does not leak into the universal SEC/Vault teaching surface");
 assert.match(shoot, /function smartTargetReplenishmentMarkup\(\.\.\.identitySources\)/, "replenishment is a reusable publisher/product relationship instead of a Baker branch");
 assert.match(shoot, /SCZN3TargetProfiles\.identityRecord\(\.\.\.identitySources\)/, "replenishment resolves the registered originating target identity");
-assert.match(shoot, /if \(!publisher \|\| !publisher\.publisherUrl\) return "";/, "replenishment fails closed when governed publisher routing is unavailable");
+assert.match(shoot, /const governedRoute = \(product && product\.productUrl\) \|\| \(publisher && publisher\.publisherUrl\);/, "replenishment prefers governed exact-product routing with a publisher fallback");
+assert.match(shoot, /if \(!publisher \|\| !governedRoute\) return "";/, "replenishment fails closed when governed product and publisher routing are unavailable");
+assert.match(platformContracts, /productId: "ST-100YD-SMART"[\s\S]*?productUrl: "https:\/\/bakertargets\.com\/product\/100-yard-bulls-eye-rifle-target-smart-target-version\/"/, "the registered Baker 100 identity carries its exact governed replenishment destination");
+assert.match(shoot, /platform_contracts\.js\?v=episode59-baker-product-route-1/, "the served Baker road cache-busts the governed exact-product route contract");
 assert.match(shoot, /BUY MORE TARGETS LIKE THIS/, "the completed demonstration presents the approved replenishment invitation");
 assert.match(shoot, /smartTargetReplenishmentMarkup\(bakerTalkingDemoSession\(\)\)/, "the Baker proof supplies session identity to the reusable replenishment surface");
 assert.doesNotMatch(shoot.match(/function smartTargetReplenishmentMarkup[\s\S]*?\n\}/)?.[0] || "", /Baker/, "the universal replenishment renderer contains no Baker-coded identity");
