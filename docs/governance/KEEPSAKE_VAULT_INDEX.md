@@ -2,7 +2,7 @@
 
 Status: **ACTIVE — FOUNDER APPROVED**
 
-Index version: **1.6**
+Index version: **1.7**
 
 Last reconciled against the Master Keepsake Vault: **2026-08-31**
 
@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#15 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#16 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -49,6 +49,8 @@ It contains the exact final Founder-audit candidate, the complete approved Baker
 **Keepsake #14 — Netlify Target Image Registration Proxy** is the current recommended deployable frontend floor. It preserves #13's public availability lock and adds only the bounded same-origin Netlify proxy required to connect the Baker photo road to the separately preserved #12 backend registration candidate.
 
 **Keepsake #15 — Production Legacy Quota Compatibility** is the current recommended deployable frontend floor. It preserves #14 and reapplies the already-proven #11 legacy-evidence compatibility behavior so long-lived Founder/production browser origins can start without duplicating large retained session evidence.
+
+**Keepsake #16 — Baker Production Runtime Asset Restore** is the current recommended deployable frontend floor. It preserves #15 and reapplies the already-proven #10 production packaging rule so the universal PLAYER runtime and governed Baker talking-demo fixture are present on Netlify.
 
 For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 
@@ -270,15 +272,32 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — fresh extraction and independent bundle clone at the exact source commit; ownership/migration, duplicate-retirement, persistence, availability, proxy, and Netlify build checks passed.
 - **Relationship:** Frontend production successor to #14 using behavior already proven by #11. Roll frontend back to #14 to remove only this compatibility restoration, or to #8 for the complete Founder-approved Baker floor.
 
+### Keepsake #16 — Baker Production Runtime Asset Restore
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · DEPLOYABLE FRONTEND PRODUCTION FLOOR
+- **Purpose / capability proven:** Restores the two already-approved Talking Smart Target runtime assets, `self_teaching_player.js` and `baker_talking_demo_session.js`, to the Netlify public bundle. The source assets and Baker page already existed; this is a production packaging correction only.
+- **Source commit:** `5ef25e1ef45a26922b4d87bc9c4b84c5fae127fd`
+- **Parent frontend production floor:** Keepsake #15 / `3f60b25855048a8b0569c20c464d09326cdb71ba`
+- **Reused known-good packaging behavior:** Keepsake #10 / `01c61680b22450b198a7145cd321a379c859372f`
+- **Backend counterpart:** Keepsake #12 / `04cafea50d4ab0de7ee9d0484f1f1473a1bbc069`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_016_Baker_Production_Runtime_Asset_Restore/`
+- **Archive:** `SCZN3_KEEP_016_BAKER_PRODUCTION_RUNTIME_ASSET_RESTORE_5ef25e1.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_016_BAKER_PRODUCTION_RUNTIME_ASSET_RESTORE_5ef25e1.zip`
+- **SHA-256:** `4b142431b6537a13e795f5880b62e004082497a64c850b2f10f53b0e897db573`
+- **Size:** `113826426` bytes
+- **Restore:** Clone the embedded bundle, check out the exact source commit, then run the verification commands in `Deposit_016_Baker_Production_Runtime_Asset_Restore/README.md`; see `VALIDATION.md` and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — fresh extraction and independent bundle clone at the exact source commit; ownership/migration, PLAYER, persistence, availability, proxy, Netlify build, and both required runtime assets passed.
+- **Relationship:** Frontend production successor to #15 using packaging behavior already proven by #10. Roll frontend back to #15 to remove only this asset restoration, or to #8 for the complete Founder-approved Baker floor.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#15 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#16 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#15 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, #13, #14, and #15 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all fifteen deposits.
-- Keepsakes #1–#15 retain their assigned numbers and directories.
+- Git bundles #1–#16 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, and #16 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all sixteen deposits.
+- Keepsakes #1–#16 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
