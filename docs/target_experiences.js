@@ -3,6 +3,13 @@
 
   const PENDING_TARGET_KEY = "SCZN3_PENDING_TARGET_PROFILE";
   const TALK_PREFERENCE_KEY = "SCZN3_TALK_ME_THROUGH_IT_V1";
+  const TARGET_AVAILABILITY = Object.freeze({
+    available: "available",
+    comingSoon: "coming-soon",
+    availableTargetIds: Object.freeze(["baker_st_100yd_smart_zero"]),
+    unidentifiedPhotoEntry: "coming-soon"
+  });
+  const availableTargetIds = new Set(TARGET_AVAILABILITY.availableTargetIds);
   const publishers = Object.freeze({
     baker: { name: "Baker Targets", catalogUrl: "https://bakertargets.com/shop/" },
     gunfun: { name: "GunFun Shooting Targets", catalogUrl: "https://gunfun.com/shop/" },
@@ -296,36 +303,56 @@
     return `<span class="ecosystem-practice-name"><span>${escapeHtml(match[1])}</span><span>${escapeHtml(match[2])}</span></span>`;
   }
 
+  function availabilityForTarget(targetId) {
+    return availableTargetIds.has(String(targetId || ""))
+      ? TARGET_AVAILABILITY.available
+      : TARGET_AVAILABILITY.comingSoon;
+  }
+
+  function isAvailableTarget(targetId) {
+    return availabilityForTarget(targetId) === TARGET_AVAILABILITY.available;
+  }
+
   function targetMarkup(experience) {
+    const available = isAvailableTarget(experience.targetId);
+    const tag = available ? "a" : "article";
     const attributes = Object.entries(experience.attributes || {})
       .map(([name, value]) => `${escapeHtml(name)}="${escapeHtml(value)}"`)
       .join(" ");
+    const navigation = available
+      ? `href="${escapeHtml(experience.href)}" aria-label="Tap to begin ${escapeHtml(experience.name)}"`
+      : `aria-label="${escapeHtml(experience.name)}, coming soon" aria-disabled="true"`;
     return `
-      <a class="ecosystem-target-card ecosystem-door-choice" data-experience-id="${escapeHtml(experience.id)}" data-status="available" href="${escapeHtml(experience.href)}" aria-label="Tap to begin ${escapeHtml(experience.name)}" data-target-id="${escapeHtml(experience.targetId)}" data-publisher-key="${escapeHtml(experience.publisherKey)}" ${attributes}>
+      <${tag} class="ecosystem-target-card ecosystem-door-choice" data-experience-id="${escapeHtml(experience.id)}" data-status="${availabilityForTarget(experience.targetId)}" ${navigation} data-target-id="${escapeHtml(experience.targetId)}" data-publisher-key="${escapeHtml(experience.publisherKey)}" ${attributes}>
         <span class="ecosystem-target-thumbnail">${artMarkup(experience.art, experience.name)}</span>
         <span class="ecosystem-target-copy">
           <h3>${targetNameMarkup(experience.name)}</h3>
           <p data-shooter-description>${escapeHtml(experience.shooterDescription)}</p>
         </span>
-        <span class="ecosystem-card-action ecosystem-card-action--launch">BEGIN <span aria-hidden="true">→</span></span>
-      </a>`;
+        <span class="ecosystem-card-action ${available ? "ecosystem-card-action--launch" : "ecosystem-card-action--soon"}">${available ? 'BEGIN <span aria-hidden="true">→</span>' : "COMING SOON"}</span>
+      </${tag}>`;
   }
 
   function doorMarkup(door) {
     const controlsId = `door-targets-${door.id}`;
     const representative = experiences[door.representativeKey];
+    const available = isAvailableTarget(representative.targetId);
+    const representativeTag = available ? "a" : "div";
+    const representativeNavigation = available
+      ? `href="${escapeHtml(representative.href)}" aria-label="Begin ${escapeHtml(representative.name)}"`
+      : `aria-label="${escapeHtml(representative.name)}, coming soon" aria-disabled="true"`;
     return `
       <article class="ecosystem-door-item" data-door-item="${escapeHtml(door.id)}">
         <div class="ecosystem-target-card ecosystem-door-card" data-representative-target-id="${escapeHtml(representative.targetId)}">
-          <a class="ecosystem-door-representative-entry" href="${escapeHtml(representative.href)}" data-target-id="${escapeHtml(representative.targetId)}" data-publisher-key="${escapeHtml(representative.publisherKey)}" aria-label="Begin ${escapeHtml(representative.name)}">
+          <${representativeTag} class="ecosystem-door-representative-entry" data-status="${availabilityForTarget(representative.targetId)}" ${representativeNavigation} data-target-id="${escapeHtml(representative.targetId)}" data-publisher-key="${escapeHtml(representative.publisherKey)}">
             <span class="ecosystem-target-thumbnail">${artMarkup(door.art, door.representative)}</span>
             <span class="ecosystem-target-copy">
               <span class="ecosystem-door-title">${escapeHtml(door.title)}</span>
               <span class="ecosystem-door-representative">${targetNameMarkup(door.representative)}</span>
               <span class="ecosystem-door-description">${escapeHtml(door.description)}</span>
-              <span class="ecosystem-door-begin">BEGIN <span aria-hidden="true">→</span></span>
+              <span class="ecosystem-door-begin ${available ? "" : "ecosystem-door-begin--soon"}">${available ? 'BEGIN <span aria-hidden="true">→</span>' : "COMING SOON"}</span>
             </span>
-          </a>
+          </${representativeTag}>
           <button class="ecosystem-card-action ecosystem-door-toggle" type="button" data-door-id="${escapeHtml(door.id)}" aria-expanded="false" aria-controls="${controlsId}"><span data-door-action-label>SEE TARGETS</span> <span data-door-action-arrow aria-hidden="true">↓</span></button>
         </div>
         <div class="ecosystem-door-targets" id="${controlsId}" hidden>
@@ -445,7 +472,10 @@
           setPrinterContext(representative?.publisherKey);
           button.closest("[data-door-item]")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
           if (talkEnabled) {
-            const message = `${door.title}. ${door.description} Choose one of the available targets.`;
+            const targetIds = [representative?.targetId, ...(door.targets || []).map(key => experiences[key]?.targetId)];
+            const message = targetIds.some(isAvailableTarget)
+              ? `${door.title}. ${door.description} The Baker 100 Yard Talking Smart Target is available now.`
+              : `${door.title}. ${door.description} Targets in this activity are coming soon.`;
             if (talkStatus) talkStatus.textContent = message;
             speak(message);
           }
@@ -456,11 +486,26 @@
       });
     });
 
-    container.querySelectorAll("[data-target-id]").forEach(card => {
+    container.querySelectorAll('[data-status="available"][data-target-id]').forEach(card => {
       card.addEventListener("click", () => preservePendingTarget(card.dataset.targetId));
       card.addEventListener("mouseenter", () => setPrinterContext(card.dataset.publisherKey));
       card.addEventListener("focusin", () => setPrinterContext(card.dataset.publisherKey));
     });
+  }
+
+  function applyPublicEntryAvailability() {
+    const trigger = document.querySelector('[data-guided-entry="photo"]');
+    const picker = document.getElementById("landingPhotoPicker");
+    const inputs = [document.getElementById("landingCameraInput"), document.getElementById("landingPhotoInput")].filter(Boolean);
+    if (TARGET_AVAILABILITY.unidentifiedPhotoEntry === TARGET_AVAILABILITY.comingSoon && trigger) {
+      trigger.dataset.status = TARGET_AVAILABILITY.comingSoon;
+      trigger.disabled = true;
+      trigger.setAttribute("aria-disabled", "true");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.querySelector("[data-entry-availability]")?.replaceChildren("COMING SOON");
+      if (picker) picker.hidden = true;
+      inputs.forEach(input => { input.disabled = true; });
+    }
   }
 
   function installPhotoEntry() {
@@ -469,6 +514,7 @@
     const inputs = [document.getElementById("landingCameraInput"), document.getElementById("landingPhotoInput")].filter(Boolean);
     const status = document.getElementById("landingPhotoStatus");
     trigger?.addEventListener("click", () => {
+      if (trigger.disabled || trigger.dataset.status === TARGET_AVAILABILITY.comingSoon) return;
       const open = trigger.getAttribute("aria-expanded") !== "true";
       trigger.setAttribute("aria-expanded", String(open));
       if (picker) picker.hidden = !open;
@@ -488,6 +534,7 @@
   }
 
   function render() {
+    applyPublicEntryAvailability();
     document.querySelectorAll("[data-target-experiences]").forEach(container => {
       container.innerHTML = doors.map(doorMarkup).join("");
       installDoorBehavior(container);
@@ -495,6 +542,6 @@
     installPhotoEntry();
   }
 
-  window.SCZN3TargetExperiences = Object.freeze({ doors, experiences, render });
+  window.SCZN3TargetExperiences = Object.freeze({ doors, experiences, availability: TARGET_AVAILABILITY, availabilityForTarget, render });
   render();
 })();

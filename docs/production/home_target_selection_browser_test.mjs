@@ -47,7 +47,7 @@ try {
     assert.ok(hero.every(line => line.lead !== line.finish));
 
     const bodyText = await page.locator("body").innerText();
-    assert.doesNotMatch(bodyText, /Available Now|Coming Soon|Recommended Targets/i);
+    assert.match(bodyText, /COMING SOON/i);
     assert.equal((await page.locator("[data-printer-explore-kicker]").textContent()).trim(), "LOOKING FOR MORE SMART TARGETS?");
     assert.equal((await page.locator("[data-printer-explore-title]").textContent()).replace(/\s+/g, " ").trim(), "Visit BakerTargets.com →");
     assert.equal(await page.locator("[data-printer-explore]").getAttribute("href"), "https://bakertargets.com/shop/");
@@ -69,17 +69,12 @@ try {
     assert.match(bodyText, /SHOW US YOUR TARGET\s+Tap here to take or choose a photo\s+of the target you already have\./i);
     assert.match(bodyText, /LET THE TARGET TALK\.\s+Tap-n-Score will visually and verbally walk you through your target\./);
     assert.equal(await page.locator(".ecosystem-talk-action").count(), 0, "the oversized standalone Talk action is removed");
-    let prematureChooser = false;
-    page.once("filechooser", () => { prematureChooser = true; });
-    await page.locator('[data-guided-entry="photo"]').click();
-    await page.waitForTimeout(100);
-    assert.equal(prematureChooser, false, "the green card does not bypass the Founder-approved source picker");
-    assert.equal(await page.locator("#landingPhotoPicker").isVisible(), true);
-    assert.deepEqual((await page.locator(".ecosystem-photo-picker-action").allTextContents()).map(value => value.trim()), ["Take Photo", "Choose Existing Photo"]);
-    const [cameraChooser] = await Promise.all([page.waitForEvent("filechooser"), page.getByText("Take Photo", { exact: true }).click()]);
-    assert.equal(cameraChooser.isMultiple(), false);
-    const [libraryChooser] = await Promise.all([page.waitForEvent("filechooser"), page.getByText("Choose Existing Photo", { exact: true }).click()]);
-    assert.equal(libraryChooser.isMultiple(), false);
+    const photoEntry = page.locator('[data-guided-entry="photo"]');
+    assert.equal(await photoEntry.isDisabled(), true, "generic photo discovery is fail-closed while its target roads are coming soon");
+    assert.equal(await photoEntry.getAttribute("data-status"), "coming-soon");
+    assert.equal(await page.locator("#landingPhotoPicker").isHidden(), true);
+    assert.equal(await cameraPhoto.isDisabled(), true);
+    assert.equal(await libraryPhoto.isDisabled(), true);
     await page.locator('[data-guided-entry="choose"]').click();
     assert.match(await page.locator("[data-talk-status]").textContent(), /experience this target authorizes/i);
     assert.equal(await page.locator("body").evaluate(body => body.classList.contains("ecosystem-talk-enabled")), true);
@@ -91,6 +86,14 @@ try {
     const renderedTargetIds = await page.locator("[data-target-id]").evaluateAll(nodes => nodes.map(node => node.dataset.targetId.toLowerCase()));
     assert.equal(new Set(renderedTargetIds).size, renderedTargetIds.length, "every target identity appears exactly once across representatives and all expanded choices");
     assert.equal(renderedTargetIds.filter(id => id === "m4_25m_zero").length, 1, "M4 appears only as the Military representative");
+    const availableTargets = page.locator('[data-status="available"][data-target-id]');
+    assert.equal(await availableTargets.count(), 1, "Baker Talking Smart Target is the only launchable target");
+    assert.equal(await availableTargets.first().getAttribute("data-target-id"), "baker_st_100yd_smart_zero");
+    assert.match(await availableTargets.first().getAttribute("href"), /target_profile_id=baker_st_100yd_smart_zero/);
+    const comingSoonTargets = page.locator('[data-status="coming-soon"][data-target-id]');
+    assert.ok(await comingSoonTargets.count() > 0);
+    assert.equal(await comingSoonTargets.evaluateAll(nodes => nodes.every(node => !node.hasAttribute("href") && node.getAttribute("aria-disabled") === "true")), true, "COMING SOON targets expose no session route");
+    assert.equal(await comingSoonTargets.evaluateAll(nodes => nodes.every(node => /COMING SOON/i.test(node.textContent))), true);
     assert.equal(await page.locator(".ecosystem-representative-start").count(), 0, "the duplicate representative start row is removed");
     const shooterDescriptions = await page.locator(".ecosystem-door-choice [data-shooter-description]").allTextContents();
     assert.ok(shooterDescriptions.length > 0 && shooterDescriptions.every(value => value.trim().length > 0), "every expanded target has dedicated shooter-facing copy");
@@ -104,7 +107,8 @@ try {
     assert.equal(await compete.locator(".ecosystem-door-targets").isVisible(), true);
     assert.match((await compete.locator("[data-door-id]").innerText()).replace(/\s+/g, " "), /CLOSE ↑/);
     assert.equal(await compete.locator('[data-experience-id="uspsa-practice-target"]').count(), 0, "the representative target is not repeated as an additional target card");
-    assert.equal(await compete.locator('.ecosystem-door-representative-entry[data-target-id="BAKER_SL_ST1"]').getAttribute("href"), "t/baker/sl-st1/");
+    assert.equal(await compete.locator('.ecosystem-door-representative-entry[data-target-id="BAKER_SL_ST1"]').getAttribute("href"), null);
+    assert.equal(await compete.locator('.ecosystem-door-representative-entry[data-target-id="BAKER_SL_ST1"]').getAttribute("aria-disabled"), "true");
     assert.equal(await page.locator("[data-printer-explore]").getAttribute("href"), "https://bakertargets.com/shop/");
     const cancelBeforeClose = await page.evaluate(() => window.__speechCancelCount);
     await compete.locator("[data-door-id]").click();
@@ -113,10 +117,10 @@ try {
     assert.ok(await page.evaluate(() => window.__speechCancelCount) > cancelBeforeClose, "CLOSE cancels active activity narration immediately");
 
     const diagnose = page.locator('[data-door-item="diagnose-zero"]');
+    assert.match(await diagnose.locator('.ecosystem-door-representative-entry[data-status="available"]').getAttribute("href"), /target_profile_id=baker_st_100yd_smart_zero/);
     await diagnose.locator("[data-door-id]").click();
     assert.equal(await diagnose.locator('[data-experience-id="hundred-yard-bullseye"]').count(), 0);
-    await diagnose.locator('[data-experience-id="gunfun-five-circles"]').hover();
-    assert.equal(await page.locator("[data-printer-explore]").getAttribute("href"), "https://gunfun.com/shop/");
+    assert.equal(await diagnose.locator('[data-experience-id="gunfun-five-circles"]').getAttribute("href"), null);
 
     const practiceNames = await page.locator(".ecosystem-practice-name span:last-child").allTextContents();
     assert.ok(practiceNames.length >= 3 && practiceNames.every(value => value.trim() === "Practice Target"));
@@ -125,7 +129,7 @@ try {
     assert.deepEqual((await page.locator("#preservationPayoffTitle > span").allTextContents()).map(value => value.trim()), ["EVERY TARGET.", "EVERY SESSION.", "YOUR HISTORY."], "Ballistic Vault payoff uses three deliberate lines");
     assert.match(bodyText, /Save your SEC and shooting history\./);
     assert.equal(await page.locator(".ecosystem-payoff-half--vault").getAttribute("href"), "records.html");
-    assert.match(await page.locator("[data-printer-explore-title]").textContent(), /Explore More from GunFun Shooting Targets/);
+    assert.match(await page.locator("[data-printer-explore-title]").textContent(), /Visit BakerTargets.com/);
     assert.equal(await page.locator(".ecosystem-family-card").isVisible(), true);
     assert.match(bodyText, /COME BE PART OF THE\s+SMART TARGET FAMILY\./i);
     assert.match(bodyText, /EXPLORE SMART TARGETS\s+→/i);
@@ -144,48 +148,6 @@ try {
     console.log(`PASS Episode 57 landing contracts at ${viewport.width}px`);
   }
 
-  const standardContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  const standardSetup = {
-    candidateId: "standard-gssf-pistol", weaponCategory: "Pistol", manufacturer: "Standard Setup",
-    modelType: "Pistol", modelCaliber: "Shooter ammunition", opticType: "Pistol sights",
-    adjustmentUnit: "", clickValue: null, source: "backend_standard_setup",
-    setupAuthority: "backend-target-authority", setupAuthorityId: "GSSF_AC_1_STANDARD_SETUP_v1",
-    displayFields: [{ label: "Firearm", value: "Pistol" }]
-  };
-  let selectedEquipment = null;
-  await standardContext.route("**/api/session/prepare", route => route.fulfill({
-    status: 200, contentType: "application/json", body: JSON.stringify({
-      ok: true, status: "prepared", preparationToken: "landing-standard-gssf", expiresAt: "2026-08-25T00:00:00Z",
-      target: { targetId: "gssf_ac_1", targetName: "GSSF AC-1" },
-      targetAdmission: { status: "admitted", targetId: "gssf_ac_1" },
-      missionIdentity: { missionFamily: "gssf", missionId: "GSSF_AC_1_PAPER_PENALTY", resultPackageType: "gssfPaperPenaltyResult" },
-      governedDistance: { value: null, unit: null, locked: false },
-      equipmentRequirements: { weaponCategories: ["Pistol"] },
-      standardSetup, setupMode: "standard",
-      equipmentAssessments: [{ candidateId: standardSetup.candidateId, officialMission: { status: "eligible", restrictionIds: [] }, capabilities: { evidence: { status: "available" } }, restrictions: [] }]
-    })
-  }));
-  await standardContext.route("**/api/session/start", async route => {
-    selectedEquipment = route.request().postDataJSON().selectedEquipment;
-    await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({
-      ok: true, status: "created", authoritativeSessionId: "landing-standard-session", createdAt: "2026-08-21T22:30:00Z",
-      sessionLifecycle: "created", sessionMode: "official_mission",
-      target: { targetId: "gssf_ac_1", targetAuthorityId: "gssf_ac_1", targetName: "GSSF AC-1", targetProfileVersion: "1", atpId: "gssf-ac-1-atp-v1" },
-      missionIdentity: { missionFamily: "gssf", missionId: "GSSF_AC_1_PAPER_PENALTY", resultPackageType: "gssfPaperPenaltyResult" },
-      targetAdmission: { status: "admitted", targetId: "gssf_ac_1" },
-      officialMission: { status: "eligible", restrictionIds: [] },
-      capabilities: { evidence: { status: "available" } }, restrictions: [],
-      governedDistance: { value: null, unit: null, locked: false }, selectedEquipment: standardSetup
-    }) });
-  });
-  const standardPage = await standardContext.newPage();
-  await standardPage.goto(`${baseUrl}/index.html?standard-equipment=1`, { waitUntil: "networkidle" });
-  const qualify = standardPage.locator('[data-door-item="qualify"]');
-  await qualify.locator('.ecosystem-door-representative-entry[data-target-id="gssf_ac_1"]').click();
-  await standardPage.waitForURL(url => url.pathname.endsWith("/shoot.html"));
-  assert.deepEqual(selectedEquipment, standardSetup, "landing target selection defaults to the backend-governed Standard setup");
-  await standardContext.close();
-  console.log("PASS landing target selection inherits Standard equipment without an equipment roadblock");
 } finally {
   await browser.close();
 }

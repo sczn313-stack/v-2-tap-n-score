@@ -231,6 +231,12 @@ html{scroll-behavior:smooth}
   transition:transform .16s ease,box-shadow .16s ease;
 }
 .ecosystem-entry-card:hover{transform:translateY(-2px);box-shadow:0 13px 28px rgba(0,0,0,.18)}
+.ecosystem-entry-card[data-status="coming-soon"]{
+  cursor:default;
+  filter:saturate(.62);
+  opacity:.82;
+}
+.ecosystem-entry-card[data-status="coming-soon"]:hover{transform:none;box-shadow:0 9px 23px rgba(0,0,0,.14)}
 .ecosystem-entry-card--choose{background:linear-gradient(135deg,#f7b500,#eda600)}
 .ecosystem-entry-card--photo{background:linear-gradient(135deg,#138d45,#087133);color:#fff}
 .ecosystem-entry-card strong{
@@ -240,8 +246,16 @@ html{scroll-behavior:smooth}
   letter-spacing:.02em;
   line-height:1;
 }
-.ecosystem-entry-card > span:last-of-type{font-size:16px;line-height:1.35}
+.ecosystem-entry-card > span:not(.ecosystem-entry-icon):not(.ecosystem-entry-availability){font-size:16px;line-height:1.35}
 .ecosystem-entry-card em{font-style:italic}
+.ecosystem-entry-card .ecosystem-entry-availability{
+  padding:7px 13px;
+  border:1px solid rgba(255,255,255,.78);
+  border-radius:999px;
+  font-size:13px;
+  font-weight:1000;
+  letter-spacing:.08em;
+}
 .ecosystem-entry-icon{
   display:grid;
   width:70px;
@@ -397,6 +411,7 @@ html{scroll-behavior:smooth}
   text-decoration:none;
 }
 .ecosystem-door-representative-entry:focus-visible{outline:3px solid var(--ecosystem-gold);outline-offset:3px}
+.ecosystem-door-representative-entry[data-status="coming-soon"]{cursor:default}
 .ecosystem-door-toggle{min-width:100px;min-height:44px;border:0;background:transparent;cursor:pointer;font:inherit}
 .ecosystem-door-card .ecosystem-target-copy{display:grid;gap:4px}
 .ecosystem-door-title{color:#111;font-family:Impact,"Arial Narrow",Arial,sans-serif;font-size:24px;letter-spacing:.025em;line-height:1}
@@ -405,6 +420,7 @@ html{scroll-behavior:smooth}
 .ecosystem-practice-name span:last-child{font-weight:550;letter-spacing:.055em}
 .ecosystem-door-description{color:#444;font-size:13px;line-height:1.35}
 .ecosystem-door-begin{margin-top:3px;color:var(--ecosystem-green);font-size:13px;font-weight:1000;letter-spacing:.02em}
+.ecosystem-door-begin--soon{color:var(--ecosystem-gold-deep)}
 .ecosystem-door-card.is-open{border-color:var(--ecosystem-gold-deep);background:#fff8e9;box-shadow:0 5px 18px rgba(0,0,0,.13),0 0 0 2px rgba(229,164,0,.2)}
 .ecosystem-door-card.is-open .ecosystem-card-action{padding:8px 10px;border-radius:6px;background:#111;color:var(--ecosystem-gold)}
 .ecosystem-door-targets{display:grid;gap:10px;margin-top:10px;padding:10px;border-left:4px solid var(--ecosystem-gold);background:#f6f6f6}
@@ -539,6 +555,8 @@ html{scroll-behavior:smooth}
   text-decoration:none;
 }
 .ecosystem-target-card[data-status="available"]{cursor:pointer}
+.ecosystem-target-card[data-status="coming-soon"]{background:#f4f2ed;color:#555;cursor:default}
+.ecosystem-target-card[data-status="coming-soon"] .ecosystem-target-thumbnail{filter:grayscale(.55);opacity:.76}
 .ecosystem-target-card[data-status="available"]:hover,
 .ecosystem-target-card[data-status="available"]:focus-visible{
   border-color:var(--ecosystem-gold-deep);

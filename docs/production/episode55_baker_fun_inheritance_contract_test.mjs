@@ -35,11 +35,10 @@ const runtime = read("m4_runtime.js");
 assert.match(runtime, /supportedBakerFunResult[\s\S]*classificationAuthority === "backend"[\s\S]*scoringAuthority === "backend"[\s\S]*reconciliation\.status === "reconciled"/, "shared preservation owner admits only reconciled backend-authoritative Baker Fun SECs");
 
 const experiences = read("target_experiences.js");
-assert.match(experiences, /id: "dart-board"[\s\S]*status: "available"[\s\S]*target=gf-db/);
-assert.match(experiences, /id: "bowling-pins"[\s\S]*status: "available"[\s\S]*target=gf-bp/);
-assert.match(experiences, /id: "dot-torture"[\s\S]*status: "available"[\s\S]*target=dot-torture/);
-assert.match(experiences, /id: "billiard-balls"[\s\S]*status: "available"[\s\S]*target=gf-bb/);
-assert.match(experiences, /id: "baker-battleship"[\s\S]*status: "available"[\s\S]*target=gf-battleship/);
+assert.match(experiences, /id: "dart-board"[\s\S]*targetId: "baker_gf_db"[\s\S]*target=gf-db/);
+assert.match(experiences, /id: "bowling-pins"[\s\S]*targetId: "baker_gf_bp"[\s\S]*target=gf-bp/);
+assert.match(experiences, /id: "dot-torture"[\s\S]*targetId: "ez2c_dot_torture_17"[\s\S]*target=dot-torture/);
+assert.match(experiences, /availableTargetIds:\s*Object\.freeze\(\["baker_st_100yd_smart_zero"\]\)/, "Baker Fun capabilities remain registered but are not publicly launchable until re-proven");
 assert.doesNotMatch(experiences, /st-001-universal-bullseye/);
 
 console.log("Episode 55 Baker Fun inheritance contract PASS");
