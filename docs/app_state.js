@@ -36,10 +36,80 @@
   const MAX_SESSION_HISTORY = 10;
   const SESSION_REF_SCHEMA = "sczn3-session-ref-v1";
   const SESSION_RECORD_SCHEMA = "sczn3-canonical-session-v1";
+  let legacyCapacityRecoveryAttempted = false;
 
   function rawWrite(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
     return value;
+  }
+
+  function directStorageRead(key, fallback = null) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function reclaimOrphanedLegacyStorage() {
+    const protectedSessionIds = new Set();
+    [LEGACY_KEYS.activeSession, LEGACY_KEYS.activeZeroSession].forEach(key => {
+      const value = directStorageRead(key, null);
+      if (value && value.sessionId) protectedSessionIds.add(String(value.sessionId));
+    });
+    const history = directStorageRead(LEGACY_KEYS.sessionHistory, []);
+    if (Array.isArray(history)) history.forEach(value => {
+      if (value && value.sessionId) protectedSessionIds.add(String(value.sessionId));
+    });
+
+    const legacySessionEntries = storedKeysWithPrefix(LEGACY_KEYS.sessionRecordPrefix).map(key => ({
+      key,
+      record: directStorageRead(key, null)
+    }));
+    legacySessionEntries.forEach(({ record }) => {
+      if (record && record.savedToSEC === true && record.sessionId) {
+        protectedSessionIds.add(String(record.sessionId));
+      }
+    });
+
+    const removedSessionKeys = [];
+    legacySessionEntries.forEach(({ key, record }) => {
+      if (!record || !record.sessionId) return;
+      if (protectedSessionIds.has(String(record.sessionId)) || record.savedToSEC === true) return;
+      localStorage.removeItem(key);
+      removedSessionKeys.push(key);
+    });
+
+    const referencedMediaIds = new Set();
+    legacySessionEntries.forEach(({ key, record }) => {
+      if (!record || removedSessionKeys.includes(key)) return;
+      collectMediaReferences(record, referencedMediaIds);
+    });
+    [LEGACY_KEYS.activeSession, LEGACY_KEYS.activeZeroSession, LEGACY_KEYS.sessionHistory, LEGACY_KEYS.activeMatrix]
+      .forEach(key => collectMediaReferences(directStorageRead(key, null), referencedMediaIds));
+
+    const removedMediaKeys = [];
+    storedKeysWithPrefix(LEGACY_KEYS.mediaPrefix).forEach(key => {
+      const encodedId = key.slice(LEGACY_KEYS.mediaPrefix.length);
+      let mediaId = encodedId;
+      try { mediaId = decodeURIComponent(encodedId); } catch (error) {}
+      if (referencedMediaIds.has(mediaId)) return;
+      localStorage.removeItem(key);
+      removedMediaKeys.push(key);
+    });
+
+    const report = {
+      reason: "legacy-migration-capacity-recovery",
+      namespace: "legacy",
+      removedSessionKeys,
+      removedMediaKeys,
+      preservedSessionIds: [...protectedSessionIds].sort(),
+      completedAt: nowStamp()
+    };
+    publishStorageGcReport(report);
+    console.info("SCZN3 legacy orphan storage cleanup", report);
+    return report;
   }
 
   function legacyKeyFor(key) {
@@ -55,8 +125,24 @@
     if (!legacyKey || localStorage.getItem(canonicalKey) !== null) return false;
     const legacyValue = localStorage.getItem(legacyKey);
     if (legacyValue === null) return false;
-    localStorage.setItem(canonicalKey, legacyValue);
-    return true;
+    try {
+      localStorage.setItem(canonicalKey, legacyValue);
+      return true;
+    } catch (error) {
+      if (error && error.name === "QuotaExceededError" && !legacyCapacityRecoveryAttempted) {
+        legacyCapacityRecoveryAttempted = true;
+        reclaimOrphanedLegacyStorage();
+        try {
+          localStorage.setItem(canonicalKey, legacyValue);
+          return true;
+        } catch (retryError) {
+          console.warn("SCZN3 legacy state remains readable in place after capacity recovery", canonicalKey, retryError);
+          return false;
+        }
+      }
+      console.warn("SCZN3 legacy state remains readable in place", canonicalKey, error);
+      return false;
+    }
   }
 
   function migrateLegacyPlatformState() {
@@ -90,7 +176,10 @@
       let raw = localStorage.getItem(key);
       if (raw === null) {
         const legacyKey = legacyKeyFor(key);
-        if (legacyKey && migrateRawValue(key, legacyKey)) raw = localStorage.getItem(key);
+        if (legacyKey) {
+          if (migrateRawValue(key, legacyKey)) raw = localStorage.getItem(key);
+          else raw = localStorage.getItem(legacyKey);
+        }
       }
       return raw ? JSON.parse(raw) : fallback;
     } catch (error) {
