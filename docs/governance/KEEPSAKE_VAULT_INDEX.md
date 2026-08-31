@@ -199,15 +199,32 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — complete bundle cloned independently at the exact source commit; migration, duplicate-retirement, persistence, PLAYER, Precision Tap, Netlify build, and runtime inclusion passed.
 - **Relationship:** Production successor to #10. #10 remains the first bounded startup/bundle hotfix; #9 remains the pre-hotfix deployable route floor; #8 remains the full Founder-approved rollback floor.
 
+### Keepsake #12 — Target Image Registration Backend Hotfix
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · BACKEND PRODUCTION CANDIDATE
+- **Purpose / capability proven:** Bounded backend-only restoration of the recovered Episode 59 Target Image Registration Authority on top of the exact live Render security floor. Restores the governed `/api/authority/target-image-registration` contract, data-driven registration packages, source-photo/canonical evidence, Baker 100 Yard registration ownership, and claim-proportional zeroing sufficiency without frontend changes.
+- **Source commit:** `04cafea50d4ab0de7ee9d0484f1f1473a1bbc069`
+- **Exact Render security floor:** `8ab8c4cc681be9206e4b32c630f8b30e3db2b34f`
+- **Authorized Render service:** `srv-d8o5nkmgvqtc73fv2vag` (`sczn3-authority`)
+- **Pre-deployment rollback:** `dep-da777phsrm7s73bf8kkg`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_012_Target_Image_Registration_Backend_Hotfix/`
+- **Archive:** `SCZN3_KEEP_012_TARGET_IMAGE_REGISTRATION_BACKEND_HOTFIX_04cafea.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_012_TARGET_IMAGE_REGISTRATION_BACKEND_HOTFIX_04cafea.zip`
+- **SHA-256:** `862fa1aba871d2e4eec946593309e13f449ef1e9fbcc44936211be526bbc7adf`
+- **Size:** `37853353` bytes
+- **Restore:** Clone the embedded bundle, check out the exact source commit, then run `Deposit_012_Target_Image_Registration_Backend_Hotfix/VERIFY_HOTFIX.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — fresh archive extraction, independent Git-bundle clone, exact commit checkout, Registration Authority/HTTP, Session Authority/HTTP, preserved SEC, SEC reopen, M4 Authority, and Git integrity passed.
+- **Relationship:** Backend production successor to the live security floor only. Keepsake #11 remains the Netlify production frontend floor; Keepsake #8 remains the full Founder-approved Baker rollback floor. Render can return to `dep-da777phsrm7s73bf8kkg` if this backend candidate fails production validation.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#11 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#12 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#11 resolve to their recorded source commits; #6, #7, #8, #9, #10, and #11 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all eleven deposits.
-- Keepsakes #1–#11 retain their assigned numbers and directories.
+- Git bundles #1–#12 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, and #12 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all twelve deposits.
+- Keepsakes #1–#12 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
