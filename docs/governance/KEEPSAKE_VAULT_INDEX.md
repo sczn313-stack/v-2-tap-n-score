@@ -2,7 +2,7 @@
 
 Status: **ACTIVE — FOUNDER APPROVED**
 
-Index version: **1.4**
+Index version: **1.5**
 
 Last reconciled against the Master Keepsake Vault: **2026-08-31**
 
@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#13 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#14 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -45,6 +45,8 @@ It contains the exact final Founder-audit candidate, the complete approved Baker
 **Keepsake #11 — Legacy Evidence Quota Migration Hotfix** is the current recommended production Baker commit. It prevents eager duplication of retained legacy session/media evidence, keeps that evidence readable in place, and removes only byte-for-byte duplicate compatibility copies. It supersedes #10 for production while preserving #10 as the first startup/bundle hotfix record.
 
 **Keepsake #13 — Production Target Availability Lock** is the current recommended public-entry frontend floor. It preserves Baker 100 Yard as the sole AVAILABLE target and makes every other exposed target COMING SOON and non-launchable. It builds on the indexed frontend/backend recovery state without modifying #8–#12.
+
+**Keepsake #14 — Netlify Target Image Registration Proxy** is the current recommended deployable frontend floor. It preserves #13's public availability lock and adds only the bounded same-origin Netlify proxy required to connect the Baker photo road to the separately preserved #12 backend registration candidate.
 
 For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 
@@ -233,15 +235,31 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — independent bundle clone at the exact source commit; availability, Baker Fun inheritance/public-state separation, and target-execution routing contracts passed. Served browser verification passed at desktop and 390px, and Baker launched to the approved SAMPLE workspace.
 - **Relationship:** Public-entry successor to the current frontend floor. Keepsake #12 remains the separately preserved backend registration candidate; Keepsake #8 remains the complete Founder-approved Baker rollback floor.
 
+### Keepsake #14 — Netlify Target Image Registration Proxy
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · DEPLOYABLE FRONTEND INTEGRATION FLOOR
+- **Purpose / capability proven:** Adds the bounded Netlify proxy route `/api/authority/target-image-registration` to the established SCZN3 Render authority destination in both `_redirects` and `netlify.toml`, while preserving the Founder-approved #13 Baker-only public availability state.
+- **Source commit:** `17afbe4778dbb01ce6bfa3a21f2ba224e7759d88`
+- **Parent public-entry floor:** Keepsake #13 / `ce8105f0c9e08f56457f727cfffe28535ad5a12a`
+- **Backend counterpart:** Keepsake #12 / `04cafea50d4ab0de7ee9d0484f1f1473a1bbc069`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_014_Netlify_Target_Image_Registration_Proxy/`
+- **Archive:** `SCZN3_KEEP_014_NETLIFY_TARGET_IMAGE_REGISTRATION_PROXY_17afbe4.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_014_NETLIFY_TARGET_IMAGE_REGISTRATION_PROXY_17afbe4.zip`
+- **SHA-256:** `b9634abab0d3e043a3b77c4305633552bf259d5129e5fdf90dc5cb913b3de32c`
+- **Size:** `113819774` bytes
+- **Restore:** Clone the embedded bundle, check out the exact source commit, then run `Deposit_014_Netlify_Target_Image_Registration_Proxy/VERIFY_PROXY.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — independent bundle clone at the exact source commit; proxy and availability contracts passed; Netlify build produced 316 public files plus assets and contained the exact proxy route.
+- **Relationship:** Frontend integration successor to #13 and companion to the separately preserved #12 backend hotfix. Roll frontend back to #13 to remove only the proxy or to #8 for the complete Founder-approved Baker floor.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#13 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#14 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#13 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, and #13 were cloned independently from their preserved artifacts.
+- Git bundles #1–#14 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, #13, and #14 were cloned independently from their preserved artifacts.
 - Restore records report PASS for all twelve deposits.
-- Keepsakes #1–#13 retain their assigned numbers and directories.
+- Keepsakes #1–#14 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
