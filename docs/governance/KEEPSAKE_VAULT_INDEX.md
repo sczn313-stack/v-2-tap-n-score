@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#9 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#10 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -39,6 +39,8 @@ Recovery rule:
 It contains the exact final Founder-audit candidate, the complete approved Baker teaching road, the reusable PLAYER integration, and the proven real Baker operational road. **Keepsake #7 — Talking Smart Target Capability** remains the current inheritance floor for teaching another Smart Target how to talk without dismantling Baker.
 
 **Keepsake #9 — Baker Post-Lock Production Routing Patch** is the current recommended deployable Baker commit. It adds only the exact governed Baker 100 Yard product destination and the shared product-first / publisher-fallback route above Keepsake #8. Production rollback returns to Keepsake #8.
+
+**Keepsake #10 — Baker Production Runtime Startup Hotfix** is the current recommended production Baker commit. It preserves #9's product route, makes retained legacy evidence fail safely when a browser origin is at quota, and includes the two already-approved Talking Smart Target runtimes in the Netlify bundle. Production rollback may return to #9 or to the full Founder-approved #8 floor.
 
 For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 
@@ -165,15 +167,30 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — the canonical archive was freshly extracted; its complete Git bundle was independently cloned at the exact source commit; governed route data, shared renderer preference, focused routing contract, and Netlify build all passed.
 - **Relationship:** Post-lock successor to Keepsake #8 for deployment only. Keepsake #8 remains the immutable complete Episode 59 recovery and rollback floor.
 
+### Keepsake #10 — Baker Production Runtime Startup Hotfix
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · CURRENT PRODUCTION BAKER FLOOR
+- **Purpose / capability proven:** Bounded production hotfix discovered during the authorized live drive. A quota-full browser origin no longer aborts universal state startup while copying retained legacy media; legacy evidence remains readable without mutation. The Netlify production bundle now includes the already-approved universal PLAYER runtime and Baker talking-demo fixture referenced by the preserved Baker page.
+- **Source commit:** `01c61680b22450b198a7145cd321a379c859372f`
+- **Parent deployable floor:** Keepsake #9 / `41faa4d001234cbbdfc685ea42494dd68112f7fc`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_010_Baker_Production_Runtime_Startup_Hotfix/`
+- **Archive:** `SCZN3_KEEP_010_BAKER_PRODUCTION_RUNTIME_STARTUP_HOTFIX_01c6168.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_010_BAKER_PRODUCTION_RUNTIME_STARTUP_HOTFIX_01c6168.zip`
+- **SHA-256:** `0e65e1d73f1f1b6d154a29c868a233ee7e0908a6476c005a13671035008fa405`
+- **Size:** `113841942` bytes
+- **Restore:** Run `Deposit_010_Baker_Production_Runtime_Startup_Hotfix/VERIFY_HOTFIX.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md` in the same deposit.
+- **Restore verification:** PASS — complete Git bundle cloned independently at the exact source commit; legacy quota migration, canonical persistence, PLAYER, Precision Tap, Netlify build, and required runtime-bundle inclusion all passed. The corrected Netlify draft reached the SAMPLE Baker stage with LET THE TARGET TALK and entered the live PLAYER sequence without runtime errors.
+- **Relationship:** Production successor to Keepsake #9. Keepsake #9 remains the pre-hotfix deployable route floor; Keepsake #8 remains the immutable full Founder-approved rollback floor.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#9 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#10 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#9 resolve to their recorded source commits; #6, #7, #8, and #9 were cloned independently from their final extracted archives.
-- Restore records report PASS for all nine deposits.
-- Keepsakes #1–#9 retain their assigned numbers and directories.
+- Git bundles #1–#10 resolve to their recorded source commits; #6, #7, #8, #9, and #10 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all ten deposits.
+- Keepsakes #1–#10 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
