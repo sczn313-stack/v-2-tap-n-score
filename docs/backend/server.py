@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hmac
+import hmac
 import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -31,6 +32,7 @@ from session_authority import (
     runtime_store,
     start_session,
 )
+from target_image_registration_authority import TargetImageRegistrationError, register_target_image
 
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8098"))
@@ -74,6 +76,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     PRESERVED_SEC_PATHS = {"/api/session/sec", "/api/session/sec/"}
     BAKER_SL_ST1_ANALYZE_PATHS = {"/api/target/baker-sl-st1/analyze", "/api/target/baker-sl-st1/analyze/"}
     BAKER_SL_ST1_FIXTURE_PATHS = {"/api/target/baker-sl-st1/founder-fixture", "/api/target/baker-sl-st1/founder-fixture/"}
+    TARGET_IMAGE_REGISTRATION_PATHS = {"/api/authority/target-image-registration", "/api/authority/target-image-registration/"}
 
     def _cors_origin(self):
         origin = self.headers.get("Origin")
@@ -128,7 +131,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             except Exception:
                 self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_read_failed"})
             return
-        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS:
+        if path in self.SESSION_PREPARE_PATHS or path in self.SESSION_START_PATHS or path in self.BAKER_SL_ST1_ANALYZE_PATHS or path in self.BAKER_SL_ST1_FIXTURE_PATHS or path in self.TARGET_IMAGE_REGISTRATION_PATHS:
             self._send_json(405, {"error": "method not allowed", "allowed": ["POST"]})
             return
         if path in self.OPS_HEALTH_PATHS:
@@ -158,6 +161,16 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.TARGET_IMAGE_REGISTRATION_PATHS:
+            try:
+                self._send_json(200, register_target_image(self._read_json_body()))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except TargetImageRegistrationError as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:  # pragma: no cover - defensive registration boundary
+                self._send_json(503, {"ok": False, "status": "service_error", "reason": "target_image_registration_failed"})
+            return
         if path in self.PRESERVED_SEC_PATHS:
             try:
                 sec_reopen_signing_key()

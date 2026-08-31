@@ -7,11 +7,17 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import time
 from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from mission_registry import normalize_target_profile, refusal_for_profile
+from target_image_registration_authority import (
+    TargetImageRegistrationError,
+    canonical_point_to_source_percent,
+    register_target_image,
+)
 from gssf_ac_1_authority import (
     GSSF_AC_1_ATP,
     GSSF_AC_1_EXECUTION_CONTRACT,
@@ -246,6 +252,200 @@ def grid_inches_to_image_percent(grid_point: Dict[str, float], geometry: Dict[st
 
 def image_point_through_grid(point: Dict[str, float], geometry: Dict[str, Any]) -> Dict[str, float]:
     return grid_inches_to_image_percent(image_percent_to_grid_inches(point, geometry), geometry)
+
+
+def _precision_tap_source_observation(item: Any, observation_id: str, role: str) -> Optional[Dict[str, Any]]:
+    if not isinstance(item, dict):
+        return None
+    x_percent = _num(item.get("xPercent"), None)
+    y_percent = _num(item.get("yPercent"), None)
+    if x_percent is None or y_percent is None or x_percent < 0 or x_percent > 100 or y_percent < 0 or y_percent > 100:
+        return None
+    return {
+        "observationId": observation_id,
+        "role": role,
+        "xNorm": x_percent / 100,
+        "yNorm": y_percent / 100,
+    }
+
+
+def apply_precision_tap_registration(payload: Dict[str, Any]) -> tuple[Dict[str, Any], Optional[Dict[str, Any]]]:
+    envelope = payload.get("precisionTapEvidence")
+    if not isinstance(envelope, dict) or not isinstance(envelope.get("imageEvidence"), dict):
+        return payload, None
+    aim = _precision_tap_source_observation(envelope.get("aimObservation"), "aim", "aim")
+    observations = [aim] if aim else []
+    for index, item in enumerate(envelope.get("impactObservations") or [], start=1):
+        observation = _precision_tap_source_observation(item, f"impact-{index:03d}", "impact")
+        if observation:
+            observations.append(observation)
+    registration = register_target_image({
+        "registrationPackageId": envelope.get("registrationPackageId"),
+        "registrationPackageVersion": envelope.get("registrationPackageVersion"),
+        "targetProfileId": envelope.get("targetProfileId") or payload.get("targetProfileId") or payload.get("target_profile_id"),
+        "targetProfileVersion": envelope.get("targetProfileVersion") or payload.get("targetProfileVersion"),
+        "imageEvidence": envelope.get("imageEvidence"),
+        "observations": observations,
+    })
+    if registration.get("knowledgeState") == "unavailable":
+        raise TargetImageRegistrationError(
+            str(registration.get("reason") or "registration_knowledge_unavailable"),
+            details=registration.get("details") or {},
+        )
+    amended = deepcopy(payload)
+    canonical = registration.get("canonicalObservations") or []
+    canonical_aim = next((item for item in canonical if item.get("role") == "aim"), None)
+    canonical_impacts = [item for item in canonical if item.get("role") == "impact"]
+    if canonical_aim:
+        amended["aimCoordinate"] = {
+            "xPercent": canonical_aim["canonicalPoint"]["xNorm"] * 100,
+            "yPercent": canonical_aim["canonicalPoint"]["yNorm"] * 100,
+        }
+    amended["impactCoordinates"] = [
+        {
+            "xPercent": item["canonicalPoint"]["xNorm"] * 100,
+            "yPercent": item["canonicalPoint"]["yNorm"] * 100,
+        }
+        for item in canonical_impacts
+    ]
+    return amended, registration
+
+
+def source_photo_render_coordinates(
+    registration: Optional[Dict[str, Any]],
+    aim: Optional[Dict[str, float]],
+    impacts: List[Dict[str, float]],
+    poib: Optional[Dict[str, float]],
+    geometry: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Return display coordinates in the same source-photo plane the shooter tapped."""
+    if not registration:
+        rendered_aim = image_point_through_grid(aim, geometry) if aim else None
+        rendered_impacts = [image_point_through_grid(point, geometry) for point in impacts]
+        rendered_poib = image_point_through_grid(poib, geometry) if poib else None
+    else:
+        observations = registration.get("canonicalObservations") or []
+        source_aim = next((item.get("sourcePoint") for item in observations if item.get("role") == "aim"), None)
+        source_impacts = [item.get("sourcePoint") for item in observations if item.get("role") == "impact"]
+        rendered_aim = ({"xPercent": source_aim["xNorm"] * 100, "yPercent": source_aim["yNorm"] * 100} if source_aim else None)
+        rendered_impacts = [
+            {"xPercent": item["xNorm"] * 100, "yPercent": item["yNorm"] * 100}
+            for item in source_impacts
+            if item
+        ]
+        rendered_poib = canonical_point_to_source_percent(registration, poib)
+    return {
+        "aim": rendered_aim,
+        "impacts": rendered_impacts,
+        "poib": rendered_poib,
+        "vector": {"start": rendered_poib, "end": rendered_aim, "intent": "POIB_TO_AIM"}
+        if rendered_poib and rendered_aim else None,
+        "coordinatePlane": "source_photo" if registration else "canonical_target",
+    }
+
+
+def zero_correction_registration_sufficiency(
+    registration: Optional[Dict[str, Any]],
+    aim: Optional[Dict[str, float]],
+    impacts: List[Dict[str, float]],
+    geometry: Dict[str, Any],
+    yards: float,
+    adjustment: Dict[str, Any],
+) -> Dict[str, Any]:
+    if not registration:
+        return {"status": "not_applicable", "owner": "zeroingCorrection"}
+    observations = registration.get("canonicalObservations") or []
+    aim_evidence = next((item for item in observations if item.get("role") == "aim"), None)
+    impact_evidence = [item for item in observations if item.get("role") == "impact"]
+    if not aim or not impacts or not aim_evidence or not impact_evidence:
+        return {"status": "insufficient", "reason": "registered_observations_incomplete", "owner": "zeroingCorrection"}
+    poib = average_point(impacts)
+    aim_grid = image_percent_to_grid_inches(aim, geometry)
+    poib_grid = image_percent_to_grid_inches(poib, geometry)
+    central = {
+        "x": poib_grid["xInches"] - aim_grid["xInches"],
+        "y": poib_grid["yInches"] - aim_grid["yInches"],
+    }
+    aim_uncertainty = float(aim_evidence.get("localUncertaintyPx") or 0)
+    impact_uncertainty = max(float(item.get("localUncertaintyPx") or 0) for item in impact_evidence)
+    uncertainty_inches = (aim_uncertainty + impact_uncertainty) / float(geometry["gridSquarePx"]) * float(geometry.get("gridSquareInches", 1))
+
+    def candidates(value: float, axis: str) -> set[tuple[str, int]]:
+        results = set()
+        for candidate in (value - uncertainty_inches, value, value + uncertainty_inches):
+            if axis == "x":
+                direction = "LEFT" if candidate > 0 else "RIGHT" if candidate < 0 else "CENTER"
+            else:
+                direction = "UP" if candidate > 0 else "DOWN" if candidate < 0 else "CENTER"
+            results.add((direction, clicks_for_inches(candidate, yards, adjustment)))
+        return results
+
+    windage = candidates(central["x"], "x")
+    elevation = candidates(central["y"], "y")
+
+    def signed_clicks(direction: str, clicks: int, axis: str) -> int:
+        if direction == "CENTER":
+            return 0
+        positive_direction = "LEFT" if axis == "x" else "UP"
+        return clicks if direction == positive_direction else -clicks
+
+    def materially_stable(value: float, axis: str, values: set[tuple[str, int]]) -> bool:
+        if axis == "x":
+            point_direction = "LEFT" if value > 0 else "RIGHT" if value < 0 else "CENTER"
+        else:
+            point_direction = "UP" if value > 0 else "DOWN" if value < 0 else "CENTER"
+        point_clicks = clicks_for_inches(value, yards, adjustment)
+        signed_point = signed_clicks(point_direction, point_clicks, axis)
+        return all(
+            abs(signed_clicks(direction, clicks, axis) - signed_point) <= 3
+            for direction, clicks in values
+        )
+
+    def axis_assessment(value: float, axis: str, values: set[tuple[str, int]]) -> Dict[str, Any]:
+        if axis == "x":
+            direction = "LEFT" if value > 0 else "RIGHT" if value < 0 else "CENTER"
+        else:
+            direction = "UP" if value > 0 else "DOWN" if value < 0 else "CENTER"
+        ordered = [{"direction": item_direction, "clicks": item_clicks} for item_direction, item_clicks in sorted(values)]
+        maximum_clicks = max(item["clicks"] for item in ordered)
+        minimum_clicks = min(item["clicks"] for item in ordered)
+        centered_within_one_click = maximum_clicks <= 1 and {item["direction"] for item in ordered}.issubset({"LEFT", "RIGHT", "CENTER"})
+        return {
+            "strictStatus": "sufficient" if materially_stable(value, axis, values) else "insufficient",
+            "bestEstimate": {
+                "direction": direction,
+                "clicks": clicks_for_inches(value, yards, adjustment),
+            },
+            "candidateAdjustments": ordered,
+            "minimumClicks": minimum_clicks,
+            "maximumClicks": maximum_clicks,
+            "practicalFinding": "centered_within_one_click" if axis == "x" and centered_within_one_click else None,
+        }
+
+    windage_assessment = axis_assessment(central["x"], "x", windage)
+    elevation_assessment = axis_assessment(central["y"], "y", elevation)
+
+    def supports_physical_adjustment(assessment: Dict[str, Any]) -> bool:
+        return (
+            assessment.get("strictStatus") == "sufficient"
+            or assessment.get("practicalFinding") == "centered_within_one_click"
+        )
+
+    supported = supports_physical_adjustment(windage_assessment) and supports_physical_adjustment(elevation_assessment)
+    return {
+        "status": "sufficient" if supported else "insufficient",
+        "owner": "zeroingCorrection",
+        "standard": "uncertainty_cannot_materially_change_presented_click_recommendation",
+        "maximumNonMaterialVariationClicks": 3,
+        "uncertaintyInches": _round(uncertainty_inches, 4),
+        "windageCandidates": [{"direction": direction, "clicks": clicks} for direction, clicks in sorted(windage)],
+        "elevationCandidates": [{"direction": direction, "clicks": clicks} for direction, clicks in sorted(elevation)],
+        "axisAssessments": {
+            "windage": windage_assessment,
+            "elevation": elevation_assessment,
+        },
+        "reason": None if supported else "registration_uncertainty_could_change_correction",
+    }
 
 
 def average_point(points: List[Dict[str, float]]) -> Optional[Dict[str, float]]:
@@ -1108,7 +1308,8 @@ def build_distance_click_query(payload: Dict[str, Any]) -> Dict[str, Any]:
     return _distance_query_unavailable("insufficient_authority", payload)
 
 
-def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
+def build_authority_package(payload: Dict[str, Any], runtime_timing: Optional[Dict[str, float]] = None) -> Dict[str, Any]:
+    authority_started = time.perf_counter()
     if not isinstance(payload, dict):
         payload = {}
 
@@ -1120,6 +1321,11 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         return build_gssf_ac_1_authority_package(payload, profile)
     if profile.get("missionFamilyId") == "marksmanshipTraining" and profile.get("resultPackageType") == "marksmanshipTrainingResult":
         return build_dot_torture_session_package(payload, profile)
+
+    registration_started = time.perf_counter()
+    payload, registration_evidence = apply_precision_tap_registration(payload)
+    if runtime_timing is not None:
+        runtime_timing["registrationMs"] = round((time.perf_counter() - registration_started) * 1000, 3)
 
     geometry = target_geometry(payload)
     aim = normalize_point(payload.get("aimCoordinate") or payload.get("aim") or payload.get("aimPoint"))
@@ -1182,12 +1388,13 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     else:
         shooter_guidance = build_shooter_guidance(correction, clicks, yards)
 
-    render_coordinates = {
-        "aim": image_point_through_grid(aim, geometry) if aim else None,
-        "impacts": [image_point_through_grid(point, geometry) for point in impacts],
-        "poib": image_point_through_grid(poib, geometry) if poib else None,
-        "vector": vector,
-    }
+    render_coordinates = source_photo_render_coordinates(
+        registration_evidence,
+        aim,
+        impacts,
+        poib,
+        geometry,
+    )
 
     phase = str(payload.get("phase") or "initial").strip().lower()
     if phase not in {"initial", "confirmation"}:
@@ -1214,6 +1421,34 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         else {"status": "not-requested", "outcome": "PENDING"}
     )
 
+    registration_claim_sufficiency = zero_correction_registration_sufficiency(
+        registration_evidence,
+        aim,
+        impacts,
+        geometry,
+        yards,
+        adjustment,
+    )
+    correction_estimate = None
+    if registration_claim_sufficiency.get("status") == "insufficient":
+        correction_estimate = {
+            "status": "best_estimate_exact_click_count_withheld",
+            "truthLabel": "Best estimate — exact click count withheld",
+            "correction": correction,
+            "clicks": clicks,
+            "moa": moa,
+            "vector": vector,
+            "axisAssessments": registration_claim_sufficiency.get("axisAssessments") or {},
+        }
+        correction = None
+        clicks = None
+        moa = None
+        shooter_guidance = {
+            "status": "partial_result",
+            "reason": registration_claim_sufficiency.get("reason"),
+            "message": "Your group was measured. The exact click count is withheld because this photo supports a small range of possible adjustments; the best estimate is shown.",
+        }
+
     authority_core = {
         "target_profile_id": "baker_st_100yd_smart_zero",
         "targetProfileId": "baker_st_100yd_smart_zero",
@@ -1221,6 +1456,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         "qrId": payload.get("qrId") or payload.get("qr_id"),
         "mission_family": "zeroingCorrection",
         "missionFamilyId": "zeroingCorrection",
+        "resultPackageType": "zeroCorrectionResult",
         "manufacturer": "Baker Targets",
         "discipline": "zeroing",
         "authorityVersion": "sczn3-ugeo-authority-v1",
@@ -1263,16 +1499,24 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         },
         "renderCoordinates": render_coordinates,
         "validation": validation,
+        "targetImageRegistrationEvidence": registration_evidence,
+        "registrationClaimSufficiency": registration_claim_sufficiency,
+        "correctionEstimate": correction_estimate,
         "hasCorrection": correction is not None,
         "status": {
             "hasAim": aim is not None,
             "impactCount": len(impacts),
             "hasPOIB": poib is not None,
             "hasCorrection": correction is not None,
+            "hasCorrectionEstimate": correction_estimate is not None,
+            "hasResult": aim is not None and bool(impacts) and poib is not None,
         },
     }
     authority_core["evidenceHash"] = stable_hash(authority_core)
     authority_core["computedAt"] = datetime.now(timezone.utc).isoformat()
+    if runtime_timing is not None:
+        runtime_timing["authorityTotalMs"] = round((time.perf_counter() - authority_started) * 1000, 3)
+        runtime_timing["authorityEvaluationMs"] = round(runtime_timing["authorityTotalMs"] - runtime_timing.get("registrationMs", 0), 3)
     return authority_core
 
 

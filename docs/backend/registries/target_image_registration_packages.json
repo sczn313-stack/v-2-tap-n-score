@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "sczn3-target-image-registration-package-registry-v1",
+  "packages": [
+    {
+      "registrationPackageId": "baker-st-100yd-smart-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "baker_st_100yd_smart_zero",
+      "targetProfileVersion": "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+      "canonicalRepresentation": {
+        "assetId": "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+        "path": "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+        "sha256": "0731aed37dc1e2a6ab0f57517bded6a9b97110dc73cf8c1a7a20d516175e3fbf",
+        "pixelWidth": 1102,
+        "pixelHeight": 1713,
+        "mediaType": "image/png"
+      },
+      "canonicalCoordinateSystemId": "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+      "ugoAuthorityId": "sczn3-ugeo-authority-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1.5,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 12,
+        "minimumInliers": 8,
+        "minimumInlierRatio": 0.25,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.2
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "registration_knowledge_only_downstream_authority_owns_sufficiency"
+    },
+    {
+      "registrationPackageId": "baker-sl-st2-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "idpa_silhouette_sl_st2",
+      "targetProfileVersion": "1",
+      "canonicalRepresentation": {
+        "assetId": "BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1",
+        "path": "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg",
+        "sha256": "9fb11d843c09336bce46e93a7c163eb9f8653e439ad0f4950d419d75d7faf5e9",
+        "pixelWidth": 1074,
+        "pixelHeight": 1393,
+        "mediaType": "image/jpeg"
+      },
+      "canonicalCoordinateSystemId": "UGO_BAKER_SL_ST2_23X35_TARGET_PLANE_V1",
+      "ugoAuthorityId": "UGO_BAKER_SL_ST2_23X35_TARGET_PLANE_V1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1.5,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 18,
+        "minimumInliers": 12,
+        "minimumInlierRatio": 0.35,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "registration_knowledge_only_downstream_authority_owns_sufficiency"
+    },
+    {
+      "registrationPackageId": "gssf-ac-1-photo-registration-fixture-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "gssf_ac_1",
+      "targetProfileVersion": "1",
+      "canonicalRepresentation": {
+        "assetId": "gssf_ac_1_clean_reference_png_v1",
+        "path": "assets/gssf_ac_1_clean_reference.png",
+        "sha256": "e08eb090f31e64a2fd75f6e88b7267ed9798da4eb438322d1dbc8246e362f030",
+        "pixelWidth": 1125,
+        "pixelHeight": 1373,
+        "mediaType": "image/png"
+      },
+      "canonicalCoordinateSystemId": "gssf-ac-1-canonical-coordinate-system-v1",
+      "ugoAuthorityId": "gssf-ac-1-concentric-geometry-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 12,
+        "minimumInliers": 8,
+        "minimumInlierRatio": 0.25,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.2
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "data_only_scale_fixture_registration_knowledge_only"
+    }
+  ]
+}

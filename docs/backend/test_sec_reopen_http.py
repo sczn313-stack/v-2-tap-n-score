@@ -40,6 +40,11 @@ stub("target_image_registration_authority", TargetImageRegistrationError=StubErr
 m4_package = stub("m4_authority")
 m4_authority = stub("m4_authority.authority_service", build_authority_package=lambda _: {})
 m4_package.authority_service = m4_authority
+stub(
+    "m4_authority.weapon_equipment_registry",
+    authority_model_from_record=lambda _: None,
+    resolve_proven_equipment_record=lambda *_: None,
+)
 stub("ops_store", record_event=lambda *_: {}, summarize_events=lambda **_: {})
 stub("product_catalog", product_resolution_http_status=lambda _: 200, resolve_product_route=lambda *_: {})
 stub("progression_record_store", runtime_progression_record_store=lambda: None)
