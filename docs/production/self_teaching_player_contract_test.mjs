@@ -3,6 +3,9 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const source = await readFile("self_teaching_player.js", "utf8");
+const netlifyBuildSource = await readFile("production/build-netlify.mjs", "utf8");
+assert.match(netlifyBuildSource, /"self_teaching_player\.js"/, "the Netlify production bundle includes the universal PLAYER runtime");
+assert.match(netlifyBuildSource, /"baker_talking_demo_session\.js"/, "the Netlify production bundle includes the governed Baker talking-demo fixture");
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 class FakeAudio {

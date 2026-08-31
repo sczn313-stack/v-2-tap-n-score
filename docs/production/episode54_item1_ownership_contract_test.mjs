@@ -13,6 +13,21 @@ class MemoryStorage {
   removeItem(key) { this.values.delete(String(key)); }
 }
 
+class QuotaMigrationStorage extends MemoryStorage {
+  constructor(entries = [], blockedCanonicalKey = "") {
+    super(entries);
+    this.blockedCanonicalKey = blockedCanonicalKey;
+  }
+  setItem(key, value) {
+    if (String(key) === this.blockedCanonicalKey) {
+      const error = new Error("Setting the value exceeded the quota.");
+      error.name = "QuotaExceededError";
+      throw error;
+    }
+    super.setItem(key, value);
+  }
+}
+
 async function source(name) {
   return readFile(name, "utf8");
 }
@@ -130,6 +145,37 @@ assert.equal(
   JSON.stringify(stateBrowser.window.SCZN3M4.read("SCZN3_MEDIA_legacy-media-001", null)),
   legacyMedia,
   "legacy evidence remains readable through the universal namespace without eager duplication"
+);
+
+const quotaLegacyMediaKey = "SCZN3_BAKER_MEDIA_media-too-large-to-copy";
+const quotaCanonicalMediaKey = "SCZN3_MEDIA_media-too-large-to-copy";
+const quotaLegacyMedia = JSON.stringify({ mediaId: "media-too-large-to-copy", dataUrl: "data:image/jpeg;base64,legacy-evidence" });
+const quotaStorage = new QuotaMigrationStorage([
+  [quotaLegacyMediaKey, quotaLegacyMedia]
+], quotaCanonicalMediaKey);
+const quotaStateBrowser = {
+  window: {},
+  localStorage: quotaStorage,
+  TextEncoder,
+  URL,
+  console,
+  document: { documentElement: { setAttribute() {} } }
+};
+quotaStateBrowser.window.window = quotaStateBrowser.window;
+quotaStateBrowser.window.localStorage = quotaStorage;
+quotaStateBrowser.window.document = quotaStateBrowser.document;
+vm.createContext(quotaStateBrowser);
+const appStateSource = await source("app_state.js");
+assert.doesNotThrow(
+  () => vm.runInContext(appStateSource, quotaStateBrowser, { filename: "app_state.js" }),
+  "a full browser origin must not abort platform state startup when legacy evidence cannot be copied"
+);
+assert.equal(quotaStorage.getItem(quotaCanonicalMediaKey), null, "failed compatibility copies do not manufacture canonical state");
+assert.equal(quotaStorage.getItem(quotaLegacyMediaKey), quotaLegacyMedia, "legacy evidence remains intact when its compatibility copy is deferred");
+assert.equal(
+  JSON.stringify(quotaStateBrowser.window.SCZN3M4.read(quotaCanonicalMediaKey, null)),
+  quotaLegacyMedia,
+  "legacy evidence remains readable when quota prevents its canonical compatibility copy"
 );
 
 const beforeLegacyKeys = [...storage.values.keys()].filter(key => key.startsWith("SCZN3_BAKER_")).sort();
