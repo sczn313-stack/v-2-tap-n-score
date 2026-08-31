@@ -289,15 +289,31 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — fresh extraction and independent bundle clone at the exact source commit; ownership/migration, PLAYER, persistence, availability, proxy, Netlify build, and both required runtime assets passed.
 - **Relationship:** Frontend production successor to #15 using packaging behavior already proven by #10. Roll frontend back to #15 to remove only this asset restoration, or to #8 for the complete Founder-approved Baker floor.
 
+### Keepsake #17 — Production SEC Exact Reopen Hotfix
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · DEPLOYABLE FRONTEND PRODUCTION FLOOR
+- **Purpose / capability proven:** Prevents the production Ballistic Vault from aborting an exact preserved SEC reopen when no Talking Smart Target demo-session fixture exists. The saved-session de-duplication scan now ignores an absent demo entry instead of dereferencing it; zeroing, evidence, preservation authority, and the Talking Smart Target are unchanged.
+- **Source commit:** `a1a510d223d121bc4cd556708761b43340570753`
+- **Parent frontend production floor:** Keepsake #16 / `5ef25e1ef45a26922b4d87bc9c4b84c5fae127fd`
+- **Backend counterpart:** Keepsake #12 / `04cafea50d4ab0de7ee9d0484f1f1473a1bbc069`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_017_Production_SEC_Exact_Reopen_Hotfix/`
+- **Archive:** `SCZN3_KEEP_017_PRODUCTION_SEC_EXACT_REOPEN_HOTFIX_a1a510d.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_017_PRODUCTION_SEC_EXACT_REOPEN_HOTFIX_a1a510d.zip`
+- **SHA-256:** `a413e9595e281fdf82ca2769257f88dbdf4a720571357808fd56c5bfc8e68ddb`
+- **Size:** `113826538` bytes
+- **Restore:** Clone the embedded bundle, check out the exact source commit, then run `Deposit_017_Production_SEC_Exact_Reopen_Hotfix/VERIFY_HOTFIX.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — fresh archive extraction and independent bundle clone at the exact source commit; processing, Precision Tap, PLAYER, Netlify build, and restored public-bundle assertions passed.
+- **Relationship:** Frontend production successor to #16. Roll frontend back to #16 to remove only this exact-reopen correction, or to #8 for the complete Founder-approved Baker floor.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#16 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#17 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#16 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, and #16 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all sixteen deposits.
-- Keepsakes #1–#16 retain their assigned numbers and directories.
+- Git bundles #1–#17 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16, and #17 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all seventeen deposits.
+- Keepsakes #1–#17 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
