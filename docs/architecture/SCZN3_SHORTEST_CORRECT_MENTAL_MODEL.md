@@ -586,9 +586,11 @@ The minimum shooter path is:
 
 Equipment Profile V2 owns durable equipment identity/configuration, provenance, shooter label/photo, stable profile identity/timestamps, and active state. Session Authority owns what the shooter is doing now. The SEC owns preserved shooting history. A session distance never becomes equipment zero authority by implication. Existing V1 profiles migrate without rebuild while transient session, personal, environmental, target, and QR fields are stripped from equipment identity.
 
+The 2026-08-31 forward-expansion proof establishes that an existing shooter-owned Equipment Profile V2 survives an additive M4-representative catalog/schema expansion with its label, photograph, governed equipment identity, optic/ammunition/configuration data, active selection, exact reopen, preserved session relationship, edit/resave behavior, and applicable-session inheritance intact. Catalog knowledge may expand; shooter-owned equipment data moves forward without rebuild or silent replacement.
+
 Equipment cards do not show `Saved Distance`. `Zero` appears only for an explicitly governed zero/confirmation relationship carrying the required provenance envelope.
 
-Future Equipment Library/catalog/schema expansion must preserve shooter-owned data. Catalog knowledge may improve, but shooter-entered equipment identity, photographs, labels, relationships, and history must not be discarded, overwritten, or forced through a rebuild. **This durability requirement is a required future proof; it is not yet claimed as completed.**
+Future Equipment Library/catalog/schema expansion must preserve shooter-owned data. Catalog knowledge may improve, but shooter-entered equipment identity, photographs, labels, relationships, and history must not be discarded, overwritten, or forced through a rebuild. The additive forward-expansion path is now proven; any future destructive migration remains separately responsible for proving that same invariant before admission.
 
 See the [closed Episode 58 record](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md), [Snapshot 13](../history/snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md), and [Gate 1/Gate 2 evidence](../authority-evidence/publisher-os/2026-08-24-equipment-library-knowledge-ingestion/README.md).
 
@@ -673,7 +675,7 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not expose any public target as AVAILABLE until its complete live road earns availability
 - do not replace the exact governed publisher product route with a generic homepage when an exact product route exists
 - do not let shared-link telemetry interfere with or become authority over shooter evidence or preserved sessions
-- do not claim Equipment Library user-data durability across future schema/catalog expansion until that migration proof exists
+- do not treat additive catalog/schema expansion as permission to rewrite, discard, or detach shooter-owned Equipment Profile data or its preserved session relationships
 
 ## 13. New Agent Operating Directive
 
