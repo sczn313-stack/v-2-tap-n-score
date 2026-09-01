@@ -145,6 +145,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
             summary = summarize_events(
                 time_window=query.get("window", ["all"])[0],
                 product_filter=query.get("product", ["all"])[0],
+                campaign_filter=query.get("campaign", ["all"])[0],
                 timezone_name=query.get("timeZone", ["UTC"])[0],
             )
             self._send_json(200 if summary.get("ok") is True else 400, summary)

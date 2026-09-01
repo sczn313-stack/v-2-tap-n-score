@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from product_catalog import PUBLISHER_RECORDS, PRODUCT_RECORDS, TARGET_CATALOG_ENTRIES, resolve_product_route
@@ -14,20 +15,27 @@ from product_catalog import PUBLISHER_RECORDS, PRODUCT_RECORDS, TARGET_CATALOG_E
 ALLOWED_EVENT_TYPES = {
     "arrival",
     "pageView",
+    "tstStart",
+    "tstComplete",
     "sessionStart",
     "showResults",
     "sessionSaved",
+    "returnShooter",
 }
 
 SUMMARY_KEYS = {
     "arrival": "arrivals",
     "pageView": "pageViews",
+    "tstStart": "tstStarts",
+    "tstComplete": "tstCompletions",
     "sessionStart": "sessionStarts",
     "showResults": "showResults",
     "sessionSaved": "sessionsSaved",
+    "returnShooter": "returnShooters",
 }
 
 TIME_WINDOWS = {"today", "week", "month", "year", "all"}
+CAMPAIGN_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
 
 
 def database_url(explicit_url=None):
@@ -50,6 +58,14 @@ def clean_optional_text(value):
         return None
     text = str(value).strip()
     return text or None
+
+
+def normalize_campaign(value, default="direct"):
+    text = clean_optional_text(value)
+    if text is None:
+        return default
+    normalized = text.lower()
+    return normalized if CAMPAIGN_PATTERN.fullmatch(normalized) else None
 
 
 def validate_event(payload):
@@ -86,11 +102,17 @@ def validate_event(payload):
             },
         }
 
+    campaign = normalize_campaign(
+        payload.get("campaign") or payload.get("ref") or payload.get("referralSource") or payload.get("referral_source")
+    )
+    if campaign is None:
+        return None, "invalid campaign identifier"
+
     return {
         "event_type": event_type,
         "arrival_id": clean_optional_text(payload.get("arrivalId") or payload.get("arrival_id")),
         "session_id": clean_optional_text(payload.get("sessionId") or payload.get("session_id")),
-        "referral_source": "Deferred",
+        "referral_source": campaign,
         "target_source": target_source,
         "region": "Deferred",
         "path": clean_optional_text(payload.get("path")),
@@ -176,7 +198,7 @@ def governed_product_options():
     return options
 
 
-def resolve_summary_filters(time_window="all", product_filter="all", timezone_name="UTC", now=None):
+def resolve_summary_filters(time_window="all", product_filter="all", campaign_filter="all", timezone_name="UTC", now=None):
     window = clean_text(time_window, "all").lower()
     if window not in TIME_WINDOWS:
         return None, "invalid time window"
@@ -184,6 +206,9 @@ def resolve_summary_filters(time_window="all", product_filter="all", timezone_na
     allowed_products = {option["id"] for option in governed_product_options()}
     if product not in allowed_products:
         return None, "unknown or unavailable product filter"
+    campaign = clean_text(campaign_filter, "all").lower()
+    if campaign != "all" and normalize_campaign(campaign, default=None) is None:
+        return None, "invalid campaign filter"
     try:
         zone = ZoneInfo(clean_text(timezone_name, "UTC"))
     except ZoneInfoNotFoundError:
@@ -204,6 +229,7 @@ def resolve_summary_filters(time_window="all", product_filter="all", timezone_na
     return {
         "timeWindow": window,
         "product": product,
+        "campaign": campaign,
         "timeZone": zone.key,
         "startAt": start_local.astimezone(timezone.utc) if start_local else None,
         "endAt": current_utc,
@@ -237,10 +263,12 @@ def empty_summary(status="ok"):
         "totals": {
             "arrivals": 0,
             "pageViews": 0,
+            "tstStarts": 0,
+            "tstCompletions": 0,
             "sessionStarts": 0,
             "showResults": 0,
             "sessionsSaved": 0,
-            "returnShooters": None,
+            "returnShooters": 0,
         },
         "conversionPercentages": {
             "arrivalToSessionStart": None,
@@ -250,10 +278,11 @@ def empty_summary(status="ok"):
         "operationalFailures": [],
         "productActivity": {},
         "unavailableTelemetry": {
-            "returningVisitors": True,
+            "returningVisitors": False,
             "unattributedArrivals": None,
         },
         "sources": {
+            "campaigns": {},
             "referrals": {},
             "targets": {},
             "regions": {},
@@ -269,12 +298,13 @@ def summarize_events(
     *,
     time_window="all",
     product_filter="all",
+    campaign_filter="all",
     timezone_name="UTC",
     now=None,
     database_url_override=None,
     connect_fn=None,
 ):
-    filters, filter_error = resolve_summary_filters(time_window, product_filter, timezone_name, now)
+    filters, filter_error = resolve_summary_filters(time_window, product_filter, campaign_filter, timezone_name, now)
     if filter_error:
         summary = empty_summary("invalid_filter")
         summary["reason"] = filter_error
@@ -298,6 +328,9 @@ def summarize_events(
         if filters["product"] != "all":
             clauses.append("target_source = %(product)s")
             params["product"] = filters["product"]
+        if filters["campaign"] != "all":
+            clauses.append("referral_source = %(campaign)s")
+            params["campaign"] = filters["campaign"]
         where_sql = " where " + " and ".join(clauses)
         arrival_where_sql = " where event_type = 'arrival' and " + " and ".join(clauses)
         with connector(url) as connection:
@@ -309,10 +342,25 @@ def summarize_events(
                         summary["totals"][key] = int(count or 0)
 
                 cursor.execute(
+                    f"select event_type, count(distinct arrival_id) from ops_events{where_sql} and arrival_id is not null group by event_type",
+                    params,
+                )
+                for event_type, count in cursor.fetchall():
+                    key = SUMMARY_KEYS.get(event_type)
+                    if key:
+                        summary["totals"][key] = int(count or 0)
+
+                cursor.execute(
                     f"select referral_source, count(*) from ops_events{arrival_where_sql} group by referral_source",
                     params,
                 )
                 summary["sources"]["referrals"] = rows_to_bucket(cursor.fetchall())
+
+                cursor.execute(
+                    f"select referral_source, count(distinct arrival_id) from ops_events{arrival_where_sql} and arrival_id is not null group by referral_source",
+                    params,
+                )
+                summary["sources"]["campaigns"] = rows_to_bucket(cursor.fetchall())
 
                 cursor.execute(
                     f"select target_source, count(*) from ops_events{arrival_where_sql} group by target_source",
@@ -334,7 +382,7 @@ def summarize_events(
             if product_id in governed_product_ids
         }
         summary["unavailableTelemetry"] = {
-            "returningVisitors": True,
+            "returningVisitors": False,
             "unattributedArrivals": sum(
                 count
                 for product_id, count in summary["sources"]["targets"].items()
@@ -353,6 +401,15 @@ def summarize_events(
             "arrivalToSessionStart": conversion_percent(totals["sessionStarts"], totals["arrivals"]),
             "sessionStartToResult": conversion_percent(totals["showResults"], totals["sessionStarts"]),
             "resultToSave": conversion_percent(totals["sessionsSaved"], totals["showResults"]),
+        }
+        summary["funnel"] = {
+            "arrived": totals["arrivals"],
+            "startedTst": totals["tstStarts"],
+            "completedTst": totals["tstCompletions"],
+            "startedRealTapNScore": totals["sessionStarts"],
+            "reachedResults": totals["showResults"],
+            "savedSession": totals["sessionsSaved"],
+            "returned": totals["returnShooters"],
         }
 
         return summary
