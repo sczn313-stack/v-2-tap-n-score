@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#16 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#19 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -34,9 +34,9 @@ Recovery rule:
 
 ## Current recommended known-good recovery floor
 
-**Keepsake #8 — Baker Talking Smart Target Final Founder Audit** is the current recommended executable recovery floor for Episode 59 Baker work.
+**Keepsake #19 — Shared Links — Recipient Activity Tracking — Production Proven** is the current recommended production frontend recovery floor. It preserves the live shared-link funnel, reliable event delivery, and the protected Baker/Talking Smart Target production-road assets at `df2eef7`.
 
-It contains the exact final Founder-audit candidate, the complete approved Baker teaching road, the reusable PLAYER integration, and the proven real Baker operational road. **Keepsake #7 — Talking Smart Target Capability** remains the current inheritance floor for teaching another Smart Target how to talk without dismantling Baker.
+**Keepsake #8 — Baker Talking Smart Target Final Founder Audit** remains the complete Founder-approved Episode 59 Baker audit rollback floor. It contains the exact final Founder-audit candidate, the complete approved Baker teaching road, the reusable PLAYER integration, and the proven real Baker operational road. **Keepsake #7 — Talking Smart Target Capability** remains the current inheritance floor for teaching another Smart Target how to talk without dismantling Baker.
 
 **Keepsake #9 — Baker Post-Lock Production Routing Patch** is the current recommended deployable Baker commit. It adds only the exact governed Baker 100 Yard product destination and the shared product-first / publisher-fallback route above Keepsake #8. Production rollback returns to Keepsake #8.
 

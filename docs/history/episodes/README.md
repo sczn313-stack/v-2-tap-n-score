@@ -25,10 +25,11 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 56 | The Shortest Correct Mental Model | 2026-08-18 through 2026-08-19 | [Locked record](./EPISODE_56_SHORTEST_CORRECT_MENTAL_MODEL.md) | CLOSED / ARCHIVED / LOCKED |
 | Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
 | Episode 58 | Equipment Library | 2026-08-23 through 2026-08-24 | [Locked record](./EPISODE_58_EQUIPMENT_LIBRARY.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
+| Episode 59 | I KNOW THIS SHOOTER | 2026-08-31 continuity lock | [Snapshot 16](../snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md) | ACTIVE — production-proven; formal closeout open |
 
 ## Episode records
 
-Episodes 55–58 are closed, archived, and locked. Snapshot 12 preserves the Episode 58 starting context; Snapshot 13 preserves its Founder-approved Equipment Library result. Survey remains outside Founder approval. No episode is active, and Episode 59 remains reserved until the Founder opens it.
+Episodes 55–58 are closed, archived, and locked. Episode 59 — I KNOW THIS SHOOTER is active and production-proven under Snapshot 16; formal closeout remains open. Survey remains outside Founder approval.
 
 ### First Stable Zeroing Pipeline
 

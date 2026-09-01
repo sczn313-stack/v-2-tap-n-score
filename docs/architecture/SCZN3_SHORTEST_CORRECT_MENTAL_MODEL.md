@@ -2,9 +2,9 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.6 — Founder Approved / LOCKED
-**Current through:** 2026-08-24
-**Status:** Episode 58 — Equipment Library closed, archived, and locked; no episode active; Episode 59 reserved
+**Version:** 1.7 — Founder Approved / LOCKED
+**Current through:** 2026-08-31
+**Status:** Episode 59 — I KNOW THIS SHOOTER is active and production-proven; formal closeout remains open
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -19,37 +19,28 @@
 
 | State | Current truth |
 |---|---|
-| Active episode | **None** |
+| Active episode | **Episode 59 — I KNOW THIS SHOOTER** — production-proven; formal closeout remains open |
 | Last closed episode | **Episode 58 — Equipment Library** — closed, archived, and locked |
-| Next reserved episode | **Episode 59** |
-| Episode Registry | PASS — 58 continuous slots; Episode 58 locked; no active episode |
-| Production | `https://tap-n-score.com` at commit `bfce363643eff364e43d7d71a6b1e42c0262ca42` |
-| Production platform | Netlify frontend + Render authority service; four released targets |
-| Current development | Episode 58 Equipment Library closure is the canonical local state; committed and recoverable ahead of production |
-| Prior continuity baseline commit | `9bc55aa6c58bc07cfa3cd8b341bc6df9b62dc4a4` — Snapshot 12 / Episode 58 starting context |
-| Latest locked snapshot | Snapshot 13 — Episode 58 Equipment Library Closure |
-| Latest checkpoint | `SCZN3_EP58_EQUIPMENT_LIBRARY_CLOSURE_2026-08-24` |
+| Next reserved episode | **Episode 60 — M4 OET**, after Episode 59 formal closeout |
+| Episode Registry | PASS — 59 continuous slots; Episode 58 locked; Episode 59 active; Episode 60 reserved |
+| Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
+| Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
+| Current development | Episode 59 production-proven floor; Shared Links recipient-activity tracking live; formal closeout not yet performed |
+| Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
+| Latest locked snapshot | Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production |
+| Latest checkpoint | `SCZN3_SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION_2026-08-31` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Founder determines Episode 59.** Try Before You Buy is preserved as Episode 57/58 continuity but remains unimplemented and requires its own Founder Specification. |
+| Next active priority | **Complete Episode 59 formal closeout. M4 OET follows Episode 59.** |
 
-Do not confuse production, Episode 58 closure, Snapshot 13, checkpoint archives, and deployment state. The Episode 58 state is committed and recoverable locally but is not pushed, deployed, or production-promoted.
+Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
-Current released production targets:
+Current public availability:
 
-- M4 25m Zero
-- 100 Yard Bullseye
-- GSSF Practice
-- USPSA Practice Target
+- **AVAILABLE:** Baker 100 Yard Talking Smart Target
+- **COMING SOON:** every other exposed target until its complete live road earns availability
 
-Current local working candidate additionally includes:
-
-- Baker SL-ST2 IDPA Timed Pair
-- Baker Dartboard
-- Baker Bowling Pins
-- EZ2C Dot Torture
-- Baker Billiard Balls
-- Baker Battleship
+The broader governed catalog remains preserved knowledge and implementation evidence. Public visibility does not imply production availability.
 
 `ST-001 Universal Bullseye` is removed from the current Episode 55 batch. Its historical identity collision and records remain untouched.
 
@@ -70,6 +61,9 @@ Current local working candidate additionally includes:
 - SCZN3's knowledge loop is **MINE → COMMONIZE → RECONCILE → SYNTHESIZE → DELIVER → LEARN**.
 - SCZN3's authority in knowledge delivery is to always tell the truth to its audience: use strong knowledge, preserve plausible alternatives, and say when it does not know enough.
 - **Simple on top. Smart underneath.** Deep structured knowledge should reduce shooter effort, not become a demand for more shooter input.
+- **The target teaches what is unique. SCZN3 teaches what is universal.** Target lessons inherit the reusable Talking Smart Target PLAYER and choreography machinery.
+- **Authority stays firm. Its refusal stays narrow.** Strict Sufficiency governs the specific claim it cannot support; it does not erase other truthful observations or results.
+- **Authority must be proportional to the downstream claim.** Registration reports governed knowledge and uncertainty; each downstream owner decides whether that evidence supports its claim.
 - The image is evidence of the target; it is not automatically the geometry authority.
 - No evidence, no claim. Missing authority fails closed.
 - Reality gets the final vote.
@@ -194,6 +188,34 @@ One product may expose several capabilities, but each resolves and executes inde
 Universality is a governance principle, not a required naming prefix.
 
 > **The target controls the inside. SCZN3 controls the outside.**
+
+### Talking Smart Target and PLAYER
+
+Smart Targets can teach themselves. `LET THE TARGET TALK` is the shooter-facing doorway. The target-specific lesson supplies what is unique to that target; the reusable SCZN3 PLAYER owns Play/Pause/Resume, logical rewind, Restart, narration continuity, choreography, temporary highlights, demonstrated taps, inspection holds, cross-screen continuity, and demo-state isolation.
+
+Founder-locked PLAYER language is:
+
+> **◀ 10 SEC | ▶ PLAY / ⏸ PAUSE / ▶ RESUME | ↻ RESTART**
+
+The universal teaching road is:
+
+> **Target-specific lesson → Universal SEC → Equipment Profile → Ballistic Vault**
+
+The shooter-facing memory anchors are:
+
+> **YOUR SHOOTING SESSION. PRESERVED.**
+
+> **YOUR RANGE HISTORY. SAVED.**
+
+Demonstration evidence never becomes shooter evidence. `ADD PHOTO` hands control from the teaching experience to the real shooter road.
+
+### Precision Tap and claim-proportional registration
+
+Precision Tap owns shooter-declared observation entry: aim when required and impacts. Target Image Registration owns source-photo-to-canonical-target knowledge, provenance, transformation, and uncertainty. Existing mission authorities own meaning and results.
+
+> **Precision Tap owns observation entry. Existing SCZN3 authorities own meaning and results.**
+
+Registration should determine what SCZN3 knows as early as practical without imposing one laboratory-grade threshold on every claim. Local imperfection produces local uncertainty. Refusal is the last responsible option and remains limited to the unsupported claim.
 
 ### SEC architecture
 
@@ -566,9 +588,40 @@ Equipment Profile V2 owns durable equipment identity/configuration, provenance, 
 
 Equipment cards do not show `Saved Distance`. `Zero` appears only for an explicitly governed zero/confirmation relationship carrying the required provenance envelope.
 
+Future Equipment Library/catalog/schema expansion must preserve shooter-owned data. Catalog knowledge may improve, but shooter-entered equipment identity, photographs, labels, relationships, and history must not be discarded, overwritten, or forced through a rebuild. **This durability requirement is a required future proof; it is not yet claimed as completed.**
+
 See the [closed Episode 58 record](../history/episodes/EPISODE_58_EQUIPMENT_LIBRARY.md), [Snapshot 13](../history/snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md), and [Gate 1/Gate 2 evidence](../authority-evidence/publisher-os/2026-08-24-equipment-library-knowledge-ingestion/README.md).
 
-## 11. Do Not Redo
+## 11. Episode 59 — I KNOW THIS SHOOTER
+
+> **The shooter advances. The screen does not.**
+
+Episode 59 established Precision Tap as the universal shooter-declared observation layer inside the existing experience and proved the first production Talking Smart Target.
+
+The live Baker real-photo road is:
+
+> **Photo → registration → Aim → impacts → Results → correction → confirmation → Save → Universal SEC → Ballistic Vault → exact reopen**
+
+Production identities:
+
+- Frontend product: `df2eef730deca3f108ebe6e592dd6b643bb8a530`
+- Netlify deploy: `6a963b798a0be0823414705f`
+- Backend authority: `ace773c7de221c5c5bf70f28b9bc96cb1208213d`
+- Render deploy: `dep-dab3dd740ujc739mu9m0`
+- Target Image Registration is production-backed.
+- Baker replenishment reaches the governed exact Baker Smart Target product route, with governed publisher-homepage fallback when no exact product route exists.
+
+Shared Links use `?ref=<campaign>` and report the aggregate funnel:
+
+> **Arrived → TST Started → TST Completed → Real Tap-n-Score → Results → Saved → Returned**
+
+Shared-link telemetry is additive. It does not replace, restrict, or collect the shooter's existing photographs, observations, equipment, SEC evidence, or preserved sessions.
+
+The current production-proven recovery floor is **Keepsake #19 — Shared Links — Recipient Activity Tracking — Production Proven**. Two Homes remains authoritative: Home 1 owns immutable executable artifacts; Home 2 is the version-controlled map. Keepsakes are working recovery tools, not souvenirs. Preserve before risky production work and inherit known-good capability instead of rediscovering it.
+
+Episode 59 remains open only for formal closeout. Do not reopen settled Baker, Talking Smart Target, Precision Tap, PLAYER, registration, SEC, Equipment Profile, Vault, or availability architecture.
+
+## 12. Do Not Redo
 
 Do not reopen or recreate these settled foundations without contradictory authority and Founder authorization:
 
@@ -616,8 +669,13 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not persist session distance, personal/organizational context, weather, target identity, or QR attribution as durable Equipment Profile identity
 - do not display a session distance as equipment zero knowledge
 - do not grandfather V1 transient fields into Equipment Profile V2 authority
+- do not rebuild Talking Smart Target machinery per target; future targets inherit PLAYER and universal choreography
+- do not expose any public target as AVAILABLE until its complete live road earns availability
+- do not replace the exact governed publisher product route with a generic homepage when an exact product route exists
+- do not let shared-link telemetry interfere with or become authority over shooter evidence or preserved sessions
+- do not claim Equipment Library user-data durability across future schema/catalog expansion until that migration proof exists
 
-## 12. New Agent Operating Directive
+## 13. New Agent Operating Directive
 
 Standard invocation:
 
@@ -625,7 +683,7 @@ Standard invocation:
 
 When invoked, read this file before advising, researching, designing, or making SCZN3 decisions. Then consult the linked architecture, Episode Registry, active episode, checkpoint, authority records, and tests only to resolve the current task.
 
-> **SCZN3 first → respect the target → commonize the knowledge → existing authority first for source-specific claims → KTIS for known targets → Publisher Product Boundary → governed registration → UGO → Target Execution Contract → exact capability owner → inherit through data before building → fix shared problems at shared owners → backend owns execution truth → Universal SEC → exact reopen → learn from subsequent evidence → tests must prove the actual surface → stop only for genuine contradictions → reality gets the final vote.**
+> **SCZN3 first → respect the target → commonize the knowledge → existing authority first for source-specific claims → KTIS for known targets → Publisher Product Boundary → governed registration → Precision Tap observations → UGO → claim-proportional sufficiency → Target Execution Contract → exact capability owner → inherit through data before building → fix shared problems at shared owners → backend owns execution truth → Talking Smart Target/PLAYER teaches → Universal SEC → Equipment Profile → Ballistic Vault → exact reopen → learn from subsequent evidence → tests must prove the actual surface → stop only for genuine contradictions → reality gets the final vote.**
 
 ## Living-File Rule
 
@@ -659,6 +717,11 @@ Primary current records:
 - [Snapshot 11 — Rate Us + Founder Cleanup Baseline](../history/snapshots/SNAPSHOT_011_RATE_US_FOUNDER_CLEANUP_BASELINE.md)
 - [Snapshot 12 — Episode 58 Equipment Library Continuity Baseline](../history/snapshots/SNAPSHOT_012_EPISODE_58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE.md)
 - [Snapshot 13 — Episode 58 Equipment Library Closure](../history/snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md)
+- [Snapshot 15 — Episode 59 Final Founder Audit Lock](../history/snapshots/SNAPSHOT_015_EPISODE_59_FINAL_FOUNDER_AUDIT_LOCK.md)
+- [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](../history/snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md)
+- [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md)
+- [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
+- [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
 - [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md)
 - [KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md)
 - [Composable Target Authority](./decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md)
