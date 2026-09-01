@@ -305,9 +305,9 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — fresh archive extraction and independent bundle clone at the exact source commit; processing, Precision Tap, PLAYER, Netlify build, and restored public-bundle assertions passed.
 - **Relationship:** Frontend production successor to #16. Roll frontend back to #16 to remove only this exact-reopen correction, or to #8 for the complete Founder-approved Baker floor.
 
-### Keepsake #18 — Founder Shared-Link Activity Dashboard
+### KEEP 018 — Shared Links — Recipient Activity Tracking
 
-- **Status:** IMMUTABLE · RESTORE VERIFIED · NOT YET DEPLOYED
+- **Status:** IMMUTABLE · RESTORE VERIFIED · ORIGINAL PRE-PRODUCTION FEATURE FLOOR
 - **Purpose / capability proven:** Minimum anonymous shared-link funnel for the live Talking Smart Target era: ARRIVED → STARTED TST → COMPLETED TST → STARTED REAL TAP-N-SCORE → REACHED RESULTS → SAVED SESSION → RETURNED. Adds bounded `?ref=` campaign attribution, distinct anonymous-arrival counting, and the smallest useful Founder dashboard without changing the Baker/TST shooter road.
 - **Source commit:** `3fbc750855f5d64559a337aadcfcf12dbc0003a3`
 - **Parent production-record floor:** `ad9878900dca4433cd0ffb7bbadc7fa4e0b538f1`
@@ -319,18 +319,37 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore:** Clone the embedded bundle, check out the exact source commit, then run `Deposit_018_Founder_Shared_Link_Activity_Dashboard/VERIFY_DASHBOARD.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
 - **Restore verification:** PASS — canonical ZIP freshly extracted; embedded bundle independently cloned at the exact source commit; shared-link and access-governance contracts passed; Netlify build produced the Founder dashboard and both same-origin OPS routes.
 - **Privacy boundary:** Bounded aggregate campaign labels and anonymous arrival/session identifiers only. No names, email addresses, photographs, target evidence, SEC content, location, or browser fingerprint collection.
-- **Deployment boundary:** Database migration `007_extend_ops_shared_link_funnel.sql` and matching backend/frontend deployment are still required. Keepsake #17 remains the current deployed Baker frontend recovery floor until that bounded production activation is separately authorized and proven.
-- **Relationship:** Observability successor to #17 without modifying Baker/TST behavior. Roll back to #17 to remove only the dashboard/instrumentation candidate, or to #8 for the complete Founder-approved Baker floor.
+- **Deployment boundary:** This exact deposit predates production activation. Migration `007`, matching backend `ace773c...`, and the production frontend successor are preserved/proven by Keepsake #19.
+- **Relationship:** Observability successor to #17 without modifying Baker/TST behavior; predecessor to the production-proven #19 state. Roll back to #17 to remove the dashboard/instrumentation feature, or to #8 for the complete Founder-approved Baker floor.
+
+### Keepsake #19 — Shared Links — Recipient Activity Tracking — Production Proven
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · LIVE PRODUCTION RECOVERY FLOOR
+- **Purpose / capability proven:** Production-proven successor to #18. Preserves reliable shared-link event delivery plus the protected production-road assets required for the live Talking Smart Target, Equipment Profile, SEC, Ballistic Vault, and exact reopen. The telemetry remains additive and does not interfere with photographs, shooter observations, SEC evidence, equipment records, or preserved sessions.
+- **Source commit:** `df2eef730deca3f108ebe6e592dd6b643bb8a530`
+- **Feature predecessor:** Keepsake #18 / `3fbc750855f5d64559a337aadcfcf12dbc0003a3`
+- **Backend counterpart:** `ace773c7de221c5c5bf70f28b9bc96cb1208213d`; Render deploy `dep-dab3dd740ujc739mu9m0`; migration `007_extend_ops_shared_link_funnel.sql`
+- **Frontend production deploy:** Netlify `6a963b798a0be0823414705f` on `https://tap-n-score.com/`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_019_Shared_Links_Recipient_Activity_Production_Proven/`
+- **Archive:** `SCZN3_KEEP_019_SHARED_LINKS_RECIPIENT_ACTIVITY_PRODUCTION_PROVEN_df2eef7.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_019_SHARED_LINKS_RECIPIENT_ACTIVITY_PRODUCTION_PROVEN_df2eef7.zip`
+- **SHA-256:** `d70c320e0371f6a12a744b16308a597e08ddce60039368aba3ba3f09c9cd9376`
+- **Size:** `113840803` bytes
+- **Restore:** Clone the embedded bundle, check out exact source commit `df2eef7`, then run `Deposit_019_Shared_Links_Recipient_Activity_Production_Proven/VERIFY_PRODUCTION_PROOF.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — canonical archive freshly extracted; embedded bundle independently cloned at exact source commit; dashboard/access, Precision Tap, PLAYER, availability, Netlify build, and protected-road asset assertions passed.
+- **Live product proof:** Public TST start/completion telemetry PASS; public desktop and 390px dashboard PASS; real Founder Baker photograph completed `30 RIGHT / 42 DOWN` correction, confirmation, Save, SEC, Vault, and exact reopen as session `sczn3-session-cde2cf65-8e50-4037-9089-c92cfefd4b74`.
+- **Privacy boundary:** Aggregate bounded campaign attribution and anonymous progression only. Existing SCZN3 incoming evidence/preservation remains unchanged and authoritative under its existing owners.
+- **Relationship:** Production successor to #18 and current recommended shared-link recipient-activity recovery floor. Roll back to #18 to remove only the delivery/packaging corrections, or to #17 to remove shared-link recipient tracking entirely.
 
 ## Physical-vault reconciliation
 
-The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation, extended by the independently restored #19 deposit on 2026-08-31, inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#18 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#19 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#18 resolve to their recorded source commits; #6 through #18 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all eighteen deposits.
-- Keepsakes #1–#18 retain their assigned numbers and directories.
+- Git bundles #1–#19 resolve to their recorded source commits; #6 through #19 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all nineteen deposits.
+- Keepsakes #1–#19 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
