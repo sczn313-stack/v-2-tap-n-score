@@ -98,13 +98,21 @@
         metadata: { source: "ops-governed-v1" }
       };
       const body = JSON.stringify(payload);
-      if (navigator.sendBeacon && navigator.sendBeacon(EVENT_ENDPOINT, new Blob([body], { type: "text/plain;charset=UTF-8" }))) return;
-      if (window.fetch) window.fetch(EVENT_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-        keepalive: true
-      }).catch(() => {});
+      const beaconFallback = () => {
+        if (navigator.sendBeacon) navigator.sendBeacon(EVENT_ENDPOINT, new Blob([body], { type: "text/plain;charset=UTF-8" }));
+      };
+      if (window.fetch) {
+        window.fetch(EVENT_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true
+        }).then(response => {
+          if (!response.ok) beaconFallback();
+        }).catch(beaconFallback);
+        return;
+      }
+      beaconFallback();
     } catch (_) {
       // Operational telemetry never affects the shooter workflow.
     }

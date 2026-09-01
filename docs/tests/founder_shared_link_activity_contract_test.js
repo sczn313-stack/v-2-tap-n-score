@@ -22,6 +22,7 @@ assert(opsJs.includes('params.get("ref")'), "shared-link ref is captured from th
 assert(opsJs.includes("CAMPAIGN_PATTERN"), "campaign identifiers are bounded before storage");
 assert(opsJs.includes("sessionStorage.setItem(CAMPAIGN_SESSION_KEY"), "campaign survives same-origin journey transitions");
 assert(!opsJs.includes("email") && !opsJs.includes("shooterName"), "telemetry does not collect personal fields");
+assert(opsJs.indexOf("window.fetch(EVENT_ENDPOINT") < opsJs.indexOf("beaconFallback();\n    } catch"), "telemetry uses reliable fetch before beacon fallback");
 
 assert(shoot.includes("window.SCZN3Ops.recordTstStarted()"), "LET THE TARGET TALK records TST start");
 assert(shoot.includes('status === "completed"') && shoot.includes("window.SCZN3Ops.recordTstCompleted()"), "completed PLAYER records TST completion");
