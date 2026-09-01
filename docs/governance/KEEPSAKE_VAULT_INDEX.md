@@ -341,15 +341,31 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Privacy boundary:** Aggregate bounded campaign attribution and anonymous progression only. Existing SCZN3 incoming evidence/preservation remains unchanged and authoritative under its existing owners.
 - **Relationship:** Production successor to #18 and current recommended shared-link recipient-activity recovery floor. Roll back to #18 to remove only the delivery/packaging corrections, or to #17 to remove shared-link recipient tracking entirely.
 
+### Keepsake #20 — Equipment Library User-Data Preservation
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · FORWARD-EXPANSION PROOF FLOOR
+- **Purpose / capability proven:** Existing shooter-owned Equipment Profile V2 data remains intact and usable under an additive M4-representative equipment catalog/schema expansion. The proof covers stable identity/label, shooter photo, governed equipment identity/configuration, optic and ammunition facts, active selection, exact reopen, preserved SEC/session relationship, edit/resave, applicable-session inheritance, and 390px use.
+- **Source commit:** `fbe89dadf720acdd4aba528005433f4bf9a623e6`
+- **Parent continuity floor:** Snapshot 16 / `7567b9a550375c403cbd3850523074cc46538186`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_020_Equipment_Library_User_Data_Preservation/`
+- **Archive:** `SCZN3_KEEP_020_EQUIPMENT_LIBRARY_USER_DATA_PRESERVATION_fbe89da.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_020_EQUIPMENT_LIBRARY_USER_DATA_PRESERVATION_fbe89da.zip`
+- **SHA-256:** `363bc45d5f35aba560dde6ca96d545106e5530c7494c92506361fc28379c8875`
+- **Size:** `113860421` bytes
+- **Restore:** Clone the embedded bundle, check out exact source commit `fbe89da`, then run `Deposit_020_Equipment_Library_User_Data_Preservation/VERIFY_PRESERVATION.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — independent bundle clone at the exact source commit; focused forward-expansion browser proof, Episode 58 Equipment Profile V2/V1 migration regressions, and Gate 2 data-only admission/inheritance regressions passed.
+- **Boundary:** This proves additive forward compatibility. Any future destructive migration remains responsible for preserving the same shooter-owned data invariant before admission.
+- **Relationship:** Capability-proof successor to Snapshot 16. Keepsake #19 remains the live shared-link production recovery floor; #20 is the Equipment Library forward-data-preservation proof to inherit during M4/catalog work.
+
 ## Physical-vault reconciliation
 
-The 2026-08-30 Two-Homes validation, extended by the independently restored #19 deposit on 2026-08-31, inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation, extended by the independently restored #19 and #20 deposits on 2026-08-31, inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#19 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#20 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#19 resolve to their recorded source commits; #6 through #19 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all nineteen deposits.
-- Keepsakes #1–#19 retain their assigned numbers and directories.
+- Git bundles #1–#20 resolve to their recorded source commits; #6 through #20 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all twenty deposits.
+- Keepsakes #1–#20 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
