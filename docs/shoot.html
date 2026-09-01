@@ -183,6 +183,7 @@ window.addEventListener("error", event => {
 <script src="ops.js?v=founder-shared-link-v1"></script>
 <script src="self_teaching_player.js?v=episode59-founder-player-lock-1"></script>
 <script src="baker_talking_demo_session.js?v=episode59-real-sec-vault-1"></script>
+<script src="m4_talking_lesson.js?v=episode60-m4-teaching-1"></script>
 <script>
 const beginExperienceProcessing = (id, message, trigger, scope) => SCZN3Actions.begin({ id, message, trigger, scope });
 const finishExperienceProcessing = (operationId, succeeded = true) => SCZN3Actions.finish(operationId, succeeded);
@@ -433,6 +434,13 @@ function isBakerSampleEvidence(evidence = activeEvidence()) {
   return isBaker100YardSession()
     && !!evidence
     && String(evidence.assetRole || "") === "registered-reference-target";
+}
+
+function isM4TalkingLessonEvidence(evidence = activeEvidence()) {
+  return !!(
+    window.SCZN3M4TalkingLesson
+    && SCZN3M4TalkingLesson.isEligible(activeTargetProfileId(), evidence)
+  );
 }
 
 function smartTargetTalkObservationDuration(count, choreography = SMART_TARGET_TALK_CHOREOGRAPHY) {
@@ -3044,6 +3052,9 @@ function renderEvidencePreview(image) {
   const preview = document.getElementById("targetEvidencePreview");
   const evidence = image && image.dataUrl ? image : null;
   if (!isBakerSampleEvidence(evidence)) stopBakerSampleDemo();
+  if (!isM4TalkingLessonEvidence(evidence) && window.SCZN3M4TalkingLesson) {
+    SCZN3M4TalkingLesson.stop();
+  }
   if (precisionTapController) {
     precisionTapController.destroy();
     precisionTapController = null;
@@ -3088,12 +3099,20 @@ function renderEvidencePreview(image) {
         <div class="marker-layer" id="markerLayer"></div>
       </div>
       ${isBakerSampleEvidence(evidence) ? bakerSampleDemoMarkup() : ""}
+      ${isM4TalkingLessonEvidence(evidence) ? SCZN3M4TalkingLesson.markup() : ""}
     </div>
     <div class="evidence-meta evidence-status-stack"><div class="target-intel-stack" id="resultsGrid">${targetIntelStackHtml()}</div></div>
   `;
   bindDistanceControl();
   bindGuidanceCard();
   bindBakerSampleDemo();
+  if (isM4TalkingLessonEvidence(evidence)) {
+    SCZN3M4TalkingLesson.bind({
+      root: document.getElementById("workspaceStageShell"),
+      host: document.getElementById("smartTargetPlayerHost"),
+      config: window.SCZN3_M4_CONFIG
+    });
+  }
   const precisionTapViewport = document.getElementById("precisionTapViewport");
   const markSurface = document.getElementById("markSurface");
   const targetImage = markSurface.querySelector("img");

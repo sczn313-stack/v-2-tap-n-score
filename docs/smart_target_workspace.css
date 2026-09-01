@@ -174,6 +174,117 @@
   pointer-events:none;
 }
 
+.m4-talking-lesson-layer{
+  position:absolute;
+  z-index:27;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.m4-talking-lesson-scene{position:absolute;inset:0}
+
+.target-page .m4-talking-lesson-start{
+  position:absolute;
+  top:13%;
+  right:5%;
+  left:5%;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:46px;
+  border:1px solid #ffdb68;
+  border-radius:12px;
+  background:linear-gradient(145deg,#f6d05a 0%,#dfa00f 56%,#bd7800 100%);
+  color:#161005;
+  font:950 clamp(14px,2.8vw,21px)/1 Arial,sans-serif;
+  letter-spacing:.035em;
+  text-shadow:0 1px 0 rgba(255,246,198,.62);
+  pointer-events:auto;
+  cursor:pointer;
+  touch-action:manipulation;
+  box-shadow:inset 0 1px 0 rgba(255,247,204,.82),inset 0 -2px 0 rgba(104,59,0,.24),0 10px 28px rgba(0,0,0,.38),0 0 20px rgba(235,174,37,.24);
+  animation:m4-target-talk-breathe 2.8s ease-in-out infinite;
+}
+
+.target-page .m4-talking-lesson-start:hover,
+.target-page .m4-talking-lesson-start:focus-visible{
+  filter:saturate(1.08) brightness(1.035);
+  transform:translateY(-2px);
+}
+
+.target-page .m4-talking-lesson-start:focus-visible{outline:3px solid #fff7d5;outline-offset:3px}
+.target-page .m4-talking-lesson-start:active{transform:translateY(1px) scale(.992)}
+.target-page .m4-talking-lesson-start[hidden]{display:none!important}
+
+.m4-lesson-callout{
+  position:absolute;
+  top:5%;
+  left:50%;
+  display:grid;
+  width:min(88%,500px);
+  gap:4px;
+  padding:10px 13px;
+  border:1px solid rgba(217,150,11,.84);
+  border-radius:10px;
+  background:rgba(8,9,8,.91);
+  color:#fff;
+  text-align:center;
+  transform:translateX(-50%);
+  box-shadow:0 8px 22px rgba(0,0,0,.34);
+}
+
+.m4-lesson-callout strong{color:#f4c64f;font-size:clamp(16px,3.5vw,25px);letter-spacing:.065em}
+.m4-lesson-callout span{font-size:clamp(11px,2vw,15px);font-weight:800;line-height:1.3}
+.m4-lesson-callout.is-action-guidance{background:linear-gradient(145deg,#f6d05a 0%,#dfa00f 58%,#bd7800 100%);color:#171005}
+.m4-lesson-callout.is-action-guidance strong,.m4-lesson-callout.is-action-guidance span{color:#171005}
+
+.m4-lesson-feature-highlight{
+  position:absolute;
+  left:var(--m4-lesson-x);
+  top:var(--m4-lesson-y);
+  width:clamp(76px,17vw,124px);
+  aspect-ratio:1;
+  border:5px solid rgba(255,220,91,.98);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,229,137,.24) 0 28%,rgba(255,211,82,.5) 29% 38%,rgba(244,198,79,.16) 39% 58%,transparent 59%);
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 4px rgba(255,214,80,.22),inset 0 0 18px rgba(255,221,110,.28);
+  filter:drop-shadow(0 0 20px rgba(255,211,82,.98));
+}
+
+.m4-lesson-feature-highlight::before,.m4-lesson-feature-highlight::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  background:rgba(255,222,112,.92);
+  transform:translate(-50%,-50%);
+}
+
+.m4-lesson-feature-highlight::before{width:82%;height:3px}
+.m4-lesson-feature-highlight::after{width:3px;height:82%}
+.m4-lesson-feature-highlight.is-active{animation:m4-lesson-feature-heartbeat 1s ease-in-out infinite}
+
+.workspace-stage-shell.is-player-paused .m4-talking-lesson-layer *{animation-play-state:paused!important}
+
+@keyframes m4-target-talk-breathe{
+  0%,100%{box-shadow:inset 0 1px 0 rgba(255,247,204,.82),0 10px 28px rgba(0,0,0,.38),0 0 15px rgba(235,174,37,.18)}
+  50%{box-shadow:inset 0 1px 0 rgba(255,247,204,.9),0 11px 30px rgba(0,0,0,.4),0 0 27px rgba(235,174,37,.38)}
+}
+
+@keyframes m4-lesson-feature-heartbeat{
+  0%,100%{opacity:.66;transform:translate(-50%,-50%) scale(.72)}
+  36%{opacity:1;transform:translate(-50%,-50%) scale(1.42)}
+  66%{opacity:.9;transform:translate(-50%,-50%) scale(.94)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .target-page .m4-talking-lesson-start,.m4-lesson-feature-highlight.is-active{animation:none}
+}
+
 .baker-sample-watermark{
   position:absolute;
   top:45%;
