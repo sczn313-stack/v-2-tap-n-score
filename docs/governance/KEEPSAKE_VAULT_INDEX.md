@@ -341,7 +341,7 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Privacy boundary:** Aggregate bounded campaign attribution and anonymous progression only. Existing SCZN3 incoming evidence/preservation remains unchanged and authoritative under its existing owners.
 - **Relationship:** Production successor to #18 and current recommended shared-link recipient-activity recovery floor. Roll back to #18 to remove only the delivery/packaging corrections, or to #17 to remove shared-link recipient tracking entirely.
 
-### Keepsake #20 — Equipment Library User-Data Preservation
+### Keepsake #20 — Equipment Library — Shooter Data Survives Updates
 
 - **Status:** IMMUTABLE · RESTORE VERIFIED · FORWARD-EXPANSION PROOF FLOOR
 - **Purpose / capability proven:** Existing shooter-owned Equipment Profile V2 data remains intact and usable under an additive M4-representative equipment catalog/schema expansion. The proof covers stable identity/label, shooter photo, governed equipment identity/configuration, optic and ammunition facts, active selection, exact reopen, preserved SEC/session relationship, edit/resave, applicable-session inheritance, and 390px use.
@@ -357,15 +357,31 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Boundary:** This proves additive forward compatibility. Any future destructive migration remains responsible for preserving the same shooter-owned data invariant before admission.
 - **Relationship:** Capability-proof successor to Snapshot 16. Keepsake #19 remains the live shared-link production recovery floor; #20 is the Equipment Library forward-data-preservation proof to inherit during M4/catalog work.
 
+### Keepsake #21 — Printer-Recipient Campaign
+
+- **Status:** HOLD · IMMUTABLE · RESTORE VERIFIED · NO OUTREACH AUTHORIZED
+- **Purpose / capability proven:** Preserves the current 12-printer Baker-comparable market evidence and reproducible calculation as the bounded evidence floor for a future printer-recipient campaign. It does not set pricing, authorize printer contact, manufacture recipient activity, negotiate terms, or change target availability.
+- **Source commit:** `b0ceee3e6bbc4fcff1f02a30be82969a51390dfb`
+- **Parent continuity floor:** Snapshot 16 / `7567b9a550375c403cbd3850523074cc46538186`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_021_Printer_Recipient_Campaign/`
+- **Archive:** `SCZN3_KEEP_021_PRINTER_RECIPIENT_CAMPAIGN_HOLD_b0ceee3.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_021_PRINTER_RECIPIENT_CAMPAIGN_HOLD_b0ceee3.zip`
+- **SHA-256:** `6d1cae11042d0c9f4efc446ae281a85381ccd95bb5d8877e66643b147aa69f4c`
+- **Size:** `113880122` bytes
+- **Restore:** Extract the canonical ZIP, clone the embedded bundle, check out exact evidence commit `b0ceee3`, then run `Deposit_021_Printer_Recipient_Campaign/VERIFY_CAMPAIGN_EVIDENCE.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — canonical ZIP freshly extracted; embedded bundle independently cloned at exact source commit; all 12 printer identities, sources, normalization rules, and fee-hypothesis calculations passed.
+- **Boundary:** **HOLD.** Commercial facts are time-sensitive and must be refreshed when necessary. Separate Founder authorization is required before contact, campaign execution, pricing policy, negotiation, or deployment.
+- **Relationship:** Evidence successor to the Snapshot 16 P-OS baseline. It does not supersede the production recovery floor in Keepsake #19 or the Equipment Library proof in #20.
+
 ## Physical-vault reconciliation
 
-The 2026-08-30 Two-Homes validation, extended by the independently restored #19 and #20 deposits on 2026-08-31, inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, and #21 deposits through 2026-09-01, inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#20 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#21 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#20 resolve to their recorded source commits; #6 through #20 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all twenty deposits.
-- Keepsakes #1–#20 retain their assigned numbers and directories.
+- Git bundles #1–#21 resolve to their recorded source commits; #6 through #21 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all twenty-one deposits.
+- Keepsakes #1–#21 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 

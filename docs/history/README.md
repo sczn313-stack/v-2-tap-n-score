@@ -12,6 +12,7 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
+- [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](./snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md)
 - [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](./snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md)
 - [Snapshot 16 checkpoint](../../CHECKPOINTS/SCZN3_SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION_2026-08-31/CHECKPOINT.md)
 - [Snapshot 16 restore point](../../CHECKPOINTS/SCZN3_SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION_2026-08-31/RESTORE_POINT.md)
@@ -29,7 +30,8 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current episode continuity
 
-- Episode 59 — **I KNOW THIS SHOOTER** is active and production-proven; formal closeout remains open.
+- [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
+- Episode 60 — **M4: LET THE TARGET TALK** is active; implementation has not begun.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
@@ -37,11 +39,12 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Latest closed episode
 
-- [Episode 58 — Equipment Library](./episodes/EPISODE_58_EQUIPMENT_LIBRARY.md) is Founder Approved, closed, archived, and locked.
+- [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is the latest Founder-approved closed episode.
+- [Episode 58 — Equipment Library](./episodes/EPISODE_58_EQUIPMENT_LIBRARY.md) remains closed, archived, and locked.
 - [Episode 58 Closeout Readiness Reconciliation](./episodes/EPISODE_58_CLOSEOUT_READINESS_RECONCILIATION.md) is the current handoff; the [Episode 58 New-Agent Handoff](./episodes/EPISODE_58_NEW_AGENT_HANDOFF.md) preserves the Snapshot 12 starting point.
 - [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md) is the starting evidence baseline.
 - [Snapshot 12 — Episode 58 Equipment Library Continuity Baseline](./snapshots/SNAPSHOT_012_EPISODE_58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE.md) locks the Founder-approved Episode 58 starting context.
-- [Snapshot 13 — Episode 58 Equipment Library Closure](./snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md) locks the final Episode 58 implementation and evidence state. Episode 59 is now active under Snapshot 16. Survey remains not Founder Approved.
+- [Snapshot 13 — Episode 58 Equipment Library Closure](./snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md) locks the final Episode 58 implementation and evidence state. Episode 59 is closed under Snapshot 17; Episode 60 is active. Survey remains not Founder Approved.
 
 ## Evidence policy
 

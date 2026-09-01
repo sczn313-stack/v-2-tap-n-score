@@ -25,11 +25,12 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 56 | The Shortest Correct Mental Model | 2026-08-18 through 2026-08-19 | [Locked record](./EPISODE_56_SHORTEST_CORRECT_MENTAL_MODEL.md) | CLOSED / ARCHIVED / LOCKED |
 | Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
 | Episode 58 | Equipment Library | 2026-08-23 through 2026-08-24 | [Locked record](./EPISODE_58_EQUIPMENT_LIBRARY.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
-| Episode 59 | I KNOW THIS SHOOTER | 2026-08-31 continuity lock | [Snapshot 16](../snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md) | ACTIVE — production-proven; formal closeout open |
+| Episode 59 | I KNOW THIS SHOOTER | 2026-08-30 through 2026-09-01 | [Closed record](./EPISODE_59_I_KNOW_THIS_SHOOTER.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
+| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 | [Snapshot 17](../snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md) | ACTIVE — implementation not begun |
 
 ## Episode records
 
-Episodes 55–58 are closed, archived, and locked. Episode 59 — I KNOW THIS SHOOTER is active and production-proven under Snapshot 16; formal closeout remains open. Survey remains outside Founder approval.
+Episodes 55–59 are closed, archived, and locked. Episode 60 — M4: LET THE TARGET TALK is active under Snapshot 17; implementation has not begun. Survey remains outside Founder approval.
 
 ### First Stable Zeroing Pipeline
 

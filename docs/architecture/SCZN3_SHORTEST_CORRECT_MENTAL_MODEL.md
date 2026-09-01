@@ -2,9 +2,9 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.7 — Founder Approved / LOCKED
-**Current through:** 2026-08-31
-**Status:** Episode 59 — I KNOW THIS SHOOTER is active and production-proven; formal closeout remains open
+**Version:** 1.8 — Founder Approved / LOCKED
+**Current through:** 2026-09-01
+**Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -19,19 +19,19 @@
 
 | State | Current truth |
 |---|---|
-| Active episode | **Episode 59 — I KNOW THIS SHOOTER** — production-proven; formal closeout remains open |
-| Last closed episode | **Episode 58 — Equipment Library** — closed, archived, and locked |
-| Next reserved episode | **Episode 60 — M4 OET**, after Episode 59 formal closeout |
-| Episode Registry | PASS — 59 continuous slots; Episode 58 locked; Episode 59 active; Episode 60 reserved |
+| Active episode | **Episode 60 — M4: LET THE TARGET TALK** — implementation not begun |
+| Last closed episode | **Episode 59 — I KNOW THIS SHOOTER** — closed, archived, and locked |
+| Next reserved episode | Not assigned |
+| Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 59 production-proven floor; Shared Links recipient-activity tracking live; formal closeout not yet performed |
+| Current development | Episode 60 opening floor; M4 implementation not begun |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production |
-| Latest checkpoint | `SCZN3_SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION_2026-08-31` |
+| Latest locked snapshot | Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor |
+| Latest checkpoint | `SCZN3_EP59_CLOSURE_EP60_OPENING_FLOOR_2026-09-01` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Complete Episode 59 formal closeout. M4 OET follows Episode 59.** |
+| Next active priority | **Bring M4 through the inherited Talking Smart Target and real-shooter road. Do not re-solve conquered behavior.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -621,7 +621,29 @@ Shared-link telemetry is additive. It does not replace, restrict, or collect the
 
 The current production-proven recovery floor is **Keepsake #19 — Shared Links — Recipient Activity Tracking — Production Proven**. Two Homes remains authoritative: Home 1 owns immutable executable artifacts; Home 2 is the version-controlled map. Keepsakes are working recovery tools, not souvenirs. Preserve before risky production work and inherit known-good capability instead of rediscovering it.
 
-Episode 59 remains open only for formal closeout. Do not reopen settled Baker, Talking Smart Target, Precision Tap, PLAYER, registration, SEC, Equipment Profile, Vault, or availability architecture.
+Episode 59 is Founder Approved, closed, archived, and locked under Snapshot 17. Do not reopen settled Baker, Talking Smart Target, Precision Tap, PLAYER, registration, SEC, Equipment Profile, Vault, availability, Shared Links, or Equipment Library preservation architecture.
+
+## 11.1 Episode 60 — M4: LET THE TARGET TALK
+
+Episode 60 inherits the working Episode 59 platform. Its job is to bring the M4 Smart Target through the same complete standard, not to rebuild Talking Smart Target.
+
+Inherited and immutable unless contradictory authority and Founder direction require otherwise:
+
+- Precision Tap and physical-evidence visibility;
+- governed Target Image Registration and claim-proportional sufficiency;
+- Talking Smart Target choreography and PLAYER;
+- photo acquisition and source-photo observation anchoring;
+- backend-owned correction/result authority;
+- confirmation evidence;
+- Save → Universal SEC → populated Equipment Profile → Ballistic Vault → exact reopen;
+- production proxy/routing and availability locks;
+- V1/legacy subject continuity and shooter-owned Equipment Library data preservation.
+
+M4 already has target assets, OET/Profile data, M4 runtime/SEC surfaces, a military equipment registry, and a 10/10 backend authority suite. It remains COMING SOON publicly. M4 Equipment Library work is limited to truthful data required by the experience and must inherit the #20 preservation invariant.
+
+The inherited front-sight evidence discrepancy remains explicit: the locked registry carries `1.5 MOA`, while later evidence describes approximately `1.75 MOA`. Do not select or patch either value locally. Resolve only through the governed equipment/configuration owner.
+
+> **Do not re-solve conquered behavior. Retrieve it.**
 
 ## 12. Do Not Redo
 
@@ -721,6 +743,7 @@ Primary current records:
 - [Snapshot 13 — Episode 58 Equipment Library Closure](../history/snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md)
 - [Snapshot 15 — Episode 59 Final Founder Audit Lock](../history/snapshots/SNAPSHOT_015_EPISODE_59_FINAL_FOUNDER_AUDIT_LOCK.md)
 - [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](../history/snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md)
+- [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](../history/snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md)
 - [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md)
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
