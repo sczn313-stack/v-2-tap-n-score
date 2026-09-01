@@ -14,6 +14,7 @@ const publicFiles = [
   "shoot.html",
   "sec.html",
   "records.html",
+  "ops.html",
   "target-experience.html",
   "target-experience.css",
   "target_execution_runtime.js",

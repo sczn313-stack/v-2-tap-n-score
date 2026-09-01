@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SCZN3 Operations</title>
 <link rel="stylesheet" href="styles.css" />
-<script src="ops.js?v=ops-v3-0623"></script>
+<script src="ops.js?v=founder-shared-link-v1"></script>
 <style>
   :root {
     --ops-bg: #070706;
@@ -324,7 +324,7 @@
     }
 
     .ops-flow {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       align-items: stretch;
     }
 
@@ -340,7 +340,7 @@
       grid-column: span 2;
     }
 
-    .ops-filters { grid-template-columns: minmax(220px,.7fr) minmax(0,1.3fr); align-items: end; }
+    .ops-filters { grid-template-columns: repeat(2, minmax(220px, 1fr)); align-items: end; }
     .ops-filter-context { grid-column: 1 / -1; }
     .ops-conversion-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
     .ops-diagnostics-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
@@ -376,6 +376,12 @@
 
   <section class="ops-filters" aria-label="Operations filters">
     <div class="ops-filter-group">
+      <label for="opsCampaignFilter">Shared link</label>
+      <select class="ops-product-select" id="opsCampaignFilter">
+        <option value="all">All shared links</option>
+      </select>
+    </div>
+    <div class="ops-filter-group">
       <label for="opsProductFilter">Product</label>
       <select class="ops-product-select" id="opsProductFilter">
         <option value="all">All Products</option>
@@ -401,7 +407,15 @@
       <strong class="ops-flow-value" id="opsArrivals">Unavailable</strong>
     </article>
     <article class="ops-flow-step">
-      <span class="ops-flow-name">Session Starts</span>
+      <span class="ops-flow-name">TST Starts</span>
+      <strong class="ops-flow-value" id="opsTstStarted">Unavailable</strong>
+    </article>
+    <article class="ops-flow-step">
+      <span class="ops-flow-name">TST Completed</span>
+      <strong class="ops-flow-value" id="opsTstCompleted">Unavailable</strong>
+    </article>
+    <article class="ops-flow-step">
+      <span class="ops-flow-name">Real Tap-n-Score</span>
       <strong class="ops-flow-value" id="opsSessionsStarted">Unavailable</strong>
     </article>
     <article class="ops-flow-step">
@@ -413,7 +427,7 @@
       <strong class="ops-flow-value" id="opsSessionsSaved">Unavailable</strong>
     </article>
     <article class="ops-flow-step">
-      <span class="ops-flow-name">Returning Visitors</span>
+      <span class="ops-flow-name">Returned</span>
       <strong class="ops-flow-value" id="opsReturnShooters">Unavailable</strong>
     </article>
   </section>
@@ -436,7 +450,7 @@
   <details class="ops-diagnostics">
     <summary>Raw telemetry diagnostics</summary>
     <div class="ops-diagnostics-grid">
-      <article class="ops-section"><h2 class="ops-section-title">Referrals <span>Arrival source</span></h2><div class="ops-list" id="opsReferrals"></div></article>
+      <article class="ops-section"><h2 class="ops-section-title">Shared Links <span>Anonymous campaign</span></h2><div class="ops-list" id="opsReferrals"></div></article>
       <article class="ops-section"><h2 class="ops-section-title">Target Attribution <span>Raw</span></h2><div class="ops-list" id="opsRawTargets"></div></article>
       <article class="ops-section"><h2 class="ops-section-title">Regions <span>Timezone</span></h2><div class="ops-list" id="opsRegions"></div></article>
     </div>
@@ -445,8 +459,9 @@
   <p class="ops-note">If operations monitoring fails, shooter workflow continues. Counts sourced from live SCZN3 OPS telemetry.</p>
 </main>
 <script>
-const OPS_SUMMARY_ENDPOINT = "https://sczn3-authority.onrender.com/api/ops/summary";
+const OPS_SUMMARY_ENDPOINT = "/api/ops/summary";
 const opsState = {
+  campaign: new URLSearchParams(window.location.search).get("campaign") || "all",
   product: "all",
   window: "all",
   timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
@@ -510,14 +525,26 @@ function renderProductOptions(filters) {
   select.value = opsState.product;
 }
 
+function renderCampaignOptions(summary) {
+  const select = document.getElementById("opsCampaignFilter");
+  if (!select) return;
+  const campaigns = Object.keys(summary && summary.sources && summary.sources.campaigns || {}).sort();
+  if (opsState.campaign !== "all" && !campaigns.includes(opsState.campaign)) campaigns.unshift(opsState.campaign);
+  select.innerHTML = ["all", ...campaigns.filter(value => value !== "all")]
+    .map(value => `<option value="${value}">${value === "all" ? "All shared links" : value}</option>`)
+    .join("");
+  select.value = opsState.campaign;
+}
+
 function renderFilterContext(filters) {
   if (!filters) return setText("opsFilterContext", "Governed interval unavailable");
   const productLabel = opsState.productLabels.get(filters.product) || "Unavailable product";
+  const campaignLabel = filters.campaign === "all" ? "All shared links" : filters.campaign;
   const end = filters.endAt ? new Date(filters.endAt).toLocaleString() : "Unavailable";
   const interval = filters.startAt
     ? `${new Date(filters.startAt).toLocaleString()} – ${end}`
     : `All recorded telemetry through ${end}`;
-  setText("opsFilterContext", `${productLabel} · ${interval} · ${filters.timeZone}`);
+  setText("opsFilterContext", `${campaignLabel} · ${productLabel} · ${interval} · ${filters.timeZone}`);
 }
 
 function renderOperationalFailures(failures, unavailableTelemetry) {
@@ -543,10 +570,13 @@ function renderOps(summary) {
   const isLive = !!(summary && summary.ok);
 
   renderProductOptions(summary && summary.filters);
+  renderCampaignOptions(summary);
   renderFilterContext(summary && summary.filters);
   renderOperationalFailures(summary && summary.operationalFailures, summary && summary.unavailableTelemetry);
 
   setText("opsArrivals", formatNumber(totals.arrivals));
+  setText("opsTstStarted", formatNumber(totals.tstStarts));
+  setText("opsTstCompleted", formatNumber(totals.tstCompletions));
   setText("opsSessionsStarted", formatNumber(totals.sessionStarts));
   setText("opsShowResults", formatNumber(totals.showResults));
   setText("opsSessionsSaved", formatNumber(totals.sessionsSaved));
@@ -576,6 +606,7 @@ async function loadOps() {
     const query = new URLSearchParams({
       window: opsState.window,
       product: opsState.product,
+      campaign: opsState.campaign,
       timeZone: opsState.timeZone
     });
     const response = await fetch(`${OPS_SUMMARY_ENDPOINT}?${query}`, { cache: "no-store" });
@@ -592,6 +623,11 @@ async function loadOps() {
 
 document.getElementById("opsProductFilter").addEventListener("change", event => {
   opsState.product = event.target.value;
+  loadOps();
+});
+
+document.getElementById("opsCampaignFilter").addEventListener("change", event => {
+  opsState.campaign = event.target.value;
   loadOps();
 });
 

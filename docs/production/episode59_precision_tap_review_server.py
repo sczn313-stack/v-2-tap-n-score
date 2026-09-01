@@ -9,7 +9,7 @@ import time
 from copy import deepcopy
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 DOCS = Path(__file__).resolve().parents[1]
 BACKEND = DOCS / "backend"
@@ -51,6 +51,48 @@ class ReviewStore:
 
 
 STORE = ReviewStore()
+OPS_EVENTS = []
+OPS_LOCK = threading.Lock()
+
+
+def review_ops_summary(query):
+    campaign = query.get("campaign", ["all"])[0]
+    with OPS_LOCK:
+        events = [event for event in OPS_EVENTS if campaign == "all" or event.get("campaign", "direct") == campaign]
+    event_keys = {
+        "arrival": "arrivals", "pageView": "pageViews", "tstStart": "tstStarts",
+        "tstComplete": "tstCompletions", "sessionStart": "sessionStarts",
+        "showResults": "showResults", "sessionSaved": "sessionsSaved", "returnShooter": "returnShooters",
+    }
+    totals = {key: 0 for key in event_keys.values()}
+    for event_type, key in event_keys.items():
+        totals[key] = len({event.get("arrival_id") for event in events if event.get("event_type") == event_type and event.get("arrival_id")})
+    campaigns = {}
+    for event in OPS_EVENTS:
+        if event.get("event_type") == "arrival":
+            name = event.get("campaign", "direct")
+            campaigns.setdefault(name, set()).add(event.get("arrival_id"))
+    campaign_counts = {name: len(values) for name, values in campaigns.items()}
+    return {
+        "ok": True,
+        "status": "local_review",
+        "totals": totals,
+        "funnel": {
+            "arrived": totals["arrivals"], "startedTst": totals["tstStarts"],
+            "completedTst": totals["tstCompletions"], "startedRealTapNScore": totals["sessionStarts"],
+            "reachedResults": totals["showResults"], "savedSession": totals["sessionsSaved"],
+            "returned": totals["returnShooters"],
+        },
+        "conversionPercentages": {}, "operationalFailures": [], "productActivity": {},
+        "unavailableTelemetry": {"returningVisitors": False, "unattributedArrivals": 0},
+        "sources": {"campaigns": campaign_counts, "referrals": campaign_counts, "targets": {}, "regions": {}},
+        "filters": {
+            "timeWindow": query.get("window", ["all"])[0], "product": "all", "campaign": campaign,
+            "timeZone": query.get("timeZone", ["UTC"])[0], "startAt": None,
+            "endAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "productOptions": [{"id": "all", "label": "All Products"}],
+        },
+    }
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -118,6 +160,9 @@ class Handler(SimpleHTTPRequestHandler):
         if request_path == "/health":
             self._send_json(200, {"ok": True, "service": "episode59-precision-tap-review"})
             return
+        if request_path == "/api/ops/summary":
+            self._send_json(200, review_ops_summary(parse_qs(urlparse(self.path).query)))
+            return
         path_parts = [part for part in request_path.split("/") if part]
         if (
             (path_parts and path_parts[0] in self.BLOCKED_STATIC_ROOTS)
@@ -125,18 +170,6 @@ class Handler(SimpleHTTPRequestHandler):
             or any(".BEFORE_" in part or part.endswith("~") for part in path_parts)
         ):
             self.send_error(404)
-            return
-        if request_path == "/ops.js":
-            source_path = Path(self.translate_path(request_path))
-            body = source_path.read_text(encoding="utf-8").replace(
-                "https://sczn3-authority.onrender.com/api/ops/event",
-                "/api/ops/event",
-            ).encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-Type", "text/javascript; charset=utf-8")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
             return
         super().do_GET()
 
@@ -172,7 +205,14 @@ class Handler(SimpleHTTPRequestHandler):
                 self._send_json(200, register_target_image(payload))
                 return
             if path == "/api/ops/event":
-                self._send_json(200, {"ok": True, "localReviewOnly": True})
+                event_type = payload.get("event_type") or payload.get("eventType")
+                arrival_id = payload.get("arrival_id") or payload.get("arrivalId")
+                campaign = payload.get("campaign") or "direct"
+                with OPS_LOCK:
+                    duplicate = any(event_type == "arrival" and item.get("event_type") == "arrival" and item.get("arrival_id") == arrival_id for item in OPS_EVENTS)
+                    if not duplicate:
+                        OPS_EVENTS.append({"event_type": event_type, "arrival_id": arrival_id, "campaign": campaign})
+                self._send_json(200, {"ok": True, "localReviewOnly": True, "stored": not duplicate})
                 return
             self._send_json(404, {"ok": False, "reason": "not_found"})
         except SessionAuthorityError as error:

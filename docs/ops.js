@@ -2,7 +2,12 @@
   "use strict";
 
   const ARRIVAL_SESSION_KEY = "SCZN3_OPS_ARRIVAL_ID";
-  const EVENT_ENDPOINT = "https://sczn3-authority.onrender.com/api/ops/event";
+  const CAMPAIGN_SESSION_KEY = "SCZN3_OPS_CAMPAIGN";
+  const VISITOR_RETURN_KEY = "SCZN3_OPS_LAST_VISIT";
+  const EVENT_DEDUPE_PREFIX = "SCZN3_OPS_EVENT_";
+  const EVENT_ENDPOINT = "/api/ops/event";
+  const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9_-]{0,63}$/;
+  const RETURN_GAP_MS = 30 * 60 * 1000;
 
   function pagePath() {
     return window.location && window.location.pathname ? window.location.pathname.toLowerCase() : "";
@@ -31,6 +36,29 @@
     }
   }
 
+  function campaignId() {
+    try {
+      const params = new URLSearchParams(window.location.search || "");
+      const incoming = String(params.get("ref") || "").trim().toLowerCase();
+      if (incoming && CAMPAIGN_PATTERN.test(incoming)) window.sessionStorage.setItem(CAMPAIGN_SESSION_KEY, incoming);
+      const stored = String(window.sessionStorage.getItem(CAMPAIGN_SESSION_KEY) || "").trim().toLowerCase();
+      return CAMPAIGN_PATTERN.test(stored) ? stored : "direct";
+    } catch (_) {
+      return "direct";
+    }
+  }
+
+  function shouldReportOnce(eventType) {
+    try {
+      const key = `${EVENT_DEDUPE_PREFIX}${arrivalId()}_${eventType}`;
+      if (window.sessionStorage.getItem(key) === "1") return false;
+      window.sessionStorage.setItem(key, "1");
+      return true;
+    } catch (_) {
+      return true;
+    }
+  }
+
   function activeSession() {
     try {
       return window.SCZN3M4 && SCZN3M4.read && SCZN3M4.KEYS
@@ -54,9 +82,10 @@
     } : {};
   }
 
-  function report(eventType, session) {
+  function report(eventType, session, options = {}) {
     try {
       if (isPulsePage()) return;
+      if (options.once && !shouldReportOnce(eventType)) return;
       const source = session || activeSession();
       const sessionId = source && (source.id || source.sessionId || source.sessionNumber);
       const payload = {
@@ -64,6 +93,7 @@
         arrival_id: arrivalId() || undefined,
         session_id: sessionId ? String(sessionId) : undefined,
         path: pagePath(),
+        campaign: campaignId(),
         ...productIdentity(source),
         metadata: { source: "ops-governed-v1" }
       };
@@ -82,13 +112,32 @@
 
   function recordLinkOpen() {
     report("pageView");
-    report("arrival");
+    report("arrival", null, { once: true });
+    try {
+      const currentArrival = arrivalId();
+      const previous = JSON.parse(window.localStorage.getItem(VISITOR_RETURN_KEY) || "null");
+      const now = Date.now();
+      if (previous && previous.arrivalId !== currentArrival && Number.isFinite(previous.lastSeenAt) && now - previous.lastSeenAt >= RETURN_GAP_MS) {
+        report("returnShooter", null, { once: true });
+      }
+      window.localStorage.setItem(VISITOR_RETURN_KEY, JSON.stringify({ arrivalId: currentArrival, lastSeenAt: now }));
+    } catch (_) {}
   }
 
-  function recordSessionStarted(session) { report("sessionStart", session); }
-  function recordShowResults(_authorityPackage) { report("showResults"); }
-  function recordSessionSaved(session) { report("sessionSaved", session); }
+  function recordTstStarted() { report("tstStart", null, { once: true }); }
+  function recordTstCompleted() { report("tstComplete", null, { once: true }); }
+  function recordSessionStarted(session) { report("sessionStart", session, { once: true }); }
+  function recordShowResults(_authorityPackage) { report("showResults", null, { once: true }); }
+  function recordSessionSaved(session) { report("sessionSaved", session, { once: true }); }
 
-  window.SCZN3Ops = { recordLinkOpen, recordSessionStarted, recordShowResults, recordSessionSaved };
+  window.SCZN3Ops = {
+    recordLinkOpen,
+    recordTstStarted,
+    recordTstCompleted,
+    recordSessionStarted,
+    recordShowResults,
+    recordSessionSaved,
+    campaignId
+  };
   recordLinkOpen();
 })();

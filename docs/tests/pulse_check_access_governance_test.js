@@ -25,17 +25,20 @@ for (const page of ["index.html", "matrix.html", "shoot.html", "records.html", "
   assert(!html.includes('href="ops.html"'), `${page} omits Pulse Check from public navigation`);
 }
 
-assert(!opsJs.includes("localStorage"), "device-local telemetry totals are removed");
-assert(!opsJs.includes("returnShooter"), "ungoverned return-shooter identity is removed");
+assert(!opsJs.includes("SCZN3_OPS_TOTAL") && !opsJs.includes("localFallbackSummary"), "device-local telemetry totals remain removed");
+assert(opsJs.includes("SCZN3_OPS_LAST_VISIT") && opsJs.includes("RETURN_GAP_MS"), "anonymous return detection uses a bounded local visit marker");
+assert(opsJs.includes('report("returnShooter"'), "return activity is reported without personal identity");
 assert(!opsJs.includes("normalizeTarget") && !opsJs.includes("targetSource"), "legacy target-name attribution is removed");
 assert(opsJs.includes("publisher_route_id") && opsJs.includes("product_route_id") && opsJs.includes("catalog_entry_id"), "events carry governed product identity");
 assert(store.includes("resolve_product_route"), "backend resolves product identity through the governed catalog");
 assert(store.includes('target_source = "Unattributed"'), "missing product identity is not guessed");
 assert(opsHtml.includes("SCZN3 Operations") && !opsHtml.includes("GSSF Operations"), "Operations remains the stable founder cockpit rather than a product dashboard");
 assert(opsHtml.includes('id="opsProductFilter"') && opsHtml.includes('id="opsWindowFilter"'), "Operations exposes product and time controls");
+assert(opsHtml.includes('id="opsCampaignFilter"'), "Operations exposes the shared-link campaign filter");
+assert(opsHtml.includes("TST Starts") && opsHtml.includes("TST Completed") && opsHtml.includes("Real Tap-n-Score"), "Operations exposes the live TST-era funnel");
 assert(opsHtml.includes("Today") && opsHtml.includes("This Week") && opsHtml.includes("This Month") && opsHtml.includes("This Year") && opsHtml.includes("All Time"), "all governed time increments are available");
 assert(opsHtml.includes("Raw telemetry diagnostics") && opsHtml.includes("<details"), "raw telemetry is secondary and collapsed by default");
-assert(opsHtml.includes("Returning Visitors") && opsHtml.includes("Unavailable"), "ungoverned return identity remains unavailable");
+assert(opsHtml.includes("Returned") && opsJs.includes("RETURN_GAP_MS"), "anonymous return activity is measured without creating shooter identity");
 assert(opsHtml.includes("summary.conversionPercentages"), "Operations displays backend-produced conversions");
 assert(opsHtml.includes("summary.productActivity") && opsHtml.includes("summary.unavailableTelemetry"), "primary product intelligence separates governed activity from unavailable attribution");
 

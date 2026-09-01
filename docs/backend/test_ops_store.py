@@ -21,8 +21,14 @@ class FakeCursor:
             self.rowcount = self.database.insert(params)
             self.result = []
             return
+        if "select event_type, count(distinct arrival_id)" in normalized:
+            self.result = self.database.count_distinct_arrivals_by("event_type", params)
+            return
         if "select event_type, count(*)" in normalized:
             self.result = self.database.count_by("event_type", params)
+            return
+        if "select referral_source, count(distinct arrival_id)" in normalized:
+            self.result = self.database.count_distinct_arrivals_by("referral_source", params, arrivals_only=True)
             return
         if "select referral_source, count(*)" in normalized:
             self.result = self.database.count_arrival_by("referral_source", params)
@@ -79,6 +85,8 @@ class FakeDatabase:
                 continue
             if params.get("product") and event.get("target_source") != params["product"]:
                 continue
+            if params.get("campaign") and event.get("referral_source") != params["campaign"]:
+                continue
             matches.append(event)
         return matches
 
@@ -97,6 +105,18 @@ class FakeDatabase:
             key = event.get(field) or "Unknown"
             counts[key] = counts.get(key, 0) + 1
         return sorted(counts.items())
+
+    def count_distinct_arrivals_by(self, field, params=None, arrivals_only=False):
+        buckets = {}
+        for event in self.matching_events(params):
+            if arrivals_only and event.get("event_type") != "arrival":
+                continue
+            arrival_id = event.get("arrival_id")
+            if not arrival_id:
+                continue
+            key = event.get(field) or "Unknown"
+            buckets.setdefault(key, set()).add(arrival_id)
+        return sorted((key, len(values)) for key, values in buckets.items())
 
 
 def assert_equal(actual, expected, label):
@@ -159,7 +179,39 @@ def test_summary_totals_return_correct_counts():
     assert_equal(summary["totals"]["sessionStarts"], 1, "session starts total")
     assert_equal(summary["totals"]["showResults"], 1, "show results total")
     assert_equal(summary["totals"]["sessionsSaved"], 1, "sessions saved total")
-    assert_equal(summary["totals"]["returnShooters"], None, "return visitors remain unavailable")
+    assert_equal(summary["totals"]["returnShooters"], 0, "return visitors measured zero")
+
+
+def test_shared_link_funnel_is_anonymous_and_campaign_filterable():
+    db = FakeDatabase()
+    event_types = ["arrival", "tstStart", "tstComplete", "sessionStart", "showResults", "sessionSaved"]
+    for event_type in event_types:
+        event = sample_event(event_type, "shared-visitor-1")
+        event["campaign"] = "founder-test-1"
+        record_event(event, database_url_override="postgresql://test", connect_fn=db.connect)
+    returned = sample_event("returnShooter", "shared-visitor-2")
+    returned["campaign"] = "founder-test-1"
+    record_event(returned, database_url_override="postgresql://test", connect_fn=db.connect)
+    summary = summarize_events(campaign_filter="founder-test-1", database_url_override="postgresql://test", connect_fn=db.connect)
+    assert_equal(summary["funnel"], {
+        "arrived": 1,
+        "startedTst": 1,
+        "completedTst": 1,
+        "startedRealTapNScore": 1,
+        "reachedResults": 1,
+        "savedSession": 1,
+        "returned": 1,
+    }, "shared-link funnel")
+    assert_equal(summary["sources"]["campaigns"], {"founder-test-1": 1}, "campaign arrival bucket")
+
+
+def test_campaign_identifier_is_bounded_and_contains_no_personal_data():
+    accepted, error = validate_event({**sample_event(), "campaign": "Founder-Test-1"})
+    assert_equal(error, None, "safe campaign accepted")
+    assert_equal(accepted["referral_source"], "founder-test-1", "campaign normalized")
+    rejected, error = validate_event({**sample_event(), "campaign": "Ronnie Seay <private@example.com>"})
+    assert_equal(rejected, None, "personal-data-shaped campaign rejected")
+    assert_equal(error, "invalid campaign identifier", "unsafe campaign refusal")
 
 
 def test_only_governed_product_identity_is_attributed():
@@ -171,7 +223,7 @@ def test_only_governed_product_identity_is_attributed():
     event.pop("catalogEntryId")
     record_event(event, database_url_override="postgresql://test", connect_fn=db.connect)
     summary = summarize_events(database_url_override="postgresql://test", connect_fn=db.connect)
-    assert_equal(summary["sources"]["referrals"], {"Deferred": 2}, "referral bucket deferred")
+    assert_equal(summary["sources"]["referrals"], {"direct": 2}, "unshared arrivals use direct campaign")
     assert_equal(summary["sources"]["targets"], {"Unattributed": 1, "gssf-ac1-public-route-v1": 1}, "governed target bucket")
     assert_equal(summary["productActivity"], {"gssf-ac1-public-route-v1": 1}, "primary product activity contains governed identity only")
     assert_equal(summary["unavailableTelemetry"]["unattributedArrivals"], 1, "unattributed activity remains explicit")
@@ -275,6 +327,8 @@ def run():
         test_missing_database_url_returns_unavailable,
         test_duplicate_arrival_id_does_not_double_count_arrival,
         test_summary_totals_return_correct_counts,
+        test_shared_link_funnel_is_anonymous_and_campaign_filterable,
+        test_campaign_identifier_is_bounded_and_contains_no_personal_data,
         test_only_governed_product_identity_is_attributed,
         test_mismatched_product_identity_is_rejected,
         test_ops_failure_does_not_affect_authority_package,
