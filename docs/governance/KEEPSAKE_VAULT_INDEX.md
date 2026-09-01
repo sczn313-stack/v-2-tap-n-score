@@ -2,9 +2,9 @@
 
 Status: **ACTIVE — FOUNDER APPROVED**
 
-Index version: **1.7**
+Index version: **1.8**
 
-Last reconciled against the Master Keepsake Vault: **2026-08-31**
+Last reconciled against the Master Keepsake Vault: **2026-09-01**
 
 ## The Two Homes
 
@@ -37,6 +37,8 @@ Recovery rule:
 **Keepsake #19 — Shared Links — Recipient Activity Tracking — Production Proven** is the current recommended production frontend recovery floor. It preserves the live shared-link funnel, reliable event delivery, and the protected Baker/Talking Smart Target production-road assets at `df2eef7`.
 
 **Keepsake #8 — Baker Talking Smart Target Final Founder Audit** remains the complete Founder-approved Episode 59 Baker audit rollback floor. It contains the exact final Founder-audit candidate, the complete approved Baker teaching road, the reusable PLAYER integration, and the proven real Baker operational road. **Keepsake #7 — Talking Smart Target Capability** remains the current inheritance floor for teaching another Smart Target how to talk without dismantling Baker.
+
+**Keepsake #22 — M4: Let the Target Talk — Victory #1** is the current Founder-approved Episode 60 M4 teaching-layer floor. It preserves the governed M4 lesson, universal PLAYER inheritance, isolated teaching state, and non-mutating ADD PHOTO handoff at exact product commit `b2abde1`. It does not replace the production recovery floor in #19 or activate M4 publicly.
 
 **Keepsake #9 — Baker Post-Lock Production Routing Patch** is the current recommended deployable Baker commit. It adds only the exact governed Baker 100 Yard product destination and the shared product-first / publisher-fallback route above Keepsake #8. Production rollback returns to Keepsake #8.
 
@@ -373,15 +375,31 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Boundary:** **HOLD.** Commercial facts are time-sensitive and must be refreshed when necessary. Separate Founder authorization is required before contact, campaign execution, pricing policy, negotiation, or deployment.
 - **Relationship:** Evidence successor to the Snapshot 16 P-OS baseline. It does not supersede the production recovery floor in Keepsake #19 or the Equipment Library proof in #20.
 
+### Keepsake #22 — M4: Let the Target Talk — Victory #1
+
+- **Status:** FOUNDER APPROVED · IMMUTABLE · RESTORE VERIFIED · EPISODE 60 VICTORY #1
+- **Purpose / capability proven:** Preserves the exact governed M4 LET THE TARGET TALK narration/choreography, inherited universal PLAYER behavior, isolated M4 teaching state, and non-mutating ADD PHOTO handoff personally approved by Founder. Founder verdict: **“Yup. It talks.”**
+- **Source commit:** `b2abde1dac8c7de335ebeef3c34e8591f1cba1aa`
+- **Parent continuity floor:** Episode 59 closure receipt / `bfa56a3ea00bb79ceffb58d6c5bf1521f8296488`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_022_M4_Let_The_Target_Talk_Victory_1/`
+- **Archive:** `SCZN3_KEEP_022_M4_LET_THE_TARGET_TALK_VICTORY_1_b2abde1.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_022_M4_LET_THE_TARGET_TALK_VICTORY_1_b2abde1.zip`
+- **SHA-256:** `f0bd96f7f1e6641984f195d930d64fd601dbcb3337450ae3d012297913721fcc`
+- **Size:** `113898074` bytes
+- **Restore:** Extract the canonical ZIP, clone the embedded bundle, check out exact product commit `b2abde1`, then run `Deposit_022_M4_Let_The_Target_Talk_Victory_1/VERIFY_VICTORY_1.sh` against the restored repository.
+- **Restore verification:** PASS — canonical ZIP integrity, fresh extraction, complete bundle, independent clone, exact detached checkout, focused M4 lesson, universal PLAYER, Episode 59 Baker/Precision Tap, availability, M4 SEC, M4 Authority 10/10, mechanical-testability, and Netlify build gates all passed.
+- **Boundary:** Locks Victory #1 only. M4 remains COMING SOON; no deployment, Baker change, full M4 road proof, or 1.5/1.75 MOA decision is included.
+- **Relationship:** Episode 60 teaching-layer successor to the Snapshot 17 opening floor; inherits the reusable capability from #7. #19 remains the production recovery floor; #22 becomes the recoverable M4 Victory #1 floor.
+
 ## Physical-vault reconciliation
 
-The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, and #21 deposits through 2026-09-01, inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, #21, and #22 deposits through 2026-09-01, inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#21 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#22 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#21 resolve to their recorded source commits; #6 through #21 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all twenty-one deposits.
-- Keepsakes #1–#21 retain their assigned numbers and directories.
+- Git bundles #1–#22 resolve to their recorded source commits; #6 through #22 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all twenty-two deposits.
+- Keepsakes #1–#22 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
