@@ -305,15 +305,32 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Restore verification:** PASS — fresh archive extraction and independent bundle clone at the exact source commit; processing, Precision Tap, PLAYER, Netlify build, and restored public-bundle assertions passed.
 - **Relationship:** Frontend production successor to #16. Roll frontend back to #16 to remove only this exact-reopen correction, or to #8 for the complete Founder-approved Baker floor.
 
+### Keepsake #18 — Founder Shared-Link Activity Dashboard
+
+- **Status:** IMMUTABLE · RESTORE VERIFIED · NOT YET DEPLOYED
+- **Purpose / capability proven:** Minimum anonymous shared-link funnel for the live Talking Smart Target era: ARRIVED → STARTED TST → COMPLETED TST → STARTED REAL TAP-N-SCORE → REACHED RESULTS → SAVED SESSION → RETURNED. Adds bounded `?ref=` campaign attribution, distinct anonymous-arrival counting, and the smallest useful Founder dashboard without changing the Baker/TST shooter road.
+- **Source commit:** `3fbc750855f5d64559a337aadcfcf12dbc0003a3`
+- **Parent production-record floor:** `ad9878900dca4433cd0ffb7bbadc7fa4e0b538f1`
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_018_Founder_Shared_Link_Activity_Dashboard/`
+- **Archive:** `SCZN3_KEEP_018_FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_3fbc750.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_018_FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_3fbc750.zip`
+- **SHA-256:** `79d8f561e3c9ef74d16ef0c5331de8df6251c597684a367b6efb6642625bd0e1`
+- **Size:** `113852807` bytes
+- **Restore:** Clone the embedded bundle, check out the exact source commit, then run `Deposit_018_Founder_Shared_Link_Activity_Dashboard/VERIFY_DASHBOARD.sh`; see `README.md`, `VALIDATION.md`, and `RESTORE_PROOF.md`.
+- **Restore verification:** PASS — canonical ZIP freshly extracted; embedded bundle independently cloned at the exact source commit; shared-link and access-governance contracts passed; Netlify build produced the Founder dashboard and both same-origin OPS routes.
+- **Privacy boundary:** Bounded aggregate campaign labels and anonymous arrival/session identifiers only. No names, email addresses, photographs, target evidence, SEC content, location, or browser fingerprint collection.
+- **Deployment boundary:** Database migration `007_extend_ops_shared_link_funnel.sql` and matching backend/frontend deployment are still required. Keepsake #17 remains the current deployed Baker frontend recovery floor until that bounded production activation is separately authorized and proven.
+- **Relationship:** Observability successor to #17 without modifying Baker/TST behavior. Roll back to #17 to remove only the dashboard/instrumentation candidate, or to #8 for the complete Founder-approved Baker floor.
+
 ## Physical-vault reconciliation
 
 The 2026-08-30 Two-Homes validation inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#17 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#18 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#17 resolve to their recorded source commits; #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16, and #17 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all seventeen deposits.
-- Keepsakes #1–#17 retain their assigned numbers and directories.
+- Git bundles #1–#18 resolve to their recorded source commits; #6 through #18 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all eighteen deposits.
+- Keepsakes #1–#18 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
