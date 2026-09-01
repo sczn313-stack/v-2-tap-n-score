@@ -22,9 +22,24 @@ try {
       SCZN3Ops.recordShowResults({ ok: true });
       SCZN3Ops.recordSessionSaved({ sessionId: "anonymous-browser-session" });
     });
-    await page.waitForTimeout(250);
+    await page.waitForFunction(async activeCampaign => {
+      const response = await fetch(`/api/ops/summary?window=all&campaign=${encodeURIComponent(activeCampaign)}&timeZone=UTC`);
+      if (!response.ok) return false;
+      const summary = await response.json();
+      const funnel = summary && summary.funnel || {};
+      return funnel.arrived === 1
+        && funnel.startedTst === 1
+        && funnel.completedTst === 1
+        && funnel.startedRealTapNScore === 1
+        && funnel.reachedResults === 1
+        && funnel.savedSession === 1;
+    }, campaign, { timeout: 10000 });
     await page.goto(`${origin}/ops.html?campaign=${campaign}`, { waitUntil: "networkidle" });
-    await page.waitForFunction(() => document.querySelector("#opsSystemStatus")?.textContent === "Live");
+    await page.waitForFunction(async () => {
+      await loadOps();
+      const values = Array.from(document.querySelectorAll(".ops-flow-value"), node => node.textContent.trim());
+      return JSON.stringify(values) === JSON.stringify(["1", "1", "1", "1", "1", "1", "0"]);
+    }, null, { timeout: 10000, polling: 250 });
     const values = await page.locator(".ops-flow-value").allTextContents();
     assert.deepEqual(values.map(value => value.trim()), ["1", "1", "1", "1", "1", "1", "0"]);
     assert.equal(await page.locator("#opsCampaignFilter").inputValue(), campaign);

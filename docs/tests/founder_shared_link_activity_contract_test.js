@@ -34,6 +34,9 @@ assert(opsHtml.includes('id="opsCampaignFilter"') && opsHtml.includes("campaign:
 assert(server.includes('campaign_filter=query.get("campaign"'), "summary endpoint accepts campaign filter");
 assert(store.includes("count(distinct arrival_id)"), "funnel counts distinct anonymous arrivals, not raw clicks");
 assert(netlifyBuild.includes('"ops.html"'), "Founder dashboard is included in the production bundle");
+for (const requiredRoadAsset of ["rate_us.js", "equipment_knowledge_registry.js", "sec_reopen_capability.js"]) {
+  assert(netlifyBuild.includes(`"${requiredRoadAsset}"`), `production bundle includes ${requiredRoadAsset}`);
+}
 assert(netlifyConfig.includes('from = "/api/ops/event"') && netlifyConfig.includes('from = "/api/ops/summary"'), "Netlify uses the established same-origin OPS proxy pattern");
 
 console.log("PASS Founder shared-link activity contract");
