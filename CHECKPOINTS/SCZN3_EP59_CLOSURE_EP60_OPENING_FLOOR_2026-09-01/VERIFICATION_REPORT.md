@@ -22,6 +22,18 @@
 
 ## Archive verification
 
-Closure ZIP, internal manifest, bundle, clean extraction, exact commit checkout, and clean Episode 60 worktree proof are recorded after the canonical closure commit.
+- Closure ZIP: `SCZN3_EP59_I_KNOW_THIS_SHOOTER_CLOSURE_2026-09-01.zip`.
+- Size: `237825314` bytes.
+- SHA-256: `94eedfb3a3835d58b946a767c0139a74aa7bd0f35f65f4548efb02527a3af26a` — PASS.
+- ZIP compressed-data integrity: PASS.
+- Internal archive manifest: PASS.
+- Repository file manifest: PASS.
+- Git bundle: complete-history verification PASS.
+- Fresh extraction: `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/SCZN3_EP59_I_KNOW_THIS_SHOOTER_CLOSURE_RESTORE_TEST_2026-09-01/`.
+- Independent bundle clone and detached checkout of `a0376a6317c3e590c2af62f5116062da16904dcb`: PASS.
+- Restored closeout/opening continuity validator: PASS.
+- Restored Target Execution Scale Architecture acceptance: PASS.
+
+The clean Episode 60 worktree proof is recorded after this archive receipt commit.
 
 These qualifications are carried forward honestly and do not override the passing runtime owners or reopen Episode 59 product scope.

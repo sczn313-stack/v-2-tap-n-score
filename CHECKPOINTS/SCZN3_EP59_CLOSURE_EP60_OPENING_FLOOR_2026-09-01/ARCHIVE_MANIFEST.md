@@ -5,6 +5,9 @@
 - Directory: `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/SCZN3_EP59_I_KNOW_THIS_SHOOTER_CLOSURE_2026-09-01/`
 - ZIP: `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/SCZN3_EP59_I_KNOW_THIS_SHOOTER_CLOSURE_2026-09-01.zip`
 - SHA sidecar: same path with `.sha256` suffix.
+- Size: `237825314` bytes.
+- SHA-256: `94eedfb3a3835d58b946a767c0139a74aa7bd0f35f65f4548efb02527a3af26a`.
+- Fresh restore verification: PASS at `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/SCZN3_EP59_I_KNOW_THIS_SHOOTER_CLOSURE_RESTORE_TEST_2026-09-01/`.
 
 ## Required contents
 
