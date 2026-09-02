@@ -33,6 +33,7 @@ Founder-supplied Baker evidence also resolved the Universal MOA branch: `ST-Uni2
 - Founder-supplied Baker product screenshots preserved with SHA-256 receipts.
 - Course-correction governance record and explicit implementation prohibition.
 - Snapshot 21 and checkpoint records.
+- Snapshot 22 adaptive-routing amendment and checkpoint records.
 
 ## Honest unresolved gaps
 
@@ -51,6 +52,8 @@ The remaining gaps are evidence/authority work, not permission to build around t
 
 No target, TSTT runtime, QR, registration, correction, Home, pricing enforcement, push, or deployment implementation occurred. Victory #2 and Snapshot 20 remain intact. Episode 60 remains active.
 
+After Snapshot 21, the Founder added equipment-adaptive lesson branching and result-adaptive advancement. The target selects the lesson, governed equipment/configuration selects the applicable branch, and governed results select advancement. An unconfirmed result loops through measurement, correction, adjustment, and confirmation rather than advancing automatically. The architecture and all three maps now carry that amendment under Snapshot 22.
+
 ## Records
 
 - Governance: `docs/governance/EPISODE60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02.md`
@@ -59,5 +62,8 @@ No target, TSTT runtime, QR, registration, correction, Home, pricing enforcement
 - Geometry/product evidence: `docs/authority-evidence/mfam/BAKER_ST_UNI25MMOA_GEOMETRY_COMPARISON.md`
 - Snapshot: `docs/history/snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md`
 - Checkpoint: `CHECKPOINTS/SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02/`
+- Adaptive amendment: `docs/governance/EPISODE60_TSTT_ADAPTIVE_ROUTING_AMENDMENT_2026-09-02.md`
+- Current snapshot: `docs/history/snapshots/SNAPSHOT_022_EPISODE_60_TSTT_ADAPTIVE_ROUTING_AMENDMENT.md`
+- Current checkpoint: `CHECKPOINTS/SCZN3_EP60_TSTT_ADAPTIVE_ROUTING_2026-09-02/`
 
 > **First make TSTT governable. Then make the targets talk and teach.**

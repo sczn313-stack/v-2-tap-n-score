@@ -2,7 +2,7 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.2 — Founder Approved / LOCKED
+**Version:** 2.3 — Founder Approved / LOCKED
 **Current through:** 2026-09-02
 **Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 three-product M/FAM direction and TSTT task-chapter architecture locked; runtime implementation pending |
+| Current development | Episode 60 three-product M/FAM direction and equipment-/result-adaptive TSTT architecture locked; runtime implementation pending |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction |
-| Latest checkpoint | `SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02` |
+| Latest locked snapshot | Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment |
+| Latest checkpoint | `SCZN3_EP60_TSTT_ADAPTIVE_ROUTING_2026-09-02` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Resolve the recorded product, registration, chapter, confirmation, and Universal MOA authority gaps before requesting implementation authorization. All three products remain unimplemented and COMING SOON.** |
+| Next active priority | **Resolve the recorded product, registration, equipment-branch, result-state/confirmation-loop, and Universal MOA authority gaps before requesting implementation authorization. All three products remain unimplemented and COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -671,6 +671,8 @@ Snapshot 20 then implements the reusable Equipment Authority adjustment profiles
 
 TSTT—Talking Smart Target Training—is now the target-specific training layer. Each Smart Target receives one session organized into complete, task-based chapters. Phone-first controls are Pause, Replay Chapter, Chapters, and Restart Training; there is no 10-second rewind. The progression is **Teach → Rehearse → Shoot → Measure → Adjust → Confirm → Preserve**. TSTT hands into Tap-n-Score at `ADD PHOTO` for registration, Precision Tap, governed correction, confirmation, SEC, and Vault. TSTT explains resolved authority and supports rehearsal; it never invents authority or recalculates a governed result.
 
+Snapshot 22 makes this architecture adaptive: **Target determines the lesson. Equipment determines the branch. Results determine advancement.** Only instruction applicable to the resolved sight/equipment configuration is presented. Confirmation is a governed result gate: an unconfirmed outcome returns through evidence, measurement, correction, adjustment, and confirmation until the applicable authority says confirmed or a narrow hold stops the affected action. Equipment selection and result routing are governed data/content behavior, not target- or equipment-specific application-code branches.
+
 The Year-One 60% SCZN3 / 40% printer allocation applies only to the incremental Smart premium and is preserved as non-binding business architecture, not pricing or an executed contract. Government/institutional value remains an evaluation thesis: measure total cost to confirmed zero through rounds, groups, elapsed time, instructor intervention, and confirmation evidence before claiming savings.
 
 > **Do not re-solve conquered behavior. Retrieve it.**
@@ -737,6 +739,9 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not divide TSTT by arbitrary playback time; chapters are complete shooter-task learning units
 - do not add a 10-second rewind to TSTT; replay operates at the chapter boundary
 - do not let TSTT invent, repair, generalize, or recalculate authority
+- do not present irrelevant sight/equipment instruction after a governed configuration branch resolves
+- do not treat one confirmation group, chapter completion, or playback position as confirmed status
+- do not advance to preservation until applicable Target Authority returns confirmed; loop or fail closed instead
 - do not encode the Year-One premium allocation as mandatory resale pricing or an executed commercial agreement
 - do not claim ammunition or training savings before governed evaluation evidence supports them
 
@@ -789,9 +794,11 @@ Primary current records:
 - [Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock](../history/snapshots/SNAPSHOT_019_EPISODE_60_M_FAM_CONTRACT_LOCK.md)
 - [Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase](../history/snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](../history/snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
+- [Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment](../history/snapshots/SNAPSHOT_022_EPISODE_60_TSTT_ADAPTIVE_ROUTING_AMENDMENT.md)
 - [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md)
 - [TSTT Target-Specific Training Architecture](./TSTT_TARGET_SPECIFIC_TRAINING_ARCHITECTURE.md)
 - [Episode 60 M/FAM / TSTT Course Correction](../history/episodes/EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
+- [Episode 60 TSTT Adaptive Routing Amendment](../governance/EPISODE60_TSTT_ADAPTIVE_ROUTING_AMENDMENT_2026-09-02.md)
 - [Universal MOA Geometry Comparison](../authority-evidence/mfam/BAKER_ST_UNI25MMOA_GEOMETRY_COMPARISON.md)
 - [Equipment Adjustment Profile Speed Purchase](../authority-evidence/mfam/EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md)

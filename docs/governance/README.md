@@ -11,7 +11,9 @@ This index identifies the governing records for implementation control, episode 
 5. [Episode Reconciliation Report](../../governance/episode-registry/EPISODE_RECONCILIATION_REPORT.md) — evidence-backed reconciliation of historical episode references.
 6. [Keepsake Vault Index — Two Homes](./KEEPSAKE_VAULT_INDEX.md) — the Founder-approved artifact-authority/index model, immutable deposit lineage, recovery map, and dual-home preservation rule.
 7. [Episode 60 M/FAM / TSTT Course Correction](./EPISODE60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02.md) — current three-product, standalone Smart Target, TSTT, business-architecture, and implementation-prohibition record.
-8. [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](../history/snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md) — current architecture/governance floor; runtime remains pending.
+8. [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](../history/snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md) — clean pre-amendment architecture/governance floor.
+9. [Episode 60 TSTT Adaptive Routing Amendment](./EPISODE60_TSTT_ADAPTIVE_ROUTING_AMENDMENT_2026-09-02.md) — equipment-selected instruction and result-gated confirmation-loop governance.
+10. [Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment](../history/snapshots/SNAPSHOT_022_EPISODE_60_TSTT_ADAPTIVE_ROUTING_AMENDMENT.md) — current adaptive architecture/governance floor; runtime remains pending.
 9. [Snapshot 20 — Equipment Adjustment Profile Speed Purchase](../history/snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md) — protected implementation floor beneath the course correction.
 10. [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](../history/snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md) — protected M4 governed-road evidence; Home remains inactive.
 11. [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](../history/snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md) — episode-transition continuity floor.
@@ -22,6 +24,8 @@ This index identifies the governing records for implementation control, episode 
 
 - [Episode 60 M/FAM / TSTT course-correction checkpoint](../../CHECKPOINTS/SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02/CHECKPOINT.md)
 - [Episode 60 M/FAM / TSTT restore point](../../CHECKPOINTS/SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02/RESTORE_POINT.md)
+- [Episode 60 TSTT adaptive-routing checkpoint](../../CHECKPOINTS/SCZN3_EP60_TSTT_ADAPTIVE_ROUTING_2026-09-02/CHECKPOINT.md)
+- [Episode 60 TSTT adaptive-routing restore point](../../CHECKPOINTS/SCZN3_EP60_TSTT_ADAPTIVE_ROUTING_2026-09-02/RESTORE_POINT.md)
 - [Episode 60 Victory #2 checkpoint](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/CHECKPOINT.md)
 - [Episode 60 Victory #2 restore point](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/RESTORE_POINT.md)
 - [Snapshot 17 / Episode transition checkpoint](../../CHECKPOINTS/SCZN3_EP59_CLOSURE_EP60_OPENING_FLOOR_2026-09-01/CHECKPOINT.md)

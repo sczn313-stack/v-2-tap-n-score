@@ -2,7 +2,7 @@
 
 Date: 2026-09-02
 
-Status: Founder Approved architecture / proposed chapter maps preserved / runtime implementation pending
+Status: Founder Approved adaptive architecture / proposed chapter maps preserved / runtime implementation pending
 
 ## Purpose
 
@@ -11,6 +11,20 @@ TSTT — **Talking Smart Target Training** — is the target-specific learning l
 > **Teach → Rehearse → Shoot → Measure → Adjust → Confirm → Preserve**
 
 TSTT explains resolved authority. **TSTT never invents authority.**
+
+## Governing adaptive model
+
+> **Target determines the lesson.**
+>
+> **Equipment determines the branch.**
+>
+> **Results determine advancement.**
+
+The exact Smart Target selects the target-specific lesson contract. The shooter's resolved equipment/sight configuration selects only the applicable teaching and adjustment branch inside that lesson. Governed Tap-n-Score results then decide whether the shooter advances, repeats the correction cycle, or stops at a narrow authority/evidence hold.
+
+Adaptation does not transfer authority to TSTT. Target Authority must admit the target/equipment relationship and owns target-specific procedure, applicability, overrides, calculation, execution, and confirmation. Equipment Authority supplies reusable mechanical facts for the resolved configuration. TSTT selects and explains only content supported by those owners.
+
+Equipment branching is governed content/data selection, not permission to create target-ID, SKU, firearm-model, or optic-model application-code branches. A branch may be entered only from resolved equipment identity and configuration. Irrelevant branches are omitted, not played and verbally disclaimed. If no applicable branch resolves, the unsupported instruction fails closed while other truthful target instruction remains available.
 
 ## Chapter contract
 
@@ -22,6 +36,8 @@ A chapter is a complete learning unit organized around a shooter task. Every cha
 - the authority/evidence supporting the instruction;
 - whether live firing occurs;
 - whether control is in TSTT, Tap-n-Score, or a governed handoff between them;
+- its equipment/configuration entry predicate and branch exit/rejoin point, when applicable;
+- the governed result state required to advance, repeat, or stop;
 - the completion condition and safe next action.
 
 Chapter duration follows the task. It is not an arbitrary video segment.
@@ -46,7 +62,33 @@ There is no 10-second rewind control. Rehearsal is chapter-based so the shooter 
 | Target Authority | Exact applicability, printed procedure, target-specific override, geometry, correction calculation, governed execution, and confirmation requirements |
 | Tap-n-Score | Photo acquisition, registration, Precision Tap observations, authoritative request/response presentation, confirmation evidence, SEC, Vault, and exact reopen |
 
-The first live-fire chapter may not begin until required identity, distance, equipment/configuration, target setup, and pre-fire procedures have resolved. If a chapter's required authority is missing, TSTT withholds only the unsupported instruction or action and states what is needed.
+The first live-fire chapter may not begin until required identity, distance, equipment/configuration, target setup, applicable branch, and pre-fire procedures have resolved. If a chapter's required authority is missing, TSTT withholds only the unsupported instruction or action and states what is needed.
+
+## Equipment-adaptive branch contract
+
+1. Resolve the exact sight/optic, firearm relationship, mount/installation, and other configuration facts required by Target Authority.
+2. Ask only for the minimum missing shooter input that materially selects an applicable branch; a saved Equipment Profile may satisfy already-governed facts.
+3. Admit the relationship through Target Authority. Similar names or shared click values do not establish applicability.
+4. Load only the chapters or chapter variants applicable to that configuration. Common target identity, geometry, safety, evidence, and preservation units may be shared.
+5. Rejoin the common governed road at the first state where branch-specific mechanical instruction is no longer required.
+6. Preserve the selected authority identities and branch identity with the session so replay and exact reopen cannot silently change the lesson.
+
+Changing equipment/configuration invalidates any dependent ready-to-fire state and requires branch resolution again. It does not erase separately preserved evidence.
+
+## Result-adaptive advancement contract
+
+Confirmation is a governed decision point, not necessarily the final chapter. After every live group, Tap-n-Score owns evidence registration, measurement, correction calculation, and confirmation classification. TSTT routes from the returned governed state:
+
+| Governed result state | Required TSTT behavior |
+|---|---|
+| Evidence incomplete or insufficient | Return to the evidence task or request the missing governed observation; do not calculate or advance. |
+| Measurable and correction required | Explain the returned correction, enter the applicable equipment adjustment branch, then return to confirmation firing. |
+| Adjustment application not yet acknowledged/recorded | Remain at rehearsal/application; do not imply the correction was made. |
+| Confirmation evidence collected but standard not satisfied | Repeat **Measure → Adjust → Confirm** using the new evidence and newly returned authority result. |
+| Confirmed under the applicable governed standard | Exit the loop and advance to any required target-specific finalization, then Preserve. |
+| Authority unavailable, configuration mismatch, or contradictory evidence | Stop narrowly at the affected action, preserve truthful evidence/state, and state what must be resolved. |
+
+The loop has no arbitrary pass count and no TSTT-authored tolerance. Each pass uses new governed evidence. `PAUSE`, `REPLAY CHAPTER`, `CHAPTERS`, and `RESTART TRAINING` never convert an unconfirmed result into a confirmed one or erase the separately governed loop history.
 
 ## Shared chapter state model
 
@@ -62,7 +104,7 @@ The three maps use the same conceptual states without forcing identical language
 8. `confirm`
 9. `preserve`
 
-TSTT chapter state is not correction authority. Tap-n-Score session state is not video position.
+TSTT chapter state is not correction authority. Tap-n-Score session state is not video position. Chapter order is a graph with governed branches and result gates, not a promise that every shooter watches every chapter exactly once.
 
 ---
 
@@ -82,6 +124,15 @@ Product basis: standalone Baker Smart version derived from conventional `ST-Uni2
 | U8 — Apply the Governed Correction | Desired POI movement, correct control, click count, rotation, and observer view come from the exact resolved row/configuration. | Pause or replay the chapter while physically applying the returned adjustment under range-safe conditions. | Backend Target Authority calculation plus selected Equipment Authority or target-scoped authority. | None | Tap-n-Score returns correction; TSTT explains and supports rehearsal without changing it. |
 | U9 — Fire and Measure Confirmation | A correction is not a confirmed zero. Fire a new group and capture new evidence. | Rehearse the full confirmation loop before firing. | Printed true-range confirmation warning; future target-specific confirmation contract. | **Confirmation group** | TSTT hands back to `ADD PHOTO`; Tap-n-Score registers and measures confirmation. |
 | U10 — Preserve and Continue | Save the evidence, result, applied adjustment, and confirmation outcome for SEC, Equipment Profile relationship, Vault, and exact reopen. | Rehearse where to find the saved SEC and reopen the exact session. | Inherited Universal SEC, Equipment Profile, Ballistic Vault, and exact-reopen contracts. | None | Tap-n-Score owns Save/SEC/Vault; TSTT closes only after preservation status is known. |
+
+### Universal adaptive routing
+
+| Decision point | Governed route |
+|---|---|
+| U3 equipment resolution | Select only an admitted CCO, M150/RCO, M4/M4A1 iron, M16-family iron, or later authority-complete branch. Omit all irrelevant sight instruction. An unresolved/mismatched row cannot advance to U4 or live fire. |
+| U4 control rehearsal | Render the control identity, click scale, rotation, and observer-view content belonging to the resolved branch, then rejoin at U5. |
+| U7 result | If correction is required, route U7 → branch-specific U8 → U9. If evidence is insufficient, return to U6. Only an authoritative confirmed result may route from U9 to U10. |
+| U9 not confirmed | New confirmation evidence routes back through U6/U7 and, when another correction is returned, U8/U9. Repeat until confirmed or narrowly held. |
 
 ### Universal-specific fail-closed condition
 
@@ -106,6 +157,15 @@ Product basis: standalone Baker Smart M4 face derived from the M4 side of conven
 | M4-9 — Confirm | Fire a confirmation group, add a new photo, and measure whether the zero relationship is confirmed. | Rehearse the confirmation evidence loop. | Baker target procedure plus future confirmation sufficiency; Tap-n-Score confirmation authority. | **Confirmation group** | Handoff back to Tap-n-Score for photo, Precision Tap, and confirmation result. |
 | M4-10 — Preserve | Preserve original evidence, correction, applied adjustment, confirmation evidence, and exact session identity. | Locate SEC, Equipment Profile relationship, Vault record, and exact reopen. | Universal SEC, Equipment Profile, Vault, exact-reopen contracts. | None | Tap-n-Score owns preservation; TSTT closes after truthful save status. |
 
+### M4 adaptive routing
+
+| Decision point | Governed route |
+|---|---|
+| M4-1 equipment resolution | Current evidence admits the standard M4/M4A1 detachable-carrying-handle/front-sight-post branch. If a different optic/sight configuration is identified, omit M4-2/M4-4 iron-sight instruction and hold correction/live-fire advancement until Target Authority admits an equipment-appropriate branch. |
+| Admitted equipment branch | Present only its target-applicable setup and control rehearsal, then rejoin at M4-5. Similar equipment names or reusable mechanics alone do not admit the branch. |
+| M4-7 result | If correction is required, route M4-7 → branch-specific M4-8 → M4-9. If evidence is insufficient, return to M4-6. Only an authoritative confirmed result may route from M4-9 to M4-10. |
+| M4-9 not confirmed | Route the new evidence through M4-6/M4-7 and repeat adjustment/confirmation as governed. There is no automatic advance after one confirmation group. |
+
 ---
 
 ## Baker M16A2 25 Meter — proposed TSTT map
@@ -126,6 +186,15 @@ Product basis: standalone Baker Smart M16A2 face derived from the M16A2 side of 
 | A2-10 — Return the Drum to 300 | After the 25-meter zero is complete, rotate the rear elevation drum one click counterclockwise, viewed from above, back to 300. | Replay while safely performing and visually verifying the final drum position. | FM Figure 5-19/Table 5-5; Baker printed finalization procedure; Target Authority owns timing/applicability. | None | TSTT resumes only after a confirmed completion state; it does not declare confirmation itself. |
 | A2-11 — Preserve | Preserve setup, evidence, correction, confirmation, finalization, SEC, equipment relationship, Vault record, and exact reopen identity. | Locate and reopen the saved session. | Universal SEC, Equipment Profile, Vault, exact-reopen contracts. | None | Tap-n-Score owns preservation; TSTT closes after truthful save status. |
 
+### M16A2 adaptive routing
+
+| Decision point | Governed route |
+|---|---|
+| A2-1 equipment resolution | Current evidence admits the standard M16A2 rear-sight/front-sight-post branch. If a different sight/optic configuration is identified, omit A2-2/A2-4 iron-sight instruction and hold correction/live-fire advancement until Target Authority admits an equipment-appropriate branch. |
+| Admitted equipment branch | Present only its target-applicable setup and control rehearsal. The one-click-past-300 setup and later return-to-300 finalization belong only to the admitted standard rear-drum branch. |
+| A2-7 result | If correction is required, route A2-7 → branch-specific A2-8 → A2-9. If evidence is insufficient, return to A2-6. A2-10 requires both authoritative confirmation and applicability of the rear-drum finalization step. |
+| A2-9 not confirmed | Route the new evidence through A2-6/A2-7 and repeat adjustment/confirmation as governed. Only confirmed status exits the loop to applicable finalization and A2-11. |
+
 ## Remaining evidence and authority gaps
 
 ### Shared gaps
@@ -139,6 +208,8 @@ Product basis: standalone Baker Smart M16A2 face derived from the M16A2 side of 
 7. Definition of “confirmed” for each product, including whether and how true-distance confirmation is represented.
 8. Evidence contract for recording whether a shooter actually applied an adjustment versus merely received one.
 9. Institutional evaluation protocol for elapsed time and instructor intervention, including start/stop events and privacy boundaries.
+10. Canonical governed result-state vocabulary and the durable event contract for each loop pass, branch choice, branch change, hold, and exit.
+11. Minimum equipment identity/configuration inputs required to select each branch without asking the shooter for unnecessary data.
 
 ### Universal MOA gaps
 
@@ -147,12 +218,14 @@ Product basis: standalone Baker Smart M16A2 face derived from the M16A2 side of 
 3. Control rotation and observer-view authority for the CCO and M150/RCO rows; the printed click values alone are insufficient.
 4. Resolution of which configurations use reusable Equipment Authority versus the protected target-scoped M4 authority.
 5. Baker physical specimen registration proving the screenshot's same-geometry classification at production scale.
+6. Authority-complete branch definitions and applicability tests for every supported Universal table row.
 
 ### Baker M4 gaps
 
 1. Final single-sided Smart artwork/specimen and QR identity.
 2. Exact production registration and print-tolerance evidence.
 3. Target-specific group/confirmation sufficiency and true-distance confirmation contract.
+4. Whether any non-standard-carry-handle or optic configuration is applicable to this exact target and, if so, its complete branch authority.
 
 ### Baker M16A2 gaps
 
@@ -160,6 +233,7 @@ Product basis: standalone Baker Smart M16A2 face derived from the M16A2 side of 
 2. Exact production registration and print-tolerance evidence.
 3. Target-specific group/confirmation sufficiency and true-distance confirmation contract.
 4. Evidence/state rule proving the rear drum was returned to 300 after completion.
+5. Whether any sight/optic configuration other than the standard M16A2 rear sight is applicable to this exact target and, if so, its complete branch authority and finalization rules.
 
 ## Implementation gate
 

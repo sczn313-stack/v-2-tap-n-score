@@ -1,7 +1,7 @@
 # M/FAM Target Family Contract
 
 Date: 2026-09-02  
-Status: Founder Approved / architecture locked / TSTT course correction incorporated / implementation pending
+Status: Founder Approved / architecture locked / adaptive TSTT amendment incorporated / implementation pending
 
 ## Purpose
 
@@ -87,6 +87,12 @@ The phone-first controls are `PAUSE`, `REPLAY CHAPTER`, `CHAPTERS`, and `RESTART
 
 TSTT explains resolved authority and supports physical rehearsal. It never supplies missing authority or recalculates a governed result. The complete chapter contract and proposed maps live in `TSTT_TARGET_SPECIFIC_TRAINING_ARCHITECTURE.md`.
 
+The adaptive contract is:
+
+> **Target determines the lesson. Equipment determines the branch. Results determine advancement.**
+
+Target Authority must admit the exact equipment relationship before branch-specific instruction operates. TSTT omits irrelevant sight instruction. After firing, governed Tap-n-Score evidence and results decide whether the shooter returns for evidence, enters the applicable correction/adjustment branch, repeats confirmation, stops at a narrow hold, or advances. Confirmation is not inferred from reaching a chapter; only authoritative confirmed status exits the loop toward applicable finalization and preservation.
+
 ## Admission test
 
 Apply these tests in order:
@@ -99,7 +105,8 @@ Apply these tests in order:
 6. Select mechanical authority only when its evidence scope explicitly covers the resolved face and configuration. Otherwise hold correction capability.
 7. Assign QR identity to the exact publisher product and face.
 8. Generate Talking Smart Target language from that face and configuration without borrowing another target's terminology.
-9. Prove the complete governed road and exact reopen before availability.
+9. Prove result routing repeats evidence → measure → adjust → confirm until authoritative confirmation or a narrow governed hold.
+10. Prove the complete governed road and exact reopen before availability.
 
 The allowed classification outcomes are:
 
@@ -118,11 +125,13 @@ The allowed classification outcomes are:
 - Related targets may require different weapon/sight authority.
 - Family membership never grants geometry, mechanics, correction, or availability.
 - Ambiguous identity, face, scale, configuration, or authority cannot enter governed correction.
+- Irrelevant equipment instruction is omitted rather than generalized across branches.
+- Chapter completion or one confirmation group cannot substitute for authoritative confirmed status.
 
 ## Preserved open work
 
 - Baker production artwork and standalone physical specimens are required for final registration and production validation, not architecture construction.
 - Smart-product SKUs and exact QR destinations remain open until Baker participation supplies them.
 - Final observer-view iconography remains open.
-- Target-specific group and confirmation sufficiency, Universal MOA optic-control authority, final TSTT scripts/media, and institutional evaluation protocols remain open.
+- Target-specific group and confirmation sufficiency, canonical loop-result/event contracts, equipment-branch admission, Universal MOA optic-control authority, final TSTT scripts/media, and institutional evaluation protocols remain open.
 - Baker Target Profiles, runtime authority registrations, TSTT runtime, QR destinations, tests, and roads are not implemented by this architecture lock.

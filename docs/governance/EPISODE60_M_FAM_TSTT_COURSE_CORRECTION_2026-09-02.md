@@ -47,6 +47,20 @@ At the governed transition, TSTT hands into:
 
 TSTT may explain and present resolved authority. TSTT never creates, repairs, generalizes, or substitutes authority.
 
+Snapshot 22 adds the governing adaptive model:
+
+> **Target determines the lesson.**
+>
+> **Equipment determines the branch.**
+>
+> **Results determine advancement.**
+
+The shooter's resolved equipment/sight configuration selects only applicable instruction. Irrelevant iron-sight or optic instruction is omitted. Target Authority must admit the equipment relationship before branch-specific instruction or correction may operate.
+
+Confirmation is a result gate, not an assumed terminal chapter. When governed confirmation is not satisfied, TSTT returns through the applicable **Measure → Adjust → Confirm** cycle using new Tap-n-Score evidence. Only an authoritative confirmed result advances to applicable finalization and preservation. Missing evidence, unavailable authority, or a configuration mismatch holds only the affected action and never becomes invented instruction.
+
+Equipment selection and result routing are governed data/content behavior. They do not authorize target-ID, SKU, firearm-model, or optic-model application-code branches.
+
 ## Authority ownership
 
 - Equipment Authority owns reusable mechanical facts.
@@ -103,3 +117,4 @@ This course correction authorizes documentation, chapter architecture, evidence 
 - commercial contract execution.
 
 Victory #2 and Snapshot 20 remain protected floors.
+Snapshot 21 remains the protected pre-amendment architecture floor. Snapshot 22 preserves this adaptive amendment and still authorizes no runtime implementation.

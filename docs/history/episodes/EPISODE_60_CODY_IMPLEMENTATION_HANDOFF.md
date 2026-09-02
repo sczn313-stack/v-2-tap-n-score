@@ -8,13 +8,13 @@ Use the clean Episode 60 worktree created from the Episode 59 closure receipt co
 
 Before implementation:
 
-1. Read SCMM v2.2.
+1. Read SCMM v2.3.
 2. Read Snapshot 17 and the Episode 59 closing record.
 3. Read the Keepsake Vault Index entries for #7, #8, #12, #19, and #20.
 4. Run the existing M4 Authority 10/10 and mechanical-testability gates.
 5. Walk the actual Home-launched M4 experience and return a factual gap ledger.
 
-Before any M/FAM implementation, read SCMM v2.2, Snapshot 21, Snapshot 20, the M/FAM Target Family Contract, the TSTT Target-Specific Training Architecture, all M/FAM authority-evidence records, and the Episode 60 course-correction governance record. Snapshot 20 remains the protected implementation floor; Snapshot 21 is the current architecture/governance floor. Neither authorizes product implementation.
+Before any M/FAM implementation, read SCMM v2.3, Snapshot 22, Snapshot 21, Snapshot 20, the M/FAM Target Family Contract, the TSTT Target-Specific Training Architecture, all M/FAM authority-evidence records, and both Episode 60 TSTT governance records. Snapshot 20 remains the protected implementation floor; Snapshot 21 remains the protected pre-amendment architecture floor; Snapshot 22 is the current architecture/governance floor. None authorizes product implementation.
 
 The current initial lineup is three standalone, single-sided Baker Smart products: Universal MOA 25 Meter, M4 25 Meter, and M16A2 25 Meter. Fort Benning is protected geometry/authority/road evidence, not a fourth commercial product. The double-sided Smart Target concept is retired.
 
@@ -38,6 +38,8 @@ Inherited reference road, not current implementation authorization:
 - Founder personally drove the corrected road and reported **“It works swimmingly well.”** Victory #2 is Founder Approved and locked under Snapshot 18 and its canonical Keepsake. Continue to prohibit Home activation and deployment; any future bounded Episode 60 implementation must begin from the protected floor only after separate Founder authorization.
 - TSTT is the target-specific training layer. Its chapters are complete shooter-task units and use Pause, Replay Chapter, Chapters, and Restart Training; there is no 10-second rewind.
 - TSTT explains resolved authority and hands into Tap-n-Score at governed evidence/execution boundaries. It never invents or recalculates authority.
+- Target determines the lesson; resolved equipment determines the applicable branch; governed results determine advancement. Irrelevant sight instruction is omitted.
+- Confirmation is a governed result gate. Correction → adjustment → confirmation repeats with new evidence until the applicable standard is satisfied or a narrow governed hold stops continuation.
 
 ## Prohibited
 
@@ -48,7 +50,7 @@ Inherited reference road, not current implementation authorization:
 - no frontend scoring/correction authority;
 - no deployment, availability change, or Episode 60 closeout without Founder authority.
 - no double-sided Smart product;
-- no implementation of any of the three Baker products or TSTT runtime until a later Founder-approved implementation specification resolves or explicitly fails closed on Snapshot 21's gap ledger;
+- no implementation of any of the three Baker products or TSTT runtime until a later Founder-approved implementation specification resolves or explicitly fails closed on Snapshot 22's gap ledger;
 - no conversion of the Year-One premium framework into pricing enforcement or an executed contract.
 
 ## Stop condition
