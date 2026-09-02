@@ -17,4 +17,4 @@ Status: Founder Approved / locked; not an episode close
 
 ## Boundary
 
-This snapshot locks the Founder-approved Victory #2 floor. It does not close Episode 60, activate M4 on Home, or authorize deployment. The canonical Keepsake preserves this snapshot and the exact approved product commit.
+This snapshot locks the Founder-approved Victory #2 floor at exact product commit `3f19b88fbd2495bc0e255d60e6f5644af4cbc687`. Keepsake #23 preserves and freshly restore-verifies it. This does not close Episode 60, activate M4 on Home, or authorize deployment.

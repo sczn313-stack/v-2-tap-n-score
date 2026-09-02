@@ -8,5 +8,7 @@ Founder personally drove the corrected M4 road and reported: **“It works swimm
 - [Source lineage](./SOURCE_LINEAGE.md)
 - [Verification report](./VERIFICATION_REPORT.md)
 - [Repository boundary](./REPOSITORY_BOUNDARY.md)
+- [Archive manifest](./ARCHIVE_MANIFEST.md)
+- [Restore point](./RESTORE_POINT.md)
 
 M4 remains COMING SOON. No deployment or Home activation is authorized.

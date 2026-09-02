@@ -25,5 +25,7 @@ The protected road passed the exact Founder photograph at 1440px and 390px, incl
 - Validation: `docs/authority-evidence/m4-mechanical-sight/M4_M16_25M_ZERO_FSP_VALIDATION_REPORT.md`
 - Audit gap: `docs/authority-evidence/m4-mechanical-sight/LEGACY_1_5_AUDIT_LINEAGE_GAP.md`
 - Preservation checkpoint: `CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/`
+- Canonical Keepsake: #23 / `SCZN3_KEEP_023_M4_GOVERNED_ROAD_VICTORY_2_3f19b88.zip`
+- Exact approved product commit: `3f19b88fbd2495bc0e255d60e6f5644af4cbc687`
 
 > **Exact identity → exact authority → governed execution.**

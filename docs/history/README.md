@@ -12,6 +12,9 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
+- [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](./snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md)
+- [Episode 60 Victory #2 checkpoint](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/CHECKPOINT.md)
+- [Episode 60 Victory #2 restore point](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/RESTORE_POINT.md)
 - [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](./snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md)
 - [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](./snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md)
 - [Snapshot 16 checkpoint](../../CHECKPOINTS/SCZN3_SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION_2026-08-31/CHECKPOINT.md)
@@ -31,11 +34,12 @@ This directory is the living historical record for SCZN3. It separates the story
 ## Current episode continuity
 
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
-- Episode 60 — **M4: LET THE TARGET TALK** is active; implementation has not begun.
+- Episode 60 — **M4: LET THE TARGET TALK** is active; Victory #2 is Founder Approved and restore-verified under Keepsake #23. M4 remains COMING SOON.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
 - [Keepsake #19](../governance/KEEPSAKE_VAULT_INDEX.md) is the production-proven frontend recovery floor.
+- [Keepsake #23](../governance/KEEPSAKE_VAULT_INDEX.md) is the canonical M4 Episode 60 Victory #2 development floor.
 
 ## Latest closed episode
 
