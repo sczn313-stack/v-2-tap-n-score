@@ -12,6 +12,9 @@ const publicFiles = [
   "survey.html",
   "matrix.html",
   "shoot.html",
+  "m16a2-tstt.html",
+  "m16a2-tstt.css",
+  "m16a2-tstt.js",
   "sec.html",
   "records.html",
   "ops.html",
@@ -92,6 +95,7 @@ const publicFiles = [
   "authority-evidence/catalog-targets/BAKER_GF_BB_C_PUBLISHER_IMAGE_V1.jpg",
   "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
   "authority-evidence/m4-target-reconstruction/M4_M16_25M_WORKSPACE_PRESENTATION.svg",
+  "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png",
 ];
 
 publicFiles.push(...await collectExecutionContractAssets(root));

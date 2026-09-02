@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 three-product M/FAM direction and equipment-/result-adaptive TSTT architecture locked; runtime implementation pending |
+| Current development | Baker M16A2 standard iron-sight TSTT implemented through pre-fire readiness; Founder/Guinea Pig Ron cold-use pending |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
 | Latest locked snapshot | Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment |
-| Latest checkpoint | `SCZN3_EP60_TSTT_ADAPTIVE_ROUTING_2026-09-02` |
+| Latest checkpoint | `SCZN3_EP60_VICTORY3_GUINEA_PIG_RON_REVIEW_2026-09-02` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Resolve the recorded product, registration, equipment-branch, result-state/confirmation-loop, and Universal MOA authority gaps before requesting implementation authorization. All three products remain unimplemented and COMING SOON.** |
+| Next active priority | **Founder/Guinea Pig Ron cold-use review of the M16A2 pre-fire TSTT candidate. Do not extend into live firing, Tap-n-Score, correction, confirmation, or preservation before that review. All three products remain COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 

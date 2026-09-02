@@ -54,6 +54,8 @@ No target, TSTT runtime, QR, registration, correction, Home, pricing enforcement
 
 After Snapshot 21, the Founder added equipment-adaptive lesson branching and result-adaptive advancement. The target selects the lesson, governed equipment/configuration selects the applicable branch, and governed results select advancement. An unconfirmed result loops through measurement, correction, adjustment, and confirmation rather than advancing automatically. The architecture and all three maps now carry that amendment under Snapshot 22.
 
+After Snapshot 22, the Founder authorized the first bounded implementation: Baker M16A2 standard iron-sight TSTT through **READY TO FIRE YOUR FIRST GROUP**. The local Victory #3 review candidate teaches the exact pre-fire chapters, fails closed for a different sight/optic, and stops before live firing or the Tap-n-Score road. Founder/Guinea Pig Ron cold-use remains pending.
+
 ## Records
 
 - Governance: `docs/governance/EPISODE60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02.md`

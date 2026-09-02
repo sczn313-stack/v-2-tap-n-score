@@ -44,7 +44,7 @@ This directory is the living historical record for SCZN3. It separates the story
 ## Current episode continuity
 
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
-- Episode 60 — **M4: LET THE TARGET TALK** is active under Snapshot 22; Snapshot 21 remains the clean pre-amendment floor, Victory #2 and Snapshot 20 remain protected, the three standalone Baker product direction and equipment-/result-adaptive TSTT architecture are locked, and runtime implementation remains pending. All three products remain COMING SOON.
+- Episode 60 — **M4: LET THE TARGET TALK** is active under Snapshot 22; Snapshot 21 remains the clean pre-amendment floor, Victory #2 and Snapshot 20 remain protected, and the first Baker M16A2 standard iron-sight TSTT is a local Founder-review candidate through pre-fire readiness only. Founder cold-use remains pending. All three products remain COMING SOON.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)

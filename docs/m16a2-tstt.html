@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111713" />
+  <title>Baker M16A2 25 Meter TSTT — SCZN3</title>
+  <meta name="description" content="Founder review build for the governed Baker M16A2 standard iron-sight pre-fire training experience." />
+  <link rel="stylesheet" href="m16a2-tstt.css?v=victory3-1" />
+</head>
+<body>
+  <main class="tstt-shell" id="tsttApp" data-status="waiting">
+    <header class="tstt-header">
+      <div class="brand-lockup" aria-label="SCZN3 Talking Smart Target Training">
+        <span class="brand-mark">SCZN3</span>
+        <span class="brand-product">TALKING SMART TARGET TRAINING</span>
+      </div>
+      <div class="branch-badge"><span aria-hidden="true"></span> STANDARD IRON SIGHTS</div>
+    </header>
+
+    <section class="lesson-stage" aria-labelledby="lessonTitle">
+      <div class="chapter-meta">
+        <span id="chapterNumber">CHAPTER 1 OF 1</span>
+        <span id="chapterTime">TARGET IDENTITY</span>
+      </div>
+      <div class="progress-track" aria-hidden="true"><span id="lessonProgress"></span></div>
+
+      <div class="lesson-copy">
+        <p class="eyebrow" id="chapterEyebrow">BAKER M16A2 • 25 METER</p>
+        <h1 id="lessonTitle">Know the target before you touch the sights.</h1>
+        <p class="lesson-summary" id="lessonSummary">This class is for the Baker M16A2 25 Meter target and the standard M16A2 iron-sight system.</p>
+      </div>
+
+      <div class="visual-stage" id="visualStage" aria-live="polite">
+        <figure class="target-window">
+          <img src="authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png" alt="Baker M16A2 25 Meter zeroing target with a red silhouette and numbered grid" />
+          <figcaption>BAKER ST-M16A2R • M16A2 FACE</figcaption>
+        </figure>
+      </div>
+
+      <div class="task-card" id="taskCard">
+        <span class="task-label">YOUR TASK</span>
+        <strong>Match the title, red M16A2 silhouette, and ±27 / ±10 grid.</strong>
+      </div>
+
+      <div class="chapter-action" id="chapterAction">
+        <button class="primary-action" id="startTraining" type="button">START TRAINING</button>
+      </div>
+    </section>
+
+    <nav class="player-controls" aria-label="TSTT playback controls">
+      <button type="button" data-control="pause" disabled><span class="control-icon" aria-hidden="true">Ⅱ</span><span data-pause-label>PAUSE</span></button>
+      <button type="button" data-control="replay" disabled><span class="control-icon" aria-hidden="true">↺</span><span>REPLAY<br />CHAPTER</span></button>
+      <button type="button" data-control="chapters"><span class="control-icon" aria-hidden="true">☷</span><span>CHAPTERS</span></button>
+      <button type="button" data-control="restart" disabled><span class="control-icon" aria-hidden="true">⟲</span><span>RESTART<br />TRAINING</span></button>
+    </nav>
+  </main>
+
+  <dialog class="chapter-dialog" id="chapterDialog" aria-labelledby="chapterDialogTitle">
+    <div class="dialog-head">
+      <div><span class="eyebrow">DIRECT NAVIGATION</span><h2 id="chapterDialogTitle">Chapters</h2></div>
+      <button type="button" class="dialog-close" data-close-chapters aria-label="Close chapters">×</button>
+    </div>
+    <ol id="chapterList"></ol>
+  </dialog>
+
+  <script src="m16a2-tstt.js?v=victory3-1"></script>
+</body>
+</html>
