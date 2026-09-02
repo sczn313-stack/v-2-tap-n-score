@@ -1,4 +1,4 @@
-(function () {
+(function (global) {
   "use strict";
 
   let vectorSequence = 0;
@@ -397,4 +397,4 @@
     SessionDetails,
     ActionBar
   });
-})();
+})(window);

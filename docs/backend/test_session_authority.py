@@ -239,10 +239,10 @@ def test_m4_standard_setup_uses_exact_proven_axis_authority_and_can_start():
     preparation = prepare_session({"targetId": "m4_25m_zero"}, store, now=NOW)
     standard = preparation["standardSetup"]
     assert standard["adjustmentSystem"] == "M4_IRON_DCH_FSP"
-    assert standard["equipmentAuthorityRecordId"] == "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+    assert standard["equipmentAuthorityRecordId"] == "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
     assert standard["axisAdjustment"] == {
         "windagePerClick": 0.75,
-        "elevationPerClick": 1.5,
+        "elevationPerClick": 1.75,
         "unit": "MOA",
     }
     result = start_session({
@@ -252,7 +252,7 @@ def test_m4_standard_setup_uses_exact_proven_axis_authority_and_can_start():
     assert result["setupMode"] == "standard"
     assert result["sessionMode"] == "official_mission"
     assert result["officialMission"]["status"] == "eligible"
-    assert result["selectedEquipment"]["setupAuthorityId"] == "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+    assert result["selectedEquipment"]["setupAuthorityId"] == "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
 
 
 def test_client_cannot_claim_backend_standard_setup_authority():

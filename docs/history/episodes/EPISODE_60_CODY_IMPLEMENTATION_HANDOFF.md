@@ -30,7 +30,8 @@ First complete road:
 - Equipment Profile preserves only durable M4 equipment/configuration truth.
 - Shooter data must satisfy Keepsake #20 across any additive registry/catalog work.
 - M4 remains COMING SOON until Founder approves a complete live road.
-- The `1.5`/`1.75 MOA` front-sight discrepancy is unresolved; do not choose a winner in UI or local target code.
+- Founder resolved the exact target/configuration scope: `1.75 MOA` governs `m4_25m_zero` plus the standard M4/M4A1 front sight post through `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01`. The verified 2011 Army FM-backed `1.5 MOA` record remains preserved outside this target-scoped selection; its missing referenced validation files are recorded as an audit-lineage gap.
+- Founder personally drove the corrected road and reported **“It works swimmingly well.”** Victory #2 is Founder Approved and locked under Snapshot 18 and its canonical Keepsake. Continue to prohibit Home activation and deployment; build the next bounded Episode 60 Victory from this floor.
 
 ## Prohibited
 

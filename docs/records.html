@@ -78,6 +78,7 @@ const REQUESTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("session") || RECORD
 const SELECTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("selected") || "").trim();
 const HISTORICAL_DETAIL_MODE = Boolean(REQUESTED_RECORD_SESSION_ID);
 const RECORDS_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+let vaultCorrectionVectorSequence = 0;
 const PRESERVED_SEC_ENDPOINT = `${RECORDS_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
 let serverSavedSessions = [];
 let serverTimelineRecords = [];
@@ -937,6 +938,19 @@ function backendRenderedHitCoordinates(pkg) {
   return backendRenderedHitEntries(pkg).map(authorityPoint).filter(Boolean);
 }
 
+function governedCorrectionVectorHtml(pkg) {
+  const governed = pkg && pkg.renderCoordinates && pkg.renderCoordinates.vector;
+  if (!governed || !governed.start || !governed.end) return "";
+  const start = authorityPoint(governed.start);
+  const end = authorityPoint(governed.end);
+  if (!start || !end) return "";
+  const markerId = `vault-governed-correction-arrowhead-${++vaultCorrectionVectorSequence}`;
+  return `<svg class="target-correction-vector vault-governed-correction-vector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Governed correction vector from initial POIB to governed aim point" data-governed-correction-vector="renderCoordinates.vector" data-authority-evidence-hash="${escapeHtml(pkg.evidenceHash || "")}">
+    <defs><marker id="${markerId}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs>
+    <line x1="${start.xPercent}" y1="${start.yPercent}" x2="${end.xPercent}" y2="${end.yPercent}" marker-end="url(#${markerId})"></line>
+  </svg>`;
+}
+
 function authorityVisualForPackage(pkg, { includeAim = true } = {}) {
   if (!pkg || !pkg.renderCoordinates) return "";
   const render = pkg.renderCoordinates;
@@ -951,6 +965,7 @@ function authorityVisualForPackage(pkg, { includeAim = true } = {}) {
     });
     return parts.join("");
   }
+  parts.push(governedCorrectionVectorHtml(pkg));
   const impacts = Array.isArray(render.impacts) ? render.impacts : [];
   impacts.forEach((point, index) => {
     parts.push(markerHtml("history-thumb-impact", point, String(index + 1)));

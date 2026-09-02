@@ -28,7 +28,7 @@ from target_execution_contract import TargetExecutionContractError, TargetExecut
 
 
 PREPARATION_TTL_SECONDS = int(os.environ.get("SCZN3_SESSION_PREPARATION_TTL_SECONDS", "900"))
-M4_STANDARD_EQUIPMENT_AUTHORITY_ID = "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+M4_STANDARD_EQUIPMENT_AUTHORITY_ID = "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
 EQUIPMENT_KNOWLEDGE_REGISTRY_PATH = Path(__file__).resolve().parent / "registries" / "equipment_knowledge_registry.json"
 
 
@@ -56,6 +56,12 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         "targetName": "M4/M16 Series Weapons 25M Zero",
         "targetProfileVersion": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
         "atpId": "m4-25m-zero-atp-v1",
+        "registrationAuthority": {
+            "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": "M4_M16_25M_ZERO_AUTHORITY_v1",
+            "status": "available",
+        },
         "missionIdentity": {
             "missionFamily": "zeroingCorrection",
             "missionId": "M4_25M_300M_ZERO",

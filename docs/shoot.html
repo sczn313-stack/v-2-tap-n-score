@@ -253,7 +253,7 @@ function isFinalizedSession(candidate) {
     && candidate.workflowStage === "validation"
     && sourceIsZeroingSession(candidate)
   ) return false;
-  return !!(candidate && (candidate.savedToSEC === true || candidate.targetDistanceLocked === true || candidate.savedAt));
+  return !!(candidate && (candidate.savedToSEC === true || candidate.savedAt));
 }
 
 if (isFinalizedSession(session)) {
@@ -295,12 +295,12 @@ const DOT_TORTURE_PROFILE_LABELS = {
 };
 const STATIC_TARGET_IDENTITY = {
   m4_25m_zero: {
-    targetName: "M4 Carbine • 25 Meter Zeroing Target",
+    targetName: "M4/M16 Series Weapons 25M Zero",
     targetProfileId: "m4_25m_zero",
     sku: "ST-M16A2/M4",
     vendor: "Baker",
     authority: "M4 Zeroing",
-    product: "M4 Carbine • 25 Meter Zeroing Target",
+    product: "M4/M16 Series Weapons • 25M Zero Target",
     qrId: "ST-M16A2/M4",
     missionFamily: "zeroingCorrection",
     manufacturer: "Baker Targets",
@@ -1709,7 +1709,7 @@ function targetAttributionOverride(source = {}) {
       targetProfileId: "m4_25m_zero",
       mission_family: "zeroingCorrection",
       missionFamilyId: "zeroingCorrection",
-      targetName: "M4 Carbine • 25 Meter Zeroing Target",
+      targetName: "M4/M16 Series Weapons 25M Zero",
       targetFamily: "Military 25 Meter M4 Zeroing Target",
       targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
       targetVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
@@ -1722,7 +1722,7 @@ function targetAttributionOverride(source = {}) {
       opticModel: "M4 Detachable Carry Handle + Front Sight Post",
       opticAdjustmentUnit: "MOA",
       adjustmentSystem: "M4_IRON_DCH_FSP",
-      equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+      equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
     };
   }
   if (isDotTortureProfileId(targetProfileId)) {
@@ -1915,7 +1915,8 @@ function installM4CanonicalEvidence() {
       registrationStatus: "complete",
       registrationAuthoritySource: "governed_m4_workspace_asset",
       registrationAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      canonicalAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4"
+      canonicalAssetSha256: "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
+      presentationAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4"
     };
     session = SCZN3M4.updateActiveSession({ targetEvidenceImage: registeredEvidence }) || session;
     return registeredEvidence;
@@ -1926,12 +1927,13 @@ function installM4CanonicalEvidence() {
     type: "image/svg+xml",
     assetRole: "founder-workspace-presentation-from-physically-validated-reconstruction",
     temporaryDevelopmentAsset: false,
-    productionAuthorityPromotion: false,
+    productionAuthorityPromotion: true,
     physicalValidationStatus: "passed-33-of-33",
     registrationStatus: "complete",
     registrationAuthoritySource: "governed_m4_workspace_asset",
     registrationAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-    canonicalAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
+    canonicalAssetSha256: "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
+    presentationAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
     validatedReconstruction: "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
     canonicalVisualReference: "authority-evidence/m4-target-reconstruction/founder-reference/IMG_2089_ORIGINAL.jpeg",
     rollbackAsset: "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg",
@@ -1940,7 +1942,7 @@ function installM4CanonicalEvidence() {
     publisher: "Baker",
     vendor: "Baker",
     sku: "ST-M16A2/M4",
-    product: "M4 Carbine • 25 Meter Zeroing Target",
+    product: "M4/M16 Series Weapons • 25M Zero Target",
     authority: "M4 Zeroing",
     imageWidthPx: 2550,
     imageHeightPx: 3300,
@@ -5647,7 +5649,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   if (saved) {
     window.setTimeout(() => {
       if (window.SCZN3SECDispatch) {
-        window.location.href = SCZN3SECDispatch.destinationFor(saved);
+        window.location.href = SCZN3SECDispatch.destinationFor(saved, { current: true });
       } else if (isM4AuthoritySession()) {
         window.location.href = "sec.html?v=stay-on-screen-002";
       } else {

@@ -17,6 +17,14 @@ FALLBACK_DOCS = Path(os.environ.get("SCZN3_REVIEW_FALLBACK_DOCS", "")).resolve()
 sys.path.insert(0, str(BACKEND))
 
 from authority_service import build_authority_package  # noqa: E402
+from m4_authority.authority_service import build_authority_package as build_m4_authority  # noqa: E402
+from preserved_sec_store import PreservedSECError, preserve_sec, read_preserved_sec  # noqa: E402
+from sec_reopen_authority import (  # noqa: E402
+    CAPABILITY_HEADER,
+    SECReopenAuthorityError,
+    issue_reopen_capability,
+    verify_reopen_capability,
+)
 from session_authority import SessionAuthorityError, prepare_session, start_session  # noqa: E402
 from target_image_registration_authority import (  # noqa: E402
     TargetImageRegistrationError,
@@ -28,6 +36,7 @@ class ReviewStore:
     def __init__(self):
         self.preparations = {}
         self.sessions = {}
+        self.preserved_secs = {}
 
     def save_preparation(self, record):
         self.preparations[record["tokenHash"]] = deepcopy(record)
@@ -48,6 +57,26 @@ class ReviewStore:
             "response": deepcopy(record["response"]),
         }
         return deepcopy(record)
+
+    def authoritative_target_id(self, session_id):
+        for stored in self.sessions.values():
+            response = stored.get("response") or {}
+            if response.get("authoritativeSessionId") == session_id:
+                return (response.get("target") or {}).get("targetId")
+        return None
+
+    def save(self, record):
+        existing = self.preserved_secs.get(record["sessionId"])
+        if existing and existing["artifactSha256"] != record["artifactSha256"]:
+            raise PreservedSECError("preservation_conflict", "preserved_sec_is_immutable", 409)
+        self.preserved_secs[record["sessionId"]] = deepcopy(record)
+        return deepcopy(record)
+
+    def get(self, session_id):
+        return deepcopy(self.preserved_secs.get(session_id))
+
+    def list(self):
+        return [deepcopy(value) for value in self.preserved_secs.values()]
 
 
 STORE = ReviewStore()
@@ -129,7 +158,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Idempotency-Key")
+        self.send_header("Access-Control-Allow-Headers", f"Content-Type, Idempotency-Key, {CAPABILITY_HEADER}")
         self.send_header("Access-Control-Expose-Headers", "Server-Timing, X-SCZN3-Authority-Received-At")
         self.send_header("Access-Control-Expose-Headers", "Server-Timing, X-SCZN3-Authority-Received-At")
         for name, header_value in (extra_headers or {}).items():
@@ -162,6 +191,17 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if request_path == "/api/ops/summary":
             self._send_json(200, review_ops_summary(parse_qs(urlparse(self.path).query)))
+            return
+        if request_path == "/api/session/sec":
+            try:
+                session_id = parse_qs(urlparse(self.path).query).get("session", [""])[0]
+                claims = verify_reopen_capability(self.headers.get(CAPABILITY_HEADER), session_id)
+                package = read_preserved_sec(session_id, STORE)
+                if claims["artifactSha256"] != package["artifactSha256"]:
+                    raise SECReopenAuthorityError("preserved_sec_reopen_capability_invalid")
+                self._send_json(200, package)
+            except (PreservedSECError, SECReopenAuthorityError) as error:
+                self._send_json(error.http_status, error.payload)
             return
         path_parts = [part for part in request_path.split("/") if part]
         if (
@@ -201,8 +241,18 @@ class Handler(SimpleHTTPRequestHandler):
                     "X-SCZN3-Authority-Received-At": received_at,
                 })
                 return
+            if path == "/api/authority/m4":
+                self._send_json(200, build_m4_authority(payload))
+                return
             if path == "/api/authority/target-image-registration":
                 self._send_json(200, register_target_image(payload))
+                return
+            if path == "/api/session/sec":
+                package = preserve_sec(payload, STORE)
+                package["reopenCapability"] = issue_reopen_capability(
+                    package["session"]["sessionId"], package["artifactSha256"]
+                )
+                self._send_json(201, package)
                 return
             if path == "/api/ops/event":
                 event_type = payload.get("event_type") or payload.get("eventType")
@@ -218,6 +268,8 @@ class Handler(SimpleHTTPRequestHandler):
         except SessionAuthorityError as error:
             self._send_json(error.http_status, error.payload)
         except TargetImageRegistrationError as error:
+            self._send_json(error.http_status, error.payload)
+        except (PreservedSECError, SECReopenAuthorityError) as error:
             self._send_json(error.http_status, error.payload)
         except (json.JSONDecodeError, UnicodeDecodeError):
             self._send_json(400, {"ok": False, "reason": "invalid_json"})

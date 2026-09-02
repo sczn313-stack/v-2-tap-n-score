@@ -7,7 +7,7 @@
   const BAKER_M4_IDENTITY = Object.freeze({
     vendor: "Baker",
     sku: BAKER_M4_SKU,
-    product: "M4 Carbine • 25 Meter Zeroing Target",
+    product: "M4/M16 Series Weapons • 25M Zero Target",
     authority: "M4 Zeroing",
     qrUrl: BAKER_M4_QR_URL,
     qrAsset: "assets/BAKER_ST-M16A2-M4_QR.png",
@@ -20,7 +20,7 @@
     missionFamilyId: "zeroingCorrection",
     targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
     targetVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-    targetName: "M4 Carbine • 25 Meter Zeroing Target",
+    targetName: "M4/M16 Series Weapons 25M Zero",
     targetFamily: "Military 25 Meter M4 Zeroing Target",
     targetDistance: "25 m",
     targetDistanceValue: "25",

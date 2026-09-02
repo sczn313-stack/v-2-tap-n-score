@@ -58,7 +58,7 @@
       missionLabel: "25 Meter Zero",
       aliases: Object.freeze(["M4_TARGET_AUTHORITY_v1_ORIGINAL"]),
       publisherIdentity: Object.freeze({ publisherId: "baker-targets", publisherLabel: "Baker Targets", publisherUrl: "https://bakertargets.com", publisherLinkLabel: "BakerTargets.com" }),
-      productIdentity: Object.freeze({ productId: "ST-M16A2/M4", sku: "ST-M16A2/M4", productLabel: "M4 Carbine • 25 Meter Zeroing Target" })
+      productIdentity: Object.freeze({ productId: "ST-M16A2/M4", sku: "ST-M16A2/M4", productLabel: "M4/M16 Series Weapons • 25M Zero Target" })
     }),
     Object.freeze({
       targetProfileId: "baker_st_100yd_smart_zero",

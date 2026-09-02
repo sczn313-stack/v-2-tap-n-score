@@ -26,11 +26,11 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
 | Episode 58 | Equipment Library | 2026-08-23 through 2026-08-24 | [Locked record](./EPISODE_58_EQUIPMENT_LIBRARY.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
 | Episode 59 | I KNOW THIS SHOOTER | 2026-08-30 through 2026-09-01 | [Closed record](./EPISODE_59_I_KNOW_THIS_SHOOTER.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
-| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 | [Snapshot 17](../snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md) | ACTIVE — implementation not begun |
+| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 onward | [Victory #2 authority record](./EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md) | ACTIVE — Victory #2 Founder Approved / locked |
 
 ## Episode records
 
-Episodes 55–59 are closed, archived, and locked. Episode 60 — M4: LET THE TARGET TALK is active under Snapshot 17; implementation has not begun. Survey remains outside Founder approval.
+Episodes 55–59 are closed, archived, and locked. Episode 60 — M4: LET THE TARGET TALK is active under Snapshot 18; Victory #2 is Founder Approved and locked. M4 remains COMING SOON. Survey remains outside Founder approval.
 
 ### First Stable Zeroing Pipeline
 

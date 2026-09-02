@@ -6,12 +6,12 @@ const point = (xPercent, yPercent, shotId) => ({ xPercent, yPercent, ...(shotId 
 
 const common = {
   targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-  targetName: "25 Meter Zeroing Target — M4 Carbine",
+  targetName: "M4/M16 Series Weapons 25M Zero",
   targetAuthorityGeometry: {
     bullCoordinate: {
       xPercent: 50,
-      yPercent: 48.7,
-      source: "M4-BULL-COORDINATE-AUTHORITY-2026-07-28"
+      yPercent: 43.181818,
+      source: "M4-M16-25M-BULL-AUTHORITY-2026-09-01"
     }
   },
   distance: { value: 25, unit: "m" },
@@ -28,23 +28,23 @@ const fixtures = [
   {
     ...common,
     caseName: "registered-m4-detachable-carry-handle-iron-sight",
-    aimCoordinate: point(50, 48.7, "aim"),
+    aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [
       point(59.67929544808918, 71.31765082202307, "controlled-1"),
       point(59.77929544808918, 71.41765082202306, "controlled-2"),
       point(59.87929544808918, 71.51765082202306, "controlled-3")
     ],
-    equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
+    equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
     shooterSetup: {
       opticType: "Iron Sights",
       adjustmentSystem: "M4_IRON_DCH_FSP",
-      equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+      equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
     }
   },
   {
     ...common,
     caseName: "opposite-axis-direction",
-    aimCoordinate: point(50, 48.7, "aim"),
+    aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [point(45, 45, "s1"), point(46, 44, "s2"), point(44, 46, "s3")],
     shooterSetup: { opticType: "Iron Sights", adjustmentSystem: "M4_IRON" }
   },
@@ -52,22 +52,22 @@ const fixtures = [
     ...common,
     caseName: "confirmation-pass",
     phase: "confirmation",
-    aimCoordinate: point(50, 48.7, "aim"),
-    impactCoordinates: [point(50, 48.7, "c1"), point(50.2, 48.7, "c2"), point(49.8, 48.7, "c3")],
+    aimCoordinate: point(50, 43.181818, "aim"),
+    impactCoordinates: [point(50, 43.181818, "c1"), point(50.2, 43.181818, "c2"), point(49.8, 43.181818, "c3")],
     shooterSetup: { opticType: "Iron Sights", adjustmentSystem: "M4_IRON" }
   },
   {
     ...common,
     caseName: "confirmation-fail",
     phase: "confirmation",
-    aimCoordinate: point(50, 48.7, "aim"),
+    aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [point(54, 56, "c1"), point(55, 56, "c2"), point(54, 57, "c3")],
     shooterSetup: { opticType: "Iron Sights", adjustmentSystem: "M4_IRON" }
   },
   {
     ...common,
     caseName: "optic-moa",
-    aimCoordinate: point(50, 48.7, "aim"),
+    aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [point(52, 53, "m1"), point(53, 54, "m2")],
     shooterSetup: {
       opticType: "Scope",
@@ -79,7 +79,7 @@ const fixtures = [
   {
     ...common,
     caseName: "optic-mrad",
-    aimCoordinate: point(50, 48.7, "aim"),
+    aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [point(52, 53, "r1"), point(53, 54, "r2")],
     shooterSetup: {
       opticType: "Scope",

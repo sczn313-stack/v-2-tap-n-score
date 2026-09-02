@@ -2,8 +2,8 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.8 — Founder Approved / LOCKED
-**Current through:** 2026-09-01
+**Version:** 1.9 — Founder Approved / LOCKED
+**Current through:** 2026-09-02
 **Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
@@ -19,19 +19,19 @@
 
 | State | Current truth |
 |---|---|
-| Active episode | **Episode 60 — M4: LET THE TARGET TALK** — implementation not begun |
+| Active episode | **Episode 60 — M4: LET THE TARGET TALK** — Victory #2 Founder Approved; episode remains active |
 | Last closed episode | **Episode 59 — I KNOW THIS SHOOTER** — closed, archived, and locked |
 | Next reserved episode | Not assigned |
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 opening floor; M4 implementation not begun |
+| Current development | Episode 60 Victory #2 locked: exact M4 road through Precision Tap, correction, confirmation, SEC, Vault, and exact reopen |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor |
-| Latest checkpoint | `SCZN3_EP59_CLOSURE_EP60_OPENING_FLOOR_2026-09-01` |
+| Latest locked snapshot | Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority |
+| Latest checkpoint | `SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Bring M4 through the inherited Talking Smart Target and real-shooter road. Do not re-solve conquered behavior.** |
+| Next active priority | **Build the next bounded Episode 60 Victory from the locked Victory #2 floor. M4 remains COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -564,7 +564,7 @@ The M4/M4A1 deep-platform proof exposed the governing relationship:
 
 > **Weapon variant → sight/optic → mount/configuration → ammunition → zero method → target → confirmation**
 
-Adjustment behavior belongs to the selected equipment/configuration, not a generic platform default. Current military evidence distinguishes M68/M150 context around **0.5 MOA**, M4/M4A1 rear sight around **0.75 MOA**, and front sight around **1.75 MOA**; a generic `1/4 MOA` value cannot truthfully represent them all. The solution must identify the universal equipment/configuration owner rather than patching M4 locally. A 25-meter grouping/zeroing stage and distance confirmation are distinct evidence.
+Adjustment behavior belongs to the selected equipment/configuration, not a generic platform default. Current military evidence distinguishes M68/M150 context around **0.5 MOA**, M4/M4A1 rear sight around **0.75 MOA**, and target/configuration-specific front-sight values; a generic `1/4 MOA` value cannot truthfully represent them all. Episode 60 proved the owner: the exact M4/M16 Series Weapons 25M Zero target plus the standard M4/M4A1 front sight post selects **1.75 MOA per elevation click** through a target-scoped equipment-authority record. The separate **1.5 MOA** value and its verified 2011 Army FM lineage remain preserved in their proper historical/applicable scope. A 25-meter grouping/zeroing stage and distance confirmation are distinct evidence.
 
 M17/M18, M500/M590, M16A4, M249, and M7/M250 are research context, not automatic menu admission. Military configurations may require deeper platform profiles than ordinary commercial selections.
 
@@ -641,7 +641,7 @@ Inherited and immutable unless contradictory authority and Founder direction req
 
 M4 already has target assets, OET/Profile data, M4 runtime/SEC surfaces, a military equipment registry, and a 10/10 backend authority suite. It remains COMING SOON publicly. M4 Equipment Library work is limited to truthful data required by the experience and must inherit the #20 preservation invariant.
 
-The inherited front-sight evidence discrepancy remains explicit: the locked registry carries `1.5 MOA`, while later evidence describes approximately `1.75 MOA`. Do not select or patch either value locally. Resolve only through the governed equipment/configuration owner.
+Founder resolved the inherited front-sight discrepancy on 2026-09-01 without a global replacement. `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01` governs **1.75 MOA per elevation click** only for target profile `m4_25m_zero` plus the standard `M4_IRON_DCH_FSP` configuration. `M4-IRON-DCH-FSP-AUTHORITY-2026-07-28` remains preserved at **1.5 MOA** with its hash-verified 2011 Army FM source. Its two referenced validation files are absent from the recovered worktree and are explicitly recorded as an audit-lineage gap, not as invalidation of the FM source. The corrected road remains protected Founder review until driven and approved; no Home activation or deployment follows from this decision alone.
 
 > **Do not re-solve conquered behavior. Retrieve it.**
 

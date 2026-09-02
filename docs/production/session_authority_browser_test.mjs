@@ -18,10 +18,10 @@ const profiles = {
       candidateId: "standard-m4-iron-dch-fsp", weaponCategory: "Rifle", manufacturer: "Colt / FN",
       modelType: "M4/M4A1 Carbine", modelCaliber: "5.56 NATO", opticType: "Iron Sights",
       adjustmentUnit: "MOA", clickValue: null, adjustmentSystem: "M4_IRON_DCH_FSP",
-      equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
-      axisAdjustment: { windagePerClick: 0.75, elevationPerClick: 1.5, unit: "MOA" },
+      equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
+      axisAdjustment: { windagePerClick: 0.75, elevationPerClick: 1.75, unit: "MOA" },
       source: "backend_standard_setup", setupAuthority: "backend-target-authority",
-      setupAuthorityId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
+      setupAuthorityId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
       displayFields: [{ label: "Distance", value: "25 meters" }, { label: "Sighting configuration", value: "M4 iron sights" }],
       equipmentFingerprint: "standard-m4-fingerprint"
     }

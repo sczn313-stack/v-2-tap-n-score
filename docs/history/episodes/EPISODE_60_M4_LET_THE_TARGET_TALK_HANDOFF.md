@@ -48,10 +48,12 @@ Use `docs/governance/KEEPSAKE_VAULT_INDEX.md` to retrieve the exact artifacts.
 - M4/M4A1 deep Equipment Library platform evidence
 - existing M4 target reconstruction/presentation evidence
 
-## Unresolved / protected
+## Founder authority decision / protected
 
 - M4 remains public COMING SOON until its complete live road earns availability.
-- Registry `1.5 MOA` versus later `1.75 MOA` front-sight evidence is unresolved. Do not patch locally.
+- Founder approved `1.75 MOA` elevation per click for the exact M4/M16 Series Weapons 25M Zero target plus standard M4/M4A1 front sight post. Runtime selection is owned by `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01`.
+- Preserve `M4-IRON-DCH-FSP-AUTHORITY-2026-07-28` at `1.5 MOA` with its verified 2011 Army FM evidence; it was not globally replaced. Its absent referenced validation files are an audit-lineage gap, not source invalidation.
+- Founder personally drove the corrected road and reported **“It works swimmingly well.”** Victory #2 is Founder Approved and locked under Snapshot 18 and its canonical Keepsake. M4 still remains COMING SOON; Home activation and deployment remain prohibited.
 - Add only truthful M4 equipment facts required by the experience. Do not redesign Equipment Library.
 - Keepsake #21 Printer-Recipient Campaign remains HOLD and outside M4 implementation.
 - The Baker digital-video plan is outside Episode 60's first road.

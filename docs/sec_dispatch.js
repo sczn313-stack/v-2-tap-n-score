@@ -215,7 +215,9 @@
     const dispatch = resolve(session);
     const sessionId = text(session && session.sessionId);
     if (dispatch.adapter === ADAPTERS.M4_ZEROING) {
-      const params = new URLSearchParams({ sessionId, v: options.version || "sec-dispatch-v1" });
+      const params = new URLSearchParams(options.current
+        ? { v: options.version || "sec-dispatch-v1" }
+        : { sessionId, v: options.version || "sec-dispatch-v1" });
       if (options.thumbnail) params.set("vaultThumbnail", "1");
       return `sec.html?${params.toString()}`;
     }

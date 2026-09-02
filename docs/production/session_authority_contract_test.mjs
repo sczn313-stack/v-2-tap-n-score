@@ -145,11 +145,11 @@ const standardBackendPackage = {
     adjustmentUnit: "MOA",
     clickValue: null,
     adjustmentSystem: "M4_IRON_DCH_FSP",
-    equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
-    axisAdjustment: { windagePerClick: 0.75, elevationPerClick: 1.5, unit: "MOA" },
+    equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
+    axisAdjustment: { windagePerClick: 0.75, elevationPerClick: 1.75, unit: "MOA" },
     source: "backend_standard_setup",
     setupAuthority: "backend-target-authority",
-    setupAuthorityId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+    setupAuthorityId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
   }
 };
 const standardSession = context.window.SCZN3M4.createAuthoritativeSession(standardBackendPackage, {
@@ -161,7 +161,7 @@ const standardSession = context.window.SCZN3M4.createAuthoritativeSession(standa
 assert.equal(standardSession.matrixSnapshot.weaponCategory, "Rifle");
 assert.equal(standardSession.matrixSnapshot.weaponModelType, "M4/M4A1 Carbine");
 assert.equal(standardSession.matrixSnapshot.adjustmentSystem, "M4_IRON_DCH_FSP");
-assert.equal(standardSession.matrixSnapshot.equipmentAuthorityRecordId, "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28");
+assert.equal(standardSession.matrixSnapshot.equipmentAuthorityRecordId, "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01");
 assert.equal(standardSession.matrixSnapshot.setupMode, "standard");
 
 console.log("PASS Backend Session Authority frontend and routing contract");

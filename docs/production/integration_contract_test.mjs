@@ -14,7 +14,7 @@ assert.match(source["index.html"], /class="package-landing-shell"/);
 assert.match(source["matrix.html"], /m4_25m_zero/);
 assert.match(source["shoot.html"], /class="workspace-stage-shell"/);
 assert.match(source["shoot.html"], /Confirm Session Setup/);
-assert.match(source["shoot.html"], /M4-IRON-DCH-FSP-AUTHORITY-2026-07-28/);
+assert.match(source["shoot.html"], /M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01/);
 assert.match(source["shoot.html"], /SCZN3M4\.loadSession\(REQUESTED_SESSION_ID\)/);
 assert.match(source["shoot.html"], /zeroingLivePhase = "confirmation"/);
 assert.match(source["shoot.html"], /sourceIsZeroingSession\(candidate\)/);

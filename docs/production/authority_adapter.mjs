@@ -31,28 +31,28 @@ function pythonFloat(value) {
 }
 
 const M4_BULL_AUTHORITY = Object.freeze({
-  authorityId: "M4-BULL-COORDINATE-AUTHORITY-2026-07-28",
+  authorityId: "M4-M16-25M-BULL-AUTHORITY-2026-09-01",
   status: "founder-approved",
   xPercent: pythonFloat(50.0),
-  yPercent: pythonFloat(48.7),
+  yPercent: pythonFloat(43.181818),
   coordinateSystem: "continuous-edge-origin-normalized-percent",
-  sourceDimensionsPx: { width: 773, height: 1000 },
-  sourceCoordinatePx: { x: pythonFloat(386.5), y: pythonFloat(487.0) },
+  sourceDimensionsPx: { width: 2550, height: 3300 },
+  sourceCoordinatePx: { x: pythonFloat(1275.0), y: pythonFloat(1425.0) },
   toleranceSourcePx: { x: pythonFloat(1.0), y: pythonFloat(1.0) },
-  sourceAssetSha256: "d7912799f7462335ed1487dd19c437e1cf9c749615136c9acd735cc20bc49bff",
-  validationReportSha256: "b9f0c485e01a03142d8b066bd208422f84a781b9dec218253ebf292784cec283",
-  founderApprovedDate: "2026-07-28",
-  scope: "normalized bull coordinate only"
+  sourceAssetSha256: "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
+  validatedPresentationSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
+  founderApprovedDate: "2026-09-01",
+  scope: "M4/M16 Series Weapons 25M Zero canonical bull coordinate only"
 });
 const M4_GEOMETRY = Object.freeze({
-  targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-  imageWidth: 1024,
-  imageHeight: 1270,
-  gridLeftPx: 95,
-  gridTopPx: 147,
-  gridRightPx: 932,
-  gridBottomPx: 1012,
-  gridSquarePx: 59.8,
+  targetId: "M4_M16_25M_ZERO_AUTHORITY_v1",
+  imageWidth: 2550,
+  imageHeight: 3300,
+  gridLeftPx: 75,
+  gridTopPx: 225,
+  gridRightPx: 2475,
+  gridBottomPx: 2625,
+  gridSquarePx: 300,
   gridSquareInches: 1,
   unit: "inch",
   bullCoordinate: {
@@ -599,6 +599,11 @@ export async function buildAuthorityPackage(input) {
 
   const shotIds = impacts.map((impact) => impact.shotId);
   const core = {
+    target_profile_id: "m4_25m_zero",
+    targetProfileId: "m4_25m_zero",
+    mission_family: "zeroingCorrection",
+    missionFamilyId: "zeroingCorrection",
+    resultPackageType: "zeroCorrectionResult",
     authorityVersion: "sczn3-m4-authority-v1",
     target: {
       targetId: geometry.targetId,
@@ -628,6 +633,9 @@ export async function buildAuthorityPackage(input) {
     calculationReconciliation,
     validation,
     renderCoordinates: { aim, bull, impacts, poib, vector },
+    targetImageRegistrationEvidence: null,
+    registrationClaimSufficiency: { status: "not_applicable", owner: "m4-zeroing-authority" },
+    correctionEstimate: null,
     confirmedAimPointAuthority: {
       status: aim ? "confirmed" : "unavailable",
       coordinate: aim,
@@ -659,6 +667,7 @@ export async function buildAuthorityPackage(input) {
       impactCount: impacts.length,
       hasPOIB: poib !== null,
       hasCorrection: correction !== null,
+      hasCorrectionEstimate: false,
       hasMechanicalRecommendation: clicks !== null
     }
   };

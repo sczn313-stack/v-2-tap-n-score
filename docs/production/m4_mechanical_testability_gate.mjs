@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { buildAuthorityPackage } from "./authority_adapter.mjs";
 
-const AUTHORITY_ID = "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28";
-const bull = { xPercent: 50, yPercent: 48.7 };
+const AUTHORITY_ID = "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01";
+const bull = { xPercent: 50, yPercent: 43.1818 };
 const confirmedAim = { xPercent: 52, yPercent: 46, shotId: "aim" };
 
 const basePayload = {
@@ -11,7 +11,7 @@ const basePayload = {
   targetAuthorityGeometry: {
     bullCoordinate: {
       ...bull,
-      source: "M4-BULL-COORDINATE-AUTHORITY-2026-07-28"
+      source: "M4-M16-25M-BULL-AUTHORITY-2026-09-01"
     }
   },
   distance: { value: 25, unit: "m" },
@@ -49,7 +49,7 @@ assert.ok(proven.clicks.elevationClicks > 0);
 assert.equal(proven.clicks.windageTurnDirection, "COUNTERCLOCKWISE");
 assert.equal(proven.clicks.elevationTurnDirection, "CLOCKWISE");
 assert.equal(Number(proven.clicks.model.windagePerClick), 0.75);
-assert.equal(Number(proven.clicks.model.elevationPerClick), 1.5);
+assert.equal(Number(proven.clicks.model.elevationPerClick), 1.75);
 assert.equal(proven.mechanicalSightAuthority.recordId, AUTHORITY_ID);
 assert.equal(
   Number(proven.vectors.poibToConfirmedAim.start.xPercent),
@@ -71,11 +71,11 @@ assert.equal(proven.calculationReconciliation.axes.elevation.status, "reconciled
 
 const reconciliationCase = await buildAuthorityPackage({
   ...basePayload,
-  aimCoordinate: { xPercent: 50, yPercent: 48.7, shotId: "reconcile-aim" },
+  aimCoordinate: { xPercent: 50, yPercent: 43.1818, shotId: "reconcile-aim" },
   impactCoordinates: [
-    { xPercent: 94.0, yPercent: 48.7, shotId: "reconcile-1" },
-    { xPercent: 94.4, yPercent: 48.7, shotId: "reconcile-2" },
-    { xPercent: 94.2, yPercent: 48.7, shotId: "reconcile-3" }
+    { xPercent: 89.8, yPercent: 43.1818, shotId: "reconcile-1" },
+    { xPercent: 90.2, yPercent: 43.1818, shotId: "reconcile-2" },
+    { xPercent: 90, yPercent: 43.1818, shotId: "reconcile-3" }
   ],
   equipmentAuthorityRecordId: AUTHORITY_ID,
   shooterSetup: {
@@ -86,15 +86,15 @@ const reconciliationCase = await buildAuthorityPackage({
 });
 
 const windageTrace = reconciliationCase.calculationReconciliation.axes.windage;
-assert.equal(Number(reconciliationCase.angular.windageMOA), 26.4406);
-assert.equal(Number(windageTrace.displayedAngularValue), 26.44);
+assert.equal(Number(reconciliationCase.angular.windageMOA), 11.8776);
+assert.equal(Number(windageTrace.displayedAngularValue), 11.88);
 assert.equal(Number(windageTrace.clickConstant), 0.75);
-assert.equal(Number(windageTrace.rawClicks), 35.2541);
-assert.equal(windageTrace.expectedClicks, 35);
-assert.equal(windageTrace.displayedExpectedClicks, 35);
-assert.equal(windageTrace.displayedClicks, 35);
-assert.equal(reconciliationCase.clicks.windageClicks, 35);
-assert.equal(reconciliationCase.correction.windage, "35 clicks LEFT");
+assert.equal(Number(windageTrace.rawClicks), 15.8368);
+assert.equal(windageTrace.expectedClicks, 16);
+assert.equal(windageTrace.displayedExpectedClicks, 16);
+assert.equal(windageTrace.displayedClicks, 16);
+assert.equal(reconciliationCase.clicks.windageClicks, 16);
+assert.equal(reconciliationCase.correction.windage, "16 clicks LEFT");
 
 const injected = await buildAuthorityPackage({
   ...basePayload,

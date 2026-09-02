@@ -11,6 +11,13 @@ import math
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+try:
+    from authority_service import apply_precision_tap_registration, source_photo_render_coordinates
+    from target_image_registration_authority import canonical_point_to_source_percent
+except ModuleNotFoundError:  # Package import used by the Python/JavaScript parity harness.
+    from backend.authority_service import apply_precision_tap_registration, source_photo_render_coordinates
+    from backend.target_image_registration_authority import canonical_point_to_source_percent
+
 from .weapon_equipment_registry import (
     authority_model_from_record,
     resolve_proven_equipment_record,
@@ -19,28 +26,28 @@ from .weapon_equipment_registry import (
 MOA_INCHES_AT_100_YARDS = 1.047
 MRAD_INCHES_AT_100_YARDS = 3.6
 M4_BULL_AUTHORITY = {
-    "authorityId": "M4-BULL-COORDINATE-AUTHORITY-2026-07-28",
+    "authorityId": "M4-M16-25M-BULL-AUTHORITY-2026-09-01",
     "status": "founder-approved",
     "xPercent": 50.0,
-    "yPercent": 48.7,
+    "yPercent": 43.181818,
     "coordinateSystem": "continuous-edge-origin-normalized-percent",
-    "sourceDimensionsPx": {"width": 773, "height": 1000},
-    "sourceCoordinatePx": {"x": 386.5, "y": 487.0},
+    "sourceDimensionsPx": {"width": 2550, "height": 3300},
+    "sourceCoordinatePx": {"x": 1275.0, "y": 1425.0},
     "toleranceSourcePx": {"x": 1.0, "y": 1.0},
-    "sourceAssetSha256": "d7912799f7462335ed1487dd19c437e1cf9c749615136c9acd735cc20bc49bff",
-    "validationReportSha256": "b9f0c485e01a03142d8b066bd208422f84a781b9dec218253ebf292784cec283",
-    "founderApprovedDate": "2026-07-28",
-    "scope": "normalized bull coordinate only",
+    "sourceAssetSha256": "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
+    "validatedPresentationSha256": "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
+    "founderApprovedDate": "2026-09-01",
+    "scope": "M4/M16 Series Weapons 25M Zero canonical bull coordinate only",
 }
 M4_GEOMETRY = {
-    "targetId": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-    "imageWidth": 1024,
-    "imageHeight": 1270,
-    "gridLeftPx": 95,
-    "gridTopPx": 147,
-    "gridRightPx": 932,
-    "gridBottomPx": 1012,
-    "gridSquarePx": 59.8,
+    "targetId": "M4_M16_25M_ZERO_AUTHORITY_v1",
+    "imageWidth": 2550,
+    "imageHeight": 3300,
+    "gridLeftPx": 75,
+    "gridTopPx": 225,
+    "gridRightPx": 2475,
+    "gridBottomPx": 2625,
+    "gridSquarePx": 300,
     "gridSquareInches": 1,
     "unit": "inch",
     "bullCoordinate": {
@@ -199,6 +206,109 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
 def axis_clicks(moa: float, mrad: float, model: Dict[str, Any], axis: str) -> int:
     magnitude = mrad if model["unit"] == "MRAD" else moa
     return int(round(magnitude / float(model[f"{axis}PerClick"])))
+
+
+def registration_claim_sufficiency(
+    registration: Optional[Dict[str, Any]],
+    aim: Optional[Dict[str, Any]],
+    poib: Optional[Dict[str, Any]],
+    geometry: Dict[str, Any],
+    yards: float,
+    model: Dict[str, Any],
+    phase: str,
+    mission: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Decide whether registered photo uncertainty can change M4 mechanical instructions."""
+    if not registration:
+        return {"status": "not_applicable", "owner": "m4-zeroing-authority"}
+    observations = registration.get("canonicalObservations") or []
+    if (
+        registration.get("knowledgeState") not in ("exact", "estimated")
+        or not aim
+        or not poib
+        or not observations
+        or any(item.get("registeredCoverageStatus") != "supported" for item in observations)
+    ):
+        return {
+            "status": "insufficient",
+            "owner": "m4-zeroing-authority",
+            "reason": "registered_observations_incomplete",
+        }
+    if model.get("authorityStatus") != "proven":
+        return {
+            "status": "sufficient_for_geometry_only",
+            "owner": "m4-zeroing-authority",
+            "reason": "registered_mechanical_sight_authority_required_for_clicks",
+        }
+
+    maximum_uncertainty_px = max(float(item.get("localUncertaintyPx") or 0) for item in observations)
+    combined_uncertainty_inches = (
+        maximum_uncertainty_px
+        * 2
+        * float(geometry.get("gridSquareInches", 1))
+        / float(geometry["gridSquarePx"])
+    )
+    aim_grid = grid_inches(aim, geometry)
+    poib_grid = grid_inches(poib, geometry)
+    axis_assessments: Dict[str, Any] = {}
+    stable = True
+    for axis, coordinate, moa_inches, mrad_inches in (
+        ("windage", "xInches", MOA_INCHES_AT_100_YARDS, MRAD_INCHES_AT_100_YARDS),
+        ("elevation", "yInches", MOA_INCHES_AT_100_YARDS, MRAD_INCHES_AT_100_YARDS),
+    ):
+        signed_offset = aim_grid[coordinate] - poib_grid[coordinate]
+        candidate_offsets = (
+            signed_offset - combined_uncertainty_inches,
+            signed_offset,
+            signed_offset + combined_uncertainty_inches,
+        )
+        signed_click_candidates = set()
+        for candidate in candidate_offsets:
+            moa = abs(candidate) / ((yards / 100) * moa_inches)
+            mrad = abs(candidate) / ((yards / 100) * mrad_inches)
+            clicks = axis_clicks(moa, mrad, model, axis)
+            signed_click_candidates.add(0 if clicks == 0 else clicks if candidate > 0 else -clicks)
+        axis_stable = len(signed_click_candidates) == 1
+        stable = stable and axis_stable
+        axis_assessments[axis] = {
+            "status": "stable" if axis_stable else "ambiguous",
+            "signedClickCandidates": sorted(signed_click_candidates),
+        }
+    confirmation_assessment = {"status": "not_applicable"}
+    confirmation_stable = True
+    if phase == "confirmation":
+        residual = math.hypot(
+            aim_grid["xInches"] - poib_grid["xInches"],
+            aim_grid["yInches"] - poib_grid["yInches"],
+        )
+        tolerance = number(mission.get("confirmationResidualToleranceInches"), 1.0) or 1.0
+        radial_uncertainty = math.sqrt(2) * combined_uncertainty_inches
+        minimum_residual = max(0.0, residual - radial_uncertainty)
+        maximum_residual = residual + radial_uncertainty
+        confirmation_stable = maximum_residual <= tolerance or minimum_residual > tolerance
+        confirmation_assessment = {
+            "status": "stable" if confirmation_stable else "ambiguous",
+            "minimumResidualInches": rounded(minimum_residual),
+            "maximumResidualInches": rounded(maximum_residual),
+            "toleranceInches": rounded(tolerance),
+        }
+    sufficient_for_claim = stable or (phase == "confirmation" and confirmation_stable)
+    return {
+        "status": (
+            "sufficient"
+            if stable
+            else "sufficient_for_confirmation"
+            if phase == "confirmation" and confirmation_stable
+            else "insufficient"
+        ),
+        "owner": "m4-zeroing-authority",
+        "reason": None if sufficient_for_claim else "registration_uncertainty_could_change_authoritative_outcome",
+        "knowledgeState": registration.get("knowledgeState"),
+        "maximumLocalUncertaintyPx": rounded(maximum_uncertainty_px),
+        "combinedAxisUncertaintyInches": rounded(combined_uncertainty_inches),
+        "axisAssessments": axis_assessments,
+        "confirmationAssessment": confirmation_assessment,
+    }
 
 
 def reconcile_click_axis(
@@ -362,6 +472,7 @@ def stable_hash(payload: Dict[str, Any]) -> str:
 
 def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     payload = payload if isinstance(payload, dict) else {}
+    payload, registration_evidence = apply_precision_tap_registration(payload)
     geometry = geometry_for(payload)
     aim = normalize_point(payload.get("aimCoordinate") or payload.get("aimPoint"), "aim")
     bull = normalize_point(geometry.get("bullCoordinate"), "registered-bull")
@@ -520,8 +631,69 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "method": "zeroing-confirmation-authority-v1",
         }
 
+    registration_sufficiency = registration_claim_sufficiency(
+        registration_evidence,
+        aim,
+        poib,
+        geometry,
+        yards,
+        model,
+        phase,
+        mission,
+    )
+    correction_estimate = None
+    registered_clicks_ambiguous = any(
+        assessment.get("status") == "ambiguous"
+        for assessment in registration_sufficiency.get("axisAssessments", {}).values()
+    )
+    if registered_clicks_ambiguous and clicks:
+        correction_estimate = {
+            "status": "best_estimate_exact_click_count_withheld",
+            "truthLabel": "Best estimate — exact click count withheld",
+            "correction": correction,
+            "clicks": clicks,
+            "angular": angular,
+            "axisAssessments": registration_sufficiency.get("axisAssessments") or {},
+        }
+        clicks = None
+        correction["windage"] = None
+        correction["elevation"] = None
+        mechanical_validation = {
+            "status": "unavailable",
+            "reason": registration_sufficiency.get("reason"),
+            "model": model,
+        }
+    if (
+        phase == "confirmation"
+        and registration_sufficiency.get("confirmationAssessment", {}).get("status") == "ambiguous"
+    ):
+        validation = {
+            "status": "authority-unavailable",
+            "outcome": "CONFIRMATION DECISION UNAVAILABLE",
+            "confirmed": None,
+            "reason": "registration_uncertainty_could_change_confirmation_outcome",
+            "method": "zeroing-confirmation-authority-v1",
+        }
+
+    if registration_evidence:
+        render_coordinates = source_photo_render_coordinates(
+            registration_evidence,
+            aim,
+            impacts,
+            poib,
+            geometry,
+        )
+        render_coordinates["bull"] = canonical_point_to_source_percent(registration_evidence, bull)
+    else:
+        render_coordinates = {"aim": aim, "bull": bull, "impacts": impacts, "poib": poib, "vector": vector}
+
     shot_ids = [impact["shotId"] for impact in impacts]
     core = {
+        "target_profile_id": "m4_25m_zero",
+        "targetProfileId": "m4_25m_zero",
+        "mission_family": "zeroingCorrection",
+        "missionFamilyId": "zeroingCorrection",
+        "resultPackageType": "zeroCorrectionResult",
         "authorityVersion": "sczn3-m4-authority-v1",
         "target": {
             "targetId": geometry["targetId"],
@@ -550,7 +722,10 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         "mechanicalValidation": mechanical_validation,
         "calculationReconciliation": calculation_reconciliation,
         "validation": validation,
-        "renderCoordinates": {"aim": aim, "bull": bull, "impacts": impacts, "poib": poib, "vector": vector},
+        "renderCoordinates": render_coordinates,
+        "targetImageRegistrationEvidence": registration_evidence,
+        "registrationClaimSufficiency": registration_sufficiency,
+        "correctionEstimate": correction_estimate,
         "confirmedAimPointAuthority": {
             "status": "confirmed" if aim else "unavailable",
             "coordinate": aim,
@@ -583,6 +758,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "hasPOIB": poib is not None,
             "hasCorrection": correction is not None,
             "hasMechanicalRecommendation": clicks is not None,
+            "hasCorrectionEstimate": correction_estimate is not None,
         },
     }
     core["evidenceHash"] = stable_hash(core)

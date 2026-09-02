@@ -5,26 +5,26 @@
     target: Object.freeze({
       vendor: "Baker",
       sku: "ST-M16A2/M4",
-      product: "M4 Carbine • 25 Meter Zeroing Target",
+      product: "M4/M16 Series Weapons • 25M Zero Target",
       authority: "M4 Zeroing",
       qrUrl: "https://tap-n-score.com/?v=baker&sku=ST-M16A2%2FM4",
       qrAsset: "assets/BAKER_ST-M16A2-M4_QR.png",
       targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      targetName: "M4 Carbine • 25 Meter Zeroing Target",
-      authorityAsset: "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg",
+      targetName: "M4/M16 Series Weapons 25M Zero",
+      authorityAsset: "assets/M4_M16_25M_ZERO_AUTHORITY_v1.png",
       geometry: Object.freeze({
-        imageWidth: 1024,
-        imageHeight: 1270,
-        gridLeftPx: 95,
-        gridTopPx: 147,
-        gridRightPx: 932,
-        gridBottomPx: 1012,
-        gridSquarePx: 59.8,
+        imageWidth: 2550,
+        imageHeight: 3300,
+        gridLeftPx: 75,
+        gridTopPx: 225,
+        gridRightPx: 2475,
+        gridBottomPx: 2625,
+        gridSquarePx: 300,
         gridSquareInches: 1,
         bullCoordinate: Object.freeze({
           xPercent: 50,
-          yPercent: 48.7,
-          source: "M4-BULL-COORDINATE-AUTHORITY-2026-07-28"
+          yPercent: 43.181818,
+          source: "M4-M16-25M-BULL-AUTHORITY-2026-09-01"
         })
       })
     }),
@@ -38,7 +38,7 @@
     sightingSystems: Object.freeze({
       M4_IRON_DCH_FSP: Object.freeze({
         adjustmentSystem: "M4_IRON_DCH_FSP",
-        equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+        equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
       }),
       M4_IRON: Object.freeze({
         adjustmentSystem: "M4_IRON",

@@ -1,4 +1,5 @@
 from .authority_service import build_authority_package
+from .weapon_equipment_registry import resolve_proven_equipment_record
 
 
 def point(x, y, shot_id=None):
@@ -8,12 +9,13 @@ def point(x, y, shot_id=None):
     return value
 
 
-M4_IRON_AUTHORITY_ID = "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28"
+M4_IRON_AUTHORITY_ID = "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
+BULL_Y_PERCENT = 43.181818
 
 
 def package(impacts, aim=None, phase="initial", proven_mechanics=False):
     payload = {
-        "aimCoordinate": aim or point(50, 48.7),
+        "aimCoordinate": aim or point(50, BULL_Y_PERCENT),
         "impactCoordinates": impacts,
         "distance": {"value": 25, "unit": "m"},
         "targetAuthorityGeometry": {
@@ -58,7 +60,7 @@ def test_confirmed_aim_is_session_authority_and_bull_remains_geometry():
     assert second["vectors"]["poibToConfirmedAim"]["end"]["xPercent"] == 88.0
     assert second["vectors"]["poibToConfirmedAim"]["end"]["yPercent"] == 12.0
     assert first["renderCoordinates"]["bull"]["xPercent"] == 50.0
-    assert first["renderCoordinates"]["bull"]["yPercent"] == 48.7
+    assert first["renderCoordinates"]["bull"]["yPercent"] == round(BULL_Y_PERCENT, 4)
     assert first["lineage"]["correctionDerivedFrom"] == ["confirmed-aim-point", "poib"]
     assert first["confirmedAimPointAuthority"]["status"] == "confirmed"
     assert first["aimPointDiscrepancy"]["status"] == "measured"
@@ -82,7 +84,7 @@ def test_required_group_positions():
 
 
 def test_on_confirmed_aim_is_near_zero_and_confirmation_ready():
-    result = package(group(50, 48.7, "bull"), phase="confirmation")
+    result = package(group(50, BULL_Y_PERCENT, "bull"), phase="confirmation")
     assert result["geometryValidation"]["magnitudeInches"] == 0
     assert result["correction"]["aimMinusPOIBInches"] == {"x": 0.0, "y": 0.0}
     assert result["clicks"] is None
@@ -113,7 +115,7 @@ def test_proven_weapon_library_record_returns_axis_specific_clicks():
     result = package(group(55, 45, "proven"), proven_mechanics=True)
     assert result["mechanicalValidation"]["status"] == "calculated"
     assert result["clicks"]["model"]["windagePerClick"] == 0.75
-    assert result["clicks"]["model"]["elevationPerClick"] == 1.5
+    assert result["clicks"]["model"]["elevationPerClick"] == 1.75
     assert result["clicks"]["model"]["authorityId"] == M4_IRON_AUTHORITY_ID
     assert result["mechanicalSightAuthority"]["recordId"] == M4_IRON_AUTHORITY_ID
     assert result["mechanicalSightAuthority"]["status"] == "proven"
@@ -122,27 +124,35 @@ def test_proven_weapon_library_record_returns_axis_specific_clicks():
     assert result["clicks"]["windageClicks"] != result["clicks"]["elevationClicks"]
 
 
-def test_full_click_chain_reconciles_26_44_moa_to_35_left():
-    result = package(group(94.2, 48.7, "reconcile"), proven_mechanics=True)
+def test_legacy_2011_fm_authority_remains_preserved_outside_target_scoped_selection():
+    legacy = resolve_proven_equipment_record("M4-IRON-DCH-FSP-AUTHORITY-2026-07-28", "M4_IRON_DCH_FSP")
+    assert legacy is not None
+    assert legacy["axes"]["elevation"]["movementPerClick"] == 1.5
+    assert legacy["sourceDocumentation"][0]["sourceSha256"] == "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532"
+    assert legacy["auditLineage"]["status"] == "gap_recorded"
+
+
+def test_full_click_chain_reconciles_on_governed_m4_m16_plane():
+    result = package(group(90, BULL_Y_PERCENT, "reconcile"), proven_mechanics=True)
     trace = result["calculationReconciliation"]
     windage = trace["axes"]["windage"]
     assert result["correction"]["windageDirection"] == "LEFT"
-    assert result["angular"]["windageMOA"] == 26.4406
-    assert windage["displayedAngularValue"] == 26.44
+    assert result["angular"]["windageMOA"] == 11.8776
+    assert windage["displayedAngularValue"] == 11.88
     assert windage["clickConstant"] == 0.75
-    assert windage["rawClicks"] == 35.2541
+    assert windage["rawClicks"] == 15.8368
     assert windage["roundingRule"] == "nearest-whole-click-half-to-even"
-    assert windage["expectedClicks"] == 35
-    assert windage["displayedExpectedClicks"] == 35
-    assert windage["displayedClicks"] == 35
-    assert result["clicks"]["windageClicks"] == 35
+    assert windage["expectedClicks"] == 16
+    assert windage["displayedExpectedClicks"] == 16
+    assert windage["displayedClicks"] == 16
+    assert result["clicks"]["windageClicks"] == 16
     assert trace["status"] == "reconciled"
     assert result["mechanicalValidation"]["calculationReconciliation"] == "reconciled"
 
 
 def test_client_claim_cannot_create_m4_mechanical_authority():
     result = build_authority_package({
-        "aimCoordinate": point(50, 48.7),
+        "aimCoordinate": point(50, BULL_Y_PERCENT),
         "impactCoordinates": group(55, 45, "injected"),
         "distance": {"value": 25, "unit": "m"},
         "mechanicalAuthority": {
@@ -162,11 +172,11 @@ def test_client_claim_cannot_create_m4_mechanical_authority():
 
 
 def test_traceability_and_hash():
-    result = package([point(50, 48.7, "alpha"), point(51, 48.7, "bravo")])
+    result = package([point(50, BULL_Y_PERCENT, "alpha"), point(51, BULL_Y_PERCENT, "bravo")])
     assert result["lineage"]["sourceShotIds"] == ["alpha", "bravo"]
     assert result["bullCoordinateAuthority"]["status"] == "founder-approved"
-    assert result["bullCoordinateAuthority"]["authorityId"] == "M4-BULL-COORDINATE-AUTHORITY-2026-07-28"
-    assert result["geometryMetadata"]["bullCoordinate"]["source"] == "M4-BULL-COORDINATE-AUTHORITY-2026-07-28"
+    assert result["bullCoordinateAuthority"]["authorityId"] == "M4-M16-25M-BULL-AUTHORITY-2026-09-01"
+    assert result["geometryMetadata"]["bullCoordinate"]["source"] == "M4-M16-25M-BULL-AUTHORITY-2026-09-01"
     assert len(result["evidenceHash"]) == 64
 
 

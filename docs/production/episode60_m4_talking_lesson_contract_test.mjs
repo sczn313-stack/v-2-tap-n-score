@@ -29,7 +29,7 @@ assert.deepEqual(Array.from(steps, step => step.state), ["intro", "distance", "a
 assert.equal(steps.at(-1).terminal, true, "completion is clean and terminal at Add Photo");
 assert.equal(steps.at(-2).action.selector, "#chooseTargetButton", "the handoff uses the existing Add Photo control");
 assert.match(steps.at(-2).narration, /mark your aim point and each visible impact/i, "the handoff explains the next shooter-owned observations");
-assert.match(lesson.sceneMarkup("aim", config), /--m4-lesson-x:50%;--m4-lesson-y:48\.7%/, "aim choreography consumes governed M4 geometry");
+assert.match(lesson.sceneMarkup("aim", config), /--m4-lesson-x:50%;--m4-lesson-y:43\.181818%/, "aim choreography consumes governed M4 geometry");
 assert.equal(lesson.isEligible("m4_25m_zero", {
   targetProfileId: "m4_25m_zero",
   assetRole: "founder-workspace-presentation-from-physically-validated-reconstruction",

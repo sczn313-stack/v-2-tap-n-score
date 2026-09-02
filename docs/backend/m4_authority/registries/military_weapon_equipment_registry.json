@@ -75,9 +75,122 @@
       "validationRecord": "docs/authority-evidence/m4-mechanical-sight/INDEPENDENT_VALIDATION_REPORT.md",
       "effectiveDate": "2026-07-28",
       "revisionDate": "2026-07-28",
+      "auditLineage": {
+        "status": "gap_recorded",
+        "recordedDate": "2026-09-01",
+        "missingReferencedFiles": [
+          "docs/authority-evidence/m4-mechanical-sight/M4_MECHANICAL_SIGHT_AUTHORITY_REGISTRATION.json",
+          "docs/authority-evidence/m4-mechanical-sight/INDEPENDENT_VALIDATION_REPORT.md"
+        ],
+        "effect": "The missing on-disk validation records are an audit-lineage gap. They do not invalidate the independently hash-verified Army FM source."
+      },
       "notes": [
         "This record does not govern generic iron sights, backup iron sights, carry-handle variants, optics, or non-M4 platforms.",
-        "The 0.50 MOA and 1.25 MOA controlled-test constants are not applicable to this registered M4 configuration."
+        "The 0.50 MOA and 1.25 MOA controlled-test constants are not applicable to this registered M4 configuration.",
+        "This 1.5 MOA elevation authority remains preserved for its 2011 FM 3-22.9 Change 1 scope and is not the target-specific runtime record for M4/M16 Series Weapons 25M Zero."
+      ]
+    },
+    {
+      "recordId": "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
+      "recordType": "target_scoped_weapon_sight_configuration",
+      "status": "proven",
+      "libraryPublicationStatus": "founder_review",
+      "militaryDesignation": "M4/M4A1 Carbine",
+      "displayName": "M4/M4A1 Carbine — Detachable Carrying Handle and Front Sight Post — M4/M16 25M Target",
+      "manufacturer": null,
+      "serviceBranches": [
+        {
+          "branch": "Army",
+          "approvedUse": "Target-scoped governed execution on the M4/M16 Series Weapons 25M Zero — Short Range and Pistol Marksmanship Target."
+        }
+      ],
+      "compatibleWeaponPlatforms": [
+        "M4 Carbine",
+        "M4A1 Carbine"
+      ],
+      "authorityScope": {
+        "targetProfileId": "m4_25m_zero",
+        "targetProfileVersion": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+        "canonicalCoordinateSystemId": "M4_M16_25M_ZERO_AUTHORITY_v1",
+        "targetTitle": "M4/M16 Series Weapons 25M Zero",
+        "targetSubtitle": "Short Range and Pistol Marksmanship Target",
+        "configuration": "M4/M4A1 Carbine — Detachable Carrying Handle + Standard Front Sight Post",
+        "scopeRule": "This record governs only when both the exact target profile and exact sight configuration match."
+      },
+      "equipmentIdentity": {
+        "rearSight": "Detachable carrying-handle rear sight",
+        "rearAperture": "Unmarked aperture",
+        "rearElevationSetting": "6/3",
+        "windageControl": "Rear sight windage knob",
+        "frontSight": "Standard four-notch M4/M4A1 front sight post",
+        "mountingConfiguration": "Detachable carrying handle installed on the M4/M4A1 upper receiver with the standard fixed front sight assembly"
+      },
+      "adjustmentSystem": "M4_IRON_DCH_FSP",
+      "adjustmentUnit": "MOA",
+      "axes": {
+        "windage": {
+          "control": "Rear sight windage knob",
+          "movementPerClick": 0.75,
+          "movementUnit": "MOA",
+          "directionConvention": {
+            "RIGHT": "CLOCKWISE",
+            "LEFT": "COUNTERCLOCKWISE"
+          }
+        },
+        "elevation": {
+          "control": "Standard four-notch M4/M4A1 front sight post",
+          "movementPerClick": 1.75,
+          "movementUnit": "MOA",
+          "directionConvention": {
+            "UP": "CLOCKWISE",
+            "DOWN": "COUNTERCLOCKWISE"
+          }
+        }
+      },
+      "roundingRule": "nearest-whole-click-half-to-even",
+      "ammunitionConfigurations": [],
+      "sourceDocumentation": [
+        {
+          "sourceId": "M4-M16-25M-ZERO-FOUNDER-PHOTO-2026-09-01",
+          "title": "M4/M16 Series Weapons 25M Zero — Short Range and Pistol Marksmanship Target",
+          "publisher": "Source publisher not asserted by SCZN3",
+          "publication": "Founder-supplied photograph of the exact physical target",
+          "effectiveDate": "2026-09-01",
+          "path": "docs/assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg",
+          "sourceSha256": "55dc305ac678b786e6d571273a9b5118f614d093e8f979fa37eb5c313d4f4f20",
+          "applicableEvidence": [
+            "Printed target table: each block equals 1 MOA at 25 meters",
+            "Printed M4/M4A1 FRONT SIGHT row: elevation 1.75 MOA",
+            "Printed M4/M4A1 REAR SIGHT row: windage 0.75 MOA"
+          ]
+        },
+        {
+          "sourceId": "FM-3-22.9-C1-2011-CONTEXT",
+          "title": "Rifle Marksmanship M16-/M4-Series Weapons",
+          "publisher": "Headquarters, Department of the Army",
+          "publication": "FM 3-22.9, Change 1",
+          "effectiveDate": "2011-02-10",
+          "url": "https://api.army.mil/e2/c/downloads/363931.pdf",
+          "sourceSha256": "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532",
+          "applicableEvidence": [
+            "Preserved contextual lineage for the separate 1.5 MOA authority",
+            "Not selected as the elevation value for this exact target-specific runtime record"
+          ]
+        }
+      ],
+      "founderAuthorityDecision": {
+        "status": "founder_approved",
+        "decisionDate": "2026-09-01",
+        "decision": "Promote 1.75 MOA per elevation click for the exact M4/M16 Series Weapons 25M Zero target plus standard M4/M4A1 front sight post configuration while preserving 1.5 MOA in its proper historical/applicable scope."
+      },
+      "registrationRecord": "docs/authority-evidence/m4-mechanical-sight/M4_M16_25M_ZERO_FSP_AUTHORITY_REGISTRATION.json",
+      "validationRecord": "docs/authority-evidence/m4-mechanical-sight/M4_M16_25M_ZERO_FSP_VALIDATION_REPORT.md",
+      "effectiveDate": "2026-09-01",
+      "revisionDate": "2026-09-01",
+      "notes": [
+        "This record does not globally supersede or erase M4-IRON-DCH-FSP-AUTHORITY-2026-07-28.",
+        "Runtime selection requires target profile m4_25m_zero and adjustment system M4_IRON_DCH_FSP.",
+        "Founder personally approved the corrected road on 2026-09-02. M4 remains COMING SOON; no Home activation or deployment is authorized."
       ]
     }
   ]

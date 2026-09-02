@@ -1,0 +1,60 @@
+{
+  "schemaId": "sczn3-target-scoped-mechanical-authority-registration-v1",
+  "registrationId": "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
+  "status": "founder_approved",
+  "decisionDate": "2026-09-01",
+  "authorityOwner": "Founder",
+  "targetIdentity": {
+    "targetProfileId": "m4_25m_zero",
+    "targetProfileVersion": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    "canonicalCoordinateSystemId": "M4_M16_25M_ZERO_AUTHORITY_v1",
+    "title": "M4/M16 Series Weapons 25M Zero",
+    "subtitle": "Short Range and Pistol Marksmanship Target"
+  },
+  "equipmentIdentity": {
+    "weapon": "M4/M4A1 Carbine",
+    "rearSight": "Detachable carrying-handle rear sight",
+    "rearElevationSetting": "6/3",
+    "frontSight": "Standard four-notch M4/M4A1 front sight post",
+    "adjustmentSystem": "M4_IRON_DCH_FSP"
+  },
+  "governedAdjustment": {
+    "unit": "MOA",
+    "windagePerClick": 0.75,
+    "elevationPerClick": 1.75,
+    "roundingRule": "nearest-whole-click-half-to-even"
+  },
+  "exactTargetEvidence": {
+    "path": "docs/assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg",
+    "sha256": "55dc305ac678b786e6d571273a9b5118f614d093e8f979fa37eb5c313d4f4f20",
+    "observations": [
+      "The printed target identifies each block as 1 MOA at 25 meters.",
+      "The printed M4/M4A1 FRONT SIGHT row specifies 1.75 for elevation.",
+      "The printed M4/M4A1 REAR SIGHT row specifies 0.75 for windage."
+    ],
+    "publisherAttribution": "not asserted"
+  },
+  "canonicalTargetArtifact": {
+    "path": "docs/assets/M4_M16_25M_ZERO_AUTHORITY_v1.png",
+    "sha256": "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70"
+  },
+  "preservedContextAuthority": {
+    "recordId": "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
+    "elevationPerClick": 1.5,
+    "source": "FM 3-22.9, Change 1 (2011)",
+    "sourceSha256": "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532",
+    "treatment": "preserved; not globally replaced; not selected for this exact target-scoped road"
+  },
+  "founderDecision": "Use 1.75 MOA per elevation click for this exact target and standard M4/M4A1 front-sight configuration.",
+  "runtimeSelectionRule": "Select this authority only for target profile m4_25m_zero with adjustment system M4_IRON_DCH_FSP.",
+  "founderDrive": {
+    "status": "approved",
+    "date": "2026-09-02",
+    "verdict": "It works swimmingly well."
+  },
+  "publicActivationStatus": "coming_soon",
+  "prohibited": [
+    "deploy",
+    "Home activation"
+  ]
+}

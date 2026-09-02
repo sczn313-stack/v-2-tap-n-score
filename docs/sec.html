@@ -65,6 +65,7 @@
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
+<script src="sec_reopen_capability.js?v=universal-sec-reopen-authority-1"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
 <script>
@@ -73,6 +74,8 @@ const reviewSessionId = SEC_QUERY.get("reviewSession");
 const requestedSessionId = SEC_QUERY.get("sessionId");
 const historicalSnapshotMode = Boolean(requestedSessionId);
 const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
+const SEC_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+const PRESERVED_SEC_ENDPOINT = `${SEC_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
 const persistedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 const requestedPersistedSession = requestedSessionId
   ? SCZN3M4.getSessionHistory().find(candidate => candidate && candidate.sessionId === requestedSessionId) || null
@@ -431,10 +434,12 @@ if (card) SCZN3Actions.bind(card, {
   save: {
     id: "save-sec",
     message: "Preserving your Shooter Experience Card…",
-    run: () => {
+    run: async () => {
       const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
       document.getElementById("secActionStatus").textContent = saved ? "" : "SEC could not be preserved.";
-      return saved || false;
+      if (!saved) return false;
+      await SCZN3SECReopenAuthority.provePossession(PRESERVED_SEC_ENDPOINT, saved);
+      return saved;
     },
     complete: result => {
       if (result.ok && result.value) renderPreservationState(result.value.preservedAt);

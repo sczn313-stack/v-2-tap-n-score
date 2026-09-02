@@ -88,10 +88,10 @@
     return {
       vendor: "Baker",
       sku: "ST-M16A2/M4",
-      product: "M4 Carbine • 25 Meter Zeroing Target",
+      product: "M4/M16 Series Weapons • 25M Zero Target",
       authority: "M4 Zeroing",
       targetId: target.targetId || "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      targetName: target.targetName || "M4 Carbine • 25 Meter Zeroing Target",
+      targetName: target.targetName || "M4/M16 Series Weapons 25M Zero",
       targetAuthorityGeometry: target.geometry,
       aimCoordinate: aimPoint,
       impactCoordinates: (impactPoints || []).map((point, index) => ({

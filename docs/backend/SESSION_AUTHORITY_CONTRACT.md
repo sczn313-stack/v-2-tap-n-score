@@ -79,8 +79,11 @@ preparation. The frontend renders `displayFields` supplied by the backend and
 does not derive setup values. A Standard Setup is not automatically added to
 the device-local Weapon Library.
 
-- M4 uses the proven `M4-IRON-DCH-FSP-AUTHORITY-2026-07-28` equipment record,
-  including 0.75 MOA windage and 1.5 MOA elevation per click.
+- The exact `m4_25m_zero` target road uses the target-scoped proven
+  `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01` record, including 0.75 MOA
+  windage and 1.75 MOA elevation per click for the standard M4/M4A1 front
+  sight post. The separate 2011 FM-backed 1.5 MOA record remains preserved
+  outside this exact target-scoped selection.
 - Baker 100 Yard uses the registered target Standard Setup with a 100-yard
   distance and 0.25 MOA scope adjustment.
 - GSSF AC-1 uses the registered pistol Standard Setup. No ungoverned distance

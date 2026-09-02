@@ -2,6 +2,37 @@
   "schemaVersion": "sczn3-target-image-registration-package-registry-v1",
   "packages": [
     {
+      "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "m4_25m_zero",
+      "targetProfileVersion": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+      "canonicalRepresentation": {
+        "assetId": "M4_M16_25M_ZERO_AUTHORITY_v1",
+        "path": "assets/M4_M16_25M_ZERO_AUTHORITY_v1.png",
+        "sha256": "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
+        "pixelWidth": 2550,
+        "pixelHeight": 3300,
+        "mediaType": "image/png"
+      },
+      "canonicalCoordinateSystemId": "M4_M16_25M_ZERO_AUTHORITY_v1",
+      "ugoAuthorityId": "sczn3-ugeo-authority-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 18,
+        "minimumInliers": 12,
+        "minimumInlierRatio": 0.35,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "registration_knowledge_only_m4_zeroing_authority_owns_sufficiency"
+    },
+    {
       "registrationPackageId": "baker-st-100yd-smart-photo-registration-v1",
       "registrationPackageVersion": "1",
       "targetProfileId": "baker_st_100yd_smart_zero",

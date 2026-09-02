@@ -2155,7 +2155,8 @@ async function goToTarget(options = {}) {
     const targetQuery = targetProfileId
       ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}${session.matrixSnapshot.vendor ? `&v=${encodeURIComponent(String(session.matrixSnapshot.vendor).toLowerCase())}` : ""}${session.matrixSnapshot.sku ? `&sku=${encodeURIComponent(session.matrixSnapshot.sku)}` : ""}`
       : "";
-    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}`;
+    const founderReviewQuery = MATRIX_QUERY.get("founder_review") === "1" ? "&founder_review=1" : "";
+    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}`;
   } catch (error) {
     const reason = error && error.packageData && error.packageData.reason;
     if (reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {
@@ -2392,7 +2393,7 @@ function targetAttributionFromContext(data = {}) {
       missionFamilyId: "zeroingCorrection",
       targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
       targetVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      targetName: "M4 Carbine • 25 Meter Zeroing Target",
+      targetName: "M4/M16 Series Weapons 25M Zero",
       targetFamily: "Military 25 Meter M4 Zeroing Target",
       targetDistance: "25 m",
       targetDistanceValue: "25",
@@ -2402,7 +2403,7 @@ function targetAttributionFromContext(data = {}) {
       opticBrand: "USGI",
       opticModel: "M4 Detachable Carry Handle + Front Sight Post",
       adjustmentSystem: "M4_IRON_DCH_FSP",
-      equipmentAuthorityRecordId: "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
+      equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
       ...(qrId ? { qr_id: qrId, qrId } : {})
     };
   }
