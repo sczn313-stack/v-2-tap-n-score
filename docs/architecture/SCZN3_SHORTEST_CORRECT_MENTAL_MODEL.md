@@ -2,7 +2,7 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.1 — Founder Approved / LOCKED
+**Version:** 2.2 — Founder Approved / LOCKED
 **Current through:** 2026-09-02
 **Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 Equipment Authority adjustment-profile speed purchase implemented and validated; Baker M/FAM product implementation pending |
+| Current development | Episode 60 three-product M/FAM direction and TSTT task-chapter architecture locked; runtime implementation pending |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase |
-| Latest checkpoint | `SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01` |
+| Latest locked snapshot | Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction |
+| Latest checkpoint | `SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Await Founder authorization before beginning the three-target M/FAM product implementation from Snapshot 20. M4 remains COMING SOON.** |
+| Next active priority | **Resolve the recorded product, registration, chapter, confirmation, and Universal MOA authority gaps before requesting implementation authorization. All three products remain unimplemented and COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -665,9 +665,13 @@ M4 already has target assets, OET/Profile data, M4 runtime/SEC surfaces, a milit
 
 Founder resolved the inherited front-sight discrepancy on 2026-09-01 without a global replacement. `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01` governs **1.75 MOA per elevation click** only for target profile `m4_25m_zero` plus the standard `M4_IRON_DCH_FSP` configuration. `M4-IRON-DCH-FSP-AUTHORITY-2026-07-28` remains preserved at **1.5 MOA** with its hash-verified 2011 Army FM source. Its two referenced validation files are absent from the recovered worktree and are explicitly recorded as an audit-lineage gap, not as invalidation of the FM source. Founder personally drove and approved the corrected road; Victory #2 is locked under Snapshot 18. No Home activation or deployment follows from that approval alone.
 
-Snapshot 19 locks the Founder-approved M/FAM contract without reopening Victory #2. The initial program contains three independent product/face identities: the existing Fort Benning M4/M16 road at target-scoped **1.75/0.75**, Baker M4 at **1.5/0.75**, and Baker M16A2 at **1.25/0.5** with a **1 MOA/click** rear elevation drum used only for its printed setup/finalization procedure. Baker production artwork/specimens, commercial identities, QR destinations, final iconography, profiles, and roads remain implementation work.
+Snapshot 19 locked the initial M/FAM contract without reopening Victory #2. Snapshot 21 course-corrects the commercial product form: the initial lineup is three standalone, single-sided Baker Talking Smart Targets—Universal MOA 25 Meter, M4 25 Meter, and M16A2 25 Meter. Fort Benning remains protected geometry/authority/road evidence, not a fourth product. Baker `ST-Uni25mMOA` is `SAME_GEOMETRY_NEW_PRODUCT` against the Fort Benning geometry. Conventional Baker products remain separate and may be merchandised beside their premium Smart versions.
 
 Snapshot 20 then implements the reusable Equipment Authority adjustment profiles and exclusive target applicability selector. It changes no target geometry, correction calculation, Baker Target Profile, QR identity, Talking lesson, SEC/Vault road, Home availability, or deployment state. Snapshot 20 is the protected implementation floor; the three-target M/FAM product build still requires separate Founder authorization.
+
+TSTT—Talking Smart Target Training—is now the target-specific training layer. Each Smart Target receives one session organized into complete, task-based chapters. Phone-first controls are Pause, Replay Chapter, Chapters, and Restart Training; there is no 10-second rewind. The progression is **Teach → Rehearse → Shoot → Measure → Adjust → Confirm → Preserve**. TSTT hands into Tap-n-Score at `ADD PHOTO` for registration, Precision Tap, governed correction, confirmation, SEC, and Vault. TSTT explains resolved authority and supports rehearsal; it never invents authority or recalculates a governed result.
+
+The Year-One 60% SCZN3 / 40% printer allocation applies only to the incremental Smart premium and is preserved as non-binding business architecture, not pricing or an executed contract. Government/institutional value remains an evaluation thesis: measure total cost to confirmed zero through rounds, groups, elapsed time, instructor intervention, and confirmation evidence before claiming savings.
 
 > **Do not re-solve conquered behavior. Retrieve it.**
 
@@ -728,6 +732,13 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not describe a physical-control rotation without stating the desired POI movement, named control, rotation, and explicit observer view
 - do not put target procedure or a target-scoped mechanical override into a reusable Equipment Authority adjustment profile
 - do not allow a target/zero relationship to select both a reusable adjustment profile and a target-scoped authority
+- do not revive the double-sided Smart Target concept; each initial Baker Smart Target is standalone and single-sided
+- do not turn Fort Benning evidence into a fourth commercial product or merge its identity with Baker `ST-Uni25mMOA`
+- do not divide TSTT by arbitrary playback time; chapters are complete shooter-task learning units
+- do not add a 10-second rewind to TSTT; replay operates at the chapter boundary
+- do not let TSTT invent, repair, generalize, or recalculate authority
+- do not encode the Year-One premium allocation as mandatory resale pricing or an executed commercial agreement
+- do not claim ammunition or training savings before governed evaluation evidence supports them
 
 ## 13. New Agent Operating Directive
 
@@ -777,7 +788,11 @@ Primary current records:
 - [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](../history/snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md)
 - [Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock](../history/snapshots/SNAPSHOT_019_EPISODE_60_M_FAM_CONTRACT_LOCK.md)
 - [Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase](../history/snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
+- [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](../history/snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
 - [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md)
+- [TSTT Target-Specific Training Architecture](./TSTT_TARGET_SPECIFIC_TRAINING_ARCHITECTURE.md)
+- [Episode 60 M/FAM / TSTT Course Correction](../history/episodes/EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
+- [Universal MOA Geometry Comparison](../authority-evidence/mfam/BAKER_ST_UNI25MMOA_GEOMETRY_COMPARISON.md)
 - [Equipment Adjustment Profile Speed Purchase](../authority-evidence/mfam/EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md)
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)

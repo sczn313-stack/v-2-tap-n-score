@@ -12,6 +12,9 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
+- [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](./snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
+- [Episode 60 M/FAM / TSTT Course Correction](./episodes/EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
+- [TSTT Target-Specific Training Architecture](../architecture/TSTT_TARGET_SPECIFIC_TRAINING_ARCHITECTURE.md)
 - [Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase](./snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Episode 60 Equipment Adjustment Profile Speed Purchase](./episodes/EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Equipment Adjustment Profile evidence](../authority-evidence/mfam/EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
@@ -40,7 +43,7 @@ This directory is the living historical record for SCZN3. It separates the story
 ## Current episode continuity
 
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
-- Episode 60 — **M4: LET THE TARGET TALK** is active under Snapshot 20; Victory #2 remains locked, M/FAM architecture remains approved, and the reusable Equipment Authority adjustment-profile layer is implemented and validated. Baker product implementation remains pending. M4 remains COMING SOON.
+- Episode 60 — **M4: LET THE TARGET TALK** is active under Snapshot 21; Victory #2 and Snapshot 20 remain protected, the three standalone Baker product direction and TSTT chapter architecture are locked, and runtime implementation remains pending. All three products remain COMING SOON.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)

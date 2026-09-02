@@ -1,7 +1,7 @@
 # M/FAM Target Family Contract
 
 Date: 2026-09-02  
-Status: Founder Approved / architecture locked / implementation pending
+Status: Founder Approved / architecture locked / TSTT course correction incorporated / implementation pending
 
 ## Purpose
 
@@ -12,6 +12,10 @@ M/FAM is the reusable SCZN3 family for M4/M16 Talking Smart Targets. It owns uni
 The governed relationship is:
 
 > **Publisher Product → Exact Face → Physical Geometry → Representation Variant → Weapon/Sight Configuration → Mechanical Authority → QR Identity → Talking Language → Governed Road**
+
+The standalone Smart product relationship is:
+
+> **Publisher/Product Identity → Exact Face → Physical Geometry → Applicable Equipment/Mechanical Authority → QR Identity → TSTT → Governed Tap-n-Score Road**
 
 ## Contract
 
@@ -26,6 +30,20 @@ The governed relationship is:
 | QR Identity | Immutable destination for the exact publisher product and face | QR identity resolves the Target Profile; appearance does not choose identity. |
 | Talking Language | Face- and configuration-specific setup, correction, confirmation, and printed terminology | A target inherits the PLAYER, not another target's nouns, procedures, or mechanics. |
 | Governed Road | QR → Target Profile → registration → setup → shot group → correction → confirmation → SEC → Vault → exact reopen | Universal capability is inherited; exact authority is injected only after identity resolution. |
+
+## Product-form decision
+
+The initial product program is exactly three standalone, single-sided Baker Talking Smart Targets:
+
+1. Baker Universal MOA 25 Meter
+2. Baker M4 25 Meter
+3. Baker M16A2 25 Meter
+
+The double-sided Smart Target concept is retired. Baker's existing conventional targets remain separate publisher products and may be merchandised side-by-side with the standalone Smart versions. A conventional two-sided sheet does not force its two faces into one Smart product identity.
+
+Fort Benning is not a fourth product or product project. Its protected specimen, geometry, target-scoped authority, and Victory #2 road remain useful evidence. Baker `ST-Uni25mMOA` is classified `SAME_GEOMETRY_NEW_PRODUCT` against that geometry. Shared geometry does not merge Fort Benning and Baker identities.
+
+> **One target. One identity. One coherent experience.**
 
 ## Mechanical-language convention
 
@@ -49,13 +67,25 @@ Examples:
 
 The M16A2 rear elevation drum step is setup/finalization, not shot-group elevation correction.
 
-## Initial family members
+## Initial Smart product lineup and authority disposition
 
 | Product identity | Face/configuration | Mechanical authority | Status |
 |---|---|---|---|
-| Fort Benning M4/M16 | Existing `m4_25m_zero`; standard M4/M4A1 front sight post and detachable carrying handle | `1.75 MOA` elevation / `0.75 MOA` windage; exact target-scoped Victory #2 authority | Locked and Founder Approved; not reopened by this contract |
-| Baker M4 | M4 face; ±21/±8 geometry; 300-meter `6/3` setting; do not use `Z` | `1.5 MOA` front-sight elevation / `0.75 MOA` rear windage | Authority closed; profile implementation pending |
-| Baker M16A2 | M16A2 face; ±27/±10 geometry; 300 plus one click setup, then return one click to 300 | `1.25 MOA` front-sight elevation / `0.5 MOA` rear windage; rear elevation drum `1 MOA/click` for setup/finalization | Authority closed; profile implementation pending |
+| Baker Universal MOA 25 Meter | `ST-Uni25mMOA` conventional evidence; same protected 8.5 × 11 ring/grid geometry; multiple printed sight rows | Exact row/configuration must resolve; protected M4 relationship uses target-scoped `1.75/0.75`; printed optic rows need complete control authority | `SAME_GEOMETRY_NEW_PRODUCT`; Smart profile/QR/registration pending |
+| Baker M4 25 Meter | Standalone M4 Smart face derived from conventional `ST-M16A2/M4`; ±21/±8 geometry; 300-meter `6/3` setting; do not use `Z` | `1.5 MOA` front-sight elevation / `0.75 MOA` rear windage | Authority closed; standalone profile implementation pending |
+| Baker M16A2 25 Meter | Standalone M16A2 Smart face derived from conventional `ST-M16A2/M4`; ±27/±10 geometry; 300 plus one click setup, then return one click to 300 | `1.25 MOA` front-sight elevation / `0.5 MOA` rear windage; rear elevation drum `1 MOA/click` for setup/finalization | Authority closed; standalone profile implementation pending |
+
+Fort Benning `m4_25m_zero` remains a protected evidence/authority/road reference at target-scoped `1.75/0.75`. It is not in the commercial Smart product lineup and is not reopened.
+
+## TSTT boundary
+
+TSTT — Talking Smart Target Training — is the target-specific training layer. Each Smart Target receives one session made of task-based chapters. A chapter is a complete learning unit defined by what the shooter must understand, rehearse, do, or change.
+
+The phone-first controls are `PAUSE`, `REPLAY CHAPTER`, `CHAPTERS`, and `RESTART TRAINING`. There is no 10-second rewind. TSTT hands into the governed road at the exact point evidence or authoritative execution is required:
+
+> **ADD PHOTO → Precision Tap → governed correction → adjustment → confirmation → SEC → Vault**
+
+TSTT explains resolved authority and supports physical rehearsal. It never supplies missing authority or recalculates a governed result. The complete chapter contract and proposed maps live in `TSTT_TARGET_SPECIFIC_TRAINING_ARCHITECTURE.md`.
 
 ## Admission test
 
@@ -91,8 +121,8 @@ The allowed classification outcomes are:
 
 ## Preserved open work
 
-- Baker production artwork and physical specimens are required for final registration and production validation, not architecture construction.
-- Commercial SKUs and exact QR destinations remain open until Baker participation supplies them.
+- Baker production artwork and standalone physical specimens are required for final registration and production validation, not architecture construction.
+- Smart-product SKUs and exact QR destinations remain open until Baker participation supplies them.
 - Final observer-view iconography remains open.
-- Baker Target Profiles, runtime authority registrations, Talking lessons, QR destinations, tests, and roads are not implemented by this architecture lock.
-
+- Target-specific group and confirmation sufficiency, Universal MOA optic-control authority, final TSTT scripts/media, and institutional evaluation protocols remain open.
+- Baker Target Profiles, runtime authority registrations, TSTT runtime, QR destinations, tests, and roads are not implemented by this architecture lock.
