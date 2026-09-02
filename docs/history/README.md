@@ -12,6 +12,9 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
+- [Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock](./snapshots/SNAPSHOT_019_EPISODE_60_M_FAM_CONTRACT_LOCK.md)
+- [Episode 60 M/FAM Target Family Contract Lock](./episodes/EPISODE_60_M_FAM_CONTRACT_LOCK.md)
+- [M/FAM Target Family Contract](../architecture/M_FAM_TARGET_FAMILY_CONTRACT.md)
 - [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](./snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md)
 - [Episode 60 Victory #2 checkpoint](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/CHECKPOINT.md)
 - [Episode 60 Victory #2 restore point](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/RESTORE_POINT.md)
@@ -34,7 +37,7 @@ This directory is the living historical record for SCZN3. It separates the story
 ## Current episode continuity
 
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
-- Episode 60 — **M4: LET THE TARGET TALK** is active; Victory #2 is Founder Approved and restore-verified under Keepsake #23. M4 remains COMING SOON.
+- Episode 60 — **M4: LET THE TARGET TALK** is active under Snapshot 19; Victory #2 is Founder Approved and restore-verified under Keepsake #23, and the M/FAM architecture is locked with Baker product implementation pending. M4 remains COMING SOON.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)

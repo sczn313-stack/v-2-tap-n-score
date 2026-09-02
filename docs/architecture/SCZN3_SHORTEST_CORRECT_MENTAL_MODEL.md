@@ -2,7 +2,7 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 1.9 — Founder Approved / LOCKED
+**Version:** 2.0 — Founder Approved / LOCKED
 **Current through:** 2026-09-02
 **Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 Victory #2 locked: exact M4 road through Precision Tap, correction, confirmation, SEC, Vault, and exact reopen |
+| Current development | Episode 60 M/FAM architecture locked; Baker M4 and Baker M16A2 authority closed; product implementation pending |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority |
+| Latest locked snapshot | Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock |
 | Latest checkpoint | `SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Build the next bounded Episode 60 Victory from the locked Victory #2 floor. M4 remains COMING SOON.** |
+| Next active priority | **Build the approved three-target M/FAM program from Snapshot 19 without reopening Victory #2. M4 remains COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -216,6 +216,22 @@ Precision Tap owns shooter-declared observation entry: aim when required and imp
 > **Precision Tap owns observation entry. Existing SCZN3 authorities own meaning and results.**
 
 Registration should determine what SCZN3 knows as early as practical without imposing one laboratory-grade threshold on every claim. Local imperfection produces local uncertainty. Refusal is the last responsible option and remains limited to the unsupported claim.
+
+### M/FAM Target Family Contract
+
+M/FAM is the reusable M4/M16 Talking Smart Target family. Its governed chain is:
+
+> **Publisher Product → Exact Face → Physical Geometry → Representation Variant → Weapon/Sight Configuration → Mechanical Authority → QR Identity → Talking Language → Governed Road**
+
+> **M/FAM owns reusable capability, never inherited geometry or mechanical defaults.**
+
+Identical geometry from different printers may reuse governed geometry without collapsing publisher/product identity. Harmless color or print differences may be representation variants when scale and registration landmarks remain unchanged. Material geometry or physical-scale changes require separate geometry and authority validation. Exact face plus exact weapon/sight configuration selects mechanical authority; family membership never supplies it.
+
+Every physical-control instruction uses:
+
+> **Desired POI movement first → physical control → rotation → explicit observer view.**
+
+Clockwise/counterclockwise without an observer view is insufficient. Ambiguous identity, face, scale, configuration, or authority fails closed for governed correction. See the [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md).
 
 ### SEC architecture
 
@@ -641,7 +657,9 @@ Inherited and immutable unless contradictory authority and Founder direction req
 
 M4 already has target assets, OET/Profile data, M4 runtime/SEC surfaces, a military equipment registry, and a 10/10 backend authority suite. It remains COMING SOON publicly. M4 Equipment Library work is limited to truthful data required by the experience and must inherit the #20 preservation invariant.
 
-Founder resolved the inherited front-sight discrepancy on 2026-09-01 without a global replacement. `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01` governs **1.75 MOA per elevation click** only for target profile `m4_25m_zero` plus the standard `M4_IRON_DCH_FSP` configuration. `M4-IRON-DCH-FSP-AUTHORITY-2026-07-28` remains preserved at **1.5 MOA** with its hash-verified 2011 Army FM source. Its two referenced validation files are absent from the recovered worktree and are explicitly recorded as an audit-lineage gap, not as invalidation of the FM source. The corrected road remains protected Founder review until driven and approved; no Home activation or deployment follows from this decision alone.
+Founder resolved the inherited front-sight discrepancy on 2026-09-01 without a global replacement. `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01` governs **1.75 MOA per elevation click** only for target profile `m4_25m_zero` plus the standard `M4_IRON_DCH_FSP` configuration. `M4-IRON-DCH-FSP-AUTHORITY-2026-07-28` remains preserved at **1.5 MOA** with its hash-verified 2011 Army FM source. Its two referenced validation files are absent from the recovered worktree and are explicitly recorded as an audit-lineage gap, not as invalidation of the FM source. Founder personally drove and approved the corrected road; Victory #2 is locked under Snapshot 18. No Home activation or deployment follows from that approval alone.
+
+Snapshot 19 locks the Founder-approved M/FAM contract without reopening Victory #2. The initial program contains three independent product/face identities: the existing Fort Benning M4/M16 road at target-scoped **1.75/0.75**, Baker M4 at **1.5/0.75**, and Baker M16A2 at **1.25/0.5** with a **1 MOA/click** rear elevation drum used only for its printed setup/finalization procedure. Baker production artwork/specimens, commercial identities, QR destinations, final iconography, profiles, and roads remain implementation work.
 
 > **Do not re-solve conquered behavior. Retrieve it.**
 
@@ -698,6 +716,8 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not replace the exact governed publisher product route with a generic homepage when an exact product route exists
 - do not let shared-link telemetry interfere with or become authority over shooter evidence or preserved sessions
 - do not treat additive catalog/schema expansion as permission to rewrite, discard, or detach shooter-owned Equipment Profile data or its preserved session relationships
+- do not let M/FAM family membership supply or inherit another target's geometry, product identity, sight configuration, or mechanical defaults
+- do not describe a physical-control rotation without stating the desired POI movement, named control, rotation, and explicit observer view
 
 ## 13. New Agent Operating Directive
 
@@ -744,6 +764,9 @@ Primary current records:
 - [Snapshot 15 — Episode 59 Final Founder Audit Lock](../history/snapshots/SNAPSHOT_015_EPISODE_59_FINAL_FOUNDER_AUDIT_LOCK.md)
 - [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](../history/snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md)
 - [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](../history/snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md)
+- [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](../history/snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md)
+- [Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock](../history/snapshots/SNAPSHOT_019_EPISODE_60_M_FAM_CONTRACT_LOCK.md)
+- [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md)
 - [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md)
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)

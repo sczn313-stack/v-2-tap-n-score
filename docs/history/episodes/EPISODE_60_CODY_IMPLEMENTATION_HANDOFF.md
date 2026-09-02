@@ -8,11 +8,13 @@ Use the clean Episode 60 worktree created from the Episode 59 closure receipt co
 
 Before implementation:
 
-1. Read SCMM v1.8.
+1. Read SCMM v2.0.
 2. Read Snapshot 17 and the Episode 59 closing record.
 3. Read the Keepsake Vault Index entries for #7, #8, #12, #19, and #20.
 4. Run the existing M4 Authority 10/10 and mechanical-testability gates.
 5. Walk the actual Home-launched M4 experience and return a factual gap ledger.
+
+Before any Baker M4/M16A2 implementation, read SCMM v2.0, Snapshot 19, the M/FAM Target Family Contract, and both M/FAM authority-evidence records. Snapshot 19 is the approved architecture floor; it does not itself authorize product implementation.
 
 ## Mission
 

@@ -11,8 +11,9 @@ This index is the front door to SCZN3 architecture. Read the documents in order 
 5. [Equipment Compatibility Authority](./EQUIPMENT_COMPATIBILITY_AUTHORITY.md)
 6. [SCZN3 Universal Shooter Experience Card Architecture](./SCZN3_Universal_SEC_Architecture.md)
 7. [SCZN3 Known Target Integration Standard — KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md)
-8. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
-9. For publisher-corpus work, [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
+8. [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md) for M4/M16 family admission, identity, geometry, mechanical authority, and Talking-language boundaries
+9. [SCZN3 History](../history/README.md), including the [Episode Index](../history/episodes/README.md) and [Milestone Index](../history/milestones/README.md)
+10. For publisher-corpus work, [Publisher OS 11-Publisher Founder Master Summary](../authority-evidence/publisher-os/PUBLISHER_OS_11_PUBLISHER_MASTER_SUMMARY_2026-08-21.md)
 
 ### Adopted architecture decision
 
@@ -54,6 +55,10 @@ The Universal SEC owns the presentation and strict renderer-selection boundary. 
 ### [SCZN3 Known Target Integration Standard — KTIS](./SCZN3_KNOWN_TARGET_INTEGRATION_STANDARD_KTIS.md) — Active
 
 KTIS governs integration of existing printer/publisher targets. The publisher's offered product, identity, published dimensions, artwork, and variants remain physical-target authority; SCZN3 adds QR identity, UGO registration, target/mission-specific backend authority, and inherits the existing platform experience. KTIS prevents target redesign, repeated platform re-specification, and unnecessary Founder gates while preserving explicit stop conditions for real authority or architecture conflicts.
+
+### [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md) — Locked
+
+M/FAM governs admission and reuse for M4/M16 Talking Smart Targets. It preserves publisher product, exact face, physical geometry, representation variant, weapon/sight configuration, mechanical authority, QR identity, Talking language, and governed-road ownership as separate layers. M/FAM supplies reusable capability but no inherited geometry or mechanical defaults. Its observer-view convention requires desired POI movement, named control, rotation, and explicit viewing perspective.
 
 ### [SCZN3 History](../history/README.md) — Active
 
