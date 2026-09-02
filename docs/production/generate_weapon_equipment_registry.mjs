@@ -26,6 +26,10 @@ export const WEAPON_EQUIPMENT_REGISTRY = Object.freeze(${JSON.stringify(registry
 const RECORDS_BY_ID = new Map(
   WEAPON_EQUIPMENT_REGISTRY.records.map((record) => [record.recordId, record])
 );
+const ADJUSTMENT_PROFILES_BY_ID = new Map(
+  (WEAPON_EQUIPMENT_REGISTRY.adjustmentProfiles || [])
+    .map((profile) => [profile.adjustmentProfileId, profile])
+);
 
 export function getEquipmentRecord(recordId) {
   return RECORDS_BY_ID.get(String(recordId || "")) || null;
@@ -39,6 +43,48 @@ export function resolveProvenEquipmentRecord(recordId, adjustmentSystem = "") {
     && String(record.adjustmentSystem || "").toUpperCase() !== String(adjustmentSystem).toUpperCase()
   ) return null;
   return record;
+}
+
+export function getAdjustmentProfile(adjustmentProfileId) {
+  return ADJUSTMENT_PROFILES_BY_ID.get(String(adjustmentProfileId || "")) || null;
+}
+
+export function resolveTargetAdjustmentAuthority(targetZeroRelationship) {
+  const relationship = targetZeroRelationship && typeof targetZeroRelationship === "object"
+    ? targetZeroRelationship
+    : null;
+  if (!relationship) return null;
+
+  const equipmentConfigurationId = String(relationship.equipmentConfigurationId || "");
+  const targetProfileId = String(relationship.targetProfileId || "");
+  if (!equipmentConfigurationId || !targetProfileId) return null;
+
+  if (relationship.authoritySelectionType === "reusable_adjustment_profile") {
+    if (!relationship.adjustmentProfileId || relationship.targetScopedAuthorityRecordId !== null) return null;
+    const profile = getAdjustmentProfile(relationship.adjustmentProfileId);
+    if (!profile || String(profile.status || "").toLowerCase() !== "proven") return null;
+    if (String(profile.equipmentConfigurationId || "") !== equipmentConfigurationId) return null;
+    return {
+      selectionType: "reusable_adjustment_profile",
+      adjustmentProfile: profile,
+      authorityRecord: null
+    };
+  }
+
+  if (relationship.authoritySelectionType === "target_scoped_authority") {
+    if (relationship.adjustmentProfileId !== null || !relationship.targetScopedAuthorityRecordId) return null;
+    const record = resolveProvenEquipmentRecord(relationship.targetScopedAuthorityRecordId);
+    if (!record || record.recordType !== "target_scoped_weapon_sight_configuration") return null;
+    if (String(record.equipmentConfigurationId || "") !== equipmentConfigurationId) return null;
+    if (String(record.authorityScope?.targetProfileId || "") !== targetProfileId) return null;
+    return {
+      selectionType: "target_scoped_authority",
+      adjustmentProfile: null,
+      authorityRecord: record
+    };
+  }
+
+  return null;
 }
 `;
   await writeFile(outputPath, moduleSource);

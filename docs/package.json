@@ -7,7 +7,7 @@
     "build:netlify": "node production/build-netlify.mjs",
     "test:authority": "python3 backend/test_authority_service.py",
     "test:authority-m4": "python3 -m backend.m4_authority.test_authority_service",
-    "test:equipment": "node production/weapon_equipment_registry_test.mjs && node production/m4_mechanical_testability_gate.mjs",
+    "test:equipment": "node production/weapon_equipment_registry_test.mjs && node production/equipment_adjustment_profile_test.mjs && python3 -B -m unittest backend.m4_authority.test_equipment_adjustment_profiles && node production/m4_mechanical_testability_gate.mjs",
     "test:parity": "node production/parity_test.mjs",
     "test:integration": "node production/integration_contract_test.mjs",
     "test:zeroing-sop": "node production/zeroing_sop_test.mjs",

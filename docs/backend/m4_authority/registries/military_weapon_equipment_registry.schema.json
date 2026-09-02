@@ -8,6 +8,7 @@
     "schemaVersion",
     "authorityOwner",
     "publicationStatus",
+    "adjustmentProfiles",
     "records"
   ],
   "properties": {
@@ -16,6 +17,11 @@
     "authorityOwner": { "const": "SCZN3 Weapon Library" },
     "publicationStatus": {
       "enum": ["research", "draft", "validation", "founder_review", "production"]
+    },
+    "adjustmentProfiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/adjustmentProfile" }
     },
     "records": {
       "type": "array",
@@ -47,6 +53,9 @@
           "libraryPublicationStatus": {
             "enum": ["research", "draft", "validation", "founder_review", "production"]
           },
+          "equipmentConfigurationId": { "type": "string", "minLength": 1 },
+          "adjustmentProfileId": { "type": "string", "minLength": 1 },
+          "targetZeroRelationship": { "$ref": "#/$defs/targetZeroRelationship" },
           "manufacturer": { "type": ["string", "null"] },
           "serviceBranches": {
             "type": "array",
@@ -89,6 +98,183 @@
     }
   },
   "$defs": {
+    "adjustmentProfile": {
+      "type": "object",
+      "required": [
+        "adjustmentProfileId",
+        "recordType",
+        "status",
+        "authorityOwner",
+        "equipmentConfigurationId",
+        "displayName",
+        "adjustmentSystem",
+        "applicabilityScope",
+        "controls",
+        "sourceDocumentation"
+      ],
+      "properties": {
+        "adjustmentProfileId": { "type": "string", "minLength": 1 },
+        "recordType": { "const": "equipment_adjustment_profile" },
+        "status": { "enum": ["research", "draft", "validation", "proven", "retired"] },
+        "authorityOwner": { "const": "Equipment Authority" },
+        "equipmentConfigurationId": { "type": "string", "minLength": 1 },
+        "displayName": { "type": "string", "minLength": 1 },
+        "adjustmentSystem": { "type": "string", "minLength": 1 },
+        "applicabilityScope": {
+          "type": "object",
+          "required": ["weaponPlatforms", "sightConfiguration", "scopeRule"],
+          "properties": {
+            "weaponPlatforms": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "sightConfiguration": { "type": "string", "minLength": 1 },
+            "scopeRule": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "controls": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/adjustmentControl" }
+        },
+        "sourceDocumentation": {
+          "type": "array",
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "adjustmentControl": {
+      "type": "object",
+      "required": [
+        "controlId",
+        "control",
+        "axis",
+        "operationPurpose",
+        "movementPerClick",
+        "movementUnit",
+        "directions",
+        "status",
+        "effectiveInterval",
+        "provenance",
+        "conflicts"
+      ],
+      "properties": {
+        "controlId": { "type": "string", "minLength": 1 },
+        "control": { "type": "string", "minLength": 1 },
+        "axis": { "enum": ["windage", "elevation"] },
+        "operationPurpose": { "enum": ["correction", "configuration_setting", "temporary_setup", "finalization"] },
+        "movementPerClick": { "type": "number", "exclusiveMinimum": 0 },
+        "movementUnit": { "enum": ["MOA", "MRAD"] },
+        "directions": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/controlDirection" }
+        },
+        "status": { "enum": ["research", "draft", "validation", "proven", "retired"] },
+        "effectiveInterval": { "$ref": "#/$defs/effectiveInterval" },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/controlProvenance" }
+        },
+        "conflicts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/controlConflict" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "controlDirection": {
+      "type": "object",
+      "required": ["desiredPoiMovement", "rotation", "observerView"],
+      "properties": {
+        "desiredPoiMovement": { "enum": ["UP", "DOWN", "LEFT", "RIGHT"] },
+        "rotation": { "enum": ["CLOCKWISE", "COUNTERCLOCKWISE"] },
+        "observerView": { "$ref": "#/$defs/observerView" }
+      },
+      "additionalProperties": false
+    },
+    "observerView": {
+      "type": "object",
+      "required": ["position", "viewingAxis"],
+      "properties": {
+        "position": { "type": "string", "minLength": 1 },
+        "viewingAxis": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "effectiveInterval": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": ["string", "null"], "format": "date" }
+      },
+      "additionalProperties": false
+    },
+    "controlProvenance": {
+      "type": "object",
+      "required": ["sourceId", "evidence"],
+      "properties": {
+        "sourceId": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "controlConflict": {
+      "type": "object",
+      "required": ["conflictId", "status", "targetScopedAuthorityRecordId", "resolution"],
+      "properties": {
+        "conflictId": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 },
+        "targetScopedAuthorityRecordId": { "type": "string", "minLength": 1 },
+        "resolution": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "targetZeroRelationship": {
+      "type": "object",
+      "required": [
+        "relationshipId",
+        "equipmentConfigurationId",
+        "targetProfileId",
+        "authoritySelectionType",
+        "adjustmentProfileId",
+        "targetScopedAuthorityRecordId"
+      ],
+      "properties": {
+        "relationshipId": { "type": "string", "minLength": 1 },
+        "equipmentConfigurationId": { "type": "string", "minLength": 1 },
+        "targetProfileId": { "type": "string", "minLength": 1 },
+        "authoritySelectionType": { "enum": ["reusable_adjustment_profile", "target_scoped_authority"] },
+        "adjustmentProfileId": { "type": ["string", "null"] },
+        "targetScopedAuthorityRecordId": { "type": ["string", "null"] }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "authoritySelectionType": { "const": "reusable_adjustment_profile" },
+            "adjustmentProfileId": { "type": "string", "minLength": 1 },
+            "targetScopedAuthorityRecordId": { "const": null }
+          }
+        },
+        {
+          "properties": {
+            "authoritySelectionType": { "const": "target_scoped_authority" },
+            "adjustmentProfileId": { "const": null },
+            "targetScopedAuthorityRecordId": { "type": "string", "minLength": 1 }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
     "axis": {
       "type": "object",
       "required": [

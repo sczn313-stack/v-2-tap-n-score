@@ -1,9 +1,224 @@
 {
   "registryId": "SCZN3-MILITARY-WEAPON-EQUIPMENT-LIBRARY",
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "authorityOwner": "SCZN3 Weapon Library",
   "governingPrinciple": "Research broadly. Register precisely. Implement only proven configurations.",
   "publicationStatus": "founder_review",
+  "adjustmentProfiles": [
+    {
+      "adjustmentProfileId": "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+      "recordType": "equipment_adjustment_profile",
+      "status": "proven",
+      "authorityOwner": "Equipment Authority",
+      "equipmentConfigurationId": "M4-M4A1-DCH-FSP",
+      "displayName": "M4/M4A1 Detachable Carrying Handle + Standard Front Sight Post",
+      "adjustmentSystem": "M4_IRON_DCH_FSP",
+      "applicabilityScope": {
+        "weaponPlatforms": ["M4 Carbine", "M4A1 Carbine"],
+        "sightConfiguration": "Detachable carrying-handle rear sight, unmarked aperture, and standard four-notch front sight post",
+        "scopeRule": "Reusable mechanical facts for this exact equipment configuration. Target Authority must separately establish applicability and may select an explicit target-scoped override."
+      },
+      "controls": [
+        {
+          "controlId": "M4-DCH-REAR-WINDAGE-KNOB",
+          "control": "Rear sight windage knob",
+          "axis": "windage",
+          "operationPurpose": "correction",
+          "movementPerClick": 0.75,
+          "movementUnit": "MOA",
+          "directions": [
+            {
+              "desiredPoiMovement": "RIGHT",
+              "rotation": "CLOCKWISE",
+              "observerView": {
+                "position": "right side of weapon",
+                "viewingAxis": "looking squarely at the exposed knob face along the control axis toward the weapon"
+              }
+            },
+            {
+              "desiredPoiMovement": "LEFT",
+              "rotation": "COUNTERCLOCKWISE",
+              "observerView": {
+                "position": "right side of weapon",
+                "viewingAxis": "looking squarely at the exposed knob face along the control axis toward the weapon"
+              }
+            }
+          ],
+          "status": "proven",
+          "effectiveInterval": {"from": "2011-02-10", "to": null},
+          "provenance": [{"sourceId": "FM-3-22.9-C1-2011", "evidence": ["Table 5-5", "Figure 5-19"]}],
+          "conflicts": []
+        },
+        {
+          "controlId": "M4-STANDARD-FRONT-SIGHT-POST",
+          "control": "Standard four-notch front sight post",
+          "axis": "elevation",
+          "operationPurpose": "correction",
+          "movementPerClick": 1.5,
+          "movementUnit": "MOA",
+          "directions": [
+            {
+              "desiredPoiMovement": "UP",
+              "rotation": "CLOCKWISE",
+              "observerView": {
+                "position": "above the weapon",
+                "viewingAxis": "looking straight down onto the front sight post along the post axis"
+              }
+            },
+            {
+              "desiredPoiMovement": "DOWN",
+              "rotation": "COUNTERCLOCKWISE",
+              "observerView": {
+                "position": "above the weapon",
+                "viewingAxis": "looking straight down onto the front sight post along the post axis"
+              }
+            }
+          ],
+          "status": "proven",
+          "effectiveInterval": {"from": "2011-02-10", "to": null},
+          "provenance": [{"sourceId": "FM-3-22.9-C1-2011", "evidence": ["Table 5-5", "Figure 5-19"]}],
+          "conflicts": [
+            {
+              "conflictId": "M4-FSP-1.5-VS-TARGET-SCOPED-1.75",
+              "status": "resolved_by_exact_target_scope",
+              "targetScopedAuthorityRecordId": "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
+              "resolution": "Preserve 1.5 MOA as reusable equipment authority for its verified 2011 scope. The exact Fort Benning target relationship selects its separate 1.75 MOA target-scoped authority and does not modify this profile."
+            }
+          ]
+        }
+      ],
+      "sourceDocumentation": [
+        {
+          "sourceId": "FM-3-22.9-C1-2011",
+          "title": "Rifle Marksmanship M16-/M4-Series Weapons",
+          "publisher": "Headquarters, Department of the Army",
+          "publication": "FM 3-22.9, Change 1",
+          "effectiveDate": "2011-02-10",
+          "url": "https://api.army.mil/e2/c/downloads/363931.pdf",
+          "sourceSha256": "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532",
+          "applicableEvidence": ["Figure 5-19", "Table 5-5"]
+        }
+      ]
+    },
+    {
+      "adjustmentProfileId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "recordType": "equipment_adjustment_profile",
+      "status": "proven",
+      "authorityOwner": "Equipment Authority",
+      "equipmentConfigurationId": "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      "displayName": "M16A2 Standard Front Sight Post + Rear Sight Windage/Elevation Controls",
+      "adjustmentSystem": "M16A2_IRON_FSP_REAR_DRUM",
+      "applicabilityScope": {
+        "weaponPlatforms": ["M16A2 Rifle"],
+        "sightConfiguration": "Standard M16A2 front sight post with rear windage knob and rear elevation drum",
+        "scopeRule": "Reusable mechanical facts for this exact equipment configuration. Target Authority separately owns target procedure and applicability."
+      },
+      "controls": [
+        {
+          "controlId": "M16A2-REAR-WINDAGE-KNOB",
+          "control": "Rear sight windage knob",
+          "axis": "windage",
+          "operationPurpose": "correction",
+          "movementPerClick": 0.5,
+          "movementUnit": "MOA",
+          "directions": [
+            {
+              "desiredPoiMovement": "RIGHT",
+              "rotation": "CLOCKWISE",
+              "observerView": {
+                "position": "right side of weapon",
+                "viewingAxis": "looking squarely at the exposed knob face along the control axis toward the weapon"
+              }
+            },
+            {
+              "desiredPoiMovement": "LEFT",
+              "rotation": "COUNTERCLOCKWISE",
+              "observerView": {
+                "position": "right side of weapon",
+                "viewingAxis": "looking squarely at the exposed knob face along the control axis toward the weapon"
+              }
+            }
+          ],
+          "status": "proven",
+          "effectiveInterval": {"from": "2011-02-10", "to": null},
+          "provenance": [{"sourceId": "FM-3-22.9-C1-2011", "evidence": ["Table 5-5", "Figure 5-19"]}],
+          "conflicts": []
+        },
+        {
+          "controlId": "M16A2-STANDARD-FRONT-SIGHT-POST",
+          "control": "Standard M16A2 front sight post",
+          "axis": "elevation",
+          "operationPurpose": "correction",
+          "movementPerClick": 1.25,
+          "movementUnit": "MOA",
+          "directions": [
+            {
+              "desiredPoiMovement": "UP",
+              "rotation": "CLOCKWISE",
+              "observerView": {
+                "position": "above the weapon",
+                "viewingAxis": "looking straight down onto the front sight post along the post axis"
+              }
+            },
+            {
+              "desiredPoiMovement": "DOWN",
+              "rotation": "COUNTERCLOCKWISE",
+              "observerView": {
+                "position": "above the weapon",
+                "viewingAxis": "looking straight down onto the front sight post along the post axis"
+              }
+            }
+          ],
+          "status": "proven",
+          "effectiveInterval": {"from": "2011-02-10", "to": null},
+          "provenance": [{"sourceId": "FM-3-22.9-C1-2011", "evidence": ["Table 5-5", "Figure 5-19"]}],
+          "conflicts": []
+        },
+        {
+          "controlId": "M16A2-REAR-ELEVATION-DRUM",
+          "control": "Rear sight elevation drum",
+          "axis": "elevation",
+          "operationPurpose": "configuration_setting",
+          "movementPerClick": 1.0,
+          "movementUnit": "MOA",
+          "directions": [
+            {
+              "desiredPoiMovement": "UP",
+              "rotation": "CLOCKWISE",
+              "observerView": {
+                "position": "above the weapon",
+                "viewingAxis": "looking down onto the exposed rear elevation drum along its vertical rotation axis"
+              }
+            },
+            {
+              "desiredPoiMovement": "DOWN",
+              "rotation": "COUNTERCLOCKWISE",
+              "observerView": {
+                "position": "above the weapon",
+                "viewingAxis": "looking down onto the exposed rear elevation drum along its vertical rotation axis"
+              }
+            }
+          ],
+          "status": "proven",
+          "effectiveInterval": {"from": "2011-02-10", "to": null},
+          "provenance": [{"sourceId": "FM-3-22.9-C1-2011", "evidence": ["Table 5-5"]}],
+          "conflicts": []
+        }
+      ],
+      "sourceDocumentation": [
+        {
+          "sourceId": "FM-3-22.9-C1-2011",
+          "title": "Rifle Marksmanship M16-/M4-Series Weapons",
+          "publisher": "Headquarters, Department of the Army",
+          "publication": "FM 3-22.9, Change 1",
+          "effectiveDate": "2011-02-10",
+          "url": "https://api.army.mil/e2/c/downloads/363931.pdf",
+          "sourceSha256": "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532",
+          "applicableEvidence": ["Figure 5-19", "Table 5-5"]
+        }
+      ]
+    }
+  ],
   "records": [
     {
       "recordId": "M4-IRON-DCH-FSP-AUTHORITY-2026-07-28",
@@ -32,6 +247,8 @@
         "mountingConfiguration": "Detachable carrying handle installed on the M4/M4A1 upper receiver with the standard fixed front sight assembly"
       },
       "adjustmentSystem": "M4_IRON_DCH_FSP",
+      "equipmentConfigurationId": "M4-M4A1-DCH-FSP",
+      "adjustmentProfileId": "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
       "adjustmentUnit": "MOA",
       "axes": {
         "windage": {
@@ -126,6 +343,15 @@
         "mountingConfiguration": "Detachable carrying handle installed on the M4/M4A1 upper receiver with the standard fixed front sight assembly"
       },
       "adjustmentSystem": "M4_IRON_DCH_FSP",
+      "equipmentConfigurationId": "M4-M4A1-DCH-FSP",
+      "targetZeroRelationship": {
+        "relationshipId": "M4-M16-25M-ZERO-TARGET-AUTHORITY-SELECTION-2026-09-01",
+        "equipmentConfigurationId": "M4-M4A1-DCH-FSP",
+        "targetProfileId": "m4_25m_zero",
+        "authoritySelectionType": "target_scoped_authority",
+        "adjustmentProfileId": null,
+        "targetScopedAuthorityRecordId": "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
+      },
       "adjustmentUnit": "MOA",
       "axes": {
         "windage": {

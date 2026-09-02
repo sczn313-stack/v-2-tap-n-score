@@ -2,7 +2,7 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.0 — Founder Approved / LOCKED
+**Version:** 2.1 — Founder Approved / LOCKED
 **Current through:** 2026-09-02
 **Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 M/FAM architecture locked; Baker M4 and Baker M16A2 authority closed; product implementation pending |
+| Current development | Episode 60 Equipment Authority adjustment-profile speed purchase implemented and validated; Baker M/FAM product implementation pending |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock |
+| Latest locked snapshot | Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase |
 | Latest checkpoint | `SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Build the approved three-target M/FAM program from Snapshot 19 without reopening Victory #2. M4 remains COMING SOON.** |
+| Next active priority | **Await Founder authorization before beginning the three-target M/FAM product implementation from Snapshot 20. M4 remains COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -600,6 +600,12 @@ The minimum shooter path is:
 
 `sczn3-equipment-knowledge-v1.1` preserves manufacturer, platform family, exact model, technical configuration, commercial offering, sight/optic, mount/installation, ammunition, target/zero/confirmation relationships, and the composed Equipment Profile. MC9 PRIME and Glock Gen6 proved that newly admitted products inherit through governed data without manufacturer/model/SKU production branches.
 
+Episode 60 completed the already-referenced `adjustmentProfile` concept without redesigning Episode 58. Military Equipment Registry/schema v1.1.0 now preserves exact-configuration, per-control movement/click, unit, desired POI movement, rotation, explicit observer view/viewing axis, operation purpose, applicability scope, provenance/status/effective interval, and conflicts. `targetZeroRelationship` must choose exactly one reusable adjustment profile or one explicit target-scoped authority and fails closed on ambiguity or configuration/target mismatch.
+
+> **Equipment Authority owns reusable mechanical facts. Target Authority owns applicability, target-specific overrides, procedure, correction calculation, and governed execution.**
+
+The reusable M4 profile remains **1.5/0.75**. The reusable M16A2 profile is **1.25/0.5**, with the rear elevation drum preserved at **1 MOA/click** as a configuration-setting fact. The Baker instruction **300 + one click → return to 300** remains target procedure. Fort Benning **1.75** remains an explicit target-scoped authority and never becomes generic M4 equipment knowledge.
+
 Equipment Profile V2 owns durable equipment identity/configuration, provenance, shooter label/photo, stable profile identity/timestamps, and active state. Session Authority owns what the shooter is doing now. The SEC owns preserved shooting history. A session distance never becomes equipment zero authority by implication. Existing V1 profiles migrate without rebuild while transient session, personal, environmental, target, and QR fields are stripped from equipment identity.
 
 The 2026-08-31 forward-expansion proof establishes that an existing shooter-owned Equipment Profile V2 survives an additive M4-representative catalog/schema expansion with its label, photograph, governed equipment identity, optic/ammunition/configuration data, active selection, exact reopen, preserved session relationship, edit/resave behavior, and applicable-session inheritance intact. Catalog knowledge may expand; shooter-owned equipment data moves forward without rebuild or silent replacement.
@@ -661,6 +667,8 @@ Founder resolved the inherited front-sight discrepancy on 2026-09-01 without a g
 
 Snapshot 19 locks the Founder-approved M/FAM contract without reopening Victory #2. The initial program contains three independent product/face identities: the existing Fort Benning M4/M16 road at target-scoped **1.75/0.75**, Baker M4 at **1.5/0.75**, and Baker M16A2 at **1.25/0.5** with a **1 MOA/click** rear elevation drum used only for its printed setup/finalization procedure. Baker production artwork/specimens, commercial identities, QR destinations, final iconography, profiles, and roads remain implementation work.
 
+Snapshot 20 then implements the reusable Equipment Authority adjustment profiles and exclusive target applicability selector. It changes no target geometry, correction calculation, Baker Target Profile, QR identity, Talking lesson, SEC/Vault road, Home availability, or deployment state. Snapshot 20 is the protected implementation floor; the three-target M/FAM product build still requires separate Founder authorization.
+
 > **Do not re-solve conquered behavior. Retrieve it.**
 
 ## 12. Do Not Redo
@@ -718,6 +726,8 @@ Do not reopen or recreate these settled foundations without contradictory author
 - do not treat additive catalog/schema expansion as permission to rewrite, discard, or detach shooter-owned Equipment Profile data or its preserved session relationships
 - do not let M/FAM family membership supply or inherit another target's geometry, product identity, sight configuration, or mechanical defaults
 - do not describe a physical-control rotation without stating the desired POI movement, named control, rotation, and explicit observer view
+- do not put target procedure or a target-scoped mechanical override into a reusable Equipment Authority adjustment profile
+- do not allow a target/zero relationship to select both a reusable adjustment profile and a target-scoped authority
 
 ## 13. New Agent Operating Directive
 
@@ -766,7 +776,9 @@ Primary current records:
 - [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](../history/snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md)
 - [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](../history/snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md)
 - [Snapshot 19 — Episode 60 M/FAM Target Family Contract Lock](../history/snapshots/SNAPSHOT_019_EPISODE_60_M_FAM_CONTRACT_LOCK.md)
+- [Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase](../history/snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [M/FAM Target Family Contract](./M_FAM_TARGET_FAMILY_CONTRACT.md)
+- [Equipment Adjustment Profile Speed Purchase](../authority-evidence/mfam/EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Keepsake Vault Index — Two Homes](../governance/KEEPSAKE_VAULT_INDEX.md)
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
