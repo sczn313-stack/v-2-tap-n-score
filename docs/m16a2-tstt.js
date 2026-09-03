@@ -5,13 +5,13 @@
   const equipmentKeys = Object.freeze({ active: "SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", saved: "SCZN3_SAVED_EQUIPMENT_PROFILES" });
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
-  const defaultEquipment = Object.freeze({ status: "demo", label: "M16A2 Rifle · 5.56 NATO · Iron Sights" });
+  const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
       title: "Know the target before you touch the sights.",
-      summary: "This target can support more than one zeroing setup. The exact M16A2 lesson opens when your M16A2 rifle and standard iron sights are selected and confirmed.",
-      narration: "This is the twenty-five meters zeroing target for the M16A2. The target determines the available lesson. Your selected equipment determines which lesson applies. Confirm that the rifle and sights in your hands match the equipment shown before you continue.",
+      summary: "Learn the target and the M16A2 standard iron-sight setup this training will use.",
+      narration: "This is the twenty-five meters zeroing target for the M16A2. This training follows the controls and adjustments for the M16A2 with standard iron sights. Begin by seeing the complete target you will use.",
       visual: () => `<figure class="target-window is-full-target"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure>`,
       action: "equipment"
     }),
@@ -39,9 +39,9 @@
     }),
     Object.freeze({
       id: "a2-5", label: "PRE-FIRE READY", shortTitle: "Ready for the first group", eyebrow: "STOP POINT • LIVE FIRE COMES NEXT", title: "Ready to fire your first group.",
-      summary: "Your target, rifle, iron sights, temporary drum setup, center aim, and adjustment controls are ready. Before you shoot, make sure the rifle and sights in your hands match the equipment shown in SCZN3.",
+      summary: "You have learned the target, temporary drum setup, center aim, and adjustment controls used by this M16A2 standard iron-sight training.",
       narration: "You are ready for your first group. At twenty-five meters, follow all range commands and safety procedures. Use the center of the target as the same point of aim for every shot. Your range procedure determines the number of rounds. Stop here and wait for range commands.",
-      visual: () => `<div class="ready-panel"><span class="ready-kicker">PREFIRE CHECK COMPLETE</span><div class="ready-title">READY TO FIRE<br>YOUR FIRST GROUP</div><ul><li><span>✓</span>25 Meters Zeroing Target — M16A2</li><li><span>✓</span>M16A2 rifle with standard iron sights</li><li><span>✓</span>Rear drum: one click past 300</li><li><span>✓</span>Aim: center intersection</li><li><span>✓</span>25-meter firing line</li></ul><p>STOP HERE. Follow range commands and keep one center aim.</p></div>`,
+      visual: () => `<div class="ready-panel"><span class="ready-kicker">PREFIRE TRAINING COMPLETE</span><div class="ready-title">READY TO FIRE<br>YOUR FIRST GROUP</div><ul><li><span>•</span>Training target: 25 Meters Zeroing Target — M16A2</li><li><span>•</span>Training setup: M16A2 with standard iron sights</li><li><span>•</span>Rear-drum lesson: one click past 300</li><li><span>•</span>Aim: center intersection</li><li><span>•</span>Distance: 25 meters</li></ul><p>STOP HERE. Follow range commands and keep one center aim.</p></div>`,
       task: "When the range is safe and commands permit, maintain the same center aim throughout your first group.", action: "terminal"
     })
   ]);
@@ -52,11 +52,10 @@
     title: document.getElementById("lessonTitle"), summary: document.getElementById("lessonSummary"), visual: document.getElementById("visualStage"), task: document.getElementById("taskCard"), action: document.getElementById("chapterAction"),
     equipmentIndicator: document.getElementById("equipmentIndicator"), equipmentStateLabel: document.getElementById("equipmentStateLabel"), equipmentLabel: document.getElementById("equipmentLabel"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
-    pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]')
+    start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]')
   });
-  const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, utterance: null, equipment: null, confirmedEquipmentId: "" };
+  const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, utterance: null, equipment: null };
 
-  function escaped(value = "") { return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character])); }
   function conciseEquipmentName(profile = {}) {
     const manufacturer = profile.weaponCatalogManufacturer || profile.weaponManufacturer || "";
     const model = profile.weaponCatalogModel || profile.weaponModelType || "";
@@ -68,13 +67,13 @@
     const sight = /iron sights/i.test(sightSource) ? "Iron Sights" : sightSource;
     return [firearm, caliber, sight].filter(Boolean).join(" · ") || profile.setupName || "Active Equipment";
   }
-  function equipmentAllowsLesson() { return state.equipment.status === "exact-confirmed"; }
+  function equipmentSupportsExactSetup() { return state.equipment.status === "exact"; }
   function equipmentLibraryUrl() {
     return `matrix.html?view=library&origin=tstt&return_to=m16a2-tstt.html&return_chapter=${state.current + 1}`;
   }
   function preserveJourney() {
     if (!state.started) return;
-    sessionStorage.setItem(journeyKey, JSON.stringify({ started: true, current: state.current, unlocked: state.unlocked, paused: state.paused, stopped: state.stopped, confirmedEquipmentId: state.confirmedEquipmentId }));
+    sessionStorage.setItem(journeyKey, JSON.stringify({ started: true, current: state.current, unlocked: state.unlocked, paused: state.paused, stopped: state.stopped }));
   }
   function restoreJourney() {
     try {
@@ -85,7 +84,6 @@
       state.unlocked = Math.min(chapters.length - 1, Math.max(state.current, Number(saved.unlocked) || 0));
       state.paused = saved.paused === true;
       state.stopped = saved.stopped === true;
-      state.confirmedEquipmentId = String(saved.confirmedEquipmentId || "");
     } catch (error) {
       console.warn("TSTT journey could not be restored", error);
     }
@@ -101,9 +99,7 @@
         && profile.adjustmentProfileId === "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
         && /(iron|front sight post|fsp|m16a2-standard-iron)/.test(sightText);
       const label = conciseEquipmentName(profile);
-      const status = compatible
-        ? (state.confirmedEquipmentId === activeId ? "exact-confirmed" : "exact-unconfirmed")
-        : "general-unavailable";
+      const status = compatible ? "exact" : "different";
       return { status, label, profile, activeId };
     } catch (error) {
       console.warn("Active Equipment Library setup could not be read", error);
@@ -114,18 +110,9 @@
     const previousStatus = state.equipment?.status;
     state.equipment = readActiveEquipment();
     elements.equipmentLabel.textContent = state.equipment.label;
-    const statusLabels = {
-      demo: "STARTING SETUP · NOT YOUR GEAR",
-      "exact-unconfirmed": "EXACT TRAINING MATCH · CONFIRM GEAR",
-      "exact-confirmed": "EXACT TRAINING MATCH",
-      "general-unavailable": "OTHER EQUIPMENT · LESSON NOT AVAILABLE"
-    };
-    elements.equipmentStateLabel.textContent = statusLabels[state.equipment.status] || "CURRENT EQUIPMENT";
+    elements.equipmentStateLabel.textContent = state.equipment.status === "none" ? "EQUIPMENT LIBRARY" : "CURRENT EQUIPMENT";
     elements.equipmentIndicator.dataset.equipmentStatus = state.equipment.status;
     elements.equipmentIndicator.href = equipmentLibraryUrl();
-    if (state.equipment.status === "general-unavailable" && state.current > 0) {
-      state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; cancelSpeech();
-    }
     syncShootingSetup();
     if (rerender && previousStatus !== state.equipment.status) render({ narrate: false, sync: false });
   }
@@ -144,47 +131,35 @@
   }
   function stopTraining() { if (!state.started) return; cancelSpeech(); state.paused = false; state.stopped = true; elements.pauseLabel.textContent = "RESUME"; elements.app.dataset.status = "stopped"; preserveJourney(); }
   function syncShootingSetup() {
-    const exact = ["exact-unconfirmed", "exact-confirmed"].includes(state.equipment.status);
-    const setup = exact ? {
+    const exact = equipmentSupportsExactSetup();
+    const setup = {
       distance: "25", distanceUnit: "METERS", adjustmentUnit: "MOA",
       adjustmentIncrement: "Elevation 1.25 · Windage 0.5",
-      source: "M16A2 25-meter procedure + selected equipment authority"
-    } : null;
-    if (setup) sessionStorage.setItem(shootingSetupKey, JSON.stringify(setup));
-    else sessionStorage.removeItem(shootingSetupKey);
-    elements.shootingSetupSummary.textContent = exact ? "25 METERS · MOA" : "NOT YET AVAILABLE";
-    elements.sessionDistance.value = setup ? setup.distance : "—";
-    elements.sessionDistanceUnit.value = setup ? setup.distanceUnit : "—";
-    elements.sessionAdjustmentUnit.value = setup ? setup.adjustmentUnit : "—";
-    elements.sessionAdjustmentIncrement.value = setup ? setup.adjustmentIncrement : "Not available";
-    elements.shootingSetupNote.textContent = setup
-      ? "This exact lesson governs 25 meters. Elevation and windage use different adjustment values."
-      : "Select equipment with a governed relationship to this target before SCZN3 can establish today’s shooting setup.";
+      source: "M16A2 25-meter training authority"
+    };
+    sessionStorage.setItem(shootingSetupKey, JSON.stringify({ ...setup, appliesToActiveEquipment: exact }));
+    elements.shootingSetupSummary.textContent = "25 METERS · MOA";
+    elements.sessionDistance.value = setup.distance;
+    elements.sessionDistanceUnit.value = setup.distanceUnit;
+    elements.sessionAdjustmentUnit.value = setup.adjustmentUnit;
+    elements.sessionAdjustmentIncrement.value = setup.adjustmentIncrement;
+    elements.shootingSetupNote.textContent = exact
+      ? "This lesson governs 25 meters for your selected M16A2 standard iron-sight setup."
+      : "Training values for the M16A2 with standard iron sights. Different equipment requires its own governed adjustment authority.";
   }
   function setupMarkup() {
-    if (state.equipment.status === "general-unavailable") {
-      return `<div class="equipment-hold is-neutral"><b>${escaped(state.equipment.label)}</b><span>This target may support general zeroing, but SCZN3 does not yet have the target-and-equipment relationship needed to guide this setup. The M16A2-specific lesson stays closed.</span></div>`;
-    }
-    const confirmed = state.equipment.status === "exact-confirmed";
-    const matchText = confirmed ? "THIS SETUP WORKS TOGETHER" : (state.equipment.status === "exact-unconfirmed" ? "EXACT TRAINING MATCH — CONFIRM YOUR GEAR" : "STARTING EXAMPLE FOR THIS LESSON");
-    const note = state.equipment.status === "demo"
-      ? `<div class="setup-demo-note">NOT CONFIRMED AS YOUR EQUIPMENT<br><span>Choose your equipment before continuing.</span></div>`
-      : (!confirmed ? `<div class="setup-demo-note">BEFORE YOU CONTINUE<br><span>Make sure the rifle and sights in your hands match the equipment shown in SCZN3.</span></div>` : "");
-    return `<div class="zeroing-setup"><span class="setup-label">YOUR ZEROING SETUP</span><div class="setup-equation"><b>M16A2 RIFLE</b><i>＋</i><b>STANDARD IRON SIGHTS</b><i>＋</i><b>25 METERS ZEROING TARGET — M16A2</b></div><div class="setup-match${confirmed ? "" : " is-pending"}">${confirmed ? "✓" : "○"} ${matchText}</div>${note}</div>`;
+    return `<div class="training-setup"><span class="task-label">TRAINING SETUP</span><b>M16A2 · Standard Iron Sights</b><p>This training follows the controls and adjustments for this setup. If your equipment is different, some instructions may not apply.</p></div>`;
   }
   function actionMarkup(chapter) {
-    if (!state.started) return `<button class="primary-action" type="button" data-action="start">START TRAINING</button>`;
-    if (state.equipment.status === "exact-unconfirmed") return `<button class="primary-action" type="button" data-action="confirm-equipment">THIS MATCHES MY GEAR</button>`;
-    if (!equipmentAllowsLesson()) return `<a class="primary-action" href="${equipmentLibraryUrl()}">${state.equipment.status === "demo" ? "CHOOSE MY EQUIPMENT" : "CHOOSE DIFFERENT EQUIPMENT"}</a>`;
+    if (!state.started) return "";
     if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT: PREPARE THE REAR DRUM</button>`;
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
   }
   function updateChapterList() {
     elements.list.innerHTML = chapters.map((chapter, index) => {
-      const unavailable = !equipmentAllowsLesson() && index > 0;
-      const disabled = !state.started || unavailable || index > state.unlocked;
-      const stateLabel = index === state.current ? `<small class="you-are-here">YOU ARE HERE</small>` : `<small>${unavailable ? "CHECK EQUIPMENT" : (disabled ? "LOCKED" : "OPEN")}</small>`;
+      const disabled = !state.started || index > state.unlocked;
+      const stateLabel = index === state.current ? `<small class="you-are-here">YOU ARE HERE</small>` : `<small>${disabled ? "LOCKED" : "OPEN"}</small>`;
       return `<li><button type="button" data-chapter-index="${index}" ${disabled ? "disabled" : ""} ${index === state.current ? 'aria-current="step"' : ""}><strong>${String(index + 1).padStart(2, "0")}</strong><span><b>${chapter.shortTitle}</b>${stateLabel}</span></button></li>`;
     }).join("");
   }
@@ -198,24 +173,17 @@
     elements.chapterNumber.textContent = `CHAPTER ${state.current + 1} OF ${chapters.length}`; elements.chapterSubject.textContent = chapter.label; renderProgress();
     elements.targetIdentity.hidden = !chapter.targetIdentity; elements.eyebrow.hidden = !chapter.eyebrow; elements.eyebrow.textContent = chapter.eyebrow; elements.title.textContent = chapter.title; elements.summary.textContent = chapter.summary;
     elements.visual.innerHTML = chapter.visual();
-    const confirmationReminder = state.equipment.status === "exact-unconfirmed" ? `<span class="equipment-confirmation-reminder">CONFIRM THAT THE RIFLE AND SIGHTS IN YOUR HANDS MATCH SCZN3 BEFORE CONTINUING.</span>` : "";
-    elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `${confirmationReminder}<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
+    elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
     elements.action.innerHTML = actionMarkup(chapter);
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
     elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" }); if (narrate) speakCurrent();
   }
-  function startTraining() { state.started = true; state.paused = false; state.stopped = false; state.current = 0; state.unlocked = equipmentAllowsLesson() ? chapters.length - 1 : 0; render(); }
-  function confirmEquipment() {
-    if (state.equipment.status !== "exact-unconfirmed" || !state.equipment.activeId) return;
-    state.confirmedEquipmentId = state.equipment.activeId;
-    state.unlocked = chapters.length - 1;
-    syncEquipment({ rerender: false });
-    render({ narrate: false, sync: false });
-  }
-  function advance() { if (state.current === 0 && !equipmentAllowsLesson()) return; if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }
-  function restartTraining() { cancelSpeech(); sessionStorage.removeItem(journeyKey); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; state.confirmedEquipmentId = ""; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
+  function startTraining() { state.started = true; state.paused = false; state.stopped = false; state.current = 0; state.unlocked = chapters.length - 1; render(); }
+  function advance() { if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }
+  function restartTraining() { cancelSpeech(); sessionStorage.removeItem(journeyKey); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
 
-  elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "start") startTraining(); if (action === "next") advance(); if (action === "confirm-equipment") confirmEquipment(); });
+  elements.start.addEventListener("click", startTraining);
+  elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "next") advance(); });
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
   elements.replay.addEventListener("click", () => { state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }); elements.restart.addEventListener("click", restartTraining);
   document.querySelector('[data-control="chapters"]').addEventListener("click", () => elements.dialog.showModal()); document.querySelector("[data-close-chapters]").addEventListener("click", () => elements.dialog.close());

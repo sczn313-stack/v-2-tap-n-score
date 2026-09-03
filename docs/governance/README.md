@@ -17,6 +17,7 @@ This index identifies the governing records for implementation control, episode 
 11. [Episode 60 Victory #3 Guinea Pig Ron Review Build](./EPISODE60_VICTORY3_GUINEA_PIG_RON_REVIEW_BUILD_2026-09-02.md) — local-only Baker M16A2 standard iron-sight TSTT through pre-fire readiness; Founder cold-use pending.
 12. [Episode 60 TSTT Founder Review Pass #3](./EPISODE60_TSTT_FOUNDER_REVIEW_PASS3_2026-09-03.md) — M-Series Equipment Library discovery, exact-training confirmation, truthful broad-utility boundary, and session Shooting Setup.
 13. [Episode 60 TSTT Pass #3 Founder Cold-Review Lock](./EPISODE60_TSTT_PASS3_FOUNDER_COLD_REVIEW_LOCK_2026-09-03.md) — Snapshot 23 preservation-only lock separating the known-good implementation from seven unimplemented Founder-review discoveries.
+14. [Episode 60 TSTT Founder Review Pass #4](./EPISODE60_TSTT_FOUNDER_REVIEW_PASS4_2026-09-03.md) — removes the firing-line entry gate, makes START TRAINING persistent before launch, and separates lesson access from equipment-specific execution authority.
 9. [Snapshot 20 — Equipment Adjustment Profile Speed Purchase](../history/snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md) — protected implementation floor beneath the course correction.
 10. [Snapshot 18 — Episode 60 Victory #2 Target-Scoped M4 Authority](../history/snapshots/SNAPSHOT_018_EPISODE_60_VICTORY_2_TARGET_SCOPED_M4_AUTHORITY.md) — protected M4 governed-road evidence; Home remains inactive.
 11. [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](../history/snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md) — episode-transition continuity floor.
@@ -32,6 +33,7 @@ This index identifies the governing records for implementation control, episode 
 - [Episode 60 Victory #3 Guinea Pig Ron review checkpoint](../../CHECKPOINTS/SCZN3_EP60_VICTORY3_GUINEA_PIG_RON_REVIEW_2026-09-02/CHECKPOINT.md)
 - [Episode 60 TSTT Founder Review Pass #3 checkpoint](../../CHECKPOINTS/SCZN3_EP60_TSTT_FOUNDER_REVIEW_PASS3_2026-09-03/CHECKPOINT.md)
 - [Episode 60 TSTT Pass #3 Founder cold-review lock](../../CHECKPOINTS/SCZN3_EP60_TSTT_PASS3_FOUNDER_COLD_REVIEW_LOCK_2026-09-03/CHECKPOINT.md)
+- [Episode 60 TSTT Founder Review Pass #4 checkpoint](../../CHECKPOINTS/SCZN3_EP60_TSTT_FOUNDER_REVIEW_PASS4_2026-09-03/CHECKPOINT.md)
 - [Episode 60 Victory #2 checkpoint](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/CHECKPOINT.md)
 - [Episode 60 Victory #2 restore point](../../CHECKPOINTS/SCZN3_EP60_VICTORY_2_M4_TARGET_SCOPED_AUTHORITY_2026-09-01/RESTORE_POINT.md)
 - [Snapshot 17 / Episode transition checkpoint](../../CHECKPOINTS/SCZN3_EP59_CLOSURE_EP60_OPENING_FLOOR_2026-09-01/CHECKPOINT.md)

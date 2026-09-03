@@ -24,7 +24,17 @@ The exact Smart Target selects the target-specific lesson contract. The shooter'
 
 Adaptation does not transfer authority to TSTT. Target Authority must admit the target/equipment relationship and owns target-specific procedure, applicability, overrides, calculation, execution, and confirmation. Equipment Authority supplies reusable mechanical facts for the resolved configuration. TSTT selects and explains only content supported by those owners.
 
-Equipment branching is governed content/data selection, not permission to create target-ID, SKU, firearm-model, or optic-model application-code branches. A branch may be entered only from resolved equipment identity and configuration. Irrelevant branches are omitted, not played and verbally disclaimed. If no applicable branch resolves, the unsupported instruction fails closed while other truthful target instruction remains available.
+Equipment branching is governed content/data selection, not permission to create target-ID, SKU, firearm-model, or optic-model application-code branches. Equipment-specific instruction may be asserted as applicable to the shooter's setup only from resolved equipment identity and configuration. A shooter may still enter, view, and rehearse a clearly named target-specific training setup when their equipment is unknown or different; that access does not assert applicability, unlock equipment-specific execution authority, or convert the lesson into authority for their gear. If no applicable branch resolves, the unsupported instruction or governed action fails closed while other truthful target instruction remains available.
+
+## Shooter-freedom entry contract
+
+> **Shooter freedom in front. Governed authority underneath.**
+
+Opening TSTT is not a firing-line permission gate. QR entry establishes exact target identity and does not ask the shooter to reconfirm what SCZN3 already knows. Equipment Library remains the persistent equipment owner, but the shooter does not have to confirm equipment merely to begin training. The teaching surface may state the named training setup and warn that some instructions may not apply when the shooter's equipment differs.
+
+Equipment identity and applicability remain strict underneath. An unresolved or mismatched configuration cannot receive a claim that target-specific controls, adjustment values, correction, or live-fire readiness apply to it. TSTT may teach the governed M16A2 standard-iron lesson as that named lesson; it may not represent those mechanics as authority for a different rifle or sight.
+
+> **Don't ask for information because SCZN3 has a place to store it. Ask for it when SCZN3 needs it to do something that is just better for the shooter.**
 
 ## Chapter contract
 
@@ -46,6 +56,7 @@ Chapter duration follows the task. It is not an arbitrary video segment.
 
 | Control | Required behavior |
 |---|---|
+| `START TRAINING` | Before training begins, occupy the persistent PLAYER rail as the immediately visible dominant action. Do not auto-start. After activation, the normal training controls replace it in the same fixed region. |
 | `PAUSE` | Freeze narration and chapter choreography without losing chapter or governed-road state. |
 | `REPLAY CHAPTER` | Return to the beginning of the current chapter and replay the complete learning unit. |
 | `CHAPTERS` | Open direct navigation among available learning units while preserving any separately governed Tap-n-Score evidence. |
@@ -73,7 +84,7 @@ The first live-fire chapter may not begin until required identity, distance, equ
 5. Rejoin the common governed road at the first state where branch-specific mechanical instruction is no longer required.
 6. Preserve the selected authority identities and branch identity with the session so replay and exact reopen cannot silently change the lesson.
 
-Changing equipment/configuration invalidates any dependent ready-to-fire state and requires branch resolution again. It does not erase separately preserved evidence.
+Changing equipment/configuration invalidates any dependent equipment-specific execution or ready-to-fire state and requires branch resolution again. It does not prevent training entry or erase training progress or separately preserved evidence.
 
 ## Result-adaptive advancement contract
 
@@ -114,7 +125,7 @@ Product basis: standalone Baker Smart version derived from conventional `ST-Uni2
 
 | Chapter | What it teaches | What the shooter can rehearse | Governing authority/evidence | Firing | TSTT / Tap-n-Score boundary |
 |---:|---|---|---|---|---|
-| U1 — Confirm This Target | Identify the standalone Baker Universal MOA Smart face, its 25-meter use, and the requirement to match one exact sight system before correction. | Compare the physical title, center diamond, ring stack, grid, and future QR identity to the displayed reference. | Founder Baker product screenshot; `BAKER_ST_UNI25MMOA_GEOMETRY_COMPARISON.md`; future Baker Smart product/QR authority required. | None | TSTT only; block governed execution if product/face identity is unresolved. |
+| U1 — Know This Target | Identify the standalone Baker Universal MOA Smart face, its 25-meter use, and the requirement for one applicable sight system before correction. | Locate the physical title, center diamond, ring stack, and grid on the displayed QR-identified target. | Founder Baker product screenshot; `BAKER_ST_UNI25MMOA_GEOMETRY_COMPARISON.md`; future Baker Smart product/QR authority required. | None | TSTT teaches the QR-established target; block governed execution only if authoritative identity is unresolved. |
 | U2 — Read the Target | Each small block represents 1 MOA at 25 m; the ring stack, crosshair, black disk, dashed ring, and center diamond are registration and aiming landmarks. | Trace the center axes and identify the center diamond and matching grid intersections without touching sights. | Protected Fort Benning geometry reconstruction and Baker same-geometry comparison; final Baker specimen registration still required. | None | TSTT teaches; Tap-n-Score later owns photograph registration and coordinates. |
 | U3 — Select the Correct Sight Row | The printed table is not one universal adjustment rule. The shooter must select the row matching the exact installed sight/configuration. | Locate the applicable row and say the elevation and windage values back before any adjustment. | Printed Baker table; Equipment Library identity; Target Authority applicability selection. | None | TSTT may show only resolved rows; unresolved or mismatched equipment withholds correction. |
 | U4 — Rehearse the Controls | For an admitted configuration, distinguish the elevation control from the windage control and practice desired-POI-first, named-control, rotation, and observer-view language. | With an unloaded/safe firearm under range rules, point to the correct control and rehearse the governed direction without consuming a correction. | Selected Equipment Authority profile or exact target-scoped authority; final observer-view iconography pending. | None | TSTT presents resolved mechanics; it does not calculate clicks. |
@@ -129,7 +140,7 @@ Product basis: standalone Baker Smart version derived from conventional `ST-Uni2
 
 | Decision point | Governed route |
 |---|---|
-| U3 equipment resolution | Select only an admitted CCO, M150/RCO, M4/M4A1 iron, M16-family iron, or later authority-complete branch. Omit all irrelevant sight instruction. An unresolved/mismatched row cannot advance to U4 or live fire. |
+| U3 equipment resolution | Select only an admitted CCO, M150/RCO, M4/M4A1 iron, M16-family iron, or later authority-complete branch for applicable execution. Unresolved/mismatched equipment may view a clearly named training setup but cannot receive equipment-applicability or live-fire authority. |
 | U4 control rehearsal | Render the control identity, click scale, rotation, and observer-view content belonging to the resolved branch, then rejoin at U5. |
 | U7 result | If correction is required, route U7 → branch-specific U8 → U9. If evidence is insufficient, return to U6. Only an authoritative confirmed result may route from U9 to U10. |
 | U9 not confirmed | New confirmation evidence routes back through U6/U7 and, when another correction is returned, U8/U9. Repeat until confirmed or narrowly held. |
@@ -146,7 +157,7 @@ Product basis: standalone Baker Smart M4 face derived from the M4 side of conven
 
 | Chapter | What it teaches | What the shooter can rehearse | Governing authority/evidence | Firing | TSTT / Tap-n-Score boundary |
 |---:|---|---|---|---|---|
-| M4-1 — Confirm M4 Target and Equipment | Match the Baker M4 Smart face to the M4/M4A1 carbine with detachable carrying handle and standard front sight post. | Identify the ±21/±8 grid, M4 silhouette, center circle/dot, and installed front/rear controls. | `BAKER_M4_MECHANICAL_AUTHORITY_EVIDENCE.md`; future Baker Smart product/QR and specimen registration. | None | TSTT only; identity/configuration mismatch blocks governed correction. |
+| M4-1 — Know the Target and Training Setup | Learn the QR-identified Baker M4 Smart face and the M4/M4A1 detachable-carrying-handle standard-iron setup used by this lesson. | Identify the ±21/±8 grid, M4 silhouette, center circle/dot, and the lesson's front/rear controls without confirming them as personal equipment. | `BAKER_M4_MECHANICAL_AUTHORITY_EVIDENCE.md`; future Baker Smart product/QR and specimen registration. | None | TSTT entry remains open; unresolved applicability blocks only governed equipment-specific correction or live-fire readiness. |
 | M4-2 — Set the Rear Sight for This Target | For this Baker M4 face, set the rear elevation knob to the 300-meter `6/3` setting and do not use `Z`. | With the firearm safe, locate `6/3`, distinguish it from `Z`, and rehearse returning to the required starting mark. | FM 3-22.9 Change 1, Figure 5-19; Baker printed M4 procedure; Target Authority owns applicability. | None | TSTT teaches the target procedure; Tap-n-Score does not infer starting setup. |
 | M4-3 — Understand Aim and Grid | Aim at target center; the ±21 horizontal and ±8 vertical grid supports measured displacement toward the center white dot. | Identify center, practice the intended sight picture, and trace horizontal versus vertical correction axes. | Baker M4 printed face/procedure; FM Figure 5-19; final physical registration required. | None | TSTT only. |
 | M4-4 — Rehearse M4 Controls | Front sight post owns elevation at `1.5 MOA/click`; rear windage owns windage at `0.75 MOA/click`, with desired-POI-first observer-normalized directions. | Point to each control and rehearse up/down/right/left physical movement language without choosing a click count. | `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`; `BAKER_M4_MECHANICAL_AUTHORITY_EVIDENCE.md`. | None | TSTT presents reusable mechanics; Target Authority will calculate applicability and clicks. |
@@ -161,7 +172,7 @@ Product basis: standalone Baker Smart M4 face derived from the M4 side of conven
 
 | Decision point | Governed route |
 |---|---|
-| M4-1 equipment resolution | Current evidence admits the standard M4/M4A1 detachable-carrying-handle/front-sight-post branch. If a different optic/sight configuration is identified, omit M4-2/M4-4 iron-sight instruction and hold correction/live-fire advancement until Target Authority admits an equipment-appropriate branch. |
+| M4-1 equipment resolution | Current evidence admits the standard M4/M4A1 detachable-carrying-handle/front-sight-post branch for applicable execution. A different or unknown configuration may view the named M4 training setup, but its mechanics are not asserted as applicable and correction/live-fire advancement remains held until Target Authority admits an equipment-appropriate branch. |
 | Admitted equipment branch | Present only its target-applicable setup and control rehearsal, then rejoin at M4-5. Similar equipment names or reusable mechanics alone do not admit the branch. |
 | M4-7 result | If correction is required, route M4-7 → branch-specific M4-8 → M4-9. If evidence is insufficient, return to M4-6. Only an authoritative confirmed result may route from M4-9 to M4-10. |
 | M4-9 not confirmed | Route the new evidence through M4-6/M4-7 and repeat adjustment/confirmation as governed. There is no automatic advance after one confirmation group. |
@@ -174,7 +185,7 @@ Product basis: standalone Baker Smart M16A2 face derived from the M16A2 side of 
 
 | Chapter | What it teaches | What the shooter can rehearse | Governing authority/evidence | Firing | TSTT / Tap-n-Score boundary |
 |---:|---|---|---|---|---|
-| A2-1 — Confirm M16A2 Target and Equipment | Match the Baker M16A2 Smart face to an M16A2 with standard rear sight, rear elevation drum, rear windage knob, and front sight post. | Identify the ±27/±10 grid, M16A2 silhouette, center circle/dot, and all three controls. | `BAKER_M16A2_MECHANICAL_AUTHORITY_EVIDENCE.md`; future Baker Smart product/QR and specimen registration. | None | TSTT only; mismatch blocks governed correction. |
+| A2-1 — Know the Target and Training Setup | Learn the QR-identified Baker M16A2 Smart face and the standard M16A2 iron-sight setup used by this lesson. | Identify the ±27/±10 grid, M16A2 silhouette, center circle/dot, and the lesson's three controls without confirming them as personal equipment. | `BAKER_M16A2_MECHANICAL_AUTHORITY_EVIDENCE.md`; future Baker Smart product/QR and specimen registration. | None | TSTT entry remains open; unresolved applicability blocks only governed equipment-specific correction or live-fire readiness. |
 | A2-2 — Prepare the Rear Elevation Drum | The rear elevation drum is a temporary setup control: set 300, then rotate one click past 300 for the 25-meter zero. | With the firearm safe, locate 300 and rehearse one clockwise click viewed from above. | FM 3-22.9 Change 1, Figure 5-19 and Table 5-5; Baker printed procedure; Target Authority owns the one-click-past-300 sequence. | None | TSTT teaches/rehearses setup; it must not present this click as group-elevation correction. |
 | A2-3 — Understand Aim and Grid | Aim at target center; the ±27 horizontal and ±10 vertical grid supports displacement measurement toward the center white dot. | Identify center and distinguish horizontal versus vertical axes. | Baker M16A2 printed face/procedure; FM Figure 5-19; final physical registration required. | None | TSTT only. |
 | A2-4 — Rehearse Correction Controls | Front sight post—not the rear drum—owns shot-group elevation at `1.25 MOA/click`; rear windage owns windage at `0.5 MOA/click`. | Point to the correct controls and rehearse observer-normalized up/down/right/left movement language. | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011`; `BAKER_M16A2_MECHANICAL_AUTHORITY_EVIDENCE.md`. | None | TSTT presents reusable mechanics; Target Authority later calculates clicks. |
@@ -190,7 +201,7 @@ Product basis: standalone Baker Smart M16A2 face derived from the M16A2 side of 
 
 | Decision point | Governed route |
 |---|---|
-| A2-1 equipment resolution | Current evidence admits the standard M16A2 rear-sight/front-sight-post branch. If a different sight/optic configuration is identified, omit A2-2/A2-4 iron-sight instruction and hold correction/live-fire advancement until Target Authority admits an equipment-appropriate branch. |
+| A2-1 equipment resolution | Current evidence admits the standard M16A2 rear-sight/front-sight-post branch for applicable execution. A different or unknown configuration may view the clearly named M16A2 standard-iron training setup, but its mechanics are not asserted as applicable and correction/live-fire advancement remains held until Target Authority admits an equipment-appropriate branch. |
 | Admitted equipment branch | Present only its target-applicable setup and control rehearsal. The one-click-past-300 setup and later return-to-300 finalization belong only to the admitted standard rear-drum branch. |
 | A2-7 result | If correction is required, route A2-7 → branch-specific A2-8 → A2-9. If evidence is insufficient, return to A2-6. A2-10 requires both authoritative confirmation and applicability of the rear-drum finalization step. |
 | A2-9 not confirmed | Route the new evidence through A2-6/A2-7 and repeat adjustment/confirmation as governed. Only confirmed status exits the loop to applicable finalization and A2-11. |

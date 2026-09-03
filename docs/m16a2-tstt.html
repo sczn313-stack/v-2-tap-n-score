@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111713" />
   <title>Baker M16A2 25 Meter TSTT — SCZN3</title>
   <meta name="description" content="Founder review build for the governed Baker M16A2 standard iron-sight pre-fire training experience." />
-  <link rel="stylesheet" href="m16a2-tstt.css?v=founder-pass3" />
+  <link rel="stylesheet" href="m16a2-tstt.css?v=founder-pass4" />
 </head>
 <body>
   <main class="tstt-shell" id="tsttApp" data-status="waiting">
@@ -16,7 +16,6 @@
         <span class="brand-product">TALKING SMART TARGET TRAINING</span>
       </div>
       <a class="equipment-indicator" id="equipmentIndicator" href="matrix.html?view=library" aria-label="Open Equipment Library">
-        <span class="equipment-dot" aria-hidden="true"></span>
         <span><small id="equipmentStateLabel">CURRENT EQUIPMENT</small><b id="equipmentLabel">CHECKING EQUIPMENT…</b></span>
       </a>
     </header>
@@ -27,9 +26,9 @@
         <label>DISTANCE<input id="sessionDistance" value="—" readonly /></label>
         <label>DISTANCE UNIT<input id="sessionDistanceUnit" value="—" readonly /></label>
         <label>ADJUSTMENT UNIT<input id="sessionAdjustmentUnit" value="—" readonly /></label>
-        <label class="setup-wide">APPLICABLE ADJUSTMENT<input id="sessionAdjustmentIncrement" value="Select and confirm equipment" readonly /></label>
+        <label class="setup-wide">APPLICABLE ADJUSTMENT<input id="sessionAdjustmentIncrement" value="Elevation 1.25 · Windage 0.5" readonly /></label>
       </div>
-      <p id="shootingSetupNote">Today’s shooting setup appears here after your equipment is selected and confirmed.</p>
+      <p id="shootingSetupNote">Training values for the M16A2 with standard iron sights.</p>
     </details>
 
     <section class="lesson-stage" aria-labelledby="lessonTitle">
@@ -53,16 +52,19 @@
       </div>
 
       <div class="task-card" id="taskCard">
-        <span class="task-label">YOUR ZEROING SETUP</span>
-        <strong>Equipment Library will supply the rifle and sight setup used by this class.</strong>
+        <div class="training-setup">
+          <span class="task-label">TRAINING SETUP</span>
+          <b>M16A2 · Standard Iron Sights</b>
+          <p>This training follows the controls and adjustments for this setup. If your equipment is different, some instructions may not apply.</p>
+        </div>
       </div>
 
       <div class="chapter-action" id="chapterAction">
-        <button class="primary-action" id="startTraining" type="button">START TRAINING</button>
       </div>
     </section>
 
     <nav class="player-controls" aria-label="TSTT playback controls">
+      <button class="player-start" type="button" data-control="start"><span class="control-icon" aria-hidden="true">▶</span><span>START TRAINING</span></button>
       <button type="button" data-control="pause" disabled><span class="control-icon" aria-hidden="true">Ⅱ</span><span data-pause-label>PAUSE</span></button>
       <button type="button" data-control="stop" disabled><span class="control-icon" aria-hidden="true">■</span><span>STOP</span></button>
       <button type="button" data-control="replay" disabled><span class="control-icon" aria-hidden="true">↺</span><span>REPLAY<br />CHAPTER</span></button>
@@ -80,6 +82,6 @@
     <div class="proficiency-status"><span>PROFICIENCY</span><b aria-label="Not yet measured">☆☆☆</b><small>Measured from shooting results—not chapter progress.</small></div>
   </dialog>
 
-  <script src="m16a2-tstt.js?v=founder-pass3"></script>
+  <script src="m16a2-tstt.js?v=founder-pass4"></script>
 </body>
 </html>
