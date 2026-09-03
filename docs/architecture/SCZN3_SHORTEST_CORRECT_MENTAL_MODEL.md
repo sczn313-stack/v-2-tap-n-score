@@ -2,8 +2,8 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.3 — Founder Approved / LOCKED
-**Current through:** 2026-09-02
+**Version:** 2.4 — Founder Approved / LOCKED
+**Current through:** 2026-09-03
 **Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Baker M16A2 standard iron-sight TSTT implemented through pre-fire readiness; Founder/Guinea Pig Ron cold-use pending |
+| Current development | Baker M16A2 standard iron-sight TSTT Pass #3 implemented through pre-fire readiness; Founder/Guinea Pig Ron cold-review evidence preserved for the next bounded review pass |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment |
-| Latest checkpoint | `SCZN3_EP60_VICTORY3_GUINEA_PIG_RON_REVIEW_2026-09-02` |
+| Latest locked snapshot | Snapshot 23 — Episode 60 TSTT Pass #3 Founder Cold-Review Lock |
+| Latest checkpoint | `SCZN3_EP60_TSTT_PASS3_FOUNDER_COLD_REVIEW_LOCK_2026-09-03` |
 | Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Founder/Guinea Pig Ron cold-use review of the M16A2 pre-fire TSTT candidate. Do not extend into live firing, Tap-n-Score, correction, confirmation, or preservation before that review. All three products remain COMING SOON.** |
+| Next active priority | **Review the seven preserved Founder cold-review items without reopening the Pass #3 floor. Do not extend into live firing, Tap-n-Score, correction, confirmation, or product activation. All three products remain COMING SOON.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -672,6 +672,10 @@ Snapshot 20 then implements the reusable Equipment Authority adjustment profiles
 TSTT—Talking Smart Target Training—is now the target-specific training layer. Each Smart Target receives one session organized into complete, task-based chapters. Phone-first controls are Pause, Replay Chapter, Chapters, and Restart Training; there is no 10-second rewind. The progression is **Teach → Rehearse → Shoot → Measure → Adjust → Confirm → Preserve**. TSTT hands into Tap-n-Score at `ADD PHOTO` for registration, Precision Tap, governed correction, confirmation, SEC, and Vault. TSTT explains resolved authority and supports rehearsal; it never invents authority or recalculates a governed result.
 
 Snapshot 22 makes this architecture adaptive: **Target determines the lesson. Equipment determines the branch. Results determine advancement.** Only instruction applicable to the resolved sight/equipment configuration is presented. Confirmation is a governed result gate: an unconfirmed outcome returns through evidence, measurement, correction, adjustment, and confirmation until the applicable authority says confirmed or a narrow hold stops the affected action. Equipment selection and result routing are governed data/content behavior, not target- or equipment-specific application-code branches.
+
+Snapshot 23 preserves the Pass #3 implementation floor and the Founder's first cold-review evidence without mixing them. Broad governed zeroing utility and exact target/equipment-specific training are separate: exact training authority must not become a physical-target fence, but absent general-zeroing authority still fails closed truthfully. The Equipment Library remains the persistent owner of equipment identity and reusable mechanical facts; TSTT creates no shadow equipment state. Today's shooting conditions belong to the target/session, subject to authority: **Equipment Library remembers the equipment. Target/session holds today's shooting setup. Authority determines what may be changed.** The measurement chain remains **target geometry → physical displacement; session distance → angular requirement; Equipment Authority → mechanical adjustment; confirmation → proof**.
+
+The protected shooter-teaching relationship is **See → Understand → Do → NEXT** and **Content moves. Control stays put.** The phone calls the physical target what the target calls itself. The standing development rule is **IF IT'S JUST BETTER, WE DO IT** only when the change clearly improves or simplifies the shooter experience without contradicting governed authority or reopening settled architecture. **New ideas are allowed. New claims require proof. Invent freely. Claim only what we can prove.**
 
 The Year-One 60% SCZN3 / 40% printer allocation applies only to the incremental Smart premium and is preserved as non-binding business architecture, not pricing or an executed contract. Government/institutional value remains an evaluation thesis: measure total cost to confirmed zero through rounds, groups, elapsed time, instructor intervention, and confirmation evidence before claiming savings.
 
