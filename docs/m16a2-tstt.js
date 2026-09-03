@@ -11,8 +11,8 @@
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
       title: "Know the target before you touch the sights.",
       summary: "",
-      narration: "This is the twenty-five meters zeroing target for the M16A2. The complete target shows a red silhouette on a numbered grid with a white center reference.",
-      visual: () => `<figure class="target-window is-full-target"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure>`,
+      narration: "This target gives you an aim point and a way to measure your group. Aim at the white center dot and hold that same point for every shot. The grid is a measurement tool. For this M16A2 standard iron-sight setup, one vertical square equals one front-sight click, and one horizontal square equals three rear-windage clicks. The target shows where the center of your group is compared with the white center dot. Use the group as evidence for the correction. Do not chase a single shot.",
+      visual: () => `<div class="target-lesson"><figure class="target-window is-full-target target-teaching-figure"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"><span class="target-marker target-marker-aim" aria-hidden="true"><i>1</i></span><span class="target-marker target-marker-grid" aria-hidden="true"><i>3</i></span><span class="sample-group" aria-hidden="true"><i></i><i></i><i></i></span></figure><ol class="target-curriculum"><li><span>1</span><div><b>WHERE TO AIM</b><p>Aim at the white center dot. Hold that same point for every shot.</p></div></li><li><span>2</span><div><b>WHAT THE GRID MEANS</b><p>The grid measures how far your group center is from the white center dot.</p></div></li><li><span>3</span><div><b>WHAT ONE SQUARE REPRESENTS</b><p><strong>Up / down:</strong> 1 square = 1 front-sight click.<br><strong>Left / right:</strong> 1 square = 3 rear-windage clicks.</p></div></li><li><span>4</span><div><b>WHAT THE TARGET WILL TELL YOU</b><p>Your group's place on the grid shows the direction and amount it needs to move.</p></div></li><li><span>5</span><div><b>WHY WE SHOOT A GROUP</b><p>A group gives us a repeatable center for the correction. Do not chase individual shots.</p></div></li></ol></div>`,
       action: "equipment"
     }),
     Object.freeze({
@@ -149,7 +149,7 @@
   }
   function actionMarkup(chapter) {
     if (!state.started) return "";
-    if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT: PREPARE THE REAR DRUM</button>`;
+    if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT → THE SIGHTS</button>`;
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
   }

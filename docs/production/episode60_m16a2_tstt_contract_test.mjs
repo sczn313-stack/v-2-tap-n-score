@@ -21,6 +21,11 @@ assert.match(source, /focus[\s\S]*pageshow[\s\S]*storage/, "TSTT rereads active 
 assert.match(`${html}\n${source}`, /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply\./, "Chapter 1 presents the Founder-approved concise training guidance");
 assert.doesNotMatch(`${html}\n${source}`, /CURRENT EQUIPMENT|equipmentIndicator|equipmentStateLabel|equipmentLabel/, "Page 1 does not prominently display the shooter's stored equipment");
 assert.doesNotMatch(source, /Learn the target and the M16A2 standard iron-sight setup this training will use\./, "Chapter 1 does not announce that teaching is coming");
+assert.match(source, /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE SHOOT A GROUP/, "Chapter 1 visibly teaches the complete target curriculum");
+assert.match(source, /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/, "Chapter 1 reads the exact M16A2 square-to-control scales printed on the governed target");
+assert.match(source, /target-marker-aim[\s\S]*target-marker-grid[\s\S]*sample-group/, "the curriculum is demonstrated on the complete physical target");
+assert.match(source, /Do not chase (?:a single shot|individual shots)/, "Chapter 1 teaches the group as correction evidence");
+assert.match(source, /NEXT → THE SIGHTS/, "Chapter 1 hands directly to the sight lesson");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /equipment-dot|EXACT TRAINING MATCH · CONFIRM GEAR|THIS MATCHES MY GEAR|confirm-equipment|CONFIRM YOUR GEAR|NOT CONFIRMED AS YOUR EQUIPMENT/, "physical-equipment confirmation UI and its orange/gold status dot are removed");
 assert.doesNotMatch(`${html}\n${source}`, /confirm (?:this |the )?target|target confirmation/i, "QR-established target identity is never reconfirmed by the shooter");
 assert.match(source, /YOU ARE HERE/, "direct navigation marks the current chapter");

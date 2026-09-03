@@ -32,6 +32,8 @@ try {
     assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
     assert.equal(await page.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
     assert.equal(await page.locator("#lessonSummary").isHidden(), true);
+    assert.match(await page.locator("#visualStage").innerText(), /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE SHOOT A GROUP/);
+    assert.match(await page.locator("#visualStage").innerText(), /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
     await page.locator("#shootingSetup").click();
@@ -39,7 +41,7 @@ try {
     assert.equal(await page.locator("#sessionDistanceUnit").inputValue(), "METERS");
     assert.equal(await page.locator("#sessionAdjustmentUnit").inputValue(), "MOA");
     assert.equal(await page.locator("#sessionAdjustmentIncrement").inputValue(), "Elevation 1.25 · Windage 0.5");
-    await page.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
+    await page.getByRole("button", { name: /NEXT → THE SIGHTS/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
 
@@ -94,6 +96,9 @@ try {
   assert.match(await coldPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
   assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);
   assert.equal(await coldPage.locator("#visualStage .is-full-target").count(), 1);
+  assert.equal(await coldPage.locator("#visualStage .target-marker-aim").count(), 1);
+  assert.equal(await coldPage.locator("#visualStage .target-marker-grid").count(), 1);
+  assert.equal(await coldPage.locator("#visualStage .sample-group i").count(), 3);
   const startBox = await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).boundingBox();
   assert.ok(startBox && startBox.y >= 0 && startBox.y + startBox.height <= 844, "START TRAINING is visible in the initial 390x844 viewport");
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 0);
@@ -102,7 +107,7 @@ try {
   assert.equal(await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).count(), 0);
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 1);
   assert.equal(await coldPage.locator("#chapterList button:not([disabled])").count(), 5);
-  await coldPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
+  await coldPage.getByRole("button", { name: /NEXT → THE SIGHTS/ }).click();
   await coldPage.locator('[data-control="pause"]').click();
   await coldPage.locator("#shootingSetup").click();
   await coldPage.getByRole("link", { name: "EQUIPMENT LIBRARY", exact: true }).click();
@@ -149,7 +154,7 @@ try {
   assert.match(await generalPage.locator("#shootingSetupNote").innerText(), /Different equipment requires its own governed adjustment authority/);
   await generalPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
   assert.equal(await generalPage.locator("#chapterList button:not([disabled])").count(), 5);
-  assert.equal(await generalPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).count(), 1);
+  assert.equal(await generalPage.getByRole("button", { name: /NEXT → THE SIGHTS/ }).count(), 1);
   assert.equal(await generalPage.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
   await generalPage.locator('[data-control="chapters"]').click();
   await generalPage.getByRole("button", { name: /Ready for the first group/ }).click();

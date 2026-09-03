@@ -88,6 +88,25 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
 .target-window.is-full-target { width: min(100%, 280px); height: auto; aspect-ratio: 458 / 690; }
 .target-window.is-full-target img { transform: translateY(-5.3%); }
 
+.target-lesson { display: grid; grid-template-columns: minmax(250px, 300px) 1fr; align-items: start; gap: 20px; }
+.target-teaching-figure { width: 100%; margin: 0; }
+.target-marker { position: absolute; z-index: 2; display: grid; place-items: center; border: 2px solid var(--gold); box-shadow: 0 0 0 3px rgba(13,18,15,.62), 0 0 18px rgba(215,166,45,.55); }
+.target-marker i { position: absolute; right: -12px; top: -12px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: #111; font-size: .68rem; font-style: normal; font-weight: 950; }
+.target-marker-aim { left: 50%; top: 55.5%; width: 54px; height: 54px; transform: translate(-50%,-50%); border-radius: 50%; }
+.target-marker-grid { left: 56.2%; top: 46.3%; width: 4.4%; aspect-ratio: 1; }
+.sample-group { position: absolute; z-index: 2; left: 37%; top: 61%; width: 35px; height: 30px; filter: drop-shadow(0 0 3px rgba(0,0,0,.9)); }
+.sample-group::after { content: "GROUP"; position: absolute; left: -8px; top: 32px; padding: 3px 5px; background: rgba(13,18,15,.88); color: var(--gold-soft); font-size: .45rem; font-weight: 950; letter-spacing: .08em; }
+.sample-group i { position: absolute; width: 7px; height: 7px; border: 2px solid #111; border-radius: 50%; background: var(--gold-soft); }
+.sample-group i:nth-child(1) { left: 3px; top: 13px; }
+.sample-group i:nth-child(2) { left: 17px; top: 3px; }
+.sample-group i:nth-child(3) { left: 24px; top: 19px; }
+.target-curriculum { margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+.target-curriculum li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.target-curriculum li > span { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid rgba(215,166,45,.55); color: var(--gold-soft); font: 400 1rem/1 var(--font-display); }
+.target-curriculum b { color: var(--gold-soft); font-size: .65rem; letter-spacing: .1em; }
+.target-curriculum p { margin: 3px 0 0; color: #c7ccc6; font-size: .76rem; line-height: 1.38; }
+.target-curriculum p strong { color: var(--ink); font-weight: 850; }
+
 .drum-demo { padding: 14px; border: 1px solid var(--line); background: linear-gradient(145deg, #1b231e, #101512); }
 .view-label { color: var(--gold-soft); font-size: .66rem; font-weight: 900; letter-spacing: .15em; text-align: center; }
 .drum-demo svg { display: block; width: min(100%, 400px); margin: auto; }
@@ -215,7 +234,10 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
   .lesson-summary { margin-top: 11px; font-size: .9rem; line-height: 1.4; }
   .visual-stage { margin-top: 16px; }
   .target-window { height: 170px; }
-  .target-window.is-full-target { width: min(100%, 250px); height: auto; }
+  .target-window.is-full-target { width: min(100%, 270px); height: auto; }
+  .target-lesson { grid-template-columns: 1fr; gap: 16px; }
+  .target-teaching-figure { margin-inline: auto; }
+  .target-curriculum li { padding: 9px 0; }
   .task-card { margin: 12px 0; padding: 12px; }
   .player-controls button { font-size: .54rem; letter-spacing: .035em; }
 }
