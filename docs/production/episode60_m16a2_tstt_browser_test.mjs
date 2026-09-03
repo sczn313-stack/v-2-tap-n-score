@@ -13,17 +13,23 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(() => {
-      window.speechSynthesis = { cancel() {}, speak() {}, pause() {}, resume() {}, speaking: false };
-      window.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak() {}, pause() {}, resume() {}, speaking: false } });
+      Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
+      localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "founder-m16a2");
+      localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
+        setupId: "founder-m16a2",
+        setupName: "M16A2 • STANDARD IRON SIGHTS",
+        weaponModelType: "M16A2",
+        opticType: "Iron Sights",
+        equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM"
+      }]));
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
 
+    assert.equal(await page.locator("#targetIdentity").innerText(), "25 METERS ZEROING TARGET\nM16A2");
+    assert.equal(await page.locator("#lessonProgress > span").count(), 5);
+    assert.match(await page.locator("#taskCard").innerText(), /YOUR ZEROING SETUP[\s\S]*M16A2 RIFLE[\s\S]*STANDARD IRON SIGHTS[\s\S]*THIS SETUP WORKS TOGETHER/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
-    await page.getByRole("button", { name: /DIFFERENT SIGHT OR OPTIC/ }).click();
-    await assert.rejects(page.getByRole("button", { name: /NEXT: PREPARE/ }).waitFor({ timeout: 250 }), "unsupported equipment cannot advance");
-    assert.match(await page.locator("#branchHold").innerText(), /BRANCH NOT AUTHORIZED/);
-
-    await page.getByRole("button", { name: /STANDARD M16A2 IRON SIGHTS/ }).click();
     await page.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
@@ -33,6 +39,11 @@ try {
     assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "paused");
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("[data-pause-label]").innerText(), "PAUSE");
+    await page.locator('[data-control="stop"]').click();
+    assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "stopped");
+    assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");
+    await page.locator('[data-control="pause"]').click();
+    assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
 
     await page.getByRole("button", { name: /I REHEARSED THE SETUP/ }).click();
     await page.getByRole("button", { name: /I FOUND THE AIM POINT/ }).click();
@@ -42,6 +53,8 @@ try {
 
     await page.locator('[data-control="chapters"]').click();
     assert.equal(await page.locator("#chapterList button:not([disabled])").count(), 5);
+    assert.equal(await page.locator("#chapterList .you-are-here").innerText(), "YOU ARE HERE");
+    assert.match(await page.locator(".proficiency-status").innerText(), /PROFICIENCY[\s\S]*☆☆☆/);
     await page.getByRole("button", { name: /Ready for the first group/ }).click();
     assert.match(await page.locator("#lessonTitle").innerText(), /READY TO FIRE YOUR FIRST GROUP/i);
     assert.match(await page.locator("#visualStage").innerText(), /READY TO FIRE\s+YOUR FIRST GROUP/);

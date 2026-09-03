@@ -12,6 +12,17 @@ const publicFiles = new Map([
   ["/m16a2-tstt.html", "m16a2-tstt.html"],
   ["/m16a2-tstt.css", "m16a2-tstt.css"],
   ["/m16a2-tstt.js", "m16a2-tstt.js"],
+  ["/matrix.html", "matrix.html"],
+  ["/styles.css", "styles.css"],
+  ["/platform-ui.css", "platform-ui.css"],
+  ["/navigation.js", "navigation.js"],
+  ["/presentation_labels.js", "presentation_labels.js"],
+  ["/platform_contracts.js", "platform_contracts.js"],
+  ["/smart_target_identity.js", "smart_target_identity.js"],
+  ["/app_state.js", "app_state.js"],
+  ["/ops.js", "ops.js"],
+  ["/equipment_knowledge_registry.js", "equipment_knowledge_registry.js"],
+  ["/assets/crosshair-cross-emblem.png", "assets/crosshair-cross-emblem.png"],
   ["/authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png", "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png"]
 ]);
 const types = Object.freeze({
