@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111713" />
   <title>Baker M16A2 25 Meter TSTT — SCZN3</title>
   <meta name="description" content="Founder review build for the governed Baker M16A2 standard iron-sight pre-fire training experience." />
-  <link rel="stylesheet" href="m16a2-tstt.css?v=founder-pass1" />
+  <link rel="stylesheet" href="m16a2-tstt.css?v=founder-pass2" />
 </head>
 <body>
   <main class="tstt-shell" id="tsttApp" data-status="waiting">
@@ -17,7 +17,7 @@
       </div>
       <a class="equipment-indicator" id="equipmentIndicator" href="matrix.html?view=library" aria-label="Open Equipment Library">
         <span class="equipment-dot" aria-hidden="true"></span>
-        <span><small>CURRENT EQUIPMENT</small><b id="equipmentLabel">CHECKING EQUIPMENT…</b></span>
+        <span><small id="equipmentStateLabel">CURRENT EQUIPMENT</small><b id="equipmentLabel">CHECKING EQUIPMENT…</b></span>
       </a>
     </header>
 
@@ -30,15 +30,14 @@
 
       <div class="lesson-copy">
         <div class="target-identity" id="targetIdentity"><span>25 METERS ZEROING TARGET</span><strong>M16A2</strong></div>
-        <p class="eyebrow" id="chapterEyebrow">KNOW YOUR TARGET</p>
+        <p class="eyebrow" id="chapterEyebrow" hidden></p>
         <h1 id="lessonTitle">Know the target before you touch the sights.</h1>
         <p class="lesson-summary" id="lessonSummary">This class is for the Baker M16A2 25 Meter target and the standard M16A2 iron-sight system.</p>
       </div>
 
       <div class="visual-stage" id="visualStage" aria-live="polite">
-        <figure class="target-window">
+        <figure class="target-window is-full-target">
           <img src="authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png" alt="Baker M16A2 25 Meter zeroing target with a red silhouette and numbered grid" />
-          <figcaption>BAKER TARGETS • ST-M16A2R</figcaption>
         </figure>
       </div>
 
@@ -70,6 +69,6 @@
     <div class="proficiency-status"><span>PROFICIENCY</span><b aria-label="Not yet measured">☆☆☆</b><small>Measured from shooting results—not chapter progress.</small></div>
   </dialog>
 
-  <script src="m16a2-tstt.js?v=founder-pass1"></script>
+  <script src="m16a2-tstt.js?v=founder-pass2"></script>
 </body>
 </html>

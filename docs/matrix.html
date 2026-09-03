@@ -32,6 +32,10 @@
     </details>
   </header>
   <section class="active-session-bar" id="activeSessionBar"></section>
+  <section class="origin-return-bar" id="originReturnBar" hidden>
+    <div><span>RETURN TO TRAINING</span><strong>25 METERS ZEROING TARGET · M16A2</strong></div>
+    <button class="button primary" type="button" id="originReturnButton">RETURN TO TSTT</button>
+  </section>
 
   <section class="matrix-only">
     <form class="panel matrix-form is-profile-collapsed" id="matrixForm">
@@ -234,6 +238,8 @@ const EQUIPMENT_KNOWLEDGE_REGISTRY = window.SCZN3EquipmentKnowledgeRegistry || {
 const EQUIPMENT_CATALOG_VERSION = EQUIPMENT_KNOWLEDGE_REGISTRY.registryVersion || "episode58-snapshot12-2026-08-23";
 const MAX_SAVED_SETUPS = 12;
 const MATRIX_QUERY = new URLSearchParams(window.location.search);
+const EQUIPMENT_RETURN_PATH = MATRIX_QUERY.get("return_to") === "m16a2-tstt.html" ? "m16a2-tstt.html" : "";
+const EQUIPMENT_RETURN_CHAPTER = Math.min(5, Math.max(1, Number(MATRIX_QUERY.get("return_chapter")) || 1));
 const TALKING_TARGET_DEMO_MODE = MATRIX_QUERY.get("simulation") === "1" && MATRIX_QUERY.get("talking_demo") === "1";
 const TALKING_TARGET_DEMO_STAGE = TALKING_TARGET_DEMO_MODE ? MATRIX_QUERY.get("talking_demo_stage") || "library" : "";
 const TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_EQUIPMENT_PROFILES";
@@ -1446,9 +1452,7 @@ async function setWeaponPhotoFromFile(file) {
 }
 
 function setupLabel(snapshot) {
-  return document.getElementById("setupName").value.trim()
-    || [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelCaliber || snapshot.ammoCaliber, snapshot.opticType].filter(Boolean).join(" / ")
-    || "Equipment Profile";
+  return document.getElementById("setupName").value.trim() || conciseEquipmentName(snapshot);
 }
 
 function setupPayload(snapshot) {
@@ -1545,14 +1549,24 @@ function renderSavedSetups(selectedId = "") {
   renderWeaponList();
 }
 
-function weaponCardTitle(setup) {
-  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(setup) : null;
-  return setup.setupName || (weapon && weapon.short) || [setup.weaponManufacturer, setup.weaponModelType].filter(Boolean).join(" ") || "Equipment Profile";
+function conciseEquipmentName(setup = {}) {
+  const manufacturer = displayValue(setup.weaponCatalogManufacturer || setup.weaponManufacturer || "");
+  const model = displayValue(setup.weaponCatalogModel || setup.weaponModelType || "");
+  const firearm = model && manufacturer && model.toLowerCase().startsWith(manufacturer.toLowerCase())
+    ? model
+    : [manufacturer, model].filter(Boolean).join(" ");
+  const caliber = displayValue(setup.weaponCatalogCaliber || setup.weaponModelCaliber || setup.ammoCaliber || setup.caliber || "");
+  const sightParts = [setup.opticBrand, setup.opticModel || setup.opticType]
+    .map(displayValue)
+    .filter(Boolean)
+    .filter((value, index, values) => values.findIndex(candidate => candidate.toLowerCase() === value.toLowerCase()) === index);
+  const sight = /iron sights/i.test(sightParts.join(" ")) ? "Iron Sights" : sightParts.join(" ");
+  const concise = [firearm, caliber, sight].filter(Boolean).join(" · ");
+  return concise || setup.setupName || "Equipment Profile";
 }
 
-function weaponCaliber(setup) {
-  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(setup) : null;
-  return weapon ? weapon.caliber : (setup.weaponModelCaliber || setup.ammoCaliber || setup.caliber || "Caliber not set");
+function weaponCardTitle(setup) {
+  return conciseEquipmentName(setup);
 }
 
 function weaponCatalogMeta(setup) {
@@ -1561,13 +1575,6 @@ function weaponCatalogMeta(setup) {
   return [weapon.frameCategory, weapon.barrelLength, weapon.sightRadius, weapon.variantFlags]
     .filter(Boolean)
     .join(" / ");
-}
-
-function weaponSightConfiguration(setup) {
-  return [setup.opticBrand, setup.opticModel || setup.opticType, setup.magnification]
-    .filter(value => value && !isSelectedPlaceholder(value))
-    .filter((value, index, values) => values.indexOf(value) === index)
-    .join(" · ");
 }
 
 function governedZeroRelationship(setup = {}) {
@@ -1640,15 +1647,12 @@ function renderWeaponList() {
         const usage = setupUsageStats(setup);
         const photo = setup.weaponPhoto && setup.weaponPhoto.dataUrl ? setup.weaponPhoto : null;
         const catalogMeta = weaponCatalogMeta(setup);
-        const sightConfiguration = weaponSightConfiguration(setup);
         const zeroDisplay = governedZeroDisplay(setup);
         return `
         <article class="weapon-card${setup.setupId === activeId ? " is-active" : ""}" data-equipment-profile-id="${escapeHtml(setup.setupId)}">
           ${photo ? `<div class="weapon-card-photo"><img src="${escapeHtml(photo.dataUrl)}" alt="${escapeHtml(weaponCardTitle(setup))} equipment photo" /></div>` : ""}
           <div>
             <div class="weapon-card-title-row"><strong>${escapeHtml(weaponCardTitle(setup))}</strong>${setup.setupId === activeId ? `<span class="active-equipment-badge">ACTIVE</span>` : ""}</div>
-            <span>${escapeHtml(weaponCaliber(setup))}</span>
-            ${sightConfiguration ? `<span class="weapon-card-optic">${escapeHtml(sightConfiguration)}</span>` : ""}
             ${catalogMeta ? `<span class="weapon-card-catalog-meta">${escapeHtml(catalogMeta)}</span>` : ""}
           </div>
           <dl>
@@ -2182,6 +2186,10 @@ function selectWeaponFromList(setupId, action = "edit") {
     setProfileEditorVisible(false);
     renderSavedSetups(setupId);
     if (UNIVERSAL_EQUIPMENT_LIBRARY_VIEW) {
+      if (EQUIPMENT_RETURN_PATH) {
+        returnToEquipmentOrigin();
+        return;
+      }
       setWeaponListExpanded(true);
       authorityStatus("Selected. Applicable Smart Target experiences can now reuse this equipment.", "ready");
       return;
@@ -2468,16 +2476,22 @@ function applyM4MissionDefaults() {
 function renderSessionBar() {
   const snapshot = collectForm();
   renderTargetModePill();
-  const weapon = SCZN3M4.weaponProfileDisplay ? SCZN3M4.weaponProfileDisplay(snapshot) : null;
-  const setup = weapon ? weapon.summary : [snapshot.weaponCategory, snapshot.weaponManufacturer, snapshot.weaponModelType, snapshot.weaponModelCaliber || snapshot.ammoCaliber]
-    .map(displayValue)
-    .filter(Boolean)
-    .join(" / ");
-  const optic = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel]
-    .map(displayValue)
-    .filter(Boolean)
-    .join(" / ");
-  document.getElementById("activeSessionBar").innerHTML = `<strong>${setup || "Equipment profile not selected"}</strong><span>${optic || "Equipment Profile"}</span>`;
+  const setup = conciseEquipmentName(snapshot);
+  document.getElementById("activeSessionBar").innerHTML = `<strong>${escapeHtml(setup)}</strong><span>CURRENT EQUIPMENT</span>`;
+}
+
+function returnToEquipmentOrigin() {
+  if (!EQUIPMENT_RETURN_PATH) return;
+  window.location.href = EQUIPMENT_RETURN_PATH;
+}
+
+function renderEquipmentOriginReturn() {
+  const bar = document.getElementById("originReturnBar");
+  const button = document.getElementById("originReturnButton");
+  if (!bar || !button || !EQUIPMENT_RETURN_PATH) return;
+  bar.hidden = false;
+  button.textContent = `RETURN TO CHAPTER ${EQUIPMENT_RETURN_CHAPTER}`;
+  button.addEventListener("click", returnToEquipmentOrigin);
 }
 
 function loadMatrix() {
@@ -2554,6 +2568,10 @@ form.addEventListener("submit", event => {
 document.getElementById("saveSetup").addEventListener("click", () => {
   const saved = saveCurrentSetupToLibrary();
   if (!saved) return;
+  if (EQUIPMENT_RETURN_PATH) {
+    returnToEquipmentOrigin();
+    return;
+  }
   setProfileEditorVisible(false);
   setWeaponListExpanded(true);
 });
@@ -2673,6 +2691,7 @@ if (requestedEquipmentProfileId && readSavedSetups().some(setup => setup.setupId
 renderSavedSetups(initialEquipmentProfileId);
 renderWeaponList();
 renderSessionBar();
+renderEquipmentOriginReturn();
 activateUniversalEquipmentLibraryView();
 offerGovernedSetupChoices();
 </script>

@@ -3,13 +3,15 @@
 
   const targetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png";
   const equipmentKeys = Object.freeze({ active: "SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", saved: "SCZN3_SAVED_EQUIPMENT_PROFILES" });
+  const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
+  const defaultEquipment = Object.freeze({ status: "demo", label: "M16A2 Rifle · 5.56 NATO · Iron Sights" });
   const chapters = Object.freeze([
     Object.freeze({
-      id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "KNOW YOUR TARGET", targetIdentity: true,
+      id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
       title: "Know the target before you touch the sights.",
       summary: "This class teaches the M16A2 25-meter zeroing target with the rifle and standard iron sights shown in your Equipment Library.",
       narration: "This is the twenty-five meters zeroing target for the M16A2. Your M16A2 rifle, standard iron sights, and this target are designed to work together for this lesson. SCZN3 is using the active setup from your Equipment Library.",
-      visual: () => `<figure class="target-window"><img src="${targetImage}" alt="25 Meters Zeroing Target, M16A2"><figcaption>BAKER TARGETS • ST-M16A2R</figcaption></figure>`,
+      visual: () => `<figure class="target-window is-full-target"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure>`,
       action: "equipment"
     }),
     Object.freeze({
@@ -47,34 +49,66 @@
     app: document.getElementById("tsttApp"), chapterNumber: document.getElementById("chapterNumber"), chapterSubject: document.getElementById("chapterSubject"),
     progress: document.getElementById("lessonProgress"), targetIdentity: document.getElementById("targetIdentity"), eyebrow: document.getElementById("chapterEyebrow"),
     title: document.getElementById("lessonTitle"), summary: document.getElementById("lessonSummary"), visual: document.getElementById("visualStage"), task: document.getElementById("taskCard"), action: document.getElementById("chapterAction"),
-    equipmentIndicator: document.getElementById("equipmentIndicator"), equipmentLabel: document.getElementById("equipmentLabel"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
+    equipmentIndicator: document.getElementById("equipmentIndicator"), equipmentStateLabel: document.getElementById("equipmentStateLabel"), equipmentLabel: document.getElementById("equipmentLabel"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
     pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]')
   });
   const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, utterance: null, equipment: null };
 
   function escaped(value = "") { return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character])); }
+  function conciseEquipmentName(profile = {}) {
+    const manufacturer = profile.weaponCatalogManufacturer || profile.weaponManufacturer || "";
+    const model = profile.weaponCatalogModel || profile.weaponModelType || "";
+    const firearm = model && manufacturer && model.toLowerCase().startsWith(manufacturer.toLowerCase()) ? model : [manufacturer, model].filter(Boolean).join(" ");
+    const caliber = profile.weaponCatalogCaliber || profile.weaponModelCaliber || profile.ammoCaliber || profile.caliber || "";
+    const sightSource = [profile.opticBrand, profile.opticModel || profile.opticType].filter(Boolean).join(" ");
+    const sight = /iron sights/i.test(sightSource) ? "Iron Sights" : sightSource;
+    return [firearm, caliber, sight].filter(Boolean).join(" · ") || profile.setupName || "Active Equipment";
+  }
+  function equipmentAllowsLesson() { return ["compatible", "demo"].includes(state.equipment.status); }
+  function equipmentLibraryUrl() {
+    return `matrix.html?view=library&origin=tstt&return_to=m16a2-tstt.html&return_chapter=${state.current + 1}`;
+  }
+  function preserveJourney() {
+    if (!state.started) return;
+    sessionStorage.setItem(journeyKey, JSON.stringify({ started: true, current: state.current, unlocked: state.unlocked, paused: state.paused, stopped: state.stopped }));
+  }
+  function restoreJourney() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(journeyKey) || "null");
+      if (!saved || saved.started !== true) return;
+      state.started = true;
+      state.current = Math.min(chapters.length - 1, Math.max(0, Number(saved.current) || 0));
+      state.unlocked = Math.min(chapters.length - 1, Math.max(state.current, Number(saved.unlocked) || 0));
+      state.paused = saved.paused === true;
+      state.stopped = saved.stopped === true;
+    } catch (error) {
+      console.warn("TSTT journey could not be restored", error);
+    }
+  }
   function readActiveEquipment() {
     try {
       const activeId = localStorage.getItem(equipmentKeys.active) || "";
       const profiles = JSON.parse(localStorage.getItem(equipmentKeys.saved) || "[]");
       const profile = Array.isArray(profiles) ? profiles.find(item => item && item.setupId === activeId) : null;
-      if (!profile) return { status: "missing", label: "NO ACTIVE SETUP" };
+      if (!profile) return { ...defaultEquipment };
       const weaponText = [profile.weaponModelType, profile.weaponCatalogModel, profile.weaponPlatform, profile.setupName, profile.equipmentConfigurationId].filter(Boolean).join(" ").toLowerCase();
       const sightText = [profile.opticType, profile.opticBrand, profile.opticModel, profile.sightConfiguration, profile.adjustmentSystem, profile.equipmentConfigurationId].filter(Boolean).join(" ").toLowerCase();
       const compatible = /m16\s*-?\s*a2/.test(weaponText) && /(iron|front sight post|fsp|m16a2-standard-iron)/.test(sightText);
-      const label = profile.setupName || [profile.weaponManufacturer, profile.weaponModelType, profile.opticModel || profile.opticType].filter(Boolean).join(" • ") || "ACTIVE SETUP";
+      const label = conciseEquipmentName(profile);
       return { status: compatible ? "compatible" : "incompatible", label, profile };
     } catch (error) {
       console.warn("Active Equipment Library setup could not be read", error);
-      return { status: "missing", label: "NO ACTIVE SETUP" };
+      return { ...defaultEquipment };
     }
   }
   function syncEquipment({ rerender = true } = {}) {
     const previousStatus = state.equipment?.status;
     state.equipment = readActiveEquipment();
     elements.equipmentLabel.textContent = state.equipment.label;
+    elements.equipmentStateLabel.textContent = state.equipment.status === "demo" ? "STARTING SETUP · NOT CONFIRMED" : (state.equipment.status === "compatible" ? "CURRENT EQUIPMENT" : "CURRENT EQUIPMENT · NEEDS CHANGE");
     elements.equipmentIndicator.dataset.equipmentStatus = state.equipment.status;
-    if (state.equipment.status !== "compatible" && state.current > 0) {
+    elements.equipmentIndicator.href = equipmentLibraryUrl();
+    if (!equipmentAllowsLesson() && state.current > 0) {
       state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; cancelSpeech();
     }
     if (rerender && previousStatus !== state.equipment.status) render({ narrate: false, sync: false });
@@ -93,19 +127,22 @@
   }
   function stopTraining() { if (!state.started) return; cancelSpeech(); state.paused = false; state.stopped = true; elements.pauseLabel.textContent = "RESUME"; elements.app.dataset.status = "stopped"; }
   function setupMarkup() {
-    if (state.equipment.status === "compatible") return `<div class="zeroing-setup"><span class="setup-label">YOUR ZEROING SETUP</span><div class="setup-equation"><b>M16A2 RIFLE</b><i>＋</i><b>STANDARD IRON SIGHTS</b><i>＋</i><b>25 METERS ZEROING TARGET — M16A2</b></div><div class="setup-match">✓ THIS SETUP WORKS TOGETHER</div></div>`;
-    const message = state.equipment.status === "incompatible" ? `<b>${escaped(state.equipment.label)}</b><span>This lesson is for an M16A2 rifle with standard iron sights.</span>` : `<b>NO ACTIVE EQUIPMENT SETUP</b><span>Select your M16A2 rifle with standard iron sights in Equipment Library, then return here.</span>`;
-    return `<div class="equipment-hold">${message}<a href="matrix.html?view=library">OPEN EQUIPMENT LIBRARY</a></div>`;
+    if (equipmentAllowsLesson()) {
+      const matchText = state.equipment.status === "demo" ? "THIS STARTING SETUP WORKS FOR THIS LESSON" : "THIS SETUP WORKS TOGETHER";
+      const demoNote = state.equipment.status === "demo" ? `<div class="setup-demo-note">STARTING EXAMPLE — NOT CONFIRMED AS YOUR EQUIPMENT<br><span>Use the equipment control above to select or add yours.</span></div>` : "";
+      return `<div class="zeroing-setup"><span class="setup-label">YOUR ZEROING SETUP</span><div class="setup-equation"><b>M16A2 RIFLE</b><i>＋</i><b>STANDARD IRON SIGHTS</b><i>＋</i><b>25 METERS ZEROING TARGET — M16A2</b></div><div class="setup-match">✓ ${matchText}</div>${demoNote}</div>`;
+    }
+    return `<div class="equipment-hold"><b>${escaped(state.equipment.label)}</b><span>This lesson is for an M16A2 rifle with standard iron sights. Use the equipment control above to select or add the setup you are using.</span></div>`;
   }
   function actionMarkup(chapter) {
     if (!state.started) return `<button class="primary-action" type="button" data-action="start">START TRAINING</button>`;
-    if (chapter.action === "equipment") return state.equipment.status === "compatible" ? `<button class="primary-action" type="button" data-action="next">NEXT: PREPARE THE REAR DRUM</button>` : `<div class="equipment-wait">RETURN AFTER SELECTING YOUR EQUIPMENT</div>`;
+    if (chapter.action === "equipment") return equipmentAllowsLesson() ? `<button class="primary-action" type="button" data-action="next">NEXT: PREPARE THE REAR DRUM</button>` : "";
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
   }
   function updateChapterList() {
     elements.list.innerHTML = chapters.map((chapter, index) => {
-      const unavailable = state.equipment.status !== "compatible" && index > 0;
+      const unavailable = !equipmentAllowsLesson() && index > 0;
       const disabled = !state.started || unavailable || index > state.unlocked;
       const stateLabel = index === state.current ? `<small class="you-are-here">YOU ARE HERE</small>` : `<small>${unavailable ? "CHECK EQUIPMENT" : (disabled ? "LOCKED" : "OPEN")}</small>`;
       return `<li><button type="button" data-chapter-index="${index}" ${disabled ? "disabled" : ""} ${index === state.current ? 'aria-current="step"' : ""}><strong>${String(index + 1).padStart(2, "0")}</strong><span><b>${chapter.shortTitle}</b>${stateLabel}</span></button></li>`;
@@ -119,14 +156,14 @@
     if (sync) syncEquipment({ rerender: false });
     const chapter = chapters[state.current];
     elements.chapterNumber.textContent = `CHAPTER ${state.current + 1} OF ${chapters.length}`; elements.chapterSubject.textContent = chapter.label; renderProgress();
-    elements.targetIdentity.hidden = !chapter.targetIdentity; elements.eyebrow.textContent = chapter.eyebrow; elements.title.textContent = chapter.title; elements.summary.textContent = chapter.summary;
+    elements.targetIdentity.hidden = !chapter.targetIdentity; elements.eyebrow.hidden = !chapter.eyebrow; elements.eyebrow.textContent = chapter.eyebrow; elements.title.textContent = chapter.title; elements.summary.textContent = chapter.summary;
     elements.visual.innerHTML = chapter.visual(); elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`; elements.action.innerHTML = actionMarkup(chapter);
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
-    elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); window.scrollTo({ top: 0, behavior: "smooth" }); if (narrate) speakCurrent();
+    elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" }); if (narrate) speakCurrent();
   }
-  function startTraining() { state.started = true; state.paused = false; state.stopped = false; state.current = 0; state.unlocked = state.equipment.status === "compatible" ? chapters.length - 1 : 0; render(); }
-  function advance() { if (state.current === 0 && state.equipment.status !== "compatible") return; if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }
-  function restartTraining() { cancelSpeech(); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
+  function startTraining() { state.started = true; state.paused = false; state.stopped = false; state.current = 0; state.unlocked = equipmentAllowsLesson() ? chapters.length - 1 : 0; render(); }
+  function advance() { if (state.current === 0 && !equipmentAllowsLesson()) return; if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }
+  function restartTraining() { cancelSpeech(); sessionStorage.removeItem(journeyKey); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
 
   elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "start") startTraining(); if (action === "next") advance(); });
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
@@ -134,5 +171,5 @@
   document.querySelector('[data-control="chapters"]').addEventListener("click", () => elements.dialog.showModal()); document.querySelector("[data-close-chapters]").addEventListener("click", () => elements.dialog.close());
   elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); render(); });
   window.addEventListener("focus", () => syncEquipment()); window.addEventListener("pageshow", () => syncEquipment()); window.addEventListener("storage", event => { if ([equipmentKeys.active, equipmentKeys.saved].includes(event.key)) syncEquipment(); });
-  syncEquipment({ rerender: false }); render({ narrate: false, sync: false });
+  restoreJourney(); syncEquipment({ rerender: false }); render({ narrate: false, sync: false });
 })();

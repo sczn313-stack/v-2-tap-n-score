@@ -71,6 +71,49 @@ try {
     assert.deepEqual(errors, [], `no page errors at ${viewport.width}px`);
     await context.close();
   }
+
+  const coldContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const coldPage = await coldContext.newPage();
+  const coldErrors = [];
+  coldPage.on("pageerror", error => coldErrors.push(error.message));
+  await coldPage.addInitScript(() => {
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak() {}, pause() {}, resume() {}, speaking: false } });
+    Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
+  });
+  await coldPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
+  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "STARTING SETUP · NOT CONFIRMED");
+  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "M16A2 Rifle · 5.56 NATO · Iron Sights");
+  assert.match(await coldPage.locator("#taskCard").innerText(), /STARTING EXAMPLE — NOT CONFIRMED AS YOUR EQUIPMENT/);
+  assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);
+  assert.equal(await coldPage.locator("#visualStage .is-full-target").count(), 1);
+
+  await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
+  await coldPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
+  assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
+
+  await coldPage.getByRole("link", { name: "Open Equipment Library" }).click();
+  await coldPage.waitForURL(/matrix\.html\?view=library.*return_chapter=2/);
+  assert.match(await coldPage.locator("#originReturnBar").innerText(), /RETURN TO TRAINING[\s\S]*RETURN TO CHAPTER 2/);
+  await coldPage.getByRole("button", { name: "🟨 New Equipment", exact: true }).click();
+  await coldPage.locator("#weaponManufacturer").selectOption("Colt");
+  await coldPage.locator("#weaponModelType").selectOption("Other");
+  await coldPage.locator("#customWeaponModelType").fill("M16A2");
+  await coldPage.locator("#weaponModelCaliber").selectOption("Other");
+  await coldPage.locator("#customWeaponModelCaliber").fill("5.56 NATO");
+  await coldPage.getByRole("button", { name: "Save to My Equipment", exact: true }).click();
+  await coldPage.waitForURL(/m16a2-tstt\.html$/);
+  assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
+  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "CURRENT EQUIPMENT");
+  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "Colt M16A2 · 5.56 NATO · Iron Sights");
+
+  await coldPage.getByRole("link", { name: "Open Equipment Library" }).click();
+  await coldPage.waitForURL(/matrix\.html/);
+  await coldPage.getByRole("button", { name: "Selected", exact: true }).click();
+  await coldPage.waitForURL(/m16a2-tstt\.html$/);
+  assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
+  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "Colt M16A2 · 5.56 NATO · Iron Sights");
+  assert.deepEqual(coldErrors, [], "cold-start Equipment Library round trip has no page errors");
+  await coldContext.close();
 } finally {
   await browser.close();
 }

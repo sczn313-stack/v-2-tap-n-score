@@ -35,6 +35,28 @@
   display:none !important;
 }
 
+.origin-return-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin:12px 0 16px;
+  padding:12px 14px;
+  border:1px solid rgba(215,166,45,.45);
+  background:rgba(215,166,45,.08);
+}
+
+.origin-return-bar[hidden]{ display:none!important; }
+.origin-return-bar > div{ display:grid; gap:3px; }
+.origin-return-bar span{ color:var(--text-muted); font-size:10px; font-weight:850; letter-spacing:.12em; }
+.origin-return-bar strong{ color:var(--text-primary); font-size:13px; }
+.origin-return-bar .button{ flex:0 0 auto; }
+
+@media (max-width:560px){
+  .origin-return-bar{ align-items:stretch; flex-direction:column; }
+  .origin-return-bar .button{ width:100%; }
+}
+
 /* Docked workflow actions remain present in their reserved universal slots.
    State changes availability, not the layout footprint. */
 .target-page .workflow-control-row.workflow-control-row--docked > .button{
