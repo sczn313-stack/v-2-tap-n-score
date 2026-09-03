@@ -13,7 +13,13 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(() => {
-      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak() {}, pause() {}, resume() {}, speaking: false } });
+      window.__spokenUtterances = [];
+      const voices = [
+        { name: "Albert", lang: "en-US", localService: true, default: true },
+        { name: "Daniel", lang: "en-GB", localService: true, default: false },
+        { name: "Samantha", lang: "en-US", localService: true, default: false }
+      ];
+      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak(utterance) { window.__spokenUtterances.push(utterance); }, pause() {}, resume() {}, getVoices() { return voices; }, speaking: false } });
       Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
       localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "founder-m16a2");
       localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
@@ -35,6 +41,12 @@ try {
     assert.match(await page.locator("#visualStage").innerText(), /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE SHOOT A GROUP/);
     assert.match(await page.locator("#visualStage").innerText(), /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
+    const chapterOneSpeech = await page.evaluate(() => {
+      const utterance = window.__spokenUtterances.at(-1);
+      return { text: utterance.text, rate: utterance.rate, pitch: utterance.pitch, volume: utterance.volume, voice: utterance.voice?.name, lang: utterance.lang };
+    });
+    assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.78, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
+    assert.match(chapterOneSpeech.text, /white center dot[\s\S]*one vertical square[\s\S]*one front-sight click[\s\S]*one horizontal square[\s\S]*three rear-windage clicks[\s\S]*Do not chase a single shot/);
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
     await page.locator("#shootingSetup").click();
     assert.equal(await page.locator("#sessionDistance").inputValue(), "25");
@@ -44,6 +56,8 @@ try {
     await page.getByRole("button", { name: /NEXT → THE SIGHTS/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
+    const chapterTwoSpeech = await page.evaluate(() => window.__spokenUtterances.at(-1).text);
+    assert.match(chapterTwoSpeech, /Temporary twenty-five-meter setup[\s\S]*rear elevation drum[\s\S]*Set three hundred[\s\S]*Viewed from above[\s\S]*clockwise one click[\s\S]*not the control for moving your group up or down/);
 
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");

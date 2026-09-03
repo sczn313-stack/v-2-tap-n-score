@@ -6,6 +6,16 @@
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
   const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
+  const speechSettings = Object.freeze({ rate: 0.78, pitch: 1, volume: 1 });
+  const instructionalVoicePriority = Object.freeze([
+    /^Samantha(?: \((?:Enhanced|Premium)\))?$/i,
+    /^Reed \(English \(US\)\)$/i,
+    /^Flo \(English \(US\)\)$/i,
+    /^Alex$/i,
+    /^Ava(?: \((?:Enhanced|Premium)\))?$/i,
+    /^Susan$/i
+  ]);
+  const nonInstructionalVoices = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Zarvox/i;
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
@@ -19,7 +29,7 @@
       id: "a2-2", label: "REAR-DRUM SETUP", shortTitle: "Prepare the rear elevation drum", eyebrow: "TEMPORARY 25-METER SETUP",
       title: "Set 300. Then go one click past.",
       summary: "Use the rear elevation drum to prepare the rifle for this 25-meter procedure. You will use a different control later to move the group up or down.",
-      narration: "With the rifle unloaded and handled under your range's safety rules, find the rear elevation drum. Set the drum at the three-hundred-meter mark. Then rotate it clockwise one click past three hundred, viewed from above. This is temporary setup. Do not use this drum to correct the shot group.",
+      narration: "Temporary twenty-five-meter setup. Use the rear elevation drum to prepare the rifle for this procedure. Set three hundred. Then go one click past. Viewed from above, rotate clockwise one click past three hundred. This is the setup control. It is not the control for moving your group up or down. On a safe, unloaded rifle, locate three hundred, then rehearse that one clockwise click.",
       visual: () => `<div class="drum-demo"><div class="view-label">VIEWED FROM ABOVE</div><svg viewBox="0 0 360 250" role="img" aria-label="Rear elevation drum moves clockwise one click from the 300 mark"><circle cx="180" cy="128" r="83" class="diagram-ring"/><circle cx="180" cy="128" r="48" class="diagram-core"/><line x1="180" y1="44" x2="180" y2="72" class="index-line"/><text x="180" y="31" class="diagram-label">INDEX</text><text x="180" y="139" class="drum-mark">300</text><path d="M 108 84 A 86 86 0 0 1 248 85" class="motion-arrow"/><polygon points="250,85 228,79 241,102" class="arrow-head"/><text x="180" y="224" class="diagram-command">CLOCKWISE • ONE CLICK PAST 300</text></svg><div class="not-correction"><b>SETUP CONTROL</b><span>Rear elevation drum</span><em>Not the control for moving your group up or down</em></div></div>`,
       task: "On a safe, unloaded rifle: locate 300, then rehearse one clockwise click past it while viewing the drum from above.", action: "advance", actionLabel: "I REHEARSED THE SETUP"
     }),
@@ -113,11 +123,44 @@
     syncShootingSetup();
     if (rerender && previousStatus !== state.equipment.status) render({ narrate: false, sync: false });
   }
+  function voiceScore(voice) {
+    if (!voice || nonInstructionalVoices.test(voice.name || "")) return -1;
+    const language = String(voice.lang || "").replace("_", "-").toLowerCase();
+    if (!language.startsWith("en-")) return -1;
+    const priorityIndex = instructionalVoicePriority.findIndex(pattern => pattern.test(voice.name || ""));
+    return (language === "en-us" ? 100 : 40)
+      + (voice.localService ? 20 : 0)
+      + (/(enhanced|premium)/i.test(voice.name || "") ? 12 : 0)
+      + (priorityIndex < 0 ? 0 : 80 - priorityIndex * 8)
+      + (voice.default ? 2 : 0);
+  }
+  function selectInstructionalVoice() {
+    if (!("speechSynthesis" in window) || typeof window.speechSynthesis.getVoices !== "function") return null;
+    return window.speechSynthesis.getVoices().slice().sort((left, right) => voiceScore(right) - voiceScore(left)).find(voice => voiceScore(voice) >= 0) || null;
+  }
+  function pronounceForInstruction(text) {
+    return text
+      .replace(/\bM16A2\b/g, "M sixteen A two")
+      .replace(/\bMOA\b/g, "minutes of angle")
+      .replace(/\b1\.25\b/g, "one point two five")
+      .replace(/\b0\.5\b/g, "zero point five")
+      .replace(/\b25-meter\b/gi, "twenty-five-meter")
+      .replace(/\b25 meters\b/gi, "twenty-five meters")
+      .replace(/\b300-meter\b/gi, "three-hundred-meter")
+      .replace(/\b300 meters\b/gi, "three hundred meters")
+      .replace(/\b300\b/g, "three hundred");
+  }
   function cancelSpeech() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); state.utterance = null; }
   function speakCurrent() {
     cancelSpeech();
     if (!state.started || state.paused || state.stopped || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
-    const utterance = new SpeechSynthesisUtterance(chapters[state.current].narration); utterance.rate = 0.9; utterance.pitch = 0.96; state.utterance = utterance; window.speechSynthesis.speak(utterance);
+    const utterance = new SpeechSynthesisUtterance(pronounceForInstruction(chapters[state.current].narration));
+    const voice = selectInstructionalVoice();
+    if (voice) { utterance.voice = voice; utterance.lang = voice.lang; } else { utterance.lang = "en-US"; }
+    utterance.rate = speechSettings.rate; utterance.pitch = speechSettings.pitch; utterance.volume = speechSettings.volume;
+    utterance.onend = () => { if (state.utterance === utterance) state.utterance = null; };
+    utterance.onerror = () => { if (state.utterance === utterance) state.utterance = null; };
+    state.utterance = utterance; window.speechSynthesis.speak(utterance);
   }
   function setPaused(paused) {
     if (state.stopped) { state.stopped = false; state.paused = false; elements.pauseLabel.textContent = "PAUSE"; render(); return; }
