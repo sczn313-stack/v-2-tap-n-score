@@ -29,9 +29,10 @@ try {
 
     assert.equal(await page.locator("#targetIdentity").innerText(), "25 METERS ZEROING TARGET\nM16A2");
     assert.equal(await page.locator("#lessonProgress > span").count(), 5);
-    assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*If your equipment is different, some instructions may not apply/);
+    assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
+    assert.equal(await page.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
+    assert.equal(await page.locator("#lessonSummary").isHidden(), true);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
-    assert.equal(await page.locator("#equipmentStateLabel").innerText(), "CURRENT EQUIPMENT");
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
     await page.locator("#shootingSetup").click();
     assert.equal(await page.locator("#sessionDistance").inputValue(), "25");
@@ -89,9 +90,8 @@ try {
     Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
   });
   await coldPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
-  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "EQUIPMENT LIBRARY");
-  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "No active equipment selected");
-  assert.match(await coldPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*If your equipment is different, some instructions may not apply/);
+  assert.equal(await coldPage.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
+  assert.match(await coldPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
   assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);
   assert.equal(await coldPage.locator("#visualStage .is-full-target").count(), 1);
   const startBox = await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).boundingBox();
@@ -104,7 +104,8 @@ try {
   assert.equal(await coldPage.locator("#chapterList button:not([disabled])").count(), 5);
   await coldPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
   await coldPage.locator('[data-control="pause"]').click();
-  await coldPage.getByRole("link", { name: "Open Equipment Library" }).click();
+  await coldPage.locator("#shootingSetup").click();
+  await coldPage.getByRole("link", { name: "EQUIPMENT LIBRARY", exact: true }).click();
   await coldPage.waitForURL(/matrix\.html\?view=library.*return_chapter=2/);
   assert.match(await coldPage.locator("#originReturnBar").innerText(), /RETURN TO TRAINING[\s\S]*RETURN TO CHAPTER 2/);
   await coldPage.getByRole("button", { name: "🟨 New Equipment", exact: true }).click();
@@ -120,16 +121,14 @@ try {
   await coldPage.getByRole("button", { name: "Save to My Equipment", exact: true }).click();
   await coldPage.waitForURL(/m16a2-tstt\.html$/);
   assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
-  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "CURRENT EQUIPMENT");
-  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "M16A2 · 5.56 NATO · Iron Sights");
   assert.equal(await coldPage.locator("#tsttApp").getAttribute("data-status"), "paused");
 
-  await coldPage.getByRole("link", { name: "Open Equipment Library" }).click();
+  await coldPage.locator("#shootingSetup").click();
+  await coldPage.getByRole("link", { name: "EQUIPMENT LIBRARY", exact: true }).click();
   await coldPage.waitForURL(/matrix\.html/);
   await coldPage.getByRole("button", { name: "Selected", exact: true }).click();
   await coldPage.waitForURL(/m16a2-tstt\.html$/);
   assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
-  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "M16A2 · 5.56 NATO · Iron Sights");
   assert.equal(await coldPage.locator("#tsttApp").getAttribute("data-status"), "paused");
   assert.deepEqual(coldErrors, [], "cold-start Equipment Library round trip has no page errors");
   await coldContext.close();
@@ -144,9 +143,8 @@ try {
     }]));
   });
   await generalPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
-  assert.equal(await generalPage.locator("#equipmentStateLabel").innerText(), "CURRENT EQUIPMENT");
+  assert.equal(await generalPage.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
   assert.match(await generalPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*some instructions may not apply/i);
-  assert.equal(await generalPage.locator("#equipmentStateLabel").filter({ hasText: "NEEDS CHANGE" }).count(), 0);
   await generalPage.locator("#shootingSetup").click();
   assert.match(await generalPage.locator("#shootingSetupNote").innerText(), /Different equipment requires its own governed adjustment authority/);
   await generalPage.getByRole("button", { name: "START TRAINING", exact: true }).click();

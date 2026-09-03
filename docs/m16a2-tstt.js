@@ -10,8 +10,8 @@
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
       title: "Know the target before you touch the sights.",
-      summary: "Learn the target and the M16A2 standard iron-sight setup this training will use.",
-      narration: "This is the twenty-five meters zeroing target for the M16A2. This training follows the controls and adjustments for the M16A2 with standard iron sights. Begin by seeing the complete target you will use.",
+      summary: "",
+      narration: "This is the twenty-five meters zeroing target for the M16A2. The complete target shows a red silhouette on a numbered grid with a white center reference.",
       visual: () => `<figure class="target-window is-full-target"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure>`,
       action: "equipment"
     }),
@@ -50,7 +50,7 @@
     app: document.getElementById("tsttApp"), chapterNumber: document.getElementById("chapterNumber"), chapterSubject: document.getElementById("chapterSubject"),
     progress: document.getElementById("lessonProgress"), targetIdentity: document.getElementById("targetIdentity"), eyebrow: document.getElementById("chapterEyebrow"),
     title: document.getElementById("lessonTitle"), summary: document.getElementById("lessonSummary"), visual: document.getElementById("visualStage"), task: document.getElementById("taskCard"), action: document.getElementById("chapterAction"),
-    equipmentIndicator: document.getElementById("equipmentIndicator"), equipmentStateLabel: document.getElementById("equipmentStateLabel"), equipmentLabel: document.getElementById("equipmentLabel"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
+    equipmentLibraryLink: document.getElementById("equipmentLibraryLink"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
     start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]')
   });
@@ -109,10 +109,7 @@
   function syncEquipment({ rerender = true } = {}) {
     const previousStatus = state.equipment?.status;
     state.equipment = readActiveEquipment();
-    elements.equipmentLabel.textContent = state.equipment.label;
-    elements.equipmentStateLabel.textContent = state.equipment.status === "none" ? "EQUIPMENT LIBRARY" : "CURRENT EQUIPMENT";
-    elements.equipmentIndicator.dataset.equipmentStatus = state.equipment.status;
-    elements.equipmentIndicator.href = equipmentLibraryUrl();
+    elements.equipmentLibraryLink.href = equipmentLibraryUrl();
     syncShootingSetup();
     if (rerender && previousStatus !== state.equipment.status) render({ narrate: false, sync: false });
   }
@@ -148,7 +145,7 @@
       : "Training values for the M16A2 with standard iron sights. Different equipment requires its own governed adjustment authority.";
   }
   function setupMarkup() {
-    return `<div class="training-setup"><span class="task-label">TRAINING SETUP</span><b>M16A2 · Standard Iron Sights</b><p>This training follows the controls and adjustments for this setup. If your equipment is different, some instructions may not apply.</p></div>`;
+    return `<div class="training-setup"><span class="task-label">TRAINING SETUP</span><b>M16A2 · Standard Iron Sights</b><p>This training teaches this setup. If yours is different, some instructions may not apply.</p></div>`;
   }
   function actionMarkup(chapter) {
     if (!state.started) return "";
@@ -171,7 +168,7 @@
     if (sync) syncEquipment({ rerender: false });
     const chapter = chapters[state.current];
     elements.chapterNumber.textContent = `CHAPTER ${state.current + 1} OF ${chapters.length}`; elements.chapterSubject.textContent = chapter.label; renderProgress();
-    elements.targetIdentity.hidden = !chapter.targetIdentity; elements.eyebrow.hidden = !chapter.eyebrow; elements.eyebrow.textContent = chapter.eyebrow; elements.title.textContent = chapter.title; elements.summary.textContent = chapter.summary;
+    elements.targetIdentity.hidden = !chapter.targetIdentity; elements.eyebrow.hidden = !chapter.eyebrow; elements.eyebrow.textContent = chapter.eyebrow; elements.title.textContent = chapter.title; elements.summary.hidden = !chapter.summary; elements.summary.textContent = chapter.summary;
     elements.visual.innerHTML = chapter.visual();
     elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
     elements.action.innerHTML = actionMarkup(chapter);
