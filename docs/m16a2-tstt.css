@@ -65,9 +65,22 @@ button { font: inherit; }
 .equipment-indicator small { color: var(--muted); font-size: .52rem; }
 .equipment-indicator b { max-width: 220px; font-size: .64rem; }
 .equipment-dot { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: var(--ready); box-shadow: 0 0 0 4px rgba(145,213,110,.12); }
-.equipment-indicator[data-equipment-status="missing"] .equipment-dot,
-.equipment-indicator[data-equipment-status="incompatible"] .equipment-dot { background: var(--danger); box-shadow: 0 0 0 4px rgba(228,118,95,.12); }
+.equipment-indicator[data-equipment-status="exact-unconfirmed"] .equipment-dot,
+.equipment-indicator[data-equipment-status="general-unavailable"] .equipment-dot,
 .equipment-indicator[data-equipment-status="demo"] .equipment-dot { background: var(--gold); box-shadow: 0 0 0 4px rgba(215,166,45,.14); }
+
+.shooting-setup { margin: 10px 0 0; border: 1px solid var(--line); background: rgba(20,26,22,.72); }
+.shooting-setup summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 9px 12px; cursor: pointer; list-style: none; }
+.shooting-setup summary::-webkit-details-marker { display: none; }
+.shooting-setup summary::before { content: "+"; color: var(--gold-soft); font-weight: 950; }
+.shooting-setup[open] summary::before { content: "−"; }
+.shooting-setup summary span { margin-right: auto; color: var(--gold-soft); font-size: .62rem; font-weight: 950; letter-spacing: .13em; }
+.shooting-setup summary b { color: var(--muted); font-size: .6rem; letter-spacing: .08em; }
+.shooting-setup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+.shooting-setup-grid label { display: grid; gap: 5px; color: var(--muted); font-size: .55rem; font-weight: 900; letter-spacing: .1em; }
+.shooting-setup-grid input { width: 100%; min-width: 0; padding: 9px; border: 1px solid #465047; background: #0e1310; color: var(--ink); font: 800 .72rem/1 var(--font-ui); }
+.shooting-setup-grid .setup-wide { grid-column: 1 / -1; }
+.shooting-setup > p { margin: 0; padding: 0 12px 12px; color: var(--muted); font-size: .68rem; line-height: 1.4; }
 
 .lesson-stage { padding: 20px 0 28px; }
 .chapter-meta { display: flex; align-items: center; gap: 10px; }
@@ -151,6 +164,7 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
 
 .task-card { display: grid; gap: 6px; margin: 18px 0; padding: 16px; border: 1px solid #444c43; border-left: 4px solid var(--gold); background: var(--panel); }
 .task-label { color: var(--gold-soft); font-size: .66rem; font-weight: 900; letter-spacing: .14em; }
+.equipment-confirmation-reminder { padding-bottom: 10px; border-bottom: 1px solid rgba(215,166,45,.28); color: var(--gold-soft); font-size: .65rem; font-weight: 900; letter-spacing: .08em; line-height: 1.4; }
 .task-card strong { font-size: .94rem; line-height: 1.38; }
 .task-card:has(.zeroing-setup), .task-card:has(.equipment-hold) { padding: 0; border-left-width: 1px; }
 .zeroing-setup { width: 100%; overflow: hidden; }
@@ -159,14 +173,16 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
 .setup-equation b { display: grid; place-items: center; min-height: 72px; padding: 10px; font-size: .72rem; line-height: 1.3; text-align: center; }
 .setup-equation i { display: grid; place-items: center; color: var(--gold); font-size: 1.2rem; font-style: normal; }
 .setup-match { padding: 12px 14px; border-top: 1px solid rgba(145,213,110,.35); background: rgba(145,213,110,.08); color: var(--ready); font-size: .72rem; font-weight: 950; letter-spacing: .1em; text-align: center; }
+.setup-match.is-pending { border-top-color: rgba(215,166,45,.35); background: rgba(215,166,45,.08); color: var(--gold-soft); }
 .setup-demo-note { padding: 11px 14px; border-top: 1px solid rgba(215,166,45,.28); color: var(--gold-soft); font-size: .66rem; font-weight: 900; letter-spacing: .08em; line-height: 1.4; text-align: center; }
 .setup-demo-note span { color: var(--muted); font-size: .65rem; font-weight: 700; letter-spacing: 0; }
 .equipment-hold { display: grid; gap: 7px; width: 100%; padding: 15px; }
 .equipment-hold b { color: #ef9b88; font-size: .75rem; letter-spacing: .08em; }
+.equipment-hold.is-neutral b { color: var(--gold-soft); }
 .equipment-hold span { color: var(--muted); font-size: .78rem; line-height: 1.4; }
 .equipment-hold a { justify-self: start; margin-top: 4px; color: var(--gold-soft); font-size: .68rem; font-weight: 950; letter-spacing: .1em; }
 .chapter-action { display: flex; justify-content: center; }
-.primary-action { width: 100%; min-height: 54px; padding: 14px 20px; border: 1px solid var(--gold); background: var(--gold); color: #111; font-weight: 950; letter-spacing: .09em; }
+.primary-action { display: grid; place-items: center; width: 100%; min-height: 54px; padding: 14px 20px; border: 1px solid var(--gold); background: var(--gold); color: #111; font-weight: 950; letter-spacing: .09em; text-align: center; text-decoration: none; }
 .primary-action:active { transform: translateY(1px); }
 .terminal-stop { width: 100%; padding: 14px; border: 1px solid var(--line); background: #111612; text-align: center; }
 .terminal-stop b { display: block; color: var(--ready); font-size: .72rem; letter-spacing: .12em; }
@@ -217,6 +233,7 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
 
 @media (max-width: 699px) {
   .tstt-header { min-height: 68px; }
+  .shooting-setup-grid { grid-template-columns: 1fr 1fr; }
   .lesson-stage { padding-top: 14px; }
   .chapter-progress { margin-bottom: 17px; }
   .lesson-copy { min-height: 0; }

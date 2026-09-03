@@ -15,6 +15,7 @@ This directory is the living historical record for SCZN3. It separates the story
 - [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](./snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
 - [Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment](./snapshots/SNAPSHOT_022_EPISODE_60_TSTT_ADAPTIVE_ROUTING_AMENDMENT.md)
 - [Episode 60 M/FAM / TSTT Course Correction](./episodes/EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
+- [Episode 60 TSTT Founder Review Pass #3](./episodes/EPISODE_60_TSTT_FOUNDER_REVIEW_PASS3.md)
 - [TSTT Target-Specific Training Architecture](../architecture/TSTT_TARGET_SPECIFIC_TRAINING_ARCHITECTURE.md)
 - [Snapshot 20 — Episode 60 Equipment Adjustment Profile Speed Purchase](./snapshots/SNAPSHOT_020_EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)
 - [Episode 60 Equipment Adjustment Profile Speed Purchase](./episodes/EPISODE_60_EQUIPMENT_ADJUSTMENT_PROFILE_SPEED_PURCHASE.md)

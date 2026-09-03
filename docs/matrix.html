@@ -94,8 +94,8 @@
             </div>
             <input class="visually-hidden-file" id="weaponPhotoInput" type="file" accept="image/*" capture="environment" />
           </div>
-          <label>Manufacturer<select name="weaponManufacturer" id="weaponManufacturer">
-            <option>Select Manufacturer</option><option>Colt</option><option>FN</option><option>Daniel Defense</option><option>BCM</option><option>Aero Precision</option><option>Smith & Wesson</option><option>Ruger</option><option>Sig Sauer</option><option>Springfield Armory</option><option>Other</option>
+          <label><span id="weaponManufacturerLabel">Manufacturer / Rifle Family</span><select name="weaponManufacturer" id="weaponManufacturer">
+            <option>Select Manufacturer</option><option>Aero Precision</option><option>BCM</option><option>Colt</option><option>CZ</option><option>Daniel Defense</option><option>FN</option><option>Heckler &amp; Koch</option><option>Military M-Series Rifles</option><option>Remington</option><option>Ruger</option><option>Savage</option><option>Sig Sauer</option><option>Smith &amp; Wesson</option><option>Springfield Armory</option><option>Other</option>
           </select></label>
           <label class="is-hidden">Custom Manufacturer<input name="customWeaponManufacturer" id="customWeaponManufacturer" placeholder="Optional custom manufacturer" /></label>
           <label>Model Type<select name="weaponModelType" id="weaponModelType">
@@ -119,6 +119,9 @@
           <input type="hidden" name="equipmentEntityType" id="equipmentEntityType" />
           <input type="hidden" name="equipmentKnowledgeSchemaId" id="equipmentKnowledgeSchemaId" />
           <input type="hidden" name="equipmentKnowledgeRegistryVersion" id="equipmentKnowledgeRegistryVersion" />
+          <input type="hidden" name="adjustmentProfileId" id="adjustmentProfileId" />
+          <input type="hidden" name="adjustmentSystem" id="adjustmentSystem" />
+          <input type="hidden" name="sightConfiguration" id="sightConfiguration" />
           <label class="is-hidden">Custom Model Caliber<input name="customWeaponModelCaliber" id="customWeaponModelCaliber" placeholder="Optional custom model caliber" /></label>
           <label>Barrel Length <span class="optional-label">Optional</span><input name="barrelLength" placeholder="Optional" /></label>
         </div>
@@ -262,7 +265,7 @@ let standardSetupPromptActive = false;
 let latestTargetPreparation = null;
 let equipmentLibraryExplicitlyOpened = false;
 const WEAPON_CATEGORY_MANUFACTURERS = {
-  Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Other"],
+  Rifle: ["Select Manufacturer", "Colt", "FN", "Daniel Defense", "BCM", "Aero Precision", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Remington", "Savage", "Heckler & Koch", "CZ", "Military M-Series Rifles", "Other"],
   Pistol: ["Select Manufacturer", "Colt", "FN", "Smith & Wesson", "Ruger", "Sig Sauer", "Springfield Armory", "Glock", "Canik", "Heckler & Koch", "Walther", "CZ", "Beretta", "Other"],
   Shotgun: ["Select Manufacturer", "Mossberg", "Remington", "Benelli", "Beretta", "Winchester", "Stoeger", "FN", "Other"]
 };
@@ -296,6 +299,7 @@ const OPTIC_CLICK_VALUES = {
 };
 const WEAPON_MODEL_TYPES = {
   "Select Manufacturer": ["Select Model Type", "Other"],
+  "Military M-Series Rifles": ["M16A2", "M4", "M4A1", "Other"],
   Colt: ["AR Platform", "1911", "Revolver", "Other"],
   FN: ["AR Platform", "SCAR Series", "Full Size", "Compact", "Semi-Auto", "Other"],
   "Daniel Defense": ["AR Platform", "DD5 Series", "Other"],
@@ -321,6 +325,7 @@ const WEAPON_MODEL_TYPES = {
 };
 const WEAPON_MODEL_TYPE_FILTERS = {
   Rifle: {
+    "Military M-Series Rifles": ["M16A2", "M4", "M4A1", "Other"],
     Colt: ["AR Platform", "Other"],
     FN: ["AR Platform", "SCAR Series", "Other"],
     "Daniel Defense": ["AR Platform", "DD5 Series", "Other"],
@@ -361,6 +366,9 @@ const WEAPON_MODEL_TYPE_FILTERS = {
 };
 const WEAPON_MODEL_CALIBERS = {
   "Select Model Type": ["Select Model Caliber", "Other"],
+  M16A2: ["5.56 NATO", "Other"],
+  M4: ["5.56 NATO", "Other"],
+  M4A1: ["5.56 NATO", "Other"],
   "AR Platform": ["5.56 NATO", ".223 Rem", ".300 BLK", ".308 Win", "Other"],
   "1911": ["1911 .45 ACP", "1911 9mm", "Other"],
   Revolver: [".357 Magnum", ".38 Special", "Other"],
@@ -381,6 +389,11 @@ const WEAPON_MODEL_CALIBERS = {
   Other: ["Other"]
 };
 const WEAPON_MODEL_CALIBER_FILTERS = {
+  "Military M-Series Rifles": {
+    M16A2: ["5.56 NATO", "Other"],
+    M4: ["5.56 NATO", "Other"],
+    M4A1: ["5.56 NATO", "Other"]
+  },
   Colt: {
     "AR Platform": ["Colt LE6920 5.56 NATO", "Colt Carbine 5.56 NATO", "Colt CR6920 5.56 NATO", "Other"],
     "1911": ["Colt Government .45 ACP", "Colt Competition 9mm", "Other"],
@@ -486,6 +499,18 @@ const WEAPON_MODEL_CALIBER_FILTERS = {
     "Pistol Caliber Carbine": ["Scorpion 9mm", "Other"]
   }
 };
+const MILITARY_M_SERIES_EQUIPMENT = Object.freeze({
+  M16A2: Object.freeze({
+    caliber: "5.56 NATO",
+    adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+    equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+    adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+    sightConfiguration: "Standard Iron Sights",
+    authorityStatus: "proven"
+  }),
+  M4: Object.freeze({ caliber: "5.56 NATO", identityOnly: true }),
+  M4A1: Object.freeze({ caliber: "5.56 NATO", identityOnly: true })
+});
 const GLOCK_GSSF_CATALOG = [
   { model: "G17", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.50 in", flags: ["Standard"], notes: "" },
   { model: "G17 Gen5", caliber: "9mm", frameCategory: "Full Size", barrelLength: "4.49 in", sightRadius: "6.46 in", flags: ["Gen5"], notes: "" },
@@ -946,6 +971,15 @@ function setOptions(select, options, selectedValue = "", preserveExternal = true
   if (selectedValue) select.value = selectedValue;
 }
 
+function discoveryOrderedOptions(options = []) {
+  const placeholder = options.filter(value => /^Select /i.test(value));
+  const other = options.includes("Other") ? ["Other"] : [];
+  const entries = options
+    .filter(value => !/^Select /i.test(value) && value !== "Other")
+    .sort((left, right) => left.localeCompare(right, undefined, { sensitivity: "base" }));
+  return [...placeholder, ...entries, ...other];
+}
+
 function activeGovernedPistolCatalog() {
   const manufacturer = document.getElementById("weaponManufacturer").value || "";
   if (selectedWeaponCategory() !== "Pistol") return null;
@@ -1004,6 +1038,8 @@ function selectedWeaponCategory() {
 function setWeaponCategory(category = "Rifle") {
   const nextCategory = WEAPON_CATEGORY_MANUFACTURERS[category] ? category : "Rifle";
   document.getElementById("weaponCategory").value = nextCategory;
+  const manufacturerLabel = document.getElementById("weaponManufacturerLabel");
+  if (manufacturerLabel) manufacturerLabel.textContent = nextCategory === "Rifle" ? "Manufacturer / Rifle Family" : "Manufacturer";
   document.querySelectorAll("[data-weapon-category]").forEach(button => {
     button.classList.toggle("is-active", button.dataset.weaponCategory === nextCategory);
   });
@@ -1085,7 +1121,7 @@ function installSingleActiveWeaponSections() {
 
 function updateWeaponManufacturers(selectedValue = "") {
   const options = WEAPON_CATEGORY_MANUFACTURERS[selectedWeaponCategory()] || WEAPON_CATEGORY_MANUFACTURERS.Rifle;
-  setOptions(document.getElementById("weaponManufacturer"), options, selectedValue);
+  setOptions(document.getElementById("weaponManufacturer"), discoveryOrderedOptions(options), selectedValue);
   toggleCustom("customWeaponManufacturer", document.getElementById("weaponManufacturer").value === "Other");
   updateWeaponModelTypes();
 }
@@ -1131,7 +1167,40 @@ function updateWeaponModelCalibers(selectedValue = "") {
   toggleCustom("customWeaponModelType", modelType === "Other");
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
   updateGlockCatalogDetails();
+  updateMilitaryMSeriesDetails();
   syncAmmoCaliberFromWeaponModel();
+}
+
+function updateMilitaryMSeriesDetails() {
+  const manufacturer = document.getElementById("weaponManufacturer").value || "";
+  if (manufacturer !== "Military M-Series Rifles") return;
+  const model = document.getElementById("weaponModelType").value || "";
+  const caliber = document.getElementById("weaponModelCaliber").value || "";
+  const record = MILITARY_M_SERIES_EQUIPMENT[model] || null;
+  const values = {
+    weaponCatalogManufacturer: "",
+    weaponCatalogModel: record ? model : "",
+    weaponCatalogCaliber: record && caliber === record.caliber ? caliber : "",
+    equipmentCatalogAuthorityRecordId: "",
+    equipmentConfigurationId: record && !record.identityOnly ? record.equipmentConfigurationId : "",
+    equipmentEntityType: record ? "military_rifle_identity" : "",
+    equipmentKnowledgeSchemaId: record ? "SCZN3-MILITARY-WEAPON-EQUIPMENT-LIBRARY" : "",
+    equipmentKnowledgeRegistryVersion: record ? "1.1.0" : "",
+    adjustmentProfileId: record && !record.identityOnly ? record.adjustmentProfileId : "",
+    adjustmentSystem: record && !record.identityOnly ? record.adjustmentSystem : "",
+    sightConfiguration: record && !record.identityOnly ? record.sightConfiguration : ""
+  };
+  Object.entries(values).forEach(([id, value]) => {
+    const field = document.getElementById(id);
+    if (field) field.value = value;
+  });
+  if (record && !record.identityOnly) {
+    document.getElementById("opticType").value = "Iron Sights";
+    updateOpticManufacturers("Iron Sights");
+    updateOpticModels("Iron Sights");
+    document.getElementById("opticAdjustmentUnit").value = "MOA";
+    updateOpticClickValues("0.5");
+  }
 }
 
 function updateGlockCatalogDetails() {
@@ -1154,7 +1223,10 @@ function updateGlockCatalogDetails() {
     equipmentConfigurationId: "",
     equipmentEntityType: "",
     equipmentKnowledgeSchemaId: "",
-    equipmentKnowledgeRegistryVersion: ""
+    equipmentKnowledgeRegistryVersion: "",
+    adjustmentProfileId: "",
+    adjustmentSystem: "",
+    sightConfiguration: ""
   };
   const entry = isGovernedCatalog ? selectedGovernedCatalogEntry() : null;
   if (entry) {
@@ -1481,6 +1553,9 @@ function setupPayload(snapshot) {
     "equipmentEntityType",
     "equipmentKnowledgeSchemaId",
     "equipmentKnowledgeRegistryVersion",
+    "adjustmentProfileId",
+    "adjustmentSystem",
+    "sightConfiguration",
     "barrelLength",
     "rifle",
     "caliber",
@@ -1552,9 +1627,11 @@ function renderSavedSetups(selectedId = "") {
 function conciseEquipmentName(setup = {}) {
   const manufacturer = displayValue(setup.weaponCatalogManufacturer || setup.weaponManufacturer || "");
   const model = displayValue(setup.weaponCatalogModel || setup.weaponModelType || "");
-  const firearm = model && manufacturer && model.toLowerCase().startsWith(manufacturer.toLowerCase())
+  const firearm = manufacturer === "Military M-Series Rifles"
     ? model
-    : [manufacturer, model].filter(Boolean).join(" ");
+    : model && manufacturer && model.toLowerCase().startsWith(manufacturer.toLowerCase())
+      ? model
+      : [manufacturer, model].filter(Boolean).join(" ");
   const caliber = displayValue(setup.weaponCatalogCaliber || setup.weaponModelCaliber || setup.ammoCaliber || setup.caliber || "");
   const sightParts = [setup.opticBrand, setup.opticModel || setup.opticType]
     .map(displayValue)
@@ -1575,6 +1652,15 @@ function weaponCatalogMeta(setup) {
   return [weapon.frameCategory, weapon.barrelLength, weapon.sightRadius, weapon.variantFlags]
     .filter(Boolean)
     .join(" / ");
+}
+
+function weaponSightConfiguration(setup = {}) {
+  if (setup.sightConfiguration) return displayValue(setup.sightConfiguration);
+  const parts = [setup.opticBrand, setup.opticModel || setup.opticType]
+    .map(displayValue)
+    .filter(Boolean)
+    .filter((value, index, values) => values.findIndex(candidate => candidate.toLowerCase() === value.toLowerCase()) === index);
+  return /iron sights/i.test(parts.join(" ")) ? "Iron Sights" : parts.join(" · ");
 }
 
 function governedZeroRelationship(setup = {}) {
@@ -1647,6 +1733,7 @@ function renderWeaponList() {
         const usage = setupUsageStats(setup);
         const photo = setup.weaponPhoto && setup.weaponPhoto.dataUrl ? setup.weaponPhoto : null;
         const catalogMeta = weaponCatalogMeta(setup);
+        const sightConfiguration = weaponSightConfiguration(setup);
         const zeroDisplay = governedZeroDisplay(setup);
         return `
         <article class="weapon-card${setup.setupId === activeId ? " is-active" : ""}" data-equipment-profile-id="${escapeHtml(setup.setupId)}">
@@ -1654,6 +1741,7 @@ function renderWeaponList() {
           <div>
             <div class="weapon-card-title-row"><strong>${escapeHtml(weaponCardTitle(setup))}</strong>${setup.setupId === activeId ? `<span class="active-equipment-badge">ACTIVE</span>` : ""}</div>
             ${catalogMeta ? `<span class="weapon-card-catalog-meta">${escapeHtml(catalogMeta)}</span>` : ""}
+            ${sightConfiguration ? `<span class="weapon-card-catalog-meta">${escapeHtml(sightConfiguration)}</span>` : ""}
           </div>
           <dl>
             ${zeroDisplay ? `<div><dt>Zero</dt><dd>${escapeHtml(zeroDisplay)}</dd></div>` : ""}
@@ -1690,8 +1778,8 @@ function saveCurrentSetupToLibrary() {
     setupName: setupLabel(snapshot),
     equipmentProfileSchemaVersion: EQUIPMENT_PROFILE_SCHEMA_VERSION,
     equipmentCatalogVersion: EQUIPMENT_CATALOG_VERSION,
-    equipmentIdentityStatus: snapshot.weaponCatalogModel ? "publisher_catalog_match" : "shooter_declared",
-    equipmentIdentitySource: snapshot.equipmentCatalogAuthorityRecordId
+    equipmentIdentityStatus: snapshot.equipmentConfigurationId ? "authority_registry_match" : (snapshot.weaponCatalogModel ? "publisher_catalog_match" : "shooter_declared"),
+    equipmentIdentitySource: snapshot.equipmentKnowledgeSchemaId
       ? "equipment_knowledge_registry"
       : (snapshot.weaponCatalogModel ? "episode58_publisher_census" : "shooter_entry"),
     equipmentProfileCreatedAt: previous.equipmentProfileCreatedAt || previous.createdAt || now,
@@ -2000,6 +2088,9 @@ function equipmentCandidateFrom(snapshot) {
     equipmentEntityType: snapshot.equipmentEntityType || "",
     equipmentKnowledgeSchemaId: snapshot.equipmentKnowledgeSchemaId || "",
     equipmentKnowledgeRegistryVersion: snapshot.equipmentKnowledgeRegistryVersion || "",
+    adjustmentProfileId: snapshot.adjustmentProfileId || "",
+    adjustmentSystem: snapshot.adjustmentSystem || "",
+    sightConfiguration: snapshot.sightConfiguration || "",
     barrelLength: snapshot.barrelLength || "",
     opticType: snapshot.opticType || "",
     opticBrand: snapshot.opticBrand || "",
@@ -2628,6 +2719,7 @@ document.getElementById("weaponModelType").addEventListener("change", () => upda
 document.getElementById("weaponModelCaliber").addEventListener("change", () => {
   toggleCustom("customWeaponModelCaliber", document.getElementById("weaponModelCaliber").value === "Other");
   updateGlockCatalogDetails();
+  updateMilitaryMSeriesDetails();
   syncAmmoCaliberFromWeaponModel();
 });
 document.getElementById("glockModelSearch").addEventListener("input", () => {

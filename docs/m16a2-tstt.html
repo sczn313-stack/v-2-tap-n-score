@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111713" />
   <title>Baker M16A2 25 Meter TSTT — SCZN3</title>
   <meta name="description" content="Founder review build for the governed Baker M16A2 standard iron-sight pre-fire training experience." />
-  <link rel="stylesheet" href="m16a2-tstt.css?v=founder-pass2" />
+  <link rel="stylesheet" href="m16a2-tstt.css?v=founder-pass3" />
 </head>
 <body>
   <main class="tstt-shell" id="tsttApp" data-status="waiting">
@@ -20,6 +20,17 @@
         <span><small id="equipmentStateLabel">CURRENT EQUIPMENT</small><b id="equipmentLabel">CHECKING EQUIPMENT…</b></span>
       </a>
     </header>
+
+    <details class="shooting-setup" id="shootingSetup">
+      <summary><span>SHOOTING SETUP</span><b id="shootingSetupSummary">SELECT EQUIPMENT</b></summary>
+      <div class="shooting-setup-grid">
+        <label>DISTANCE<input id="sessionDistance" value="—" readonly /></label>
+        <label>DISTANCE UNIT<input id="sessionDistanceUnit" value="—" readonly /></label>
+        <label>ADJUSTMENT UNIT<input id="sessionAdjustmentUnit" value="—" readonly /></label>
+        <label class="setup-wide">APPLICABLE ADJUSTMENT<input id="sessionAdjustmentIncrement" value="Select and confirm equipment" readonly /></label>
+      </div>
+      <p id="shootingSetupNote">Today’s shooting setup appears here after your equipment is selected and confirmed.</p>
+    </details>
 
     <section class="lesson-stage" aria-labelledby="lessonTitle">
       <div class="chapter-meta">
@@ -69,6 +80,6 @@
     <div class="proficiency-status"><span>PROFICIENCY</span><b aria-label="Not yet measured">☆☆☆</b><small>Measured from shooting results—not chapter progress.</small></div>
   </dialog>
 
-  <script src="m16a2-tstt.js?v=founder-pass2"></script>
+  <script src="m16a2-tstt.js?v=founder-pass3"></script>
 </body>
 </html>

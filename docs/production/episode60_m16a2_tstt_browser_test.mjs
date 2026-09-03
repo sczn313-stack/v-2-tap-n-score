@@ -21,15 +21,24 @@ try {
         setupName: "M16A2 • STANDARD IRON SIGHTS",
         weaponModelType: "M16A2",
         opticType: "Iron Sights",
-        equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM"
+        equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+        adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
       }]));
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
 
     assert.equal(await page.locator("#targetIdentity").innerText(), "25 METERS ZEROING TARGET\nM16A2");
     assert.equal(await page.locator("#lessonProgress > span").count(), 5);
-    assert.match(await page.locator("#taskCard").innerText(), /YOUR ZEROING SETUP[\s\S]*M16A2 RIFLE[\s\S]*STANDARD IRON SIGHTS[\s\S]*THIS SETUP WORKS TOGETHER/);
+    assert.match(await page.locator("#taskCard").innerText(), /YOUR ZEROING SETUP[\s\S]*M16A2 RIFLE[\s\S]*STANDARD IRON SIGHTS[\s\S]*EXACT TRAINING MATCH — CONFIRM YOUR GEAR/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
+    await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).click();
+    assert.equal(await page.locator("#equipmentStateLabel").innerText(), "EXACT TRAINING MATCH");
+    assert.match(await page.locator("#taskCard").innerText(), /THIS SETUP WORKS TOGETHER/);
+    await page.locator("#shootingSetup").click();
+    assert.equal(await page.locator("#sessionDistance").inputValue(), "25");
+    assert.equal(await page.locator("#sessionDistanceUnit").inputValue(), "METERS");
+    assert.equal(await page.locator("#sessionAdjustmentUnit").inputValue(), "MOA");
+    assert.equal(await page.locator("#sessionAdjustmentIncrement").inputValue(), "Elevation 1.25 · Windage 0.5");
     await page.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
@@ -81,39 +90,66 @@ try {
     Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
   });
   await coldPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
-  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "STARTING SETUP · NOT CONFIRMED");
+  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "STARTING SETUP · NOT YOUR GEAR");
   assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "M16A2 Rifle · 5.56 NATO · Iron Sights");
-  assert.match(await coldPage.locator("#taskCard").innerText(), /STARTING EXAMPLE — NOT CONFIRMED AS YOUR EQUIPMENT/);
+  assert.match(await coldPage.locator("#taskCard").innerText(), /STARTING EXAMPLE FOR THIS LESSON[\s\S]*NOT CONFIRMED AS YOUR EQUIPMENT/);
   assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);
   assert.equal(await coldPage.locator("#visualStage .is-full-target").count(), 1);
 
   await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
-  await coldPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
-  assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
-
-  await coldPage.getByRole("link", { name: "Open Equipment Library" }).click();
-  await coldPage.waitForURL(/matrix\.html\?view=library.*return_chapter=2/);
-  assert.match(await coldPage.locator("#originReturnBar").innerText(), /RETURN TO TRAINING[\s\S]*RETURN TO CHAPTER 2/);
+  assert.equal(await coldPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).count(), 0);
+  await coldPage.getByRole("link", { name: "CHOOSE MY EQUIPMENT", exact: true }).click();
+  await coldPage.waitForURL(/matrix\.html\?view=library.*return_chapter=1/);
+  assert.match(await coldPage.locator("#originReturnBar").innerText(), /RETURN TO TRAINING[\s\S]*RETURN TO CHAPTER 1/);
   await coldPage.getByRole("button", { name: "🟨 New Equipment", exact: true }).click();
-  await coldPage.locator("#weaponManufacturer").selectOption("Colt");
-  await coldPage.locator("#weaponModelType").selectOption("Other");
-  await coldPage.locator("#customWeaponModelType").fill("M16A2");
-  await coldPage.locator("#weaponModelCaliber").selectOption("Other");
-  await coldPage.locator("#customWeaponModelCaliber").fill("5.56 NATO");
+  const manufacturers = await coldPage.locator("#weaponManufacturer option").allTextContents();
+  assert.equal(manufacturers.at(-1), "Other");
+  assert.ok(manufacturers.indexOf("Aero Precision") < manufacturers.indexOf("BCM"));
+  assert.ok(manufacturers.indexOf("Military M-Series Rifles") < manufacturers.indexOf("Remington"));
+  await coldPage.locator("#weaponManufacturer").selectOption("Military M-Series Rifles");
+  await coldPage.locator("#weaponModelType").selectOption("M16A2");
+  await coldPage.locator("#weaponModelCaliber").selectOption("5.56 NATO");
+  assert.equal(await coldPage.locator("#equipmentConfigurationId").inputValue(), "M16A2-STANDARD-IRON-FSP-REAR-DRUM");
+  assert.equal(await coldPage.locator("#adjustmentProfileId").inputValue(), "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011");
   await coldPage.getByRole("button", { name: "Save to My Equipment", exact: true }).click();
   await coldPage.waitForURL(/m16a2-tstt\.html$/);
+  assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 1 OF 5");
+  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "EXACT TRAINING MATCH · CONFIRM GEAR");
+  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "M16A2 · 5.56 NATO · Iron Sights");
+  await coldPage.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).click();
+  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "EXACT TRAINING MATCH");
+  await coldPage.getByRole("button", { name: /NEXT: PREPARE THE REAR DRUM/ }).click();
   assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
-  assert.equal(await coldPage.locator("#equipmentStateLabel").innerText(), "CURRENT EQUIPMENT");
-  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "Colt M16A2 · 5.56 NATO · Iron Sights");
+  await coldPage.locator('[data-control="pause"]').click();
 
   await coldPage.getByRole("link", { name: "Open Equipment Library" }).click();
   await coldPage.waitForURL(/matrix\.html/);
   await coldPage.getByRole("button", { name: "Selected", exact: true }).click();
   await coldPage.waitForURL(/m16a2-tstt\.html$/);
   assert.equal(await coldPage.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
-  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "Colt M16A2 · 5.56 NATO · Iron Sights");
+  assert.equal(await coldPage.locator("#equipmentLabel").innerText(), "M16A2 · 5.56 NATO · Iron Sights");
+  assert.equal(await coldPage.locator("#tsttApp").getAttribute("data-status"), "paused");
   assert.deepEqual(coldErrors, [], "cold-start Equipment Library round trip has no page errors");
   await coldContext.close();
+
+  const generalContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const generalPage = await generalContext.newPage();
+  await generalPage.addInitScript(() => {
+    localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "cz-optic");
+    localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
+      setupId: "cz-optic", weaponCategory: "Rifle", weaponManufacturer: "CZ", weaponModelType: "Bolt Action",
+      weaponModelCaliber: "CZ 600 .223 Rem", opticType: "Scope", opticBrand: "Vortex", opticModel: "Other"
+    }]));
+  });
+  await generalPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
+  assert.equal(await generalPage.locator("#equipmentStateLabel").innerText(), "OTHER EQUIPMENT · LESSON NOT AVAILABLE");
+  assert.match(await generalPage.locator("#taskCard").innerText(), /may support general zeroing[\s\S]*does not yet have the target-and-equipment relationship/i);
+  assert.equal(await generalPage.locator("#equipmentStateLabel").filter({ hasText: "NEEDS CHANGE" }).count(), 0);
+  await generalPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
+  assert.equal(await generalPage.locator("#chapterList button:not([disabled])").count(), 1);
+  assert.equal(await generalPage.locator("#chapterList button[disabled]").count(), 4);
+  assert.equal(await generalPage.getByRole("link", { name: "CHOOSE DIFFERENT EQUIPMENT", exact: true }).count(), 1);
+  await generalContext.close();
 } finally {
   await browser.close();
 }
