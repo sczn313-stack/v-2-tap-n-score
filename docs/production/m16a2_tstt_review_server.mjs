@@ -20,6 +20,8 @@ const publicFiles = new Map([
   ["/tstt-voice-audition.js", "tstt-voice-audition.js"],
   ["/tstt-samantha-ab.html", "tstt-samantha-ab.html"],
   ["/tstt-samantha-ab.js", "tstt-samantha-ab.js"],
+  ["/tstt-samantha-test.html", "tstt-samantha-test.html"],
+  ["/tstt-samantha-test.js", "tstt-samantha-test.js"],
   ["/tstt-word-audition.html", "tstt-word-audition.html"],
   ["/tstt-word-audition.js", "tstt-word-audition.js"],
   ["/matrix.html", "matrix.html"],
@@ -147,6 +149,7 @@ server.listen(port, host, () => {
   console.log(`M16A2 TSTT review: http://127.0.0.1:${port}/m16a2-tstt.html`);
   console.log(`TSTT voice audition: http://127.0.0.1:${port}/tstt-voice-audition.html`);
   console.log(`TSTT Samantha A/B: http://127.0.0.1:${port}/tstt-samantha-ab.html`);
+  console.log(`TSTT Samantha test: http://127.0.0.1:${port}/tstt-samantha-test.html`);
   console.log(`TSTT word audition: http://127.0.0.1:${port}/tstt-word-audition.html`);
   if (host === "0.0.0.0") {
     for (const records of Object.values(networkInterfaces())) {
@@ -155,6 +158,7 @@ server.listen(port, host, () => {
           console.log(`M16A2 TSTT Wi-Fi: http://${record.address}:${port}/m16a2-tstt.html`);
           console.log(`TSTT voice audition Wi-Fi: http://${record.address}:${port}/tstt-voice-audition.html`);
           console.log(`TSTT Samantha A/B Wi-Fi: http://${record.address}:${port}/tstt-samantha-ab.html`);
+          console.log(`TSTT Samantha test Wi-Fi: http://${record.address}:${port}/tstt-samantha-test.html`);
           console.log(`TSTT word audition Wi-Fi: http://${record.address}:${port}/tstt-word-audition.html`);
         }
       }
