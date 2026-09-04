@@ -12,6 +12,9 @@ const publicFiles = new Map([
   ["/m16a2-tstt.html", "m16a2-tstt.html"],
   ["/m16a2-tstt.css", "m16a2-tstt.css"],
   ["/m16a2-tstt.js", "m16a2-tstt.js"],
+  ["/tstt-voice-audition.html", "tstt-voice-audition.html"],
+  ["/tstt-voice-audition.css", "tstt-voice-audition.css"],
+  ["/tstt-voice-audition.js", "tstt-voice-audition.js"],
   ["/matrix.html", "matrix.html"],
   ["/styles.css", "styles.css"],
   ["/platform-ui.css", "platform-ui.css"],
@@ -73,9 +76,13 @@ const server = createServer(async (request, response) => {
 
 server.listen(port, "0.0.0.0", () => {
   console.log(`M16A2 TSTT review: http://127.0.0.1:${port}/m16a2-tstt.html`);
+  console.log(`TSTT voice audition: http://127.0.0.1:${port}/tstt-voice-audition.html`);
   for (const records of Object.values(networkInterfaces())) {
     for (const record of records || []) {
-      if (record.family === "IPv4" && !record.internal) console.log(`M16A2 TSTT Wi-Fi: http://${record.address}:${port}/m16a2-tstt.html`);
+      if (record.family === "IPv4" && !record.internal) {
+        console.log(`M16A2 TSTT Wi-Fi: http://${record.address}:${port}/m16a2-tstt.html`);
+        console.log(`TSTT voice audition Wi-Fi: http://${record.address}:${port}/tstt-voice-audition.html`);
+      }
     }
   }
 });

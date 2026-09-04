@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f0d" />
+  <title>TSTT Founder Voice Audition — SCZN3</title>
+  <meta name="description" content="Device-local comparison of neutral U.S. English instructor voices for TSTT." />
+  <link rel="stylesheet" href="tstt-voice-audition.css?v=1" />
+</head>
+<body>
+  <main class="audition-shell">
+    <header class="audition-header">
+      <div class="brand-mark">SCZN3</div>
+      <div class="brand-product">TSTT FOUNDER VOICE AUDITION</div>
+    </header>
+
+    <section class="audition-intro" aria-labelledby="auditionTitle">
+      <span>VOICE TEST · SAME WORDS · SAME SPEED</span>
+      <h1 id="auditionTitle">Listen. Compare. Choose.</h1>
+      <p>Use the ordinary phone speaker. Every candidate uses identical words and delivery settings.</p>
+    </section>
+
+    <blockquote id="auditionSentence">“Your group is two squares high and three squares left. We’ll use the sights to move the group to the center of the target.”</blockquote>
+
+    <section aria-live="polite" aria-busy="true" id="voiceRegion">
+      <p class="voice-status" id="voiceStatus">CHECKING THIS DEVICE’S U.S. ENGLISH VOICES…</p>
+      <div class="voice-list" id="voiceList"></div>
+    </section>
+
+    <p class="audition-rule"><b>RATE 0.70</b><span>NEUTRAL PITCH</span><span>IDENTICAL SENTENCE</span></p>
+  </main>
+
+  <script src="tstt-voice-audition.js?v=1"></script>
+</body>
+</html>
