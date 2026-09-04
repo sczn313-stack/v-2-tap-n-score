@@ -6,9 +6,13 @@
   if (!state) throw new Error("Tap-n-Score state must load before the M4 runtime.");
 
   const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost", "::1"]);
-  const AUTHORITY_ENDPOINT = LOCAL_HOSTS.has(window.location.hostname)
+  const FOUNDER_LAN_REVIEW = new URLSearchParams(window.location.search).get("founder_review") === "1"
+    && /^(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/.test(window.location.hostname);
+  const AUTHORITY_ENDPOINT = window.SCZN3_M4_AUTHORITY_ENDPOINT || (LOCAL_HOSTS.has(window.location.hostname)
     ? "http://127.0.0.1:8098/api/authority/m4"
-    : "/api/authority/m4";
+    : FOUNDER_LAN_REVIEW
+      ? `${window.location.origin}/api/authority/m4`
+      : "/api/authority/m4");
 
   function nowStamp() {
     return new Date().toISOString();
@@ -59,6 +63,11 @@
       .toLowerCase()
       .includes("iron");
     const configuredSight = config.sightingSystems && config.sightingSystems.M4_IRON_DCH_FSP || {};
+    const equipmentConfigurationId = String(source.equipmentConfigurationId || "");
+    const adjustmentProfileId = String(source.adjustmentProfileId || "");
+    const usesRegisteredM16A2IronSight = isIron
+      && equipmentConfigurationId === "M16A2-STANDARD-IRON-FSP-REAR-DRUM"
+      && adjustmentProfileId === "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
     const sightAuthorityId = String(
       source.equipmentAuthorityRecordId
       || source.mechanicalSightAuthorityId
@@ -67,8 +76,10 @@
     );
     const usesRegisteredM4IronSight = isIron
       && sightAuthorityId === configuredSight.equipmentAuthorityRecordId;
-    const adjustmentSystem = usesRegisteredM4IronSight
-      ? "M4_IRON_DCH_FSP"
+    const adjustmentSystem = usesRegisteredM16A2IronSight
+      ? "M16A2_IRON_FSP_REAR_DRUM"
+      : usesRegisteredM4IronSight
+        ? "M4_IRON_DCH_FSP"
       : isIron
         ? "M4_IRON"
         : "OPTIC";
@@ -107,9 +118,12 @@
       equipmentAuthorityRecordId: usesRegisteredM4IronSight
         ? configuredSight.equipmentAuthorityRecordId
         : null,
+      adjustmentProfileId: usesRegisteredM16A2IronSight ? adjustmentProfileId : null,
       shooterSetup: {
         ...source,
         adjustmentSystem,
+        equipmentConfigurationId,
+        adjustmentProfileId: usesRegisteredM16A2IronSight ? adjustmentProfileId : null,
         equipmentAuthorityRecordId: usesRegisteredM4IronSight
           ? configuredSight.equipmentAuthorityRecordId
           : null,

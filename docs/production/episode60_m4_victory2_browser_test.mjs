@@ -6,6 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8137";
 const liveReviewAuthority = process.env.SCZN3_TEST_LIVE_REVIEW_AUTHORITY === "1";
+const authorityEndpoint = process.env.SCZN3_TEST_AUTHORITY_ENDPOINT || "";
 const targetPhoto = path.resolve("docs/assets/M4_M16_SERIES_WEAPONS_25M_ZERO_FOUNDER_PHOTO.jpeg");
 const registrationPackageId = "m4-m16-25m-zero-photo-registration-v1";
 const targetProfileVersion = "M4_TARGET_AUTHORITY_v1_ORIGINAL";
@@ -157,6 +158,12 @@ const browser = await chromium.launch({ headless: true, executablePath: process.
 try {
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     const context = await browser.newContext({ viewport });
+    if (authorityEndpoint) {
+      await context.addInitScript(endpoint => {
+        window.SCZN3_BACKEND_AUTHORITY_ENDPOINT = endpoint;
+        window.SCZN3_M4_AUTHORITY_ENDPOINT = endpoint.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/m4");
+      }, authorityEndpoint);
+    }
     let sessionId = `episode60-m4-victory2-${viewport.width}`;
     const errors = [];
     const registrationRequests = [];

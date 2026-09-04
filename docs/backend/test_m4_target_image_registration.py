@@ -128,6 +128,21 @@ def test_exact_canonical_representation_registers():
     assert result["canonicalRepresentation"]["sha256"] == evidence["sha256"]
 
 
+def test_backend_hashes_when_insecure_lan_browser_cannot():
+    evidence = image_evidence(CANONICAL.read_bytes(), "image/png")
+    expected_sha256 = evidence.pop("sha256")
+    result = register_target_image({
+        "registrationPackageId": PACKAGE_ID,
+        "registrationPackageVersion": "1",
+        "targetProfileId": PROFILE_ID,
+        "targetProfileVersion": PROFILE_VERSION,
+        "imageEvidence": evidence,
+        "observations": [],
+    })
+    assert result["knowledgeState"] == "exact"
+    assert result["sourceImage"]["sha256"] == expected_sha256
+
+
 def test_registered_photo_drives_unchanged_m4_authority_and_source_rendering():
     evidence, transform = perspective_fixture()
     aim = source_observation(transform, 50, BULL_Y_PERCENT)

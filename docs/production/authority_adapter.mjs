@@ -7,7 +7,7 @@
  * output discrepancy.
  */
 
-import { resolveProvenEquipmentRecord } from "./generated_weapon_equipment_registry.mjs";
+import { getAdjustmentProfile, resolveProvenEquipmentRecord } from "./generated_weapon_equipment_registry.mjs";
 
 const MOA_INCHES_AT_100_YARDS = 1.047;
 const MRAD_INCHES_AT_100_YARDS = 3.6;
@@ -185,6 +185,34 @@ function authorityModelFromRecord(record) {
   };
 }
 
+function authorityModelFromAdjustmentProfile(profile) {
+  const controls = Array.isArray(profile.controls) ? profile.controls : [];
+  const windage = controls.find(control => control.axis === "windage" && control.operationPurpose === "correction") || {};
+  const elevation = controls.find(control => control.axis === "elevation" && control.operationPurpose === "correction") || {};
+  const directions = control => Object.fromEntries((control.directions || []).map(direction => [direction.desiredPoiMovement, direction.rotation]));
+  return {
+    system: profile.adjustmentSystem,
+    label: profile.displayName,
+    unit: windage.movementUnit || elevation.movementUnit || "MOA",
+    windagePerClick: pythonFloat(windage.movementPerClick),
+    elevationPerClick: pythonFloat(elevation.movementPerClick),
+    authorityStatus: profile.status,
+    authorityId: profile.adjustmentProfileId,
+    equipmentAuthorityRecordId: null,
+    authoritySource: (profile.sourceDocumentation || [])[0] || null,
+    exactSightIdentity: {
+      weapon: (profile.applicabilityScope && profile.applicabilityScope.weaponPlatforms || []).join(", "),
+      rearSight: profile.applicabilityScope && profile.applicabilityScope.sightConfiguration || "",
+      windageControl: windage.control,
+      elevationControl: elevation.control,
+      mountingConfiguration: profile.equipmentConfigurationId
+    },
+    roundingRule: "nearest-whole-click-half-to-even",
+    turnDirections: { windage: directions(windage), elevation: directions(elevation) },
+    authorityRecord: profile
+  };
+}
+
 function adjustmentModel(payload) {
   const setup = payload.shooterSetup && typeof payload.shooterSetup === "object" && !Array.isArray(payload.shooterSetup)
     ? payload.shooterSetup
@@ -198,6 +226,33 @@ function adjustmentModel(payload) {
       || setup.adjustmentSystem
       || (opticType.toLowerCase().includes("iron") ? "M4_IRON" : "OPTIC")
   ).toUpperCase();
+  if (requested.startsWith("M16A2_IRON")) {
+    const adjustmentProfileId = String(payload.adjustmentProfileId || setup.adjustmentProfileId || "");
+    const equipmentConfigurationId = String(setup.equipmentConfigurationId || "");
+    const profile = getAdjustmentProfile(adjustmentProfileId);
+    const proven = Boolean(
+      profile
+      && String(profile.status || "").toLowerCase() === "proven"
+      && profile.equipmentConfigurationId === equipmentConfigurationId
+      && profile.adjustmentSystem === requested
+    );
+    const authority = proven ? authorityModelFromAdjustmentProfile(profile) : {};
+    return {
+      system: requested,
+      label: authority.label || "Unspecified M16A2 iron sights",
+      unit: authority.unit || "MOA",
+      windagePerClick: authority.windagePerClick || null,
+      elevationPerClick: authority.elevationPerClick || null,
+      authorityStatus: proven ? "proven" : "unproven",
+      authorityId: authority.authorityId || null,
+      authoritySource: authority.authoritySource || null,
+      exactSightIdentity: authority.exactSightIdentity || null,
+      roundingRule: authority.roundingRule || null,
+      turnDirections: authority.turnDirections || null,
+      equipmentAuthorityRecordId: null,
+      authorityRecord: authority.authorityRecord || null
+    };
+  }
   if (requested.startsWith("M4_IRON")) {
     const requestedAuthorityId = String(
       payload.equipmentAuthorityRecordId

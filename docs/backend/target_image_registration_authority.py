@@ -79,8 +79,8 @@ def decode_image_evidence(image: Mapping[str, Any]) -> Dict[str, Any]:
     if not isinstance(image, Mapping):
         raise TargetImageRegistrationError("image_evidence_required")
     claimed = str(image.get("sha256") or "").lower()
-    if not SHA256_PATTERN.fullmatch(claimed):
-        raise TargetImageRegistrationError("image_sha256_required")
+    if claimed and not SHA256_PATTERN.fullmatch(claimed):
+        raise TargetImageRegistrationError("image_sha256_invalid")
     match = DATA_URL_PATTERN.fullmatch(str(image.get("dataUrl") or ""))
     if not match:
         raise TargetImageRegistrationError("image_data_url_invalid")
@@ -91,7 +91,7 @@ def decode_image_evidence(image: Mapping[str, Any]) -> Dict[str, Any]:
     if not image_bytes or len(image_bytes) > MAX_IMAGE_BYTES:
         raise TargetImageRegistrationError("image_data_size_invalid")
     backend_hash = hashlib.sha256(image_bytes).hexdigest()
-    if backend_hash != claimed:
+    if claimed and backend_hash != claimed:
         raise TargetImageRegistrationError("image_sha256_mismatch")
     decoded = cv2.imdecode(np.frombuffer(image_bytes, dtype=np.uint8), cv2.IMREAD_COLOR)
     if decoded is None:

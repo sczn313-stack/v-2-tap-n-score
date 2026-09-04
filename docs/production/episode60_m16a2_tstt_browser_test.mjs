@@ -39,11 +39,10 @@ try {
     assert.equal(await page.locator("#lessonProgress > span").count(), 5);
     assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
     assert.equal(await page.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
-    assert.equal(await page.locator("#lessonSummary").isHidden(), true);
+    assert.equal(await page.locator("#lessonSummary").isHidden(), false);
     assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR TARGET.");
     assert.equal(await page.locator("#lessonSummary").innerText(), "Before making any sight adjustments, understand what this target is telling you.");
     assert.match(await page.locator("#visualStage").innerText(), /AIM POINT[\s\S]*Always make the center crosshairs your aim point[\s\S]*READ THE GRID[\s\S]*Each small square measures[\s\S]*READ THE CLICKS[\s\S]*columns represents one front-sight up-or-down click[\s\S]*rows represents three rear-windage clicks[\s\S]*FIRE THE SHOT PATTERN[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*LET TAP-N-SCORE READ IT/);
-    assert.match(await page.locator("#visualStage").innerText(), /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
     const chapterOneSpeech = await page.evaluate(() => {
       const utterance = window.__spokenUtterances.at(-1);
@@ -68,7 +67,7 @@ try {
     assert.equal(await page.locator("#visualStage .sight-card").count(), 3);
     assert.equal(await page.locator("#visualStage .sight-photo img").count(), 3);
     assert.equal(await page.locator("#visualStage svg").count(), 0);
-    assert.equal(await page.getByText("YOUR TASK", { exact: true }).count(), 0);
+    assert.equal(await page.locator("#taskCard:visible").count(), 0);
     assert.equal(await page.getByRole("button", { name: "I CAN FIND THE THREE SIGHTS", exact: true }).count(), 0);
     assert.equal(await page.locator("#visualStage .sight-recap").count(), 0);
     assert.equal(await page.locator("#visualStage .sight-intro, #visualStage .sight-job, #visualStage .drum-sequence, #visualStage figcaption, #visualStage .review-asset-note").count(), 0);
@@ -96,15 +95,17 @@ try {
     await page.getByRole("button", { name: /Make the adjustment/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 3 OF 5");
     assert.equal(await page.locator("#lessonTitle").innerText(), "MAKE THE ADJUSTMENT.");
-    assert.match(await page.locator("#visualStage").innerText(), /SHOOT[\s\S]*Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*TAP YOUR SHOTS[\s\S]*Tap each shot in Tap-n-Score\.[\s\S]*MEASURE[\s\S]*Tap-n-Score finds the center of your shot pattern[\s\S]*ADJUST[\s\S]*For elevation[\s\S]*For windage[\s\S]*Make the adjustments[\s\S]*CONFIRM[\s\S]*Then shoot another three-to-five-shot pattern[\s\S]*8\/3[\s\S]*COUNTERCLOCKWISE[\s\S]*Your sights are set\./);
-    assert.equal(await page.locator("#visualStage .adjustment-flow > li").count(), 6);
-    assert.equal(await page.getByText("YOUR TASK", { exact: true }).count(), 0);
+    assert.match(await page.locator("#visualStage").innerText(), /ADD PHOTO[\s\S]*Take a photo of your target or choose one from your photos\.[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/);
+    assert.equal(await page.locator("#visualStage .adjustment-target img").count(), 1);
+    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png$/);
+    assert.equal(await page.locator("#visualStage .adjustment-flow").count(), 0);
+    assert.equal(await page.locator("#taskCard:visible").count(), 0);
     assert.equal(await page.locator("#visualStage .aim-demo, #visualStage .aim-reticle, #visualStage .axis-key").count(), 0);
     const chapterThreeSpeech = await page.evaluate(() => {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
     });
-    assert.equal(chapterThreeSpeech.text, "Your sights are ready. Now let Tap-n-Score tell you how to adjust them. Shoot three to five shots while aiming at the center crosshairs. Tap each shot in Tap-n-Score. Tap-n-Score finds the center of your shot pattern and measures how far it is from the center crosshairs. For elevation, Tap-n-Score tells you how many clicks to move the front sight post and which direction to turn it. For windage, Tap-n-Score tells you how many clicks to move the rear windage knob and which direction to turn it. Make the adjustments Tap-n-Score gives you. Then shoot another three-to-five-shot pattern to confirm your zero. Once your zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your three-hundred-meter setting. Your sights are set.");
+    assert.equal(chapterThreeSpeech.text, "Shoot three to five shots while aiming at the center crosshairs. Take a photo of your target or choose one from your photos.");
     assert.deepEqual({ rate: chapterThreeSpeech.rate, voice: chapterThreeSpeech.voice }, { rate: 0.70, voice: "Samantha" });
 
     await page.locator('[data-control="chapters"]').click();

@@ -2,6 +2,8 @@
   "use strict";
 
   const targetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png";
+  const chapterThreeTargetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png";
+  const tapNScoreRoad = "matrix.html?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=3";
   const chapterTwoReferencePath = "authority-evidence/mfam/founder-supplied-chapter2-visual-reference";
   const chapterTwoReferenceImages = Object.freeze({
     frontSight: `${chapterTwoReferencePath}/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg`,
@@ -33,16 +35,8 @@
   ]);
   const chapterTwoSpokenNarration = `Front sight post. ${chapterTwoFounderScript[0]} Rear windage knob. ${chapterTwoFounderScript[1]} Rear elevation drum. ${chapterTwoFounderScript[2]} ${chapterTwoFounderScript[3]} ${chapterTwoFounderScript[4]}`;
   const chapterThreeFounderScript = Object.freeze([
-    "Your sights are ready. Now let Tap-n-Score tell you how to adjust them.",
     "Shoot three to five shots while aiming at the center crosshairs.",
-    "Tap each shot in Tap-n-Score.",
-    "Tap-n-Score finds the center of your shot pattern and measures how far it is from the center crosshairs.",
-    "For elevation, Tap-n-Score tells you how many clicks to move the front sight post and which direction to turn it.",
-    "For windage, Tap-n-Score tells you how many clicks to move the rear windage knob and which direction to turn it.",
-    "Make the adjustments Tap-n-Score gives you.",
-    "Then shoot another three-to-five-shot pattern to confirm your zero.",
-    "Once your zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your 300-meter setting.",
-    "Your sights are set."
+    "Take a photo of your target or choose one from your photos."
   ]);
   const chapterThreeSpokenNarration = chapterThreeFounderScript.join(" ");
   const chapters = Object.freeze([
@@ -88,13 +82,13 @@
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
-      id: "a2-3", label: "MAKE THE ADJUSTMENT", shortTitle: "Make the adjustment", eyebrow: "LET TAP-N-SCORE TALK", title: "Make the adjustment.",
+      id: "a2-3", label: "MAKE THE ADJUSTMENT", shortTitle: "Make the adjustment", eyebrow: "LET TAP-N-SCORE DO ITS JOB", title: "Make the adjustment.",
       summary: chapterThreeFounderScript[0],
       narration: chapterThreeSpokenNarration,
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterThreeSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="adjustment-lesson"><ol class="adjustment-flow"><li><span>01</span><div><b>SHOOT</b><p>${chapterThreeFounderScript[1]}</p></div></li><li><span>02</span><div><b>TAP YOUR SHOTS</b><p>${chapterThreeFounderScript[2]}</p></div></li><li><span>03</span><div><b>MEASURE</b><p>${chapterThreeFounderScript[3]}</p></div></li><li><span>04</span><div><b>ADJUST</b><p>${chapterThreeFounderScript[4]}</p><p>${chapterThreeFounderScript[5]}</p><p>${chapterThreeFounderScript[6]}</p></div></li><li><span>05</span><div><b>CONFIRM</b><p>${chapterThreeFounderScript[7]}</p></div></li><li><span>06</span><div><b>8/3</b><p>${chapterThreeFounderScript[8]}</p></div></li></ol><p class="adjustment-close">${chapterThreeFounderScript[9]}</p></div>`,
+      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>ADD PHOTO</span><h2 id="photo-entry-title">Your shot pattern starts here.</h2><p>${chapterThreeFounderScript[1]}</p><div><a href="${chapterThreePhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterThreePhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>${equipmentSupportsExactSetup() ? "Tap-n-Score will open the proven Precision Tap road for your photograph." : "Select the governed M16A2 standard iron-sight setup in Equipment Library first."}</small></section></div>`,
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
@@ -138,6 +132,10 @@
   function equipmentSupportsExactSetup() { return state.equipment.status === "exact"; }
   function equipmentLibraryUrl() {
     return `matrix.html?view=library&origin=tstt&return_to=m16a2-tstt.html&return_chapter=${state.current + 1}`;
+  }
+  function chapterThreePhotoRoad(photoSource) {
+    if (!equipmentSupportsExactSetup() || !state.equipment.activeId) return equipmentLibraryUrl();
+    return `${tapNScoreRoad}&equipment_profile_id=${encodeURIComponent(state.equipment.activeId)}&photo_source=${encodeURIComponent(photoSource)}`;
   }
   function preserveJourney() {
     if (!state.started) return;
