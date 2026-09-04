@@ -23,10 +23,10 @@ assert.match(source, /focus[\s\S]*pageshow[\s\S]*storage/, "TSTT rereads active 
 assert.match(`${html}\n${source}`, /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply\./, "Chapter 1 presents the Founder-approved concise training guidance");
 assert.doesNotMatch(`${html}\n${source}`, /CURRENT EQUIPMENT|equipmentIndicator|equipmentStateLabel|equipmentLabel/, "Page 1 does not prominently display the shooter's stored equipment");
 assert.doesNotMatch(source, /Learn the target and the M16A2 standard iron-sight setup this training will use\./, "Chapter 1 does not announce that teaching is coming");
-assert.match(source, /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE SHOOT A GROUP/, "Chapter 1 visibly teaches the complete target curriculum");
+assert.match(source, /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE USE A SHOT PATTERN/, "Chapter 1 visibly teaches the complete target curriculum");
 assert.match(source, /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/, "Chapter 1 reads the exact M16A2 square-to-control scales printed on the governed target");
 assert.match(source, /target-marker-aim[\s\S]*target-marker-grid[\s\S]*sample-group/, "the curriculum is demonstrated on the complete physical target");
-assert.match(source, /Do not chase (?:a single shot|individual shots)/, "Chapter 1 teaches the group as correction evidence");
+assert.match(source, /shot pattern[\s\S]*Do not chase (?:a single shot|individual shots)/, "Chapter 1 teaches the shot pattern as correction evidence");
 assert.match(source, /NEXT → THE SIGHTS/, "Chapter 1 hands directly to the sight lesson");
 assert.match(html, /tstt_narration\.js[\s\S]*m16a2-tstt\.js/, "the reusable narration standard loads before the product lesson");
 assert.match(narration, /DEFAULT_SETTINGS = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "the reusable narrator keeps the slower neutral baseline");

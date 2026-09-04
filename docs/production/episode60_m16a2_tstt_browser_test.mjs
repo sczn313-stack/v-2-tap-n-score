@@ -46,7 +46,7 @@ try {
     assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
     assert.equal(await page.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
     assert.equal(await page.locator("#lessonSummary").isHidden(), true);
-    assert.match(await page.locator("#visualStage").innerText(), /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE SHOOT A GROUP/);
+    assert.match(await page.locator("#visualStage").innerText(), /WHERE TO AIM[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY WE USE A SHOT PATTERN/);
     assert.match(await page.locator("#visualStage").innerText(), /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
     const chapterOneSpeech = await page.evaluate(() => {
@@ -54,7 +54,7 @@ try {
       return { text: utterance.text, rate: utterance.rate, pitch: utterance.pitch, volume: utterance.volume, voice: utterance.voice?.name, lang: utterance.lang };
     });
     assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
-    assert.equal(chapterOneSpeech.text, "This target gives you an aim point. It also gives you a way to measure your group. Aim at the white center dot. Hold that same point for every shot. The grid is a measurement tool. One vertical square equals one front-sight click. One horizontal square equals three rear-windage clicks. The target shows where the center of your group is compared with the white center dot. Use the group as evidence for the correction. Do not chase a single shot.");
+    assert.equal(chapterOneSpeech.text, "This target gives you an aim point. It also gives you a way to measure your shot pattern. Aim at the white center dot. Hold that same point for every shot. The grid is a measurement tool. One vertical square equals one front-sight click. One horizontal square equals three rear-windage clicks. The target shows where your shot pattern is centered compared with the white center dot. Use the shot pattern as evidence for the correction. Do not chase a single shot.");
     const spokenCountBeforePause = await page.evaluate(() => window.__spokenUtterances.length);
     await page.evaluate(() => window.__spokenUtterances.at(-1).onend());
     await page.waitForTimeout(550);
