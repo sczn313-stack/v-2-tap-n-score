@@ -6,18 +6,29 @@
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
   const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
-  const auditionSentence = "Your group is two squares high and three squares left. We’ll use the sights to move the group to the center of the target.";
-  const chapterOneSpokenNarration = "This target gives you an aim point. It also gives you a way to measure your shot pattern. Aim at the center crosshairs. Hold the center crosshairs as your aiming reference for every shot. The grid is a measurement tool. One vertical square equals one front-sight click. One horizontal square equals three rear-windage clicks. The target shows where your shot pattern is centered compared with the center crosshairs. Fire three to five shots before making an adjustment. The center of your shot pattern gives a better picture of where your shots are landing.";
+  const auditionSentence = "Your shot pattern is two squares high and three squares left.";
+  const chapterOneFounderScript = Object.freeze([
+    "Before making any sight adjustments, understand what this target is telling you.",
+    "Always make the center crosshairs your aim point when zeroing your weapon.",
+    "Each small square measures how far your shots are landing from the center crosshairs.",
+    "On this target, each square in the columns represents one front-sight up-or-down click.",
+    "Each square in the rows represents three rear-windage clicks, right or left.",
+    "Fire three to five shots before making an adjustment.",
+    "The center of your shot pattern gives a better picture of where your shots are landing.",
+    "Once you have a shot pattern, Tap-n-Score can measure where it is in relation to the center crosshairs and tell you what adjustment to make.",
+    "Next, we'll learn the sights."
+  ]);
+  const chapterOneSpokenNarration = chapterOneFounderScript.join(" ");
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
-      title: "Know the target before you touch the sights.",
-      summary: "",
-      narration: "This target gives you an aim point and a way to measure your shot pattern. Aim at the center crosshairs and hold that same aiming reference for every shot. The grid is a measurement tool. For this M16A2 standard iron-sight setup, one vertical square equals one front-sight click, and one horizontal square equals three rear-windage clicks. The target shows where your shot pattern is centered compared with the center crosshairs. Fire three to five shots before making an adjustment. The center of your shot pattern gives a better picture of where your shots are landing.",
+      title: "Know your target.",
+      summary: chapterOneFounderScript[0],
+      narration: chapterOneSpokenNarration,
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterOneSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="target-lesson"><figure class="target-window is-full-target target-teaching-figure"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure><ol class="target-curriculum"><li><span>1</span><div><b>WHERE TO AIM</b><p>Aim at the <strong>CENTER CROSSHAIRS</strong>. Hold that same aiming reference for every shot.</p></div></li><li><span>2</span><div><b>WHAT THE GRID MEANS</b><p>The grid measures how far the center of your shot pattern is from the <strong>CENTER CROSSHAIRS</strong>.</p></div></li><li><span>3</span><div><b>WHAT ONE SQUARE REPRESENTS</b><p><strong>Up / down:</strong> 1 square = 1 front-sight click.<br><strong>Left / right:</strong> 1 square = 3 rear-windage clicks.</p></div></li><li><span>4</span><div><b>WHAT THE TARGET WILL TELL YOU</b><p>The shot pattern's place on the grid shows the direction and amount it needs to move.</p></div></li><li><span>5</span><div><b>WHY FIRE THREE TO FIVE SHOTS</b><p>Fire three to five shots before making an adjustment. <strong>THE CENTER OF YOUR SHOT PATTERN</strong> gives a better picture of where your shots are landing.</p></div></li></ol></div>`,
+      visual: () => `<div class="target-lesson"><figure class="target-window is-full-target target-teaching-figure"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure><ol class="target-curriculum"><li><span>1</span><div><b>AIM POINT</b><p>${chapterOneFounderScript[1]}</p></div></li><li><span>2</span><div><b>READ THE GRID</b><p>${chapterOneFounderScript[2]}</p></div></li><li><span>3</span><div><b>READ THE CLICKS</b><p>${chapterOneFounderScript[3]} ${chapterOneFounderScript[4]}</p></div></li><li><span>4</span><div><b>FIRE THE SHOT PATTERN</b><p>${chapterOneFounderScript[5]} <strong>THE CENTER OF YOUR SHOT PATTERN</strong> gives a better picture of where your shots are landing.</p></div></li><li><span>5</span><div><b>LET TAP-N-SCORE READ IT</b><p>${chapterOneFounderScript[7]}</p></div></li></ol></div>`,
       action: "equipment"
     }),
     Object.freeze({
@@ -171,7 +182,7 @@
   }
   function actionMarkup(chapter) {
     if (!state.started) return "";
-    if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT → THE SIGHTS</button>`;
+    if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT, WE'LL LEARN THE SIGHTS.</button>`;
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
   }

@@ -37,7 +37,7 @@ try {
     assert.equal(await page.locator("#runtimeVoiceStatus").innerText(), "Samantha · en-US · com.apple.voice.compact.en-US.Samantha");
     await page.locator("#runtimeVoiceCheck").click();
     const voiceCheck = await page.evaluate(() => window.__spokenUtterances.at(-1));
-    assert.equal(voiceCheck.text, "Your group is two squares high and three squares left. We’ll use the sights to move the group to the center of the target.");
+    assert.equal(voiceCheck.text, "Your shot pattern is two squares high and three squares left.");
     assert.equal(voiceCheck.voice.name, "Samantha");
     assert.equal(voiceCheck.voice.voiceURI, "com.apple.voice.compact.en-US.Samantha");
     assert.equal(voiceCheck.rate, 0.70);
@@ -46,7 +46,9 @@ try {
     assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
     assert.equal(await page.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
     assert.equal(await page.locator("#lessonSummary").isHidden(), true);
-    assert.match(await page.locator("#visualStage").innerText(), /WHERE TO AIM[\s\S]*CENTER CROSSHAIRS[\s\S]*WHAT THE GRID MEANS[\s\S]*WHAT ONE SQUARE REPRESENTS[\s\S]*WHAT THE TARGET WILL TELL YOU[\s\S]*WHY FIRE THREE TO FIVE SHOTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN/);
+    assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR TARGET.");
+    assert.equal(await page.locator("#lessonSummary").innerText(), "Before making any sight adjustments, understand what this target is telling you.");
+    assert.match(await page.locator("#visualStage").innerText(), /AIM POINT[\s\S]*Always make the center crosshairs your aim point[\s\S]*READ THE GRID[\s\S]*Each small square measures[\s\S]*READ THE CLICKS[\s\S]*columns represents one front-sight up-or-down click[\s\S]*rows represents three rear-windage clicks[\s\S]*FIRE THE SHOT PATTERN[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*LET TAP-N-SCORE READ IT/);
     assert.match(await page.locator("#visualStage").innerText(), /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-windage clicks/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
     const chapterOneSpeech = await page.evaluate(() => {
@@ -54,7 +56,7 @@ try {
       return { text: utterance.text, rate: utterance.rate, pitch: utterance.pitch, volume: utterance.volume, voice: utterance.voice?.name, lang: utterance.lang };
     });
     assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
-    assert.equal(chapterOneSpeech.text, "This target gives you an aim point. It also gives you a way to measure your shot pattern. Aim at the center crosshairs. Hold the center crosshairs as your aiming reference for every shot. The grid is a measurement tool. One vertical square equals one front-sight click. One horizontal square equals three rear-windage clicks. The target shows where your shot pattern is centered compared with the center crosshairs. Fire three to five shots before making an adjustment. The center of your shot pattern gives a better picture of where your shots are landing.");
+    assert.equal(chapterOneSpeech.text, "Before making any sight adjustments, understand what this target is telling you. Always make the center crosshairs your aim point when zeroing your weapon. Each small square measures how far your shots are landing from the center crosshairs. On this target, each square in the columns represents one front-sight up-or-down click. Each square in the rows represents three rear-windage clicks, right or left. Fire three to five shots before making an adjustment. The center of your shot pattern gives a better picture of where your shots are landing. Once you have a shot pattern, Tap-n-Score can measure where it is in relation to the center crosshairs and tell you what adjustment to make. Next, we'll learn the sights.");
     const spokenCountBeforePause = await page.evaluate(() => window.__spokenUtterances.length);
     await page.evaluate(() => window.__spokenUtterances.at(-1).onend());
     await page.waitForTimeout(550);
@@ -65,7 +67,7 @@ try {
     assert.equal(await page.locator("#sessionDistanceUnit").inputValue(), "METERS");
     assert.equal(await page.locator("#sessionAdjustmentUnit").inputValue(), "MOA");
     assert.equal(await page.locator("#sessionAdjustmentIncrement").inputValue(), "Elevation 1.25 · Windage 0.5");
-    await page.getByRole("button", { name: /NEXT → THE SIGHTS/ }).click();
+    await page.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
     const chapterTwoSpeech = await page.evaluate(() => window.__spokenUtterances.at(-1).text);
@@ -138,7 +140,7 @@ try {
   assert.equal(await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).count(), 0);
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 1);
   assert.equal(await coldPage.locator("#chapterList button:not([disabled])").count(), 5);
-  await coldPage.getByRole("button", { name: /NEXT → THE SIGHTS/ }).click();
+  await coldPage.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
   await coldPage.locator('[data-control="pause"]').click();
   await coldPage.locator("#shootingSetup").click();
   await coldPage.getByRole("link", { name: "EQUIPMENT LIBRARY", exact: true }).click();
@@ -185,7 +187,7 @@ try {
   assert.match(await generalPage.locator("#shootingSetupNote").innerText(), /Different equipment requires its own governed adjustment authority/);
   await generalPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
   assert.equal(await generalPage.locator("#chapterList button:not([disabled])").count(), 5);
-  assert.equal(await generalPage.getByRole("button", { name: /NEXT → THE SIGHTS/ }).count(), 1);
+  assert.equal(await generalPage.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).count(), 1);
   assert.equal(await generalPage.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
   await generalPage.locator('[data-control="chapters"]').click();
   await generalPage.getByRole("button", { name: /Ready for the first group/ }).click();
