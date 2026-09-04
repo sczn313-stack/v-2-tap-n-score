@@ -30,10 +30,10 @@ try {
     page.on("request", request => {
       if (/records\.html\?.*(?:view=sec|selected=)/.test(request.url())) preservedSurfaceRequests.push(request.url());
     });
-    await page.goto(`${baseUrl}/shoot.html?prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}/shoot.html?target_profile_id=baker_m16a2_25m_zero&prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1`, { waitUntil: "networkidle" });
     await page.locator('#workspaceStageShell[data-player-status="completed"]').waitFor({ timeout: 120000 });
 
-    assert.match(await page.locator("#markSurface > img").getAttribute("src"), /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png$/);
+    assert.match(await page.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
     const state = await page.evaluate(() => ({
       states: window.__SCZN3_PREPARED_DEMO_STATES__ || [],
       session: JSON.parse(sessionStorage.getItem("SCZN3_TALKING_TARGET_DEMO_SESSION") || "null"),

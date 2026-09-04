@@ -2,6 +2,37 @@
   "schemaVersion": "sczn3-target-image-registration-package-registry-v1",
   "packages": [
     {
+      "registrationPackageId": "baker-m16a2-25m-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "baker_m16a2_25m_zero",
+      "targetProfileVersion": "BAKER_M16A2_25M_AUTHORITY_v1",
+      "canonicalRepresentation": {
+        "assetId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+        "path": "assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg",
+        "sha256": "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
+        "pixelWidth": 773,
+        "pixelHeight": 1000,
+        "mediaType": "image/jpeg"
+      },
+      "canonicalCoordinateSystemId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+      "ugoAuthorityId": "BAKER_M16A2_096CM_18X20_GEOMETRY_v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 18,
+        "minimumInliers": 12,
+        "minimumInlierRatio": 0.35,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "registration_knowledge_only_baker_m16a2_zeroing_authority_owns_sufficiency"
+    },
+    {
       "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
       "registrationPackageVersion": "1",
       "targetProfileId": "m4_25m_zero",

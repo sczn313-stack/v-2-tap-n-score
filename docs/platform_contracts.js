@@ -52,6 +52,15 @@
   const executionFamilyAdapterRegistry = new Map();
   const TARGET_PROFILE_DEFINITIONS = Object.freeze([
     Object.freeze({
+      targetProfileId: "baker_m16a2_25m_zero",
+      targetProfileVersion: "BAKER_M16A2_25M_AUTHORITY_v1",
+      targetProfileLabel: "Baker M16A2 25 Meter Zeroing Target",
+      missionLabel: "25 Meter Zero",
+      aliases: Object.freeze(["BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1"]),
+      publisherIdentity: Object.freeze({ publisherId: "baker-targets", publisherLabel: "Baker Targets", publisherUrl: "https://bakertargets.com", publisherLinkLabel: "BakerTargets.com" }),
+      productIdentity: Object.freeze({ productId: "ST-M16A2", sku: "ST-M16A2", productLabel: "Baker M16A2 25 Meter Zeroing Target", productUrl: "https://bakertargets.com/product/2-sided-25-meter-m16a2m4-zeroing-target/" })
+    }),
+    Object.freeze({
       targetProfileId: "m4_25m_zero",
       targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
       targetProfileLabel: "M4 25m Zero",

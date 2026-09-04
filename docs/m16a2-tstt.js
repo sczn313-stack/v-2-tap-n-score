@@ -2,9 +2,9 @@
   "use strict";
 
   const targetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png";
-  const chapterThreeTargetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png";
-  const tapNScoreRoad = "matrix.html?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=4";
-  const chapterThreeDemoRoad = "shoot.html?prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1";
+  const chapterThreeTargetImage = "assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg";
+  const tapNScoreRoad = "matrix.html?target_profile_id=baker_m16a2_25m_zero&founder_review=1&tstt_chapter=4";
+  const chapterThreeDemoRoad = "shoot.html?target_profile_id=baker_m16a2_25m_zero&prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1";
   const chapterTwoReferencePath = "authority-evidence/mfam/founder-supplied-chapter2-visual-reference";
   const chapterTwoReferenceImages = Object.freeze({
     frontSight: `${chapterTwoReferencePath}/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg`,

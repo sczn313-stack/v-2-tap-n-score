@@ -75,7 +75,8 @@ const requestedSessionId = SEC_QUERY.get("sessionId");
 const historicalSnapshotMode = Boolean(requestedSessionId);
 const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
 const SEC_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
-const PRESERVED_SEC_ENDPOINT = `${SEC_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
+const SEC_FOUNDER_REVIEW = SEC_QUERY.get("founder_review") === "1";
+const PRESERVED_SEC_ENDPOINT = `${SEC_FOUNDER_REVIEW ? window.location.origin : SEC_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
 const persistedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 const requestedPersistedSession = requestedSessionId
   ? SCZN3M4.getSessionHistory().find(candidate => candidate && candidate.sessionId === requestedSessionId) || null
@@ -149,7 +150,7 @@ function isCompletedZeroingSession(candidate) {
   return Boolean(
     candidate &&
     window.SCZN3SECDispatch &&
-    SCZN3SECDispatch.resolve(candidate).adapter === SCZN3SECDispatch.ADAPTERS.M4_ZEROING &&
+    [SCZN3SECDispatch.ADAPTERS.M4_ZEROING, SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING].includes(SCZN3SECDispatch.resolve(candidate).adapter) &&
     window.SCZN3ZeroingPlatform &&
     window.SCZN3ZeroingPlatform.isCompletedSession(candidate) &&
     (candidate.m4AuthorityPackage || candidate.backendAuthorityPackage) &&
@@ -160,7 +161,7 @@ function isCompletedZeroingSession(candidate) {
 const dispatchCandidate = requestedPersistedSession || (!founderReviewSession ? persistedSession : null);
 if (dispatchCandidate && window.SCZN3SECDispatch) {
   const dispatch = SCZN3SECDispatch.resolve(dispatchCandidate);
-  if (dispatch.adapter !== SCZN3SECDispatch.ADAPTERS.M4_ZEROING) {
+  if (![SCZN3SECDispatch.ADAPTERS.M4_ZEROING, SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING].includes(dispatch.adapter)) {
     window.location.replace(SCZN3SECDispatch.destinationFor(dispatchCandidate));
   }
 }
@@ -174,6 +175,20 @@ const session = (isCompletedZeroingSession(requestedPersistedSession) ? requeste
 const authority = session && (session.m4AuthorityPackage || session.backendAuthorityPackage);
 const cardHost = document.getElementById("secCardHost");
 if (session && window.SCZN3M4SEC) cardHost.innerHTML = SCZN3M4SEC.render(session);
+if (session && window.SCZN3TargetProfiles) {
+  const identity = SCZN3TargetProfiles.identityRecord(session, session.authorityPackage || session.backendAuthorityPackage);
+  const missionBar = document.querySelector(".sec-mission-bar");
+  const publisherBar = document.querySelector(".sec-publisher-bar");
+  if (identity && missionBar) {
+    missionBar.dataset.sczn3TargetProfileIdentity = identity.targetProfileId;
+    SCZN3TargetProfiles.apply(missionBar, identity);
+  }
+  if (identity && publisherBar && window.SCZN3PartnershipIdentity) {
+    publisherBar.dataset.sczn3PartnershipSurface = identity.targetProfileId;
+    SCZN3PartnershipIdentity.apply(publisherBar, identity);
+  }
+  if (identity) document.title = `${identity.targetProfileLabel} Shooter Experience Card`;
+}
 const card = cardHost.querySelector('[data-sec-shell="universal-v1"]');
 document.body.dataset.vaultThumbnail = vaultThumbnailMode ? "true" : "false";
 document.body.dataset.secMode = historicalSnapshotMode ? "historical" : "current";

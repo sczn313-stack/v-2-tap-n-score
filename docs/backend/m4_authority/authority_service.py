@@ -19,7 +19,9 @@ except ModuleNotFoundError:  # Package import used by the Python/JavaScript pari
     from backend.target_image_registration_authority import canonical_point_to_source_percent
 
 from .weapon_equipment_registry import (
+    authority_model_from_adjustment_profile,
     authority_model_from_record,
+    get_adjustment_profile,
     resolve_proven_equipment_record,
 )
 
@@ -54,6 +56,40 @@ M4_GEOMETRY = {
         "xPercent": M4_BULL_AUTHORITY["xPercent"],
         "yPercent": M4_BULL_AUTHORITY["yPercent"],
         "source": M4_BULL_AUTHORITY["authorityId"],
+    },
+}
+M16A2_PROFILE_ID = "baker_m16a2_25m_zero"
+M16A2_ADJUSTMENT_PROFILE_ID = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+M16A2_BULL_AUTHORITY = {
+    "authorityId": "BAKER-M16A2-25M-BULL-AUTHORITY-2026-09-04",
+    "status": "registered-production-face",
+    "xPercent": 50.0,
+    "yPercent": 48.7,
+    "coordinateSystem": "continuous-edge-origin-normalized-percent",
+    "sourceDimensionsPx": {"width": 773, "height": 1000},
+    "sourceCoordinatePx": {"x": 386.5, "y": 487.0},
+    "sourceAssetSha256": "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
+    "scope": "Baker standard M16A2 25-meter face center white dot only",
+}
+M16A2_GEOMETRY = {
+    "targetId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+    "imageWidth": 773,
+    "imageHeight": 1000,
+    "gridLeftPx": 64.0,
+    "gridTopPx": 129.0,
+    "gridRightPx": 709.0,
+    "gridBottomPx": 845.0,
+    "gridColumns": 18,
+    "gridRows": 20,
+    "gridSquareXPx": 645.0 / 18.0,
+    "gridSquareYPx": 716.0 / 20.0,
+    "gridSquarePx": 645.0 / 18.0,
+    "gridSquareInches": 0.96 / 2.54,
+    "unit": "inch",
+    "bullCoordinate": {
+        "xPercent": M16A2_BULL_AUTHORITY["xPercent"],
+        "yPercent": M16A2_BULL_AUTHORITY["yPercent"],
+        "source": M16A2_BULL_AUTHORITY["authorityId"],
     },
 }
 
@@ -99,6 +135,11 @@ def normalize_impacts(impacts: Any) -> List[Dict[str, Any]]:
 
 
 def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
+    target_profile_id = str(payload.get("targetProfileId") or payload.get("target_profile_id") or "").lower()
+    if target_profile_id == M16A2_PROFILE_ID:
+        geometry = dict(M16A2_GEOMETRY)
+        geometry["bullCoordinate"] = dict(M16A2_GEOMETRY["bullCoordinate"])
+        return geometry
     supplied = payload.get("targetAuthorityGeometry")
     geometry = dict(M4_GEOMETRY)
     if isinstance(supplied, dict):
@@ -124,10 +165,11 @@ def distance_yards(payload: Dict[str, Any]) -> float:
 def grid_inches(point: Dict[str, Any], geometry: Dict[str, Any]) -> Dict[str, float]:
     x_px = (point["xPercent"] / 100) * float(geometry["imageWidth"])
     y_px = (point["yPercent"] / 100) * float(geometry["imageHeight"])
-    scale = float(geometry.get("gridSquareInches", 1)) / float(geometry["gridSquarePx"])
+    scale_x = float(geometry.get("gridSquareInches", 1)) / float(geometry.get("gridSquareXPx") or geometry["gridSquarePx"])
+    scale_y = float(geometry.get("gridSquareInches", 1)) / float(geometry.get("gridSquareYPx") or geometry["gridSquarePx"])
     return {
-        "xInches": rounded((x_px - float(geometry["gridLeftPx"])) * scale),
-        "yInches": rounded((y_px - float(geometry["gridTopPx"])) * scale),
+        "xInches": rounded((x_px - float(geometry["gridLeftPx"])) * scale_x),
+        "yInches": rounded((y_px - float(geometry["gridTopPx"])) * scale_y),
     }
 
 
@@ -149,6 +191,35 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
         or setup.get("adjustmentSystem")
         or ("M4_IRON" if "iron" in optic_type.lower() else "OPTIC")
     ).upper()
+    if requested.startswith("M16A2_IRON"):
+        requested_profile_id = str(
+            payload.get("adjustmentProfileId")
+            or setup.get("adjustmentProfileId")
+            or ""
+        )
+        profile = get_adjustment_profile(requested_profile_id)
+        authority = authority_model_from_adjustment_profile(profile) if (
+            profile
+            and requested_profile_id == M16A2_ADJUSTMENT_PROFILE_ID
+            and str(profile.get("status") or "").lower() == "proven"
+            and str(profile.get("adjustmentSystem") or "").upper() == requested
+        ) else {}
+        proven = bool(authority)
+        return {
+            "system": requested,
+            "label": authority.get("label") or "Unspecified M16A2 iron sights",
+            "unit": authority.get("unit") or "MOA",
+            "windagePerClick": authority.get("windagePerClick"),
+            "elevationPerClick": authority.get("elevationPerClick"),
+            "authorityStatus": "proven" if proven else "unproven",
+            "authorityId": authority.get("authorityId"),
+            "authoritySource": authority.get("authoritySource"),
+            "roundingRule": authority.get("roundingRule"),
+            "turnDirections": authority.get("turnDirections"),
+            "adjustmentProfileId": authority.get("adjustmentProfileId"),
+            "equipmentConfigurationId": authority.get("equipmentConfigurationId"),
+            "authorityRecord": authority.get("authorityRecord"),
+        }
     if requested.startswith("M4_IRON"):
         requested_authority_id = str(
             payload.get("equipmentAuthorityRecordId")
@@ -218,9 +289,14 @@ def registration_claim_sufficiency(
     phase: str,
     mission: Dict[str, Any],
 ) -> Dict[str, Any]:
-    """Decide whether registered photo uncertainty can change M4 mechanical instructions."""
+    """Decide whether registered photo uncertainty can change mechanical instructions."""
+    owner = (
+        "baker-m16a2-zeroing-authority"
+        if geometry.get("targetId") == M16A2_GEOMETRY["targetId"]
+        else "m4-zeroing-authority"
+    )
     if not registration:
-        return {"status": "not_applicable", "owner": "m4-zeroing-authority"}
+        return {"status": "not_applicable", "owner": owner}
     observations = registration.get("canonicalObservations") or []
     if (
         registration.get("knowledgeState") not in ("exact", "estimated")
@@ -231,13 +307,13 @@ def registration_claim_sufficiency(
     ):
         return {
             "status": "insufficient",
-            "owner": "m4-zeroing-authority",
+            "owner": owner,
             "reason": "registered_observations_incomplete",
         }
     if model.get("authorityStatus") != "proven":
         return {
             "status": "sufficient_for_geometry_only",
-            "owner": "m4-zeroing-authority",
+            "owner": owner,
             "reason": "registered_mechanical_sight_authority_required_for_clicks",
         }
 
@@ -246,7 +322,7 @@ def registration_claim_sufficiency(
         maximum_uncertainty_px
         * 2
         * float(geometry.get("gridSquareInches", 1))
-        / float(geometry["gridSquarePx"])
+        / min(float(geometry.get("gridSquareXPx") or geometry["gridSquarePx"]), float(geometry.get("gridSquareYPx") or geometry["gridSquarePx"]))
     )
     aim_grid = grid_inches(aim, geometry)
     poib_grid = grid_inches(poib, geometry)
@@ -301,7 +377,7 @@ def registration_claim_sufficiency(
             if phase == "confirmation" and confirmation_stable
             else "insufficient"
         ),
-        "owner": "m4-zeroing-authority",
+        "owner": owner,
         "reason": None if sufficient_for_claim else "registration_uncertainty_could_change_authoritative_outcome",
         "knowledgeState": registration.get("knowledgeState"),
         "maximumLocalUncertaintyPx": rounded(maximum_uncertainty_px),
@@ -688,13 +764,19 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         render_coordinates = {"aim": aim, "bull": bull, "impacts": impacts, "poib": poib, "vector": vector}
 
     shot_ids = [impact["shotId"] for impact in impacts]
+    target_profile_id = str(payload.get("targetProfileId") or payload.get("target_profile_id") or "m4_25m_zero").lower()
+    bull_authority = M16A2_BULL_AUTHORITY if target_profile_id == M16A2_PROFILE_ID else M4_BULL_AUTHORITY
     core = {
-        "target_profile_id": "m4_25m_zero",
-        "targetProfileId": "m4_25m_zero",
+        "target_profile_id": target_profile_id,
+        "targetProfileId": target_profile_id,
         "mission_family": "zeroingCorrection",
         "missionFamilyId": "zeroingCorrection",
         "resultPackageType": "zeroCorrectionResult",
-        "authorityVersion": "sczn3-m4-authority-v1",
+        "authorityVersion": (
+            "sczn3-baker-m16a2-authority-v1"
+            if target_profile_id == M16A2_PROFILE_ID
+            else "sczn3-m4-authority-v1"
+        ),
         "target": {
             "targetId": geometry["targetId"],
             "targetName": payload.get("targetName") or "Zeroing target",
@@ -732,7 +814,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "source": "shooter-selected-session-evidence" if aim else None,
             "method": "confirmed-aim-point-v1" if aim else None,
         },
-        "bullCoordinateAuthority": dict(M4_BULL_AUTHORITY),
+        "bullCoordinateAuthority": dict(bull_authority),
         "mechanicalSightAuthority": model.get("authorityRecord")
         if model.get("authorityStatus") == "proven"
         else {

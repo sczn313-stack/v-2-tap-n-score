@@ -97,7 +97,7 @@ try {
     assert.equal(await page.locator("#lessonTitle").innerText(), "LET TAP-N-SCORE SHOW YOU.");
     assert.match(await page.locator("#visualStage").innerText(), /COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE WORK[\s\S]*WATCH TAP-N-SCORE/i);
     assert.equal(await page.locator("#visualStage .adjustment-target img").count(), 1);
-    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png$/);
+    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
     assert.equal(await page.getByRole("link", { name: "TAKE PHOTO", exact: true }).count(), 0);
     assert.equal(await page.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).count(), 0);
     assert.equal(await page.locator("#taskCard:visible").count(), 0);
@@ -114,10 +114,11 @@ try {
     assert.equal(await page.locator("#lessonTitle").innerText(), "YOUR TURN.");
     assert.equal(await page.locator("#lessonSummary").innerText(), "Shoot three to five shots while aiming at the center crosshairs.");
     assert.match(await page.locator("#visualStage").innerText(), /YOUR TURN[\s\S]*Take a photo of your target or choose one from your photos\.[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/i);
-    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png$/);
+    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
     for (const name of ["TAKE PHOTO", "CHOOSE EXISTING PHOTO"]) {
       const href = await page.getByRole("link", { name, exact: true }).getAttribute("href");
       assert.match(href, /tstt_chapter=4/);
+      assert.match(href, /target_profile_id=baker_m16a2_25m_zero/);
       assert.match(href, /equipment_profile_id=founder-m16a2/);
     }
 
@@ -161,7 +162,7 @@ try {
   await returningPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).click();
   await returningPage.waitForURL(/shoot\.html\?.*photo_source=existing/, { timeout: 30000 });
   assert.equal(await returningPage.locator("#targetImageInput[type=file]").count(), 1);
-  assert.match(await returningPage.locator("#targetSessionSummary").innerText(), /M4 25m Zero/i);
+  assert.match(await returningPage.locator("#targetSessionSummary").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
   await returningContext.close();
 
   const coldContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });

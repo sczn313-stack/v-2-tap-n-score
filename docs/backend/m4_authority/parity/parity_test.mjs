@@ -27,6 +27,27 @@ const common = {
 const fixtures = [
   {
     ...common,
+    caseName: "standard-baker-m16a2-governed-profile",
+    target_profile_id: "baker_m16a2_25m_zero",
+    targetProfileId: "baker_m16a2_25m_zero",
+    targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+    targetName: "Baker M16A2 25 Meter Zeroing Target",
+    aimCoordinate: point(50, 48.7, "aim"),
+    impactCoordinates: [
+      point(58.3, 41.1, "initial-1"),
+      point(58.5, 41.3, "initial-2"),
+      point(58.7, 41.5, "initial-3")
+    ],
+    adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+    shooterSetup: {
+      opticType: "Iron Sights",
+      adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+      equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+    }
+  },
+  {
+    ...common,
     caseName: "registered-m4-detachable-carry-handle-iron-sight",
     aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [

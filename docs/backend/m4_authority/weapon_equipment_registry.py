@@ -71,6 +71,40 @@ def get_adjustment_profile(adjustment_profile_id: Any) -> Optional[Dict[str, Any
     return copy.deepcopy(profile) if profile else None
 
 
+def authority_model_from_adjustment_profile(profile: Dict[str, Any]) -> Dict[str, Any]:
+    """Project one proven reusable adjustment profile into correction authority."""
+    controls = profile.get("controls") or []
+    windage = next((item for item in controls if item.get("axis") == "windage" and item.get("operationPurpose") == "correction"), {})
+    elevation = next((item for item in controls if item.get("axis") == "elevation" and item.get("operationPurpose") == "correction"), {})
+
+    def directions(control: Dict[str, Any]) -> Dict[str, str]:
+        return {
+            str(item.get("desiredPoiMovement") or ""): str(item.get("rotation") or "")
+            for item in control.get("directions") or []
+            if item.get("desiredPoiMovement") and item.get("rotation")
+        }
+
+    source = (profile.get("sourceDocumentation") or [{}])[0]
+    return {
+        "system": profile.get("adjustmentSystem"),
+        "label": profile.get("displayName"),
+        "unit": windage.get("movementUnit") or elevation.get("movementUnit"),
+        "windagePerClick": windage.get("movementPerClick"),
+        "elevationPerClick": elevation.get("movementPerClick"),
+        "authorityStatus": profile.get("status"),
+        "authorityId": profile.get("adjustmentProfileId"),
+        "adjustmentProfileId": profile.get("adjustmentProfileId"),
+        "equipmentConfigurationId": profile.get("equipmentConfigurationId"),
+        "authoritySource": source,
+        "roundingRule": "nearest-whole-click-half-to-even",
+        "turnDirections": {
+            "windage": directions(windage),
+            "elevation": directions(elevation),
+        },
+        "authorityRecord": profile,
+    }
+
+
 def resolve_target_adjustment_authority(
     target_zero_relationship: Any,
 ) -> Optional[Dict[str, Any]]:

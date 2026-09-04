@@ -1,13 +1,18 @@
 (function (global) {
   "use strict";
 
-  const SEC_ADAPTER_ID = "m4-zeroing";
   const REQUIRED_SEMANTIC_STAGES = Object.freeze(["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]);
+
+  function secAdapterId(session) {
+    const source = session && session.matrixSnapshot || session || {};
+    const profile = String(source.target_profile_id || source.targetProfileId || "").toLowerCase();
+    return profile === "baker_m16a2_25m_zero" ? "m16a2-zeroing" : "m4-zeroing";
+  }
 
   function secAdapterViewModel(session) {
     const registry = global.SCZN3TargetAdapters;
     if (!registry || !session || typeof session !== "object") return null;
-    const mapped = registry.createViewModel(SEC_ADAPTER_ID, { session });
+    const mapped = registry.createViewModel(secAdapterId(session), { session });
     if (!mapped.ok || !mapped.value) return null;
     const stages = mapped.value.semanticComponents.map(component => component.stage);
     if (stages.length !== REQUIRED_SEMANTIC_STAGES.length || stages.some((stage, index) => stage !== REQUIRED_SEMANTIC_STAGES[index])) return null;
@@ -68,7 +73,7 @@
       articleClassName: "sec-experience is-hidden",
       articleAttributes: {
         "data-session-id": session.sessionId || "",
-        "data-sec-adapter-id": SEC_ADAPTER_ID,
+        "data-sec-adapter-id": secAdapterId(session),
         "data-scoring-presentation-family": adapterView.scoringPresentationFamily,
         "data-target-profile-id": adapterView.targetProfileIdentity.targetProfileId,
         "data-target-profile-version": adapterView.targetProfileIdentity.targetProfileVersion,
@@ -85,5 +90,5 @@
     });
   }
 
-  global.SCZN3M4SEC = Object.freeze({ secAdapterId: SEC_ADAPTER_ID, secAdapterViewModel, render });
+  global.SCZN3M4SEC = Object.freeze({ secAdapterId, secAdapterViewModel, render });
 })(window);

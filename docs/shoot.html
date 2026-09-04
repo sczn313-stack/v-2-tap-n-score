@@ -228,15 +228,20 @@ function preparedM16A2DemoSeed() {
   const evidence = {
     dataUrl: fixture.target.image,
     name: fixture.target.name,
-    type: "image/png",
+    type: fixture.target.image.endsWith(".jpg") || fixture.target.image.endsWith(".jpeg") ? "image/jpeg" : "image/png",
     assetRole: "governed-prepared-demo-target",
     imageWidthPx: fixture.target.width,
     imageHeightPx: fixture.target.height,
     widthPx: fixture.target.width,
     heightPx: fixture.target.height,
     sourceImageSha256: fixture.target.imageSha256,
-    registrationStatus: "prepared_demo",
-    registrationAuthoritySource: "founder-supplied-target-evidence",
+    registrationStatus: "complete",
+    registrationAuthoritySource: "registered_exact_asset",
+    registrationAuthorityId: "baker-m16a2-25m-photo-registration-v1",
+    registrationPackageId: "baker-m16a2-25m-photo-registration-v1",
+    registrationPackageVersion: "1",
+    canonicalAssetSha256: fixture.target.imageSha256,
+    canonicalCoordinateSystemVersion: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
     targetProfileId: fixture.target.profileId,
     targetId: fixture.target.targetId
   };
@@ -329,7 +334,7 @@ const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.loca
 const IS_FOUNDER_LAN_REVIEW = TARGET_QUERY.get("founder_review") === "1"
   && /^(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/.test(window.location.hostname);
 const FOUNDER_WORKSPACE_TEST_MODE = (IS_LOCAL_FRONTEND || IS_FOUNDER_LAN_REVIEW) && TARGET_QUERY.get("founder_review") === "1";
-const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (IS_FOUNDER_LAN_REVIEW
+const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (TARGET_QUERY.get("founder_review") === "1"
   ? `${window.location.origin}/api/authority/ugeo`
   : IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
 const DISTANCE_CLICK_QUERY_ENDPOINT = window.SCZN3_DISTANCE_CLICK_QUERY_ENDPOINT || BACKEND_AUTHORITY_ENDPOINT.replace(/\/api\/authority\/ugeo\/?$/, "/api/authority/distance-click-query");
@@ -356,6 +361,18 @@ const DOT_TORTURE_PROFILE_LABELS = {
   }
 };
 const STATIC_TARGET_IDENTITY = {
+  baker_m16a2_25m_zero: {
+    targetName: "Baker M16A2 25 Meter Zeroing Target",
+    targetProfileId: "baker_m16a2_25m_zero",
+    sku: "ST-M16A2/M4",
+    vendor: "Baker",
+    authority: "Baker M16A2 Zeroing",
+    product: "Baker M16A2 25 Meter Zeroing Target",
+    qrId: "",
+    missionFamily: "zeroingCorrection",
+    manufacturer: "Baker Targets",
+    discipline: "zeroing"
+  },
   m4_25m_zero: {
     targetName: "M4/M16 Series Weapons 25M Zero",
     targetProfileId: "m4_25m_zero",
@@ -438,6 +455,14 @@ const PRECISION_TAP_EXACT_ASSETS = Object.freeze({
     heightPx: 3300,
     authorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
     authoritySource: "governed_m4_workspace_asset"
+  }),
+  baker_m16a2_25m_zero: Object.freeze({
+    sha256: "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
+    widthPx: 773,
+    heightPx: 1000,
+    authorityId: "baker-m16a2-25m-photo-registration-v1",
+    authoritySource: "registered_exact_asset",
+    coordinateSystemVersion: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1"
   })
 });
 let missionResolutionStatus = SESSION_ROUTE_MISS ? "unavailable" : (TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle");
@@ -570,7 +595,7 @@ function bakerTalkingDemoSession() {
   const evidence = {
     dataUrl: target.image,
     name: `${target.name} — DEMONSTRATION`,
-    type: "image/png",
+    type: target.image.endsWith(".jpg") || target.image.endsWith(".jpeg") ? "image/jpeg" : "image/png",
     assetRole: m16a2Demo ? "governed-prepared-demo-target" : "simulation-reference-target",
     imageWidthPx: target.width,
     imageHeightPx: target.height,
@@ -578,7 +603,12 @@ function bakerTalkingDemoSession() {
     heightPx: target.height,
     sourceImageSha256: target.imageSha256 || "",
     registrationStatus: "complete",
-    registrationAuthoritySource: m16a2Demo ? "founder-supplied-target-evidence" : "registered_exact_asset",
+    registrationAuthoritySource: "registered_exact_asset",
+    registrationAuthorityId: m16a2Demo ? "baker-m16a2-25m-photo-registration-v1" : "baker-st-100yd-smart-photo-registration-v1",
+    registrationPackageId: m16a2Demo ? "baker-m16a2-25m-photo-registration-v1" : "baker-st-100yd-smart-photo-registration-v1",
+    registrationPackageVersion: "1",
+    canonicalAssetSha256: target.imageSha256 || "",
+    canonicalCoordinateSystemVersion: m16a2Demo ? "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1" : "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
     targetProfileId: target.profileId,
     targetId: target.targetId
   };
@@ -1046,8 +1076,16 @@ function isM4AuthoritySession() {
     || !!(window.SCZN3M4 && SCZN3M4.isM4Session && SCZN3M4.isM4Session(session || matrix));
 }
 
+function isM16A2AuthoritySession() {
+  return activeTargetProfileId() === "baker_m16a2_25m_zero";
+}
+
+function isMfamZeroingAuthoritySession() {
+  return isM4AuthoritySession() || isM16A2AuthoritySession();
+}
+
 function isZeroingAuthoritySession() {
-  return isM4AuthoritySession()
+  return isMfamZeroingAuthoritySession()
     || isBaker100YardSession()
     || activeMissionFamily() === "zeroingcorrection";
 }
@@ -1245,7 +1283,7 @@ function zeroingMissionProgress() {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation group";
     if (!resultsShown) return `${currentImpactPoints.length} confirmation ${currentImpactPoints.length === 1 ? "hole" : "holes"}`;
-    if (!isM4AuthoritySession()) return "Confirmation recorded";
+    if (!isMfamZeroingAuthoritySession()) return "Confirmation recorded";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero confirmed"
       : "Additional correction required";
@@ -1285,17 +1323,17 @@ function zeroingMissionGuidance() {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
     if (!resultsShown) return "Tap Show Results for this confirmation group.";
-    if (!isM4AuthoritySession()) return "Confirmation recorded. Save the completed session.";
+    if (!isMfamZeroingAuthoritySession()) return "Confirmation recorded. Save the completed session.";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Your zero is confirmed. Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your 300-meter setting."
       : "Apply the correction, then fire another confirmation group.";
   }
   if (!currentAimPoint) return "Tap your aim point on the photo.";
   if (!currentImpactPoints.length) return "Tap your shots on the photo.";
-  if (!resultsShown) return (!isM4AuthoritySession() || holeEntrySettled)
+  if (!resultsShown) return (!isMfamZeroingAuthoritySession() || holeEntrySettled)
     ? "Tap Show Results when your shots are marked."
     : "Continue tapping bullet holes.";
-  if (!sessionSaved) return isM4AuthoritySession()
+  if (!sessionSaved) return isMfamZeroingAuthoritySession()
     ? "Apply the clicks, then shoot your confirmation."
     : "Apply your clicks, then shoot your confirmation shots.";
   return "View Record";
@@ -1307,7 +1345,7 @@ function zeroingMissionStatus() {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation";
     if (!resultsShown) return "Confirmation Evidence";
-    if (!isM4AuthoritySession()) return "Confirmation Recorded";
+    if (!isMfamZeroingAuthoritySession()) return "Confirmation Recorded";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero Confirmed"
       : "Correction Required";
@@ -1723,7 +1761,7 @@ function isGovernedConfirmationEvidenceResult(authorityPackage) {
 function zeroingClicksFromAuthorityPackage(authorityPackage) {
   if (!authorityPackage || isNonZeroingAuthorityPackage(authorityPackage)) return null;
   if (!authorityPackage.clicks) return null;
-  if (isM4AuthoritySession() && authorityPackage.mechanicalValidation?.status !== "calculated") return null;
+  if (isMfamZeroingAuthoritySession() && authorityPackage.mechanicalValidation?.status !== "calculated") return null;
   const correction = authorityPackage.correction || {};
   const clicks = authorityPackage.clicks || {};
   return {
@@ -1831,6 +1869,30 @@ function targetAttributionOverride(source = {}) {
   const targetProfileId = activeTargetProfileId();
   const missionFamily = activeMissionFamily();
   const base = authoritySafeRecord(source);
+  if (targetProfileId === "baker_m16a2_25m_zero") {
+    return {
+      ...base,
+      target_profile_id: "baker_m16a2_25m_zero",
+      targetProfileId: "baker_m16a2_25m_zero",
+      mission_family: "zeroingCorrection",
+      missionFamilyId: "zeroingCorrection",
+      targetName: "Baker M16A2 25 Meter Zeroing Target",
+      targetFamily: "Military 25 Meter M16A2 Zeroing Target",
+      targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+      targetVersion: "BAKER_M16A2_25M_AUTHORITY_v1",
+      targetDistance: "25 m",
+      targetDistanceValue: "25",
+      targetDistanceUnit: "M",
+      targetDistanceLocked: true,
+      opticType: "Iron Sights",
+      opticBrand: "USGI",
+      opticModel: "M16A2 Rear Sight + Front Sight Post",
+      opticAdjustmentUnit: "MOA",
+      adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+      equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+    };
+  }
   if (targetProfileId === "m4_25m_zero") {
     return {
       ...base,
@@ -2084,7 +2146,7 @@ function installM4CanonicalEvidence() {
 }
 
 function ensureTargetAttribution() {
-  if (!isM4AuthoritySession() && !isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
+  if (!isMfamZeroingAuthoritySession() && !isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
   matrix = targetAttributionOverride(matrix || {});
   SCZN3M4.saveMatrixSnapshot(matrix);
   if (session) {
@@ -2099,7 +2161,7 @@ function ensureTargetAttribution() {
 }
 
 ensureTargetAttribution();
-if (isM4AuthoritySession()) {
+if (isMfamZeroingAuthoritySession()) {
   selectedDistanceValue = "25";
   selectedDistanceUnit = "M";
   distanceLocked = true;
@@ -3492,7 +3554,7 @@ function backendTargetGeometry() {
 
 function backendAuthorityRequest() {
   const qrId = TARGET_QUERY.get("qr_id") || TARGET_QUERY.get("qrId") || (session && (session.qr_id || session.qrId)) || (matrix && (matrix.qr_id || matrix.qrId)) || "";
-  if (isM4AuthoritySession()) {
+  if (isMfamZeroingAuthoritySession()) {
     return {
       ...SCZN3M4.authorityRequest(
       session,
@@ -3658,7 +3720,7 @@ async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
   const requestBody = JSON.stringify(requestPayload);
   const exactWireRequest = JSON.parse(requestBody);
-  const authorityEndpoint = isM4AuthoritySession()
+  const authorityEndpoint = isMfamZeroingAuthoritySession()
     ? SCZN3M4.M4_AUTHORITY_ENDPOINT
     : BACKEND_AUTHORITY_ENDPOINT;
   if (activeShowResultsTiming) activeShowResultsTiming.requestSentAt = Date.now();
@@ -3726,6 +3788,18 @@ async function resolveMissionFromTargetProfile() {
   renderMissionResolutionState();
   try {
     if (!session && !ensureTargetSession()) return;
+    if (isM16A2AuthoritySession()) {
+      ensureTargetAttribution();
+      missionResolutionStatus = "resolved";
+      missionResolutionMessage = "";
+      const evidence = activeEvidence();
+      if (evidence) renderEvidencePreview(evidence);
+      setMode(currentAimPoint ? "impact" : "aim");
+      renderSetupSummary();
+      renderResults();
+      renderMarkStatus();
+      return;
+    }
     if (isM4AuthoritySession()) {
       ensureTargetAttribution();
       const evidence = installM4CanonicalEvidence();
@@ -3826,7 +3900,7 @@ function correctionEstimateAxisDisplay(authorityPackage, axis) {
 }
 
 function renderCorrectionOverlay(correction) {
-  const confirmedM4Group = isM4AuthoritySession()
+  const confirmedMfamGroup = isMfamZeroingAuthoritySession()
     && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
@@ -3834,7 +3908,7 @@ function renderCorrectionOverlay(correction) {
   if (
     !isZeroingAuthoritySession()
     || !resultsShown
-    || confirmedM4Group
+    || confirmedMfamGroup
     || (!correction && !backendAuthorityPackage?.correctionEstimate)
   ) return "";
   const estimated = !currentClicks && !!backendAuthorityPackage?.correctionEstimate;
@@ -4833,12 +4907,12 @@ function scheduleHoleEntryReadiness() {
 }
 
 function resultsOfferReady() {
-  return !isM4AuthoritySession() || holeEntrySettled;
+  return !isMfamZeroingAuthoritySession() || holeEntrySettled;
 }
 
 function awaitingNextConfirmationGroup() {
   return !!(
-    isM4AuthoritySession()
+    isMfamZeroingAuthoritySession()
     && zeroingLivePhase === "confirmation"
     && resultsShown
     && backendAuthorityPackage
@@ -4873,7 +4947,7 @@ function rangeWorkflowState(canMark) {
   if (correctionContextPending) return "confirm-context";
   if (awaitingNextConfirmationGroup()) return "await-next-group";
   if (
-    isM4AuthoritySession()
+    isMfamZeroingAuthoritySession()
     && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
@@ -5035,8 +5109,8 @@ function renderMarkStatus() {
   if (saveButton && isZeroingAuthoritySession()) {
     const confirmationComplete = zeroingLivePhase === "confirmation"
       && backendAuthorityPackage
-      && (!isM4AuthoritySession() || backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed);
-    const additionalCorrection = isM4AuthoritySession() && zeroingLivePhase === "confirmation"
+      && (!isMfamZeroingAuthoritySession() || backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed);
+    const additionalCorrection = isMfamZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
       && backendAuthorityPackage
       && backendAuthorityPackage.validation
       && backendAuthorityPackage.validation.status === "calculated"
@@ -5397,7 +5471,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
     if (resultsShown && !isNonZeroingAuthorityPackage(authorityPackage)) showShooterTip();
     if (resultsShown && isNonZeroingAuthorityPackage(authorityPackage)) hideShooterTip();
-    if (isM4AuthoritySession() && zeroingLivePhase === "confirmation" && authorityPackage.validation) {
+    if (isMfamZeroingAuthoritySession() && zeroingLivePhase === "confirmation" && authorityPackage.validation) {
       setSaveSessionStatus(
         correctionContextPending
           ? "Review the session setup to refresh the correction."
@@ -5448,7 +5522,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     return;
   }
   if (
-    isM4AuthoritySession()
+    isMfamZeroingAuthoritySession()
     && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage.validation
     && backendAuthorityPackage.validation.status === "calculated"
@@ -5684,7 +5758,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       savePatch.confirmationEvidenceImage = activeEvidence();
       savePatch.confirmationImpactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
       savePatch.confirmationAuthorityPackage = authorityPackage;
-      savePatch.confirmationStatus = isM4AuthoritySession()
+      savePatch.confirmationStatus = isMfamZeroingAuthoritySession()
         ? authorityPackage.validation && authorityPackage.validation.confirmed
           ? "Confirmed"
           : "Correction Required"

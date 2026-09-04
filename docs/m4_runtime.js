@@ -6,11 +6,10 @@
   if (!state) throw new Error("Tap-n-Score state must load before the M4 runtime.");
 
   const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost", "::1"]);
-  const FOUNDER_LAN_REVIEW = new URLSearchParams(window.location.search).get("founder_review") === "1"
-    && /^(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/.test(window.location.hostname);
+  const FOUNDER_REVIEW = new URLSearchParams(window.location.search).get("founder_review") === "1";
   const AUTHORITY_ENDPOINT = window.SCZN3_M4_AUTHORITY_ENDPOINT || (LOCAL_HOSTS.has(window.location.hostname)
-    ? "http://127.0.0.1:8098/api/authority/m4"
-    : FOUNDER_LAN_REVIEW
+    ? FOUNDER_REVIEW ? `${window.location.origin}/api/authority/m4` : "http://127.0.0.1:8098/api/authority/m4"
+    : FOUNDER_REVIEW
       ? `${window.location.origin}/api/authority/m4`
       : "/api/authority/m4");
 
@@ -59,6 +58,24 @@
       : state.getActiveMatrix() || {};
     const target = config.target || {};
     const mission = config.zeroingMission || {};
+    const targetProfileId = String(source.target_profile_id || source.targetProfileId || source.targetId || "m4_25m_zero").toLowerCase();
+    const isBakerM16A2 = targetProfileId === "baker_m16a2_25m_zero";
+    const m16a2Geometry = {
+      targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+      imageWidth: 773,
+      imageHeight: 1000,
+      gridLeftPx: 64,
+      gridTopPx: 129,
+      gridRightPx: 709,
+      gridBottomPx: 845,
+      gridColumns: 18,
+      gridRows: 20,
+      gridSquareXPx: 645 / 18,
+      gridSquareYPx: 716 / 20,
+      gridSquarePx: 645 / 18,
+      gridSquareInches: 0.96 / 2.54,
+      unit: "inch"
+    };
     const isIron = String(source.opticType || source.opticModel || "")
       .toLowerCase()
       .includes("iron");
@@ -99,11 +116,13 @@
     return {
       vendor: "Baker",
       sku: "ST-M16A2/M4",
-      product: "M4/M16 Series Weapons • 25M Zero Target",
-      authority: "M4 Zeroing",
-      targetId: target.targetId || "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      targetName: target.targetName || "M4/M16 Series Weapons 25M Zero",
-      targetAuthorityGeometry: target.geometry,
+      product: isBakerM16A2 ? "Baker M16A2 25 Meter Zeroing Target" : "M4/M16 Series Weapons • 25M Zero Target",
+      authority: isBakerM16A2 ? "Baker M16A2 Zeroing" : "M4 Zeroing",
+      target_profile_id: targetProfileId,
+      targetProfileId,
+      targetId: isBakerM16A2 ? "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1" : (target.targetId || "M4_TARGET_AUTHORITY_v1_ORIGINAL"),
+      targetName: isBakerM16A2 ? "Baker M16A2 25 Meter Zeroing Target" : (target.targetName || "M4/M16 Series Weapons 25M Zero"),
+      targetAuthorityGeometry: isBakerM16A2 ? m16a2Geometry : target.geometry,
       aimCoordinate: aimPoint,
       impactCoordinates: (impactPoints || []).map((point, index) => ({
         ...point,
@@ -216,6 +235,7 @@
     const evidence = session && session.targetEvidenceImage;
     const supportedConfirmationResult = dispatch && (
       dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.M4_ZEROING
+      || dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING
       || dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.BAKER_100YD_ZEROING
     ) && session.confirmationAuthorityPackage;
     const supportedEvidenceResult = dispatch

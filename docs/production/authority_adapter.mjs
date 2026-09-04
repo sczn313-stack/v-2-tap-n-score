@@ -61,6 +61,39 @@ const M4_GEOMETRY = Object.freeze({
     source: M4_BULL_AUTHORITY.authorityId
   }
 });
+const M16A2_PROFILE_ID = "baker_m16a2_25m_zero";
+const M16A2_BULL_AUTHORITY = Object.freeze({
+  authorityId: "BAKER-M16A2-25M-BULL-AUTHORITY-2026-09-04",
+  status: "registered-production-face",
+  xPercent: pythonFloat(50.0),
+  yPercent: pythonFloat(48.7),
+  coordinateSystem: "continuous-edge-origin-normalized-percent",
+  sourceDimensionsPx: { width: 773, height: 1000 },
+  sourceCoordinatePx: { x: pythonFloat(386.5), y: pythonFloat(487.0) },
+  sourceAssetSha256: "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
+  scope: "Baker standard M16A2 25-meter face center white dot only"
+});
+const M16A2_GEOMETRY = Object.freeze({
+  targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+  imageWidth: 773,
+  imageHeight: 1000,
+  gridLeftPx: pythonFloat(64),
+  gridTopPx: pythonFloat(129),
+  gridRightPx: pythonFloat(709),
+  gridBottomPx: pythonFloat(845),
+  gridColumns: 18,
+  gridRows: 20,
+  gridSquareXPx: pythonFloat(645 / 18),
+  gridSquareYPx: pythonFloat(716 / 20),
+  gridSquarePx: pythonFloat(645 / 18),
+  gridSquareInches: pythonFloat(0.96 / 2.54),
+  unit: "inch",
+  bullCoordinate: {
+    xPercent: M16A2_BULL_AUTHORITY.xPercent,
+    yPercent: M16A2_BULL_AUTHORITY.yPercent,
+    source: M16A2_BULL_AUTHORITY.authorityId
+  }
+});
 
 function number(value, fallback = null) {
   if (value === null || value === undefined || value === "" || typeof value === "boolean") {
@@ -105,6 +138,10 @@ function normalizeImpacts(impacts) {
 }
 
 function geometryFor(payload) {
+  const targetProfileId = String(payload.targetProfileId || payload.target_profile_id || "").toLowerCase();
+  if (targetProfileId === M16A2_PROFILE_ID) {
+    return { ...M16A2_GEOMETRY, bullCoordinate: { ...M16A2_GEOMETRY.bullCoordinate } };
+  }
   const supplied = payload.targetAuthorityGeometry;
   const geometry = { ...M4_GEOMETRY };
   if (supplied && typeof supplied === "object" && !Array.isArray(supplied)) {
@@ -136,10 +173,11 @@ function distanceYards(payload) {
 function gridInches(point, geometry) {
   const xPx = (Number(point.xPercent) / 100) * Number(geometry.imageWidth);
   const yPx = (Number(point.yPercent) / 100) * Number(geometry.imageHeight);
-  const scale = Number(geometry.gridSquareInches || 1) / Number(geometry.gridSquarePx);
+  const scaleX = Number(geometry.gridSquareInches || 1) / Number(geometry.gridSquareXPx || geometry.gridSquarePx);
+  const scaleY = Number(geometry.gridSquareInches || 1) / Number(geometry.gridSquareYPx || geometry.gridSquarePx);
   return {
-    xInches: rounded((xPx - Number(geometry.gridLeftPx)) * scale),
-    yInches: rounded((yPx - Number(geometry.gridTopPx)) * scale)
+    xInches: rounded((xPx - Number(geometry.gridLeftPx)) * scaleX),
+    yInches: rounded((yPx - Number(geometry.gridTopPx)) * scaleY)
   };
 }
 
@@ -190,6 +228,13 @@ function authorityModelFromAdjustmentProfile(profile) {
   const windage = controls.find(control => control.axis === "windage" && control.operationPurpose === "correction") || {};
   const elevation = controls.find(control => control.axis === "elevation" && control.operationPurpose === "correction") || {};
   const directions = control => Object.fromEntries((control.directions || []).map(direction => [direction.desiredPoiMovement, direction.rotation]));
+  const authorityRecord = {
+    ...profile,
+    controls: controls.map(control => ({
+      ...control,
+      movementPerClick: pythonFloat(Number(control.movementPerClick))
+    }))
+  };
   return {
     system: profile.adjustmentSystem,
     label: profile.displayName,
@@ -198,18 +243,12 @@ function authorityModelFromAdjustmentProfile(profile) {
     elevationPerClick: pythonFloat(elevation.movementPerClick),
     authorityStatus: profile.status,
     authorityId: profile.adjustmentProfileId,
-    equipmentAuthorityRecordId: null,
+    adjustmentProfileId: profile.adjustmentProfileId,
+    equipmentConfigurationId: profile.equipmentConfigurationId,
     authoritySource: (profile.sourceDocumentation || [])[0] || null,
-    exactSightIdentity: {
-      weapon: (profile.applicabilityScope && profile.applicabilityScope.weaponPlatforms || []).join(", "),
-      rearSight: profile.applicabilityScope && profile.applicabilityScope.sightConfiguration || "",
-      windageControl: windage.control,
-      elevationControl: elevation.control,
-      mountingConfiguration: profile.equipmentConfigurationId
-    },
     roundingRule: "nearest-whole-click-half-to-even",
     turnDirections: { windage: directions(windage), elevation: directions(elevation) },
-    authorityRecord: profile
+    authorityRecord
   };
 }
 
@@ -246,10 +285,10 @@ function adjustmentModel(payload) {
       authorityStatus: proven ? "proven" : "unproven",
       authorityId: authority.authorityId || null,
       authoritySource: authority.authoritySource || null,
-      exactSightIdentity: authority.exactSightIdentity || null,
       roundingRule: authority.roundingRule || null,
       turnDirections: authority.turnDirections || null,
-      equipmentAuthorityRecordId: null,
+      adjustmentProfileId: authority.adjustmentProfileId || null,
+      equipmentConfigurationId: authority.equipmentConfigurationId || null,
       authorityRecord: authority.authorityRecord || null
     };
   }
@@ -653,13 +692,17 @@ export async function buildAuthorityPackage(input) {
   }
 
   const shotIds = impacts.map((impact) => impact.shotId);
+  const targetProfileId = String(payload.targetProfileId || payload.target_profile_id || "m4_25m_zero").toLowerCase();
+  const bullAuthority = targetProfileId === M16A2_PROFILE_ID ? M16A2_BULL_AUTHORITY : M4_BULL_AUTHORITY;
   const core = {
-    target_profile_id: "m4_25m_zero",
-    targetProfileId: "m4_25m_zero",
+    target_profile_id: targetProfileId,
+    targetProfileId,
     mission_family: "zeroingCorrection",
     missionFamilyId: "zeroingCorrection",
     resultPackageType: "zeroCorrectionResult",
-    authorityVersion: "sczn3-m4-authority-v1",
+    authorityVersion: targetProfileId === M16A2_PROFILE_ID
+      ? "sczn3-baker-m16a2-authority-v1"
+      : "sczn3-m4-authority-v1",
     target: {
       targetId: geometry.targetId,
       targetName: payload.targetName || "Zeroing target"
@@ -689,7 +732,10 @@ export async function buildAuthorityPackage(input) {
     validation,
     renderCoordinates: { aim, bull, impacts, poib, vector },
     targetImageRegistrationEvidence: null,
-    registrationClaimSufficiency: { status: "not_applicable", owner: "m4-zeroing-authority" },
+    registrationClaimSufficiency: {
+      status: "not_applicable",
+      owner: targetProfileId === M16A2_PROFILE_ID ? "baker-m16a2-zeroing-authority" : "m4-zeroing-authority"
+    },
     correctionEstimate: null,
     confirmedAimPointAuthority: {
       status: aim ? "confirmed" : "unavailable",
@@ -697,7 +743,7 @@ export async function buildAuthorityPackage(input) {
       source: aim ? "shooter-selected-session-evidence" : null,
       method: aim ? "confirmed-aim-point-v1" : null
     },
-    bullCoordinateAuthority: { ...M4_BULL_AUTHORITY },
+    bullCoordinateAuthority: { ...bullAuthority },
     mechanicalSightAuthority: model.authorityStatus === "proven"
       ? model.authorityRecord
       : {

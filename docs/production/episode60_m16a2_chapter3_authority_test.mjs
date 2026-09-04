@@ -19,7 +19,9 @@ const shooterSetup = {
 };
 
 const initial = await buildAuthorityPackage({
-  targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+  target_profile_id: fixture.target.profileId,
+  targetProfileId: fixture.target.profileId,
+  targetId: fixture.target.targetId,
   targetName: "Baker 25 Meters Zeroing Target M16A2",
   aimCoordinate,
   impactCoordinates: fixture.initialImpacts,
@@ -47,7 +49,9 @@ assert.equal(Number(initial.poib.xPercent), fixture.initialAuthorityPackage.poib
 assert.equal(Number(initial.poib.yPercent), fixture.initialAuthorityPackage.poib.yPercent);
 
 const confirmation = await buildAuthorityPackage({
-  targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+  target_profile_id: fixture.target.profileId,
+  targetProfileId: fixture.target.profileId,
+  targetId: fixture.target.targetId,
   targetName: "Baker 25 Meters Zeroing Target M16A2",
   aimCoordinate,
   impactCoordinates: fixture.confirmationImpacts,
@@ -58,6 +62,9 @@ const confirmation = await buildAuthorityPackage({
 });
 
 assert.equal(confirmation.validation.confirmed, true);
+assert.equal(initial.targetProfileId, "baker_m16a2_25m_zero");
+assert.equal(initial.target.targetId, "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1");
+assert.equal(initial.authorityVersion, "sczn3-baker-m16a2-authority-v1");
 assert.equal(confirmation.mechanicalSightAuthority.adjustmentProfileId, adjustmentProfileId);
 assert.equal(Number(confirmation.clicks.model.windagePerClick), 0.5);
 assert.equal(Number(confirmation.clicks.model.elevationPerClick), 1.25);
@@ -65,6 +72,6 @@ assert.equal(confirmation.clicks.windageClicks, fixture.confirmationAuthorityPac
 assert.equal(confirmation.clicks.elevationClicks, fixture.confirmationAuthorityPackage.clicks.elevationClicks);
 assert.equal(fixture.fixtureAuthority.owner, "SCZN3 Backend Authority");
 assert.equal(fixture.fixtureAuthority.method, "docs/production/authority_adapter.mjs::buildAuthorityPackage");
-assert.equal(fixture.target.imageSha256, "690d33a58899b85fbd7204ab3911bbc0d37caed6ad9e5e2ce209b6f0eef8940c");
+assert.equal(fixture.target.imageSha256, "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993");
 
 console.log("PASS Episode 60 Chapter 3 M16A2 governed authority and confirmation");

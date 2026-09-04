@@ -3,6 +3,7 @@
 
   const ADAPTERS = Object.freeze({
     M4_ZEROING: "m4-zeroing",
+    M16A2_ZEROING: "m16a2-zeroing",
     BAKER_100YD_ZEROING: "baker-100yd-zeroing",
     BAKER_SL_ST1: "baker-sl-st1",
     GUNFUN_VITAL_DUDE: "gunfun-vital-dude-evidence",
@@ -160,6 +161,9 @@
     if (target === "m4_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.M4_ZEROING;
     }
+    if (target === "baker_m16a2_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
+      return ADAPTERS.M16A2_ZEROING;
+    }
     if (target === "baker_st_100yd_smart_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.BAKER_100YD_ZEROING;
     }
@@ -214,10 +218,11 @@
   function destinationFor(session, options = {}) {
     const dispatch = resolve(session);
     const sessionId = text(session && session.sessionId);
-    if (dispatch.adapter === ADAPTERS.M4_ZEROING) {
+    if ([ADAPTERS.M4_ZEROING, ADAPTERS.M16A2_ZEROING].includes(dispatch.adapter)) {
       const params = new URLSearchParams(options.current
         ? { v: options.version || "sec-dispatch-v1" }
         : { sessionId, v: options.version || "sec-dispatch-v1" });
+      if (new URLSearchParams(global.location && global.location.search || "").get("founder_review") === "1") params.set("founder_review", "1");
       if (options.thumbnail) params.set("vaultThumbnail", "1");
       return `sec.html?${params.toString()}`;
     }

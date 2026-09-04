@@ -62,9 +62,9 @@ assert.match(source, /For your 25-meter zero[\s\S]*CLOCKWISE past 8\/3[\s\S]*Aft
 assert.doesNotMatch(source.split('id: "a2-3"')[0], /<svg|rifle-locator|sight-physical|drum-demo|diagram-ring|CLOCKWISE • ONE CLICK PAST 300/, "Chapter 2 contains no replacement hardware illustration or rejected abstract drum graphic");
 assert.match(source, /task: "", action: "none", hideTask: true/, "Chapter 2 removes the classroom task and completion button");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /PHOTOGRAPH USAGE RIGHTS|FOUNDER REVIEW REFERENCES|review-asset-note/, "the shooter-facing page contains no photograph-review notice");
-assert.match(source, /chapterThreeDemoRoad = "shoot\.html\?prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1"/, "Chapter 3 launches the prepared demonstration through the existing target workspace");
+assert.match(source, /chapterThreeDemoRoad = "shoot\.html\?target_profile_id=baker_m16a2_25m_zero&prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1"/, "Chapter 3 launches the prepared demonstration against the dedicated Baker M16A2 profile");
 assert.match(chapterThreeSource, /Let Tap-n-Score show you[\s\S]*COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE/, "Chapter 3 is a watch-only complete demonstration");
-assert.match(source, /chapterThreeTargetImage = "[^"]*FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png"/, "the exact Founder-supplied Baker M16A2 target is registered once");
+assert.match(source, /chapterThreeTargetImage = "assets\/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg"/, "Chapter 3 displays the exact governed standard Baker M16A2 production face");
 assert.match(chapterThreeSource, /adjustment-target[\s\S]*chapterThreeTargetImage[\s\S]*demo-launch/, "Chapter 3 prominently renders the supplied Baker target");
 assert.doesNotMatch(chapterThreeSource, /TAKE PHOTO|CHOOSE EXISTING PHOTO|I FOUND|I CAN|YOUR TASK|\bPOIB\b|quiz|competenc/i, "Chapter 3 asks for no upload, observation, calculation, acknowledgment, or classroom gate");
 assert.match(demoFixture, /M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "the prepared example carries the exact equipment configuration");
@@ -78,7 +78,7 @@ assert.match(player, /speechRate[\s\S]*speechVoiceResolver/, "the reusable playe
 assert.match(source, /Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Take a photo of your target or choose one from your photos\./, "Chapter 4 carries the concise shooter photo-entry script");
 assert.match(chapterFourSource, /YOUR TURN[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the shooter-control entry");
 assert.match(chapterFourSource, /chapterFourPhotoRoad\("camera"\)[\s\S]*chapterFourPhotoRoad\("existing"\)/, "Chapter 4 hands both photo choices to the governed road");
-assert.match(source, /tapNScoreRoad = "matrix\.html\?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=4"[\s\S]*chapterFourPhotoRoad[\s\S]*equipmentSupportsExactSetup[\s\S]*equipment_profile_id/, "Chapter 4 selects the governed road with the active exact M16A2 Equipment Library profile");
+assert.match(source, /tapNScoreRoad = "matrix\.html\?target_profile_id=baker_m16a2_25m_zero&founder_review=1&tstt_chapter=4"[\s\S]*chapterFourPhotoRoad[\s\S]*equipmentSupportsExactSetup[\s\S]*equipment_profile_id/, "Chapter 4 selects the dedicated Baker M16A2 profile with the exact Equipment Library configuration");
 assert.match(matrix, /photo_source[\s\S]*shoot\.html\?session=[\s\S]*founderReviewQuery[\s\S]*photoSource/, "the governed session handoff preserves the requested Chapter 4 photo source");
 assert.match(matrix, /TSTT_SHOOTER_HANDOFF[\s\S]*governed\.item\.setup\.setupId === requestedEquipmentProfileId[\s\S]*await goToTarget\(\)/, "the Chapter 4 handoff automatically starts only the backend-admitted requested equipment profile");
 assert.match(source, /applyDirectChapterEntry[\s\S]*state\.started = true[\s\S]*state\.current = requested - 1[\s\S]*state\.unlocked = chapters\.length - 1/, "returning shooters can enter Chapter 4 directly with all Chapters navigation available");
@@ -132,11 +132,11 @@ for (const build of [buildSite, buildNetlify]) {
   assert.match(build, /"tstt_narration\.js"/, "the reusable narration runtime is included in the build inventory");
   assert.match(build, /"m16a2_talking_demo_session\.js"/, "the prepared M16A2 demonstration fixture is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the preserved target evidence is included in the build inventory");
-  assert.match(build, /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png/, "the exact Founder-supplied Chapter 3 Baker target is included in the build inventory");
+  assert.match(build, /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg/, "the exact governed standard Baker M16A2 face is included in the build inventory");
   assert.doesNotMatch(build, /FOUNDER_M16A2_(?:FRONT_SIGHT|REAR_WINDAGE|REAR_ELEVATION)/, "uncleared Chapter 2 reference photographs cannot enter the production build inventory");
 }
 assert.match(reviewServer, /FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_ELEVATION_DRUM_8-3_REFERENCE/, "the local review server permits all three Founder-supplied references");
-assert.match(reviewServer, /shoot\.html[\s\S]*sec\.html[\s\S]*records\.html[\s\S]*FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png/, "the local review server permits the Chapter 3 photo, governed interaction, and preservation road");
+assert.match(reviewServer, /shoot\.html[\s\S]*sec\.html[\s\S]*records\.html[\s\S]*BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg/, "the local review server permits the governed standard face, interaction, and preservation road");
 assert.match(reviewServer, /pathname\.startsWith\("\/api\/"\)[\s\S]*proxyAuthority/, "private-LAN review proxies governed API calls through the allowed Node review executable");
 assert.match(reviewServer, /const host = process\.argv\[3\] \|\| "127\.0\.0\.1"/, "the review server keeps uncleared reference photographs on localhost unless LAN exposure is explicitly requested");
 

@@ -253,10 +253,13 @@ const HAS_EXPLICIT_TARGET_INTENT = [
 const UNIVERSAL_EQUIPMENT_LIBRARY_VIEW = MATRIX_QUERY.get("view") === "library" || !HAS_EXPLICIT_TARGET_INTENT;
 const LANDING_STANDARD_EQUIPMENT_DEFAULT = MATRIX_QUERY.get("equipment") === "standard";
 const TSTT_SHOOTER_HANDOFF = MATRIX_QUERY.get("tstt_chapter") === "4";
+const FOUNDER_REVIEW = MATRIX_QUERY.get("founder_review") === "1";
 const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
 const PENDING_SESSION_START_KEY = "SCZN3_PENDING_BACKEND_SESSION_START";
 const SESSION_AUTHORITY_BASE = window.SCZN3_SESSION_AUTHORITY_BASE || (
-  /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname)
+  FOUNDER_REVIEW
+    ? `${window.location.origin}/api/session`
+    : /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname)
     ? "http://127.0.0.1:8098/api/session"
     : "/api/session"
 );
@@ -1843,14 +1846,17 @@ function renderTargetModePill() {
   const isGssf = attribution.target_profile_id === "gssf_ac_1";
   const isDotTorture = attribution.target_profile_id === "dot_torture_ez2c_style_17";
   const isM4 = attribution.target_profile_id === "m4_25m_zero";
+  const isM16A2 = attribution.target_profile_id === "baker_m16a2_25m_zero";
   const isBaker100Yard = attribution.target_profile_id === "baker_st_100yd_smart_zero";
   const gssfLabel = SCZN3Presentation.targetLabel("gssf_ac_1", "GSSF AC-1");
-  pill.textContent = isM4
+  pill.textContent = isM16A2
+    ? "Target Mode: Baker M16A2 25 Meter Zero"
+    : isM4
     ? "Target Mode: M4 25 Meter Zero"
     : (isBaker100Yard
       ? "Target Mode: 100 Yard Bullseye"
       : (isDotTorture ? "Target Mode: Dot Torture" : `Target Mode: ${gssfLabel}`));
-  pill.classList.toggle("is-hidden", !(isM4 || isBaker100Yard || isGssf || isDotTorture));
+  pill.classList.toggle("is-hidden", !(isM16A2 || isM4 || isBaker100Yard || isGssf || isDotTorture));
 }
 
 function collectFormSnapshot() {
@@ -2475,6 +2481,33 @@ function targetAttributionFromContext(data = {}) {
   if (queryTargetProfileId.toLowerCase() === "baker_st_100yd_smart_zero") {
     return canonicalBaker100YardAttribution();
   }
+  if (targetProfileId === "baker_m16a2_25m_zero") {
+    return {
+      target_profile_id: "baker_m16a2_25m_zero",
+      targetProfileId: "baker_m16a2_25m_zero",
+      mission_family: "zeroingCorrection",
+      missionFamilyId: "zeroingCorrection",
+      targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+      targetVersion: "BAKER_M16A2_25M_AUTHORITY_v1",
+      targetName: "Baker M16A2 25 Meter Zeroing Target",
+      targetFamily: "Military 25 Meter M16A2 Zeroing Target",
+      vendor: "Baker",
+      manufacturer: "Baker Targets",
+      sku: "ST-M16A2/M4",
+      product: "Baker M16A2 25 Meter Zeroing Target",
+      targetDistance: "25 m",
+      targetDistanceValue: "25",
+      targetDistanceUnit: "M",
+      targetDistanceLocked: true,
+      opticType: "Iron Sights",
+      opticBrand: "USGI",
+      opticModel: "M16A2 Rear Sight + Front Sight Post",
+      opticAdjustmentUnit: "MOA",
+      adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+      equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+    };
+  }
   if (
     queryTargetProfileId.toLowerCase() === "gssf_ac_1"
     || String(MATRIX_QUERY.get("mission_family") || MATRIX_QUERY.get("missionFamily") || MATRIX_QUERY.get("missionFamilyId") || "").toLowerCase() === "gssf"
@@ -2558,7 +2591,7 @@ function clearSetupFields() {
 
 function applyM4MissionDefaults() {
   const queryProfile = String(MATRIX_QUERY.get("target_profile_id") || MATRIX_QUERY.get("targetProfileId") || "").toLowerCase();
-  if (queryProfile !== "m4_25m_zero") return;
+  if (!["m4_25m_zero", "baker_m16a2_25m_zero"].includes(queryProfile)) return;
   const distance = document.getElementById("matrixDistanceValue");
   const unit = document.getElementById("matrixDistanceUnit");
   if (distance) {

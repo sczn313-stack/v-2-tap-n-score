@@ -21,7 +21,9 @@ from typing import Any, Dict, Iterable, Mapping, Optional
 
 from gssf_ac_1_authority import GSSF_AC_1_ATP, GSSF_AC_1_EXECUTION_CONTRACT
 from m4_authority.weapon_equipment_registry import (
+    authority_model_from_adjustment_profile,
     authority_model_from_record,
+    get_adjustment_profile,
     resolve_proven_equipment_record,
 )
 from target_execution_contract import TargetExecutionContractError, TargetExecutionContractResolver, runtime_resolver
@@ -50,6 +52,37 @@ EQUIPMENT_KNOWLEDGE_BY_RECORD_ID = {
 
 
 TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
+    "baker_m16a2_25m_zero": {
+        "targetId": "baker_m16a2_25m_zero",
+        "targetAuthorityId": "BAKER_M16A2_25M_AUTHORITY_v1",
+        "targetName": "Baker M16A2 25 Meter Zeroing Target",
+        "targetProfileVersion": "BAKER_M16A2_25M_AUTHORITY_v1",
+        "atpId": "baker-m16a2-25m-zero-atp-v1",
+        "registrationAuthority": {
+            "registrationPackageId": "baker-m16a2-25m-photo-registration-v1",
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+            "status": "available",
+        },
+        "missionIdentity": {
+            "missionFamily": "zeroingCorrection",
+            "missionId": "BAKER_M16A2_25M_300M_ZERO",
+            "resultPackageType": "zeroCorrectionResult",
+        },
+        "governedDistance": {"value": 25, "unit": "M", "locked": True},
+        "equipmentRequirements": {
+            "weaponCategories": ["Rifle"],
+            "modelFamilies": ["M16A2"],
+            "requiresAdjustmentSystem": True,
+            "allowedAdjustmentUnits": ["MOA"],
+        },
+        "standardSetupAuthority": {
+            "setupId": "standard-m16a2-iron-fsp-rear-drum",
+            "authorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+            "kind": "registered_adjustment_profile",
+            "equipmentConfigurationId": "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+        },
+    },
     "m4_25m_zero": {
         "targetId": "m4_25m_zero",
         "targetAuthorityId": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
@@ -298,7 +331,7 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
 
 TARGET_ID_ALIASES = {
     "m4_target_authority_v1_original": "m4_25m_zero",
-    "st-m16a2/m4": "m4_25m_zero",
+    "baker_st_m16a2_standard_face": "baker_m16a2_25m_zero",
     "baker_st_100yd_smart": "baker_st_100yd_smart_zero",
     "gssf-ac-1": "gssf_ac_1",
     "baker_sl_st1": "baker_sl_st1",
@@ -474,6 +507,8 @@ def normalize_equipment(candidate: Any, index: int = 1, *, allow_backend_standar
         "opticType": clean_text(candidate.get("opticType")),
         "opticBrand": clean_text(candidate.get("opticBrand")),
         "opticModel": clean_text(candidate.get("opticModel")),
+        "adjustmentProfileId": clean_text(candidate.get("adjustmentProfileId")),
+        "adjustmentSystem": clean_text(candidate.get("adjustmentSystem")),
         "magnification": clean_text(candidate.get("magnification")),
         "adjustmentUnit": adjustment_unit,
         "clickValue": click_value,
@@ -483,13 +518,42 @@ def normalize_equipment(candidate: Any, index: int = 1, *, allow_backend_standar
         "bulletWeight": clean_text(candidate.get("bulletWeight")),
         "source": source,
     }
+    adjustment_profile_id = normalized["adjustmentProfileId"]
+    if adjustment_profile_id:
+        adjustment_profile = get_adjustment_profile(adjustment_profile_id)
+        if not adjustment_profile or str(adjustment_profile.get("status") or "").lower() != "proven":
+            raise SessionAuthorityError("authority_unavailable", "equipment_adjustment_profile_not_registered", 409)
+        expected_configuration = str(adjustment_profile.get("equipmentConfigurationId") or "")
+        if normalized["equipmentConfigurationId"] != expected_configuration:
+            raise SessionAuthorityError("authority_conflict", "equipment_adjustment_profile_configuration_mismatch", 409)
+        claimed_system = normalized["adjustmentSystem"]
+        governed_system = str(adjustment_profile.get("adjustmentSystem") or "")
+        if claimed_system and claimed_system != governed_system:
+            raise SessionAuthorityError("authority_conflict", "equipment_adjustment_profile_system_mismatch", 409)
+        model = authority_model_from_adjustment_profile(adjustment_profile)
+        normalized.update({
+            "adjustmentSystem": governed_system,
+            "adjustmentUnit": model["unit"],
+            "axisAdjustment": {
+                "windagePerClick": model["windagePerClick"],
+                "elevationPerClick": model["elevationPerClick"],
+                "unit": model["unit"],
+            },
+            "mechanicalAuthority": {
+                "status": "proven",
+                "source": model["authoritySource"],
+                "turnDirections": model["turnDirections"],
+            },
+        })
     if allow_backend_standard and source == "backend_standard_setup":
         normalized.update({
             "setupAuthority": "backend-target-authority",
             "setupAuthorityId": clean_text(candidate.get("setupAuthorityId")),
             "adjustmentSystem": clean_text(candidate.get("adjustmentSystem")),
+            "adjustmentProfileId": clean_text(candidate.get("adjustmentProfileId")),
             "equipmentAuthorityRecordId": clean_text(candidate.get("equipmentAuthorityRecordId")),
             "axisAdjustment": deepcopy(candidate.get("axisAdjustment") or {}),
+            "mechanicalAuthority": deepcopy(candidate.get("mechanicalAuthority") or normalized.get("mechanicalAuthority") or {}),
             "displayFields": deepcopy(candidate.get("displayFields") or []),
         })
     normalized["equipmentFingerprint"] = digest(normalized)
@@ -505,7 +569,38 @@ def standard_setup_for(profile: Mapping[str, Any]) -> Dict[str, Any]:
         unit_label = "meters" if distance.get("unit") == "M" else "yards"
         display_fields.append({"label": "Distance", "value": f"{distance['value']} {unit_label}"})
 
-    if kind == "registered_m4_iron_sight":
+    if kind == "registered_adjustment_profile":
+        adjustment_profile = get_adjustment_profile(authority["authorityId"])
+        if not adjustment_profile or str(adjustment_profile.get("status") or "").lower() != "proven":
+            raise SessionAuthorityError("authority_unavailable", "registered_adjustment_profile_unavailable", 503)
+        if str(adjustment_profile.get("equipmentConfigurationId") or "") != str(authority.get("equipmentConfigurationId") or ""):
+            raise SessionAuthorityError("authority_unavailable", "registered_adjustment_profile_configuration_mismatch", 503)
+        model = authority_model_from_adjustment_profile(adjustment_profile)
+        display_fields.extend([
+            {"label": "Firearm", "value": "M16A2 Rifle"},
+            {"label": "Sighting configuration", "value": model["label"]},
+            {"label": "Windage", "value": f"{model['windagePerClick']} {model['unit']} per click"},
+            {"label": "Elevation", "value": f"{model['elevationPerClick']} {model['unit']} per click"},
+        ])
+        candidate = {
+            "candidateId": authority["setupId"],
+            "weaponCategory": "Rifle",
+            "manufacturer": "Military M-Series Rifles",
+            "modelType": "M16A2 Rifle",
+            "modelCaliber": "5.56 NATO",
+            "opticType": "Iron Sights",
+            "adjustmentUnit": model["unit"],
+            "clickValue": None,
+            "adjustmentSystem": model["system"],
+            "adjustmentProfileId": model["adjustmentProfileId"],
+            "equipmentConfigurationId": model["equipmentConfigurationId"],
+            "axisAdjustment": {
+                "windagePerClick": model["windagePerClick"],
+                "elevationPerClick": model["elevationPerClick"],
+                "unit": model["unit"],
+            },
+        }
+    elif kind == "registered_m4_iron_sight":
         record = resolve_proven_equipment_record(authority["authorityId"], "M4_IRON_DCH_FSP")
         if not record:
             raise SessionAuthorityError("authority_unavailable", "m4_standard_setup_authority_unavailable", 503)

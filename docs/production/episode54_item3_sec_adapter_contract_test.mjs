@@ -16,6 +16,7 @@ const adapters = window.SCZN3TargetAdapters;
 const families = adapters.scoringPresentationFamilies;
 const expected = [
   ["m4-zeroing", "m4_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
+  ["m16a2-zeroing", "baker_m16a2_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
   ["baker-100yd-zeroing", "baker_st_100yd_smart_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
   ["gssf", "gssf_ac_1", "gssf", "gssfPaperPenaltyResult", families.LOWEST_SCORE_WINS, ["evidence", "measurement", "execution", "validation", "preservation"]],
   ["baker-sl-st1", "baker_sl_st1_practice", "smartEvidenceCapture", "smartEvidenceResult", families.HIGHEST_SCORE_WINS, ["evidence", "measurement", "validation", "preservation"]],
