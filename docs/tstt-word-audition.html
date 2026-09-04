@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f0d" />
+  <title>TSTT Word Audition — SCZN3</title>
+  <meta name="description" content="Founder listening audition for four equivalent TSTT phrases spoken by Samantha." />
+  <link rel="stylesheet" href="tstt-voice-audition.css?v=1" />
+</head>
+<body>
+  <main class="audition-shell">
+    <header class="audition-header">
+      <div class="brand-mark">SCZN3</div>
+      <div class="brand-product">TSTT WORD AUDITION</div>
+    </header>
+
+    <section class="audition-intro" aria-labelledby="auditionTitle">
+      <span>SAME VOICE · SAME SPEED · WORDING ONLY</span>
+      <h1 id="auditionTitle">Let your ear pick it.</h1>
+      <p>Listen on the ordinary iPhone speaker. Every sample uses the same Samantha voice, rate, pitch, and speech construction.</p>
+    </section>
+
+    <section aria-live="polite" aria-busy="true" id="voiceRegion">
+      <p class="voice-status" id="voiceStatus">CHECKING THIS DEVICE FOR SAMANTHA…</p>
+      <div class="voice-list" id="voiceList">
+        <article class="voice-sample">
+          <div class="voice-name"><span>A · GROUP</span><b>“Your group is two squares high and three squares left.”</b></div>
+          <button type="button" data-sample="A" disabled><span aria-hidden="true">▶</span> PLAY A</button>
+        </article>
+        <article class="voice-sample">
+          <div class="voice-name"><span>B · SHOTS</span><b>“Your shots are landing two squares high and three squares left.”</b></div>
+          <button type="button" data-sample="B" disabled><span aria-hidden="true">▶</span> PLAY B</button>
+        </article>
+        <article class="voice-sample">
+          <div class="voice-name"><span>C · SHOT PATTERN</span><b>“Your shot pattern is two squares high and three squares left.”</b></div>
+          <button type="button" data-sample="C" disabled><span aria-hidden="true">▶</span> PLAY C</button>
+        </article>
+        <article class="voice-sample">
+          <div class="voice-name"><span>D · CLUSTER</span><b>“Your cluster is two squares high and three squares left.”</b></div>
+          <button type="button" data-sample="D" disabled><span aria-hidden="true">▶</span> PLAY D</button>
+        </article>
+      </div>
+    </section>
+
+    <p class="audition-rule"><b>SAMANTHA</b><span>RATE 0.70</span><span>NEUTRAL PITCH</span><span>ONE SENTENCE</span></p>
+  </main>
+
+  <script src="tstt_narration.js?v=voice-identity-1"></script>
+  <script src="tstt-word-audition.js?v=1"></script>
+</body>
+</html>
