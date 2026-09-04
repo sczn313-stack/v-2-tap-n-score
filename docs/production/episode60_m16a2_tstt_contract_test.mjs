@@ -32,6 +32,9 @@ assert.match(html, /tstt_narration\.js[\s\S]*m16a2-tstt\.js/, "the reusable narr
 assert.match(narration, /DEFAULT_SETTINGS = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "the reusable narrator keeps the slower neutral baseline");
 assert.ok(narration.indexOf("/^Samantha") < narration.indexOf("/^Reed"), "Samantha is selected before the neutral fallback voices");
 assert.match(narration, /Samantha[\s\S]*Reed[\s\S]*Flo[\s\S]*Alex[\s\S]*Ava[\s\S]*Susan/, "neutral instructional fallbacks remain available");
+assert.match(narration, /resolveSamantha[\s\S]*find\(voice => SAMANTHA_NAME\.test[\s\S]*if \(!voice\) return/, "production narration locks Samantha and refuses to speak through a fallback voice");
+assert.match(narration, /SAMANTHA UNAVAILABLE[\s\S]*voiceschanged[\s\S]*resolveSamantha/, "the runtime waits for the device voice list and reports exact unavailability");
+assert.match(`${html}\n${source}`, /RUNTIME INSTRUCTOR[\s\S]*runtimeVoiceStatus[\s\S]*PLAY “GROUP” CHECK[\s\S]*Your group is two squares high and three squares left/, "Founder review exposes the actual runtime voice and exact audition sentence");
 assert.match(narration, /NON_INSTRUCTIONAL_VOICES[\s\S]*Albert[\s\S]*Zarvox/, "novelty and theatrical system voices cannot become the instructor");
 assert.match(narration, /pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle[\s\S]*one point two five[\s\S]*zero point five/, "speech preparation deliberately pronounces equipment terminology and adjustment values");
 assert.match(narration, /DEFAULT_PAUSES[\s\S]*normal: 450[\s\S]*action: 900[\s\S]*look: 1100/, "thought, action, and observation pauses are explicitly paced");

@@ -28,11 +28,11 @@ This standard governs how approved lesson meaning is spoken. It does not create,
 - Sentence boundaries create natural silence. Action and observation roles receive longer silence.
 - Important and action sentences run slightly slower than the `0.70` baseline. Pitch remains neutral.
 - Pronunciation preparation expands governed abbreviations and numerical values before they reach the browser voice engine.
-- Samantha is the first-choice U.S. English voice. Other neutral U.S. English voices are fallbacks only when Samantha is unavailable.
+- Samantha is the locked production instructor voice. Production must use the same device-voice resolver as the Founder audition and must expose the actual selected voice identifier during review. If Samantha is unavailable, production reports that state and remains silent; it never substitutes another instructor while presenting the result as Samantha.
 
 ## Browser limitations
 
-The Web Speech API does not guarantee word-level emphasis, exact pause duration, identical voice availability, or identical prosody across Safari and iOS versions. Segmenting speech into sentence-level utterances gives TSTT reliable thought boundaries, but the device voice engine still controls final cadence and timbre. Phone-speaker listening remains a required Founder acceptance test.
+The Web Speech API does not guarantee word-level emphasis, exact pause duration, identical voice availability, or identical prosody across Safari and iOS versions. A voice list may also become available asynchronously. TSTT therefore waits for the device list, binds the exact Samantha voice object, and fails visibly when it cannot. Segmenting speech into sentence-level utterances gives TSTT reliable thought boundaries, but the device voice engine still controls final cadence and timbre. Phone-speaker listening remains a required Founder acceptance test.
 
 ## Acceptance
 

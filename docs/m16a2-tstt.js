@@ -6,7 +6,7 @@
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
   const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
-  const narrator = window.SCZN3TSTTNarration.createNarrator();
+  const auditionSentence = "Your group is two squares high and three squares left. We’ll use the sights to move the group to the center of the target.";
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
@@ -75,9 +75,16 @@
     title: document.getElementById("lessonTitle"), summary: document.getElementById("lessonSummary"), visual: document.getElementById("visualStage"), task: document.getElementById("taskCard"), action: document.getElementById("chapterAction"),
     equipmentLibraryLink: document.getElementById("equipmentLibraryLink"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
-    start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]')
+    start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]'),
+    runtimeVoiceStatus: document.getElementById("runtimeVoiceStatus"), runtimeVoiceCheck: document.getElementById("runtimeVoiceCheck")
   });
   const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null };
+  const narrator = window.SCZN3TSTTNarration.createNarrator({
+    onVoiceStatus: ({ status, identifier }) => {
+      elements.runtimeVoiceStatus.textContent = status === "checking" ? "CHECKING FOR SAMANTHA…" : identifier;
+      elements.runtimeVoiceCheck.disabled = status !== "selected";
+    }
+  });
 
   function conciseEquipmentName(profile = {}) {
     const manufacturer = profile.weaponCatalogManufacturer || profile.weaponManufacturer || "";
@@ -203,6 +210,7 @@
   function restartTraining() { cancelSpeech(); sessionStorage.removeItem(journeyKey); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
 
   elements.start.addEventListener("click", startTraining);
+  elements.runtimeVoiceCheck.addEventListener("click", () => narrator.play([Object.freeze({ text: auditionSentence, delivery: "normal" })]));
   elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "next") advance(); });
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
   elements.replay.addEventListener("click", () => { state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }); elements.restart.addEventListener("click", restartTraining);

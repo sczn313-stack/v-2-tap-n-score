@@ -5,13 +5,17 @@
   const DEFAULT_PAUSES = Object.freeze({ normal: 450, important: 650, action: 900, look: 1100, completion: 650 });
   const DEFAULT_VOICE_PRIORITY = Object.freeze([
     /^Samantha(?: \((?:Enhanced|Premium)\))?$/i,
-    /^Reed \(English \(US\)\)$/i,
-    /^Flo \(English \(US\)\)$/i,
+    /^Reed \(English \((?:US|United States)\)\)$/i,
+    /^Flo \(English \((?:US|United States)\)\)$/i,
     /^Alex$/i,
     /^Ava(?: \((?:Enhanced|Premium)\))?$/i,
-    /^Susan$/i
+    /^Susan$/i,
+    /^Eddy \(English \((?:US|United States)\)\)$/i,
+    /^Sandy \(English \((?:US|United States)\)\)$/i,
+    /^Shelley \(English \((?:US|United States)\)\)$/i
   ]);
-  const NON_INSTRUCTIONAL_VOICES = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Zarvox/i;
+  const NON_INSTRUCTIONAL_VOICES = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Fred|Good News|Grandma|Grandpa|Jester|Junior|Kathy|Organ|Ralph|Superstar|Trinoids|Whisper|Zarvox/i;
+  const SAMANTHA_NAME = /^Samantha(?: \((?:Enhanced|Premium)\))?$/i;
 
   function pronounceForInstruction(text) {
     return String(text)
@@ -31,11 +35,29 @@
     return String(text).match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map(sentence => ({ text: sentence.trim(), delivery: "normal" })) || [];
   }
 
+  function normalizedLanguage(voice) { return String(voice?.lang || "").replace("_", "-").toLowerCase(); }
+  function preferenceIndex(voice, voicePriority = DEFAULT_VOICE_PRIORITY) {
+    const index = voicePriority.findIndex(pattern => pattern.test(voice?.name || ""));
+    return index < 0 ? voicePriority.length : index;
+  }
+  function availableInstructionalVoices(synthesis = root.speechSynthesis, { limit = Infinity, voicePriority = DEFAULT_VOICE_PRIORITY } = {}) {
+    if (!synthesis || typeof synthesis.getVoices !== "function") return [];
+    const seen = new Set();
+    return synthesis.getVoices()
+      .filter(voice => normalizedLanguage(voice) === "en-us" && !NON_INSTRUCTIONAL_VOICES.test(voice.name || ""))
+      .filter(voice => { const key = `${voice.name}|${voice.lang}|${voice.voiceURI || ""}`; if (seen.has(key)) return false; seen.add(key); return true; })
+      .sort((left, right) => preferenceIndex(left, voicePriority) - preferenceIndex(right, voicePriority) || Number(right.localService) - Number(left.localService) || left.name.localeCompare(right.name) || String(left.voiceURI || "").localeCompare(String(right.voiceURI || "")))
+      .slice(0, limit);
+  }
+  function voiceIdentifier(voice) {
+    return voice ? [voice.name, voice.lang, voice.voiceURI || "DEVICE VOICE"].filter(Boolean).join(" · ") : "SAMANTHA UNAVAILABLE";
+  }
+
   function createNarrator(options = {}) {
     const synthesis = options.synthesis || root.speechSynthesis;
     const Utterance = options.Utterance || root.SpeechSynthesisUtterance;
     const settings = Object.freeze({ ...DEFAULT_SETTINGS, ...(options.settings || {}) });
-    const voicePriority = options.voicePriority || DEFAULT_VOICE_PRIORITY;
+    const onVoiceStatus = typeof options.onVoiceStatus === "function" ? options.onVoiceStatus : () => {};
     let queue = [];
     let cursor = 0;
     let currentUtterance = null;
@@ -43,22 +65,13 @@
     let paused = false;
     let waitingBetweenThoughts = false;
     let generation = 0;
+    let selectedVoice = null;
+    let availabilityFinal = false;
 
-    function voiceScore(voice) {
-      if (!voice || NON_INSTRUCTIONAL_VOICES.test(voice.name || "")) return -1;
-      const language = String(voice.lang || "").replace("_", "-").toLowerCase();
-      if (!language.startsWith("en-")) return -1;
-      const priorityIndex = voicePriority.findIndex(pattern => pattern.test(voice.name || ""));
-      return (language === "en-us" ? 100 : 40)
-        + (voice.localService ? 20 : 0)
-        + (/(enhanced|premium)/i.test(voice.name || "") ? 12 : 0)
-        + (priorityIndex < 0 ? 0 : 80 - priorityIndex * 8)
-        + (voice.default ? 2 : 0);
-    }
-
-    function selectVoice() {
-      if (!synthesis || typeof synthesis.getVoices !== "function") return null;
-      return synthesis.getVoices().slice().sort((left, right) => voiceScore(right) - voiceScore(left)).find(voice => voiceScore(voice) >= 0) || null;
+    function resolveSamantha({ final = availabilityFinal } = {}) {
+      selectedVoice = availableInstructionalVoices(synthesis).find(voice => SAMANTHA_NAME.test(voice.name || "")) || null;
+      onVoiceStatus(Object.freeze({ status: selectedVoice ? "selected" : (final ? "unavailable" : "checking"), voice: selectedVoice, identifier: voiceIdentifier(selectedVoice) }));
+      return selectedVoice;
     }
 
     function deliveryRate(delivery) {
@@ -81,8 +94,10 @@
       if (token !== generation || paused || !synthesis || !Utterance || cursor >= queue.length) return;
       const segment = queue[cursor++];
       const utterance = new Utterance(pronounceForInstruction(segment.text));
-      const voice = selectVoice();
-      if (voice) { utterance.voice = voice; utterance.lang = voice.lang; } else { utterance.lang = "en-US"; }
+      const voice = selectedVoice || resolveSamantha({ final: true });
+      if (!voice) return;
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
       utterance.rate = deliveryRate(segment.delivery);
       utterance.pitch = settings.pitch;
       utterance.volume = settings.volume;
@@ -116,7 +131,7 @@
     function play(plan) {
       cancel();
       queue = (Array.isArray(plan) ? plan : sentencePlan(plan)).map(segment => typeof segment === "string" ? { text: segment, delivery: "normal" } : { delivery: "normal", ...segment }).filter(segment => segment.text);
-      speakNext(generation);
+      if (resolveSamantha({ final: true })) speakNext(generation);
     }
 
     function pause() {
@@ -140,8 +155,16 @@
       } else speakNext(generation);
     }
 
-    return Object.freeze({ cancel, pause, play, resume, selectVoice, settings });
+    if (synthesis && typeof synthesis.addEventListener === "function") synthesis.addEventListener("voiceschanged", () => {
+      const wasUnavailable = !selectedVoice;
+      if (resolveSamantha({ final: true }) && wasUnavailable && queue.length && !currentUtterance && !paused) speakNext(generation);
+    });
+    resolveSamantha();
+    root.setTimeout(() => resolveSamantha(), 250);
+    root.setTimeout(() => { availabilityFinal = true; resolveSamantha({ final: true }); }, 1000);
+
+    return Object.freeze({ cancel, pause, play, resume, resolveSamantha, settings });
   }
 
-  root.SCZN3TSTTNarration = Object.freeze({ createNarrator, pronounceForInstruction, sentencePlan, settings: DEFAULT_SETTINGS });
+  root.SCZN3TSTTNarration = Object.freeze({ availableInstructionalVoices, createNarrator, pronounceForInstruction, sentencePlan, settings: DEFAULT_SETTINGS, voiceIdentifier });
 })(window);

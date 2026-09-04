@@ -17,8 +17,8 @@ try {
       const voices = [
         { name: "Albert", lang: "en-US", localService: true, default: true },
         { name: "Daniel", lang: "en-GB", localService: true, default: false },
-        { name: "Samantha", lang: "en-US", localService: true, default: false },
-        { name: "Reed (English (US))", lang: "en-US", localService: true, default: false }
+        { name: "Samantha", lang: "en-US", voiceURI: "com.apple.voice.compact.en-US.Samantha", localService: true, default: false },
+        { name: "Reed (English (US))", lang: "en-US", voiceURI: "com.apple.eloquence.en-US.Reed", localService: true, default: false }
       ];
       Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak(utterance) { window.__spokenUtterances.push(utterance); }, pause() {}, resume() {}, getVoices() { return voices; }, speaking: false } });
       Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
@@ -34,6 +34,13 @@ try {
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
 
+    assert.equal(await page.locator("#runtimeVoiceStatus").innerText(), "Samantha · en-US · com.apple.voice.compact.en-US.Samantha");
+    await page.locator("#runtimeVoiceCheck").click();
+    const voiceCheck = await page.evaluate(() => window.__spokenUtterances.at(-1));
+    assert.equal(voiceCheck.text, "Your group is two squares high and three squares left. We’ll use the sights to move the group to the center of the target.");
+    assert.equal(voiceCheck.voice.name, "Samantha");
+    assert.equal(voiceCheck.voice.voiceURI, "com.apple.voice.compact.en-US.Samantha");
+    assert.equal(voiceCheck.rate, 0.70);
     assert.equal(await page.locator("#targetIdentity").innerText(), "25 METERS ZEROING TARGET\nM16A2");
     assert.equal(await page.locator("#lessonProgress > span").count(), 5);
     assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
@@ -48,9 +55,10 @@ try {
     });
     assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
     assert.equal(chapterOneSpeech.text, "This target gives you an aim point.");
+    const spokenCountBeforePause = await page.evaluate(() => window.__spokenUtterances.length);
     await page.evaluate(() => window.__spokenUtterances.at(-1).onend());
     await page.waitForTimeout(250);
-    assert.equal(await page.evaluate(() => window.__spokenUtterances.length), 1, "the narrator leaves silence between completed thoughts");
+    assert.equal(await page.evaluate(() => window.__spokenUtterances.length), spokenCountBeforePause, "the narrator leaves silence between completed thoughts");
     await page.waitForTimeout(300);
     assert.equal(await page.evaluate(() => window.__spokenUtterances.at(-1).text), "It also gives you a way to measure your group.");
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
@@ -108,10 +116,16 @@ try {
   const coldErrors = [];
   coldPage.on("pageerror", error => coldErrors.push(error.message));
   await coldPage.addInitScript(() => {
-    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak() {}, pause() {}, resume() {}, speaking: false } });
+    window.__coldSpoken = [];
+    const voices = [{ name: "Reed (English (US))", lang: "en-US", voiceURI: "com.apple.eloquence.en-US.Reed", localService: true }];
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak(utterance) { window.__coldSpoken.push(utterance); }, pause() {}, resume() {}, getVoices() { return voices; }, addEventListener() {}, speaking: false } });
     Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
   });
   await coldPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
+  assert.equal(await coldPage.locator("#runtimeVoiceStatus").innerText(), "CHECKING FOR SAMANTHA…");
+  await coldPage.waitForTimeout(1100);
+  assert.equal(await coldPage.locator("#runtimeVoiceStatus").innerText(), "SAMANTHA UNAVAILABLE");
+  assert.equal(await coldPage.locator("#runtimeVoiceCheck").isDisabled(), true);
   assert.equal(await coldPage.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
   assert.match(await coldPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
   assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);
@@ -124,6 +138,7 @@ try {
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 0);
 
   await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
+  assert.equal(await coldPage.evaluate(() => window.__coldSpoken.length), 0, "production never substitutes Reed when Samantha is unavailable");
   assert.equal(await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).count(), 0);
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 1);
   assert.equal(await coldPage.locator("#chapterList button:not([disabled])").count(), 5);

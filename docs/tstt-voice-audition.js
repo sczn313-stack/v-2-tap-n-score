@@ -3,36 +3,13 @@
 
   const auditionSentence = "Your group is two squares high and three squares left. We’ll use the sights to move the group to the center of the target.";
   const speechSettings = Object.freeze({ rate: 0.70, pitch: 1, volume: 1 });
-  const preferredNames = Object.freeze([
-    /^Samantha(?: \((?:Enhanced|Premium)\))?$/i,
-    /^Reed \(English \((?:US|United States)\)\)$/i,
-    /^Flo \(English \((?:US|United States)\)\)$/i,
-    /^Alex$/i,
-    /^Ava(?: \((?:Enhanced|Premium)\))?$/i,
-    /^Susan$/i,
-    /^Eddy \(English \((?:US|United States)\)\)$/i,
-    /^Sandy \(English \((?:US|United States)\)\)$/i,
-    /^Shelley \(English \((?:US|United States)\)\)$/i
-  ]);
-  const nonInstructionalNames = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Fred|Good News|Grandma|Grandpa|Jester|Junior|Kathy|Organ|Ralph|Superstar|Trinoids|Whisper|Zarvox/i;
   const region = document.getElementById("voiceRegion");
   const status = document.getElementById("voiceStatus");
   const list = document.getElementById("voiceList");
   let candidates = [];
 
-  function normalizedLanguage(voice) { return String(voice.lang || "").replace("_", "-").toLowerCase(); }
-  function preferenceIndex(voice) {
-    const index = preferredNames.findIndex(pattern => pattern.test(voice.name || ""));
-    return index < 0 ? preferredNames.length : index;
-  }
   function availableCandidates() {
-    if (!("speechSynthesis" in window) || typeof window.speechSynthesis.getVoices !== "function") return [];
-    const seen = new Set();
-    return window.speechSynthesis.getVoices()
-      .filter(voice => normalizedLanguage(voice) === "en-us" && !nonInstructionalNames.test(voice.name || ""))
-      .filter(voice => { const key = `${voice.name}|${voice.lang}`; if (seen.has(key)) return false; seen.add(key); return true; })
-      .sort((left, right) => preferenceIndex(left) - preferenceIndex(right) || Number(right.localService) - Number(left.localService) || left.name.localeCompare(right.name))
-      .slice(0, 5);
+    return window.SCZN3TSTTNarration.availableInstructionalVoices(window.speechSynthesis, { limit: 5 });
   }
   function stopPlayback() {
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
