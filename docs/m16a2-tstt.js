@@ -19,6 +19,20 @@
     "Next, we'll learn the sights."
   ]);
   const chapterOneSpokenNarration = chapterOneFounderScript.join(" ");
+  const chapterTwoFounderScript = Object.freeze([
+    "Now that you understand the target, let's learn the sights you'll use to zero your M16A2.",
+    "Your M16A2 has three sight adjustments you need to understand: the front sight post, the rear windage knob, and the rear elevation drum.",
+    "The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down.",
+    "The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left.",
+    "The rear elevation drum has a different job. Before you zero at 25 meters, the drum must be placed in the correct starting position.",
+    "Set the rear elevation drum to 8/3, then move it one click past 8/3.",
+    "For now, remember these three jobs:",
+    "Front sight post — elevation, up or down.",
+    "Rear windage knob — windage, right or left.",
+    "Rear elevation drum — sets the sight for the 25-meter zero.",
+    "Next, we'll show you exactly where each adjustment is on your rifle and how to move it."
+  ]);
+  const chapterTwoSpokenNarration = chapterTwoFounderScript.join(" ");
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
@@ -32,22 +46,73 @@
       action: "equipment"
     }),
     Object.freeze({
-      id: "a2-2", label: "REAR-DRUM SETUP", shortTitle: "Prepare the rear elevation drum", eyebrow: "TEMPORARY 25-METER SETUP",
-      title: "Set 300. Then go one click past.",
-      summary: "Use the rear elevation drum to prepare the rifle for this 25-meter procedure. You will use a different control later to move the group up or down.",
-      narration: "Temporary twenty-five-meter setup. Use the rear elevation drum to prepare the rifle for this procedure. Set three hundred. Then go one click past. Viewed from above, rotate clockwise one click past three hundred. This is the setup control. It is not the control for moving your group up or down. On a safe, unloaded rifle, locate three hundred, then rehearse that one clockwise click.",
+      id: "a2-2", label: "THE SIGHTS", shortTitle: "Know your sights", eyebrow: "SEE IT → FIND IT → UNDERSTAND ITS JOB",
+      title: "Know your sights.",
+      summary: chapterTwoFounderScript[0],
+      narration: chapterTwoSpokenNarration,
       narrationPlan: Object.freeze([
-        Object.freeze({ text: "Find the rear elevation drum.", delivery: "action" }),
-        Object.freeze({ text: "Use it to prepare the rifle for this twenty-five-meter procedure.", delivery: "normal" }),
-        Object.freeze({ text: "Set the drum at three hundred.", delivery: "action" }),
-        Object.freeze({ text: "Then go one click past.", delivery: "important" }),
-        Object.freeze({ text: "Viewed from above, turn it clockwise one click.", delivery: "important" }),
-        Object.freeze({ text: "This is the setup control.", delivery: "normal" }),
-        Object.freeze({ text: "Do not use it to move your group up or down.", delivery: "important" }),
-        Object.freeze({ text: "On a safe, unloaded rifle, rehearse that one clockwise click.", delivery: "action" })
+        Object.freeze({ text: chapterTwoSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="drum-demo"><div class="view-label">VIEWED FROM ABOVE</div><svg viewBox="0 0 360 250" role="img" aria-label="Rear elevation drum moves clockwise one click from the 300 mark"><circle cx="180" cy="128" r="83" class="diagram-ring"/><circle cx="180" cy="128" r="48" class="diagram-core"/><line x1="180" y1="44" x2="180" y2="72" class="index-line"/><text x="180" y="31" class="diagram-label">INDEX</text><text x="180" y="139" class="drum-mark">300</text><path d="M 108 84 A 86 86 0 0 1 248 85" class="motion-arrow"/><polygon points="250,85 228,79 241,102" class="arrow-head"/><text x="180" y="224" class="diagram-command">CLOCKWISE • ONE CLICK PAST 300</text></svg><div class="not-correction"><b>SETUP CONTROL</b><span>Rear elevation drum</span><em>Not the control for moving your group up or down</em></div></div>`,
-      task: "On a safe, unloaded rifle: locate 300, then rehearse one clockwise click past it while viewing the drum from above.", action: "advance", actionLabel: "I REHEARSED THE SETUP"
+      visual: () => `<div class="sight-lesson">
+        <section class="rifle-locator" aria-label="M16A2 sight locations">
+          <div class="sight-section-heading"><span>SEE IT</span><b>THE SIGHTS ON THE RIFLE</b></div>
+          <svg viewBox="0 0 760 205" role="img" aria-label="Side profile of an M16A2 showing the front sight at the front of the rifle and the windage knob and elevation drum in the rear sight assembly">
+            <path class="rifle-body" d="M34 117h112l36-28h95l24 22h89l31 22h67l21-38h43l8 18h122v15H534l-12 39h-67l-16-31h-46l-24 20h-97l-24-21H34z"/>
+            <path class="rifle-line" d="M135 116h124l25-17h93l20 18h72m14 0 17-45h17l17 45m-7-45v-29m-12 13h24m-20 61h56m21 0h116"/>
+            <path class="rifle-line rear-handle" d="M279 98l18-47h96l28 66m-112-19 12-27h63l12 27"/>
+            <circle class="rifle-callout" cx="516" cy="55" r="17"/><text x="516" y="61" class="callout-number">1</text>
+            <circle class="rifle-callout" cx="397" cy="73" r="17"/><text x="397" y="79" class="callout-number">2</text>
+            <circle class="rifle-callout" cx="356" cy="101" r="17"/><text x="356" y="107" class="callout-number">3</text>
+            <text x="516" y="28" class="rifle-label">FRONT SIGHT</text><text x="376" y="26" class="rifle-label">REAR SIGHT</text>
+          </svg>
+          <p>${chapterTwoFounderScript[1]}</p>
+        </section>
+        <div class="sight-cards">
+          <section class="sight-card">
+            <div class="sight-card-head"><span>1 · FRONT OF RIFLE</span><b>FRONT SIGHT POST</b></div>
+            <div class="sight-physical front-sight-view">
+              <svg viewBox="0 0 260 170" role="img" aria-label="Front view of the M16A2 front sight housing with the square front sight post centered between two protective ears">
+                <path class="sight-metal" d="M31 153 47 38l30-20 13 118h80l13-118 30 20 16 115-32-9-14-83-6 92H83l-6-92-14 83z"/>
+                <path class="sight-detail" d="M116 143V65l7-25h14l7 25v78m-28-70h28"/>
+                <circle class="sight-detent" cx="97" cy="139" r="6"/>
+              </svg>
+              <span>Square post centered between two protective ears</span>
+            </div>
+            <p>${chapterTwoFounderScript[2]}</p>
+            <div class="sight-job"><span>JOB</span><b>ELEVATION</b><em>SHOT PATTERN · UP / DOWN</em></div>
+          </section>
+          <section class="sight-card">
+            <div class="sight-card-head"><span>2 · REAR SIGHT · RIGHT SIDE</span><b>REAR WINDAGE KNOB</b></div>
+            <div class="sight-physical rear-windage-view">
+              <svg viewBox="0 0 260 170" role="img" aria-label="Right-side view of the M16A2 rear sight with its round windage knob highlighted">
+                <path class="sight-metal" d="M22 145h181l-17-99h-52l-11 35H78L64 47H43z"/>
+                <path class="sight-detail" d="M123 81h63m-52-35v-23h36v23m-18-22v35"/>
+                <circle class="knob-edge" cx="203" cy="94" r="42"/><circle class="knob-face" cx="203" cy="94" r="29"/><circle class="knob-center" cx="203" cy="94" r="7"/>
+              </svg>
+              <span>Round exposed knob on the right side of the rear sight</span>
+            </div>
+            <p>${chapterTwoFounderScript[3]}</p>
+            <div class="sight-job"><span>JOB</span><b>WINDAGE</b><em>SHOT PATTERN · RIGHT / LEFT</em></div>
+          </section>
+          <section class="sight-card">
+            <div class="sight-card-head"><span>3 · REAR SIGHT · BELOW APERTURE</span><b>REAR ELEVATION DRUM</b></div>
+            <div class="sight-physical rear-drum-view">
+              <svg viewBox="0 0 260 170" role="img" aria-label="M16A2 rear elevation drum below the rear aperture with the 8/3 mark aligned to its index">
+                <path class="sight-metal" d="M49 146h163l-14-37H62z"/><path class="aperture-stem" d="M113 110V53h34v57"/>
+                <circle class="aperture-ring" cx="130" cy="43" r="30"/><circle class="aperture-hole" cx="130" cy="43" r="12"/>
+                <path class="drum-edge" d="M68 91h124l15 26H53z"/><path class="drum-index" d="M130 83v25"/>
+                <text x="130" y="131" class="drum-setting">8/3</text>
+              </svg>
+              <span>Numbered drum beneath the rear sight aperture</span>
+            </div>
+            <p>${chapterTwoFounderScript[4]}</p><p class="setup-command">${chapterTwoFounderScript[5]}</p>
+            <div class="sight-job"><span>JOB</span><b>25-METER ZERO SETUP</b><em>8/3 → ONE CLICK PAST 8/3</em></div>
+          </section>
+        </div>
+        <section class="sight-recap"><b>${chapterTwoFounderScript[6]}</b><ul><li>${chapterTwoFounderScript[7]}</li><li>${chapterTwoFounderScript[8]}</li><li>${chapterTwoFounderScript[9]}</li></ul></section>
+        <p class="sight-next">${chapterTwoFounderScript[10]}</p>
+      </div>`,
+      task: "On a safe, unloaded M16A2, point to the front sight post, the right-side rear windage knob, and the rear elevation drum beneath the aperture. Say each control's job.", action: "advance", actionLabel: "I CAN FIND THE THREE SIGHTS"
     }),
     Object.freeze({
       id: "a2-3", label: "GRID + AIM", shortTitle: "Understand the grid and aim", eyebrow: "AIM RELATIONSHIP", title: "The center is your reference.",

@@ -104,22 +104,52 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
 .target-curriculum p { margin: 3px 0 0; color: #c7ccc6; font-size: .76rem; line-height: 1.38; }
 .target-curriculum p strong { color: var(--ink); font-weight: 850; }
 
-.drum-demo { padding: 14px; border: 1px solid var(--line); background: linear-gradient(145deg, #1b231e, #101512); }
-.view-label { color: var(--gold-soft); font-size: .66rem; font-weight: 900; letter-spacing: .15em; text-align: center; }
-.drum-demo svg { display: block; width: min(100%, 400px); margin: auto; }
-.diagram-ring { fill: #222b25; stroke: #aab1a9; stroke-width: 14; stroke-dasharray: 10 5; }
-.diagram-core { fill: #0e1310; stroke: var(--gold); stroke-width: 3; }
-.index-line { stroke: var(--gold-soft); stroke-width: 4; }
-.diagram-label, .diagram-command, .drum-mark { fill: var(--ink); font-family: var(--font-ui); text-anchor: middle; font-weight: 900; }
-.diagram-label { font-size: 11px; letter-spacing: 2px; }
-.diagram-command { fill: var(--gold-soft); font-size: 11px; letter-spacing: 1.5px; }
-.drum-mark { font-size: 20px; }
-.motion-arrow { fill: none; stroke: var(--gold); stroke-width: 6; stroke-linecap: round; }
-.arrow-head { fill: var(--gold); }
-.not-correction { display: grid; gap: 4px; padding: 12px; border-left: 4px solid var(--gold); background: rgba(0,0,0,.25); }
-.not-correction b { color: var(--gold-soft); font-size: .7rem; letter-spacing: .12em; }
-.not-correction span { font-weight: 850; }
-.not-correction em { color: var(--muted); font-size: .78rem; font-style: normal; }
+.sight-lesson { display: grid; gap: 14px; }
+.rifle-locator { overflow: hidden; border: 1px solid var(--line); background: linear-gradient(145deg, #1b231e, #101512); }
+.sight-section-heading { display: flex; align-items: center; gap: 10px; padding: 12px 14px 0; }
+.sight-section-heading span { color: var(--gold-soft); font-size: .62rem; font-weight: 950; letter-spacing: .14em; }
+.sight-section-heading b { font-size: .76rem; letter-spacing: .06em; }
+.rifle-locator svg { display: block; width: 100%; height: auto; padding: 0 10px; }
+.rifle-body { fill: #525b54; stroke: #a8afa8; stroke-width: 2; stroke-linejoin: round; }
+.rifle-line { fill: none; stroke: #d2d6d1; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.rear-handle { stroke-width: 4; }
+.rifle-callout { fill: var(--gold); stroke: var(--gold-soft); stroke-width: 2; }
+.callout-number, .rifle-label { fill: #111; font-family: var(--font-ui); font-weight: 950; text-anchor: middle; }
+.callout-number { font-size: 17px; }
+.rifle-label { fill: var(--gold-soft); font-size: 12px; letter-spacing: 1.5px; }
+.rifle-locator > p { margin: 0; padding: 11px 14px 13px; border-top: 1px solid var(--line); color: #c7ccc6; font-size: .76rem; line-height: 1.42; }
+.sight-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.sight-card { display: flex; min-width: 0; overflow: hidden; flex-direction: column; border: 1px solid var(--line); background: var(--panel); }
+.sight-card-head { display: grid; gap: 4px; min-height: 65px; padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.sight-card-head span { color: var(--gold-soft); font-size: .55rem; font-weight: 950; letter-spacing: .1em; }
+.sight-card-head b { font-size: .76rem; line-height: 1.2; }
+.sight-physical { display: grid; grid-template-rows: 145px auto; min-height: 188px; padding: 8px; background: radial-gradient(circle at 50% 42%, #303a32, #111612 70%); }
+.sight-physical svg { display: block; width: 100%; height: 145px; }
+.sight-physical > span { align-self: end; color: #bec4bd; font-size: .62rem; font-weight: 750; line-height: 1.35; text-align: center; }
+.sight-metal { fill: #626b64; stroke: #c2c8c2; stroke-width: 2; stroke-linejoin: round; }
+.sight-detail { fill: none; stroke: var(--gold-soft); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.sight-detent { fill: var(--gold); stroke: var(--gold-soft); stroke-width: 2; }
+.knob-edge { fill: #2a322c; stroke: #b9c0ba; stroke-width: 11; stroke-dasharray: 5 4; }
+.knob-face { fill: #59625b; stroke: var(--gold); stroke-width: 3; }
+.knob-center { fill: #171d19; stroke: #d0d5d0; stroke-width: 2; }
+.aperture-stem { fill: #656e67; stroke: #c2c8c2; stroke-width: 2; }
+.aperture-ring { fill: #525b54; stroke: #c2c8c2; stroke-width: 3; }
+.aperture-hole { fill: #0a0e0b; stroke: var(--gold-soft); stroke-width: 2; }
+.drum-edge { fill: #252d27; stroke: #aeb5ae; stroke-width: 10; stroke-dasharray: 6 4; stroke-linejoin: round; }
+.drum-index { stroke: var(--gold); stroke-width: 5; }
+.drum-setting { fill: var(--gold-soft); font: 950 21px/1 var(--font-ui); text-anchor: middle; }
+.sight-card > p { margin: 0; padding: 11px 12px 0; color: #c7ccc6; font-size: .7rem; line-height: 1.4; }
+.sight-card > p.setup-command { color: var(--ink); font-weight: 850; }
+.sight-job { display: grid; gap: 3px; margin-top: auto; padding: 11px 12px; border-top: 1px solid var(--line); border-left: 3px solid var(--gold); background: rgba(215,166,45,.07); }
+.sight-job span { color: var(--gold-soft); font-size: .53rem; font-weight: 950; letter-spacing: .14em; }
+.sight-job b { font-size: .7rem; line-height: 1.25; }
+.sight-job em { color: var(--muted); font-size: .59rem; font-style: normal; font-weight: 850; letter-spacing: .04em; }
+.sight-recap { padding: 14px; border: 1px solid rgba(215,166,45,.38); background: rgba(215,166,45,.06); }
+.sight-recap > b { color: var(--gold-soft); font-size: .73rem; }
+.sight-recap ul { display: grid; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+.sight-recap li { padding-left: 13px; color: #d6dad5; font-size: .72rem; line-height: 1.35; }
+.sight-recap li::before { content: "•"; margin-left: -13px; padding-right: 7px; color: var(--gold); }
+.sight-next { margin: 0; padding: 12px 14px; border-left: 3px solid var(--ready); background: rgba(145,213,110,.07); color: #d8ddd7; font-size: .74rem; font-weight: 750; line-height: 1.4; }
 
 .aim-demo { display: grid; gap: 10px; }
 .target-window.is-aim::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, transparent 0 35px, rgba(4,8,5,.18) 37px, rgba(4,8,5,.48) 70%); pointer-events: none; }
@@ -235,6 +265,14 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
   .target-lesson { grid-template-columns: 1fr; gap: 16px; }
   .target-teaching-figure { margin-inline: auto; }
   .target-curriculum li { padding: 9px 0; }
+  .sight-cards { grid-template-columns: 1fr; }
+  .sight-card { display: grid; grid-template-columns: 132px 1fr; }
+  .sight-card-head { grid-column: 1 / -1; min-height: 0; }
+  .sight-physical { grid-row: span 3; grid-template-rows: 118px auto; min-height: 174px; }
+  .sight-physical svg { height: 118px; }
+  .sight-card > p { padding: 10px 10px 0; font-size: .68rem; }
+  .sight-job { padding: 9px 10px; }
+  .rifle-locator > p { font-size: .7rem; }
   .task-card { margin: 12px 0; padding: 12px; }
   .player-controls button { font-size: .54rem; letter-spacing: .035em; }
 }

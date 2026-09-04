@@ -69,9 +69,15 @@ try {
     assert.equal(await page.locator("#sessionAdjustmentIncrement").inputValue(), "Elevation 1.25 · Windage 0.5");
     await page.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
-    assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
-    const chapterTwoSpeech = await page.evaluate(() => window.__spokenUtterances.at(-1).text);
-    assert.equal(chapterTwoSpeech, "Find the rear elevation drum.");
+    assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR SIGHTS.");
+    assert.match(await page.locator("#visualStage").innerText(), /SEE IT[\s\S]*THE SIGHTS ON THE RIFLE[\s\S]*FRONT SIGHT POST[\s\S]*Square post centered between two protective ears[\s\S]*ELEVATION[\s\S]*SHOT PATTERN · UP \/ DOWN[\s\S]*REAR WINDAGE KNOB[\s\S]*Round exposed knob on the right side[\s\S]*WINDAGE[\s\S]*SHOT PATTERN · RIGHT \/ LEFT[\s\S]*REAR ELEVATION DRUM[\s\S]*Numbered drum beneath the rear sight aperture[\s\S]*25-METER ZERO SETUP[\s\S]*8\/3 → ONE CLICK PAST 8\/3/);
+    assert.equal(await page.locator("#visualStage .sight-card").count(), 3);
+    const chapterTwoSpeech = await page.evaluate(() => {
+      const utterance = window.__spokenUtterances.at(-1);
+      return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
+    });
+    assert.equal(chapterTwoSpeech.text, "Now that you understand the target, let's learn the sights you'll use to zero your M sixteen A two. Your M sixteen A two has three sight adjustments you need to understand: the front sight post, the rear windage knob, and the rear elevation drum. The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down. The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left. The rear elevation drum has a different job. Before you zero at twenty-five meters, the drum must be placed in the correct starting position. Set the rear elevation drum to 8/3, then move it one click past 8/3. For now, remember these three jobs: Front sight post — elevation, up or down. Rear windage knob — windage, right or left. Rear elevation drum — sets the sight for the twenty-five-meter zero. Next, we'll show you exactly where each adjustment is on your rifle and how to move it.");
+    assert.deepEqual({ rate: chapterTwoSpeech.rate, voice: chapterTwoSpeech.voice }, { rate: 0.70, voice: "Samantha" });
 
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");
@@ -84,7 +90,7 @@ try {
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
 
-    await page.getByRole("button", { name: /I REHEARSED THE SETUP/ }).click();
+    await page.getByRole("button", { name: /I CAN FIND THE THREE SIGHTS/ }).click();
     await page.getByRole("button", { name: /I FOUND THE AIM POINT/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST/);
