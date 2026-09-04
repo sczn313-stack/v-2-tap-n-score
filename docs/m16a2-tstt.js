@@ -6,10 +6,10 @@
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
   const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
-  const speechSettings = Object.freeze({ rate: 0.78, pitch: 1, volume: 1 });
+  const speechSettings = Object.freeze({ rate: 0.70, pitch: 1, volume: 1 });
   const instructionalVoicePriority = Object.freeze([
-    /^Samantha(?: \((?:Enhanced|Premium)\))?$/i,
     /^Reed \(English \(US\)\)$/i,
+    /^Samantha(?: \((?:Enhanced|Premium)\))?$/i,
     /^Flo \(English \(US\)\)$/i,
     /^Alex$/i,
     /^Ava(?: \((?:Enhanced|Premium)\))?$/i,

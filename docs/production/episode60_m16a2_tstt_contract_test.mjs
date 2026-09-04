@@ -26,8 +26,9 @@ assert.match(source, /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-win
 assert.match(source, /target-marker-aim[\s\S]*target-marker-grid[\s\S]*sample-group/, "the curriculum is demonstrated on the complete physical target");
 assert.match(source, /Do not chase (?:a single shot|individual shots)/, "Chapter 1 teaches the group as correction evidence");
 assert.match(source, /NEXT → THE SIGHTS/, "Chapter 1 hands directly to the sight lesson");
-assert.match(source, /speechSettings = Object\.freeze\(\{ rate: 0\.78, pitch: 1, volume: 1 \}\)/, "narration uses a measured, neutral instructional delivery");
-assert.match(source, /Samantha[\s\S]*Reed[\s\S]*Flo[\s\S]*Alex[\s\S]*Ava[\s\S]*Susan/, "TSTT ranks clear neutral English voices before generic fallbacks");
+assert.match(source, /speechSettings = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "voice test 2 slows narration another ten percent while keeping neutral delivery");
+assert.ok(source.indexOf("/^Reed") < source.indexOf("/^Samantha"), "voice test 2 prefers Reed before Samantha");
+assert.match(source, /Samantha[\s\S]*Flo[\s\S]*Alex[\s\S]*Ava[\s\S]*Susan/, "neutral instructional fallbacks remain available");
 assert.match(source, /nonInstructionalVoices[\s\S]*Albert[\s\S]*Zarvox/, "novelty and theatrical system voices cannot become the instructor");
 assert.match(source, /pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle[\s\S]*front sight post[\s\S]*rear elevation drum|pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle/, "speech preparation deliberately pronounces core equipment terminology");
 assert.match(source, /Temporary twenty-five-meter setup\.[\s\S]*Use the rear elevation drum[\s\S]*Set three hundred\.[\s\S]*Viewed from above[\s\S]*setup control[\s\S]*not the control for moving your group up or down/, "Chapter 2 narration closely tracks its visible instructions");

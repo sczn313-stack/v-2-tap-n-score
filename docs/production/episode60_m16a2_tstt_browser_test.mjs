@@ -17,7 +17,8 @@ try {
       const voices = [
         { name: "Albert", lang: "en-US", localService: true, default: true },
         { name: "Daniel", lang: "en-GB", localService: true, default: false },
-        { name: "Samantha", lang: "en-US", localService: true, default: false }
+        { name: "Samantha", lang: "en-US", localService: true, default: false },
+        { name: "Reed (English (US))", lang: "en-US", localService: true, default: false }
       ];
       Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak(utterance) { window.__spokenUtterances.push(utterance); }, pause() {}, resume() {}, getVoices() { return voices; }, speaking: false } });
       Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
@@ -45,7 +46,7 @@ try {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, pitch: utterance.pitch, volume: utterance.volume, voice: utterance.voice?.name, lang: utterance.lang };
     });
-    assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.78, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
+    assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Reed (English (US))", lang: "en-US" });
     assert.match(chapterOneSpeech.text, /white center dot[\s\S]*one vertical square[\s\S]*one front-sight click[\s\S]*one horizontal square[\s\S]*three rear-windage clicks[\s\S]*Do not chase a single shot/);
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
     await page.locator("#shootingSetup").click();
