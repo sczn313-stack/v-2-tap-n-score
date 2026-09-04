@@ -45,16 +45,23 @@
     button.disabled = !samantha;
     region.setAttribute("aria-busy", "false");
   }
+  function stopPlayback() {
+    window.speechSynthesis.cancel();
+    button.setAttribute("aria-pressed", "false");
+  }
 
   button.addEventListener("click", () => {
     if (!samantha || !("SpeechSynthesisUtterance" in window)) return;
-    window.speechSynthesis.cancel();
+    stopPlayback();
     const utterance = new SpeechSynthesisUtterance(testSentence);
     utterance.voice = samantha;
     utterance.lang = samantha.lang;
     utterance.rate = speechSettings.rate;
     utterance.pitch = speechSettings.pitch;
     utterance.volume = speechSettings.volume;
+    button.setAttribute("aria-pressed", "true");
+    utterance.onend = () => button.setAttribute("aria-pressed", "false");
+    utterance.onerror = () => button.setAttribute("aria-pressed", "false");
     window.speechSynthesis.speak(utterance);
   });
 
