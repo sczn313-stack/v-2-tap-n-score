@@ -4,7 +4,7 @@
   const targetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png";
   const chapterThreeTargetImage = "assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg";
   const tapNScoreRoad = "matrix.html?target_profile_id=baker_m16a2_25m_zero&founder_review=1&tstt_chapter=4";
-  const chapterThreeDemoRoad = "shoot.html?target_profile_id=baker_m16a2_25m_zero&prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1";
+  const chapterThreeDemoRoad = "shoot.html?target_profile_id=baker_m16a2_25m_zero&prepared_demo=1&talking_demo=1&m16a2_demo=1&embedded_tstt=1&founder_review=1";
   const chapterTwoReferencePath = "authority-evidence/mfam/founder-supplied-chapter2-visual-reference";
   const chapterTwoReferenceImages = Object.freeze({
     frontSight: `${chapterTwoReferencePath}/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg`,
@@ -123,6 +123,8 @@
     equipmentLibraryLink: document.getElementById("equipmentLibraryLink"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
     start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]'),
+    chapterThreeRuntimeShell: document.getElementById("chapterThreeRuntimeShell"), chapterThreeRuntime: document.getElementById("chapterThreeRuntime"), chapterThreeRuntimeStart: document.querySelector("[data-start-chapter-three]"),
+    demoProof: document.querySelector("[data-demo-proof]"), audioProof: document.querySelector("[data-audio-proof]"), stepProof: document.querySelector("[data-step-proof]"), playerProof: document.querySelector("[data-player-proof]"),
   });
   const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null };
   const narrator = window.SCZN3TSTTNarration.createNarrator();
@@ -176,10 +178,37 @@
     const query = new URLSearchParams(window.location.search);
     return chapter.id === "a2-3" && query.get("chapter_menu") !== "1";
   }
-  function launchChapterThreeDemo() {
+  function updateChapterThreeRuntimeProof(detail = {}) {
+    const playerState = String(detail.playerState || "idle").toUpperCase();
+    const narrationState = String(detail.narrationState || "idle").toLowerCase();
+    const stepIndex = Number.isInteger(detail.stepIndex) ? detail.stepIndex : -1;
+    elements.demoProof.textContent = detail.controllerInstantiated
+      ? (playerState === "COMPLETED" ? "COMPLETE" : (["PLAYING", "PAUSED"].includes(playerState) ? "RUNNING" : "NOT RUNNING"))
+      : "NOT RUNNING";
+    elements.audioProof.textContent = ["fallback", "playing"].includes(narrationState) ? "QUEUED" : "NOT QUEUED";
+    elements.stepProof.textContent = `${Math.max(0, stepIndex + 1)} / 14`;
+    elements.playerProof.textContent = playerState;
+    elements.chapterThreeRuntimeStart.hidden = ["PLAYING", "PAUSED", "COMPLETED"].includes(playerState);
+  }
+  function chapterThreeController() {
+    try {
+      return elements.chapterThreeRuntime.contentWindow;
+    } catch (_) {
+      return null;
+    }
+  }
+  function launchChapterThreeDemo({ userGesture = false } = {}) {
     cancelSpeech();
     preserveJourney();
-    window.location.assign(chapterThreeDemoRoad);
+    elements.chapterThreeRuntimeShell.hidden = false;
+    elements.app.setAttribute("aria-hidden", "true");
+    const controller = chapterThreeController();
+    if (userGesture && controller && typeof controller.startBakerSampleDemo === "function") {
+      controller.startBakerSampleDemo();
+      return true;
+    }
+    elements.chapterThreeRuntimeStart.hidden = false;
+    return false;
   }
   function readActiveEquipment() {
     try {
@@ -270,7 +299,7 @@
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
     elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" });
     if (state.started && !state.paused && !state.stopped && shouldLaunchChapterThreeDemo(chapter)) {
-      launchChapterThreeDemo();
+      launchChapterThreeDemo({ userGesture: false });
       return;
     }
     if (narrate) speakCurrent();
@@ -284,7 +313,15 @@
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
   elements.replay.addEventListener("click", () => { state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }); elements.restart.addEventListener("click", restartTraining);
   document.querySelector('[data-control="chapters"]').addEventListener("click", () => elements.dialog.showModal()); document.querySelector("[data-close-chapters]").addEventListener("click", () => elements.dialog.close());
-  elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); if (state.current === 2) launchChapterThreeDemo(); else render(); });
+  elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); if (state.current === 2) launchChapterThreeDemo({ userGesture: true }); else render(); });
+  elements.chapterThreeRuntimeStart.addEventListener("click", () => launchChapterThreeDemo({ userGesture: true }));
+  elements.chapterThreeRuntime.addEventListener("load", () => {
+    updateChapterThreeRuntimeProof({ controllerInstantiated: typeof chapterThreeController()?.startBakerSampleDemo === "function", playerState: "idle", stepIndex: -1, narrationState: "idle" });
+  });
+  window.addEventListener("message", event => {
+    if (event.origin !== window.location.origin || event.source !== elements.chapterThreeRuntime.contentWindow || event.data?.type !== "sczn3-m16a2-demo-runtime") return;
+    updateChapterThreeRuntimeProof(event.data);
+  });
   window.addEventListener("focus", () => syncEquipment()); window.addEventListener("pageshow", () => syncEquipment()); window.addEventListener("storage", event => { if ([equipmentKeys.active, equipmentKeys.saved].includes(event.key)) syncEquipment(); });
   restoreJourney(); applyDirectChapterEntry(); syncEquipment({ rerender: false }); render({ narrate: false, sync: false });
   if (new URLSearchParams(window.location.search).get("chapter_menu") === "1") elements.dialog.showModal();

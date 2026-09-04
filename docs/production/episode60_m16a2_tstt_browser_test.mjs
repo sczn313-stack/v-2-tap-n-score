@@ -93,29 +93,35 @@ try {
 
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
-    await page.waitForURL(/shoot\.html\?.*prepared_demo=1.*m16a2_demo=1.*autoplay=1/, { timeout: 30000 });
-    await page.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
-    assert.match(await page.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
+    const demo = page.frameLocator("#chapterThreeRuntime");
+    await demo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
+    assert.match(page.url(), /m16a2-tstt\.html$/);
+    assert.equal(await page.locator("[data-demo-proof]").innerText(), "RUNNING");
+    assert.equal(await page.locator("[data-audio-proof]").innerText(), "QUEUED");
+    assert.equal(await page.locator("[data-step-proof]").innerText(), "1 / 14");
+    assert.equal(await page.locator("[data-player-proof]").innerText(), "PLAYING");
+    assert.match(await demo.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
     assert.deepEqual(
-      await page.locator(".m16a2-tstt-demo-controls button").allTextContents(),
+      await demo.locator(".m16a2-tstt-demo-controls button").allTextContents(),
       ["⏸ PAUSE", "■ STOP", "↺ REPLAY CHAPTER", "☷ CHAPTERS", "⟲ RESTART"]
     );
-    await page.getByRole("button", { name: "PAUSE", exact: true }).click();
-    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "paused");
-    await page.getByRole("button", { name: "RESUME", exact: true }).click();
-    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "playing");
-    await page.getByRole("button", { name: "REPLAY CHAPTER", exact: true }).click();
-    assert.equal(await page.locator("#bakerSampleDemoLayer").getAttribute("data-demo-state"), "intro");
-    await page.getByRole("button", { name: "STOP", exact: true }).click();
-    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "idle");
-    await page.getByRole("button", { name: /Let the target talk/ }).click();
-    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "playing");
-    await page.getByRole("button", { name: "CHAPTERS", exact: true }).click();
+    await demo.getByRole("button", { name: "PAUSE", exact: true }).click();
+    assert.equal(await demo.locator("#workspaceStageShell").getAttribute("data-player-status"), "paused");
+    await demo.getByRole("button", { name: "RESUME", exact: true }).click();
+    assert.equal(await demo.locator("#workspaceStageShell").getAttribute("data-player-status"), "playing");
+    await demo.getByRole("button", { name: "REPLAY CHAPTER", exact: true }).click();
+    assert.equal(await demo.locator("#bakerSampleDemoLayer").getAttribute("data-demo-state"), "intro");
+    await demo.getByRole("button", { name: "STOP", exact: true }).click();
+    assert.equal(await demo.locator("#workspaceStageShell").getAttribute("data-player-status"), "idle");
+    await demo.getByRole("button", { name: /Let the target talk/ }).click();
+    assert.equal(await demo.locator("#workspaceStageShell").getAttribute("data-player-status"), "playing");
+    await demo.getByRole("button", { name: "CHAPTERS", exact: true }).click();
     await page.waitForURL(/m16a2-tstt\.html\?chapter=3&chapter_menu=1/, { timeout: 30000 });
     assert.equal(await page.locator("#chapterDialog").getAttribute("open"), "");
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
-    await page.waitForURL(/shoot\.html\?.*prepared_demo=1.*m16a2_demo=1.*autoplay=1/, { timeout: 30000 });
-    await page.getByRole("button", { name: "RESTART", exact: true }).click();
+    const replayedDemo = page.frameLocator("#chapterThreeRuntime");
+    await replayedDemo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
+    await replayedDemo.getByRole("button", { name: "RESTART", exact: true }).click();
     await page.waitForURL(/m16a2-tstt\.html$/, { timeout: 30000 });
     assert.equal(await page.getByRole("button", { name: "START TRAINING", exact: true }).count(), 1);
 

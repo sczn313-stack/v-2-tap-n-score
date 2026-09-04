@@ -39,11 +39,13 @@ try {
     await page.getByRole("button", { name: "NEXT, WE'LL LEARN THE SIGHTS.", exact: true }).click();
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
-    await page.waitForURL(/shoot\.html\?.*prepared_demo=1.*m16a2_demo=1.*autoplay=1/, { timeout: 30000 });
-    await page.locator('#workspaceStageShell[data-player-status="completed"]').waitFor({ timeout: 120000 });
+    const demo = page.frameLocator("#chapterThreeRuntime");
+    await demo.locator('#workspaceStageShell[data-player-status="completed"]').waitFor({ timeout: 120000 });
+    const demoFrame = page.frames().find(frame => frame.url().includes("embedded_tstt=1"));
+    assert.ok(demoFrame, "the same-origin Chapter 3 runtime is present");
 
-    assert.match(await page.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
-    const state = await page.evaluate(() => ({
+    assert.match(await demo.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
+    const state = await demoFrame.evaluate(() => ({
       states: window.__SCZN3_PREPARED_DEMO_STATES__ || [],
       session: JSON.parse(sessionStorage.getItem("SCZN3_TALKING_TARGET_DEMO_SESSION") || "null"),
       scene: document.getElementById("bakerSampleDemoScene")?.innerText || "",
@@ -92,9 +94,11 @@ try {
   });
   const directPage = await directContext.newPage();
   await directPage.goto(`${baseUrl}/m16a2-tstt.html?chapter=3`, { waitUntil: "networkidle" });
-  await directPage.waitForURL(/shoot\.html\?.*prepared_demo=1.*m16a2_demo=1.*autoplay=1/, { timeout: 30000 });
-  await directPage.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
-  assert.equal(await directPage.locator(".m16a2-tstt-demo-controls").count(), 1);
+  assert.equal(await directPage.locator("[data-start-chapter-three]").isVisible(), true, "direct Chapter 3 entry waits for the required user gesture");
+  await directPage.locator("[data-start-chapter-three]").click();
+  const directDemo = directPage.frameLocator("#chapterThreeRuntime");
+  await directDemo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
+  assert.equal(await directDemo.locator(".m16a2-tstt-demo-controls").count(), 1);
   await directContext.close();
   console.log("PASS Episode 60 Chapter 3 prepared M16A2 demonstration at 1440px and 390px");
 } finally {

@@ -201,6 +201,7 @@ const REQUESTED_TARGET_PROFILE_ID = String(
 ).toLowerCase();
 const SIMULATION_MODE = TARGET_QUERY.get("simulation") === "1";
 const PREPARED_M16A2_DEMO_MODE = TARGET_QUERY.get("prepared_demo") === "1" && TARGET_QUERY.get("m16a2_demo") === "1";
+const EMBEDDED_M16A2_TSTT_DEMO = PREPARED_M16A2_DEMO_MODE && TARGET_QUERY.get("embedded_tstt") === "1" && window.parent !== window;
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const PRE_SIMULATION_ACTIVE_MATRIX = SIMULATION_MODE ? SCZN3M4.getActiveMatrix() : null;
@@ -484,6 +485,24 @@ let precisionTapController = null;
 let precisionTapReviewing = false;
 let bakerSampleDemoState = "waiting";
 let bakerSampleDemoPlayer = null;
+
+function publishM16A2DemoRuntime() {
+  if (!EMBEDDED_M16A2_TSTT_DEMO) return;
+  const root = document.getElementById("workspaceStageShell");
+  window.parent.postMessage({
+    type: "sczn3-m16a2-demo-runtime",
+    controllerInstantiated: !!bakerSampleDemoPlayer,
+    startFired: root?.dataset.preparedDemoStart === "fired",
+    demoState: bakerSampleDemoState,
+    playerState: bakerSampleDemoPlayer?.status || "idle",
+    stepIndex: Number.isInteger(bakerSampleDemoPlayer?.stepIndex) ? bakerSampleDemoPlayer.stepIndex : -1,
+    narrationState: document.body.dataset.bakerSampleNarration || "idle"
+  }, window.location.origin);
+}
+
+function m16a2TsttNavigationWindow() {
+  return EMBEDDED_M16A2_TSTT_DEMO ? window.parent : window;
+}
 let bakerSampleDemoActionRestore = null;
 const TALKING_TARGET_DEMO_SESSION_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_SESSION";
 const TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_EQUIPMENT_PROFILES";
@@ -764,7 +783,7 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
   if (state === "complete") return m16a2Demo
-    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOUR TURN.</strong><small>The demonstration is preserved in Ballistic Vault.</small><a class="prepared-demo-return" href="${fixture.returnUrl}">GO TO CHAPTER 4</a></div></div>`
+    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOUR TURN.</strong><small>The demonstration is preserved in Ballistic Vault.</small><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
     : `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }
@@ -783,6 +802,7 @@ function setBakerSampleDemoState(state) {
   layer.dataset.demoState = state;
   scene.innerHTML = bakerSampleDemoScene(state);
   syncBakerSampleDemoControls(bakerSampleDemoPlayer ? bakerSampleDemoPlayer.status : "idle");
+  publishM16A2DemoRuntime();
 }
 
 function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
@@ -906,7 +926,10 @@ function syncBakerSampleDemoControls(status = "idle") {
 
 function startBakerSampleDemo() {
   if (window.SCZN3Ops) window.SCZN3Ops.recordTstStarted();
+  const root = document.getElementById("workspaceStageShell");
+  if (root) root.dataset.preparedDemoStart = "fired";
   if (bakerSampleDemoPlayer) bakerSampleDemoPlayer.play();
+  publishM16A2DemoRuntime();
 }
 
 function bakerSampleDemoMarkup() {
@@ -954,9 +977,13 @@ function bindBakerSampleDemo() {
       speechVoiceResolver: () => PREPARED_M16A2_DEMO_MODE
         ? (window.speechSynthesis.getVoices() || []).find(voice => /^Samantha(?:\s|$|\()/i.test(String(voice.name || ""))) || null
         : null,
-      onNarrationStatus: status => { document.body.dataset.bakerSampleNarration = status; },
+      onNarrationStatus: status => {
+        document.body.dataset.bakerSampleNarration = status;
+        publishM16A2DemoRuntime();
+      },
       onStatusChange: status => {
         syncBakerSampleDemoControls(status);
+        publishM16A2DemoRuntime();
         if (status === "completed" && window.SCZN3Ops) window.SCZN3Ops.recordTstCompleted();
       }
     });
@@ -970,12 +997,12 @@ function bindBakerSampleDemo() {
       if (action === "replay") bakerSampleDemoPlayer.replay();
       if (action === "chapters") {
         bakerSampleDemoPlayer.stop({ reset: true });
-        window.location.href = "m16a2-tstt.html?chapter=3&chapter_menu=1";
+        m16a2TsttNavigationWindow().location.href = "m16a2-tstt.html?chapter=3&chapter_menu=1";
       }
       if (action === "restart-training") {
         bakerSampleDemoPlayer.stop({ reset: true });
         sessionStorage.removeItem("SCZN3_TSTT_M16A2_JOURNEY_V1");
-        window.location.href = "m16a2-tstt.html";
+        m16a2TsttNavigationWindow().location.href = "m16a2-tstt.html";
       }
     });
   }
@@ -993,6 +1020,7 @@ function bindBakerSampleDemo() {
   talk.addEventListener("click", startBakerSampleDemo);
   setBakerSampleDemoState(bakerSampleDemoPlayer.status === "idle" ? "waiting" : bakerSampleDemoState);
   syncBakerSampleDemoControls(bakerSampleDemoPlayer.status);
+  publishM16A2DemoRuntime();
   if (PREPARED_M16A2_DEMO_MODE && TARGET_QUERY.get("autoplay") === "1" && root.dataset.preparedDemoAutoplay !== "started") {
     root.dataset.preparedDemoAutoplay = "started";
     window.setTimeout(startBakerSampleDemo, 250);

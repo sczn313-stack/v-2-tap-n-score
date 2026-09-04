@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111713" />
   <title>Baker M16A2 25 Meter TSTT — SCZN3</title>
   <meta name="description" content="Founder review build for the governed Baker M16A2 standard iron-sight pre-fire training experience." />
-  <link rel="stylesheet" href="m16a2-tstt.css?v=chapter-three-pass-2" />
+  <link rel="stylesheet" href="m16a2-tstt.css?v=chapter-three-runtime-start-2" />
 </head>
 <body>
   <main class="tstt-shell" id="tsttApp" data-status="waiting">
@@ -80,7 +80,18 @@
     <div class="proficiency-status"><span>PROFICIENCY</span><b aria-label="Not yet measured">☆☆☆</b><small>Measured from shooting results—not chapter progress.</small></div>
   </dialog>
 
+  <section class="chapter-three-runtime" id="chapterThreeRuntimeShell" aria-label="Chapter 3 Tap-n-Score demonstration" hidden>
+    <iframe id="chapterThreeRuntime" src="shoot.html?target_profile_id=baker_m16a2_25m_zero&amp;prepared_demo=1&amp;talking_demo=1&amp;m16a2_demo=1&amp;embedded_tstt=1&amp;founder_review=1&amp;runtime_start=2" title="Chapter 3 — Watch Tap-n-Score" allow="autoplay"></iframe>
+    <aside class="chapter-three-runtime-proof" aria-label="Founder runtime proof">
+      <span>DEMO: <b data-demo-proof>NOT RUNNING</b></span>
+      <span>AUDIO: <b data-audio-proof>NOT QUEUED</b></span>
+      <span>STEP: <b data-step-proof>0 / 14</b></span>
+      <span>PLAYER STATE: <b data-player-proof>IDLE</b></span>
+      <button type="button" data-start-chapter-three>START WATCH + LISTEN</button>
+    </aside>
+  </section>
+
   <script src="tstt_narration.js?v=voice-identity-1"></script>
-  <script src="m16a2-tstt.js?v=chapter-three-runtime-start-1"></script>
+  <script src="m16a2-tstt.js?v=chapter-three-runtime-start-2"></script>
 </body>
 </html>
