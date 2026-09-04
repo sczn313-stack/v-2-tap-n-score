@@ -47,7 +47,8 @@ This directory is the living historical record for SCZN3. It separates the story
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
 - [Episode 60 TSTT Founder Review Pass #4](./episodes/EPISODE_60_TSTT_FOUNDER_REVIEW_PASS4.md) removes the equipment-confirmation entry gate and makes pre-start PLAYER discovery immediate while preserving strict equipment-specific execution authority.
 - [Episode 60 TSTT Chapter 1 Founder-Approved Floor](./episodes/EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) closes KNOW YOUR TARGET and establishes Snapshot 24 as the clean Chapter 2 next floor.
-- Episode 60 — **M4: LET THE TARGET TALK** remains active. [Snapshot 24](./snapshots/SNAPSHOT_024_EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) locks the Founder-approved Chapter 1 runtime and establishes Chapter 2 — THE SIGHTS as the next bounded floor. Earlier snapshots remain intact. All three products remain COMING SOON.
+- [Episode 60 TSTT Chapter 2 Founder-Approved Floor](./episodes/EPISODE_60_TSTT_CHAPTER_2_FOUNDER_APPROVED_FLOOR.md) closes THE SIGHTS and establishes Snapshot 25 as the clean Chapter 3 next floor.
+- Episode 60 — **M4: LET THE TARGET TALK** remains active. [Snapshot 25](./snapshots/SNAPSHOT_025_EPISODE_60_TSTT_CHAPTER_2_FOUNDER_APPROVED_FLOOR.md) locks the Founder-approved Chapter 2 runtime and establishes Chapter 3 as the next bounded floor. Earlier snapshots remain intact. All three products remain COMING SOON.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)

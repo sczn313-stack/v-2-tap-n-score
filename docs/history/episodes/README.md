@@ -340,6 +340,11 @@ Composable Target Authority.
 
 ## Episode entry template
 
+### Episode 60 TSTT chapter floors
+
+- [Chapter 1 Founder-Approved Floor](./EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) — KNOW YOUR TARGET closed; Snapshot 24.
+- [Chapter 2 Founder-Approved Floor](./EPISODE_60_TSTT_CHAPTER_2_FOUNDER_APPROVED_FLOOR.md) — THE SIGHTS closed; Snapshot 25; Chapter 3 next.
+
 ```text
 ### Episode number: <number or Needs Review>
 
