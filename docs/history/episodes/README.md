@@ -26,11 +26,11 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
 | Episode 58 | Equipment Library | 2026-08-23 through 2026-08-24 | [Locked record](./EPISODE_58_EQUIPMENT_LIBRARY.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
 | Episode 59 | I KNOW THIS SHOOTER | 2026-08-30 through 2026-09-01 | [Closed record](./EPISODE_59_I_KNOW_THIS_SHOOTER.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
-| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 onward | [M/FAM / TSTT course correction](./EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md) | ACTIVE — Snapshot 22 floor; M16A2 pre-fire TSTT Founder-review candidate |
+| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 onward | [Chapter 1 Founder-Approved Floor](./EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) | ACTIVE — Snapshot 24 floor; Chapter 1 closed; Chapter 2 next |
 
 ## Episode records
 
-Episodes 55–59 are closed, archived, and locked. Episode 60 — M4: LET THE TARGET TALK is active under Snapshot 22; Snapshot 21 is the clean pre-amendment floor, Victory #2 and Snapshot 20 remain protected, and the first Baker M16A2 standard iron-sight TSTT is implemented locally through pre-fire readiness for Founder cold-use. It does not enter the live Tap-n-Score road. All three products remain COMING SOON. Survey remains outside Founder approval.
+Episodes 55–59 are closed, archived, and locked. Episode 60 — M4: LET THE TARGET TALK is active under Snapshot 24. Chapter 1 — KNOW YOUR TARGET is Founder Approved and closed; Chapter 2 — THE SIGHTS is the next bounded floor. Victory #2 and earlier snapshots remain protected. The local TSTT does not enter the live Tap-n-Score road. All three products remain COMING SOON. Survey remains outside Founder approval.
 
 ### First Stable Zeroing Pipeline
 
