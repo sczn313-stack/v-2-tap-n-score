@@ -1,0 +1,162 @@
+(function exposeM16A2TalkingDemoFixture(global) {
+  "use strict";
+
+  if (new URLSearchParams(global.location.search).get("m16a2_demo") !== "1") return;
+
+  const aim = Object.freeze({ xPercent: 49.1, yPercent: 52.6, shotId: "demo-aim" });
+  const initialImpacts = Object.freeze([
+    Object.freeze({ xPercent: 57.2, yPercent: 44.8, shotId: "demo-initial-1" }),
+    Object.freeze({ xPercent: 57.6, yPercent: 45.2, shotId: "demo-initial-2" }),
+    Object.freeze({ xPercent: 58, yPercent: 45.6, shotId: "demo-initial-3" })
+  ]);
+  const confirmationImpacts = Object.freeze([
+    Object.freeze({ xPercent: 49, yPercent: 52.5, shotId: "demo-confirmation-1" }),
+    Object.freeze({ xPercent: 49.2, yPercent: 52.6, shotId: "demo-confirmation-2" }),
+    Object.freeze({ xPercent: 49.1, yPercent: 52.7, shotId: "demo-confirmation-3" })
+  ]);
+  const adjustmentProfileId = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
+  const equipmentConfigurationId = "M16A2-STANDARD-IRON-FSP-REAR-DRUM";
+  const target = Object.freeze({
+    image: "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png",
+    imageSha256: "690d33a58899b85fbd7204ab3911bbc0d37caed6ad9e5e2ce209b6f0eef8940c",
+    width: 448,
+    height: 646,
+    profileId: "m4_25m_zero",
+    profileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    name: "Baker 25 Meters Zeroing Target M16A2",
+    distanceValue: 25,
+    distanceUnit: "METERS"
+  });
+  const equipmentProfile = Object.freeze({
+    setupId: "sczn3-m16a2-tstt-demo-equipment-v1",
+    setupName: "M16A2 · Standard Iron Sights",
+    weaponCategory: "Rifle",
+    weaponManufacturer: "Military M-Series Rifles",
+    weaponModelType: "M16A2",
+    weaponModelCaliber: "5.56 NATO",
+    opticType: "Iron Sights",
+    equipmentConfigurationId,
+    adjustmentProfileId,
+    adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+    opticAdjustmentUnit: "MOA",
+    targetDistanceValue: "25",
+    targetDistanceUnit: "METERS"
+  });
+  const mechanicalSightAuthority = Object.freeze({
+    status: "proven",
+    authorityOwner: "Equipment Authority",
+    adjustmentProfileId,
+    equipmentConfigurationId,
+    adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+    displayName: "M16A2 Standard Front Sight Post + Rear Sight Windage/Elevation Controls"
+  });
+  const clickModel = Object.freeze({
+    system: "M16A2_IRON_FSP_REAR_DRUM",
+    label: mechanicalSightAuthority.displayName,
+    unit: "MOA",
+    windagePerClick: 0.5,
+    elevationPerClick: 1.25,
+    authorityStatus: "proven",
+    authorityId: adjustmentProfileId,
+    turnDirections: Object.freeze({
+      windage: Object.freeze({ RIGHT: "CLOCKWISE", LEFT: "COUNTERCLOCKWISE" }),
+      elevation: Object.freeze({ UP: "CLOCKWISE", DOWN: "COUNTERCLOCKWISE" })
+    })
+  });
+  const initialAuthorityPackage = Object.freeze({
+    authoritySource: "backend-authoritative",
+    authorityVersion: "sczn3-m4-authority-v1",
+    target_profile_id: target.profileId,
+    targetProfileId: target.profileId,
+    targetProfileVersion: target.profileVersion,
+    mission_family: "zeroingCorrection",
+    missionFamilyId: "zeroingCorrection",
+    resultPackageType: "zeroCorrectionResult",
+    phase: "initial",
+    target: Object.freeze({ targetId: target.targetId, targetName: target.name }),
+    inputs: Object.freeze({ aimCoordinate: aim, impactCoordinates: initialImpacts, distanceYards: 27.3403, shooterSetup: equipmentProfile }),
+    impacts: initialImpacts,
+    poib: Object.freeze({ xPercent: 57.6, yPercent: 45.2 }),
+    groupCenter: Object.freeze({ xPercent: 57.6, yPercent: 45.2 }),
+    group: Object.freeze({ status: "calculated", display: "3-shot pattern" }),
+    correction: Object.freeze({
+      windage: "5 clicks LEFT",
+      elevation: "2 clicks DOWN",
+      windageDirection: "LEFT",
+      elevationDirection: "DOWN",
+      windageTurnDirection: "COUNTERCLOCKWISE",
+      elevationTurnDirection: "COUNTERCLOCKWISE"
+    }),
+    clicks: Object.freeze({
+      windageClicks: 5,
+      elevationClicks: 2,
+      windageDirection: "LEFT",
+      elevationDirection: "DOWN",
+      windageTurnDirection: "COUNTERCLOCKWISE",
+      elevationTurnDirection: "COUNTERCLOCKWISE",
+      model: clickModel
+    }),
+    angular: Object.freeze({ windageMOA: 2.524, elevationMOA: 2.8436, windageMRAD: 0.7341, elevationMRAD: 0.827 }),
+    renderCoordinates: Object.freeze({
+      aim,
+      impacts: initialImpacts,
+      poib: Object.freeze({ xPercent: 57.6, yPercent: 45.2 }),
+      vector: Object.freeze({ start: Object.freeze({ xPercent: 57.6, yPercent: 45.2 }), end: aim, intent: "POIB_TO_CONFIRMED_AIM" }),
+      coordinatePlane: "source_photo"
+    }),
+    mechanicalValidation: Object.freeze({ status: "calculated", method: "registered-sight-mechanics-v1" }),
+    calculationReconciliation: Object.freeze({ status: "reconciled" }),
+    mechanicalSightAuthority,
+    validation: Object.freeze({ status: "not-requested", outcome: "PENDING" }),
+    status: Object.freeze({ hasAim: true, impactCount: 3, hasPOIB: true, hasCorrection: true, hasMechanicalRecommendation: true })
+  });
+  const confirmationAuthorityPackage = Object.freeze({
+    ...initialAuthorityPackage,
+    phase: "confirmation",
+    inputs: Object.freeze({ aimCoordinate: aim, impactCoordinates: confirmationImpacts, distanceYards: 27.3403, shooterSetup: equipmentProfile }),
+    impacts: confirmationImpacts,
+    poib: Object.freeze({ xPercent: 49.1, yPercent: 52.6 }),
+    groupCenter: Object.freeze({ xPercent: 49.1, yPercent: 52.6 }),
+    correction: Object.freeze({ windage: "0 clicks CENTER", elevation: "0 clicks CENTER", windageDirection: "CENTER", elevationDirection: "CENTER" }),
+    clicks: Object.freeze({ windageClicks: 0, elevationClicks: 0, windageDirection: "CENTER", elevationDirection: "CENTER", windageTurnDirection: null, elevationTurnDirection: null, model: clickModel }),
+    renderCoordinates: Object.freeze({
+      aim,
+      impacts: confirmationImpacts,
+      poib: Object.freeze({ xPercent: 49.1, yPercent: 52.6 }),
+      vector: Object.freeze({ start: Object.freeze({ xPercent: 49.1, yPercent: 52.6 }), end: aim, intent: "POIB_TO_CONFIRMED_AIM" }),
+      coordinatePlane: "source_photo"
+    }),
+    validation: Object.freeze({
+      status: "calculated",
+      outcome: "CONFIRMED",
+      confirmed: true,
+      minimumShotsMet: true,
+      residualOffsetInches: 0,
+      standard: "3+ confirmed shots; POIB within 1.00 inch of confirmed aim point",
+      method: "zeroing-confirmation-authority-v1"
+    })
+  });
+
+  global.SCZN3_BAKER_TALKING_DEMO_FIXTURE = Object.freeze({
+    schemaVersion: "sczn3-talking-target-demo-session-v1",
+    demoKind: "m16a2-tstt",
+    fixtureAuthority: Object.freeze({
+      owner: "SCZN3 Backend Authority",
+      method: "docs/production/authority_adapter.mjs::buildAuthorityPackage",
+      generatedFrom: "prepared M16A2 target observations",
+      generatedAt: "2026-09-04T18:50:00Z"
+    }),
+    sessionId: "sczn3-tstt-m16a2-demo-v1",
+    simulationSessionId: "",
+    returnUrl: "m16a2-tstt.html?chapter=4",
+    target,
+    equipmentProfile,
+    equipmentProfiles: Object.freeze([equipmentProfile]),
+    aim,
+    initialImpacts,
+    confirmationImpacts,
+    initialAuthorityPackage,
+    confirmationAuthorityPackage
+  });
+})(window);

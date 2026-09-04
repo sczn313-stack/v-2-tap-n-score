@@ -183,6 +183,7 @@ window.addEventListener("error", event => {
 <script src="ops.js?v=founder-shared-link-v1"></script>
 <script src="self_teaching_player.js?v=episode59-founder-player-lock-1"></script>
 <script src="baker_talking_demo_session.js?v=episode59-real-sec-vault-1"></script>
+<script src="m16a2_talking_demo_session.js?v=episode60-chapter3-pass3"></script>
 <script src="m4_talking_lesson.js?v=episode60-m4-teaching-1"></script>
 <script>
 const beginExperienceProcessing = (id, message, trigger, scope) => SCZN3Actions.begin({ id, message, trigger, scope });
@@ -199,6 +200,7 @@ const REQUESTED_TARGET_PROFILE_ID = String(
   TARGET_QUERY.get("target_profile_id") || TARGET_QUERY.get("targetProfileId") || ""
 ).toLowerCase();
 const SIMULATION_MODE = TARGET_QUERY.get("simulation") === "1";
+const PREPARED_M16A2_DEMO_MODE = TARGET_QUERY.get("prepared_demo") === "1" && TARGET_QUERY.get("m16a2_demo") === "1";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const PRE_SIMULATION_ACTIVE_MATRIX = SIMULATION_MODE ? SCZN3M4.getActiveMatrix() : null;
@@ -220,7 +222,63 @@ function activeSimulationSessionId() {
 }
 
 const SIMULATION_SESSION_ID = activeSimulationSessionId();
-let session = REQUESTED_SESSION_ID
+function preparedM16A2DemoSeed() {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  if (!PREPARED_M16A2_DEMO_MODE || !fixture || fixture.demoKind !== "m16a2-tstt") return null;
+  const evidence = {
+    dataUrl: fixture.target.image,
+    name: fixture.target.name,
+    type: "image/png",
+    assetRole: "governed-prepared-demo-target",
+    imageWidthPx: fixture.target.width,
+    imageHeightPx: fixture.target.height,
+    widthPx: fixture.target.width,
+    heightPx: fixture.target.height,
+    sourceImageSha256: fixture.target.imageSha256,
+    registrationStatus: "prepared_demo",
+    registrationAuthoritySource: "founder-supplied-target-evidence",
+    targetProfileId: fixture.target.profileId,
+    targetId: fixture.target.targetId
+  };
+  return {
+    persistenceSchema: "sczn3-canonical-session-v1",
+    sessionId: fixture.sessionId,
+    authoritativeSessionId: fixture.sessionId,
+    sessionIdAuthority: "governed-demo-fixture",
+    sessionNumber: 0,
+    sessionLabel: "M16A2 DEMONSTRATION",
+    workflowStage: "observation",
+    experienceMode: "demonstration",
+    target_profile_id: fixture.target.profileId,
+    targetProfileId: fixture.target.profileId,
+    targetProfileVersion: fixture.target.profileVersion,
+    mission_family: "zeroingCorrection",
+    missionFamily: "zeroingCorrection",
+    resultPackageType: "zeroCorrectionResult",
+    targetName: fixture.target.name,
+    product: fixture.target.name,
+    targetDistanceValue: fixture.target.distanceValue,
+    targetDistanceUnit: fixture.target.distanceUnit,
+    targetEvidenceImage: evidence,
+    matrixSnapshot: {
+      ...fixture.equipmentProfile,
+      target_profile_id: fixture.target.profileId,
+      targetProfileId: fixture.target.profileId,
+      targetId: fixture.target.targetId,
+      targetName: fixture.target.name,
+      targetProfileVersion: fixture.target.profileVersion,
+      mission_family: "zeroingCorrection",
+      missionFamily: "zeroingCorrection",
+      resultPackageType: "zeroCorrectionResult",
+      targetDistanceValue: fixture.target.distanceValue,
+      targetDistanceUnit: fixture.target.distanceUnit,
+      experienceMode: "demonstration"
+    }
+  };
+}
+let session = PREPARED_M16A2_DEMO_MODE
+  ? preparedM16A2DemoSeed()
+  : REQUESTED_SESSION_ID
   ? SCZN3M4.loadSession(REQUESTED_SESSION_ID)
   : SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 const SESSION_ROUTE_MISS = Boolean(REQUESTED_SESSION_ID && !session);
@@ -435,9 +493,9 @@ const SMART_TARGET_TALK_CHOREOGRAPHY = Object.freeze({
 });
 
 function isBakerSampleEvidence(evidence = activeEvidence()) {
-  return isBaker100YardSession()
+  return (isBaker100YardSession() || PREPARED_M16A2_DEMO_MODE)
     && !!evidence
-    && String(evidence.assetRole || "") === "registered-reference-target";
+    && ["registered-reference-target", "governed-prepared-demo-target"].includes(String(evidence.assetRole || ""));
 }
 
 function isM4TalkingLessonEvidence(evidence = activeEvidence()) {
@@ -467,17 +525,19 @@ function sampleFeatureHighlightMarkup(feature, x, y) {
 function bakerSampleGroupAnalysisMarkup({ showVector = false, showAdjustment = false } = {}) {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
   const authority = fixture.initialAuthorityPackage;
+  const m16a2Demo = fixture.demoKind === "m16a2-tstt";
   const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
   const choreography = SMART_TARGET_TALK_CHOREOGRAPHY;
   const settledGroup = bakerSampleHoleMarkup(initial, false, choreography, 0, true);
   const centerCoordinate = authority.renderCoordinates.poib;
-  const center = `<i class="baker-sample-poib${showVector ? " is-settled" : ""}" style="--sample-x:${centerCoordinate.xPercent}%;--sample-y:${centerCoordinate.yPercent}%" aria-label="Center of the sample shot group"><span>GROUP CENTER</span></i>`;
+  const center = `<i class="baker-sample-poib${showVector ? " is-settled" : ""}" style="--sample-x:${centerCoordinate.xPercent}%;--sample-y:${centerCoordinate.yPercent}%" aria-label="Center of the sample shot pattern"><span>${m16a2Demo ? "THE CENTER OF YOUR SHOT PATTERN" : "GROUP CENTER"}</span></i>`;
   const vectorCoordinates = authority.renderCoordinates.vector;
   const vector = showVector
-    ? `<i class="baker-sample-aim" aria-hidden="true"></i><svg class="baker-sample-vector${showAdjustment ? "" : " is-drawing is-emphasized"}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Vector from group center to aim point" style="--sample-vector-draw-duration:${choreography.resultTeaching.vectorDrawMs}ms"><defs><marker id="bakerSampleVectorArrow" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 Z"></path></marker></defs><line pathLength="1" x1="${vectorCoordinates.start.xPercent}" y1="${vectorCoordinates.start.yPercent}" x2="${vectorCoordinates.end.xPercent}" y2="${vectorCoordinates.end.yPercent}" marker-end="url(#bakerSampleVectorArrow)" /></svg>`
+    ? `<i class="baker-sample-aim" style="--sample-x:${fixture.aim.xPercent}%;--sample-y:${fixture.aim.yPercent}%" aria-label="Center crosshairs aim point"></i><svg class="baker-sample-vector${showAdjustment ? "" : " is-drawing is-emphasized"}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Measurement from the center of the shot pattern to the center crosshairs" style="--sample-vector-draw-duration:${choreography.resultTeaching.vectorDrawMs}ms"><defs><marker id="bakerSampleVectorArrow" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 Z"></path></marker></defs><line pathLength="1" x1="${vectorCoordinates.start.xPercent}" y1="${vectorCoordinates.start.yPercent}" x2="${vectorCoordinates.end.xPercent}" y2="${vectorCoordinates.end.yPercent}" marker-end="url(#bakerSampleVectorArrow)" /></svg>`
     : "";
+  const angular = authority.angular || authority.moa;
   const adjustment = showAdjustment
-    ? `<div class="baker-sample-result-context"><div class="baker-sample-measurement" aria-label="Authoritative measurement context"><span><small>DISTANCE</small><strong>100</strong><b>YARDS</b></span><span><small>MOA OFFSET</small><strong>${authority.moa.windageMOA.toFixed(2)} W</strong><b>${authority.moa.elevationMOA.toFixed(2)} E</b></span></div><div class="baker-sample-clicks is-emphasized"><b>→</b><strong>${authority.clicks.windageClicks}</strong><span>${authority.clicks.windageDirection}</span><em>CLICKS</em><b>↓</b><strong>${authority.clicks.elevationClicks}</strong><span>${authority.clicks.elevationDirection}</span><em>CLICKS</em></div></div>`
+    ? `<div class="baker-sample-result-context"><div class="baker-sample-measurement" aria-label="Authoritative measurement context"><span><small>DISTANCE</small><strong>${fixture.target ? fixture.target.distanceValue : 100}</strong><b>${fixture.target ? fixture.target.distanceUnit : "YARDS"}</b></span><span><small>MOA OFFSET</small><strong>${angular.windageMOA.toFixed(2)} W</strong><b>${angular.elevationMOA.toFixed(2)} E</b></span></div>${m16a2Demo ? `<div class="m16a2-demo-correction"><span><b>REAR WINDAGE KNOB</b><strong>${authority.clicks.windageClicks} CLICKS ${authority.clicks.windageDirection}</strong><em>${authority.clicks.windageTurnDirection}</em></span><span><b>FRONT SIGHT POST</b><strong>${authority.clicks.elevationClicks} CLICKS ${authority.clicks.elevationDirection}</strong><em>${authority.clicks.elevationTurnDirection}</em></span></div>` : `<div class="baker-sample-clicks is-emphasized"><b>→</b><strong>${authority.clicks.windageClicks}</strong><span>${authority.clicks.windageDirection}</span><em>CLICKS</em><b>↓</b><strong>${authority.clicks.elevationClicks}</strong><span>${authority.clicks.elevationDirection}</span><em>CLICKS</em></div>`}</div>`
     : "";
   return `${settledGroup}${center}${vector}${adjustment}`;
 }
@@ -494,19 +554,33 @@ function bakerSampleConfirmationResultMarkup() {
 
 function bakerTalkingDemoSession() {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  const m16a2Demo = fixture.demoKind === "m16a2-tstt";
+  const target = fixture.target || {
+    image: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+    name: "Baker 100 Yard Smart Target",
+    width: 1102,
+    height: 1713,
+    profileId: "baker_st_100yd_smart_zero",
+    profileVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+    targetId: "BAKER_ST_100YD_SMART",
+    distanceValue: 100,
+    distanceUnit: "YDS"
+  };
   const timestamp = new Date().toISOString();
   const evidence = {
-    dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
-    name: "Baker 100 Yard Smart Target — SAMPLE",
+    dataUrl: target.image,
+    name: `${target.name} — DEMONSTRATION`,
     type: "image/png",
-    assetRole: "simulation-reference-target",
-    imageWidthPx: 1102,
-    imageHeightPx: 1713,
-    widthPx: 1102,
-    heightPx: 1713,
+    assetRole: m16a2Demo ? "governed-prepared-demo-target" : "simulation-reference-target",
+    imageWidthPx: target.width,
+    imageHeightPx: target.height,
+    widthPx: target.width,
+    heightPx: target.height,
+    sourceImageSha256: target.imageSha256 || "",
     registrationStatus: "complete",
-    registrationAuthoritySource: "registered_exact_asset",
-    targetProfileId: "baker_st_100yd_smart_zero"
+    registrationAuthoritySource: m16a2Demo ? "founder-supplied-target-evidence" : "registered_exact_asset",
+    targetProfileId: target.profileId,
+    targetId: target.targetId
   };
   return {
     persistenceSchema: "sczn3-canonical-session-v1",
@@ -514,53 +588,54 @@ function bakerTalkingDemoSession() {
     authoritativeSessionId: fixture.sessionId,
     sessionIdAuthority: "governed-demo-fixture",
     sessionNumber: 0,
-    sessionLabel: "SAMPLE SESSION",
-    savedIdentifier: "SAMPLE SESSION",
+    sessionLabel: m16a2Demo ? "M16A2 DEMONSTRATION" : "SAMPLE SESSION",
+    savedIdentifier: m16a2Demo ? "M16A2 DEMONSTRATION" : "SAMPLE SESSION",
     savedToSEC: true,
     savedAt: timestamp,
     preservedAt: timestamp,
     timestamp,
     workflowStage: "preservation",
     preservationStatus: "saved",
-    experienceMode: "simulation",
-    simulation: true,
-    simulationSessionId: fixture.simulationSessionId,
-    targetProfileVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
-    target_profile_id: "baker_st_100yd_smart_zero",
-    targetProfileId: "baker_st_100yd_smart_zero",
+    experienceMode: m16a2Demo ? "demonstration" : "simulation",
+    simulation: !m16a2Demo,
+    simulationSessionId: fixture.simulationSessionId || "",
+    targetProfileVersion: target.profileVersion,
+    target_profile_id: target.profileId,
+    targetProfileId: target.profileId,
     mission_family: "zeroingCorrection",
     missionFamily: "zeroingCorrection",
     resultPackageType: "zeroCorrectionResult",
-    targetName: "Baker 100 Yard Smart Target",
-    product: "Baker 100 Yard Smart Target",
-    targetDistanceValue: 100,
-    targetDistanceUnit: "YDS",
+    targetName: target.name,
+    product: target.name,
+    targetDistanceValue: target.distanceValue,
+    targetDistanceUnit: target.distanceUnit,
     confirmationStatus: "Recorded",
     aimPoint: fixture.aim,
     impactPoints: fixture.initialImpacts,
     confirmationImpactPoints: fixture.confirmationImpacts,
     targetEvidenceImage: evidence,
-    confirmationEvidenceImage: { ...evidence, name: "Baker 100 Yard Smart Target — SAMPLE confirmation" },
+    confirmationEvidenceImage: { ...evidence, name: `${target.name} — DEMONSTRATION confirmation` },
     authorityPackage: fixture.initialAuthorityPackage,
     confirmationAuthorityPackage: fixture.confirmationAuthorityPackage,
     matrixSnapshot: {
-      target_profile_id: "baker_st_100yd_smart_zero",
-      targetProfileId: "baker_st_100yd_smart_zero",
-      targetId: "BAKER_ST_100YD_SMART",
-      targetName: "Baker 100 Yard Smart Target",
-      targetFamily: "Baker Smart Target",
-      targetProfileVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+      ...(m16a2Demo ? fixture.equipmentProfile : {}),
+      target_profile_id: target.profileId,
+      targetProfileId: target.profileId,
+      targetId: target.targetId,
+      targetName: target.name,
+      targetFamily: m16a2Demo ? "Military 25 Meter M16A2 Zeroing Target" : "Baker Smart Target",
+      targetProfileVersion: target.profileVersion,
       mission_family: "zeroingCorrection",
       missionFamily: "zeroingCorrection",
       resultPackageType: "zeroCorrectionResult",
-      targetDistanceValue: 100,
-      targetDistanceUnit: "YDS",
-      setupName: "Standard Setup",
+      targetDistanceValue: target.distanceValue,
+      targetDistanceUnit: target.distanceUnit,
+      setupName: m16a2Demo ? fixture.equipmentProfile.setupName : "Standard Setup",
       setupMode: "standard",
-      opticType: "Quarter-MOA Scope",
+      opticType: m16a2Demo ? fixture.equipmentProfile.opticType : "Quarter-MOA Scope",
       opticAdjustmentUnit: "MOA",
-      opticClickValue: 0.25,
-      experienceMode: "simulation"
+      opticClickValue: m16a2Demo ? null : 0.25,
+      experienceMode: m16a2Demo ? "demonstration" : "simulation"
     }
   };
 }
@@ -568,13 +643,16 @@ function bakerTalkingDemoSession() {
 function preserveBakerTalkingDemoSession() {
   const demoSession = bakerTalkingDemoSession();
   sessionStorage.setItem(TALKING_TARGET_DEMO_SESSION_STORAGE_KEY, JSON.stringify(demoSession));
-  localStorage.setItem(SIMULATION_SESSION_STORAGE_KEY, demoSession.simulationSessionId);
+  if (demoSession.simulationSessionId) localStorage.setItem(SIMULATION_SESSION_STORAGE_KEY, demoSession.simulationSessionId);
   return demoSession;
 }
 
 function bakerTalkingDemoRecordsFrame(view) {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
   const demoSession = preserveBakerTalkingDemoSession();
-  const query = new URLSearchParams({ simulation: "1", talking_demo: "1" });
+  const query = new URLSearchParams(fixture.demoKind === "m16a2-tstt"
+    ? { prepared_demo: "1", talking_demo: "1", m16a2_demo: "1" }
+    : { simulation: "1", talking_demo: "1" });
   if (view === "sec") {
     query.set("session", demoSession.sessionId);
     query.set("view", "sec");
@@ -622,8 +700,22 @@ function smartTargetReplenishmentMarkup(...identitySources) {
 
 function bakerSampleDemoScene(state) {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  const m16a2Demo = fixture.demoKind === "m16a2-tstt";
   const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
   const confirmation = fixture.confirmationImpacts.map(point => [point.xPercent, point.yPercent]);
+  if (m16a2Demo) {
+    if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>BAKER 25 METERS ZEROING TARGET · M16A2</strong><span>Watch Tap-n-Score run the complete zeroing road.</span></div>`;
+    if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>CENTER CROSSHAIRS</strong><span>Tap-n-Score marks the prepared aim point.</span></div>${sampleFeatureHighlightMarkup("aim", fixture.aim.xPercent, fixture.aim.yPercent)}`;
+    if (state === "shoot-observations") return `<div class="baker-sample-demo-callout"><strong>SHOT PATTERN</strong><span>Tap-n-Score places the prepared shot observations.</span></div>${bakerSampleHoleMarkup(initial)}`;
+    if (state === "show-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Tap-n-Score submits the observations to governed authority.</span></div>${bakerSampleHoleMarkup(initial, false, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+    if (state === "group-center") return `<div class="baker-sample-demo-callout"><strong>THE CENTER OF YOUR SHOT PATTERN</strong><span>Tap-n-Score locates the center of the prepared pattern.</span></div>${bakerSampleGroupAnalysisMarkup()}`;
+    if (state === "vector") return `<div class="baker-sample-demo-callout"><strong>MEASURE</strong><span>Tap-n-Score measures from the pattern center to the center crosshairs.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true })}`;
+    if (state === "results") return `<div class="baker-sample-demo-callout"><strong>GOVERNED M16A2 ADJUSTMENT</strong><span>Backend authority names the sight control, click count, movement, and turn direction.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
+    if (state === "begin-confirmation") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>APPLY THE CLICKS</strong><span>Tap-n-Score begins the confirmation road.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
+    if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRMATION</strong><span>Tap-n-Score places the prepared confirmation observations.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, SMART_TARGET_TALK_CHOREOGRAPHY.observations.confirmationCadenceMs)}`;
+    if (state === "show-confirmation-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Backend authority confirms the zero.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+    if (state === "save") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>ZERO CONFIRMED</strong><span>Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting.</span></div>${bakerSampleConfirmationResultMarkup()}`;
+  }
   if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>BAKER 100 YARD SMART TARGET</strong><span>Listen as you need. Shoot when you please.</span></div>`;
   if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
   if (state === "shoot") return `<div class="baker-sample-demo-callout"><strong>SHOOT</strong><span>Shoot your initial group.</span></div>`;
@@ -641,12 +733,18 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-library") return bakerTalkingDemoEquipmentFrame("library");
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
-  if (state === "complete") return `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
+  if (state === "complete") return m16a2Demo
+    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOUR TURN.</strong><small>The demonstration is preserved in Ballistic Vault.</small><a class="prepared-demo-return" href="${fixture.returnUrl}">GO TO CHAPTER 4</a></div></div>`
+    : `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }
 
 function setBakerSampleDemoState(state) {
   bakerSampleDemoState = state;
+  if (PREPARED_M16A2_DEMO_MODE) {
+    window.__SCZN3_PREPARED_DEMO_STATES__ = window.__SCZN3_PREPARED_DEMO_STATES__ || [];
+    if (window.__SCZN3_PREPARED_DEMO_STATES__.at(-1) !== state) window.__SCZN3_PREPARED_DEMO_STATES__.push(state);
+  }
   const stage = document.getElementById("workspaceStageShell");
   const layer = document.getElementById("bakerSampleDemoLayer");
   const scene = document.getElementById("bakerSampleDemoScene");
@@ -663,6 +761,24 @@ function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
 }
 
 function bakerSampleDemoSteps() {
+  const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
+  if (fixture.demoKind === "m16a2-tstt") return [
+    { state: "intro", narration: "Let Tap-n-Score show you the complete M16A2 zeroing road.", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "aim", narration: "The center crosshairs are the aim point.", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "shoot-observations", narration: "Tap-n-Score marks the prepared shot observations.", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedGroupHoldMs },
+    { state: "show-results", narration: "Tap-n-Score sends those observations to governed authority.", action: { id: "show-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "group-center", narration: "Tap-n-Score finds the center of the shot pattern.", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.groupCenterComprehensionMs },
+    { state: "vector", narration: "It measures from the center of the shot pattern to the center crosshairs.", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.vectorComprehensionMs },
+    { state: "results", narration: "Backend authority gives the governed M16A2 adjustment. Rear windage knob, five clicks left, counterclockwise. Front sight post, two clicks down, counterclockwise.", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
+    { state: "begin-confirmation", narration: "Apply the clicks, then Tap-n-Score begins confirmation.", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "confirmation", narration: "Tap-n-Score marks the prepared confirmation shots.", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
+    { state: "show-confirmation-results", narration: "Backend authority confirms the zero.", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "save", narration: "Your zero is confirmed. Turn the rear elevation drum one click counterclockwise back to eight slash three for your three-hundred-meter setting.", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "sec", narration: "The completed Shooter Experience Card preserves the authoritative result.", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "vault", narration: "The completed session is preserved in Ballistic Vault.", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
+    { state: "complete", narration: "The demonstration is complete. Chapter Four gives you the controls.", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
+    { state: "complete", terminal: true }
+  ];
   const aimPostSpeechHold = SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs
     * SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.postSpeechBeats;
   return [
@@ -792,6 +908,10 @@ function bindBakerSampleDemo() {
       resolveAction: resolveBakerSampleDemoAction,
       demonstrateAction: demonstrateBakerSampleDemoAction,
       clearAction: clearBakerSampleDemoAction,
+      speechRate: PREPARED_M16A2_DEMO_MODE ? 0.70 : 0.94,
+      speechVoiceResolver: () => PREPARED_M16A2_DEMO_MODE
+        ? (window.speechSynthesis.getVoices() || []).find(voice => /^Samantha(?:\s|$|\()/i.test(String(voice.name || ""))) || null
+        : null,
       onNarrationStatus: status => { document.body.dataset.bakerSampleNarration = status; },
       onStatusChange: status => {
         syncBakerSampleDemoControls(status);
@@ -814,6 +934,10 @@ function bindBakerSampleDemo() {
   talk.addEventListener("click", startBakerSampleDemo);
   setBakerSampleDemoState(bakerSampleDemoPlayer.status === "idle" ? "waiting" : bakerSampleDemoState);
   syncBakerSampleDemoControls(bakerSampleDemoPlayer.status);
+  if (PREPARED_M16A2_DEMO_MODE && TARGET_QUERY.get("autoplay") === "1" && root.dataset.preparedDemoAutoplay !== "started") {
+    root.dataset.preparedDemoAutoplay = "started";
+    window.setTimeout(startBakerSampleDemo, 250);
+  }
 }
 function sourceIsZeroingSession(source) {
   if (!source || typeof source !== "object") return false;
@@ -5677,7 +5801,7 @@ bindCorrectionContextDrawer();
 if (TARGET_PROFILE_LAUNCH_ID) {
   resolveMissionFromTargetProfile();
 } else {
-  if (isM4AuthoritySession()) {
+  if (isM4AuthoritySession() && !PREPARED_M16A2_DEMO_MODE) {
     const evidence = installM4CanonicalEvidence();
     if (evidence) renderEvidencePreview(evidence);
   }

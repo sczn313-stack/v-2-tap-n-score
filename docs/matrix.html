@@ -252,7 +252,7 @@ const HAS_EXPLICIT_TARGET_INTENT = [
 ].some(key => MATRIX_QUERY.has(key));
 const UNIVERSAL_EQUIPMENT_LIBRARY_VIEW = MATRIX_QUERY.get("view") === "library" || !HAS_EXPLICIT_TARGET_INTENT;
 const LANDING_STANDARD_EQUIPMENT_DEFAULT = MATRIX_QUERY.get("equipment") === "standard";
-const TSTT_CHAPTER_THREE_HANDOFF = MATRIX_QUERY.get("tstt_chapter") === "3";
+const TSTT_SHOOTER_HANDOFF = MATRIX_QUERY.get("tstt_chapter") === "4";
 const PENDING_TARGET_PROFILE_KEY = "SCZN3_PENDING_TARGET_PROFILE";
 const PENDING_SESSION_START_KEY = "SCZN3_PENDING_BACKEND_SESSION_START";
 const SESSION_AUTHORITY_BASE = window.SCZN3_SESSION_AUTHORITY_BASE || (
@@ -2046,7 +2046,7 @@ async function offerGovernedSetupChoices() {
         setProfileEditorVisible(false);
         setWeaponListExpanded(false);
         authorityStatus(equipmentAssessmentGuidance(governed.assessment, weaponCardTitle(governed.item.setup), governed.item.candidate), "ready");
-        if (TSTT_CHAPTER_THREE_HANDOFF && governed.item.setup.setupId === requestedEquipmentProfileId) {
+        if (TSTT_SHOOTER_HANDOFF && governed.item.setup.setupId === requestedEquipmentProfileId) {
           await goToTarget();
         }
         return;

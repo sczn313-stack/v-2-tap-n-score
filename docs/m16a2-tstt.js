@@ -3,7 +3,8 @@
 
   const targetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png";
   const chapterThreeTargetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png";
-  const tapNScoreRoad = "matrix.html?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=3";
+  const tapNScoreRoad = "matrix.html?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=4";
+  const chapterThreeDemoRoad = "shoot.html?prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1";
   const chapterTwoReferencePath = "authority-evidence/mfam/founder-supplied-chapter2-visual-reference";
   const chapterTwoReferenceImages = Object.freeze({
     frontSight: `${chapterTwoReferencePath}/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg`,
@@ -35,10 +36,15 @@
   ]);
   const chapterTwoSpokenNarration = `Front sight post. ${chapterTwoFounderScript[0]} Rear windage knob. ${chapterTwoFounderScript[1]} Rear elevation drum. ${chapterTwoFounderScript[2]} ${chapterTwoFounderScript[3]} ${chapterTwoFounderScript[4]}`;
   const chapterThreeFounderScript = Object.freeze([
+    "Let Tap-n-Score show you the complete zeroing road.",
+    "Watch how it marks the aim point and shots, measures the center of the shot pattern, gives the governed sight adjustment, confirms the zero, and preserves the session."
+  ]);
+  const chapterThreeSpokenNarration = chapterThreeFounderScript.join(" ");
+  const chapterFourFounderScript = Object.freeze([
     "Shoot three to five shots while aiming at the center crosshairs.",
     "Take a photo of your target or choose one from your photos."
   ]);
-  const chapterThreeSpokenNarration = chapterThreeFounderScript.join(" ");
+  const chapterFourSpokenNarration = chapterFourFounderScript.join(" ");
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
@@ -82,21 +88,24 @@
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
-      id: "a2-3", label: "MAKE THE ADJUSTMENT", shortTitle: "Make the adjustment", eyebrow: "LET TAP-N-SCORE DO ITS JOB", title: "Make the adjustment.",
+      id: "a2-3", label: "WATCH TAP-N-SCORE", shortTitle: "Let Tap-n-Score show you", eyebrow: "CHAPTER 3 · WATCH", title: "Let Tap-n-Score show you.",
       summary: chapterThreeFounderScript[0],
       narration: chapterThreeSpokenNarration,
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterThreeSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>ADD PHOTO</span><h2 id="photo-entry-title">Your shot pattern starts here.</h2><p>${chapterThreeFounderScript[1]}</p><div><a href="${chapterThreePhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterThreePhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>${equipmentSupportsExactSetup() ? "Tap-n-Score will open the proven Precision Tap road for your photograph." : "Select the governed M16A2 standard iron-sight setup in Equipment Library first."}</small></section></div>`,
+      visual: () => `<div class="adjustment-entry demo-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry demo-launch" aria-labelledby="demo-entry-title"><span>COMPLETE DEMONSTRATION</span><h2 id="demo-entry-title">Watch Tap-n-Score work.</h2><p>${chapterThreeFounderScript[1]}</p><div><a href="${chapterThreeDemoRoad}">WATCH TAP-N-SCORE</a></div><small>Tap-n-Score owns the controls during this prepared example.</small></section></div>`,
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
-      id: "a2-4", label: "ADJUSTMENT CONTROLS", shortTitle: "Rehearse the correction controls", eyebrow: "STANDARD M16A2 IRON SIGHTS", title: "Two controls. Four movements.",
-      summary: "The front sight post moves group elevation. The rear windage knob moves the group left or right. Always name the movement you want before turning a control.",
-      narration: "For group elevation, use the front sight post. Each click is one point two five minutes of angle. To move impact up, turn the front sight post clockwise viewed from above. To move impact down, turn it counterclockwise viewed from above. For windage, use the exposed right-side rear windage knob. Each click is zero point five minutes of angle. To move impact right, turn it clockwise while looking squarely at the knob face. To move impact left, turn it counterclockwise. The rear elevation drum is not the group-elevation correction control in this procedure.",
-      visual: () => `<div class="control-grid"><section class="control-card"><div class="control-name"><span>ELEVATION</span><b>FRONT SIGHT POST</b><em>1.25 MOA / CLICK</em></div><div class="control-figure front-post" aria-hidden="true"><span class="post-tip"></span><span class="post-base"></span><i class="view-axis">VIEW FROM ABOVE</i></div><div class="movement-list"><span><b>MOVE IMPACT UP</b><i>↻ CLOCKWISE</i></span><span><b>MOVE IMPACT DOWN</b><i>↺ COUNTERCLOCKWISE</i></span></div></section><section class="control-card"><div class="control-name"><span>WINDAGE</span><b>REAR WINDAGE KNOB</b><em>0.5 MOA / CLICK</em></div><div class="control-figure windage-knob" aria-hidden="true"><span></span><i class="view-axis">FACE THE RIGHT-SIDE KNOB</i></div><div class="movement-list"><span><b>MOVE IMPACT RIGHT</b><i>↻ CLOCKWISE</i></span><span><b>MOVE IMPACT LEFT</b><i>↺ COUNTERCLOCKWISE</i></span></div></section></div><div class="control-reminder"><b>NOT THE REAR DRUM</b><span>Use the front sight post to move the group up or down.</span></div>`,
-      task: "With the rifle safe, point to the front sight post for up/down movement and the rear windage knob for left/right movement. Say the desired impact movement before rehearsing the turn.", action: "advance", actionLabel: "I REHEARSED BOTH CONTROLS"
+      id: "a2-4", label: "YOUR TURN", shortTitle: "Your turn", eyebrow: "CHAPTER 4 · SHOOTER CONTROL", title: "Your turn.",
+      summary: chapterFourFounderScript[0],
+      narration: chapterFourSpokenNarration,
+      narrationPlan: Object.freeze([
+        Object.freeze({ text: chapterFourSpokenNarration, delivery: "normal" })
+      ]),
+      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>YOUR TURN</span><h2 id="photo-entry-title">Add your target.</h2><p>${chapterFourFounderScript[1]}</p><div><a href="${chapterFourPhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterFourPhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>${equipmentSupportsExactSetup() ? "Your photograph opens in the governed Precision Tap road." : "Select the governed M16A2 standard iron-sight setup in Equipment Library first."}</small></section></div>`,
+      task: "", action: "none", hideTask: true
     }),
     Object.freeze({
       id: "a2-5", label: "PRE-FIRE READY", shortTitle: "Ready for the first group", eyebrow: "STOP POINT • LIVE FIRE COMES NEXT", title: "Ready to fire your first group.",
@@ -133,7 +142,7 @@
   function equipmentLibraryUrl() {
     return `matrix.html?view=library&origin=tstt&return_to=m16a2-tstt.html&return_chapter=${state.current + 1}`;
   }
-  function chapterThreePhotoRoad(photoSource) {
+  function chapterFourPhotoRoad(photoSource) {
     if (!equipmentSupportsExactSetup() || !state.equipment.activeId) return equipmentLibraryUrl();
     return `${tapNScoreRoad}&equipment_profile_id=${encodeURIComponent(state.equipment.activeId)}&photo_source=${encodeURIComponent(photoSource)}`;
   }
@@ -153,6 +162,15 @@
     } catch (error) {
       console.warn("TSTT journey could not be restored", error);
     }
+  }
+  function applyDirectChapterEntry() {
+    const requested = Number(new URLSearchParams(window.location.search).get("chapter"));
+    if (!Number.isInteger(requested) || requested < 1 || requested > chapters.length) return;
+    state.started = true;
+    state.current = requested - 1;
+    state.unlocked = chapters.length - 1;
+    state.paused = false;
+    state.stopped = false;
   }
   function readActiveEquipment() {
     try {
@@ -254,5 +272,5 @@
   document.querySelector('[data-control="chapters"]').addEventListener("click", () => elements.dialog.showModal()); document.querySelector("[data-close-chapters]").addEventListener("click", () => elements.dialog.close());
   elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); render(); });
   window.addEventListener("focus", () => syncEquipment()); window.addEventListener("pageshow", () => syncEquipment()); window.addEventListener("storage", event => { if ([equipmentKeys.active, equipmentKeys.saved].includes(event.key)) syncEquipment(); });
-  restoreJourney(); syncEquipment({ rerender: false }); render({ narrate: false, sync: false });
+  restoreJourney(); applyDirectChapterEntry(); syncEquipment({ rerender: false }); render({ narrate: false, sync: false });
 })();

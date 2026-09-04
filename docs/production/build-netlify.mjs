@@ -56,6 +56,7 @@ const publicFiles = [
   "sec_reopen_capability.js",
   "self_teaching_player.js",
   "baker_talking_demo_session.js",
+  "m16a2_talking_demo_session.js",
   "m4_talking_lesson.js",
   "sec_reopen_lifecycle.js",
   "experience_frame_processing.js",

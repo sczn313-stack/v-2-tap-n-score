@@ -92,27 +92,34 @@ try {
     assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
 
     await page.locator('[data-control="chapters"]').click();
-    await page.getByRole("button", { name: /Make the adjustment/ }).click();
+    await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 3 OF 5");
-    assert.equal(await page.locator("#lessonTitle").innerText(), "MAKE THE ADJUSTMENT.");
-    assert.match(await page.locator("#visualStage").innerText(), /ADD PHOTO[\s\S]*Take a photo of your target or choose one from your photos\.[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/);
+    assert.equal(await page.locator("#lessonTitle").innerText(), "LET TAP-N-SCORE SHOW YOU.");
+    assert.match(await page.locator("#visualStage").innerText(), /COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE WORK[\s\S]*WATCH TAP-N-SCORE/i);
     assert.equal(await page.locator("#visualStage .adjustment-target img").count(), 1);
     assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png$/);
-    assert.equal(await page.locator("#visualStage .adjustment-flow").count(), 0);
+    assert.equal(await page.getByRole("link", { name: "TAKE PHOTO", exact: true }).count(), 0);
+    assert.equal(await page.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).count(), 0);
     assert.equal(await page.locator("#taskCard:visible").count(), 0);
-    assert.equal(await page.locator("#visualStage .aim-demo, #visualStage .aim-reticle, #visualStage .axis-key").count(), 0);
     const chapterThreeSpeech = await page.evaluate(() => {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
     });
-    assert.equal(chapterThreeSpeech.text, "Shoot three to five shots while aiming at the center crosshairs. Take a photo of your target or choose one from your photos.");
+    assert.equal(chapterThreeSpeech.text, "Let Tap-n-Score show you the complete zeroing road. Watch how it marks the aim point and shots, measures the center of the shot pattern, gives the governed sight adjustment, confirms the zero, and preserves the session.");
     assert.deepEqual({ rate: chapterThreeSpeech.rate, voice: chapterThreeSpeech.voice }, { rate: 0.70, voice: "Samantha" });
 
     await page.locator('[data-control="chapters"]').click();
-    await page.getByRole("button", { name: /Rehearse the correction controls/ }).click();
+    await page.getByRole("button", { name: /Your turn/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
-    assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST/);
-    assert.match(await page.locator("#visualStage").innerText(), /REAR WINDAGE KNOB/);
+    assert.equal(await page.locator("#lessonTitle").innerText(), "YOUR TURN.");
+    assert.equal(await page.locator("#lessonSummary").innerText(), "Shoot three to five shots while aiming at the center crosshairs.");
+    assert.match(await page.locator("#visualStage").innerText(), /YOUR TURN[\s\S]*Take a photo of your target or choose one from your photos\.[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/i);
+    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png$/);
+    for (const name of ["TAKE PHOTO", "CHOOSE EXISTING PHOTO"]) {
+      const href = await page.getByRole("link", { name, exact: true }).getAttribute("href");
+      assert.match(href, /tstt_chapter=4/);
+      assert.match(href, /equipment_profile_id=founder-m16a2/);
+    }
 
     await page.locator('[data-control="chapters"]').click();
     assert.equal(await page.locator("#chapterList button:not([disabled])").count(), 5);
@@ -134,6 +141,28 @@ try {
     assert.deepEqual(errors, [], `no page errors at ${viewport.width}px`);
     await context.close();
   }
+
+  const returningContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const returningPage = await returningContext.newPage();
+  await returningPage.addInitScript(() => {
+    localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "founder-m16a2");
+    localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
+      setupId: "founder-m16a2", setupName: "M16A2 · Standard Iron Sights", weaponModelType: "M16A2",
+      opticType: "Iron Sights", equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+    }]));
+  });
+  await returningPage.goto(`${baseUrl}/m16a2-tstt.html?chapter=4`, { waitUntil: "networkidle" });
+  assert.equal(await returningPage.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
+  assert.equal(await returningPage.locator("#lessonTitle").innerText(), "YOUR TURN.");
+  assert.equal(await returningPage.locator("#chapterList button:not([disabled])").count(), 5);
+  assert.equal(await returningPage.getByRole("link", { name: "TAKE PHOTO", exact: true }).count(), 1);
+  assert.equal(await returningPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).count(), 1);
+  await returningPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).click();
+  await returningPage.waitForURL(/shoot\.html\?.*photo_source=existing/, { timeout: 30000 });
+  assert.equal(await returningPage.locator("#targetImageInput[type=file]").count(), 1);
+  assert.match(await returningPage.locator("#targetSessionSummary").innerText(), /M4 25m Zero/i);
+  await returningContext.close();
 
   const coldContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const coldPage = await coldContext.newPage();

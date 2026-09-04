@@ -729,6 +729,24 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
 
 .baker-sample-clicks{grid-template-columns:auto auto auto auto;gap:5px}
 
+.m16a2-demo-correction{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  padding:8px;
+  border:1px solid #35c86d;
+  border-radius:9px;
+  background:rgba(4,18,9,.94);
+  color:#fff;
+  animation:baker-sample-adjustment-arrive .38s ease-out both;
+}
+
+.m16a2-demo-correction>span{display:grid;align-content:center;gap:3px;min-width:0;text-align:center}
+.m16a2-demo-correction>span+span{border-left:1px solid rgba(83,237,137,.35)}
+.m16a2-demo-correction b{color:#9ff4ba;font-size:8px;letter-spacing:.05em}
+.m16a2-demo-correction strong{font-size:clamp(12px,2.2vw,17px);line-height:1.05}
+.m16a2-demo-correction em{color:#c9ffda;font-size:9px;font-style:normal;font-weight:950;letter-spacing:.06em}
+
 .baker-sample-clicks.is-emphasized{
   animation:baker-sample-adjustment-arrive .38s ease-out both,baker-sample-adjustment-breathe 1.6s ease-in-out .38s 3;
 }
@@ -768,6 +786,22 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   text-align:center;
   transform:translate(-50%,-50%);
   box-shadow:0 18px 45px rgba(0,0,0,.5);
+}
+
+.prepared-demo-return{
+  display:grid;
+  place-items:center;
+  min-height:42px;
+  margin-top:8px;
+  padding:9px 14px;
+  border:1px solid #f4c64f;
+  border-radius:8px;
+  background:#f4c64f;
+  color:#161105;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-decoration:none;
 }
 
 .baker-sample-stage-card span{color:#f4c64f;font-size:18px;font-weight:950;letter-spacing:.12em}
@@ -900,6 +934,8 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   .baker-sample-demo-callout{top:4%;padding:7px 9px}
   .baker-sample-result-context{right:2%;bottom:16%;left:2%;gap:5px}
   .baker-sample-measurement,.baker-sample-clicks{padding:7px 6px}
+  .m16a2-demo-correction{grid-template-columns:1fr;gap:4px;padding:6px}
+  .m16a2-demo-correction>span+span{padding-top:4px;border-top:1px solid rgba(83,237,137,.35);border-left:0}
   .baker-sample-clicks{grid-template-columns:auto auto auto;gap:3px}
   .baker-sample-clicks em{grid-column:2 / 4}
   .baker-sample-measurement small{font-size:7px}

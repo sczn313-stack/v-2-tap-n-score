@@ -1,9 +1,16 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import vm from "node:vm";
 import { buildAuthorityPackage } from "./authority_adapter.mjs";
+
+const fixtureSource = await readFile(new URL("../m16a2_talking_demo_session.js", import.meta.url), "utf8");
+const sandbox = { URLSearchParams, window: { location: { search: "?m16a2_demo=1" } } };
+vm.runInNewContext(fixtureSource, sandbox);
+const fixture = sandbox.window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
 
 const adjustmentProfileId = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
 const equipmentConfigurationId = "M16A2-STANDARD-IRON-FSP-REAR-DRUM";
-const aimCoordinate = { xPercent: 50, yPercent: 43.181818 };
+const aimCoordinate = fixture.aim;
 const shooterSetup = {
   opticType: "Iron Sights",
   adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
@@ -15,11 +22,7 @@ const initial = await buildAuthorityPackage({
   targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
   targetName: "Baker 25 Meters Zeroing Target M16A2",
   aimCoordinate,
-  impactCoordinates: [
-    { xPercent: 59.6, yPercent: 55, shotId: "initial-1" },
-    { xPercent: 60, yPercent: 55.4, shotId: "initial-2" },
-    { xPercent: 60.4, yPercent: 55.8, shotId: "initial-3" }
-  ],
+  impactCoordinates: fixture.initialImpacts,
   distance: { value: 25, unit: "m" },
   adjustmentProfileId,
   shooterSetup
@@ -34,16 +37,20 @@ assert.equal(initial.clicks.model.turnDirections.windage.RIGHT, "CLOCKWISE");
 assert.equal(initial.clicks.model.turnDirections.elevation.DOWN, "COUNTERCLOCKWISE");
 assert.equal(initial.mechanicalValidation.status, "calculated");
 assert.equal(initial.calculationReconciliation.status, "reconciled");
+assert.equal(initial.clicks.windageClicks, fixture.initialAuthorityPackage.clicks.windageClicks);
+assert.equal(initial.clicks.elevationClicks, fixture.initialAuthorityPackage.clicks.elevationClicks);
+assert.equal(initial.clicks.windageDirection, fixture.initialAuthorityPackage.clicks.windageDirection);
+assert.equal(initial.clicks.elevationDirection, fixture.initialAuthorityPackage.clicks.elevationDirection);
+assert.equal(initial.clicks.windageTurnDirection, fixture.initialAuthorityPackage.clicks.windageTurnDirection);
+assert.equal(initial.clicks.elevationTurnDirection, fixture.initialAuthorityPackage.clicks.elevationTurnDirection);
+assert.equal(Number(initial.poib.xPercent), fixture.initialAuthorityPackage.poib.xPercent);
+assert.equal(Number(initial.poib.yPercent), fixture.initialAuthorityPackage.poib.yPercent);
 
 const confirmation = await buildAuthorityPackage({
   targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
   targetName: "Baker 25 Meters Zeroing Target M16A2",
   aimCoordinate,
-  impactCoordinates: [
-    { xPercent: 49.9, yPercent: 43.1, shotId: "confirmation-1" },
-    { xPercent: 50.1, yPercent: 43.2, shotId: "confirmation-2" },
-    { xPercent: 50, yPercent: 43.3, shotId: "confirmation-3" }
-  ],
+  impactCoordinates: fixture.confirmationImpacts,
   distance: { value: 25, unit: "m" },
   phase: "confirmation",
   adjustmentProfileId,
@@ -54,5 +61,10 @@ assert.equal(confirmation.validation.confirmed, true);
 assert.equal(confirmation.mechanicalSightAuthority.adjustmentProfileId, adjustmentProfileId);
 assert.equal(Number(confirmation.clicks.model.windagePerClick), 0.5);
 assert.equal(Number(confirmation.clicks.model.elevationPerClick), 1.25);
+assert.equal(confirmation.clicks.windageClicks, fixture.confirmationAuthorityPackage.clicks.windageClicks);
+assert.equal(confirmation.clicks.elevationClicks, fixture.confirmationAuthorityPackage.clicks.elevationClicks);
+assert.equal(fixture.fixtureAuthority.owner, "SCZN3 Backend Authority");
+assert.equal(fixture.fixtureAuthority.method, "docs/production/authority_adapter.mjs::buildAuthorityPackage");
+assert.equal(fixture.target.imageSha256, "690d33a58899b85fbd7204ab3911bbc0d37caed6ad9e5e2ce209b6f0eef8940c");
 
 console.log("PASS Episode 60 Chapter 3 M16A2 governed authority and confirmation");

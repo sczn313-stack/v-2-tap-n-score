@@ -58,6 +58,8 @@
       this.onStatusChange = options.onStatusChange || (() => {});
       this.onNarrationStatus = options.onNarrationStatus || (() => {});
       this.audioFactory = options.audioFactory || (() => new global.Audio());
+      this.speechRate = Math.max(0.1, Number(options.speechRate) || 0.94);
+      this.speechVoiceResolver = options.speechVoiceResolver || (() => null);
       this.timer = new PausableTimer(options.clock || global);
       this.audio = null;
       this.utterance = null;
@@ -304,8 +306,10 @@
       }
       global.speechSynthesis.cancel();
       this.utterance = new global.SpeechSynthesisUtterance(message);
-      this.utterance.rate = 0.94;
+      this.utterance.rate = this.speechRate;
       this.utterance.pitch = 1;
+      const voice = this.speechVoiceResolver();
+      if (voice) this.utterance.voice = voice;
       this.utterance.onend = finish;
       this.utterance.onerror = () => this.timer.start(estimatedDuration, finish);
       global.speechSynthesis.speak(this.utterance);

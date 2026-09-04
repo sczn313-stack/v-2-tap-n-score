@@ -74,21 +74,22 @@
 const historyList = document.getElementById("historyList");
 const RECORD_QUERY = new URLSearchParams(window.location.search);
 const SIMULATION_MODE = RECORD_QUERY.get("simulation") === "1";
+const PREPARED_DEMO_MODE = RECORD_QUERY.get("prepared_demo") === "1";
 const REQUESTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("session") || RECORD_QUERY.get("sessionId") || "").trim();
 const SELECTED_RECORD_SESSION_ID = String(RECORD_QUERY.get("selected") || "").trim();
 const HISTORICAL_DETAIL_MODE = Boolean(REQUESTED_RECORD_SESSION_ID);
 const RECORDS_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
 let vaultCorrectionVectorSequence = 0;
-const PRESERVED_SEC_ENDPOINT = `${RECORDS_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
+const PRESERVED_SEC_ENDPOINT = `${PREPARED_DEMO_MODE ? window.location.origin : RECORDS_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
 let serverSavedSessions = [];
 let serverTimelineRecords = [];
 const VAULT_RETURN_STATE_KEY = "SCZN3_BALLISTIC_VAULT_RETURN_STATE";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const TALKING_TARGET_DEMO_SESSION_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_SESSION";
-const TALKING_TARGET_DEMO_MODE = SIMULATION_MODE && RECORD_QUERY.get("talking_demo") === "1";
+const TALKING_TARGET_DEMO_MODE = (SIMULATION_MODE || PREPARED_DEMO_MODE) && RECORD_QUERY.get("talking_demo") === "1";
 const SIMULATION_SESSION_ID = SIMULATION_MODE ? (localStorage.getItem(SIMULATION_SESSION_STORAGE_KEY) || "") : "";
-document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
+document.body.dataset.experienceMode = PREPARED_DEMO_MODE ? "demonstration" : SIMULATION_MODE ? "simulation" : "standard";
 if (TALKING_TARGET_DEMO_MODE) document.body.dataset.talkingTargetDemoStage = "true";
 if (TALKING_TARGET_DEMO_MODE) {
   const reinforcement = document.createElement("section");

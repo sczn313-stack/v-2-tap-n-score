@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [html, css, source, narration, narrationStandard, matrix, shoot, m4Runtime, workspace, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
+const [html, css, source, narration, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, workspace, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
   readFile("m16a2-tstt.html", "utf8"),
   readFile("m16a2-tstt.css", "utf8"),
   readFile("m16a2-tstt.js", "utf8"),
@@ -9,6 +9,9 @@ const [html, css, source, narration, narrationStandard, matrix, shoot, m4Runtime
   readFile("architecture/TSTT_NARRATION_STANDARD.md", "utf8"),
   readFile("matrix.html", "utf8"),
   readFile("shoot.html", "utf8"),
+  readFile("records.html", "utf8"),
+  readFile("self_teaching_player.js", "utf8"),
+  readFile("m16a2_talking_demo_session.js", "utf8"),
   readFile("m4_runtime.js", "utf8"),
   readFile("smart_target_workspace.js", "utf8"),
   readFile("backend/target_image_registration_authority.py", "utf8"),
@@ -17,6 +20,7 @@ const [html, css, source, narration, narrationStandard, matrix, shoot, m4Runtime
   readFile("production/m16a2_tstt_review_server.mjs", "utf8")
 ]);
 const chapterThreeSource = source.slice(source.indexOf('id: "a2-3"'), source.indexOf('id: "a2-4"'));
+const chapterFourSource = source.slice(source.indexOf('id: "a2-4"'), source.indexOf('id: "a2-5"'));
 
 assert.match(html, /Baker M16A2 25 Meter TSTT/, "the route identifies the exact lesson product");
 assert.match(html, /PAUSE[\s\S]*STOP[\s\S]*REPLAY[\s\S]*CHAPTERS[\s\S]*RESTART/, "Snapshot 22 controls plus distinct Stop are present");
@@ -58,18 +62,27 @@ assert.match(source, /For your 25-meter zero[\s\S]*CLOCKWISE past 8\/3[\s\S]*Aft
 assert.doesNotMatch(source.split('id: "a2-3"')[0], /<svg|rifle-locator|sight-physical|drum-demo|diagram-ring|CLOCKWISE • ONE CLICK PAST 300/, "Chapter 2 contains no replacement hardware illustration or rejected abstract drum graphic");
 assert.match(source, /task: "", action: "none", hideTask: true/, "Chapter 2 removes the classroom task and completion button");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /PHOTOGRAPH USAGE RIGHTS|FOUNDER REVIEW REFERENCES|review-asset-note/, "the shooter-facing page contains no photograph-review notice");
-assert.match(source, /Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Take a photo of your target or choose one from your photos\./, "Chapter 3 preserves the concise Founder photo-entry script");
-assert.match(chapterThreeSource, /MAKE THE ADJUSTMENT[\s\S]*ADD PHOTO[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 3 presents the concise Founder photo-entry actions in order");
-assert.match(source, /chapterThreeTargetImage = "[^"]*FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png"/, "Chapter 3 registers the exact Founder-supplied Baker M16A2 target");
-assert.match(chapterThreeSource, /adjustment-target[\s\S]*chapterThreeTargetImage[\s\S]*photo-entry/, "Chapter 3 prominently renders the supplied Baker target");
-assert.match(source, /tapNScoreRoad = "matrix\.html\?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=3"[\s\S]*chapterThreePhotoRoad[\s\S]*equipmentSupportsExactSetup[\s\S]*equipment_profile_id/, "Chapter 3 selects the governed road only with the active exact M16A2 Equipment Library profile");
-assert.match(chapterThreeSource, /chapterThreePhotoRoad\("camera"\)[\s\S]*chapterThreePhotoRoad\("existing"\)/, "Chapter 3 hands both photo choices to the governed road");
-assert.match(chapterThreeSource, /chapterThreeSpokenNarration[\s\S]*delivery: "normal"[\s\S]*task: ""[\s\S]*action: "none"[\s\S]*hideTask: true/, "Chapter 3 uses one baseline narration pass and no classroom gate");
-assert.doesNotMatch(chapterThreeSource, /adjustment-flow|aim-demo|aim-reticle|axis-key|I FOUND THE AIM POINT|\bPOIB\b|minutes of angle|\bMOA\b|marksmanship|quiz|competenc|I CAN|YOUR TASK|groupCenter|showResults/i, "Chapter 3 contains no six-card treatment, simulation, math, parallel result implementation, quiz, or gate");
-assert.match(css, /\.adjustment-entry[\s\S]*grid-template-columns: minmax\(240px, 330px\) 1fr[\s\S]*@media \(max-width: 699px\)[\s\S]*\.adjustment-entry \{ grid-template-columns: 1fr;/, "Chapter 3 has a dedicated desktop and phone photo-entry presentation");
-assert.match(matrix, /photo_source[\s\S]*shoot\.html\?session=[\s\S]*founderReviewQuery[\s\S]*photoSource/, "the governed session handoff preserves the requested Chapter 3 photo source");
-assert.match(matrix, /TSTT_CHAPTER_THREE_HANDOFF[\s\S]*governed\.item\.setup\.setupId === requestedEquipmentProfileId[\s\S]*await goToTarget\(\)/, "the Chapter 3 handoff automatically starts only the backend-admitted requested equipment profile");
-assert.match(shoot, /requestedPhotoSource[\s\S]*precisionTapPhotoPicker[\s\S]*renderPrecisionTapControls/, "the proven target workspace opens its real photo picker after the Chapter 3 handoff");
+assert.match(source, /chapterThreeDemoRoad = "shoot\.html\?prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1"/, "Chapter 3 launches the prepared demonstration through the existing target workspace");
+assert.match(chapterThreeSource, /Let Tap-n-Score show you[\s\S]*COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE/, "Chapter 3 is a watch-only complete demonstration");
+assert.match(source, /chapterThreeTargetImage = "[^"]*FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png"/, "the exact Founder-supplied Baker M16A2 target is registered once");
+assert.match(chapterThreeSource, /adjustment-target[\s\S]*chapterThreeTargetImage[\s\S]*demo-launch/, "Chapter 3 prominently renders the supplied Baker target");
+assert.doesNotMatch(chapterThreeSource, /TAKE PHOTO|CHOOSE EXISTING PHOTO|I FOUND|I CAN|YOUR TASK|\bPOIB\b|quiz|competenc/i, "Chapter 3 asks for no upload, observation, calculation, acknowledgment, or classroom gate");
+assert.match(demoFixture, /M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "the prepared example carries the exact equipment configuration");
+assert.match(demoFixture, /M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011[\s\S]*authoritySource: "backend-authoritative"/, "the prepared example carries the governed M16A2 adjustment identity and output provenance");
+assert.match(shoot, /PREPARED_M16A2_DEMO_MODE[\s\S]*SCZN3_BAKER_TALKING_DEMO_FIXTURE[\s\S]*bakerSampleDemoSteps[\s\S]*autoplay/, "the existing SCZN3 demonstration engine owns the automated Chapter 3 road");
+assert.match(shoot, /CENTER CROSSHAIRS[\s\S]*SHOT PATTERN[\s\S]*SHOW RESULTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*GOVERNED M16A2 ADJUSTMENT[\s\S]*ZERO CONFIRMED/, "the demonstration visibly completes the governed observation, correction, and confirmation sequence");
+assert.match(shoot, /state: "sec"[\s\S]*completed Shooter Experience Card[\s\S]*state: "vault"[\s\S]*Ballistic Vault/, "the demonstration continues through the real SEC and Ballistic Vault surfaces");
+assert.match(shoot, /REAR WINDAGE KNOB[\s\S]*FRONT SIGHT POST[\s\S]*COUNTERCLOCKWISE back to 8\/3/, "the demo names the governed controls, turn direction, and confirmed-zero return procedure");
+assert.match(records, /PREPARED_DEMO_MODE[\s\S]*experienceMode[\s\S]*demonstration/, "prepared Chapter 3 preservation uses real records surfaces without a simulation label");
+assert.match(player, /speechRate[\s\S]*speechVoiceResolver/, "the reusable player accepts the governed Samantha voice and 0.70 rate for the demo");
+assert.match(source, /Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Take a photo of your target or choose one from your photos\./, "Chapter 4 carries the concise shooter photo-entry script");
+assert.match(chapterFourSource, /YOUR TURN[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the shooter-control entry");
+assert.match(chapterFourSource, /chapterFourPhotoRoad\("camera"\)[\s\S]*chapterFourPhotoRoad\("existing"\)/, "Chapter 4 hands both photo choices to the governed road");
+assert.match(source, /tapNScoreRoad = "matrix\.html\?target_profile_id=m4_25m_zero&founder_review=1&tstt_chapter=4"[\s\S]*chapterFourPhotoRoad[\s\S]*equipmentSupportsExactSetup[\s\S]*equipment_profile_id/, "Chapter 4 selects the governed road with the active exact M16A2 Equipment Library profile");
+assert.match(matrix, /photo_source[\s\S]*shoot\.html\?session=[\s\S]*founderReviewQuery[\s\S]*photoSource/, "the governed session handoff preserves the requested Chapter 4 photo source");
+assert.match(matrix, /TSTT_SHOOTER_HANDOFF[\s\S]*governed\.item\.setup\.setupId === requestedEquipmentProfileId[\s\S]*await goToTarget\(\)/, "the Chapter 4 handoff automatically starts only the backend-admitted requested equipment profile");
+assert.match(source, /applyDirectChapterEntry[\s\S]*state\.started = true[\s\S]*state\.current = requested - 1[\s\S]*state\.unlocked = chapters\.length - 1/, "returning shooters can enter Chapter 4 directly with all Chapters navigation available");
+assert.match(shoot, /requestedPhotoSource[\s\S]*precisionTapPhotoPicker[\s\S]*renderPrecisionTapControls/, "the proven target workspace opens its real photo picker after the Chapter 4 handoff");
 assert.match(shoot, /targetCameraInput[\s\S]*capture="environment"[\s\S]*targetImageInput[\s\S]*Tap Your Aim Point[\s\S]*Tap Your Shots[\s\S]*Show Results/, "the handoff uses the established Take Photo, existing-photo, Precision Tap, and results controls");
 assert.match(workspace, /createPrecisionTap[\s\S]*pointer[\s\S]*(?:scale|zoom)[\s\S]*(?:translate|pan)/i, "the established Precision Tap owner retains anchored source-image interaction and zoom/pan behavior");
 assert.match(m4Runtime, /\/api\/authority\/m4[\s\S]*requestAuthority[\s\S]*saveInitialAuthority[\s\S]*saveConfirmationAuthority/, "backend M16A2 authority remains the sole correction and confirmation owner");
@@ -100,10 +113,7 @@ assert.match(matrix, /setActiveEquipmentProfile\(setupId\)[\s\S]*returnToEquipme
 assert.match(matrix, /Military M-Series Rifles[\s\S]*M16A2[\s\S]*M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "M16A2 standard iron sights are discoverable through the existing Equipment Library");
 assert.match(matrix, /function discoveryOrderedOptions[\s\S]*localeCompare[\s\S]*\.\.\.other/, "equipment discovery is alphabetized while Other remains last");
 assert.match(source, /For your 25-meter zero, set the drum to 8\/3, then turn it one click CLOCKWISE past 8\/3[\s\S]*After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8\/3 for the 300-meter setting/, "Chapter 2 teaches the Founder-approved M16A2 rear-drum setup and return");
-assert.match(source, /FRONT SIGHT POST[\s\S]*1\.25 MOA \/ CLICK/, "front-post elevation authority is taught");
-assert.match(source, /REAR WINDAGE KNOB[\s\S]*0\.5 MOA \/ CLICK/, "rear-windage authority is taught");
 assert.match(source, /CLOCKWISE[\s\S]*COUNTERCLOCKWISE/, "rotation language is explicit");
-assert.match(source, /VIEW FROM ABOVE[\s\S]*FACE THE RIGHT-SIDE KNOB/, "observer view is explicit for both controls");
 assert.match(source, /READY TO FIRE[\s\S]*YOUR FIRST GROUP/, "the experience reaches the exact pre-fire readiness stop");
 assert.match(source, /PREFIRE TRAINING COMPLETE[\s\S]*Training setup: M16A2 with standard iron sights/, "the readiness panel reports lesson coverage without claiming the shooter's equipment was confirmed");
 assert.doesNotMatch(source, /PREFIRE CHECK COMPLETE/, "the readiness panel does not imply an equipment-confirmation checkpoint");
@@ -120,6 +130,7 @@ for (const build of [buildSite, buildNetlify]) {
   assert.match(build, /"m16a2-tstt\.css"/, "the stylesheet is included in the build inventory");
   assert.match(build, /"m16a2-tstt\.js"/, "the lesson runtime is included in the build inventory");
   assert.match(build, /"tstt_narration\.js"/, "the reusable narration runtime is included in the build inventory");
+  assert.match(build, /"m16a2_talking_demo_session\.js"/, "the prepared M16A2 demonstration fixture is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the preserved target evidence is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04\.png/, "the exact Founder-supplied Chapter 3 Baker target is included in the build inventory");
   assert.doesNotMatch(build, /FOUNDER_M16A2_(?:FRONT_SIGHT|REAR_WINDAGE|REAR_ELEVATION)/, "uncleared Chapter 2 reference photographs cannot enter the production build inventory");

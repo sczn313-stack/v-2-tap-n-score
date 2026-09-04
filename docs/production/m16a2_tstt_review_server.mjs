@@ -49,6 +49,7 @@ const publicFiles = new Map([
   ["/m4_zeroing_sec.js", "m4_zeroing_sec.js"],
   ["/founder_review_session_003.js", "founder_review_session_003.js"],
   ["/baker_talking_demo_session.js", "baker_talking_demo_session.js"],
+  ["/m16a2_talking_demo_session.js", "m16a2_talking_demo_session.js"],
   ["/sec_dispatch.js", "sec_dispatch.js"],
   ["/self_teaching_player.js", "self_teaching_player.js"],
   ["/ballistic-vault.css", "ballistic-vault.css"],
