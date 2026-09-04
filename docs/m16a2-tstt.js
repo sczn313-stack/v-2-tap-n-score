@@ -2,6 +2,12 @@
   "use strict";
 
   const targetImage = "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png";
+  const chapterTwoReferencePath = "authority-evidence/mfam/founder-supplied-chapter2-visual-reference";
+  const chapterTwoReferenceImages = Object.freeze({
+    frontSight: `${chapterTwoReferencePath}/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg`,
+    rearWindage: `${chapterTwoReferencePath}/FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE_2026-09-04.jpeg`,
+    rearDrum: `${chapterTwoReferencePath}/FOUNDER_M16A2_REAR_ELEVATION_DRUM_8-3_REFERENCE_2026-09-04.jpeg`
+  });
   const equipmentKeys = Object.freeze({ active: "SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", saved: "SCZN3_SAVED_EQUIPMENT_PROFILES" });
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
@@ -54,65 +60,33 @@
         Object.freeze({ text: chapterTwoSpokenNarration, delivery: "normal" })
       ]),
       visual: () => `<div class="sight-lesson">
-        <section class="rifle-locator" aria-label="M16A2 sight locations">
-          <div class="sight-section-heading"><span>SEE IT</span><b>THE SIGHTS ON THE RIFLE</b></div>
-          <svg viewBox="0 0 760 205" role="img" aria-label="Side profile of an M16A2 showing the front sight at the front of the rifle and the windage knob and elevation drum in the rear sight assembly">
-            <path class="rifle-body" d="M34 117h112l36-28h95l24 22h89l31 22h67l21-38h43l8 18h122v15H534l-12 39h-67l-16-31h-46l-24 20h-97l-24-21H34z"/>
-            <path class="rifle-line" d="M135 116h124l25-17h93l20 18h72m14 0 17-45h17l17 45m-7-45v-29m-12 13h24m-20 61h56m21 0h116"/>
-            <path class="rifle-line rear-handle" d="M279 98l18-47h96l28 66m-112-19 12-27h63l12 27"/>
-            <circle class="rifle-callout" cx="516" cy="55" r="17"/><text x="516" y="61" class="callout-number">1</text>
-            <circle class="rifle-callout" cx="397" cy="73" r="17"/><text x="397" y="79" class="callout-number">2</text>
-            <circle class="rifle-callout" cx="356" cy="101" r="17"/><text x="356" y="107" class="callout-number">3</text>
-            <text x="516" y="28" class="rifle-label">FRONT SIGHT</text><text x="376" y="26" class="rifle-label">REAR SIGHT</text>
-          </svg>
-          <p>${chapterTwoFounderScript[1]}</p>
-        </section>
+        <p class="sight-intro">${chapterTwoFounderScript[1]}</p>
         <div class="sight-cards">
           <section class="sight-card">
-            <div class="sight-card-head"><span>1 · FRONT OF RIFLE</span><b>FRONT SIGHT POST</b></div>
-            <div class="sight-physical front-sight-view">
-              <svg viewBox="0 0 260 170" role="img" aria-label="Front view of the M16A2 front sight housing with the square front sight post centered between two protective ears">
-                <path class="sight-metal" d="M31 153 47 38l30-20 13 118h80l13-118 30 20 16 115-32-9-14-83-6 92H83l-6-92-14 83z"/>
-                <path class="sight-detail" d="M116 143V65l7-25h14l7 25v78m-28-70h28"/>
-                <circle class="sight-detent" cx="97" cy="139" r="6"/>
-              </svg>
-              <span>Square post centered between two protective ears</span>
-            </div>
+            <div class="sight-card-head"><span>FRONT OF RIFLE</span><b>FRONT SIGHT POST</b></div>
+            <figure class="sight-photo front-sight-photo"><img src="${chapterTwoReferenceImages.frontSight}" alt="Real M16A2 front sight post between its protective ears"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE SQUARE POST BETWEEN THE PROTECTIVE EARS</figcaption></figure>
             <p>${chapterTwoFounderScript[2]}</p>
             <div class="sight-job"><span>JOB</span><b>ELEVATION</b><em>SHOT PATTERN · UP / DOWN</em></div>
           </section>
           <section class="sight-card">
-            <div class="sight-card-head"><span>2 · REAR SIGHT · RIGHT SIDE</span><b>REAR WINDAGE KNOB</b></div>
-            <div class="sight-physical rear-windage-view">
-              <svg viewBox="0 0 260 170" role="img" aria-label="Right-side view of the M16A2 rear sight with its round windage knob highlighted">
-                <path class="sight-metal" d="M22 145h181l-17-99h-52l-11 35H78L64 47H43z"/>
-                <path class="sight-detail" d="M123 81h63m-52-35v-23h36v23m-18-22v35"/>
-                <circle class="knob-edge" cx="203" cy="94" r="42"/><circle class="knob-face" cx="203" cy="94" r="29"/><circle class="knob-center" cx="203" cy="94" r="7"/>
-              </svg>
-              <span>Round exposed knob on the right side of the rear sight</span>
-            </div>
+            <div class="sight-card-head"><span>REAR SIGHT · RIGHT SIDE</span><b>REAR WINDAGE KNOB</b></div>
+            <figure class="sight-photo rear-windage-photo"><img src="${chapterTwoReferenceImages.rearWindage}" alt="Real rear sight showing the round windage knob on its right side"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE ROUND KNOB ON THE RIGHT SIDE</figcaption></figure>
             <p>${chapterTwoFounderScript[3]}</p>
             <div class="sight-job"><span>JOB</span><b>WINDAGE</b><em>SHOT PATTERN · RIGHT / LEFT</em></div>
           </section>
           <section class="sight-card">
-            <div class="sight-card-head"><span>3 · REAR SIGHT · BELOW APERTURE</span><b>REAR ELEVATION DRUM</b></div>
-            <div class="sight-physical rear-drum-view">
-              <svg viewBox="0 0 260 170" role="img" aria-label="M16A2 rear elevation drum below the rear aperture with the 8/3 mark aligned to its index">
-                <path class="sight-metal" d="M49 146h163l-14-37H62z"/><path class="aperture-stem" d="M113 110V53h34v57"/>
-                <circle class="aperture-ring" cx="130" cy="43" r="30"/><circle class="aperture-hole" cx="130" cy="43" r="12"/>
-                <path class="drum-edge" d="M68 91h124l15 26H53z"/><path class="drum-index" d="M130 83v25"/>
-                <text x="130" y="131" class="drum-setting">8/3</text>
-              </svg>
-              <span>Numbered drum beneath the rear sight aperture</span>
-            </div>
+            <div class="sight-card-head"><span>REAR SIGHT · BELOW APERTURE</span><b>REAR ELEVATION DRUM</b></div>
+            <figure class="sight-photo rear-drum-photo"><img src="${chapterTwoReferenceImages.rearDrum}" alt="Real M16A2 rear elevation drum with the 8/3 marking visible"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE 8/3 MARK ON THE NUMBERED DRUM</figcaption></figure>
             <p>${chapterTwoFounderScript[4]}</p><p class="setup-command">${chapterTwoFounderScript[5]}</p>
-            <div class="sight-job"><span>JOB</span><b>25-METER ZERO SETUP</b><em>8/3 → ONE CLICK PAST 8/3</em></div>
+            <div class="drum-sequence"><span><b>25-METER ZERO</b>8/3 → 1 CLICK CLOCKWISE PAST 8/3</span><span><b>AFTER ZERO CONFIRMATION</b>1 CLICK COUNTERCLOCKWISE → BACK TO 8/3</span></div>
+            <div class="sight-job"><span>JOB</span><b>25-METER ZERO SETUP</b><em>START AT THE 8/3 INDEX</em></div>
           </section>
         </div>
         <section class="sight-recap"><b>${chapterTwoFounderScript[6]}</b><ul><li>${chapterTwoFounderScript[7]}</li><li>${chapterTwoFounderScript[8]}</li><li>${chapterTwoFounderScript[9]}</li></ul></section>
         <p class="sight-next">${chapterTwoFounderScript[10]}</p>
+        <p class="review-asset-note">FOUNDER REVIEW REFERENCES · PHOTOGRAPH USAGE RIGHTS NOT YET CLEARED FOR PRODUCTION</p>
       </div>`,
-      task: "On a safe, unloaded M16A2, point to the front sight post, the right-side rear windage knob, and the rear elevation drum beneath the aperture. Say each control's job.", action: "advance", actionLabel: "I CAN FIND THE THREE SIGHTS"
+      task: "", action: "none", hideTask: true
     }),
     Object.freeze({
       id: "a2-3", label: "GRID + AIM", shortTitle: "Understand the grid and aim", eyebrow: "AIM RELATIONSHIP", title: "The center is your reference.",
@@ -247,6 +221,7 @@
   }
   function actionMarkup(chapter) {
     if (!state.started) return "";
+    if (chapter.action === "none") return "";
     if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT, WE'LL LEARN THE SIGHTS.</button>`;
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
@@ -268,6 +243,7 @@
     elements.chapterNumber.textContent = `CHAPTER ${state.current + 1} OF ${chapters.length}`; elements.chapterSubject.textContent = chapter.label; renderProgress();
     elements.targetIdentity.hidden = !chapter.targetIdentity; elements.eyebrow.hidden = !chapter.eyebrow; elements.eyebrow.textContent = chapter.eyebrow; elements.title.textContent = chapter.title; elements.summary.hidden = !chapter.summary; elements.summary.textContent = chapter.summary;
     elements.visual.innerHTML = chapter.visual();
+    elements.task.hidden = chapter.hideTask === true;
     elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
     elements.action.innerHTML = actionMarkup(chapter);
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;

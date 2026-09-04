@@ -70,8 +70,12 @@ try {
     await page.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR SIGHTS.");
-    assert.match(await page.locator("#visualStage").innerText(), /SEE IT[\s\S]*THE SIGHTS ON THE RIFLE[\s\S]*FRONT SIGHT POST[\s\S]*Square post centered between two protective ears[\s\S]*ELEVATION[\s\S]*SHOT PATTERN · UP \/ DOWN[\s\S]*REAR WINDAGE KNOB[\s\S]*Round exposed knob on the right side[\s\S]*WINDAGE[\s\S]*SHOT PATTERN · RIGHT \/ LEFT[\s\S]*REAR ELEVATION DRUM[\s\S]*Numbered drum beneath the rear sight aperture[\s\S]*25-METER ZERO SETUP[\s\S]*8\/3 → ONE CLICK PAST 8\/3/);
+    assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST[\s\S]*FIND THE SQUARE POST BETWEEN THE PROTECTIVE EARS[\s\S]*ELEVATION[\s\S]*SHOT PATTERN · UP \/ DOWN[\s\S]*REAR WINDAGE KNOB[\s\S]*FIND THE ROUND KNOB ON THE RIGHT SIDE[\s\S]*WINDAGE[\s\S]*SHOT PATTERN · RIGHT \/ LEFT[\s\S]*REAR ELEVATION DRUM[\s\S]*FIND THE 8\/3 MARK ON THE NUMBERED DRUM[\s\S]*25-METER ZERO[\s\S]*1 CLICK CLOCKWISE PAST 8\/3[\s\S]*AFTER ZERO CONFIRMATION[\s\S]*1 CLICK COUNTERCLOCKWISE → BACK TO 8\/3/);
     assert.equal(await page.locator("#visualStage .sight-card").count(), 3);
+    assert.equal(await page.locator("#visualStage .sight-photo img").count(), 3);
+    assert.equal(await page.locator("#visualStage svg").count(), 0);
+    assert.equal(await page.getByText("YOUR TASK", { exact: true }).count(), 0);
+    assert.equal(await page.getByRole("button", { name: "I CAN FIND THE THREE SIGHTS", exact: true }).count(), 0);
     const chapterTwoSpeech = await page.evaluate(() => {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
@@ -90,7 +94,8 @@ try {
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
 
-    await page.getByRole("button", { name: /I CAN FIND THE THREE SIGHTS/ }).click();
+    await page.locator('[data-control="chapters"]').click();
+    await page.getByRole("button", { name: /Understand the grid and aim/ }).click();
     await page.getByRole("button", { name: /I FOUND THE AIM POINT/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST/);

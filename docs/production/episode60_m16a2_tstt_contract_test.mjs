@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [html, css, source, narration, narrationStandard, matrix, buildSite, buildNetlify] = await Promise.all([
+const [html, css, source, narration, narrationStandard, matrix, buildSite, buildNetlify, reviewServer] = await Promise.all([
   readFile("m16a2-tstt.html", "utf8"),
   readFile("m16a2-tstt.css", "utf8"),
   readFile("m16a2-tstt.js", "utf8"),
@@ -9,7 +9,8 @@ const [html, css, source, narration, narrationStandard, matrix, buildSite, build
   readFile("architecture/TSTT_NARRATION_STANDARD.md", "utf8"),
   readFile("matrix.html", "utf8"),
   readFile("production/build-site.mjs", "utf8"),
-  readFile("production/build-netlify.mjs", "utf8")
+  readFile("production/build-netlify.mjs", "utf8"),
+  readFile("production/m16a2_tstt_review_server.mjs", "utf8")
 ]);
 
 assert.match(html, /Baker M16A2 25 Meter TSTT/, "the route identifies the exact lesson product");
@@ -44,9 +45,13 @@ assert.match(source, /Before making any sight adjustments, understand what this 
 assert.doesNotMatch(source.split('id: "a2-2"')[0], /\b(?:white|red|group|POIB)\b|center dot|center point|Do not chase/i, "Chapter 1 uses locked shooter-facing terminology without color, group, POIB, or the retired standalone explanation");
 assert.match(source, /Now that you understand the target, let's learn the sights you'll use to zero your M16A2\.[\s\S]*three sight adjustments[\s\S]*front sight post[\s\S]*rear windage knob[\s\S]*rear elevation drum[\s\S]*move your shot pattern up or down[\s\S]*move your shot pattern right or left[\s\S]*correct starting position[\s\S]*Set the rear elevation drum to 8\/3, then move it one click past 8\/3\.[\s\S]*Front sight post — elevation, up or down\.[\s\S]*Rear windage knob — windage, right or left\.[\s\S]*Rear elevation drum — sets the sight for the 25-meter zero\.[\s\S]*exactly where each adjustment is on your rifle and how to move it\./, "Chapter 2 contains the complete Founder-approved script in order");
 assert.match(source, /chapterTwoSpokenNarration[\s\S]*narrationPlan: Object\.freeze\(\[\s*Object\.freeze\(\{ text: chapterTwoSpokenNarration, delivery: "normal" \}\)/, "Chapter 2 uses the locked Samantha baseline rate with natural sentence punctuation");
-assert.match(source, /SEE IT → FIND IT → UNDERSTAND ITS JOB[\s\S]*THE SIGHTS ON THE RIFLE[\s\S]*FRONT OF RIFLE[\s\S]*REAR SIGHT · RIGHT SIDE[\s\S]*REAR SIGHT · BELOW APERTURE/, "Chapter 2 teaches where each physical sight is found on the rifle");
-assert.match(source, /Square post centered between two protective ears[\s\S]*Round exposed knob on the right side of the rear sight[\s\S]*Numbered drum beneath the rear sight aperture/, "Chapter 2 uses recognizable physical traits rather than abstract control decoration");
-assert.doesNotMatch(source.split('id: "a2-3"')[0], /drum-demo|diagram-ring|CLOCKWISE • ONE CLICK PAST 300/, "Chapter 2 does not restore the rejected abstract rear-drum graphic");
+assert.match(source, /SEE IT → FIND IT → UNDERSTAND ITS JOB[\s\S]*FRONT OF RIFLE[\s\S]*REAR SIGHT · RIGHT SIDE[\s\S]*REAR SIGHT · BELOW APERTURE/, "Chapter 2 teaches where each physical sight is found on the rifle");
+assert.match(source, /FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_ELEVATION_DRUM_8-3_REFERENCE/, "Chapter 2 uses all three Founder-supplied real-hardware references");
+assert.match(source, /FIND THE SQUARE POST BETWEEN THE PROTECTIVE EARS[\s\S]*FIND THE ROUND KNOB ON THE RIGHT SIDE[\s\S]*FIND THE 8\/3 MARK ON THE NUMBERED DRUM/, "Chapter 2 highlights and names the actual hardware controls");
+assert.match(source, /25-METER ZERO[\s\S]*1 CLICK CLOCKWISE PAST 8\/3[\s\S]*AFTER ZERO CONFIRMATION[\s\S]*1 CLICK COUNTERCLOCKWISE → BACK TO 8\/3/, "Chapter 2 teaches temporary 25-meter setup and return to the 300-meter 8/3 setting");
+assert.doesNotMatch(source.split('id: "a2-3"')[0], /<svg|rifle-locator|sight-physical|drum-demo|diagram-ring|CLOCKWISE • ONE CLICK PAST 300/, "Chapter 2 contains no replacement hardware illustration or rejected abstract drum graphic");
+assert.match(source, /task: "", action: "none", hideTask: true/, "Chapter 2 removes the classroom task and completion button");
+assert.match(source, /PHOTOGRAPH USAGE RIGHTS NOT YET CLEARED FOR PRODUCTION/, "the local review surface identifies the unresolved production-rights boundary");
 assert.match(narrationStandard, /one thought per sentence[\s\S]*Pause briefly after every sentence[\s\S]*Use one governed name[\s\S]*visual and audio teaching in the same sequence/i, "the reusable governance artifact preserves the Founder narration rules");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /equipment-dot|EXACT TRAINING MATCH · CONFIRM GEAR|THIS MATCHES MY GEAR|confirm-equipment|CONFIRM YOUR GEAR|NOT CONFIRMED AS YOUR EQUIPMENT/, "physical-equipment confirmation UI and its orange/gold status dot are removed");
 assert.doesNotMatch(`${html}\n${source}`, /confirm (?:this |the )?target|target confirmation/i, "QR-established target identity is never reconfirmed by the shooter");
@@ -90,6 +95,9 @@ for (const build of [buildSite, buildNetlify]) {
   assert.match(build, /"m16a2-tstt\.js"/, "the lesson runtime is included in the build inventory");
   assert.match(build, /"tstt_narration\.js"/, "the reusable narration runtime is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the preserved target evidence is included in the build inventory");
+  assert.doesNotMatch(build, /FOUNDER_M16A2_(?:FRONT_SIGHT|REAR_WINDAGE|REAR_ELEVATION)/, "uncleared Chapter 2 reference photographs cannot enter the production build inventory");
 }
+assert.match(reviewServer, /FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_ELEVATION_DRUM_8-3_REFERENCE/, "the local review server permits all three Founder-supplied references");
+assert.match(reviewServer, /const host = process\.argv\[3\] \|\| "127\.0\.0\.1"/, "the review server keeps uncleared reference photographs on localhost unless LAN exposure is explicitly requested");
 
 console.log("PASS Episode 60 Baker M16A2 pre-fire TSTT contract");
