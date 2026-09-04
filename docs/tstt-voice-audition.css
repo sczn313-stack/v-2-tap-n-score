@@ -40,6 +40,19 @@ blockquote { margin: 4px 0 24px; padding: 18px; border: 1px solid #4a5149; borde
 .voice-sample button[aria-pressed="true"] { border-color: var(--gold-soft); box-shadow: 0 0 18px rgba(215,166,45,.24); }
 .audition-rule { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 18px 0 0; color: var(--muted); font-size: .62rem; font-weight: 850; letter-spacing: .1em; }
 .audition-rule b { color: var(--gold-soft); }
+.speech-diagnostics { margin-top: 18px; padding: 16px; border: 1px solid var(--line); background: rgba(9,13,10,.9); }
+.speech-diagnostics h2 { margin: 0 0 12px; color: var(--gold-soft); font-size: .72rem; letter-spacing: .13em; }
+.synthesis-flags { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 12px; }
+.synthesis-flags div { min-width: 0; padding: 9px; border: 1px solid #2d352e; background: var(--panel); }
+.synthesis-flags dt { overflow-wrap: anywhere; color: var(--muted); font-size: .54rem; font-weight: 800; }
+.synthesis-flags dd { margin: 5px 0 0; color: var(--ink); font-size: .72rem; font-weight: 900; }
+.speech-event-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.speech-event-grid article { display: grid; gap: 6px; padding: 11px; border: 1px solid #2d352e; background: var(--panel); }
+.speech-event-grid article > b { color: var(--gold-soft); font-size: .65rem; letter-spacing: .1em; }
+.speech-event-grid span { color: var(--muted); font-size: .63rem; }
+.speech-event-grid strong { color: var(--ink); overflow-wrap: anywhere; }
+.speech-call-state { margin: 12px 0 0; color: var(--muted); font-size: .62rem; font-weight: 800; }
+.speech-call-state strong { color: var(--ink); }
 
 @media (max-width: 420px) {
   .audition-header { align-items: flex-start; }
@@ -48,6 +61,7 @@ blockquote { margin: 4px 0 24px; padding: 18px; border: 1px solid #4a5149; borde
   blockquote { padding: 15px; font-size: .94rem; }
   .voice-sample { min-height: 76px; }
   .voice-sample button { min-width: 92px; }
+  .synthesis-flags, .speech-event-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

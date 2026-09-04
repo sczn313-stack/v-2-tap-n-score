@@ -21,7 +21,9 @@
   const region = document.getElementById("voiceRegion");
   const status = document.getElementById("voiceStatus");
   const identity = document.getElementById("voiceIdentity");
-  const button = document.getElementById("testSamantha");
+  const buttons = [...document.querySelectorAll("[data-speech-test]")];
+  const samanthaButton = document.getElementById("testSamantha");
+  const lastSpeechCall = document.getElementById("lastSpeechCall");
   let samantha = null;
 
   function normalizedLanguage(voice) { return String(voice.lang || "").replace("_", "-").toLowerCase(); }
@@ -42,29 +44,66 @@
     samantha = availableCandidates().find(voice => samanthaName.test(voice.name || "")) || null;
     identity.textContent = samantha ? [samantha.name, samantha.lang, samantha.voiceURI || "DEVICE VOICE"].filter(Boolean).join(" · ") : "SAMANTHA UNAVAILABLE";
     status.textContent = samantha ? "SAMANTHA READY · TAP ONCE" : "SAMANTHA IS NOT AVAILABLE ON THIS DEVICE";
-    button.disabled = !samantha;
+    samanthaButton.disabled = !samantha;
     region.setAttribute("aria-busy", "false");
   }
-  function stopPlayback() {
-    window.speechSynthesis.cancel();
-    button.setAttribute("aria-pressed", "false");
+  function setEvent(channel, eventName, value) {
+    const output = document.querySelector(`[data-speech-event="${channel}-${eventName}"]`);
+    if (output) output.textContent = value;
   }
-
-  button.addEventListener("click", () => {
-    if (!samantha || !("SpeechSynthesisUtterance" in window)) return;
-    stopPlayback();
+  function renderSynthesisFlags() {
+    const synthesis = window.speechSynthesis;
+    for (const name of ["paused", "pending", "speaking"]) {
+      document.querySelector(`[data-synthesis-flag="${name}"]`).textContent = String(Boolean(synthesis?.[name])).toUpperCase();
+    }
+  }
+  function resetEvents(channel) {
+    setEvent(channel, "start", "NOT RECEIVED");
+    setEvent(channel, "end", "NOT RECEIVED");
+    setEvent(channel, "error", "NOT RECEIVED");
+    setEvent(channel, "error-value", "—");
+  }
+  function runSpeechTest(channel) {
+    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      lastSpeechCall.textContent = "WEB SPEECH API UNAVAILABLE";
+      return;
+    }
+    if (channel === "samantha" && !samantha) return;
+    window.speechSynthesis.cancel();
+    buttons.forEach(button => button.setAttribute("aria-pressed", "false"));
+    const button = document.querySelector(`[data-speech-test="${channel}"]`);
+    const selectedVoice = channel === "samantha" ? samantha : null;
     const utterance = new SpeechSynthesisUtterance(testSentence);
-    utterance.voice = samantha;
-    utterance.lang = samantha.lang;
+    if (selectedVoice) utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice?.lang || "en-US";
     utterance.rate = speechSettings.rate;
     utterance.pitch = speechSettings.pitch;
     utterance.volume = speechSettings.volume;
+    resetEvents(channel);
     button.setAttribute("aria-pressed", "true");
-    utterance.onend = () => button.setAttribute("aria-pressed", "false");
-    utterance.onerror = () => button.setAttribute("aria-pressed", "false");
+    utterance.onstart = () => {
+      setEvent(channel, "start", "RECEIVED");
+      renderSynthesisFlags();
+    };
+    utterance.onend = () => {
+      setEvent(channel, "end", "RECEIVED");
+      button.setAttribute("aria-pressed", "false");
+      renderSynthesisFlags();
+    };
+    utterance.onerror = event => {
+      setEvent(channel, "error", "RECEIVED");
+      setEvent(channel, "error-value", String(event.error || "UNSPECIFIED"));
+      button.setAttribute("aria-pressed", "false");
+      renderSynthesisFlags();
+    };
+    lastSpeechCall.textContent = `${channel === "samantha" ? "A · SAMANTHA" : "B · DEFAULT"} · speak() CALLED`;
     window.speechSynthesis.speak(utterance);
-  });
+    renderSynthesisFlags();
+  }
+
+  buttons.forEach(button => button.addEventListener("click", () => runSpeechTest(button.dataset.speechTest)));
 
   if ("speechSynthesis" in window && typeof window.speechSynthesis.addEventListener === "function") window.speechSynthesis.addEventListener("voiceschanged", renderVoice);
   renderVoice();
+  renderSynthesisFlags();
 })();

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0b0f0d" />
   <title>TEST SAMANTHA — SCZN3</title>
   <meta name="description" content="Founder-runtime test of the original approved Samantha speech path." />
-  <link rel="stylesheet" href="tstt-voice-audition.css?v=1" />
+  <link rel="stylesheet" href="tstt-voice-audition.css?v=2" />
 </head>
 <body>
   <main class="audition-shell">
@@ -18,7 +18,7 @@
     <section class="audition-intro" aria-labelledby="testTitle">
       <span>ORIGINAL APPROVED SPEECH PATH</span>
       <h1 id="testTitle">Test Samantha.</h1>
-      <p>Tap the button once and judge the audible result.</p>
+      <p>Run A, then B. Both use the same direct Founder click and the same sentence.</p>
     </section>
 
     <blockquote>“This target is designed to zero your weapon at 25 meters.”</blockquote>
@@ -27,15 +27,45 @@
       <p class="voice-status" id="voiceStatus">CHECKING THIS DEVICE FOR SAMANTHA…</p>
       <div class="voice-list">
         <article class="voice-sample">
-          <div class="voice-name"><span>FOUNDER ACCEPTANCE</span><b id="voiceIdentity">CHECKING…</b></div>
-          <button type="button" id="testSamantha" disabled><span aria-hidden="true">▶</span> TEST SAMANTHA</button>
+          <div class="voice-name"><span>A · SELECTED SAMANTHA OBJECT</span><b id="voiceIdentity">CHECKING…</b></div>
+          <button type="button" id="testSamantha" data-speech-test="samantha" disabled><span aria-hidden="true">▶</span> TEST SAMANTHA</button>
+        </article>
+        <article class="voice-sample">
+          <div class="voice-name"><span>B · BROWSER DEFAULT VOICE</span><b>UTTERANCE.VOICE UNSET</b></div>
+          <button type="button" data-speech-test="default"><span aria-hidden="true">▶</span> TEST DEFAULT</button>
         </article>
       </div>
     </section>
 
-    <p class="audition-rule"><b>SAMANTHA</b><span>RATE 0.70</span><span>ONE DIRECT CLICK</span></p>
+    <section class="speech-diagnostics" aria-labelledby="diagnosticTitle">
+      <h2 id="diagnosticTitle">LIVE SPEECH EVENTS</h2>
+      <dl class="synthesis-flags">
+        <div><dt>speechSynthesis.paused</dt><dd data-synthesis-flag="paused">—</dd></div>
+        <div><dt>speechSynthesis.pending</dt><dd data-synthesis-flag="pending">—</dd></div>
+        <div><dt>speechSynthesis.speaking</dt><dd data-synthesis-flag="speaking">—</dd></div>
+      </dl>
+      <div class="speech-event-grid">
+        <article>
+          <b>A · SAMANTHA</b>
+          <span>onstart: <strong data-speech-event="samantha-start">NOT RECEIVED</strong></span>
+          <span>onend: <strong data-speech-event="samantha-end">NOT RECEIVED</strong></span>
+          <span>onerror: <strong data-speech-event="samantha-error">NOT RECEIVED</strong></span>
+          <span>error value: <strong data-speech-event="samantha-error-value">—</strong></span>
+        </article>
+        <article>
+          <b>B · DEFAULT</b>
+          <span>onstart: <strong data-speech-event="default-start">NOT RECEIVED</strong></span>
+          <span>onend: <strong data-speech-event="default-end">NOT RECEIVED</strong></span>
+          <span>onerror: <strong data-speech-event="default-error">NOT RECEIVED</strong></span>
+          <span>error value: <strong data-speech-event="default-error-value">—</strong></span>
+        </article>
+      </div>
+      <p class="speech-call-state">LAST CALL: <strong id="lastSpeechCall">NONE</strong></p>
+    </section>
+
+    <p class="audition-rule"><b>RATE 0.70</b><span>IDENTICAL SENTENCE</span><span>DIRECT CLICKS</span></p>
   </main>
 
-  <script src="tstt-samantha-test.js?v=2"></script>
+  <script src="tstt-samantha-test.js?v=3"></script>
 </body>
 </html>
