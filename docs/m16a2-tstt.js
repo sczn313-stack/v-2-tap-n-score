@@ -6,22 +6,25 @@
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
   const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
-  const speechSettings = Object.freeze({ rate: 0.70, pitch: 1, volume: 1 });
-  const instructionalVoicePriority = Object.freeze([
-    /^Reed \(English \(US\)\)$/i,
-    /^Samantha(?: \((?:Enhanced|Premium)\))?$/i,
-    /^Flo \(English \(US\)\)$/i,
-    /^Alex$/i,
-    /^Ava(?: \((?:Enhanced|Premium)\))?$/i,
-    /^Susan$/i
-  ]);
-  const nonInstructionalVoices = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Zarvox/i;
+  const narrator = window.SCZN3TSTTNarration.createNarrator();
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
       title: "Know the target before you touch the sights.",
       summary: "",
       narration: "This target gives you an aim point and a way to measure your group. Aim at the white center dot and hold that same point for every shot. The grid is a measurement tool. For this M16A2 standard iron-sight setup, one vertical square equals one front-sight click, and one horizontal square equals three rear-windage clicks. The target shows where the center of your group is compared with the white center dot. Use the group as evidence for the correction. Do not chase a single shot.",
+      narrationPlan: Object.freeze([
+        Object.freeze({ text: "This target gives you an aim point.", delivery: "normal" }),
+        Object.freeze({ text: "It also gives you a way to measure your group.", delivery: "normal" }),
+        Object.freeze({ text: "Aim at the white center dot.", delivery: "look" }),
+        Object.freeze({ text: "Hold that same point for every shot.", delivery: "important" }),
+        Object.freeze({ text: "The grid is a measurement tool.", delivery: "look" }),
+        Object.freeze({ text: "One vertical square equals one front-sight click.", delivery: "important" }),
+        Object.freeze({ text: "One horizontal square equals three rear-windage clicks.", delivery: "important" }),
+        Object.freeze({ text: "The target shows where the center of your group is compared with the white center dot.", delivery: "normal" }),
+        Object.freeze({ text: "Use the group as evidence for the correction.", delivery: "action" }),
+        Object.freeze({ text: "Do not chase a single shot.", delivery: "important" })
+      ]),
       visual: () => `<div class="target-lesson"><figure class="target-window is-full-target target-teaching-figure"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"><span class="target-marker target-marker-aim" aria-hidden="true"><i>1</i></span><span class="target-marker target-marker-grid" aria-hidden="true"><i>3</i></span><span class="sample-group" aria-hidden="true"><i></i><i></i><i></i></span></figure><ol class="target-curriculum"><li><span>1</span><div><b>WHERE TO AIM</b><p>Aim at the white center dot. Hold that same point for every shot.</p></div></li><li><span>2</span><div><b>WHAT THE GRID MEANS</b><p>The grid measures how far your group center is from the white center dot.</p></div></li><li><span>3</span><div><b>WHAT ONE SQUARE REPRESENTS</b><p><strong>Up / down:</strong> 1 square = 1 front-sight click.<br><strong>Left / right:</strong> 1 square = 3 rear-windage clicks.</p></div></li><li><span>4</span><div><b>WHAT THE TARGET WILL TELL YOU</b><p>Your group's place on the grid shows the direction and amount it needs to move.</p></div></li><li><span>5</span><div><b>WHY WE SHOOT A GROUP</b><p>A group gives us a repeatable center for the correction. Do not chase individual shots.</p></div></li></ol></div>`,
       action: "equipment"
     }),
@@ -30,6 +33,16 @@
       title: "Set 300. Then go one click past.",
       summary: "Use the rear elevation drum to prepare the rifle for this 25-meter procedure. You will use a different control later to move the group up or down.",
       narration: "Temporary twenty-five-meter setup. Use the rear elevation drum to prepare the rifle for this procedure. Set three hundred. Then go one click past. Viewed from above, rotate clockwise one click past three hundred. This is the setup control. It is not the control for moving your group up or down. On a safe, unloaded rifle, locate three hundred, then rehearse that one clockwise click.",
+      narrationPlan: Object.freeze([
+        Object.freeze({ text: "Find the rear elevation drum.", delivery: "action" }),
+        Object.freeze({ text: "Use it to prepare the rifle for this twenty-five-meter procedure.", delivery: "normal" }),
+        Object.freeze({ text: "Set the drum at three hundred.", delivery: "action" }),
+        Object.freeze({ text: "Then go one click past.", delivery: "important" }),
+        Object.freeze({ text: "Viewed from above, turn it clockwise one click.", delivery: "important" }),
+        Object.freeze({ text: "This is the setup control.", delivery: "normal" }),
+        Object.freeze({ text: "Do not use it to move your group up or down.", delivery: "important" }),
+        Object.freeze({ text: "On a safe, unloaded rifle, rehearse that one clockwise click.", delivery: "action" })
+      ]),
       visual: () => `<div class="drum-demo"><div class="view-label">VIEWED FROM ABOVE</div><svg viewBox="0 0 360 250" role="img" aria-label="Rear elevation drum moves clockwise one click from the 300 mark"><circle cx="180" cy="128" r="83" class="diagram-ring"/><circle cx="180" cy="128" r="48" class="diagram-core"/><line x1="180" y1="44" x2="180" y2="72" class="index-line"/><text x="180" y="31" class="diagram-label">INDEX</text><text x="180" y="139" class="drum-mark">300</text><path d="M 108 84 A 86 86 0 0 1 248 85" class="motion-arrow"/><polygon points="250,85 228,79 241,102" class="arrow-head"/><text x="180" y="224" class="diagram-command">CLOCKWISE • ONE CLICK PAST 300</text></svg><div class="not-correction"><b>SETUP CONTROL</b><span>Rear elevation drum</span><em>Not the control for moving your group up or down</em></div></div>`,
       task: "On a safe, unloaded rifle: locate 300, then rehearse one clockwise click past it while viewing the drum from above.", action: "advance", actionLabel: "I REHEARSED THE SETUP"
     }),
@@ -64,7 +77,7 @@
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
     start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]')
   });
-  const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, utterance: null, equipment: null };
+  const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null };
 
   function conciseEquipmentName(profile = {}) {
     const manufacturer = profile.weaponCatalogManufacturer || profile.weaponManufacturer || "";
@@ -123,50 +136,17 @@
     syncShootingSetup();
     if (rerender && previousStatus !== state.equipment.status) render({ narrate: false, sync: false });
   }
-  function voiceScore(voice) {
-    if (!voice || nonInstructionalVoices.test(voice.name || "")) return -1;
-    const language = String(voice.lang || "").replace("_", "-").toLowerCase();
-    if (!language.startsWith("en-")) return -1;
-    const priorityIndex = instructionalVoicePriority.findIndex(pattern => pattern.test(voice.name || ""));
-    return (language === "en-us" ? 100 : 40)
-      + (voice.localService ? 20 : 0)
-      + (/(enhanced|premium)/i.test(voice.name || "") ? 12 : 0)
-      + (priorityIndex < 0 ? 0 : 80 - priorityIndex * 8)
-      + (voice.default ? 2 : 0);
-  }
-  function selectInstructionalVoice() {
-    if (!("speechSynthesis" in window) || typeof window.speechSynthesis.getVoices !== "function") return null;
-    return window.speechSynthesis.getVoices().slice().sort((left, right) => voiceScore(right) - voiceScore(left)).find(voice => voiceScore(voice) >= 0) || null;
-  }
-  function pronounceForInstruction(text) {
-    return text
-      .replace(/\bM16A2\b/g, "M sixteen A two")
-      .replace(/\bMOA\b/g, "minutes of angle")
-      .replace(/\b1\.25\b/g, "one point two five")
-      .replace(/\b0\.5\b/g, "zero point five")
-      .replace(/\b25-meter\b/gi, "twenty-five-meter")
-      .replace(/\b25 meters\b/gi, "twenty-five meters")
-      .replace(/\b300-meter\b/gi, "three-hundred-meter")
-      .replace(/\b300 meters\b/gi, "three hundred meters")
-      .replace(/\b300\b/g, "three hundred");
-  }
-  function cancelSpeech() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); state.utterance = null; }
+  function cancelSpeech() { narrator.cancel(); }
   function speakCurrent() {
     cancelSpeech();
-    if (!state.started || state.paused || state.stopped || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
-    const utterance = new SpeechSynthesisUtterance(pronounceForInstruction(chapters[state.current].narration));
-    const voice = selectInstructionalVoice();
-    if (voice) { utterance.voice = voice; utterance.lang = voice.lang; } else { utterance.lang = "en-US"; }
-    utterance.rate = speechSettings.rate; utterance.pitch = speechSettings.pitch; utterance.volume = speechSettings.volume;
-    utterance.onend = () => { if (state.utterance === utterance) state.utterance = null; };
-    utterance.onerror = () => { if (state.utterance === utterance) state.utterance = null; };
-    state.utterance = utterance; window.speechSynthesis.speak(utterance);
+    if (!state.started || state.paused || state.stopped) return;
+    const chapter = chapters[state.current];
+    narrator.play(chapter.narrationPlan || chapter.narration);
   }
   function setPaused(paused) {
     if (state.stopped) { state.stopped = false; state.paused = false; elements.pauseLabel.textContent = "PAUSE"; render(); return; }
     state.paused = paused; elements.app.dataset.status = paused ? "paused" : (state.started ? "active" : "waiting"); elements.pauseLabel.textContent = paused ? "RESUME" : "PAUSE";
-    if (!("speechSynthesis" in window)) return;
-    if (paused) window.speechSynthesis.pause(); else { window.speechSynthesis.resume(); if (!window.speechSynthesis.speaking) speakCurrent(); }
+    if (paused) narrator.pause(); else narrator.resume();
     preserveJourney();
   }
   function stopTraining() { if (!state.started) return; cancelSpeech(); state.paused = false; state.stopped = true; elements.pauseLabel.textContent = "RESUME"; elements.app.dataset.status = "stopped"; preserveJourney(); }

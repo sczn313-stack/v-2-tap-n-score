@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [html, css, source, matrix, buildSite, buildNetlify] = await Promise.all([
+const [html, css, source, narration, narrationStandard, matrix, buildSite, buildNetlify] = await Promise.all([
   readFile("m16a2-tstt.html", "utf8"),
   readFile("m16a2-tstt.css", "utf8"),
   readFile("m16a2-tstt.js", "utf8"),
+  readFile("tstt_narration.js", "utf8"),
+  readFile("architecture/TSTT_NARRATION_STANDARD.md", "utf8"),
   readFile("matrix.html", "utf8"),
   readFile("production/build-site.mjs", "utf8"),
   readFile("production/build-netlify.mjs", "utf8")
@@ -26,12 +28,17 @@ assert.match(source, /1 square = 1 front-sight click[\s\S]*1 square = 3 rear-win
 assert.match(source, /target-marker-aim[\s\S]*target-marker-grid[\s\S]*sample-group/, "the curriculum is demonstrated on the complete physical target");
 assert.match(source, /Do not chase (?:a single shot|individual shots)/, "Chapter 1 teaches the group as correction evidence");
 assert.match(source, /NEXT → THE SIGHTS/, "Chapter 1 hands directly to the sight lesson");
-assert.match(source, /speechSettings = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "voice test 2 slows narration another ten percent while keeping neutral delivery");
-assert.ok(source.indexOf("/^Reed") < source.indexOf("/^Samantha"), "voice test 2 prefers Reed before Samantha");
-assert.match(source, /Samantha[\s\S]*Flo[\s\S]*Alex[\s\S]*Ava[\s\S]*Susan/, "neutral instructional fallbacks remain available");
-assert.match(source, /nonInstructionalVoices[\s\S]*Albert[\s\S]*Zarvox/, "novelty and theatrical system voices cannot become the instructor");
-assert.match(source, /pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle[\s\S]*front sight post[\s\S]*rear elevation drum|pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle/, "speech preparation deliberately pronounces core equipment terminology");
-assert.match(source, /Temporary twenty-five-meter setup\.[\s\S]*Use the rear elevation drum[\s\S]*Set three hundred\.[\s\S]*Viewed from above[\s\S]*setup control[\s\S]*not the control for moving your group up or down/, "Chapter 2 narration closely tracks its visible instructions");
+assert.match(html, /tstt_narration\.js[\s\S]*m16a2-tstt\.js/, "the reusable narration standard loads before the product lesson");
+assert.match(narration, /DEFAULT_SETTINGS = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "the reusable narrator keeps the slower neutral baseline");
+assert.ok(narration.indexOf("/^Samantha") < narration.indexOf("/^Reed"), "Samantha is selected before the neutral fallback voices");
+assert.match(narration, /Samantha[\s\S]*Reed[\s\S]*Flo[\s\S]*Alex[\s\S]*Ava[\s\S]*Susan/, "neutral instructional fallbacks remain available");
+assert.match(narration, /NON_INSTRUCTIONAL_VOICES[\s\S]*Albert[\s\S]*Zarvox/, "novelty and theatrical system voices cannot become the instructor");
+assert.match(narration, /pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle[\s\S]*one point two five[\s\S]*zero point five/, "speech preparation deliberately pronounces equipment terminology and adjustment values");
+assert.match(narration, /DEFAULT_PAUSES[\s\S]*normal: 450[\s\S]*action: 900[\s\S]*look: 1100/, "thought, action, and observation pauses are explicitly paced");
+assert.match(narration, /deliveryRate[\s\S]*important[\s\S]*0\.66[\s\S]*action[\s\S]*0\.68/, "important facts and actions receive modest vocal emphasis without changing pitch");
+assert.match(source, /This target gives you an aim point\.[\s\S]*Aim at the white center dot\.[\s\S]*One vertical square equals one front-sight click\.[\s\S]*One horizontal square equals three rear-windage clicks\.[\s\S]*Do not chase a single shot\./, "Chapter 1 is queued as one aligned thought per sentence");
+assert.match(source, /Find the rear elevation drum\.[\s\S]*Set the drum at three hundred\.[\s\S]*Then go one click past\.[\s\S]*turn it clockwise one click\.[\s\S]*Do not use it to move your group up or down\./, "Chapter 2 uses action-first sentence-level narration aligned to its visible instructions");
+assert.match(narrationStandard, /one thought per sentence[\s\S]*Pause briefly after every sentence[\s\S]*Use one governed name[\s\S]*visual and audio teaching in the same sequence/i, "the reusable governance artifact preserves the Founder narration rules");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /equipment-dot|EXACT TRAINING MATCH · CONFIRM GEAR|THIS MATCHES MY GEAR|confirm-equipment|CONFIRM YOUR GEAR|NOT CONFIRMED AS YOUR EQUIPMENT/, "physical-equipment confirmation UI and its orange/gold status dot are removed");
 assert.doesNotMatch(`${html}\n${source}`, /confirm (?:this |the )?target|target confirmation/i, "QR-established target identity is never reconfirmed by the shooter");
 assert.match(source, /YOU ARE HERE/, "direct navigation marks the current chapter");
@@ -72,6 +79,7 @@ for (const build of [buildSite, buildNetlify]) {
   assert.match(build, /"m16a2-tstt\.html"/, "the route is included in the build inventory");
   assert.match(build, /"m16a2-tstt\.css"/, "the stylesheet is included in the build inventory");
   assert.match(build, /"m16a2-tstt\.js"/, "the lesson runtime is included in the build inventory");
+  assert.match(build, /"tstt_narration\.js"/, "the reusable narration runtime is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the preserved target evidence is included in the build inventory");
 }
 

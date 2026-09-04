@@ -46,8 +46,13 @@ try {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, pitch: utterance.pitch, volume: utterance.volume, voice: utterance.voice?.name, lang: utterance.lang };
     });
-    assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Reed (English (US))", lang: "en-US" });
-    assert.match(chapterOneSpeech.text, /white center dot[\s\S]*one vertical square[\s\S]*one front-sight click[\s\S]*one horizontal square[\s\S]*three rear-windage clicks[\s\S]*Do not chase a single shot/);
+    assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
+    assert.equal(chapterOneSpeech.text, "This target gives you an aim point.");
+    await page.evaluate(() => window.__spokenUtterances.at(-1).onend());
+    await page.waitForTimeout(250);
+    assert.equal(await page.evaluate(() => window.__spokenUtterances.length), 1, "the narrator leaves silence between completed thoughts");
+    await page.waitForTimeout(300);
+    assert.equal(await page.evaluate(() => window.__spokenUtterances.at(-1).text), "It also gives you a way to measure your group.");
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
     await page.locator("#shootingSetup").click();
     assert.equal(await page.locator("#sessionDistance").inputValue(), "25");
@@ -58,7 +63,7 @@ try {
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /CLOCKWISE • ONE CLICK PAST 300/);
     const chapterTwoSpeech = await page.evaluate(() => window.__spokenUtterances.at(-1).text);
-    assert.match(chapterTwoSpeech, /Temporary twenty-five-meter setup[\s\S]*rear elevation drum[\s\S]*Set three hundred[\s\S]*Viewed from above[\s\S]*clockwise one click[\s\S]*not the control for moving your group up or down/);
+    assert.equal(chapterTwoSpeech, "Find the rear elevation drum.");
 
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");
