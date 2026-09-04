@@ -172,6 +172,15 @@
     state.paused = false;
     state.stopped = false;
   }
+  function shouldLaunchChapterThreeDemo(chapter) {
+    const query = new URLSearchParams(window.location.search);
+    return chapter.id === "a2-3" && query.get("chapter_menu") !== "1";
+  }
+  function launchChapterThreeDemo() {
+    cancelSpeech();
+    preserveJourney();
+    window.location.assign(chapterThreeDemoRoad);
+  }
   function readActiveEquipment() {
     try {
       const activeId = localStorage.getItem(equipmentKeys.active) || "";
@@ -259,7 +268,12 @@
     elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
     elements.action.innerHTML = actionMarkup(chapter);
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
-    elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" }); if (narrate) speakCurrent();
+    elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" });
+    if (state.started && !state.paused && !state.stopped && shouldLaunchChapterThreeDemo(chapter)) {
+      launchChapterThreeDemo();
+      return;
+    }
+    if (narrate) speakCurrent();
   }
   function startTraining() { state.started = true; state.paused = false; state.stopped = false; state.current = 0; state.unlocked = chapters.length - 1; render(); }
   function advance() { if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }
@@ -270,7 +284,8 @@
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
   elements.replay.addEventListener("click", () => { state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }); elements.restart.addEventListener("click", restartTraining);
   document.querySelector('[data-control="chapters"]').addEventListener("click", () => elements.dialog.showModal()); document.querySelector("[data-close-chapters]").addEventListener("click", () => elements.dialog.close());
-  elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); render(); });
+  elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); if (state.current === 2) launchChapterThreeDemo(); else render(); });
   window.addEventListener("focus", () => syncEquipment()); window.addEventListener("pageshow", () => syncEquipment()); window.addEventListener("storage", event => { if ([equipmentKeys.active, equipmentKeys.saved].includes(event.key)) syncEquipment(); });
   restoreJourney(); applyDirectChapterEntry(); syncEquipment({ rerender: false }); render({ narrate: false, sync: false });
+  if (new URLSearchParams(window.location.search).get("chapter_menu") === "1") elements.dialog.showModal();
 })();

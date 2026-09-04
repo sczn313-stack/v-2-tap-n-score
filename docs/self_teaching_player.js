@@ -278,6 +278,7 @@
       const message = String(step.narration || "");
       const estimatedDuration = Math.max(1500, 520 + message.trim().split(/\s+/).length * 360);
       let settled = false;
+      let fallbackStarted = false;
       const finish = () => {
         if (settled) return;
         settled = true;
@@ -286,17 +287,24 @@
         this.onNarrationStatus("complete", step);
         onComplete();
       };
-      this.narrationFinish = finish;
-      this.audio = this.audio || this.audioFactory();
-      this.audio.onended = finish;
-      this.audio.onerror = () => this._speechFallback(message, finish, estimatedDuration);
-      this.audio.src = step.audio || "";
-      this.audio.currentTime = 0;
-      this.audio.play().then(() => this.onNarrationStatus("playing", step)).catch(() => {
+      const startFallback = () => {
+        if (fallbackStarted) return;
+        fallbackStarted = true;
         this.onNarrationStatus("fallback", step);
         this._speechFallback(message, finish, estimatedDuration);
-      });
+      };
+      this.narrationFinish = finish;
       this.timer.start(estimatedDuration + 4000, finish);
+      if (!step.audio) {
+        startFallback();
+        return;
+      }
+      this.audio = this.audio || this.audioFactory();
+      this.audio.onended = finish;
+      this.audio.onerror = startFallback;
+      this.audio.src = step.audio;
+      this.audio.currentTime = 0;
+      this.audio.play().then(() => this.onNarrationStatus("playing", step)).catch(startFallback);
     }
 
     _speechFallback(message, finish, estimatedDuration) {

@@ -93,23 +93,33 @@ try {
 
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
-    assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 3 OF 5");
-    assert.equal(await page.locator("#lessonTitle").innerText(), "LET TAP-N-SCORE SHOW YOU.");
-    assert.match(await page.locator("#visualStage").innerText(), /COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE WORK[\s\S]*WATCH TAP-N-SCORE/i);
-    assert.equal(await page.locator("#visualStage .adjustment-target img").count(), 1);
-    assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
-    assert.equal(await page.getByRole("link", { name: "TAKE PHOTO", exact: true }).count(), 0);
-    assert.equal(await page.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).count(), 0);
-    assert.equal(await page.locator("#taskCard:visible").count(), 0);
-    const chapterThreeSpeech = await page.evaluate(() => {
-      const utterance = window.__spokenUtterances.at(-1);
-      return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
-    });
-    assert.equal(chapterThreeSpeech.text, "Let Tap-n-Score show you the complete zeroing road. Watch how it marks the aim point and shots, measures the center of the shot pattern, gives the governed sight adjustment, confirms the zero, and preserves the session.");
-    assert.deepEqual({ rate: chapterThreeSpeech.rate, voice: chapterThreeSpeech.voice }, { rate: 0.70, voice: "Samantha" });
+    await page.waitForURL(/shoot\.html\?.*prepared_demo=1.*m16a2_demo=1.*autoplay=1/, { timeout: 30000 });
+    await page.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
+    assert.match(await page.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
+    assert.deepEqual(
+      await page.locator(".m16a2-tstt-demo-controls button").allTextContents(),
+      ["⏸ PAUSE", "■ STOP", "↺ REPLAY CHAPTER", "☷ CHAPTERS", "⟲ RESTART"]
+    );
+    await page.getByRole("button", { name: "PAUSE", exact: true }).click();
+    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "paused");
+    await page.getByRole("button", { name: "RESUME", exact: true }).click();
+    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "playing");
+    await page.getByRole("button", { name: "REPLAY CHAPTER", exact: true }).click();
+    assert.equal(await page.locator("#bakerSampleDemoLayer").getAttribute("data-demo-state"), "intro");
+    await page.getByRole("button", { name: "STOP", exact: true }).click();
+    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "idle");
+    await page.getByRole("button", { name: /Let the target talk/ }).click();
+    assert.equal(await page.locator("#workspaceStageShell").getAttribute("data-player-status"), "playing");
+    await page.getByRole("button", { name: "CHAPTERS", exact: true }).click();
+    await page.waitForURL(/m16a2-tstt\.html\?chapter=3&chapter_menu=1/, { timeout: 30000 });
+    assert.equal(await page.locator("#chapterDialog").getAttribute("open"), "");
+    await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
+    await page.waitForURL(/shoot\.html\?.*prepared_demo=1.*m16a2_demo=1.*autoplay=1/, { timeout: 30000 });
+    await page.getByRole("button", { name: "RESTART", exact: true }).click();
+    await page.waitForURL(/m16a2-tstt\.html$/, { timeout: 30000 });
+    assert.equal(await page.getByRole("button", { name: "START TRAINING", exact: true }).count(), 1);
 
-    await page.locator('[data-control="chapters"]').click();
-    await page.getByRole("button", { name: /Your turn/ }).click();
+    await page.goto(`${baseUrl}/m16a2-tstt.html?chapter=4`, { waitUntil: "networkidle" });
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
     assert.equal(await page.locator("#lessonTitle").innerText(), "YOUR TURN.");
     assert.equal(await page.locator("#lessonSummary").innerText(), "Shoot three to five shots while aiming at the center crosshairs.");

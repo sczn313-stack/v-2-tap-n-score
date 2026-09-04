@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode59-player-continuity-3" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode60-chapter3-runtime-start-1" />
 <link rel="preload" href="assets/audio/episode59/baker-selected.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-photo-after-shooting.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-aim-intro.wav" as="audio" type="audio/wav" />
@@ -913,6 +913,16 @@ function bakerSampleDemoMarkup() {
   return `<div class="baker-sample-demo-layer" id="bakerSampleDemoLayer" data-demo-state="waiting" style="--smart-target-heartbeat-period:${SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs}ms"><div class="baker-sample-watermark">SAMPLE</div><div class="baker-sample-demo-scene" id="bakerSampleDemoScene" aria-live="polite">${bakerSampleDemoScene("waiting")}</div><button class="baker-sample-demo-replay" id="bakerSampleDemoReplay" type="button" data-sczn3-live-control="target-talk" aria-label="Let the target talk. Start sample demonstration."><span aria-hidden="true">🗣️</span><strong>LET THE TARGET TALK</strong></button></div>`;
 }
 
+function m16a2TsttDemoControlsMarkup() {
+  return `<div class="self-teaching-player-controls m16a2-tstt-demo-controls" data-self-teaching-player-controls aria-label="Chapter 3 playback controls" hidden>
+    <button type="button" data-player-action="toggle"><span data-player-icon aria-hidden="true">▶</span> <span data-player-label>PLAY</span></button>
+    <button type="button" data-player-action="stop"><span aria-hidden="true">■</span> <span>STOP</span></button>
+    <button type="button" data-player-action="replay"><span aria-hidden="true">↺</span> <span>REPLAY CHAPTER</span></button>
+    <button type="button" data-player-action="chapters"><span aria-hidden="true">☷</span> <span>CHAPTERS</span></button>
+    <button type="button" data-player-action="restart-training"><span aria-hidden="true">⟲</span> <span>RESTART</span></button>
+  </div>`;
+}
+
 function bindBakerSampleDemo() {
   const root = document.getElementById("workspaceStageShell");
   const layer = document.getElementById("bakerSampleDemoLayer");
@@ -920,7 +930,9 @@ function bindBakerSampleDemo() {
   const host = document.getElementById("smartTargetPlayerHost");
   if (!root || !layer || !talk || !host) return;
   if (!host.querySelector("[data-self-teaching-player-controls]")) {
-    host.innerHTML = SCZN3SelfTeachingPlayer.controlsMarkup("Let the Target Talk player");
+    host.innerHTML = PREPARED_M16A2_DEMO_MODE
+      ? m16a2TsttDemoControlsMarkup()
+      : SCZN3SelfTeachingPlayer.controlsMarkup("Let the Target Talk player");
   }
   const controls = host.querySelector("[data-self-teaching-player-controls]");
   if (!bakerSampleDemoPlayer) {
@@ -949,6 +961,23 @@ function bindBakerSampleDemo() {
       }
     });
     bakerSampleDemoPlayer.bindControls(controls);
+  }
+  if (PREPARED_M16A2_DEMO_MODE && controls.dataset.tsttDemoControlsBound !== "true") {
+    controls.dataset.tsttDemoControlsBound = "true";
+    controls.addEventListener("click", event => {
+      const action = event.target.closest("[data-player-action]")?.dataset.playerAction;
+      if (action === "stop") bakerSampleDemoPlayer.stop({ reset: true });
+      if (action === "replay") bakerSampleDemoPlayer.replay();
+      if (action === "chapters") {
+        bakerSampleDemoPlayer.stop({ reset: true });
+        window.location.href = "m16a2-tstt.html?chapter=3&chapter_menu=1";
+      }
+      if (action === "restart-training") {
+        bakerSampleDemoPlayer.stop({ reset: true });
+        sessionStorage.removeItem("SCZN3_TSTT_M16A2_JOURNEY_V1");
+        window.location.href = "m16a2-tstt.html";
+      }
+    });
   }
   const workflow = document.querySelector(".workflow-control-row");
   if (workflow) {

@@ -63,6 +63,7 @@ assert.doesNotMatch(source.split('id: "a2-3"')[0], /<svg|rifle-locator|sight-phy
 assert.match(source, /task: "", action: "none", hideTask: true/, "Chapter 2 removes the classroom task and completion button");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /PHOTOGRAPH USAGE RIGHTS|FOUNDER REVIEW REFERENCES|review-asset-note/, "the shooter-facing page contains no photograph-review notice");
 assert.match(source, /chapterThreeDemoRoad = "shoot\.html\?target_profile_id=baker_m16a2_25m_zero&prepared_demo=1&talking_demo=1&m16a2_demo=1&autoplay=1&founder_review=1"/, "Chapter 3 launches the prepared demonstration against the dedicated Baker M16A2 profile");
+assert.match(source, /shouldLaunchChapterThreeDemo[\s\S]*chapter\.id === "a2-3"[\s\S]*launchChapterThreeDemo[\s\S]*window\.location\.assign\(chapterThreeDemoRoad\)/, "entering Chapter 3 starts the real prepared demo instead of stopping on its launch card");
 assert.match(chapterThreeSource, /Let Tap-n-Score show you[\s\S]*COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE/, "Chapter 3 is a watch-only complete demonstration");
 assert.match(source, /chapterThreeTargetImage = "assets\/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg"/, "Chapter 3 displays the exact governed standard Baker M16A2 production face");
 assert.match(chapterThreeSource, /adjustment-target[\s\S]*chapterThreeTargetImage[\s\S]*demo-launch/, "Chapter 3 prominently renders the supplied Baker target");
@@ -70,11 +71,13 @@ assert.doesNotMatch(chapterThreeSource, /TAKE PHOTO|CHOOSE EXISTING PHOTO|I FOUN
 assert.match(demoFixture, /M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "the prepared example carries the exact equipment configuration");
 assert.match(demoFixture, /M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011[\s\S]*authoritySource: "backend-authoritative"/, "the prepared example carries the governed M16A2 adjustment identity and output provenance");
 assert.match(shoot, /PREPARED_M16A2_DEMO_MODE[\s\S]*SCZN3_BAKER_TALKING_DEMO_FIXTURE[\s\S]*bakerSampleDemoSteps[\s\S]*autoplay/, "the existing SCZN3 demonstration engine owns the automated Chapter 3 road");
+assert.match(shoot, /m16a2TsttDemoControlsMarkup[\s\S]*data-player-action="toggle"[\s\S]*STOP[\s\S]*REPLAY CHAPTER[\s\S]*CHAPTERS[\s\S]*RESTART/, "the running Chapter 3 demo carries the governed TSTT PLAYER controls");
 assert.match(shoot, /CENTER CROSSHAIRS[\s\S]*SHOT PATTERN[\s\S]*SHOW RESULTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*GOVERNED M16A2 ADJUSTMENT[\s\S]*ZERO CONFIRMED/, "the demonstration visibly completes the governed observation, correction, and confirmation sequence");
 assert.match(shoot, /state: "sec"[\s\S]*completed Shooter Experience Card[\s\S]*state: "vault"[\s\S]*Ballistic Vault/, "the demonstration continues through the real SEC and Ballistic Vault surfaces");
 assert.match(shoot, /REAR WINDAGE KNOB[\s\S]*FRONT SIGHT POST[\s\S]*COUNTERCLOCKWISE back to 8\/3/, "the demo names the governed controls, turn direction, and confirmed-zero return procedure");
 assert.match(records, /PREPARED_DEMO_MODE[\s\S]*experienceMode[\s\S]*demonstration/, "prepared Chapter 3 preservation uses real records surfaces without a simulation label");
 assert.match(player, /speechRate[\s\S]*speechVoiceResolver/, "the reusable player accepts the governed Samantha voice and 0.70 rate for the demo");
+assert.match(player, /fallbackStarted[\s\S]*if \(!step\.audio\)[\s\S]*startFallback\(\)/, "text-only demo narration enters the Samantha queue exactly once without attempting an empty audio source");
 assert.match(source, /Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Take a photo of your target or choose one from your photos\./, "Chapter 4 carries the concise shooter photo-entry script");
 assert.match(chapterFourSource, /YOUR TURN[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the shooter-control entry");
 assert.match(chapterFourSource, /chapterFourPhotoRoad\("camera"\)[\s\S]*chapterFourPhotoRoad\("existing"\)/, "Chapter 4 hands both photo choices to the governed road");
