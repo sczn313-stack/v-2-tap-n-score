@@ -34,13 +34,7 @@ try {
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
 
-    assert.equal(await page.locator("#runtimeVoiceStatus").innerText(), "Samantha · en-US · com.apple.voice.compact.en-US.Samantha");
-    await page.locator("#runtimeVoiceCheck").click();
-    const voiceCheck = await page.evaluate(() => window.__spokenUtterances.at(-1));
-    assert.equal(voiceCheck.text, "Your shot pattern is two squares high and three squares left.");
-    assert.equal(voiceCheck.voice.name, "Samantha");
-    assert.equal(voiceCheck.voice.voiceURI, "com.apple.voice.compact.en-US.Samantha");
-    assert.equal(voiceCheck.rate, 0.70);
+    assert.equal(await page.locator("#runtimeVoiceStatus, #runtimeVoiceCheck, .voice-diagnostic").count(), 0);
     assert.equal(await page.locator("#targetIdentity").innerText(), "25 METERS ZEROING TARGET\nM16A2");
     assert.equal(await page.locator("#lessonProgress > span").count(), 5);
     assert.match(await page.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
@@ -70,19 +64,21 @@ try {
     await page.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR SIGHTS.");
-    assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST[\s\S]*FIND THE SQUARE POST BETWEEN THE PROTECTIVE EARS[\s\S]*ELEVATION[\s\S]*SHOT PATTERN · UP \/ DOWN[\s\S]*REAR WINDAGE KNOB[\s\S]*FIND THE ROUND KNOB ON THE RIGHT SIDE[\s\S]*WINDAGE[\s\S]*SHOT PATTERN · RIGHT \/ LEFT[\s\S]*REAR ELEVATION DRUM[\s\S]*FIND THE 8\/3 MARK ON THE NUMBERED DRUM[\s\S]*25-METER ZERO[\s\S]*1 CLICK CLOCKWISE PAST 8\/3[\s\S]*AFTER ZERO CONFIRMATION[\s\S]*1 CLICK COUNTERCLOCKWISE → BACK TO 8\/3/);
+    assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST[\s\S]*Controls elevation — moves your shot pattern up or down\.[\s\S]*REAR WINDAGE KNOB[\s\S]*Controls windage — moves your shot pattern right or left\.[\s\S]*REAR ELEVATION DRUM[\s\S]*For your 25-meter zero, set the drum to 8\/3, then turn it one click CLOCKWISE past 8\/3\.[\s\S]*After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8\/3 for the 300-meter setting\./);
     assert.equal(await page.locator("#visualStage .sight-card").count(), 3);
     assert.equal(await page.locator("#visualStage .sight-photo img").count(), 3);
     assert.equal(await page.locator("#visualStage svg").count(), 0);
     assert.equal(await page.getByText("YOUR TASK", { exact: true }).count(), 0);
     assert.equal(await page.getByRole("button", { name: "I CAN FIND THE THREE SIGHTS", exact: true }).count(), 0);
     assert.equal(await page.locator("#visualStage .sight-recap").count(), 0);
+    assert.equal(await page.locator("#visualStage .sight-intro, #visualStage .sight-job, #visualStage .drum-sequence, #visualStage figcaption, #visualStage .review-asset-note").count(), 0);
+    assert.doesNotMatch(await page.locator("#visualStage").innerText(), /\bFIND\b|\bJOB\b|FOUNDER REVIEW REFERENCES/);
     assert.match(await page.locator("#visualStage").innerText(), /Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern\./);
     const chapterTwoSpeech = await page.evaluate(() => {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
     });
-    assert.equal(chapterTwoSpeech.text, "Now that you understand the target, let's learn the sights you'll use to zero your M sixteen A two. Your M sixteen A two has three sight adjustments you need to understand: the front sight post, the rear windage knob, and the rear elevation drum. The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down. The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left. The rear elevation drum has a different job. Before you zero at twenty-five meters, the drum must be placed in the correct starting position. Set the rear elevation drum to 8/3, then turn it one click CLOCKWISE past 8/3. After the zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting. Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern.");
+    assert.equal(chapterTwoSpeech.text, "Front sight post. Controls elevation — moves your shot pattern up or down. Rear windage knob. Controls windage — moves your shot pattern right or left. Rear elevation drum. For your twenty-five-meter zero, set the drum to 8/3, then turn it one click CLOCKWISE past 8/3. After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8/3 for the three-hundred-meter setting. Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern.");
     assert.deepEqual({ rate: chapterTwoSpeech.rate, voice: chapterTwoSpeech.voice }, { rate: 0.70, voice: "Samantha" });
 
     await page.locator('[data-control="pause"]').click();
@@ -135,10 +131,7 @@ try {
     Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
   });
   await coldPage.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
-  assert.equal(await coldPage.locator("#runtimeVoiceStatus").innerText(), "CHECKING FOR SAMANTHA…");
-  await coldPage.waitForTimeout(1100);
-  assert.equal(await coldPage.locator("#runtimeVoiceStatus").innerText(), "SAMANTHA UNAVAILABLE");
-  assert.equal(await coldPage.locator("#runtimeVoiceCheck").isDisabled(), true);
+  assert.equal(await coldPage.locator("#runtimeVoiceStatus, #runtimeVoiceCheck, .voice-diagnostic").count(), 0);
   assert.equal(await coldPage.getByText("CURRENT EQUIPMENT", { exact: true }).count(), 0);
   assert.match(await coldPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*This training teaches this setup\. If yours is different, some instructions may not apply/);
   assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);

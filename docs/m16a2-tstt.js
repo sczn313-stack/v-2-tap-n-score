@@ -12,7 +12,6 @@
   const journeyKey = "SCZN3_TSTT_M16A2_JOURNEY_V1";
   const shootingSetupKey = "SCZN3_TSTT_M16A2_SHOOTING_SETUP_V1";
   const defaultEquipment = Object.freeze({ status: "none", label: "No active equipment selected" });
-  const auditionSentence = "Your shot pattern is two squares high and three squares left.";
   const chapterOneFounderScript = Object.freeze([
     "Before making any sight adjustments, understand what this target is telling you.",
     "Always make the center crosshairs your aim point when zeroing your weapon.",
@@ -26,16 +25,13 @@
   ]);
   const chapterOneSpokenNarration = chapterOneFounderScript.join(" ");
   const chapterTwoFounderScript = Object.freeze([
-    "Now that you understand the target, let's learn the sights you'll use to zero your M16A2.",
-    "Your M16A2 has three sight adjustments you need to understand: the front sight post, the rear windage knob, and the rear elevation drum.",
-    "The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down.",
-    "The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left.",
-    "The rear elevation drum has a different job. Before you zero at 25 meters, the drum must be placed in the correct starting position.",
-    "Set the rear elevation drum to 8/3, then turn it one click CLOCKWISE past 8/3.",
-    "After the zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting.",
+    "Controls elevation — moves your shot pattern up or down.",
+    "Controls windage — moves your shot pattern right or left.",
+    "For your 25-meter zero, set the drum to 8/3, then turn it one click CLOCKWISE past 8/3.",
+    "After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting.",
     "Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern."
   ]);
-  const chapterTwoSpokenNarration = chapterTwoFounderScript.join(" ");
+  const chapterTwoSpokenNarration = `Front sight post. ${chapterTwoFounderScript[0]} Rear windage knob. ${chapterTwoFounderScript[1]} Rear elevation drum. ${chapterTwoFounderScript[2]} ${chapterTwoFounderScript[3]} ${chapterTwoFounderScript[4]}`;
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
@@ -49,38 +45,32 @@
       action: "equipment"
     }),
     Object.freeze({
-      id: "a2-2", label: "THE SIGHTS", shortTitle: "Know your sights", eyebrow: "SEE IT → FIND IT → UNDERSTAND ITS JOB",
+      id: "a2-2", label: "THE SIGHTS", shortTitle: "Know your sights", eyebrow: "M16A2 · STANDARD IRON SIGHTS",
       title: "Know your sights.",
-      summary: chapterTwoFounderScript[0],
+      summary: "",
       narration: chapterTwoSpokenNarration,
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterTwoSpokenNarration, delivery: "normal" })
       ]),
       visual: () => `<div class="sight-lesson">
-        <p class="sight-intro">${chapterTwoFounderScript[1]}</p>
         <div class="sight-cards">
           <section class="sight-card">
-            <div class="sight-card-head"><span>FRONT OF RIFLE</span><b>FRONT SIGHT POST</b></div>
-            <figure class="sight-photo front-sight-photo"><img src="${chapterTwoReferenceImages.frontSight}" alt="Real M16A2 front sight post between its protective ears"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE SQUARE POST BETWEEN THE PROTECTIVE EARS</figcaption></figure>
-            <p>${chapterTwoFounderScript[2]}</p>
-            <div class="sight-job"><span>JOB</span><b>ELEVATION</b><em>SHOT PATTERN · UP / DOWN</em></div>
+            <div class="sight-card-head"><b>FRONT SIGHT POST</b></div>
+            <figure class="sight-photo front-sight-photo"><img src="${chapterTwoReferenceImages.frontSight}" alt="Real M16A2 front sight post between its protective ears"><span class="photo-callout" aria-hidden="true"></span></figure>
+            <p>${chapterTwoFounderScript[0]}</p>
           </section>
           <section class="sight-card">
-            <div class="sight-card-head"><span>REAR SIGHT · RIGHT SIDE</span><b>REAR WINDAGE KNOB</b></div>
-            <figure class="sight-photo rear-windage-photo"><img src="${chapterTwoReferenceImages.rearWindage}" alt="Real rear sight showing the round windage knob on its right side"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE ROUND KNOB ON THE RIGHT SIDE</figcaption></figure>
-            <p>${chapterTwoFounderScript[3]}</p>
-            <div class="sight-job"><span>JOB</span><b>WINDAGE</b><em>SHOT PATTERN · RIGHT / LEFT</em></div>
+            <div class="sight-card-head"><b>REAR WINDAGE KNOB</b></div>
+            <figure class="sight-photo rear-windage-photo"><img src="${chapterTwoReferenceImages.rearWindage}" alt="Real rear sight showing the round windage knob on its right side"><span class="photo-callout" aria-hidden="true"></span></figure>
+            <p>${chapterTwoFounderScript[1]}</p>
           </section>
           <section class="sight-card">
-            <div class="sight-card-head"><span>REAR SIGHT · BELOW APERTURE</span><b>REAR ELEVATION DRUM</b></div>
-            <figure class="sight-photo rear-drum-photo"><img src="${chapterTwoReferenceImages.rearDrum}" alt="Real M16A2 rear elevation drum with the 8/3 marking visible"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE 8/3 MARK ON THE NUMBERED DRUM</figcaption></figure>
-            <p>${chapterTwoFounderScript[4]}</p><p class="setup-command">${chapterTwoFounderScript[5]}</p><p class="setup-command">${chapterTwoFounderScript[6]}</p>
-            <div class="drum-sequence"><span><b>25-METER ZERO</b>8/3 → 1 CLICK CLOCKWISE PAST 8/3</span><span><b>AFTER ZERO CONFIRMATION</b>1 CLICK COUNTERCLOCKWISE → BACK TO 8/3</span></div>
-            <div class="sight-job"><span>JOB</span><b>25-METER ZERO SETUP</b><em>START AT THE 8/3 INDEX</em></div>
+            <div class="sight-card-head"><b>REAR ELEVATION DRUM</b></div>
+            <figure class="sight-photo rear-drum-photo"><img src="${chapterTwoReferenceImages.rearDrum}" alt="Real M16A2 rear elevation drum with the 8/3 marking visible"><span class="photo-callout" aria-hidden="true"></span></figure>
+            <p>${chapterTwoFounderScript[2]}</p><p>${chapterTwoFounderScript[3]}</p>
           </section>
         </div>
-        <p class="sight-next">${chapterTwoFounderScript[7]}</p>
-        <p class="review-asset-note">FOUNDER REVIEW REFERENCES · PHOTOGRAPH USAGE RIGHTS NOT YET CLEARED FOR PRODUCTION</p>
+        <p class="sight-next">${chapterTwoFounderScript[4]}</p>
       </div>`,
       task: "", action: "none", hideTask: true
     }),
@@ -114,15 +104,9 @@
     equipmentLibraryLink: document.getElementById("equipmentLibraryLink"), dialog: document.getElementById("chapterDialog"), list: document.getElementById("chapterList"),
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
     start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]'),
-    runtimeVoiceStatus: document.getElementById("runtimeVoiceStatus"), runtimeVoiceCheck: document.getElementById("runtimeVoiceCheck")
   });
   const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null };
-  const narrator = window.SCZN3TSTTNarration.createNarrator({
-    onVoiceStatus: ({ status, identifier }) => {
-      elements.runtimeVoiceStatus.textContent = status === "checking" ? "CHECKING FOR SAMANTHA…" : identifier;
-      elements.runtimeVoiceCheck.disabled = status !== "selected";
-    }
-  });
+  const narrator = window.SCZN3TSTTNarration.createNarrator();
 
   function conciseEquipmentName(profile = {}) {
     const manufacturer = profile.weaponCatalogManufacturer || profile.weaponManufacturer || "";
@@ -250,7 +234,6 @@
   function restartTraining() { cancelSpeech(); sessionStorage.removeItem(journeyKey); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
 
   elements.start.addEventListener("click", startTraining);
-  elements.runtimeVoiceCheck.addEventListener("click", () => narrator.play([Object.freeze({ text: auditionSentence, delivery: "normal" })]));
   elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "next") advance(); });
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
   elements.replay.addEventListener("click", () => { state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }); elements.restart.addEventListener("click", restartTraining);
