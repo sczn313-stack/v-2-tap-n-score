@@ -93,8 +93,22 @@ try {
     assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
 
     await page.locator('[data-control="chapters"]').click();
-    await page.getByRole("button", { name: /Understand the grid and aim/ }).click();
-    await page.getByRole("button", { name: /I FOUND THE AIM POINT/ }).click();
+    await page.getByRole("button", { name: /Make the adjustment/ }).click();
+    assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 3 OF 5");
+    assert.equal(await page.locator("#lessonTitle").innerText(), "MAKE THE ADJUSTMENT.");
+    assert.match(await page.locator("#visualStage").innerText(), /SHOOT[\s\S]*Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*TAP YOUR SHOTS[\s\S]*Tap each shot in Tap-n-Score\.[\s\S]*MEASURE[\s\S]*Tap-n-Score finds the center of your shot pattern[\s\S]*ADJUST[\s\S]*For elevation[\s\S]*For windage[\s\S]*Make the adjustments[\s\S]*CONFIRM[\s\S]*Then shoot another three-to-five-shot pattern[\s\S]*8\/3[\s\S]*COUNTERCLOCKWISE[\s\S]*Your sights are set\./);
+    assert.equal(await page.locator("#visualStage .adjustment-flow > li").count(), 6);
+    assert.equal(await page.getByText("YOUR TASK", { exact: true }).count(), 0);
+    assert.equal(await page.locator("#visualStage .aim-demo, #visualStage .aim-reticle, #visualStage .axis-key").count(), 0);
+    const chapterThreeSpeech = await page.evaluate(() => {
+      const utterance = window.__spokenUtterances.at(-1);
+      return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
+    });
+    assert.equal(chapterThreeSpeech.text, "Your sights are ready. Now let Tap-n-Score tell you how to adjust them. Shoot three to five shots while aiming at the center crosshairs. Tap each shot in Tap-n-Score. Tap-n-Score finds the center of your shot pattern and measures how far it is from the center crosshairs. For elevation, Tap-n-Score tells you how many clicks to move the front sight post and which direction to turn it. For windage, Tap-n-Score tells you how many clicks to move the rear windage knob and which direction to turn it. Make the adjustments Tap-n-Score gives you. Then shoot another three-to-five-shot pattern to confirm your zero. Once your zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your three-hundred-meter setting. Your sights are set.");
+    assert.deepEqual({ rate: chapterThreeSpeech.rate, voice: chapterThreeSpeech.voice }, { rate: 0.70, voice: "Samantha" });
+
+    await page.locator('[data-control="chapters"]').click();
+    await page.getByRole("button", { name: /Rehearse the correction controls/ }).click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
     assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST/);
     assert.match(await page.locator("#visualStage").innerText(), /REAR WINDAGE KNOB/);

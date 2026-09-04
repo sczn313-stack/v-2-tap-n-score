@@ -32,6 +32,19 @@
     "Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern."
   ]);
   const chapterTwoSpokenNarration = `Front sight post. ${chapterTwoFounderScript[0]} Rear windage knob. ${chapterTwoFounderScript[1]} Rear elevation drum. ${chapterTwoFounderScript[2]} ${chapterTwoFounderScript[3]} ${chapterTwoFounderScript[4]}`;
+  const chapterThreeFounderScript = Object.freeze([
+    "Your sights are ready. Now let Tap-n-Score tell you how to adjust them.",
+    "Shoot three to five shots while aiming at the center crosshairs.",
+    "Tap each shot in Tap-n-Score.",
+    "Tap-n-Score finds the center of your shot pattern and measures how far it is from the center crosshairs.",
+    "For elevation, Tap-n-Score tells you how many clicks to move the front sight post and which direction to turn it.",
+    "For windage, Tap-n-Score tells you how many clicks to move the rear windage knob and which direction to turn it.",
+    "Make the adjustments Tap-n-Score gives you.",
+    "Then shoot another three-to-five-shot pattern to confirm your zero.",
+    "Once your zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your 300-meter setting.",
+    "Your sights are set."
+  ]);
+  const chapterThreeSpokenNarration = chapterThreeFounderScript.join(" ");
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
@@ -75,11 +88,14 @@
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
-      id: "a2-3", label: "GRID + AIM", shortTitle: "Understand the grid and aim", eyebrow: "AIM RELATIONSHIP", title: "The center is your reference.",
-      summary: "The grid shows where your group lands in relation to where you aimed. Aim at the center and keep that same aim for every shot in the group.",
-      narration: "The target grid extends twenty-seven units left and right and ten units up and down. The heavy center lines meet at the white center of the red silhouette. That intersection is your point of aim. Keep that same center aim through the entire first group. Do not estimate a correction now.",
-      visual: () => `<div class="aim-demo"><figure class="target-window is-aim"><img src="${targetImage}" alt="M16A2 target centered on the heavy horizontal and vertical grid lines"><span class="aim-reticle" aria-hidden="true"><i></i></span><figcaption>HOLD THE SAME CENTER AIM</figcaption></figure><div class="axis-key"><span><b>±27</b> LEFT / RIGHT</span><span><b>±10</b> UP / DOWN</span></div></div>`,
-      task: "Point to the heavy-line intersection at the center of the red silhouette. That is the aim reference for every shot in the first group.", action: "advance", actionLabel: "I FOUND THE AIM POINT"
+      id: "a2-3", label: "MAKE THE ADJUSTMENT", shortTitle: "Make the adjustment", eyebrow: "LET TAP-N-SCORE TALK", title: "Make the adjustment.",
+      summary: chapterThreeFounderScript[0],
+      narration: chapterThreeSpokenNarration,
+      narrationPlan: Object.freeze([
+        Object.freeze({ text: chapterThreeSpokenNarration, delivery: "normal" })
+      ]),
+      visual: () => `<div class="adjustment-lesson"><ol class="adjustment-flow"><li><span>01</span><div><b>SHOOT</b><p>${chapterThreeFounderScript[1]}</p></div></li><li><span>02</span><div><b>TAP YOUR SHOTS</b><p>${chapterThreeFounderScript[2]}</p></div></li><li><span>03</span><div><b>MEASURE</b><p>${chapterThreeFounderScript[3]}</p></div></li><li><span>04</span><div><b>ADJUST</b><p>${chapterThreeFounderScript[4]}</p><p>${chapterThreeFounderScript[5]}</p><p>${chapterThreeFounderScript[6]}</p></div></li><li><span>05</span><div><b>CONFIRM</b><p>${chapterThreeFounderScript[7]}</p></div></li><li><span>06</span><div><b>8/3</b><p>${chapterThreeFounderScript[8]}</p></div></li></ol><p class="adjustment-close">${chapterThreeFounderScript[9]}</p></div>`,
+      task: "", action: "none", hideTask: true
     }),
     Object.freeze({
       id: "a2-4", label: "ADJUSTMENT CONTROLS", shortTitle: "Rehearse the correction controls", eyebrow: "STANDARD M16A2 IRON SIGHTS", title: "Two controls. Four movements.",

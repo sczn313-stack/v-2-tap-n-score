@@ -12,6 +12,7 @@ const [html, css, source, narration, narrationStandard, matrix, buildSite, build
   readFile("production/build-netlify.mjs", "utf8"),
   readFile("production/m16a2_tstt_review_server.mjs", "utf8")
 ]);
+const chapterThreeSource = source.slice(source.indexOf('id: "a2-3"'), source.indexOf('id: "a2-4"'));
 
 assert.match(html, /Baker M16A2 25 Meter TSTT/, "the route identifies the exact lesson product");
 assert.match(html, /PAUSE[\s\S]*STOP[\s\S]*REPLAY[\s\S]*CHAPTERS[\s\S]*RESTART/, "Snapshot 22 controls plus distinct Stop are present");
@@ -53,6 +54,11 @@ assert.match(source, /For your 25-meter zero[\s\S]*CLOCKWISE past 8\/3[\s\S]*Aft
 assert.doesNotMatch(source.split('id: "a2-3"')[0], /<svg|rifle-locator|sight-physical|drum-demo|diagram-ring|CLOCKWISE • ONE CLICK PAST 300/, "Chapter 2 contains no replacement hardware illustration or rejected abstract drum graphic");
 assert.match(source, /task: "", action: "none", hideTask: true/, "Chapter 2 removes the classroom task and completion button");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /PHOTOGRAPH USAGE RIGHTS|FOUNDER REVIEW REFERENCES|review-asset-note/, "the shooter-facing page contains no photograph-review notice");
+assert.match(source, /Your sights are ready\. Now let Tap-n-Score tell you how to adjust them\.[\s\S]*Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Tap each shot in Tap-n-Score\.[\s\S]*Tap-n-Score finds the center of your shot pattern and measures how far it is from the center crosshairs\.[\s\S]*For elevation, Tap-n-Score tells you how many clicks to move the front sight post and which direction to turn it\.[\s\S]*For windage, Tap-n-Score tells you how many clicks to move the rear windage knob and which direction to turn it\.[\s\S]*Make the adjustments Tap-n-Score gives you\.[\s\S]*Then shoot another three-to-five-shot pattern to confirm your zero\.[\s\S]*Once your zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8\/3 for your 300-meter setting\.[\s\S]*Your sights are set\./, "Chapter 3 contains the complete Founder script in order");
+assert.match(chapterThreeSource, /SHOOT[\s\S]*TAP YOUR SHOTS[\s\S]*MEASURE[\s\S]*ADJUST[\s\S]*CONFIRM[\s\S]*8\/3/, "Chapter 3 presents the six-step Founder sequence in order");
+assert.match(chapterThreeSource, /chapterThreeSpokenNarration[\s\S]*delivery: "normal"[\s\S]*task: ""[\s\S]*action: "none"[\s\S]*hideTask: true/, "Chapter 3 uses one baseline narration pass and no classroom gate");
+assert.doesNotMatch(chapterThreeSource, /aim-demo|aim-reticle|axis-key|I FOUND THE AIM POINT|\bPOIB\b|minutes of angle|\bMOA\b|marksmanship|quiz|competenc|I CAN|YOUR TASK/i, "Chapter 3 contains no retired aim exercise, math, quiz, gate, or marksmanship instruction");
+assert.match(css, /\.adjustment-flow[\s\S]*grid-template-columns: repeat\(3,[\s\S]*@media \(max-width: 699px\)[\s\S]*\.adjustment-flow \{ grid-template-columns: 1fr; \}/, "Chapter 3 has a dedicated desktop and phone presentation");
 assert.match(narrationStandard, /one thought per sentence[\s\S]*Pause briefly after every sentence[\s\S]*Use one governed name[\s\S]*visual and audio teaching in the same sequence/i, "the reusable governance artifact preserves the Founder narration rules");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /equipment-dot|EXACT TRAINING MATCH · CONFIRM GEAR|THIS MATCHES MY GEAR|confirm-equipment|CONFIRM YOUR GEAR|NOT CONFIRMED AS YOUR EQUIPMENT/, "physical-equipment confirmation UI and its orange/gold status dot are removed");
 assert.doesNotMatch(`${html}\n${source}`, /confirm (?:this |the )?target|target confirmation/i, "QR-established target identity is never reconfirmed by the shooter");
