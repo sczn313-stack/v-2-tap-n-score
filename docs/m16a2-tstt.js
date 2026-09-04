@@ -31,12 +31,9 @@
     "The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down.",
     "The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left.",
     "The rear elevation drum has a different job. Before you zero at 25 meters, the drum must be placed in the correct starting position.",
-    "Set the rear elevation drum to 8/3, then move it one click past 8/3.",
-    "For now, remember these three jobs:",
-    "Front sight post — elevation, up or down.",
-    "Rear windage knob — windage, right or left.",
-    "Rear elevation drum — sets the sight for the 25-meter zero.",
-    "Next, we'll show you exactly where each adjustment is on your rifle and how to move it."
+    "Set the rear elevation drum to 8/3, then turn it one click CLOCKWISE past 8/3.",
+    "After the zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting.",
+    "Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern."
   ]);
   const chapterTwoSpokenNarration = chapterTwoFounderScript.join(" ");
   const chapters = Object.freeze([
@@ -77,13 +74,12 @@
           <section class="sight-card">
             <div class="sight-card-head"><span>REAR SIGHT · BELOW APERTURE</span><b>REAR ELEVATION DRUM</b></div>
             <figure class="sight-photo rear-drum-photo"><img src="${chapterTwoReferenceImages.rearDrum}" alt="Real M16A2 rear elevation drum with the 8/3 marking visible"><span class="photo-callout" aria-hidden="true"></span><figcaption>FIND THE 8/3 MARK ON THE NUMBERED DRUM</figcaption></figure>
-            <p>${chapterTwoFounderScript[4]}</p><p class="setup-command">${chapterTwoFounderScript[5]}</p>
+            <p>${chapterTwoFounderScript[4]}</p><p class="setup-command">${chapterTwoFounderScript[5]}</p><p class="setup-command">${chapterTwoFounderScript[6]}</p>
             <div class="drum-sequence"><span><b>25-METER ZERO</b>8/3 → 1 CLICK CLOCKWISE PAST 8/3</span><span><b>AFTER ZERO CONFIRMATION</b>1 CLICK COUNTERCLOCKWISE → BACK TO 8/3</span></div>
             <div class="sight-job"><span>JOB</span><b>25-METER ZERO SETUP</b><em>START AT THE 8/3 INDEX</em></div>
           </section>
         </div>
-        <section class="sight-recap"><b>${chapterTwoFounderScript[6]}</b><ul><li>${chapterTwoFounderScript[7]}</li><li>${chapterTwoFounderScript[8]}</li><li>${chapterTwoFounderScript[9]}</li></ul></section>
-        <p class="sight-next">${chapterTwoFounderScript[10]}</p>
+        <p class="sight-next">${chapterTwoFounderScript[7]}</p>
         <p class="review-asset-note">FOUNDER REVIEW REFERENCES · PHOTOGRAPH USAGE RIGHTS NOT YET CLEARED FOR PRODUCTION</p>
       </div>`,
       task: "", action: "none", hideTask: true

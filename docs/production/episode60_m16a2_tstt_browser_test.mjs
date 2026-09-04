@@ -76,11 +76,13 @@ try {
     assert.equal(await page.locator("#visualStage svg").count(), 0);
     assert.equal(await page.getByText("YOUR TASK", { exact: true }).count(), 0);
     assert.equal(await page.getByRole("button", { name: "I CAN FIND THE THREE SIGHTS", exact: true }).count(), 0);
+    assert.equal(await page.locator("#visualStage .sight-recap").count(), 0);
+    assert.match(await page.locator("#visualStage").innerText(), /Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern\./);
     const chapterTwoSpeech = await page.evaluate(() => {
       const utterance = window.__spokenUtterances.at(-1);
       return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
     });
-    assert.equal(chapterTwoSpeech.text, "Now that you understand the target, let's learn the sights you'll use to zero your M sixteen A two. Your M sixteen A two has three sight adjustments you need to understand: the front sight post, the rear windage knob, and the rear elevation drum. The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down. The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left. The rear elevation drum has a different job. Before you zero at twenty-five meters, the drum must be placed in the correct starting position. Set the rear elevation drum to 8/3, then move it one click past 8/3. For now, remember these three jobs: Front sight post — elevation, up or down. Rear windage knob — windage, right or left. Rear elevation drum — sets the sight for the twenty-five-meter zero. Next, we'll show you exactly where each adjustment is on your rifle and how to move it.");
+    assert.equal(chapterTwoSpeech.text, "Now that you understand the target, let's learn the sights you'll use to zero your M sixteen A two. Your M sixteen A two has three sight adjustments you need to understand: the front sight post, the rear windage knob, and the rear elevation drum. The front sight post controls elevation when zeroing your weapon. This is the adjustment you'll use to move your shot pattern up or down. The rear windage knob controls windage. This is the adjustment you'll use to move your shot pattern right or left. The rear elevation drum has a different job. Before you zero at twenty-five meters, the drum must be placed in the correct starting position. Set the rear elevation drum to 8/3, then turn it one click CLOCKWISE past 8/3. After the zero is confirmed, turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting. Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern.");
     assert.deepEqual({ rate: chapterTwoSpeech.rate, voice: chapterTwoSpeech.voice }, { rate: 0.70, voice: "Samantha" });
 
     await page.locator('[data-control="pause"]').click();
