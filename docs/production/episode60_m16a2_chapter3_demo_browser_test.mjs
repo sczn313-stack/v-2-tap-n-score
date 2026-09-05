@@ -66,12 +66,13 @@ try {
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
-    await page.getByRole("button", { name: "NEXT, WE'LL LEARN THE SIGHTS.", exact: true }).click();
+    await page.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true }).click();
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
     assert.equal(await page.locator("[data-demo-proof], [data-audio-proof], [data-step-proof], [data-player-proof]").count(), 0, `development instrumentation is absent at ${viewport.width}px`);
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator("#markSurface > img").waitFor({ timeout: 30000 });
+    assert.equal(await demo.locator("html").getAttribute("data-tstt-page-zoom"), "locked", `embedded TSTT page zoom is locked at ${viewport.width}px`);
     assert.equal(await demo.locator("#chooseTargetButton").isVisible(), false, `Chapter 3 hides Add Photo at ${viewport.width}px`);
     assert.equal(await demo.locator("#precisionTapPhotoPicker").isVisible(), false, `Chapter 3 hides photo entry choices at ${viewport.width}px`);
     const sampleBadge = await demo.locator(".baker-sample-watermark").evaluate(element => {

@@ -48,6 +48,7 @@
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
+      nextChapterLabel: "NEXT — KNOW YOUR SIGHTS",
       title: "Know your target.",
       summary: chapterOneFounderScript[0],
       narration: chapterOneSpokenNarration,
@@ -59,6 +60,7 @@
     }),
     Object.freeze({
       id: "a2-2", label: "THE SIGHTS", shortTitle: "Know your sights", eyebrow: "M16A2 · STANDARD IRON SIGHTS",
+      nextChapterLabel: "NEXT — WATCH IT",
       title: "Know your sights.",
       summary: "",
       narration: chapterTwoSpokenNarration,
@@ -262,8 +264,8 @@
   }
   function actionMarkup(chapter) {
     if (!state.started) return "";
+    if (chapter.nextChapterLabel) return `<button class="primary-action next-chapter-overlay" type="button" data-action="next" aria-label="${chapter.nextChapterLabel}"><span>NEXT CHAPTER</span><strong>${chapter.nextChapterLabel}</strong></button>`;
     if (chapter.action === "none") return "";
-    if (chapter.action === "equipment") return `<button class="primary-action" type="button" data-action="next">NEXT, WE'LL LEARN THE SIGHTS.</button>`;
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
   }
@@ -286,6 +288,7 @@
     elements.visual.innerHTML = chapter.visual();
     elements.task.hidden = chapter.hideTask === true;
     elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
+    elements.action.classList.toggle("has-next-chapter", Boolean(state.started && chapter.nextChapterLabel));
     elements.action.innerHTML = actionMarkup(chapter);
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
     elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" });
@@ -296,11 +299,11 @@
     if (narrate) speakCurrent();
   }
   function startTraining() { state.started = true; state.paused = false; state.stopped = false; state.current = 0; state.unlocked = chapters.length - 1; render(); }
-  function advance() { if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }
+  function advance({ userGesture = false } = {}) { if (state.current >= chapters.length - 1) return; state.unlocked = Math.max(state.unlocked, state.current + 1); state.current += 1; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); if (userGesture && state.current === 2) launchChapterThreeDemo({ userGesture: true }); }
   function restartTraining() { cancelSpeech(); sessionStorage.removeItem(journeyKey); state.started = false; state.current = 0; state.unlocked = 0; state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render({ narrate: false }); }
 
   elements.start.addEventListener("click", startTraining);
-  elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "next") advance(); });
+  elements.action.addEventListener("click", event => { const action = event.target.closest("[data-action]")?.dataset.action; if (action === "next") advance({ userGesture: true }); });
   elements.pause.addEventListener("click", () => setPaused(!state.paused)); elements.stop.addEventListener("click", stopTraining);
   elements.replay.addEventListener("click", () => { state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; render(); }); elements.restart.addEventListener("click", restartTraining);
   document.querySelector('[data-control="chapters"]').addEventListener("click", () => elements.dialog.showModal()); document.querySelector("[data-close-chapters]").addEventListener("click", () => elements.dialog.close());

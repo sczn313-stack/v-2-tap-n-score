@@ -35,6 +35,17 @@ try {
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
 
+    assert.match(await page.locator('meta[name="viewport"]').getAttribute("content"), /maximum-scale=1[\s\S]*user-scalable=no/);
+    assert.equal(await page.locator("html").getAttribute("data-tstt-page-zoom"), "locked");
+    assert.equal(await page.locator("html").evaluate(element => getComputedStyle(element).touchAction), "pan-x pan-y");
+    const blockedPageGestures = await page.evaluate(() => {
+      const gesture = new Event("gesturestart", { bubbles: true, cancelable: true });
+      document.dispatchEvent(gesture);
+      const wheel = new WheelEvent("wheel", { bubbles: true, cancelable: true, ctrlKey: true, deltaY: -100 });
+      document.dispatchEvent(wheel);
+      return { gesture: gesture.defaultPrevented, wheel: wheel.defaultPrevented };
+    });
+    assert.deepEqual(blockedPageGestures, { gesture: true, wheel: true }, `outer TSTT page pinch gestures are blocked at ${viewport.width}px`);
     assert.equal(await page.locator("#runtimeVoiceStatus, #runtimeVoiceCheck, .voice-diagnostic").count(), 0);
     assert.equal(await page.locator("#targetIdentity").innerText(), "25 METERS ZEROING TARGET\nM16A2");
     assert.equal(await page.locator("#lessonProgress > span").count(), 5);
@@ -61,7 +72,10 @@ try {
     assert.equal(await page.locator("#sessionDistanceUnit").inputValue(), "METERS");
     assert.equal(await page.locator("#sessionAdjustmentUnit").inputValue(), "MOA");
     assert.equal(await page.locator("#sessionAdjustmentIncrement").inputValue(), "Elevation 1.25 · Windage 0.5");
-    await page.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
+    const chapterOneNext = page.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true });
+    assert.match(await chapterOneNext.innerText(), /NEXT CHAPTER[\s\S]*NEXT — KNOW YOUR SIGHTS/);
+    assert.equal(await chapterOneNext.evaluate(element => getComputedStyle(element.parentElement).position), "fixed");
+    await chapterOneNext.click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR SIGHTS.");
     assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST[\s\S]*Controls elevation — moves your shot pattern up or down\.[\s\S]*REAR WINDAGE KNOB[\s\S]*Controls windage — moves your shot pattern right or left\.[\s\S]*REAR ELEVATION DRUM[\s\S]*For your 25-meter zero, set the drum to 8\/3, then turn it one click CLOCKWISE past 8\/3\.[\s\S]*After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8\/3 for the 300-meter setting\./);
@@ -92,10 +106,12 @@ try {
     await page.locator('[data-control="pause"]').click();
     assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
 
-    await page.locator('[data-control="chapters"]').click();
-    await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
+    const chapterTwoNext = page.getByRole("button", { name: "NEXT — WATCH IT", exact: true });
+    assert.match(await chapterTwoNext.innerText(), /NEXT CHAPTER[\s\S]*NEXT — WATCH IT/);
+    await chapterTwoNext.click();
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
+    assert.equal(await demo.locator("html").getAttribute("data-tstt-page-zoom"), "locked", "embedded Chapter 3 shell also blocks browser page zoom");
     assert.match(page.url(), /m16a2-tstt\.html$/);
     assert.equal(await page.locator("[data-demo-proof], [data-audio-proof], [data-step-proof], [data-player-proof]").count(), 0, "finished TSTT exposes no development instrumentation");
     assert.match(await demo.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
@@ -130,6 +146,7 @@ try {
     assert.equal(await page.locator("#lessonSummary").innerText(), "Shoot three to five shots while aiming at the center crosshairs.");
     assert.match(await page.locator("#visualStage").innerText(), /YOUR TURN[\s\S]*Take a photo of your target or choose one from your photos\.[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/i);
     assert.match(await page.locator("#visualStage .adjustment-target img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
+    assert.equal(await page.locator(".chapter-action.has-next-chapter").count(), 0, "Chapter 4 uses its governed photo-entry road rather than a fabricated next chapter");
     for (const name of ["TAKE PHOTO", "CHOOSE EXISTING PHOTO"]) {
       const href = await page.getByRole("link", { name, exact: true }).getAttribute("href");
       assert.match(href, /tstt_chapter=4/);
@@ -206,7 +223,7 @@ try {
   assert.equal(await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).count(), 0);
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 1);
   assert.equal(await coldPage.locator("#chapterList button:not([disabled])").count(), 5);
-  await coldPage.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).click();
+  await coldPage.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true }).click();
   await coldPage.locator('[data-control="pause"]').click();
   await coldPage.locator("#shootingSetup").click();
   await coldPage.getByRole("link", { name: "EQUIPMENT LIBRARY", exact: true }).click();
@@ -253,7 +270,7 @@ try {
   assert.match(await generalPage.locator("#shootingSetupNote").innerText(), /Different equipment requires its own governed adjustment authority/);
   await generalPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
   assert.equal(await generalPage.locator("#chapterList button:not([disabled])").count(), 5);
-  assert.equal(await generalPage.getByRole("button", { name: /NEXT, WE'LL LEARN THE SIGHTS\./ }).count(), 1);
+  assert.equal(await generalPage.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true }).count(), 1);
   assert.equal(await generalPage.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
   await generalPage.locator('[data-control="chapters"]').click();
   await generalPage.getByRole("button", { name: /Ready for the first group/ }).click();

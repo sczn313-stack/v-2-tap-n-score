@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [html, css, source, narration, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, workspace, workspaceCss, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
+const [html, css, source, narration, viewportGuard, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, workspace, workspaceCss, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
   readFile("m16a2-tstt.html", "utf8"),
   readFile("m16a2-tstt.css", "utf8"),
   readFile("m16a2-tstt.js", "utf8"),
   readFile("tstt_narration.js", "utf8"),
+  readFile("tstt_viewport_guard.js", "utf8"),
   readFile("architecture/TSTT_NARRATION_STANDARD.md", "utf8"),
   readFile("matrix.html", "utf8"),
   readFile("shoot.html", "utf8"),
@@ -39,7 +40,9 @@ assert.match(source, /AIM POINT[\s\S]*READ THE GRID[\s\S]*READ THE CLICKS[\s\S]*
 assert.match(source, /each square in the columns represents one front-sight up-or-down click[\s\S]*Each square in the rows represents three rear-windage clicks, right or left/i, "Chapter 1 reads the Founder-settled M16A2 square-to-control scales");
 assert.doesNotMatch(`${source}\n${css}`, /target-marker|sample-group/, "Chapter 1 keeps the complete physical target free of intrusive teaching overlays");
 assert.match(source, /Fire three to five shots before making an adjustment\.[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*better picture of where your shots are landing/, "Chapter 1 teaches the settled shooter-facing shot-pattern concept");
-assert.match(source, /NEXT, WE'LL LEARN THE SIGHTS\./, "Chapter 1 hands directly to the sight lesson with the settled Founder copy");
+assert.match(source, /nextChapterLabel: "NEXT — KNOW YOUR SIGHTS"[\s\S]*nextChapterLabel: "NEXT — WATCH IT"/, "Chapters 1 and 2 carry the universal Founder-approved forward destinations");
+assert.match(source, /actionMarkup[\s\S]*next-chapter-overlay[\s\S]*NEXT CHAPTER[\s\S]*has-next-chapter/, "eligible TSTT chapters render one consistent in-page forward overlay");
+assert.doesNotMatch(chapterFourSource, /nextChapterLabel/, "Chapter 4 retains its governed photo-entry and preservation destination instead of inventing another chapter");
 assert.match(html, /tstt_narration\.js[\s\S]*m16a2-tstt\.js/, "the reusable narration standard loads before the product lesson");
 assert.match(narration, /DEFAULT_SETTINGS = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "the reusable narrator keeps the slower neutral baseline");
 assert.ok(narration.indexOf("/^Samantha") < narration.indexOf("/^Reed"), "Samantha is selected before the neutral fallback voices");
@@ -149,11 +152,18 @@ assert.doesNotMatch(source, /fetch\(|XMLHttpRequest|\/api\//, "the pre-fire less
 assert.match(css, /100svh/, "the shell is sized for a phone viewport");
 assert.match(css, /safe-area-inset-bottom/, "phone safe areas protect the fixed controls");
 assert.match(css, /repeat\(5, 1fr\)/, "five course chapters render as five progress/control segments");
+assert.match(html, /maximum-scale=1, user-scalable=no[\s\S]*tstt_viewport_guard\.js/, "the TSTT shell declares its fixed responsive viewport before runtime starts");
+assert.match(shoot, /tstt_viewport_guard\.js/, "the embedded Chapter 3 TSTT runtime uses the same viewport guard");
+assert.match(viewportGuard, /maximum-scale=1, user-scalable=no[\s\S]*gesturestart[\s\S]*gesturechange[\s\S]*gestureend[\s\S]*touches\.length > 1[\s\S]*ctrlKey/, "the universal viewport guard blocks page-level touch, Safari gesture, and trackpad pinch zoom");
+assert.match(viewportGuard, /documentElement\.dataset\.tsttPage === "true" \|\| query\.get\("embedded_tstt"\) === "1"/, "the viewport guard installs only on the outer or embedded TSTT shell");
+assert.match(css, /html, body[^{]*\{[^}]*touch-action: pan-x pan-y/, "the outer TSTT shell permits scrolling without browser pinch zoom");
+assert.match(workspaceCss, /precision-tap-viewport[\s\S]*touch-action:none/, "Precision Tap retains its intentional target-owned pinch and pan surface");
 for (const build of [buildSite, buildNetlify]) {
   assert.match(build, /"m16a2-tstt\.html"/, "the route is included in the build inventory");
   assert.match(build, /"m16a2-tstt\.css"/, "the stylesheet is included in the build inventory");
   assert.match(build, /"m16a2-tstt\.js"/, "the lesson runtime is included in the build inventory");
   assert.match(build, /"tstt_narration\.js"/, "the reusable narration runtime is included in the build inventory");
+  assert.match(build, /"tstt_viewport_guard\.js"/, "the universal TSTT viewport guard is included in the build inventory");
   assert.match(build, /"m16a2_talking_demo_session\.js"/, "the prepared M16A2 demonstration fixture is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the preserved target evidence is included in the build inventory");
   assert.match(build, /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg/, "the exact governed standard Baker M16A2 face is included in the build inventory");
@@ -161,6 +171,7 @@ for (const build of [buildSite, buildNetlify]) {
 }
 assert.match(reviewServer, /FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_ELEVATION_DRUM_8-3_REFERENCE/, "the local review server permits all three Founder-supplied references");
 assert.match(reviewServer, /shoot\.html[\s\S]*sec\.html[\s\S]*records\.html[\s\S]*BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg/, "the local review server permits the governed standard face, interaction, and preservation road");
+assert.match(reviewServer, /tstt_viewport_guard\.js/, "the LAN review server serves the universal TSTT viewport guard");
 assert.match(reviewServer, /pathname\.startsWith\("\/api\/"\)[\s\S]*proxyAuthority/, "private-LAN review proxies governed API calls through the allowed Node review executable");
 assert.match(reviewServer, /const host = process\.argv\[3\] \|\| "127\.0\.0\.1"/, "the review server keeps uncleared reference photographs on localhost unless LAN exposure is explicitly requested");
 

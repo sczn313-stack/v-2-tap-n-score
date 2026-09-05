@@ -16,6 +16,7 @@ const publicFiles = [
   "m16a2-tstt.css",
   "m16a2-tstt.js",
   "tstt_narration.js",
+  "tstt_viewport_guard.js",
   "tstt-voice-audition.html",
   "tstt-voice-audition.css",
   "tstt-voice-audition.js",

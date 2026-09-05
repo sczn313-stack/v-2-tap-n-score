@@ -15,6 +15,7 @@ const publicFiles = new Map([
   ["/m16a2-tstt.css", "m16a2-tstt.css"],
   ["/m16a2-tstt.js", "m16a2-tstt.js"],
   ["/tstt_narration.js", "tstt_narration.js"],
+  ["/tstt_viewport_guard.js", "tstt_viewport_guard.js"],
   ["/tstt-voice-audition.html", "tstt-voice-audition.html"],
   ["/tstt-voice-audition.css", "tstt-voice-audition.css"],
   ["/tstt-voice-audition.js", "tstt-voice-audition.js"],

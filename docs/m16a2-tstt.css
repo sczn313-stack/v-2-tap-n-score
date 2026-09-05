@@ -16,7 +16,7 @@
 
 * { box-sizing: border-box; }
 
-html, body { min-height: 100%; }
+html, body { min-height: 100%; touch-action: pan-x pan-y; }
 
 body {
   margin: 0;
@@ -165,6 +165,12 @@ h1 { max-width: 680px; margin: 0; font: 400 clamp(2.25rem, 8vw, 4.3rem)/.95 var(
 .training-setup b { color: var(--ink); font-size: 1rem; }
 .training-setup p { margin: 2px 0 0; color: var(--muted); font-size: .78rem; line-height: 1.45; }
 .chapter-action { display: flex; justify-content: center; }
+.chapter-action.has-next-chapter { position: fixed; z-index: 8; right: 12px; bottom: calc(88px + env(safe-area-inset-bottom)); left: 12px; width: min(calc(100% - 24px), 520px); margin-inline: auto; filter: drop-shadow(0 12px 22px rgba(0,0,0,.5)); }
+.next-chapter-overlay { grid-template-rows:auto auto; gap: 4px; border-radius: 10px; }
+.next-chapter-overlay span { font-size: .57rem; letter-spacing: .16em; }
+.next-chapter-overlay strong { font-size: .82rem; letter-spacing: .09em; }
+.tstt-shell[data-status="paused"] .chapter-action.has-next-chapter,
+.tstt-shell[data-status="stopped"] .chapter-action.has-next-chapter { pointer-events: none; }
 .primary-action { display: grid; place-items: center; width: 100%; min-height: 54px; padding: 14px 20px; border: 1px solid var(--gold); background: var(--gold); color: #111; font-weight: 950; letter-spacing: .09em; text-align: center; text-decoration: none; }
 .primary-action:active { transform: translateY(1px); }
 .terminal-stop { width: 100%; padding: 14px; border: 1px solid var(--line); background: #111612; text-align: center; }
