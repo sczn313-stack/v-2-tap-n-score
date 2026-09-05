@@ -75,10 +75,11 @@ try {
     assert.equal(await demo.locator("#precisionTapPhotoPicker").isVisible(), false, `Chapter 3 hides photo entry choices at ${viewport.width}px`);
     const sampleBadge = await demo.locator(".baker-sample-watermark").evaluate(element => {
       const style = getComputedStyle(element);
-      return { fontSize: Number.parseFloat(style.fontSize), writingMode: style.writingMode, width: element.getBoundingClientRect().width };
+      return { color: style.color, fontSize: Number.parseFloat(style.fontSize), writingMode: style.writingMode, width: element.getBoundingClientRect().width };
     });
-    assert.ok(sampleBadge.fontSize <= 10 && sampleBadge.width < 30, `SAMPLE is a compact edge badge at ${viewport.width}px`);
-    assert.match(sampleBadge.writingMode, /vertical/);
+    assert.ok(sampleBadge.fontSize >= 36 && sampleBadge.width > 120, `SAMPLE is immediately readable on the target at ${viewport.width}px`);
+    assert.match(sampleBadge.writingMode, /horizontal/);
+    assert.match(sampleBadge.color, /rgba\([^)]*, 0\.17\)/, `SAMPLE remains translucent at ${viewport.width}px`);
     const targetViewport = demo.locator(".precision-tap-viewport");
     const calloutBox = await demo.locator(".baker-sample-demo-callout").boundingBox();
     const targetBox = await targetViewport.boundingBox();
@@ -121,6 +122,11 @@ try {
     await demo.locator('#bakerSampleDemoLayer[data-demo-state="vault"]').waitFor({ timeout: 30000 });
     assert.match(await demo.locator(".baker-demo-preservation-caption").innerText(), /BALLISTIC VAULT[\s\S]*complete shooting session is saved/i);
     await demo.locator('#workspaceStageShell[data-player-status="completed"]').waitFor({ timeout: 120000 });
+    const completionCardBox = await demo.locator(".baker-sample-stage-card").boundingBox();
+    const completionTargetBox = await targetViewport.boundingBox();
+    assert.ok(completionCardBox && completionTargetBox, "completion card and target have measurable bounds");
+    assert.ok(Math.abs((completionCardBox.x + completionCardBox.width / 2) - (completionTargetBox.x + completionTargetBox.width / 2)) <= 2, `completion card is horizontally centered at ${viewport.width}px`);
+    assert.ok(Math.abs((completionCardBox.y + completionCardBox.height / 2) - (completionTargetBox.y + completionTargetBox.height / 2)) <= 2, `completion card is vertically centered at ${viewport.width}px`);
     const demoFrame = page.frames().find(frame => frame.url().includes("embedded_tstt=1"));
     assert.ok(demoFrame, "the same-origin Chapter 3 runtime is present");
 
