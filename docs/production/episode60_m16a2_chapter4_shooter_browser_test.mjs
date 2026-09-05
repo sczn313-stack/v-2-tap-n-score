@@ -80,12 +80,18 @@ try {
       elevationDirection: "DOWN",
       elevationTurnDirection: "COUNTERCLOCKWISE"
     });
+    assert.equal(
+      await page.locator("#missionWorkspaceGuidance").innerText(),
+      "Apply the clicks. Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes."
+    );
 
     await page.locator("#saveMarks:visible", { hasText: "Begin Confirmation" }).click();
     await page.waitForFunction(() => document.body.dataset.m4LivePhase === "confirmation" && document.body.dataset.hasResults === "false");
+    assert.equal(await page.locator("#missionWorkspaceGuidance").innerText(), "On the confirmation target photo, tap only the new confirmation bullet holes.");
     await tapPercent(page, 49.9, 48.6);
     await tapPercent(page, 50.1, 48.7);
     await tapPercent(page, 50.0, 48.8);
+    assert.equal(await page.locator("#missionWorkspaceGuidance").innerText(), "Tap Show Results for these new confirmation shots.");
     await page.locator("#showResults:visible").click();
     await page.waitForFunction(() => document.body.dataset.hasResults === "true", null, { timeout: 30000 });
     assert.equal(authorityResponses[1].status, 200);

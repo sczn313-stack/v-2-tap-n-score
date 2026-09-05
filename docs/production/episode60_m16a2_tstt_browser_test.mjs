@@ -8,20 +8,41 @@ const browser = await chromium.launch({ headless: true, executablePath: process.
 
 try {
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000 }]) {
-    const context = await browser.newContext({ viewport, reducedMotion: "reduce" });
+    const context = await browser.newContext({ viewport, reducedMotion: "no-preference" });
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(() => {
-      window.__spokenUtterances = [];
       window.__speechSynthesisCalls = [];
+      window.__tsttAudio = [];
+      class ControlledAudio {
+        constructor() {
+          this.src = "";
+          this.paused = true;
+          this.onplay = null;
+          this.onended = null;
+          this.onerror = null;
+          window.__tsttAudio.push(this);
+        }
+        play() {
+          this.paused = false;
+          queueMicrotask(() => this.onplay?.());
+          return Promise.resolve();
+        }
+        pause() { this.paused = true; }
+        finish() {
+          this.paused = true;
+          this.onended?.();
+        }
+      }
+      Object.defineProperty(window, "Audio", { configurable: true, value: ControlledAudio });
       const voices = [
         { name: "Albert", lang: "en-US", localService: true, default: true },
         { name: "Daniel", lang: "en-GB", localService: true, default: false },
         { name: "Samantha", lang: "en-US", voiceURI: "com.apple.voice.compact.en-US.Samantha", localService: true, default: false },
         { name: "Reed (English (US))", lang: "en-US", voiceURI: "com.apple.eloquence.en-US.Reed", localService: true, default: false }
       ];
-      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() { window.__speechSynthesisCalls.push("cancel"); }, speak(utterance) { window.__speechSynthesisCalls.push("speak"); window.__spokenUtterances.push(utterance); }, pause() { window.__speechSynthesisCalls.push("pause"); }, resume() { window.__speechSynthesisCalls.push("resume"); }, getVoices() { return voices; }, speaking: false } });
+      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() { window.__speechSynthesisCalls.push("cancel"); }, speak() { window.__speechSynthesisCalls.push("speak"); }, pause() { window.__speechSynthesisCalls.push("pause"); }, resume() { window.__speechSynthesisCalls.push("resume"); }, getVoices() { return voices; }, speaking: false } });
       Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
       localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "founder-m16a2");
       localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
@@ -56,16 +77,15 @@ try {
     assert.equal(await page.locator("#lessonSummary").innerText(), "Before making any sight adjustments, understand what this target is telling you.");
     assert.match(await page.locator("#visualStage").innerText(), /AIM POINT[\s\S]*Always make the center crosshairs your aim point[\s\S]*READ THE GRID[\s\S]*Each small square measures[\s\S]*READ THE CLICKS[\s\S]*columns represents one front-sight up-or-down click[\s\S]*rows represents three rear-windage clicks[\s\S]*FIRE THE SHOT PATTERN[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*LET TAP-N-SCORE READ IT/);
     await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
-    const chapterOneSpeech = await page.evaluate(() => {
-      const utterance = window.__spokenUtterances.at(-1);
-      return { text: utterance.text, rate: utterance.rate, pitch: utterance.pitch, volume: utterance.volume, voice: utterance.voice?.name, lang: utterance.lang };
-    });
-    assert.deepEqual({ rate: chapterOneSpeech.rate, pitch: chapterOneSpeech.pitch, volume: chapterOneSpeech.volume, voice: chapterOneSpeech.voice, lang: chapterOneSpeech.lang }, { rate: 0.70, pitch: 1, volume: 1, voice: "Samantha", lang: "en-US" });
-    assert.equal(chapterOneSpeech.text, "Before making any sight adjustments, understand what this target is telling you. Always make the center crosshairs your aim point when zeroing your weapon. Each small square measures how far your shots are landing from the center crosshairs. On this target, each square in the columns represents one front-sight up-or-down click. Each square in the rows represents three rear-windage clicks, right or left. Fire three to five shots before making an adjustment. The center of your shot pattern gives a better picture of where your shots are landing. Once you have a shot pattern, Tap-n-Score can measure where it is in relation to the center crosshairs and tell you what adjustment to make. Next, we'll learn the sights.");
-    const spokenCountBeforePause = await page.evaluate(() => window.__spokenUtterances.length);
-    await page.evaluate(() => window.__spokenUtterances.at(-1).onend());
-    await page.waitForTimeout(550);
-    assert.equal(await page.evaluate(() => window.__spokenUtterances.length), spokenCountBeforePause, "Chapter 1 remains one continuous known-good utterance");
+    await page.waitForFunction(() => window.__tsttAudio.length === 1);
+    assert.match(await page.evaluate(() => window.__tsttAudio.at(-1).src), /assets\/audio\/episode60\/chapter1\/01\.wav$/);
+    assert.deepEqual(await page.evaluate(() => window.__speechSynthesisCalls), ["cancel", "cancel"], "Chapter 1 uses native audio instead of Web Speech");
+    await page.locator('[data-control="pause"]').click();
+    assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");
+    assert.equal(await page.evaluate(() => window.__tsttAudio.at(-1).paused), true);
+    await page.locator('[data-control="pause"]').click();
+    assert.equal(await page.locator("[data-pause-label]").innerText(), "PAUSE");
+    assert.equal(await page.evaluate(() => window.__tsttAudio.at(-1).paused), false);
     assert.equal(await page.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
     await page.locator("#shootingSetup").click();
     assert.equal(await page.locator("#sessionDistance").inputValue(), "25");
@@ -75,7 +95,16 @@ try {
     const chapterOneNext = page.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true });
     assert.match(await chapterOneNext.innerText(), /NEXT CHAPTER[\s\S]*NEXT — KNOW YOUR SIGHTS/);
     assert.equal(await chapterOneNext.evaluate(element => getComputedStyle(element.parentElement).position), "fixed");
-    await chapterOneNext.click();
+    for (let index = 0; index < 9; index += 1) {
+      const expectedPath = `chapter1/${String(index + 1).padStart(2, "0")}.wav`;
+      assert.ok((await page.evaluate(() => window.__tsttAudio.at(-1).src)).endsWith(expectedPath));
+      if (index === 3) assert.equal(await page.locator('[data-grid-cue="columns"]').getAttribute("class"), "grid-teaching-cue is-column is-active");
+      if (index === 4) assert.equal(await page.locator('[data-grid-cue="rows"]').getAttribute("class"), "grid-teaching-cue is-row is-active");
+      const count = await page.evaluate(() => window.__tsttAudio.length);
+      await page.evaluate(() => window.__tsttAudio.at(-1).finish());
+      if (index < 8) await page.waitForFunction(previous => window.__tsttAudio.length > previous, count);
+    }
+    await page.waitForFunction(() => document.getElementById("chapterNumber")?.textContent === "CHAPTER 2 OF 5");
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 2 OF 5");
     assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR SIGHTS.");
     assert.match(await page.locator("#visualStage").innerText(), /FRONT SIGHT POST[\s\S]*Controls elevation — moves your shot pattern up or down\.[\s\S]*REAR WINDAGE KNOB[\s\S]*Controls windage — moves your shot pattern right or left\.[\s\S]*REAR ELEVATION DRUM[\s\S]*For your 25-meter zero, set the drum to 8\/3, then turn it one click CLOCKWISE past 8\/3\.[\s\S]*After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8\/3 for the 300-meter setting\./);
@@ -88,27 +117,15 @@ try {
     assert.equal(await page.locator("#visualStage .sight-intro, #visualStage .sight-job, #visualStage .drum-sequence, #visualStage figcaption, #visualStage .review-asset-note").count(), 0);
     assert.doesNotMatch(await page.locator("#visualStage").innerText(), /\bFIND\b|\bJOB\b|FOUNDER REVIEW REFERENCES/);
     assert.match(await page.locator("#visualStage").innerText(), /Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern\./);
-    const chapterTwoSpeech = await page.evaluate(() => {
-      const utterance = window.__spokenUtterances.at(-1);
-      return { text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name };
-    });
-    assert.equal(chapterTwoSpeech.text, "Front sight post. Controls elevation — moves your shot pattern up or down. Rear windage knob. Controls windage — moves your shot pattern right or left. Rear elevation drum. For your twenty-five-meter zero, set the drum to 8/3, then turn it one click CLOCKWISE past 8/3. After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8/3 for the three-hundred-meter setting. Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern.");
-    assert.deepEqual({ rate: chapterTwoSpeech.rate, voice: chapterTwoSpeech.voice }, { rate: 0.70, voice: "Samantha" });
-
-    await page.locator('[data-control="pause"]').click();
-    assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");
-    assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "paused");
-    await page.locator('[data-control="pause"]').click();
-    assert.equal(await page.locator("[data-pause-label]").innerText(), "PAUSE");
-    await page.locator('[data-control="stop"]').click();
-    assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "stopped");
-    assert.equal(await page.locator("[data-pause-label]").innerText(), "RESUME");
-    await page.locator('[data-control="pause"]').click();
-    assert.equal(await page.locator("#tsttApp").getAttribute("data-status"), "active");
-
     const chapterTwoNext = page.getByRole("button", { name: "NEXT — WATCH IT", exact: true });
     assert.match(await chapterTwoNext.innerText(), /NEXT CHAPTER[\s\S]*NEXT — WATCH IT/);
-    await chapterTwoNext.click();
+    for (let index = 0; index < 5; index += 1) {
+      const expectedPath = `chapter2/${String(index + 1).padStart(2, "0")}.wav`;
+      assert.ok((await page.evaluate(() => window.__tsttAudio.at(-1).src)).endsWith(expectedPath));
+      const count = await page.evaluate(() => window.__tsttAudio.length);
+      await page.evaluate(() => window.__tsttAudio.at(-1).finish());
+      if (index < 4) await page.waitForFunction(previous => window.__tsttAudio.length > previous, count);
+    }
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
     assert.equal(await demo.locator("html").getAttribute("data-tstt-page-zoom"), "locked", "embedded Chapter 3 shell also blocks browser page zoom");

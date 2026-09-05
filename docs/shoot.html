@@ -1412,12 +1412,12 @@ function zeroingMissionGuidance() {
   if (isBakerSampleEvidence()) return "";
   if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
-    if (!currentImpactPoints.length) return "Tap each hole in the confirmation group.";
-    if (!resultsShown) return "Tap Show Results for this confirmation group.";
+    if (!currentImpactPoints.length) return "On the confirmation target photo, tap only the new confirmation bullet holes.";
+    if (!resultsShown) return "Tap Show Results for these new confirmation shots.";
     if (!isMfamZeroingAuthoritySession()) return "Confirmation recorded. Save the completed session.";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Your zero is confirmed. Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your 300-meter setting."
-      : "Apply the correction, then fire another confirmation group.";
+      : "Apply the new clicks. Then shoot another confirmation group, photograph that target, and tap only those new holes.";
   }
   if (!currentAimPoint) return "Tap your aim point on the photo.";
   if (!currentImpactPoints.length) return "Tap your shots on the photo.";
@@ -1425,7 +1425,7 @@ function zeroingMissionGuidance() {
     ? "Tap Show Results when your shots are marked."
     : "Continue tapping bullet holes.";
   if (!sessionSaved) return isMfamZeroingAuthoritySession()
-    ? "Apply the clicks, then shoot your confirmation."
+    ? "Apply the clicks. Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes."
     : "Apply your clicks, then shoot your confirmation shots.";
   return "View Record";
 }
@@ -3010,7 +3010,7 @@ function correctionUnavailableShooterMessage(authorityPackage = backendAuthority
 function remainingCorrectionShooterMessage(authorityPackage = backendAuthorityPackage) {
   const clicks = authorityPackage && authorityPackage.clicks;
   if (!clicks) {
-    return "Review the session setup before firing another confirmation group.";
+    return "Review the session setup before shooting and photographing another confirmation group.";
   }
   const axes = ["windage", "elevation"].map(axis => {
     const direction = String(clicks[`${axis}Direction`] || "CENTER").trim().toUpperCase();
@@ -3020,9 +3020,9 @@ function remainingCorrectionShooterMessage(authorityPackage = backendAuthorityPa
     return `${readableDirection} ${count} ${count === 1 ? "click" : "clicks"}`;
   }).filter(Boolean);
   if (!axes.length) {
-    return "Fire and tap another confirmation group.";
+    return "Shoot another confirmation group, photograph that target, then tap only those new holes.";
   }
-  return `Apply the remaining correction: ${axes.join(" · ")}. Then fire and tap another confirmation group.`;
+  return `Apply the remaining correction: ${axes.join(" · ")}. Then shoot another confirmation group, photograph that target, and tap only those new holes.`;
 }
 
 function correctionContextEvidenceX(authorityPackage = backendAuthorityPackage) {

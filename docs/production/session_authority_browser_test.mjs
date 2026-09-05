@@ -269,7 +269,7 @@ try {
       await page.locator("#saveMarks").click();
       await page.waitForFunction(() => document.body.dataset.m4LivePhase === "confirmation");
       assert.equal(await page.locator("#missionWorkspaceGuidance").isVisible(), true);
-      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /Tap each hole in the confirmation group\./);
+      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /On the confirmation target photo, tap only the new confirmation bullet holes\./);
       await tap(0.495, 0.50);
       await tap(0.50, 0.495);
       await tap(0.505, 0.50);

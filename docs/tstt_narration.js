@@ -56,11 +56,18 @@
   function createNarrator(options = {}) {
     const synthesis = options.synthesis || root.speechSynthesis;
     const Utterance = options.Utterance || root.SpeechSynthesisUtterance;
+    const audioFactory = options.audioFactory || (() => new root.Audio());
     const settings = Object.freeze({ ...DEFAULT_SETTINGS, ...(options.settings || {}) });
     const onVoiceStatus = typeof options.onVoiceStatus === "function" ? options.onVoiceStatus : () => {};
+    const onSegmentStart = typeof options.onSegmentStart === "function" ? options.onSegmentStart : () => {};
+    const onSegmentEnd = typeof options.onSegmentEnd === "function" ? options.onSegmentEnd : () => {};
+    const onComplete = typeof options.onComplete === "function" ? options.onComplete : () => {};
+    const onAudioError = typeof options.onAudioError === "function" ? options.onAudioError : () => {};
     let queue = [];
     let cursor = 0;
     let currentUtterance = null;
+    let currentAudio = null;
+    let currentSegment = null;
     let pauseTimer = null;
     let paused = false;
     let waitingBetweenThoughts = false;
@@ -90,9 +97,70 @@
       pauseTimer = null;
     }
 
-    function speakNext(token) {
-      if (token !== generation || paused || !synthesis || !Utterance || cursor >= queue.length) return;
+    function completePlan(token) {
+      if (token !== generation || paused) return;
+      currentSegment = null;
+      onComplete(Object.freeze({ token, segments: queue.slice() }));
+    }
+
+    function finishSegment(segment, token) {
+      if (token !== generation || currentSegment !== segment) return;
+      currentUtterance = null;
+      currentAudio = null;
+      currentSegment = null;
+      onSegmentEnd(segment);
+      if (cursor >= queue.length) {
+        completePlan(token);
+        return;
+      }
+      waitingBetweenThoughts = true;
+      pauseTimer = root.setTimeout(() => {
+        pauseTimer = null;
+        waitingBetweenThoughts = false;
+        playNext(token);
+      }, pauseAfter(segment));
+    }
+
+    function playNativeAudio(segment, token) {
+      const audio = audioFactory();
+      currentAudio = audio;
+      audio.preload = "auto";
+      audio.src = segment.audio;
+      audio.volume = settings.volume;
+      audio.onplay = () => {
+        if (token === generation && currentAudio === audio) onSegmentStart(segment);
+      };
+      audio.onended = () => finishSegment(segment, token);
+      audio.onerror = event => {
+        if (token !== generation || currentAudio !== audio) return;
+        currentAudio = null;
+        currentSegment = null;
+        onAudioError(Object.freeze({ event, segment }));
+      };
+      const playback = audio.play();
+      if (playback && typeof playback.catch === "function") {
+        playback.catch(error => {
+          if (token !== generation || currentAudio !== audio) return;
+          currentAudio = null;
+          currentSegment = null;
+          onAudioError(Object.freeze({ error, segment }));
+        });
+      }
+    }
+
+    function playNext(token) {
+      if (token !== generation || paused) return;
+      if (cursor >= queue.length) {
+        completePlan(token);
+        return;
+      }
       const segment = queue[cursor++];
+      currentSegment = segment;
+      if (segment.audio) {
+        playNativeAudio(segment, token);
+        return;
+      }
+      if (!synthesis || !Utterance) return;
       const utterance = new Utterance(pronounceForInstruction(segment.text));
       const voice = selectedVoice || resolveSamantha({ final: true });
       if (!voice) return;
@@ -101,16 +169,10 @@
       utterance.rate = deliveryRate(segment.delivery);
       utterance.pitch = settings.pitch;
       utterance.volume = settings.volume;
+      onSegmentStart(segment);
       utterance.onend = () => {
         if (token !== generation || currentUtterance !== utterance) return;
-        currentUtterance = null;
-        if (cursor >= queue.length) return;
-        waitingBetweenThoughts = true;
-        pauseTimer = root.setTimeout(() => {
-          pauseTimer = null;
-          waitingBetweenThoughts = false;
-          speakNext(token);
-        }, pauseAfter(segment));
+        finishSegment(segment, token);
       };
       utterance.onerror = () => { if (token === generation && currentUtterance === utterance) currentUtterance = null; };
       currentUtterance = utterance;
@@ -122,7 +184,15 @@
       clearTimer();
       queue = [];
       cursor = 0;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.onplay = null;
+        currentAudio.onended = null;
+        currentAudio.onerror = null;
+      }
+      currentAudio = null;
       currentUtterance = null;
+      currentSegment = null;
       waitingBetweenThoughts = false;
       paused = false;
       if (synthesis && typeof synthesis.cancel === "function") synthesis.cancel();
@@ -131,7 +201,8 @@
     function play(plan) {
       cancel();
       queue = (Array.isArray(plan) ? plan : sentencePlan(plan)).map(segment => typeof segment === "string" ? { text: segment, delivery: "normal" } : { delivery: "normal", ...segment }).filter(segment => segment.text);
-      if (resolveSamantha({ final: true })) speakNext(generation);
+      if (queue.some(segment => !segment.audio) && !resolveSamantha({ final: true })) return;
+      playNext(generation);
     }
 
     function pause() {
@@ -140,6 +211,8 @@
       if (pauseTimer !== null) {
         clearTimer();
         waitingBetweenThoughts = true;
+      } else if (currentAudio) {
+        currentAudio.pause();
       } else if (currentUtterance && synthesis && typeof synthesis.pause === "function") {
         synthesis.pause();
       }
@@ -148,16 +221,20 @@
     function resume() {
       if (!paused) return;
       paused = false;
-      if (currentUtterance && synthesis && typeof synthesis.resume === "function") synthesis.resume();
+      if (currentAudio) {
+        const playback = currentAudio.play();
+        if (playback && typeof playback.catch === "function") playback.catch(error => onAudioError(Object.freeze({ error, segment: currentSegment })));
+      }
+      else if (currentUtterance && synthesis && typeof synthesis.resume === "function") synthesis.resume();
       else if (waitingBetweenThoughts) {
         waitingBetweenThoughts = false;
-        pauseTimer = root.setTimeout(() => { pauseTimer = null; speakNext(generation); }, 200);
-      } else speakNext(generation);
+        pauseTimer = root.setTimeout(() => { pauseTimer = null; playNext(generation); }, 200);
+      } else playNext(generation);
     }
 
     if (synthesis && typeof synthesis.addEventListener === "function") synthesis.addEventListener("voiceschanged", () => {
       const wasUnavailable = !selectedVoice;
-      if (resolveSamantha({ final: true }) && wasUnavailable && queue.length && !currentUtterance && !paused) speakNext(generation);
+      if (resolveSamantha({ final: true }) && wasUnavailable && queue.some(segment => !segment.audio) && !currentUtterance && !currentAudio && !paused) playNext(generation);
     });
     resolveSamantha();
     root.setTimeout(() => resolveSamantha(), 250);

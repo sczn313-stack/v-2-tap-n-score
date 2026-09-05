@@ -27,6 +27,11 @@
     "Next, we'll learn the sights."
   ]);
   const chapterOneSpokenNarration = chapterOneFounderScript.join(" ");
+  const chapterOneNarrationPlan = Object.freeze(chapterOneFounderScript.map((text, index) => Object.freeze({
+    text,
+    audio: `assets/audio/episode60/chapter1/${String(index + 1).padStart(2, "0")}.wav`,
+    cue: index === 3 ? "columns" : (index === 4 ? "rows" : "")
+  })));
   const chapterTwoFounderScript = Object.freeze([
     "Controls elevation — moves your shot pattern up or down.",
     "Controls windage — moves your shot pattern right or left.",
@@ -34,7 +39,18 @@
     "After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting.",
     "Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern."
   ]);
-  const chapterTwoSpokenNarration = `Front sight post. ${chapterTwoFounderScript[0]} Rear windage knob. ${chapterTwoFounderScript[1]} Rear elevation drum. ${chapterTwoFounderScript[2]} ${chapterTwoFounderScript[3]} ${chapterTwoFounderScript[4]}`;
+  const chapterTwoNarrationSegments = Object.freeze([
+    `Front sight post. ${chapterTwoFounderScript[0]}`,
+    `Rear windage knob. ${chapterTwoFounderScript[1]}`,
+    `Rear elevation drum. ${chapterTwoFounderScript[2]}`,
+    chapterTwoFounderScript[3],
+    chapterTwoFounderScript[4]
+  ]);
+  const chapterTwoSpokenNarration = chapterTwoNarrationSegments.join(" ");
+  const chapterTwoNarrationPlan = Object.freeze(chapterTwoNarrationSegments.map((text, index) => Object.freeze({
+    text,
+    audio: `assets/audio/episode60/chapter2/${String(index + 1).padStart(2, "0")}.wav`
+  })));
   const chapterThreeFounderScript = Object.freeze([
     "Watch Tap-n-Score zero this M16A2.",
     "See the aim point, shot pattern, measurement, sight adjustment, confirmation, Shooter Experience Card, and Ballistic Vault."
@@ -52,10 +68,8 @@
       title: "Know your target.",
       summary: chapterOneFounderScript[0],
       narration: chapterOneSpokenNarration,
-      narrationPlan: Object.freeze([
-        Object.freeze({ text: chapterOneSpokenNarration, delivery: "normal" })
-      ]),
-      visual: () => `<div class="target-lesson"><figure class="target-window is-full-target target-teaching-figure"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"></figure><ol class="target-curriculum"><li><span>1</span><div><b>AIM POINT</b><p>${chapterOneFounderScript[1]}</p></div></li><li><span>2</span><div><b>READ THE GRID</b><p>${chapterOneFounderScript[2]}</p></div></li><li><span>3</span><div><b>READ THE CLICKS</b><p>${chapterOneFounderScript[3]} ${chapterOneFounderScript[4]}</p></div></li><li><span>4</span><div><b>FIRE THE SHOT PATTERN</b><p>${chapterOneFounderScript[5]} <strong>THE CENTER OF YOUR SHOT PATTERN</strong> gives a better picture of where your shots are landing.</p></div></li><li><span>5</span><div><b>LET TAP-N-SCORE READ IT</b><p>${chapterOneFounderScript[7]}</p></div></li></ol></div>`,
+      narrationPlan: chapterOneNarrationPlan,
+      visual: () => `<div class="target-lesson"><figure class="target-window is-full-target target-teaching-figure"><img src="${targetImage}" alt="Complete 25 Meters Zeroing Target, M16A2"><i class="grid-teaching-cue is-column" data-grid-cue="columns" aria-hidden="true"></i><i class="grid-teaching-cue is-row" data-grid-cue="rows" aria-hidden="true"></i></figure><ol class="target-curriculum"><li><span>1</span><div><b>AIM POINT</b><p>${chapterOneFounderScript[1]}</p></div></li><li><span>2</span><div><b>READ THE GRID</b><p>${chapterOneFounderScript[2]}</p></div></li><li><span>3</span><div><b>READ THE CLICKS</b><p>${chapterOneFounderScript[3]} ${chapterOneFounderScript[4]}</p></div></li><li><span>4</span><div><b>FIRE THE SHOT PATTERN</b><p>${chapterOneFounderScript[5]} <strong>THE CENTER OF YOUR SHOT PATTERN</strong> gives a better picture of where your shots are landing.</p></div></li><li><span>5</span><div><b>LET TAP-N-SCORE READ IT</b><p>${chapterOneFounderScript[7]}</p></div></li></ol></div>`,
       action: "equipment"
     }),
     Object.freeze({
@@ -64,9 +78,7 @@
       title: "Know your sights.",
       summary: "",
       narration: chapterTwoSpokenNarration,
-      narrationPlan: Object.freeze([
-        Object.freeze({ text: chapterTwoSpokenNarration, delivery: "normal" })
-      ]),
+      narrationPlan: chapterTwoNarrationPlan,
       visual: () => `<div class="sight-lesson">
         <div class="sight-cards">
           <section class="sight-card">
@@ -127,8 +139,12 @@
     start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]'),
     chapterThreeRuntimeShell: document.getElementById("chapterThreeRuntimeShell"), chapterThreeRuntime: document.getElementById("chapterThreeRuntime"), chapterThreeRuntimeStart: document.querySelector("[data-start-chapter-three]"),
   });
-  const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null };
-  const narrator = window.SCZN3TSTTNarration.createNarrator();
+  const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null, pendingAutomaticDemoStart: false };
+  const narrator = window.SCZN3TSTTNarration.createNarrator({
+    onSegmentStart: segment => setGridTeachingCue(segment.cue),
+    onSegmentEnd: clearGridTeachingCue,
+    onComplete: () => completeCurrentTeachingChapter()
+  });
 
   function conciseEquipmentName(profile = {}) {
     const manufacturer = profile.weaponCatalogManufacturer || profile.weaponManufacturer || "";
@@ -190,16 +206,18 @@
       return null;
     }
   }
-  function launchChapterThreeDemo({ userGesture = false } = {}) {
+  function launchChapterThreeDemo({ userGesture = false, automatic = false } = {}) {
     cancelSpeech();
     preserveJourney();
     elements.chapterThreeRuntimeShell.hidden = false;
     elements.app.setAttribute("aria-hidden", "true");
     const controller = chapterThreeController();
-    if (userGesture && controller && typeof controller.startBakerSampleDemo === "function") {
+    if ((userGesture || automatic) && controller && typeof controller.startBakerSampleDemo === "function") {
       controller.startBakerSampleDemo();
+      state.pendingAutomaticDemoStart = false;
       return true;
     }
+    if (automatic) state.pendingAutomaticDemoStart = true;
     elements.chapterThreeRuntimeStart.hidden = false;
     return false;
   }
@@ -229,6 +247,25 @@
     if (rerender && previousStatus !== state.equipment.status) render({ narrate: false, sync: false });
   }
   function cancelSpeech() { narrator.cancel(); }
+  function clearGridTeachingCue() {
+    elements.visual.querySelectorAll("[data-grid-cue].is-active").forEach(cue => cue.classList.remove("is-active"));
+  }
+  function setGridTeachingCue(cueName) {
+    clearGridTeachingCue();
+    if (!cueName || state.current !== 0) return;
+    const cue = elements.visual.querySelector(`[data-grid-cue="${cueName}"]`);
+    if (!cue) return;
+    void cue.offsetWidth;
+    cue.classList.add("is-active");
+    cue.addEventListener("animationend", () => cue.classList.remove("is-active"), { once: true });
+  }
+  function completeCurrentTeachingChapter() {
+    clearGridTeachingCue();
+    if (!state.started || state.paused || state.stopped || state.current > 1) return;
+    const enteringChapterThree = state.current === 1;
+    if (enteringChapterThree) state.pendingAutomaticDemoStart = true;
+    advance({ automatic: true });
+  }
   function speakCurrent() {
     cancelSpeech();
     if (!state.started || state.paused || state.stopped) return;
@@ -293,7 +330,7 @@
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
     elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" });
     if (state.started && !state.paused && !state.stopped && shouldLaunchChapterThreeDemo(chapter)) {
-      launchChapterThreeDemo({ userGesture: false });
+      launchChapterThreeDemo({ userGesture: false, automatic: state.pendingAutomaticDemoStart });
       return;
     }
     if (narrate) speakCurrent();
@@ -311,6 +348,7 @@
   elements.chapterThreeRuntimeStart.addEventListener("click", () => launchChapterThreeDemo({ userGesture: true }));
   elements.chapterThreeRuntime.addEventListener("load", () => {
     updateChapterThreeStartControl({ playerState: "idle" });
+    if (state.pendingAutomaticDemoStart && state.current === 2) launchChapterThreeDemo({ automatic: true });
   });
   window.addEventListener("message", event => {
     if (event.origin !== window.location.origin || event.source !== elements.chapterThreeRuntime.contentWindow || event.data?.type !== "sczn3-m16a2-demo-runtime") return;
