@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
-<link rel="stylesheet" href="smart_target_workspace.css?v=episode60-chapter3-runtime-start-1" />
+<link rel="stylesheet" href="smart_target_workspace.css?v=episode60-chapter3-founder-massage-1" />
 <link rel="preload" href="assets/audio/episode59/baker-selected.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-photo-after-shooting.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-aim-intro.wav" as="audio" type="audio/wav" />
@@ -183,7 +183,7 @@ window.addEventListener("error", event => {
 <script src="ops.js?v=founder-shared-link-v1"></script>
 <script src="self_teaching_player.js?v=episode59-founder-player-lock-1"></script>
 <script src="baker_talking_demo_session.js?v=episode59-real-sec-vault-1"></script>
-<script src="m16a2_talking_demo_session.js?v=episode60-chapter3-pass3"></script>
+<script src="m16a2_talking_demo_session.js?v=episode60-chapter3-founder-massage-1"></script>
 <script src="m4_talking_lesson.js?v=episode60-m4-teaching-1"></script>
 <script>
 const beginExperienceProcessing = (id, message, trigger, scope) => SCZN3Actions.begin({ id, message, trigger, scope });
@@ -202,6 +202,7 @@ const REQUESTED_TARGET_PROFILE_ID = String(
 const SIMULATION_MODE = TARGET_QUERY.get("simulation") === "1";
 const PREPARED_M16A2_DEMO_MODE = TARGET_QUERY.get("prepared_demo") === "1" && TARGET_QUERY.get("m16a2_demo") === "1";
 const EMBEDDED_M16A2_TSTT_DEMO = PREPARED_M16A2_DEMO_MODE && TARGET_QUERY.get("embedded_tstt") === "1" && window.parent !== window;
+document.body.dataset.preparedM16a2Demo = PREPARED_M16A2_DEMO_MODE ? "true" : "false";
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const PRE_SIMULATION_ACTIVE_MATRIX = SIMULATION_MODE ? SCZN3M4.getActiveMatrix() : null;
@@ -506,6 +507,11 @@ function m16a2TsttNavigationWindow() {
 let bakerSampleDemoActionRestore = null;
 const TALKING_TARGET_DEMO_SESSION_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_SESSION";
 const TALKING_TARGET_DEMO_EQUIPMENT_STORAGE_KEY = "SCZN3_TALKING_TARGET_DEMO_EQUIPMENT_PROFILES";
+const M16A2_DEMO_SIGHT_IMAGES = Object.freeze({
+  frontSight: "authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg",
+  rearWindage: "authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE_2026-09-04.jpeg",
+  rearDrum: "authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_REAR_ELEVATION_DRUM_8-3_REFERENCE_2026-09-04.jpeg"
+});
 const SMART_TARGET_TALK_CHOREOGRAPHY = Object.freeze({
   speechPauseMs: 850,
   featureHighlight: Object.freeze({
@@ -566,6 +572,26 @@ function sampleFeatureHighlightMarkup(feature, x, y) {
   return `<i class="sample-feature-highlight is-active" data-sample-feature="${feature}" style="--sample-x:${x}%;--sample-y:${y}%" aria-hidden="true"></i>`;
 }
 
+function m16a2DemoSightAdjustmentMarkup(authority) {
+  return `<div class="m16a2-demo-correction" aria-label="Your sight adjustment">
+    <span data-demo-sight-control="rear-windage">
+      <figure class="m16a2-demo-sight-photo is-rear-windage"><img src="${M16A2_DEMO_SIGHT_IMAGES.rearWindage}" alt="Real M16A2 rear windage knob" /><i aria-hidden="true"></i></figure>
+      <b>REAR WINDAGE KNOB</b><strong>${authority.clicks.windageClicks} CLICKS ${authority.clicks.windageDirection}</strong><em>${authority.clicks.windageTurnDirection}</em>
+    </span>
+    <span data-demo-sight-control="front-sight">
+      <figure class="m16a2-demo-sight-photo is-front-sight"><img src="${M16A2_DEMO_SIGHT_IMAGES.frontSight}" alt="Real M16A2 front sight post" /><i aria-hidden="true"></i></figure>
+      <b>FRONT SIGHT POST</b><strong>${authority.clicks.elevationClicks} CLICKS ${authority.clicks.elevationDirection}</strong><em>${authority.clicks.elevationTurnDirection}</em>
+    </span>
+  </div>`;
+}
+
+function m16a2DemoDrumFinalizationMarkup() {
+  return `<div class="m16a2-demo-drum-finalization">
+    <figure class="m16a2-demo-sight-photo is-rear-drum"><img src="${M16A2_DEMO_SIGHT_IMAGES.rearDrum}" alt="Real M16A2 rear elevation drum with 8/3 visible" /><i aria-hidden="true"></i></figure>
+    <span><b>REAR ELEVATION DRUM</b><strong>ONE CLICK COUNTERCLOCKWISE</strong><em>BACK TO 8/3</em></span>
+  </div>`;
+}
+
 function bakerSampleGroupAnalysisMarkup({ showVector = false, showAdjustment = false } = {}) {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
   const authority = fixture.initialAuthorityPackage;
@@ -581,7 +607,7 @@ function bakerSampleGroupAnalysisMarkup({ showVector = false, showAdjustment = f
     : "";
   const angular = authority.angular || authority.moa;
   const adjustment = showAdjustment
-    ? `<div class="baker-sample-result-context"><div class="baker-sample-measurement" aria-label="Authoritative measurement context"><span><small>DISTANCE</small><strong>${fixture.target ? fixture.target.distanceValue : 100}</strong><b>${fixture.target ? fixture.target.distanceUnit : "YARDS"}</b></span><span><small>MOA OFFSET</small><strong>${angular.windageMOA.toFixed(2)} W</strong><b>${angular.elevationMOA.toFixed(2)} E</b></span></div>${m16a2Demo ? `<div class="m16a2-demo-correction"><span><b>REAR WINDAGE KNOB</b><strong>${authority.clicks.windageClicks} CLICKS ${authority.clicks.windageDirection}</strong><em>${authority.clicks.windageTurnDirection}</em></span><span><b>FRONT SIGHT POST</b><strong>${authority.clicks.elevationClicks} CLICKS ${authority.clicks.elevationDirection}</strong><em>${authority.clicks.elevationTurnDirection}</em></span></div>` : `<div class="baker-sample-clicks is-emphasized"><b>→</b><strong>${authority.clicks.windageClicks}</strong><span>${authority.clicks.windageDirection}</span><em>CLICKS</em><b>↓</b><strong>${authority.clicks.elevationClicks}</strong><span>${authority.clicks.elevationDirection}</span><em>CLICKS</em></div>`}</div>`
+    ? `<div class="baker-sample-result-context"><div class="baker-sample-measurement" aria-label="Measured shot-pattern offset"><span><small>DISTANCE</small><strong>${fixture.target ? fixture.target.distanceValue : 100}</strong><b>${fixture.target ? fixture.target.distanceUnit : "YARDS"}</b></span><span><small>MOA OFFSET</small><strong>${angular.windageMOA.toFixed(2)} W</strong><b>${angular.elevationMOA.toFixed(2)} E</b></span></div>${m16a2Demo ? m16a2DemoSightAdjustmentMarkup(authority) : `<div class="baker-sample-clicks is-emphasized"><b>→</b><strong>${authority.clicks.windageClicks}</strong><span>${authority.clicks.windageDirection}</span><em>CLICKS</em><b>↓</b><strong>${authority.clicks.elevationClicks}</strong><span>${authority.clicks.elevationDirection}</span><em>CLICKS</em></div>`}</div>`
     : "";
   return `${settledGroup}${center}${vector}${adjustment}`;
 }
@@ -708,7 +734,12 @@ function bakerTalkingDemoRecordsFrame(view) {
   } else {
     query.set("selected", demoSession.sessionId);
   }
-  return `<iframe class="baker-sample-records-frame" src="records.html?${query}" title="${view === "sec" ? "Actual Shooter Experience Card" : "Actual Ballistic Vault containing the sample session"}" tabindex="0"></iframe>`;
+  const meaning = fixture.demoKind === "m16a2-tstt"
+    ? view === "sec"
+      ? `<div class="baker-demo-preservation-caption"><strong>SHOOTER EXPERIENCE CARD</strong><span>Your target, shots, adjustment, and confirmation are preserved together.</span></div>`
+      : `<div class="baker-demo-preservation-caption"><strong>BALLISTIC VAULT</strong><span>And the complete shooting session is saved in your Ballistic Vault.</span></div>`
+    : "";
+  return `${meaning}<iframe class="baker-sample-records-frame" src="records.html?${query}" title="${view === "sec" ? "Actual Shooter Experience Card" : "Actual Ballistic Vault containing the sample session"}" tabindex="0"></iframe>`;
 }
 
 function bakerTalkingDemoEquipmentFrame(view) {
@@ -753,17 +784,17 @@ function bakerSampleDemoScene(state) {
   const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
   const confirmation = fixture.confirmationImpacts.map(point => [point.xPercent, point.yPercent]);
   if (m16a2Demo) {
-    if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>BAKER 25 METERS ZEROING TARGET · M16A2</strong><span>Watch Tap-n-Score run the complete zeroing road.</span></div>`;
-    if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>CENTER CROSSHAIRS</strong><span>Tap-n-Score marks the prepared aim point.</span></div>${sampleFeatureHighlightMarkup("aim", fixture.aim.xPercent, fixture.aim.yPercent)}`;
-    if (state === "shoot-observations") return `<div class="baker-sample-demo-callout"><strong>SHOT PATTERN</strong><span>Tap-n-Score places the prepared shot observations.</span></div>${bakerSampleHoleMarkup(initial)}`;
-    if (state === "show-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Tap-n-Score submits the observations to governed authority.</span></div>${bakerSampleHoleMarkup(initial, false, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
-    if (state === "group-center") return `<div class="baker-sample-demo-callout"><strong>THE CENTER OF YOUR SHOT PATTERN</strong><span>Tap-n-Score locates the center of the prepared pattern.</span></div>${bakerSampleGroupAnalysisMarkup()}`;
+    if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>WATCH TAP-N-SCORE ZERO THIS M16A2</strong><span>Target → aim → shots → results → adjustment → confirmation.</span></div>`;
+    if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>CENTER CROSSHAIRS</strong><span>Tap-n-Score marks the aim point.</span></div>${sampleFeatureHighlightMarkup("aim", fixture.aim.xPercent, fixture.aim.yPercent)}`;
+    if (state === "shoot-observations") return `<div class="baker-sample-demo-callout"><strong>SHOT PATTERN</strong><span>Three example shots form one shot pattern.</span></div>${bakerSampleHoleMarkup(initial)}`;
+    if (state === "show-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Tap-n-Score reads the shot pattern and shows the result.</span></div>${bakerSampleHoleMarkup(initial, false, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+    if (state === "group-center") return `<div class="baker-sample-demo-callout"><strong>THE CENTER OF YOUR SHOT PATTERN</strong><span>Tap-n-Score finds the center of the shot pattern.</span></div>${bakerSampleGroupAnalysisMarkup()}`;
     if (state === "vector") return `<div class="baker-sample-demo-callout"><strong>MEASURE</strong><span>Tap-n-Score measures from the pattern center to the center crosshairs.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true })}`;
-    if (state === "results") return `<div class="baker-sample-demo-callout"><strong>GOVERNED M16A2 ADJUSTMENT</strong><span>Backend authority names the sight control, click count, movement, and turn direction.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
-    if (state === "begin-confirmation") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>APPLY THE CLICKS</strong><span>Tap-n-Score begins the confirmation road.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
-    if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRMATION</strong><span>Tap-n-Score places the prepared confirmation observations.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, SMART_TARGET_TALK_CHOREOGRAPHY.observations.confirmationCadenceMs)}`;
-    if (state === "show-confirmation-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOW RESULTS</strong><span>Backend authority confirms the zero.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
-    if (state === "save") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>ZERO CONFIRMED</strong><span>Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for the 300-meter setting.</span></div>${bakerSampleConfirmationResultMarkup()}`;
+    if (state === "results") return `<div class="baker-sample-demo-callout"><strong>YOUR SIGHT ADJUSTMENT</strong><span>Tap-n-Score tells you exactly which sight to move, how many clicks, and which way to turn it.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
+    if (state === "begin-confirmation") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>APPLY THE CLICKS</strong><span>Then shoot your confirmation shots.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
+    if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRMATION SHOTS</strong><span>Tap-n-Score marks the next three shots.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, SMART_TARGET_TALK_CHOREOGRAPHY.observations.confirmationCadenceMs)}`;
+    if (state === "show-confirmation-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>ZERO CONFIRMED</strong><span>The confirmation shot pattern is centered.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+    if (state === "save") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>300-METER SETTING</strong><span>Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3.</span></div>${bakerSampleConfirmationResultMarkup()}${m16a2DemoDrumFinalizationMarkup()}`;
   }
   if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>BAKER 100 YARD SMART TARGET</strong><span>Listen as you need. Shoot when you please.</span></div>`;
   if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
@@ -783,7 +814,7 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
   if (state === "complete") return m16a2Demo
-    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOUR TURN.</strong><small>The demonstration is preserved in Ballistic Vault.</small><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
+    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOUR TURN.</strong><small>Chapter 4 gives you the controls.</small><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
     : `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }
@@ -813,20 +844,20 @@ function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
 function bakerSampleDemoSteps() {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
   if (fixture.demoKind === "m16a2-tstt") return [
-    { state: "intro", narration: "Let Tap-n-Score show you the complete M16A2 zeroing road.", audio: "assets/audio/episode60/chapter3/01-intro.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "intro", narration: "Watch Tap-n-Score zero this M16A2.", audio: "assets/audio/episode60/chapter3/01-intro.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "aim", narration: "The center crosshairs are the aim point.", audio: "assets/audio/episode60/chapter3/02-aim.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "shoot-observations", narration: "Tap-n-Score marks the prepared shot observations.", audio: "assets/audio/episode60/chapter3/03-shot-observations.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedGroupHoldMs },
-    { state: "show-results", narration: "Tap-n-Score sends those observations to governed authority.", audio: "assets/audio/episode60/chapter3/04-authority.wav", action: { id: "show-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "shoot-observations", narration: "These three shots make one shot pattern.", audio: "assets/audio/episode60/chapter3/03-shot-observations.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedGroupHoldMs },
+    { state: "show-results", narration: "Tap-n-Score reads the shot pattern and shows the result.", audio: "assets/audio/episode60/chapter3/04-authority.wav", action: { id: "show-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "group-center", narration: "Tap-n-Score finds the center of the shot pattern.", audio: "assets/audio/episode60/chapter3/05-pattern-center.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.groupCenterComprehensionMs },
     { state: "vector", narration: "It measures from the center of the shot pattern to the center crosshairs.", audio: "assets/audio/episode60/chapter3/06-measurement.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.vectorComprehensionMs },
-    { state: "results", narration: "Backend authority gives the governed M16A2 adjustment. Rear windage knob, five clicks left, counterclockwise. Front sight post, two clicks down, counterclockwise.", audio: "assets/audio/episode60/chapter3/07-adjustment.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
-    { state: "begin-confirmation", narration: "Apply the clicks, then Tap-n-Score begins confirmation.", audio: "assets/audio/episode60/chapter3/08-begin-confirmation.wav", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "confirmation", narration: "Tap-n-Score marks the prepared confirmation shots.", audio: "assets/audio/episode60/chapter3/09-confirmation-shots.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
-    { state: "show-confirmation-results", narration: "Backend authority confirms the zero.", audio: "assets/audio/episode60/chapter3/10-confirmed-zero.wav", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "save", narration: "Your zero is confirmed. Turn the rear elevation drum one click counterclockwise back to eight slash three for your three-hundred-meter setting.", audio: "assets/audio/episode60/chapter3/11-finalize-drum.wav", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "sec", narration: "The completed Shooter Experience Card preserves the authoritative result.", audio: "assets/audio/episode60/chapter3/12-sec.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "vault", narration: "The completed session is preserved in Ballistic Vault.", audio: "assets/audio/episode60/chapter3/13-vault.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
-    { state: "complete", narration: "The demonstration is complete. Chapter Four gives you the controls.", audio: "assets/audio/episode60/chapter3/14-complete.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
+    { state: "results", narration: "This is your sight adjustment. Tap-n-Score tells you exactly which sight to move, how many clicks, and which way to turn it. Rear windage knob, eight clicks left, counterclockwise. Front sight post, four clicks down, counterclockwise.", audio: "assets/audio/episode60/chapter3/07-adjustment.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
+    { state: "begin-confirmation", narration: "Apply the clicks, then shoot your confirmation shots.", audio: "assets/audio/episode60/chapter3/08-begin-confirmation.wav", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "confirmation", narration: "Tap-n-Score marks the confirmation shots.", audio: "assets/audio/episode60/chapter3/09-confirmation-shots.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
+    { state: "show-confirmation-results", narration: "Zero confirmed.", audio: "assets/audio/episode60/chapter3/10-confirmed-zero.wav", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "save", narration: "Turn the rear elevation drum one click counterclockwise back to eight slash three for your three-hundred-meter setting.", audio: "assets/audio/episode60/chapter3/11-finalize-drum.wav", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "sec", narration: "Your target, shots, adjustment, and confirmation are preserved together.", audio: "assets/audio/episode60/chapter3/12-sec.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "vault", narration: "And the complete shooting session is saved in your Ballistic Vault.", audio: "assets/audio/episode60/chapter3/13-vault.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
+    { state: "complete", narration: "Your turn.", audio: "assets/audio/episode60/chapter3/14-complete.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
     { state: "complete", terminal: true }
   ];
   const aimPostSpeechHold = SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs

@@ -96,6 +96,7 @@ try {
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
+    await page.waitForFunction(() => document.querySelector("[data-audio-proof]")?.textContent === "PLAYING", null, { timeout: 30000 });
     assert.match(page.url(), /m16a2-tstt\.html$/);
     assert.equal(await page.locator("[data-demo-proof]").innerText(), "RUNNING");
     assert.equal(await page.locator("[data-audio-proof]").innerText(), "PLAYING");

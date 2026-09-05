@@ -5,9 +5,9 @@
 
   const aim = Object.freeze({ xPercent: 50, yPercent: 48.7, shotId: "demo-aim" });
   const initialImpacts = Object.freeze([
-    Object.freeze({ xPercent: 58.1, yPercent: 40.9, shotId: "demo-initial-1" }),
-    Object.freeze({ xPercent: 58.5, yPercent: 41.3, shotId: "demo-initial-2" }),
-    Object.freeze({ xPercent: 58.9, yPercent: 41.7, shotId: "demo-initial-3" })
+    Object.freeze({ xPercent: 61.2, yPercent: 33.7, shotId: "demo-initial-1" }),
+    Object.freeze({ xPercent: 66, yPercent: 35.1, shotId: "demo-initial-2" }),
+    Object.freeze({ xPercent: 63.3, yPercent: 37.7, shotId: "demo-initial-3" })
   ]);
   const confirmationImpacts = Object.freeze([
     Object.freeze({ xPercent: 49.9, yPercent: 48.6, shotId: "demo-confirmation-1" }),
@@ -77,32 +77,32 @@
     target: Object.freeze({ targetId: target.targetId, targetName: target.name }),
     inputs: Object.freeze({ aimCoordinate: aim, impactCoordinates: initialImpacts, distanceYards: 27.3403, shooterSetup: equipmentProfile }),
     impacts: initialImpacts,
-    poib: Object.freeze({ xPercent: 58.5, yPercent: 41.3 }),
-    groupCenter: Object.freeze({ xPercent: 58.5, yPercent: 41.3 }),
+    poib: Object.freeze({ xPercent: 63.5, yPercent: 35.5 }),
+    groupCenter: Object.freeze({ xPercent: 63.5, yPercent: 35.5 }),
     group: Object.freeze({ status: "calculated", display: "3-shot pattern" }),
     correction: Object.freeze({
-      windage: "5 clicks LEFT",
-      elevation: "2 clicks DOWN",
+      windage: "8 clicks LEFT",
+      elevation: "4 clicks DOWN",
       windageDirection: "LEFT",
       elevationDirection: "DOWN",
       windageTurnDirection: "COUNTERCLOCKWISE",
       elevationTurnDirection: "COUNTERCLOCKWISE"
     }),
     clicks: Object.freeze({
-      windageClicks: 5,
-      elevationClicks: 2,
+      windageClicks: 8,
+      elevationClicks: 4,
       windageDirection: "LEFT",
       elevationDirection: "DOWN",
       windageTurnDirection: "COUNTERCLOCKWISE",
       elevationTurnDirection: "COUNTERCLOCKWISE",
       model: clickModel
     }),
-    angular: Object.freeze({ windageMOA: 2.4209, elevationMOA: 2.7291, windageMRAD: 0.7041, elevationMRAD: 0.7937 }),
+    angular: Object.freeze({ windageMOA: 3.8452, elevationMOA: 4.8681, windageMRAD: 1.1183, elevationMRAD: 1.4158 }),
     renderCoordinates: Object.freeze({
       aim,
       impacts: initialImpacts,
-      poib: Object.freeze({ xPercent: 58.5, yPercent: 41.3 }),
-      vector: Object.freeze({ start: Object.freeze({ xPercent: 58.5, yPercent: 41.3 }), end: aim, intent: "POIB_TO_CONFIRMED_AIM" }),
+      poib: Object.freeze({ xPercent: 63.5, yPercent: 35.5 }),
+      vector: Object.freeze({ start: Object.freeze({ xPercent: 63.5, yPercent: 35.5 }), end: aim, intent: "POIB_TO_CONFIRMED_AIM" }),
       coordinatePlane: "source_photo"
     }),
     mechanicalValidation: Object.freeze({ status: "calculated", method: "registered-sight-mechanics-v1" }),

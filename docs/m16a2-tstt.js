@@ -36,8 +36,8 @@
   ]);
   const chapterTwoSpokenNarration = `Front sight post. ${chapterTwoFounderScript[0]} Rear windage knob. ${chapterTwoFounderScript[1]} Rear elevation drum. ${chapterTwoFounderScript[2]} ${chapterTwoFounderScript[3]} ${chapterTwoFounderScript[4]}`;
   const chapterThreeFounderScript = Object.freeze([
-    "Let Tap-n-Score show you the complete zeroing road.",
-    "Watch how it marks the aim point and shots, measures the center of the shot pattern, gives the governed sight adjustment, confirms the zero, and preserves the session."
+    "Watch Tap-n-Score zero this M16A2.",
+    "See the aim point, shot pattern, measurement, sight adjustment, confirmation, Shooter Experience Card, and Ballistic Vault."
   ]);
   const chapterThreeSpokenNarration = chapterThreeFounderScript.join(" ");
   const chapterFourFounderScript = Object.freeze([
@@ -94,7 +94,7 @@
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterThreeSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="adjustment-entry demo-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry demo-launch" aria-labelledby="demo-entry-title"><span>COMPLETE DEMONSTRATION</span><h2 id="demo-entry-title">Watch Tap-n-Score work.</h2><p>${chapterThreeFounderScript[1]}</p><div><a href="${chapterThreeDemoRoad}">WATCH TAP-N-SCORE</a></div><small>Tap-n-Score owns the controls during this prepared example.</small></section></div>`,
+      visual: () => `<div class="adjustment-entry demo-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry demo-launch" aria-labelledby="demo-entry-title"><span>COMPLETE DEMONSTRATION</span><h2 id="demo-entry-title">Watch Tap-n-Score work.</h2><p>${chapterThreeFounderScript[1]}</p><div><a href="${chapterThreeDemoRoad}">WATCH TAP-N-SCORE</a></div><small>Tap-n-Score owns the controls during this example.</small></section></div>`,
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({

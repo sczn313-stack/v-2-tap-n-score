@@ -70,6 +70,43 @@ try {
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
     const demo = page.frameLocator("#chapterThreeRuntime");
+    await demo.locator("#markSurface > img").waitFor({ timeout: 30000 });
+    assert.equal(await demo.locator("#chooseTargetButton").isVisible(), false, `Chapter 3 hides Add Photo at ${viewport.width}px`);
+    assert.equal(await demo.locator("#precisionTapPhotoPicker").isVisible(), false, `Chapter 3 hides photo entry choices at ${viewport.width}px`);
+    const sampleBadge = await demo.locator(".baker-sample-watermark").evaluate(element => {
+      const style = getComputedStyle(element);
+      return { fontSize: Number.parseFloat(style.fontSize), writingMode: style.writingMode, width: element.getBoundingClientRect().width };
+    });
+    assert.ok(sampleBadge.fontSize <= 10 && sampleBadge.width < 30, `SAMPLE is a compact edge badge at ${viewport.width}px`);
+    assert.match(sampleBadge.writingMode, /vertical/);
+    const targetViewport = demo.locator(".precision-tap-viewport");
+    const calloutBox = await demo.locator(".baker-sample-demo-callout").boundingBox();
+    const targetBox = await targetViewport.boundingBox();
+    assert.ok(calloutBox && targetBox, "target and teaching overlay have measurable interaction areas");
+    assert.equal(await demo.locator(".baker-sample-demo-layer").evaluate(element => getComputedStyle(element).pointerEvents), "none");
+    const scaleBefore = Number(await targetViewport.getAttribute("data-precision-tap-scale"));
+    await page.mouse.move(calloutBox.x + calloutBox.width / 2, calloutBox.y + calloutBox.height / 2);
+    await page.mouse.wheel(0, -700);
+    await page.waitForTimeout(50);
+    const scaleAfterOverlayZoom = Number(await targetViewport.getAttribute("data-precision-tap-scale"));
+    assert.ok(scaleAfterOverlayZoom > scaleBefore, `target zoom works underneath the visible teaching overlay at ${viewport.width}px`);
+    const transformBeforePan = await demo.locator(".precision-tap-plane").evaluate(element => element.style.transform);
+    await page.mouse.move(targetBox.x + targetBox.width * .5, targetBox.y + targetBox.height * .72);
+    await page.mouse.down();
+    await page.mouse.move(targetBox.x + targetBox.width * .36, targetBox.y + targetBox.height * .62, { steps: 5 });
+    await page.mouse.up();
+    const transformAfterPan = await demo.locator(".precision-tap-plane").evaluate(element => element.style.transform);
+    assert.notEqual(transformAfterPan, transformBeforePan, `target pan works around the teaching overlay at ${viewport.width}px`);
+    await demo.locator('#bakerSampleDemoLayer[data-demo-state="results"]').waitFor({ timeout: 30000 });
+    assert.match(await demo.locator("#bakerSampleDemoScene").innerText(), /YOUR SIGHT ADJUSTMENT[\s\S]*REAR WINDAGE KNOB[\s\S]*8 CLICKS LEFT[\s\S]*FRONT SIGHT POST[\s\S]*4 CLICKS DOWN/);
+    assert.equal(await demo.locator(".m16a2-demo-sight-photo img").count(), 2, `adjustment shows both approved hardware photographs at ${viewport.width}px`);
+    await demo.locator('#bakerSampleDemoLayer[data-demo-state="save"]').waitFor({ timeout: 30000 });
+    assert.match(await demo.locator("#bakerSampleDemoScene").innerText(), /300-METER SETTING[\s\S]*ONE CLICK COUNTERCLOCKWISE[\s\S]*BACK TO 8\/3/);
+    assert.equal(await demo.locator(".m16a2-demo-sight-photo.is-rear-drum img").count(), 1);
+    await demo.locator('#bakerSampleDemoLayer[data-demo-state="sec"]').waitFor({ timeout: 30000 });
+    assert.match(await demo.locator(".baker-demo-preservation-caption").innerText(), /SHOOTER EXPERIENCE CARD[\s\S]*target, shots, adjustment, and confirmation are preserved together/i);
+    await demo.locator('#bakerSampleDemoLayer[data-demo-state="vault"]').waitFor({ timeout: 30000 });
+    assert.match(await demo.locator(".baker-demo-preservation-caption").innerText(), /BALLISTIC VAULT[\s\S]*complete shooting session is saved/i);
     await demo.locator('#workspaceStageShell[data-player-status="completed"]').waitFor({ timeout: 120000 });
     const demoFrame = page.frames().find(frame => frame.url().includes("embedded_tstt=1"));
     assert.ok(demoFrame, "the same-origin Chapter 3 runtime is present");
@@ -104,8 +141,8 @@ try {
       elevationDirection: state.session.authorityPackage.clicks.elevationDirection,
       elevationTurnDirection: state.session.authorityPackage.clicks.elevationTurnDirection
     }, {
-      windageClicks: 5, windageDirection: "LEFT", windageTurnDirection: "COUNTERCLOCKWISE",
-      elevationClicks: 2, elevationDirection: "DOWN", elevationTurnDirection: "COUNTERCLOCKWISE"
+      windageClicks: 8, windageDirection: "LEFT", windageTurnDirection: "COUNTERCLOCKWISE",
+      elevationClicks: 4, elevationDirection: "DOWN", elevationTurnDirection: "COUNTERCLOCKWISE"
     });
     assert.ok(preservedSurfaceRequests.some(url => url.includes("view=sec")), "demo opens the existing SEC surface");
     assert.ok(preservedSurfaceRequests.some(url => url.includes("selected=")), "demo opens the existing Ballistic Vault record surface");

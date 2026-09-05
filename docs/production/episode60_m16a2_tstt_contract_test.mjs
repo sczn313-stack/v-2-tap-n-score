@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [html, css, source, narration, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, workspace, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
+const [html, css, source, narration, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, workspace, workspaceCss, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
   readFile("m16a2-tstt.html", "utf8"),
   readFile("m16a2-tstt.css", "utf8"),
   readFile("m16a2-tstt.js", "utf8"),
@@ -14,6 +14,7 @@ const [html, css, source, narration, narrationStandard, matrix, shoot, records, 
   readFile("m16a2_talking_demo_session.js", "utf8"),
   readFile("m4_runtime.js", "utf8"),
   readFile("smart_target_workspace.js", "utf8"),
+  readFile("smart_target_workspace.css", "utf8"),
   readFile("backend/target_image_registration_authority.py", "utf8"),
   readFile("production/build-site.mjs", "utf8"),
   readFile("production/build-netlify.mjs", "utf8"),
@@ -21,6 +22,7 @@ const [html, css, source, narration, narrationStandard, matrix, shoot, records, 
 ]);
 const chapterThreeSource = source.slice(source.indexOf('id: "a2-3"'), source.indexOf('id: "a2-4"'));
 const chapterFourSource = source.slice(source.indexOf('id: "a2-4"'), source.indexOf('id: "a2-5"'));
+const chapterThreeDemoSource = shoot.slice(shoot.indexOf('if (fixture.demoKind === "m16a2-tstt") return ['), shoot.indexOf("const aimPostSpeechHold"));
 
 assert.match(html, /Baker M16A2 25 Meter TSTT/, "the route identifies the exact lesson product");
 assert.match(html, /PAUSE[\s\S]*STOP[\s\S]*REPLAY[\s\S]*CHAPTERS[\s\S]*RESTART/, "Snapshot 22 controls plus distinct Stop are present");
@@ -77,9 +79,15 @@ assert.equal(chapterThreeAudioPaths.length, 14, "every spoken Chapter 3 step has
 assert.equal(new Set(chapterThreeAudioPaths).size, 14, "Chapter 3 narration assets are mapped one-to-one without reuse");
 assert.match(shoot, /allowSpeechFallback: !PREPARED_M16A2_DEMO_MODE/, "the prepared M16A2 demonstration disables Web Speech fallback");
 assert.match(shoot, /m16a2TsttDemoControlsMarkup[\s\S]*data-player-action="toggle"[\s\S]*STOP[\s\S]*REPLAY CHAPTER[\s\S]*CHAPTERS[\s\S]*RESTART/, "the running Chapter 3 demo carries the governed TSTT PLAYER controls");
-assert.match(shoot, /CENTER CROSSHAIRS[\s\S]*SHOT PATTERN[\s\S]*SHOW RESULTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*GOVERNED M16A2 ADJUSTMENT[\s\S]*ZERO CONFIRMED/, "the demonstration visibly completes the governed observation, correction, and confirmation sequence");
-assert.match(shoot, /state: "sec"[\s\S]*completed Shooter Experience Card[\s\S]*state: "vault"[\s\S]*Ballistic Vault/, "the demonstration continues through the real SEC and Ballistic Vault surfaces");
+assert.match(shoot, /CENTER CROSSHAIRS[\s\S]*SHOT PATTERN[\s\S]*SHOW RESULTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*YOUR SIGHT ADJUSTMENT[\s\S]*ZERO CONFIRMED/, "the demonstration visibly completes the shooter-facing observation, correction, and confirmation sequence");
+assert.doesNotMatch(chapterThreeDemoSource, /Backend Authority|governed authority|prepared (?:shot|confirmation) observations/i, "Chapter 3 narration contains no internal architecture or prepared-observation language");
+assert.match(shoot, /FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE[\s\S]*data-demo-sight-control="rear-windage"[\s\S]*data-demo-sight-control="front-sight"/, "the governed adjustment reconnects to the approved real Chapter 2 hardware images");
+assert.match(shoot, /state: "sec"[\s\S]*Your target, shots, adjustment, and confirmation are preserved together\.[\s\S]*state: "vault"[\s\S]*complete shooting session is saved in your Ballistic Vault/, "the demonstration gives SEC and Ballistic Vault one sentence of shooter-facing meaning");
 assert.match(shoot, /REAR WINDAGE KNOB[\s\S]*FRONT SIGHT POST[\s\S]*COUNTERCLOCKWISE back to 8\/3/, "the demo names the governed controls, turn direction, and confirmed-zero return procedure");
+assert.match(workspaceCss, /data-prepared-m16a2-demo="true"[\s\S]*#chooseTargetButton[\s\S]*display:none!important/, "Chapter 3 hides the premature Add Photo control while Chapter 4 retains photo entry");
+assert.match(workspaceCss, /data-prepared-m16a2-demo="true"[\s\S]*baker-sample-watermark[\s\S]*writing-mode:vertical-rl/, "the Chapter 3 SAMPLE identifier is moved to a compact target-edge badge");
+assert.match(workspaceCss, /baker-sample-demo-layer[\s\S]*pointer-events:none[\s\S]*baker-sample-demo-scene[\s\S]*pointer-events:none/, "Chapter 3 teaching overlays leave Precision Tap pinch and pan hit testing available");
+assert.match(demoFixture, /61\.2[\s\S]*33\.7[\s\S]*66[\s\S]*35\.1[\s\S]*63\.3[\s\S]*37\.7[\s\S]*8 clicks LEFT[\s\S]*4 clicks DOWN/, "the revised initial evidence has visible scatter and truthfully inherits its governed correction");
 assert.match(records, /PREPARED_DEMO_MODE[\s\S]*experienceMode[\s\S]*demonstration/, "prepared Chapter 3 preservation uses real records surfaces without a simulation label");
 assert.match(player, /speechRate[\s\S]*speechVoiceResolver/, "the reusable player accepts the governed Samantha voice and 0.70 rate for the demo");
 assert.match(player, /allowSpeechFallback = options\.allowSpeechFallback !== false[\s\S]*if \(!this\.allowSpeechFallback \|\| !global\.speechSynthesis/, "the reusable PLAYER can run governed audio without touching Web Speech");

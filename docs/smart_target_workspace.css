@@ -300,9 +300,38 @@
   transform:translate(-50%,-50%) rotate(-8deg);
 }
 
+body.target-page[data-prepared-m16a2-demo="true"] #chooseTargetButton,
+body.target-page[data-prepared-m16a2-demo="true"] #precisionTapPhotoPicker{
+  display:none!important;
+}
+
+body.target-page[data-prepared-m16a2-demo="true"]:not([data-baker-demo-action]) [data-sczn3-workspace-actions="true"]{
+  display:none!important;
+}
+
+body.target-page[data-prepared-m16a2-demo="true"] .baker-sample-watermark{
+  z-index:6;
+  top:50%;
+  bottom:auto;
+  left:6px;
+  width:auto;
+  padding:7px 4px;
+  border:1px solid rgba(244,198,79,.72);
+  border-radius:5px;
+  background:rgba(6,7,10,.88);
+  color:#f4c64f;
+  font-size:9px;
+  letter-spacing:.15em;
+  line-height:1;
+  text-shadow:none;
+  writing-mode:vertical-rl;
+  transform:translateY(-50%);
+}
+
 .baker-sample-demo-scene{
   position:absolute;
   inset:0;
+  pointer-events:none;
 }
 
 .target-page .baker-sample-demo-replay{
@@ -704,6 +733,8 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   align-items:stretch;
 }
 
+body.target-page[data-prepared-m16a2-demo="true"] .baker-sample-result-context{bottom:22%}
+
 .baker-sample-measurement,
 .baker-sample-clicks{
   display:grid;
@@ -748,6 +779,50 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
 .m16a2-demo-correction b{color:#9ff4ba;font-size:8px;letter-spacing:.05em}
 .m16a2-demo-correction strong{font-size:clamp(12px,2.2vw,17px);line-height:1.05}
 .m16a2-demo-correction em{color:#c9ffda;font-size:9px;font-style:normal;font-weight:950;letter-spacing:.06em}
+
+.m16a2-demo-sight-photo{
+  position:relative;
+  width:100%;
+  height:54px;
+  margin:0 0 3px;
+  overflow:hidden;
+  border:1px solid rgba(159,244,186,.46);
+  border-radius:5px;
+  background:#070908;
+}
+
+.m16a2-demo-sight-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.m16a2-demo-sight-photo.is-rear-windage img{object-position:50% 42%}
+.m16a2-demo-sight-photo.is-front-sight img{object-position:50% 45%}
+.m16a2-demo-sight-photo.is-rear-drum img{object-position:50% 25%}
+.m16a2-demo-sight-photo i{position:absolute;border:2px solid #f4c64f;border-radius:50%;box-shadow:0 0 0 2px rgba(5,7,6,.76),0 0 11px rgba(244,198,79,.72)}
+.m16a2-demo-sight-photo.is-rear-windage i{left:13%;top:14%;width:42%;height:42%}
+.m16a2-demo-sight-photo.is-front-sight i{left:38%;top:32%;width:24%;height:28%}
+.m16a2-demo-sight-photo.is-rear-drum i{left:33%;top:27%;width:38%;height:26%;border-radius:5px}
+
+.m16a2-demo-drum-finalization{
+  position:absolute;
+  z-index:4;
+  right:4%;
+  bottom:16%;
+  display:grid;
+  grid-template-columns:110px minmax(170px,1fr);
+  align-items:center;
+  width:min(70%,460px);
+  gap:9px;
+  padding:8px;
+  border:1px solid #35c86d;
+  border-radius:9px;
+  background:rgba(4,18,9,.95);
+  color:#fff;
+  box-shadow:0 8px 22px rgba(0,0,0,.36);
+}
+
+.m16a2-demo-drum-finalization .m16a2-demo-sight-photo{height:64px;margin:0}
+.m16a2-demo-drum-finalization>span{display:grid;gap:3px;text-align:left}
+.m16a2-demo-drum-finalization b{color:#9ff4ba;font-size:9px;letter-spacing:.06em}
+.m16a2-demo-drum-finalization strong{font-size:clamp(12px,2.2vw,17px);line-height:1.05}
+.m16a2-demo-drum-finalization em{color:#c9ffda;font-size:10px;font-style:normal;font-weight:950;letter-spacing:.06em}
 
 .baker-sample-clicks.is-emphasized{
   animation:baker-sample-adjustment-arrive .38s ease-out both,baker-sample-adjustment-breathe 1.6s ease-in-out .38s 3;
@@ -879,6 +954,27 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   pointer-events:none;
 }
 
+body.target-page[data-prepared-m16a2-demo="true"] .baker-sample-demo-layer[data-demo-state="sec"]::before,
+body.target-page[data-prepared-m16a2-demo="true"] .baker-sample-demo-layer[data-demo-state="vault"]::before{content:""}
+
+.baker-demo-preservation-caption{
+  position:absolute;
+  z-index:19;
+  top:0;
+  left:0;
+  display:grid;
+  align-content:center;
+  width:38%;
+  height:68px;
+  gap:3px;
+  padding:7px 3%;
+  color:#f7f4ec;
+  pointer-events:none;
+}
+
+.baker-demo-preservation-caption strong{color:#f4c64f;font-size:clamp(10px,1.5vw,13px);letter-spacing:.08em}
+.baker-demo-preservation-caption span{font-size:clamp(9px,1.3vw,12px);font-weight:750;line-height:1.2}
+
 .baker-sample-records-frame,
 .baker-sample-equipment-frame{
   position:absolute;
@@ -934,10 +1030,13 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
 @media(max-width:560px){
   .target-page .baker-sample-demo-replay{top:12%;right:3%;left:3%;min-height:40px}
   .baker-sample-demo-callout{top:4%;padding:7px 9px}
-  .baker-sample-result-context{right:2%;bottom:16%;left:2%;gap:5px}
+  .baker-sample-result-context{right:2%;bottom:20%;left:2%;gap:5px}
   .baker-sample-measurement,.baker-sample-clicks{padding:7px 6px}
   .m16a2-demo-correction{grid-template-columns:1fr;gap:4px;padding:6px}
   .m16a2-demo-correction>span+span{padding-top:4px;border-top:1px solid rgba(83,237,137,.35);border-left:0}
+  .m16a2-demo-sight-photo{height:38px}
+  .m16a2-demo-drum-finalization{right:2%;bottom:17%;width:min(82%,330px);grid-template-columns:82px minmax(0,1fr);gap:6px;padding:6px}
+  .m16a2-demo-drum-finalization .m16a2-demo-sight-photo{height:50px}
   .baker-sample-clicks{grid-template-columns:auto auto auto;gap:3px}
   .baker-sample-clicks em{grid-column:2 / 4}
   .baker-sample-measurement small{font-size:7px}
@@ -953,10 +1052,12 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   .baker-sample-demo-layer[data-demo-state="equipment-library"]::before,
   .baker-sample-demo-layer[data-demo-state="equipment-detail"]::before,
   .baker-sample-demo-layer[data-demo-state="vault"]::before{height:84px;align-items:flex-start;justify-content:center;padding-top:7px;font-size:9px}
+  .baker-demo-preservation-caption{right:0;width:100%;height:30px;padding:4px 3%;text-align:center}
+  .baker-demo-preservation-caption span{font-size:8px}
   .workspace-stage-shell[data-smart-target-demo-state="sec"] .self-teaching-player-host .self-teaching-player-controls,
   .workspace-stage-shell[data-smart-target-demo-state="equipment-library"] .self-teaching-player-host .self-teaching-player-controls,
   .workspace-stage-shell[data-smart-target-demo-state="equipment-detail"] .self-teaching-player-host .self-teaching-player-controls,
-  .workspace-stage-shell[data-smart-target-demo-state="vault"] .self-teaching-player-host .self-teaching-player-controls{top:27px;right:2%;left:2%;width:auto}
+  .workspace-stage-shell[data-smart-target-demo-state="vault"] .self-teaching-player-host .self-teaching-player-controls{top:31px;right:2%;left:2%;width:auto}
   .baker-sample-demo-layer[data-demo-state="sec"] .baker-sample-records-frame,
   .baker-sample-demo-layer[data-demo-state="equipment-library"] .baker-sample-equipment-frame,
   .baker-sample-demo-layer[data-demo-state="equipment-detail"] .baker-sample-equipment-frame,
