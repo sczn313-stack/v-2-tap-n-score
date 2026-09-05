@@ -69,6 +69,7 @@ try {
     await page.getByRole("button", { name: "NEXT, WE'LL LEARN THE SIGHTS.", exact: true }).click();
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
+    assert.equal(await page.locator("[data-demo-proof], [data-audio-proof], [data-step-proof], [data-player-proof]").count(), 0, `development instrumentation is absent at ${viewport.width}px`);
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator("#markSurface > img").waitFor({ timeout: 30000 });
     assert.equal(await demo.locator("#chooseTargetButton").isVisible(), false, `Chapter 3 hides Add Photo at ${viewport.width}px`);
@@ -119,8 +120,10 @@ try {
     assert.equal(await demo.locator(".m16a2-demo-sight-photo.is-rear-drum img").count(), 1);
     await demo.locator('#bakerSampleDemoLayer[data-demo-state="sec"]').waitFor({ timeout: 30000 });
     assert.match(await demo.locator(".baker-demo-preservation-caption").innerText(), /SHOOTER EXPERIENCE CARD[\s\S]*target, shots, adjustment, and confirmation are preserved together/i);
+    assert.ok(Number.parseFloat(await demo.locator(".baker-demo-preservation-caption strong").evaluate(element => getComputedStyle(element).fontSize)) >= 15, `Shooter Experience Card is prominent at ${viewport.width}px`);
     await demo.locator('#bakerSampleDemoLayer[data-demo-state="vault"]').waitFor({ timeout: 30000 });
     assert.match(await demo.locator(".baker-demo-preservation-caption").innerText(), /BALLISTIC VAULT[\s\S]*complete shooting session is saved/i);
+    assert.ok(Number.parseFloat(await demo.locator(".baker-demo-preservation-caption strong").evaluate(element => getComputedStyle(element).fontSize)) >= 15, `Ballistic Vault is prominent at ${viewport.width}px`);
     await demo.locator('#workspaceStageShell[data-player-status="completed"]').waitFor({ timeout: 120000 });
     const completionCardBox = await demo.locator(".baker-sample-stage-card").boundingBox();
     const completionTargetBox = await targetViewport.boundingBox();
@@ -166,6 +169,7 @@ try {
     assert.ok(preservedSurfaceRequests.some(url => url.includes("view=sec")), "demo opens the existing SEC surface");
     assert.ok(preservedSurfaceRequests.some(url => url.includes("selected=")), "demo opens the existing Ballistic Vault record surface");
     assert.match(state.scene, /DEMONSTRATION COMPLETE[\s\S]*YOU'RE UP!!/);
+    assert.doesNotMatch(state.scene, /Chapter 4 gives you the controls/);
     assert.equal(state.href, "m16a2-tstt.html?chapter=4");
     assert.equal(state.overflow, false);
     assert.deepEqual(errors, []);

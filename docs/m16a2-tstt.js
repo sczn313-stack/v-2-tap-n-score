@@ -124,7 +124,6 @@
     shootingSetupSummary: document.getElementById("shootingSetupSummary"), sessionDistance: document.getElementById("sessionDistance"), sessionDistanceUnit: document.getElementById("sessionDistanceUnit"), sessionAdjustmentUnit: document.getElementById("sessionAdjustmentUnit"), sessionAdjustmentIncrement: document.getElementById("sessionAdjustmentIncrement"), shootingSetupNote: document.getElementById("shootingSetupNote"),
     start: document.querySelector('[data-control="start"]'), pause: document.querySelector('[data-control="pause"]'), pauseLabel: document.querySelector("[data-pause-label]"), stop: document.querySelector('[data-control="stop"]'), replay: document.querySelector('[data-control="replay"]'), restart: document.querySelector('[data-control="restart"]'),
     chapterThreeRuntimeShell: document.getElementById("chapterThreeRuntimeShell"), chapterThreeRuntime: document.getElementById("chapterThreeRuntime"), chapterThreeRuntimeStart: document.querySelector("[data-start-chapter-three]"),
-    demoProof: document.querySelector("[data-demo-proof]"), audioProof: document.querySelector("[data-audio-proof]"), stepProof: document.querySelector("[data-step-proof]"), playerProof: document.querySelector("[data-player-proof]"),
   });
   const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null };
   const narrator = window.SCZN3TSTTNarration.createNarrator();
@@ -178,16 +177,8 @@
     const query = new URLSearchParams(window.location.search);
     return chapter.id === "a2-3" && query.get("chapter_menu") !== "1";
   }
-  function updateChapterThreeRuntimeProof(detail = {}) {
+  function updateChapterThreeStartControl(detail = {}) {
     const playerState = String(detail.playerState || "idle").toUpperCase();
-    const narrationState = String(detail.narrationState || "idle").toLowerCase();
-    const stepIndex = Number.isInteger(detail.stepIndex) ? detail.stepIndex : -1;
-    elements.demoProof.textContent = detail.controllerInstantiated
-      ? (playerState === "COMPLETED" ? "COMPLETE" : (["PLAYING", "PAUSED"].includes(playerState) ? "RUNNING" : "NOT RUNNING"))
-      : "NOT RUNNING";
-    elements.audioProof.textContent = narrationState === "playing" ? "PLAYING" : "NOT PLAYING";
-    elements.stepProof.textContent = `${Math.min(14, Math.max(0, stepIndex + 1))} / 14`;
-    elements.playerProof.textContent = playerState;
     elements.chapterThreeRuntimeStart.hidden = ["PLAYING", "PAUSED", "COMPLETED"].includes(playerState);
   }
   function chapterThreeController() {
@@ -316,11 +307,11 @@
   elements.dialog.addEventListener("click", event => { const button = event.target.closest("[data-chapter-index]"); if (!button || button.disabled) return; state.current = Number(button.dataset.chapterIndex); state.paused = false; state.stopped = false; elements.pauseLabel.textContent = "PAUSE"; elements.dialog.close(); if (state.current === 2) launchChapterThreeDemo({ userGesture: true }); else render(); });
   elements.chapterThreeRuntimeStart.addEventListener("click", () => launchChapterThreeDemo({ userGesture: true }));
   elements.chapterThreeRuntime.addEventListener("load", () => {
-    updateChapterThreeRuntimeProof({ controllerInstantiated: typeof chapterThreeController()?.startBakerSampleDemo === "function", playerState: "idle", stepIndex: -1, narrationState: "idle" });
+    updateChapterThreeStartControl({ playerState: "idle" });
   });
   window.addEventListener("message", event => {
     if (event.origin !== window.location.origin || event.source !== elements.chapterThreeRuntime.contentWindow || event.data?.type !== "sczn3-m16a2-demo-runtime") return;
-    updateChapterThreeRuntimeProof(event.data);
+    updateChapterThreeStartControl(event.data);
   });
   window.addEventListener("focus", () => syncEquipment()); window.addEventListener("pageshow", () => syncEquipment()); window.addEventListener("storage", event => { if ([equipmentKeys.active, equipmentKeys.saved].includes(event.key)) syncEquipment(); });
   restoreJourney(); applyDirectChapterEntry(); syncEquipment({ rerender: false }); render({ narrate: false, sync: false });

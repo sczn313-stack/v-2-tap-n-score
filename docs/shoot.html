@@ -815,7 +815,7 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
   if (state === "complete") return m16a2Demo
-    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOU'RE UP!!</strong><small>Chapter 4 gives you the controls.</small><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
+    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOU'RE UP!!</strong><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
     : `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }

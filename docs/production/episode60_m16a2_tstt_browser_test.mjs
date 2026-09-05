@@ -96,12 +96,8 @@ try {
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
-    await page.waitForFunction(() => document.querySelector("[data-audio-proof]")?.textContent === "PLAYING", null, { timeout: 30000 });
     assert.match(page.url(), /m16a2-tstt\.html$/);
-    assert.equal(await page.locator("[data-demo-proof]").innerText(), "RUNNING");
-    assert.equal(await page.locator("[data-audio-proof]").innerText(), "PLAYING");
-    assert.equal(await page.locator("[data-step-proof]").innerText(), "1 / 14");
-    assert.equal(await page.locator("[data-player-proof]").innerText(), "PLAYING");
+    assert.equal(await page.locator("[data-demo-proof], [data-audio-proof], [data-step-proof], [data-player-proof]").count(), 0, "finished TSTT exposes no development instrumentation");
     assert.match(await demo.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
     assert.deepEqual(
       await demo.locator(".m16a2-tstt-demo-controls button").allTextContents(),
