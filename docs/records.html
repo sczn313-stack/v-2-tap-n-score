@@ -51,7 +51,7 @@
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
-<script src="platform_contracts.js?v=episode54-item3-1"></script>
+<script src="platform_contracts.js?v=episode60-directional-authority-rivet-1"></script>
 <script src="sec_adapter_model.js?v=episode54-item4a-1"></script>
 <script src="app_state.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_dispatch.js?v=mission-a-fresh-score-0814"></script>
@@ -60,7 +60,7 @@
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="sec_v1.js?v=episode59-baker-demo-cleanup-1"></script>
-<script src="sec_framework.js?v=episode55-lowest-score-1"></script>
+<script src="sec_framework.js?v=episode60-directional-authority-rivet-1"></script>
 <script src="sec_session_timeline.js?v=session-2-uspsa-1"></script>
 <script src="universal_practice_sec.js"></script>
 <script src="m4_smart_target_sec.js"></script>
@@ -940,6 +940,7 @@ function backendRenderedHitCoordinates(pkg) {
 }
 
 function governedCorrectionVectorHtml(pkg) {
+  if (!SCZN3PlatformContracts.directionalAuthorityRelease(pkg).releasable) return "";
   const governed = pkg && pkg.renderCoordinates && pkg.renderCoordinates.vector;
   if (!governed || !governed.start || !governed.end) return "";
   const start = authorityPoint(governed.start);

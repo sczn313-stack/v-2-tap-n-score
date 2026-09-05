@@ -16,6 +16,7 @@ from mission_registry import normalize_target_profile, refusal_for_profile
 from target_image_registration_authority import (
     TargetImageRegistrationError,
     canonical_point_to_source_percent,
+    directional_source_reconciliation,
     register_target_image,
 )
 from gssf_ac_1_authority import (
@@ -354,6 +355,14 @@ def zero_correction_registration_sufficiency(
 ) -> Dict[str, Any]:
     if not registration:
         return {"status": "not_applicable", "owner": "zeroingCorrection"}
+    orientation = registration.get("orientationEvidence") or {}
+    if orientation.get("requiredForGovernedDirection") and orientation.get("status") != "proven":
+        return {
+            "status": "insufficient",
+            "reason": "target_orientation_unverified",
+            "owner": "zeroingCorrection",
+            "orientationEvidence": orientation,
+        }
     observations = registration.get("canonicalObservations") or []
     aim_evidence = next((item for item in observations if item.get("role") == "aim"), None)
     impact_evidence = [item for item in observations if item.get("role") == "impact"]
@@ -1429,24 +1438,55 @@ def build_authority_package(payload: Dict[str, Any], runtime_timing: Optional[Di
         yards,
         adjustment,
     )
+    directional_reconciliation = directional_source_reconciliation(
+        registration_evidence,
+        aim,
+        poib,
+        render_coordinates,
+        correction,
+    )
+    if registration_evidence and directional_reconciliation.get("status") != "reconciled":
+        registration_claim_sufficiency = {
+            **registration_claim_sufficiency,
+            "status": "insufficient",
+            "reason": registration_claim_sufficiency.get("reason") or "source_direction_reconciliation_failed",
+            "owner": "zeroingCorrection",
+            "orientationEvidence": registration_evidence.get("orientationEvidence") or {},
+            "directionalReconciliation": directional_reconciliation,
+        }
+    audit_correction = dict(correction) if correction else None
+    audit_clicks = dict(clicks) if clicks else None
+    audit_moa = dict(moa) if moa else None
+    audit_vector = dict(vector) if vector else None
     correction_estimate = None
     if registration_claim_sufficiency.get("status") == "insufficient":
-        correction_estimate = {
-            "status": "best_estimate_exact_click_count_withheld",
-            "truthLabel": "Best estimate — exact click count withheld",
-            "correction": correction,
-            "clicks": clicks,
-            "moa": moa,
-            "vector": vector,
-            "axisAssessments": registration_claim_sufficiency.get("axisAssessments") or {},
+        hard_withhold = registration_claim_sufficiency.get("reason") in {
+            "target_orientation_unverified",
+            "source_direction_reconciliation_failed",
         }
+        if not hard_withhold:
+            correction_estimate = {
+                "status": "best_estimate_exact_click_count_withheld",
+                "truthLabel": "Best estimate — exact click count withheld",
+                "correction": correction,
+                "clicks": clicks,
+                "moa": moa,
+                "vector": vector,
+                "axisAssessments": registration_claim_sufficiency.get("axisAssessments") or {},
+            }
         correction = None
         clicks = None
         moa = None
         shooter_guidance = {
-            "status": "partial_result",
+            "status": "authority_withheld" if hard_withhold else "partial_result",
             "reason": registration_claim_sufficiency.get("reason"),
-            "message": "Your group was measured. The exact click count is withheld because this photo supports a small range of possible adjustments; the best estimate is shown.",
+            "message": (
+                "TARGET ORIENTATION UNVERIFIED. Take another photo that includes the target's identifying top landmarks."
+                if registration_claim_sufficiency.get("reason") == "target_orientation_unverified"
+                else "The directional correction was withheld because the source photograph and governed result did not reconcile."
+                if hard_withhold
+                else "Your group was measured. The exact click count is withheld because this photo supports a small range of possible adjustments; the best estimate is shown."
+            ),
         }
         render_coordinates["vector"] = None
 
@@ -1491,7 +1531,7 @@ def build_authority_package(payload: Dict[str, Any], runtime_timing: Optional[Di
         "clicks": clicks,
         "shooterGuidance": shooter_guidance,
         "moa": moa,
-        "vectors": {"poibToAim": vector} if vector else {},
+        "vectors": {"poibToAim": vector} if vector and correction is not None else {},
         "geometryMetadata": geometry,
         "targetMetadata": {
             "targetId": geometry["targetId"],
@@ -1502,6 +1542,28 @@ def build_authority_package(payload: Dict[str, Any], runtime_timing: Optional[Di
         "validation": validation,
         "targetImageRegistrationEvidence": registration_evidence,
         "registrationClaimSufficiency": registration_claim_sufficiency,
+        "directionalReconciliation": directional_reconciliation,
+        "authorityAuditEnvelope": {
+            "schemaVersion": "sczn3-directional-authority-audit-v1",
+            "sourceEvidence": directional_reconciliation.get("sourcePlane"),
+            "registration": {
+                "registrationEvidenceId": registration_evidence.get("registrationEvidenceId") if registration_evidence else None,
+                "registrationEvidenceHash": registration_evidence.get("registrationEvidenceHash") if registration_evidence else None,
+                "sourceToCanonicalMatrix": registration_evidence.get("sourceToCanonicalMatrix") if registration_evidence else None,
+                "orientationEvidence": registration_evidence.get("orientationEvidence") if registration_evidence else None,
+            },
+            "canonicalObservations": registration_evidence.get("canonicalObservations") if registration_evidence else [],
+            "canonicalPOIB": poib,
+            "canonicalAim": aim,
+            "canonicalVector": audit_vector,
+            "applicableAuthority": adjustment,
+            "calculatedCorrection": audit_correction,
+            "calculatedClicks": audit_clicks,
+            "calculatedAngular": audit_moa,
+            "releasedCorrection": correction,
+            "projectedResult": directional_reconciliation.get("projectedResult"),
+            "releaseStatus": "released" if correction is not None else "withheld",
+        } if registration_evidence else None,
         "correctionEstimate": correction_estimate,
         "hasCorrection": correction is not None,
         "status": {

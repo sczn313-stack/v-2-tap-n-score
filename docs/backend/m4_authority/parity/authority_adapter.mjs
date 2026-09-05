@@ -736,6 +736,11 @@ export async function buildAuthorityPackage(input) {
       status: "not_applicable",
       owner: targetProfileId === M16A2_PROFILE_ID ? "baker-m16a2-zeroing-authority" : "m4-zeroing-authority"
     },
+    directionalReconciliation: {
+      status: "not_applicable",
+      reason: "no_source_photo_registration"
+    },
+    authorityAuditEnvelope: null,
     correctionEstimate: null,
     confirmedAimPointAuthority: {
       status: aim ? "confirmed" : "unavailable",

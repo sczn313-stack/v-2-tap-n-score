@@ -1,0 +1,54 @@
+{
+  "evidenceId": "BAKER-100YD-180-REGISTRATION-FAILURE-CLASS-2026-09-05",
+  "status": "preserved_regression_evidence",
+  "canonicalAsset": "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
+  "deterministicSourceRecipe": {
+    "cropPx": {"left": 68, "top": 280, "right": 1047, "bottom": 1650},
+    "maximumDimensionPx": 1200,
+    "jpegQuality": 86,
+    "expectedSha256": "3f93444fd80ff1687a1ed77d7c13ac17b2849609c3fb143c23dd87f52077e9f5",
+    "expectedDimensionsPx": {"width": 858, "height": 1200}
+  },
+  "sourceObservationsPercent": {
+    "aim": {"x": 50.0, "y": 50.0},
+    "impacts": [
+      {"x": 44.6, "y": 53.7},
+      {"x": 45.4, "y": 53.8},
+      {"x": 45.0, "y": 54.5}
+    ],
+    "poib": {"x": 45.0, "y": 54.0},
+    "requiredMovement": {"windage": "RIGHT", "elevation": "UP"}
+  },
+  "oldFailure": {
+    "registrationMethod": "ugo_sift_homography_v1",
+    "sourceToCanonicalMatrix": [
+      [-1.140657850596, 0.000533324814, 1050.524626956351],
+      [0.017503227628, -1.149088351203, 1657.793537826006],
+      [0.000017131804, 0.000000199822, 1.0]
+    ],
+    "qualityMetrics": {
+      "mutualMatches": 34,
+      "inliers": 15,
+      "inlierRatio": 0.4412,
+      "reprojectionRmsPx": 0.3438,
+      "reprojectionP95Px": 0.7242,
+      "targetCoverage": 0.7101
+    },
+    "wrongCalculatedResult": {
+      "windageClicks": 4,
+      "windageDirection": "LEFT",
+      "elevationClicks": 4,
+      "elevationDirection": "DOWN"
+    }
+  },
+  "protectedResult": {
+    "orientationStatus": "unverified",
+    "registrationClaimReason": "target_orientation_unverified",
+    "directionalReconciliationStatus": "mismatch",
+    "releasedCorrection": null,
+    "releasedClicks": null,
+    "releasedVector": null,
+    "secReleaseStatus": "withheld"
+  },
+  "executableRegression": "backend/test_directional_registration_reconciliation.py"
+}

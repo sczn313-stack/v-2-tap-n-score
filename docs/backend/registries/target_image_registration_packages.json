@@ -26,6 +26,14 @@
         "ransacThresholdPx": 5,
         "minimumTargetCoverage": 0.45
       },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-identity", "xMin": 0.08, "xMax": 0.92, "yMin": 0.02, "yMax": 0.16, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "bottom-instructions", "xMin": 0.08, "xMax": 0.92, "yMin": 0.84, "yMax": 0.98, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
+      },
       "recovery": {
         "retakeWhenTargetEvidenceMissing": true,
         "shooterAssistedLandmarks": []
@@ -57,6 +65,14 @@
         "ransacThresholdPx": 5,
         "minimumTargetCoverage": 0.45
       },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-identity", "xMin": 0.12, "xMax": 0.88, "yMin": 0.01, "yMax": 0.14, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "bottom-authority-table", "xMin": 0.08, "xMax": 0.92, "yMin": 0.82, "yMax": 0.98, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
+      },
       "recovery": {
         "retakeWhenTargetEvidenceMissing": true,
         "shooterAssistedLandmarks": []
@@ -87,6 +103,14 @@
         "minimumInlierRatio": 0.25,
         "ransacThresholdPx": 5,
         "minimumTargetCoverage": 0.2
+      },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-left-product-identity", "xMin": 0.02, "xMax": 0.43, "yMin": 0.01, "yMax": 0.14, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "top-right-qr-identity", "xMin": 0.76, "xMax": 0.98, "yMin": 0.01, "yMax": 0.15, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
       },
       "recovery": {
         "retakeWhenTargetEvidenceMissing": true,

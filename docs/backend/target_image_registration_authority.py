@@ -187,6 +187,253 @@ def _visible_canonical_coverage(homography: np.ndarray, source_width: int, sourc
     return max(0.0, min(1.0, float(intersection_area) / canonical_area)) if canonical_area else 0.0
 
 
+def _axis_name(x: float, y: float) -> str:
+    if abs(x) >= abs(y):
+        return "RIGHT" if x >= 0 else "LEFT"
+    return "DOWN" if y >= 0 else "UP"
+
+
+def _source_axis_mapping(matrix: np.ndarray, source_width: int, source_height: int) -> Dict[str, str]:
+    center = np.float32([[[source_width * .5, source_height * .5], [source_width * .55, source_height * .5], [source_width * .5, source_height * .55]]])
+    mapped = cv2.perspectiveTransform(center, matrix)[0]
+    right = mapped[1] - mapped[0]
+    down = mapped[2] - mapped[0]
+    return {
+        "sourceRightMapsToCanonical": _axis_name(float(right[0]), float(right[1])),
+        "sourceDownMapsToCanonical": _axis_name(float(down[0]), float(down[1])),
+    }
+
+
+def _patch_correlation(canonical: np.ndarray, observed: np.ndarray, valid: np.ndarray) -> float:
+    keep = valid.astype(bool)
+    if int(keep.sum()) < 16:
+        return -1.0
+    left = canonical[keep].astype(np.float64)
+    right = observed[keep].astype(np.float64)
+    left -= float(left.mean())
+    right -= float(right.mean())
+    denominator = float(np.linalg.norm(left) * np.linalg.norm(right))
+    return float(np.dot(left, right) / denominator) if denominator > 1e-9 else -1.0
+
+
+def orientation_evidence(
+    package: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+    matrix: np.ndarray,
+    method: str,
+    canonical_gray: np.ndarray,
+) -> Dict[str, Any]:
+    """Prove page axes independently from homography fit quality."""
+    policy = package.get("orientationProof") if isinstance(package.get("orientationProof"), Mapping) else {}
+    required = bool(policy.get("requiredForGovernedDirection"))
+    axis_mapping = _source_axis_mapping(matrix, int(evidence["width"]), int(evidence["height"]))
+    if method == "exact_canonical_representation":
+        return {
+            "status": "proven",
+            "requiredForGovernedDirection": required,
+            "method": "exact-canonical-representation-identity-v1",
+            "axesProven": ["TOP", "BOTTOM", "LEFT", "RIGHT"],
+            "sourceAxisMapping": axis_mapping,
+            "anchors": [],
+        }
+    anchors = policy.get("anchors") if isinstance(policy.get("anchors"), list) else []
+    if not required:
+        return {
+            "status": "not_required",
+            "requiredForGovernedDirection": False,
+            "method": "not-required-for-registered-claim",
+            "axesProven": [],
+            "sourceAxisMapping": axis_mapping,
+            "anchors": [],
+        }
+    if not anchors:
+        return {
+            "status": "unverified",
+            "requiredForGovernedDirection": True,
+            "reason": "orientation_authority_not_configured",
+            "axesProven": [],
+            "sourceAxisMapping": axis_mapping,
+            "anchors": [],
+        }
+    canonical_height, canonical_width = canonical_gray.shape[:2]
+    warped = cv2.warpPerspective(evidence["decoded"], matrix, (canonical_width, canonical_height))
+    warped_gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
+    source_mask = np.full((int(evidence["height"]), int(evidence["width"])), 255, dtype=np.uint8)
+    warped_mask = cv2.warpPerspective(source_mask, matrix, (canonical_width, canonical_height), flags=cv2.INTER_NEAREST)
+    findings = []
+    all_pass = True
+    for anchor in anchors:
+        x0 = max(0, min(canonical_width - 1, int(round(float(anchor.get("xMin", 0)) * canonical_width))))
+        x1 = max(x0 + 1, min(canonical_width, int(round(float(anchor.get("xMax", 1)) * canonical_width))))
+        y0 = max(0, min(canonical_height - 1, int(round(float(anchor.get("yMin", 0)) * canonical_height))))
+        y1 = max(y0 + 1, min(canonical_height, int(round(float(anchor.get("yMax", 1)) * canonical_height))))
+        valid = warped_mask[y0:y1, x0:x1] > 0
+        coverage = float(valid.mean()) if valid.size else 0.0
+        correlation = _patch_correlation(canonical_gray[y0:y1, x0:x1], warped_gray[y0:y1, x0:x1], valid)
+        minimum_coverage = float(anchor.get("minimumCoverage", .9))
+        minimum_correlation = float(anchor.get("minimumCorrelation", .25))
+        passed = coverage >= minimum_coverage and correlation >= minimum_correlation
+        all_pass = all_pass and passed
+        findings.append({
+            "anchorId": str(anchor.get("id") or "orientation-anchor"),
+            "coverage": round(coverage, 4),
+            "correlation": round(correlation, 4),
+            "minimumCoverage": minimum_coverage,
+            "minimumCorrelation": minimum_correlation,
+            "status": "proven" if passed else "unverified",
+        })
+    return {
+        "status": "proven" if all_pass else "unverified",
+        "requiredForGovernedDirection": True,
+        "method": str(policy.get("method") or "asymmetric-canonical-anchor-correlation-v1"),
+        "reason": None if all_pass else "target_orientation_unverified",
+        "axesProven": ["TOP", "BOTTOM", "LEFT", "RIGHT"] if all_pass else [],
+        "sourceAxisMapping": axis_mapping,
+        "anchors": findings,
+    }
+
+
+def _point_from_normalized(value: Mapping[str, Any] | None) -> Dict[str, float] | None:
+    if not isinstance(value, Mapping):
+        return None
+    try:
+        return {"xPercent": float(value["xNorm"]) * 100, "yPercent": float(value["yNorm"]) * 100}
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _mean_points(points: Sequence[Mapping[str, Any]]) -> Dict[str, float] | None:
+    usable = [point for point in points if isinstance(point, Mapping) and "xPercent" in point and "yPercent" in point]
+    if not usable:
+        return None
+    return {
+        "xPercent": sum(float(point["xPercent"]) for point in usable) / len(usable),
+        "yPercent": sum(float(point["yPercent"]) for point in usable) / len(usable),
+    }
+
+
+def _direction(start: Mapping[str, Any] | None, end: Mapping[str, Any] | None, tolerance: float = 1e-4) -> Dict[str, str] | None:
+    if not start or not end:
+        return None
+    dx = float(end["xPercent"]) - float(start["xPercent"])
+    dy = float(end["yPercent"]) - float(start["yPercent"])
+    return {
+        "windage": "CENTER" if abs(dx) <= tolerance else "RIGHT" if dx > 0 else "LEFT",
+        "elevation": "CENTER" if abs(dy) <= tolerance else "DOWN" if dy > 0 else "UP",
+    }
+
+
+def _points_close(left: Mapping[str, Any] | None, right: Mapping[str, Any] | None, tolerance: float = .03) -> bool:
+    return bool(
+        left and right
+        and abs(float(left["xPercent"]) - float(right["xPercent"])) <= tolerance
+        and abs(float(left["yPercent"]) - float(right["yPercent"])) <= tolerance
+    )
+
+
+def _canonicalized_source_direction(
+    source_poib: Mapping[str, Any] | None,
+    source_aim: Mapping[str, Any] | None,
+    source_axis_mapping: Mapping[str, Any],
+) -> Dict[str, str] | None:
+    if not source_poib or not source_aim:
+        return None
+    axes = {
+        "RIGHT": (1.0, 0.0),
+        "LEFT": (-1.0, 0.0),
+        "DOWN": (0.0, 1.0),
+        "UP": (0.0, -1.0),
+    }
+    right_axis = axes.get(str(source_axis_mapping.get("sourceRightMapsToCanonical") or ""))
+    down_axis = axes.get(str(source_axis_mapping.get("sourceDownMapsToCanonical") or ""))
+    if not right_axis or not down_axis:
+        return None
+    source_dx = float(source_aim["xPercent"]) - float(source_poib["xPercent"])
+    source_dy = float(source_aim["yPercent"]) - float(source_poib["yPercent"])
+    canonical_dx = source_dx * right_axis[0] + source_dy * down_axis[0]
+    canonical_dy = source_dx * right_axis[1] + source_dy * down_axis[1]
+    return _direction(
+        {"xPercent": 0.0, "yPercent": 0.0},
+        {"xPercent": canonical_dx, "yPercent": canonical_dy},
+    )
+
+
+def directional_source_reconciliation(
+    registration: Mapping[str, Any] | None,
+    canonical_aim: Mapping[str, Any] | None,
+    canonical_poib: Mapping[str, Any] | None,
+    render_coordinates: Mapping[str, Any] | None,
+    correction: Mapping[str, Any] | None,
+) -> Dict[str, Any]:
+    """Independently reconcile source taps, canonical direction, and projected output."""
+    if not registration:
+        return {"status": "not_applicable", "reason": "no_source_photo_registration"}
+    observations = registration.get("canonicalObservations") or []
+    source_aim = next((_point_from_normalized(item.get("sourcePoint")) for item in observations if item.get("role") == "aim"), None)
+    source_impacts = [
+        point for point in (_point_from_normalized(item.get("sourcePoint")) for item in observations if item.get("role") == "impact")
+        if point
+    ]
+    source_poib = _mean_points(source_impacts)
+    render = render_coordinates if isinstance(render_coordinates, Mapping) else {}
+    projected_vector = render.get("vector") if isinstance(render.get("vector"), Mapping) else None
+    projected_start = projected_vector.get("start") if projected_vector else render.get("poib")
+    projected_end = projected_vector.get("end") if projected_vector else render.get("aim")
+    source_direction = _direction(source_poib, source_aim)
+    projected_direction = _direction(projected_start, projected_end)
+    canonical_direction = _direction(canonical_poib, canonical_aim)
+    released_direction = {
+        "windage": str(correction.get("windageDirection") or "") if correction else "",
+        "elevation": str(correction.get("elevationDirection") or "") if correction else "",
+    }
+    orientation = registration.get("orientationEvidence") or {}
+    source_axis_mapping = orientation.get("sourceAxisMapping") or {}
+    canonicalized_source_direction = _canonicalized_source_direction(source_poib, source_aim, source_axis_mapping)
+    orientation_proven = orientation.get("status") in {"proven", "not_required"}
+    checks = {
+        "sourceOrientationProven": orientation_proven,
+        "sourceAimAnchorPreserved": _points_close(source_aim, render.get("aim")),
+        "sourcePOIBProjectionAnchored": _points_close(projected_start, render.get("poib")),
+        "projectedVectorEndsAtSourceAim": _points_close(projected_end, source_aim),
+        "sourceAndProjectedDirectionAgree": bool(source_direction and source_direction == projected_direction),
+        "orientedSourceDirectionMatchesCanonical": bool(
+            orientation_proven
+            and canonicalized_source_direction
+            and canonicalized_source_direction == canonical_direction
+        ),
+        "orientedSourceDirectionMatchesReleasedCorrection": bool(
+            orientation_proven
+            and canonicalized_source_direction
+            and canonicalized_source_direction == released_direction
+        ),
+        "canonicalDirectionMatchesReleasedCorrection": bool(canonical_direction and canonical_direction == released_direction),
+    }
+    status = "reconciled" if all(checks.values()) else "mismatch"
+    return {
+        "status": status,
+        "reason": None if status == "reconciled" else "source_direction_reconciliation_failed",
+        "sourcePlane": {
+            "dimensions": dict(registration.get("sourceImage") or {}),
+            "aim": source_aim,
+            "impacts": source_impacts,
+            "poib": source_poib,
+            "direction": source_direction,
+            "canonicalizedDirection": canonicalized_source_direction if orientation_proven else None,
+        },
+        "canonicalPlane": {
+            "aim": dict(canonical_aim) if canonical_aim else None,
+            "poib": dict(canonical_poib) if canonical_poib else None,
+            "direction": canonical_direction,
+            "releasedCorrectionDirection": released_direction,
+        },
+        "projectedResult": {
+            "vector": dict(projected_vector) if projected_vector else None,
+            "direction": projected_direction,
+        },
+        "checks": checks,
+    }
+
+
 def _local_uncertainty(point: Sequence[float], inlier_destinations: np.ndarray, residuals: np.ndarray, base_uncertainty: float) -> float:
     if not len(inlier_destinations):
         return float(base_uncertainty)
@@ -409,6 +656,14 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
                 "registeredCoverageStatus": "supported" if inside else "outside_registered_target_plane",
             })
 
+    orientation = orientation_evidence(
+        package,
+        evidence,
+        matrix,
+        method,
+        context["canonicalGray"],
+    )
+
     result = {
         "ok": True,
         "schemaVersion": "sczn3-target-image-registration-evidence-v1",
@@ -425,6 +680,7 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
         "sourceToCanonicalMatrix": [[round(float(value), 12) for value in row] for row in matrix.tolist()],
         "metrics": metrics,
         "globalUncertaintyPx": round(base_uncertainty + float(metrics["reprojectionP95Px"] or 0), 4),
+        "orientationEvidence": orientation,
         "canonicalObservations": canonical_observations,
         "claimSufficiencyOwner": "downstream_mission_authority",
         "claimSufficiency": "not_evaluated",

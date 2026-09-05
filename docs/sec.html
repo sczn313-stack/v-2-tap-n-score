@@ -57,10 +57,10 @@
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
-<script src="platform_contracts.js?v=episode54-item2-1"></script>
+<script src="platform_contracts.js?v=episode60-directional-authority-rivet-1"></script>
 <script src="sec_v1.js?v=episode54-item4d-1"></script>
 <script src="sec_adapter_model.js?v=episode54-item4a-1"></script>
-<script src="sec_framework.js?v=episode55-lowest-score-1"></script>
+<script src="sec_framework.js?v=episode60-directional-authority-rivet-1"></script>
 <script src="m4_zeroing_sec.js?v=episode54-item4d-1"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
@@ -220,6 +220,7 @@ function marker(point, className, label) {
 }
 
 function authoritativeClickItems(authorityPackage) {
+  if (!SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage).releasable) return [];
   const mechanical = authorityPackage && authorityPackage.mechanicalValidation || {};
   const status = authorityPackage && authorityPackage.status || {};
   const clicks = authorityPackage && authorityPackage.clicks;
@@ -344,6 +345,15 @@ function renderSEC() {
     document.getElementById("missingState").classList.remove("is-hidden");
     return;
   }
+  const directionalRelease = SCZN3PlatformContracts.directionalAuthorityRelease(authority);
+  if (!directionalRelease.releasable) {
+    const missingState = document.getElementById("missingState");
+    missingState.querySelector("h1").textContent = "Result unavailable";
+    missingState.querySelector("p").textContent = "The source photograph and directional correction could not be reconciled. Return to the target and try again.";
+    missingState.querySelector("a").textContent = "Return to Target";
+    missingState.classList.remove("is-hidden");
+    return;
+  }
   const calculationIntegrity = SCZN3SECComponents.verifyCalculationChain(authority);
   if (
     authority.status.hasMechanicalRecommendation === true
@@ -450,6 +460,7 @@ if (card) SCZN3Actions.bind(card, {
     id: "save-sec",
     message: "Preserving your Shooter Experience Card…",
     run: async () => {
+      if (!SCZN3PlatformContracts.directionalAuthorityRelease(authority).releasable) return false;
       const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
       document.getElementById("secActionStatus").textContent = saved ? "" : "SEC could not be preserved.";
       if (!saved) return false;

@@ -548,6 +548,37 @@
       .filter(Boolean);
   }
 
+  function directionalAuthorityRelease(authorityPackage) {
+    if (!authorityPackage || typeof authorityPackage !== "object") {
+      return Object.freeze({ releasable: false, status: "unavailable", reason: "authority_package_unavailable" });
+    }
+    const registration = authorityPackage.targetImageRegistrationEvidence;
+    const audit = authorityPackage.authorityAuditEnvelope || {};
+    const hasDirectionalResult = !!(
+      authorityPackage.correction
+      || authorityPackage.clicks
+      || (authorityPackage.renderCoordinates && authorityPackage.renderCoordinates.vector)
+      || audit.calculatedCorrection
+    );
+    if (!hasDirectionalResult || !registration) {
+      return Object.freeze({ releasable: true, status: "not-applicable", reason: null });
+    }
+    const exactCanonical = registration.registrationMethod === "exact_canonical_representation";
+    const orientation = registration.orientationEvidence || {};
+    const reconciliation = authorityPackage.directionalReconciliation || {};
+    const orientationProven = exactCanonical || orientation.status === "proven";
+    const reconciliationProven = reconciliation.status === "reconciled"
+      || (exactCanonical && !reconciliation.status);
+    const releaseRecorded = !audit.releaseStatus || audit.releaseStatus === "released";
+    if (!orientationProven) {
+      return Object.freeze({ releasable: false, status: "withheld", reason: "target_orientation_unverified" });
+    }
+    if (!reconciliationProven || !releaseRecorded) {
+      return Object.freeze({ releasable: false, status: "withheld", reason: "source_direction_reconciliation_failed" });
+    }
+    return Object.freeze({ releasable: true, status: "released", reason: null });
+  }
+
   global.SCZN3PlatformContracts = Object.freeze({
     version: VERSION,
     secAdapterSchemaVersion: SEC_ADAPTER_SCHEMA_VERSION,
@@ -559,7 +590,8 @@
     validateSECComponentModel,
     validatePartnershipIdentity,
     validateTargetProfileIdentity,
-    validateExecutionFamilyAdapter
+    validateExecutionFamilyAdapter,
+    directionalAuthorityRelease
   });
 
   global.SCZN3TargetAdapters = Object.freeze({

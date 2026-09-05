@@ -13,10 +13,10 @@ from typing import Any, Dict, List, Optional
 
 try:
     from authority_service import apply_precision_tap_registration, source_photo_render_coordinates
-    from target_image_registration_authority import canonical_point_to_source_percent
+    from target_image_registration_authority import canonical_point_to_source_percent, directional_source_reconciliation
 except ModuleNotFoundError:  # Package import used by the Python/JavaScript parity harness.
     from backend.authority_service import apply_precision_tap_registration, source_photo_render_coordinates
-    from backend.target_image_registration_authority import canonical_point_to_source_percent
+    from backend.target_image_registration_authority import canonical_point_to_source_percent, directional_source_reconciliation
 
 from .weapon_equipment_registry import (
     authority_model_from_adjustment_profile,
@@ -297,6 +297,14 @@ def registration_claim_sufficiency(
     )
     if not registration:
         return {"status": "not_applicable", "owner": owner}
+    orientation = registration.get("orientationEvidence") or {}
+    if orientation.get("requiredForGovernedDirection") and orientation.get("status") != "proven":
+        return {
+            "status": "insufficient",
+            "owner": owner,
+            "reason": "target_orientation_unverified",
+            "orientationEvidence": orientation,
+        }
     observations = registration.get("canonicalObservations") or []
     if (
         registration.get("knowledgeState") not in ("exact", "estimated")
@@ -763,6 +771,59 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     else:
         render_coordinates = {"aim": aim, "bull": bull, "impacts": impacts, "poib": poib, "vector": vector}
 
+    directional_reconciliation = directional_source_reconciliation(
+        registration_evidence,
+        aim,
+        poib,
+        render_coordinates,
+        correction,
+    )
+    if registration_evidence and directional_reconciliation.get("status") != "reconciled":
+        registration_sufficiency = {
+            **registration_sufficiency,
+            "status": "insufficient",
+            "owner": registration_sufficiency.get("owner"),
+            "reason": registration_sufficiency.get("reason") or "source_direction_reconciliation_failed",
+            "orientationEvidence": registration_evidence.get("orientationEvidence") or {},
+            "directionalReconciliation": directional_reconciliation,
+        }
+    audit_correction = dict(correction) if correction else None
+    audit_clicks = dict(clicks) if clicks else None
+    audit_angular = dict(angular) if angular else None
+    audit_vector = dict(vector) if vector else None
+    hard_withhold = registration_sufficiency.get("reason") in {
+        "target_orientation_unverified",
+        "source_direction_reconciliation_failed",
+    }
+    if hard_withhold:
+        correction = None
+        clicks = None
+        angular = None
+        vector = None
+        correction_estimate = None
+        render_coordinates["vector"] = None
+        mechanical_validation = {
+            "status": "unavailable",
+            "reason": registration_sufficiency.get("reason"),
+            "model": model,
+        }
+        calculation_reconciliation = {
+            "status": "unavailable",
+            "reason": registration_sufficiency.get("reason"),
+        }
+        geometry_validation = {
+            "status": "authority-withheld",
+            "reason": registration_sufficiency.get("reason"),
+        }
+        if phase == "confirmation":
+            validation = {
+                "status": "authority-unavailable",
+                "outcome": "CONFIRMATION DECISION UNAVAILABLE",
+                "confirmed": None,
+                "reason": registration_sufficiency.get("reason"),
+                "method": "zeroing-confirmation-authority-v1",
+            }
+
     shot_ids = [impact["shotId"] for impact in impacts]
     target_profile_id = str(payload.get("targetProfileId") or payload.get("target_profile_id") or "m4_25m_zero").lower()
     bull_authority = M16A2_BULL_AUTHORITY if target_profile_id == M16A2_PROFILE_ID else M4_BULL_AUTHORITY
@@ -807,6 +868,27 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         "renderCoordinates": render_coordinates,
         "targetImageRegistrationEvidence": registration_evidence,
         "registrationClaimSufficiency": registration_sufficiency,
+        "directionalReconciliation": directional_reconciliation,
+        "authorityAuditEnvelope": {
+            "schemaVersion": "sczn3-directional-authority-audit-v1",
+            "sourceEvidence": directional_reconciliation.get("sourcePlane"),
+            "registration": {
+                "registrationEvidenceId": registration_evidence.get("registrationEvidenceId") if registration_evidence else None,
+                "registrationEvidenceHash": registration_evidence.get("registrationEvidenceHash") if registration_evidence else None,
+                "sourceToCanonicalMatrix": registration_evidence.get("sourceToCanonicalMatrix") if registration_evidence else None,
+                "orientationEvidence": registration_evidence.get("orientationEvidence") if registration_evidence else None,
+            },
+            "canonicalObservations": registration_evidence.get("canonicalObservations") if registration_evidence else [],
+            "canonicalPOIB": poib,
+            "canonicalAim": aim,
+            "canonicalVector": audit_vector,
+            "applicableAuthority": model,
+            "calculatedCorrection": audit_correction,
+            "calculatedClicks": audit_clicks,
+            "calculatedAngular": audit_angular,
+            "projectedResult": directional_reconciliation.get("projectedResult"),
+            "releaseStatus": "withheld" if hard_withhold else "released",
+        } if registration_evidence else None,
         "correctionEstimate": correction_estimate,
         "confirmedAimPointAuthority": {
             "status": "confirmed" if aim else "unavailable",

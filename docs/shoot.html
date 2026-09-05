@@ -174,7 +174,7 @@ window.addEventListener("error", event => {
   }
 </script>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
-<script src="platform_contracts.js?v=episode59-baker-product-route-1"></script>
+<script src="platform_contracts.js?v=episode60-directional-authority-rivet-1"></script>
 <script src="smart_target_identity.js"></script>
 <script src="zeroing_platform.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
@@ -1851,6 +1851,7 @@ function isGovernedConfirmationEvidenceResult(authorityPackage) {
 
 function zeroingClicksFromAuthorityPackage(authorityPackage) {
   if (!authorityPackage || isNonZeroingAuthorityPackage(authorityPackage)) return null;
+  if (!SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage).releasable) return null;
   if (!authorityPackage.clicks) return null;
   if (isMfamZeroingAuthoritySession() && authorityPackage.mechanicalValidation?.status !== "calculated") return null;
   const correction = authorityPackage.correction || {};
@@ -3620,6 +3621,7 @@ function currentVisualCorrection() {
   if (!resultsShown || !backendAuthorityPackage) return null;
   if (isDotTortureAuthoritySession()) return null;
   if (isNonZeroingAuthorityPackage(backendAuthorityPackage)) return null;
+  if (!SCZN3PlatformContracts.directionalAuthorityRelease(backendAuthorityPackage).releasable) return null;
   const correction = backendAuthorityPackage.correction || {};
   const clicks = backendAuthorityPackage.clicks || {};
   return {
@@ -4599,6 +4601,7 @@ function backendRenderedHitCoordinates(authorityPackage) {
 
 function governedCorrectionVector(authorityPackage) {
   if (!authorityPackage) return null;
+  if (!SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage).releasable) return null;
   const render = authorityPackage.renderCoordinates || {};
   const poib = backendPoibDisplayCoordinate(authorityPackage);
   const aim = safePoint(render.aim);
@@ -5606,6 +5609,11 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   }
   if (!backendAuthorityPackage) {
     setSaveSessionStatus("Show Results before saving so the complete result is preserved.", "error");
+    return;
+  }
+  const directionalRelease = SCZN3PlatformContracts.directionalAuthorityRelease(backendAuthorityPackage);
+  if (!directionalRelease.releasable) {
+    setSaveSessionStatus("The directional correction was withheld because its source evidence did not reconcile.", "error");
     return;
   }
   if (isGssfAuthorityPackage(backendAuthorityPackage) && !gssfTimerTimeReadyForSave()) {

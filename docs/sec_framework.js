@@ -119,12 +119,13 @@
   function EvidenceCard(authorityPackage) {
     const status = authorityPackage.status || {};
     const lineage = authorityPackage.lineage || {};
+    const directionalRelease = global.SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage);
     return {
       summary: `${Number(status.impactCount || 0)} confirmed impacts established the initial group. SCZN3 calculated the correction from that group's POIB to the confirmed aim point.`,
       sourceIds: lineage.sourceShotIds || [],
       overlay(render = authorityPackage.renderCoordinates || {}) {
         const impacts = Array.isArray(render.impacts) ? render.impacts : [];
-        return vector(render.vector) +
+        return (directionalRelease.releasable ? vector(render.vector) : "") +
           marker(render.aim, "aim-marker", "") +
           impacts.map((point, index) => marker(point, "impact-marker", index + 1)).join("") +
           marker(render.poib, "poib-marker", "POIB");
@@ -162,8 +163,9 @@
     const adjustment = clicks.model || {};
     const mechanical = authorityPackage.mechanicalValidation || {};
     const integrity = verifyCalculationChain(authorityPackage);
+    const directionalRelease = global.SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage);
     const unit = String(adjustment.unit || "MOA").toUpperCase();
-    if (mechanical.status !== "calculated" || integrity.status !== "reconciled") {
+    if (!directionalRelease.releasable || mechanical.status !== "calculated" || integrity.status !== "reconciled") {
       const guidance = global.SCZN3Presentation
         ? global.SCZN3Presentation.sightCorrectionGuidance({ integrityStatus: integrity.status })
         : "Your target and group measurement are saved. Review your sight setup in Equipment to receive Sight Correction.";
@@ -193,7 +195,8 @@
     const angular = authorityPackage.angular || {};
     const mechanical = authorityPackage.mechanicalValidation || {};
     const integrity = verifyCalculationChain(authorityPackage);
-    const instruction = mechanical.status === "calculated" && integrity.status === "reconciled"
+    const directionalRelease = global.SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage);
+    const instruction = directionalRelease.releasable && mechanical.status === "calculated" && integrity.status === "reconciled"
       ? `<strong>${escapeHtml(correction.elevation)}</strong><strong>${escapeHtml(correction.windage)}</strong>`
       : integrity.status === "mismatch"
         ? "<strong>Correction unavailable</strong>"
@@ -204,7 +207,7 @@
       angular: ["windage", "elevation"].map(axis => {
         const trace = integrity.axes[axis];
         const axisLabel = axis[0].toUpperCase() + axis.slice(1);
-        if (!trace || integrity.status !== "reconciled") {
+        if (!directionalRelease.releasable || !trace || integrity.status !== "reconciled") {
           return metric(
             axisLabel,
             `${Number(angular[`${axis}MOA`] || 0).toFixed(2)} MOA`,
@@ -225,7 +228,8 @@
     const adjustment = authorityPackage.clicks && authorityPackage.clicks.model || {};
     const mechanical = authorityPackage.mechanicalValidation || {};
     const integrity = verifyCalculationChain(authorityPackage);
-    if (mechanical.status !== "calculated" || integrity.status !== "reconciled") {
+    const directionalRelease = global.SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage);
+    if (!directionalRelease.releasable || mechanical.status !== "calculated" || integrity.status !== "reconciled") {
       const guidance = global.SCZN3Presentation
         ? global.SCZN3Presentation.sightCorrectionGuidance({ integrityStatus: integrity.status })
         : "Your target and group measurement are saved. Review your sight setup in Equipment to receive Sight Correction.";
