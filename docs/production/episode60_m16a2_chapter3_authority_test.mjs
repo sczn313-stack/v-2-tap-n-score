@@ -62,6 +62,12 @@ const confirmation = await buildAuthorityPackage({
 });
 
 assert.equal(confirmation.validation.confirmed, true);
+assert.ok(Math.max(...fixture.confirmationImpacts.map(point => point.xPercent)) - Math.min(...fixture.confirmationImpacts.map(point => point.xPercent)) >= 10, "confirmation shots are visibly distinct rather than stacked");
+assert.deepEqual(
+  { xPercent: Number(confirmation.poib.xPercent), yPercent: Number(confirmation.poib.yPercent) },
+  { xPercent: fixture.aim.xPercent, yPercent: fixture.aim.yPercent },
+  "the dispersed confirmation evidence remains centered on the governed aim point"
+);
 assert.equal(initial.targetProfileId, "baker_m16a2_25m_zero");
 assert.equal(initial.target.targetId, "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1");
 assert.equal(initial.authorityVersion, "sczn3-baker-m16a2-authority-v1");

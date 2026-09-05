@@ -100,6 +100,19 @@ try {
     await demo.locator('#bakerSampleDemoLayer[data-demo-state="results"]').waitFor({ timeout: 30000 });
     assert.match(await demo.locator("#bakerSampleDemoScene").innerText(), /YOUR SIGHT ADJUSTMENT[\s\S]*REAR WINDAGE KNOB[\s\S]*8 CLICKS LEFT[\s\S]*FRONT SIGHT POST[\s\S]*4 CLICKS DOWN/);
     assert.equal(await demo.locator(".m16a2-demo-sight-photo img").count(), 2, `adjustment shows both approved hardware photographs at ${viewport.width}px`);
+    await demo.locator('#bakerSampleDemoLayer[data-demo-state="begin-confirmation"]').waitFor({ timeout: 30000 });
+    assert.match(await demo.locator("#bakerSampleDemoScene").innerText(), /SECOND PHOTO[\s\S]*SHOOT YOUR CONFIRMATION GROUP[\s\S]*Use this target or put up a new one[\s\S]*take another photo/i);
+    assert.equal(await demo.locator(".m16a2-demo-confirmation-photo.is-entering img").count(), 1, `a distinct second photograph enters at ${viewport.width}px`);
+    assert.equal(await demo.locator(".baker-sample-hole.is-confirmation").count(), 0, `confirmation holes do not appear before the second photograph at ${viewport.width}px`);
+    await demo.locator('#bakerSampleDemoLayer[data-demo-state="confirmation"]').waitFor({ timeout: 30000 });
+    assert.match(await demo.locator("#bakerSampleDemoScene").innerText(), /CONFIRMATION PHOTO[\s\S]*marks each shot on the new photograph/i);
+    const confirmationHoleCenters = await demo.locator(".baker-sample-hole.is-confirmation").evaluateAll(elements => elements.map(element => {
+      const box = element.getBoundingClientRect();
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    }));
+    assert.equal(confirmationHoleCenters.length, 3, `three confirmation observations appear on the second photograph at ${viewport.width}px`);
+    const closestConfirmationPair = Math.min(...confirmationHoleCenters.flatMap((point, index) => confirmationHoleCenters.slice(index + 1).map(other => Math.hypot(point.x - other.x, point.y - other.y))));
+    assert.ok(closestConfirmationPair >= 12, `confirmation observations remain visually distinct at ${viewport.width}px`);
     await demo.locator('#bakerSampleDemoLayer[data-demo-state="save"]').waitFor({ timeout: 30000 });
     assert.match(await demo.locator("#bakerSampleDemoScene").innerText(), /300-METER SETTING[\s\S]*ONE CLICK COUNTERCLOCKWISE[\s\S]*BACK TO 8\/3/);
     assert.equal(await demo.locator(".m16a2-demo-sight-photo.is-rear-drum img").count(), 1);
@@ -146,7 +159,7 @@ try {
     });
     assert.ok(preservedSurfaceRequests.some(url => url.includes("view=sec")), "demo opens the existing SEC surface");
     assert.ok(preservedSurfaceRequests.some(url => url.includes("selected=")), "demo opens the existing Ballistic Vault record surface");
-    assert.match(state.scene, /DEMONSTRATION COMPLETE[\s\S]*YOUR TURN/);
+    assert.match(state.scene, /DEMONSTRATION COMPLETE[\s\S]*YOU'RE UP!!/);
     assert.equal(state.href, "m16a2-tstt.html?chapter=4");
     assert.equal(state.overflow, false);
     assert.deepEqual(errors, []);

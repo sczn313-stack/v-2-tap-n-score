@@ -10,9 +10,9 @@
     Object.freeze({ xPercent: 63.3, yPercent: 37.7, shotId: "demo-initial-3" })
   ]);
   const confirmationImpacts = Object.freeze([
-    Object.freeze({ xPercent: 49.9, yPercent: 48.6, shotId: "demo-confirmation-1" }),
-    Object.freeze({ xPercent: 50.1, yPercent: 48.7, shotId: "demo-confirmation-2" }),
-    Object.freeze({ xPercent: 50, yPercent: 48.8, shotId: "demo-confirmation-3" })
+    Object.freeze({ xPercent: 44, yPercent: 45, shotId: "demo-confirmation-1" }),
+    Object.freeze({ xPercent: 56, yPercent: 48.7, shotId: "demo-confirmation-2" }),
+    Object.freeze({ xPercent: 50, yPercent: 52.4, shotId: "demo-confirmation-3" })
   ]);
   const adjustmentProfileId = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
   const equipmentConfigurationId = "M16A2-STANDARD-IRON-FSP-REAR-DRUM";

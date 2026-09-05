@@ -783,6 +783,7 @@ function bakerSampleDemoScene(state) {
   const m16a2Demo = fixture.demoKind === "m16a2-tstt";
   const initial = fixture.initialImpacts.map(point => [point.xPercent, point.yPercent]);
   const confirmation = fixture.confirmationImpacts.map(point => [point.xPercent, point.yPercent]);
+  const confirmationPhoto = (entering = false) => `<div class="m16a2-demo-confirmation-photo${entering ? " is-entering" : ""}" aria-label="Second target photograph entering Tap-n-Score"><img src="${fixture.target.image}" alt="Second photograph of the Baker M16A2 25 meter zeroing target"><span>SECOND PHOTO</span></div>`;
   if (m16a2Demo) {
     if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>WATCH TAP-N-SCORE ZERO THIS M16A2</strong><span>Target → aim → shots → results → adjustment → confirmation.</span></div>`;
     if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>CENTER CROSSHAIRS</strong><span>Tap-n-Score marks the aim point.</span></div>${sampleFeatureHighlightMarkup("aim", fixture.aim.xPercent, fixture.aim.yPercent)}`;
@@ -791,10 +792,10 @@ function bakerSampleDemoScene(state) {
     if (state === "group-center") return `<div class="baker-sample-demo-callout"><strong>THE CENTER OF YOUR SHOT PATTERN</strong><span>Tap-n-Score finds the center of the shot pattern.</span></div>${bakerSampleGroupAnalysisMarkup()}`;
     if (state === "vector") return `<div class="baker-sample-demo-callout"><strong>MEASURE</strong><span>Tap-n-Score measures from the pattern center to the center crosshairs.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true })}`;
     if (state === "results") return `<div class="baker-sample-demo-callout"><strong>YOUR SIGHT ADJUSTMENT</strong><span>Tap-n-Score tells you exactly which sight to move, how many clicks, and which way to turn it.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
-    if (state === "begin-confirmation") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>APPLY THE CLICKS</strong><span>Then shoot your confirmation shots.</span></div>${bakerSampleGroupAnalysisMarkup({ showVector: true, showAdjustment: true })}`;
-    if (state === "confirmation") return `<div class="baker-sample-demo-callout"><strong>CONFIRMATION SHOTS</strong><span>Tap-n-Score marks the next three shots.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, SMART_TARGET_TALK_CHOREOGRAPHY.observations.confirmationCadenceMs)}`;
-    if (state === "show-confirmation-results") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>ZERO CONFIRMED</strong><span>The confirmation shot pattern is centered.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
-    if (state === "save") return `<div class="baker-sample-demo-callout is-action-guidance"><strong>300-METER SETTING</strong><span>Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3.</span></div>${bakerSampleConfirmationResultMarkup()}${m16a2DemoDrumFinalizationMarkup()}`;
+    if (state === "begin-confirmation") return `${confirmationPhoto(true)}<div class="baker-sample-demo-callout is-action-guidance"><strong>SHOOT YOUR CONFIRMATION GROUP</strong><span>Use this target or put up a new one. Then take another photo.</span></div>`;
+    if (state === "confirmation") return `${confirmationPhoto()}<div class="baker-sample-demo-callout"><strong>CONFIRMATION PHOTO</strong><span>Tap-n-Score marks each shot on the new photograph.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, SMART_TARGET_TALK_CHOREOGRAPHY.observations.confirmationCadenceMs)}`;
+    if (state === "show-confirmation-results") return `${confirmationPhoto()}<div class="baker-sample-demo-callout is-action-guidance"><strong>ZERO CONFIRMED</strong><span>The confirmation shot pattern is centered.</span></div>${bakerSampleHoleMarkup(confirmation, true, SMART_TARGET_TALK_CHOREOGRAPHY, 0, true)}`;
+    if (state === "save") return `${confirmationPhoto()}<div class="baker-sample-demo-callout is-action-guidance"><strong>300-METER SETTING</strong><span>Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3.</span></div>${bakerSampleConfirmationResultMarkup()}${m16a2DemoDrumFinalizationMarkup()}`;
   }
   if (state === "intro") return `<div class="baker-sample-demo-callout"><strong>BAKER 100 YARD SMART TARGET</strong><span>Listen as you need. Shoot when you please.</span></div>`;
   if (state === "aim") return `<div class="baker-sample-demo-callout"><strong>AIM</strong><span>Tap the point you aimed at.</span></div>${sampleFeatureHighlightMarkup("aim", 50, 56.6)}`;
@@ -814,7 +815,7 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
   if (state === "complete") return m16a2Demo
-    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOUR TURN.</strong><small>Chapter 4 gives you the controls.</small><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
+    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOU'RE UP!!</strong><small>Chapter 4 gives you the controls.</small><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
     : `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }
@@ -851,13 +852,13 @@ function bakerSampleDemoSteps() {
     { state: "group-center", narration: "Tap-n-Score finds the center of the shot pattern.", audio: "assets/audio/episode60/chapter3/05-pattern-center.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.groupCenterComprehensionMs },
     { state: "vector", narration: "It measures from the center of the shot pattern to the center crosshairs.", audio: "assets/audio/episode60/chapter3/06-measurement.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.vectorComprehensionMs },
     { state: "results", narration: "This is your sight adjustment. Tap-n-Score tells you exactly which sight to move, how many clicks, and which way to turn it. Rear windage knob, eight clicks left, counterclockwise. Front sight post, four clicks down, counterclockwise.", audio: "assets/audio/episode60/chapter3/07-adjustment.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
-    { state: "begin-confirmation", narration: "Apply the clicks, then shoot your confirmation shots.", audio: "assets/audio/episode60/chapter3/08-begin-confirmation.wav", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "confirmation", narration: "Tap-n-Score marks the confirmation shots.", audio: "assets/audio/episode60/chapter3/09-confirmation-shots.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
+    { state: "begin-confirmation", narration: "Now shoot your confirmation group. You can use this target or put up a new one. When you're finished, take another photo.", audio: "assets/audio/episode60/chapter3/08-begin-confirmation.wav", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "confirmation", narration: "Tap-n-Score marks each shot on the confirmation photograph.", audio: "assets/audio/episode60/chapter3/09-confirmation-shots.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
     { state: "show-confirmation-results", narration: "Zero confirmed.", audio: "assets/audio/episode60/chapter3/10-confirmed-zero.wav", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "save", narration: "Turn the rear elevation drum one click counterclockwise back to eight slash three for your three-hundred-meter setting.", audio: "assets/audio/episode60/chapter3/11-finalize-drum.wav", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "sec", narration: "Your target, shots, adjustment, and confirmation are preserved together.", audio: "assets/audio/episode60/chapter3/12-sec.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
     { state: "vault", narration: "And the complete shooting session is saved in your Ballistic Vault.", audio: "assets/audio/episode60/chapter3/13-vault.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
-    { state: "complete", narration: "Your turn.", audio: "assets/audio/episode60/chapter3/14-complete.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
+    { state: "complete", narration: "You're up!", audio: "assets/audio/episode60/chapter3/14-complete.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
     { state: "complete", terminal: true }
   ];
   const aimPostSpeechHold = SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs

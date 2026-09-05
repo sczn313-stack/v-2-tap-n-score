@@ -525,6 +525,7 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   position:absolute;
   top:6%;
   left:50%;
+  z-index:6;
   display:grid;
   width:min(86%,430px);
   gap:3px;
@@ -536,6 +537,47 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   text-align:center;
   transform:translateX(-50%);
   box-shadow:0 8px 22px rgba(0,0,0,.3);
+}
+
+.m16a2-demo-confirmation-photo{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  overflow:hidden;
+  background:#f4f1e5;
+  box-shadow:inset 0 0 0 3px rgba(244,198,79,.84),0 14px 34px rgba(0,0,0,.34);
+  pointer-events:none;
+}
+
+.m16a2-demo-confirmation-photo img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:fill;
+}
+
+.m16a2-demo-confirmation-photo span{
+  position:absolute;
+  right:3%;
+  bottom:3%;
+  padding:5px 8px;
+  border:1px solid rgba(244,198,79,.9);
+  border-radius:5px;
+  background:rgba(8,9,8,.9);
+  color:#f4c64f;
+  font:950 clamp(8px,1.7vw,11px)/1 Arial,sans-serif;
+  letter-spacing:.08em;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+
+.m16a2-demo-confirmation-photo.is-entering{
+  transform-origin:50% 72%;
+  animation:m16a2-confirmation-photo-enter .72s cubic-bezier(.2,.78,.2,1) both;
+}
+
+@keyframes m16a2-confirmation-photo-enter{
+  from{opacity:0;transform:translateY(18%) scale(.9) rotate(-1.4deg)}
+  to{opacity:1;transform:translateY(0) scale(1) rotate(0)}
 }
 
 .baker-sample-demo-callout strong{color:#f4c64f;font-size:clamp(16px,3.5vw,25px);letter-spacing:.08em}
@@ -619,6 +661,7 @@ body.target-page[data-baker-sample-stage="true"] .workspace-stage-shell .target-
   background:rgba(255,255,255,.12);
   box-shadow:0 0 0 2px rgba(255,255,255,.72);
   transform:translate(-50%,-50%);
+  z-index:3;
 }
 
 .baker-sample-hole.is-settled{opacity:1;animation:none}
