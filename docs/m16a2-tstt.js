@@ -185,8 +185,8 @@
     elements.demoProof.textContent = detail.controllerInstantiated
       ? (playerState === "COMPLETED" ? "COMPLETE" : (["PLAYING", "PAUSED"].includes(playerState) ? "RUNNING" : "NOT RUNNING"))
       : "NOT RUNNING";
-    elements.audioProof.textContent = ["fallback", "playing"].includes(narrationState) ? "QUEUED" : "NOT QUEUED";
-    elements.stepProof.textContent = `${Math.max(0, stepIndex + 1)} / 14`;
+    elements.audioProof.textContent = narrationState === "playing" ? "PLAYING" : "NOT PLAYING";
+    elements.stepProof.textContent = `${Math.min(14, Math.max(0, stepIndex + 1))} / 14`;
     elements.playerProof.textContent = playerState;
     elements.chapterThreeRuntimeStart.hidden = ["PLAYING", "PAUSED", "COMPLETED"].includes(playerState);
   }

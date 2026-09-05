@@ -70,6 +70,20 @@ const publicFiles = new Map([
   ["/assets/crosshair-cross-emblem.png", "assets/crosshair-cross-emblem.png"],
   ["/assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png", "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png"],
   ["/assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg", "assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg"],
+  ["/assets/audio/episode60/chapter3/01-intro.wav", "assets/audio/episode60/chapter3/01-intro.wav"],
+  ["/assets/audio/episode60/chapter3/02-aim.wav", "assets/audio/episode60/chapter3/02-aim.wav"],
+  ["/assets/audio/episode60/chapter3/03-shot-observations.wav", "assets/audio/episode60/chapter3/03-shot-observations.wav"],
+  ["/assets/audio/episode60/chapter3/04-authority.wav", "assets/audio/episode60/chapter3/04-authority.wav"],
+  ["/assets/audio/episode60/chapter3/05-pattern-center.wav", "assets/audio/episode60/chapter3/05-pattern-center.wav"],
+  ["/assets/audio/episode60/chapter3/06-measurement.wav", "assets/audio/episode60/chapter3/06-measurement.wav"],
+  ["/assets/audio/episode60/chapter3/07-adjustment.wav", "assets/audio/episode60/chapter3/07-adjustment.wav"],
+  ["/assets/audio/episode60/chapter3/08-begin-confirmation.wav", "assets/audio/episode60/chapter3/08-begin-confirmation.wav"],
+  ["/assets/audio/episode60/chapter3/09-confirmation-shots.wav", "assets/audio/episode60/chapter3/09-confirmation-shots.wav"],
+  ["/assets/audio/episode60/chapter3/10-confirmed-zero.wav", "assets/audio/episode60/chapter3/10-confirmed-zero.wav"],
+  ["/assets/audio/episode60/chapter3/11-finalize-drum.wav", "assets/audio/episode60/chapter3/11-finalize-drum.wav"],
+  ["/assets/audio/episode60/chapter3/12-sec.wav", "assets/audio/episode60/chapter3/12-sec.wav"],
+  ["/assets/audio/episode60/chapter3/13-vault.wav", "assets/audio/episode60/chapter3/13-vault.wav"],
+  ["/assets/audio/episode60/chapter3/14-complete.wav", "assets/audio/episode60/chapter3/14-complete.wav"],
   ["/authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png", "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png"],
   ["/authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png", "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png"],
   ["/authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg", "authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg"],
@@ -84,7 +98,8 @@ const types = Object.freeze({
   ".jpg": "image/jpeg",
   ".js": "text/javascript; charset=utf-8",
   ".png": "image/png",
-  ".svg": "image/svg+xml"
+  ".svg": "image/svg+xml",
+  ".wav": "audio/wav"
 });
 
 function resolveRequest(requestUrl = "/") {

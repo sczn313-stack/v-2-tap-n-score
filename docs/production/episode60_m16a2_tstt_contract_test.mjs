@@ -72,13 +72,17 @@ assert.doesNotMatch(chapterThreeSource, /TAKE PHOTO|CHOOSE EXISTING PHOTO|I FOUN
 assert.match(demoFixture, /M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "the prepared example carries the exact equipment configuration");
 assert.match(demoFixture, /M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011[\s\S]*authoritySource: "backend-authoritative"/, "the prepared example carries the governed M16A2 adjustment identity and output provenance");
 assert.match(shoot, /PREPARED_M16A2_DEMO_MODE[\s\S]*SCZN3_BAKER_TALKING_DEMO_FIXTURE[\s\S]*bakerSampleDemoSteps[\s\S]*startBakerSampleDemo/, "the existing SCZN3 demonstration engine owns the automated Chapter 3 road");
+const chapterThreeAudioPaths = [...shoot.matchAll(/audio: "(assets\/audio\/episode60\/chapter3\/[^"\n]+\.wav)"/g)].map(match => match[1]);
+assert.equal(chapterThreeAudioPaths.length, 14, "every spoken Chapter 3 step has one native Samantha audio asset");
+assert.equal(new Set(chapterThreeAudioPaths).size, 14, "Chapter 3 narration assets are mapped one-to-one without reuse");
+assert.match(shoot, /allowSpeechFallback: !PREPARED_M16A2_DEMO_MODE/, "the prepared M16A2 demonstration disables Web Speech fallback");
 assert.match(shoot, /m16a2TsttDemoControlsMarkup[\s\S]*data-player-action="toggle"[\s\S]*STOP[\s\S]*REPLAY CHAPTER[\s\S]*CHAPTERS[\s\S]*RESTART/, "the running Chapter 3 demo carries the governed TSTT PLAYER controls");
 assert.match(shoot, /CENTER CROSSHAIRS[\s\S]*SHOT PATTERN[\s\S]*SHOW RESULTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*GOVERNED M16A2 ADJUSTMENT[\s\S]*ZERO CONFIRMED/, "the demonstration visibly completes the governed observation, correction, and confirmation sequence");
 assert.match(shoot, /state: "sec"[\s\S]*completed Shooter Experience Card[\s\S]*state: "vault"[\s\S]*Ballistic Vault/, "the demonstration continues through the real SEC and Ballistic Vault surfaces");
 assert.match(shoot, /REAR WINDAGE KNOB[\s\S]*FRONT SIGHT POST[\s\S]*COUNTERCLOCKWISE back to 8\/3/, "the demo names the governed controls, turn direction, and confirmed-zero return procedure");
 assert.match(records, /PREPARED_DEMO_MODE[\s\S]*experienceMode[\s\S]*demonstration/, "prepared Chapter 3 preservation uses real records surfaces without a simulation label");
 assert.match(player, /speechRate[\s\S]*speechVoiceResolver/, "the reusable player accepts the governed Samantha voice and 0.70 rate for the demo");
-assert.match(player, /fallbackStarted[\s\S]*if \(!step\.audio\)[\s\S]*startFallback\(\)/, "text-only demo narration enters the Samantha queue exactly once without attempting an empty audio source");
+assert.match(player, /allowSpeechFallback = options\.allowSpeechFallback !== false[\s\S]*if \(!this\.allowSpeechFallback \|\| !global\.speechSynthesis/, "the reusable PLAYER can run governed audio without touching Web Speech");
 assert.match(source, /Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Take a photo of your target or choose one from your photos\./, "Chapter 4 carries the concise shooter photo-entry script");
 assert.match(chapterFourSource, /YOUR TURN[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the shooter-control entry");
 assert.match(chapterFourSource, /chapterFourPhotoRoad\("camera"\)[\s\S]*chapterFourPhotoRoad\("existing"\)/, "Chapter 4 hands both photo choices to the governed road");

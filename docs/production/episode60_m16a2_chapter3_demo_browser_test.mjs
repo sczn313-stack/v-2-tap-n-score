@@ -1,25 +1,55 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import { stat } from "node:fs/promises";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8098";
+const chapterThreeAudioPaths = [
+  "assets/audio/episode60/chapter3/01-intro.wav",
+  "assets/audio/episode60/chapter3/02-aim.wav",
+  "assets/audio/episode60/chapter3/03-shot-observations.wav",
+  "assets/audio/episode60/chapter3/04-authority.wav",
+  "assets/audio/episode60/chapter3/05-pattern-center.wav",
+  "assets/audio/episode60/chapter3/06-measurement.wav",
+  "assets/audio/episode60/chapter3/07-adjustment.wav",
+  "assets/audio/episode60/chapter3/08-begin-confirmation.wav",
+  "assets/audio/episode60/chapter3/09-confirmation-shots.wav",
+  "assets/audio/episode60/chapter3/10-confirmed-zero.wav",
+  "assets/audio/episode60/chapter3/11-finalize-drum.wav",
+  "assets/audio/episode60/chapter3/12-sec.wav",
+  "assets/audio/episode60/chapter3/13-vault.wav",
+  "assets/audio/episode60/chapter3/14-complete.wav"
+];
+for (const path of chapterThreeAudioPaths) assert.ok((await stat(path)).size > 4096, `${path} contains rendered audio frames`);
 const browser = await chromium.launch({ headless: true, executablePath: process.env.SCZN3_CHROME_EXECUTABLE || undefined });
 
 try {
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     const context = await browser.newContext({ viewport, reducedMotion: "reduce" });
     await context.addInitScript(() => {
-      window.__m16SpokenUtterances = [];
+      window.__m16SpeechCalls = [];
+      window.__m16AudioPlayback = [];
+      class TestAudio {
+        constructor() { this.src = ""; this.currentTime = 0; this.paused = true; this.onended = null; this.onerror = null; }
+        play() {
+          this.paused = false;
+          window.__m16AudioPlayback.push(this.src);
+          window.setTimeout(() => { this.paused = true; if (this.onended) this.onended(); }, 5);
+          return Promise.resolve();
+        }
+        pause() { this.paused = true; }
+      }
+      Object.defineProperty(window, "Audio", { configurable: true, value: TestAudio });
       const voices = [{ name: "Samantha", lang: "en-US", localService: true, default: true }];
       Object.defineProperty(window, "speechSynthesis", {
         configurable: true,
         value: {
-          cancel() {}, pause() {}, resume() {}, getVoices() { return voices; },
-          speak(utterance) {
-            window.__m16SpokenUtterances.push({ text: utterance.text, rate: utterance.rate, voice: utterance.voice?.name });
-            window.setTimeout(() => utterance.onend && utterance.onend(), 5);
-          }
+          cancel() { window.__m16SpeechCalls.push("cancel"); },
+          pause() { window.__m16SpeechCalls.push("pause"); },
+          resume() { window.__m16SpeechCalls.push("resume"); },
+          getVoices() { return voices; },
+          speak() { window.__m16SpeechCalls.push("speak"); }
         }
       });
       Object.defineProperty(window, "SpeechSynthesisUtterance", {
@@ -50,7 +80,8 @@ try {
       session: JSON.parse(sessionStorage.getItem("SCZN3_TALKING_TARGET_DEMO_SESSION") || "null"),
       scene: document.getElementById("bakerSampleDemoScene")?.innerText || "",
       href: document.querySelector(".prepared-demo-return")?.getAttribute("href") || "",
-      spoken: window.__m16SpokenUtterances || [],
+      audio: window.__m16AudioPlayback || [],
+      speechCalls: window.__m16SpeechCalls || [],
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth
     }));
     for (const expected of ["aim", "shoot-observations", "group-center", "vector", "results", "confirmation", "save", "sec", "vault", "complete"]) {
@@ -62,10 +93,9 @@ try {
     assert.equal(state.session.simulation, false);
     assert.equal(state.session.confirmationAuthorityPackage.validation.confirmed, true);
     assert.equal(state.session.authorityPackage.mechanicalSightAuthority.adjustmentProfileId, "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011");
-    const demoSpoken = state.spoken.slice(-14);
-    assert.equal(demoSpoken.length, 14, "every Chapter 3 narration step is spoken exactly once");
-    assert.ok(demoSpoken.every(item => item.rate === 0.70 && item.voice === "Samantha"), "Chapter 3 uses Samantha at 0.70 throughout");
-    assert.match(demoSpoken.map(item => item.text).join(" "), /complete M16A2 zeroing road[\s\S]*governed M16A2 adjustment[\s\S]*Backend authority confirms the zero[\s\S]*Shooter Experience Card[\s\S]*Ballistic Vault/);
+    const demoAudio = state.audio.slice(-14);
+    assert.deepEqual(demoAudio, chapterThreeAudioPaths, "every Chapter 3 Samantha clip plays exactly once and in choreography order");
+    assert.deepEqual(state.speechCalls, [], "Chapter 3 never calls Web Speech");
     assert.deepEqual({
       windageClicks: state.session.authorityPackage.clicks.windageClicks,
       windageDirection: state.session.authorityPackage.clicks.windageDirection,

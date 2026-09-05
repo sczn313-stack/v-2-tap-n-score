@@ -14,13 +14,14 @@ try {
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(() => {
       window.__spokenUtterances = [];
+      window.__speechSynthesisCalls = [];
       const voices = [
         { name: "Albert", lang: "en-US", localService: true, default: true },
         { name: "Daniel", lang: "en-GB", localService: true, default: false },
         { name: "Samantha", lang: "en-US", voiceURI: "com.apple.voice.compact.en-US.Samantha", localService: true, default: false },
         { name: "Reed (English (US))", lang: "en-US", voiceURI: "com.apple.eloquence.en-US.Reed", localService: true, default: false }
       ];
-      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, speak(utterance) { window.__spokenUtterances.push(utterance); }, pause() {}, resume() {}, getVoices() { return voices; }, speaking: false } });
+      Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() { window.__speechSynthesisCalls.push("cancel"); }, speak(utterance) { window.__speechSynthesisCalls.push("speak"); window.__spokenUtterances.push(utterance); }, pause() { window.__speechSynthesisCalls.push("pause"); }, resume() { window.__speechSynthesisCalls.push("resume"); }, getVoices() { return voices; }, speaking: false } });
       Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
       localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "founder-m16a2");
       localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
@@ -97,7 +98,7 @@ try {
     await demo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
     assert.match(page.url(), /m16a2-tstt\.html$/);
     assert.equal(await page.locator("[data-demo-proof]").innerText(), "RUNNING");
-    assert.equal(await page.locator("[data-audio-proof]").innerText(), "QUEUED");
+    assert.equal(await page.locator("[data-audio-proof]").innerText(), "PLAYING");
     assert.equal(await page.locator("[data-step-proof]").innerText(), "1 / 14");
     assert.equal(await page.locator("[data-player-proof]").innerText(), "PLAYING");
     assert.match(await demo.locator("#markSurface > img").getAttribute("src"), /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg$/);
@@ -105,6 +106,7 @@ try {
       await demo.locator(".m16a2-tstt-demo-controls button").allTextContents(),
       ["⏸ PAUSE", "■ STOP", "↺ REPLAY CHAPTER", "☷ CHAPTERS", "⟲ RESTART"]
     );
+    assert.deepEqual(await demo.locator("body").evaluate(() => window.__speechSynthesisCalls), [], "Chapter 3 never calls Web Speech");
     await demo.getByRole("button", { name: "PAUSE", exact: true }).click();
     assert.equal(await demo.locator("#workspaceStageShell").getAttribute("data-player-status"), "paused");
     await demo.getByRole("button", { name: "RESUME", exact: true }).click();

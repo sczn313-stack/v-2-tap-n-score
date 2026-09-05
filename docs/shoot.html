@@ -813,20 +813,20 @@ function stopBakerSampleDemo({ returnToWaiting = false } = {}) {
 function bakerSampleDemoSteps() {
   const fixture = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE;
   if (fixture.demoKind === "m16a2-tstt") return [
-    { state: "intro", narration: "Let Tap-n-Score show you the complete M16A2 zeroing road.", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "aim", narration: "The center crosshairs are the aim point.", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "shoot-observations", narration: "Tap-n-Score marks the prepared shot observations.", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedGroupHoldMs },
-    { state: "show-results", narration: "Tap-n-Score sends those observations to governed authority.", action: { id: "show-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "group-center", narration: "Tap-n-Score finds the center of the shot pattern.", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.groupCenterComprehensionMs },
-    { state: "vector", narration: "It measures from the center of the shot pattern to the center crosshairs.", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.vectorComprehensionMs },
-    { state: "results", narration: "Backend authority gives the governed M16A2 adjustment. Rear windage knob, five clicks left, counterclockwise. Front sight post, two clicks down, counterclockwise.", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
-    { state: "begin-confirmation", narration: "Apply the clicks, then Tap-n-Score begins confirmation.", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "confirmation", narration: "Tap-n-Score marks the prepared confirmation shots.", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
-    { state: "show-confirmation-results", narration: "Backend authority confirms the zero.", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "save", narration: "Your zero is confirmed. Turn the rear elevation drum one click counterclockwise back to eight slash three for your three-hundred-meter setting.", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "sec", narration: "The completed Shooter Experience Card preserves the authoritative result.", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
-    { state: "vault", narration: "The completed session is preserved in Ballistic Vault.", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
-    { state: "complete", narration: "The demonstration is complete. Chapter Four gives you the controls.", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
+    { state: "intro", narration: "Let Tap-n-Score show you the complete M16A2 zeroing road.", audio: "assets/audio/episode60/chapter3/01-intro.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "aim", narration: "The center crosshairs are the aim point.", audio: "assets/audio/episode60/chapter3/02-aim.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "shoot-observations", narration: "Tap-n-Score marks the prepared shot observations.", audio: "assets/audio/episode60/chapter3/03-shot-observations.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedGroupHoldMs },
+    { state: "show-results", narration: "Tap-n-Score sends those observations to governed authority.", audio: "assets/audio/episode60/chapter3/04-authority.wav", action: { id: "show-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "group-center", narration: "Tap-n-Score finds the center of the shot pattern.", audio: "assets/audio/episode60/chapter3/05-pattern-center.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.groupCenterComprehensionMs },
+    { state: "vector", narration: "It measures from the center of the shot pattern to the center crosshairs.", audio: "assets/audio/episode60/chapter3/06-measurement.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.vectorComprehensionMs },
+    { state: "results", narration: "Backend authority gives the governed M16A2 adjustment. Rear windage knob, five clicks left, counterclockwise. Front sight post, two clicks down, counterclockwise.", audio: "assets/audio/episode60/chapter3/07-adjustment.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.resultTeaching.adjustmentComprehensionMs },
+    { state: "begin-confirmation", narration: "Apply the clicks, then Tap-n-Score begins confirmation.", audio: "assets/audio/episode60/chapter3/08-begin-confirmation.wav", action: { id: "begin-confirmation", selector: "#saveMarks", label: "Begin Confirmation" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "confirmation", narration: "Tap-n-Score marks the prepared confirmation shots.", audio: "assets/audio/episode60/chapter3/09-confirmation-shots.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.observations.completedConfirmationHoldMs },
+    { state: "show-confirmation-results", narration: "Backend authority confirms the zero.", audio: "assets/audio/episode60/chapter3/10-confirmed-zero.wav", action: { id: "show-confirmation-results", selector: "#showResults", label: "Show Results" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "save", narration: "Your zero is confirmed. Turn the rear elevation drum one click counterclockwise back to eight slash three for your three-hundred-meter setting.", audio: "assets/audio/episode60/chapter3/11-finalize-drum.wav", action: { id: "save", selector: "#saveMarks", label: "Save Session" }, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "sec", narration: "The completed Shooter Experience Card preserves the authoritative result.", audio: "assets/audio/episode60/chapter3/12-sec.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.speechPauseMs },
+    { state: "vault", narration: "The completed session is preserved in Ballistic Vault.", audio: "assets/audio/episode60/chapter3/13-vault.wav", waitForSurface: true, settleMs: SMART_TARGET_TALK_CHOREOGRAPHY.componentSettleMs, after: SMART_TARGET_TALK_CHOREOGRAPHY.vaultReadingHoldMs },
+    { state: "complete", narration: "The demonstration is complete. Chapter Four gives you the controls.", audio: "assets/audio/episode60/chapter3/14-complete.wav", after: SMART_TARGET_TALK_CHOREOGRAPHY.completionHoldMs },
     { state: "complete", terminal: true }
   ];
   const aimPostSpeechHold = SMART_TARGET_TALK_CHOREOGRAPHY.featureHighlight.heartbeatPeriodMs
@@ -973,6 +973,7 @@ function bindBakerSampleDemo() {
       resolveAction: resolveBakerSampleDemoAction,
       demonstrateAction: demonstrateBakerSampleDemoAction,
       clearAction: clearBakerSampleDemoAction,
+      allowSpeechFallback: !PREPARED_M16A2_DEMO_MODE,
       speechRate: PREPARED_M16A2_DEMO_MODE ? 0.70 : 0.94,
       speechVoiceResolver: () => PREPARED_M16A2_DEMO_MODE
         ? (window.speechSynthesis.getVoices() || []).find(voice => /^Samantha(?:\s|$|\()/i.test(String(voice.name || ""))) || null

@@ -58,6 +58,7 @@
       this.onStatusChange = options.onStatusChange || (() => {});
       this.onNarrationStatus = options.onNarrationStatus || (() => {});
       this.audioFactory = options.audioFactory || (() => new global.Audio());
+      this.allowSpeechFallback = options.allowSpeechFallback !== false;
       this.speechRate = Math.max(0.1, Number(options.speechRate) || 0.94);
       this.speechVoiceResolver = options.speechVoiceResolver || (() => null);
       this.timer = new PausableTimer(options.clock || global);
@@ -114,7 +115,7 @@
       if (this.activeActionElement) this.activeActionElement.classList.add("is-player-paused");
       if (this.phase === "narrating") {
         if (this.audio && !this.audio.paused) this.audio.pause();
-        if (this.utterance && global.speechSynthesis && typeof global.speechSynthesis.pause === "function") global.speechSynthesis.pause();
+        if (this.allowSpeechFallback && this.utterance && global.speechSynthesis && typeof global.speechSynthesis.pause === "function") global.speechSynthesis.pause();
       }
       this._publishStatus();
     }
@@ -128,7 +129,7 @@
       this.pendingContinuation = null;
       if (this.phase === "narrating") {
         if (this.audio && this.audio.paused) this.audio.play().catch(() => {});
-        if (this.utterance && global.speechSynthesis && typeof global.speechSynthesis.resume === "function") global.speechSynthesis.resume();
+        if (this.allowSpeechFallback && this.utterance && global.speechSynthesis && typeof global.speechSynthesis.resume === "function") global.speechSynthesis.resume();
       }
       this.timer.resume();
       this._publishStatus();
@@ -308,7 +309,7 @@
     }
 
     _speechFallback(message, finish, estimatedDuration) {
-      if (!global.speechSynthesis || typeof global.SpeechSynthesisUtterance !== "function") {
+      if (!this.allowSpeechFallback || !global.speechSynthesis || typeof global.SpeechSynthesisUtterance !== "function") {
         this.timer.start(estimatedDuration, finish);
         return;
       }
@@ -330,7 +331,7 @@
         this.audio.pause();
         this.audio.currentTime = 0;
       }
-      if (global.speechSynthesis) global.speechSynthesis.cancel();
+      if (this.allowSpeechFallback && global.speechSynthesis) global.speechSynthesis.cancel();
       this.utterance = null;
       this.narrationFinish = null;
       this.onNarrationStatus("idle", null);
