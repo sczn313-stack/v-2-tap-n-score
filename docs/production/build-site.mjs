@@ -49,6 +49,7 @@ const publicFiles = [
   "m16a2_talking_demo_session.js",
   "m4_talking_lesson.js",
   "zeroing_platform.js",
+  "zeroing_target_profiles.js",
   "sec_framework.js",
   "presentation_labels.js",
   "analytics.js",

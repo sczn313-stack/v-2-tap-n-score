@@ -47,6 +47,7 @@ const publicFiles = [
   "m4_sec_config.js",
   "m4_runtime.js",
   "zeroing_platform.js",
+  "zeroing_target_profiles.js",
   "sec_framework.js",
   "presentation_labels.js",
   "analytics.js",

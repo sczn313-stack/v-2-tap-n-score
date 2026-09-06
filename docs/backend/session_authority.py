@@ -50,6 +50,29 @@ EQUIPMENT_KNOWLEDGE_BY_RECORD_ID = {
     if isinstance(record, Mapping) and record.get("recordId")
 }
 
+ZEROING_EXPERIENCE_SCHEMA_VERSION = "sczn3-zeroing-experience-profile-v1"
+ZEROING_CAPABILITY_ID = "sczn3-governed-zeroing-road-v1"
+
+
+def zeroing_experience(
+    target_profile_id: str,
+    target_profile_version: str,
+    *,
+    authority_family: str,
+    entry_mode: str,
+    confirmation_mode: str,
+) -> Dict[str, Any]:
+    """Declare target differences without transferring workflow ownership."""
+    return {
+        "schemaVersion": ZEROING_EXPERIENCE_SCHEMA_VERSION,
+        "capabilityId": ZEROING_CAPABILITY_ID,
+        "targetProfileId": target_profile_id,
+        "targetProfileVersion": target_profile_version,
+        "authorityFamily": authority_family,
+        "entryMode": entry_mode,
+        "confirmationMode": confirmation_mode,
+    }
+
 
 TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
     "baker_m16a2_25m_zero": {
@@ -58,6 +81,13 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         "targetName": "Baker M16A2 25 Meter Zeroing Target",
         "targetProfileVersion": "BAKER_M16A2_25M_AUTHORITY_v1",
         "atpId": "baker-m16a2-25m-zero-atp-v1",
+        "zeroingExperience": zeroing_experience(
+            "baker_m16a2_25m_zero",
+            "BAKER_M16A2_25M_AUTHORITY_v1",
+            authority_family="mfam",
+            entry_mode="photo",
+            confirmation_mode="governed",
+        ),
         "registrationAuthority": {
             "registrationPackageId": "baker-m16a2-25m-photo-registration-v1",
             "registrationPackageVersion": "1",
@@ -89,6 +119,13 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         "targetName": "M4/M16 Series Weapons 25M Zero",
         "targetProfileVersion": "M4_TARGET_AUTHORITY_v1_ORIGINAL",
         "atpId": "m4-25m-zero-atp-v1",
+        "zeroingExperience": zeroing_experience(
+            "m4_25m_zero",
+            "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+            authority_family="mfam",
+            entry_mode="registered-reference",
+            confirmation_mode="governed",
+        ),
         "registrationAuthority": {
             "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
             "registrationPackageVersion": "1",
@@ -119,6 +156,13 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         "targetName": "Baker 100 Yard Smart Target",
         "targetProfileVersion": "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
         "atpId": "baker-100-yard-smart-zero-atp-v1",
+        "zeroingExperience": zeroing_experience(
+            "baker_st_100yd_smart_zero",
+            "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
+            authority_family="universal",
+            entry_mode="registered-reference",
+            confirmation_mode="evidence",
+        ),
         "registrationAuthority": {
             "registrationPackageId": "baker-st-100yd-smart-photo-registration-v1",
             "registrationPackageVersion": "1",
@@ -839,6 +883,7 @@ def atp_fingerprint(profile: Mapping[str, Any]) -> str:
         "targetId": profile["targetId"],
         "targetProfileVersion": profile["targetProfileVersion"],
         "atpId": profile["atpId"],
+        "zeroingExperience": profile.get("zeroingExperience"),
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
@@ -889,6 +934,7 @@ def prepare_session(
         "targetProfileVersion": profile["targetProfileVersion"],
         "atpId": profile["atpId"],
         "atpFingerprint": atp_fingerprint(profile),
+        "zeroingExperience": profile.get("zeroingExperience"),
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
@@ -917,6 +963,7 @@ def prepare_session(
         "targetAdmission": target_admission(profile),
         "missionIdentity": profile["missionIdentity"],
         "executionContract": profile.get("executionContract"),
+        "zeroingExperience": profile.get("zeroingExperience"),
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "registrationAuthority": profile.get("registrationAuthority"),
@@ -1015,6 +1062,7 @@ def start_session(
             "atpId": current_profile["atpId"],
         },
         "targetAdmission": target_admission(current_profile),
+        "zeroingExperience": current_profile.get("zeroingExperience"),
         "missionIdentity": current_profile["missionIdentity"],
         "executionContract": current_profile.get("executionContract"),
         "officialMission": equipment_assessment["officialMission"],
@@ -1035,6 +1083,7 @@ def start_session(
         "targetId": current_profile["targetId"],
         "targetProfileVersion": current_profile["targetProfileVersion"],
         "atpId": current_profile["atpId"],
+        "zeroingExperience": current_profile.get("zeroingExperience"),
         "missionIdentity": current_profile["missionIdentity"],
         "sessionMode": session_mode,
         "officialMission": equipment_assessment["officialMission"],

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [html, css, source, narration, viewportGuard, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, workspace, workspaceCss, registrationAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
+const [html, css, source, narration, viewportGuard, narrationStandard, matrix, shoot, records, player, demoFixture, m4Runtime, zeroingPlatform, zeroingProfiles, workspace, workspaceCss, registrationAuthority, sessionAuthority, buildSite, buildNetlify, reviewServer] = await Promise.all([
   readFile("m16a2-tstt.html", "utf8"),
   readFile("m16a2-tstt.css", "utf8"),
   readFile("m16a2-tstt.js", "utf8"),
@@ -14,9 +14,12 @@ const [html, css, source, narration, viewportGuard, narrationStandard, matrix, s
   readFile("self_teaching_player.js", "utf8"),
   readFile("m16a2_talking_demo_session.js", "utf8"),
   readFile("m4_runtime.js", "utf8"),
+  readFile("zeroing_platform.js", "utf8"),
+  readFile("zeroing_target_profiles.js", "utf8"),
   readFile("smart_target_workspace.js", "utf8"),
   readFile("smart_target_workspace.css", "utf8"),
   readFile("backend/target_image_registration_authority.py", "utf8"),
+  readFile("backend/session_authority.py", "utf8"),
   readFile("production/build-site.mjs", "utf8"),
   readFile("production/build-netlify.mjs", "utf8"),
   readFile("production/m16a2_tstt_review_server.mjs", "utf8")
@@ -121,11 +124,18 @@ assert.match(shoot, /REQUESTED_PHOTO_SOURCE[\s\S]*openRequestedPhotoEntry[\s\S]*
 assert.match(shoot, /targetCameraInput[\s\S]*capture="environment"[\s\S]*targetImageInput[\s\S]*Tap Your Aim Point[\s\S]*Tap Your Shots[\s\S]*Show Results/, "the handoff uses the established Take Photo, existing-photo, Precision Tap, and results controls");
 assert.match(workspace, /createPrecisionTap[\s\S]*pointer[\s\S]*(?:scale|zoom)[\s\S]*(?:translate|pan)/i, "the established Precision Tap owner retains anchored source-image interaction and zoom/pan behavior");
 assert.match(m4Runtime, /\/api\/authority\/m4[\s\S]*requestAuthority[\s\S]*saveInitialAuthority[\s\S]*saveConfirmationAuthority/, "backend M16A2 authority remains the sole correction and confirmation owner");
-assert.match(m4Runtime, /M16A2-STANDARD-IRON-FSP-REAR-DRUM[\s\S]*M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011[\s\S]*M16A2_IRON_FSP_REAR_DRUM/, "the frontend passes the exact governed M16A2 authority identity without click math");
-assert.match(shoot, /Apply the clicks\. Then shoot a new confirmation group\. You can use this target or a new one\. Take a photo of that target, then tap only the new confirmation bullet holes\./, "Chapter 4 makes the physical confirmation-photo sequence unmistakable after the initial correction");
-assert.match(shoot, /TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT[\s\S]*Then shoot a new confirmation group[\s\S]*TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO[\s\S]*new Audio\(TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO\)[\s\S]*playTsttChapterFourConfirmationNarration\(\)/, "Chapter 4 presents and plays the approved confirmation sequence from the actual confirmation transition");
+assert.match(m4Runtime, /SCZN3ZeroingPlatform\.authorityRequest/, "the legacy runtime bridge delegates zeroing requests to the shared platform capability");
+assert.doesNotMatch(m4Runtime, /m16a2Geometry|gridSquareInches|M16A2-STANDARD-IRON-FSP-REAR-DRUM|M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011/, "the runtime no longer rebuilds M16A2 geometry or mechanical authority");
+assert.match(zeroingPlatform, /photo-entry[\s\S]*precision-tap[\s\S]*undo-clear[\s\S]*show-results[\s\S]*confirmation-photo-entry[\s\S]*generate-zeroing-sec[\s\S]*add-to-ballistic-vault[\s\S]*failure-recovery/, "one platform capability owns the complete governed zeroing road");
+assert.match(zeroingProfiles, /capabilityId: platform\.CAPABILITY_ID/, "Target Profiles point to the shared zeroing capability");
+assert.match(zeroingProfiles, /baker_m16a2_25m_zero[\s\S]*m4_25m_zero/, "M16A2 and M4 are both registered as consumers of that capability");
+assert.match(sessionAuthority, /baker_m16a2_25m_zero[\s\S]*M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011[\s\S]*M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "Backend Session Authority supplies the governed M16A2 mechanical package");
+assert.match(zeroingProfiles, /confirmationInstruction: "Then shoot a new confirmation group\. You can use this target or a new one\. Take a photo of that target, then tap only the new confirmation bullet holes\."/, "the M16A2 Target Profile carries the physical confirmation-photo sequence");
+assert.match(zeroingProfiles, /confirmationInstruction:[\s\S]*Then shoot a new confirmation group[\s\S]*confirmationAudio:[\s\S]*episode60\/chapter4\/01-confirmation-sequence\.wav/, "the M16A2 Target Profile supplies its approved confirmation teaching content");
+assert.match(shoot, /activeZeroingExperience\(\)\?\.presentation[\s\S]*new Audio\(presentation\.confirmationAudio\)[\s\S]*playTsttChapterFourConfirmationNarration\(\)/, "the shared road presents and plays target-supplied confirmation content at the actual transition");
 assert.match(reviewServer, /episode60\/chapter4\/01-confirmation-sequence\.wav/, "the Founder LAN runtime serves the Chapter 4 native Samantha confirmation clip");
-assert.match(shoot, /On the confirmation target photo, tap only the new confirmation bullet holes\.[\s\S]*Tap Show Results for these new confirmation shots\.[\s\S]*Your zero is confirmed\. Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8\/3 for your 300-meter setting\./, "Chapter 4 distinguishes the new confirmation holes through the governed result");
+assert.match(shoot, /On the confirmation target photo, tap only the new confirmation bullet holes\.[\s\S]*Tap Show Results for these new confirmation shots\./, "the shared road distinguishes new confirmation holes from the original group");
+assert.match(zeroingProfiles, /confirmedInstruction: "Your zero is confirmed\. Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8\/3 for your 300-meter setting\."/, "the M16A2 Target Profile supplies its finalization procedure");
 assert.match(narrationStandard, /one thought per sentence[\s\S]*Pause briefly after every sentence[\s\S]*Use one governed name[\s\S]*visual and audio teaching in the same sequence/i, "the reusable governance artifact preserves the Founder narration rules");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /equipment-dot|EXACT TRAINING MATCH · CONFIRM GEAR|THIS MATCHES MY GEAR|confirm-equipment|CONFIRM YOUR GEAR|NOT CONFIRMED AS YOUR EQUIPMENT/, "physical-equipment confirmation UI and its orange/gold status dot are removed");
 assert.doesNotMatch(`${html}\n${source}`, /confirm (?:this |the )?target|target confirmation/i, "QR-established target identity is never reconfirmed by the shooter");
@@ -175,6 +185,7 @@ for (const build of [buildSite, buildNetlify]) {
   assert.match(build, /"m16a2-tstt\.js"/, "the lesson runtime is included in the build inventory");
   assert.match(build, /"tstt_narration\.js"/, "the reusable narration runtime is included in the build inventory");
   assert.match(build, /"tstt_viewport_guard\.js"/, "the universal TSTT viewport guard is included in the build inventory");
+  assert.match(build, /"zeroing_target_profiles\.js"/, "governed zeroing Target Profile differences are included in the build inventory");
   assert.match(build, /"m16a2_talking_demo_session\.js"/, "the prepared M16A2 demonstration fixture is included in the build inventory");
   assert.match(build, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the preserved target evidence is included in the build inventory");
   assert.match(build, /BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg/, "the exact governed standard Baker M16A2 face is included in the build inventory");

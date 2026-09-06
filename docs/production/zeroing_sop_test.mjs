@@ -5,14 +5,68 @@ import vm from "node:vm";
 const platformSource = await readFile("zeroing_platform.js", "utf8");
 const context = { window: {} };
 vm.runInNewContext(platformSource, context, { filename: "zeroing_platform.js" });
+vm.runInNewContext(await readFile("zeroing_target_profiles.js", "utf8"), context, { filename: "zeroing_target_profiles.js" });
 const platform = context.window.SCZN3ZeroingPlatform;
 
 assert.deepEqual(Array.from(platform.SOP), [
-  "select-target", "stay-on-screen", "tap-aim-point", "tap-initial-group",
-  "confirm-session-setup", "calculate-authoritative-correction", "apply-correction",
-  "fire-confirmation-group", "tap-confirmation-group", "generate-zeroing-sec",
-  "preserve-sec", "add-to-ballistic-vault"
+  "photo-entry", "precision-tap", "tap-aim-point", "tap-initial-group", "undo-clear",
+  "show-results", "present-authoritative-correction", "apply-correction",
+  "fire-confirmation-group", "confirmation-photo-entry", "tap-confirmation-group",
+  "show-confirmation-results", "generate-zeroing-sec", "preserve-sec",
+  "add-to-ballistic-vault", "failure-recovery"
 ]);
+
+const m16a2 = platform.resolveTargetProfile({ targetProfileId: "baker_m16a2_25m_zero" });
+const m4 = platform.resolveTargetProfile({ targetProfileId: "m4_25m_zero" });
+assert.equal(m16a2.capabilityId, platform.CAPABILITY_ID);
+assert.equal(m4.capabilityId, platform.CAPABILITY_ID);
+assert.equal(m16a2.entryMode, "photo");
+assert.equal(m4.entryMode, "registered-reference");
+assert.equal(m16a2.authorityFamily, "mfam");
+assert.equal(m4.authorityFamily, "mfam");
+assert.equal(platform.usesGovernedConfirmation({ targetProfileId: m16a2.targetProfileId }), true);
+assert.equal(platform.usesGovernedConfirmation({ targetProfileId: m4.targetProfileId }), true);
+assert.equal(platform.validateTargetProfile({
+  ...m16a2,
+  workflow: ["target-owned-copy-of-shared-road"]
+}).ok, false, "a Target Profile cannot take ownership of the shared road");
+
+const futureM4M16 = platform.registerTargetProfile({
+  capabilityId: platform.CAPABILITY_ID,
+  targetProfileId: "future_m4_m16_25m_zero",
+  targetProfileVersion: "PROOF_REQUIRED_BEFORE_RUNTIME_ADMISSION",
+  authorityFamily: "mfam",
+  entryMode: "photo",
+  confirmationMode: "governed",
+  presentation: { targetZero: "300 m" }
+});
+assert.equal(futureM4M16.capabilityId, m16a2.capabilityId);
+assert.equal(platform.resolveTargetProfile({ targetProfileId: futureM4M16.targetProfileId }), futureM4M16);
+assert.equal(Object.hasOwn(futureM4M16, "workflow"), false, "registering another target cannot fork the road");
+
+const m16Request = platform.authorityRequest({
+  session: {
+    target_profile_id: m16a2.targetProfileId,
+    backendSessionAuthority: {
+      target: { targetId: m16a2.targetProfileId, targetAuthorityId: "BAKER_M16A2_25M_AUTHORITY_v1", targetName: "Baker M16A2 25 Meter Zeroing Target" },
+      governedDistance: { value: 25, unit: "M", locked: true },
+      missionIdentity: { missionId: "BAKER_M16A2_25M_300M_ZERO" }
+    },
+    matrixSnapshot: {
+      adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
+      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      opticType: "Iron Sights",
+      opticAdjustmentUnit: "MOA"
+    }
+  },
+  aimPoint: { xPercent: 50, yPercent: 48.7 },
+  impactPoints: [{ xPercent: 58, yPercent: 41 }]
+});
+assert.equal(m16Request.targetProfileId, m16a2.targetProfileId);
+assert.equal(m16Request.shooterSetup.adjustmentSystem, "M16A2_IRON_FSP_REAR_DRUM");
+assert.equal(m16Request.adjustmentProfileId, "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011");
+assert.equal(Object.hasOwn(m16Request, "targetAuthorityGeometry"), false, "the browser cannot rebuild governed geometry");
 
 const mission = platform.registerMission({
   id: "TEST_ZEROING",
@@ -42,8 +96,8 @@ const vault = await readFile("records.html", "utf8");
 assert.match(shoot, /zeroingLivePhase === "confirmation"/);
 assert.match(shoot, /isZeroingAuthoritySession\(\)[\s\S]*?zeroingLivePhase === "confirmation"/);
 assert.match(shoot, /phase: zeroingLivePhase === "confirmation" \? "confirmation" : "initial"/);
-assert.match(shoot, /confirmationStatus = isM4AuthoritySession\(\)[\s\S]*?: "Recorded"/);
-assert.match(shoot, /if \(isM4AuthoritySession\(\) && authorityPackage\.mechanicalValidation\?\.status !== "calculated"\) return null;/);
+assert.match(shoot, /confirmationStatus = usesGovernedZeroingRoad\(\)[\s\S]*?: "Recorded"/);
+assert.match(shoot, /if \(usesGovernedZeroingRoad\(\) && authorityPackage\.mechanicalValidation\?\.status !== "calculated"\) return null;/);
 assert.match(shoot, /function renderCorrectionOverlay\(correction\)[\s\S]*?!isZeroingAuthoritySession\(\)[\s\S]*?!currentClicks/);
 assert.match(shoot, /REQUESTED_SESSION_ID[\s\S]*?SCZN3M4\.loadSession\(REQUESTED_SESSION_ID\)/);
 assert.match(shoot, /SESSION_ROUTE_MISS/);
@@ -52,8 +106,8 @@ assert.match(shoot, /if \(!SIMULATION_MODE\)[\s\S]*?window\.location\.replace\(`
 assert.match(shoot, /undoImpact[\s\S]*?holeEntrySettled = false;[\s\S]*?correctionContextReviewDismissed = true;[\s\S]*?scheduleHoleEntryReadiness\(\)/);
 assert.match(shoot, /confirmationAuthorityPackage/);
 assert.match(shoot, /remainingCorrectionShooterMessage\(backendAuthorityPackage\)/);
-assert.match(shoot, /Apply the remaining correction:[\s\S]*?Then fire and tap another confirmation group\./);
-assert.match(shoot, /Tap Your Confirmation Impacts/);
+assert.match(shoot, /Apply the remaining correction:[\s\S]*?Then shoot another confirmation group, photograph that target, and tap only those new holes\./);
+assert.match(shoot, /Tap Your Confirmation Shots/);
 assert.match(sec, /authorityPackage && authorityPackage\.clicks/);
 assert.match(sec, /confirmationAuthorityPackage/);
 assert.doesNotMatch(sec, /sec-comparison-arrow/);

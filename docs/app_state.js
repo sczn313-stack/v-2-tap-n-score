@@ -1134,6 +1134,7 @@
     session.sessionLifecycle = authorityPackage.sessionLifecycle || "created";
     session.sessionMode = authorityPackage.sessionMode || "";
     session.backendSessionAuthority = authorityPackage;
+    session.zeroingExperience = authorityPackage.zeroingExperience || null;
     session.targetAdmission = authorityPackage.targetAdmission || {};
     session.officialMission = authorityPackage.officialMission || {};
     session.authoritativeCapabilities = authorityPackage.capabilities || {};

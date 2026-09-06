@@ -51,6 +51,15 @@ const backendPackage = {
     missionId: "M4_25M_300M_ZERO",
     resultPackageType: "zeroCorrectionResult"
   },
+  zeroingExperience: {
+    schemaVersion: "sczn3-zeroing-experience-profile-v1",
+    capabilityId: "sczn3-governed-zeroing-road-v1",
+    targetProfileId: "m4_25m_zero",
+    targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
+    authorityFamily: "mfam",
+    entryMode: "registered-reference",
+    confirmationMode: "governed"
+  },
   targetAdmission: { status: "admitted", targetId: "m4_25m_zero" },
   officialMission: { status: "authority_unavailable", restrictionIds: [] },
   capabilities: {
@@ -91,6 +100,7 @@ assert.equal(session.sessionLabel, "Session #001");
 assert.equal(session.mission_family, "zeroingCorrection");
 assert.equal(session.matrixSnapshot.mission_family, "zeroingCorrection");
 assert.equal(session.matrixSnapshot.sessionAuthorityOwner, "backend");
+assert.equal(session.zeroingExperience.capabilityId, "sczn3-governed-zeroing-road-v1");
 assert.equal(session.sessionDistance.value, 25);
 assert.equal(session.sessionDistance.unit, "M");
 assert.equal(context.window.SCZN3M4.getSessionHistory()[0].sessionId, backendPackage.authoritativeSessionId);

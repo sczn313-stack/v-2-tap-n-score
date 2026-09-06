@@ -46,6 +46,7 @@ const publicFiles = new Map([
   ["/smart_target_workspace.css", "smart_target_workspace.css"],
   ["/smart_target_workspace.js", "smart_target_workspace.js"],
   ["/zeroing_platform.js", "zeroing_platform.js"],
+  ["/zeroing_target_profiles.js", "zeroing_target_profiles.js"],
   ["/m4_runtime.js", "m4_runtime.js"],
   ["/m4_sec_config.js", "m4_sec_config.js"],
   ["/m4_talking_lesson.js", "m4_talking_lesson.js"],

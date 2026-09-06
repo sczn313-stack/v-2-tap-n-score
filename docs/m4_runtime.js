@@ -53,111 +53,14 @@
   }
 
   function authorityRequest(session, aimPoint, impactPoints, phase = "initial") {
-    const source = session && session.matrixSnapshot
-      ? session.matrixSnapshot
-      : state.getActiveMatrix() || {};
-    const target = config.target || {};
-    const mission = config.zeroingMission || {};
-    const targetProfileId = String(source.target_profile_id || source.targetProfileId || source.targetId || "m4_25m_zero").toLowerCase();
-    const isBakerM16A2 = targetProfileId === "baker_m16a2_25m_zero";
-    const m16a2Geometry = {
-      targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
-      imageWidth: 773,
-      imageHeight: 1000,
-      gridLeftPx: 64,
-      gridTopPx: 129,
-      gridRightPx: 709,
-      gridBottomPx: 845,
-      gridColumns: 18,
-      gridRows: 20,
-      gridSquareXPx: 645 / 18,
-      gridSquareYPx: 716 / 20,
-      gridSquarePx: 645 / 18,
-      gridSquareInches: 0.96 / 2.54,
-      unit: "inch"
-    };
-    const isIron = String(source.opticType || source.opticModel || "")
-      .toLowerCase()
-      .includes("iron");
-    const configuredSight = config.sightingSystems && config.sightingSystems.M4_IRON_DCH_FSP || {};
-    const equipmentConfigurationId = String(source.equipmentConfigurationId || "");
-    const adjustmentProfileId = String(source.adjustmentProfileId || "");
-    const usesRegisteredM16A2IronSight = isIron
-      && equipmentConfigurationId === "M16A2-STANDARD-IRON-FSP-REAR-DRUM"
-      && adjustmentProfileId === "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
-    const sightAuthorityId = String(
-      source.equipmentAuthorityRecordId
-      || source.mechanicalSightAuthorityId
-      || source.sightAuthorityId
-      || ""
-    );
-    const usesRegisteredM4IronSight = isIron
-      && sightAuthorityId === configuredSight.equipmentAuthorityRecordId;
-    const adjustmentSystem = usesRegisteredM16A2IronSight
-      ? "M16A2_IRON_FSP_REAR_DRUM"
-      : usesRegisteredM4IronSight
-        ? "M4_IRON_DCH_FSP"
-      : isIron
-        ? "M4_IRON"
-        : "OPTIC";
-    const distanceValue = Number(
-      source.targetDistanceValue
-      || source.targetDistance
-      || source.distance
-      || mission.defaultDistance && mission.defaultDistance.value
-      || 25
-    );
-    const distanceUnitSource = String(
-      source.targetDistanceUnit
-      || mission.defaultDistance && mission.defaultDistance.unit
-      || "m"
-    ).toUpperCase();
-
-    return {
-      vendor: "Baker",
-      sku: "ST-M16A2/M4",
-      product: isBakerM16A2 ? "Baker M16A2 25 Meter Zeroing Target" : "M4/M16 Series Weapons • 25M Zero Target",
-      authority: isBakerM16A2 ? "Baker M16A2 Zeroing" : "M4 Zeroing",
-      target_profile_id: targetProfileId,
-      targetProfileId,
-      targetId: isBakerM16A2 ? "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1" : (target.targetId || "M4_TARGET_AUTHORITY_v1_ORIGINAL"),
-      targetName: isBakerM16A2 ? "Baker M16A2 25 Meter Zeroing Target" : (target.targetName || "M4/M16 Series Weapons 25M Zero"),
-      targetAuthorityGeometry: isBakerM16A2 ? m16a2Geometry : target.geometry,
-      aimCoordinate: aimPoint,
-      impactCoordinates: (impactPoints || []).map((point, index) => ({
-        ...point,
-        shotId: point.shotId || `${phase}-shot-${index + 1}`
-      })),
-      distance: {
-        value: Number.isFinite(distanceValue) && distanceValue > 0 ? distanceValue : 25,
-        unit: distanceUnitSource === "YDS" || distanceUnitSource === "YD" ? "yds" : "m"
-      },
+    if (!window.SCZN3ZeroingPlatform) throw new Error("The shared zeroing capability is unavailable.");
+    return window.SCZN3ZeroingPlatform.authorityRequest({
+      session,
+      aimPoint,
+      impactPoints,
       phase,
-      zeroingMission: mission,
-      equipmentAuthorityRecordId: usesRegisteredM4IronSight
-        ? configuredSight.equipmentAuthorityRecordId
-        : null,
-      adjustmentProfileId: usesRegisteredM16A2IronSight ? adjustmentProfileId : null,
-      shooterSetup: {
-        ...source,
-        adjustmentSystem,
-        equipmentConfigurationId,
-        adjustmentProfileId: usesRegisteredM16A2IronSight ? adjustmentProfileId : null,
-        equipmentAuthorityRecordId: usesRegisteredM4IronSight
-          ? configuredSight.equipmentAuthorityRecordId
-          : null,
-        opticAdjustmentUnit: source.opticAdjustmentUnit || "MOA",
-        opticClickValue: Number(source.opticClickValue) || null,
-        optic: {
-          type: source.opticType,
-          manufacturer: source.opticBrand,
-          model: source.opticModel,
-          adjustmentSystem,
-          adjustmentUnit: source.opticAdjustmentUnit || "MOA",
-          clickValue: Number(source.opticClickValue) || null
-        }
-      }
-    };
+      fallbackConfig: config
+    });
   }
 
   function saveInitialAuthority(authorityPackage, evidence, aimPoint, impactPoints) {

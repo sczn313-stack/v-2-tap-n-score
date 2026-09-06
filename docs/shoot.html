@@ -178,6 +178,7 @@ window.addEventListener("error", event => {
 <script src="platform_contracts.js?v=episode60-directional-authority-rivet-1"></script>
 <script src="smart_target_identity.js"></script>
 <script src="zeroing_platform.js"></script>
+<script src="zeroing_target_profiles.js"></script>
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
@@ -205,19 +206,18 @@ const SIMULATION_MODE = TARGET_QUERY.get("simulation") === "1";
 const PREPARED_M16A2_DEMO_MODE = TARGET_QUERY.get("prepared_demo") === "1" && TARGET_QUERY.get("m16a2_demo") === "1";
 const EMBEDDED_M16A2_TSTT_DEMO = PREPARED_M16A2_DEMO_MODE && TARGET_QUERY.get("embedded_tstt") === "1" && window.parent !== window;
 const TSTT_CHAPTER_FOUR_MODE = TARGET_QUERY.get("tstt_chapter") === "4";
-const TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT = "Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes.";
-const TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO = "assets/audio/episode60/chapter4/01-confirmation-sequence.wav";
 let tsttChapterFourConfirmationAudio = null;
 const REQUESTED_PHOTO_SOURCE = TARGET_QUERY.get("photo_source");
 document.body.dataset.preparedM16a2Demo = PREPARED_M16A2_DEMO_MODE ? "true" : "false";
 
 function playTsttChapterFourConfirmationNarration() {
-  if (!TSTT_CHAPTER_FOUR_MODE || !isM16A2AuthoritySession()) return;
+  const presentation = activeZeroingExperience()?.presentation || {};
+  if (!TSTT_CHAPTER_FOUR_MODE || !presentation.confirmationAudio) return;
   if (tsttChapterFourConfirmationAudio) {
     tsttChapterFourConfirmationAudio.pause();
     tsttChapterFourConfirmationAudio.currentTime = 0;
   }
-  const audio = new Audio(TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO);
+  const audio = new Audio(presentation.confirmationAudio);
   audio.preload = "auto";
   audio.playbackRate = 1;
   tsttChapterFourConfirmationAudio = audio;
@@ -482,21 +482,6 @@ const PRECISION_TAP_EXACT_ASSETS = Object.freeze({
     authorityId: GSSF_CANONICAL_AUTHORITY.registrationPackageId,
     authoritySource: "registered_exact_asset",
     coordinateSystemVersion: GSSF_CANONICAL_AUTHORITY.canonicalCoordinateSystemVersion
-  }),
-  m4_25m_zero: Object.freeze({
-    sha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
-    widthPx: 2550,
-    heightPx: 3300,
-    authorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-    authoritySource: "governed_m4_workspace_asset"
-  }),
-  baker_m16a2_25m_zero: Object.freeze({
-    sha256: "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
-    widthPx: 773,
-    heightPx: 1000,
-    authorityId: "baker-m16a2-25m-photo-registration-v1",
-    authoritySource: "registered_exact_asset",
-    coordinateSystemVersion: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1"
   })
 });
 let missionResolutionStatus = SESSION_ROUTE_MISS ? "unavailable" : (TARGET_PROFILE_LAUNCH_ID ? "resolving" : "idle");
@@ -1094,11 +1079,6 @@ function bindBakerSampleDemo() {
 function sourceIsZeroingSession(source) {
   if (!source || typeof source !== "object") return false;
   const matrixSource = source.matrixSnapshot || {};
-  const profileId = String(
-    source.target_profile_id || source.targetProfileId
-    || matrixSource.target_profile_id || matrixSource.targetProfileId
-    || ""
-  ).toLowerCase();
   const missionFamily = String(
     source.mission_family || source.missionFamily || source.missionFamilyId
     || matrixSource.mission_family || matrixSource.missionFamily || matrixSource.missionFamilyId
@@ -1106,8 +1086,7 @@ function sourceIsZeroingSession(source) {
   )
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "");
-  return profileId === "m4_25m_zero"
-    || profileId === "baker_st_100yd_smart_zero"
+  return !!(window.SCZN3ZeroingPlatform && SCZN3ZeroingPlatform.isZeroingSession(source))
     || missionFamily === "zeroingcorrection";
 }
 
@@ -1198,17 +1177,21 @@ function isM4AuthoritySession() {
     || !!(window.SCZN3M4 && SCZN3M4.isM4Session && SCZN3M4.isM4Session(session || matrix));
 }
 
-function isM16A2AuthoritySession() {
-  return activeTargetProfileId() === "baker_m16a2_25m_zero";
+function activeZeroingExperience() {
+  if (!window.SCZN3ZeroingPlatform) return null;
+  return SCZN3ZeroingPlatform.resolveTargetProfile(session || matrix || {});
 }
 
-function isMfamZeroingAuthoritySession() {
-  return isM4AuthoritySession() || isM16A2AuthoritySession();
+function usesGovernedZeroingRoad() {
+  return !!(window.SCZN3ZeroingPlatform && SCZN3ZeroingPlatform.usesGovernedConfirmation(session || matrix || {}));
+}
+
+function zeroingUsesAuthorityFamily(family) {
+  return !!(window.SCZN3ZeroingPlatform && SCZN3ZeroingPlatform.usesAuthorityFamily(session || matrix || {}, family));
 }
 
 function isZeroingAuthoritySession() {
-  return isMfamZeroingAuthoritySession()
-    || isBaker100YardSession()
+  return !!(window.SCZN3ZeroingPlatform && SCZN3ZeroingPlatform.isZeroingSession(session || matrix || {}))
     || activeMissionFamily() === "zeroingcorrection";
 }
 document.body.dataset.experienceMode = SIMULATION_MODE ? "simulation" : "standard";
@@ -1405,7 +1388,7 @@ function zeroingMissionProgress() {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation group";
     if (!resultsShown) return `${currentImpactPoints.length} confirmation ${currentImpactPoints.length === 1 ? "hole" : "holes"}`;
-    if (!isMfamZeroingAuthoritySession()) return "Confirmation recorded";
+    if (!usesGovernedZeroingRoad()) return "Confirmation recorded";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero confirmed"
       : "Additional correction required";
@@ -1443,22 +1426,22 @@ function zeroingMissionGuidance() {
   if (isBakerSampleEvidence()) return "";
   if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
-    if (!currentImpactPoints.length) return isM16A2AuthoritySession() && TSTT_CHAPTER_FOUR_MODE
-      ? TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT
+    if (!currentImpactPoints.length) return TSTT_CHAPTER_FOUR_MODE && activeZeroingExperience()?.presentation?.confirmationInstruction
+      ? activeZeroingExperience().presentation.confirmationInstruction
       : "On the confirmation target photo, tap only the new confirmation bullet holes.";
     if (!resultsShown) return "Tap Show Results for these new confirmation shots.";
-    if (!isMfamZeroingAuthoritySession()) return "Confirmation recorded. Save the completed session.";
+    if (!usesGovernedZeroingRoad()) return "Confirmation recorded. Save the completed session.";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
-      ? "Your zero is confirmed. Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8/3 for your 300-meter setting."
+      ? (activeZeroingExperience()?.presentation?.confirmedInstruction || "Your zero is confirmed.")
       : "Apply the new clicks. Then shoot another confirmation group, photograph that target, and tap only those new holes.";
   }
   if (!currentAimPoint) return "Tap your aim point on the photo.";
   if (!currentImpactPoints.length) return "Tap your shots on the photo.";
-  if (!resultsShown) return (!isMfamZeroingAuthoritySession() || holeEntrySettled)
+  if (!resultsShown) return (!usesGovernedZeroingRoad() || holeEntrySettled)
     ? "Tap Show Results when your shots are marked."
     : "Continue tapping bullet holes.";
-  if (!sessionSaved) return isMfamZeroingAuthoritySession()
-    ? "Apply the clicks. Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes."
+  if (!sessionSaved) return usesGovernedZeroingRoad()
+    ? `Apply the clicks. ${activeZeroingExperience()?.presentation?.confirmationInstruction || "Then shoot a new confirmation group, photograph that target, and tap only the new confirmation bullet holes."}`
     : "Apply your clicks, then shoot your confirmation shots.";
   return "View Record";
 }
@@ -1469,7 +1452,7 @@ function zeroingMissionStatus() {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation";
     if (!resultsShown) return "Confirmation Evidence";
-    if (!isMfamZeroingAuthoritySession()) return "Confirmation Recorded";
+    if (!usesGovernedZeroingRoad()) return "Confirmation Recorded";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
       ? "Zero Confirmed"
       : "Correction Required";
@@ -1886,7 +1869,7 @@ function zeroingClicksFromAuthorityPackage(authorityPackage) {
   if (!authorityPackage || isNonZeroingAuthorityPackage(authorityPackage)) return null;
   if (!SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage).releasable) return null;
   if (!authorityPackage.clicks) return null;
-  if (isMfamZeroingAuthoritySession() && authorityPackage.mechanicalValidation?.status !== "calculated") return null;
+  if (usesGovernedZeroingRoad() && authorityPackage.mechanicalValidation?.status !== "calculated") return null;
   const correction = authorityPackage.correction || {};
   const clicks = authorityPackage.clicks || {};
   return {
@@ -1994,52 +1977,31 @@ function targetAttributionOverride(source = {}) {
   const targetProfileId = activeTargetProfileId();
   const missionFamily = activeMissionFamily();
   const base = authoritySafeRecord(source);
-  if (targetProfileId === "baker_m16a2_25m_zero") {
+  const zeroingProfile = activeZeroingExperience();
+  if (zeroingProfile) {
+    const backend = session && session.backendSessionAuthority || {};
+    const backendTarget = backend.target || {};
+    const backendMission = backend.missionIdentity || {};
+    const distance = backend.governedDistance || session && session.sessionDistance || {};
+    const staticIdentity = STATIC_TARGET_IDENTITY[targetProfileId] || {};
+    const distanceValue = distance.value ?? base.targetDistanceValue;
+    const distanceUnit = distance.unit || base.targetDistanceUnit || "";
+    const distanceSuffix = String(distanceUnit).toUpperCase() === "M" ? "m" : String(distanceUnit).toLowerCase();
     return {
       ...base,
-      target_profile_id: "baker_m16a2_25m_zero",
-      targetProfileId: "baker_m16a2_25m_zero",
-      mission_family: "zeroingCorrection",
-      missionFamilyId: "zeroingCorrection",
-      targetName: "Baker M16A2 25 Meter Zeroing Target",
-      targetFamily: "Military 25 Meter M16A2 Zeroing Target",
-      targetId: "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
-      targetVersion: "BAKER_M16A2_25M_AUTHORITY_v1",
-      targetDistance: "25 m",
-      targetDistanceValue: "25",
-      targetDistanceUnit: "M",
-      targetDistanceLocked: true,
-      opticType: "Iron Sights",
-      opticBrand: "USGI",
-      opticModel: "M16A2 Rear Sight + Front Sight Post",
-      opticAdjustmentUnit: "MOA",
-      adjustmentSystem: "M16A2_IRON_FSP_REAR_DRUM",
-      equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
-      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
-    };
-  }
-  if (targetProfileId === "m4_25m_zero") {
-    return {
-      ...base,
-      ...(window.SCZN3SmartTargetIdentity ? SCZN3SmartTargetIdentity.BAKER_M4_IDENTITY : {}),
-      target_profile_id: "m4_25m_zero",
-      targetProfileId: "m4_25m_zero",
-      mission_family: "zeroingCorrection",
-      missionFamilyId: "zeroingCorrection",
-      targetName: "M4/M16 Series Weapons 25M Zero",
-      targetFamily: "Military 25 Meter M4 Zeroing Target",
-      targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      targetVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      targetDistance: "25 m",
-      targetDistanceValue: "25",
-      targetDistanceUnit: "M",
-      targetDistanceLocked: true,
-      opticType: "Iron Sights",
-      opticBrand: "USGI",
-      opticModel: "M4 Detachable Carry Handle + Front Sight Post",
-      opticAdjustmentUnit: "MOA",
-      adjustmentSystem: "M4_IRON_DCH_FSP",
-      equipmentAuthorityRecordId: "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
+      target_profile_id: zeroingProfile.targetProfileId,
+      targetProfileId: zeroingProfile.targetProfileId,
+      mission_family: backendMission.missionFamily || "zeroingCorrection",
+      missionFamily: backendMission.missionFamily || "zeroingCorrection",
+      missionFamilyId: backendMission.missionFamily || "zeroingCorrection",
+      targetName: backendTarget.targetName || base.targetName || staticIdentity.targetName || "Zeroing Target",
+      targetFamily: base.targetFamily || backendTarget.targetName || staticIdentity.targetName || "Zeroing Target",
+      targetId: backendTarget.targetAuthorityId || base.targetId || zeroingProfile.targetProfileId,
+      targetVersion: backendTarget.targetProfileVersion || zeroingProfile.targetProfileVersion,
+      targetDistance: distanceValue === undefined || distanceValue === null ? base.targetDistance : `${distanceValue} ${distanceSuffix}`.trim(),
+      targetDistanceValue: distanceValue === undefined || distanceValue === null ? base.targetDistanceValue : String(distanceValue),
+      targetDistanceUnit: distanceUnit || base.targetDistanceUnit,
+      targetDistanceLocked: distance.locked === true || base.targetDistanceLocked === true
     };
   }
   if (isDotTortureProfileId(targetProfileId)) {
@@ -2073,27 +2035,6 @@ function targetAttributionOverride(source = {}) {
       sku: "",
       product: "GSSF AC-1",
       authority: "GSSF Paper Penalty"
-    };
-  }
-  if (targetProfileId === "baker_st_100yd_smart_zero") {
-    return {
-      ...base,
-      target_profile_id: "baker_st_100yd_smart_zero",
-      targetProfileId: "baker_st_100yd_smart_zero",
-      mission_family: "zeroingCorrection",
-      missionFamily: "zeroingCorrection",
-      missionFamilyId: "zeroingCorrection",
-      targetName: "Baker 100 Yard Smart Target",
-      targetFamily: "Baker 100 Yard Smart Target",
-      targetId: "BAKER_ST_100YD_SMART",
-      vendor: "Baker",
-      sku: "",
-      product: "Baker 100 Yard Smart Target",
-      authority: "Baker 100 Yard Zeroing",
-      manufacturer: "Baker Targets",
-      targetDistance: "100 yds",
-      targetDistanceValue: "100",
-      targetDistanceUnit: "YDS"
     };
   }
   return source;
@@ -2168,32 +2109,6 @@ function installBakerSimulationEvidence() {
   return evidence;
 }
 
-function installBaker100YardEvidence() {
-  if (!isBaker100YardSession()) return null;
-  if (!ensureTargetSession()) return null;
-  const evidence = {
-    dataUrl: "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png",
-    name: "Baker 100 Yard Smart Target",
-    type: "image/png",
-    assetRole: "registered-reference-target",
-    registrationStatus: "complete",
-    registrationAuthoritySource: "registered_exact_asset",
-    registrationAuthorityId: "baker-st-100yd-smart-photo-registration-v1",
-    registrationPackageId: "baker-st-100yd-smart-photo-registration-v1",
-    registrationPackageVersion: "1",
-    canonicalCoordinateSystemVersion: "BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL",
-    canonicalAssetSha256: "0731aed37dc1e2a6ab0f57517bded6a9b97110dc73cf8c1a7a20d516175e3fbf",
-    imageWidthPx: 1102,
-    imageHeightPx: 1713,
-    targetProfileId: "baker_st_100yd_smart_zero",
-    targetId: "BAKER_ST_100YD_SMART",
-    publisher: "Baker Targets"
-  };
-  session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
-  pendingEvidence = null;
-  return evidence;
-}
-
 function installGssfCanonicalEvidence() {
   if (!isGssfAuthoritySession()) return null;
   if (!ensureTargetSession()) return null;
@@ -2217,61 +2132,20 @@ function installGssfCanonicalEvidence() {
   return evidence;
 }
 
-function installM4CanonicalEvidence() {
-  if (!isM4AuthoritySession()) return null;
+function installZeroingEntryEvidence() {
+  const profile = activeZeroingExperience();
+  if (!profile || profile.entryMode !== "registered-reference" || !profile.entryEvidence) return activeEvidence();
   if (!ensureTargetSession()) return null;
-  const founderPrototypeAsset = "authority-evidence/m4-target-reconstruction/M4_M16_25M_WORKSPACE_PRESENTATION.svg";
   const existingEvidence = session && session.targetEvidenceImage || null;
-  const existingSource = String(existingEvidence && existingEvidence.dataUrl || "");
-  const isFounderPrototypeTarget = existingSource.includes("M4_M16_25M_WORKSPACE_PRESENTATION.svg")
-    && Number(existingEvidence && existingEvidence.imageWidthPx) === 2550
-    && Number(existingEvidence && existingEvidence.imageHeightPx) === 3300;
-  if (existingEvidence && isFounderPrototypeTarget) {
-    const registeredEvidence = {
-      ...existingEvidence,
-      registrationStatus: "complete",
-      registrationAuthoritySource: "governed_m4_workspace_asset",
-      registrationAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-      canonicalAssetSha256: "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
-      presentationAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4"
-    };
-    session = SCZN3M4.updateActiveSession({ targetEvidenceImage: registeredEvidence }) || session;
-    return registeredEvidence;
-  }
-  const evidence = {
-    dataUrl: founderPrototypeAsset,
-    name: "M4/M16 Series Weapons 25M Zero Short Range and Pistol Marksmanship Target",
-    type: "image/svg+xml",
-    assetRole: "founder-workspace-presentation-from-physically-validated-reconstruction",
-    temporaryDevelopmentAsset: false,
-    productionAuthorityPromotion: true,
-    physicalValidationStatus: "passed-33-of-33",
-    registrationStatus: "complete",
-    registrationAuthoritySource: "governed_m4_workspace_asset",
-    registrationAuthorityId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-    canonicalAssetSha256: "e2be00e15b82b8f775fcb0934aaac7413ee44abcb53df29e44f07ac2c2b25b70",
-    presentationAssetSha256: "a562a0f5ce3e0c3ffd2ad3fbd886aed277dad82d99bd37edf8d6bed380b2b9d4",
-    validatedReconstruction: "authority-evidence/m4-target-reconstruction/M4_M16_25M_RECONSTRUCTION_CANDIDATE.svg",
-    canonicalVisualReference: "authority-evidence/m4-target-reconstruction/founder-reference/IMG_2089_ORIGINAL.jpeg",
-    rollbackAsset: "assets/BAKER_ST-M16A2-M4_SMART_TARGET.svg",
-    targetProfileId: "m4_25m_zero",
-    targetId: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
-    publisher: "Baker",
-    vendor: "Baker",
-    sku: "ST-M16A2/M4",
-    product: "M4/M16 Series Weapons • 25M Zero Target",
-    authority: "M4 Zeroing",
-    imageWidthPx: 2550,
-    imageHeightPx: 3300,
-    qrOverlay: null
-  };
+  if (existingEvidence && existingEvidence.targetProfileId === profile.targetProfileId) return existingEvidence;
+  const evidence = { ...profile.entryEvidence };
   session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
   pendingEvidence = null;
   return evidence;
 }
 
 function ensureTargetAttribution() {
-  if (!isMfamZeroingAuthoritySession() && !isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
+  if (!isZeroingAuthoritySession() && !isGssfAuthoritySession() && !isDotTortureAuthoritySession()) return;
   matrix = targetAttributionOverride(matrix || {});
   SCZN3M4.saveMatrixSnapshot(matrix);
   if (session) {
@@ -2286,10 +2160,13 @@ function ensureTargetAttribution() {
 }
 
 ensureTargetAttribution();
-if (isMfamZeroingAuthoritySession()) {
-  selectedDistanceValue = "25";
-  selectedDistanceUnit = "M";
-  distanceLocked = true;
+if (activeZeroingExperience()) {
+  const governedDistance = session && session.backendSessionAuthority && session.backendSessionAuthority.governedDistance
+    || session && session.sessionDistance
+    || {};
+  if (governedDistance.value !== undefined && governedDistance.value !== null) selectedDistanceValue = String(governedDistance.value);
+  if (governedDistance.unit) selectedDistanceUnit = String(governedDistance.unit).toUpperCase();
+  distanceLocked = governedDistance.locked === true;
 }
 renderActiveSessionBar();
 
@@ -2814,7 +2691,7 @@ function isPresetDistance(value) {
 }
 
 function zeroingSetupPanelHtml() {
-  const isM4 = isM4AuthoritySession();
+  const targetZero = activeZeroingExperience()?.presentation?.targetZero || "";
   return `
     <details class="guidance-card zeroing-setup-panel">
       <summary>Zeroing Setup</summary>
@@ -2837,10 +2714,10 @@ function zeroingSetupPanelHtml() {
             </div>
           </div>
         </div>
-        ${isM4 ? `
+        ${targetZero ? `
           <div class="m4-target-zero" aria-label="Target zero distance">
             <span>Target Zero</span>
-            <strong>300 m</strong>
+            <strong>${escapeHtml(targetZero)}</strong>
           </div>
           <input id="targetDistance" type="hidden" value="25" />
           <input id="targetDistanceOther" type="hidden" value="" />
@@ -2851,7 +2728,7 @@ function zeroingSetupPanelHtml() {
           <input class="distance-other-input${isPresetDistance(selectedDistanceValue) ? " is-hidden" : ""}" id="targetDistanceOther" inputmode="numeric" pattern="[0-9]*" placeholder="" value="${isPresetDistance(selectedDistanceValue) ? "" : selectedDistanceValue}"${distanceLocked ? " disabled" : ""} />
         `}
       </div>
-      ${isM4 ? "" : `<div class="distance-query-row">
+      ${targetZero ? "" : `<div class="distance-query-row">
         <label>Go To Distance<input id="desiredZeroDistance" inputmode="decimal" placeholder="" /></label>
         <button class="button guidance-calc-button" type="button" id="calculateDistanceClicks">Calculate</button>
       </div>
@@ -3559,7 +3436,7 @@ function governedPrecisionTapRegistration(evidence = activeEvidence()) {
 
 function registeredExactAssetForUpload(imageEvidence) {
   const profileId = sessionTargetProfileId(session) || String(TARGET_PROFILE_LAUNCH_ID).toLowerCase();
-  const authority = PRECISION_TAP_EXACT_ASSETS[profileId];
+  const authority = activeZeroingExperience()?.exactAsset || PRECISION_TAP_EXACT_ASSETS[profileId];
   if (!authority || !imageEvidence) return null;
   if (imageEvidence.sha256 !== authority.sha256) return null;
   if (Number(imageEvidence.width) !== authority.widthPx || Number(imageEvidence.height) !== authority.heightPx) return null;
@@ -3684,7 +3561,7 @@ function backendTargetGeometry() {
 
 function backendAuthorityRequest() {
   const qrId = TARGET_QUERY.get("qr_id") || TARGET_QUERY.get("qrId") || (session && (session.qr_id || session.qrId)) || (matrix && (matrix.qr_id || matrix.qrId)) || "";
-  if (isMfamZeroingAuthoritySession()) {
+  if (zeroingUsesAuthorityFamily("mfam")) {
     return {
       ...SCZN3M4.authorityRequest(
       session,
@@ -3850,7 +3727,7 @@ async function requestBackendAuthority() {
   const requestPayload = backendAuthorityRequest();
   const requestBody = JSON.stringify(requestPayload);
   const exactWireRequest = JSON.parse(requestBody);
-  const authorityEndpoint = isMfamZeroingAuthoritySession()
+  const authorityEndpoint = zeroingUsesAuthorityFamily("mfam")
     ? SCZN3M4.M4_AUTHORITY_ENDPOINT
     : BACKEND_AUTHORITY_ENDPOINT;
   if (activeShowResultsTiming) activeShowResultsTiming.requestSentAt = Date.now();
@@ -3918,25 +3795,16 @@ async function resolveMissionFromTargetProfile() {
   renderMissionResolutionState();
   try {
     if (!session && !ensureTargetSession()) return;
-    if (isM16A2AuthoritySession()) {
+    const zeroingProfile = activeZeroingExperience();
+    if (zeroingProfile) {
       ensureTargetAttribution();
       missionResolutionStatus = "resolved";
       missionResolutionMessage = "";
-      const evidence = activeEvidence();
+      const evidence = zeroingProfile.entryMode === "registered-reference"
+        ? installZeroingEntryEvidence()
+        : activeEvidence();
       if (evidence) renderEvidencePreview(evidence);
       setMode(currentAimPoint ? "impact" : "aim");
-      renderSetupSummary();
-      renderResults();
-      renderMarkStatus();
-      return;
-    }
-    if (isM4AuthoritySession()) {
-      ensureTargetAttribution();
-      const evidence = installM4CanonicalEvidence();
-      missionResolutionStatus = "resolved";
-      missionResolutionMessage = "";
-      renderEvidencePreview(evidence);
-      setMode("aim");
       renderSetupSummary();
       renderResults();
       renderMarkStatus();
@@ -3948,17 +3816,6 @@ async function resolveMissionFromTargetProfile() {
       missionResolutionMessage = "";
       renderEvidencePreview(evidence);
       setMode("impact");
-      renderSetupSummary();
-      renderResults();
-      renderMarkStatus();
-      return;
-    }
-    if (isBaker100YardSession()) {
-      const evidence = installBaker100YardEvidence();
-      missionResolutionStatus = "resolved";
-      missionResolutionMessage = "";
-      renderEvidencePreview(evidence);
-      setMode("aim");
       renderSetupSummary();
       renderResults();
       renderMarkStatus();
@@ -4030,7 +3887,7 @@ function correctionEstimateAxisDisplay(authorityPackage, axis) {
 }
 
 function renderCorrectionOverlay(correction) {
-  const confirmedMfamGroup = isMfamZeroingAuthoritySession()
+  const confirmedMfamGroup = usesGovernedZeroingRoad()
     && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
@@ -5038,12 +4895,12 @@ function scheduleHoleEntryReadiness() {
 }
 
 function resultsOfferReady() {
-  return !isMfamZeroingAuthoritySession() || holeEntrySettled;
+  return !usesGovernedZeroingRoad() || holeEntrySettled;
 }
 
 function awaitingNextConfirmationGroup() {
   return !!(
-    isMfamZeroingAuthoritySession()
+    usesGovernedZeroingRoad()
     && zeroingLivePhase === "confirmation"
     && resultsShown
     && backendAuthorityPackage
@@ -5078,7 +4935,7 @@ function rangeWorkflowState(canMark) {
   if (correctionContextPending) return "confirm-context";
   if (awaitingNextConfirmationGroup()) return "await-next-group";
   if (
-    isMfamZeroingAuthoritySession()
+    usesGovernedZeroingRoad()
     && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage
     && backendAuthorityPackage.validation
@@ -5240,8 +5097,8 @@ function renderMarkStatus() {
   if (saveButton && isZeroingAuthoritySession()) {
     const confirmationComplete = zeroingLivePhase === "confirmation"
       && backendAuthorityPackage
-      && (!isMfamZeroingAuthoritySession() || backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed);
-    const additionalCorrection = isMfamZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
+      && (!usesGovernedZeroingRoad() || backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed);
+    const additionalCorrection = usesGovernedZeroingRoad() && zeroingLivePhase === "confirmation"
       && backendAuthorityPackage
       && backendAuthorityPackage.validation
       && backendAuthorityPackage.validation.status === "calculated"
@@ -5595,7 +5452,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     renderResults();
     if (resultsShown && !isNonZeroingAuthorityPackage(authorityPackage)) showShooterTip();
     if (resultsShown && isNonZeroingAuthorityPackage(authorityPackage)) hideShooterTip();
-    if (isMfamZeroingAuthoritySession() && zeroingLivePhase === "confirmation" && authorityPackage.validation) {
+    if (usesGovernedZeroingRoad() && zeroingLivePhase === "confirmation" && authorityPackage.validation) {
       setSaveSessionStatus(
         correctionContextPending
           ? "Review the session setup to refresh the correction."
@@ -5651,7 +5508,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     return;
   }
   if (
-    isMfamZeroingAuthoritySession()
+    usesGovernedZeroingRoad()
     && zeroingLivePhase === "confirmation"
     && backendAuthorityPackage.validation
     && backendAuthorityPackage.validation.status === "calculated"
@@ -5887,7 +5744,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
       savePatch.confirmationEvidenceImage = activeEvidence();
       savePatch.confirmationImpactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
       savePatch.confirmationAuthorityPackage = authorityPackage;
-      savePatch.confirmationStatus = isMfamZeroingAuthoritySession()
+      savePatch.confirmationStatus = usesGovernedZeroingRoad()
         ? authorityPackage.validation && authorityPackage.validation.confirmed
           ? "Confirmed"
           : "Correction Required"
@@ -6005,8 +5862,8 @@ bindCorrectionContextDrawer();
 if (TARGET_PROFILE_LAUNCH_ID) {
   resolveMissionFromTargetProfile().then(openRequestedPhotoEntry);
 } else {
-  if (isM4AuthoritySession() && !PREPARED_M16A2_DEMO_MODE) {
-    const evidence = installM4CanonicalEvidence();
+  if (activeZeroingExperience()?.entryMode === "registered-reference" && !PREPARED_M16A2_DEMO_MODE) {
+    const evidence = installZeroingEntryEvidence();
     if (evidence) renderEvidencePreview(evidence);
   }
   setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));

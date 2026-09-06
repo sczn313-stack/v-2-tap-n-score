@@ -109,6 +109,27 @@ def test_prepare_normalizes_three_supported_targets():
         assert result["equipmentAssessments"][0]["officialMission"]["status"] == mission_status
 
 
+def test_zeroing_targets_share_one_platform_capability_without_owning_workflow():
+    cases = {
+        "baker_m16a2_25m_zero": ("mfam", "photo", "governed"),
+        "m4_25m_zero": ("mfam", "registered-reference", "governed"),
+        "baker_st_100yd_smart_zero": ("universal", "registered-reference", "evidence"),
+    }
+    forbidden_workflow_keys = {
+        "workflow", "controls", "navigation", "scoring", "correctionMath",
+        "confirmationWorkflow", "secWorkflow", "vaultWorkflow",
+    }
+    for target_id, (authority_family, entry_mode, confirmation_mode) in cases.items():
+        result = prepared(TestStore(), target_id, equipment(model="Bolt Action") if "100yd" in target_id else equipment())
+        experience = result["zeroingExperience"]
+        assert experience["capabilityId"] == "sczn3-governed-zeroing-road-v1"
+        assert experience["targetProfileId"] == target_id
+        assert experience["authorityFamily"] == authority_family
+        assert experience["entryMode"] == entry_mode
+        assert experience["confirmationMode"] == confirmation_mode
+        assert forbidden_workflow_keys.isdisjoint(experience)
+
+
 def test_equipment_library_profile_identity_and_reusable_facts_survive_backend_handoff():
     store = TestStore()
     candidate = {
