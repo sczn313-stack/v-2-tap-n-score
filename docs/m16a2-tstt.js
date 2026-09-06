@@ -116,7 +116,7 @@
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterFourSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>YOUR TURN</span><h2 id="photo-entry-title">Add your target.</h2><p>${chapterFourFounderScript[1]}</p><div><a href="${chapterFourPhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterFourPhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>${equipmentSupportsExactSetup() ? "Your photograph opens in the governed Precision Tap road." : "Select the governed M16A2 standard iron-sight setup in Equipment Library first."}</small></section></div>`,
+      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>YOUR TURN</span><h2 id="photo-entry-title">Add your target.</h2><p>${chapterFourFounderScript[1]}</p><div><a href="${chapterFourPhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterFourPhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>Your photograph opens in the governed Precision Tap road.</small></section></div>`,
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
@@ -157,12 +157,15 @@
     return [firearm, caliber, sight].filter(Boolean).join(" · ") || profile.setupName || "Active Equipment";
   }
   function equipmentSupportsExactSetup() { return state.equipment.status === "exact"; }
-  function equipmentLibraryUrl() {
-    return `matrix.html?view=library&origin=tstt&return_to=m16a2-tstt.html&return_chapter=${state.current + 1}`;
+  function equipmentLibraryUrl(photoSource = "") {
+    const trainingReturn = `&origin=tstt&return_to=m16a2-tstt.html&return_chapter=${state.current + 1}`;
+    if (!photoSource) return `matrix.html?view=library${trainingReturn}`;
+    return `${tapNScoreRoad}&view=library${trainingReturn}&photo_source=${encodeURIComponent(photoSource)}`;
   }
   function chapterFourPhotoRoad(photoSource) {
-    if (!equipmentSupportsExactSetup() || !state.equipment.activeId) return equipmentLibraryUrl();
-    return `${tapNScoreRoad}&equipment_profile_id=${encodeURIComponent(state.equipment.activeId)}&photo_source=${encodeURIComponent(photoSource)}`;
+    const photoQuery = `&photo_source=${encodeURIComponent(photoSource)}`;
+    if (!state.equipment.activeId) return equipmentLibraryUrl(photoSource);
+    return `${tapNScoreRoad}&equipment_profile_id=${encodeURIComponent(state.equipment.activeId)}${photoQuery}`;
   }
   function preserveJourney() {
     if (!state.started) return;

@@ -212,6 +212,43 @@ try {
   assert.match(await returningPage.locator("#targetSessionSummary").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
   await returningContext.close();
 
+  const cameraContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const cameraPage = await cameraContext.newPage();
+  await cameraPage.addInitScript(() => {
+    localStorage.setItem("SCZN3_ACTIVE_EQUIPMENT_PROFILE_ID", "founder-m16a2-camera");
+    localStorage.setItem("SCZN3_SAVED_EQUIPMENT_PROFILES", JSON.stringify([{
+      setupId: "founder-m16a2-camera", setupName: "M16A2 · Standard Iron Sights", weaponModelType: "M16A2",
+      opticType: "Iron Sights", equipmentConfigurationId: "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
+      adjustmentProfileId: "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+    }]));
+  });
+  await cameraPage.goto(`${baseUrl}/m16a2-tstt.html?chapter=4`, { waitUntil: "networkidle" });
+  await cameraPage.getByRole("link", { name: "TAKE PHOTO", exact: true }).click();
+  await cameraPage.waitForURL(/shoot\.html\?.*photo_source=camera/, { timeout: 30000 });
+  await cameraPage.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+  assert.match(await cameraPage.locator("#targetSessionSummary").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
+  await cameraContext.close();
+
+  const newEquipmentContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const newEquipmentPage = await newEquipmentContext.newPage();
+  await newEquipmentPage.goto(`${baseUrl}/m16a2-tstt.html?chapter=4`, { waitUntil: "networkidle" });
+  const newEquipmentHref = await newEquipmentPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).getAttribute("href");
+  assert.match(newEquipmentHref, /target_profile_id=baker_m16a2_25m_zero/);
+  assert.match(newEquipmentHref, /view=library/);
+  assert.match(newEquipmentHref, /photo_source=existing/);
+  await newEquipmentPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).click();
+  await newEquipmentPage.waitForURL(/matrix\.html\?.*view=library.*photo_source=existing/);
+  assert.equal(await newEquipmentPage.getByText("Your Equipment Library Is Empty", { exact: true }).isVisible(), true);
+  await newEquipmentPage.getByRole("button", { name: "🟨 New Equipment", exact: true }).click();
+  await newEquipmentPage.locator("#weaponManufacturer").selectOption("Military M-Series Rifles");
+  await newEquipmentPage.locator("#weaponModelType").selectOption("M16A2");
+  await newEquipmentPage.locator("#weaponModelCaliber").selectOption("5.56 NATO");
+  await newEquipmentPage.getByRole("button", { name: "Save to My Equipment", exact: true }).click();
+  await newEquipmentPage.waitForURL(/shoot\.html\?.*photo_source=existing/, { timeout: 30000 });
+  await newEquipmentPage.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+  assert.match(await newEquipmentPage.locator("#targetSessionSummary").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
+  await newEquipmentContext.close();
+
   const coldContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const coldPage = await coldContext.newPage();
   const coldErrors = [];

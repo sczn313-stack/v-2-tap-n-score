@@ -1408,6 +1408,15 @@ function setActiveEquipmentProfile(setupId) {
   else localStorage.removeItem(ACTIVE_EQUIPMENT_PROFILE_KEY);
 }
 
+function continueTsttShooterHandoff(setupId) {
+  if (!TSTT_SHOOTER_HANDOFF || !setupId) return false;
+  const nextQuery = new URLSearchParams(MATRIX_QUERY);
+  ["view", "origin", "return_to", "return_chapter"].forEach(key => nextQuery.delete(key));
+  nextQuery.set("equipment_profile_id", setupId);
+  window.location.href = `matrix.html?${nextQuery.toString()}`;
+  return true;
+}
+
 function escapeHtml(value = "") {
   return String(value).replace(/[&<>"']/g, character => ({
     "&": "&amp;",
@@ -1946,6 +1955,15 @@ function preferredGovernedSavedSetup(preparation, candidates) {
     .sort((left, right) => equipmentAssessmentRank(right.assessment) - equipmentAssessmentRank(left.assessment) || left.index - right.index)[0] || null;
 }
 
+function equipmentSupportsGovernedRoad(assessment) {
+  return assessment
+    && assessment.officialMission
+    && assessment.officialMission.status === "eligible"
+    && assessment.capabilities
+    && assessment.capabilities.correction
+    && assessment.capabilities.correction.status === "available";
+}
+
 function equipmentAssessmentGuidance(assessment, setupName = "This equipment", candidate = {}) {
   const target = latestTargetPreparation && latestTargetPreparation.target || {};
   const missionIdentity = latestTargetPreparation && latestTargetPreparation.missionIdentity || {};
@@ -2036,6 +2054,13 @@ async function offerGovernedSetupChoices() {
       }
       const governed = preferredGovernedSavedSetup(preparation, savedCandidates);
       if (governed) {
+        if (TSTT_SHOOTER_HANDOFF && !equipmentSupportsGovernedRoad(governed.assessment)) {
+          setStandardSetupPromptVisible(false);
+          setProfileEditorVisible(false);
+          setWeaponListExpanded(true);
+          authorityStatus("Select applicable equipment or add new equipment to continue.", "error");
+          return;
+        }
         loadSavedSetup(governed.item.setup.setupId);
         const pending = {
           targetId,
@@ -2052,7 +2077,8 @@ async function offerGovernedSetupChoices() {
         setProfileEditorVisible(false);
         setWeaponListExpanded(false);
         authorityStatus(equipmentAssessmentGuidance(governed.assessment, weaponCardTitle(governed.item.setup), governed.item.candidate), "ready");
-        if (TSTT_SHOOTER_HANDOFF && governed.item.setup.setupId === requestedEquipmentProfileId) {
+        const selectedEquipmentProfileId = requestedEquipmentProfileId || activeEquipmentProfileId();
+        if (TSTT_SHOOTER_HANDOFF && governed.item.setup.setupId === selectedEquipmentProfileId) {
           await goToTarget();
         }
         return;
@@ -2291,6 +2317,7 @@ function selectWeaponFromList(setupId, action = "edit") {
     setProfileEditorVisible(false);
     renderSavedSetups(setupId);
     if (UNIVERSAL_EQUIPMENT_LIBRARY_VIEW) {
+      if (continueTsttShooterHandoff(setupId)) return;
       if (EQUIPMENT_RETURN_PATH) {
         returnToEquipmentOrigin();
         return;
@@ -2700,6 +2727,7 @@ form.addEventListener("submit", event => {
 document.getElementById("saveSetup").addEventListener("click", () => {
   const saved = saveCurrentSetupToLibrary();
   if (!saved) return;
+  if (continueTsttShooterHandoff(saved.setupId)) return;
   if (EQUIPMENT_RETURN_PATH) {
     returnToEquipmentOrigin();
     return;
