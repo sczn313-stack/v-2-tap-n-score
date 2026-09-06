@@ -230,7 +230,14 @@ function playTsttChapterFourConfirmationNarration() {
 
 function openRequestedPhotoEntry() {
   if (!["camera", "existing"].includes(REQUESTED_PHOTO_SOURCE) || activeEvidence()) return;
+  openPhotoEntryPicker();
+}
+
+function openPhotoEntryPicker() {
   const picker = document.getElementById("precisionTapPhotoPicker");
+  if (!picker) return;
+  document.getElementById("targetImageInput").value = "";
+  document.getElementById("targetCameraInput").value = "";
   picker.hidden = false;
   document.body.dataset.precisionTapPhotoPicker = "open";
   renderPrecisionTapControls(document.body.dataset.precisionTapControlState, document.body.dataset.rangeState);
@@ -1148,6 +1155,16 @@ window.SCZN3WorkspaceNavigationState = Object.freeze({
   }
 });
 let zeroingLivePhase = RESUMING_ZEROING_CONFIRMATION ? "confirmation" : "initial";
+const resumedConfirmationValidation = session && session.confirmationAuthorityPackage && session.confirmationAuthorityPackage.validation;
+let confirmationPhotoRequired = !!(
+  RESUMING_ZEROING_CONFIRMATION
+  && (
+    !(session.confirmationEvidenceImage && session.confirmationEvidenceImage.dataUrl)
+    || resumedConfirmationValidation
+      && resumedConfirmationValidation.status === "calculated"
+      && !resumedConfirmationValidation.confirmed
+  )
+);
 let initialZeroingAuthorityPackage = session && (
   session.m4AuthorityPackage
   || session.backendAuthorityPackage
@@ -1384,6 +1401,9 @@ function missionStageProgress(authorityPackage) {
 }
 
 function zeroingMissionProgress() {
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation" && confirmationPhotoRequired) {
+    return "Confirmation photo";
+  }
   if (!hasMarkableEvidence()) return "";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation group";
@@ -1424,6 +1444,11 @@ function simulationLimitReached() {
 
 function zeroingMissionGuidance() {
   if (isBakerSampleEvidence()) return "";
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation" && confirmationPhotoRequired) {
+    return TSTT_CHAPTER_FOUR_MODE && activeZeroingExperience()?.presentation?.confirmationInstruction
+      ? activeZeroingExperience().presentation.confirmationInstruction
+      : "Shoot a confirmation group, take another photo, then tap only the new confirmation bullet holes.";
+  }
   if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return TSTT_CHAPTER_FOUR_MODE && activeZeroingExperience()?.presentation?.confirmationInstruction
@@ -1448,6 +1473,9 @@ function zeroingMissionGuidance() {
 
 function zeroingMissionStatus() {
   if (isBakerSampleEvidence()) return "Sample";
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation" && confirmationPhotoRequired) {
+    return "Awaiting Confirmation Photo";
+  }
   if (!hasMarkableEvidence()) return "Ready";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
     if (!currentImpactPoints.length) return "Confirmation";
@@ -2652,7 +2680,7 @@ function targetIntelStackHtml() {
       </div>
     `;
   }
-  if (authorityStatusMessage && !resultsShown) return authorityRecoveryHtml(authorityStatusMessage);
+  if (targetVerificationFailure() || authorityStatusMessage && !resultsShown) return authorityRecoveryHtml(authorityStatusMessage);
   return `
       <div class="authority-results-panel" aria-label="Results">
         <div class="authority-evidence-summary">
@@ -2666,7 +2694,37 @@ function targetIntelStackHtml() {
   `;
 }
 
+const TARGET_VERIFICATION_RECOVERY_MESSAGE = "Try another photo that clearly shows the complete selected target.";
+
+function targetVerificationFailure(authorityPackage = backendAuthorityPackage, evidence = activeEvidence()) {
+  if (!isZeroingAuthoritySession()) return false;
+  const registrationUnavailable = evidence && String(evidence.registrationStatus || "") === "unavailable";
+  const audit = authorityPackage && authorityPackage.authorityAuditEnvelope || {};
+  const release = authorityPackage
+    ? SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage)
+    : null;
+  return !!(
+    registrationUnavailable
+    || audit.releaseStatus === "withheld"
+    || release && release.status === "withheld"
+  );
+}
+
 function authorityRecoveryHtml(message) {
+  if (targetVerificationFailure()) {
+    return `
+      <section class="authority-recovery-state" aria-label="Target verification unavailable" role="alert">
+        <div>
+          <span>WE CAN’T VERIFY THIS TARGET</span>
+          <strong>${TARGET_VERIFICATION_RECOVERY_MESSAGE}</strong>
+        </div>
+        <div class="authority-recovery-actions">
+          <button class="button" type="button" data-authority-retry-photo>Try Again</button>
+          <a class="button secondary" href="index.html#targetExperiences" data-authority-exit data-allow-mission-exit>Exit</a>
+        </div>
+      </section>
+    `;
+  }
   return `
     <section class="authority-recovery-state" aria-label="Results unavailable" role="alert">
       <div>
@@ -2679,6 +2737,22 @@ function authorityRecoveryHtml(message) {
 }
 
 function bindAuthorityRecoveryAction() {
+  const retryPhoto = document.querySelector("[data-authority-retry-photo]");
+  if (retryPhoto && retryPhoto.dataset.bound !== "true") {
+    retryPhoto.dataset.bound = "true";
+    retryPhoto.addEventListener("click", () => {
+      pendingEvidence = null;
+      confirmationPhotoRequired = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
+      precisionTapReviewing = false;
+      currentImpactPoints = [];
+      if (zeroingLivePhase !== "confirmation") currentAimPoint = null;
+      clearCalculatedResults();
+      setSaveSessionStatus("");
+      renderEvidencePreview(null);
+      setMode(zeroingLivePhase === "confirmation" ? "impact" : "aim");
+      openPhotoEntryPicker();
+    });
+  }
   const retry = document.querySelector("[data-authority-retry]");
   const showResults = document.getElementById("showResults");
   if (!retry || !showResults || retry.dataset.bound === "true") return;
@@ -3333,7 +3407,13 @@ function renderEvidencePreview(image) {
 }
 
 function activeEvidence() {
-  return pendingEvidence || (SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {}).targetEvidenceImage || null;
+  if (pendingEvidence) return pendingEvidence;
+  const storedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null) || {};
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
+    if (confirmationPhotoRequired) return null;
+    return storedSession.confirmationEvidenceImage || null;
+  }
+  return storedSession.targetEvidenceImage || null;
 }
 
 function readFileAsDataUrl(file) {
@@ -3496,6 +3576,7 @@ function precisionTapRegistrationMessage() {
   if (governedPrecisionTapRegistration()) return "";
   const evidence = activeEvidence();
   if (evidence && evidence.registrationStatus === "pending") return "SCZN3 is still getting the target ready. Try again in a moment.";
+  if (TSTT_CHAPTER_FOUR_MODE) return TARGET_VERIFICATION_RECOVERY_MESSAGE;
   if (evidence && evidence.registrationRecoveryMessage) return evidence.registrationRecoveryMessage;
   if (evidence && evidence.registrationReason === "target_identity_unverified") {
     return "SCZN3 could not verify that this photo matches the target selected for this session. Check the target identity and choose a photo that clearly shows its title, grid, and bottom instructions. Your marks are still here.";
@@ -3776,6 +3857,9 @@ function applyBackendAuthorityPackage(authorityPackage) {
         || backendAuthorityPackage.validation && backendAuthorityPackage.validation.note
         || "Your group was recorded, but SCZN3 cannot responsibly recommend a correction from this evidence.")
       : "";
+  if (targetVerificationFailure(backendAuthorityPackage)) {
+    authorityStatusMessage = TARGET_VERIFICATION_RECOVERY_MESSAGE;
+  }
   syncAuthorityDerivedState();
   renderTargetHeaderIdentity();
   sessionSaved = false;
@@ -4776,7 +4860,7 @@ function renderResults() {
     }
     return;
   }
-  if (authorityStatusMessage && !resultsShown) {
+  if (targetVerificationFailure() || authorityStatusMessage && !resultsShown) {
     const grid = document.getElementById("resultsGrid");
     if (grid) grid.innerHTML = authorityRecoveryHtml(authorityStatusMessage);
     bindAuthorityRecoveryAction();
@@ -4843,6 +4927,10 @@ function showShooterTip() {
   const tip = document.getElementById("shooterTip");
   const text = document.getElementById("shooterTipText");
   if (!tip || !text) return;
+  if (targetVerificationFailure()) {
+    hideShooterTip();
+    return;
+  }
   text.textContent = shooterTipFromResults();
   tip.classList.remove("is-hidden");
 }
@@ -4912,6 +5000,18 @@ function awaitingNextConfirmationGroup() {
   );
 }
 
+function initialZeroingCorrectionReady() {
+  if (!isZeroingAuthoritySession() || zeroingLivePhase === "confirmation") return true;
+  if (!resultsShown || !backendAuthorityPackage || !currentClicks || targetVerificationFailure()) return false;
+  const release = SCZN3PlatformContracts.directionalAuthorityRelease(backendAuthorityPackage);
+  return !!(
+    release.releasable
+    && backendAuthorityPackage.status
+    && backendAuthorityPackage.status.hasCorrection
+    && (!usesGovernedZeroingRoad() || backendAuthorityPackage.mechanicalValidation?.status === "calculated")
+  );
+}
+
 function rangeWorkflowState(canMark) {
   if (simulationLimitReached()) return "simulation-complete";
   if (!canMark) return "choose-target";
@@ -4941,6 +5041,9 @@ function rangeWorkflowState(canMark) {
     && backendAuthorityPackage.validation
     && !backendAuthorityPackage.validation.confirmed
   ) return "continue-confirmation";
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "initial" && resultsShown && !initialZeroingCorrectionReady()) {
+    return "verification-unavailable";
+  }
   if (!sessionSaved) return "save-session";
   return "view-sec";
 }
@@ -4957,6 +5060,7 @@ function precisionTapControlState(rangeState, hasEvidence) {
     return "result";
   }
   if (rangeState === "await-next-group" || rangeState === "continue-confirmation") return "confirmation_entry";
+  if (rangeState === "verification-unavailable") return "recovery";
   if (rangeState === "save-session") {
     return isZeroingAuthoritySession() && zeroingLivePhase !== "confirmation"
       ? "confirmation_entry"
@@ -5077,6 +5181,7 @@ function renderMarkStatus() {
     || !resultsShown
     || correctionContextPending
     || awaitingNextConfirmationGroup()
+    || !initialZeroingCorrectionReady()
     || gssfTimerTimePending
     || (isTraining && !trainingDrillFinished);
   document.getElementById("showResults").disabled = authorityRequestInFlight || !canProceed || (!isTraining && currentImpactPoints.length === 0);
@@ -5089,7 +5194,7 @@ function renderMarkStatus() {
   if (hasEvidence && !isTraining && currentImpactPoints.length && !resultsShown) {
     nextStep = resultsOfferReady() ? "showResults" : "addImpactMode";
   }
-  if (canProceed && resultsShown && !gssfTimerTimePending && (!isTraining || trainingDrillFinished)) nextStep = "saveMarks";
+  if (canProceed && resultsShown && !gssfTimerTimePending && (!isTraining || trainingDrillFinished) && initialZeroingCorrectionReady()) nextStep = "saveMarks";
   if (correctionContextPending || founderContextAtResultsGate() || awaitingNextConfirmationGroup()) nextStep = null;
   if (sessionSaved) nextStep = null;
   setNextStep(nextStep);
@@ -5203,7 +5308,7 @@ function handleMarkTap(event) {
 if (TARGET_PROFILE_LAUNCH_ID) {
   renderMissionResolutionState();
 } else {
-  renderEvidencePreview(session && session.targetEvidenceImage);
+  renderEvidencePreview(activeEvidence());
 }
 
 document.getElementById("chooseTargetButton").addEventListener("click", event => {
@@ -5242,11 +5347,15 @@ function handleTargetImageSelection(event) {
     // session workspace; it must not replace or resize the workspace itself.
     cancelHoleEntryReadiness();
     holeEntrySettled = false;
-    currentAimPoint = null;
+    if (!(isZeroingAuthoritySession() && zeroingLivePhase === "confirmation")) {
+      currentAimPoint = null;
+    }
     currentImpactPoints = [];
     precisionTapReviewing = false;
     markWorkspaceProgressUnsaved();
-    unlockDistanceForNewTarget();
+    if (!(isZeroingAuthoritySession() && zeroingLivePhase === "confirmation")) {
+      unlockDistanceForNewTarget();
+    }
     if (isDotTortureAuthoritySession()) {
       currentClicks = null;
       currentScore = null;
@@ -5278,6 +5387,9 @@ function handleTargetImageSelection(event) {
       originalImageWidthPx: imageEvidenceBundle.original.width,
       originalImageHeightPx: imageEvidenceBundle.original.height
     };
+    if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
+      confirmationPhotoRequired = false;
+    }
     renderEvidencePreview(pendingEvidence);
     document.getElementById("precisionTapPhotoPicker").hidden = true;
     document.body.dataset.precisionTapPhotoPicker = "closed";
@@ -5299,15 +5411,22 @@ function handleTargetImageSelection(event) {
       pendingEvidence.registrationRecoveryMessage = registration && registration.recovery && registration.recovery.shooterMessage;
       renderEvidencePreview(pendingEvidence);
       if (pendingEvidence.registrationStatus === "unavailable") {
-        authorityStatusMessage = registration && registration.recovery && registration.recovery.shooterMessage
-          || "SCZN3 could not verify this target's position and orientation from the photo. Retake it with the title, grid, and bottom instructions visible.";
+        authorityStatusMessage = TSTT_CHAPTER_FOUR_MODE
+          ? TARGET_VERIFICATION_RECOVERY_MESSAGE
+          : registration && registration.recovery && registration.recovery.shooterMessage
+            || "SCZN3 could not verify this target's position and orientation from the photo. Retake it with the title, grid, and bottom instructions visible.";
         setSaveSessionStatus(authorityStatusMessage);
       } else {
         authorityStatusMessage = "";
         setSaveSessionStatus("");
       }
+      renderResults();
     }
-    setMode(isGssfAuthoritySession() ? "impact" : "aim");
+    setMode(
+      isGssfAuthoritySession() || isZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
+        ? "impact"
+        : "aim"
+    );
     renderMarkStatus();
     processingSucceeded = true;
   }).catch(error => {
@@ -5500,7 +5619,17 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   }
   const directionalRelease = SCZN3PlatformContracts.directionalAuthorityRelease(backendAuthorityPackage);
   if (!directionalRelease.releasable) {
-    setSaveSessionStatus("The directional correction was withheld because its source evidence did not reconcile.", "error");
+    authorityStatusMessage = TARGET_VERIFICATION_RECOVERY_MESSAGE;
+    setSaveSessionStatus("We can’t verify this target. Try another photo or exit this session.", "error");
+    renderResults();
+    renderMarkStatus();
+    return;
+  }
+  if (isZeroingAuthoritySession() && zeroingLivePhase === "initial" && !initialZeroingCorrectionReady()) {
+    authorityStatusMessage = TARGET_VERIFICATION_RECOVERY_MESSAGE;
+    setSaveSessionStatus("We can’t verify this target. Try another photo or exit this session.", "error");
+    renderResults();
+    renderMarkStatus();
     return;
   }
   if (isGssfAuthorityPackage(backendAuthorityPackage) && !gssfTimerTimeReadyForSave()) {
@@ -5515,13 +5644,18 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     && !backendAuthorityPackage.validation.confirmed
   ) {
     const nextGroupMessage = remainingCorrectionShooterMessage(backendAuthorityPackage);
-    SCZN3M4.saveConfirmationAuthority(backendAuthorityPackage, activeEvidence(), currentImpactPoints.map(safePoint).filter(Boolean));
+    session = SCZN3M4.saveConfirmationAuthority(backendAuthorityPackage, activeEvidence(), currentImpactPoints.map(safePoint).filter(Boolean)) || session;
+    pendingEvidence = null;
+    confirmationPhotoRequired = true;
     currentImpactPoints = [];
     clearCalculatedResults();
     setMode("impact");
     setSaveSessionStatus(nextGroupMessage, "saved");
+    renderEvidencePreview(null);
     renderMarkers();
     renderMarkStatus();
+    openPhotoEntryPicker();
+    playTsttChapterFourConfirmationNarration();
     return;
   }
   const saveProcessingId = beginExperienceProcessing("save-sec", "Preserving your Shooter Experience Card…", saveButton, document.querySelector(".workflow-control-row"));
@@ -5529,7 +5663,10 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   saveButton.disabled = true;
   saveButton.textContent = "Saving…";
   let saved = null;
-  if (pendingEvidence) {
+  const pendingConfirmationEvidence = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
+    ? pendingEvidence
+    : null;
+  if (pendingEvidence && !pendingConfirmationEvidence) {
     saved = SCZN3M4.saveTargetEvidenceImage(pendingEvidence);
     pendingEvidence = null;
   }
@@ -5793,6 +5930,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     finishExperienceProcessing(saveProcessingId, false);
     return;
   }
+  if (pendingConfirmationEvidence) pendingEvidence = null;
   if (!saved || !saved.savedIdentifier || !saved.authorityPackage) {
     saveButton.disabled = false;
     saveButton.textContent = "Save Session";
@@ -5800,8 +5938,12 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     finishExperienceProcessing(saveProcessingId, false);
     return;
   }
-  if (saved && saved.targetEvidenceImage) {
-    renderEvidencePreview(saved.targetEvidenceImage);
+  if (saved && (saved.confirmationEvidenceImage || saved.targetEvidenceImage)) {
+    renderEvidencePreview(
+      isZeroingAuthoritySession() && zeroingLivePhase === "confirmation"
+        ? saved.confirmationEvidenceImage
+        : saved.targetEvidenceImage
+    );
   }
   try {
     if (window.SCZN3Ops) window.SCZN3Ops.recordSessionSaved(saved, { hadSavedHistoryBefore });
@@ -5811,6 +5953,8 @@ document.getElementById("saveMarks").addEventListener("click", () => {
   if (isZeroingAuthoritySession() && zeroingLivePhase === "initial") {
     initialZeroingAuthorityPackage = authorityPackage;
     zeroingLivePhase = "confirmation";
+    confirmationPhotoRequired = true;
+    pendingEvidence = null;
     precisionTapReviewing = false;
     markWorkspaceProgressUnsaved();
     currentImpactPoints = [];
@@ -5821,12 +5965,13 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     resultsShown = false;
     authorityStatusMessage = "";
     hideShooterTip();
-    renderEvidencePreview(saved.targetEvidenceImage || activeEvidence());
+    renderEvidencePreview(null);
     setMode("impact");
     renderMarkers();
     renderResults();
     renderMarkStatus();
     setSaveSessionStatus("");
+    openPhotoEntryPicker();
     playTsttChapterFourConfirmationNarration();
     finishExperienceProcessing(saveProcessingId, true);
     return;

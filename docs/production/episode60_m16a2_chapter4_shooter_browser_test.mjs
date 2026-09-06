@@ -59,8 +59,16 @@ try {
     assert.equal(registrationResponses.at(-1).status, 200);
     assert.equal(registrationResponses.at(-1).body.knowledgeState, "exact");
     assert.equal(registrationResponses.at(-1).body.registrationPackageId, registrationPackageId);
+    assert.equal(await page.locator("#saveMarks:visible").count(), 0, "BEGIN CONFIRMATION must not exist before a governed correction");
 
     await tapPercent(page, 50, 48.7);
+    await tapPercent(page, 58.3, 41.1);
+    await tapPercent(page, 58.5, 41.3);
+    await tapPercent(page, 58.7, 41.5);
+    assert.equal(await page.locator("#clearMarks:visible").count(), 1, "CLEAR must be present during Precision Tap");
+    await page.locator("#clearMarks:visible").click();
+    assert.equal(await page.locator("#targetHitCounter strong").innerText(), "0", "CLEAR must remove every shot observation");
+    assert.equal(await page.locator("#showResults:visible").count(), 0, "CLEAR must withdraw SHOW RESULTS until new shots exist");
     await tapPercent(page, 58.3, 41.1);
     await tapPercent(page, 58.5, 41.3);
     await tapPercent(page, 58.7, 41.5);
@@ -97,6 +105,17 @@ try {
       "Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes."
     );
     assert.match(await page.locator("body").getAttribute("data-tstt-chapter-four-narration"), /requested|playing|complete/);
+    assert.equal(await page.locator("#markSurface").count(), 0, "the original photograph must leave the workspace before confirmation observations");
+    assert.equal(await page.locator("#saveMarks:visible").count(), 0, "BEGIN CONFIRMATION must not remain as a dead control");
+    await page.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+    assert.equal(await page.getByText("Take Photo", { exact: true }).isVisible(), true);
+    assert.equal(await page.getByText("Choose Existing Photo", { exact: true }).isVisible(), true);
+
+    await page.locator("#targetImageInput").setInputFiles(targetPhoto);
+    await page.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
+    assert.equal(registrationResponses.length, 2, "confirmation must submit a second photograph for registration");
+    assert.equal(registrationResponses[1].body.knowledgeState, "exact");
+    assert.equal(registrationResponses[1].body.registrationPackageId, registrationPackageId);
     await tapPercent(page, 49.9, 48.6);
     await tapPercent(page, 50.1, 48.7);
     await tapPercent(page, 50.0, 48.8);
@@ -108,6 +127,10 @@ try {
     assert.equal(authorityResponses[1].request.phase, "confirmation");
     assert.equal(authorityResponses[1].body.validation.confirmed, true);
 
+    const governedSession = await page.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null));
+    assert.equal(governedSession.targetEvidenceImage.assetRole, "shooter-captured-target-photo");
+    assert.equal(governedSession.confirmationEvidenceImage, undefined, "confirmation evidence is not preserved before final governed save");
+
     await page.locator("#saveMarks:visible", { hasText: "Save Session" }).click();
     await page.waitForURL(url => url.pathname.endsWith("/sec.html"), { timeout: 30000 });
     const secShell = page.locator('[data-sec-shell="universal-v1"][data-sec-adapter-id="m16a2-zeroing"]');
@@ -115,6 +138,10 @@ try {
     assert.match(await page.locator(".sec-mission-bar").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
     assert.equal(await page.locator("#beforeEvidenceMarkers .impact-marker").count(), 3);
     assert.equal(await page.locator("#confirmationMarkers .impact-marker").count(), 3);
+    const preservedSession = await page.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null));
+    assert.equal(preservedSession.targetEvidenceImage.assetRole, "shooter-captured-target-photo");
+    assert.equal(preservedSession.confirmationEvidenceImage.assetRole, "shooter-captured-target-photo");
+    assert.equal(preservedSession.confirmationImpactPoints.length, 3);
     await page.locator("#saveSEC").click();
     await page.getByText("SEC PRESERVED", { exact: true }).waitFor({ timeout: 30000 }).catch(error => {
       throw new Error(`M16A2 SEC preservation failed: ${JSON.stringify(preservationResponses)}`, { cause: error });
@@ -131,7 +158,13 @@ try {
 
   const refusalContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const refusalPage = await refusalContext.newPage();
+  const refusalRegistrations = [];
   const refusalAuthority = [];
+  await refusalContext.route("**/api/authority/target-image-registration", async route => {
+    const response = await route.fetch();
+    refusalRegistrations.push({ status: response.status(), body: await response.json() });
+    await route.fulfill({ response });
+  });
   await refusalContext.route("**/api/authority/m4", async route => {
     const response = await route.fetch();
     refusalAuthority.push({ status: response.status(), body: await response.json() });
@@ -139,21 +172,46 @@ try {
   });
   await refusalPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=existing`, { waitUntil: "networkidle" });
   await refusalPage.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
+  const refusalRegistrationCompleted = refusalPage.waitForResponse(response => response.url().includes("/api/authority/target-image-registration"));
   await refusalPage.locator("#targetImageInput").setInputFiles(enlargedDifferentProduct);
-  await refusalPage.waitForFunction(() => document.body.dataset.precisionTapRegistration !== "pending", null, { timeout: 30000 });
+  await refusalRegistrationCompleted;
+  assert.equal(refusalRegistrations.at(-1).body.knowledgeState, "estimated");
+  assert.equal(refusalRegistrations.at(-1).body.orientationEvidence.reason, "target_orientation_unverified");
   await tapPercent(refusalPage, 50, 48.7);
   await tapPercent(refusalPage, 58.3, 41.1);
   await tapPercent(refusalPage, 58.5, 41.3);
   await tapPercent(refusalPage, 58.7, 41.5);
   await refusalPage.locator("#showResults:visible").click();
-  await refusalPage.getByText(/TARGET ORIENTATION UNVERIFIED/, { exact: false }).waitFor({ timeout: 30000 });
+  await refusalPage.getByText("WE CAN’T VERIFY THIS TARGET", { exact: true }).waitFor({ timeout: 30000 });
+  assert.equal(refusalRegistrations.at(-1).status, 200);
   assert.equal(refusalAuthority.at(-1).status, 200);
   assert.equal(refusalAuthority.at(-1).body.registrationClaimSufficiency.reason, "target_orientation_unverified");
   assert.equal(refusalAuthority.at(-1).body.authorityAuditEnvelope.releaseStatus, "withheld");
   assert.equal(refusalAuthority.at(-1).body.clicks, null);
-  assert.match(await refusalPage.locator("#authorityStatusMessage").innerText(), /exact Baker standard M16A2 face[\s\S]*Check the target identity/);
+  assert.equal(await refusalPage.locator("#saveMarks:visible").count(), 0, "failed registration must suppress confirmation machinery");
+  assert.equal(await refusalPage.locator(".workspace-result-overlay").count(), 0, "failed registration must suppress correction machinery");
+  assert.equal(await refusalPage.getByText("Try Again", { exact: true }).isVisible(), true);
+  const exit = refusalPage.getByText("Exit", { exact: true });
+  assert.equal(await exit.isVisible(), true);
+  assert.match(await exit.getAttribute("href"), /index\.html#targetExperiences$/);
+  assert.notEqual(await exit.getAttribute("data-allow-mission-exit"), null, "EXIT must leave the failed admission cleanly without an unsaved-session trap");
+  assert.doesNotMatch(await refusalPage.locator("body").innerText(), /authority|reconciliation|registration package/i);
+  await refusalPage.getByText("Try Again", { exact: true }).click();
+  await refusalPage.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+  assert.equal(await refusalPage.locator("#markSurface").count(), 0);
   await refusalContext.close();
-  console.log("PASS enlarged ST-M16A2R is refused with truthful target identity/orientation guidance");
+  console.log("PASS enlarged ST-M16A2R fails closed with simple TRY AGAIN / EXIT recovery");
+
+  const cameraContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const cameraPage = await cameraContext.newPage();
+  await cameraPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=camera`, { waitUntil: "networkidle" });
+  await cameraPage.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
+  await cameraPage.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+  await cameraPage.locator("#targetCameraInput").setInputFiles(targetPhoto);
+  await cameraPage.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
+  assert.equal(await cameraPage.locator("#setAimMode:visible").count(), 1);
+  await cameraContext.close();
+  console.log("PASS TAKE PHOTO entry reaches the governed M16A2 Precision Tap road at 390px");
 } finally {
   await browser.close();
 }

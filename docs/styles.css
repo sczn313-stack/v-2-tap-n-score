@@ -9635,6 +9635,18 @@ body.navigation-leave-dialog-open{
 .target-page .authority-recovery-state span{color:#d9960b;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .target-page .authority-recovery-state strong{font-size:14px;line-height:1.3}
 .target-page .authority-recovery-state .button{min-width:112px}
+.target-page .authority-recovery-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+}
+.target-page .authority-recovery-actions .button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+}
 
 .target-page .authority-evidence-summary{
   grid-template-columns:minmax(0,1fr) minmax(72px,auto) auto;
@@ -9659,6 +9671,7 @@ body.navigation-leave-dialog-open{
 
 @media(max-width:560px){
   .target-page .authority-recovery-state{grid-template-columns:1fr}
+  .target-page .authority-recovery-actions{display:grid;grid-template-columns:1fr 1fr}
   .target-page .authority-recovery-state .button{width:100%}
 }
 
