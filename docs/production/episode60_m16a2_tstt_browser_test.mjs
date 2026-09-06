@@ -76,7 +76,7 @@ try {
     assert.equal(await page.locator("#lessonTitle").innerText(), "KNOW YOUR TARGET.");
     assert.equal(await page.locator("#lessonSummary").innerText(), "Before making any sight adjustments, understand what this target is telling you.");
     assert.match(await page.locator("#visualStage").innerText(), /AIM POINT[\s\S]*Always make the center crosshairs your aim point[\s\S]*READ THE GRID[\s\S]*Each small square measures[\s\S]*READ THE CLICKS[\s\S]*columns represents one front-sight up-or-down click[\s\S]*rows represents three rear-windage clicks[\s\S]*FIRE THE SHOT PATTERN[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*LET TAP-N-SCORE READ IT/);
-    await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
+    await page.getByRole("button", { name: "START SESSION", exact: true }).click();
     await page.waitForFunction(() => window.__tsttAudio.length === 1);
     assert.match(await page.evaluate(() => window.__tsttAudio.at(-1).src), /assets\/audio\/episode60\/chapter1\/01\.wav$/);
     assert.deepEqual(await page.evaluate(() => window.__speechSynthesisCalls), ["cancel", "cancel"], "Chapter 1 uses native audio instead of Web Speech");
@@ -92,9 +92,7 @@ try {
     assert.equal(await page.locator("#sessionDistanceUnit").inputValue(), "METERS");
     assert.equal(await page.locator("#sessionAdjustmentUnit").inputValue(), "MOA");
     assert.equal(await page.locator("#sessionAdjustmentIncrement").inputValue(), "Elevation 1.25 · Windage 0.5");
-    const chapterOneNext = page.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true });
-    assert.match(await chapterOneNext.innerText(), /NEXT CHAPTER[\s\S]*NEXT — KNOW YOUR SIGHTS/);
-    assert.equal(await chapterOneNext.evaluate(element => getComputedStyle(element.parentElement).position), "fixed");
+    assert.equal(await page.getByText("NEXT CHAPTER", { exact: true }).count(), 0);
     for (let index = 0; index < 9; index += 1) {
       const expectedPath = `chapter1/${String(index + 1).padStart(2, "0")}.wav`;
       assert.ok((await page.evaluate(() => window.__tsttAudio.at(-1).src)).endsWith(expectedPath));
@@ -117,8 +115,7 @@ try {
     assert.equal(await page.locator("#visualStage .sight-intro, #visualStage .sight-job, #visualStage .drum-sequence, #visualStage figcaption, #visualStage .review-asset-note").count(), 0);
     assert.doesNotMatch(await page.locator("#visualStage").innerText(), /\bFIND\b|\bJOB\b|FOUNDER REVIEW REFERENCES/);
     assert.match(await page.locator("#visualStage").innerText(), /Now you know which sight controls you'll adjust when Tap-n-Score tells you how to move your shot pattern\./);
-    const chapterTwoNext = page.getByRole("button", { name: "NEXT — WATCH IT", exact: true });
-    assert.match(await chapterTwoNext.innerText(), /NEXT CHAPTER[\s\S]*NEXT — WATCH IT/);
+    assert.equal(await page.getByText("NEXT CHAPTER", { exact: true }).count(), 0);
     for (let index = 0; index < 5; index += 1) {
       const expectedPath = `chapter2/${String(index + 1).padStart(2, "0")}.wav`;
       assert.ok((await page.evaluate(() => window.__tsttAudio.at(-1).src)).endsWith(expectedPath));
@@ -155,7 +152,7 @@ try {
     await replayedDemo.locator('#workspaceStageShell[data-player-status="playing"]').waitFor({ timeout: 30000 });
     await replayedDemo.getByRole("button", { name: "RESTART", exact: true }).click();
     await page.waitForURL(/m16a2-tstt\.html$/, { timeout: 30000 });
-    assert.equal(await page.getByRole("button", { name: "START TRAINING", exact: true }).count(), 1);
+    assert.equal(await page.getByRole("button", { name: "START SESSION", exact: true }).count(), 1);
 
     await page.goto(`${baseUrl}/m16a2-tstt.html?chapter=4`, { waitUntil: "networkidle" });
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 5");
@@ -184,7 +181,7 @@ try {
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 5 OF 5");
     await page.locator('[data-control="restart"]').click();
     assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 1 OF 5");
-    assert.equal(await page.getByRole("button", { name: "START TRAINING", exact: true }).count(), 1);
+    assert.equal(await page.getByRole("button", { name: "START SESSION", exact: true }).count(), 1);
 
     const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
     assert.equal(horizontalOverflow, false, `no horizontal overflow at ${viewport.width}px`);
@@ -231,16 +228,17 @@ try {
   assert.equal(await coldPage.locator("#visualStage figcaption").count(), 0);
   assert.equal(await coldPage.locator("#visualStage .is-full-target").count(), 1);
   assert.equal(await coldPage.locator("#visualStage .target-marker, #visualStage .sample-group").count(), 0);
-  const startBox = await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).boundingBox();
-  assert.ok(startBox && startBox.y >= 0 && startBox.y + startBox.height <= 844, "START TRAINING is visible in the initial 390x844 viewport");
+  const startBox = await coldPage.getByRole("button", { name: "START SESSION", exact: true }).boundingBox();
+  assert.ok(startBox && startBox.y >= 0 && startBox.y + startBox.height <= 844, "START SESSION is visible in the initial 390x844 viewport");
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 0);
 
-  await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
+  await coldPage.getByRole("button", { name: "START SESSION", exact: true }).click();
   assert.equal(await coldPage.evaluate(() => window.__coldSpoken.length), 0, "production never substitutes Reed when Samantha is unavailable");
-  assert.equal(await coldPage.getByRole("button", { name: "START TRAINING", exact: true }).count(), 0);
+  assert.equal(await coldPage.getByRole("button", { name: "START SESSION", exact: true }).count(), 0);
   assert.equal(await coldPage.locator('.player-controls [data-control="pause"]:visible').count(), 1);
   assert.equal(await coldPage.locator("#chapterList button:not([disabled])").count(), 5);
-  await coldPage.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true }).click();
+  await coldPage.locator('[data-control="chapters"]').click();
+  await coldPage.getByRole("button", { name: /Know your sights/ }).click();
   await coldPage.locator('[data-control="pause"]').click();
   await coldPage.locator("#shootingSetup").click();
   await coldPage.getByRole("link", { name: "EQUIPMENT LIBRARY", exact: true }).click();
@@ -285,9 +283,9 @@ try {
   assert.match(await generalPage.locator("#taskCard").innerText(), /TRAINING SETUP[\s\S]*M16A2 · Standard Iron Sights[\s\S]*some instructions may not apply/i);
   await generalPage.locator("#shootingSetup").click();
   assert.match(await generalPage.locator("#shootingSetupNote").innerText(), /Different equipment requires its own governed adjustment authority/);
-  await generalPage.getByRole("button", { name: "START TRAINING", exact: true }).click();
+  await generalPage.getByRole("button", { name: "START SESSION", exact: true }).click();
   assert.equal(await generalPage.locator("#chapterList button:not([disabled])").count(), 5);
-  assert.equal(await generalPage.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true }).count(), 1);
+  assert.equal(await generalPage.getByText("NEXT CHAPTER", { exact: true }).count(), 0);
   assert.equal(await generalPage.getByRole("button", { name: "THIS MATCHES MY GEAR", exact: true }).count(), 0);
   await generalPage.locator('[data-control="chapters"]').click();
   await generalPage.getByRole("button", { name: /Ready for the first group/ }).click();

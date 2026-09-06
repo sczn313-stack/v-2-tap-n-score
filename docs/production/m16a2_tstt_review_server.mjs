@@ -99,6 +99,7 @@ const publicFiles = new Map([
   ["/assets/audio/episode60/chapter3/12-sec.wav", "assets/audio/episode60/chapter3/12-sec.wav"],
   ["/assets/audio/episode60/chapter3/13-vault.wav", "assets/audio/episode60/chapter3/13-vault.wav"],
   ["/assets/audio/episode60/chapter3/14-complete.wav", "assets/audio/episode60/chapter3/14-complete.wav"],
+  ["/assets/audio/episode60/chapter4/01-confirmation-sequence.wav", "assets/audio/episode60/chapter4/01-confirmation-sequence.wav"],
   ["/authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png", "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png"],
   ["/authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png", "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_M16A2_25M_ZEROING_TARGET_2026-09-04.png"],
   ["/authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg", "authority-evidence/mfam/founder-supplied-chapter2-visual-reference/FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE_2026-09-04.jpeg"],

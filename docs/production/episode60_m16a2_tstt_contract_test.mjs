@@ -40,8 +40,8 @@ assert.match(source, /AIM POINT[\s\S]*READ THE GRID[\s\S]*READ THE CLICKS[\s\S]*
 assert.match(source, /each square in the columns represents one front-sight up-or-down click[\s\S]*Each square in the rows represents three rear-windage clicks, right or left/i, "Chapter 1 reads the Founder-settled M16A2 square-to-control scales");
 assert.doesNotMatch(`${source}\n${css}`, /target-marker|sample-group/, "Chapter 1 keeps the complete physical target free of intrusive teaching overlays");
 assert.match(source, /Fire three to five shots before making an adjustment\.[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*better picture of where your shots are landing/, "Chapter 1 teaches the settled shooter-facing shot-pattern concept");
-assert.match(source, /nextChapterLabel: "NEXT — KNOW YOUR SIGHTS"[\s\S]*nextChapterLabel: "NEXT — WATCH IT"/, "Chapters 1 and 2 carry the universal Founder-approved forward destinations");
-assert.match(source, /actionMarkup[\s\S]*next-chapter-overlay[\s\S]*NEXT CHAPTER[\s\S]*has-next-chapter/, "eligible TSTT chapters render one consistent in-page forward overlay");
+assert.match(html, /START SESSION/, "the Founder-approved session start remains available");
+assert.doesNotMatch(`${html}\n${source}\n${css}`, /NEXT CHAPTER|NEXT — KNOW YOUR SIGHTS|NEXT — WATCH IT|next-chapter-overlay/, "continuous Chapters 1 through 3 expose no redundant forward controls");
 assert.doesNotMatch(chapterFourSource, /nextChapterLabel/, "Chapter 4 retains its governed photo-entry and preservation destination instead of inventing another chapter");
 assert.match(html, /tstt_narration\.js[\s\S]*m16a2-tstt\.js/, "the reusable narration standard loads before the product lesson");
 assert.match(narration, /DEFAULT_SETTINGS = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "the reusable narrator keeps the slower neutral baseline");
@@ -51,7 +51,7 @@ assert.match(narration, /resolveSamantha[\s\S]*find\(voice => SAMANTHA_NAME\.tes
 assert.match(narration, /SAMANTHA UNAVAILABLE[\s\S]*voiceschanged[\s\S]*resolveSamantha/, "the runtime waits for the device voice list and reports exact unavailability");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /RUNTIME INSTRUCTOR|runtimeVoiceStatus|runtimeVoiceCheck|PLAY “SHOT PATTERN” CHECK|voice-diagnostic/, "the shooter-facing page contains no Samantha diagnostic or check residue");
 assert.match(source, /chapterOneNarrationPlan[\s\S]*assets\/audio\/episode60\/chapter1\/[\s\S]*cue: index === 3 \? "columns" : \(index === 4 \? "rows"/, "Chapter 1 uses native Samantha audio segments with synchronized column and row cues");
-assert.match(css, /grid-teaching-cue\.is-column[\s\S]*grid-teaching-cue\.is-row[\s\S]*animation: grid-teaching-pulse \.9s ease-in-out 2/, "Chapter 1 pulses one representative column and row twice without adding another teaching box");
+assert.match(css, /grid-teaching-cue\.is-column[\s\S]*grid-teaching-cue\.is-row[\s\S]*animation: grid-teaching-pulse 1\.25s ease-in-out 2[\s\S]*prefers-reduced-motion[\s\S]*grid-teaching-cue\.is-active/, "Chapter 1 visibly pulses one representative column and row twice, including on the Founder reduced-motion runtime");
 assert.match(narration, /NON_INSTRUCTIONAL_VOICES[\s\S]*Albert[\s\S]*Zarvox/, "novelty and theatrical system voices cannot become the instructor");
 assert.match(narration, /pronounceForInstruction[\s\S]*M sixteen A two[\s\S]*minutes of angle[\s\S]*one point two five[\s\S]*zero point five/, "speech preparation deliberately pronounces equipment terminology and adjustment values");
 assert.match(narration, /DEFAULT_PAUSES[\s\S]*normal: 450[\s\S]*action: 900[\s\S]*look: 1100/, "thought, action, and observation pauses are explicitly paced");
@@ -109,7 +109,7 @@ assert.match(source, /Shoot three to five shots while aiming at the center cross
 assert.match(chapterFourSource, /YOUR TURN[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the shooter-control entry");
 assert.match(chapterFourSource, /chapterFourPhotoRoad\("camera"\)[\s\S]*chapterFourPhotoRoad\("existing"\)/, "Chapter 4 hands both photo choices to the governed road");
 assert.match(source, /tapNScoreRoad = "matrix\.html\?target_profile_id=baker_m16a2_25m_zero&founder_review=1&tstt_chapter=4"[\s\S]*chapterFourPhotoRoad[\s\S]*equipmentSupportsExactSetup[\s\S]*equipment_profile_id/, "Chapter 4 selects the dedicated Baker M16A2 profile with the exact Equipment Library configuration");
-assert.match(matrix, /photo_source[\s\S]*shoot\.html\?session=[\s\S]*founderReviewQuery[\s\S]*photoSource/, "the governed session handoff preserves the requested Chapter 4 photo source");
+assert.match(matrix, /tsttChapterQuery = TSTT_SHOOTER_HANDOFF \? "&tstt_chapter=4"[\s\S]*photoSource[\s\S]*shoot\.html\?session=[\s\S]*founderReviewQuery[\s\S]*tsttChapterQuery[\s\S]*photoSource/, "the governed session handoff preserves the Chapter 4 identity and requested photo source");
 assert.match(matrix, /TSTT_SHOOTER_HANDOFF[\s\S]*governed\.item\.setup\.setupId === requestedEquipmentProfileId[\s\S]*await goToTarget\(\)/, "the Chapter 4 handoff automatically starts only the backend-admitted requested equipment profile");
 assert.match(source, /applyDirectChapterEntry[\s\S]*state\.started = true[\s\S]*state\.current = requested - 1[\s\S]*state\.unlocked = chapters\.length - 1/, "returning shooters can enter Chapter 4 directly with all Chapters navigation available");
 assert.match(shoot, /requestedPhotoSource[\s\S]*precisionTapPhotoPicker[\s\S]*renderPrecisionTapControls/, "the proven target workspace opens its real photo picker after the Chapter 4 handoff");
@@ -118,6 +118,8 @@ assert.match(workspace, /createPrecisionTap[\s\S]*pointer[\s\S]*(?:scale|zoom)[\
 assert.match(m4Runtime, /\/api\/authority\/m4[\s\S]*requestAuthority[\s\S]*saveInitialAuthority[\s\S]*saveConfirmationAuthority/, "backend M16A2 authority remains the sole correction and confirmation owner");
 assert.match(m4Runtime, /M16A2-STANDARD-IRON-FSP-REAR-DRUM[\s\S]*M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011[\s\S]*M16A2_IRON_FSP_REAR_DRUM/, "the frontend passes the exact governed M16A2 authority identity without click math");
 assert.match(shoot, /Apply the clicks\. Then shoot a new confirmation group\. You can use this target or a new one\. Take a photo of that target, then tap only the new confirmation bullet holes\./, "Chapter 4 makes the physical confirmation-photo sequence unmistakable after the initial correction");
+assert.match(shoot, /TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT[\s\S]*Then shoot a new confirmation group[\s\S]*TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO[\s\S]*new Audio\(TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO\)[\s\S]*playTsttChapterFourConfirmationNarration\(\)/, "Chapter 4 presents and plays the approved confirmation sequence from the actual confirmation transition");
+assert.match(reviewServer, /episode60\/chapter4\/01-confirmation-sequence\.wav/, "the Founder LAN runtime serves the Chapter 4 native Samantha confirmation clip");
 assert.match(shoot, /On the confirmation target photo, tap only the new confirmation bullet holes\.[\s\S]*Tap Show Results for these new confirmation shots\.[\s\S]*Your zero is confirmed\. Turn the rear elevation drum one click COUNTERCLOCKWISE back to 8\/3 for your 300-meter setting\./, "Chapter 4 distinguishes the new confirmation holes through the governed result");
 assert.match(narrationStandard, /one thought per sentence[\s\S]*Pause briefly after every sentence[\s\S]*Use one governed name[\s\S]*visual and audio teaching in the same sequence/i, "the reusable governance artifact preserves the Founder narration rules");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /equipment-dot|EXACT TRAINING MATCH · CONFIRM GEAR|THIS MATCHES MY GEAR|confirm-equipment|CONFIRM YOUR GEAR|NOT CONFIRMED AS YOUR EQUIPMENT/, "physical-equipment confirmation UI and its orange/gold status dot are removed");
@@ -136,8 +138,8 @@ assert.match(source, /SCZN3_TSTT_M16A2_JOURNEY_V1[\s\S]*preserveJourney[\s\S]*re
 assert.match(source, /return_to=m16a2-tstt\.html&return_chapter=/, "the Equipment Library link preserves the exact TSTT origin and chapter");
 assert.match(html, /shootingSetupNote[\s\S]*equipmentLibraryLink[\s\S]*EQUIPMENT LIBRARY/, "Equipment Library remains quietly available inside Shooting Setup");
 assert.match(source, /target-window is-full-target/, "Chapter 1 requests the complete physical target thumbnail");
-assert.match(html, /player-controls[\s\S]*player-start[\s\S]*▶[\s\S]*START TRAINING/, "START TRAINING lives in the fixed PLAYER rail before training begins");
-assert.match(css, /data-status="waiting"[\s\S]*player-start[\s\S]*display: block/, "the pre-start PLAYER rail makes START TRAINING dominant");
+assert.match(html, /player-controls[\s\S]*player-start[\s\S]*▶[\s\S]*START SESSION/, "START SESSION lives in the fixed PLAYER rail before training begins");
+assert.match(css, /data-status="waiting"[\s\S]*player-start[\s\S]*display: block/, "the pre-start PLAYER rail makes START SESSION dominant");
 assert.match(matrix, /EQUIPMENT_RETURN_PATH[\s\S]*RETURN TO CHAPTER[\s\S]*returnToEquipmentOrigin/, "Equipment Library exposes the direct origin-preserving return");
 assert.match(matrix, /function conciseEquipmentName[\s\S]*join\(" · "\)/, "Equipment Library owns one concise equipment display name");
 assert.match(matrix, /setActiveEquipmentProfile\(setupId\)[\s\S]*returnToEquipmentOrigin/, "existing-equipment selection commits before direct return");

@@ -47,6 +47,7 @@ try {
     await page.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=existing`, { waitUntil: "networkidle" });
     await page.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
     assert.equal(new URL(page.url()).searchParams.get("founder_review"), "1");
+    assert.equal(new URL(page.url()).searchParams.get("tstt_chapter"), "4");
     assert.equal(new URL(page.url()).searchParams.get("photo_source"), "existing");
 
     await page.locator("#targetImageInput").setInputFiles(targetPhoto);
@@ -87,7 +88,11 @@ try {
 
     await page.locator("#saveMarks:visible", { hasText: "Begin Confirmation" }).click();
     await page.waitForFunction(() => document.body.dataset.m4LivePhase === "confirmation" && document.body.dataset.hasResults === "false");
-    assert.equal(await page.locator("#missionWorkspaceGuidance").innerText(), "On the confirmation target photo, tap only the new confirmation bullet holes.");
+    assert.equal(
+      await page.locator("#missionWorkspaceGuidance").innerText(),
+      "Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes."
+    );
+    assert.match(await page.locator("body").getAttribute("data-tstt-chapter-four-narration"), /requested|playing|complete/);
     await tapPercent(page, 49.9, 48.6);
     await tapPercent(page, 50.1, 48.7);
     await tapPercent(page, 50.0, 48.8);

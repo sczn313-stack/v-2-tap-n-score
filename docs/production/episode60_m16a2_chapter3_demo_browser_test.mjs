@@ -65,8 +65,7 @@ try {
       if (/records\.html\?.*(?:view=sec|selected=)/.test(request.url())) preservedSurfaceRequests.push(request.url());
     });
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
-    await page.getByRole("button", { name: "START TRAINING", exact: true }).click();
-    await page.getByRole("button", { name: "NEXT — KNOW YOUR SIGHTS", exact: true }).click();
+    await page.getByRole("button", { name: "START SESSION", exact: true }).click();
     await page.locator('[data-control="chapters"]').click();
     await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
     assert.equal(await page.locator("[data-demo-proof], [data-audio-proof], [data-step-proof], [data-player-proof]").count(), 0, `development instrumentation is absent at ${viewport.width}px`);

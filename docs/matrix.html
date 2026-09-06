@@ -2261,10 +2261,11 @@ async function goToTarget(options = {}) {
       ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}${session.matrixSnapshot.vendor ? `&v=${encodeURIComponent(String(session.matrixSnapshot.vendor).toLowerCase())}` : ""}${session.matrixSnapshot.sku ? `&sku=${encodeURIComponent(session.matrixSnapshot.sku)}` : ""}`
       : "";
     const founderReviewQuery = MATRIX_QUERY.get("founder_review") === "1" ? "&founder_review=1" : "";
+    const tsttChapterQuery = TSTT_SHOOTER_HANDOFF ? "&tstt_chapter=4" : "";
     const photoSource = ["camera", "existing"].includes(MATRIX_QUERY.get("photo_source"))
       ? `&photo_source=${encodeURIComponent(MATRIX_QUERY.get("photo_source"))}`
       : "";
-    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}${photoSource}`;
+    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}${tsttChapterQuery}${photoSource}`;
   } catch (error) {
     const reason = error && error.packageData && error.packageData.reason;
     if (reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {

@@ -23,6 +23,7 @@
 <link rel="preload" href="assets/audio/episode59/baker-adjustment-explain.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-adjustment-act.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-confirmation-explain.wav" as="audio" type="audio/wav" />
+<link rel="preload" href="assets/audio/episode60/chapter4/01-confirmation-sequence.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-save-session.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-save-own-photo.wav" as="audio" type="audio/wav" />
 <link rel="preload" href="assets/audio/episode59/baker-demo-complete.wav" as="audio" type="audio/wav" />
@@ -203,7 +204,28 @@ const REQUESTED_TARGET_PROFILE_ID = String(
 const SIMULATION_MODE = TARGET_QUERY.get("simulation") === "1";
 const PREPARED_M16A2_DEMO_MODE = TARGET_QUERY.get("prepared_demo") === "1" && TARGET_QUERY.get("m16a2_demo") === "1";
 const EMBEDDED_M16A2_TSTT_DEMO = PREPARED_M16A2_DEMO_MODE && TARGET_QUERY.get("embedded_tstt") === "1" && window.parent !== window;
+const TSTT_CHAPTER_FOUR_MODE = TARGET_QUERY.get("tstt_chapter") === "4";
+const TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT = "Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes.";
+const TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO = "assets/audio/episode60/chapter4/01-confirmation-sequence.wav";
+let tsttChapterFourConfirmationAudio = null;
 document.body.dataset.preparedM16a2Demo = PREPARED_M16A2_DEMO_MODE ? "true" : "false";
+
+function playTsttChapterFourConfirmationNarration() {
+  if (!TSTT_CHAPTER_FOUR_MODE || !isM16A2AuthoritySession()) return;
+  if (tsttChapterFourConfirmationAudio) {
+    tsttChapterFourConfirmationAudio.pause();
+    tsttChapterFourConfirmationAudio.currentTime = 0;
+  }
+  const audio = new Audio(TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO);
+  audio.preload = "auto";
+  audio.playbackRate = 1;
+  tsttChapterFourConfirmationAudio = audio;
+  document.body.dataset.tsttChapterFourNarration = "requested";
+  audio.addEventListener("playing", () => { document.body.dataset.tsttChapterFourNarration = "playing"; }, { once: true });
+  audio.addEventListener("ended", () => { document.body.dataset.tsttChapterFourNarration = "complete"; }, { once: true });
+  audio.addEventListener("error", () => { document.body.dataset.tsttChapterFourNarration = "error"; }, { once: true });
+  audio.play().catch(() => { document.body.dataset.tsttChapterFourNarration = "blocked"; });
+}
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
 const PRE_SIMULATION_ACTIVE_MATRIX = SIMULATION_MODE ? SCZN3M4.getActiveMatrix() : null;
@@ -1412,7 +1434,9 @@ function zeroingMissionGuidance() {
   if (isBakerSampleEvidence()) return "";
   if (!precisionTapShooterEvidenceReady()) return "Add a target photo to begin.";
   if (isZeroingAuthoritySession() && zeroingLivePhase === "confirmation") {
-    if (!currentImpactPoints.length) return "On the confirmation target photo, tap only the new confirmation bullet holes.";
+    if (!currentImpactPoints.length) return isM16A2AuthoritySession() && TSTT_CHAPTER_FOUR_MODE
+      ? TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT
+      : "On the confirmation target photo, tap only the new confirmation bullet holes.";
     if (!resultsShown) return "Tap Show Results for these new confirmation shots.";
     if (!isMfamZeroingAuthoritySession()) return "Confirmation recorded. Save the completed session.";
     return backendAuthorityPackage && backendAuthorityPackage.validation && backendAuthorityPackage.validation.confirmed
@@ -5940,6 +5964,7 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     renderResults();
     renderMarkStatus();
     setSaveSessionStatus("");
+    playTsttChapterFourConfirmationNarration();
     finishExperienceProcessing(saveProcessingId, true);
     return;
   }

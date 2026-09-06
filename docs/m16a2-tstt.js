@@ -64,7 +64,6 @@
   const chapters = Object.freeze([
     Object.freeze({
       id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
-      nextChapterLabel: "NEXT — KNOW YOUR SIGHTS",
       title: "Know your target.",
       summary: chapterOneFounderScript[0],
       narration: chapterOneSpokenNarration,
@@ -74,7 +73,6 @@
     }),
     Object.freeze({
       id: "a2-2", label: "THE SIGHTS", shortTitle: "Know your sights", eyebrow: "M16A2 · STANDARD IRON SIGHTS",
-      nextChapterLabel: "NEXT — WATCH IT",
       title: "Know your sights.",
       summary: "",
       narration: chapterTwoSpokenNarration,
@@ -140,6 +138,7 @@
     chapterThreeRuntimeShell: document.getElementById("chapterThreeRuntimeShell"), chapterThreeRuntime: document.getElementById("chapterThreeRuntime"), chapterThreeRuntimeStart: document.querySelector("[data-start-chapter-three]"),
   });
   const state = { started: false, current: 0, unlocked: 0, paused: false, stopped: false, equipment: null, pendingAutomaticDemoStart: false };
+  let gridTeachingCueTimeout = 0;
   const narrator = window.SCZN3TSTTNarration.createNarrator({
     onSegmentStart: segment => setGridTeachingCue(segment.cue),
     onSegmentEnd: clearGridTeachingCue,
@@ -248,6 +247,8 @@
   }
   function cancelSpeech() { narrator.cancel(); }
   function clearGridTeachingCue() {
+    window.clearTimeout(gridTeachingCueTimeout);
+    gridTeachingCueTimeout = 0;
     elements.visual.querySelectorAll("[data-grid-cue].is-active").forEach(cue => cue.classList.remove("is-active"));
   }
   function setGridTeachingCue(cueName) {
@@ -257,7 +258,7 @@
     if (!cue) return;
     void cue.offsetWidth;
     cue.classList.add("is-active");
-    cue.addEventListener("animationend", () => cue.classList.remove("is-active"), { once: true });
+    gridTeachingCueTimeout = window.setTimeout(clearGridTeachingCue, 2700);
   }
   function completeCurrentTeachingChapter() {
     clearGridTeachingCue();
@@ -301,7 +302,6 @@
   }
   function actionMarkup(chapter) {
     if (!state.started) return "";
-    if (chapter.nextChapterLabel) return `<button class="primary-action next-chapter-overlay" type="button" data-action="next" aria-label="${chapter.nextChapterLabel}"><span>NEXT CHAPTER</span><strong>${chapter.nextChapterLabel}</strong></button>`;
     if (chapter.action === "none") return "";
     if (chapter.action === "terminal") return `<div class="terminal-stop"><b>STOP HERE</b><span>Wait for range commands before firing.</span></div>`;
     return `<button class="primary-action" type="button" data-action="next">${chapter.actionLabel}</button>`;
@@ -325,7 +325,7 @@
     elements.visual.innerHTML = chapter.visual();
     elements.task.hidden = chapter.hideTask === true;
     elements.task.innerHTML = chapter.action === "equipment" ? setupMarkup() : `<span class="task-label">YOUR TASK</span><strong>${chapter.task}</strong>`;
-    elements.action.classList.toggle("has-next-chapter", Boolean(state.started && chapter.nextChapterLabel));
+    elements.action.classList.remove("has-next-chapter");
     elements.action.innerHTML = actionMarkup(chapter);
     elements.pause.disabled = !state.started; elements.stop.disabled = !state.started; elements.replay.disabled = !state.started; elements.restart.disabled = !state.started;
     elements.app.dataset.status = state.stopped ? "stopped" : (state.paused ? "paused" : (state.started ? "active" : "waiting")); updateChapterList(); preserveJourney(); window.scrollTo({ top: 0, behavior: "smooth" });
