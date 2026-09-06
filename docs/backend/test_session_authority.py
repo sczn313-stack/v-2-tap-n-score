@@ -130,6 +130,37 @@ def test_zeroing_targets_share_one_platform_capability_without_owning_workflow()
         assert forbidden_workflow_keys.isdisjoint(experience)
 
 
+def test_mfam_profiles_receive_exact_backend_family_bindings_without_frontend_defaults():
+    cases = {
+        "baker_m16a2_25m_zero": (
+            "baker:st-m16a2-m4:m16a2-face",
+            "mfam_m16a2_a3_standard_25m_300m",
+            "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+        ),
+        "m4_25m_zero": (
+            "sczn3:protected-modern-m4-m16-moa:face",
+            "mfam_modern_a8_moa_25m",
+            "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
+        ),
+    }
+    for target_id, expected in cases.items():
+        store = TestStore()
+        preparation = prepared(store, target_id, equipment())
+        binding = preparation["mfamAuthorityBinding"]
+        assert (binding["productId"], binding["familyId"], binding["mechanicalAuthorityId"]) == expected
+        assert binding["status"] == "GOVERNED"
+        started = start_session({
+            "preparationToken": preparation["preparationToken"],
+            "selectedEquipment": {**equipment(), "source": "weapon_library"},
+        }, store, idempotency_key=f"mfam-binding-{target_id}", now=NOW)
+        assert started["mfamAuthorityBinding"] == binding
+
+
+def test_non_mfam_zeroing_profile_has_no_mfam_binding():
+    result = prepared(TestStore(), "baker_st_100yd_smart_zero", equipment(model="Bolt Action"))
+    assert result["mfamAuthorityBinding"] is None
+
+
 def test_equipment_library_profile_identity_and_reusable_facts_survive_backend_handoff():
     store = TestStore()
     candidate = {

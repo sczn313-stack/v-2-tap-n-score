@@ -49,6 +49,13 @@ Each equipment assessment contains:
 - registered restrictions, if any; and
 - shooter-facing guidance that does not claim unsupported authority.
 
+For an M/FAM Target Profile, preparation also returns a backend-owned
+`mfamAuthorityBinding`. It identifies the exact publisher product/face,
+physical-geometry family, procedure, equipment configuration, mechanical
+authority record, and registration package selected by the governed registry.
+It contains no workflow implementation. Products that merely resemble or map
+to a family but lack an explicit governed binding cannot produce this envelope.
+
 ## `POST /api/session/start`
 
 The browser sends the preparation token and one exact prepared equipment
@@ -62,6 +69,10 @@ candidate. The request requires an `Idempotency-Key` header. The backend:
 6. creates one durable backend-owned session; and
 7. returns the authoritative session ID, selected setup, assessment, and
    `sessionMode`.
+
+The M/FAM binding is part of the ATP fingerprint and is preserved in the
+preparation and session response. A registry change therefore makes an older
+preparation stale and requires reconfirmation.
 
 `sessionMode` is `official_mission` only when official mission eligibility is
 established. Otherwise it is `target_evidence`. Both modes retain truthful

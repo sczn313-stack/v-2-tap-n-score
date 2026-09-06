@@ -26,6 +26,7 @@ from m4_authority.weapon_equipment_registry import (
     get_adjustment_profile,
     resolve_proven_equipment_record,
 )
+from mfam_family_authority import resolve_target_profile as resolve_mfam_target_profile
 from target_execution_contract import TargetExecutionContractError, TargetExecutionContractResolver, runtime_resolver
 
 
@@ -52,6 +53,25 @@ EQUIPMENT_KNOWLEDGE_BY_RECORD_ID = {
 
 ZEROING_EXPERIENCE_SCHEMA_VERSION = "sczn3-zeroing-experience-profile-v1"
 ZEROING_CAPABILITY_ID = "sczn3-governed-zeroing-road-v1"
+
+
+def mfam_authority_binding(target_profile_id: str) -> Dict[str, Any]:
+    """Resolve the executable M/FAM differences owned by backend authority."""
+    resolved = resolve_mfam_target_profile(target_profile_id)
+    binding = resolved["binding"]
+    return {
+        "registryId": resolved["registryId"],
+        "registryVersion": resolved["version"],
+        "productId": binding["productId"],
+        "faceIdentity": deepcopy(resolved["product"]["face"]),
+        "familyId": binding["familyId"],
+        "geometry": deepcopy(resolved["family"]["geometry"]),
+        "procedure": deepcopy(resolved["family"]["procedure"]),
+        "mechanicalAuthorityId": binding["mechanicalAuthorityId"],
+        "equipmentConfiguration": deepcopy(resolved["mechanicalAuthority"]["equipmentConfiguration"]),
+        "registrationPackageId": binding["registrationPackageId"],
+        "status": binding["status"],
+    }
 
 
 def zeroing_experience(
@@ -88,6 +108,7 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             entry_mode="photo",
             confirmation_mode="governed",
         ),
+        "mfamAuthorityBinding": mfam_authority_binding("baker_m16a2_25m_zero"),
         "registrationAuthority": {
             "registrationPackageId": "baker-m16a2-25m-photo-registration-v1",
             "registrationPackageVersion": "1",
@@ -126,6 +147,7 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             entry_mode="registered-reference",
             confirmation_mode="governed",
         ),
+        "mfamAuthorityBinding": mfam_authority_binding("m4_25m_zero"),
         "registrationAuthority": {
             "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
             "registrationPackageVersion": "1",
@@ -884,6 +906,7 @@ def atp_fingerprint(profile: Mapping[str, Any]) -> str:
         "targetProfileVersion": profile["targetProfileVersion"],
         "atpId": profile["atpId"],
         "zeroingExperience": profile.get("zeroingExperience"),
+        "mfamAuthorityBinding": profile.get("mfamAuthorityBinding"),
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
@@ -935,6 +958,7 @@ def prepare_session(
         "atpId": profile["atpId"],
         "atpFingerprint": atp_fingerprint(profile),
         "zeroingExperience": profile.get("zeroingExperience"),
+        "mfamAuthorityBinding": profile.get("mfamAuthorityBinding"),
         "missionIdentity": profile["missionIdentity"],
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
@@ -964,6 +988,7 @@ def prepare_session(
         "missionIdentity": profile["missionIdentity"],
         "executionContract": profile.get("executionContract"),
         "zeroingExperience": profile.get("zeroingExperience"),
+        "mfamAuthorityBinding": profile.get("mfamAuthorityBinding"),
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "registrationAuthority": profile.get("registrationAuthority"),
@@ -1063,6 +1088,7 @@ def start_session(
         },
         "targetAdmission": target_admission(current_profile),
         "zeroingExperience": current_profile.get("zeroingExperience"),
+        "mfamAuthorityBinding": current_profile.get("mfamAuthorityBinding"),
         "missionIdentity": current_profile["missionIdentity"],
         "executionContract": current_profile.get("executionContract"),
         "officialMission": equipment_assessment["officialMission"],
@@ -1084,6 +1110,7 @@ def start_session(
         "targetProfileVersion": current_profile["targetProfileVersion"],
         "atpId": current_profile["atpId"],
         "zeroingExperience": current_profile.get("zeroingExperience"),
+        "mfamAuthorityBinding": current_profile.get("mfamAuthorityBinding"),
         "missionIdentity": current_profile["missionIdentity"],
         "sessionMode": session_mode,
         "officialMission": equipment_assessment["officialMission"],
