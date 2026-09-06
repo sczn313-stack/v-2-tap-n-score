@@ -11,6 +11,7 @@
     "status",
     "classificationVocabulary",
     "evidencePolicy",
+    "inventoryAudit",
     "families",
     "mechanicalAuthorities",
     "products",
@@ -46,6 +47,15 @@
       }
     },
     "evidencePolicy": {"type": "object"},
+    "inventoryAudit": {
+      "type": "object",
+      "required": ["catalogId", "path", "counts"],
+      "properties": {
+        "catalogId": {"type": "string"},
+        "path": {"type": "string"},
+        "counts": {"type": "object"}
+      }
+    },
     "families": {"type": "array", "items": {"$ref": "#/$defs/family"}},
     "mechanicalAuthorities": {"type": "array", "items": {"$ref": "#/$defs/mechanicalAuthority"}},
     "products": {"type": "array", "items": {"$ref": "#/$defs/product"}},

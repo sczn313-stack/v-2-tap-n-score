@@ -21,6 +21,8 @@ Backend structured data is runtime authority. This record explains that data to 
 
 - Runtime registry: `docs/backend/registries/mfam_family_authority.json`
 - Registry schema: `docs/backend/registries/mfam_family_authority.schema.json`
+- Product/face audit registry: `docs/backend/registries/mfam_inventory_audit.json`
+- Product/face audit schema: `docs/backend/registries/mfam_inventory_audit.schema.json`
 - Fail-closed resolver: `docs/backend/mfam_family_authority.py`
 - Universal zeroing capability: `sczn3-governed-zeroing-road-v1`
 
@@ -66,19 +68,46 @@ The structured registry uses exactly these outcomes:
 
 These classifications are composable. Two products can have proven equivalent geometry and still require `IDENTITY_REGISTRATION_DIFFERENCE`. A shared face can require `MECHANICAL_AUTHORITY_DIFFERENCE` for M16A4 versus M4. A different sight row can be `SAME_GOVERNED_CAPABILITY_DIFFERENT_VALUE` only after its exact configuration and controls are proven.
 
-## Governed family compression
+## Inventory hierarchy and exact catalog counts
 
-| Family | Geometry/procedure | Current disposition |
-|---|---|---|
-| Legacy M16A1 25m/250m | Issued identity/procedure exists; exact geometry incomplete | `EVIDENCE_ONLY` |
-| Standard M16A2/A3 25m/300m | 18 × 20 uniform grid; 0.96 cm squares | `GOVERNED` for the exact Baker standard M16A2 face |
-| Standard M16A4/M4 25m/300m | 14 × 16 uniform grid; 1.3 cm squares | `EVIDENCE_ONLY`; production registration unresolved |
-| Modern Universal MOA / A8 25m | 32 × 32 quarter-inch lattice; 8 × 8 one-inch grid | `GOVERNED` for the protected SCZN3 face |
-| Enlarged Baker M16A2R | 23 × 35 product; internal physical pitch unproven | `HOLD` as separate geometry |
-| 10m boresight/offset | Configuration-specific offset template/procedure | `EVIDENCE_ONLY`; separate family |
-| Configuration overlay on base | Reuses an admitted base only with an exact governed aim/strike overlay | `EVIDENCE_ONLY`; per-device/mount authority required |
-| USMC 36m BZO | Official procedure evidence; exact face absent | `EVIDENCE_ONLY`; separate family |
-| Qualification/course products | Alt-C, slow/timed fire, Navy and composite faces | `EVIDENCE_ONLY`; product-specific families |
+The original 31 rows are evidence records. They are not interchangeable counts of products, faces, or families.
+
+```text
+10 publishers / issuing authorities
+  → 25 commercial or government products/forms
+    → 35 physical printed faces
+      → 35 product-face representation records
+        + 1 non-product governed reference representation
+        → 23 cataloged physical-geometry identities/candidates
+          → 14 cataloged procedure identities/buckets
+            → 9 candidate governed families
+              → 2 executable runtime bindings
+```
+
+Count qualifications:
+
+- The 25-product total excludes the SCZN3 preserved reference representation, the Army configuration-overlay relationship, and the USMC procedure-only record because none is a separate commercial/government product.
+- The 35-face total counts every substantiated printed side. A two-sided product contributes two physical faces even when one face remains unresolved.
+- The audit carries 35 product-face representation records. The exact number of unique face designs is `UNPROVEN`: Baker `ST-Uni25mMOA` is substantiated as two-sided, but preserved evidence shows only one side and does not prove the reverse is an exact duplicate.
+- The protected SCZN3 modern MOA asset adds one non-product reference representation, producing 36 total representation-catalog records.
+- The exact real-world number of unique physical geometries is `UNPROVEN`. The registry deliberately carries 23 geometry identities/candidates: three reusable geometry records with substantial proof, several proven-different but incomplete geometries, and unresolved product/side candidates that cannot yet be merged.
+- The exact real-world number of unique procedures is also `UNPROVEN` where printed instructions were not captured. The registry carries 14 stable procedure identities or explicit unresolved buckets so geometry never supplies missing procedure.
+
+The machine-enforced counts live in `mfam_inventory_audit.json`. The face-by-face human view is `M_FAM_FACE_LEVEL_MASTER_CATALOG.md`.
+
+## Exact nine-family audit
+
+| Family ID / plain name | Defining geometry | Defining procedure / generations | Equipment and mechanics | Products / physical faces mapped | Evidence / runtime |
+|---|---|---|---|---|---|
+| `mfam_m16a1_25m_250m` — Legacy M16A1 | exact grid/pitch unproven | 25m represents 250m; `L` aperture then unmarked; M16A1 | complete mechanical package unproven | Army NSN `6920-01-167-1392` / face-031 | issuer procedure evidence; `EVIDENCE_ONLY` |
+| `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 18 × 20; 0.96 cm uniform squares | 25m/300m; 8/3 + one; M16A2/A3 | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | Baker `ST-M16A2/M4` face-003; Rite 9125 face-006; National dual face-013; QTI face-016; Alco face-018; Speedwell face-020; GunFun faces 025/027; Army face-032 | geometry/mechanics governed; only Baker face-003 runtime `GOVERNED` |
+| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 14 × 16; 1.3 cm uniform squares | 25m/300m; M16A4/M4/M4A1 | `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`; `MFAM-M16A4-IRON-EVIDENCE-2011` | Baker face-004; Rite face-007; National face-014; QTI face-017; Speedwell face-019; Action face-021; Army face-033 | family evidence defined; commercial registrations held; no runtime binding |
+| `mfam_modern_a8_moa_25m` — Modern Universal MOA/A8 | protected geometry: 32 × 32 quarter-inch lattice, 8 × 8-inch grid | modern 25m grouping/zero; final/confirmation by exact profile | `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01`; printed rows remain evidence-only | Baker face-001 (reverse face-002 unresolved/unmapped); Rite face-009; National faces 011/012; Action face-023; Army face-034; plus protected reference representation | protected reference runtime `GOVERNED`; all product faces held |
+| `mfam_m16a2r_enlarged_23x35` — Baker enlarged M16A2R | 23 × 35; internal pitch/origin unproven | M16A2-related 25m/300m | mechanical applicability unproven | Baker `ST-M16A2R` / face-005 | proven different scale; `HOLD` |
+| `mfam_10m_boresight_offset` — 10m boresight/offset | separately manufactured 10m target; exact symbol geometry incomplete | 10m device/mount-specific aim/strike offset | exact optic/laser/mount required | Army 10m form / face-035 | issuer evidence; `EVIDENCE_ONLY` |
+| `mfam_configuration_offset_overlay_on_base` — Configuration overlay | admitted base geometry plus exact aim/strike overlay and zone | device/mount-specific 25m offset | `MFAM-M68-CCO-EVIDENCE`; `MFAM-M150-TA01-RCO-EVIDENCE` are not executable defaults | Army overlay evidence record; no separate product face | issuer evidence; `EVIDENCE_ONLY` |
+| `mfam_usmc_36m_bzo` — USMC 36m BZO | exact product/face/geometry unproven | 36m BZO; M16A4/M4 | exact configuration authority unproven | USMC procedure evidence; no product face | issuer procedure only; `EVIDENCE_ONLY` |
+| `mfam_qualification_course_product_specific` — Qualification/course products | product-specific Alt-C, Navy/composite, slow/timed-fire regions | course/qualification-specific; not standard zero correction | course/equipment-specific | National face-015; GunFun face-030; other catalog leads remain outside the 31 structured records | proven different purpose; `EVIDENCE_ONLY` |
 
 Qualification, composite, True-MOA, and True-MIL targets do not inherit a 25-meter live-fire zero face merely because an M4/M16 label appears on the product.
 
@@ -125,6 +154,7 @@ The M16A2 rear elevation drum remains a setup/finalization control:
 ## Deliverable map
 
 - Full product inventory: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_INDUSTRY_PRODUCT_INVENTORY.md`
+- Face-level master catalog: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_FACE_LEVEL_MASTER_CATALOG.md`
 - Family comparison: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_FAMILY_COMPARISON_MATRIX.md`
 - Product mapping: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_PRODUCT_FAMILY_MAPPING.md`
 - Exact-common vs genuine-difference report: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_EXACT_COMMON_VS_DIFFERENCES.md`

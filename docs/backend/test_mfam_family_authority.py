@@ -8,9 +8,11 @@ from pathlib import Path
 from mfam_family_authority import (
     ALLOWED_CLASSIFICATIONS,
     MFAMAuthorityError,
+    INVENTORY_AUDIT_PATH,
     REGISTRY_PATH,
     classify_pair,
     family,
+    inventory_audit,
     product,
     registry_metadata,
     resolve_target_profile,
@@ -40,10 +42,71 @@ def test_registry_schema_contract_is_present_and_matches_runtime_schema_id():
     assert schema["properties"]["schemaId"]["const"] == "sczn3-mfam-family-authority-v1"
     assert set(schema["required"]) == {
         "schemaId", "registryId", "version", "status", "classificationVocabulary",
-        "evidencePolicy", "families", "mechanicalAuthorities", "products",
+        "evidencePolicy", "inventoryAudit", "families", "mechanicalAuthorities", "products",
         "targetProfileBindings", "pairClassifications", "publisherSweep",
         "unresolvedGaps", "sources",
     }
+
+
+def test_inventory_schema_and_exact_audit_counts():
+    schema_path = INVENTORY_AUDIT_PATH.with_name("mfam_inventory_audit.schema.json")
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    assert schema["properties"]["schemaId"]["const"] == "sczn3-mfam-inventory-audit-v1"
+    audit = inventory_audit()
+    assert audit["counts"] == {
+        "sourceEvidenceRecords": 31,
+        "publisherIssuingAuthorities": 10,
+        "commercialGovernmentProducts": 25,
+        "physicalTargetFaces": 35,
+        "productFaceRepresentationRecords": 35,
+        "exactUniqueFaceDesigns": None,
+        "exactUniqueFaceDesignsStatus": "UNPROVEN_WHERE_REVERSE_SIDE_DESIGN_IS_NOT_PRESERVED",
+        "additionalNonProductReferenceRepresentations": 1,
+        "representationCatalogRecords": 36,
+        "geometryCatalogRecords": 23,
+        "exactUniquePhysicalGeometries": None,
+        "exactUniquePhysicalGeometriesStatus": "UNPROVEN",
+        "procedureCatalogRecords": 14,
+        "exactUniqueProcedures": None,
+        "exactUniqueProceduresStatus": "UNPROVEN_WHERE_PRODUCT_INSTRUCTIONS_ARE_MISSING",
+        "candidateGovernedFamilies": 9,
+        "runtimeBindings": 2,
+    }
+
+
+def test_inventory_products_claim_all_faces_and_every_face_is_auditable():
+    audit = inventory_audit()
+    faces = {record["faceId"]: record for record in audit["faces"]}
+    claimed = {face_id for record in audit["products"] for face_id in record["faceIds"]}
+    assert claimed == set(faces)
+    required = {
+        "faceId", "productId", "publisherAuthorityId", "exactProduct", "identifiers",
+        "side", "representationId", "representation", "dimensions", "geometryId",
+        "geometry", "grid", "aimReference", "distance", "procedureId", "procedure",
+        "weaponApplicability", "sightEquipmentApplicability", "mechanicalAuthorityIds",
+        "registration", "evidenceSourceIds", "governedFamilyId", "runtimeBinding",
+        "runtimeStatus", "unresolvedFacts",
+    }
+    for record in faces.values():
+        assert required == set(record), record["faceId"]
+    baker_reverse = faces["face-002"]
+    assert baker_reverse["geometry"] == "UNPROVEN; do not infer the governed front-face geometry"
+    assert baker_reverse["governedFamilyId"] is None
+
+
+def test_exact_nine_candidate_families_are_cataloged():
+    payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    assert [record["familyId"] for record in payload["families"]] == [
+        "mfam_m16a1_25m_250m",
+        "mfam_m16a2_a3_standard_25m_300m",
+        "mfam_m16a4_m4_standard_25m_300m",
+        "mfam_modern_a8_moa_25m",
+        "mfam_m16a2r_enlarged_23x35",
+        "mfam_10m_boresight_offset",
+        "mfam_configuration_offset_overlay_on_base",
+        "mfam_usmc_36m_bzo",
+        "mfam_qualification_course_product_specific",
+    ]
 
 
 def test_only_two_exact_profiles_have_executable_mfam_bindings():
@@ -110,6 +173,16 @@ def test_every_product_preserves_required_evidence_fields():
 def test_human_governance_record_exists():
     path = Path(__file__).resolve().parents[1] / "architecture" / "M_FAM_GOVERNANCE.md"
     assert path.is_file()
+    face_catalog = Path(__file__).resolve().parents[1] / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "M_FAM_FACE_LEVEL_MASTER_CATALOG.md"
+    assert face_catalog.is_file()
+    governance_text = path.read_text(encoding="utf-8")
+    catalog_text = face_catalog.read_text(encoding="utf-8")
+    audit = inventory_audit()
+    for record in audit["faces"]:
+        assert f"`{record['faceId']}`" in catalog_text
+    payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    for record in payload["families"]:
+        assert f"`{record['familyId']}`" in governance_text
 
 
 if __name__ == "__main__":

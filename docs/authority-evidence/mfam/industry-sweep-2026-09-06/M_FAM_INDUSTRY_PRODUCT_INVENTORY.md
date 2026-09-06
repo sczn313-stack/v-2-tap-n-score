@@ -3,6 +3,10 @@
 Observed: 2026-09-06  
 Scope: products/faces with a substantiated M16/M4 zeroing, boresight, or closely related qualification relationship. “Not found” means not found in the admitted evidence corpus; it is not a claim that a publisher has never sold such a product.
 
+The original 31 evidence rows normalize to 10 publishing/issuing authorities, 25 commercial/government products, 35 physical faces, and 35 separately tracked product-face representation records. The exact number of unique face designs remains `UNPROVEN` because the evidence does not preserve every reverse-side design. The authoritative normalization is `docs/backend/registries/mfam_inventory_audit.json`; the auditable face-by-face view is `M_FAM_FACE_LEVEL_MASTER_CATALOG.md`.
+
+The inventory contains 23 physical-geometry catalog records and 14 procedure catalog records. Those are deliberately separated reference/candidate counts—not claims that the exact real-world number of unique geometries or procedures is known. Both real-world totals remain `UNPROVEN` where scale, reverse-side, or printed procedure evidence is missing.
+
 ## Exact product/face inventory
 
 | Publisher / issuer | Exact product / ID | Face / application | Published size | Geometry / aim evidence | Procedure | Equipment / mechanics | Registration landmarks | Evidence / runtime |

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sczn3.local/schemas/mfam-inventory-audit-v1.schema.json",
+  "title": "SCZN3 M/FAM Product and Face Inventory Audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaId", "catalogId", "version", "authorityRegistryId", "countRules", "counts", "publisherAuthorities", "products", "faces", "referenceRepresentations", "geometryCatalog", "procedureCatalog"],
+  "properties": {
+    "schemaId": {"const": "sczn3-mfam-inventory-audit-v1"},
+    "catalogId": {"type": "string"},
+    "version": {"type": "string"},
+    "authorityRegistryId": {"type": "string"},
+    "countRules": {"type": "object"},
+    "counts": {"type": "object"},
+    "publisherAuthorities": {"type": "array", "items": {"type": "object", "required": ["publisherAuthorityId", "name", "kind"]}},
+    "products": {"type": "array", "items": {"type": "object", "required": ["productId", "publisherAuthorityId", "exactName", "identifiers", "faceIds", "evidenceRecordIds"]}},
+    "faces": {"type": "array", "items": {"$ref": "#/$defs/face"}},
+    "referenceRepresentations": {"type": "array", "items": {"type": "object", "required": ["representationId", "kind", "evidenceRecordId"]}},
+    "geometryCatalog": {"type": "array", "items": {"type": "object", "required": ["geometryId", "name", "definition", "evidenceStatus"]}},
+    "procedureCatalog": {"type": "array", "items": {"type": "object", "required": ["procedureId", "name", "definition", "evidenceStatus"]}}
+  },
+  "$defs": {
+    "face": {
+      "type": "object",
+      "required": ["faceId", "productId", "publisherAuthorityId", "exactProduct", "identifiers", "side", "representationId", "representation", "dimensions", "geometryId", "geometry", "grid", "aimReference", "distance", "procedureId", "procedure", "weaponApplicability", "sightEquipmentApplicability", "mechanicalAuthorityIds", "registration", "evidenceSourceIds", "governedFamilyId", "runtimeBinding", "runtimeStatus", "unresolvedFacts"]
+    }
+  }
+}
