@@ -62,16 +62,22 @@ try {
     assert.equal(await page.locator("#saveMarks:visible").count(), 0, "BEGIN CONFIRMATION must not exist before a governed correction");
 
     await tapPercent(page, 50, 48.7);
-    await tapPercent(page, 58.3, 41.1);
-    await tapPercent(page, 58.5, 41.3);
-    await tapPercent(page, 58.7, 41.5);
+    await tapPercent(page, 58.0, 40.8);
+    await tapPercent(page, 58.2, 41.0);
+    await tapPercent(page, 58.4, 41.2);
+    await tapPercent(page, 58.6, 41.4);
+    await tapPercent(page, 58.8, 41.6);
+    await tapPercent(page, 59.0, 41.8);
     assert.equal(await page.locator("#clearMarks:visible").count(), 1, "CLEAR must be present during Precision Tap");
     await page.locator("#clearMarks:visible").click();
     assert.equal(await page.locator("#targetHitCounter strong").innerText(), "0", "CLEAR must remove every shot observation");
     assert.equal(await page.locator("#showResults:visible").count(), 0, "CLEAR must withdraw SHOW RESULTS until new shots exist");
-    await tapPercent(page, 58.3, 41.1);
-    await tapPercent(page, 58.5, 41.3);
-    await tapPercent(page, 58.7, 41.5);
+    await tapPercent(page, 58.0, 40.8);
+    await tapPercent(page, 58.2, 41.0);
+    await tapPercent(page, 58.4, 41.2);
+    await tapPercent(page, 58.6, 41.4);
+    await tapPercent(page, 58.8, 41.6);
+    await tapPercent(page, 59.0, 41.8);
     await page.locator("#showResults:visible").click();
     await page.waitForFunction(() => document.body.dataset.hasResults === "true", null, { timeout: 30000 });
     assert.equal(authorityResponses[0].status, 200);
@@ -97,6 +103,20 @@ try {
       await page.locator("#missionWorkspaceGuidance").innerText(),
       "Apply the clicks. Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes."
     );
+    assert.deepEqual(await page.evaluate(() => ({
+      rangeState: document.body.dataset.rangeState,
+      controlState: document.body.dataset.precisionTapControlState,
+      beginConfirmationVisible: !!document.querySelector("#saveMarks:not([hidden])")
+        && getComputedStyle(document.querySelector("#saveMarks")).display !== "none",
+      beginConfirmationDisabled: document.querySelector("#saveMarks").disabled,
+      beginConfirmationLabel: document.querySelector("#saveMarks").textContent.trim()
+    })), {
+      rangeState: "save-session",
+      controlState: "confirmation_entry",
+      beginConfirmationVisible: true,
+      beginConfirmationDisabled: false,
+      beginConfirmationLabel: "Begin Confirmation"
+    }, "a released governed correction must expose one actionable BEGIN CONFIRMATION control");
 
     await page.locator("#saveMarks:visible", { hasText: "Begin Confirmation" }).click();
     await page.waitForFunction(() => document.body.dataset.m4LivePhase === "confirmation" && document.body.dataset.hasResults === "false");
@@ -136,7 +156,7 @@ try {
     const secShell = page.locator('[data-sec-shell="universal-v1"][data-sec-adapter-id="m16a2-zeroing"]');
     await secShell.waitFor({ state: "visible", timeout: 30000 });
     assert.match(await page.locator(".sec-mission-bar").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
-    assert.equal(await page.locator("#beforeEvidenceMarkers .impact-marker").count(), 3);
+    assert.equal(await page.locator("#beforeEvidenceMarkers .impact-marker").count(), 6);
     assert.equal(await page.locator("#confirmationMarkers .impact-marker").count(), 3);
     const preservedSession = await page.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null));
     assert.equal(preservedSession.targetEvidenceImage.assetRole, "shooter-captured-target-photo");
@@ -212,6 +232,31 @@ try {
   assert.equal(await cameraPage.locator("#setAimMode:visible").count(), 1);
   await cameraContext.close();
   console.log("PASS TAKE PHOTO entry reaches the governed M16A2 Precision Tap road at 390px");
+
+  const rehydratedContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const rehydratedPage = await rehydratedContext.newPage();
+  await rehydratedContext.route("**/api/authority/m4", async route => {
+    const response = await route.fetch();
+    const body = await response.json();
+    delete body.status.hasCorrection;
+    await route.fulfill({ response, json: body });
+  });
+  await rehydratedPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=existing`, { waitUntil: "networkidle" });
+  await rehydratedPage.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
+  await rehydratedPage.locator("#targetImageInput").setInputFiles(targetPhoto);
+  await rehydratedPage.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
+  await tapPercent(rehydratedPage, 50, 48.7);
+  await tapPercent(rehydratedPage, 58.3, 41.1);
+  await tapPercent(rehydratedPage, 58.5, 41.3);
+  await tapPercent(rehydratedPage, 58.7, 41.5);
+  await rehydratedPage.locator("#showResults:visible").click();
+  await rehydratedPage.waitForFunction(() => document.body.dataset.hasResults === "true", null, { timeout: 30000 });
+  assert.equal(await rehydratedPage.locator('.workspace-result-overlay[aria-label="Mechanical correction"]').count(), 1);
+  const rehydratedBegin = rehydratedPage.locator("#saveMarks:visible", { hasText: "Begin Confirmation" });
+  assert.equal(await rehydratedBegin.count(), 1, "a rehydrated governed click package must not leave the action bar empty");
+  assert.equal(await rehydratedBegin.isEnabled(), true);
+  await rehydratedContext.close();
+  console.log("PASS rehydrated governed click result retains actionable BEGIN CONFIRMATION at 390px");
 } finally {
   await browser.close();
 }

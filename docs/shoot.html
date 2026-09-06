@@ -5003,13 +5003,11 @@ function awaitingNextConfirmationGroup() {
 function initialZeroingCorrectionReady() {
   if (!isZeroingAuthoritySession() || zeroingLivePhase === "confirmation") return true;
   if (!resultsShown || !backendAuthorityPackage || !currentClicks || targetVerificationFailure()) return false;
-  const release = SCZN3PlatformContracts.directionalAuthorityRelease(backendAuthorityPackage);
-  return !!(
-    release.releasable
-    && backendAuthorityPackage.status
-    && backendAuthorityPackage.status.hasCorrection
-    && (!usesGovernedZeroingRoad() || backendAuthorityPackage.mechanicalValidation?.status === "calculated")
-  );
+  // currentClicks is created only by zeroingClicksFromAuthorityPackage(), which
+  // already owns the governed directional-release and mechanical-authority gates.
+  // Do not reinterpret the authority package here: a second, narrower UI gate can
+  // strand a shooter after the governed correction has already been released.
+  return true;
 }
 
 function rangeWorkflowState(canMark) {
@@ -5222,7 +5220,11 @@ function renderMarkStatus() {
   const evidenceRole = String(controlEvidence && controlEvidence.assetRole || "");
   const shooterPhotoLoaded = !!(controlEvidence && evidenceRole.includes("shooter-captured"));
   const referenceEvidence = hasEvidence && !shooterPhotoLoaded;
-  const controlEvidenceReady = precisionTapShooterEvidenceReady();
+  // A released initial correction necessarily came from admitted shooter evidence.
+  // Keep the transition actionable even if presentation evidence is rehydrated into
+  // a narrower display shape after results render.
+  const controlEvidenceReady = precisionTapShooterEvidenceReady()
+    || (zeroingLivePhase === "initial" && initialZeroingCorrectionReady());
   const activeRangeState = rangeWorkflowState(canProceed);
   document.body.dataset.rangeState = activeRangeState;
   document.body.dataset.precisionTapControlState = precisionTapControlState(activeRangeState, controlEvidenceReady);
