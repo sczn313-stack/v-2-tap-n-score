@@ -208,6 +208,7 @@ const TSTT_CHAPTER_FOUR_MODE = TARGET_QUERY.get("tstt_chapter") === "4";
 const TSTT_CHAPTER_FOUR_CONFIRMATION_TEXT = "Then shoot a new confirmation group. You can use this target or a new one. Take a photo of that target, then tap only the new confirmation bullet holes.";
 const TSTT_CHAPTER_FOUR_CONFIRMATION_AUDIO = "assets/audio/episode60/chapter4/01-confirmation-sequence.wav";
 let tsttChapterFourConfirmationAudio = null;
+const REQUESTED_PHOTO_SOURCE = TARGET_QUERY.get("photo_source");
 document.body.dataset.preparedM16a2Demo = PREPARED_M16A2_DEMO_MODE ? "true" : "false";
 
 function playTsttChapterFourConfirmationNarration() {
@@ -225,6 +226,14 @@ function playTsttChapterFourConfirmationNarration() {
   audio.addEventListener("ended", () => { document.body.dataset.tsttChapterFourNarration = "complete"; }, { once: true });
   audio.addEventListener("error", () => { document.body.dataset.tsttChapterFourNarration = "error"; }, { once: true });
   audio.play().catch(() => { document.body.dataset.tsttChapterFourNarration = "blocked"; });
+}
+
+function openRequestedPhotoEntry() {
+  if (!["camera", "existing"].includes(REQUESTED_PHOTO_SOURCE) || activeEvidence()) return;
+  const picker = document.getElementById("precisionTapPhotoPicker");
+  picker.hidden = false;
+  document.body.dataset.precisionTapPhotoPicker = "open";
+  renderPrecisionTapControls(document.body.dataset.precisionTapControlState, document.body.dataset.rangeState);
 }
 const SIMULATION_LIMIT = 3;
 const SIMULATION_SESSION_STORAGE_KEY = "SCZN3_TRY_BEFORE_BUY_SESSION_ID";
@@ -5352,14 +5361,6 @@ document.getElementById("chooseTargetButton").addEventListener("click", event =>
   renderPrecisionTapControls(document.body.dataset.precisionTapControlState, document.body.dataset.rangeState);
 });
 
-const requestedPhotoSource = TARGET_QUERY.get("photo_source");
-if (["camera", "existing"].includes(requestedPhotoSource) && !activeEvidence()) {
-  const picker = document.getElementById("precisionTapPhotoPicker");
-  picker.hidden = false;
-  document.body.dataset.precisionTapPhotoPicker = "open";
-  renderPrecisionTapControls(document.body.dataset.precisionTapControlState, document.body.dataset.rangeState);
-}
-
 function handleTargetImageSelection(event) {
   if (!ensureTargetSession()) return;
   const file = event.target.files && event.target.files[0];
@@ -5997,7 +5998,7 @@ window.addEventListener("resize", () => {
 
 bindCorrectionContextDrawer();
 if (TARGET_PROFILE_LAUNCH_ID) {
-  resolveMissionFromTargetProfile();
+  resolveMissionFromTargetProfile().then(openRequestedPhotoEntry);
 } else {
   if (isM4AuthoritySession() && !PREPARED_M16A2_DEMO_MODE) {
     const evidence = installM4CanonicalEvidence();
@@ -6006,6 +6007,7 @@ if (TARGET_PROFILE_LAUNCH_ID) {
   setMode(isGssfAuthoritySession() ? "impact" : (currentAimPoint ? "impact" : "aim"));
   renderSetupSummary();
   renderResults();
+  openRequestedPhotoEntry();
 }
 </script>
 </body>

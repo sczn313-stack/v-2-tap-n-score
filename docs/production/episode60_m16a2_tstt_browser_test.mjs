@@ -207,6 +207,7 @@ try {
   assert.equal(await returningPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).count(), 1);
   await returningPage.getByRole("link", { name: "CHOOSE EXISTING PHOTO", exact: true }).click();
   await returningPage.waitForURL(/shoot\.html\?.*photo_source=existing/, { timeout: 30000 });
+  await returningPage.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
   assert.equal(await returningPage.locator("#targetImageInput[type=file]").count(), 1);
   assert.match(await returningPage.locator("#targetSessionSummary").innerText(), /Baker M16A2 25 Meter Zeroing Target/i);
   await returningContext.close();

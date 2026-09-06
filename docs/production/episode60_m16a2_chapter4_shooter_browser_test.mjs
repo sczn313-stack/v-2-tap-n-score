@@ -49,6 +49,9 @@ try {
     assert.equal(new URL(page.url()).searchParams.get("founder_review"), "1");
     assert.equal(new URL(page.url()).searchParams.get("tstt_chapter"), "4");
     assert.equal(new URL(page.url()).searchParams.get("photo_source"), "existing");
+    await page.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+    assert.equal(await page.getByText("Take Photo", { exact: true }).isVisible(), true);
+    assert.equal(await page.getByText("Choose Existing Photo", { exact: true }).isVisible(), true);
 
     await page.locator("#targetImageInput").setInputFiles(targetPhoto);
     await page.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
