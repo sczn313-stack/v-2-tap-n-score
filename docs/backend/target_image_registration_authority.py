@@ -528,6 +528,12 @@ def canonical_point_to_source_percent(registration: Mapping[str, Any] | None, po
 
 
 def _unavailable_evidence(package: Mapping[str, Any], evidence: Mapping[str, Any], reason: str, details: Mapping[str, Any] | None = None) -> Dict[str, Any]:
+    if reason == "target_identity_unverified":
+        recovery_action = "check_target_identity"
+        shooter_message = "SCZN3 could not verify that this photo matches the target selected for this session. Check the target identity and choose a photo that clearly shows its title, grid, and bottom instructions."
+    else:
+        recovery_action = "retake_photo"
+        shooter_message = "SCZN3 could not verify this target's position and orientation from the photo. Retake it with the title, grid, and bottom instructions visible."
     result = {
         "ok": True,
         "schemaVersion": "sczn3-target-image-registration-evidence-v1",
@@ -543,7 +549,7 @@ def _unavailable_evidence(package: Mapping[str, Any], evidence: Mapping[str, Any
         "reason": reason,
         "details": dict(details or {}),
         "claimSufficiencyOwner": "downstream_mission_authority",
-        "recovery": {"action": "retake_photo", "shooterMessage": "We need a little more of the target in the picture. Take another photo."},
+        "recovery": {"action": recovery_action, "shooterMessage": shooter_message},
         "canonicalObservations": [],
     }
     result["registrationEvidenceHash"] = _stable_hash(result)

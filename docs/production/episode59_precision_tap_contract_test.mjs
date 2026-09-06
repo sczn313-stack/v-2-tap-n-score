@@ -91,7 +91,7 @@ assert.match(shoot, /function activeTargetImageRegistrationAuthority\(/, "regist
 assert.match(shoot, /\["exact", "estimated", "partial", "complete"\]\.includes\(String\(evidence\.registrationStatus/, "descriptive governed registration states replace the old binary gate");
 assert.match(shoot, /registrationGlobalUncertaintyPx/);
 assert.match(shoot, /registrationEvidenceId/);
-assert.match(shoot, /We need a little more of the target in the picture\. Take another photo\. Your marks are still here\./);
+assert.match(shoot, /registrationReason === "target_identity_unverified"[\s\S]*could not verify that this photo matches the target selected for this session[\s\S]*position and orientation from the photo/, "registration recovery describes identity and orientation failures instead of always asking for more target");
 assert.ok(
   shoot.indexOf("const registrationMessage = precisionTapRegistrationMessage()") < shoot.indexOf("const unavailableCapabilityMessage = unavailableResultCapabilityMessage()"),
   "registration fails closed before mission result authority is requested"

@@ -16,6 +16,7 @@ from target_image_registration_authority import register_target_image
 DOCS = Path(__file__).resolve().parents[1]
 CANONICAL = DOCS / "assets" / "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg"
 DIFFERENT_GEOMETRY = DOCS / "assets" / "M4_M16_25M_ZERO_AUTHORITY_v1.png"
+DIFFERENT_PRODUCT = DOCS / "authority-evidence" / "mfam" / "founder-supplied-baker-product-evidence" / "FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png"
 PACKAGE_ID = "baker-m16a2-25m-photo-registration-v1"
 PROFILE_ID = "baker_m16a2_25m_zero"
 PROFILE_VERSION = "BAKER_M16A2_25M_AUTHORITY_v1"
@@ -133,6 +134,25 @@ def test_different_universal_moa_geometry_still_fails_closed():
     })
     assert result["knowledgeState"] == "unavailable"
     assert result["reason"] == "target_identity_unverified"
+    assert result["recovery"]["action"] == "check_target_identity"
+    assert "matches the target selected for this session" in result["recovery"]["shooterMessage"]
+
+
+def test_enlarged_st_m16a2r_cannot_inherit_standard_face_directional_authority():
+    impacts = [
+        {"xPercent": 58.3, "yPercent": 41.1, "shotId": "initial-1"},
+        {"xPercent": 58.5, "yPercent": 41.3, "shotId": "initial-2"},
+        {"xPercent": 58.7, "yPercent": 41.5, "shotId": "initial-3"},
+    ]
+    result = build_authority_package(authority_payload(image_evidence(DIFFERENT_PRODUCT), impacts))
+    registration = result["targetImageRegistrationEvidence"]
+    assert registration["metrics"]["targetCoverage"] == 1.0
+    assert registration["orientationEvidence"]["status"] == "unverified"
+    assert result["registrationClaimSufficiency"]["reason"] == "target_orientation_unverified"
+    assert result["authorityAuditEnvelope"]["releaseStatus"] == "withheld"
+    assert result["clicks"] is None
+    assert result["correction"] is None
+    assert "exact Baker standard M16A2 face" in result["shooterGuidance"]["message"]
 
 
 def test_standard_baker_m16a2_uses_existing_mechanical_authority():

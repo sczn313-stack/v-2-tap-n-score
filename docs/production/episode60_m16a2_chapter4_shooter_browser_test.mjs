@@ -6,6 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8094";
 const targetPhoto = path.resolve("assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg");
+const enlargedDifferentProduct = path.resolve("authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png");
 const profileId = "baker_m16a2_25m_zero";
 const registrationPackageId = "baker-m16a2-25m-photo-registration-v1";
 const adjustmentProfileId = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
@@ -127,6 +128,32 @@ try {
     await context.close();
     console.log(`PASS Chapter 4 shooter M16A2 correction → confirmation → SEC → Vault at ${viewport.width}px`);
   }
+
+  const refusalContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const refusalPage = await refusalContext.newPage();
+  const refusalAuthority = [];
+  await refusalContext.route("**/api/authority/m4", async route => {
+    const response = await route.fetch();
+    refusalAuthority.push({ status: response.status(), body: await response.json() });
+    await route.fulfill({ response });
+  });
+  await refusalPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=existing`, { waitUntil: "networkidle" });
+  await refusalPage.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
+  await refusalPage.locator("#targetImageInput").setInputFiles(enlargedDifferentProduct);
+  await refusalPage.waitForFunction(() => document.body.dataset.precisionTapRegistration !== "pending", null, { timeout: 30000 });
+  await tapPercent(refusalPage, 50, 48.7);
+  await tapPercent(refusalPage, 58.3, 41.1);
+  await tapPercent(refusalPage, 58.5, 41.3);
+  await tapPercent(refusalPage, 58.7, 41.5);
+  await refusalPage.locator("#showResults:visible").click();
+  await refusalPage.getByText(/TARGET ORIENTATION UNVERIFIED/, { exact: false }).waitFor({ timeout: 30000 });
+  assert.equal(refusalAuthority.at(-1).status, 200);
+  assert.equal(refusalAuthority.at(-1).body.registrationClaimSufficiency.reason, "target_orientation_unverified");
+  assert.equal(refusalAuthority.at(-1).body.authorityAuditEnvelope.releaseStatus, "withheld");
+  assert.equal(refusalAuthority.at(-1).body.clicks, null);
+  assert.match(await refusalPage.locator("#authorityStatusMessage").innerText(), /exact Baker standard M16A2 face[\s\S]*Check the target identity/);
+  await refusalContext.close();
+  console.log("PASS enlarged ST-M16A2R is refused with truthful target identity/orientation guidance");
 } finally {
   await browser.close();
 }

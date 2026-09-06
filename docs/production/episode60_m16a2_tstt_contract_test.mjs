@@ -75,7 +75,9 @@ assert.match(source, /pendingAutomaticDemoStart[\s\S]*chapterThreeRuntime\.addEv
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /DEMO:|AUDIO:|STEP:|PLAYER STATE:|Founder runtime proof|chapter-three-runtime-proof/, "development instrumentation is absent from the finished shooter-facing TSTT experience");
 assert.match(source, /sczn3-m16a2-demo-runtime[\s\S]*updateChapterThreeStartControl/, "the runtime event still hides the legitimate gesture control once the demo starts");
 assert.match(chapterThreeSource, /Let Tap-n-Score show you[\s\S]*COMPLETE DEMONSTRATION[\s\S]*WATCH TAP-N-SCORE/, "Chapter 3 is a watch-only complete demonstration");
-assert.match(source, /chapterThreeTargetImage = "assets\/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg"/, "Chapter 3 displays the exact governed standard Baker M16A2 production face");
+assert.match(source, /targetImage = "assets\/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg"[\s\S]*chapterThreeTargetImage = targetImage/, "every M16A2 chapter displays the same exact governed standard Baker production face");
+assert.match(html, /assets\/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1\.jpg/, "the pre-runtime target visual is bound to the governed standard M16A2 face");
+assert.doesNotMatch(`${html}\n${source}`, /FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02\.png/, "the enlarged ST-M16A2R representation is not shooter-facing in the standard-face TSTT");
 assert.match(chapterThreeSource, /adjustment-target[\s\S]*chapterThreeTargetImage[\s\S]*demo-launch/, "Chapter 3 prominently renders the supplied Baker target");
 assert.doesNotMatch(chapterThreeSource, /TAKE PHOTO|CHOOSE EXISTING PHOTO|I FOUND|I CAN|YOUR TASK|\bPOIB\b|quiz|competenc/i, "Chapter 3 asks for no upload, observation, calculation, acknowledgment, or classroom gate");
 assert.match(demoFixture, /M16A2-STANDARD-IRON-FSP-REAR-DRUM/, "the prepared example carries the exact equipment configuration");

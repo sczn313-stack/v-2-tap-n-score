@@ -791,6 +791,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     audit_clicks = dict(clicks) if clicks else None
     audit_angular = dict(angular) if angular else None
     audit_vector = dict(vector) if vector else None
+    shooter_guidance = None
     hard_withhold = registration_sufficiency.get("reason") in {
         "target_orientation_unverified",
         "source_direction_reconciliation_failed",
@@ -814,6 +815,15 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         geometry_validation = {
             "status": "authority-withheld",
             "reason": registration_sufficiency.get("reason"),
+        }
+        shooter_guidance = {
+            "status": "authority_withheld",
+            "reason": registration_sufficiency.get("reason"),
+            "message": (
+                "TARGET ORIENTATION UNVERIFIED. This photo does not match the exact Baker standard M16A2 face for this session, or its identifying top and bottom landmarks could not be proven. Check the target identity before taking another photo."
+                if registration_sufficiency.get("reason") == "target_orientation_unverified"
+                else "The directional correction was withheld because the source photograph and governed result did not reconcile."
+            ),
         }
         if phase == "confirmation":
             validation = {
@@ -890,6 +900,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "releaseStatus": "withheld" if hard_withhold else "released",
         } if registration_evidence else None,
         "correctionEstimate": correction_estimate,
+        "shooterGuidance": shooter_guidance,
         "confirmedAimPointAuthority": {
             "status": "confirmed" if aim else "unavailable",
             "coordinate": aim,

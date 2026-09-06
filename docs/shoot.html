@@ -3619,7 +3619,11 @@ function precisionTapRegistrationMessage() {
   if (governedPrecisionTapRegistration()) return "";
   const evidence = activeEvidence();
   if (evidence && evidence.registrationStatus === "pending") return "SCZN3 is still getting the target ready. Try again in a moment.";
-  return "We need a little more of the target in the picture. Take another photo. Your marks are still here.";
+  if (evidence && evidence.registrationRecoveryMessage) return evidence.registrationRecoveryMessage;
+  if (evidence && evidence.registrationReason === "target_identity_unverified") {
+    return "SCZN3 could not verify that this photo matches the target selected for this session. Check the target identity and choose a photo that clearly shows its title, grid, and bottom instructions. Your marks are still here.";
+  }
+  return "SCZN3 could not verify this target's position and orientation from the photo. Retake it with the title, grid, and bottom instructions visible. Your marks are still here.";
 }
 
 async function requestTargetImageRegistration(imageEvidence, observations = []) {
@@ -5435,10 +5439,11 @@ function handleTargetImageSelection(event) {
         || "";
       pendingEvidence.canonicalCoordinateSystemVersion = registration && registration.canonicalCoordinateSystemId;
       pendingEvidence.registrationReason = registration && registration.reason;
+      pendingEvidence.registrationRecoveryMessage = registration && registration.recovery && registration.recovery.shooterMessage;
       renderEvidencePreview(pendingEvidence);
       if (pendingEvidence.registrationStatus === "unavailable") {
         authorityStatusMessage = registration && registration.recovery && registration.recovery.shooterMessage
-          || "We need a little more of the target in the picture. Take another photo.";
+          || "SCZN3 could not verify this target's position and orientation from the photo. Retake it with the title, grid, and bottom instructions visible.";
         setSaveSessionStatus(authorityStatusMessage);
       } else {
         authorityStatusMessage = "";

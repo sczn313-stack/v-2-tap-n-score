@@ -742,6 +742,7 @@ export async function buildAuthorityPackage(input) {
     },
     authorityAuditEnvelope: null,
     correctionEstimate: null,
+    shooterGuidance: null,
     confirmedAimPointAuthority: {
       status: aim ? "confirmed" : "unavailable",
       coordinate: aim,
