@@ -59,17 +59,34 @@ def mfam_authority_binding(target_profile_id: str) -> Dict[str, Any]:
     """Resolve the executable M/FAM differences owned by backend authority."""
     resolved = resolve_mfam_target_profile(target_profile_id)
     binding = resolved["binding"]
+    family_package = resolved.get("familyAuthorityPackage")
+    family_geometry = (
+        family_package.get("geometryAuthority")
+        if isinstance(family_package, Mapping)
+        else resolved["family"]["geometry"]
+    )
+    family_procedure = (
+        family_package.get("procedureAuthority")
+        if isinstance(family_package, Mapping)
+        else resolved["family"]["procedure"]
+    )
     return {
         "registryId": resolved["registryId"],
         "registryVersion": resolved["version"],
         "productId": binding["productId"],
         "faceIdentity": deepcopy(resolved["product"]["face"]),
         "familyId": binding["familyId"],
-        "geometry": deepcopy(resolved["family"]["geometry"]),
-        "procedure": deepcopy(resolved["family"]["procedure"]),
+        "familyAuthorityPackageId": binding.get("familyAuthorityPackageId"),
+        "familyAuthorityVersion": family_package.get("authorityVersion") if isinstance(family_package, Mapping) else None,
+        "geometry": deepcopy(family_geometry),
+        "aimAuthority": deepcopy(family_package.get("aimAuthority")) if isinstance(family_package, Mapping) else None,
+        "measurementAuthority": deepcopy(family_package.get("measurementAuthority")) if isinstance(family_package, Mapping) else None,
+        "procedure": deepcopy(family_procedure),
         "mechanicalAuthorityId": binding["mechanicalAuthorityId"],
         "equipmentConfiguration": deepcopy(resolved["mechanicalAuthority"]["equipmentConfiguration"]),
+        "confirmationAuthority": deepcopy(family_package.get("confirmationAuthority")) if isinstance(family_package, Mapping) else None,
         "registrationPackageId": binding["registrationPackageId"],
+        "canonicalRepresentationAuthority": deepcopy(binding.get("canonicalRepresentationAuthority")),
         "status": binding["status"],
     }
 

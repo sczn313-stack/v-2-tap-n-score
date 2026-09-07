@@ -1,7 +1,7 @@
 # M/FAM Hold-Clearance Plan
 
 Date: 2026-09-06  
-Authority floor: M/FAM inventory and family authority registry version `2026-09-06.3`  
+Authority floor: M/FAM inventory and family authority registry version `2026-09-06.5`
 Purpose: clear shared authority by governed family without collapsing product identity or copying the universal zeroing road
 
 ## Decision
@@ -68,6 +68,8 @@ The ranking uses potential bindings gained, existing governed reuse, and the amo
 ## First work package
 
 Start with `mfam_m16a2_a3_standard_25m_300m`.
+
+Scale Proof 01 executed this package. The shared family authority is now a machine-enforced Backend record and the Baker standard face consumes it through inheritance. No additional candidate face was admitted because the preserved evidence did not prove its physical conformance and exact representation registration. See `M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md`.
 
 The family already owns the facts that must not be repurchased per publisher:
 

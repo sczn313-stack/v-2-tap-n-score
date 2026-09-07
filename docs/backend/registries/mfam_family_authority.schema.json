@@ -13,7 +13,9 @@
     "evidencePolicy",
     "inventoryAudit",
     "authorizationSweep",
+    "scaleProofs",
     "families",
+    "familyAuthorityPackages",
     "mechanicalAuthorities",
     "products",
     "targetProfileBindings",
@@ -96,7 +98,9 @@
         "decision": {"type": "string", "minLength": 1}
       }
     },
+    "scaleProofs": {"type": "array", "items": {"$ref": "#/$defs/scaleProof"}},
     "families": {"type": "array", "items": {"$ref": "#/$defs/family"}},
+    "familyAuthorityPackages": {"type": "array", "items": {"$ref": "#/$defs/familyAuthorityPackage"}},
     "mechanicalAuthorities": {"type": "array", "items": {"$ref": "#/$defs/mechanicalAuthority"}},
     "products": {"type": "array", "items": {"$ref": "#/$defs/product"}},
     "targetProfileBindings": {"type": "array", "items": {"$ref": "#/$defs/binding"}},
@@ -107,6 +111,27 @@
   },
   "$defs": {
     "status": {"enum": ["GOVERNED", "EVIDENCE_ONLY", "HOLD", "UNPROVEN"]},
+    "scaleProof": {
+      "type": "object",
+      "required": [
+        "proofId", "observedAt", "reportPath", "familyId",
+        "familyAuthorityPackageId", "candidateFaceIds", "admittedTargetProfileIds",
+        "holdReasons", "counts", "familyLeverage", "decision"
+      ],
+      "properties": {
+        "proofId": {"type": "string", "minLength": 1},
+        "observedAt": {"type": "string", "minLength": 1},
+        "reportPath": {"type": "string", "minLength": 1},
+        "familyId": {"type": "string", "minLength": 1},
+        "familyAuthorityPackageId": {"type": "string", "minLength": 1},
+        "candidateFaceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "admittedTargetProfileIds": {"type": "array", "items": {"type": "string"}},
+        "holdReasons": {"type": "array", "items": {"type": "object"}},
+        "counts": {"type": "object"},
+        "familyLeverage": {"type": "number", "minimum": 0},
+        "decision": {"type": "string", "minLength": 1}
+      }
+    },
     "family": {
       "type": "object",
       "required": ["familyId", "name", "status", "geometry", "procedure", "registration"],
@@ -129,6 +154,29 @@
         "equipmentConfiguration": {"type": "object"},
         "controls": {"type": "array", "items": {"type": "object"}},
         "sourceIds": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "familyAuthorityPackage": {
+      "type": "object",
+      "required": [
+        "familyAuthorityPackageId", "familyId", "status", "authorityVersion",
+        "universalZeroingCapabilityId", "geometryAuthority", "aimAuthority",
+        "measurementAuthority", "procedureAuthority", "mechanicalAuthorityIds",
+        "confirmationAuthority", "sourceIds"
+      ],
+      "properties": {
+        "familyAuthorityPackageId": {"type": "string", "minLength": 1},
+        "familyId": {"type": "string", "minLength": 1},
+        "status": {"const": "GOVERNED"},
+        "authorityVersion": {"type": "string", "minLength": 1},
+        "universalZeroingCapabilityId": {"const": "sczn3-governed-zeroing-road-v1"},
+        "geometryAuthority": {"type": "object"},
+        "aimAuthority": {"type": "object"},
+        "measurementAuthority": {"type": "object"},
+        "procedureAuthority": {"type": "object"},
+        "mechanicalAuthorityIds": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "confirmationAuthority": {"type": "object"},
+        "sourceIds": {"type": "array", "minItems": 1, "items": {"type": "string"}}
       }
     },
     "product": {
@@ -167,8 +215,10 @@
         "targetProfileId": {"type": "string", "minLength": 1},
         "productId": {"type": "string", "minLength": 1},
         "familyId": {"type": "string", "minLength": 1},
+        "familyAuthorityPackageId": {"type": "string", "minLength": 1},
         "mechanicalAuthorityId": {"type": "string", "minLength": 1},
         "registrationPackageId": {"type": "string", "minLength": 1},
+        "canonicalRepresentationAuthority": {"type": "object"},
         "status": {"const": "GOVERNED"}
       }
     },

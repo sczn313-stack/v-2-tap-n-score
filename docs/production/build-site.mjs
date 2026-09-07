@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { generateWeaponEquipmentRegistry } from "./generate_weapon_equipment_registry.mjs";
+import { generateMFAMFamilyRegistry } from "./generate_mfam_family_registry.mjs";
 import { collectExecutionContractAssets } from "./collect_execution_contract_assets.mjs";
 
 const root = process.cwd();
@@ -123,6 +124,7 @@ publicFiles.push(...await collectExecutionContractAssets(root));
 await rm(path.join(root, "dist"), { recursive: true, force: true });
 await mkdir(serverDir, { recursive: true });
 await generateWeaponEquipmentRegistry();
+await generateMFAMFamilyRegistry();
 
 const assets = {};
 for (const relativePath of publicFiles) {
@@ -137,6 +139,10 @@ await cp(
 await cp(
   path.join(root, "production", "generated_weapon_equipment_registry.mjs"),
   path.join(serverDir, "generated_weapon_equipment_registry.mjs")
+);
+await cp(
+  path.join(root, "production", "generated_mfam_family_registry.mjs"),
+  path.join(serverDir, "generated_mfam_family_registry.mjs")
 );
 await cp(
   path.join(root, "production", "worker.mjs"),

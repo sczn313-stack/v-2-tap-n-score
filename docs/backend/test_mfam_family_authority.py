@@ -11,6 +11,7 @@ from mfam_family_authority import (
     INVENTORY_AUDIT_PATH,
     REGISTRY_PATH,
     classify_pair,
+    family_scale_proof,
     family,
     hold_clearance_inventory,
     industry_authorization_sweep,
@@ -48,7 +49,7 @@ def test_registry_schema_contract_is_present_and_matches_runtime_schema_id():
     assert schema["properties"]["schemaId"]["const"] == "sczn3-mfam-family-authority-v1"
     assert set(schema["required"]) == {
         "schemaId", "registryId", "version", "status", "classificationVocabulary",
-        "evidencePolicy", "inventoryAudit", "authorizationSweep", "families", "mechanicalAuthorities", "products",
+        "evidencePolicy", "inventoryAudit", "authorizationSweep", "scaleProofs", "families", "familyAuthorityPackages", "mechanicalAuthorities", "products",
         "targetProfileBindings", "pairClassifications", "publisherSweep",
         "unresolvedGaps", "sources",
     }
@@ -127,6 +128,50 @@ def test_only_two_exact_profiles_have_executable_mfam_bindings():
         assert resolved["product"]["runtimeStatus"] == "GOVERNED"
         assert resolved["family"]["status"] == "GOVERNED"
         assert resolved["mechanicalAuthority"]["status"] == "GOVERNED"
+
+
+def test_standard_m16a2_family_authority_is_one_reusable_backend_package():
+    payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    packages = payload["familyAuthorityPackages"]
+    assert len(packages) == 1
+    package = packages[0]
+    assert package["familyAuthorityPackageId"] == "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1"
+    assert package["familyId"] == "mfam_m16a2_a3_standard_25m_300m"
+    assert package["universalZeroingCapabilityId"] == "sczn3-governed-zeroing-road-v1"
+    assert package["geometryAuthority"]["columns"] == 18
+    assert package["geometryAuthority"]["rows"] == 20
+    assert package["geometryAuthority"]["square"] == {"value": 0.96, "unit": "CM"}
+    assert package["aimAuthority"]["gridOriginToAim"] == {"columns": 9, "rows": 10}
+    assert package["mechanicalAuthorityIds"] == [
+        "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+    ]
+    assert package["confirmationAuthority"]["minimumShots"] == 3
+    assert package["confirmationAuthority"]["residualTolerance"] == {"value": 1.0, "unit": "IN"}
+    resolved = resolve_target_profile("baker_m16a2_25m_zero")
+    assert resolved["familyAuthorityPackage"] == package
+    assert resolved["binding"]["familyAuthorityPackageId"] == package["familyAuthorityPackageId"]
+    assert resolved["binding"]["canonicalRepresentationAuthority"]["targetId"] == "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1"
+
+
+def test_standard_m16a2_scale_proof_is_auditable_and_evidence_limited():
+    proof = family_scale_proof("MFAM-SCALE-PROOF-01-STANDARD-M16A2-A3")
+    assert proof["familyId"] == "mfam_m16a2_a3_standard_25m_300m"
+    assert proof["counts"] == {
+        "candidateFaces": 9,
+        "familyAuthorityPackagesCreated": 1,
+        "alreadyExecutable": 1,
+        "newlyExecutableThroughInheritance": 0,
+        "stillHold": 8,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0,
+        "totalExecutableBindingsAfterProof": 1,
+    }
+    assert proof["familyLeverage"] == 1.0
+    assert proof["admittedTargetProfileIds"] == ["baker_m16a2_25m_zero"]
+    assert {item["faceId"] for item in proof["holdReasons"]} == {
+        "face-006", "face-013", "face-016", "face-018",
+        "face-020", "face-025", "face-027", "face-032",
+    }
 
 
 def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority():
@@ -278,13 +323,16 @@ def test_human_governance_record_exists():
     face_catalog = Path(__file__).resolve().parents[1] / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "M_FAM_FACE_LEVEL_MASTER_CATALOG.md"
     authorization_report = face_catalog.with_name("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
     hold_clearance_plan = face_catalog.with_name("M_FAM_HOLD_CLEARANCE_PLAN.md")
+    scale_proof = face_catalog.with_name("M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md")
     assert face_catalog.is_file()
     assert authorization_report.is_file()
     assert hold_clearance_plan.is_file()
+    assert scale_proof.is_file()
     governance_text = path.read_text(encoding="utf-8")
     catalog_text = face_catalog.read_text(encoding="utf-8")
     authorization_text = authorization_report.read_text(encoding="utf-8")
     clearance_text = hold_clearance_plan.read_text(encoding="utf-8")
+    scale_text = scale_proof.read_text(encoding="utf-8")
     audit = inventory_audit()
     for record in audit["faces"]:
         assert f"`{record['faceId']}`" in catalog_text
@@ -298,6 +346,9 @@ def test_human_governance_record_exists():
     assert "| `AUTHORIZED NOW` — new runtime bindings | 0 |" in authorization_text
     assert "| `HOLD` — known physical product faces | 34 |" in authorization_text
     assert "Baker `ST-M16A2R`" in clearance_text
+    for face_id in ("face-003", "face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"):
+        assert f"`{face_id}`" in scale_text
+    assert "FAMILY LEVERAGE" in scale_text
     assert "Baker `ST-Uni25mMOA`" in clearance_text
     assert "National `23112` no-yellow" in clearance_text
     assert "National `23112` yellow-circle" in clearance_text

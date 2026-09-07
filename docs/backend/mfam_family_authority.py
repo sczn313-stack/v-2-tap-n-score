@@ -93,16 +93,36 @@ def _load_registry() -> Dict[str, Any]:
             raise MFAMAuthorityError(f"mfam_inventory_audit_count_mismatch:{name}")
 
     families = _unique_index(payload.get("families") or [], "familyId")
+    family_packages = _unique_index(
+        payload.get("familyAuthorityPackages") or [],
+        "familyAuthorityPackageId",
+    )
     mechanics = _unique_index(payload.get("mechanicalAuthorities") or [], "mechanicalAuthorityId")
     products = _unique_index(payload.get("products") or [], "productId")
     sources = _unique_index(payload.get("sources") or [], "sourceId")
     bindings = _unique_index(payload.get("targetProfileBindings") or [], "targetProfileId")
+    scale_proofs = _unique_index(payload.get("scaleProofs") or [], "proofId")
 
     for collection_name, collection in (("family", families.values()), ("mechanical_authority", mechanics.values())):
         for record in collection:
             for source_id in record.get("sourceIds") or []:
                 if source_id not in sources:
                     raise MFAMAuthorityError(f"mfam_{collection_name}_source_missing:{source_id}")
+
+    for package in family_packages.values():
+        if package.get("status") != "GOVERNED":
+            raise MFAMAuthorityError(f"mfam_family_package_not_governed:{package['familyAuthorityPackageId']}")
+        if package.get("familyId") not in families:
+            raise MFAMAuthorityError(f"mfam_family_package_family_missing:{package['familyAuthorityPackageId']}")
+        if package.get("universalZeroingCapabilityId") != payload.get("universalZeroingCapabilityId"):
+            raise MFAMAuthorityError(f"mfam_family_package_capability_mismatch:{package['familyAuthorityPackageId']}")
+        for authority_id in package.get("mechanicalAuthorityIds") or []:
+            authority = mechanics.get(authority_id)
+            if not authority or authority.get("status") != "GOVERNED":
+                raise MFAMAuthorityError(f"mfam_family_package_mechanics_not_governed:{package['familyAuthorityPackageId']}")
+        for source_id in package.get("sourceIds") or []:
+            if source_id not in sources:
+                raise MFAMAuthorityError(f"mfam_family_package_source_missing:{package['familyAuthorityPackageId']}:{source_id}")
 
     for product in products.values():
         family_id = product.get("candidateFamilyId")
@@ -131,6 +151,21 @@ def _load_registry() -> Dict[str, Any]:
         )
         if not governed:
             raise MFAMAuthorityError(f"mfam_binding_not_fully_governed:{binding['targetProfileId']}")
+        package_id = binding.get("familyAuthorityPackageId")
+        if package_id:
+            package = family_packages.get(package_id)
+            if not package or package.get("familyId") != binding.get("familyId"):
+                raise MFAMAuthorityError(f"mfam_binding_family_package_mismatch:{binding['targetProfileId']}")
+            if binding.get("mechanicalAuthorityId") not in package.get("mechanicalAuthorityIds", []):
+                raise MFAMAuthorityError(f"mfam_binding_mechanics_outside_family_package:{binding['targetProfileId']}")
+            representation = binding.get("canonicalRepresentationAuthority") or {}
+            required_representation_fields = {
+                "targetId", "imageWidth", "imageHeight", "gridLeftPx", "gridTopPx",
+                "gridRightPx", "gridBottomPx", "gridSquareXPx", "gridSquareYPx",
+                "aimCoordinate", "aimAuthorityId", "sourceAssetSha256",
+            }
+            if not required_representation_fields.issubset(representation):
+                raise MFAMAuthorityError(f"mfam_binding_representation_authority_incomplete:{binding['targetProfileId']}")
 
     for pair in payload.get("pairClassifications") or []:
         if pair.get("leftProductId") not in products or pair.get("rightProductId") not in products:
@@ -220,6 +255,55 @@ def _load_registry() -> Dict[str, Any]:
             if source_id not in sources:
                 raise MFAMAuthorityError(f"mfam_inventory_face_source_missing:{face_record['faceId']}:{source_id}")
 
+    for proof in scale_proofs.values():
+        proof_id = proof["proofId"]
+        family_id = proof.get("familyId")
+        package_id = proof.get("familyAuthorityPackageId")
+        package = family_packages.get(package_id)
+        if family_id not in families or not package or package.get("familyId") != family_id:
+            raise MFAMAuthorityError(f"mfam_scale_proof_authority_mismatch:{proof_id}")
+        candidate_faces = {
+            face["faceId"] for face in inventory_faces.values()
+            if face.get("governedFamilyId") == family_id
+        }
+        if set(proof.get("candidateFaceIds") or []) != candidate_faces:
+            raise MFAMAuthorityError(f"mfam_scale_proof_candidate_faces_mismatch:{proof_id}")
+        admitted_profiles = set(proof.get("admittedTargetProfileIds") or [])
+        if any(
+            profile_id not in bindings or bindings[profile_id].get("familyId") != family_id
+            for profile_id in admitted_profiles
+        ):
+            raise MFAMAuthorityError(f"mfam_scale_proof_binding_mismatch:{proof_id}")
+        held_faces = {
+            face_id for face_id in candidate_faces
+            if not inventory_faces[face_id].get("runtimeBinding")
+        }
+        hold_reasons = {item.get("faceId"): item for item in proof.get("holdReasons") or []}
+        if set(hold_reasons) != held_faces:
+            raise MFAMAuthorityError(f"mfam_scale_proof_hold_faces_mismatch:{proof_id}")
+        for face_id, reason in hold_reasons.items():
+            if reason.get("missingFacts") != inventory_faces[face_id].get("unresolvedFacts"):
+                raise MFAMAuthorityError(f"mfam_scale_proof_hold_reason_mismatch:{proof_id}:{face_id}")
+        counts = proof.get("counts") or {}
+        expected_counts = {
+            "candidateFaces": len(candidate_faces),
+            "familyAuthorityPackagesCreated": 1,
+            "alreadyExecutable": len(candidate_faces) - len(held_faces),
+            "newlyExecutableThroughInheritance": 0,
+            "stillHold": len(held_faces),
+            "productSpecificZeroingImplementationsCreated": 0,
+            "universalZeroingRoadsCreated": 0,
+            "totalExecutableBindingsAfterProof": len(admitted_profiles),
+        }
+        if counts != expected_counts:
+            raise MFAMAuthorityError(f"mfam_scale_proof_count_mismatch:{proof_id}")
+        expected_leverage = (
+            counts["totalExecutableBindingsAfterProof"]
+            / counts["familyAuthorityPackagesCreated"]
+        )
+        if float(proof.get("familyLeverage", -1)) != expected_leverage:
+            raise MFAMAuthorityError(f"mfam_scale_proof_leverage_mismatch:{proof_id}")
+
     authorization_sweep = payload.get("authorizationSweep") or {}
     sweep_counts = authorization_sweep.get("counts") or {}
     bound_physical_faces = [face for face in inventory_faces.values() if face.get("runtimeBinding")]
@@ -247,9 +331,11 @@ def _load_registry() -> Dict[str, Any]:
 
     payload["_index"] = {
         "families": families,
+        "familyPackages": family_packages,
         "mechanics": mechanics,
         "products": products,
         "bindings": bindings,
+        "scaleProofs": scale_proofs,
     }
     payload["_inventoryIndex"] = {
         "publishers": inventory_publishers,
@@ -274,6 +360,7 @@ def registry_metadata() -> Dict[str, Any]:
         "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
         "inventoryCatalogId": _REGISTRY["inventoryAudit"]["catalogId"],
         "authorizationSweep": deepcopy(_REGISTRY["authorizationSweep"]),
+        "scaleProofs": deepcopy(_REGISTRY["scaleProofs"]),
     }
 
 
@@ -285,6 +372,7 @@ def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
     geometry = _REGISTRY["_inventoryIndex"]["geometries"][face_record["geometryId"]]
     procedure = _REGISTRY["_inventoryIndex"]["procedures"][face_record["procedureId"]]
     runtime_binding = face_record.get("runtimeBinding")
+    binding = _REGISTRY["_index"]["bindings"].get(runtime_binding) if runtime_binding else None
     geometry_authorized = _face_has_authorized_geometry(
         face_record,
         _REGISTRY["_inventoryIndex"]["geometries"],
@@ -327,6 +415,7 @@ def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
         "mechanicalAuthorityIds": list(face_record.get("mechanicalAuthorityIds") or []),
         "registration": deepcopy(face_record.get("registration") or {}),
         "runtimeBinding": runtime_binding,
+        "familyAuthorityPackageId": binding.get("familyAuthorityPackageId") if binding else None,
         "missingFacts": missing_facts,
         "whyExecutionBlocked": None if runtime_binding else f"Execution requires the unresolved authority fact(s): {'; '.join(missing_facts)}.",
         "shooterRecovery": shooter_recovery,
@@ -486,15 +575,28 @@ def hold_clearance_inventory() -> Dict[str, Any]:
     })
 
 
+def family_scale_proof(proof_id: str) -> Dict[str, Any]:
+    """Return one evidence-limited family leverage result."""
+    proof = _REGISTRY["_index"]["scaleProofs"].get(str(proof_id))
+    if not proof:
+        raise MFAMAuthorityError("mfam_scale_proof_not_found")
+    return deepcopy(proof)
+
+
 def resolve_target_profile(target_profile_id: str) -> Dict[str, Any]:
     binding = _REGISTRY["_index"]["bindings"].get(str(target_profile_id))
     if not binding:
         raise MFAMAuthorityError("mfam_target_profile_not_governed")
+    family_package_id = binding.get("familyAuthorityPackageId")
     return deepcopy({
         **registry_metadata(),
         "binding": binding,
         "product": _REGISTRY["_index"]["products"][binding["productId"]],
         "family": _REGISTRY["_index"]["families"][binding["familyId"]],
+        "familyAuthorityPackage": (
+            _REGISTRY["_index"]["familyPackages"].get(family_package_id)
+            if family_package_id else None
+        ),
         "mechanicalAuthority": _REGISTRY["_index"]["mechanics"][binding["mechanicalAuthorityId"]],
     })
 

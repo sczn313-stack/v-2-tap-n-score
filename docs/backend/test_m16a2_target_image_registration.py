@@ -153,7 +153,7 @@ def test_enlarged_st_m16a2r_cannot_inherit_standard_face_directional_authority()
     assert result["authorityAuditEnvelope"]["releaseStatus"] == "withheld"
     assert result["clicks"] is None
     assert result["correction"] is None
-    assert "exact Baker standard M16A2 face" in result["shooterGuidance"]["message"]
+    assert "exact selected target face" in result["shooterGuidance"]["message"]
 
 
 def test_standard_baker_m16a2_uses_existing_mechanical_authority():
@@ -164,9 +164,9 @@ def test_standard_baker_m16a2_uses_existing_mechanical_authority():
     ]
     result = build_authority_package(authority_payload(image_evidence(CANONICAL), impacts))
     assert result["targetProfileId"] == PROFILE_ID
-    assert result["authorityVersion"] == "sczn3-baker-m16a2-authority-v1"
+    assert result["authorityVersion"] == "sczn3-standard-m16a2-a3-family-authority-v1"
     assert result["targetImageRegistrationEvidence"]["knowledgeState"] == "exact"
-    assert result["registrationClaimSufficiency"]["owner"] == "baker-m16a2-zeroing-authority"
+    assert result["registrationClaimSufficiency"]["owner"] == "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1"
     assert result["mechanicalSightAuthority"]["adjustmentProfileId"] == ADJUSTMENT_PROFILE_ID
     correction_controls = {
         control["axis"]: control

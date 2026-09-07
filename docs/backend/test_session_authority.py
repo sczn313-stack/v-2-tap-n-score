@@ -149,6 +149,12 @@ def test_mfam_profiles_receive_exact_backend_family_bindings_without_frontend_de
         binding = preparation["mfamAuthorityBinding"]
         assert (binding["productId"], binding["familyId"], binding["mechanicalAuthorityId"]) == expected
         assert binding["status"] == "GOVERNED"
+        if target_id == "baker_m16a2_25m_zero":
+            assert binding["familyAuthorityPackageId"] == "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1"
+            assert binding["familyAuthorityVersion"] == "sczn3-standard-m16a2-a3-family-authority-v1"
+            assert binding["geometry"]["authorityId"] == "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1"
+            assert binding["confirmationAuthority"]["authorityId"] == "MFAM-STANDARD-M16A2-A3-CONFIRMATION-v1"
+            assert binding["canonicalRepresentationAuthority"]["targetId"] == "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1"
         started = start_session({
             "preparationToken": preparation["preparationToken"],
             "selectedEquipment": {**equipment(), "source": "weapon_library"},

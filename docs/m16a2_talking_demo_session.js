@@ -66,7 +66,7 @@
   });
   const initialAuthorityPackage = Object.freeze({
     authoritySource: "backend-authoritative",
-    authorityVersion: "sczn3-baker-m16a2-authority-v1",
+    authorityVersion: "sczn3-standard-m16a2-a3-family-authority-v1",
     target_profile_id: target.profileId,
     targetProfileId: target.profileId,
     targetProfileVersion: target.profileVersion,

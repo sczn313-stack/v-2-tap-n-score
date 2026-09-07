@@ -14,10 +14,12 @@ from typing import Any, Dict, List, Optional
 try:
     from authority_service import apply_precision_tap_registration, source_photo_render_coordinates
     from mechanical_quantization import ROUNDING_RULE, nearest_click_half_to_even, quantize_mechanical_axis
+    from mfam_family_authority import MFAMAuthorityError, resolve_target_profile as resolve_mfam_target_profile
     from target_image_registration_authority import canonical_point_to_source_percent, directional_source_reconciliation
 except ModuleNotFoundError:  # Package import used by the Python/JavaScript parity harness.
     from backend.authority_service import apply_precision_tap_registration, source_photo_render_coordinates
     from backend.mechanical_quantization import ROUNDING_RULE, nearest_click_half_to_even, quantize_mechanical_axis
+    from backend.mfam_family_authority import MFAMAuthorityError, resolve_target_profile as resolve_mfam_target_profile
     from backend.target_image_registration_authority import canonical_point_to_source_percent, directional_source_reconciliation
 
 from .weapon_equipment_registry import (
@@ -60,42 +62,6 @@ M4_GEOMETRY = {
         "source": M4_BULL_AUTHORITY["authorityId"],
     },
 }
-M16A2_PROFILE_ID = "baker_m16a2_25m_zero"
-M16A2_ADJUSTMENT_PROFILE_ID = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
-M16A2_BULL_AUTHORITY = {
-    "authorityId": "BAKER-M16A2-25M-BULL-AUTHORITY-2026-09-04",
-    "status": "registered-production-face",
-    "xPercent": 50.0,
-    "yPercent": 48.7,
-    "coordinateSystem": "continuous-edge-origin-normalized-percent",
-    "sourceDimensionsPx": {"width": 773, "height": 1000},
-    "sourceCoordinatePx": {"x": 386.5, "y": 487.0},
-    "sourceAssetSha256": "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
-    "scope": "Baker standard M16A2 25-meter face center white dot only",
-}
-M16A2_GEOMETRY = {
-    "targetId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
-    "imageWidth": 773,
-    "imageHeight": 1000,
-    "gridLeftPx": 64.0,
-    "gridTopPx": 129.0,
-    "gridRightPx": 709.0,
-    "gridBottomPx": 845.0,
-    "gridColumns": 18,
-    "gridRows": 20,
-    "gridSquareXPx": 645.0 / 18.0,
-    "gridSquareYPx": 716.0 / 20.0,
-    "gridSquarePx": 645.0 / 18.0,
-    "gridSquareInches": 0.96 / 2.54,
-    "unit": "inch",
-    "bullCoordinate": {
-        "xPercent": M16A2_BULL_AUTHORITY["xPercent"],
-        "yPercent": M16A2_BULL_AUTHORITY["yPercent"],
-        "source": M16A2_BULL_AUTHORITY["authorityId"],
-    },
-}
-
-
 def number(value: Any, fallback: Optional[float] = None) -> Optional[float]:
     try:
         result = float(value)
@@ -136,12 +102,73 @@ def normalize_impacts(impacts: Any) -> List[Dict[str, Any]]:
     ]
 
 
-def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
+def governed_family_context(payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Resolve family authority independently from publisher representation identity."""
     target_profile_id = str(payload.get("targetProfileId") or payload.get("target_profile_id") or "").lower()
-    if target_profile_id == M16A2_PROFILE_ID:
-        geometry = dict(M16A2_GEOMETRY)
-        geometry["bullCoordinate"] = dict(M16A2_GEOMETRY["bullCoordinate"])
-        return geometry
+    if not target_profile_id:
+        return None
+    try:
+        resolved = resolve_mfam_target_profile(target_profile_id)
+    except MFAMAuthorityError:
+        return None
+    package = resolved.get("familyAuthorityPackage")
+    representation = resolved.get("binding", {}).get("canonicalRepresentationAuthority")
+    if not isinstance(package, dict) or not isinstance(representation, dict):
+        return None
+    return {"resolved": resolved, "package": package, "representation": representation}
+
+
+def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
+    context = governed_family_context(payload)
+    if context:
+        package = context["package"]
+        representation = context["representation"]
+        family_geometry = package["geometryAuthority"]
+        aim = representation["aimCoordinate"]
+        square = family_geometry["square"]
+        square_inches = float(square["value"]) / 2.54 if str(square["unit"]).upper() == "CM" else float(square["value"])
+        return {
+            "targetId": representation["targetId"],
+            "imageWidth": representation["imageWidth"],
+            "imageHeight": representation["imageHeight"],
+            "gridLeftPx": representation["gridLeftPx"],
+            "gridTopPx": representation["gridTopPx"],
+            "gridRightPx": representation["gridRightPx"],
+            "gridBottomPx": representation["gridBottomPx"],
+            "gridColumns": family_geometry["columns"],
+            "gridRows": family_geometry["rows"],
+            "gridSquareXPx": representation["gridSquareXPx"],
+            "gridSquareYPx": representation["gridSquareYPx"],
+            "gridSquarePx": representation["gridSquareXPx"],
+            "gridSquareInches": square_inches,
+            "unit": "inch",
+            "authorityOwner": package["familyAuthorityPackageId"],
+            "authorityVersion": package["authorityVersion"],
+            "familyId": package["familyId"],
+            "familyGeometryAuthorityId": family_geometry["authorityId"],
+            "bullAuthority": {
+                "authorityId": representation["aimAuthorityId"],
+                "status": "registered-production-face",
+                "xPercent": aim["xPercent"],
+                "yPercent": aim["yPercent"],
+                "coordinateSystem": "continuous-edge-origin-normalized-percent",
+                "sourceDimensionsPx": {
+                    "width": representation["imageWidth"],
+                    "height": representation["imageHeight"],
+                },
+                "sourceCoordinatePx": {
+                    "x": float(representation["imageWidth"]) * float(aim["xPercent"]) / 100,
+                    "y": float(representation["imageHeight"]) * float(aim["yPercent"]) / 100,
+                },
+                "sourceAssetSha256": representation["sourceAssetSha256"],
+                "scope": "exact registered representation aim reference",
+            },
+            "bullCoordinate": {
+                "xPercent": aim["xPercent"],
+                "yPercent": aim["yPercent"],
+                "source": representation["aimAuthorityId"],
+            },
+        }
     supplied = payload.get("targetAuthorityGeometry")
     geometry = dict(M4_GEOMETRY)
     if isinstance(supplied, dict):
@@ -200,9 +227,13 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
             or ""
         )
         profile = get_adjustment_profile(requested_profile_id)
+        family_context = governed_family_context(payload)
+        allowed_profile_ids = set(
+            family_context["package"].get("mechanicalAuthorityIds") or []
+        ) if family_context else set()
         authority = authority_model_from_adjustment_profile(profile) if (
             profile
-            and requested_profile_id == M16A2_ADJUSTMENT_PROFILE_ID
+            and requested_profile_id in allowed_profile_ids
             and str(profile.get("status") or "").lower() == "proven"
             and str(profile.get("adjustmentSystem") or "").upper() == requested
         ) else {}
@@ -292,11 +323,7 @@ def registration_claim_sufficiency(
     mission: Dict[str, Any],
 ) -> Dict[str, Any]:
     """Decide whether registered photo uncertainty can change mechanical instructions."""
-    owner = (
-        "baker-m16a2-zeroing-authority"
-        if geometry.get("targetId") == M16A2_GEOMETRY["targetId"]
-        else "m4-zeroing-authority"
-    )
+    owner = geometry.get("authorityOwner") or "m4-zeroing-authority"
     if not registration:
         return {"status": "not_applicable", "owner": owner}
     orientation = registration.get("orientationEvidence") or {}
@@ -671,7 +698,16 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
                 }
 
     phase = str(payload.get("phase") or "initial").lower()
-    mission = payload.get("zeroingMission") if isinstance(payload.get("zeroingMission"), dict) else {}
+    mission = dict(payload.get("zeroingMission")) if isinstance(payload.get("zeroingMission"), dict) else {}
+    family_context = governed_family_context(payload)
+    if family_context:
+        confirmation_authority = family_context["package"]["confirmationAuthority"]
+        mission.update({
+            "confirmationAuthorityId": confirmation_authority["authorityId"],
+            "confirmationMinimumShots": confirmation_authority["minimumShots"],
+            "confirmationResidualToleranceInches": confirmation_authority["residualTolerance"]["value"],
+            "confirmationEvidenceRequirement": confirmation_authority["evidenceRequirement"],
+        })
     validation = {"status": "not-requested", "outcome": "PENDING"}
     if phase == "confirmation":
         minimum_shots = int(number(mission.get("confirmationMinimumShots"), 3) or 3)
@@ -822,7 +858,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "status": "authority_withheld",
             "reason": registration_sufficiency.get("reason"),
             "message": (
-                "TARGET ORIENTATION UNVERIFIED. This photo does not match the exact Baker standard M16A2 face for this session, or its identifying top and bottom landmarks could not be proven. Check the target identity before taking another photo."
+                "TARGET ORIENTATION UNVERIFIED. This photo does not match the exact selected target face for this session, or its identifying top and bottom landmarks could not be proven. Check the target identity before taking another photo."
                 if registration_sufficiency.get("reason") == "target_orientation_unverified"
                 else "The directional correction was withheld because the source photograph and governed result did not reconcile."
             ),
@@ -838,18 +874,14 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     shot_ids = [impact["shotId"] for impact in impacts]
     target_profile_id = str(payload.get("targetProfileId") or payload.get("target_profile_id") or "m4_25m_zero").lower()
-    bull_authority = M16A2_BULL_AUTHORITY if target_profile_id == M16A2_PROFILE_ID else M4_BULL_AUTHORITY
+    bull_authority = geometry.get("bullAuthority") or M4_BULL_AUTHORITY
     core = {
         "target_profile_id": target_profile_id,
         "targetProfileId": target_profile_id,
         "mission_family": "zeroingCorrection",
         "missionFamilyId": "zeroingCorrection",
         "resultPackageType": "zeroCorrectionResult",
-        "authorityVersion": (
-            "sczn3-baker-m16a2-authority-v1"
-            if target_profile_id == M16A2_PROFILE_ID
-            else "sczn3-m4-authority-v1"
-        ),
+        "authorityVersion": geometry.get("authorityVersion") or "sczn3-m4-authority-v1",
         "target": {
             "targetId": geometry["targetId"],
             "targetName": payload.get("targetName") or "Zeroing target",

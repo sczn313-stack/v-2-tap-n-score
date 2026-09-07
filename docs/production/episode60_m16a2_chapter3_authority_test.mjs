@@ -70,7 +70,10 @@ assert.deepEqual(
 );
 assert.equal(initial.targetProfileId, "baker_m16a2_25m_zero");
 assert.equal(initial.target.targetId, "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1");
-assert.equal(initial.authorityVersion, "sczn3-baker-m16a2-authority-v1");
+assert.equal(initial.authorityVersion, "sczn3-standard-m16a2-a3-family-authority-v1");
+assert.equal(initial.geometryMetadata.familyId, "mfam_m16a2_a3_standard_25m_300m");
+assert.equal(initial.geometryMetadata.authorityOwner, "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1");
+assert.equal(initial.zeroingMission.confirmationAuthorityId, "MFAM-STANDARD-M16A2-A3-CONFIRMATION-v1");
 assert.equal(confirmation.mechanicalSightAuthority.adjustmentProfileId, adjustmentProfileId);
 assert.equal(Number(confirmation.clicks.model.windagePerClick), 0.5);
 assert.equal(Number(confirmation.clicks.model.elevationPerClick), 1.25);

@@ -26,6 +26,7 @@ Backend structured data is runtime authority. This record explains that data to 
 - Fail-closed resolver: `docs/backend/mfam_family_authority.py`
 - Industry authorization result: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md`
 - Family hold-clearance plan: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md`
+- Standard M16A2/A3 scale proof: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md`
 - Universal zeroing capability: `sczn3-governed-zeroing-road-v1`
 
 ## Authority model
@@ -115,6 +116,14 @@ Qualification, composite, True-MOA, and True-MIL targets do not inherit a 25-met
 
 ## Runtime admission
 
+### Scale Proof 01 — Standard M16A2/A3
+
+The first family execution created one governed Backend package for common Standard M16A2/A3 geometry, aim, measurement, procedure, mechanics, and confirmation. The Baker standard face now retains only its product identity and exact representation/registration binding before entering the universal zeroing road.
+
+The audited family contains nine candidate faces. One is executable, zero additional faces could be truthfully admitted from the preserved corpus, and eight remain held for their exact physical-conformance or representation-registration facts. Product-specific zeroing implementations created: zero. New universal roads created: zero. Current family leverage: `1 executable binding ÷ 1 family package = 1.0`.
+
+This is an evidence result, not an architecture limitation: the family admission machinery is reusable, but candidate-family placement never substitutes for face conformance and registration.
+
 The completed industry-wide authorization sweep applies the existing evidence ledger without starting another product investigation:
 
 | Disposition | Result |
@@ -187,6 +196,7 @@ The M16A2 rear elevation drum remains a setup/finalization control:
 - Exact-common vs genuine-difference report: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_EXACT_COMMON_VS_DIFFERENCES.md`
 - Unresolved evidence gaps: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_UNRESOLVED_GAPS.md`
 - Ranked family hold-clearance plan: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md`
+- Standard M16A2/A3 Scale Proof 01: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md`
 - Source ledger: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/EVIDENCE_LEDGER.md`
 
 ## First pure-scale recommendation

@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-06.3",
+  "version": "2026-09-06.5",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -59,6 +59,42 @@
     },
     "decision": "No additional physical face in the completed evidence corpus has the complete representation registration, procedure, applicable mechanical authority, and confirmation package required for a new executable binding. Proven geometry reuse is preserved separately from runtime execution authority."
   },
+  "scaleProofs": [
+    {
+      "proofId": "MFAM-SCALE-PROOF-01-STANDARD-M16A2-A3",
+      "observedAt": "2026-09-06",
+      "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "candidateFaceIds": [
+        "face-003", "face-006", "face-013", "face-016", "face-018",
+        "face-020", "face-025", "face-027", "face-032"
+      ],
+      "admittedTargetProfileIds": ["baker_m16a2_25m_zero"],
+      "holdReasons": [
+        {"faceId": "face-006", "missingFacts": ["physical pitch", "aim", "printed instructions", "mechanics", "registration"]},
+        {"faceId": "face-013", "missingFacts": ["physical square pitch", "aim", "registration", "mechanical binding"]},
+        {"faceId": "face-016", "missingFacts": ["physical pitch", "exact landmarks", "mechanical binding", "registration"]},
+        {"faceId": "face-018", "missingFacts": ["physical pitch", "registration", "authority for M4/M16A4 claims"]},
+        {"faceId": "face-020", "missingFacts": ["physical pitch", "aim", "mechanical binding", "registration"]},
+        {"faceId": "face-025", "missingFacts": ["physical pitch", "aim", "weapon-specific mechanics", "registration"]},
+        {"faceId": "face-027", "missingFacts": ["physical pitch", "ink/wedge geometry effect", "aim", "procedure", "mechanics", "registration"]},
+        {"faceId": "face-032", "missingFacts": ["exact production dimensions", "registration package"]}
+      ],
+      "counts": {
+        "candidateFaces": 9,
+        "familyAuthorityPackagesCreated": 1,
+        "alreadyExecutable": 1,
+        "newlyExecutableThroughInheritance": 0,
+        "stillHold": 8,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0,
+        "totalExecutableBindingsAfterProof": 1
+      },
+      "familyLeverage": 1.0,
+      "decision": "The family authority was extracted once and the Baker specimen now consumes it through a product-specific representation binding. No second publisher face is admitted because the preserved evidence does not prove its exact physical conformance and representation registration."
+    }
+  ],
   "families": [
     {
       "familyId": "mfam_m16a1_25m_250m",
@@ -140,6 +176,55 @@
       "procedure": {"zeroingRoadEquivalent": false, "status": "EVIDENCE_ONLY"},
       "registration": {"status": "UNPROVEN", "orientationLandmarks": []},
       "sourceIds": ["RITR-NSN-2021", "ACTION-CATALOG", "GUNFUN-CATALOG"]
+    }
+  ],
+  "familyAuthorityPackages": [
+    {
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "status": "GOVERNED",
+      "authorityVersion": "sczn3-standard-m16a2-a3-family-authority-v1",
+      "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
+      "geometryAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1",
+        "sheetInches": [8.5, 11.0],
+        "columns": 18,
+        "rows": 20,
+        "square": {"value": 0.96, "unit": "CM"},
+        "uniform": true
+      },
+      "aimAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "reference": "center crosshairs / center white dot",
+        "gridOriginToAim": {"columns": 9, "rows": 10}
+      },
+      "measurementAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A2-A3-GRID-MEASUREMENT-v1",
+        "coordinateMeaning": "physical displacement from the 18 x 20 uniform grid",
+        "squareInches": 0.3779527559055118
+      },
+      "procedureAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A2-A3-25M-300M-PROCEDURE-v1",
+        "zeroDistance": {"value": 25, "unit": "M"},
+        "finalDistance": {"value": 300, "unit": "M"},
+        "setup": "8/3 then one click CLOCKWISE past 8/3",
+        "finalization": "after confirmed zero, one click COUNTERCLOCKWISE back to 8/3"
+      },
+      "mechanicalAuthorityIds": [
+        "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+      ],
+      "confirmationAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A2-A3-CONFIRMATION-v1",
+        "minimumShots": 3,
+        "residualTolerance": {"value": 1.0, "unit": "IN"},
+        "evidenceRequirement": "a second target photograph containing only the new confirmation-group observations",
+        "method": "zeroing-confirmation-authority-v1"
+      },
+      "sourceIds": [
+        "ARMY-FM-3-22-9-2011",
+        "SCZN3-M16A2-REGISTRATION",
+        "SCZN3-M16A2-MECHANICS"
+      ]
     }
   ],
   "mechanicalAuthorities": [
@@ -870,8 +955,23 @@
       "targetProfileId": "baker_m16a2_25m_zero",
       "productId": "baker:st-m16a2-m4:m16a2-face",
       "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
       "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
       "registrationPackageId": "baker-m16a2-25m-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+        "imageWidth": 773,
+        "imageHeight": 1000,
+        "gridLeftPx": 64.0,
+        "gridTopPx": 129.0,
+        "gridRightPx": 709.0,
+        "gridBottomPx": 845.0,
+        "gridSquareXPx": 35.833333333333336,
+        "gridSquareYPx": 35.8,
+        "aimCoordinate": {"xPercent": 50.0, "yPercent": 48.7},
+        "aimAuthorityId": "BAKER-M16A2-25M-BULL-AUTHORITY-2026-09-04",
+        "sourceAssetSha256": "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993"
+      },
       "status": "GOVERNED"
     },
     {
