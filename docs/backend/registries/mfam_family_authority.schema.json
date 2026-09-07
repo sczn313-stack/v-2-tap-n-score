@@ -13,6 +13,7 @@
     "evidencePolicy",
     "inventoryAudit",
     "authorizationSweep",
+    "familyConformanceRegistry",
     "scaleProofs",
     "families",
     "familyAuthorityPackages",
@@ -96,6 +97,17 @@
           }
         },
         "decision": {"type": "string", "minLength": 1}
+      }
+    },
+    "familyConformanceRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registryId", "path", "contractId", "scaleProofId"],
+      "properties": {
+        "registryId": {"type": "string", "minLength": 1},
+        "path": {"const": "registries/mfam_family_conformance.json"},
+        "contractId": {"type": "string", "minLength": 1},
+        "scaleProofId": {"type": "string", "minLength": 1}
       }
     },
     "scaleProofs": {"type": "array", "items": {"$ref": "#/$defs/scaleProof"}},

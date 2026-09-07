@@ -359,6 +359,7 @@ def registry_metadata() -> Dict[str, Any]:
         "version": _REGISTRY["version"],
         "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
         "inventoryCatalogId": _REGISTRY["inventoryAudit"]["catalogId"],
+        "familyConformanceRegistry": deepcopy(_REGISTRY["familyConformanceRegistry"]),
         "authorizationSweep": deepcopy(_REGISTRY["authorizationSweep"]),
         "scaleProofs": deepcopy(_REGISTRY["scaleProofs"]),
     }

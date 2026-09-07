@@ -49,7 +49,7 @@ def test_registry_schema_contract_is_present_and_matches_runtime_schema_id():
     assert schema["properties"]["schemaId"]["const"] == "sczn3-mfam-family-authority-v1"
     assert set(schema["required"]) == {
         "schemaId", "registryId", "version", "status", "classificationVocabulary",
-        "evidencePolicy", "inventoryAudit", "authorizationSweep", "scaleProofs", "families", "familyAuthorityPackages", "mechanicalAuthorities", "products",
+        "evidencePolicy", "inventoryAudit", "authorizationSweep", "familyConformanceRegistry", "scaleProofs", "families", "familyAuthorityPackages", "mechanicalAuthorities", "products",
         "targetProfileBindings", "pairClassifications", "publisherSweep",
         "unresolvedGaps", "sources",
     }

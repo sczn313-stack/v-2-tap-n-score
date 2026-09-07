@@ -45,3 +45,7 @@ Observed: 2026-09-06
 ## Evidence-quality rule
 
 Publisher pages can prove that a product exists, its claimed use, dimensions, and identifiers. They do not automatically prove the physical geometry, exact registration, or mechanical authority of a printed face. Government publications can govern doctrine and mechanical values within their scope; they do not automatically certify a commercial printer’s scale or representation.
+
+## Family admission proof
+
+- [Scale Proof 02 - Family Admission](M_FAM_SCALE_PROOF_02_FAMILY_ADMISSION.md) preserves the six-gate `MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1` contract, the eight-face batch result, the issued-NSN evidence bridge, and the exact irreducible representation gap for every remaining HOLD.

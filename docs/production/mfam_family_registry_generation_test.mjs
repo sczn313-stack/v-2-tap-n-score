@@ -5,6 +5,7 @@ import {
   MFAM_FAMILY_REGISTRY_SOURCE_SHA256,
   resolveMFAMFamilyTargetProfile
 } from "./generated_mfam_family_registry.mjs";
+import { loadFamilyConformanceRegistry, runFamilyAdmissionBatch } from "./mfam_family_conformance.mjs";
 
 const sourceBytes = await readFile("backend/registries/mfam_family_authority.json");
 const source = JSON.parse(sourceBytes.toString("utf8"));
@@ -25,5 +26,13 @@ const generatedProfileIds = source.targetProfileBindings
 assert.deepEqual(generatedProfileIds, ["baker_m16a2_25m_zero"]);
 assert.equal(resolveMFAMFamilyTargetProfile("rite-in-rain:9125:m16a2-m16a4-front"), null, "candidate family membership cannot create a runtime binding");
 
-console.log("PASS generated M/FAM family registry matches Backend authority and fails closed");
+const conformance = await loadFamilyConformanceRegistry();
+assert.equal(source.familyConformanceRegistry.registryId, conformance.registryId);
+const proof = conformance.scaleProof;
+const batch = runFamilyAdmissionBatch(conformance, proof.contractId, proof.candidateFaceIds);
+assert.equal(batch.candidatesEvaluated, 8);
+assert.equal(batch.admitted.length, 0);
+assert.equal(batch.held.length, 8);
+assert.equal(proof.counts.totalExecutableFamilyBindings, 1);
 
+console.log("PASS generated M/FAM family registry matches Backend authority and fails closed");
