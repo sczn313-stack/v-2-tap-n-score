@@ -12,6 +12,7 @@
     "classificationVocabulary",
     "evidencePolicy",
     "inventoryAudit",
+    "authorizationSweep",
     "families",
     "mechanicalAuthorities",
     "products",
@@ -54,6 +55,38 @@
         "catalogId": {"type": "string"},
         "path": {"type": "string"},
         "counts": {"type": "object"}
+      }
+    },
+    "authorizationSweep": {
+      "type": "object",
+      "required": ["observedAt", "reportPath", "dispositions", "counts", "decision"],
+      "properties": {
+        "observedAt": {"type": "string"},
+        "reportPath": {"type": "string", "minLength": 1},
+        "dispositions": {
+          "type": "array",
+          "items": {"enum": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"]},
+          "uniqueItems": true
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "authorizedNowRuntimeBindings",
+            "alreadyAuthorizedRuntimeBindings",
+            "alreadyAuthorizedPhysicalFaces",
+            "heldPhysicalFaces",
+            "knownHeldFacesWithAuthorizedGeometry"
+          ],
+          "properties": {
+            "authorizedNowRuntimeBindings": {"type": "integer", "minimum": 0},
+            "alreadyAuthorizedRuntimeBindings": {"type": "integer", "minimum": 0},
+            "alreadyAuthorizedPhysicalFaces": {"type": "integer", "minimum": 0},
+            "heldPhysicalFaces": {"type": "integer", "minimum": 0},
+            "knownHeldFacesWithAuthorizedGeometry": {"type": "integer", "minimum": 0}
+          }
+        },
+        "decision": {"type": "string", "minLength": 1}
       }
     },
     "families": {"type": "array", "items": {"$ref": "#/$defs/family"}},

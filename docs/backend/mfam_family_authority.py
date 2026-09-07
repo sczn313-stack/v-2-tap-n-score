@@ -44,6 +44,30 @@ def _unique_index(items: list[Mapping[str, Any]], key: str) -> Dict[str, Dict[st
     return index
 
 
+def _face_has_authorized_geometry(
+    face_record: Mapping[str, Any],
+    geometries: Mapping[str, Mapping[str, Any]],
+) -> bool:
+    """Require face-level physical proof before declaring reusable geometry."""
+    geometry = geometries.get(str(face_record.get("geometryId"))) or {}
+    if geometry.get("evidenceStatus") != "PROVEN_REUSABLE":
+        return False
+    dimensions = face_record.get("dimensions") or {}
+    grid = face_record.get("grid") or {}
+    spacing = grid.get("spacing") or {}
+    aim = str(face_record.get("aimReference") or "")
+    return bool(
+        dimensions.get("width")
+        and dimensions.get("height")
+        and grid.get("columns")
+        and grid.get("rows")
+        and spacing.get("value")
+        and spacing.get("unit")
+        and aim
+        and "UNPROVEN" not in aim.upper()
+    )
+
+
 def _load_registry() -> Dict[str, Any]:
     with REGISTRY_PATH.open("r", encoding="utf-8") as handle:
         payload = json.load(handle)
@@ -196,11 +220,40 @@ def _load_registry() -> Dict[str, Any]:
             if source_id not in sources:
                 raise MFAMAuthorityError(f"mfam_inventory_face_source_missing:{face_record['faceId']}:{source_id}")
 
+    authorization_sweep = payload.get("authorizationSweep") or {}
+    sweep_counts = authorization_sweep.get("counts") or {}
+    bound_physical_faces = [face for face in inventory_faces.values() if face.get("runtimeBinding")]
+    held_physical_faces = [face for face in inventory_faces.values() if not face.get("runtimeBinding")]
+    held_authorized_geometries = [
+        face for face in held_physical_faces
+        if _face_has_authorized_geometry(face, inventory_geometries)
+    ]
+    computed_sweep_counts = {
+        "authorizedNowRuntimeBindings": 0,
+        "alreadyAuthorizedRuntimeBindings": len(bindings),
+        "alreadyAuthorizedPhysicalFaces": len(bound_physical_faces),
+        "heldPhysicalFaces": len(held_physical_faces),
+        "knownHeldFacesWithAuthorizedGeometry": len(held_authorized_geometries),
+    }
+    if sweep_counts != computed_sweep_counts:
+        raise MFAMAuthorityError("mfam_authorization_sweep_count_mismatch")
+    if authorization_sweep.get("dispositions") != ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"]:
+        raise MFAMAuthorityError("mfam_authorization_sweep_dispositions_invalid")
+
     payload["_index"] = {
         "families": families,
         "mechanics": mechanics,
         "products": products,
         "bindings": bindings,
+    }
+    payload["_inventoryIndex"] = {
+        "publishers": inventory_publishers,
+        "products": inventory_products,
+        "faces": inventory_faces,
+        "geometries": inventory_geometries,
+        "procedures": inventory_procedures,
+        "representations": inventory_representations,
+        "referenceRepresentations": reference_representations,
     }
     payload["_inventory"] = inventory
     return payload
@@ -215,11 +268,187 @@ def registry_metadata() -> Dict[str, Any]:
         "version": _REGISTRY["version"],
         "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
         "inventoryCatalogId": _REGISTRY["inventoryAudit"]["catalogId"],
+        "authorizationSweep": deepcopy(_REGISTRY["authorizationSweep"]),
     }
 
 
 def inventory_audit() -> Dict[str, Any]:
     return deepcopy(_REGISTRY["_inventory"])
+
+
+def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
+    geometry = _REGISTRY["_inventoryIndex"]["geometries"][face_record["geometryId"]]
+    procedure = _REGISTRY["_inventoryIndex"]["procedures"][face_record["procedureId"]]
+    runtime_binding = face_record.get("runtimeBinding")
+    geometry_authorized = _face_has_authorized_geometry(
+        face_record,
+        _REGISTRY["_inventoryIndex"]["geometries"],
+    )
+    missing_facts = list(face_record.get("unresolvedFacts") or [])
+    if runtime_binding:
+        target_state = "KNOWN_TARGET_EXECUTION_AUTHORIZED"
+        disposition = "ALREADY_AUTHORIZED"
+        shooter_recovery = None
+    elif geometry_authorized:
+        target_state = "KNOWN_TARGET_GEOMETRY_AUTHORIZED"
+        disposition = "HOLD"
+        shooter_recovery = {
+            "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
+            "title": "THIS TARGET IS KNOWN",
+            "message": f"Tap-n-Score knows this target, but {missing_facts[0]} is not yet governed.",
+        }
+    else:
+        target_state = "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
+        disposition = "HOLD"
+        shooter_recovery = {
+            "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
+            "title": "THIS TARGET IS KNOWN",
+            "message": f"Tap-n-Score knows this target, but {missing_facts[0]} is not yet governed.",
+        }
+    return {
+        "targetKnowledge": "KNOWN_TARGET",
+        "targetState": target_state,
+        "disposition": disposition,
+        "faceId": face_record["faceId"],
+        "productId": face_record["productId"],
+        "publisherAuthorityId": face_record["publisherAuthorityId"],
+        "exactProduct": face_record["exactProduct"],
+        "side": face_record["side"],
+        "representationId": face_record["representationId"],
+        "geometryId": face_record["geometryId"],
+        "geometryAuthorityStatus": "AUTHORIZED_REUSABLE" if geometry_authorized else geometry["evidenceStatus"],
+        "procedureId": face_record["procedureId"],
+        "procedureAuthorityStatus": procedure["evidenceStatus"],
+        "mechanicalAuthorityIds": list(face_record.get("mechanicalAuthorityIds") or []),
+        "registration": deepcopy(face_record.get("registration") or {}),
+        "runtimeBinding": runtime_binding,
+        "missingFacts": missing_facts,
+        "whyExecutionBlocked": None if runtime_binding else f"Execution requires the unresolved authority fact(s): {'; '.join(missing_facts)}.",
+        "shooterRecovery": shooter_recovery,
+    }
+
+
+def resolve_face_admission(identity: str) -> Dict[str, Any]:
+    """Classify known identity separately from geometry and execution authority."""
+    requested = str(identity or "").strip()
+    inventory_index = _REGISTRY["_inventoryIndex"]
+    face = inventory_index["faces"].get(requested)
+    if not face:
+        face = next(
+            (item for item in inventory_index["faces"].values()
+             if requested in {item.get("representationId"), item.get("runtimeBinding")}),
+            None,
+        )
+    if face:
+        return deepcopy(_face_admission_record(face))
+
+    product_record = inventory_index["products"].get(requested)
+    if not product_record:
+        product_matches = [
+            item for item in inventory_index["products"].values()
+            if requested == item.get("exactName")
+            or requested in set((item.get("identifiers") or {}).values())
+            or requested in set(item.get("evidenceRecordIds") or [])
+        ]
+        if len(product_matches) == 1:
+            product_record = product_matches[0]
+        elif len(product_matches) > 1:
+            return {
+                "targetKnowledge": "KNOWN_TARGET",
+                "targetState": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
+                "disposition": "HOLD",
+                "candidateProductIds": [item["productId"] for item in product_matches],
+                "missingFacts": ["exact publisher product identity"],
+                "whyExecutionBlocked": "This identifier matches more than one cataloged product.",
+                "shooterRecovery": {
+                    "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
+                    "title": "THIS TARGET IS KNOWN",
+                    "message": "Choose the exact publisher product.",
+                },
+            }
+    if product_record:
+        face_ids = list(product_record.get("faceIds") or [])
+        if len(face_ids) == 1:
+            return deepcopy(_face_admission_record(inventory_index["faces"][face_ids[0]]))
+        return {
+            "targetKnowledge": "KNOWN_TARGET",
+            "targetState": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
+            "disposition": "HOLD",
+            "productId": product_record["productId"],
+            "exactProduct": product_record["exactName"],
+            "candidateFaceIds": face_ids,
+            "missingFacts": ["exact face/side selection"],
+            "whyExecutionBlocked": "A two-sided product cannot execute until its exact face/side is established.",
+            "shooterRecovery": {
+                "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
+                "title": "THIS TARGET IS KNOWN",
+                "message": "Choose the exact face or side of this target.",
+            },
+        }
+
+    binding = _REGISTRY["_index"]["bindings"].get(requested)
+    if binding:
+        return {
+            "targetKnowledge": "KNOWN_TARGET",
+            "targetState": "KNOWN_TARGET_EXECUTION_AUTHORIZED",
+            "disposition": "ALREADY_AUTHORIZED",
+            "recordKind": "governed_reference_representation",
+            "targetProfileId": requested,
+            "productId": binding["productId"],
+            "familyId": binding["familyId"],
+            "mechanicalAuthorityId": binding["mechanicalAuthorityId"],
+            "registrationPackageId": binding["registrationPackageId"],
+            "missingFacts": [],
+            "shooterRecovery": None,
+        }
+
+    return {
+        "targetKnowledge": "UNKNOWN_TARGET",
+        "targetState": "UNKNOWN_TARGET",
+        "disposition": "HOLD",
+        "missingFacts": ["publisher product and exact face identity"],
+        "whyExecutionBlocked": "No admitted publisher product and exact face identity matches this identifier.",
+        "shooterRecovery": {
+            "code": "UNKNOWN_TARGET",
+            "title": "WE CAN’T IDENTIFY THIS TARGET",
+            "message": "Select the exact target product or scan its target identity.",
+        },
+    }
+
+
+def industry_authorization_sweep() -> Dict[str, Any]:
+    """Return the complete evidence-limited disposition of the audited industry set."""
+    face_results = [
+        _face_admission_record(face)
+        for face in _REGISTRY["_inventoryIndex"]["faces"].values()
+    ]
+    bound_face_profiles = {item["runtimeBinding"] for item in face_results if item.get("runtimeBinding")}
+    reference_bindings = [
+        {
+            "targetKnowledge": "KNOWN_TARGET",
+            "targetState": "KNOWN_TARGET_EXECUTION_AUTHORIZED",
+            "disposition": "ALREADY_AUTHORIZED",
+            "recordKind": "governed_reference_representation",
+            "targetProfileId": binding["targetProfileId"],
+            "productId": binding["productId"],
+            "familyId": binding["familyId"],
+            "mechanicalAuthorityId": binding["mechanicalAuthorityId"],
+            "registrationPackageId": binding["registrationPackageId"],
+            "missingFacts": [],
+        }
+        for binding in _REGISTRY["_index"]["bindings"].values()
+        if binding["targetProfileId"] not in bound_face_profiles
+    ]
+    return deepcopy({
+        "registryId": _REGISTRY["registryId"],
+        "registryVersion": _REGISTRY["version"],
+        "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
+        "reportPath": _REGISTRY["authorizationSweep"]["reportPath"],
+        "counts": _REGISTRY["authorizationSweep"]["counts"],
+        "authorizedNow": [],
+        "alreadyAuthorized": [item for item in face_results if item["disposition"] == "ALREADY_AUTHORIZED"] + reference_bindings,
+        "hold": [item for item in face_results if item["disposition"] == "HOLD"],
+    })
 
 
 def resolve_target_profile(target_profile_id: str) -> Dict[str, Any]:

@@ -12,9 +12,11 @@ from mfam_family_authority import (
     REGISTRY_PATH,
     classify_pair,
     family,
+    industry_authorization_sweep,
     inventory_audit,
     product,
     registry_metadata,
+    resolve_face_admission,
     resolve_target_profile,
 )
 
@@ -33,7 +35,10 @@ def test_registry_metadata_and_vocabulary_are_governed():
     assert payload["schemaId"] == "sczn3-mfam-family-authority-v1"
     assert payload["status"] == "governed"
     assert set(payload["classificationVocabulary"]) == ALLOWED_CLASSIFICATIONS
-    assert registry_metadata()["universalZeroingCapabilityId"] == "sczn3-governed-zeroing-road-v1"
+    metadata = registry_metadata()
+    assert metadata["universalZeroingCapabilityId"] == "sczn3-governed-zeroing-road-v1"
+    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 34
+    assert metadata["authorizationSweep"]["reportPath"].endswith("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
 
 
 def test_registry_schema_contract_is_present_and_matches_runtime_schema_id():
@@ -42,7 +47,7 @@ def test_registry_schema_contract_is_present_and_matches_runtime_schema_id():
     assert schema["properties"]["schemaId"]["const"] == "sczn3-mfam-family-authority-v1"
     assert set(schema["required"]) == {
         "schemaId", "registryId", "version", "status", "classificationVocabulary",
-        "evidencePolicy", "inventoryAudit", "families", "mechanicalAuthorities", "products",
+        "evidencePolicy", "inventoryAudit", "authorizationSweep", "families", "mechanicalAuthorities", "products",
         "targetProfileBindings", "pairClassifications", "publisherSweep",
         "unresolvedGaps", "sources",
     }
@@ -123,6 +128,71 @@ def test_only_two_exact_profiles_have_executable_mfam_bindings():
         assert resolved["mechanicalAuthority"]["status"] == "GOVERNED"
 
 
+def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority():
+    sweep = industry_authorization_sweep()
+    assert sweep["counts"] == {
+        "authorizedNowRuntimeBindings": 0,
+        "alreadyAuthorizedRuntimeBindings": 2,
+        "alreadyAuthorizedPhysicalFaces": 1,
+        "heldPhysicalFaces": 34,
+        "knownHeldFacesWithAuthorizedGeometry": 3,
+    }
+    assert sweep["authorizedNow"] == []
+    assert {item.get("targetProfileId") or item.get("runtimeBinding") for item in sweep["alreadyAuthorized"]} == {
+        "baker_m16a2_25m_zero",
+        "m4_25m_zero",
+    }
+    assert len(sweep["hold"]) == 34
+    assert {item["faceId"] for item in sweep["hold"]} == {
+        f"face-{index:03d}" for index in range(1, 36)
+    } - {"face-003"}
+
+
+def test_known_identity_geometry_and_execution_states_are_distinct():
+    executable = resolve_face_admission("face-003")
+    assert executable["targetState"] == "KNOWN_TARGET_EXECUTION_AUTHORIZED"
+    assert executable["runtimeBinding"] == "baker_m16a2_25m_zero"
+    assert executable["shooterRecovery"] is None
+
+    reusable_geometry = resolve_face_admission("face-001")
+    assert reusable_geometry["targetState"] == "KNOWN_TARGET_GEOMETRY_AUTHORIZED"
+    assert reusable_geometry["geometryAuthorityStatus"] == "AUTHORIZED_REUSABLE"
+    assert reusable_geometry["disposition"] == "HOLD"
+    assert reusable_geometry["missingFacts"] == [
+        "production registration", "exact selected equipment branch", "confirmation",
+    ]
+    assert reusable_geometry["shooterRecovery"]["title"] == "THIS TARGET IS KNOWN"
+
+    unresolved = resolve_face_admission("face-006")
+    assert unresolved["targetState"] == "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
+    assert unresolved["disposition"] == "HOLD"
+
+    unknown = resolve_face_admission("not-an-admitted-mfam-target")
+    assert unknown["targetState"] == "UNKNOWN_TARGET"
+    assert unknown["shooterRecovery"]["title"] == "WE CAN’T IDENTIFY THIS TARGET"
+
+
+def test_baker_st_m16a2r_is_known_different_and_reports_only_its_real_gaps():
+    for identity in ("face-005", "product-baker-st-m16a2r", "ST-M16A2R", "baker:st-m16a2r:face"):
+        result = resolve_face_admission(identity)
+        assert result["targetKnowledge"] == "KNOWN_TARGET"
+        assert result["exactProduct"] == "25 Meter Sighting Target with Red"
+        assert result["geometryId"] == "geometry-baker-m16a2r-23x35"
+        assert result["targetState"] == "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
+        assert result["missingFacts"] == [
+            "grid pitch", "page origin", "aim reference", "registration", "mechanical applicability",
+        ]
+        assert "photo" not in result["shooterRecovery"]["message"].lower()
+
+
+def test_two_sided_known_product_requires_face_identity_instead_of_becoming_unknown():
+    result = resolve_face_admission("product-baker-st-m16a2-m4")
+    assert result["targetKnowledge"] == "KNOWN_TARGET"
+    assert result["targetState"] == "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
+    assert result["candidateFaceIds"] == ["face-003", "face-004"]
+    assert result["missingFacts"] == ["exact face/side selection"]
+
+
 def test_unregistered_products_and_families_do_not_gain_execution_authority():
     held = product("rite-in-rain:9125:m16a2-m16a4-front")
     assert held["candidateFamilyId"] == "mfam_m16a2_a3_standard_25m_300m"
@@ -174,15 +244,23 @@ def test_human_governance_record_exists():
     path = Path(__file__).resolve().parents[1] / "architecture" / "M_FAM_GOVERNANCE.md"
     assert path.is_file()
     face_catalog = Path(__file__).resolve().parents[1] / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "M_FAM_FACE_LEVEL_MASTER_CATALOG.md"
+    authorization_report = face_catalog.with_name("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
     assert face_catalog.is_file()
+    assert authorization_report.is_file()
     governance_text = path.read_text(encoding="utf-8")
     catalog_text = face_catalog.read_text(encoding="utf-8")
+    authorization_text = authorization_report.read_text(encoding="utf-8")
     audit = inventory_audit()
     for record in audit["faces"]:
         assert f"`{record['faceId']}`" in catalog_text
+        if record["faceId"] != "face-003":
+            assert f"`{record['faceId']}`" in authorization_text
     payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     for record in payload["families"]:
         assert f"`{record['familyId']}`" in governance_text
+    assert "Baker `ST-M16A2R`" in authorization_text
+    assert "| `AUTHORIZED NOW` — new runtime bindings | 0 |" in authorization_text
+    assert "| `HOLD` — known physical product faces | 34 |" in authorization_text
 
 
 if __name__ == "__main__":

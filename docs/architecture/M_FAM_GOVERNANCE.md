@@ -24,6 +24,7 @@ Backend structured data is runtime authority. This record explains that data to 
 - Product/face audit registry: `docs/backend/registries/mfam_inventory_audit.json`
 - Product/face audit schema: `docs/backend/registries/mfam_inventory_audit.schema.json`
 - Fail-closed resolver: `docs/backend/mfam_family_authority.py`
+- Industry authorization result: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md`
 - Universal zeroing capability: `sczn3-governed-zeroing-road-v1`
 
 ## Authority model
@@ -112,6 +113,29 @@ The machine-enforced counts live in `mfam_inventory_audit.json`. The face-by-fac
 Qualification, composite, True-MOA, and True-MIL targets do not inherit a 25-meter live-fire zero face merely because an M4/M16 label appears on the product.
 
 ## Runtime admission
+
+The completed industry-wide authorization sweep applies the existing evidence ledger without starting another product investigation:
+
+| Disposition | Result |
+|---|---:|
+| `AUTHORIZED NOW` — new executable bindings | 0 |
+| `ALREADY AUTHORIZED` — executable bindings | 2 |
+| `ALREADY AUTHORIZED` — physical product faces | 1 |
+| `HOLD` — known physical product faces | 34 |
+| Held faces with already-authorized reusable geometry | 3 |
+
+The three geometry-authorized holds are Baker `ST-Uni25mMOA` front (`face-001`) and the two National `23112` representations (`face-011`, `face-012`). They reuse `geometry-universal-moa-quarter-inch` without merging publisher/product/representation identity. They remain held because their exact registration, equipment/mechanical branch, and confirmation authority are incomplete.
+
+Baker `ST-M16A2R` (`face-005`) is a **known** 23 × 35-inch Baker face with its own `geometry-baker-m16a2r-23x35` identity. It is neither an unknown photograph nor the Letter-size M16A2 geometry. Its exact holds are: grid pitch, page origin, aim reference, registration, and mechanical applicability.
+
+Backend admission exposes four distinct outcomes:
+
+- `UNKNOWN_TARGET` — publisher product and exact face identity are not established.
+- `KNOWN_TARGET_GEOMETRY_AUTHORIZED` — identity and reusable physical geometry are proven, but another execution fact remains unresolved.
+- `KNOWN_TARGET_AUTHORITY_UNRESOLVED` — identity is known, but geometry or another required authority layer is incomplete.
+- `KNOWN_TARGET_EXECUTION_AUTHORIZED` — the complete executable binding is governed.
+
+Known holds use `THIS TARGET IS KNOWN` and name the unresolved fact. They do not tell a shooter to take another photograph unless the actual registration decision proves that photograph coverage failed.
 
 The registry currently exposes only two executable M/FAM bindings:
 

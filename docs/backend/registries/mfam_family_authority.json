@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-06.1",
+  "version": "2026-09-06.2",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -21,6 +21,9 @@
     "unknownRule": "A missing value is null and UNPROVEN; it is never copied from a visually similar product.",
     "productRule": "A publisher product and each exact face retain independent identity even when geometry is later proven reusable.",
     "executionRule": "Only an explicit GOVERNED targetProfileBinding may enter the universal zeroing capability.",
+    "geometryReuseRule": "A product face may reuse a governed Geometry Authority only when the inventory proves its physical dimensions, grid scale, and aim reference; publisher and representation identity remain separate.",
+    "knownIdentityRule": "A known product or face with an unresolved execution fact is a known authority hold, never an unknown target and never a request for more photograph coverage unless coverage actually failed.",
+    "shooterStateRule": "Runtime admission distinguishes UNKNOWN_TARGET, KNOWN_TARGET_GEOMETRY_AUTHORIZED, KNOWN_TARGET_AUTHORITY_UNRESOLVED, and KNOWN_TARGET_EXECUTION_AUTHORIZED.",
     "sourcePriority": ["issuing government publication", "publisher primary", "preserved first-party artifact", "secondary distributor"]
   },
   "inventoryAudit": {
@@ -38,6 +41,19 @@
       "candidateGovernedFamilies": 9,
       "runtimeBindings": 2
     }
+  },
+  "authorizationSweep": {
+    "observedAt": "2026-09-06",
+    "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md",
+    "dispositions": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"],
+    "counts": {
+      "authorizedNowRuntimeBindings": 0,
+      "alreadyAuthorizedRuntimeBindings": 2,
+      "alreadyAuthorizedPhysicalFaces": 1,
+      "heldPhysicalFaces": 34,
+      "knownHeldFacesWithAuthorizedGeometry": 3
+    },
+    "decision": "No additional physical face in the completed evidence corpus has the complete representation registration, procedure, applicable mechanical authority, and confirmation package required for a new executable binding. Proven geometry reuse is preserved separately from runtime execution authority."
   },
   "families": [
     {
