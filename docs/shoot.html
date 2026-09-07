@@ -839,7 +839,7 @@ function bakerSampleDemoScene(state) {
   if (state === "equipment-detail") return bakerTalkingDemoEquipmentFrame("detail");
   if (state === "vault") return bakerTalkingDemoRecordsFrame("vault");
   if (state === "complete") return m16a2Demo
-    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOU'RE UP!!</strong><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
+    ? `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>DEMONSTRATION COMPLETE</span><strong>YOU'RE UP!</strong><a class="prepared-demo-return" href="${fixture.returnUrl}" target="_top">GO TO CHAPTER 4</a></div></div>`
     : `<div class="smart-target-completion-layout"><div class="baker-sample-stage-card"><span>COMPLETE</span><strong>TAP-N-SCORE DEMO</strong><small>Load your target or replay the demonstration.</small></div>${smartTargetReplenishmentMarkup(bakerTalkingDemoSession())}</div>`;
   return "";
 }
@@ -1050,7 +1050,10 @@ function bindBakerSampleDemo() {
     controls.dataset.tsttDemoControlsBound = "true";
     controls.addEventListener("click", event => {
       const action = event.target.closest("[data-player-action]")?.dataset.playerAction;
-      if (action === "stop") bakerSampleDemoPlayer.stop({ reset: true });
+      if (action === "stop") {
+        bakerSampleDemoPlayer.stop({ reset: true });
+        m16a2TsttNavigationWindow().location.href = window.SCZN3_BAKER_TALKING_DEMO_FIXTURE.returnUrl;
+      }
       if (action === "replay") bakerSampleDemoPlayer.replay();
       if (action === "chapters") {
         bakerSampleDemoPlayer.stop({ reset: true });
@@ -1073,6 +1076,9 @@ function bindBakerSampleDemo() {
   }
   ["pointerdown", "pointerup", "pointercancel"].forEach(eventName => {
     talk.addEventListener(eventName, event => event.stopPropagation());
+    layer.addEventListener(eventName, event => {
+      if (event.target.closest(".prepared-demo-return")) event.stopPropagation();
+    });
   });
   talk.addEventListener("click", startBakerSampleDemo);
   setBakerSampleDemoState(bakerSampleDemoPlayer.status === "idle" ? "waiting" : bakerSampleDemoState);

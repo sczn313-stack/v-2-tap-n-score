@@ -25,7 +25,8 @@ const [html, css, source, narration, viewportGuard, narrationStandard, matrix, s
   readFile("production/m16a2_tstt_review_server.mjs", "utf8")
 ]);
 const chapterThreeSource = source.slice(source.indexOf('id: "a2-3"'), source.indexOf('id: "a2-4"'));
-const chapterFourSource = source.slice(source.indexOf('id: "a2-4"'), source.indexOf('id: "a2-5"'));
+const chapterFourStart = source.indexOf('id: "a2-4"');
+const chapterFourSource = source.slice(chapterFourStart, source.indexOf("\n  ]);\n\n  const elements", chapterFourStart));
 const chapterThreeDemoSource = shoot.slice(shoot.indexOf('if (fixture.demoKind === "m16a2-tstt") return ['), shoot.indexOf("const aimPostSpeechHold"));
 
 assert.match(html, /Baker M16A2 25 Meter TSTT/, "the route identifies the exact lesson product");
@@ -46,6 +47,9 @@ assert.match(source, /Fire three to five shots before making an adjustment\.[\s\
 assert.match(html, /START SESSION/, "the Founder-approved session start remains available");
 assert.doesNotMatch(`${html}\n${source}\n${css}`, /NEXT CHAPTER|NEXT — KNOW YOUR SIGHTS|NEXT — WATCH IT|next-chapter-overlay/, "continuous Chapters 1 through 3 expose no redundant forward controls");
 assert.doesNotMatch(chapterFourSource, /nextChapterLabel/, "Chapter 4 retains its governed photo-entry and preservation destination instead of inventing another chapter");
+assert.match(source, /label: "TARGET AND EQUIPMENT", shortTitle: "TARGET AND EQUIPMENT"[\s\S]*label: "KNOW YOUR SIGHTS", shortTitle: "KNOW YOUR SIGHTS"[\s\S]*label: "LET TAP-N-SCORE SHOW YOU", shortTitle: "LET TAP-N-SCORE SHOW YOU"[\s\S]*label: "YOU'RE UP!", shortTitle: "YOU'RE UP!"/, "TSTT exposes exactly the four Founder-approved chapter identities in order");
+assert.equal([...source.matchAll(/id: "a2-\d+"/g)].length, 4, "the active TSTT registry contains exactly four chapters");
+assert.doesNotMatch(source, /a2-5|PRE-FIRE READY|Ready for the first group/, "the stray Chapter 5 is removed");
 assert.match(html, /tstt_narration\.js[\s\S]*m16a2-tstt\.js/, "the reusable narration standard loads before the product lesson");
 assert.match(narration, /DEFAULT_SETTINGS = Object\.freeze\(\{ rate: 0\.70, pitch: 1, volume: 1 \}\)/, "the reusable narrator keeps the slower neutral baseline");
 assert.ok(narration.indexOf("/^Samantha") < narration.indexOf("/^Reed"), "Samantha is selected before the neutral fallback voices");
@@ -94,7 +98,8 @@ assert.match(shoot, /m16a2TsttDemoControlsMarkup[\s\S]*data-player-action="toggl
 assert.match(shoot, /CENTER CROSSHAIRS[\s\S]*SHOT PATTERN[\s\S]*SHOW RESULTS[\s\S]*THE CENTER OF YOUR SHOT PATTERN[\s\S]*YOUR SIGHT ADJUSTMENT[\s\S]*ZERO CONFIRMED/, "the demonstration visibly completes the shooter-facing observation, correction, and confirmation sequence");
 assert.match(chapterThreeDemoSource, /Now shoot your confirmation group\. You can use this target or put up a new one\. When you're finished, take another photo\.[\s\S]*Tap-n-Score marks each shot on the confirmation photograph\./, "Chapter 3 teaches physical confirmation through a second photograph before governed evaluation");
 assert.match(shoot, /SECOND PHOTO[\s\S]*CONFIRMATION PHOTO[\s\S]*ZERO CONFIRMED/, "the second target photograph visibly enters before confirmation observations and results");
-assert.match(shoot, /DEMONSTRATION COMPLETE[\s\S]*YOU'RE UP!![\s\S]*GO TO CHAPTER 4/, "Chapter 3 ends with the Founder-approved shooter handoff");
+assert.match(shoot, /DEMONSTRATION COMPLETE[\s\S]*YOU'RE UP![\s\S]*GO TO CHAPTER 4/, "Chapter 3 ends with the Founder-approved shooter handoff");
+assert.match(shoot, /action === "stop"[\s\S]*bakerSampleDemoPlayer\.stop\(\{ reset: true \}\)[\s\S]*location\.href = window\.SCZN3_BAKER_TALKING_DEMO_FIXTURE\.returnUrl/, "STOP during the prepared demonstration routes to the shared Chapter 4 doorway");
 assert.doesNotMatch(chapterThreeDemoSource, /Backend Authority|governed authority|prepared (?:shot|confirmation) observations/i, "Chapter 3 narration contains no internal architecture or prepared-observation language");
 assert.match(shoot, /FOUNDER_M16A2_FRONT_SIGHT_POST_REFERENCE[\s\S]*FOUNDER_M16A2_REAR_WINDAGE_KNOB_REFERENCE[\s\S]*data-demo-sight-control="rear-windage"[\s\S]*data-demo-sight-control="front-sight"/, "the governed adjustment reconnects to the approved real Chapter 2 hardware images");
 assert.match(shoot, /state: "sec"[\s\S]*Your target, shots, adjustment, and confirmation are preserved together\.[\s\S]*state: "vault"[\s\S]*complete shooting session is saved in your Ballistic Vault/, "the demonstration gives SEC and Ballistic Vault one sentence of shooter-facing meaning");
@@ -104,6 +109,8 @@ assert.match(shoot, /REAR WINDAGE KNOB[\s\S]*FRONT SIGHT POST[\s\S]*COUNTERCLOCK
 assert.match(workspaceCss, /data-prepared-m16a2-demo="true"[\s\S]*#chooseTargetButton[\s\S]*display:none!important/, "Chapter 3 hides the premature Add Photo control while Chapter 4 retains photo entry");
 assert.match(workspaceCss, /data-prepared-m16a2-demo="true"[\s\S]*baker-sample-watermark[\s\S]*color:rgba\(20,20,20,\.17\)[\s\S]*font-size:clamp\(36px,8vw,72px\)[\s\S]*writing-mode:horizontal-tb/, "Chapter 3 restores SAMPLE as a large readable translucent target watermark");
 assert.match(workspaceCss, /data-prepared-m16a2-demo="true"[\s\S]*smart-target-completion-layout[\s\S]*inset:0[\s\S]*grid-template-columns:minmax\(0,460px\)[\s\S]*justify-content:center[\s\S]*align-content:center/, "the Chapter 3 completion handoff is centered over the target");
+assert.match(workspaceCss, /prepared-demo-return[\s\S]*pointer-events:auto/, "the visible Chapter 3 completion handoff remains actionable above the target interaction surface");
+assert.match(shoot, /layer\.addEventListener\(eventName[\s\S]*prepared-demo-return[\s\S]*stopPropagation/, "the Chapter 3 completion handoff is insulated from Precision Tap pointer handling");
 assert.match(workspaceCss, /baker-sample-demo-layer[\s\S]*pointer-events:none[\s\S]*baker-sample-demo-scene[\s\S]*pointer-events:none/, "Chapter 3 teaching overlays leave Precision Tap pinch and pan hit testing available");
 assert.match(demoFixture, /61\.2[\s\S]*33\.7[\s\S]*66[\s\S]*35\.1[\s\S]*63\.3[\s\S]*37\.7[\s\S]*8 clicks LEFT[\s\S]*4 clicks DOWN/, "the revised initial evidence has visible scatter and truthfully inherits its governed correction");
 assert.match(demoFixture, /xPercent: 44, yPercent: 45[\s\S]*xPercent: 56, yPercent: 48\.7[\s\S]*xPercent: 50, yPercent: 52\.4[\s\S]*outcome: "CONFIRMED"/, "the confirmation evidence has believable visible dispersion and a governed confirmed result");
@@ -111,7 +118,8 @@ assert.match(records, /PREPARED_DEMO_MODE[\s\S]*experienceMode[\s\S]*demonstrati
 assert.match(player, /speechRate[\s\S]*speechVoiceResolver/, "the reusable player accepts the governed Samantha voice and 0.70 rate for the demo");
 assert.match(player, /allowSpeechFallback = options\.allowSpeechFallback !== false[\s\S]*if \(!this\.allowSpeechFallback \|\| !global\.speechSynthesis/, "the reusable PLAYER can run governed audio without touching Web Speech");
 assert.match(source, /Shoot three to five shots while aiming at the center crosshairs\.[\s\S]*Take a photo of your target or choose one from your photos\./, "Chapter 4 carries the concise shooter photo-entry script");
-assert.match(chapterFourSource, /YOUR TURN[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the shooter-control entry");
+assert.match(chapterFourSource, /YOU'RE UP![\s\S]*Shoot Your Own Target[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/, "Chapter 4 is the Founder-approved shooter-control entry");
+assert.doesNotMatch(chapterFourSource, /YOUR TURN/, "Chapter 4 no longer carries the retired identity");
 assert.match(chapterFourSource, /chapterFourPhotoRoad\("camera"\)[\s\S]*chapterFourPhotoRoad\("existing"\)/, "Chapter 4 hands both photo choices to the governed road");
 assert.match(source, /tapNScoreRoad = "matrix\.html\?target_profile_id=baker_m16a2_25m_zero&founder_review=1&tstt_chapter=4"[\s\S]*chapterFourPhotoRoad[\s\S]*state\.equipment\.activeId[\s\S]*equipment_profile_id/, "Chapter 4 passes any ACTIVE\/SELECTED equipment to the dedicated Baker M16A2 road for backend applicability admission");
 assert.match(source, /equipmentLibraryUrl\(photoSource[\s\S]*tapNScoreRoad[\s\S]*view=library[\s\S]*photo_source/, "Chapter 4 preserves M16A2 target and photo intent when the existing New Equipment road is needed");
@@ -168,9 +176,6 @@ assert.match(matrix, /Military M-Series Rifles[\s\S]*M16A2[\s\S]*M16A2-STANDARD-
 assert.match(matrix, /function discoveryOrderedOptions[\s\S]*localeCompare[\s\S]*\.\.\.other/, "equipment discovery is alphabetized while Other remains last");
 assert.match(source, /For your 25-meter zero, set the drum to 8\/3, then turn it one click CLOCKWISE past 8\/3[\s\S]*After your zero is confirmed, turn it one click COUNTERCLOCKWISE back to 8\/3 for the 300-meter setting/, "Chapter 2 teaches the Founder-approved M16A2 rear-drum setup and return");
 assert.match(source, /CLOCKWISE[\s\S]*COUNTERCLOCKWISE/, "rotation language is explicit");
-assert.match(source, /READY TO FIRE[\s\S]*YOUR FIRST GROUP/, "the experience reaches the exact pre-fire readiness stop");
-assert.match(source, /PREFIRE TRAINING COMPLETE[\s\S]*Training setup: M16A2 with standard iron sights/, "the readiness panel reports lesson coverage without claiming the shooter's equipment was confirmed");
-assert.doesNotMatch(source, /PREFIRE CHECK COMPLETE/, "the readiness panel does not imply an equipment-confirmation checkpoint");
 assert.doesNotMatch(chapterThreeSource, /fetch\(|XMLHttpRequest|\/api\//, "Chapter 3 frontend does not recreate backend correction authority");
 assert.match(shoot, /const subtle = globalThis\.crypto && globalThis\.crypto\.subtle[\s\S]*const sha256 = digest \?[^:]+: ""/, "plain-HTTP LAN review keeps photo entry available when browser Web Crypto is unavailable");
 assert.match(shoot, /pendingEvidence\.sourceImageSha256 = pendingEvidence\.sourceImageSha256[\s\S]*registration\.sourceImage\.sha256[\s\S]*pendingEvidence\.originalSourceImageSha256/, "the browser preserves the authoritative backend-computed source-image hash when client hashing is unavailable");
@@ -178,7 +183,7 @@ assert.match(registrationAuthority, /if claimed and not SHA256_PATTERN\.fullmatc
 assert.doesNotMatch(source, /fetch\(|XMLHttpRequest|\/api\//, "the pre-fire lesson does not call execution authority");
 assert.match(css, /100svh/, "the shell is sized for a phone viewport");
 assert.match(css, /safe-area-inset-bottom/, "phone safe areas protect the fixed controls");
-assert.match(css, /repeat\(5, 1fr\)/, "five course chapters render as five progress/control segments");
+assert.match(css, /chapter-progress \{[^}]*repeat\(4, 1fr\)/, "four course chapters render as four progress segments");
 assert.match(html, /maximum-scale=1, user-scalable=no[\s\S]*tstt_viewport_guard\.js/, "the TSTT shell declares its fixed responsive viewport before runtime starts");
 assert.match(shoot, /tstt_viewport_guard\.js/, "the embedded Chapter 3 TSTT runtime uses the same viewport guard");
 assert.match(viewportGuard, /maximum-scale=1, user-scalable=no[\s\S]*gesturestart[\s\S]*gesturechange[\s\S]*gestureend[\s\S]*touches\.length > 1[\s\S]*ctrlKey/, "the universal viewport guard blocks page-level touch, Safari gesture, and trackpad pinch zoom");

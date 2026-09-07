@@ -63,7 +63,7 @@
   const chapterFourSpokenNarration = chapterFourFounderScript.join(" ");
   const chapters = Object.freeze([
     Object.freeze({
-      id: "a2-1", label: "TARGET + EQUIPMENT", shortTitle: "Target and equipment", eyebrow: "", targetIdentity: true,
+      id: "a2-1", label: "TARGET AND EQUIPMENT", shortTitle: "TARGET AND EQUIPMENT", eyebrow: "", targetIdentity: true,
       title: "Know your target.",
       summary: chapterOneFounderScript[0],
       narration: chapterOneSpokenNarration,
@@ -72,7 +72,7 @@
       action: "equipment"
     }),
     Object.freeze({
-      id: "a2-2", label: "THE SIGHTS", shortTitle: "Know your sights", eyebrow: "M16A2 · STANDARD IRON SIGHTS",
+      id: "a2-2", label: "KNOW YOUR SIGHTS", shortTitle: "KNOW YOUR SIGHTS", eyebrow: "M16A2 · STANDARD IRON SIGHTS",
       title: "Know your sights.",
       summary: "",
       narration: chapterTwoSpokenNarration,
@@ -100,7 +100,7 @@
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
-      id: "a2-3", label: "WATCH TAP-N-SCORE", shortTitle: "Let Tap-n-Score show you", eyebrow: "CHAPTER 3 · WATCH", title: "Let Tap-n-Score show you.",
+      id: "a2-3", label: "LET TAP-N-SCORE SHOW YOU", shortTitle: "LET TAP-N-SCORE SHOW YOU", eyebrow: "CHAPTER 3 · WATCH", title: "Let Tap-n-Score show you.",
       summary: chapterThreeFounderScript[0],
       narration: chapterThreeSpokenNarration,
       narrationPlan: Object.freeze([
@@ -110,21 +110,14 @@
       task: "", action: "none", hideTask: true
     }),
     Object.freeze({
-      id: "a2-4", label: "YOUR TURN", shortTitle: "Your turn", eyebrow: "CHAPTER 4 · SHOOTER CONTROL", title: "Your turn.",
+      id: "a2-4", label: "YOU'RE UP!", shortTitle: "YOU'RE UP!", eyebrow: "CHAPTER 4 · SHOOTER CONTROL", title: "YOU'RE UP!",
       summary: chapterFourFounderScript[0],
       narration: chapterFourSpokenNarration,
       narrationPlan: Object.freeze([
         Object.freeze({ text: chapterFourSpokenNarration, delivery: "normal" })
       ]),
-      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>YOUR TURN</span><h2 id="photo-entry-title">Add your target.</h2><p>${chapterFourFounderScript[1]}</p><div><a href="${chapterFourPhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterFourPhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>Your photograph opens in the governed Precision Tap road.</small></section></div>`,
+      visual: () => `<div class="adjustment-entry"><figure class="adjustment-target"><img src="${chapterThreeTargetImage}" alt="Baker 25 Meters Zeroing Target, M16A2"></figure><section class="photo-entry" aria-labelledby="photo-entry-title"><span>YOU'RE UP!</span><h2 id="photo-entry-title">Shoot Your Own Target</h2><p>${chapterFourFounderScript[1]}</p><div><a href="${chapterFourPhotoRoad("camera")}">TAKE PHOTO</a><a href="${chapterFourPhotoRoad("existing")}">CHOOSE EXISTING PHOTO</a></div><small>Your photograph opens in the governed Precision Tap road.</small></section></div>`,
       task: "", action: "none", hideTask: true
-    }),
-    Object.freeze({
-      id: "a2-5", label: "PRE-FIRE READY", shortTitle: "Ready for the first group", eyebrow: "STOP POINT • LIVE FIRE COMES NEXT", title: "Ready to fire your first group.",
-      summary: "You have learned the target, temporary drum setup, center aim, and adjustment controls used by this M16A2 standard iron-sight training.",
-      narration: "You are ready for your first group. At twenty-five meters, follow all range commands and safety procedures. Use the center of the target as the same point of aim for every shot. Your range procedure determines the number of rounds. Stop here and wait for range commands.",
-      visual: () => `<div class="ready-panel"><span class="ready-kicker">PREFIRE TRAINING COMPLETE</span><div class="ready-title">READY TO FIRE<br>YOUR FIRST GROUP</div><ul><li><span>•</span>Training target: 25 Meters Zeroing Target — M16A2</li><li><span>•</span>Training setup: M16A2 with standard iron sights</li><li><span>•</span>Rear-drum lesson: one click past 300</li><li><span>•</span>Aim: center intersection</li><li><span>•</span>Distance: 25 meters</li></ul><p>STOP HERE. Follow range commands and keep one center aim.</p></div>`,
-      task: "When the range is safe and commands permit, maintain the same center aim throughout your first group.", action: "terminal"
     })
   ]);
 

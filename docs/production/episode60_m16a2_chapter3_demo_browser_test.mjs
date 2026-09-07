@@ -67,7 +67,7 @@ try {
     await page.goto(`${baseUrl}/m16a2-tstt.html`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "START SESSION", exact: true }).click();
     await page.locator('[data-control="chapters"]').click();
-    await page.getByRole("button", { name: /Let Tap-n-Score show you/ }).click();
+    await page.getByRole("button", { name: /LET TAP-N-SCORE SHOW YOU/i }).click();
     assert.equal(await page.locator("[data-demo-proof], [data-audio-proof], [data-step-proof], [data-player-proof]").count(), 0, `development instrumentation is absent at ${viewport.width}px`);
     const demo = page.frameLocator("#chapterThreeRuntime");
     await demo.locator("#markSurface > img").waitFor({ timeout: 30000 });
@@ -168,11 +168,16 @@ try {
     });
     assert.ok(preservedSurfaceRequests.some(url => url.includes("view=sec")), "demo opens the existing SEC surface");
     assert.ok(preservedSurfaceRequests.some(url => url.includes("selected=")), "demo opens the existing Ballistic Vault record surface");
-    assert.match(state.scene, /DEMONSTRATION COMPLETE[\s\S]*YOU'RE UP!!/);
+    assert.match(state.scene, /DEMONSTRATION COMPLETE[\s\S]*YOU'RE UP!/);
     assert.doesNotMatch(state.scene, /Chapter 4 gives you the controls/);
     assert.equal(state.href, "m16a2-tstt.html?chapter=4");
     assert.equal(state.overflow, false);
     assert.deepEqual(errors, []);
+    await demo.getByRole("link", { name: "GO TO CHAPTER 4", exact: true }).click();
+    await page.waitForURL(/m16a2-tstt\.html\?chapter=4$/, { timeout: 30000 });
+    assert.equal(await page.locator("#chapterNumber").innerText(), "CHAPTER 4 OF 4");
+    assert.equal(await page.locator("#lessonTitle").innerText(), "YOU'RE UP!");
+    assert.match(await page.locator("#visualStage").innerText(), /YOU'RE UP![\s\S]*Shoot Your Own Target[\s\S]*TAKE PHOTO[\s\S]*CHOOSE EXISTING PHOTO/i);
     await context.close();
   }
 
