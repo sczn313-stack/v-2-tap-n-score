@@ -163,6 +163,9 @@ def test_correctly_oriented_photo_releases_reconciled_right_up_result():
     assert result["correction"]["windageDirection"] == "RIGHT"
     assert result["correction"]["elevationDirection"] == "UP"
     assert result["authorityAuditEnvelope"]["releaseStatus"] == "released"
+    assert result["clicks"]["quantization"]["windage"]["policyId"] == "sczn3-universal-mechanical-quantization-v1"
+    assert result["clicks"]["quantization"]["windage"]["status"] == "released"
+    assert result["authorityAuditEnvelope"]["mechanicalQuantization"] == result["clicks"]["quantization"]
     assert all(result["directionalReconciliation"]["checks"].values())
 
 

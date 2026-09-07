@@ -1724,7 +1724,10 @@
   }
 
   function loadSession(sessionId) {
-    const session = getSessionHistory().find(item => item.sessionId === sessionId);
+    // The URL names the canonical working record. History is a display index,
+    // not the authority for whether an in-progress session can be rehydrated.
+    const session = readCanonicalSession(sessionId)
+      || getSessionHistory().find(item => item.sessionId === sessionId);
     if (!session) return null;
     if (!readCanonicalSession(sessionId)) persistCanonicalSession(session, "migrate-loaded-session");
     rawWrite(KEYS.activeSession, sessionReference(session.sessionId));

@@ -6,6 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const baseUrl = process.env.SCZN3_TEST_BASE_URL || "http://127.0.0.1:8094";
 const targetPhoto = path.resolve("assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg");
+const founderTargetPhoto = path.resolve("authority-evidence/mfam/chapter4-founder-quantization-2026-09-06/founder-m16a2-chapter4-specimen.jpg");
 const enlargedDifferentProduct = path.resolve("authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png");
 const profileId = "baker_m16a2_25m_zero";
 const registrationPackageId = "baker-m16a2-25m-photo-registration-v1";
@@ -149,7 +150,8 @@ try {
 
     const governedSession = await page.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null));
     assert.equal(governedSession.targetEvidenceImage.assetRole, "shooter-captured-target-photo");
-    assert.equal(governedSession.confirmationEvidenceImage, undefined, "confirmation evidence is not preserved before final governed save");
+    assert.equal(governedSession.confirmationEvidenceImage.assetRole, "shooter-captured-target-photo", "working confirmation evidence must survive a reload before final governed save");
+    assert.equal(governedSession.savedToSEC, false, "working evidence is rehydratable but is not a preserved SEC until the shooter saves");
 
     await page.locator("#saveMarks:visible", { hasText: "Save Session" }).click();
     await page.waitForURL(url => url.pathname.endsWith("/sec.html"), { timeout: 30000 });
@@ -169,12 +171,85 @@ try {
     const sessionId = await page.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null).sessionId);
     await page.locator("#viewHistory").click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"), { timeout: 30000 });
-    await page.locator(`[data-session-id="${sessionId}"] .vault-record-link`).waitFor({ state: "visible", timeout: 30000 });
+    const vaultRecord = page.locator(`[data-session-id="${sessionId}"] .vault-record-link`);
+    await vaultRecord.waitFor({ state: "visible", timeout: 30000 });
+    await vaultRecord.click();
+    await page.waitForURL(url => url.pathname.endsWith("/sec.html") && url.searchParams.get("sessionId") === sessionId, { timeout: 30000 });
+    await page.locator('[data-sec-shell="universal-v1"][data-sec-adapter-id="m16a2-zeroing"]').waitFor({ state: "visible", timeout: 30000 });
+    assert.equal(await page.evaluate(id => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null).sessionId === id, sessionId), true);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     assert.deepEqual(errors, []);
     await context.close();
     console.log(`PASS Chapter 4 shooter M16A2 correction → confirmation → SEC → Vault at ${viewport.width}px`);
   }
+
+  const founderContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const founderPage = await founderContext.newPage();
+  const founderRegistrations = [];
+  const founderAuthority = [];
+  await founderContext.route("**/api/authority/target-image-registration", async route => {
+    const response = await route.fetch();
+    founderRegistrations.push({ status: response.status(), body: await response.json() });
+    await route.fulfill({ response });
+  });
+  await founderContext.route("**/api/authority/m4", async route => {
+    const request = route.request().postDataJSON();
+    const response = await route.fetch();
+    founderAuthority.push({ request, status: response.status(), body: await response.json() });
+    await route.fulfill({ response });
+  });
+  await founderPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=existing`, { waitUntil: "networkidle" });
+  await founderPage.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
+  await founderPage.locator("#targetImageInput").setInputFiles(founderTargetPhoto);
+  await founderPage.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
+  await tapPercent(founderPage, 49.97, 57.32);
+  for (const [x, y] of [[13.24, 80.37], [16.53, 80.51], [18.49, 80.51], [21.68, 80.51], [24.68, 80.51], [27.23, 80.51]]) {
+    await tapPercent(founderPage, x, y);
+  }
+  await founderPage.locator("#showResults:visible").click();
+  await founderPage.waitForFunction(() => document.body.dataset.hasResults === "true", null, { timeout: 30000 });
+  assert.deepEqual({
+    coverage: founderRegistrations[0].body.metrics.targetCoverage,
+    matches: founderRegistrations[0].body.metrics.mutualMatches,
+    inliers: founderRegistrations[0].body.metrics.inliers,
+    rms: founderRegistrations[0].body.metrics.reprojectionRmsPx,
+    orientation: founderRegistrations[0].body.orientationEvidence.status
+  }, { coverage: .9821, matches: 1070, inliers: 1010, rms: .3064, orientation: "proven" });
+  assert.deepEqual({
+    windageClicks: founderAuthority[0].body.clicks.windageClicks,
+    windageDirection: founderAuthority[0].body.clicks.windageDirection,
+    elevationClicks: founderAuthority[0].body.clicks.elevationClicks,
+    elevationDirection: founderAuthority[0].body.clicks.elevationDirection,
+    mechanicalRecommendation: founderAuthority[0].body.status.hasMechanicalRecommendation
+  }, { windageClicks: 18, windageDirection: "RIGHT", elevationClicks: 8, elevationDirection: "UP", mechanicalRecommendation: true });
+  assert.equal(founderAuthority[0].body.clicks.quantization.windage.continuousClicks, 18.369746);
+  assert.equal(founderAuthority[0].body.clicks.quantization.windage.selectedClicks, 18);
+  const founderSessionId = await founderPage.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null).sessionId);
+  await founderPage.reload({ waitUntil: "networkidle" });
+  await founderPage.locator("#saveMarks:visible", { hasText: "Begin Confirmation" }).click();
+  await founderPage.locator("#precisionTapPhotoPicker:visible").waitFor({ timeout: 30000 });
+  await founderPage.locator("#targetImageInput").setInputFiles(targetPhoto);
+  await founderPage.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
+  await tapPercent(founderPage, 49.9, 48.6);
+  await tapPercent(founderPage, 50.1, 48.7);
+  await tapPercent(founderPage, 50.0, 48.8);
+  await founderPage.locator("#showResults:visible").click();
+  await founderPage.waitForFunction(() => document.body.dataset.hasResults === "true", null, { timeout: 30000 });
+  assert.equal(founderAuthority[1].request.phase, "confirmation");
+  assert.equal(founderAuthority[1].body.validation.confirmed, true);
+  await founderPage.locator("#saveMarks:visible", { hasText: "Save Session" }).click();
+  await founderPage.waitForURL(url => url.pathname.endsWith("/sec.html"), { timeout: 30000 });
+  await founderPage.locator("#saveSEC").click();
+  await founderPage.getByText("SEC PRESERVED", { exact: true }).waitFor({ timeout: 30000 });
+  await founderPage.locator("#viewHistory").click();
+  await founderPage.waitForURL(url => url.pathname.endsWith("/records.html"), { timeout: 30000 });
+  const founderVaultRecord = founderPage.locator(`[data-session-id="${founderSessionId}"] .vault-record-link`);
+  await founderVaultRecord.waitFor({ state: "visible", timeout: 30000 });
+  await founderVaultRecord.click();
+  await founderPage.waitForURL(url => url.pathname.endsWith("/sec.html") && url.searchParams.get("sessionId") === founderSessionId, { timeout: 30000 });
+  assert.equal(await founderPage.locator('[data-sec-shell="universal-v1"][data-sec-adapter-id="m16a2-zeroing"]').isVisible(), true);
+  await founderContext.close();
+  console.log("PASS exact Founder specimen → 18 RIGHT / 8 UP → BEGIN CONFIRMATION → second photo → ZERO CONFIRMED → SEC → Vault → exact reopen at 390px");
 
   const refusalContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const refusalPage = await refusalContext.newPage();
@@ -222,6 +297,35 @@ try {
   await refusalContext.close();
   console.log("PASS enlarged ST-M16A2R fails closed with simple TRY AGAIN / EXIT recovery");
 
+  const quantizationRefusalContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const quantizationRefusalPage = await quantizationRefusalContext.newPage();
+  await quantizationRefusalContext.route("**/api/authority/m4", async route => {
+    const response = await route.fetch();
+    const body = await response.json();
+    body.correctionEstimate = { status: "best_estimate_exact_click_count_withheld", axisAssessments: body.registrationClaimSufficiency?.axisAssessments || {} };
+    body.clicks = null;
+    body.status.hasMechanicalRecommendation = false;
+    body.mechanicalValidation = { status: "unavailable", reason: "mechanical_quantization_uncertainty_exceeds_governed_policy", model: body.mechanicalValidation?.model };
+    await route.fulfill({ response, json: body });
+  });
+  await quantizationRefusalPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=existing`, { waitUntil: "networkidle" });
+  await quantizationRefusalPage.waitForURL(url => url.pathname.endsWith("/shoot.html"), { timeout: 30000 });
+  await quantizationRefusalPage.locator("#targetImageInput").setInputFiles(targetPhoto);
+  await quantizationRefusalPage.waitForFunction(() => document.body.dataset.precisionTapRegistration === "complete", null, { timeout: 30000 });
+  await tapPercent(quantizationRefusalPage, 50, 48.7);
+  await tapPercent(quantizationRefusalPage, 58.3, 41.1);
+  await tapPercent(quantizationRefusalPage, 58.5, 41.3);
+  await tapPercent(quantizationRefusalPage, 58.7, 41.5);
+  await quantizationRefusalPage.locator("#showResults:visible").click();
+  await quantizationRefusalPage.waitForFunction(() => document.body.dataset.rangeState === "verification-unavailable", null, { timeout: 30000 });
+  await quantizationRefusalPage.getByText("WE CAN’T VERIFY THIS ADJUSTMENT", { exact: true }).waitFor({ timeout: 30000 });
+  assert.equal(await quantizationRefusalPage.locator("#saveMarks:visible").count(), 0);
+  assert.equal(await quantizationRefusalPage.getByText("Try Again", { exact: true }).isVisible(), true);
+  assert.equal(await quantizationRefusalPage.getByText("Exit", { exact: true }).isVisible(), true);
+  assert.doesNotMatch(await quantizationRefusalPage.locator("body").innerText(), /APPLY THE CLICKS/i);
+  await quantizationRefusalContext.close();
+  console.log("PASS excessive mechanical uncertainty uses truthful TRY AGAIN / EXIT recovery without APPLY CLICKS");
+
   const cameraContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const cameraPage = await cameraContext.newPage();
   await cameraPage.goto(`${baseUrl}/matrix.html?target_profile_id=${profileId}&equipment=standard&founder_review=1&tstt_chapter=4&photo_source=camera`, { waitUntil: "networkidle" });
@@ -252,11 +356,17 @@ try {
   await rehydratedPage.locator("#showResults:visible").click();
   await rehydratedPage.waitForFunction(() => document.body.dataset.hasResults === "true", null, { timeout: 30000 });
   assert.equal(await rehydratedPage.locator('.workspace-result-overlay[aria-label="Mechanical correction"]').count(), 1);
+  const workingSessionId = await rehydratedPage.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null).sessionId);
+  await rehydratedPage.reload({ waitUntil: "networkidle" });
+  assert.equal(new URL(rehydratedPage.url()).searchParams.get("session"), workingSessionId);
+  await rehydratedPage.waitForFunction(() => document.body.dataset.hasEvidence === "true" && document.body.dataset.hasResults === "true", null, { timeout: 30000 });
+  assert.equal(await rehydratedPage.locator("#precisionTapPhotoPicker:visible").count(), 0, "reload must not discard preserved evidence into photo entry");
+  assert.equal(await rehydratedPage.locator('.workspace-result-overlay[aria-label="Mechanical correction"]').count(), 1);
   const rehydratedBegin = rehydratedPage.locator("#saveMarks:visible", { hasText: "Begin Confirmation" });
   assert.equal(await rehydratedBegin.count(), 1, "a rehydrated governed click package must not leave the action bar empty");
   assert.equal(await rehydratedBegin.isEnabled(), true);
   await rehydratedContext.close();
-  console.log("PASS rehydrated governed click result retains actionable BEGIN CONFIRMATION at 390px");
+  console.log("PASS URL reload rehydrates evidence, governed result, and actionable BEGIN CONFIRMATION at 390px");
 } finally {
   await browser.close();
 }

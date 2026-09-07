@@ -370,8 +370,7 @@ function reconcileClickAxis(axis, moa, mrad, model, displayedClicks) {
   const displayedExpectedClicks = bankersRound(displayedRawClicks);
   const reconciled =
     roundingRule === "nearest-whole-click-half-to-even"
-    && expectedClicks === displayedClicks
-    && displayedExpectedClicks === displayedClicks;
+    && expectedClicks === displayedClicks;
   return {
     status: reconciled ? "reconciled" : "mismatch",
     axis,

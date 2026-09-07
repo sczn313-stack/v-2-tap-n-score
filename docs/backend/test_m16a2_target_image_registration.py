@@ -17,6 +17,7 @@ DOCS = Path(__file__).resolve().parents[1]
 CANONICAL = DOCS / "assets" / "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg"
 DIFFERENT_GEOMETRY = DOCS / "assets" / "M4_M16_25M_ZERO_AUTHORITY_v1.png"
 DIFFERENT_PRODUCT = DOCS / "authority-evidence" / "mfam" / "founder-supplied-baker-product-evidence" / "FOUNDER_BAKER_ST_M16A2R_PRODUCT_SCREENSHOT_2026-09-02.png"
+FOUNDER_CHAPTER4_SPECIMEN = DOCS / "authority-evidence" / "mfam" / "chapter4-founder-quantization-2026-09-06" / "founder-m16a2-chapter4-specimen.jpg"
 PACKAGE_ID = "baker-m16a2-25m-photo-registration-v1"
 PROFILE_ID = "baker_m16a2_25m_zero"
 PROFILE_VERSION = "BAKER_M16A2_25M_AUTHORITY_v1"
@@ -194,6 +195,40 @@ def test_standard_baker_m16a2_confirmation_is_authoritative():
     assert result["validation"]["status"] == "calculated"
     assert result["registrationClaimSufficiency"]["confirmationAssessment"]["status"] == "stable"
     assert result["targetImageRegistrationEvidence"]["knowledgeState"] == "exact"
+
+
+def test_founder_chapter4_adjacent_click_boundary_releases_nearest_executable_value():
+    aim = {"xPercent": 49.97, "yPercent": 57.32}
+    impacts = [
+        {"xPercent": x, "yPercent": y, "shotId": f"founder-{index + 1}"}
+        for index, (x, y) in enumerate([
+            (13.24, 80.37), (16.53, 80.51), (18.49, 80.51),
+            (21.68, 80.51), (24.68, 80.51), (27.23, 80.51),
+        ])
+    ]
+    evidence = image_evidence(FOUNDER_CHAPTER4_SPECIMEN)
+    payload = authority_payload(evidence, impacts)
+    payload["aimCoordinate"] = aim
+    payload["precisionTapEvidence"] = precision_envelope(evidence, aim, impacts)
+    result = build_authority_package(payload)
+    registration = result["targetImageRegistrationEvidence"]
+    windage = result["clicks"]["quantization"]["windage"]
+    assert registration["metrics"]["targetCoverage"] == .9821
+    assert registration["metrics"]["mutualMatches"] == 1070
+    assert registration["metrics"]["inliers"] == 1010
+    assert registration["metrics"]["reprojectionRmsPx"] == .3064
+    assert registration["orientationEvidence"]["status"] == "proven"
+    assert result["directionalReconciliation"]["status"] == "reconciled"
+    assert result["clicks"]["windageClicks"] == 18
+    assert result["clicks"]["windageDirection"] == "RIGHT"
+    assert result["clicks"]["elevationClicks"] == 8
+    assert result["clicks"]["elevationDirection"] == "UP"
+    assert windage["continuousClicks"] == 18.369746
+    assert windage["signedClickCandidates"] == [18, 19]
+    assert windage["lowerResidualClicks"] < windage["upperResidualClicks"]
+    assert windage["selectedClicks"] == 18
+    assert windage["status"] == "released"
+    assert result["status"]["hasMechanicalRecommendation"] is True
 
 
 if __name__ == "__main__":

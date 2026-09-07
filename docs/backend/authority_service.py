@@ -19,6 +19,10 @@ from target_image_registration_authority import (
     directional_source_reconciliation,
     register_target_image,
 )
+try:
+    from mechanical_quantization import nearest_click_half_to_even, quantize_mechanical_axis
+except ModuleNotFoundError:
+    from backend.mechanical_quantization import nearest_click_half_to_even, quantize_mechanical_axis
 from gssf_ac_1_authority import (
     GSSF_AC_1_ATP,
     GSSF_AC_1_EXECUTION_CONTRACT,
@@ -379,81 +383,62 @@ def zero_correction_registration_sufficiency(
     impact_uncertainty = max(float(item.get("localUncertaintyPx") or 0) for item in impact_evidence)
     uncertainty_inches = (aim_uncertainty + impact_uncertainty) / float(geometry["gridSquarePx"]) * float(geometry.get("gridSquareInches", 1))
 
-    def candidates(value: float, axis: str) -> set[tuple[str, int]]:
-        results = set()
-        for candidate in (value - uncertainty_inches, value, value + uncertainty_inches):
-            if axis == "x":
-                direction = "LEFT" if candidate > 0 else "RIGHT" if candidate < 0 else "CENTER"
-            else:
-                direction = "UP" if candidate > 0 else "DOWN" if candidate < 0 else "CENTER"
-            results.add((direction, clicks_for_inches(candidate, yards, adjustment)))
-        return results
-
-    windage = candidates(central["x"], "x")
-    elevation = candidates(central["y"], "y")
-
-    def signed_clicks(direction: str, clicks: int, axis: str) -> int:
-        if direction == "CENTER":
-            return 0
-        positive_direction = "LEFT" if axis == "x" else "UP"
-        return clicks if direction == positive_direction else -clicks
-
-    def materially_stable(value: float, axis: str, values: set[tuple[str, int]]) -> bool:
-        if axis == "x":
-            point_direction = "LEFT" if value > 0 else "RIGHT" if value < 0 else "CENTER"
-        else:
-            point_direction = "UP" if value > 0 else "DOWN" if value < 0 else "CENTER"
-        point_clicks = clicks_for_inches(value, yards, adjustment)
-        signed_point = signed_clicks(point_direction, point_clicks, axis)
-        return all(
-            abs(signed_clicks(direction, clicks, axis) - signed_point) <= 3
-            for direction, clicks in values
-        )
-
-    def axis_assessment(value: float, axis: str, values: set[tuple[str, int]]) -> Dict[str, Any]:
+    def axis_assessment(value: float, axis: str) -> Dict[str, Any]:
         if axis == "x":
             direction = "LEFT" if value > 0 else "RIGHT" if value < 0 else "CENTER"
         else:
             direction = "UP" if value > 0 else "DOWN" if value < 0 else "CENTER"
-        ordered = [{"direction": item_direction, "clicks": item_clicks} for item_direction, item_clicks in sorted(values)]
-        maximum_clicks = max(item["clicks"] for item in ordered)
-        minimum_clicks = min(item["clicks"] for item in ordered)
-        centered_within_one_click = maximum_clicks <= 1 and {item["direction"] for item in ordered}.issubset({"LEFT", "RIGHT", "CENTER"})
+        angular_value = angular_for_inches(value, yards, adjustment)
+        click_value = adjustment["clickValueMRAD"] if adjustment["unit"] == "MRAD" else adjustment["clickValueMOA"]
+        angular_uncertainty = angular_for_inches(uncertainty_inches, yards, adjustment)
+        signed_continuous = angular_value / click_value
+        if value < 0:
+            signed_continuous *= -1
+        quantization = quantize_mechanical_axis(signed_continuous, angular_uncertainty / click_value)
+        ordered = []
+        for signed_clicks in quantization["signedClickCandidates"]:
+            item_direction = (
+                "CENTER" if signed_clicks == 0
+                else ("LEFT" if axis == "x" else "UP") if signed_clicks > 0
+                else ("RIGHT" if axis == "x" else "DOWN")
+            )
+            ordered.append({"direction": item_direction, "clicks": abs(signed_clicks)})
+        click_values = [item["clicks"] for item in ordered] or [0]
         return {
-            "strictStatus": "sufficient" if materially_stable(value, axis, values) else "insufficient",
+            "strictStatus": "sufficient" if quantization["status"] == "released" else "insufficient",
             "bestEstimate": {
                 "direction": direction,
-                "clicks": clicks_for_inches(value, yards, adjustment),
+                "clicks": abs(quantization["selectedClicks"]),
             },
             "candidateAdjustments": ordered,
-            "minimumClicks": minimum_clicks,
-            "maximumClicks": maximum_clicks,
-            "practicalFinding": "centered_within_one_click" if axis == "x" and centered_within_one_click else None,
+            "minimumClicks": min(click_values),
+            "maximumClicks": max(click_values),
+            "practicalFinding": "bounded_adjacent_click_quantization" if len(ordered) > 1 and quantization["status"] == "released" else None,
+            "quantization": quantization,
         }
 
-    windage_assessment = axis_assessment(central["x"], "x", windage)
-    elevation_assessment = axis_assessment(central["y"], "y", elevation)
+    windage_assessment = axis_assessment(central["x"], "x")
+    elevation_assessment = axis_assessment(central["y"], "y")
 
     def supports_physical_adjustment(assessment: Dict[str, Any]) -> bool:
         return (
             assessment.get("strictStatus") == "sufficient"
-            or assessment.get("practicalFinding") == "centered_within_one_click"
         )
 
     supported = supports_physical_adjustment(windage_assessment) and supports_physical_adjustment(elevation_assessment)
     return {
         "status": "sufficient" if supported else "insufficient",
         "owner": "zeroingCorrection",
-        "standard": "uncertainty_cannot_materially_change_presented_click_recommendation",
-        "maximumNonMaterialVariationClicks": 3,
+        "standard": "governed_nearest_click_with_bounded_adjacent_uncertainty",
+        "maximumGovernedCandidateSpanClicks": 3,
         "uncertaintyInches": _round(uncertainty_inches, 4),
-        "windageCandidates": [{"direction": direction, "clicks": clicks} for direction, clicks in sorted(windage)],
-        "elevationCandidates": [{"direction": direction, "clicks": clicks} for direction, clicks in sorted(elevation)],
+        "windageCandidates": windage_assessment["candidateAdjustments"],
+        "elevationCandidates": elevation_assessment["candidateAdjustments"],
         "axisAssessments": {
             "windage": windage_assessment,
             "elevation": elevation_assessment,
         },
-        "reason": None if supported else "registration_uncertainty_could_change_correction",
+        "reason": None if supported else "mechanical_quantization_uncertainty_exceeds_governed_policy",
     }
 
 
@@ -481,7 +466,7 @@ def clicks_for_inches(inches: float, yards: float, adjustment: Dict[str, Any]) -
     else:
         angular_value = moa_for_inches(inches, yards)
         click_value = adjustment["clickValueMOA"]
-    return int(round(angular_value / click_value))
+    return nearest_click_half_to_even(angular_value / click_value)
 
 
 def clicks_for_angular_value(angular_value: float, adjustment_unit: str, click_value: float) -> int:
@@ -490,7 +475,7 @@ def clicks_for_angular_value(angular_value: float, adjustment_unit: str, click_v
         raise ValueError("invalid or missing optic adjustment unit")
     if click_value <= 0:
         raise ValueError("invalid or missing optic click value")
-    return int(round(abs(angular_value) / click_value))
+    return nearest_click_half_to_even(abs(angular_value) / click_value)
 
 
 def angular_for_inches(inches: float, yards: float, adjustment: Dict[str, Any]) -> float:
@@ -1438,6 +1423,12 @@ def build_authority_package(payload: Dict[str, Any], runtime_timing: Optional[Di
         yards,
         adjustment,
     )
+    if registration_claim_sufficiency.get("status") == "sufficient" and clicks:
+        quantization = {
+            axis: assessment.get("quantization")
+            for axis, assessment in registration_claim_sufficiency.get("axisAssessments", {}).items()
+        }
+        clicks["quantization"] = quantization
     directional_reconciliation = directional_source_reconciliation(
         registration_evidence,
         aim,
@@ -1560,6 +1551,7 @@ def build_authority_package(payload: Dict[str, Any], runtime_timing: Optional[Di
             "calculatedCorrection": audit_correction,
             "calculatedClicks": audit_clicks,
             "calculatedAngular": audit_moa,
+            "mechanicalQuantization": clicks.get("quantization") if clicks else None,
             "releasedCorrection": correction,
             "projectedResult": directional_reconciliation.get("projectedResult"),
             "releaseStatus": "released" if correction is not None else "withheld",

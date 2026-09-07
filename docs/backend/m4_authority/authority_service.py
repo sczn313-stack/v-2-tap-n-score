@@ -13,9 +13,11 @@ from typing import Any, Dict, List, Optional
 
 try:
     from authority_service import apply_precision_tap_registration, source_photo_render_coordinates
+    from mechanical_quantization import ROUNDING_RULE, nearest_click_half_to_even, quantize_mechanical_axis
     from target_image_registration_authority import canonical_point_to_source_percent, directional_source_reconciliation
 except ModuleNotFoundError:  # Package import used by the Python/JavaScript parity harness.
     from backend.authority_service import apply_precision_tap_registration, source_photo_render_coordinates
+    from backend.mechanical_quantization import ROUNDING_RULE, nearest_click_half_to_even, quantize_mechanical_axis
     from backend.target_image_registration_authority import canonical_point_to_source_percent, directional_source_reconciliation
 
 from .weapon_equipment_registry import (
@@ -276,7 +278,7 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 def axis_clicks(moa: float, mrad: float, model: Dict[str, Any], axis: str) -> int:
     magnitude = mrad if model["unit"] == "MRAD" else moa
-    return int(round(magnitude / float(model[f"{axis}PerClick"])))
+    return nearest_click_half_to_even(magnitude / float(model[f"{axis}PerClick"]))
 
 
 def registration_claim_sufficiency(
@@ -335,28 +337,24 @@ def registration_claim_sufficiency(
     aim_grid = grid_inches(aim, geometry)
     poib_grid = grid_inches(poib, geometry)
     axis_assessments: Dict[str, Any] = {}
-    stable = True
+    governed = True
     for axis, coordinate, moa_inches, mrad_inches in (
         ("windage", "xInches", MOA_INCHES_AT_100_YARDS, MRAD_INCHES_AT_100_YARDS),
         ("elevation", "yInches", MOA_INCHES_AT_100_YARDS, MRAD_INCHES_AT_100_YARDS),
     ):
         signed_offset = aim_grid[coordinate] - poib_grid[coordinate]
-        candidate_offsets = (
-            signed_offset - combined_uncertainty_inches,
-            signed_offset,
-            signed_offset + combined_uncertainty_inches,
+        angular_scale = (yards / 100) * (mrad_inches if model["unit"] == "MRAD" else moa_inches)
+        angular_per_click = float(model[f"{axis}PerClick"])
+        quantization = quantize_mechanical_axis(
+            signed_offset / angular_scale / angular_per_click,
+            combined_uncertainty_inches / angular_scale / angular_per_click,
         )
-        signed_click_candidates = set()
-        for candidate in candidate_offsets:
-            moa = abs(candidate) / ((yards / 100) * moa_inches)
-            mrad = abs(candidate) / ((yards / 100) * mrad_inches)
-            clicks = axis_clicks(moa, mrad, model, axis)
-            signed_click_candidates.add(0 if clicks == 0 else clicks if candidate > 0 else -clicks)
-        axis_stable = len(signed_click_candidates) == 1
-        stable = stable and axis_stable
+        governed = governed and quantization["status"] == "released"
+        candidates = quantization["signedClickCandidates"]
         axis_assessments[axis] = {
-            "status": "stable" if axis_stable else "ambiguous",
-            "signedClickCandidates": sorted(signed_click_candidates),
+            "status": "stable" if len(candidates) == 1 else "bounded_adjacent" if quantization["status"] == "released" else "excessive",
+            "signedClickCandidates": candidates,
+            "quantization": quantization,
         }
     confirmation_assessment = {"status": "not_applicable"}
     confirmation_stable = True
@@ -376,17 +374,17 @@ def registration_claim_sufficiency(
             "maximumResidualInches": rounded(maximum_residual),
             "toleranceInches": rounded(tolerance),
         }
-    sufficient_for_claim = stable or (phase == "confirmation" and confirmation_stable)
+    sufficient_for_claim = governed or (phase == "confirmation" and confirmation_stable)
     return {
         "status": (
             "sufficient"
-            if stable
+            if governed
             else "sufficient_for_confirmation"
             if phase == "confirmation" and confirmation_stable
             else "insufficient"
         ),
         "owner": owner,
-        "reason": None if sufficient_for_claim else "registration_uncertainty_could_change_authoritative_outcome",
+        "reason": None if sufficient_for_claim else "mechanical_quantization_uncertainty_exceeds_governed_policy",
         "knowledgeState": registration.get("knowledgeState"),
         "maximumLocalUncertaintyPx": rounded(maximum_uncertainty_px),
         "combinedAxisUncertaintyInches": rounded(combined_uncertainty_inches),
@@ -415,12 +413,11 @@ def reconcile_click_axis(
         }
     raw_clicks = angular_value / click_constant
     displayed_raw_clicks = displayed_angular_value / click_constant
-    expected_clicks = int(round(raw_clicks))
-    displayed_expected_clicks = int(round(displayed_raw_clicks))
+    expected_clicks = nearest_click_half_to_even(raw_clicks)
+    displayed_expected_clicks = nearest_click_half_to_even(displayed_raw_clicks)
     reconciled = (
-        rounding_rule == "nearest-whole-click-half-to-even"
+        rounding_rule == ROUNDING_RULE
         and expected_clicks == displayed_clicks
-        and displayed_expected_clicks == displayed_clicks
     )
     return {
         "status": "reconciled" if reconciled else "mismatch",
@@ -726,11 +723,8 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         mission,
     )
     correction_estimate = None
-    registered_clicks_ambiguous = any(
-        assessment.get("status") == "ambiguous"
-        for assessment in registration_sufficiency.get("axisAssessments", {}).values()
-    )
-    if registered_clicks_ambiguous and clicks:
+    quantization_withheld = registration_sufficiency.get("status") == "insufficient"
+    if quantization_withheld and clicks:
         correction_estimate = {
             "status": "best_estimate_exact_click_count_withheld",
             "truthLabel": "Best estimate — exact click count withheld",
@@ -747,6 +741,14 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "reason": registration_sufficiency.get("reason"),
             "model": model,
         }
+    elif clicks and registration_evidence:
+        quantization = {
+            axis: assessment.get("quantization")
+            for axis, assessment in registration_sufficiency.get("axisAssessments", {}).items()
+        }
+        clicks["quantization"] = quantization
+        mechanical_validation["quantizationPolicy"] = quantization
+        mechanical_validation["registrationUncertaintyPreserved"] = True
     if (
         phase == "confirmation"
         and registration_sufficiency.get("confirmationAssessment", {}).get("status") == "ambiguous"
@@ -896,6 +898,7 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "calculatedCorrection": audit_correction,
             "calculatedClicks": audit_clicks,
             "calculatedAngular": audit_angular,
+            "mechanicalQuantization": clicks.get("quantization") if clicks else None,
             "projectedResult": directional_reconciliation.get("projectedResult"),
             "releaseStatus": "withheld" if hard_withhold else "released",
         } if registration_evidence else None,

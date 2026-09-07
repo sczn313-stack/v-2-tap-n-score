@@ -1465,6 +1465,7 @@ function zeroingMissionGuidance() {
   if (!resultsShown) return (!usesGovernedZeroingRoad() || holeEntrySettled)
     ? "Tap Show Results when your shots are marked."
     : "Continue tapping bullet holes.";
+  if (mechanicalRecommendationUnavailable()) return MECHANICAL_RECOMMENDATION_RECOVERY_MESSAGE;
   if (!sessionSaved) return usesGovernedZeroingRoad()
     ? `Apply the clicks. ${activeZeroingExperience()?.presentation?.confirmationInstruction || "Then shoot a new confirmation group, photograph that target, and tap only the new confirmation bullet holes."}`
     : "Apply your clicks, then shoot your confirmation shots.";
@@ -2680,7 +2681,7 @@ function targetIntelStackHtml() {
       </div>
     `;
   }
-  if (targetVerificationFailure() || authorityStatusMessage && !resultsShown) return authorityRecoveryHtml(authorityStatusMessage);
+  if (targetVerificationFailure() || mechanicalRecommendationUnavailable() || authorityStatusMessage && !resultsShown) return authorityRecoveryHtml(authorityStatusMessage);
   return `
       <div class="authority-results-panel" aria-label="Results">
         <div class="authority-evidence-summary">
@@ -2695,6 +2696,7 @@ function targetIntelStackHtml() {
 }
 
 const TARGET_VERIFICATION_RECOVERY_MESSAGE = "Try another photo that clearly shows the complete selected target.";
+const MECHANICAL_RECOMMENDATION_RECOVERY_MESSAGE = "Take another photo so Tap-n-Score can give you one exact click adjustment.";
 
 function targetVerificationFailure(authorityPackage = backendAuthorityPackage, evidence = activeEvidence()) {
   if (!isZeroingAuthoritySession()) return false;
@@ -2710,13 +2712,24 @@ function targetVerificationFailure(authorityPackage = backendAuthorityPackage, e
   );
 }
 
+function mechanicalRecommendationUnavailable(authorityPackage = backendAuthorityPackage) {
+  if (!isZeroingAuthoritySession() || zeroingLivePhase !== "initial" || !resultsShown || !authorityPackage) return false;
+  if (!SCZN3PlatformContracts.directionalAuthorityRelease(authorityPackage).releasable) return false;
+  return !authorityPackage.clicks
+    || usesGovernedZeroingRoad() && authorityPackage.mechanicalValidation?.status !== "calculated";
+}
+
 function authorityRecoveryHtml(message) {
-  if (targetVerificationFailure()) {
+  const targetUnavailable = targetVerificationFailure();
+  const mechanicalUnavailable = mechanicalRecommendationUnavailable();
+  if (targetUnavailable || mechanicalUnavailable) {
+    const title = targetUnavailable ? "WE CAN’T VERIFY THIS TARGET" : "WE CAN’T VERIFY THIS ADJUSTMENT";
+    const guidance = targetUnavailable ? TARGET_VERIFICATION_RECOVERY_MESSAGE : MECHANICAL_RECOMMENDATION_RECOVERY_MESSAGE;
     return `
-      <section class="authority-recovery-state" aria-label="Target verification unavailable" role="alert">
+      <section class="authority-recovery-state" aria-label="${targetUnavailable ? "Target" : "Adjustment"} verification unavailable" role="alert">
         <div>
-          <span>WE CAN’T VERIFY THIS TARGET</span>
-          <strong>${TARGET_VERIFICATION_RECOVERY_MESSAGE}</strong>
+          <span>${title}</span>
+          <strong>${guidance}</strong>
         </div>
         <div class="authority-recovery-actions">
           <button class="button" type="button" data-authority-retry-photo>Try Again</button>
@@ -2741,6 +2754,30 @@ function bindAuthorityRecoveryAction() {
   if (retryPhoto && retryPhoto.dataset.bound !== "true") {
     retryPhoto.dataset.bound = "true";
     retryPhoto.addEventListener("click", () => {
+      if (session) {
+        const confirmation = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
+        const reset = {
+          ...session,
+          savedToSEC: false,
+          updatedAt: new Date().toISOString(),
+        };
+        if (confirmation) {
+          reset.confirmationEvidenceImage = null;
+          reset.confirmationImpactPoints = [];
+          reset.confirmationAuthorityPackage = null;
+        } else {
+          reset.targetEvidenceImage = null;
+          reset.aimPoint = null;
+          reset.impactPoints = [];
+          reset.backendAuthorityPackage = null;
+          reset.ugeoAuthorityPackage = null;
+          reset.authorityPackage = null;
+          reset.m4AuthorityPackage = null;
+          reset.clicks = null;
+          reset.workflowStage = "observation";
+        }
+        session = SCZN3M4.replaceSession(reset) || session;
+      }
       pendingEvidence = null;
       confirmationPhotoRequired = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
       precisionTapReviewing = false;
@@ -3416,6 +3453,60 @@ function activeEvidence() {
   return storedSession.targetEvidenceImage || null;
 }
 
+function persistWorkingObservations() {
+  if (!session || session.savedToSEC === true) return;
+  const evidence = pendingEvidence || displayedEvidence || activeEvidence();
+  const confirmation = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
+  const patch = {
+    ...session,
+    savedToSEC: false,
+    workflowStage: confirmation ? "validation" : "observation",
+    updatedAt: new Date().toISOString(),
+  };
+  if (confirmation) {
+    patch.confirmationEvidenceImage = evidence || session.confirmationEvidenceImage || null;
+    patch.confirmationImpactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
+  } else {
+    patch.targetEvidenceImage = evidence || session.targetEvidenceImage || null;
+    patch.aimPoint = safePoint(currentAimPoint);
+    patch.impactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
+  }
+  session = SCZN3M4.replaceSession(patch) || session;
+}
+
+function persistWorkingAuthority(authorityPackage) {
+  if (!session || !authorityPackage || session.savedToSEC === true) return;
+  const confirmation = isZeroingAuthoritySession() && zeroingLivePhase === "confirmation";
+  const authorityClicks = zeroingClicksFromAuthorityPackage(authorityPackage);
+  const patch = {
+    ...session,
+    savedToSEC: false,
+    workflowStage: confirmation ? "validation" : "analysis",
+    updatedAt: new Date().toISOString(),
+  };
+  if (confirmation) {
+    patch.confirmationEvidenceImage = activeEvidence();
+    patch.confirmationImpactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
+    patch.confirmationAuthorityPackage = authorityPackage;
+  } else {
+    patch.targetEvidenceImage = activeEvidence();
+    patch.aimPoint = safePoint(currentAimPoint);
+    patch.impactPoints = currentImpactPoints.map(safePoint).filter(Boolean);
+    patch.backendAuthorityPackage = authorityPackage;
+    patch.ugeoAuthorityPackage = authorityPackage;
+    patch.authorityPackage = authorityPackage;
+    if (zeroingUsesAuthorityFamily("mfam")) patch.m4AuthorityPackage = authorityPackage;
+    patch.clicks = authorityClicks;
+    patch.correctionData = {
+      status: authorityClicks ? "backend-authority-calculated" : "not-calculated",
+      clicks: authorityClicks,
+      correction: authorityPackage.correction || null,
+      vectors: authorityPackage.vectors || null,
+    };
+  }
+  session = SCZN3M4.replaceSession(patch) || session;
+}
+
 function readFileAsDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -3850,8 +3941,16 @@ async function requestBackendAuthority() {
 
 function applyBackendAuthorityPackage(authorityPackage) {
   backendAuthorityPackage = compatibleAuthorityPackage(authorityPackage);
+  const zeroingMechanicalUnavailable = isZeroingAuthorityPackage(backendAuthorityPackage)
+    && SCZN3PlatformContracts.directionalAuthorityRelease(backendAuthorityPackage).releasable
+    && (
+      !backendAuthorityPackage.clicks
+      || usesGovernedZeroingRoad() && backendAuthorityPackage.mechanicalValidation?.status !== "calculated"
+    );
   authorityStatusMessage = isGssfAuthoritySession() && !isGssfAuthorityPackage(authorityPackage)
     ? "Your confirmed impacts are saved. SCZN3 could not calculate the Paper Penalty. Review the impacts, then tap Show Results again."
+    : zeroingMechanicalUnavailable
+      ? MECHANICAL_RECOMMENDATION_RECOVERY_MESSAGE
     : isZeroingAuthorityPackage(backendAuthorityPackage) && !backendAuthorityPackage.status.hasCorrection
       ? String(backendAuthorityPackage.shooterGuidance && backendAuthorityPackage.shooterGuidance.message
         || backendAuthorityPackage.validation && backendAuthorityPackage.validation.note
@@ -3872,14 +3971,17 @@ async function resolveMissionFromTargetProfile() {
     renderMarkStatus();
     return;
   }
+  const zeroingProfile = activeZeroingExperience();
   missionResolutionStatus = "resolving";
   missionResolutionMessage = "Loading target...";
-  backendAuthorityPackage = null;
+  // A compatible authority package belongs to the named working session. Keep
+  // it while resolving that session's governed target profile so reload can
+  // restore an already-released result instead of falling back to photo entry.
+  if (!zeroingProfile) backendAuthorityPackage = null;
   syncAuthorityDerivedState();
   renderMissionResolutionState();
   try {
     if (!session && !ensureTargetSession()) return;
-    const zeroingProfile = activeZeroingExperience();
     if (zeroingProfile) {
       ensureTargetAttribution();
       missionResolutionStatus = "resolved";
@@ -4860,7 +4962,7 @@ function renderResults() {
     }
     return;
   }
-  if (targetVerificationFailure() || authorityStatusMessage && !resultsShown) {
+  if (targetVerificationFailure() || mechanicalRecommendationUnavailable() || authorityStatusMessage && !resultsShown) {
     const grid = document.getElementById("resultsGrid");
     if (grid) grid.innerHTML = authorityRecoveryHtml(authorityStatusMessage);
     bindAuthorityRecoveryAction();
@@ -5301,6 +5403,7 @@ function handleMarkTap(event) {
   }
   markWorkspaceProgressUnsaved();
   clearCalculatedResults();
+  persistWorkingObservations();
   setMode(markMode);
   if (restoreFullTargetContext) precisionTapController?.resetView();
   renderMarkers();
@@ -5422,6 +5525,7 @@ function handleTargetImageSelection(event) {
         authorityStatusMessage = "";
         setSaveSessionStatus("");
       }
+      persistWorkingObservations();
       renderResults();
     }
     setMode(
@@ -5566,6 +5670,7 @@ document.getElementById("showResults").addEventListener("click", async () => {
     const authorityPackage = await requestBackendAuthority();
     applyBackendAuthorityPackage(authorityPackage);
     syncCorrectionContextGate();
+    persistWorkingAuthority(authorityPackage);
     try {
       if (window.SCZN3Ops) window.SCZN3Ops.recordShowResults(authorityPackage);
     } catch (error) {}
