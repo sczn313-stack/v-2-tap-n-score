@@ -228,12 +228,17 @@ def _load_registry() -> Dict[str, Any]:
         face for face in held_physical_faces
         if _face_has_authorized_geometry(face, inventory_geometries)
     ]
+    held_assigned_faces = [face for face in held_physical_faces if face.get("governedFamilyId")]
+    held_unassigned_faces = [face for face in held_physical_faces if not face.get("governedFamilyId")]
     computed_sweep_counts = {
         "authorizedNowRuntimeBindings": 0,
         "alreadyAuthorizedRuntimeBindings": len(bindings),
         "alreadyAuthorizedPhysicalFaces": len(bound_physical_faces),
         "heldPhysicalFaces": len(held_physical_faces),
         "knownHeldFacesWithAuthorizedGeometry": len(held_authorized_geometries),
+        "heldFacesAssignedToCandidateFamily": len(held_assigned_faces),
+        "heldFacesUnassigned": len(held_unassigned_faces),
+        "candidateFamilies": len(families),
     }
     if sweep_counts != computed_sweep_counts:
         raise MFAMAuthorityError("mfam_authorization_sweep_count_mismatch")
@@ -448,6 +453,36 @@ def industry_authorization_sweep() -> Dict[str, Any]:
         "authorizedNow": [],
         "alreadyAuthorized": [item for item in face_results if item["disposition"] == "ALREADY_AUTHORIZED"] + reference_bindings,
         "hold": [item for item in face_results if item["disposition"] == "HOLD"],
+    })
+
+
+def hold_clearance_inventory() -> Dict[str, Any]:
+    """Group every held physical face without upgrading candidate membership to proof."""
+    held_faces = [
+        face for face in _REGISTRY["_inventoryIndex"]["faces"].values()
+        if not face.get("runtimeBinding")
+    ]
+    family_groups = []
+    for family_record in _REGISTRY["families"]:
+        face_ids = [
+            face["faceId"] for face in held_faces
+            if face.get("governedFamilyId") == family_record["familyId"]
+        ]
+        family_groups.append({
+            "familyId": family_record["familyId"],
+            "familyName": family_record["name"],
+            "familyStatus": family_record["status"],
+            "heldFaceIds": face_ids,
+            "heldFaceCount": len(face_ids),
+        })
+    unassigned = [face["faceId"] for face in held_faces if not face.get("governedFamilyId")]
+    return deepcopy({
+        "planPath": _REGISTRY["authorizationSweep"]["holdClearancePlanPath"],
+        "heldFaceCount": len(held_faces),
+        "assignedHeldFaceCount": len(held_faces) - len(unassigned),
+        "unassignedHeldFaceCount": len(unassigned),
+        "families": family_groups,
+        "unassignedFaceIds": unassigned,
     })
 
 

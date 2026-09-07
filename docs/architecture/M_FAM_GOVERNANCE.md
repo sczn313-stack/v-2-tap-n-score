@@ -25,6 +25,7 @@ Backend structured data is runtime authority. This record explains that data to 
 - Product/face audit schema: `docs/backend/registries/mfam_inventory_audit.schema.json`
 - Fail-closed resolver: `docs/backend/mfam_family_authority.py`
 - Industry authorization result: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md`
+- Family hold-clearance plan: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md`
 - Universal zeroing capability: `sczn3-governed-zeroing-road-v1`
 
 ## Authority model
@@ -124,6 +125,8 @@ The completed industry-wide authorization sweep applies the existing evidence le
 | `HOLD` — known physical product faces | 34 |
 | Held faces with already-authorized reusable geometry | 3 |
 
+Of the 34 held physical faces, 26 are assigned to candidate families and 8 remain deliberately unassigned pending the minimum evidence needed for truthful family placement. Hold clearance is planned by family in `M_FAM_HOLD_CLEARANCE_PLAN.md`; exact representation registration remains face-specific.
+
 The three geometry-authorized holds are Baker `ST-Uni25mMOA` front (`face-001`) and the two National `23112` representations (`face-011`, `face-012`). They reuse `geometry-universal-moa-quarter-inch` without merging publisher/product/representation identity. They remain held because their exact registration, equipment/mechanical branch, and confirmation authority are incomplete.
 
 Baker `ST-M16A2R` (`face-005`) is a **known** 23 × 35-inch Baker face with its own `geometry-baker-m16a2r-23x35` identity. It is neither an unknown photograph nor the Letter-size M16A2 geometry. Its exact holds are: grid pitch, page origin, aim reference, registration, and mechanical applicability.
@@ -183,6 +186,7 @@ The M16A2 rear elevation drum remains a setup/finalization control:
 - Product mapping: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_PRODUCT_FAMILY_MAPPING.md`
 - Exact-common vs genuine-difference report: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_EXACT_COMMON_VS_DIFFERENCES.md`
 - Unresolved evidence gaps: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_UNRESOLVED_GAPS.md`
+- Ranked family hold-clearance plan: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md`
 - Source ledger: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/EVIDENCE_LEDGER.md`
 
 ## First pure-scale recommendation

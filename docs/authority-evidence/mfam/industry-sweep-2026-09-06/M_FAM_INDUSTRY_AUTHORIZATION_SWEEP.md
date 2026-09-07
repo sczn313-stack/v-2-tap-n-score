@@ -17,6 +17,10 @@ This is not a request for another industry sweep. It is the evidence-limited res
 | `ALREADY AUTHORIZED` — physical product faces | 1 |
 | `HOLD` — known physical product faces | 34 |
 | Held faces with reusable Geometry Authority already proven | 3 |
+| Held faces assigned to a candidate family | 26 |
+| Held faces awaiting truthful family assignment | 8 |
+
+The ranked family-level closure strategy is recorded in `M_FAM_HOLD_CLEARANCE_PLAN.md`.
 
 ## Shooter-state contract
 

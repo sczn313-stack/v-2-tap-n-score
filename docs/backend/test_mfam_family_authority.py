@@ -12,6 +12,7 @@ from mfam_family_authority import (
     REGISTRY_PATH,
     classify_pair,
     family,
+    hold_clearance_inventory,
     industry_authorization_sweep,
     inventory_audit,
     product,
@@ -136,6 +137,9 @@ def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority
         "alreadyAuthorizedPhysicalFaces": 1,
         "heldPhysicalFaces": 34,
         "knownHeldFacesWithAuthorizedGeometry": 3,
+        "heldFacesAssignedToCandidateFamily": 26,
+        "heldFacesUnassigned": 8,
+        "candidateFamilies": 9,
     }
     assert sweep["authorizedNow"] == []
     assert {item.get("targetProfileId") or item.get("runtimeBinding") for item in sweep["alreadyAuthorized"]} == {
@@ -146,6 +150,34 @@ def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority
     assert {item["faceId"] for item in sweep["hold"]} == {
         f"face-{index:03d}" for index in range(1, 36)
     } - {"face-003"}
+
+
+def test_hold_clearance_inventory_groups_every_hold_without_forcing_family_membership():
+    plan = hold_clearance_inventory()
+    assert plan["heldFaceCount"] == 34
+    assert plan["assignedHeldFaceCount"] == 26
+    assert plan["unassignedHeldFaceCount"] == 8
+    assert len(plan["families"]) == 9
+    grouped = {face_id for family_record in plan["families"] for face_id in family_record["heldFaceIds"]}
+    unassigned = set(plan["unassignedFaceIds"])
+    assert len(grouped) == 26
+    assert len(unassigned) == 8
+    assert not grouped.intersection(unassigned)
+    assert grouped | unassigned == {
+        f"face-{index:03d}" for index in range(1, 36)
+    } - {"face-003"}
+    counts = {record["familyId"]: record["heldFaceCount"] for record in plan["families"]}
+    assert counts == {
+        "mfam_m16a1_25m_250m": 1,
+        "mfam_m16a2_a3_standard_25m_300m": 8,
+        "mfam_m16a4_m4_standard_25m_300m": 7,
+        "mfam_modern_a8_moa_25m": 6,
+        "mfam_m16a2r_enlarged_23x35": 1,
+        "mfam_10m_boresight_offset": 1,
+        "mfam_configuration_offset_overlay_on_base": 0,
+        "mfam_usmc_36m_bzo": 0,
+        "mfam_qualification_course_product_specific": 2,
+    }
 
 
 def test_known_identity_geometry_and_execution_states_are_distinct():
@@ -245,11 +277,14 @@ def test_human_governance_record_exists():
     assert path.is_file()
     face_catalog = Path(__file__).resolve().parents[1] / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "M_FAM_FACE_LEVEL_MASTER_CATALOG.md"
     authorization_report = face_catalog.with_name("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
+    hold_clearance_plan = face_catalog.with_name("M_FAM_HOLD_CLEARANCE_PLAN.md")
     assert face_catalog.is_file()
     assert authorization_report.is_file()
+    assert hold_clearance_plan.is_file()
     governance_text = path.read_text(encoding="utf-8")
     catalog_text = face_catalog.read_text(encoding="utf-8")
     authorization_text = authorization_report.read_text(encoding="utf-8")
+    clearance_text = hold_clearance_plan.read_text(encoding="utf-8")
     audit = inventory_audit()
     for record in audit["faces"]:
         assert f"`{record['faceId']}`" in catalog_text
@@ -258,9 +293,14 @@ def test_human_governance_record_exists():
     payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     for record in payload["families"]:
         assert f"`{record['familyId']}`" in governance_text
+        assert f"`{record['familyId']}`" in clearance_text
     assert "Baker `ST-M16A2R`" in authorization_text
     assert "| `AUTHORIZED NOW` — new runtime bindings | 0 |" in authorization_text
     assert "| `HOLD` — known physical product faces | 34 |" in authorization_text
+    assert "Baker `ST-M16A2R`" in clearance_text
+    assert "Baker `ST-Uni25mMOA`" in clearance_text
+    assert "National `23112` no-yellow" in clearance_text
+    assert "National `23112` yellow-circle" in clearance_text
 
 
 if __name__ == "__main__":

@@ -59,10 +59,11 @@
     },
     "authorizationSweep": {
       "type": "object",
-      "required": ["observedAt", "reportPath", "dispositions", "counts", "decision"],
+      "required": ["observedAt", "reportPath", "holdClearancePlanPath", "dispositions", "counts", "decision"],
       "properties": {
         "observedAt": {"type": "string"},
         "reportPath": {"type": "string", "minLength": 1},
+        "holdClearancePlanPath": {"type": "string", "minLength": 1},
         "dispositions": {
           "type": "array",
           "items": {"enum": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"]},
@@ -76,14 +77,20 @@
             "alreadyAuthorizedRuntimeBindings",
             "alreadyAuthorizedPhysicalFaces",
             "heldPhysicalFaces",
-            "knownHeldFacesWithAuthorizedGeometry"
+            "knownHeldFacesWithAuthorizedGeometry",
+            "heldFacesAssignedToCandidateFamily",
+            "heldFacesUnassigned",
+            "candidateFamilies"
           ],
           "properties": {
             "authorizedNowRuntimeBindings": {"type": "integer", "minimum": 0},
             "alreadyAuthorizedRuntimeBindings": {"type": "integer", "minimum": 0},
             "alreadyAuthorizedPhysicalFaces": {"type": "integer", "minimum": 0},
             "heldPhysicalFaces": {"type": "integer", "minimum": 0},
-            "knownHeldFacesWithAuthorizedGeometry": {"type": "integer", "minimum": 0}
+            "knownHeldFacesWithAuthorizedGeometry": {"type": "integer", "minimum": 0},
+            "heldFacesAssignedToCandidateFamily": {"type": "integer", "minimum": 0},
+            "heldFacesUnassigned": {"type": "integer", "minimum": 0},
+            "candidateFamilies": {"type": "integer", "minimum": 0}
           }
         },
         "decision": {"type": "string", "minLength": 1}
