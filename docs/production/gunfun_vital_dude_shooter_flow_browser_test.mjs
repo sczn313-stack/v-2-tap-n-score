@@ -33,7 +33,7 @@ try {
 
   await page.getByRole("button", { name: "Save SEC" }).click();
   await page.getByText("SEC saved to Ballistic Vault.", { exact: true }).waitFor();
-  await page.getByRole("link", { name: "View History" }).click();
+  await page.getByRole("link", { name: "Ballistic Vault" }).click();
   await page.waitForURL(/records\.html/);
   await page.getByText("EVIDENCE RECORDED", { exact: true }).waitFor();
   const recordLink = page.locator('a[href*="view=sec"]').first();

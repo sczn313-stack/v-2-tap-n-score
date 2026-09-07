@@ -13,6 +13,31 @@ const [sec, m4Adapter, sharedShell, records, lifecycle, appState, navigation, se
   readFile("ballistic-vault.css", "utf8"),
   readFile("architecture/FUTURE_BACKEND_SESSION_NUMBERING_AUTHORITY.md", "utf8"),
 ]);
+const vaultDestinationSources = Object.fromEntries(await Promise.all(
+  [
+    "sec_framework.js",
+    "m4_zeroing_sec.js",
+    "baker_fun_sec.js",
+    "baker_sl_st1_sec.js",
+    "baker_sl_st2_idpa_sec.js",
+    "gunfun_vital_dude_sec.js",
+    "target_execution_runtime.js",
+    "sec.html",
+    "matrix.html",
+    "buy-targets.html",
+    "analytics.html",
+    "t/baker/sl-st1/index.html",
+    "t/baker/sl-st2/index.html",
+    "t/baker/fun/index.html",
+    "t/gunfun/vital-dude/index.html",
+  ].map(async file => [file, await readFile(file, "utf8")])
+));
+
+for (const [file, source] of Object.entries(vaultDestinationSources)) {
+  assert.doesNotMatch(source, /View History|View SEC History|>History<|<span>History<\/span>/i, `${file} must not rename the Ballistic Vault as History`);
+}
+assert.match(vaultDestinationSources["sec_framework.js"], /Ballistic Vault/, "the shared SEC action names its destination Ballistic Vault");
+assert.match(m4Adapter, /label: "Ballistic Vault"[^\n]*href: "records\.html"/, "the M4 SEC action names its destination Ballistic Vault");
 
 // Current SEC: TARGET first, every stage in one true accordion.
 assert.match(m4Adapter, /global\.SCZN3SEC\.render\(\{/);

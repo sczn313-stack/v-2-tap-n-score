@@ -281,7 +281,7 @@
       return global.SCZN3SECComponents.ActionBar({ actions: [
         { label: "Export SEC", action: "export", attributes: { "data-sec-export": true } },
         { label: "Share SEC", action: "share", attributes: { "data-sec-share": true } },
-        { label: "Back to Vault", action: "history", href: "records.html", primary: true }
+        { label: "Ballistic Vault", action: "history", href: "records.html", primary: true }
       ] });
     }
     return global.SCZN3SECComponents.ActionBar({
@@ -290,7 +290,7 @@
         { label: "Share", action: "share", attributes: { "data-sec-share": true } },
         { label: "Export / Print PDF", action: "export", attributes: { "data-sec-export": true } },
         { label: "Add Note", action: "note", attributes: { "data-baker-add-note": true } },
-        { label: "View History", action: "history", href: "../../../records.html" }
+        { label: "Ballistic Vault", action: "history", href: "../../../records.html" }
       ],
       afterHtml: `<div class="sec-note-editor" data-sczn3-note-editor data-baker-note-editor hidden><label>Session note<textarea rows="3" data-baker-note></textarea></label><button class="button" type="button" data-sczn3-action="note-save" data-baker-save-note>Save Note</button></div><span class="sec-action-status" data-baker-sec-status role="status" aria-live="polite"></span>`
     });

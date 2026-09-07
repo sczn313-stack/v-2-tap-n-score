@@ -478,7 +478,7 @@ try {
     assert.deepEqual(savedTimelineIds, ["prior-04", "prior-05", "prior-06", "prior-07", "prior-08", "prior-09", "prior-10", "prior-11", "prior-12", authoritativeSessionId], "successful preservation adds the current SEC as the newest point and retains only the newest 10");
     assert.equal(await page.locator(`.sec-session-timeline-point[data-session-id="${authoritativeSessionId}"]`).getAttribute("class").then(value => value.includes("is-current")), true, "newly preserved current SEC is identified as the newest current point");
     assert.match(await page.locator('.sec-session-timeline-point[data-session-id="prior-12"]').getAttribute("href"), /records\.html\?session=prior-12&view=sec$/, "historical score point resolves to its exact preserved SEC");
-    await page.getByRole("link", { name: "View History" }).click();
+    await page.getByRole("link", { name: "Ballistic Vault" }).click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"));
     assert.equal(await page.getByLabel("Open menu").isVisible(), true, "Vault must expose navigation");
     await page.locator(`[data-session-id="${authoritativeSessionId}"] .vault-record-link`).click();
@@ -502,7 +502,7 @@ try {
     assert.equal(preservedSession.authorityPackage.scoring.total, 30, "Save and reopen preserve the exact backend-authoritative score");
     assert.equal(await page.locator(".baker-sl-st1-sec-card").getAttribute("data-sec-adapter-id"), "baker-sl-st1", "preserved SEC reopens through the registered adapter");
     assert.match(await page.locator(".baker-sl-st1-sec-card").textContent(), /Total Score\s*30\s*Highest score wins/i, "preserved SEC reopens with the unchanged result");
-    assert.equal(await page.getByRole("link", { name: /Back to Vault/i }).isVisible(), true, "Reopened SEC must expose a Vault return path");
+    assert.equal(await page.getByRole("link", { name: /Ballistic Vault/i }).isVisible(), true, "Reopened SEC must expose a Vault return path");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     if (process.env.SCZN3_SKIP_KNOWN_SESSION2_HISTORICAL !== "1") {
       await page.locator('[data-sec-region="session"] summary').click();

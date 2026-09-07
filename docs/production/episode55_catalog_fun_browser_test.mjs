@@ -23,7 +23,7 @@ async function preserveAndReopen(page, expectedText) {
   await page.getByRole("button", { name: "Save SEC" }).click();
   await page.getByText("SEC saved to Ballistic Vault.").waitFor();
   const recordId = await page.locator("[data-sec-shell='universal-v1']").getAttribute("data-sec-record-id");
-  await page.getByRole("link", { name: "View History" }).click();
+  await page.getByRole("link", { name: "Ballistic Vault" }).click();
   await page.waitForTimeout(750);
   const openLinks = page.locator(`a[href*="${encodeURIComponent(recordId)}"]`).filter({ hasText: /OPEN SEC/i });
   if (!await openLinks.count()) {

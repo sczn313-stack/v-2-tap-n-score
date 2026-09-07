@@ -33,7 +33,7 @@ try {
           <button data-sczn3-action="share">SHARE</button>
           <button data-sczn3-action="export">EXPORT</button>
           <button data-sczn3-action="note">ADD NOTE</button>
-          <a data-sczn3-action="history" href="#history">VIEW HISTORY</a>
+          <a data-sczn3-action="history" href="#history">BALLISTIC VAULT</a>
         </div>
         <div data-sczn3-note-editor hidden class="is-hidden"><textarea></textarea></div>`;
       window.__saveCalls = 0;

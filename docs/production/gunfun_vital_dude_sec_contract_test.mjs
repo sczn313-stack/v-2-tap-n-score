@@ -76,7 +76,7 @@ assert.deepEqual(JSON.parse(JSON.stringify(adapter.vaultResultSummary(pkg))), {
 });
 const reopened = adapter.render({ session: { ...session, savedToSEC: true }, package: pkg, mode: "historical", preserved: true });
 assert.match(reopened, /Shooter-declared aim point preserved/);
-assert.match(reopened, /Back to Vault/);
+assert.match(reopened, /Ballistic Vault/);
 
 const wrong = structuredClone(pkg); wrong.target.smartTargetId = "BAKER_SL_ST1";
 assert.equal(adapter.matches(wrong), false);

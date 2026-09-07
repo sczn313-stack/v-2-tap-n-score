@@ -177,7 +177,7 @@ try {
 
   await page.locator("[data-baker-save-sec]").click();
   await page.getByText("SEC saved to Ballistic Vault.").waitFor();
-  await page.getByRole("link", { name: "View History" }).click();
+  await page.getByRole("link", { name: "Ballistic Vault" }).click();
   await page.waitForURL(url => url.pathname.endsWith("/records.html"));
   await page.locator(`[data-session-id="${preservedSessionId}"] .vault-record-link`).click();
   await page.locator(".baker-sl-st1-sec-card").waitFor({ timeout: 10000 }).catch(async error => {

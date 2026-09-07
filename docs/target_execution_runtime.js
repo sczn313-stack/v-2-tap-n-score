@@ -159,7 +159,7 @@
     const resultSummary = summary(result);
     const scoringState = result.scoring && result.scoring.status || "not_applicable";
     const actions = mode === "historical"
-      ? global.SCZN3SECComponents.ActionBar({ actions: [{ label: "Back to Vault", href: "records.html", action: "history", primary: true }] })
+      ? global.SCZN3SECComponents.ActionBar({ actions: [{ label: "Ballistic Vault", href: "records.html", action: "history", primary: true }] })
       : global.SCZN3SECComponents.ActionBar({ actions: [{ label: preserved ? "SEC Preserved" : "Save SEC", action: "save", primary: !preserved, disabled: preserved }, { label: "Exact Reopen", href: `target-experience.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec`, action: "history" }], afterHtml: '<span data-contract-save-status role="status" aria-live="polite"></span>' });
     return global.SCZN3SEC.render({
       schemaVersion: "1.2", recordId: clean(session.sessionId || result.progressionEvaluationId) || "contract-sec", missionFamily: result.missionFamily,

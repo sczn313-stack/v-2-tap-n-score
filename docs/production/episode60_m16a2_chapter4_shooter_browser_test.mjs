@@ -169,6 +169,7 @@ try {
       throw new Error(`M16A2 SEC preservation failed: ${JSON.stringify(preservationResponses)}`, { cause: error });
     });
     const sessionId = await page.evaluate(() => window.SCZN3M4.read(window.SCZN3M4.KEYS.activeSession, null).sessionId);
+    assert.equal((await page.locator("#viewHistory").innerText()).trim(), "BALLISTIC VAULT");
     await page.locator("#viewHistory").click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"), { timeout: 30000 });
     const vaultRecord = page.locator(`[data-session-id="${sessionId}"] .vault-record-link`);
@@ -241,6 +242,7 @@ try {
   await founderPage.waitForURL(url => url.pathname.endsWith("/sec.html"), { timeout: 30000 });
   await founderPage.locator("#saveSEC").click();
   await founderPage.getByText("SEC PRESERVED", { exact: true }).waitFor({ timeout: 30000 });
+  assert.equal((await founderPage.locator("#viewHistory").innerText()).trim(), "BALLISTIC VAULT");
   await founderPage.locator("#viewHistory").click();
   await founderPage.waitForURL(url => url.pathname.endsWith("/records.html"), { timeout: 30000 });
   const founderVaultRecord = founderPage.locator(`[data-session-id="${founderSessionId}"] .vault-record-link`);

@@ -125,14 +125,14 @@
     if (mode === "historical") return global.SCZN3SECComponents.ActionBar({ actions: [
       { label: "Export SEC", action: "export", attributes: { "data-sec-export": true } },
       { label: "Share SEC", action: "share", attributes: { "data-sec-share": true } },
-      { label: "Back to Vault", action: "history", href: "records.html", primary: true }
+      { label: "Ballistic Vault", action: "history", href: "records.html", primary: true }
     ] });
     return global.SCZN3SECComponents.ActionBar({
       actions: [
         { label: preserved ? "SEC Preserved" : "Save SEC", action: "save", primary: !preserved, disabled: preserved, className: preserved ? "is-preserved" : "" },
         { label: "Share", action: "share", attributes: { "data-sec-share": true } },
         { label: "Export / Print PDF", action: "export", attributes: { "data-sec-export": true } },
-        { label: "View History", action: "history", href: "../../../records.html" }
+        { label: "Ballistic Vault", action: "history", href: "../../../records.html" }
       ],
       afterHtml: '<span class="sec-action-status" data-vital-dude-sec-status role="status" aria-live="polite"></span>'
     });

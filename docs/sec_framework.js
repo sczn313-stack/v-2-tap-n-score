@@ -278,7 +278,7 @@
       capabilities.share ? '<button class="button" type="button" id="shareSEC" data-sczn3-action="share">Share</button>' : "",
       capabilities.print ? '<button class="button" type="button" id="exportSEC" data-sczn3-action="export">Export / Print PDF</button>' : "",
       capabilities.note ? '<button class="button" type="button" id="addNote" data-sczn3-action="note">Add Note</button>' : "",
-      capabilities.history ? '<a class="button" id="viewHistory" href="records.html?from=preserved-sec" data-sczn3-action="history">View History</a>' : ""
+      capabilities.history ? '<a class="button" id="viewHistory" href="records.html?from=preserved-sec" data-sczn3-action="history">Ballistic Vault</a>' : ""
     ].join("");
   }
 

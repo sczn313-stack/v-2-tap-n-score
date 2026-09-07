@@ -52,7 +52,7 @@
       actions: [
         { label: "Save SEC", action: "save", id: "saveSEC", primary: true }, { label: "Share", action: "share", id: "shareSEC" },
         { label: "Export / Print PDF", action: "export", id: "exportSEC" }, { label: "Add Note", action: "note", id: "addNote" },
-        { label: "View History", action: "history", href: "records.html" }
+        { label: "Ballistic Vault", action: "history", href: "records.html" }
       ],
       afterHtml: `<div class="sec-note-editor is-hidden" id="noteEditor" data-sczn3-note-editor hidden><label>Session note<textarea id="secNote" rows="3" placeholder="Instructor note, applied setting, or range observation"></textarea></label><button class="button" type="button" id="saveNote" data-sczn3-action="note-save">Save Note</button></div><div class="sec-preserved-history-row is-hidden"></div><span class="sec-action-status" id="secActionStatus" role="status" aria-live="polite"></span>`
     }) });

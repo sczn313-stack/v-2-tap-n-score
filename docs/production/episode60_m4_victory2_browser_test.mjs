@@ -316,6 +316,7 @@ try {
     assert.equal(beforeReopen.equipmentAuthorityRecordId, equipmentAuthorityRecordId);
     assert(beforeReopen.preservedAt);
 
+    assert.equal((await page.locator("#viewHistory").innerText()).trim(), "BALLISTIC VAULT");
     await page.locator("#viewHistory").click();
     await page.waitForURL(url => url.pathname.endsWith("/records.html"));
     const vaultRecord = page.locator(`[data-session-id="${sessionId}"] .vault-record-link`);
