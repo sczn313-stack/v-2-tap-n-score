@@ -1,15 +1,15 @@
 # M/FAM Hold-Clearance Plan
 
-Date: 2026-09-06; updated by Scale Proof #5 on 2026-09-07
-Authority floor: M/FAM inventory and family authority registry version `2026-09-07.9`
+Date: 2026-09-06; updated by Scale Sweep #6 on 2026-09-07
+Authority floor: M/FAM inventory and family authority registry version `2026-09-07.10`
 Purpose: clear shared authority by governed family without collapsing product identity or copying the universal zeroing road
 
 ## Decision
 
-The 26 held physical faces are not 26 independent zeroing applications.
+The 24 held physical faces are not 24 independent zeroing applications.
 
-- 18 held faces are assigned to six candidate families.
-- 8 held faces remain deliberately unassigned because present evidence cannot truthfully place them in a family.
+- 19 held faces are assigned to candidate families.
+- 5 held faces remain deliberately unassigned because present evidence cannot truthfully place them in a family.
 - Two candidate families currently contain no admitted physical face.
 - Registration remains representation-specific. A family proof may supply common geometry, procedure, confirmation, or mechanical authority, but it cannot prove the landmarks and orientation of ink it has never examined.
 
@@ -24,8 +24,8 @@ This preserves publisher/product identity while eliminating repeated geometry, p
 | Candidate family | Faces held | Common proven facts | Common missing facts | One family-level closure package | Representation-specific remainder | Potential runtime bindings gained |
 |---|---:|---|---|---|---|---:|
 | `mfam_m16a1_25m_250m` — Legacy M16A1 | 1: `face-031` | issued M16A1 identity; 25m/250m procedure; aperture sequence evidence | canonical physical geometry; complete sight mechanics; confirmation authority | govern the issued M16A1 face geometry, complete mechanical controls/directions, and confirmation standard once | exact production-face registration | 1 |
-| `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 0 | **governed** 18 × 20 / 0.96 cm geometry; center aim; 25m/300m procedure; M16A2 mechanics; confirmation; all nine candidate bindings execute | none in current candidate set | reuse the existing governed family package and six-gate conformance contract | exact registration remains mandatory for every future representation | 0 current |
-| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 7: `face-004`, `face-007`, `face-014`, `face-017`, `face-019`, `face-021`, `face-033` | issued 14 × 16 / 1.3 cm family dimensions; 25m/300m purpose; governed M4 DCH/front-post mechanics | canonical page origin and aim; full procedure/finalization; confirmation; exact M16A4 versus M4 configuration scope | govern one canonical standard-M4 family geometry/aim/procedure/confirmation package and an explicit equipment-configuration matrix | each publisher face must prove physical conformance and receive its own registration package | **up to 7** |
+| `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 0 | **governed** 18 × 20 / 0.96 cm geometry; center aim; 25m/300m procedure; M16A2 mechanics; confirmation; all ten admitted physical faces execute | none in current candidate set | reuse the existing governed family package and six-gate conformance contract | exact registration remains mandatory for every future representation | 0 current |
+| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 8: `face-007`, `face-014`, `face-017`, `face-019`, `face-021`, `face-026`, `face-028`, `face-033` | **governed** 14 × 16 / 1.3 cm geometry, center aim, M4/M4A1 DCH/FSP mechanics, 25m/300m procedure and confirmation; Baker face-004 executes | exact representation/UGO bridge for six; calibrated production scale for two; M16A4 branch remains held where applicable | reuse `MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1`; no new family package is required for M4/M4A1 candidates | exact publisher representation registration and explicit applicable equipment branch | **up to 8** |
 | `mfam_modern_a8_moa_25m` — Modern Universal MOA/A8 | 6: `face-001`, `face-009`, `face-011`, `face-012`, `face-023`, `face-034` | governed quarter-inch Universal-MOA geometry on protected reference; geometry equivalence already proven for `face-001`, `face-011`, `face-012`; protected M4 mechanical branch exists | common procedure/finalization and confirmation by equipment branch; complete equipment/mechanical matrix | govern the reusable equipment-branch + procedure + confirmation matrix against the existing Universal-MOA Geometry Authority | registration for every representation; geometry conformance first for `face-009`, `face-023`, `face-034` | **3 near-term; up to 6** |
 | `mfam_m16a2r_enlarged_23x35` — Baker enlarged M16A2R | 1: `face-005` | Baker `ST-M16A2R` product identity; 23 × 35-inch sheet; M16A2-related 25m/300m purpose; proven different from Letter-size M16A2 | internal grid pitch; page origin; physical aim; mechanical applicability; confirmation | measure and govern the enlarged family geometry/aim, then prove whether the existing M16A2 procedure/mechanics apply at that physical scale | Baker `ST-M16A2R` registration package | 1 |
 | `mfam_10m_boresight_offset` — 10m boresight/offset | 1: `face-035` | Army 10m boresight procedure and device/mount-specific nature | exact form geometry; complete symbols; device/mount branches; confirmation/completion rule | govern the official base face and a device/mount authority matrix once | exact issued-form registration | 1 |
@@ -41,7 +41,7 @@ This matrix prevents one missing layer from being disguised as another.
 |---|---|---|---|---|---|
 | `mfam_m16a1_25m_250m` | missing canonical physical face geometry | missing exact issued-face package | 25m/250m sequence is evidence-only | complete M16A1 sight package missing | missing |
 | `mfam_m16a2_a3_standard_25m_300m` | governed; each candidate face must prove conformance | missing per held representation | governed for M16A2/A3 family | governed for exact M16A2 branch; other weapon claims remain separate | reusable governed M16A2 procedure after face/configuration admission |
-| `mfam_m16a4_m4_standard_25m_300m` | 14 × 16 / 1.3 cm proven; canonical page origin/aim incomplete | missing per representation | evidence-only until finalization is closed | governed M4 branch exists; M16A4 scope remains evidence-only | missing common standard |
+| `mfam_m16a4_m4_standard_25m_300m` | governed 14 × 16 / 1.3 cm geometry and center aim | exact UGO package missing per held representation | governed for M4/M4A1 branch | governed M4/M4A1 DCH/FSP branch; M16A4 scope remains held | governed for M4/M4A1 branch |
 | `mfam_modern_a8_moa_25m` | governed reference; proven reusable on three held faces; three faces unresolved | missing per representation | partially governed; exact branch/finalization missing | protected M4 branch governed; full printed equipment matrix unresolved | missing for held product faces |
 | `mfam_m16a2r_enlarged_23x35` | 23 × 35 size proven; pitch/origin/aim missing | missing Baker package | M16A2-related evidence only | must prove M16A2 mechanics apply to enlarged geometry | depends on procedure/mechanical applicability closure |
 | `mfam_10m_boresight_offset` | exact form/symbol geometry missing | missing issued-form package | issuer procedure evidence only | device/mount matrix missing | completion/verification rule missing |
@@ -56,8 +56,8 @@ The ranking uses potential bindings gained, existing governed reuse, and the amo
 | Rank | Family package | Faces affected | Exact missing evidence to acquire once | Expected bindings gained | Why this order |
 |---:|---|---:|---|---:|---|
 | complete | Standard M16A2/A3 | 0 | No missing evidence in the nine-face candidate set. | 0 current | Scale Proof #5 cleared all four remaining faces through one material-conformance package and exact registrations |
-| 2 | Modern Universal MOA/A8 — proven-geometry tranche | 3 immediately; 6 total | one equipment-branch/procedure/confirmation matrix; registration for Baker `ST-Uni25mMOA`, National `23112` no-yellow, and National `23112` yellow-circle | 3 near-term | three faces already have reusable Geometry Authority; no geometry research is needed for them |
-| 3 | Standard M16A4/M4 | 7 | one canonical page-origin/aim/procedure/confirmation package plus exact M4/M16A4 configuration matrix | up to 7 | large family return, but more common authority remains open than M16A2 |
+| 2 | Standard M16A4/M4 | 8 | exact representation/UGO packages or calibrated production-scale bridges; M16A4 equipment branch only where claimed | up to 8 | family geometry, M4/M4A1 mechanics, procedure, and confirmation are already governed; do not buy them again |
+| 3 | Modern Universal MOA/A8 — proven-geometry tranche | 3 immediately; 6 total | one truthful true-distance completion branch plus exact representation registration/equipment selection | 3 near-term | geometry is already reusable; the remaining family-level gap is completion semantics, not target plumbing |
 | 4 | Modern Universal MOA/A8 — remaining tranche | 3 | conformance proof for Rite `9126`, Action `MOA-25-1S`, and Army A8 before their representation registrations | 3 additional | reuses the rank-2 common package after geometry is proven |
 | 5 | Baker enlarged M16A2R | 1 | measured internal pitch, page origin, aim, mechanical applicability, confirmation, and Baker registration | 1 | strategically important known target, but its enlargement prevents Letter-size geometry inheritance |
 | 6 | Legacy M16A1 | 1 | canonical geometry, complete sight mechanics, confirmation, and registration | 1 | one family proof yields one face |
@@ -92,7 +92,7 @@ Future faces use the preserved **material representation-conformance and registr
 
 ## Unassigned intake — not silently forced into a family
 
-Eight held faces are cataloged but cannot yet be assigned to one of the nine candidate families:
+Five held faces are cataloged but cannot yet be assigned to one of the nine candidate families:
 
 | Face | Minimum fact needed before family assignment |
 |---|---|
@@ -101,9 +101,6 @@ Eight held faces are cataloged but cannot yet be assigned to one of the nine can
 | `face-010` — Rite True-MIL | physical geometry, aim, distance, and procedure |
 | `face-022` — Action M16 reverse | exact face artwork, weapon generation, dimensions, grid, and aim |
 | `face-024` — Action M68 optic | geometry, aim, distance, procedure, and weapon/device relationship |
-| `face-026` — GunFun red reverse | exact face identity/artwork and physical geometry |
-| `face-028` — GunFun green reverse | exact face identity/artwork and physical geometry |
-| `face-029` — GunFun 14 × 20 M16 | weapon generation, grid, pitch, aim, and procedure |
 
 Family assignment waits for these minimum facts. Similar branding or artwork is not authority.
 

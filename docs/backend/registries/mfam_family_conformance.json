@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-target-family-conformance-v1",
   "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
-  "version": "2026-09-07.4",
+  "version": "2026-09-07.5",
   "status": "governed",
   "authorityRegistryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
   "admissionPolicy": {
@@ -70,6 +70,21 @@
         }
       ],
       "admissionRule": "all six required gates PROVEN + explicit Target Profile binding + family-permitted mechanical authority"
+    },
+    {
+      "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "status": "GOVERNED",
+      "requiredGates": [
+        {"gateId": "physical_geometry_pitch", "name": "Physical geometry and pitch", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove conformance to the governed 14 x 16 / 1.3 cm physical family geometry without treating the outer carrier as the zeroing geometry.", "failureCode": "family_geometry_conformance_unverified"},
+        {"gateId": "aim_reference", "name": "Aim reference", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the center crosshairs/white-dot aim at 7 columns and 8 rows from the grid origin.", "failureCode": "family_aim_reference_unverified"},
+        {"gateId": "representation_landmarks", "name": "Exact representation and landmarks", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Preserve the exact printer face and asymmetric orientation landmarks without substituting the modern Universal MOA face.", "failureCode": "target_representation_unverified"},
+        {"gateId": "procedure", "name": "Standard M4 25m/300m procedure", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the 25-meter M4/M4A1 procedure with 6/3 setup and no Z; the family owns the procedure once.", "failureCode": "family_procedure_conformance_unverified"},
+        {"gateId": "mechanical_applicability", "name": "Applicable governed mechanical branch", "scope": "EQUIPMENT_BRANCH", "required": true, "proofRule": "Prove M4/M4A1 detachable-carrying-handle rear and standard four-notch front sight applicability. M16A4 does not inherit this branch.", "failureCode": "mechanical_applicability_unverified"},
+        {"gateId": "registration_orientation", "name": "Exact-face registration and orientation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Build and verify an exact-face UGO package with TOP/BOTTOM/LEFT/RIGHT proof and source-evidence reconciliation.", "failureCode": "target_registration_unverified"}
+      ],
+      "admissionRule": "all six required gates PROVEN + explicit Target Profile binding + M4/M4A1 DCH/FSP branch"
     }
   ],
   "reusableEvidencePackages": [
@@ -181,6 +196,31 @@
         "each face retains its own publisher, product, face, representation, registration, and source hash"
       ],
       "sourceIds": ["RITR-9125", "NATIONAL-23075", "ALCO-AR-0", "GUNFUN-32110", "GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-05"]
+    },
+    {
+      "evidencePackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1",
+      "scope": "FAMILY",
+      "status": "PROVEN",
+      "facts": [
+        "14 x 16 uniform grid with 1.3 cm physical pitch",
+        "center aim at 7 columns and 8 rows from grid origin",
+        "M4/M4A1 25-meter to 300-meter procedure uses 6/3 and not Z",
+        "M4/M4A1 detachable-carrying-handle rear plus standard four-notch front sight uses the existing governed 1.5 MOA elevation and 0.75 MOA windage branch",
+        "M16A4 mechanical execution remains outside this package"
+      ],
+      "sourceIds": ["ARMY-FM-3-22-9-2011", "BAKER-ST-M16A2-M4-PRODUCT", "SCZN3-M4-MECHANICS"]
+    },
+    {
+      "evidencePackageId": "GUNFUN-82020-M16A2-FACE-CONFORMANCE-v1",
+      "scope": "FACE_CONFORMANCE",
+      "status": "PROVEN",
+      "facts": [
+        "the exact GunFun 82020 publisher representation is preserved on its declared 14 x 20 carrier",
+        "the operative face is an 18 x 20 center-aim lattice whose page-normalized pitch is approximately 0.953 x 0.955 cm",
+        "the printed M16A2 procedure is the governed 25-meter/300-meter plus-one and return procedure",
+        "the M16A4 label does not grant M16A4 mechanical execution"
+      ],
+      "sourceIds": ["GUNFUN-CATALOG", "P-OS-12-PUBLISHER-SEED"]
     }
   ],
   "evaluations": [
@@ -335,6 +375,40 @@
       ],
       "disposition": "ADMITTED",
       "targetProfileId": "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+      "irreducibleMissingFacts": []
+    },
+    {
+      "faceId": "face-029",
+      "productId": "product-gunfun-82020",
+      "representationId": "representation-028-gunfun-82020",
+      "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId": "physical_geometry_pitch", "status": "PROVEN", "basis": "The exact 14 x 20 publisher carrier contains an 18 x 20 lattice whose page-normalized pitch is approximately 0.953 x 0.955 cm; the carrier is non-operative metadata.", "sourceIds": ["GUNFUN-CATALOG", "P-OS-12-PUBLISHER-SEED"], "evidencePackageIds": ["GUNFUN-82020-M16A2-FACE-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-GEOMETRY-FACT-v1"]},
+        {"gateId": "aim_reference", "status": "PROVEN", "basis": "The exact face places center aim at 9 columns and 10 rows from grid origin.", "sourceIds": ["GUNFUN-CATALOG"], "evidencePackageIds": ["GUNFUN-82020-M16A2-FACE-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-AIM-FACT-v1"]},
+        {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "The exact GunFun face preserves its title, publisher mark, axis labels, sight diagrams, silhouette, and footer.", "sourceIds": ["GUNFUN-CATALOG"]},
+        {"gateId": "procedure", "status": "PROVEN", "basis": "The exact footer prints the Standard M16A2 25-meter/300-meter plus-one and return procedure.", "sourceIds": ["GUNFUN-CATALOG"], "evidencePackageIds": ["GUNFUN-82020-M16A2-FACE-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
+        {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "Only the printed M16A2 branch binds the governed M16A2 standard-iron mechanical package; the M16A4 label does not execute.", "sourceIds": ["GUNFUN-CATALOG", "ARMY-FM-3-22-9-2011"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
+        {"gateId": "registration_orientation", "status": "PROVEN", "basis": "gunfun-82020-m16a2-photo-registration-v1 preserves the exact face hash and asymmetric top/footer orientation with source-plane reconciliation required.", "sourceIds": ["GUNFUN-CATALOG"]}
+      ],
+      "disposition": "ADMITTED",
+      "targetProfileId": "gunfun_82020_m16a2_25m_zero",
+      "irreducibleMissingFacts": []
+    },
+    {
+      "faceId": "face-004",
+      "productId": "product-baker-st-m16a2-m4",
+      "representationId": "representation-003-baker-m4",
+      "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId": "physical_geometry_pitch", "status": "PROVEN", "basis": "The exact Baker M4 face and publisher product dimensions establish the governed 14 x 16 / 1.3 cm family geometry.", "sourceIds": ["BAKER-ST-M16A2-M4-PRODUCT"], "evidencePackageIds": ["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId": "aim_reference", "status": "PROVEN", "basis": "The exact face places center aim at 7 columns and 8 rows from grid origin.", "sourceIds": ["BAKER-ST-M16A2-M4-PRODUCT"], "evidencePackageIds": ["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "The exact Baker M4 side is preserved separately from the Baker M16A2 side and the modern Universal MOA product.", "sourceIds": ["BAKER-ST-M16A2-M4-PRODUCT"]},
+        {"gateId": "procedure", "status": "PROVEN", "basis": "The exact face prints 25-meter zero, 6/3 setup without Z, and 300-meter final use.", "sourceIds": ["BAKER-ST-M16A2-M4-PRODUCT", "ARMY-FM-3-22-9-2011"], "evidencePackageIds": ["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "The M4/M4A1 DCH/FSP branch binds the already-governed 1.5 MOA elevation and 0.75 MOA windage authority. M16A4 remains excluded.", "sourceIds": ["ARMY-FM-3-22-9-2011", "SCZN3-M4-MECHANICS"], "evidencePackageIds": ["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId": "registration_orientation", "status": "PROVEN", "basis": "baker-st-m16a2-m4-m4-photo-registration-v1 preserves the exact Baker M4 hash and asymmetric title/footer orientation with source-plane reconciliation required.", "sourceIds": ["BAKER-ST-M16A2-M4-PRODUCT"]}
+      ],
+      "disposition": "ADMITTED",
+      "targetProfileId": "baker_m4_25m_zero",
       "irreducibleMissingFacts": []
     }
   ],

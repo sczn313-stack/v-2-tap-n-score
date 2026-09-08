@@ -174,6 +174,60 @@ def standard_m16a2_family_profile(
     }
 
 
+def standard_m4_family_profile(
+    target_profile_id: str,
+    target_profile_version: str,
+    target_name: str,
+    *,
+    atp_id: str,
+    mission_id: str,
+    registration_package_id: str,
+    canonical_coordinate_system_id: str,
+) -> Dict[str, Any]:
+    """Bind one exact product representation to the shared Standard M4 family road."""
+    family_binding = mfam_authority_binding(target_profile_id)
+    return {
+        "targetId": target_profile_id,
+        "targetAuthorityId": target_profile_version,
+        "targetName": target_name,
+        "targetProfileVersion": target_profile_version,
+        "atpId": atp_id,
+        "zeroingExperience": zeroing_experience(
+            target_profile_id,
+            target_profile_version,
+            authority_family="mfam",
+            entry_mode="photo",
+            confirmation_mode="governed",
+        ),
+        "mfamAuthorityBinding": family_binding,
+        "confirmationAuthority": deepcopy(family_binding["confirmationAuthority"]),
+        "registrationAuthority": {
+            "registrationPackageId": registration_package_id,
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": canonical_coordinate_system_id,
+            "status": "available",
+        },
+        "missionIdentity": {
+            "missionFamily": "zeroingCorrection",
+            "missionId": mission_id,
+            "resultPackageType": "zeroCorrectionResult",
+        },
+        "governedDistance": {"value": 25, "unit": "M", "locked": True},
+        "equipmentRequirements": {
+            "weaponCategories": ["Rifle"],
+            "modelFamilies": ["M4", "M4A1"],
+            "requiresAdjustmentSystem": True,
+            "allowedAdjustmentUnits": ["MOA"],
+        },
+        "standardSetupAuthority": {
+            "setupId": "standard-m4-iron-dch-fsp",
+            "authorityId": "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+            "kind": "registered_adjustment_profile",
+            "equipmentConfigurationId": "M4-M4A1-DCH-FSP",
+        },
+    }
+
+
 TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
     "baker_m16a2_25m_zero": standard_m16a2_family_profile(
         "baker_m16a2_25m_zero",
@@ -247,6 +301,20 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         atp_id="gunfun-32110-m16a2-red-25m-zero-atp-v1", mission_id="GUNFUN_32110_M16A2_25M_300M_ZERO",
         registration_package_id="gunfun-32110-m16a2-red-photo-registration-v1",
         canonical_coordinate_system_id="GUNFUN_32110_M16A2_RED_FACE_AUTHORITY_v1",
+    ),
+    "gunfun_82020_m16a2_25m_zero": standard_m16a2_family_profile(
+        "gunfun_82020_m16a2_25m_zero", "GUNFUN_82020_M16A2_AUTHORITY_v1",
+        "GunFun 82020 M16A2 25 Meter Zeroing Target",
+        atp_id="gunfun-82020-m16a2-25m-zero-atp-v1", mission_id="GUNFUN_82020_M16A2_25M_300M_ZERO",
+        registration_package_id="gunfun-82020-m16a2-photo-registration-v1",
+        canonical_coordinate_system_id="GUNFUN_82020_M16A2_FACE_AUTHORITY_v1",
+    ),
+    "baker_m4_25m_zero": standard_m4_family_profile(
+        "baker_m4_25m_zero", "BAKER_M4_25M_AUTHORITY_v1",
+        "Baker M4 25 Meter Zeroing Target",
+        atp_id="baker-m4-25m-zero-atp-v1", mission_id="BAKER_M4_25M_300M_ZERO",
+        registration_package_id="baker-st-m16a2-m4-m4-photo-registration-v1",
+        canonical_coordinate_system_id="BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1",
     ),
     "m4_25m_zero": {
         "targetId": "m4_25m_zero",

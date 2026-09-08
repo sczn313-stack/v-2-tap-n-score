@@ -1,0 +1,50 @@
+{
+  "manifestId": "MFAM-SCALE-SWEEP-06-EVIDENCE-MANIFEST",
+  "observedAt": "2026-09-07",
+  "decisionId": "MFAM-SCALE-SWEEP-06-BATCH-ADMISSION",
+  "authorityFloor": [
+    "docs/backend/registries/mfam_inventory_audit.json",
+    "docs/backend/registries/mfam_family_authority.json",
+    "docs/backend/registries/mfam_family_conformance.json",
+    "docs/backend/registries/target_image_registration_packages.json"
+  ],
+  "newExactRepresentations": [
+    {
+      "faceId": "face-004",
+      "publisher": "Baker Targets",
+      "product": "ST-M16A2/M4",
+      "side": "M4",
+      "assetPath": "docs/assets/BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1.jpg",
+      "sha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6",
+      "pixelDimensions": [773, 1000],
+      "registrationPackageId": "baker-st-m16a2-m4-m4-photo-registration-v1",
+      "ugoAuthorityId": "MFAM-STANDARD-M16A4-M4-13CM-14X16-GEOMETRY-v1",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "runtimeBinding": "baker_m4_25m_zero"
+    },
+    {
+      "faceId": "face-029",
+      "publisher": "GunFun Shooting Targets",
+      "product": "82020",
+      "side": "single / M16A2 execution branch",
+      "assetPath": "docs/assets/GUNFUN_82020_M16A2_FACE_AUTHORITY_v1.jpg",
+      "sha256": "f40eab04d37e2ef2d13dd2dc72fac0f066b17d0bd297f537d0d23276242f831e",
+      "pixelDimensions": [400, 572],
+      "registrationPackageId": "gunfun-82020-m16a2-photo-registration-v1",
+      "ugoAuthorityId": "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "runtimeBinding": "gunfun_82020_m16a2_25m_zero"
+    }
+  ],
+  "batchCounts": {
+    "knownPhysicalFacesProcessed": 35,
+    "startingExecutableBindings": 10,
+    "newlyAdmittedBindings": 2,
+    "endingExecutableBindings": 12,
+    "endingExecutablePhysicalFaces": 11,
+    "remainingHeldPhysicalFaces": 24,
+    "productSpecificZeroingImplementationsCreated": 0,
+    "universalZeroingRoadsCreated": 0
+  },
+  "claimBoundary": "Exact product identity and representation registration remain per face; only proven UGO, family procedure, mechanics, confirmation, and the universal zeroing road are inherited."
+}

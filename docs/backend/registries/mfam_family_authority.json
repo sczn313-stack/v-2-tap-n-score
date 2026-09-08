@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-07.9",
+  "version": "2026-09-07.10",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -9,7 +9,7 @@
     "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
     "path": "registries/mfam_family_conformance.json",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
-    "scaleProofId": "MFAM-SCALE-PROOF-05-MATERIAL-ADMISSION"
+    "scaleProofId": "MFAM-SCALE-SWEEP-06-BATCH-ADMISSION"
   },
   "classificationVocabulary": [
     "EXACTLY_THE_SAME",
@@ -46,7 +46,7 @@
       "geometryCatalogRecords": 23,
       "procedureCatalogRecords": 14,
       "candidateGovernedFamilies": 9,
-      "runtimeBindings": 10
+      "runtimeBindings": 12
     }
   },
   "authorizationSweep": {
@@ -55,16 +55,16 @@
     "holdClearancePlanPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md",
     "dispositions": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"],
     "counts": {
-      "authorizedNowRuntimeBindings": 4,
-      "alreadyAuthorizedRuntimeBindings": 6,
-      "alreadyAuthorizedPhysicalFaces": 9,
-      "heldPhysicalFaces": 26,
+      "authorizedNowRuntimeBindings": 2,
+      "alreadyAuthorizedRuntimeBindings": 10,
+      "alreadyAuthorizedPhysicalFaces": 11,
+      "heldPhysicalFaces": 24,
       "knownHeldFacesWithAuthorizedGeometry": 3,
-      "heldFacesAssignedToCandidateFamily": 18,
-      "heldFacesUnassigned": 8,
+      "heldFacesAssignedToCandidateFamily": 19,
+      "heldFacesUnassigned": 5,
       "candidateFamilies": 9
     },
-    "decision": "Rite 9125, National 23075, Alco AR-0, and GunFun 32110 red now have exact representation/orientation packages and materially conform to the already-solved Standard M16A2/A3 family. All nine documented candidate faces are executable through one family authority and one universal road."
+    "decision": "The batch sweep governs the Standard M16A4/M4 family once for its proven M4/M4A1 DCH/FSP branch, admits the exact Baker M4 face through it, and admits GunFun 82020 through the existing Standard M16A2/A3 family. Twenty-four faces remain held only at one material family or representation boundary each."
   },
   "scaleProofs": [
     {
@@ -231,6 +231,55 @@
       "familyLeverage": 9.0,
       "admissionLeverage": 4.0,
       "decision": "One material face-conformance package plus four exact representation registrations cleared the final four candidates. Physical family geometry, procedure, mechanics, confirmation, and the universal zeroing road were inherited without reimplementation."
+    },
+    {
+      "proofId": "MFAM-SCALE-SWEEP-06-BATCH-ADMISSION",
+      "observedAt": "2026-09-07",
+      "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-06/M_FAM_SCALE_SWEEP_06_BATCH_ADMISSION.md",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "candidateFaceIds": ["face-004", "face-007", "face-014", "face-017", "face-019", "face-021", "face-026", "face-028", "face-033"],
+      "investigatedFaceIds": ["face-004", "face-007", "face-014", "face-017", "face-019", "face-021", "face-026", "face-028", "face-033"],
+      "admittedTargetProfileIds": ["baker_m4_25m_zero"],
+      "newlyAdmittedTargetProfileIds": ["baker_m4_25m_zero"],
+      "holdReasons": [
+        {"faceId": "face-007", "missingFacts": ["exact complete M4-side representation for UGO registration"]},
+        {"faceId": "face-014", "missingFacts": ["exact National M4-side representation for UGO registration"]},
+        {"faceId": "face-017", "missingFacts": ["calibrated production-scale bridge for the exact publisher representation"]},
+        {"faceId": "face-019", "missingFacts": ["calibrated production-scale bridge for the exact publisher representation"]},
+        {"faceId": "face-021", "missingFacts": ["exact M4-side representation for UGO registration"]},
+        {"faceId": "face-026", "missingFacts": ["exact red M16A4 reverse representation for UGO registration"]},
+        {"faceId": "face-028", "missingFacts": ["exact green M16A4 reverse representation for UGO registration"]},
+        {"faceId": "face-033", "missingFacts": ["exact issued M16A4/M4/M4A representation for UGO registration"]}
+      ],
+      "counts": {
+        "candidateFaces": 9,
+        "candidatesInvestigated": 9,
+        "startingExecutableBindings": 0,
+        "alreadyExecutable": 0,
+        "familyAuthorityPackagesCreated": 1,
+        "newAuthoritativeEvidenceArtifactsAcquired": 1,
+        "reusableEvidenceArtifacts": 1,
+        "newRegistrationOrientationPackages": 1,
+        "newlyExecutableThroughInheritance": 1,
+        "stillHold": 8,
+        "totalExecutableBindingsAfterProof": 1,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0
+      },
+      "batchSummary": {
+        "knownPhysicalFacesProcessed": 35,
+        "startingExecutableBindings": 10,
+        "newlyAdmittedTargetProfileIds": ["baker_m4_25m_zero", "gunfun_82020_m16a2_25m_zero"],
+        "newlyExecutableThroughInheritance": 2,
+        "remainingHeldPhysicalFaces": 24,
+        "endingExecutableBindings": 12,
+        "endingExecutablePhysicalFaces": 11,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0
+      },
+      "familyLeverage": 1.0,
+      "decision": "One batch processed the full known catalog. Baker M4 inherits one new Standard M16A4/M4 family package; GunFun 82020 inherits the existing Standard M16A2/A3 package. Modern MOA faces remain one family-level true-distance-completion hold, and every other hold is reduced to one material identity, UGO, course, or mechanical boundary."
     }
   ],
   "families": [
@@ -255,10 +304,10 @@
     {
       "familyId": "mfam_m16a4_m4_standard_25m_300m",
       "name": "Legacy standard M16A4/M4 25-meter / 300-meter zero face",
-      "status": "EVIDENCE_ONLY",
-      "geometry": {"sheetInches": null, "rows": 16, "columns": 14, "square": {"value": 1.3, "unit": "CM"}, "uniform": true, "aimPoint": null, "status": "EVIDENCE_ONLY"},
-      "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 300, "weaponFamilies": ["M16A4", "M4", "M4A1"], "status": "EVIDENCE_ONLY"},
-      "registration": {"status": "UNPROVEN", "orientationLandmarks": []},
+      "status": "GOVERNED",
+      "geometry": {"referenceSheetInches": [8.5, 11.0], "sheetCarrierRule": "outer paper dimensions are product facts; the governed family geometry is the physical 14 x 16 grid, 1.3 cm pitch, origin, and aim relationship", "rows": 16, "columns": 14, "square": {"value": 1.3, "unit": "CM"}, "uniform": true, "gridOriginToAim": {"columns": 7, "rows": 8}, "status": "GOVERNED"},
+      "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 300, "weaponFamilies": ["M4", "M4A1"], "setup": "set rear elevation to 6/3; do not use Z", "finalization": "after the governed 25-meter zero is confirmed, the standard M4 zero is established for 300 meters", "status": "GOVERNED_M4_BRANCH_ONLY"},
+      "registration": {"status": "GOVERNED_PER_EXACT_REPRESENTATION", "orientationLandmarks": ["printed M4 title", "numbered 14 x 16 axes", "asymmetric sight diagrams", "center silhouette and 300 METERS label", "instructional footer"]},
       "sourceIds": ["ARMY-FM-3-22-9-2011", "BAKER-ST-M16A2-M4-PRODUCT"]
     },
     {
@@ -363,6 +412,55 @@
         "ARMY-FM-3-22-9-2011",
         "SCZN3-M16A2-REGISTRATION",
         "SCZN3-M16A2-MECHANICS"
+      ]
+    },
+    {
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "status": "GOVERNED",
+      "authorityVersion": "sczn3-standard-m16a4-m4-family-authority-v1",
+      "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
+      "geometryAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A4-M4-13CM-14X16-GEOMETRY-v1",
+        "referenceSheetInches": [8.5, 11.0],
+        "sheetCarrierRule": "outer paper dimensions are product-specific; the governed family geometry is the physical 14 x 16 grid, 1.3 cm pitch, origin, and aim relationship",
+        "columns": 14,
+        "rows": 16,
+        "square": {"value": 1.3, "unit": "CM"},
+        "uniform": true
+      },
+      "aimAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A4-M4-CENTER-AIM-v1",
+        "reference": "center crosshairs / center white dot",
+        "gridOriginToAim": {"columns": 7, "rows": 8}
+      },
+      "measurementAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A4-M4-GRID-MEASUREMENT-v1",
+        "coordinateMeaning": "physical displacement from the 14 x 16 uniform grid",
+        "squareInches": 0.5118110236220472
+      },
+      "procedureAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A4-M4-25M-300M-PROCEDURE-v1",
+        "zeroDistance": {"value": 25, "unit": "M"},
+        "finalDistance": {"value": 300, "unit": "M"},
+        "setup": "set the M4/M4A1 rear elevation drum to 6/3; do not use Z",
+        "finalization": "after the governed 25-meter zero is confirmed, the standard M4/M4A1 zero is established for 300 meters",
+        "branchScope": "M4/M4A1 detachable-carrying-handle rear sight and standard four-notch front sight post only; M16A4 remains held"
+      },
+      "mechanicalAuthorityIds": [
+        "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"
+      ],
+      "confirmationAuthority": {
+        "authorityId": "MFAM-STANDARD-M16A4-M4-CONFIRMATION-v1",
+        "minimumShots": 3,
+        "residualTolerance": {"value": 1.0, "unit": "IN"},
+        "evidenceRequirement": "a second target photograph containing only the new confirmation-group observations",
+        "method": "zeroing-confirmation-authority-v1"
+      },
+      "sourceIds": [
+        "ARMY-FM-3-22-9-2011",
+        "BAKER-ST-M16A2-M4-PRODUCT",
+        "SCZN3-M4-MECHANICS"
       ]
     }
   ],
@@ -509,17 +607,17 @@
       "face": {"side": "M4", "printedTitle": "M4 - 25 METER ZEROING TARGET"},
       "dimensions": {"width": 8.5, "height": 11.0, "unit": "IN"},
       "grid": {"columns": 14, "rows": 16, "square": {"value": 1.3, "unit": "CM"}, "uniform": true},
-      "aim": {"reference": null, "gridOrigin": null},
-      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": null},
+      "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 7, "rows": 8}},
+      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "setup": "6/3; do not use Z", "confirmation": "governed Standard M16A4/M4 family confirmation"},
       "applicableEquipment": ["M4/M4A1 standard iron sights"],
       "mechanicalAuthorityIds": ["M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
+      "registration": {"status": "GOVERNED", "packageId": "baker-st-m16a2-m4-m4-photo-registration-v1", "orientationProofRequired": true},
       "candidateFamilyId": "mfam_m16a4_m4_standard_25m_300m",
       "mappingClassification": "IDENTITY_REGISTRATION_DIFFERENCE",
-      "evidenceQuality": "PRIMARY_PARTIAL",
-      "runtimeStatus": "HOLD",
+      "evidenceQuality": "PRIMARY_GOVERNED",
+      "runtimeStatus": "GOVERNED",
       "sourceIds": ["BAKER-ST-M16A2-M4-PRODUCT", "ARMY-FM-3-22-9-2011", "SCZN3-M4-MECHANICS"],
-      "notes": ["M16A2 and M4 faces are separate authority identities even when printed on one sheet."]
+      "notes": ["M16A2 and M4 faces are separate authority identities even when printed on one sheet. The M4 face inherits one branch-gated Standard M16A4/M4 family package; no M16A4 execution is implied."]
     },
     {
       "productId": "baker:st-m16a2r:face",
@@ -926,20 +1024,20 @@
       "exactName": "M16 Zeroing Target",
       "identifiers": {"sku": "82020"},
       "generationOrApplication": "M16 zeroing",
-      "face": {"side": "cataloged product", "printedTitle": null},
+      "face": {"side": "single", "printedTitle": "M16A2 / M16A4"},
       "dimensions": {"width": 14.0, "height": 20.0, "unit": "IN"},
-      "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
-      "procedure": {"zeroDistance": null, "finalDistance": null, "confirmation": null},
-      "applicableEquipment": ["M16; generation unproven"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
-      "candidateFamilyId": null,
-      "mappingClassification": "GEOMETRY_DIFFERENCE",
-      "evidenceQuality": "PRIMARY_PARTIAL",
-      "runtimeStatus": "EVIDENCE_ONLY",
-      "sourceIds": ["GUNFUN-CATALOG", "P-OS-12-PUBLISHER-SEED"],
-      "notes": ["Sheet dimensions distinguish it from standard letter-size faces; internal geometry is unproven."]
+      "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "scope": "M16A2 branch"},
+      "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 9, "rows": 10}},
+      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "setup": "8/3 then one click CLOCKWISE past 8/3", "finalization": "after confirmed zero, one click COUNTERCLOCKWISE back to 8/3", "confirmation": "governed Standard M16A2/A3 family confirmation"},
+      "applicableEquipment": ["M16A2 standard iron branch; printed M16A4 identity remains outside this binding"],
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "gunfun-82020-m16a2-photo-registration-v1", "orientationProofRequired": true, "scope": "M16A2 branch only"},
+      "candidateFamilyId": "mfam_m16a2_a3_standard_25m_300m",
+      "mappingClassification": "REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY",
+      "evidenceQuality": "PUBLISHER_PRIMARY",
+      "runtimeStatus": "GOVERNED",
+      "sourceIds": ["GUNFUN-CATALOG", "P-OS-12-PUBLISHER-SEED", "SCZN3-MFAM-SCALE-SWEEP-06"],
+      "notes": ["The 14 x 20 carrier is product identity, not a new operative zeroing geometry. Page-normalized UGO shows the governed 18 x 20 center-aim grid; only the M16A2 branch executes."]
     },
     {
       "productId": "gunfun:22460:navy-qual-m4",
@@ -1282,6 +1380,42 @@
       "status": "GOVERNED"
     },
     {
+      "targetProfileId": "gunfun_82020_m16a2_25m_zero",
+      "productId": "gunfun:82020:m16-zero",
+      "inventoryFaceId": "face-029",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "gunfun-82020-m16a2-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "GUNFUN_82020_M16A2_FACE_AUTHORITY_v1", "imageWidth": 400, "imageHeight": 572,
+        "gridLeftPx": 102.0, "gridTopPx": 179.0, "gridRightPx": 295.0, "gridBottomPx": 394.0,
+        "gridSquareXPx": 10.722222222222221, "gridSquareYPx": 10.75,
+        "aimCoordinate": {"xPercent": 49.625, "yPercent": 50.08741258741259},
+        "aimAuthorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "sourceAssetSha256": "f40eab04d37e2ef2d13dd2dc72fac0f066b17d0bd297f537d0d23276242f831e"
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "baker_m4_25m_zero",
+      "productId": "baker:st-m16a2-m4:m4-face",
+      "inventoryFaceId": "face-004",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "baker-st-m16a2-m4-m4-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1", "imageWidth": 773, "imageHeight": 1000,
+        "gridLeftPx": 68.0, "gridTopPx": 122.0, "gridRightPx": 705.0, "gridBottomPx": 850.0,
+        "gridSquareXPx": 45.5, "gridSquareYPx": 45.5,
+        "aimCoordinate": {"xPercent": 50.0, "yPercent": 48.6},
+        "aimAuthorityId": "MFAM-STANDARD-M16A4-M4-CENTER-AIM-v1",
+        "sourceAssetSha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6"
+      },
+      "status": "GOVERNED"
+    },
+    {
       "targetProfileId": "m4_25m_zero",
       "productId": "sczn3:protected-modern-m4-m16-moa:face",
       "familyId": "mfam_modern_a8_moa_25m",
@@ -1469,6 +1603,7 @@
     {"sourceId": "GUNFUN-32110", "title": "M16 A2 and A4 Zeroing Target Red", "publisher": "GunFun Shooting Targets", "url": "https://gunfun.com/shop/m16-a2-a4-zeroing-target-red-32110/", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "size", "two-sided identity", "printed instructions"]},
     {"sourceId": "GUNFUN-32120", "title": "M16 A2 and A4 Zeroing Target Green", "publisher": "GunFun Shooting Targets", "url": "https://gunfun.com/shop/m16-a2-a4-zeroing-target-green-32120/", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "9.5 x 12 sheet", "two-sided identity", "exact green face representation"]},
     {"sourceId": "GUNFUN-CATALOG", "title": "Preserved GunFun catalog corpus", "publisher": "GunFun Shooting Targets", "url": "docs/authority-evidence/publisher-os/11-publisher-master-2026-08-21", "quality": "PRESERVED_FIRST_PARTY", "scope": ["32120", "82020", "22460"]},
+    {"sourceId": "SCZN3-MFAM-SCALE-SWEEP-06", "title": "M/FAM Scale Sweep 06 — Batch Admission", "publisher": "SCZN3 Backend Authority", "url": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-06/M_FAM_SCALE_SWEEP_06_BATCH_ADMISSION.md", "quality": "GOVERNED_DERIVED_EVIDENCE", "scope": ["batch admission", "Baker M4 family inheritance", "GunFun 82020 M16A2 family inheritance"]},
     {"sourceId": "P-OS-12-PUBLISHER-SEED", "title": "P-OS 12-publisher preserved corpus", "publisher": "SCZN3 Publisher Operating System", "url": "docs/authority-evidence/publisher-os/11-publisher-master-2026-08-21/PUBLISHER_PROFILES.json", "quality": "PRESERVED_FIRST_PARTY", "scope": ["publisher identities", "normalized products", "negative findings"]},
     {"sourceId": "SCZN3-M16A2-REGISTRATION", "title": "Baker standard M16A2 face registration evidence", "publisher": "SCZN3", "url": "docs/authority-evidence/mfam/BAKER_M16A2_STANDARD_FACE_REGISTRATION_EVIDENCE.md", "quality": "PRESERVED_FIRST_PARTY", "scope": ["exact face hash", "geometry", "landmarks", "registration"]},
     {"sourceId": "SCZN3-M16A2-MECHANICS", "title": "Baker M16A2 mechanical authority evidence", "publisher": "SCZN3", "url": "docs/authority-evidence/mfam/BAKER_M16A2_MECHANICAL_AUTHORITY_EVIDENCE.md", "quality": "PRESERVED_FIRST_PARTY", "scope": ["M16A2 controls", "click values", "procedure"]},

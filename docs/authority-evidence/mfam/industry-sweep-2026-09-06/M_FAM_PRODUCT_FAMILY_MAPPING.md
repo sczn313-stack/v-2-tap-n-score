@@ -1,6 +1,6 @@
 # M/FAM Product → Governed-Family Mapping
 
-Date: 2026-09-06; updated by Scale Proof #4 on 2026-09-07
+Date: 2026-09-06; updated by Scale Sweep #6 on 2026-09-07
 
 | Product / exact face | Candidate family | Classification | Runtime |
 |---|---|---|---|
@@ -13,25 +13,26 @@ Date: 2026-09-06; updated by Scale Proof #4 on 2026-09-07
 | Rite in the Rain `9126` | Modern Universal MOA/A8 candidate | `UNPROVEN` | `HOLD` |
 | Baker `ST-M16A2/M4`, M16A2 face | Standard M16A2/A3 | exact governed specimen | `GOVERNED` |
 | Army NSN `6920-01-395-2949`, M16A2/A3 face | Standard M16A2/A3 | issued identity + exact registration | `GOVERNED` |
-| Rite in the Rain `9125` front | Standard M16A2/A3 candidate | geometry equivalence unproven | `HOLD` |
+| Rite in the Rain `9125` front | Standard M16A2/A3 | material conformance + exact registration | `GOVERNED` |
 | Qualification Targets `M16A2` | Standard M16A2/A3 | official NSN bridge + exact registration; identity remains separate | `GOVERNED` |
-| Alco `AR-0` for M16A2 | Standard M16A2/A3 candidate | 18 × 20 image/instructions; physical pitch unproven | `HOLD` |
-| National `M-16A2-M4-CARBINE`, M16 face | Standard M16A2/A3 candidate | non-letter sheet; physical pitch unproven | `HOLD` |
+| Alco `AR-0` for M16A2 | Standard M16A2/A3 | material conformance + exact registration | `GOVERNED` |
+| National `M-16A2-M4-CARBINE`, M16 face | Standard M16A2/A3 | material conformance + exact registration | `GOVERNED` |
 | Speedwell `DODM4`, M16A2 side | Standard M16A2/A3 | issued NSN bridge + exact registration | `GOVERNED` |
-| GunFun `32110` red, M16A2 side | Standard-derived M16A2 candidate | production-scale bridge unresolved | `HOLD` |
+| GunFun `32110` red, M16A2 side | Standard M16A2/A3 | material conformance + exact registration | `GOVERNED` |
 | GunFun `32120` green, M16A2 side | Standard M16A2/A3 | page-normalized 0.96 cm conformance + exact registration | `GOVERNED` |
-| Baker `ST-M16A2/M4`, M4 face | Standard M16A4/M4 | geometry evidence; exact registration absent | `HOLD` |
+| GunFun `82020`, M16A2 branch | Standard M16A2/A3 | exact UGO registration on larger carrier; M16A4 excluded | `GOVERNED` |
+| Baker `ST-M16A2/M4`, M4 face | Standard M16A4/M4 | exact UGO registration + governed M4/M4A1 branch | `GOVERNED` |
 | Rite in the Rain `9125` back | Standard M16A4/M4 candidate | exact geometry unproven | `HOLD` |
 | Qualification Targets `M4 Carbine` | Standard M16A4/M4 candidate | exact geometry unproven | `HOLD` |
 | National `M-16A2-M4-CARBINE`, M4 face | Standard M16A4/M4 candidate | non-letter sheet; physical pitch unproven | `HOLD` |
 | Speedwell `DODM4`, M4 side | Standard M16A4/M4 candidate | government form identity; physical pitch unproven | `HOLD` |
 | Action `M4 CARBINE` | standard dual-face candidate | exact faces/dimensions absent | `HOLD` |
+| GunFun `32110`/`32120`, M16A4 reverse faces | Standard M16A4/M4 candidate | publisher identifies reverse side; exact production representations absent | `HOLD` |
 | Army NSN `6920-01-167-1392` | Legacy M16A1 | issuer identity/procedure | `EVIDENCE_ONLY` |
 | Rite in the Rain `9127` | Legacy/Alt-C M16A1 product-specific | qualification/alternate-course distinction required | `EVIDENCE_ONLY` |
 | National `25M ALT-C` | qualification product-specific | genuinely different family | `EVIDENCE_ONLY` |
 | Action `ALT C(2)` | qualification product-specific | title/purpose ambiguity | `HOLD` |
 | Baker `ST-M16A2R` | Enlarged M16A2R | geometry difference | `HOLD` |
-| GunFun `82020` | enlarged product-specific | 14 × 20 sheet; internal geometry unproven | `EVIDENCE_ONLY` |
 | GunFun `22460` Navy Qual M4 | composite/qualification | genuinely different family | `EVIDENCE_ONLY` |
 | Action `M68 OPTIC` | optic-specific product | genuinely different target family until proven | `EVIDENCE_ONLY` |
 | Army 10m offset symbols | 10m boresight/offset | genuinely different target family | `EVIDENCE_ONLY` |

@@ -360,6 +360,78 @@
       "claimBoundary": "registration_knowledge_only_downstream_authority_owns_sufficiency"
     },
     {
+      "registrationPackageId": "baker-st-m16a2-m4-m4-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "baker_m4_25m_zero",
+      "targetProfileVersion": "BAKER_M4_25M_AUTHORITY_v1",
+      "canonicalRepresentation": {
+        "assetId": "BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1",
+        "path": "assets/BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1.jpg",
+        "sha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6",
+        "pixelWidth": 773,
+        "pixelHeight": 1000,
+        "mediaType": "image/jpeg"
+      },
+      "canonicalCoordinateSystemId": "BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1",
+      "ugoAuthorityId": "MFAM-STANDARD-M16A4-M4-13CM-14X16-GEOMETRY-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1.5,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 18,
+        "minimumInliers": 12,
+        "minimumInlierRatio": 0.35,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-m4-title", "xMin": 0.08, "xMax": 0.92, "yMin": 0.01, "yMax": 0.13, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "bottom-m4-procedure", "xMin": 0.05, "xMax": 0.95, "yMin": 0.86, "yMax": 0.99, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
+      },
+      "recovery": {"retakeWhenTargetEvidenceMissing": true, "shooterAssistedLandmarks": []},
+      "claimBoundary": "registration_knowledge_only_standard_m16a4_m4_family_authority_owns_geometry_and_mechanics"
+    },
+    {
+      "registrationPackageId": "gunfun-82020-m16a2-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "gunfun_82020_m16a2_25m_zero",
+      "targetProfileVersion": "GUNFUN_82020_M16A2_AUTHORITY_v1",
+      "canonicalRepresentation": {
+        "assetId": "GUNFUN_82020_M16A2_FACE_AUTHORITY_v1",
+        "path": "assets/GUNFUN_82020_M16A2_FACE_AUTHORITY_v1.jpg",
+        "sha256": "f40eab04d37e2ef2d13dd2dc72fac0f066b17d0bd297f537d0d23276242f831e",
+        "pixelWidth": 400,
+        "pixelHeight": 572,
+        "mediaType": "image/jpeg"
+      },
+      "canonicalCoordinateSystemId": "GUNFUN_82020_M16A2_FACE_AUTHORITY_v1",
+      "ugoAuthorityId": "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1.5,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 12,
+        "minimumInliers": 8,
+        "minimumInlierRatio": 0.25,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-gunfun-identity", "xMin": 0.03, "xMax": 0.97, "yMin": 0.02, "yMax": 0.21, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "bottom-procedure-and-publisher", "xMin": 0.03, "xMax": 0.97, "yMin": 0.72, "yMax": 0.98, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
+      },
+      "recovery": {"retakeWhenTargetEvidenceMissing": true, "shooterAssistedLandmarks": []},
+      "claimBoundary": "registration_knowledge_only_standard_m16a2_family_authority_owns_geometry_and_mechanics"
+    },
+    {
       "registrationPackageId": "gssf-ac-1-photo-registration-fixture-v1",
       "registrationPackageVersion": "1",
       "targetProfileId": "gssf_ac_1",

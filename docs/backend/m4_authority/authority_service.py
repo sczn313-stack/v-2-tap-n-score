@@ -220,17 +220,39 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
         or setup.get("adjustmentSystem")
         or ("M4_IRON" if "iron" in optic_type.lower() else "OPTIC")
     ).upper()
+    requested_profile_id = str(
+        payload.get("adjustmentProfileId")
+        or setup.get("adjustmentProfileId")
+        or ""
+    )
+    family_context = governed_family_context(payload)
+    allowed_profile_ids = set(
+        family_context["package"].get("mechanicalAuthorityIds") or []
+    ) if family_context else set()
+    profile = get_adjustment_profile(requested_profile_id)
+    if (
+        profile
+        and requested_profile_id in allowed_profile_ids
+        and str(profile.get("status") or "").lower() == "proven"
+        and str(profile.get("adjustmentSystem") or "").upper() == requested
+    ):
+        authority = authority_model_from_adjustment_profile(profile)
+        return {
+            "system": requested,
+            "label": authority.get("label") or "Registered family equipment",
+            "unit": authority.get("unit") or "MOA",
+            "windagePerClick": authority.get("windagePerClick"),
+            "elevationPerClick": authority.get("elevationPerClick"),
+            "authorityStatus": "proven",
+            "authorityId": authority.get("authorityId"),
+            "authoritySource": authority.get("authoritySource"),
+            "roundingRule": authority.get("roundingRule"),
+            "turnDirections": authority.get("turnDirections"),
+            "adjustmentProfileId": authority.get("adjustmentProfileId"),
+            "equipmentConfigurationId": authority.get("equipmentConfigurationId"),
+            "authorityRecord": authority.get("authorityRecord"),
+        }
     if requested.startswith("M16A2_IRON"):
-        requested_profile_id = str(
-            payload.get("adjustmentProfileId")
-            or setup.get("adjustmentProfileId")
-            or ""
-        )
-        profile = get_adjustment_profile(requested_profile_id)
-        family_context = governed_family_context(payload)
-        allowed_profile_ids = set(
-            family_context["package"].get("mechanicalAuthorityIds") or []
-        ) if family_context else set()
         authority = authority_model_from_adjustment_profile(profile) if (
             profile
             and requested_profile_id in allowed_profile_ids

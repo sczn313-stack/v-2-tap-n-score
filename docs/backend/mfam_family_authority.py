@@ -54,6 +54,8 @@ def _face_has_authorized_geometry(
         return False
     dimensions = face_record.get("dimensions") or {}
     grid = face_record.get("grid") or {}
+    if grid.get("status") == "FAMILY_CANDIDATE":
+        return False
     spacing = grid.get("spacing") or {}
     aim = str(face_record.get("aimReference") or "")
     return bool(
@@ -267,8 +269,6 @@ def _load_registry() -> Dict[str, Any]:
             face["faceId"] for face in inventory_faces.values()
             if face.get("governedFamilyId") == family_id
         }
-        if set(proof.get("candidateFaceIds") or []) != candidate_faces:
-            raise MFAMAuthorityError(f"mfam_scale_proof_candidate_faces_mismatch:{proof_id}")
         admitted_profiles = set(proof.get("admittedTargetProfileIds") or [])
         if any(
             profile_id not in bindings or bindings[profile_id].get("familyId") != family_id
@@ -277,6 +277,10 @@ def _load_registry() -> Dict[str, Any]:
             raise MFAMAuthorityError(f"mfam_scale_proof_binding_mismatch:{proof_id}")
         if proof_id != current_scale_proof_id:
             continue
+        # Historical scale proofs preserve the candidate universe known at the
+        # time. Only the current proof must reconcile to the live catalog.
+        if set(proof.get("candidateFaceIds") or []) != candidate_faces:
+            raise MFAMAuthorityError(f"mfam_scale_proof_candidate_faces_mismatch:{proof_id}")
         held_faces = {
             face_id for face_id in candidate_faces
             if not inventory_faces[face_id].get("runtimeBinding")
@@ -325,7 +329,12 @@ def _load_registry() -> Dict[str, Any]:
     held_assigned_faces = [face for face in held_physical_faces if face.get("governedFamilyId")]
     held_unassigned_faces = [face for face in held_physical_faces if not face.get("governedFamilyId")]
     current_scale_proof = scale_proofs.get(current_scale_proof_id) or {}
-    newly_authorized_count = len(current_scale_proof.get("newlyAdmittedTargetProfileIds") or [])
+    batch_summary = current_scale_proof.get("batchSummary") or {}
+    newly_authorized_count = len(
+        batch_summary.get("newlyAdmittedTargetProfileIds")
+        or current_scale_proof.get("newlyAdmittedTargetProfileIds")
+        or []
+    )
     computed_sweep_counts = {
         "authorizedNowRuntimeBindings": newly_authorized_count,
         "alreadyAuthorizedRuntimeBindings": len(bindings) - newly_authorized_count,
@@ -549,7 +558,12 @@ def industry_authorization_sweep() -> Dict[str, Any]:
     current_proof = _REGISTRY["_index"]["scaleProofs"].get(
         _REGISTRY["familyConformanceRegistry"].get("scaleProofId")
     ) or {}
-    newly_authorized = set(current_proof.get("newlyAdmittedTargetProfileIds") or [])
+    batch_summary = current_proof.get("batchSummary") or {}
+    newly_authorized = set(
+        batch_summary.get("newlyAdmittedTargetProfileIds")
+        or current_proof.get("newlyAdmittedTargetProfileIds")
+        or []
+    )
     physical_authorized = [
         item for item in face_results if item["disposition"] == "ALREADY_AUTHORIZED"
     ]

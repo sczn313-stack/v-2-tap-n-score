@@ -4,10 +4,10 @@ Date: 2026-09-06
 
 | Priority | Scope | Missing proof | Why it matters | Closure evidence |
 |---:|---|---|---|---|
-| 1 | Baker `ST-Uni25mMOA` | exact production face/specimen and Baker-specific orientation registration | first pure-scale product cannot be admitted by aliasing the protected face | flat production artifact, physical dimensions, measured landmarks, registration regression fixtures |
+| 1 | Modern Universal MOA/A8 product faces | true-distance completion branch plus exact product registration/equipment selection | reusable geometry does not authorize a false 25m-only `ZERO CONFIRMED` completion | governed true-distance completion contract and exact face registration |
 | 2 | Army A8 | exact issued production face and comparison to protected SCZN3 specimen | doctrine proves A8 procedure, not byte/landmark equivalence | official face/form artifact and physical-scale comparison |
-| 3 | Standard M4/M16A4 products | side-specific exact faces, page origins, aim point and registration landmarks | 14 × 16 / 1.3 cm family exists but no commercial exact face is executable | production specimen per publisher/side plus registration package |
-| 4 | Rite, QTI, Speedwell, Alco, Action, GunFun standard-derived faces | physical square pitch and full page/landmark measurement | appearance and titles cannot prove geometry | measured specimen or publisher dimensional drawing |
+| 3 | Remaining Standard M4/M16A4 products | side-specific exact faces or calibrated production-scale bridges; M16A4 equipment branch where claimed | Baker M4 proves the family, but another printer's identity and UGO mapping still require its own evidence | exact production representation or calibrated publisher artifact plus registration package |
+| 4 | Remaining exact representations | only the material face-to-UGO fact not already inherited from a governed family | appearance and titles cannot prove identity/orientation, while family facts must not be repurchased | exact face artifact or smallest calibrated conformance bridge |
 | 5 | Modern optic/laser rows | exact equipment/mount applicability, control directions/observer view and confirmation procedure | printed click values alone cannot safely prescribe adjustments | primary device/config authority plus tests |
 | 6 | Baker `ST-M16A2R` and other enlarged/composite products | internal grid pitch, aim point, page origin and subface transform | enlargement changes physical meaning | physical specimen and independent profile |
 | 7 | M16A1 | exact governed face geometry and complete sight procedure/mechanics | issuer identity exists, executable target does not | primary face/form, measurements, mechanics, registration, confirmation |
