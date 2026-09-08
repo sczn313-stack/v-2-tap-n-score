@@ -6,21 +6,12 @@ from copy import deepcopy
 from typing import Any, Dict, Mapping
 
 from target_execution_contract import canonical_json, digest
+from target_scoring_data_contract import MODEL_AGGREGATIONS, validate_target_scoring_data
 from ugo_observation_classifier import classify, coordinate
 
 
 class DeclarativeTargetScoreError(ValueError):
     pass
-
-
-SUPPORTED_MODELS = {
-    "numeric_regions",
-    "named_regions",
-    "penalty_regions",
-    "ordered_objects",
-    "multiple_bulls",
-    "not_applicable",
-}
 
 
 def _image(value: Any) -> Dict[str, Any]:
@@ -46,16 +37,17 @@ def _point(value: Any) -> tuple[float, float]:
     )
 
 
-def _aim(value: Any, allowed: bool) -> Dict[str, Any] | None:
+def _aim(value: Any, mode: str) -> Dict[str, Any] | None:
     if value is None:
         return None
-    if not allowed or not isinstance(value, Mapping):
+    if mode != "shooter_declared" or not isinstance(value, Mapping):
         raise DeclarativeTargetScoreError("shooter_declared_aim_not_authorized")
     x, y = _point(value)
     return {"xNorm": x, "yNorm": y, "declaredBy": "shooter", "authorityScope": "session_evidence_only"}
 
 
 def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
+    validate_target_scoring_data(contract)
     if not isinstance(evidence, Mapping):
         raise DeclarativeTargetScoreError("evidence_object_required")
     observations = evidence.get("observations")
@@ -66,7 +58,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         raise DeclarativeTargetScoreError("observation_limit_exceeded")
     scoring_data = contract["components"]["scoring"]["definition"]
     model = str(scoring_data.get("model") or "")
-    if model not in SUPPORTED_MODELS:
+    if model not in MODEL_AGGREGATIONS:
         raise DeclarativeTargetScoreError("scoring_model_unsupported")
     geometry = contract["components"]["geometry"]["definition"]
     regions = geometry.get("regions") or []
@@ -112,18 +104,32 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "regionCounts": dict(counts),
         "outsideCount": counts.get("outside", 0),
         "publisherRuleAuthority": deepcopy(scoring_data.get("publisherRuleAuthority")),
+        "aggregation": deepcopy(scoring_data.get("aggregation")),
     }
     if numeric:
         scoring.update({"total": total, "groupTotals": dict(group_totals)})
-    elif model == "ordered_objects":
+    if model in {"multiple_bulls", "ordered_objects"}:
+        object_rules = list(dict.fromkeys((rule.get("objectId"), rule.get("label")) for rule in rules.values()))
+        scoring["objectResults"] = [
+            {"objectId": object_id, "label": label, "observationCount": sum(1 for item in classifications if str(item.get("objectId")) == str(object_id)), "hit": any(str(item.get("objectId")) == str(object_id) for item in classifications)}
+            for object_id, label in object_rules
+        ]
+    if model == "ordered_objects":
         observed = [item.get("objectId") for item in classifications]
-        expected = list(scoring_data.get("sequence") or [])
-        prefix = 0
-        for actual, wanted in zip(observed, expected):
-            if str(actual) != str(wanted):
+        aggregation = scoring_data["aggregation"]
+        expected = list(aggregation.get("sequence") or [])
+        progress = 0
+        for actual in observed:
+            if progress < len(expected) and str(actual) == str(expected[progress]):
+                progress += 1
+                continue
+            if aggregation.get("mismatchBehavior") == "restart_sequence":
+                progress = 1 if expected and str(actual) == str(expected[0]) else 0
+            else:
                 break
-            prefix += 1
-        scoring.update({"observedSequence": observed, "expectedSequence": expected, "completedInOrder": prefix, "nextExpectedObjectId": expected[prefix] if prefix < len(expected) else None})
+        complete = progress == len(expected) if aggregation.get("completionBehavior") == "all_in_order" else evidence.get("shooterDeclaredComplete") is True
+        scoring["completion"] = "complete" if complete else "in_progress"
+        scoring.update({"observedSequence": observed, "expectedSequence": expected, "completedInOrder": progress, "sequenceComplete": complete, "nextExpectedObjectId": expected[progress] if progress < len(expected) else None})
     elif model == "not_applicable":
         scoring["reason"] = str(scoring_data.get("reason") or "printer_defines_no_score")
 
@@ -134,7 +140,8 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "executionContract": {"contractId": contract["contractId"], "contractVersion": contract["contractVersion"], "contractFingerprint": contract["contractFingerprint"], "executorId": contract["executor"]["id"], "executorVersion": contract["executor"]["version"], "secAdapterFamilyId": contract["secAdapter"]["id"], "secAdapterFamilyVersion": contract["secAdapter"]["version"], "preservationValidatorId": contract["preservationValidator"]["id"], "preservationValidatorVersion": contract["preservationValidator"]["version"]},
         "imageEvidence": _image(evidence.get("imageEvidence")),
         "observations": deepcopy(classifications), "classifications": classifications,
-        "shooterDeclaredAimPoint": _aim(evidence.get("shooterDeclaredAimPoint"), bool(mission.get("allowShooterDeclaredAim", True))),
+        "aimStructure": deepcopy(mission["interaction"]["aim"]),
+        "shooterDeclaredAimPoint": _aim(evidence.get("shooterDeclaredAimPoint"), mission["interaction"]["aim"]["mode"]),
         "scoring": scoring,
         "reconciliation": {"status": "reconciled", "recordedObservationCount": len(classifications), "classifiedObservationCount": len(classifications), "countsMatch": sum(counts.values()) == len(classifications)},
         "authorityTrace": {"targetExecutionContract": f"{contract['contractId']}@{contract['contractVersion']}", "classificationAuthority": "backend", "scoringAuthority": "printer-rules-through-target-data", "componentDigests": {name: component["digest"] for name, component in contract["components"].items()}},
@@ -156,6 +163,8 @@ def validate_result(contract: Mapping[str, Any], result: Any) -> bool:
         and result.get("executionContract", {}).get("contractFingerprint") == contract["contractFingerprint"]
         and isinstance(classifications, list) and len(classifications) >= 1
         and isinstance(scoring, Mapping) and scoring.get("status") in {"complete", "not_applicable"}
+        and scoring.get("aggregation") == contract["components"]["scoring"]["definition"].get("aggregation")
+        and result.get("aimStructure") == contract["components"]["mission"]["definition"]["interaction"]["aim"]
         and isinstance(reconciliation, Mapping) and reconciliation.get("status") == "reconciled" and reconciliation.get("countsMatch") is True
         and result.get("imageEvidence", {}).get("backendHashVerified") is True
     )

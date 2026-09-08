@@ -42,6 +42,7 @@
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "concentric_regions",
         "regions": [
           {
             "regionId": "x",
@@ -91,7 +92,7 @@
         ],
         "ugoAuthority": "publisher-printed-ring-data-v1"
       },
-      "digest": "d1f293083fab22bab0c8840f44a74e6ce261cdf678dede10044a3c91daf801d1"
+      "digest": "aebc43586869b05300e7dc21494643231f6f218f3cf9698627bb2731eb3cbee8"
     },
     "registration": {
       "id": "gunfun_22200_b27e_black-target-scoring-registration",
@@ -139,12 +140,17 @@
           "label": "Miss",
           "value": 0
         },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "sum",
+          "groupBy": "observation.groupId"
+        },
         "publisherRuleAuthority": {
           "source": "GunFun product 22200 publisher representation",
           "rule": "printed X/10/9/8/7 regions"
         }
       },
-      "digest": "40f446721b3b662a8d02fd29458744254798bfa1dc11cf6c9865902cfba0aca9"
+      "digest": "49facb7f3f1ab3dc77d397de377c90b1db12cb33056f98dda23fc46841cf034c"
     },
     "mission": {
       "id": "gunfun_22200_b27e_black-target-scoring-mission",
@@ -155,7 +161,20 @@
         "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "fixed",
+            "points": [
+              {
+                "aimId": "governed_center",
+                "xNorm": 0.5,
+                "yNorm": 0.66
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
@@ -174,7 +193,7 @@
           }
         }
       },
-      "digest": "57900f82c54c04c1849c287618a6771d74db08e1a33eabafbfa13a20a2159279"
+      "digest": "aff4d1f5fba3a206e05e29f22094ee9fa9e97ea36485f6b4f8decbd00a1c203b"
     }
   },
   "missionFamily": "targetScoring",

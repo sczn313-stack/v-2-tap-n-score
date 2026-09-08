@@ -92,7 +92,8 @@
     if (result.missionFamily === "precisionRingScore") return reconciliation.status === "reconciled" && result.scoring && result.scoring.status === "complete";
     if (result.missionFamily === "targetScoring") {
       const classifications = Array.isArray(result.classifications) ? result.classifications : [];
-      return result.status === "complete" && reconciliation.status === "reconciled" && reconciliation.countsMatch === true && reconciliation.recordedObservationCount === classifications.length && classifications.length > 0 && result.scoring && ["complete", "not_applicable"].includes(result.scoring.status);
+      const aim = result.aimStructure;
+      return result.status === "complete" && reconciliation.status === "reconciled" && reconciliation.countsMatch === true && reconciliation.recordedObservationCount === classifications.length && classifications.length > 0 && result.scoring && ["complete", "not_applicable"].includes(result.scoring.status) && aim && ["fixed", "region_centers", "shooter_declared", "not_required"].includes(aim.mode);
     }
     if (result.missionFamily === "recreationalChallenge") return reconciliation.status === "reconciled" && result.challenge && ["in_progress", "complete"].includes(result.challenge.status);
     if (result.missionFamily === "collectionHandEvaluation") {
@@ -147,8 +148,10 @@
     const source = clean(image.dataUrl);
     const observations = Array.isArray(result.observations) ? result.observations : (Array.isArray(result.classifications) ? result.classifications : result.events || []);
     const markers = observations.map((observation, index) => `<span class="contract-observation-marker" style="left:${Number(observation.xNorm) * 100}%;top:${Number(observation.yNorm) * 100}%" aria-label="Observation ${index + 1}">${index + 1}</span>`).join("");
-    const aim = result.shooterDeclaredAimPoint;
-    const aimMarker = aim ? `<span class="contract-aim-marker" style="left:${Number(aim.xNorm) * 100}%;top:${Number(aim.yNorm) * 100}%" aria-label="Shooter-declared aim point"></span>` : "";
+    const targetAim = result.aimStructure && result.aimStructure.mode === "fixed" && Array.isArray(result.aimStructure.points) ? result.aimStructure.points[0] : null;
+    const aim = result.shooterDeclaredAimPoint || targetAim;
+    const aimLabel = result.shooterDeclaredAimPoint ? "Shooter-declared aim point" : "Governed target aim point";
+    const aimMarker = aim ? `<span class="contract-aim-marker" style="left:${Number(aim.xNorm) * 100}%;top:${Number(aim.yNorm) * 100}%" aria-label="${aimLabel}"></span>` : "";
     return source ? `<figure class="contract-evidence"><div><img src="${escapeHtml(source)}" alt="Registered target session evidence" />${markers}${aimMarker}</div></figure>` : `<p>Evidence image unavailable.</p>`;
   }
 
@@ -262,12 +265,13 @@
     const local = ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname);
     const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
     const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority.onrender.com");
-    const state = { session: null, image: null, imageDataUrl: "", observations: [], aim: null, aimMode: false, isCueDrill: false, isQualification: false, isDiagnostic: false, isDecision: false, isStaged: false, cueSequence: 0, cueRunState: null, noObservationDeclared: false };
+    const state = { session: null, image: null, imageDataUrl: "", observations: [], aim: null, aimMode: false, interaction: { aim: { mode: "shooter_declared", points: [] } }, isCueDrill: false, isQualification: false, isDiagnostic: false, isDecision: false, isStaged: false, cueSequence: 0, cueRunState: null, noObservationDeclared: false };
     const byId = id => document.getElementById(id);
     const status = message => { byId("contractStatus").textContent = message; };
 
     function paintMarkers() {
-      byId("contractMarkers").innerHTML = state.observations.map((point, index) => `<span class="contract-observation-marker" style="left:${point.xNorm * 100}%;top:${point.yNorm * 100}%">${index + 1}</span>`).join("") + (state.aim ? `<span class="contract-aim-marker" style="left:${state.aim.xNorm * 100}%;top:${state.aim.yNorm * 100}%"></span>` : "");
+      const fixedAim = state.interaction.aim && state.interaction.aim.mode === "fixed" ? state.interaction.aim.points[0] : null;
+      byId("contractMarkers").innerHTML = state.observations.map((point, index) => `<span class="contract-observation-marker" style="left:${point.xNorm * 100}%;top:${point.yNorm * 100}%">${index + 1}</span>`).join("") + (state.aim ? `<span class="contract-aim-marker" style="left:${state.aim.xNorm * 100}%;top:${state.aim.yNorm * 100}%"></span>` : (fixedAim ? `<span class="contract-aim-marker" style="left:${fixedAim.xNorm * 100}%;top:${fixedAim.yNorm * 100}%"></span>` : ""));
       byId("contractObservationCount").textContent = String(state.observations.length);
       byId("contractShowResult").disabled = state.isStaged || !state.observations.length;
       if (state.isStaged) byId("contractCueAdvance").disabled = !(state.observations.length || state.noObservationDeclared);
@@ -286,12 +290,14 @@
       const prepared = await request("/api/session/prepare", { method: "POST", body: JSON.stringify({ targetId, missionFamily: missionFamily || undefined }) });
       const started = await request("/api/session/start", { method: "POST", headers: { "Idempotency-Key": `contract-${runtimeId()}` }, body: JSON.stringify({ preparationToken: prepared.preparationToken, selectedEquipment: prepared.standardSetup }) });
       state.session = global.SCZN3M4.createAuthoritativeSession(started, { targetProfileId: started.target.targetId, target_profile_id: started.target.targetId, targetName: started.target.targetName, missionFamily: started.missionIdentity.missionFamily, resultPackageType: started.missionIdentity.resultPackageType });
+      state.interaction = started.interactionContract || state.interaction;
       state.isCueDrill = started.missionIdentity.missionFamily === "cueDrillOrchestration";
       state.isQualification = started.missionIdentity.missionFamily === "qualificationCourseEvaluation";
       state.isDiagnostic = started.missionIdentity.missionFamily === "diagnosticFeedbackEvaluation";
       state.isDecision = started.missionIdentity.missionFamily === "decisionScenarioEvaluation";
       state.isStaged = state.isCueDrill || state.isQualification || state.isDecision;
       byId("contractProductName").textContent = started.target.targetName;
+      byId("contractMarkAim").hidden = state.isStaged || state.isDiagnostic || !state.interaction.aim || state.interaction.aim.mode !== "shooter_declared";
       byId("contractStart").hidden = true;
       byId("contractCapture").hidden = false;
       status("Session admitted. Load target evidence.");
@@ -308,7 +314,7 @@
       byId("contractTargetImage").src = dataUrl;
       byId("contractWorkspace").hidden = false;
       byId("contractDiagnosticPanel").hidden = !state.isDiagnostic;
-      if (state.isDiagnostic) byId("contractMarkAim").hidden = true;
+      if (state.isDiagnostic || state.isStaged || !state.interaction.aim || state.interaction.aim.mode !== "shooter_declared") byId("contractMarkAim").hidden = true;
       if (state.isStaged) await startCueRun();
       else status("Tap visible shot observations.");
     }

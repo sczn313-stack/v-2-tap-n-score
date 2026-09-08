@@ -37,6 +37,7 @@
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "repeated_regions",
         "regions": [
           {
             "regionId": "bull_1_1",
@@ -113,7 +114,7 @@
         ],
         "ugoAuthority": "baker-publisher-nine-bull-representation-v1"
       },
-      "digest": "2713d9f1486f328d713b212f142eba6d041e8ec7b1cd66b9f4bf18fb89ce59dc"
+      "digest": "d2a61857c3996993512112278ca4bb561326611423d680366be99f1673f31d4d"
     },
     "registration": {
       "id": "baker_be_r9b-target-scoring-registration",
@@ -176,12 +177,16 @@
         "outsideRule": {
           "label": "Outside bulls"
         },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
         "publisherRuleAuthority": {
           "source": "Baker product BE-R9B",
           "rule": "nine identified bullseyes; no numeric score inferred"
         }
       },
-      "digest": "4df8581ad21fedc78a0506e464b3fafe6a244d9137b47cca5304c1754c3aee29"
+      "digest": "987f2da2fe856323491bdfc43a87d333b580a0d2bbde7f50c3ce50147053930c"
     },
     "mission": {
       "id": "baker_be_r9b-target-scoring-mission",
@@ -192,7 +197,69 @@
         "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_bull_1_1",
+                "regionId": "bull_1_1",
+                "xNorm": 0.22,
+                "yNorm": 0.25
+              },
+              {
+                "aimId": "aim_bull_1_2",
+                "regionId": "bull_1_2",
+                "xNorm": 0.5,
+                "yNorm": 0.25
+              },
+              {
+                "aimId": "aim_bull_1_3",
+                "regionId": "bull_1_3",
+                "xNorm": 0.78,
+                "yNorm": 0.25
+              },
+              {
+                "aimId": "aim_bull_2_1",
+                "regionId": "bull_2_1",
+                "xNorm": 0.22,
+                "yNorm": 0.5
+              },
+              {
+                "aimId": "aim_bull_2_2",
+                "regionId": "bull_2_2",
+                "xNorm": 0.5,
+                "yNorm": 0.5
+              },
+              {
+                "aimId": "aim_bull_2_3",
+                "regionId": "bull_2_3",
+                "xNorm": 0.78,
+                "yNorm": 0.5
+              },
+              {
+                "aimId": "aim_bull_3_1",
+                "regionId": "bull_3_1",
+                "xNorm": 0.22,
+                "yNorm": 0.75
+              },
+              {
+                "aimId": "aim_bull_3_2",
+                "regionId": "bull_3_2",
+                "xNorm": 0.5,
+                "yNorm": 0.75
+              },
+              {
+                "aimId": "aim_bull_3_3",
+                "regionId": "bull_3_3",
+                "xNorm": 0.78,
+                "yNorm": 0.75
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
@@ -211,7 +278,7 @@
           }
         }
       },
-      "digest": "07d502424c0f3de7862608e79a2dcecda3003c221a36318ad5c89685501356e0"
+      "digest": "81e32ccc712722768e2d66c827019401e9d8c1299da8a150d8b3045c4491c690"
     }
   },
   "missionFamily": "targetScoring",

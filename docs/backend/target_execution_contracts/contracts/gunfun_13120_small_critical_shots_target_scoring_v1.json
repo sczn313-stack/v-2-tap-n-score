@@ -42,6 +42,7 @@
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
         "regions": [
           {
             "regionId": "head_target",
@@ -103,7 +104,7 @@
         ],
         "ugoAuthority": "publisher-representation-region-data-v1"
       },
-      "digest": "0fc3edae98f0bc91ecb420f775738141b13f8f8624fe8dc5286d2c9190fe321e"
+      "digest": "71796426c4ec11153c27787be613bac84e8b3b2eb06af5b4f9d8b60ee2921009"
     },
     "registration": {
       "id": "gunfun_13120_small_critical_shots-target-scoring-registration",
@@ -139,12 +140,16 @@
         "outsideRule": {
           "label": "Outside printed target areas"
         },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "classification_counts"
+        },
         "publisherRuleAuthority": {
           "source": "GunFun product 13120",
           "rule": "paper shooting target featuring a 2 color silhouette with target areas"
         }
       },
-      "digest": "f856eae25c98313c52cf0809a9aefbd4459e654cf786d8fabf238b6531054695"
+      "digest": "15b4bea1314b2f0b4af30a6b4908b305fa0baa9dbd2de4349ddb62bc9e8412e9"
     },
     "mission": {
       "id": "gunfun_13120_small_critical_shots-target-scoring-mission",
@@ -155,7 +160,15 @@
         "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "shooter_declared",
+            "required": false,
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
@@ -174,7 +187,7 @@
           }
         }
       },
-      "digest": "6bdb3bc8bb1a230a34aeb1005890ca1e2e98ba839826b873f59d2667d656f987"
+      "digest": "e8c53c4bec33eef5f8d6059f0d77888e177edfde8215d0e1b7dcb7476da0031f"
     }
   },
   "missionFamily": "targetScoring",

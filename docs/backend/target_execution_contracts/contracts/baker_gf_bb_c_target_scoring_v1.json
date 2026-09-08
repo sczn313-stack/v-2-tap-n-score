@@ -37,6 +37,7 @@
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
         "regions": [
           {
             "regionId": "1",
@@ -176,7 +177,7 @@
         ],
         "ugoAuthority": "UGO_BAKER_GF_BB_C_V1"
       },
-      "digest": "3b2f6b51250248f0389376d6a7309aa546437cc34092c3cf015677cea19c28cc"
+      "digest": "b403ec02ab5ba85aa4916a7abe3b445d505cb72369cdfe4298bd390d56d64c04"
     },
     "registration": {
       "id": "baker_gf_bb_c-target-scoring-registration",
@@ -263,29 +264,35 @@
         "outsideRule": {
           "label": "Miss"
         },
-        "sequence": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15
-        ],
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "ordered_progression",
+          "sequence": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "mismatchBehavior": "stop_progress",
+          "completionBehavior": "all_in_order"
+        },
         "publisherRuleAuthority": {
           "source": "BAKER_GF_BB_C_PUBLISHED_GAME_V1",
           "rule": "Shoot in order; change shooters if you miss"
         }
       },
-      "digest": "5605063794a5b6bee684854009f150f4ab031329e3c1e2a5c58234af0acf1674"
+      "digest": "c81432bd4aeb965daf8decd93d6b738eb4a4d37e95e556c406096f06f84a1f62"
     },
     "mission": {
       "id": "baker_gf_bb_c-target-scoring-mission",
@@ -296,7 +303,105 @@
         "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_1",
+                "regionId": "1",
+                "xNorm": 0.49079754601226994,
+                "yNorm": 0.8133333333333334
+              },
+              {
+                "aimId": "aim_2",
+                "regionId": "2",
+                "xNorm": 0.31551270815074495,
+                "yNorm": 0.3233333333333333
+              },
+              {
+                "aimId": "aim_3",
+                "regionId": "3",
+                "xNorm": 0.5784399649430324,
+                "yNorm": 0.6866666666666666
+              },
+              {
+                "aimId": "aim_4",
+                "regionId": "4",
+                "xNorm": 0.5784399649430324,
+                "yNorm": 0.44333333333333336
+              },
+              {
+                "aimId": "aim_5",
+                "regionId": "5",
+                "xNorm": 0.6660823838737949,
+                "yNorm": 0.3233333333333333
+              },
+              {
+                "aimId": "aim_6",
+                "regionId": "6",
+                "xNorm": 0.31551270815074495,
+                "yNorm": 0.5633333333333334
+              },
+              {
+                "aimId": "aim_7",
+                "regionId": "7",
+                "xNorm": 0.1446099912357581,
+                "yNorm": 0.3233333333333333
+              },
+              {
+                "aimId": "aim_8",
+                "regionId": "8",
+                "xNorm": 0.49079754601226994,
+                "yNorm": 0.5633333333333334
+              },
+              {
+                "aimId": "aim_9",
+                "regionId": "9",
+                "xNorm": 0.7537248028045574,
+                "yNorm": 0.44333333333333336
+              },
+              {
+                "aimId": "aim_10",
+                "regionId": "10",
+                "xNorm": 0.49079754601226994,
+                "yNorm": 0.3233333333333333
+              },
+              {
+                "aimId": "aim_11",
+                "regionId": "11",
+                "xNorm": 0.40315512708150747,
+                "yNorm": 0.6866666666666666
+              },
+              {
+                "aimId": "aim_12",
+                "regionId": "12",
+                "xNorm": 0.8413672217353199,
+                "yNorm": 0.3233333333333333
+              },
+              {
+                "aimId": "aim_13",
+                "regionId": "13",
+                "xNorm": 0.2322524101665206,
+                "yNorm": 0.44333333333333336
+              },
+              {
+                "aimId": "aim_14",
+                "regionId": "14",
+                "xNorm": 0.6660823838737949,
+                "yNorm": 0.5633333333333334
+              },
+              {
+                "aimId": "aim_15",
+                "regionId": "15",
+                "xNorm": 0.40315512708150747,
+                "yNorm": 0.44333333333333336
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
@@ -315,7 +420,7 @@
           }
         }
       },
-      "digest": "9a5fadda19e7e5ecb03b4f25de89d4a691e8b141152a77f66b86865e2663ff78"
+      "digest": "25e151c3591268bd0d161986f3e66e133a3bdd524ac89270668526a6633272fb"
     }
   },
   "missionFamily": "targetScoring",

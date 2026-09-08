@@ -37,8 +37,10 @@ try {
     const surface = page.locator("#contractTapSurface");
     const box = await surface.boundingBox();
     assert.ok(box && box.width > 100 && box.height > 100);
-    await page.getByRole("button", { name: "Mark Aim" }).click();
-    await surface.click({ position: { x: box.width * .5, y: box.height * .5 } });
+    if (await page.getByRole("button", { name: "Mark Aim" }).isVisible()) {
+      await page.getByRole("button", { name: "Mark Aim" }).click();
+      await surface.click({ position: { x: box.width * .5, y: box.height * .5 } });
+    }
     await surface.click({ position: { x: box.width * .42, y: box.height * .44 } });
     await surface.click({ position: { x: box.width * .57, y: box.height * .51 } });
     await surface.click({ position: { x: box.width * .48, y: box.height * .58 } });
@@ -65,7 +67,11 @@ try {
     await page.locator("#contractSecView").waitFor({ state: "visible" });
     assert.equal(await page.locator("#contractStatus").textContent(), "Exact preserved SEC reopened.");
     assert.equal(await page.locator(".contract-observation-marker").count(), 3);
-    assert.equal(await page.locator(".contract-aim-marker").count(), 1);
+    const reopenedResponse = await fetch(`${authorityOrigin}/api/session/sec?session=${encodeURIComponent(sessionId)}`);
+    assert.equal(reopenedResponse.status, 200);
+    const reopened = await reopenedResponse.json();
+    assert.deepEqual(reopened.session.authorityPackage.aimStructure, result.aimStructure);
+    assert.equal(await page.locator(".contract-aim-marker").count(), result.aimStructure.mode === "fixed" || result.aimStructure.mode === "shooter_declared" ? 1 : 0);
     await Promise.all([page.waitForURL(/\/records\.html$/), page.getByRole("link", { name: "Ballistic Vault" }).click()]);
     await page.getByRole("heading", { name: "BALLISTIC VAULT", exact: true }).waitFor();
     const vaultResponse = await fetch(`${authorityOrigin}/api/session/sec`);

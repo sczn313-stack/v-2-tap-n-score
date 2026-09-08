@@ -42,6 +42,7 @@
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
         "regions": [
           {
             "regionId": "a_head",
@@ -165,7 +166,7 @@
         ],
         "ugoAuthority": "UGO_GUNFUN_22470_USPSA_IPSC_CANDIDATE_V1:publisher-labels"
       },
-      "digest": "27f2e65c62cd8cff33407aa620d1cf59ad9abd61f6e470b0bd480c3450885277"
+      "digest": "3452d3399a445c46e9b7dad0ecb2400872035964d6e2c46569e3ed9aebb2e033"
     },
     "registration": {
       "id": "gunfun_22470_uspsa_ipsc-target-scoring-registration",
@@ -207,12 +208,16 @@
         "outsideRule": {
           "label": "Miss"
         },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "classification_counts"
+        },
         "publisherRuleAuthority": {
           "source": "GunFun product 22470 publisher representation",
           "rule": "printed A/B/C/D region names; no numeric value inferred"
         }
       },
-      "digest": "03339914de213ac3569ea15c678d607ad0484cf13b640be0eb9bb3ab588ce6fc"
+      "digest": "515dc4cbf678c19aaba81f6961def8857ca1b0e9c1e69b1e14c9e84bd8b20583"
     },
     "mission": {
       "id": "gunfun_22470_uspsa_ipsc-target-scoring-mission",
@@ -223,7 +228,15 @@
         "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "shooter_declared",
+            "required": false,
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
@@ -242,7 +255,7 @@
           }
         }
       },
-      "digest": "9c4c48d211412291f854d5922b59074730281a2f728049dbb58da885df7943de"
+      "digest": "843989fb462f144c5cb3c934c73c872e6150561fe6f59a0b7c4b2333ba6d3eb2"
     }
   },
   "missionFamily": "targetScoring",

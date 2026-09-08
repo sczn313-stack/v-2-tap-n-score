@@ -157,6 +157,12 @@ def validate_contract(package: Any, *, now: Optional[datetime] = None) -> Dict[s
     mission = components["mission"]["definition"]
     if mission.get("missionFamily") != mission_family or mission.get("resultPackageType") != expected_result or _text(mission.get("resultPackageVersion")) != contract["resultPackageVersion"]:
         raise TargetExecutionContractError("mission_component_binding_mismatch")
+    if mission_family == "targetScoring":
+        from target_scoring_data_contract import TargetScoringDataContractError, validate_target_scoring_data
+        try:
+            validate_target_scoring_data(contract)
+        except TargetScoringDataContractError as exc:
+            raise TargetExecutionContractError(str(exc), "configuration_error") from exc
     for owner in ("executor", "secAdapter", "preservationValidator"):
         reference = contract.get(owner)
         if not isinstance(reference, Mapping) or not _text(reference.get("id")) or not _text(reference.get("version")):

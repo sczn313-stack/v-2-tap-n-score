@@ -42,10 +42,11 @@
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
         "regions": [],
         "ugoAuthority": "ATP_GUNFUN_22740_VITAL_DUDE_EVIDENCE_V1"
       },
-      "digest": "3fb43f162489aee9415e4c742dd61bf1dc0d11086305b3582c15dd891935c3dd"
+      "digest": "9315a67a0fe23d648cf6b97a4ee7ceed21cd9ff18961df5bf904ab2aa090550a"
     },
     "registration": {
       "id": "gunfun_22740_vital_dude-target-scoring-registration",
@@ -69,12 +70,16 @@
         "model": "not_applicable",
         "regionRules": {},
         "reason": "printer_defines_no_score",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
         "publisherRuleAuthority": {
           "source": "GunFun product 22740",
           "rule": "publisher defines anatomical artwork and no score"
         }
       },
-      "digest": "cf4ec6b290f9b4dd7e72dda0f1d408c5f12641716a7e2864ba840ed89fcb167f"
+      "digest": "05a91654c26e3f41a0d4f0eec50e7dfa525fcc3884106537c8ee0ca1e8c740a2"
     },
     "mission": {
       "id": "gunfun_22740_vital_dude-target-scoring-mission",
@@ -85,7 +90,14 @@
         "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
@@ -104,7 +116,7 @@
           }
         }
       },
-      "digest": "eae46514d683f339740ecf449fd38547b2e9c4dd088dfd90b0c173de69ec1ae5"
+      "digest": "c614f2f41a16cf5de7722e5a9300c26ba21733e4ac93a9b8e253c51e70459f2e"
     }
   },
   "missionFamily": "targetScoring",

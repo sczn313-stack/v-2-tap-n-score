@@ -56,11 +56,65 @@ def asset(path):
     return hashlib.sha256(absolute.read_bytes()).hexdigest()
 
 
+def layout_model(regions, scoring):
+    model = scoring["model"]
+    if model == "not_applicable":
+        return "unstructured_evidence"
+    if model == "multiple_bulls":
+        return "repeated_regions"
+    if model == "ordered_objects":
+        return "discrete_objects"
+    centers = {(region.get("cx"), region.get("cy")) for region in regions if region.get("shape") in {"circle", "ellipse"}}
+    if regions and len(centers) == 1 and len(centers) == len({(region.get("cx"), region.get("cy")) for region in regions}):
+        return "concentric_regions"
+    return "regions"
+
+
+def aim_interaction(regions, scoring, layout):
+    if scoring["model"] == "not_applicable":
+        aim = {"mode": "not_required", "points": []}
+    elif layout == "concentric_regions":
+        center = regions[0]
+        aim = {"mode": "fixed", "points": [{"aimId": "governed_center", "xNorm": center["cx"], "yNorm": center["cy"]}]}
+    elif layout in {"repeated_regions", "discrete_objects"}:
+        points = []
+        for region in regions:
+            if region["shape"] not in {"circle", "ellipse"}:
+                continue
+            points.append({"aimId": f"aim_{region['regionId']}", "regionId": region["regionId"], "xNorm": region["cx"], "yNorm": region["cy"]})
+        aim = {"mode": "region_centers", "points": points}
+    else:
+        aim = {"mode": "shooter_declared", "required": False, "points": []}
+    return {"aim": aim, "observationInput": "normalized_taps", "resultAction": "show_result"}
+
+
+def aggregation(scoring):
+    model = scoring["model"]
+    if model in {"numeric_regions", "penalty_regions"}:
+        return {"mode": "sum", "groupBy": "observation.groupId"}
+    if model == "named_regions":
+        return {"mode": "classification_counts"}
+    if model == "multiple_bulls":
+        return {"mode": "per_object_counts"}
+    if model == "ordered_objects":
+        return {
+            "mode": "ordered_progression",
+            "sequence": scoring.pop("sequence"),
+            "mismatchBehavior": "stop_progress",
+            "completionBehavior": "all_in_order",
+        }
+    return {"mode": "none"}
+
+
 def contract(spec):
     target = spec["target"]
     profile_id = target["id"]
     scoring = dict(spec["scoring"])
+    scoring["schemaVersion"] = "sczn3-target-scoring-data-v1"
+    scoring["aggregation"] = aggregation(scoring)
     scoring["publisherRuleAuthority"] = spec["ruleAuthority"]
+    layout = layout_model(spec["regions"], scoring)
+    interaction = aim_interaction(spec["regions"], scoring, layout)
     capability_states = {
         "evidence": {"status": "available"},
         "measurement": {"status": "available" if spec["regions"] else "not_applicable"},
@@ -69,10 +123,10 @@ def contract(spec):
         "publisherMission": {"status": "available" if scoring["model"] == "ordered_objects" else "not_applicable"},
     }
     components = {
-        "geometry": component(f"{profile_id}-target-scoring-geometry", {"coordinateSystem": "normalized_source_image_top_left", "regions": spec["regions"], "ugoAuthority": spec["ugoAuthority"]}),
+        "geometry": component(f"{profile_id}-target-scoring-geometry", {"coordinateSystem": "normalized_source_image_top_left", "layoutModel": layout, "regions": spec["regions"], "ugoAuthority": spec["ugoAuthority"]}),
         "registration": component(f"{profile_id}-target-scoring-registration", {"role": "scorable_canonical_asset", "assetPath": spec["imagePath"], "assetSha256": asset(spec["imagePath"]), "assetAlt": f"{target['product']['name']}, SKU {target['product']['sku']}", "coordinateConvention": "normalized_source_image_top_left"}),
         "scoring": component(f"{profile_id}-target-scoring-data", scoring),
-        "mission": component(f"{profile_id}-target-scoring-mission", {"missionFamily": "targetScoring", "resultPackageType": "targetScoreResult", "resultPackageVersion": "1", "maxObservations": 500, "allowShooterDeclaredAim": True, "capabilityStates": capability_states}),
+        "mission": component(f"{profile_id}-target-scoring-mission", {"missionFamily": "targetScoring", "resultPackageType": "targetScoreResult", "resultPackageVersion": "1", "maxObservations": 500, "interaction": interaction, "capabilityStates": capability_states}),
     }
     return {
         "schemaVersion": "sczn3-target-execution-contract-v1",
