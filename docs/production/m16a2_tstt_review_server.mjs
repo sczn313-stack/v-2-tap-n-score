@@ -69,6 +69,17 @@ const publicFiles = new Map([
   ["/target_execution_runtime.js", "target_execution_runtime.js"],
   ["/target-experience.html", "target-experience.html"],
   ["/target-experience.css", "target-experience.css"],
+  ["/founder-nine-target-review.html", "founder-nine-target-review.html"],
+  ["/founder-nine-target-review.css", "founder-nine-target-review.css"],
+  ["/review-assets/target-01.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/13120.jpg"],
+  ["/review-assets/target-02.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22200.jpg"],
+  ["/review-assets/target-03.jpeg", "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg"],
+  ["/review-assets/target-04.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22470.jpg"],
+  ["/review-assets/target-05.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22040.jpg"],
+  ["/review-assets/target-06.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/12070.jpg"],
+  ["/review-assets/target-07.webp", "authority-evidence/catalog-targets/BAKER_BE_R9B_PUBLISHER_IMAGE_V1.webp"],
+  ["/review-assets/target-08.jpg", "authority-evidence/catalog-targets/BAKER_GF_BB_C_PUBLISHER_IMAGE_V1.jpg"],
+  ["/review-assets/target-09.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22740.jpg"],
   ["/universal_practice_sec.js", "universal_practice_sec.js"],
   ["/vendor/html2canvas-1.4.1.min.js", "vendor/html2canvas-1.4.1.min.js"],
   ["/assets/crosshair-cross-emblem.png", "assets/crosshair-cross-emblem.png"],
@@ -118,6 +129,7 @@ const types = Object.freeze({
   ".js": "text/javascript; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml",
+  ".webp": "image/webp",
   ".wav": "audio/wav"
 });
 
