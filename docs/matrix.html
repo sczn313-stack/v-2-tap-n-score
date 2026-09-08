@@ -2239,24 +2239,23 @@ async function goToTarget(options = {}) {
   authorityStatus("Confirming target and equipment…", "pending");
   try {
     if (!pending) {
-      if (useStandardSetup) {
-        authorityStatus("The Standard Setup confirmation expired. Reload the page to review it again.", "error");
-        return;
-      }
       const preparation = await sessionAuthorityRequest("prepare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetId, equipmentCandidates: [candidate] })
+        body: JSON.stringify(useStandardSetup
+          ? { targetId }
+          : { targetId, equipmentCandidates: [candidate] })
       });
-      const assessment = equipmentAssessmentFor(preparation, candidate);
+      const preparedCandidate = useStandardSetup ? preparation.standardSetup : candidate;
+      const assessment = equipmentAssessmentFor(preparation, preparedCandidate);
       if (!preparation.targetAdmission || preparation.targetAdmission.status !== "admitted" || !assessment) {
         authorityStatus("This Smart Target could not be started. Your selections are preserved. Try again.", "error");
         return;
       }
       pending = {
         targetId,
-        equipmentKey: candidateKey,
-        candidate,
+        equipmentKey: equipmentKey(preparedCandidate),
+        candidate: preparedCandidate,
         equipmentAssessment: assessment,
         preparationToken: preparation.preparationToken,
         idempotencyKey: idempotencyKey(),
@@ -2282,16 +2281,23 @@ async function goToTarget(options = {}) {
     try {
       if (window.SCZN3Ops) window.SCZN3Ops.recordSessionStarted();
     } catch (error) {}
-    const targetProfileId = session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id;
+    const targetProfileId = String(
+      backendSession && backendSession.target && backendSession.target.targetId
+      || session && session.matrixSnapshot && session.matrixSnapshot.target_profile_id
+      || ""
+    ).trim();
+    const sessionSnapshot = session && session.matrixSnapshot || {};
+    const snapshotMatchesAuthoritativeTarget = String(sessionSnapshot.target_profile_id || "").toLowerCase() === targetProfileId.toLowerCase();
     const targetQuery = targetProfileId
-      ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${session.matrixSnapshot.qr_id ? `&qr_id=${encodeURIComponent(session.matrixSnapshot.qr_id)}` : ""}${session.matrixSnapshot.vendor ? `&v=${encodeURIComponent(String(session.matrixSnapshot.vendor).toLowerCase())}` : ""}${session.matrixSnapshot.sku ? `&sku=${encodeURIComponent(session.matrixSnapshot.sku)}` : ""}`
+      ? `&target_profile_id=${encodeURIComponent(targetProfileId)}${snapshotMatchesAuthoritativeTarget && sessionSnapshot.qr_id ? `&qr_id=${encodeURIComponent(sessionSnapshot.qr_id)}` : ""}${snapshotMatchesAuthoritativeTarget && sessionSnapshot.vendor ? `&v=${encodeURIComponent(String(sessionSnapshot.vendor).toLowerCase())}` : ""}${snapshotMatchesAuthoritativeTarget && sessionSnapshot.sku ? `&sku=${encodeURIComponent(sessionSnapshot.sku)}` : ""}`
       : "";
     const founderReviewQuery = MATRIX_QUERY.get("founder_review") === "1" ? "&founder_review=1" : "";
+    const scaleBatchReviewQuery = MATRIX_QUERY.get("founderReview") === "scale-batch-1" ? "&founderReview=scale-batch-1" : "";
     const tsttChapterQuery = TSTT_SHOOTER_HANDOFF ? "&tstt_chapter=4" : "";
     const photoSource = ["camera", "existing"].includes(MATRIX_QUERY.get("photo_source"))
       ? `&photo_source=${encodeURIComponent(MATRIX_QUERY.get("photo_source"))}`
       : "";
-    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}${tsttChapterQuery}${photoSource}`;
+    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}${scaleBatchReviewQuery}${tsttChapterQuery}${photoSource}`;
   } catch (error) {
     const reason = error && error.packageData && error.packageData.reason;
     if (reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {
@@ -2442,7 +2448,9 @@ function targetAttributionFromContext(data = {}) {
   const sessionAuthority = activeSession.targetAuthority || {};
   const activeMatrix = SCZN3M4.getActiveMatrix() || {};
   const pendingTarget = readPendingTargetProfile();
-  const qrId = MATRIX_QUERY.get("qr_id") || MATRIX_QUERY.get("qrId") || pendingTarget.qr_id || pendingTarget.qrId || data.qr_id || data.qrId || "";
+  const qrId = MATRIX_QUERY.get("qr_id") || MATRIX_QUERY.get("qrId") || (
+    queryTargetProfileId ? "" : pendingTarget.qr_id || pendingTarget.qrId || data.qr_id || data.qrId || ""
+  );
   const targetProfileId = String(
     queryTargetProfileId
     || activeSession.target_profile_id
@@ -2544,13 +2552,13 @@ function targetAttributionFromContext(data = {}) {
   }
   if (
     scannedIdentity
-    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(activeSession))
-    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(sessionMatrix))
-    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(pendingTarget))
-    || (window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(data))
+    || (!queryTargetProfileId && window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(activeSession))
+    || (!queryTargetProfileId && window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(sessionMatrix))
+    || (!queryTargetProfileId && window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(pendingTarget))
+    || (!queryTargetProfileId && window.SCZN3SmartTargetIdentity && SCZN3SmartTargetIdentity.isM4(data))
     ||
     targetProfileId === "m4_25m_zero"
-    || (targetName.includes("m4") && targetName.includes("25"))
+    || (!queryTargetProfileId && targetName.includes("m4") && targetName.includes("25"))
   ) {
     return {
       ...(window.SCZN3SmartTargetIdentity ? SCZN3SmartTargetIdentity.BAKER_M4_IDENTITY : {}),
@@ -2588,6 +2596,20 @@ function targetAttributionFromContext(data = {}) {
     || targetName.includes("dot torture")
   ) {
     return { ...canonicalDotTortureAttribution(), ...(qrId ? { qr_id: qrId, qrId } : {}) };
+  }
+  if (queryTargetProfileId) {
+    return {
+      target_profile_id: queryTargetProfileId.toLowerCase(),
+      targetProfileId: queryTargetProfileId.toLowerCase(),
+      targetId: queryTargetProfileId.toLowerCase(),
+      targetName: MATRIX_QUERY.get("targetName") || MATRIX_QUERY.get("target") || "",
+      vendor: MATRIX_QUERY.get("v") || MATRIX_QUERY.get("vendor") || "",
+      sku: MATRIX_QUERY.get("sku") || "",
+      product: "",
+      qr_id: qrId,
+      qrId,
+      ...(qrId ? { qr_id: qrId, qrId } : {})
+    };
   }
   return qrId ? { qr_id: qrId, qrId } : {};
 }

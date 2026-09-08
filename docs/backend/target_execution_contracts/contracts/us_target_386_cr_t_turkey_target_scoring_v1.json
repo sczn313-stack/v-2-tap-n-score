@@ -1,0 +1,257 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-us_target_386_cr_t_turkey-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "US-TARGET-PRINTER-AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "us_target_386_cr_t_turkey",
+    "version": "1",
+    "atpId": "P-OS:us-target:386",
+    "authorityId": "US-TARGET-PRINTER-PRODUCT-386",
+    "publisher": {
+      "id": "us-target",
+      "name": "U.S. Target Inc.",
+      "url": "https://ustargetinc.com/"
+    },
+    "product": {
+      "id": "us-target-product-386",
+      "name": "CR-T Turkey",
+      "sku": "386",
+      "identifierType": "source_product_id",
+      "dimensions": {
+        "width": 10.5,
+        "height": 12,
+        "unit": "inch"
+      },
+      "productUrl": "https://ustargetinc.com/product/cr-t/"
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "us_target_386_cr_t_turkey-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "top_10",
+            "shape": "circle",
+            "cx": 0.748,
+            "cy": 0.189,
+            "radius": 0.03,
+            "priority": 80
+          },
+          {
+            "regionId": "bottom_10",
+            "shape": "circle",
+            "cx": 0.252,
+            "cy": 0.757,
+            "radius": 0.03,
+            "priority": 80
+          },
+          {
+            "regionId": "body_10",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.492,
+            "radius": 0.05,
+            "priority": 70
+          },
+          {
+            "regionId": "body_9",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.492,
+            "radius": 0.105,
+            "priority": 60
+          },
+          {
+            "regionId": "body_8",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.492,
+            "radius": 0.16,
+            "priority": 50
+          },
+          {
+            "regionId": "body_7",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.492,
+            "radius": 0.22,
+            "priority": 40
+          },
+          {
+            "regionId": "body_6",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.492,
+            "radius": 0.28,
+            "priority": 30
+          }
+        ],
+        "ugoAuthority": "publisher-representation-normalized-ring-data-v1"
+      },
+      "digest": "266b6e91e3c6da4b0ff12f6d09f0f9951ef052eb2260cca62eaff70e310566c0"
+    },
+    "registration": {
+      "id": "us_target_386_cr_t_turkey-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/us-target-386.png",
+        "assetSha256": "c8cc672fdb2f5766152a8b697967a1b8b4cb9b90c4b6c83d0a3c4e96f59b914c",
+        "assetAlt": "CR-T Turkey, SKU 386",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "6a05ed71bbfa68fd02bf447b7e5ea59697baf668890d778a3cef3eeb9eab379c"
+    },
+    "scoring": {
+      "id": "us_target_386_cr_t_turkey-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "top_10": {
+            "label": "10",
+            "value": 10
+          },
+          "bottom_10": {
+            "label": "10",
+            "value": 10
+          },
+          "body_10": {
+            "label": "10",
+            "value": 10
+          },
+          "body_9": {
+            "label": "9",
+            "value": 9
+          },
+          "body_8": {
+            "label": "8",
+            "value": 8
+          },
+          "body_7": {
+            "label": "7",
+            "value": 7
+          },
+          "body_6": {
+            "label": "6",
+            "value": 6
+          }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": 0
+        },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "sum",
+          "groupBy": "observation.groupId"
+        },
+        "publisherRuleAuthority": {
+          "source": "P-OS us-target:386 and U.S. Target product representation",
+          "rule": "printed 6/7/8/9/10 regions and two printed 10-point bullseyes"
+        }
+      },
+      "digest": "8327474d5cedcaef0c47f6753c80361501370de791d093d42d6166f36205cb46"
+    },
+    "mission": {
+      "id": "us_target_386_cr_t_turkey-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "shooter_declared",
+            "required": false,
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "68e20970172e90122587698eec297dabf6287e2ccf4626fd4be3bad32460c39d"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

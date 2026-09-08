@@ -1,0 +1,295 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-national_target_idpa_p-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "NATIONAL-TARGET-PRINTER-AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "national_target_idpa_p",
+    "version": "1",
+    "atpId": "P-OS:national-target:IDPA(P)",
+    "authorityId": "NATIONAL-TARGET-PRINTER-PRODUCT-IDPA-P",
+    "publisher": {
+      "id": "national-target",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/"
+    },
+    "product": {
+      "id": "national-target-IDPA-P",
+      "name": "IDPA(P) Practice Target",
+      "sku": "IDPA(P)",
+      "dimensions": {
+        "width": 22.5,
+        "height": 34.5,
+        "unit": "inch"
+      },
+      "productUrl": "https://nationaltarget.com/shop/idpap/"
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "national_target_idpa_p-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "down_zero_head",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radius": 0.105,
+            "priority": 50
+          },
+          {
+            "regionId": "down_zero_torso",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.465,
+            "radius": 0.18,
+            "priority": 50
+          },
+          {
+            "regionId": "down_one_head",
+            "shape": "rectangle",
+            "xMin": 0.355,
+            "yMin": 0.065,
+            "xMax": 0.645,
+            "yMax": 0.3,
+            "priority": 30
+          },
+          {
+            "regionId": "down_one_torso",
+            "shape": "polygon",
+            "points": [
+              [
+                0.355,
+                0.3
+              ],
+              [
+                0.26,
+                0.385
+              ],
+              [
+                0.26,
+                0.65
+              ],
+              [
+                0.37,
+                0.79
+              ],
+              [
+                0.63,
+                0.79
+              ],
+              [
+                0.74,
+                0.65
+              ],
+              [
+                0.74,
+                0.385
+              ],
+              [
+                0.645,
+                0.3
+              ]
+            ],
+            "priority": 30
+          },
+          {
+            "regionId": "down_three",
+            "shape": "polygon",
+            "points": [
+              [
+                0.185,
+                0.3
+              ],
+              [
+                0.815,
+                0.3
+              ],
+              [
+                0.9,
+                0.38
+              ],
+              [
+                0.9,
+                0.805
+              ],
+              [
+                0.78,
+                0.945
+              ],
+              [
+                0.22,
+                0.945
+              ],
+              [
+                0.1,
+                0.805
+              ],
+              [
+                0.1,
+                0.38
+              ]
+            ],
+            "priority": 10
+          }
+        ],
+        "ugoAuthority": "publisher-representation-normalized-penalty-region-data-v1"
+      },
+      "digest": "7b03b4027948e63b6b4b04c9b09906416438249c1d43196980586c9b758d168e"
+    },
+    "registration": {
+      "id": "national_target_idpa_p-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/national-idpa-p.jpg",
+        "assetSha256": "fb06f5d3c22f046931d70094a3b2bbfad4a1f1b0edc473846f3d48a798562792",
+        "assetAlt": "IDPA(P) Practice Target, SKU IDPA(P)",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "a4f6bc5fe235526e69350a1d4ad1dcfd21e2e94ab2347ca5f19a45b7690bc76a"
+    },
+    "scoring": {
+      "id": "national_target_idpa_p-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "penalty_regions",
+        "regionRules": {
+          "down_zero_head": {
+            "label": "-0",
+            "value": 0
+          },
+          "down_zero_torso": {
+            "label": "-0",
+            "value": 0
+          },
+          "down_one_head": {
+            "label": "-1",
+            "value": -1
+          },
+          "down_one_torso": {
+            "label": "-1",
+            "value": -1
+          },
+          "down_three": {
+            "label": "-3",
+            "value": -3
+          }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": -5
+        },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "sum",
+          "groupBy": "observation.groupId"
+        },
+        "publisherRuleAuthority": {
+          "source": "P-OS national-target:IDPA(P) and publisher representation",
+          "rule": "printed -0/-1/-3 regions; outside -5 from existing governed IDPA miss rule"
+        }
+      },
+      "digest": "5be610b7c6cfa4b67f02b53be42e8501e846b33c34c516a97fe5a5445add1ce1"
+    },
+    "mission": {
+      "id": "national_target_idpa_p-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "shooter_declared",
+            "required": false,
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "27ecbca86a7dbffea8326cb0a8e85461ad7d9227cc08cc61e88706c560041792"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,314 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-thompson_r_1602_basic_training_bullseye-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "THOMPSON-PRINTER-AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "thompson_r_1602_basic_training_bullseye",
+    "version": "1",
+    "atpId": "P-OS:thompson-1602",
+    "authorityId": "THOMPSON-PRINTER-PRODUCT-R-1602",
+    "publisher": {
+      "id": "thompson-target",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/"
+    },
+    "product": {
+      "id": "thompson-product-R-1602",
+      "name": "Basic Training Bullseye",
+      "sku": "R-1602",
+      "dimensions": {
+        "width": 19,
+        "height": 25,
+        "unit": "inch"
+      },
+      "productUrl": "https://www.thompsontarget.com/basic-training-bullseye-economy-paper-shooting-targets-19x25/"
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "thompson_r_1602_basic_training_bullseye-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "repeated_regions",
+        "regions": [
+          {
+            "regionId": "bull_1",
+            "shape": "circle",
+            "cx": 0.3,
+            "cy": 0.275,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_2",
+            "shape": "circle",
+            "cx": 0.7,
+            "cy": 0.275,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_3",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.405,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_4",
+            "shape": "circle",
+            "cx": 0.3,
+            "cy": 0.535,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_5",
+            "shape": "circle",
+            "cx": 0.7,
+            "cy": 0.535,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_6",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.665,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_7",
+            "shape": "circle",
+            "cx": 0.3,
+            "cy": 0.795,
+            "radius": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_8",
+            "shape": "circle",
+            "cx": 0.7,
+            "cy": 0.795,
+            "radius": 0.095,
+            "priority": 10
+          }
+        ],
+        "ugoAuthority": "publisher-representation-normalized-repeated-object-data-v1"
+      },
+      "digest": "c9e7869e5b1055a5786f53bdb459f7f9008cde83147b8cf311d1f7079f7c691b"
+    },
+    "registration": {
+      "id": "thompson_r_1602_basic_training_bullseye-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/thompson-r-1602.webp",
+        "assetSha256": "9d7a99bebc1bbeadf1006313f3226bfa3876b798bfbc0d4854f95b95a70e4ec5",
+        "assetAlt": "Basic Training Bullseye, SKU R-1602",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "d9dc0036e336c8cc2418c6608054125260606d1f5bef1b0d40976278204f387c"
+    },
+    "scoring": {
+      "id": "thompson_r_1602_basic_training_bullseye-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "bull_1": {
+            "label": "Bull 1",
+            "objectId": "bull_1"
+          },
+          "bull_2": {
+            "label": "Bull 2",
+            "objectId": "bull_2"
+          },
+          "bull_3": {
+            "label": "Bull 3",
+            "objectId": "bull_3"
+          },
+          "bull_4": {
+            "label": "Bull 4",
+            "objectId": "bull_4"
+          },
+          "bull_5": {
+            "label": "Bull 5",
+            "objectId": "bull_5"
+          },
+          "bull_6": {
+            "label": "Bull 6",
+            "objectId": "bull_6"
+          },
+          "bull_7": {
+            "label": "Bull 7",
+            "objectId": "bull_7"
+          },
+          "bull_8": {
+            "label": "Bull 8",
+            "objectId": "bull_8"
+          }
+        },
+        "outsideRule": {
+          "label": "Outside bulls"
+        },
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "P-OS thompson-1602",
+          "rule": "publisher identifies eight 5-inch bullseyes; no numeric point schedule inferred"
+        }
+      },
+      "digest": "f95df11ce96d9158ae32e39feb4a53cc5727d17ea086d5af95b974242480acd3"
+    },
+    "mission": {
+      "id": "thompson_r_1602_basic_training_bullseye-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_bull_1",
+                "regionId": "bull_1",
+                "xNorm": 0.3,
+                "yNorm": 0.275
+              },
+              {
+                "aimId": "aim_bull_2",
+                "regionId": "bull_2",
+                "xNorm": 0.7,
+                "yNorm": 0.275
+              },
+              {
+                "aimId": "aim_bull_3",
+                "regionId": "bull_3",
+                "xNorm": 0.5,
+                "yNorm": 0.405
+              },
+              {
+                "aimId": "aim_bull_4",
+                "regionId": "bull_4",
+                "xNorm": 0.3,
+                "yNorm": 0.535
+              },
+              {
+                "aimId": "aim_bull_5",
+                "regionId": "bull_5",
+                "xNorm": 0.7,
+                "yNorm": 0.535
+              },
+              {
+                "aimId": "aim_bull_6",
+                "regionId": "bull_6",
+                "xNorm": 0.5,
+                "yNorm": 0.665
+              },
+              {
+                "aimId": "aim_bull_7",
+                "regionId": "bull_7",
+                "xNorm": 0.3,
+                "yNorm": 0.795
+              },
+              {
+                "aimId": "aim_bull_8",
+                "regionId": "bull_8",
+                "xNorm": 0.7,
+                "yNorm": 0.795
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "80970ca3023e1a4f4331159d5053a6096701bec9da11611dad25e8ff52225796"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

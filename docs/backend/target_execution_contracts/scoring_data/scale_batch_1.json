@@ -1,0 +1,185 @@
+[
+  {
+    "target": {
+      "id": "us_target_386_cr_t_turkey",
+      "version": "1",
+      "atpId": "P-OS:us-target:386",
+      "authorityId": "US-TARGET-PRINTER-PRODUCT-386",
+      "publisher": {"id": "us-target", "name": "U.S. Target Inc.", "url": "https://ustargetinc.com/"},
+      "product": {"id": "us-target-product-386", "name": "CR-T Turkey", "sku": "386", "identifierType": "source_product_id", "dimensions": {"width": 10.5, "height": 12, "unit": "inch"}, "productUrl": "https://ustargetinc.com/product/cr-t/"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/us-target-386.png",
+    "ugoAuthority": "publisher-representation-normalized-ring-data-v1",
+    "approvalAuthority": "US-TARGET-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS us-target:386 and U.S. Target product representation", "rule": "printed 6/7/8/9/10 regions and two printed 10-point bullseyes"},
+    "regions": [
+      {"regionId":"top_10","shape":"circle","cx":0.748,"cy":0.189,"radius":0.030,"priority":80},
+      {"regionId":"bottom_10","shape":"circle","cx":0.252,"cy":0.757,"radius":0.030,"priority":80},
+      {"regionId":"body_10","shape":"circle","cx":0.500,"cy":0.492,"radius":0.050,"priority":70},
+      {"regionId":"body_9","shape":"circle","cx":0.500,"cy":0.492,"radius":0.105,"priority":60},
+      {"regionId":"body_8","shape":"circle","cx":0.500,"cy":0.492,"radius":0.160,"priority":50},
+      {"regionId":"body_7","shape":"circle","cx":0.500,"cy":0.492,"radius":0.220,"priority":40},
+      {"regionId":"body_6","shape":"circle","cx":0.500,"cy":0.492,"radius":0.280,"priority":30}
+    ],
+    "scoring": {"status":"complete","model":"numeric_regions","regionRules":{"top_10":{"label":"10","value":10},"bottom_10":{"label":"10","value":10},"body_10":{"label":"10","value":10},"body_9":{"label":"9","value":9},"body_8":{"label":"8","value":8},"body_7":{"label":"7","value":7},"body_6":{"label":"6","value":6}},"outsideRule":{"label":"Miss","value":0}}
+  },
+  {
+    "target": {
+      "id": "american_target_58_q100_uspa_ipsc",
+      "version": "1",
+      "atpId": "P-OS:american-target:law-enforcement:58-Q100",
+      "authorityId": "AMERICAN-TARGET-PRINTER-PRODUCT-law-enforcement:58-Q100",
+      "publisher": {"id": "american-target", "name": "American Target Company", "url": "https://www.americantargetcompany.com/"},
+      "product": {"id": "american-target-law-enforcement-58-Q100", "name": "USPA/IPSC", "sku": "law-enforcement:58-Q100", "identifierType": "source_product_id", "dimensions": {"width": 20, "height": 32, "unit": "inch"}, "productUrl": "https://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/american-target-58-Q100.jpg",
+    "ugoAuthority": "publisher-representation-normalized-named-region-data-v1",
+    "approvalAuthority": "AMERICAN-TARGET-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS american-target:law-enforcement:58-Q100 and publisher representation", "rule": "printed A/B/C/D region names; no numeric value inferred"},
+    "regions": [
+      {"regionId":"a_head","shape":"rectangle","xMin":0.405,"yMin":0.075,"xMax":0.595,"yMax":0.160,"priority":50},
+      {"regionId":"b_head","shape":"rectangle","xMin":0.340,"yMin":0.040,"xMax":0.660,"yMax":0.285,"priority":20},
+      {"regionId":"a_body","shape":"polygon","points":[[0.330,0.325],[0.670,0.325],[0.670,0.640],[0.620,0.745],[0.380,0.745],[0.330,0.640]],"priority":50},
+      {"regionId":"c_body","shape":"polygon","points":[[0.205,0.290],[0.795,0.290],[0.895,0.375],[0.895,0.775],[0.760,0.950],[0.240,0.950],[0.105,0.775],[0.105,0.375]],"priority":20},
+      {"regionId":"d_body","shape":"polygon","points":[[0.085,0.280],[0.915,0.280],[0.915,0.790],[0.770,0.965],[0.230,0.965],[0.085,0.790]],"priority":10}
+    ],
+    "scoring": {"status":"complete","model":"named_regions","regionRules":{"a_head":{"label":"A"},"b_head":{"label":"B"},"a_body":{"label":"A"},"c_body":{"label":"C"},"d_body":{"label":"D"}},"outsideRule":{"label":"Miss"}}
+  },
+  {
+    "target": {
+      "id": "national_target_idpa_p",
+      "version": "1",
+      "atpId": "P-OS:national-target:IDPA(P)",
+      "authorityId": "NATIONAL-TARGET-PRINTER-PRODUCT-IDPA-P",
+      "publisher": {"id": "national-target", "name": "The National Target Company", "url": "https://nationaltarget.com/"},
+      "product": {"id": "national-target-IDPA-P", "name": "IDPA(P) Practice Target", "sku": "IDPA(P)", "dimensions": {"width": 22.5, "height": 34.5, "unit": "inch"}, "productUrl": "https://nationaltarget.com/shop/idpap/"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/national-idpa-p.jpg",
+    "ugoAuthority": "publisher-representation-normalized-penalty-region-data-v1",
+    "approvalAuthority": "NATIONAL-TARGET-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS national-target:IDPA(P) and publisher representation", "rule": "printed -0/-1/-3 regions; outside -5 from existing governed IDPA miss rule"},
+    "regions": [
+      {"regionId":"down_zero_head","shape":"circle","cx":0.500,"cy":0.180,"radius":0.105,"priority":50},
+      {"regionId":"down_zero_torso","shape":"circle","cx":0.500,"cy":0.465,"radius":0.180,"priority":50},
+      {"regionId":"down_one_head","shape":"rectangle","xMin":0.355,"yMin":0.065,"xMax":0.645,"yMax":0.300,"priority":30},
+      {"regionId":"down_one_torso","shape":"polygon","points":[[0.355,0.300],[0.260,0.385],[0.260,0.650],[0.370,0.790],[0.630,0.790],[0.740,0.650],[0.740,0.385],[0.645,0.300]],"priority":30},
+      {"regionId":"down_three","shape":"polygon","points":[[0.185,0.300],[0.815,0.300],[0.900,0.380],[0.900,0.805],[0.780,0.945],[0.220,0.945],[0.100,0.805],[0.100,0.380]],"priority":10}
+    ],
+    "scoring": {"status":"complete","model":"penalty_regions","regionRules":{"down_zero_head":{"label":"-0","value":0},"down_zero_torso":{"label":"-0","value":0},"down_one_head":{"label":"-1","value":-1},"down_one_torso":{"label":"-1","value":-1},"down_three":{"label":"-3","value":-3}},"outsideRule":{"label":"Miss","value":-5}}
+  },
+  {
+    "target": {
+      "id": "splatterburst_74_12in_multi_bullseye",
+      "version": "1",
+      "atpId": "P-OS:splatterburst:SOURCE-74",
+      "authorityId": "SPLATTERBURST-PRINTER-PRODUCT-74",
+      "publisher": {"id": "splatterburst", "name": "Splatterburst Targets", "url": "https://splatterbursttargets.com/"},
+      "product": {"id": "splatterburst-product-74", "name": "12-inch Multi Bullseye Splatter Target", "sku": "SOURCE-74", "identifierType": "source_product_id", "productUrl": "https://splatterbursttargets.com/item/12-multi-bullseye-splatter-target/"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/splatterburst-74.jpg",
+    "ugoAuthority": "publisher-representation-normalized-repeated-object-data-v1",
+    "approvalAuthority": "SPLATTERBURST-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS splatterburst:SOURCE-74", "rule": "publisher identifies five different bullseyes; no aggregate point schedule inferred"},
+    "regions": [
+      {"regionId":"bull_center","shape":"circle","cx":0.500,"cy":0.500,"radius":0.155,"priority":10},
+      {"regionId":"bull_top","shape":"circle","cx":0.500,"cy":0.180,"radius":0.065,"priority":10},
+      {"regionId":"bull_right","shape":"circle","cx":0.820,"cy":0.500,"radius":0.065,"priority":10},
+      {"regionId":"bull_bottom","shape":"circle","cx":0.500,"cy":0.820,"radius":0.065,"priority":10},
+      {"regionId":"bull_left","shape":"circle","cx":0.180,"cy":0.500,"radius":0.065,"priority":10}
+    ],
+    "scoring": {"status":"complete","model":"multiple_bulls","regionRules":{"bull_center":{"label":"Center bull","objectId":"bull_center"},"bull_top":{"label":"Top bull","objectId":"bull_top"},"bull_right":{"label":"Right bull","objectId":"bull_right"},"bull_bottom":{"label":"Bottom bull","objectId":"bull_bottom"},"bull_left":{"label":"Left bull","objectId":"bull_left"}},"outsideRule":{"label":"Outside bulls"}}
+  },
+  {
+    "target": {
+      "id": "thompson_r_1602_basic_training_bullseye",
+      "version": "1",
+      "atpId": "P-OS:thompson-1602",
+      "authorityId": "THOMPSON-PRINTER-PRODUCT-R-1602",
+      "publisher": {"id": "thompson-target", "name": "Thompson Target Inc.", "url": "https://www.thompsontarget.com/"},
+      "product": {"id": "thompson-product-R-1602", "name": "Basic Training Bullseye", "sku": "R-1602", "dimensions": {"width": 19, "height": 25, "unit": "inch"}, "productUrl": "https://www.thompsontarget.com/basic-training-bullseye-economy-paper-shooting-targets-19x25/"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/thompson-r-1602.webp",
+    "ugoAuthority": "publisher-representation-normalized-repeated-object-data-v1",
+    "approvalAuthority": "THOMPSON-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS thompson-1602", "rule": "publisher identifies eight 5-inch bullseyes; no numeric point schedule inferred"},
+    "regions": [
+      {"regionId":"bull_1","shape":"circle","cx":0.300,"cy":0.275,"radius":0.095,"priority":10},
+      {"regionId":"bull_2","shape":"circle","cx":0.700,"cy":0.275,"radius":0.095,"priority":10},
+      {"regionId":"bull_3","shape":"circle","cx":0.500,"cy":0.405,"radius":0.095,"priority":10},
+      {"regionId":"bull_4","shape":"circle","cx":0.300,"cy":0.535,"radius":0.095,"priority":10},
+      {"regionId":"bull_5","shape":"circle","cx":0.700,"cy":0.535,"radius":0.095,"priority":10},
+      {"regionId":"bull_6","shape":"circle","cx":0.500,"cy":0.665,"radius":0.095,"priority":10},
+      {"regionId":"bull_7","shape":"circle","cx":0.300,"cy":0.795,"radius":0.095,"priority":10},
+      {"regionId":"bull_8","shape":"circle","cx":0.700,"cy":0.795,"radius":0.095,"priority":10}
+    ],
+    "scoring": {"status":"complete","model":"multiple_bulls","regionRules":{"bull_1":{"label":"Bull 1","objectId":"bull_1"},"bull_2":{"label":"Bull 2","objectId":"bull_2"},"bull_3":{"label":"Bull 3","objectId":"bull_3"},"bull_4":{"label":"Bull 4","objectId":"bull_4"},"bull_5":{"label":"Bull 5","objectId":"bull_5"},"bull_6":{"label":"Bull 6","objectId":"bull_6"},"bull_7":{"label":"Bull 7","objectId":"bull_7"},"bull_8":{"label":"Bull 8","objectId":"bull_8"}},"outsideRule":{"label":"Outside bulls"}}
+  },
+  {
+    "target": {
+      "id": "birchwood_casey_bc_3dtgtprt_pool_rack",
+      "version": "1",
+      "atpId": "P-OS:birchwood-casey:BC-3DTGTPRT",
+      "authorityId": "BIRCHWOOD-CASEY-PRINTER-PRODUCT-BC-3DTGTPRT",
+      "publisher": {"id": "birchwood-casey", "name": "Birchwood Casey", "url": "https://www.birchwoodcasey.com/"},
+      "product": {"id": "birchwood-casey-product-BC-3DTGTPRT", "name": "Pool Rack Target 3pk", "sku": "BC-3DTGTPRT", "productUrl": "https://www.birchwoodcasey.com/products/pool-rack-target-3pk.html"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/birchwood-bc-3dtgtprt.png",
+    "ugoAuthority": "publisher-representation-normalized-discrete-object-data-v1",
+    "approvalAuthority": "BIRCHWOOD-CASEY-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS birchwood-casey:BC-3DTGTPRT and publisher representation", "rule": "fifteen printed, individually identified pool-ball objects; no sequence or points inferred"},
+    "regions": [
+      {"regionId":"1","shape":"circle","cx":0.500,"cy":0.210,"radius":0.060,"priority":10},{"regionId":"14","shape":"circle","cx":0.405,"cy":0.315,"radius":0.060,"priority":10},{"regionId":"9","shape":"circle","cx":0.585,"cy":0.315,"radius":0.060,"priority":10},{"regionId":"2","shape":"circle","cx":0.315,"cy":0.425,"radius":0.060,"priority":10},{"regionId":"8","shape":"circle","cx":0.500,"cy":0.425,"radius":0.060,"priority":10},{"regionId":"5","shape":"circle","cx":0.680,"cy":0.425,"radius":0.060,"priority":10},{"regionId":"10","shape":"circle","cx":0.230,"cy":0.540,"radius":0.060,"priority":10},{"regionId":"15","shape":"circle","cx":0.405,"cy":0.540,"radius":0.060,"priority":10},{"regionId":"7","shape":"circle","cx":0.585,"cy":0.540,"radius":0.060,"priority":10},{"regionId":"12","shape":"circle","cx":0.760,"cy":0.540,"radius":0.060,"priority":10},{"regionId":"3","shape":"circle","cx":0.150,"cy":0.660,"radius":0.060,"priority":10},{"regionId":"11","shape":"circle","cx":0.325,"cy":0.660,"radius":0.060,"priority":10},{"regionId":"6","shape":"circle","cx":0.500,"cy":0.660,"radius":0.060,"priority":10},{"regionId":"4","shape":"circle","cx":0.675,"cy":0.660,"radius":0.060,"priority":10},{"regionId":"13","shape":"circle","cx":0.845,"cy":0.660,"radius":0.060,"priority":10}
+    ],
+    "scoring": {"status":"complete","model":"multiple_bulls","regionRules":{"1":{"label":"Object 1","objectId":"1"},"2":{"label":"Object 2","objectId":"2"},"3":{"label":"Object 3","objectId":"3"},"4":{"label":"Object 4","objectId":"4"},"5":{"label":"Object 5","objectId":"5"},"6":{"label":"Object 6","objectId":"6"},"7":{"label":"Object 7","objectId":"7"},"8":{"label":"Object 8","objectId":"8"},"9":{"label":"Object 9","objectId":"9"},"10":{"label":"Object 10","objectId":"10"},"11":{"label":"Object 11","objectId":"11"},"12":{"label":"Object 12","objectId":"12"},"13":{"label":"Object 13","objectId":"13"},"14":{"label":"Object 14","objectId":"14"},"15":{"label":"Object 15","objectId":"15"}},"outsideRule":{"label":"Outside printed objects"}}
+  },
+  {
+    "target": {
+      "id": "ez_aim_allen_15787_shootin_eye_test",
+      "version": "1",
+      "atpId": "P-OS:ez-aim-allen:15787",
+      "authorityId": "EZ-AIM-ALLEN-PRINTER-PRODUCT-15787",
+      "publisher": {"id": "ez-aim-allen", "name": "EZ Aim / Allen Company", "url": "https://byallen.com/"},
+      "product": {"id": "ez-aim-allen-product-15787", "name": "FUN Shootin' Eye Test", "sku": "15787", "dimensions": {"width": 24, "height": 19, "unit": "inch"}, "productUrl": "https://byallen.com/products/ez-aim-fun-shootin-eye-test-paper-shooting-target-24-x-19-4-pack-multi"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/ez-aim-15787.jpg",
+    "ugoAuthority": "publisher-representation-normalized-discrete-object-data-v1",
+    "approvalAuthority": "EZ-AIM-ALLEN-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS ez-aim-allen:15787 and publisher representation", "rule": "eleven printed, individually numbered objects; no sequence or point schedule inferred"},
+    "regions": [
+      {"regionId":"1","shape":"circle","cx":0.330,"cy":0.175,"radius":0.105,"priority":10},{"regionId":"2","shape":"circle","cx":0.680,"cy":0.175,"radius":0.095,"priority":10},{"regionId":"5","shape":"circle","cx":0.260,"cy":0.450,"radius":0.070,"priority":10},{"regionId":"4","shape":"circle","cx":0.485,"cy":0.455,"radius":0.080,"priority":10},{"regionId":"3","shape":"circle","cx":0.725,"cy":0.455,"radius":0.085,"priority":10},{"regionId":"6","shape":"circle","cx":0.290,"cy":0.705,"radius":0.060,"priority":10},{"regionId":"7","shape":"circle","cx":0.510,"cy":0.710,"radius":0.055,"priority":10},{"regionId":"8","shape":"circle","cx":0.725,"cy":0.710,"radius":0.055,"priority":10},{"regionId":"11","shape":"circle","cx":0.275,"cy":0.925,"radius":0.025,"priority":10},{"regionId":"10","shape":"circle","cx":0.505,"cy":0.925,"radius":0.030,"priority":10},{"regionId":"9","shape":"circle","cx":0.710,"cy":0.925,"radius":0.040,"priority":10}
+    ],
+    "scoring": {"status":"complete","model":"multiple_bulls","regionRules":{"1":{"label":"Object 1","objectId":"1"},"2":{"label":"Object 2","objectId":"2"},"3":{"label":"Object 3","objectId":"3"},"4":{"label":"Object 4","objectId":"4"},"5":{"label":"Object 5","objectId":"5"},"6":{"label":"Object 6","objectId":"6"},"7":{"label":"Object 7","objectId":"7"},"8":{"label":"Object 8","objectId":"8"},"9":{"label":"Object 9","objectId":"9"},"10":{"label":"Object 10","objectId":"10"},"11":{"label":"Object 11","objectId":"11"}},"outsideRule":{"label":"Outside printed objects"}}
+  },
+  {
+    "target": {
+      "id": "highwild_cj_host_m108_gong",
+      "version": "1",
+      "atpId": "P-OS:highwild:CJ-HOST-M108",
+      "authorityId": "HIGHWILD-PRINTER-PRODUCT-CJ-HOST-M108",
+      "publisher": {"id": "highwild", "name": "Highwild", "url": "https://www.highwildoutdoors.com/"},
+      "product": {"id": "highwild-product-CJ-HOST-M108", "name": "CJ-8-inch Gong Target", "sku": "CJ-HOST-M108", "productUrl": "https://www.highwildoutdoors.com/products/cj-8-gong-target"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/highwild-cj-host-m108.jpg",
+    "ugoAuthority": "publisher-product-representation-evidence-v1",
+    "approvalAuthority": "HIGHWILD-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS highwild:CJ-HOST-M108", "rule": "printer defines a shootable gong and no score"},
+    "regions": [],
+    "scoring": {"status":"not_applicable","model":"not_applicable","regionRules":{},"reason":"printer_defines_no_score"}
+  },
+  {
+    "target": {
+      "id": "champion_44924c_rimfire_animal_4pack",
+      "version": "1",
+      "atpId": "P-OS:champion:44924C",
+      "authorityId": "CHAMPION-PRINTER-PRODUCT-44924C",
+      "publisher": {"id": "champion", "name": "Champion Targets / Primos", "url": "https://www.primos.com/"},
+      "product": {"id": "champion-product-44924C", "name": "Impact Steel Rimfire Animal 4-Pack Target", "sku": "44924C", "productUrl": "https://www.primos.com/products/impact-steel-rimfire-animal-4-pack-target"}
+    },
+    "imagePath": "authority-evidence/platform/scale-batch-1-2026-09-08/representations/champion-44924c.png",
+    "ugoAuthority": "publisher-product-representation-evidence-v1",
+    "approvalAuthority": "CHAMPION-PRINTER-AUTHORITY",
+    "ruleAuthority": {"source": "P-OS champion:44924C", "rule": "printer defines four shootable rimfire animal targets and no score"},
+    "regions": [],
+    "scoring": {"status":"not_applicable","model":"not_applicable","regionRules":{},"reason":"printer_defines_no_score"}
+  }
+]

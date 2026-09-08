@@ -72,6 +72,10 @@ const publicFiles = new Map([
   ["/founder-nine-target-review.html", "founder-nine-target-review.html"],
   ["/founder-nine-target-review.css", "founder-nine-target-review.css"],
   ["/founder-nine-target-review-loader.js", "founder-nine-target-review-loader.js"],
+  ["/founder-scale-batch-1-review.html", "founder-scale-batch-1-review.html"],
+  ["/founder-scale-batch-1-review.css", "founder-scale-batch-1-review.css"],
+  ["/founder-scale-batch-1-review-loader.js", "founder-scale-batch-1-review-loader.js"],
+  ["/founder-scale-batch-1-zeroing-loader.js", "founder-scale-batch-1-zeroing-loader.js"],
   ["/review-assets/target-01.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/13120.jpg"],
   ["/review-assets/target-02.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22200.jpg"],
   ["/review-assets/target-03.jpeg", "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg"],
@@ -81,6 +85,27 @@ const publicFiles = new Map([
   ["/review-assets/target-07.webp", "authority-evidence/catalog-targets/BAKER_BE_R9B_PUBLISHER_IMAGE_V1.webp"],
   ["/review-assets/target-08.jpg", "authority-evidence/catalog-targets/BAKER_GF_BB_C_PUBLISHER_IMAGE_V1.jpg"],
   ["/review-assets/target-09.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22740.jpg"],
+  ["/scale-batch-assets/target-01.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22200.jpg"],
+  ["/scale-batch-assets/target-02.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/12070.jpg"],
+  ["/scale-batch-assets/target-03.png", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/us-target-386.png"],
+  ["/scale-batch-assets/target-04.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/13120.jpg"],
+  ["/scale-batch-assets/target-05.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22470.jpg"],
+  ["/scale-batch-assets/target-06.jpg", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/american-target-58-Q100.jpg"],
+  ["/scale-batch-assets/target-07.jpeg", "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg"],
+  ["/scale-batch-assets/target-08.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22040.jpg"],
+  ["/scale-batch-assets/target-09.jpg", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/national-idpa-p.jpg"],
+  ["/scale-batch-assets/target-10.webp", "authority-evidence/catalog-targets/BAKER_BE_R9B_PUBLISHER_IMAGE_V1.webp"],
+  ["/scale-batch-assets/target-11.jpg", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/splatterburst-74.jpg"],
+  ["/scale-batch-assets/target-12.webp", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/thompson-r-1602.webp"],
+  ["/scale-batch-assets/target-13.jpg", "authority-evidence/catalog-targets/BAKER_GF_BB_C_PUBLISHER_IMAGE_V1.jpg"],
+  ["/scale-batch-assets/target-14.png", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/birchwood-bc-3dtgtprt.png"],
+  ["/scale-batch-assets/target-15.jpg", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/ez-aim-15787.jpg"],
+  ["/scale-batch-assets/target-16.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22740.jpg"],
+  ["/scale-batch-assets/target-17.jpg", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/highwild-cj-host-m108.jpg"],
+  ["/scale-batch-assets/target-18.png", "authority-evidence/platform/scale-batch-1-2026-09-08/representations/champion-44924c.png"],
+  ["/scale-batch-assets/target-19.jpg", "assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg"],
+  ["/scale-batch-assets/target-20.jpg", "assets/GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1.jpg"],
+  ["/scale-batch-assets/target-21.jpg", "assets/SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg"],
   ["/universal_practice_sec.js", "universal_practice_sec.js"],
   ["/vendor/html2canvas-1.4.1.min.js", "vendor/html2canvas-1.4.1.min.js"],
   ["/assets/crosshair-cross-emblem.png", "assets/crosshair-cross-emblem.png"],
@@ -182,6 +207,32 @@ const server = createServer(async (request, response) => {
     if (pathname === "/target-experience.html" && parsedUrl.searchParams.get("founderReview") === "nine-target") {
       const source = await readFile(file, "utf8");
       const body = Buffer.from(source.replace("</body>", '  <script src="founder-nine-target-review-loader.js" defer></script>\n</body>'));
+      response.writeHead(200, {
+        "Cache-Control": "no-store",
+        "Content-Length": body.length,
+        "Content-Type": types[".html"],
+        "X-Content-Type-Options": "nosniff"
+      });
+      if (request.method === "HEAD") response.end();
+      else response.end(body);
+      return;
+    }
+    if (pathname === "/target-experience.html" && parsedUrl.searchParams.get("founderReview") === "scale-batch-1") {
+      const source = await readFile(file, "utf8");
+      const body = Buffer.from(source.replace("</body>", '  <script src="founder-scale-batch-1-review-loader.js" defer></script>\n</body>'));
+      response.writeHead(200, {
+        "Cache-Control": "no-store",
+        "Content-Length": body.length,
+        "Content-Type": types[".html"],
+        "X-Content-Type-Options": "nosniff"
+      });
+      if (request.method === "HEAD") response.end();
+      else response.end(body);
+      return;
+    }
+    if (pathname === "/shoot.html" && parsedUrl.searchParams.get("founderReview") === "scale-batch-1") {
+      const source = await readFile(file, "utf8");
+      const body = Buffer.from(source.replace("</body>", '  <script src="founder-scale-batch-1-zeroing-loader.js" defer></script>\n</body>'));
       response.writeHead(200, {
         "Cache-Control": "no-store",
         "Content-Length": body.length,

@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BACKEND = ROOT / "backend"
 OUT = BACKEND / "target_execution_contracts" / "contracts"
+DATA = BACKEND / "target_execution_contracts" / "scoring_data"
 
 
 def digest(value):
@@ -203,6 +204,10 @@ bb_regions=[]; bb_rules={}
 for number,x,y in balls:
     ident=str(number); bb_regions.append(ellipse(ident,x/1141,y/1500,92/1141,92/1500,10)); bb_rules[ident]=rule(f"Ball {number}",object_id=number)
 specs.append({"target":{"id":"baker_gf_bb_c","version":"1","atpId":"ATP_BAKER_GF_BB_C_V1","authorityId":"BAKER_GF_BB_C_PRODUCT_AUTHORITY_V1","publisher":{"id":"baker-targets","name":"Baker Targets","url":"https://bakertargets.com"},"product":{"id":"BAKER_GF_BB_C","name":"Billiard Ball Color Target","sku":"GF-BB-C"}}, "imagePath":"authority-evidence/catalog-targets/BAKER_GF_BB_C_PUBLISHER_IMAGE_V1.jpg", "ugoAuthority":"UGO_BAKER_GF_BB_C_V1", "approvalAuthority":"BAKER_GF_BB_C_PRODUCT_AUTHORITY_V1", "ruleAuthority":{"source":"BAKER_GF_BB_C_PUBLISHED_GAME_V1","rule":"Shoot in order; change shooters if you miss"}, "regions":bb_regions, "scoring":{"status":"complete","model":"ordered_objects","regionRules":bb_rules,"outsideRule":rule("Miss"),"sequence":list(range(1,16))}})
+
+# Snapshot 26 scale batch data. New products are expressed as data consumed by
+# the existing declarative scorer; the shared shooter road remains unchanged.
+specs.extend(json.loads((DATA / "scale_batch_1.json").read_text(encoding="utf-8")))
 
 
 old = [

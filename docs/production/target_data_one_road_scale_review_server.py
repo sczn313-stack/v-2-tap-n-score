@@ -15,9 +15,11 @@ BACKEND = Path(__file__).resolve().parents[1] / "backend"
 sys.path.insert(0, str(BACKEND))
 
 from execution_authority import ExecutionAuthorityError, execute_authoritative_session  # noqa: E402
+from authority_service import build_authority_package, build_distance_click_query  # noqa: E402
 from preserved_sec_store import PreservedSECError, list_preserved_secs, preserve_sec, read_preserved_sec  # noqa: E402
 from session_authority import SessionAuthorityError, prepare_session, start_session  # noqa: E402
 from target_execution_contract import runtime_resolver  # noqa: E402
+from target_image_registration_authority import TargetImageRegistrationError, register_target_image  # noqa: E402
 from test_target_execution_scale_architecture import MemoryStore  # noqa: E402
 
 
@@ -75,6 +77,15 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/target-execution":
                 self.send_json(200, execute_authoritative_session(payload, STORE, resolver=RESOLVER))
                 return
+            if path in {"/api/authority/ugeo", "/api/authority/ugeo/"}:
+                self.send_json(200, build_authority_package(payload))
+                return
+            if path in {"/api/authority/distance-click-query", "/api/authority/distance-click-query/"}:
+                self.send_json(200, build_distance_click_query(payload))
+                return
+            if path in {"/api/authority/target-image-registration", "/api/authority/target-image-registration/"}:
+                self.send_json(200, register_target_image(payload))
+                return
             if path == "/api/session/sec":
                 self.send_json(201, preserve_sec(payload, STORE, execution_contract_resolver=RESOLVER))
                 return
@@ -82,6 +93,8 @@ class Handler(BaseHTTPRequestHandler):
         except SessionAuthorityError as error:
             self.send_json(error.http_status, error.payload)
         except ExecutionAuthorityError as error:
+            self.send_json(error.http_status, error.payload)
+        except TargetImageRegistrationError as error:
             self.send_json(error.http_status, error.payload)
         except PreservedSECError as error:
             self.send_json(error.http_status, error.payload)
