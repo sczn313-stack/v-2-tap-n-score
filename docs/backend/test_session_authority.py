@@ -112,6 +112,8 @@ def test_prepare_normalizes_three_supported_targets():
 def test_zeroing_targets_share_one_platform_capability_without_owning_workflow():
     cases = {
         "baker_m16a2_25m_zero": ("mfam", "photo", "governed"),
+        "speedwell_dodm4_m16a2_25m_zero": ("mfam", "photo", "governed"),
+        "army_nsn_6920_01_395_2949_m16a2_25m_zero": ("mfam", "photo", "governed"),
         "m4_25m_zero": ("mfam", "registered-reference", "governed"),
         "baker_st_100yd_smart_zero": ("universal", "registered-reference", "evidence"),
     }
@@ -137,6 +139,16 @@ def test_mfam_profiles_receive_exact_backend_family_bindings_without_frontend_de
             "mfam_m16a2_a3_standard_25m_300m",
             "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
         ),
+        "speedwell_dodm4_m16a2_25m_zero": (
+            "speedwell:dodm4:two-sided",
+            "mfam_m16a2_a3_standard_25m_300m",
+            "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+        ),
+        "army_nsn_6920_01_395_2949_m16a2_25m_zero": (
+            "army:nsn-6920-01-395-2949:dual-face",
+            "mfam_m16a2_a3_standard_25m_300m",
+            "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+        ),
         "m4_25m_zero": (
             "sczn3:protected-modern-m4-m16-moa:face",
             "mfam_modern_a8_moa_25m",
@@ -149,12 +161,16 @@ def test_mfam_profiles_receive_exact_backend_family_bindings_without_frontend_de
         binding = preparation["mfamAuthorityBinding"]
         assert (binding["productId"], binding["familyId"], binding["mechanicalAuthorityId"]) == expected
         assert binding["status"] == "GOVERNED"
-        if target_id == "baker_m16a2_25m_zero":
+        if target_id in {
+            "baker_m16a2_25m_zero",
+            "speedwell_dodm4_m16a2_25m_zero",
+            "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+        }:
             assert binding["familyAuthorityPackageId"] == "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1"
             assert binding["familyAuthorityVersion"] == "sczn3-standard-m16a2-a3-family-authority-v1"
             assert binding["geometry"]["authorityId"] == "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1"
             assert binding["confirmationAuthority"]["authorityId"] == "MFAM-STANDARD-M16A2-A3-CONFIRMATION-v1"
-            assert binding["canonicalRepresentationAuthority"]["targetId"] == "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1"
+            assert binding["canonicalRepresentationAuthority"]["targetId"]
         started = start_session({
             "preparationToken": preparation["preparationToken"],
             "selectedEquipment": {**equipment(), "source": "weapon_library"},

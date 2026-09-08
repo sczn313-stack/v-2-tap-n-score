@@ -1,0 +1,102 @@
+{
+  "manifestId": "SCZN3-MFAM-SCALE-PROOF-03-EVIDENCE-MANIFEST-v1",
+  "observedAt": "2026-09-07",
+  "startingHead": "d76c21a7692bc70d58b91b4b5c0f57ff6a896a97",
+  "familyId": "mfam_m16a2_a3_standard_25m_300m",
+  "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+  "familyConformanceContractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
+  "newAuthoritativeEvidenceArtifactCount": 5,
+  "artifacts": [
+    {
+      "artifactId": "speedwell-dodm4-primary-page-2025-08-20",
+      "path": "SPEEDWELL_DODM4_PRIMARY_PAGE_2025-08-20.html",
+      "sha256": "38e4529910cbbaea5bc479e09ffc3465f89a219446f0cdf4575b55801136175d",
+      "source": "https://web.archive.org/web/20250820211523id_/https://www.speedwelltargets.com/DOD-M4-p/dodm4.htm",
+      "authority": "PRIMARY_PUBLISHER_ARCHIVED",
+      "proves": ["DODM4 product identity", "NSN 6920-01-395-2949", "two sides", "M16A2 side", "8.75 x 11.5 production dimensions"]
+    },
+    {
+      "artifactId": "speedwell-dodm4-m16a2-side-primary",
+      "path": "SPEEDWELL_DODM4_M16A2_SIDE_PRIMARY.jpg",
+      "sha256": "17a9d49750ad520a5e04bd5cc9109491e0722ff88653b87c8eb0cdf3b62ab91a",
+      "source": "https://cdn4.volusion.store/ryamz-mysjs/v/vspfiles/photos/DODM4-1.jpg",
+      "authority": "PRIMARY_PUBLISHER",
+      "pixelDimensions": [156, 200],
+      "proves": ["exact Speedwell DODM4 M16A2-side representation identity"]
+    },
+    {
+      "artifactId": "speedwell-dodm16a2-primary-page-2023-12-10",
+      "path": "SPEEDWELL_DODM16A2_PRIMARY_PAGE_2023-12-10.html",
+      "sha256": "29f305a83e4b1a0f06aa630e860cdba4d1a36c77e9238245cf4d1a0091eb027f",
+      "source": "https://web.archive.org/web/20231210161137id_/https://www.speedwelltargets.com/DOD-M16-A2-p/dodm16a2.htm",
+      "authority": "PRIMARY_PUBLISHER_ARCHIVED",
+      "proves": ["Speedwell DODM16A2 product identity", "publisher-owned high-resolution face plate provenance"]
+    },
+    {
+      "artifactId": "speedwell-m16a2-publisher-face-authority-v1",
+      "path": "../../../../assets/SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg",
+      "sha256": "1f728b8c8030ced399f9869105d7e2092866d550f28c4c9c00551786ea0cf5b4",
+      "source": "https://cdn4.volusion.store/ryamz-mysjs/v/vspfiles/photos/DODM16A2-2.jpg",
+      "authority": "PRIMARY_PUBLISHER",
+      "pixelDimensions": [480, 639],
+      "proves": ["exact flat Speedwell M16A2 representation", "asymmetric top/bottom orientation landmarks"]
+    },
+    {
+      "artifactId": "army-fm-3-22-9-figure-5-19-m16a2-face",
+      "path": "ARMY_FM_3_22_9_FIGURE_5_19_M16A2_FACE.png",
+      "sha256": "b5ee5e8dd5bfb71c74d6c9faae3d730f052c25b9d3770e30c303c3cd70e650ed",
+      "source": "https://api.army.mil/e2/c/downloads/363931.pdf#page=22",
+      "sourceDocumentSha256": "56c9c9c32e1f19aaff4c8f6bf220208ce54960dadd62dff8a4b59db0b5a1d532",
+      "authority": "PRIMARY_GOVERNMENT",
+      "pixelDimensions": [522, 668],
+      "proves": ["issued M16A2 face", "NSN 6920-01-395-2949", "18 x 20 grid", "center aim", "asymmetric title/NSN/footer orientation landmarks"]
+    }
+  ],
+  "representationBridge": {
+    "evidencePackageId": "NSN-6920-01-395-2949-PRODUCTION-REPRESENTATION-BRIDGE-v1",
+    "claim": "The Speedwell DODM4 M16A2 side and the Army-issued NSN face are traceably represented by exact publisher/government artifacts while retaining separate product identities.",
+    "limits": [
+      "The bridge does not admit the distinct DODM4 M4 side.",
+      "The bridge does not transfer Speedwell artwork identity to the Army face or vice versa.",
+      "The bridge does not admit another publisher merely because its image looks similar."
+    ],
+    "featureReconciliation": [
+      {"comparison": "Speedwell high-resolution plate to Baker governed family specimen", "mutualMatches": 101, "inliers": 88, "inlierRatio": 0.8713, "reprojectionRmsPx": 1.3595},
+      {"comparison": "Speedwell high-resolution plate to Army Figure 5-19", "mutualMatches": 54, "inliers": 28, "inlierRatio": 0.5185, "reprojectionRmsPx": 1.8649}
+    ]
+  },
+  "admissions": [
+    {
+      "faceId": "face-020",
+      "targetProfileId": "speedwell_dodm4_m16a2_25m_zero",
+      "registrationPackageId": "speedwell-dodm4-m16a2-photo-registration-v1",
+      "disposition": "ADMITTED"
+    },
+    {
+      "faceId": "face-032",
+      "targetProfileId": "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+      "registrationPackageId": "army-nsn-6920-01-395-2949-m16a2-photo-registration-v1",
+      "disposition": "ADMITTED",
+      "executionScope": "M16A2 equipment branch; M16A3 mechanics remain outside v1"
+    }
+  ],
+  "holds": [
+    {"faceId": "face-006", "product": "Rite in the Rain 9125", "irreducibleMissingFact": "calibrated exact front-face artifact proving physical pitch, center aim, exact procedure, landmarks, and registration"},
+    {"faceId": "face-013", "product": "National 23075", "irreducibleMissingFact": "calibrated physical 0.96 cm pitch/center-aim conformance, then exact National-face registration"},
+    {"faceId": "face-016", "product": "Qualification M16A2", "irreducibleMissingFact": "traceable physical 0.96 cm pitch/center-aim production conformance, then exact Qualification-face registration"},
+    {"faceId": "face-018", "product": "Alco AR-0", "irreducibleMissingFact": "dimensioned evidence resolving the advertised offset aim against Standard M16A2 center aim, then exact-face registration"},
+    {"faceId": "face-025", "product": "GunFun 32110", "irreducibleMissingFact": "calibrated production-scale 0.96 cm pitch/center-aim proof for the 9.5 x 12 red face, then registration"},
+    {"faceId": "face-027", "product": "GunFun 32120", "irreducibleMissingFact": "calibrated production-scale pitch/center-aim proof and proof that green wedges do not alter governed geometry, then registration"}
+  ],
+  "scale": {
+    "startingExecutableBindings": 1,
+    "newlyAdmittedBindings": 2,
+    "endingExecutableBindings": 3,
+    "familyAuthorityPackages": 1,
+    "familyLeverage": 3.0,
+    "newReusableEvidenceConformancePackages": 1,
+    "admissionLeverage": 2.0,
+    "productSpecificZeroingImplementations": 0,
+    "newUniversalZeroingRoads": 0
+  }
+}

@@ -74,6 +74,15 @@ def mfam_authority_binding(target_profile_id: str) -> Dict[str, Any]:
         "registryId": resolved["registryId"],
         "registryVersion": resolved["version"],
         "productId": binding["productId"],
+        "publisherIdentity": {
+            "name": resolved["product"]["publisherOrIssuer"],
+        },
+        "productIdentity": {
+            "productId": binding["productId"],
+            "name": resolved["product"]["exactName"],
+            "identifiers": deepcopy(resolved["product"].get("identifiers") or {}),
+            "inventoryFaceId": binding.get("inventoryFaceId"),
+        },
         "faceIdentity": deepcopy(resolved["product"]["face"]),
         "familyId": binding["familyId"],
         "familyAuthorityPackageId": binding.get("familyAuthorityPackageId"),
@@ -111,30 +120,42 @@ def zeroing_experience(
     }
 
 
-TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
-    "baker_m16a2_25m_zero": {
-        "targetId": "baker_m16a2_25m_zero",
-        "targetAuthorityId": "BAKER_M16A2_25M_AUTHORITY_v1",
-        "targetName": "Baker M16A2 25 Meter Zeroing Target",
-        "targetProfileVersion": "BAKER_M16A2_25M_AUTHORITY_v1",
-        "atpId": "baker-m16a2-25m-zero-atp-v1",
+def standard_m16a2_family_profile(
+    target_profile_id: str,
+    target_profile_version: str,
+    target_name: str,
+    *,
+    atp_id: str,
+    mission_id: str,
+    registration_package_id: str,
+    canonical_coordinate_system_id: str,
+) -> Dict[str, Any]:
+    """Bind one exact product representation to the shared M16A2 family road."""
+    family_binding = mfam_authority_binding(target_profile_id)
+    return {
+        "targetId": target_profile_id,
+        "targetAuthorityId": target_profile_version,
+        "targetName": target_name,
+        "targetProfileVersion": target_profile_version,
+        "atpId": atp_id,
         "zeroingExperience": zeroing_experience(
-            "baker_m16a2_25m_zero",
-            "BAKER_M16A2_25M_AUTHORITY_v1",
+            target_profile_id,
+            target_profile_version,
             authority_family="mfam",
             entry_mode="photo",
             confirmation_mode="governed",
         ),
-        "mfamAuthorityBinding": mfam_authority_binding("baker_m16a2_25m_zero"),
+        "mfamAuthorityBinding": family_binding,
+        "confirmationAuthority": deepcopy(family_binding["confirmationAuthority"]),
         "registrationAuthority": {
-            "registrationPackageId": "baker-m16a2-25m-photo-registration-v1",
+            "registrationPackageId": registration_package_id,
             "registrationPackageVersion": "1",
-            "canonicalCoordinateSystemId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+            "canonicalCoordinateSystemId": canonical_coordinate_system_id,
             "status": "available",
         },
         "missionIdentity": {
             "missionFamily": "zeroingCorrection",
-            "missionId": "BAKER_M16A2_25M_300M_ZERO",
+            "missionId": mission_id,
             "resultPackageType": "zeroCorrectionResult",
         },
         "governedDistance": {"value": 25, "unit": "M", "locked": True},
@@ -150,7 +171,37 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             "kind": "registered_adjustment_profile",
             "equipmentConfigurationId": "M16A2-STANDARD-IRON-FSP-REAR-DRUM",
         },
-    },
+    }
+
+
+TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
+    "baker_m16a2_25m_zero": standard_m16a2_family_profile(
+        "baker_m16a2_25m_zero",
+        "BAKER_M16A2_25M_AUTHORITY_v1",
+        "Baker M16A2 25 Meter Zeroing Target",
+        atp_id="baker-m16a2-25m-zero-atp-v1",
+        mission_id="BAKER_M16A2_25M_300M_ZERO",
+        registration_package_id="baker-m16a2-25m-photo-registration-v1",
+        canonical_coordinate_system_id="BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+    ),
+    "speedwell_dodm4_m16a2_25m_zero": standard_m16a2_family_profile(
+        "speedwell_dodm4_m16a2_25m_zero",
+        "SPEEDWELL_DODM4_M16A2_AUTHORITY_v1",
+        "Speedwell DODM4 M16A2 25 Meter Zeroing Target",
+        atp_id="speedwell-dodm4-m16a2-25m-zero-atp-v1",
+        mission_id="SPEEDWELL_DODM4_M16A2_25M_300M_ZERO",
+        registration_package_id="speedwell-dodm4-m16a2-photo-registration-v1",
+        canonical_coordinate_system_id="SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1",
+    ),
+    "army_nsn_6920_01_395_2949_m16a2_25m_zero": standard_m16a2_family_profile(
+        "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+        "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1",
+        "Army-Issued M16A2 25 Meter Zeroing Target",
+        atp_id="army-nsn-6920-01-395-2949-m16a2-25m-zero-atp-v1",
+        mission_id="ARMY_ISSUED_M16A2_25M_300M_ZERO",
+        registration_package_id="army-nsn-6920-01-395-2949-m16a2-photo-registration-v1",
+        canonical_coordinate_system_id="ARMY_NSN_6920_01_395_2949_M16A2_FACE_AUTHORITY_v1",
+    ),
     "m4_25m_zero": {
         "targetId": "m4_25m_zero",
         "targetAuthorityId": "M4_TARGET_AUTHORITY_v1_ORIGINAL",

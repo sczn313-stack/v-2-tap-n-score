@@ -17,13 +17,23 @@ assert.deepEqual(Array.from(platform.SOP), [
 ]);
 
 const m16a2 = platform.resolveTargetProfile({ targetProfileId: "baker_m16a2_25m_zero" });
+const speedwellM16a2 = platform.resolveTargetProfile({ targetProfileId: "speedwell_dodm4_m16a2_25m_zero" });
+const armyM16a2 = platform.resolveTargetProfile({ targetProfileId: "army_nsn_6920_01_395_2949_m16a2_25m_zero" });
 const m4 = platform.resolveTargetProfile({ targetProfileId: "m4_25m_zero" });
 assert.equal(m16a2.capabilityId, platform.CAPABILITY_ID);
+assert.equal(speedwellM16a2.capabilityId, platform.CAPABILITY_ID);
+assert.equal(armyM16a2.capabilityId, platform.CAPABILITY_ID);
 assert.equal(m4.capabilityId, platform.CAPABILITY_ID);
 assert.equal(m16a2.entryMode, "photo");
 assert.equal(m4.entryMode, "registered-reference");
 assert.equal(m16a2.authorityFamily, "mfam");
+assert.equal(speedwellM16a2.authorityFamily, "mfam");
+assert.equal(armyM16a2.authorityFamily, "mfam");
 assert.equal(m4.authorityFamily, "mfam");
+assert.deepEqual(speedwellM16a2.presentation, m16a2.presentation, "family consumers share one presentation contract");
+assert.deepEqual(armyM16a2.presentation, m16a2.presentation, "family consumers share one presentation contract");
+assert.notEqual(speedwellM16a2.exactAsset.sha256, m16a2.exactAsset.sha256, "publisher identity retains exact representation");
+assert.notEqual(armyM16a2.exactAsset.sha256, m16a2.exactAsset.sha256, "issuer identity retains exact representation");
 assert.equal(platform.usesGovernedConfirmation({ targetProfileId: m16a2.targetProfileId }), true);
 assert.equal(platform.usesGovernedConfirmation({ targetProfileId: m4.targetProfileId }), true);
 assert.equal(platform.validateTargetProfile({

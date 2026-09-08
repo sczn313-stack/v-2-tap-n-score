@@ -13,51 +13,36 @@
     return Object.freeze({ stage, modelRef, authorityRef });
   }
 
+  function zeroingDefinition(adapterId, targetProfileId, targetProfileVersion) {
+    return {
+      schemaVersion: SCHEMA,
+      adapterId,
+      targetProfileRef: { targetProfileId, targetProfileVersion },
+      authorityReferences: {
+        session: SESSION_AUTHORITY,
+        result: { packageType: "zeroCorrectionResult", source: "backend-authoritative" }
+      },
+      scoringPresentationFamily: FAMILY.ZEROING_CORRECTION,
+      contentModel: {
+        result: { authorityRef: "resultPackage.correction" },
+        components: [
+          component("evidence", "target-evidence", "session.evidence"),
+          component("measurement", "group-measurement", "resultPackage.measurement"),
+          component("recommendation", "sight-correction", "resultPackage.correction"),
+          component("execution", "applied-correction", "session.execution"),
+          component("validation", "confirmation-group", "resultPackage.validation"),
+          component("preservation", "sec-preservation", "session.preservation")
+        ]
+      },
+      preservationCapabilities: PRESERVATION
+    };
+  }
+
   const definitions = [
-    {
-      schemaVersion: SCHEMA,
-      adapterId: "m16a2-zeroing",
-      targetProfileRef: { targetProfileId: "baker_m16a2_25m_zero", targetProfileVersion: "BAKER_M16A2_25M_AUTHORITY_v1" },
-      authorityReferences: {
-        session: SESSION_AUTHORITY,
-        result: { packageType: "zeroCorrectionResult", source: "backend-authoritative" }
-      },
-      scoringPresentationFamily: FAMILY.ZEROING_CORRECTION,
-      contentModel: {
-        result: { authorityRef: "resultPackage.correction" },
-        components: [
-          component("evidence", "target-evidence", "session.evidence"),
-          component("measurement", "group-measurement", "resultPackage.measurement"),
-          component("recommendation", "sight-correction", "resultPackage.correction"),
-          component("execution", "applied-correction", "session.execution"),
-          component("validation", "confirmation-group", "resultPackage.validation"),
-          component("preservation", "sec-preservation", "session.preservation")
-        ]
-      },
-      preservationCapabilities: PRESERVATION
-    },
-    {
-      schemaVersion: SCHEMA,
-      adapterId: "m4-zeroing",
-      targetProfileRef: { targetProfileId: "m4_25m_zero", targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL" },
-      authorityReferences: {
-        session: SESSION_AUTHORITY,
-        result: { packageType: "zeroCorrectionResult", source: "backend-authoritative" }
-      },
-      scoringPresentationFamily: FAMILY.ZEROING_CORRECTION,
-      contentModel: {
-        result: { authorityRef: "resultPackage.correction" },
-        components: [
-          component("evidence", "target-evidence", "session.evidence"),
-          component("measurement", "group-measurement", "resultPackage.measurement"),
-          component("recommendation", "sight-correction", "resultPackage.correction"),
-          component("execution", "applied-correction", "session.execution"),
-          component("validation", "confirmation-group", "resultPackage.validation"),
-          component("preservation", "sec-preservation", "session.preservation")
-        ]
-      },
-      preservationCapabilities: PRESERVATION
-    },
+    zeroingDefinition("m16a2-zeroing", "baker_m16a2_25m_zero", "BAKER_M16A2_25M_AUTHORITY_v1"),
+    zeroingDefinition("speedwell-m16a2-zeroing", "speedwell_dodm4_m16a2_25m_zero", "SPEEDWELL_DODM4_M16A2_AUTHORITY_v1"),
+    zeroingDefinition("army-m16a2-zeroing", "army_nsn_6920_01_395_2949_m16a2_25m_zero", "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1"),
+    zeroingDefinition("m4-zeroing", "m4_25m_zero", "M4_TARGET_AUTHORITY_v1_ORIGINAL"),
     {
       schemaVersion: SCHEMA,
       adapterId: "baker-100yd-zeroing",

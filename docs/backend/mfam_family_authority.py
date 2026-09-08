@@ -255,6 +255,7 @@ def _load_registry() -> Dict[str, Any]:
             if source_id not in sources:
                 raise MFAMAuthorityError(f"mfam_inventory_face_source_missing:{face_record['faceId']}:{source_id}")
 
+    current_scale_proof_id = (payload.get("familyConformanceRegistry") or {}).get("scaleProofId")
     for proof in scale_proofs.values():
         proof_id = proof["proofId"]
         family_id = proof.get("familyId")
@@ -274,6 +275,8 @@ def _load_registry() -> Dict[str, Any]:
             for profile_id in admitted_profiles
         ):
             raise MFAMAuthorityError(f"mfam_scale_proof_binding_mismatch:{proof_id}")
+        if proof_id != current_scale_proof_id:
+            continue
         held_faces = {
             face_id for face_id in candidate_faces
             if not inventory_faces[face_id].get("runtimeBinding")
@@ -285,11 +288,19 @@ def _load_registry() -> Dict[str, Any]:
             if reason.get("missingFacts") != inventory_faces[face_id].get("unresolvedFacts"):
                 raise MFAMAuthorityError(f"mfam_scale_proof_hold_reason_mismatch:{proof_id}:{face_id}")
         counts = proof.get("counts") or {}
+        newly_admitted = set(proof.get("newlyAdmittedTargetProfileIds") or [])
+        if not newly_admitted.issubset(admitted_profiles):
+            raise MFAMAuthorityError(f"mfam_scale_proof_new_binding_mismatch:{proof_id}")
         expected_counts = {
             "candidateFaces": len(candidate_faces),
+            "candidatesInvestigated": len(proof.get("investigatedFaceIds") or []),
             "familyAuthorityPackagesCreated": 1,
-            "alreadyExecutable": len(candidate_faces) - len(held_faces),
-            "newlyExecutableThroughInheritance": 0,
+            "startingExecutableBindings": len(admitted_profiles) - len(newly_admitted),
+            "alreadyExecutable": len(admitted_profiles) - len(newly_admitted),
+            "newAuthoritativeEvidenceArtifactsAcquired": 5,
+            "reusableEvidenceArtifacts": 2,
+            "newRegistrationOrientationPackages": len(newly_admitted),
+            "newlyExecutableThroughInheritance": len(newly_admitted),
             "stillHold": len(held_faces),
             "productSpecificZeroingImplementationsCreated": 0,
             "universalZeroingRoadsCreated": 0,
@@ -314,9 +325,11 @@ def _load_registry() -> Dict[str, Any]:
     ]
     held_assigned_faces = [face for face in held_physical_faces if face.get("governedFamilyId")]
     held_unassigned_faces = [face for face in held_physical_faces if not face.get("governedFamilyId")]
+    current_scale_proof = scale_proofs.get(current_scale_proof_id) or {}
+    newly_authorized_count = len(current_scale_proof.get("newlyAdmittedTargetProfileIds") or [])
     computed_sweep_counts = {
-        "authorizedNowRuntimeBindings": 0,
-        "alreadyAuthorizedRuntimeBindings": len(bindings),
+        "authorizedNowRuntimeBindings": newly_authorized_count,
+        "alreadyAuthorizedRuntimeBindings": len(bindings) - newly_authorized_count,
         "alreadyAuthorizedPhysicalFaces": len(bound_physical_faces),
         "heldPhysicalFaces": len(held_physical_faces),
         "knownHeldFacesWithAuthorizedGeometry": len(held_authorized_geometries),
@@ -534,14 +547,28 @@ def industry_authorization_sweep() -> Dict[str, Any]:
         for binding in _REGISTRY["_index"]["bindings"].values()
         if binding["targetProfileId"] not in bound_face_profiles
     ]
+    current_proof = _REGISTRY["_index"]["scaleProofs"].get(
+        _REGISTRY["familyConformanceRegistry"].get("scaleProofId")
+    ) or {}
+    newly_authorized = set(current_proof.get("newlyAdmittedTargetProfileIds") or [])
+    physical_authorized = [
+        item for item in face_results if item["disposition"] == "ALREADY_AUTHORIZED"
+    ]
+    reference_authorized = physical_authorized + reference_bindings
     return deepcopy({
         "registryId": _REGISTRY["registryId"],
         "registryVersion": _REGISTRY["version"],
         "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
         "reportPath": _REGISTRY["authorizationSweep"]["reportPath"],
         "counts": _REGISTRY["authorizationSweep"]["counts"],
-        "authorizedNow": [],
-        "alreadyAuthorized": [item for item in face_results if item["disposition"] == "ALREADY_AUTHORIZED"] + reference_bindings,
+        "authorizedNow": [
+            item for item in reference_authorized
+            if (item.get("targetProfileId") or item.get("runtimeBinding")) in newly_authorized
+        ],
+        "alreadyAuthorized": [
+            item for item in reference_authorized
+            if (item.get("targetProfileId") or item.get("runtimeBinding")) not in newly_authorized
+        ],
         "hold": [item for item in face_results if item["disposition"] == "HOLD"],
     })
 

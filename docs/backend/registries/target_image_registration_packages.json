@@ -41,6 +41,84 @@
       "claimBoundary": "registration_knowledge_only_baker_m16a2_zeroing_authority_owns_sufficiency"
     },
     {
+      "registrationPackageId": "speedwell-dodm4-m16a2-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "speedwell_dodm4_m16a2_25m_zero",
+      "targetProfileVersion": "SPEEDWELL_DODM4_M16A2_AUTHORITY_v1",
+      "canonicalRepresentation": {
+        "assetId": "SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1",
+        "path": "assets/SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg",
+        "sha256": "1f728b8c8030ced399f9869105d7e2092866d550f28c4c9c00551786ea0cf5b4",
+        "pixelWidth": 480,
+        "pixelHeight": 639,
+        "mediaType": "image/jpeg"
+      },
+      "canonicalCoordinateSystemId": "SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1",
+      "ugoAuthorityId": "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1.5,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 18,
+        "minimumInliers": 12,
+        "minimumInlierRatio": 0.35,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-identity", "xMin": 0.1, "xMax": 0.9, "yMin": 0.01, "yMax": 0.12, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "bottom-zero-data", "xMin": 0.04, "xMax": 0.96, "yMin": 0.77, "yMax": 0.99, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "registration_knowledge_only_speedwell_dodm4_m16a2_representation_family_authority_owns_sufficiency"
+    },
+    {
+      "registrationPackageId": "army-nsn-6920-01-395-2949-m16a2-photo-registration-v1",
+      "registrationPackageVersion": "1",
+      "targetProfileId": "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+      "targetProfileVersion": "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1",
+      "canonicalRepresentation": {
+        "assetId": "ARMY_NSN_6920_01_395_2949_M16A2_FACE_AUTHORITY_v1",
+        "path": "authority-evidence/mfam/industry-sweep-2026-09-06/scale-proof-03/ARMY_FM_3_22_9_FIGURE_5_19_M16A2_FACE.png",
+        "sha256": "b5ee5e8dd5bfb71c74d6c9faae3d730f052c25b9d3770e30c303c3cd70e650ed",
+        "pixelWidth": 522,
+        "pixelHeight": 668,
+        "mediaType": "image/png"
+      },
+      "canonicalCoordinateSystemId": "ARMY_NSN_6920_01_395_2949_M16A2_FACE_AUTHORITY_v1",
+      "ugoAuthorityId": "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1",
+      "supportedMethods": ["exact_canonical_representation", "ugo_sift_homography_v1"],
+      "baseGeometryUncertaintyPx": 1.5,
+      "integrityGates": {
+        "ratioTest": 0.72,
+        "minimumMutualMatches": 18,
+        "minimumInliers": 12,
+        "minimumInlierRatio": 0.35,
+        "ransacThresholdPx": 5,
+        "minimumTargetCoverage": 0.45
+      },
+      "orientationProof": {
+        "requiredForGovernedDirection": true,
+        "method": "asymmetric-canonical-anchor-correlation-v1",
+        "anchors": [
+          {"id": "top-title-and-nsn", "xMin": 0.08, "xMax": 0.92, "yMin": 0.0, "yMax": 0.1, "minimumCoverage": 0.9, "minimumCorrelation": 0.25},
+          {"id": "bottom-issued-instructions", "xMin": 0.05, "xMax": 0.95, "yMin": 0.79, "yMax": 0.99, "minimumCoverage": 0.9, "minimumCorrelation": 0.25}
+        ]
+      },
+      "recovery": {
+        "retakeWhenTargetEvidenceMissing": true,
+        "shooterAssistedLandmarks": []
+      },
+      "claimBoundary": "registration_knowledge_only_army_issued_m16a2_representation_family_authority_owns_sufficiency"
+    },
+    {
       "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
       "registrationPackageVersion": "1",
       "targetProfileId": "m4_25m_zero",

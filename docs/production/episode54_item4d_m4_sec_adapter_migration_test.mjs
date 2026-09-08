@@ -68,6 +68,48 @@ assert.equal(session.m4AuthorityPackage.evidenceHash, "m4-evidence-hash-unchange
 assert.equal(session.targetEvidenceImage.sha256, "m4-photo-hash-unchanged");
 assert.deepEqual(session.m4AuthorityPackage.renderCoordinates.impacts, impacts);
 
+for (const inherited of [
+  {
+    profileId: "speedwell_dodm4_m16a2_25m_zero",
+    profileVersion: "SPEEDWELL_DODM4_M16A2_AUTHORITY_v1",
+    adapterId: "speedwell-m16a2-zeroing",
+    publisherId: "speedwell",
+    productId: "DODM4-M16A2"
+  },
+  {
+    profileId: "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+    profileVersion: "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1",
+    adapterId: "army-m16a2-zeroing",
+    publisherId: "us-army",
+    productId: "NSN-6920-01-395-2949-M16A2"
+  }
+]) {
+  const inheritedPackage = {
+    ...pkg,
+    target_profile_id: inherited.profileId,
+    targetProfileVersion: inherited.profileVersion,
+    evidenceHash: `${inherited.profileId}-evidence-hash`
+  };
+  const inheritedSession = {
+    ...session,
+    sessionId: `${inherited.profileId}-session`,
+    targetProfileId: inherited.profileId,
+    targetProfileVersion: inherited.profileVersion,
+    m4AuthorityPackage: inheritedPackage
+  };
+  const inheritedMapped = context.window.SCZN3M4SEC.secAdapterViewModel(inheritedSession);
+  assert(inheritedMapped, `${inherited.profileId} consumes the existing zeroing SEC renderer`);
+  assert.equal(inheritedMapped.adapterId, inherited.adapterId);
+  assert.equal(inheritedMapped.publisherIdentity.publisherId, inherited.publisherId);
+  assert.equal(inheritedMapped.productIdentity.productId, inherited.productId);
+  context.window.SCZN3M4SEC.render(inheritedSession);
+  const inheritedModel = renderedModels.at(-1);
+  assert.equal(inheritedModel.articleAttributes["data-sec-adapter-id"], inherited.adapterId);
+  assert.equal(inheritedModel.articleAttributes["data-target-profile-id"], inherited.profileId);
+  assert.equal(inheritedModel.articleAttributes["data-publisher-id"], inherited.publisherId);
+  assert.equal(inheritedModel.articleAttributes["data-product-id"], inherited.productId);
+}
+
 assert.match(secSource, /SCZN3M4SEC\.render\(session\)/);
 assert.match(secSource, /<div id="secCardHost"><\/div>/);
 assert.doesNotMatch(secSource, /<article id="secCard"/, "the standalone M4 shell is retired");

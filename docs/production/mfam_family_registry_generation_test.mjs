@@ -23,7 +23,17 @@ assert.equal(baker.familyAuthorityPackage.universalZeroingCapabilityId, "sczn3-g
 const generatedProfileIds = source.targetProfileBindings
   .filter(binding => binding.status === "GOVERNED" && binding.familyAuthorityPackageId)
   .map(binding => binding.targetProfileId);
-assert.deepEqual(generatedProfileIds, ["baker_m16a2_25m_zero"]);
+assert.deepEqual(generatedProfileIds, [
+  "baker_m16a2_25m_zero",
+  "speedwell_dodm4_m16a2_25m_zero",
+  "army_nsn_6920_01_395_2949_m16a2_25m_zero"
+]);
+const speedwell = resolveMFAMFamilyTargetProfile("speedwell_dodm4_m16a2_25m_zero");
+const army = resolveMFAMFamilyTargetProfile("army_nsn_6920_01_395_2949_m16a2_25m_zero");
+assert.equal(speedwell.binding.productId, "speedwell:dodm4:two-sided");
+assert.equal(army.binding.productId, "army:nsn-6920-01-395-2949:dual-face");
+assert.deepEqual(speedwell.familyAuthorityPackage, baker.familyAuthorityPackage);
+assert.deepEqual(army.familyAuthorityPackage, baker.familyAuthorityPackage);
 assert.equal(resolveMFAMFamilyTargetProfile("rite-in-rain:9125:m16a2-m16a4-front"), null, "candidate family membership cannot create a runtime binding");
 
 const conformance = await loadFamilyConformanceRegistry();
@@ -31,8 +41,8 @@ assert.equal(source.familyConformanceRegistry.registryId, conformance.registryId
 const proof = conformance.scaleProof;
 const batch = runFamilyAdmissionBatch(conformance, proof.contractId, proof.candidateFaceIds);
 assert.equal(batch.candidatesEvaluated, 8);
-assert.equal(batch.admitted.length, 0);
-assert.equal(batch.held.length, 8);
-assert.equal(proof.counts.totalExecutableFamilyBindings, 1);
+assert.equal(batch.admitted.length, 2);
+assert.equal(batch.held.length, 6);
+assert.equal(proof.counts.totalExecutableFamilyBindings, 3);
 
 console.log("PASS generated M/FAM family registry matches Backend authority and fails closed");

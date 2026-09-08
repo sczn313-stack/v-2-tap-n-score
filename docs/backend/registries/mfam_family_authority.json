@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-06.6",
+  "version": "2026-09-07.7",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -9,7 +9,7 @@
     "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
     "path": "registries/mfam_family_conformance.json",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
-    "scaleProofId": "MFAM-SCALE-PROOF-02-FAMILY-ADMISSION"
+    "scaleProofId": "MFAM-SCALE-PROOF-03-EVIDENCE-TO-ADMISSIONS"
   },
   "classificationVocabulary": [
     "EXACTLY_THE_SAME",
@@ -45,7 +45,7 @@
       "geometryCatalogRecords": 23,
       "procedureCatalogRecords": 14,
       "candidateGovernedFamilies": 9,
-      "runtimeBindings": 2
+      "runtimeBindings": 4
     }
   },
   "authorizationSweep": {
@@ -54,16 +54,16 @@
     "holdClearancePlanPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md",
     "dispositions": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"],
     "counts": {
-      "authorizedNowRuntimeBindings": 0,
+      "authorizedNowRuntimeBindings": 2,
       "alreadyAuthorizedRuntimeBindings": 2,
-      "alreadyAuthorizedPhysicalFaces": 1,
-      "heldPhysicalFaces": 34,
+      "alreadyAuthorizedPhysicalFaces": 3,
+      "heldPhysicalFaces": 32,
       "knownHeldFacesWithAuthorizedGeometry": 3,
-      "heldFacesAssignedToCandidateFamily": 26,
+      "heldFacesAssignedToCandidateFamily": 24,
       "heldFacesUnassigned": 8,
       "candidateFamilies": 9
     },
-    "decision": "No additional physical face in the completed evidence corpus has the complete representation registration, procedure, applicable mechanical authority, and confirmation package required for a new executable binding. Proven geometry reuse is preserved separately from runtime execution authority."
+    "decision": "The Speedwell DODM4 M16A2 side and Army-issued NSN 6920-01-395-2949 M16A2 face now have exact representation/orientation packages and inherit one Standard M16A2/A3 family authority. Six candidate faces remain held at irreducible product-specific physical-conformance evidence gaps."
   },
   "scaleProofs": [
     {
@@ -99,6 +99,56 @@
       },
       "familyLeverage": 1.0,
       "decision": "The family authority was extracted once and the Baker specimen now consumes it through a product-specific representation binding. No second publisher face is admitted because the preserved evidence does not prove its exact physical conformance and representation registration."
+    },
+    {
+      "proofId": "MFAM-SCALE-PROOF-03-EVIDENCE-TO-ADMISSIONS",
+      "observedAt": "2026-09-07",
+      "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-proof-03/M_FAM_SCALE_PROOF_03_EVIDENCE_TO_ADMISSIONS.md",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "candidateFaceIds": [
+        "face-003", "face-006", "face-013", "face-016", "face-018",
+        "face-020", "face-025", "face-027", "face-032"
+      ],
+      "investigatedFaceIds": [
+        "face-006", "face-013", "face-016", "face-018",
+        "face-020", "face-025", "face-027", "face-032"
+      ],
+      "admittedTargetProfileIds": [
+        "baker_m16a2_25m_zero",
+        "speedwell_dodm4_m16a2_25m_zero",
+        "army_nsn_6920_01_395_2949_m16a2_25m_zero"
+      ],
+      "newlyAdmittedTargetProfileIds": [
+        "speedwell_dodm4_m16a2_25m_zero",
+        "army_nsn_6920_01_395_2949_m16a2_25m_zero"
+      ],
+      "holdReasons": [
+        {"faceId": "face-006", "missingFacts": ["physical pitch", "aim", "printed instructions", "mechanics", "registration"]},
+        {"faceId": "face-013", "missingFacts": ["physical square pitch", "aim", "registration", "mechanical binding"]},
+        {"faceId": "face-016", "missingFacts": ["physical pitch", "exact landmarks", "mechanical binding", "registration"]},
+        {"faceId": "face-018", "missingFacts": ["physical pitch", "registration", "authority for M4/M16A4 claims"]},
+        {"faceId": "face-025", "missingFacts": ["physical pitch", "aim", "weapon-specific mechanics", "registration"]},
+        {"faceId": "face-027", "missingFacts": ["physical pitch", "ink/wedge geometry effect", "aim", "procedure", "mechanics", "registration"]}
+      ],
+      "counts": {
+        "candidateFaces": 9,
+        "candidatesInvestigated": 8,
+        "familyAuthorityPackagesCreated": 1,
+        "startingExecutableBindings": 1,
+        "alreadyExecutable": 1,
+        "newAuthoritativeEvidenceArtifactsAcquired": 5,
+        "reusableEvidenceArtifacts": 2,
+        "newRegistrationOrientationPackages": 2,
+        "newlyExecutableThroughInheritance": 2,
+        "stillHold": 6,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0,
+        "totalExecutableBindingsAfterProof": 3
+      },
+      "familyLeverage": 3.0,
+      "admissionLeverage": 2.0,
+      "decision": "One reusable issued-NSN production-representation bridge plus two exact-face registration/orientation packages admit Speedwell and Army identities to the existing family authority and universal zeroing road. Six remaining products stay held at irreducible physical-conformance evidence gaps."
     }
   ],
   "families": [
@@ -667,20 +717,20 @@
       "exactName": "DOD M4 / M16A2 Two-Sided Target",
       "identifiers": {"sku": "DODM4", "nsn": "6920-01-395-2949"},
       "generationOrApplication": "Legacy M4 side / DoD M16A2 side",
-      "face": {"side": "two-sided product", "printedTitle": null},
+      "face": {"side": "DoD M16A2 side governed; M4 side remains held", "printedTitle": "25 METERS ZEROING TARGET M16A2"},
       "dimensions": {"width": 8.75, "height": 11.5, "unit": "IN"},
-      "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
+      "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "scope": "DoD M16A2 side"},
+      "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 9, "rows": 10}, "scope": "DoD M16A2 side"},
       "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": null},
       "applicableEquipment": ["M4", "M16A2"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "speedwell-dodm4-m16a2-photo-registration-v1", "orientationProofRequired": true, "scope": "DoD M16A2 side only"},
       "candidateFamilyId": null,
-      "mappingClassification": "UNPROVEN",
+      "mappingClassification": "IDENTITY_REGISTRATION_DIFFERENCE",
       "evidenceQuality": "PUBLISHER_PRIMARY",
-      "runtimeStatus": "HOLD",
-      "sourceIds": ["SPEEDWELL-DODM4", "P-OS-12-PUBLISHER-SEED"],
-      "notes": ["Government form identity is substantiated, but the published page dimensions differ from Baker and exact square pitch is unmeasured."]
+      "runtimeStatus": "GOVERNED",
+      "sourceIds": ["SPEEDWELL-DODM4", "SPEEDWELL-DODM16A2-FACE", "ARMY-FM-3-22-9-2011", "SCZN3-MFAM-SCALE-PROOF-03"],
+      "notes": ["Only the exact DoD M16A2 side is admitted. The distinct M4 side remains HOLD and receives no authority from this binding."]
     },
     {
       "productId": "action-target:m4-carbine:two-sided",
@@ -856,20 +906,20 @@
       "exactName": "M16A2/A3 and M16A4/M4/M4A dual-sided 25-meter zero target",
       "identifiers": {"nsn": "6920-01-395-2949"},
       "generationOrApplication": "Legacy dual-sided M16/M4 zero",
-      "face": {"side": "dual-sided issued product", "printedTitle": null},
-      "dimensions": {"width": null, "height": null, "unit": "IN"},
-      "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
+      "face": {"side": "M16A2/A3 side governed; M16A4/M4/M4A side remains held", "printedTitle": "25 METER ZEROING TARGET M16A2"},
+      "dimensions": {"width": 8.75, "height": 11.5, "unit": "IN", "basis": "traceable production listing for issued NSN 6920-01-395-2949"},
+      "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "scope": "M16A2/A3 side"},
+      "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 9, "rows": 10}, "scope": "M16A2/A3 side"},
       "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "Army grouping/zero confirmation procedure"},
       "applicableEquipment": ["M16A2", "M16A3", "M16A4", "M4", "M4A1"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "army-nsn-6920-01-395-2949-m16a2-photo-registration-v1", "orientationProofRequired": true, "scope": "M16A2/A3 side only"},
       "candidateFamilyId": null,
-      "mappingClassification": "IDENTITY_REGISTRATION_DIFFERENCE",
+      "mappingClassification": "EXACTLY_THE_SAME",
       "evidenceQuality": "ISSUER_PRIMARY",
-      "runtimeStatus": "EVIDENCE_ONLY",
-      "sourceIds": ["ARMY-FM-3-22-9-2011"],
-      "notes": ["The issued product contains distinct faces; it is not one geometry authority."]
+      "runtimeStatus": "GOVERNED",
+      "sourceIds": ["ARMY-FM-3-22-9-2011", "SPEEDWELL-DODM4", "SPEEDWELL-DODM16A2-FACE", "SCZN3-MFAM-SCALE-PROOF-03"],
+      "notes": ["Only the exact M16A2/A3 side is admitted, and v1 execution is restricted to the governed M16A2 equipment branch. The distinct M16A4/M4/M4A side remains HOLD."]
     },
     {
       "productId": "army:a8-nsn-6920-01-660-9191:face",
@@ -977,6 +1027,54 @@
         "aimCoordinate": {"xPercent": 50.0, "yPercent": 48.7},
         "aimAuthorityId": "BAKER-M16A2-25M-BULL-AUTHORITY-2026-09-04",
         "sourceAssetSha256": "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993"
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "speedwell_dodm4_m16a2_25m_zero",
+      "productId": "speedwell:dodm4:two-sided",
+      "inventoryFaceId": "face-020",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "speedwell-dodm4-m16a2-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1",
+        "imageWidth": 480,
+        "imageHeight": 639,
+        "gridLeftPx": 29.0,
+        "gridTopPx": 58.0,
+        "gridRightPx": 455.0,
+        "gridBottomPx": 478.0,
+        "gridSquareXPx": 23.666666666666668,
+        "gridSquareYPx": 21.0,
+        "aimCoordinate": {"xPercent": 50.416666666666664, "yPercent": 41.94053208137715},
+        "aimAuthorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "sourceAssetSha256": "1f728b8c8030ced399f9869105d7e2092866d550f28c4c9c00551786ea0cf5b4"
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+      "productId": "army:nsn-6920-01-395-2949:dual-face",
+      "inventoryFaceId": "face-032",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "army-nsn-6920-01-395-2949-m16a2-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "ARMY_NSN_6920_01_395_2949_M16A2_FACE_AUTHORITY_v1",
+        "imageWidth": 522,
+        "imageHeight": 668,
+        "gridLeftPx": 37.5,
+        "gridTopPx": 63.0,
+        "gridRightPx": 479.0,
+        "gridBottomPx": 506.0,
+        "gridSquareXPx": 24.52777777777778,
+        "gridSquareYPx": 22.15,
+        "aimCoordinate": {"xPercent": 49.47318007662835, "yPercent": 42.58982035928144},
+        "aimAuthorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "sourceAssetSha256": "b5ee5e8dd5bfb71c74d6c9faae3d730f052c25b9d3770e30c303c3cd70e650ed"
       },
       "status": "GOVERNED"
     },
@@ -1121,6 +1219,8 @@
     {"sourceId": "NATIONAL-23075", "title": "M-16A2/M4-CARBINE", "publisher": "National Target Company", "url": "https://nationaltarget.com/shop/m-16a2-m4-carbine/", "quality": "PRIMARY_PUBLISHER", "scope": ["product identity", "SKU", "size"]},
     {"sourceId": "NATIONAL-ALT-C", "title": "25M ALT-C", "publisher": "National Target Company", "url": "https://nationaltarget.com/shop/25m-alt-c/", "quality": "PRIMARY_PUBLISHER", "scope": ["product identity", "M16A1 application", "size"]},
     {"sourceId": "SPEEDWELL-DODM4", "title": "DOD M4", "publisher": "Speedwell", "url": "https://www.speedwelltargets.com/DOD-M4-p/dodm4.htm", "quality": "PRIMARY_PUBLISHER", "scope": ["DODM4 SKU", "NSN", "two sides", "dimensions"]},
+    {"sourceId": "SPEEDWELL-DODM16A2-FACE", "title": "DOD M16A2 official military target and publisher face", "publisher": "Speedwell", "url": "https://web.archive.org/web/20231210161137id_/https://www.speedwelltargets.com/DOD-M16-A2-p/dodm16a2.htm", "quality": "PRIMARY_PUBLISHER", "scope": ["high-resolution exact M16A2 face representation", "Speedwell product identity", "orientation landmarks"]},
+    {"sourceId": "SCZN3-MFAM-SCALE-PROOF-03", "title": "M/FAM Scale Proof #3 evidence manifest", "publisher": "SCZN3", "url": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-proof-03/SCALE_PROOF_03_EVIDENCE_MANIFEST.json", "quality": "PRESERVED_FIRST_PARTY", "scope": ["artifact hashes", "Speedwell-to-issued-NSN representation bridge", "registration/orientation package validation", "hold evidence boundaries"]},
     {"sourceId": "GUNFUN-32110", "title": "M16 A2 and A4 Zeroing Target Red", "publisher": "GunFun Shooting Targets", "url": "https://gunfun.com/shop/m16-a2-a4-zeroing-target-red-32110/", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "size", "two-sided identity", "printed instructions"]},
     {"sourceId": "GUNFUN-CATALOG", "title": "Preserved GunFun catalog corpus", "publisher": "GunFun Shooting Targets", "url": "docs/authority-evidence/publisher-os/11-publisher-master-2026-08-21", "quality": "PRESERVED_FIRST_PARTY", "scope": ["32120", "82020", "22460"]},
     {"sourceId": "P-OS-12-PUBLISHER-SEED", "title": "P-OS 12-publisher preserved corpus", "publisher": "SCZN3 Publisher Operating System", "url": "docs/authority-evidence/publisher-os/11-publisher-master-2026-08-21/PUBLISHER_PROFILES.json", "quality": "PRESERVED_FIRST_PARTY", "scope": ["publisher identities", "normalized products", "negative findings"]},

@@ -61,6 +61,24 @@
       productIdentity: Object.freeze({ productId: "ST-M16A2", sku: "ST-M16A2", productLabel: "Baker M16A2 25 Meter Zeroing Target", productUrl: "https://bakertargets.com/product/2-sided-25-meter-m16a2m4-zeroing-target/" })
     }),
     Object.freeze({
+      targetProfileId: "speedwell_dodm4_m16a2_25m_zero",
+      targetProfileVersion: "SPEEDWELL_DODM4_M16A2_AUTHORITY_v1",
+      targetProfileLabel: "Speedwell DODM4 M16A2 25 Meter Zeroing Target",
+      missionLabel: "25 Meter Zero",
+      aliases: Object.freeze(["SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1"]),
+      publisherIdentity: Object.freeze({ publisherId: "speedwell", publisherLabel: "Speedwell", publisherUrl: "https://www.speedwelltargets.com", publisherLinkLabel: "SpeedwellTargets.com" }),
+      productIdentity: Object.freeze({ productId: "DODM4-M16A2", sku: "DODM4", nsn: "6920-01-395-2949", productLabel: "DOD M4 / M16A2 Two-Sided Target — M16A2 Face" })
+    }),
+    Object.freeze({
+      targetProfileId: "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+      targetProfileVersion: "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1",
+      targetProfileLabel: "Army-Issued M16A2 25 Meter Zeroing Target",
+      missionLabel: "25 Meter Zero",
+      aliases: Object.freeze(["ARMY_NSN_6920_01_395_2949_M16A2_FACE_AUTHORITY_v1"]),
+      publisherIdentity: Object.freeze({ publisherId: "us-army", publisherLabel: "Headquarters, Department of the Army", publisherUrl: "https://www.army.mil", publisherLinkLabel: "Army.mil" }),
+      productIdentity: Object.freeze({ productId: "NSN-6920-01-395-2949-M16A2", nsn: "6920-01-395-2949", productLabel: "Issued M16A2/A3 25 Meter Zero Target Face" })
+    }),
+    Object.freeze({
       targetProfileId: "m4_25m_zero",
       targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
       targetProfileLabel: "M4 25m Zero",

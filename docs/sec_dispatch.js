@@ -4,6 +4,8 @@
   const ADAPTERS = Object.freeze({
     M4_ZEROING: "m4-zeroing",
     M16A2_ZEROING: "m16a2-zeroing",
+    SPEEDWELL_M16A2_ZEROING: "speedwell-m16a2-zeroing",
+    ARMY_M16A2_ZEROING: "army-m16a2-zeroing",
     BAKER_100YD_ZEROING: "baker-100yd-zeroing",
     BAKER_SL_ST1: "baker-sl-st1",
     GUNFUN_VITAL_DUDE: "gunfun-vital-dude-evidence",
@@ -163,6 +165,12 @@
     }
     if (target === "baker_m16a2_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.M16A2_ZEROING;
+    }
+    if (target === "speedwell_dodm4_m16a2_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
+      return ADAPTERS.SPEEDWELL_M16A2_ZEROING;
+    }
+    if (target === "army_nsn_6920_01_395_2949_m16a2_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
+      return ADAPTERS.ARMY_M16A2_ZEROING;
     }
     if (target === "baker_st_100yd_smart_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.BAKER_100YD_ZEROING;

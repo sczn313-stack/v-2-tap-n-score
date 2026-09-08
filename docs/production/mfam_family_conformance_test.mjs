@@ -28,17 +28,19 @@ assert.deepEqual(baker.missingGateIds, []);
 
 const batch = runFamilyAdmissionBatch(registry, contract.contractId, registry.scaleProof.candidateFaceIds);
 assert.equal(batch.candidatesEvaluated, 8);
-assert.equal(batch.admitted.length, 0);
-assert.equal(batch.held.length, 8);
+assert.deepEqual(batch.admitted.map(candidate => candidate.faceId), ["face-020", "face-032"]);
+assert.equal(batch.held.length, 6);
 assert(batch.held.every((candidate) => candidate.irreducibleMissingFacts.length === 1));
 
 const speedwell = evaluateFamilyCandidate(registry, "face-020");
-assert.deepEqual(speedwell.missingGateIds, ["registration_orientation"]);
-assert(speedwell.gateResults.filter((gate) => gate.status === "PROVEN").length === 5);
+assert.deepEqual(speedwell.missingGateIds, []);
+assert.equal(speedwell.disposition, "ADMITTED");
+assert.equal(speedwell.targetProfileId, "speedwell_dodm4_m16a2_25m_zero");
 
 const army = evaluateFamilyCandidate(registry, "face-032");
-assert.deepEqual(army.missingGateIds, ["registration_orientation"]);
-assert.match(army.irreducibleMissingFacts[0], /flat production face/);
+assert.deepEqual(army.missingGateIds, []);
+assert.equal(army.disposition, "ADMITTED");
+assert.equal(army.targetProfileId, "army_nsn_6920_01_395_2949_m16a2_25m_zero");
 
 const gunfun = evaluateFamilyCandidate(registry, "face-025");
 assert(gunfun.missingGateIds.includes("physical_geometry_pitch"));
@@ -46,9 +48,11 @@ assert(gunfun.missingGateIds.includes("registration_orientation"));
 
 assert.equal(registry.scaleProof.counts.productSpecificZeroingImplementations, 0);
 assert.equal(registry.scaleProof.counts.universalZeroingRoadsAdded, 0);
-assert.equal(registry.scaleProof.familyLeverage, 1);
-assert.equal(registry.scaleProof.admissionLeverage, 0);
+assert.equal(registry.scaleProof.counts.newAuthoritativeEvidenceArtifactsAcquired, 5);
+assert.equal(registry.scaleProof.counts.newRegistrationOrientationPackages, 2);
+assert.equal(registry.scaleProof.familyLeverage, 3);
+assert.equal(registry.scaleProof.admissionLeverage, 2);
 
 console.log("PASS reusable M/FAM Target Family Conformance/Admission Pattern");
-console.log("PASS 8 Standard M16A2/A3 HOLDs evaluated by one six-gate contract");
-console.log("PASS no candidate admitted without exact representation registration");
+console.log("PASS 8 Standard M16A2/A3 candidates evaluated by one six-gate contract");
+console.log("PASS Speedwell and Army admitted through exact representation registration");

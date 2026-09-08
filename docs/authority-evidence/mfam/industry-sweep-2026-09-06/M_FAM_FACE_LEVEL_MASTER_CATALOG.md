@@ -1,6 +1,6 @@
 # M/FAM Face-Level Master Catalog
 
-Date: 2026-09-06  
+Date: 2026-09-06; runtime bindings updated by Scale Proof #3 on 2026-09-07
 Authority source: `docs/backend/registries/mfam_inventory_audit.json`
 
 This is the human-readable audit of 35 physical faces belonging to 25 commercial/government products. Every two-sided product has two stable Face IDs even when one side remains unresolved. No unresolved faces are merged. The catalog therefore has 35 product-face representation records; the exact number of unique face designs remains `UNPROVEN` until every unresolved side is preserved and compared.
@@ -58,7 +58,7 @@ Abbreviations used below:
 | `face-017` | `product-qualification-m4`; Qualification; SKU `M4 Carbine`, NSN `6920-01-472-7493` | single; `representation-016` | 8.5×11; grid/pitch/aim unproven | printed procedure unproven | M4; — | no package; M4 candidate; `HOLD` | product page; geometry/procedure/mechanics/registration unresolved |
 | `face-018` | `product-alco-ar-0`; Alco; `AR-0` | single; `representation-017` | 8.5×11; 18×20 appearance; pitch unmeasured | 25m→300m; 8/3 procedure visible | M16A2 plausible; M4/M16A4 marketing held; — | no package; M16A2 candidate; `HOLD` | Alco page; physical pitch/registration and broad applicability unresolved |
 | `face-019` | `product-speedwell-dodm4`; Speedwell; `DODM4`, NSN `6920-01-395-2949` | M4; `representation-018` | 8.75×11.5; 14×16 candidate; pitch/aim unmeasured | legacy 25m→300m | M4 iron unresolved; — | no package; M4 candidate; `HOLD` | Speedwell + P-OS; pitch/aim/mechanics/registration unresolved |
-| `face-020` | same product/ID | DoD M16A2; `representation-019` | 8.75×11.5; 18×20 candidate; pitch/aim unmeasured | legacy 25m→300m | M16A2 iron unresolved; — | no package; M16A2 candidate; `HOLD` | same evidence; pitch/aim/mechanics/registration unresolved |
+| `face-020` | same product/ID | DoD M16A2; `representation-019` | 8.75×11.5 carrier; 18×20 at 0.96 cm through issued-NSN conformance; center aim | governed 25m→300m procedure | M16A2 standard iron; `M16A2-2011` | `speedwell-dodm4-m16a2-photo-registration-v1`; standard M16A2 family; `GOVERNED` as `speedwell_dodm4_m16a2_25m_zero` | Speedwell primary DODM4/M16A2 artifacts + Army FM + Scale Proof #3 manifest; no unresolved facts for this side |
 
 ## Faces 021–030 — Action Target and GunFun
 
@@ -80,7 +80,7 @@ Abbreviations used below:
 | Face | Product / issuer / ID | Side and representation | Dimensions; geometry; grid; aim | Distance and procedure | Weapon / sight / mechanics | Registration; family; runtime | Evidence and unresolved facts |
 |---|---|---|---|---|---|---|---|
 | `face-031` | `product-army-m16a1-zero`; Army; NSN `6920-01-167-1392` | single issued; `representation-030` | page/grid/pitch unproven; center-mass aim | 25m→250m; L aperture then unmarked | M16A1 iron; complete package — | no package; M16A1 family; `EVIDENCE_ONLY` | Army FM; geometry/mechanics/registration/confirmation unresolved |
-| `face-032` | `product-army-dual-m16-m4`; Army; NSN `6920-01-395-2949` | M16A2/A3; `representation-031` | 18×20 at 0.96 cm; center mass | 25m→300m | M16A2/A3; `M16A2-2011` for exact A2 scope | no package; M16A2 family; `EVIDENCE_ONLY` | Army FM; production dimensions/registration unresolved |
+| `face-032` | `product-army-dual-m16-m4`; Army; NSN `6920-01-395-2949` | M16A2/A3; `representation-031` | 8.75×11.5 traceable issued-NSN production listing; 18×20 at 0.96 cm; center aim | governed 25m→300m procedure | M16A2 execution scope; `M16A2-2011` | `army-nsn-6920-01-395-2949-m16a2-photo-registration-v1`; standard M16A2 family; `GOVERNED` as `army_nsn_6920_01_395_2949_m16a2_25m_zero` | Army FM Figure 5-19 + Speedwell issued-NSN production bridge + Scale Proof #3 manifest; M16A3 mechanics excluded from v1 |
 | `face-033` | same product/ID | M16A4/M4/M4A; `representation-032` | 14×16 at 1.3 cm; center mass | 25m→300m; configuration-specific | M16A4/M4/M4A; `M4-2011`, `M16A4-E` | no package; M4 family; `EVIDENCE_ONLY` | Army FM; production dimensions/registration/config selection unresolved |
 | `face-034` | `product-army-a8`; Army; A8, NSN `6920-01-660-9191` | single issued; `representation-033` | exact issued face/grid/aim comparison pending | 25m 5-round grouping/zero; 4/5 within 6 MOA threshold, 4 MOA objective; true-distance confirmation | current M4/M16 branches; — | no package; modern MOA candidate; `HOLD` | Army TC 3-20.40; exact artifact/geometry/config mechanics unresolved |
 | `face-035` | `product-army-10m-boresight`; Army; TC 3-22.9 Figure F-1 | single template; `representation-034` | exact page unknown; 1 cm statement limited to separately manufactured 10m target; device-specific aim symbol | 10m boresight/offset, not live-fire 25m zero | exact optic/laser/mount required; — | no package; 10m family; `EVIDENCE_ONLY` | Army TC 3-22.9; exact form/symbol set/device branches/registration unresolved |

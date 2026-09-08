@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-target-family-conformance-v1",
   "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
-  "version": "2026-09-06.1",
+  "version": "2026-09-07.2",
   "status": "governed",
   "authorityRegistryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
   "admissionPolicy": {
@@ -119,6 +119,18 @@
       "status": "PROVEN",
       "facts": ["NSN 6920-01-395-2949 is the issued dual-sided zero target", "M16A2/A3 is one exact side", "that side uses the Standard M16A2/A3 family geometry, aim, and procedure"],
       "sourceIds": ["ARMY-FM-3-22-9-2011", "SPEEDWELL-DODM4"]
+    },
+    {
+      "evidencePackageId": "NSN-6920-01-395-2949-PRODUCTION-REPRESENTATION-BRIDGE-v1",
+      "scope": "ISSUED_PRODUCT_IDENTITY",
+      "status": "PROVEN",
+      "facts": [
+        "Speedwell primary product evidence binds DODM4 to NSN 6920-01-395-2949 and identifies M16A2 as one exact side",
+        "the preserved DODM4 M16A2-side image and Speedwell high-resolution M16A2 publisher plate are the same Speedwell face representation",
+        "Army Figure 5-19 identifies the issued NSN face and supplies an independent exact-face orientation representation",
+        "each product retains its own publisher/product/representation identity and registration package"
+      ],
+      "sourceIds": ["SPEEDWELL-DODM4", "SPEEDWELL-DODM16A2-FACE", "ARMY-FM-3-22-9-2011", "SCZN3-MFAM-SCALE-PROOF-03"]
     }
   ],
   "evaluations": [
@@ -218,11 +230,11 @@
         {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "Speedwell identifies the exact product, side, dimensions, NSN, and displayed representation.", "sourceIds": ["SPEEDWELL-DODM4"]},
         {"gateId": "procedure", "status": "PROVEN", "basis": "The exact issued NSN M16A2 side inherits the Army-governed 25-meter/300-meter procedure.", "sourceIds": ["SPEEDWELL-DODM4", "ARMY-FM-3-22-9-2011"], "evidencePackageIds": ["NSN-6920-01-395-2949-M16A2-SIDE-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
         {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "The exact M16A2 side may use the existing governed M16A2 standard-iron branch.", "sourceIds": ["SPEEDWELL-DODM4", "ARMY-FM-3-22-9-2011"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
-        {"gateId": "registration_orientation", "status": "UNRESOLVED", "basis": "No exact Speedwell representation asset/hash, anchor set, and tested registration package are preserved.", "sourceIds": ["SPEEDWELL-DODM4"]}
+        {"gateId": "registration_orientation", "status": "PROVEN", "basis": "The exact Speedwell M16A2-side representation is preserved by hash and governed by speedwell-dodm4-m16a2-photo-registration-v1 with asymmetric top/bottom anchors and required source-plane reconciliation.", "sourceIds": ["SPEEDWELL-DODM4", "SPEEDWELL-DODM16A2-FACE", "SCZN3-MFAM-SCALE-PROOF-03"], "evidencePackageIds": ["NSN-6920-01-395-2949-PRODUCTION-REPRESENTATION-BRIDGE-v1"]}
       ],
-      "disposition": "HOLD",
-      "targetProfileId": null,
-      "irreducibleMissingFacts": ["verified exact Speedwell M16A2-side representation registration/orientation package"]
+      "disposition": "ADMITTED",
+      "targetProfileId": "speedwell_dodm4_m16a2_25m_zero",
+      "irreducibleMissingFacts": []
     },
     {
       "faceId": "face-025",
@@ -269,33 +281,37 @@
         {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "Official Figure 5-19 preserves title, NSN, axes, sight icons, silhouette, 300 METERS label, and three-step footer as asymmetric landmarks.", "sourceIds": ["ARMY-FM-3-22-9-2011"]},
         {"gateId": "procedure", "status": "PROVEN", "basis": "Army doctrine governs the 25-meter/300-meter M16A2/A3 procedure.", "sourceIds": ["ARMY-FM-3-22-9-2011"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
         {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "The M16A2 equipment branch is governed; M16A3 execution remains outside this v1 mechanical package.", "sourceIds": ["ARMY-FM-3-22-9-2011"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
-        {"gateId": "registration_orientation", "status": "UNRESOLVED", "basis": "Figure 5-19 is authoritative doctrine evidence but is a manual figure, not a verified flat production-face asset tested as a registration package.", "sourceIds": ["ARMY-FM-3-22-9-2011"]}
+        {"gateId": "registration_orientation", "status": "PROVEN", "basis": "Army Figure 5-19 preserves the issued NSN face, and army-nsn-6920-01-395-2949-m16a2-photo-registration-v1 governs the exact representation with asymmetric title/NSN and instruction anchors plus required source-plane reconciliation.", "sourceIds": ["ARMY-FM-3-22-9-2011", "SPEEDWELL-DODM4", "SPEEDWELL-DODM16A2-FACE", "SCZN3-MFAM-SCALE-PROOF-03"], "evidencePackageIds": ["NSN-6920-01-395-2949-PRODUCTION-REPRESENTATION-BRIDGE-v1"]}
       ],
-      "disposition": "HOLD",
-      "targetProfileId": null,
-      "irreducibleMissingFacts": ["verified flat production face for NSN 6920-01-395-2949 and tested exact-face registration/orientation package"]
+      "disposition": "ADMITTED",
+      "targetProfileId": "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+      "irreducibleMissingFacts": []
     }
   ],
   "scaleProof": {
-    "proofId": "MFAM-SCALE-PROOF-02-FAMILY-ADMISSION",
+    "proofId": "MFAM-SCALE-PROOF-03-EVIDENCE-TO-ADMISSIONS",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
     "candidateFaceIds": ["face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"],
     "counts": {
       "candidatesEvaluated": 8,
       "commonConformanceRequirements": 6,
-      "reusableEvidenceFactsEstablished": 7,
+      "reusableEvidenceFactsEstablished": 8,
       "representationSpecificRequirementTypes": 2,
-      "representationSpecificFactInstancesRequired": 16,
-      "newlyAdmittedFaces": 0,
-      "remainingHold": 8,
-      "totalExecutableFamilyBindings": 1,
+      "representationSpecificFactInstancesRequired": 12,
+      "newAuthoritativeEvidenceArtifactsAcquired": 5,
+      "reusableEvidenceArtifacts": 2,
+      "newRegistrationOrientationPackages": 2,
+      "newlyAdmittedFaces": 2,
+      "remainingHold": 6,
+      "startingExecutableFamilyBindings": 1,
+      "totalExecutableFamilyBindings": 3,
       "familyAuthorityPackages": 1,
-      "newReusableEvidenceConformancePackagesRequired": 2,
+      "newReusableEvidenceConformancePackagesRequired": 1,
       "productSpecificZeroingImplementations": 0,
       "universalZeroingRoadsAdded": 0
     },
-    "familyLeverage": 1.0,
-    "admissionLeverage": 0.0,
-    "decision": "The reusable contract clears repeated procedure and M16A2 mechanical checks and proves the issued-NSN conformance bridge once. No held representation has the exact calibrated registration package required for executable admission, so all eight remain HOLD without duplicated investigations or unsafe inheritance."
+    "familyLeverage": 3.0,
+    "admissionLeverage": 2.0,
+    "decision": "One NSN production-representation bridge and two exact-representation registration packages admit Speedwell DODM4 M16A2 and the Army-issued M16A2 face. Six faces remain HOLD at product-specific physical-conformance evidence gaps; no zeroing workflow, family mechanics, procedure, or confirmation authority was duplicated."
   }
 }

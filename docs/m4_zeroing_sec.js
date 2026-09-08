@@ -6,7 +6,12 @@
   function secAdapterId(session) {
     const source = session && session.matrixSnapshot || session || {};
     const profile = String(source.target_profile_id || source.targetProfileId || "").toLowerCase();
-    return profile === "baker_m16a2_25m_zero" ? "m16a2-zeroing" : "m4-zeroing";
+    const zeroingAdapters = {
+      baker_m16a2_25m_zero: "m16a2-zeroing",
+      speedwell_dodm4_m16a2_25m_zero: "speedwell-m16a2-zeroing",
+      army_nsn_6920_01_395_2949_m16a2_25m_zero: "army-m16a2-zeroing"
+    };
+    return zeroingAdapters[profile] || "m4-zeroing";
   }
 
   function secAdapterViewModel(session) {
