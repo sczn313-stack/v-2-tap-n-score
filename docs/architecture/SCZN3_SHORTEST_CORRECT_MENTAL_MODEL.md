@@ -2,9 +2,9 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.4 — Founder Approved / LOCKED
-**Current through:** 2026-09-03
-**Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active
+**Version:** 2.5 — Founder Approved / SCALE FLOOR LOCKED
+**Current through:** 2026-09-08
+**Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active with its Target Data / Scoring Data / One Road scale floor locked
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -25,13 +25,13 @@
 | Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Baker M16A2 standard iron-sight TSTT Pass #3 implemented through pre-fire readiness; Founder/Guinea Pig Ron cold-review evidence preserved for the next bounded review pass |
+| Current development | Episode 60 scale milestone: nine materially different targets execute through one shared road with data-defined scoring and exact SEC → Vault → reopen preservation |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 23 — Episode 60 TSTT Pass #3 Founder Cold-Review Lock |
-| Latest checkpoint | `SCZN3_EP60_TSTT_PASS3_FOUNDER_COLD_REVIEW_LOCK_2026-09-03` |
-| Current P-OS baseline | **12 publishers; 1,792 publisher target implementation identities; 2,709 commercial target or target-system offerings** |
+| Latest locked snapshot | Snapshot 26 — Target Data / Scoring Data / One Road Scale Floor |
+| Latest checkpoint | `SCZN3_EP60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR_2026-09-08` |
+| Current P-OS baseline | **12 publishers; 2,924 publisher product records; 2,570 target-only products in the current scale denominator** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Review the seven preserved Founder cold-review items without reopening the Pass #3 floor. Do not extend into live firing, Tap-n-Score, correction, confirmation, or product activation. All three products remain COMING SOON.** |
+| Next active priority | **Begin only from the locked scale floor when separately authorized. Express another target through existing target/scoring data before considering new software. No push, deployment, or public activation is authorized by this floor.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -45,6 +45,20 @@ The broader governed catalog remains preserved knowledge and implementation evid
 `ST-001 Universal Bullseye` is removed from the current Episode 55 batch. Its historical identity collision and records remain untouched.
 
 ## 2. Shortest Correct Mental Model
+
+> **TARGET = DATA.**
+>
+> **SCORING = DATA.**
+>
+> **ROAD = SOFTWARE.**
+
+Printer/P-OS supplies printer-derived target identity and scoring rules as governed data. UGO establishes the photographed target's operative spatial relationship. Shared SCZN3 software consumes that data through one shooter road and preserves the result.
+
+> **More targets ≠ more applications.**
+>
+> **More targets = more data running through the same software.**
+>
+> **Leverage = scale.**
 
 - SCZN3 owns the inherited shooter platform.
 - Publishers own their published products.
@@ -681,6 +695,30 @@ The Year-One 60% SCZN3 / 40% printer allocation applies only to the incremental 
 
 > **Do not re-solve conquered behavior. Retrieve it.**
 
+## 11.2 Episode 60 — Target Data / Scoring Data / One Road Scale Floor
+
+Snapshot 26 locks the source floor at `e249872850409536a368a695b69b682e2584bb01`. One shared execution road now consumes target and scoring contracts rather than target-specific scoring applications:
+
+> **LOAD → TAP AIM / OBSERVATIONS AS APPLICABLE → SHOW RESULTS → SEC → BALLISTIC VAULT → EXACT REOPEN**
+
+The nine-target proof passed 9/9 at 1180px and 9/9 at 390px with zero target-specific production implementations and zero new shooter roads. The proof covers:
+
+- fixed, shooter-declared, multiple, and unnecessary aim-point structures;
+- concentric and named scoring regions;
+- numeric and penalty scoring;
+- repeated and individually identified discrete objects;
+- ordered progression, reset, and completion behavior;
+- classification-only and printer-defined `not_applicable` outcomes; and
+- exact SEC → Ballistic Vault → reopen reconstruction of observations, scoring contract, and result.
+
+The operational ownership boundary is locked:
+
+- **Printer/P-OS** supplies the target's identity, representation, and printer-derived scoring rules/data.
+- **UGO** maps the photographed target and observations into the governed spatial relationship required by the target.
+- **Shared software** validates and executes the target/scoring data through the universal road.
+
+The 2,570-target inventory is scale context, not a claim that all 2,570 targets are executable. The nine-target proof establishes that materially different target structures can be data running through one software road. Future work must first ask **“Does SCZN3 already know how to do this?”** If yes, express the target in data and move. If no, implement the smallest reusable missing behavior once and prove multiple applicable targets can consume it.
+
 ## 12. Do Not Redo
 
 Do not reopen or recreate these settled foundations without contradictory authority and Founder authorization:
@@ -697,6 +735,10 @@ Do not reopen or recreate these settled foundations without contradictory author
 - Target Execution Contract as the exact governed composition boundary
 - multi-capability without multi-authority execution
 - data-only inheritance as the scale acceptance standard
+- **TARGET = DATA / SCORING = DATA / ROAD = SOFTWARE** as the approved Episode 60 scale floor
+- target-specific scoring applications where the shared scoring-data contract can express the printer's rules
+- new shooter roads where the shared LOAD → TAP → SHOW RESULTS → SEC → Vault → exact-reopen road already owns the behavior
+- re-governing aim structure, scoring geometry, region semantics, object behavior, sequence behavior, or preservation separately for each target when the shared contract already expresses it
 - authority gaps as fail-closed authority states, not architecture failures
 - P-OS's four-layer denominator ontology and organization-authority chain
 - Thompson as additive Publisher #12; no Publisher #13 or further expansion without Founder direction
@@ -757,7 +799,7 @@ Standard invocation:
 
 When invoked, read this file before advising, researching, designing, or making SCZN3 decisions. Then consult the linked architecture, Episode Registry, active episode, checkpoint, authority records, and tests only to resolve the current task.
 
-> **SCZN3 first → respect the target → commonize the knowledge → existing authority first for source-specific claims → KTIS for known targets → Publisher Product Boundary → governed registration → Precision Tap observations → UGO → claim-proportional sufficiency → Target Execution Contract → exact capability owner → inherit through data before building → fix shared problems at shared owners → backend owns execution truth → Talking Smart Target/PLAYER teaches → Universal SEC → Equipment Profile → Ballistic Vault → exact reopen → learn from subsequent evidence → tests must prove the actual surface → stop only for genuine contradictions → reality gets the final vote.**
+> **SCZN3 first → Printer/P-OS supplies target and scoring data → respect the target → commonize the knowledge → existing authority first for source-specific claims → KTIS for known targets → Publisher Product Boundary → governed registration → Precision Tap observations → UGO → claim-proportional sufficiency → Target Execution Contract → TARGET = DATA / SCORING = DATA / ROAD = SOFTWARE → exact capability owner → inherit through data before building → fix shared problems at shared owners → backend owns execution truth → Talking Smart Target/PLAYER teaches → Universal SEC → Equipment Profile → Ballistic Vault → exact reopen → learn from subsequent evidence → tests must prove the actual surface → stop only for genuine contradictions → reality gets the final vote.**
 
 ## Living-File Rule
 
@@ -771,6 +813,11 @@ Update this existing file only when meaningful SCZN3 knowledge changes: a substa
 - Keep this file compact enough to function as an operational briefing.
 
 Primary current records:
+
+- [Snapshot 26 — Target Data / Scoring Data / One Road Scale Floor](../history/snapshots/SNAPSHOT_026_EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md)
+- [Episode 60 Scale Floor Governance](../governance/EPISODE60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR_2026-09-08.md)
+- [Scale Pass Evidence](../authority-evidence/platform/target-scoring-data-2026-09-08/SCZN3_SCALE_PASS.md)
+- [Target Scoring Data Contract](../authority-evidence/platform/target-scoring-data-2026-09-08/TARGET_SCORING_DATA_CONTRACT.md)
 
 - [Episode 54 — Universal Inheritance Hierarchy](../history/episodes/EPISODE_54_UNIVERSAL_INHERITANCE_HIERARCHY.md)
 - [Episode 55 — IDPA: The First Inherited Smart Target](../history/episodes/EPISODE_55_IDPA_FIRST_INHERITED_SMART_TARGET.md)

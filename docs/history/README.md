@@ -12,6 +12,8 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
+- [Snapshot 26 — Target Data / Scoring Data / One Road Scale Floor](./snapshots/SNAPSHOT_026_EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md)
+- [Episode 60 Target Data / Scoring Data / One Road Scale Floor](./episodes/EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md)
 - [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](./snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
 - [Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment](./snapshots/SNAPSHOT_022_EPISODE_60_TSTT_ADAPTIVE_ROUTING_AMENDMENT.md)
 - [Episode 60 M/FAM / TSTT Course Correction](./episodes/EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
@@ -44,6 +46,7 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current episode continuity
 
+- [Episode 60 Target Data / Scoring Data / One Road Scale Floor](./episodes/EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md) locks the nine-target, one-road scale milestone under Snapshot 26 and Keepsake #24.
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
 - [Episode 60 TSTT Founder Review Pass #4](./episodes/EPISODE_60_TSTT_FOUNDER_REVIEW_PASS4.md) removes the equipment-confirmation entry gate and makes pre-start PLAYER discovery immediate while preserving strict equipment-specific execution authority.
 - [Episode 60 TSTT Chapter 1 Founder-Approved Floor](./episodes/EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) closes KNOW YOUR TARGET and establishes Snapshot 24 as the clean Chapter 2 next floor.
@@ -53,7 +56,7 @@ This directory is the living historical record for SCZN3. It separates the story
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
 - [Keepsake #19](../governance/KEEPSAKE_VAULT_INDEX.md) is the production-proven frontend recovery floor.
-- [Keepsake #23](../governance/KEEPSAKE_VAULT_INDEX.md) is the canonical M4 Episode 60 Victory #2 development floor.
+- [Keepsake #24](../governance/KEEPSAKE_VAULT_INDEX.md) is the canonical Episode 60 Target Data / Scoring Data / One Road scale-development floor.
 
 ## Latest closed episode
 

@@ -344,6 +344,7 @@ Composable Target Authority.
 
 - [Chapter 1 Founder-Approved Floor](./EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) — KNOW YOUR TARGET closed; Snapshot 24.
 - [Chapter 2 Founder-Approved Floor](./EPISODE_60_TSTT_CHAPTER_2_FOUNDER_APPROVED_FLOOR.md) — THE SIGHTS closed; Snapshot 25; Chapter 3 next.
+- [Target Data / Scoring Data / One Road Scale Floor](./EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md) — nine diverse targets, one road, zero target-specific production implementations; Snapshot 26.
 
 ```text
 ### Episode number: <number or Needs Review>
