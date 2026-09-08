@@ -3,7 +3,7 @@
 
   const clean = value => typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
-  const CONTRACT_ADAPTERS = Object.freeze(["collection-hand-family", "cue-drill-family", "decision-scenario-family", "diagnostic-feedback-family", "qualification-family", "smart-evidence-family", "precision-open-score-family", "recreational-challenge-family"]);
+  const CONTRACT_ADAPTERS = Object.freeze(["collection-hand-family", "cue-drill-family", "decision-scenario-family", "diagnostic-feedback-family", "qualification-family", "smart-evidence-family", "precision-open-score-family", "recreational-challenge-family", "target-scoring-family"]);
 
   function canonicalResult(session) {
     return session && (session.authorityPackage || session.backendAuthorityPackage) || null;
@@ -32,6 +32,10 @@
       return observations.length > 0 && reconciliation.countsMatch === true && reconciliation.capturedObservationCount === observations.length && reconciliation.acceptedObservationCount === observations.length && result.scoring && result.scoring.status === "not_applicable";
     }
     if (result.missionFamily === "precisionRingScore") return reconciliation.status === "reconciled" && result.scoring && result.scoring.status === "complete";
+    if (result.missionFamily === "targetScoring") {
+      const classifications = Array.isArray(result.classifications) ? result.classifications : [];
+      return result.status === "complete" && reconciliation.status === "reconciled" && reconciliation.countsMatch === true && reconciliation.recordedObservationCount === classifications.length && classifications.length > 0 && result.scoring && ["complete", "not_applicable"].includes(result.scoring.status);
+    }
     if (result.missionFamily === "recreationalChallenge") return reconciliation.status === "reconciled" && result.challenge && ["in_progress", "complete"].includes(result.challenge.status);
     if (result.missionFamily === "collectionHandEvaluation") {
       const turns = Array.isArray(result.turns) ? result.turns : [], observations = Array.isArray(result.observations) ? result.observations : [], players = Array.isArray(result.players) ? result.players : [], claim = result.claim || {};
@@ -103,6 +107,13 @@
     if (result.missionFamily === "diagnosticFeedbackEvaluation") return { label: "Publisher Label Match", value: `${result.reconciliation.matched} matched`, detail: `${result.reconciliation.unmapped} unmapped · ${result.reconciliation.ambiguous} ambiguous · not an SCZN3 diagnosis` };
     if (result.missionFamily === "smartEvidenceCapture") return { label: "Evidence Recorded", value: String(result.observations.length), detail: `${result.observations.length} shot observations` };
     if (result.missionFamily === "precisionRingScore") return { label: "Open Score", value: String(result.scoring.total), detail: result.scoring.completion === "open" ? "Shooter-controlled completion" : "Shooter declared complete" };
+    if (result.missionFamily === "targetScoring") {
+      const scoring = result.scoring || {};
+      if (scoring.status === "not_applicable") return { label: "Target Result", value: `${scoring.observationCount || 0} recorded`, detail: "Printer defines no score · evidence preserved" };
+      if (["numeric_regions", "penalty_regions"].includes(scoring.model)) return { label: scoring.model === "penalty_regions" ? "Penalty Total" : "Target Score", value: String(scoring.total), detail: `${scoring.observationCount} governed observations` };
+      if (scoring.model === "ordered_objects") return { label: "Ordered Objects", value: `${scoring.completedInOrder} in order`, detail: scoring.nextExpectedObjectId ? `Next: ${scoring.nextExpectedObjectId}` : "Sequence complete" };
+      return { label: "Target Result", value: `${scoring.observationCount} classified`, detail: `${Object.keys(scoring.regionCounts || {}).length} target region${Object.keys(scoring.regionCounts || {}).length === 1 ? "" : "s"}` };
+    }
     const winner = result.challenge && result.challenge.winnerPlayerId;
     return { label: "Challenge", value: winner ? `Winner: ${winner}` : "In progress", detail: `${(result.events || []).length} governed events` };
   }

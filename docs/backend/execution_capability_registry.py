@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Mapping, Optional
 
-from executors import collection_hand_evaluator, cue_drill_orchestrator, decision_scenario_evaluator, diagnostic_feedback_evaluator, precision_open_score, qualification_executor, recreational_challenge, sec_progression_evaluator, smart_evidence_capture
+from executors import collection_hand_evaluator, cue_drill_orchestrator, decision_scenario_evaluator, declarative_target_score, diagnostic_feedback_evaluator, precision_open_score, qualification_executor, recreational_challenge, sec_progression_evaluator, smart_evidence_capture
 
 
 @dataclass(frozen=True)
@@ -28,6 +28,7 @@ OWNERS = (
     CapabilityOwner("qualificationCourseEvaluation", "qualificationResult", "1", "qualification-executor", "1", "qualification-family", "qualification-preservation", qualification_executor.execute, qualification_executor.validate_result, qualification_executor.transition),
     CapabilityOwner("diagnosticFeedbackEvaluation", "diagnosticFeedbackResult", "1", "diagnostic-feedback-evaluator", "1", "diagnostic-feedback-family", "diagnostic-feedback-preservation", diagnostic_feedback_evaluator.execute, diagnostic_feedback_evaluator.validate_result),
     CapabilityOwner("smartEvidenceCapture", "smartEvidenceResult", "1", "smart-evidence-capture", "1", "smart-evidence-family", "smart-evidence-preservation", smart_evidence_capture.execute, smart_evidence_capture.validate_result),
+    CapabilityOwner("targetScoring", "targetScoreResult", "1", "declarative-target-score", "1", "target-scoring-family", "target-scoring-preservation", declarative_target_score.execute, declarative_target_score.validate_result),
     CapabilityOwner("precisionRingScore", "precisionScoreResult", "1", "precision-open-score", "1", "precision-open-score-family", "precision-open-score-preservation", precision_open_score.execute, precision_open_score.validate_result),
     CapabilityOwner("recreationalChallenge", "challengeResult", "1", "recreational-challenge", "1", "recreational-challenge-family", "recreational-challenge-preservation", recreational_challenge.execute, recreational_challenge.validate_result),
     CapabilityOwner("secProgressionEvaluation", "secProgressionResult", "1", "sec-progression-evaluator", "1", "sec-progression-family", "sec-progression-preservation", sec_progression_evaluator.execute, sec_progression_evaluator.validate_result),

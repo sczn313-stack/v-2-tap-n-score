@@ -825,13 +825,15 @@ def resolve_target_authority(
     requested = clean_text(target_id).lower()
     canonical = TARGET_ID_ALIASES.get(requested, requested)
     profile = TARGET_AUTHORITY_PROFILES.get(canonical)
-    if profile:
+    if profile and not clean_text(mission_family):
         return deepcopy(profile)
     resolver = execution_contract_resolver or runtime_resolver()
     try:
         return _profile_from_execution_contract(resolver.resolve(canonical, mission_family))
     except TargetExecutionContractError as exc:
         if exc.payload.get("reason") == "execution_contract_unavailable":
+            if profile and (not mission_family or profile.get("missionIdentity", {}).get("missionFamily") == mission_family):
+                return deepcopy(profile)
             raise SessionAuthorityError("target_unavailable", "target_id_not_registered", 404) from exc
         raise SessionAuthorityError(exc.payload.get("status", "authority_unavailable"), exc.payload["reason"], 409) from exc
 

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_22740_vital_dude-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "GUNFUN_EP56_FULL_CATALOG_PRINTER_AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_22740_vital_dude",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_22740_VITAL_DUDE_EVIDENCE_V1",
+    "authorityId": "GUNFUN_EP56_COHORT_PUBLISHER_AUTHORITY_AUDIT_V1:E56-T08",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-22740",
+      "name": "Vital Dude",
+      "sku": "22740",
+      "dimensions": {
+        "width": 23,
+        "height": 35,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_22740_vital_dude-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "regions": [],
+        "ugoAuthority": "ATP_GUNFUN_22740_VITAL_DUDE_EVIDENCE_V1"
+      },
+      "digest": "3fb43f162489aee9415e4c742dd61bf1dc0d11086305b3582c15dd891935c3dd"
+    },
+    "registration": {
+      "id": "gunfun_22740_vital_dude-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22740.jpg",
+        "assetSha256": "ee30970efbeb98e20afa5780cbe6bfcc9e7767206ad40bed2a08e2d31c0fd576",
+        "assetAlt": "Vital Dude, SKU 22740",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "86ed023ba5f45b2230f8fd768386969c4ab0a04687a305c613cee245e5b09d4a"
+    },
+    "scoring": {
+      "id": "gunfun_22740_vital_dude-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "printer_defines_no_score",
+        "publisherRuleAuthority": {
+          "source": "GunFun product 22740",
+          "rule": "publisher defines anatomical artwork and no score"
+        }
+      },
+      "digest": "cf4ec6b290f9b4dd7e72dda0f1d408c5f12641716a7e2864ba840ed89fcb167f"
+    },
+    "mission": {
+      "id": "gunfun_22740_vital_dude-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "eae46514d683f339740ecf449fd38547b2e9c4dd088dfd90b0c173de69ec1ae5"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

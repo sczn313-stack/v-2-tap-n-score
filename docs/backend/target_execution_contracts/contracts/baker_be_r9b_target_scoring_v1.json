@@ -1,0 +1,259 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-baker_be_r9b-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "BAKER-PRINTER-AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "baker_be_r9b",
+    "version": "1",
+    "atpId": "ATP_BAKER_BE_R9B_TARGET_SCORING_V1",
+    "authorityId": "BAKER_BE_R9B_PRINTER_AUTHORITY",
+    "publisher": {
+      "id": "baker-targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com"
+    },
+    "product": {
+      "id": "BAKER_BE_R9B",
+      "name": "Rifle Nine Bulls Eyes Target",
+      "sku": "BE-R9B"
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "baker_be_r9b-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "regions": [
+          {
+            "regionId": "bull_1_1",
+            "shape": "circle",
+            "cx": 0.22,
+            "cy": 0.25,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_1_2",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.25,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_1_3",
+            "shape": "circle",
+            "cx": 0.78,
+            "cy": 0.25,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_2_1",
+            "shape": "circle",
+            "cx": 0.22,
+            "cy": 0.5,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_2_2",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_2_3",
+            "shape": "circle",
+            "cx": 0.78,
+            "cy": 0.5,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_3_1",
+            "shape": "circle",
+            "cx": 0.22,
+            "cy": 0.75,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_3_2",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.75,
+            "radius": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_3_3",
+            "shape": "circle",
+            "cx": 0.78,
+            "cy": 0.75,
+            "radius": 0.105,
+            "priority": 10
+          }
+        ],
+        "ugoAuthority": "baker-publisher-nine-bull-representation-v1"
+      },
+      "digest": "2713d9f1486f328d713b212f142eba6d041e8ec7b1cd66b9f4bf18fb89ce59dc"
+    },
+    "registration": {
+      "id": "baker_be_r9b-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/catalog-targets/BAKER_BE_R9B_PUBLISHER_IMAGE_V1.webp",
+        "assetSha256": "7e56bc75d93c6b1080ba2af87c362dc50cc585e1f932db1d6370315fdf3ef1cf",
+        "assetAlt": "Rifle Nine Bulls Eyes Target, SKU BE-R9B",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f805660fc8d82f5fc125c4f09a6151c88d82a5aa698c9c2e369538389461c9bb"
+    },
+    "scoring": {
+      "id": "baker_be_r9b-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "bull_1_1": {
+            "label": "Bull 1-1",
+            "objectId": "bull_1_1"
+          },
+          "bull_1_2": {
+            "label": "Bull 1-2",
+            "objectId": "bull_1_2"
+          },
+          "bull_1_3": {
+            "label": "Bull 1-3",
+            "objectId": "bull_1_3"
+          },
+          "bull_2_1": {
+            "label": "Bull 2-1",
+            "objectId": "bull_2_1"
+          },
+          "bull_2_2": {
+            "label": "Bull 2-2",
+            "objectId": "bull_2_2"
+          },
+          "bull_2_3": {
+            "label": "Bull 2-3",
+            "objectId": "bull_2_3"
+          },
+          "bull_3_1": {
+            "label": "Bull 3-1",
+            "objectId": "bull_3_1"
+          },
+          "bull_3_2": {
+            "label": "Bull 3-2",
+            "objectId": "bull_3_2"
+          },
+          "bull_3_3": {
+            "label": "Bull 3-3",
+            "objectId": "bull_3_3"
+          }
+        },
+        "outsideRule": {
+          "label": "Outside bulls"
+        },
+        "publisherRuleAuthority": {
+          "source": "Baker product BE-R9B",
+          "rule": "nine identified bullseyes; no numeric score inferred"
+        }
+      },
+      "digest": "4df8581ad21fedc78a0506e464b3fafe6a244d9137b47cca5304c1754c3aee29"
+    },
+    "mission": {
+      "id": "baker_be_r9b-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "07d502424c0f3de7862608e79a2dcecda3003c221a36318ad5c89685501356e0"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

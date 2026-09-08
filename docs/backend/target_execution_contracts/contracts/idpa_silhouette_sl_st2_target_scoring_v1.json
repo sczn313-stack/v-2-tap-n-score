@@ -1,0 +1,295 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-idpa_silhouette_sl_st2-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER-APPROVED-SCZN3-SL-ST2-AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "idpa_silhouette_sl_st2",
+    "version": "1",
+    "atpId": "ATP_BAKER_SL_ST2_TIMED_PAIR_7YD_V1",
+    "authorityId": "BAKER_SL_ST2_23X35_PRODUCT_AUTHORITY_V1",
+    "publisher": {
+      "id": "baker-targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com"
+    },
+    "product": {
+      "id": "BAKER_SL_ST2",
+      "name": "Silhouette Target (IDPA)",
+      "sku": "SL-ST2",
+      "dimensions": {
+        "width": 23,
+        "height": 35,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "idpa_silhouette_sl_st2-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "regions": [
+          {
+            "regionId": "down_zero_head",
+            "shape": "circle",
+            "cx": 0.49441340782122906,
+            "cy": 0.18305814788226848,
+            "radius": 0.074487895716946,
+            "priority": 50
+          },
+          {
+            "regionId": "down_zero_torso",
+            "shape": "ellipse",
+            "cx": 0.49441340782122906,
+            "cy": 0.4623115577889447,
+            "radiusX": 0.14804469273743018,
+            "radiusY": 0.11414213926776741,
+            "priority": 50
+          },
+          {
+            "regionId": "down_one_head",
+            "shape": "polygon",
+            "points": [
+              [
+                0.382682,
+                0.098349
+              ],
+              [
+                0.607076,
+                0.098349
+              ],
+              [
+                0.607076,
+                0.262024
+              ],
+              [
+                0.382682,
+                0.262024
+              ]
+            ],
+            "priority": 30
+          },
+          {
+            "regionId": "down_one_torso",
+            "shape": "polygon",
+            "points": [
+              [
+                0.382682,
+                0.262024
+              ],
+              [
+                0.273743,
+                0.347452
+              ],
+              [
+                0.273743,
+                0.631012
+              ],
+              [
+                0.382682,
+                0.773869
+              ],
+              [
+                0.606145,
+                0.773869
+              ],
+              [
+                0.716015,
+                0.631012
+              ],
+              [
+                0.716015,
+                0.347452
+              ],
+              [
+                0.607076,
+                0.262024
+              ]
+            ],
+            "priority": 30
+          },
+          {
+            "regionId": "down_three",
+            "shape": "polygon",
+            "points": [
+              [
+                0.244879,
+                0.262742
+              ],
+              [
+                0.74581,
+                0.262742
+              ],
+              [
+                0.815642,
+                0.34458
+              ],
+              [
+                0.815642,
+                0.80402
+              ],
+              [
+                0.724395,
+                0.953338
+              ],
+              [
+                0.266294,
+                0.953338
+              ],
+              [
+                0.174115,
+                0.80402
+              ],
+              [
+                0.174115,
+                0.34458
+              ]
+            ],
+            "priority": 10
+          }
+        ],
+        "ugoAuthority": "UGO_BAKER_SL_ST2_23X35_TARGET_PLANE_V1"
+      },
+      "digest": "76ceda6ef1d6cf0ed20904d0cde34d3b258071d17a2a45e68fb9b1e0e8632edc"
+    },
+    "registration": {
+      "id": "idpa_silhouette_sl_st2-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg",
+        "assetSha256": "9fb11d843c09336bce46e93a7c163eb9f8653e439ad0f4950d419d75d7faf5e9",
+        "assetAlt": "Silhouette Target (IDPA), SKU SL-ST2",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "143439c1fe53cade2a6444af5afc9052db1ffe15f62f323e5dff695f9a744fe3"
+    },
+    "scoring": {
+      "id": "idpa_silhouette_sl_st2-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "penalty_regions",
+        "regionRules": {
+          "down_zero_head": {
+            "label": "-0",
+            "value": 0
+          },
+          "down_zero_torso": {
+            "label": "-0",
+            "value": 0
+          },
+          "down_one_head": {
+            "label": "-1",
+            "value": -1
+          },
+          "down_one_torso": {
+            "label": "-1",
+            "value": -1
+          },
+          "down_three": {
+            "label": "-3",
+            "value": -3
+          }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": -5
+        },
+        "publisherRuleAuthority": {
+          "source": "SCZN3_SL_ST2_TIMED_PAIR_7YD_V1 + IDPA_RULEBOOK_2026_2",
+          "rule": "0/-1/-3 points-down regions; outside -5"
+        }
+      },
+      "digest": "3d5d5e6c5e6193942fe860fa0eec29dfcac084cd504ada10a15ef4f1f9314bca"
+    },
+    "mission": {
+      "id": "idpa_silhouette_sl_st2-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "8ed1efa71a4131ea00bcc8d6d6acaa936baa08574e2323dd20949148cfac704b"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

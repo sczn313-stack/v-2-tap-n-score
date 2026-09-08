@@ -23,6 +23,7 @@
     UNIVERSAL_PRACTICE: "universal-practice",
     CONTRACT_SMART_EVIDENCE: "smart-evidence-family",
     CONTRACT_PRECISION_OPEN_SCORE: "precision-open-score-family",
+    CONTRACT_TARGET_SCORING: "target-scoring-family",
     CONTRACT_RECREATIONAL_CHALLENGE: "recreational-challenge-family",
     CONTRACT_COLLECTION_HAND: "collection-hand-family",
     CONTRACT_CUE_DRILL: "cue-drill-family",
@@ -152,6 +153,7 @@
     if (pkg && pkg.authoritySource === "backend-authoritative" && contract && contract.contractFingerprint) {
       if (contract.secAdapterFamilyId === ADAPTERS.CONTRACT_SMART_EVIDENCE && mission === "smartevidencecapture" && result === "smartevidenceresult") return ADAPTERS.CONTRACT_SMART_EVIDENCE;
       if (contract.secAdapterFamilyId === ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE && mission === "precisionringscore" && result === "precisionscoreresult") return ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE;
+      if (contract.secAdapterFamilyId === ADAPTERS.CONTRACT_TARGET_SCORING && mission === "targetscoring" && result === "targetscoreresult") return ADAPTERS.CONTRACT_TARGET_SCORING;
       if (contract.secAdapterFamilyId === ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE && mission === "recreationalchallenge" && result === "challengeresult") return ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE;
       if (contract.secAdapterFamilyId === ADAPTERS.CONTRACT_COLLECTION_HAND && mission === "collectionhandevaluation" && result === "collectionhandresult") return ADAPTERS.CONTRACT_COLLECTION_HAND;
       if (contract.secAdapterFamilyId === ADAPTERS.CONTRACT_CUE_DRILL && mission === "cuedrillorchestration" && result === "cuedrillresult") return ADAPTERS.CONTRACT_CUE_DRILL;

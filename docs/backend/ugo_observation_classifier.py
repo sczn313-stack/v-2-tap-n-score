@@ -25,6 +25,22 @@ def contains(region: Mapping[str, Any], x: float, y: float, reason: str, error_t
         return hypot(x - float(region["cx"]), y - float(region["cy"])) <= float(region["radius"])
     if shape == "rectangle":
         return float(region["xMin"]) <= x <= float(region["xMax"]) and float(region["yMin"]) <= y <= float(region["yMax"])
+    if shape == "ellipse":
+        rx, ry = float(region["radiusX"]), float(region["radiusY"])
+        return rx > 0 and ry > 0 and ((x - float(region["cx"])) / rx) ** 2 + ((y - float(region["cy"])) / ry) ** 2 <= 1
+    if shape == "polygon":
+        points = region.get("points")
+        if not isinstance(points, Sequence) or len(points) < 3:
+            raise error_type(reason)
+        inside = False
+        prior_x, prior_y = map(float, points[-1])
+        for raw in points:
+            current_x, current_y = map(float, raw)
+            crosses = (current_y > y) != (prior_y > y)
+            if crosses and x < (prior_x - current_x) * (y - current_y) / (prior_y - current_y) + current_x:
+                inside = not inside
+            prior_x, prior_y = current_x, current_y
+        return inside
     raise error_type(reason)
 
 

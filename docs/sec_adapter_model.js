@@ -333,6 +333,13 @@
       preservationCapabilities: PRESERVATION
     },
     {
+      adapterId: "target-scoring-family", missionFamily: "targetScoring", resultPackageType: "targetScoreResult", resultPackageVersion: "1", missionLabel: "Target Scoring",
+      authorityReferences: { session: SESSION_AUTHORITY, result: { packageType: "targetScoreResult", source: "backend-authoritative" }, executionContract: { packageType: "targetExecutionContract", source: "backend-authoritative" }, scoringRules: { packageType: "targetScoringData", source: "publisher-authoritative" } },
+      scoringPresentationFamily: FAMILY.TARGET_DATA,
+      contentModel: { result: { authorityRef: "resultPackage.scoring" }, components: [component("evidence", "registered-target-evidence", "session.evidence"), component("measurement", "target-data-region-classification", "resultPackage.classifications"), component("validation", "target-data-score-reconciliation", "resultPackage.reconciliation"), component("preservation", "sec-preservation", "session.preservation")] },
+      preservationCapabilities: PRESERVATION
+    },
+    {
       adapterId: "recreational-challenge-family", missionFamily: "recreationalChallenge", resultPackageType: "challengeResult", resultPackageVersion: "1", missionLabel: "Recreational Challenge",
       authorityReferences: { session: SESSION_AUTHORITY, result: { packageType: "challengeResult", source: "backend-authoritative" }, executionContract: { packageType: "targetExecutionContract", source: "backend-authoritative" } },
       scoringPresentationFamily: FAMILY.QUALIFICATION_PASS_FAIL,

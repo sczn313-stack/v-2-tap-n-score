@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "sczn3-target-scoring-scale-proof-v1",
+  "date": "2026-09-08",
+  "result": "PASS",
+  "cohortSize": 9,
+  "sharedShooterRoadsAdded": 0,
+  "targetSpecificProductionImplementationsAdded": 0,
+  "sharedExecutor": "declarative-target-score@1",
+  "sharedMissionFamily": "targetScoring",
+  "sharedResultPackage": "targetScoreResult@1",
+  "sharedSECAdapter": "target-scoring-family@1",
+  "viewports": [1180, 390],
+  "road": ["LOAD", "TAP", "SHOW_RESULTS", "SEC", "EXACT_REOPEN", "BALLISTIC_VAULT"],
+  "totals": {
+    "sessionAdmitted": 9,
+    "resultCompleted": 9,
+    "printerScoringComplete": 8,
+    "truthfulNotApplicable": 1,
+    "secPreserved": 9,
+    "exactReopen": 9,
+    "ballisticVault": 9
+  },
+  "targets": [
+    {"publisher":"GunFun","sku":"13120","profile":"gunfun_13120_small_critical_shots","model":"named_regions","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"GunFun","sku":"22200","profile":"gunfun_22200_b27e_black","model":"numeric_regions","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"Baker Targets","sku":"SL-ST2","profile":"idpa_silhouette_sl_st2","model":"penalty_regions","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"GunFun","sku":"22470","profile":"gunfun_22470_uspsa_ipsc","model":"named_regions","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"GunFun","sku":"22040","profile":"gunfun_22040_idpa_white","model":"penalty_regions","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"GunFun","sku":"12070","profile":"gunfun_12070_big_circle","model":"numeric_regions","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"Baker Targets","sku":"BE-R9B","profile":"baker_be_r9b","model":"multiple_bulls","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"Baker Targets","sku":"GF-BB-C","profile":"baker_gf_bb_c","model":"ordered_objects","scoringStatus":"complete","result":"PASS"},
+    {"publisher":"GunFun","sku":"22740","profile":"gunfun_22740_vital_dude","model":"not_applicable","scoringStatus":"not_applicable","result":"PASS"}
+  ],
+  "validation": {
+    "backendContract": "PASS",
+    "legacySessionCompatibility": "PASS",
+    "targetExecutionContractBuildAdmission": "PASS",
+    "secAdapterContract": "PASS",
+    "secVaultArchitecture": "PASS",
+    "browser1180": "9/9 PASS",
+    "browser390": "9/9 PASS",
+    "productionBuild": "426 public files built"
+  },
+  "elapsedMinutesApproximate": 18
+}

@@ -1,0 +1,282 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_22040_idpa_white-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "GUNFUN_EP56_FULL_CATALOG_PRINTER_AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_22040_idpa_white",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_22040_IDPA_WHITE_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-093",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-22040",
+      "name": "IDPA White",
+      "sku": "22040",
+      "dimensions": {
+        "width": 23,
+        "height": 35,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_22040_idpa_white-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "regions": [
+          {
+            "regionId": "zero_head",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.17,
+            "radiusX": 0.09,
+            "radiusY": 0.07,
+            "priority": 50
+          },
+          {
+            "regionId": "zero_torso",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.45,
+            "radiusX": 0.18,
+            "radiusY": 0.14,
+            "priority": 50
+          },
+          {
+            "regionId": "one_head",
+            "shape": "rectangle",
+            "xMin": 0.37,
+            "yMin": 0.06,
+            "xMax": 0.64,
+            "yMax": 0.29,
+            "priority": 30
+          },
+          {
+            "regionId": "one_torso",
+            "shape": "polygon",
+            "points": [
+              [
+                0.37,
+                0.29
+              ],
+              [
+                0.63,
+                0.29
+              ],
+              [
+                0.76,
+                0.39
+              ],
+              [
+                0.76,
+                0.64
+              ],
+              [
+                0.63,
+                0.79
+              ],
+              [
+                0.37,
+                0.79
+              ],
+              [
+                0.24,
+                0.64
+              ],
+              [
+                0.24,
+                0.39
+              ]
+            ],
+            "priority": 30
+          },
+          {
+            "regionId": "three",
+            "shape": "polygon",
+            "points": [
+              [
+                0.2,
+                0.28
+              ],
+              [
+                0.8,
+                0.28
+              ],
+              [
+                0.9,
+                0.37
+              ],
+              [
+                0.9,
+                0.8
+              ],
+              [
+                0.77,
+                0.96
+              ],
+              [
+                0.23,
+                0.96
+              ],
+              [
+                0.1,
+                0.8
+              ],
+              [
+                0.1,
+                0.37
+              ]
+            ],
+            "priority": 10
+          }
+        ],
+        "ugoAuthority": "publisher-printed-idpa-region-data-v1"
+      },
+      "digest": "af6647927d8eafd4cdb71d91fa49c5c260f519af33e9cab09718d68ca99479b3"
+    },
+    "registration": {
+      "id": "gunfun_22040_idpa_white-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22040.jpg",
+        "assetSha256": "6358c6e75c675251134bdd92707ea2c38d20bc623c5bb2c088d1eec6d1885fed",
+        "assetAlt": "IDPA White, SKU 22040",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "ae6dc9a024e31ade2fb43b99a59ec8ae5dd19f3faf9da67f19fbae1618665719"
+    },
+    "scoring": {
+      "id": "gunfun_22040_idpa_white-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "penalty_regions",
+        "regionRules": {
+          "zero_head": {
+            "label": "-0",
+            "value": 0
+          },
+          "zero_torso": {
+            "label": "-0",
+            "value": 0
+          },
+          "one_head": {
+            "label": "-1",
+            "value": -1
+          },
+          "one_torso": {
+            "label": "-1",
+            "value": -1
+          },
+          "three": {
+            "label": "-3",
+            "value": -3
+          }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": -5
+        },
+        "publisherRuleAuthority": {
+          "source": "GunFun product 22040 representation + governed IDPA miss rule",
+          "rule": "printed 0/-1/-3 regions; outside -5"
+        }
+      },
+      "digest": "06393b18cc3d1ebb1461b4f3a6a0c28c292b33027081ddfa5c81c4f72ba28d6b"
+    },
+    "mission": {
+      "id": "gunfun_22040_idpa_white-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "3feb98b38dcea244d86396ae905131bba1ae650b1cd0b43a4072283c0c4eba0c"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

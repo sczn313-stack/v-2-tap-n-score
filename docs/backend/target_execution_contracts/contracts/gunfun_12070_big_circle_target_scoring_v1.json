@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_12070_big_circle-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "GUNFUN_EP56_FULL_CATALOG_PRINTER_AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_12070_big_circle",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_12070_BIG_CIRCLE_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-015",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-12070",
+      "name": "Big Circle",
+      "sku": "12070",
+      "dimensions": {
+        "width": 19,
+        "height": 25,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_12070_big_circle-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "regions": [
+          {
+            "regionId": "1",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.08,
+            "radiusY": 0.065,
+            "priority": 80
+          },
+          {
+            "regionId": "2",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.14,
+            "radiusY": 0.11,
+            "priority": 70
+          },
+          {
+            "regionId": "3",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.2,
+            "radiusY": 0.16,
+            "priority": 60
+          },
+          {
+            "regionId": "4",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.26,
+            "radiusY": 0.21,
+            "priority": 50
+          },
+          {
+            "regionId": "5",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.32,
+            "radiusY": 0.26,
+            "priority": 40
+          },
+          {
+            "regionId": "6",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.37,
+            "radiusY": 0.3,
+            "priority": 30
+          },
+          {
+            "regionId": "7",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.42,
+            "radiusY": 0.34,
+            "priority": 20
+          },
+          {
+            "regionId": "8",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.53,
+            "radiusX": 0.47,
+            "radiusY": 0.37,
+            "priority": 10
+          }
+        ],
+        "ugoAuthority": "publisher-printed-concentric-ring-data-v1"
+      },
+      "digest": "bc162786427ff323b63eaa075d2c0dcef40b63d12a56645d0ee57f6d4bd21abf"
+    },
+    "registration": {
+      "id": "gunfun_12070_big_circle-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/12070.jpg",
+        "assetSha256": "15e31a504c6629593c3b6e4dba3b3626611ccf555d929a2e111a5b52ce3a96b5",
+        "assetAlt": "Big Circle, SKU 12070",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "df7361d39d1d997b0c946dd063cadae2d39fdc7a1a0458253aca43a50baeee66"
+    },
+    "scoring": {
+      "id": "gunfun_12070_big_circle-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "1": {
+            "label": "1",
+            "value": 1
+          },
+          "2": {
+            "label": "2",
+            "value": 2
+          },
+          "3": {
+            "label": "3",
+            "value": 3
+          },
+          "4": {
+            "label": "4",
+            "value": 4
+          },
+          "5": {
+            "label": "5",
+            "value": 5
+          },
+          "6": {
+            "label": "6",
+            "value": 6
+          },
+          "7": {
+            "label": "7",
+            "value": 7
+          },
+          "8": {
+            "label": "8",
+            "value": 8
+          }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": 0
+        },
+        "publisherRuleAuthority": {
+          "source": "GunFun product 12070 publisher representation",
+          "rule": "printed concentric numeric regions 1 through 8"
+        }
+      },
+      "digest": "b62a735b95bfdeece1651835f2b18bfeba0ea88778890a515d24f59e9277a7f9"
+    },
+    "mission": {
+      "id": "gunfun_12070_big_circle-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": true,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "bae5eb70fb085cfd02bc75fb64b0b366adb5264aa3790430167a448bc12b5651"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

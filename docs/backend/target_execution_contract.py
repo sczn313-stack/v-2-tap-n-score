@@ -27,6 +27,7 @@ TARGET_AUTHORITY_FAMILIES = {
     "recreationalChallenge": "challengeResult",
     "secProgressionEvaluation": "secProgressionResult",
     "smartEvidenceCapture": "smartEvidenceResult",
+    "targetScoring": "targetScoreResult",
 }
 EXECUTABLE_REGISTRATION_ROLES = {"scorable_canonical_asset", "evidence_capture_asset"}
 

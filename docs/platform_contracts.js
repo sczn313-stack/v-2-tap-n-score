@@ -45,7 +45,8 @@
     ZEROING_CORRECTION: "zeroing-correction",
     HIGHEST_SCORE_WINS: "highest-score-wins",
     LOWEST_SCORE_WINS: "lowest-score-wins",
-    QUALIFICATION_PASS_FAIL: "qualification-pass-fail"
+    QUALIFICATION_PASS_FAIL: "qualification-pass-fail",
+    TARGET_DATA: "target-data"
   });
   const REGISTERED_PRESENTATION_FAMILIES = Object.freeze(Object.values(SCORING_PRESENTATION_FAMILIES));
   const secAdapterRegistry = new Map();
