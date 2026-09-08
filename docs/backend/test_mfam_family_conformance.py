@@ -27,13 +27,12 @@ def test_baker_reference_passes_every_gate_and_has_the_existing_binding():
     assert result["targetProfileId"] == "baker_m16a2_25m_zero"
 
 
-def test_all_eight_candidates_are_batch_evaluated_with_four_exact_admissions():
+def test_all_eight_candidates_are_batch_evaluated_and_admitted():
     proof = scale_proof()
     result = run_family_admission_batch(proof["contractId"], proof["candidateFaceIds"])
     assert result["candidatesEvaluated"] == 8
-    assert {item["faceId"] for item in result["admitted"]} == {"face-016", "face-020", "face-027", "face-032"}
-    assert len(result["hold"]) == 4
-    assert all(len(item["irreducibleMissingFacts"]) == 1 for item in result["hold"])
+    assert {item["faceId"] for item in result["admitted"]} == set(proof["candidateFaceIds"])
+    assert result["hold"] == []
 
 
 def test_issued_nsn_bridge_and_exact_packages_clear_speedwell_and_army():
@@ -44,10 +43,11 @@ def test_issued_nsn_bridge_and_exact_packages_clear_speedwell_and_army():
     assert speedwell["disposition"] == army["disposition"] == "ADMITTED"
 
 
-def test_held_publisher_artwork_never_inherits_another_registration():
+def test_new_publisher_artwork_keeps_exact_registration_and_clears_all_gates():
     for face_id in ("face-006", "face-013", "face-018", "face-025"):
         result = evaluate_family_candidate(face_id)
-        assert "registration_orientation" in result["missingGateIds"]
+        assert result["missingGateIds"] == []
+        assert result["disposition"] == "ADMITTED"
 
 
 def test_new_admissions_reuse_family_facts_but_keep_exact_registration():

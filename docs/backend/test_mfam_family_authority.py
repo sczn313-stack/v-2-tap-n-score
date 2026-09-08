@@ -39,7 +39,7 @@ def test_registry_metadata_and_vocabulary_are_governed():
     assert set(payload["classificationVocabulary"]) == ALLOWED_CLASSIFICATIONS
     metadata = registry_metadata()
     assert metadata["universalZeroingCapabilityId"] == "sczn3-governed-zeroing-road-v1"
-    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 30
+    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 26
     assert metadata["authorizationSweep"]["reportPath"].endswith("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
 
 
@@ -77,7 +77,7 @@ def test_inventory_schema_and_exact_audit_counts():
         "exactUniqueProcedures": None,
         "exactUniqueProceduresStatus": "UNPROVEN_WHERE_PRODUCT_INSTRUCTIONS_ARE_MISSING",
         "candidateGovernedFamilies": 9,
-        "runtimeBindings": 6,
+        "runtimeBindings": 10,
     }
 
 
@@ -116,7 +116,7 @@ def test_exact_nine_candidate_families_are_cataloged():
     ]
 
 
-def test_six_exact_profiles_have_executable_mfam_bindings():
+def test_ten_exact_profiles_have_executable_mfam_bindings():
     payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     assert {item["targetProfileId"] for item in payload["targetProfileBindings"]} == {
         "baker_m16a2_25m_zero",
@@ -124,6 +124,10 @@ def test_six_exact_profiles_have_executable_mfam_bindings():
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
         "qualification_m16a2_25m_zero",
         "gunfun_32120_m16a2_green_25m_zero",
+        "rite_9125_m16a2_25m_zero",
+        "national_23075_m16a2_25m_zero",
+        "alco_ar0_m16a2_25m_zero",
+        "gunfun_32110_m16a2_red_25m_zero",
         "m4_25m_zero",
     }
     for target_profile_id in (
@@ -132,6 +136,10 @@ def test_six_exact_profiles_have_executable_mfam_bindings():
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
         "qualification_m16a2_25m_zero",
         "gunfun_32120_m16a2_green_25m_zero",
+        "rite_9125_m16a2_25m_zero",
+        "national_23075_m16a2_25m_zero",
+        "alco_ar0_m16a2_25m_zero",
+        "gunfun_32110_m16a2_red_25m_zero",
         "m4_25m_zero",
     ):
         resolved = resolve_target_profile(target_profile_id)
@@ -188,49 +196,53 @@ def test_standard_m16a2_scale_proof_is_auditable_and_evidence_limited():
 def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority():
     sweep = industry_authorization_sweep()
     assert sweep["counts"] == {
-        "authorizedNowRuntimeBindings": 2,
-        "alreadyAuthorizedRuntimeBindings": 4,
-        "alreadyAuthorizedPhysicalFaces": 5,
-        "heldPhysicalFaces": 30,
+        "authorizedNowRuntimeBindings": 4,
+        "alreadyAuthorizedRuntimeBindings": 6,
+        "alreadyAuthorizedPhysicalFaces": 9,
+        "heldPhysicalFaces": 26,
         "knownHeldFacesWithAuthorizedGeometry": 3,
-        "heldFacesAssignedToCandidateFamily": 22,
+        "heldFacesAssignedToCandidateFamily": 18,
         "heldFacesUnassigned": 8,
         "candidateFamilies": 9,
     }
     assert {item["runtimeBinding"] for item in sweep["authorizedNow"]} == {
-        "qualification_m16a2_25m_zero",
-        "gunfun_32120_m16a2_green_25m_zero",
+        "rite_9125_m16a2_25m_zero",
+        "national_23075_m16a2_25m_zero",
+        "alco_ar0_m16a2_25m_zero",
+        "gunfun_32110_m16a2_red_25m_zero",
     }
     assert {item.get("targetProfileId") or item.get("runtimeBinding") for item in sweep["alreadyAuthorized"]} == {
         "baker_m16a2_25m_zero",
         "speedwell_dodm4_m16a2_25m_zero",
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+        "qualification_m16a2_25m_zero",
+        "gunfun_32120_m16a2_green_25m_zero",
         "m4_25m_zero",
     }
-    assert len(sweep["hold"]) == 30
+    assert len(sweep["hold"]) == 26
     assert {item["faceId"] for item in sweep["hold"]} == {
         f"face-{index:03d}" for index in range(1, 36)
-    } - {"face-003", "face-016", "face-020", "face-027", "face-032"}
+    } - {"face-003", "face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"}
 
 
 def test_hold_clearance_inventory_groups_every_hold_without_forcing_family_membership():
     plan = hold_clearance_inventory()
-    assert plan["heldFaceCount"] == 30
-    assert plan["assignedHeldFaceCount"] == 22
+    assert plan["heldFaceCount"] == 26
+    assert plan["assignedHeldFaceCount"] == 18
     assert plan["unassignedHeldFaceCount"] == 8
     assert len(plan["families"]) == 9
     grouped = {face_id for family_record in plan["families"] for face_id in family_record["heldFaceIds"]}
     unassigned = set(plan["unassignedFaceIds"])
-    assert len(grouped) == 22
+    assert len(grouped) == 18
     assert len(unassigned) == 8
     assert not grouped.intersection(unassigned)
     assert grouped | unassigned == {
         f"face-{index:03d}" for index in range(1, 36)
-    } - {"face-003", "face-016", "face-020", "face-027", "face-032"}
+    } - {"face-003", "face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"}
     counts = {record["familyId"]: record["heldFaceCount"] for record in plan["families"]}
     assert counts == {
         "mfam_m16a1_25m_250m": 1,
-        "mfam_m16a2_a3_standard_25m_300m": 4,
+        "mfam_m16a2_a3_standard_25m_300m": 0,
         "mfam_m16a4_m4_standard_25m_300m": 7,
         "mfam_modern_a8_moa_25m": 6,
         "mfam_m16a2r_enlarged_23x35": 1,
@@ -256,9 +268,9 @@ def test_known_identity_geometry_and_execution_states_are_distinct():
     ]
     assert reusable_geometry["shooterRecovery"]["title"] == "THIS TARGET IS KNOWN"
 
-    unresolved = resolve_face_admission("face-006")
-    assert unresolved["targetState"] == "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
-    assert unresolved["disposition"] == "HOLD"
+    newly_executable = resolve_face_admission("face-006")
+    assert newly_executable["targetState"] == "KNOWN_TARGET_EXECUTION_AUTHORIZED"
+    assert newly_executable["disposition"] == "ALREADY_AUTHORIZED"
 
     unknown = resolve_face_admission("not-an-admitted-mfam-target")
     assert unknown["targetState"] == "UNKNOWN_TARGET"
@@ -287,10 +299,10 @@ def test_two_sided_known_product_requires_face_identity_instead_of_becoming_unkn
 
 
 def test_unregistered_products_and_families_do_not_gain_execution_authority():
-    held = product("rite-in-rain:9125:m16a2-m16a4-front")
-    assert held["candidateFamilyId"] == "mfam_m16a2_a3_standard_25m_300m"
+    held = product("rite-in-rain:9125:m4-back")
+    assert held["candidateFamilyId"] == "mfam_m16a4_m4_standard_25m_300m"
     assert held["runtimeStatus"] == "HOLD"
-    expect_error(lambda: resolve_target_profile("rite-in-rain:9125:m16a2-m16a4-front"), "mfam_target_profile_not_governed")
+    expect_error(lambda: resolve_target_profile("rite-in-rain:9125:m4-back"), "mfam_target_profile_not_governed")
     assert family("mfam_m16a2_a3_standard_25m_300m")["status"] == "GOVERNED"
 
 
@@ -339,7 +351,7 @@ def test_human_governance_record_exists():
     face_catalog = Path(__file__).resolve().parents[1] / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "M_FAM_FACE_LEVEL_MASTER_CATALOG.md"
     authorization_report = face_catalog.with_name("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
     hold_clearance_plan = face_catalog.with_name("M_FAM_HOLD_CLEARANCE_PLAN.md")
-    scale_proof = face_catalog.parent / "scale-proof-04" / "M_FAM_SCALE_PROOF_04_NO_REDUNDANT_GEOMETRY.md"
+    scale_proof = face_catalog.parent / "scale-proof-05" / "M_FAM_SCALE_PROOF_05_MATERIAL_ADMISSION.md"
     assert face_catalog.is_file()
     assert authorization_report.is_file()
     assert hold_clearance_plan.is_file()
@@ -359,8 +371,8 @@ def test_human_governance_record_exists():
         assert f"`{record['familyId']}`" in governance_text
         assert f"`{record['familyId']}`" in clearance_text
     assert "Baker `ST-M16A2R`" in authorization_text
-    assert "| `AUTHORIZED NOW` — new runtime bindings | 2 |" in authorization_text
-    assert "| `HOLD` — known physical product faces | 30 |" in authorization_text
+    assert "| `AUTHORIZED NOW` — new runtime bindings | 4 |" in authorization_text
+    assert "| `HOLD` — known physical product faces | 26 |" in authorization_text
     assert "Baker `ST-M16A2R`" in clearance_text
     for face_id in ("face-003", "face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"):
         assert f"`{face_id}`" in scale_text

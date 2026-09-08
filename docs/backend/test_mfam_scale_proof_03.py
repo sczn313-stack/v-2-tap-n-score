@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scale Proof #4: no redundant family facts; exact representations inherit one authority."""
+"""Scale Proof #5: material face conformance clears the full candidate family."""
 from __future__ import annotations
 
 import base64
@@ -50,6 +50,22 @@ PROFILES = {
         "GUNFUN_32120_M16A2_GREEN_AUTHORITY_v1",
         DOCS / "assets" / "GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1.jpg",
     ),
+    "rite_9125_m16a2_25m_zero": (
+        "rite-9125-m16a2-photo-registration-v1", "RITE_9125_M16A2_AUTHORITY_v1",
+        DOCS / "assets" / "RITE_9125_M16A2_FRONT_FACE_AUTHORITY_v1.png",
+    ),
+    "national_23075_m16a2_25m_zero": (
+        "national-23075-m16a2-photo-registration-v1", "NATIONAL_23075_M16A2_AUTHORITY_v1",
+        DOCS / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "scale-proof-04" / "NATIONAL_23075_M16A2_FACE_PRIMARY_2025.png",
+    ),
+    "alco_ar0_m16a2_25m_zero": (
+        "alco-ar0-m16a2-photo-registration-v1", "ALCO_AR0_M16A2_AUTHORITY_v1",
+        DOCS / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "scale-proof-04" / "ALCO_AR0_M16A2_FACE_PRIMARY_2026.webp",
+    ),
+    "gunfun_32110_m16a2_red_25m_zero": (
+        "gunfun-32110-m16a2-red-photo-registration-v1", "GUNFUN_32110_M16A2_RED_AUTHORITY_v1",
+        DOCS / "authority-evidence" / "gunfun" / "episode56" / "publisher-representations" / "E56-T01_SKU-32110_SIDE-A.jpg",
+    ),
 }
 
 
@@ -72,7 +88,9 @@ def image_evidence(path: Path, *, rotate_180: bool = False) -> dict:
         assert ok
         raw = encoded.tobytes()
     height, width = decoded.shape[:2]
-    media_type = "image/jpeg" if path.suffix.lower() in {".jpg", ".jpeg"} else "image/png"
+    media_type = {
+        ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp",
+    }.get(path.suffix.lower(), "image/png")
     return {
         "sha256": hashlib.sha256(raw).hexdigest(),
         "widthPx": width,
@@ -136,28 +154,26 @@ def authority_payload(profile_id: str) -> dict:
     }
 
 
-def test_eight_candidates_run_through_one_contract_and_four_are_admitted():
+def test_eight_candidates_run_through_one_contract_and_all_are_admitted():
     batch = run_family_admission_batch(CONTRACT_ID, CANDIDATE_FACES)
     assert batch["candidatesEvaluated"] == 8
-    assert {record["faceId"] for record in batch["admitted"]} == {"face-016", "face-020", "face-027", "face-032"}
-    assert {record["faceId"] for record in batch["hold"]} == {
-        "face-006", "face-013", "face-018", "face-025",
-    }
+    assert {record["faceId"] for record in batch["admitted"]} == set(CANDIDATE_FACES)
+    assert batch["hold"] == []
     proof = scale_proof()
-    assert proof["familyLeverage"] == 5.0
-    assert proof["admissionLeverage"] == 1.0
+    assert proof["familyLeverage"] == 9.0
+    assert proof["admissionLeverage"] == 4.0
     assert proof["counts"]["productSpecificZeroingImplementations"] == 0
     assert proof["counts"]["universalZeroingRoadsAdded"] == 0
 
 
-def test_five_products_share_one_family_package_but_retain_exact_identity():
+def test_nine_products_share_one_family_package_but_retain_exact_identity():
     resolved = {profile_id: resolve_target_profile(profile_id) for profile_id in PROFILES}
     assert {
         record["binding"]["familyAuthorityPackageId"] for record in resolved.values()
     } == {FAMILY_PACKAGE_ID}
-    assert len({record["binding"]["productId"] for record in resolved.values()}) == 5
-    assert len({record["binding"]["registrationPackageId"] for record in resolved.values()}) == 5
-    assert len({record["binding"]["canonicalRepresentationAuthority"]["sourceAssetSha256"] for record in resolved.values()}) == 5
+    assert len({record["binding"]["productId"] for record in resolved.values()}) == 9
+    assert len({record["binding"]["registrationPackageId"] for record in resolved.values()}) == 9
+    assert len({record["binding"]["canonicalRepresentationAuthority"]["sourceAssetSha256"] for record in resolved.values()}) == 9
     assert {
         record["binding"]["mechanicalAuthorityId"] for record in resolved.values()
     } == {"M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"}
@@ -169,11 +185,15 @@ def test_new_profiles_enter_the_same_backend_zeroing_capability():
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
         "qualification_m16a2_25m_zero",
         "gunfun_32120_m16a2_green_25m_zero",
+        "rite_9125_m16a2_25m_zero",
+        "national_23075_m16a2_25m_zero",
+        "alco_ar0_m16a2_25m_zero",
+        "gunfun_32110_m16a2_red_25m_zero",
     ):
         prepared = prepare_session({"targetId": profile_id}, Store())
         assert prepared["zeroingExperience"]["capabilityId"] == "sczn3-governed-zeroing-road-v1"
         assert prepared["mfamAuthorityBinding"]["familyAuthorityPackageId"] == FAMILY_PACKAGE_ID
-        assert prepared["mfamAuthorityBinding"]["productIdentity"]["inventoryFaceId"] in {"face-020", "face-032", "face-016", "face-027"}
+        assert prepared["mfamAuthorityBinding"]["productIdentity"]["inventoryFaceId"] in set(CANDIDATE_FACES)
         assert prepared["standardSetup"]["adjustmentProfileId"] == "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
         assert prepared["confirmationAuthority"]["minimumShots"] == 3
 
@@ -184,6 +204,10 @@ def test_new_profiles_release_governed_correction_through_shared_mechanics():
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
         "qualification_m16a2_25m_zero",
         "gunfun_32120_m16a2_green_25m_zero",
+        "rite_9125_m16a2_25m_zero",
+        "national_23075_m16a2_25m_zero",
+        "alco_ar0_m16a2_25m_zero",
+        "gunfun_32110_m16a2_red_25m_zero",
     ):
         package = build_authority_package(authority_payload(profile_id))
         assert package["status"]["hasMechanicalRecommendation"] is True
@@ -227,10 +251,22 @@ def test_face_admission_preserves_exact_publisher_product_face_binding():
     assert qualification["publisherAuthorityId"] == "publisher-qualification-targets"
     assert gunfun_green["publisherAuthorityId"] == "publisher-gunfun"
 
+    expected = {
+        "face-006": ("rite_9125_m16a2_25m_zero", "publisher-rite-in-rain"),
+        "face-013": ("national_23075_m16a2_25m_zero", "publisher-national-target"),
+        "face-018": ("alco_ar0_m16a2_25m_zero", "publisher-alco"),
+        "face-025": ("gunfun_32110_m16a2_red_25m_zero", "publisher-gunfun"),
+    }
+    for face_id, (binding, publisher) in expected.items():
+        record = resolve_face_admission(face_id)
+        assert record["runtimeBinding"] == binding
+        assert record["publisherAuthorityId"] == publisher
+        assert record["targetState"] == "KNOWN_TARGET_EXECUTION_AUTHORIZED"
+
 
 if __name__ == "__main__":
     tests = [value for name, value in sorted(globals().items()) if name.startswith("test_") and callable(value)]
     for test in tests:
         test()
         print(f"PASS {test.__name__}")
-    print(f"M/FAM Scale Proof #4 tests passed: {len(tests)}/{len(tests)}")
+    print(f"M/FAM Scale Proof #5 tests passed: {len(tests)}/{len(tests)}")

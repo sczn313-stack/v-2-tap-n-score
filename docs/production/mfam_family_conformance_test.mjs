@@ -28,9 +28,8 @@ assert.deepEqual(baker.missingGateIds, []);
 
 const batch = runFamilyAdmissionBatch(registry, contract.contractId, registry.scaleProof.candidateFaceIds);
 assert.equal(batch.candidatesEvaluated, 8);
-assert.deepEqual(batch.admitted.map(candidate => candidate.faceId), ["face-016", "face-020", "face-027", "face-032"]);
-assert.equal(batch.held.length, 4);
-assert(batch.held.every((candidate) => candidate.irreducibleMissingFacts.length === 1));
+assert.deepEqual(batch.admitted.map(candidate => candidate.faceId), ["face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"]);
+assert.equal(batch.held.length, 0);
 
 const speedwell = evaluateFamilyCandidate(registry, "face-020");
 assert.deepEqual(speedwell.missingGateIds, []);
@@ -51,16 +50,16 @@ assert.equal(gunfunGreen.targetProfileId, "gunfun_32120_m16a2_green_25m_zero");
 assert.deepEqual(gunfunGreen.missingGateIds, []);
 
 const gunfun = evaluateFamilyCandidate(registry, "face-025");
-assert(gunfun.missingGateIds.includes("physical_geometry_pitch"));
-assert(gunfun.missingGateIds.includes("registration_orientation"));
+assert.deepEqual(gunfun.missingGateIds, []);
+assert.equal(gunfun.targetProfileId, "gunfun_32110_m16a2_red_25m_zero");
 
 assert.equal(registry.scaleProof.counts.productSpecificZeroingImplementations, 0);
 assert.equal(registry.scaleProof.counts.universalZeroingRoadsAdded, 0);
-assert.equal(registry.scaleProof.counts.newAuthoritativeEvidenceArtifactsAcquired, 4);
-assert.equal(registry.scaleProof.counts.newRegistrationOrientationPackages, 2);
-assert.equal(registry.scaleProof.familyLeverage, 5);
-assert.equal(registry.scaleProof.admissionLeverage, 1);
+assert.equal(registry.scaleProof.counts.newAuthoritativeEvidenceArtifactsAcquired, 2);
+assert.equal(registry.scaleProof.counts.newRegistrationOrientationPackages, 4);
+assert.equal(registry.scaleProof.familyLeverage, 9);
+assert.equal(registry.scaleProof.admissionLeverage, 4);
 
 console.log("PASS reusable M/FAM Target Family Conformance/Admission Pattern");
 console.log("PASS 8 Standard M16A2/A3 candidates evaluated by one six-gate contract");
-console.log("PASS Qualification and GunFun green admitted without re-governing family facts");
+console.log("PASS all eight candidates admitted without re-governing family facts");

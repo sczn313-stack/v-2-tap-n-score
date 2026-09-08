@@ -29,6 +29,10 @@ assert.deepEqual(generatedProfileIds, [
   "army_nsn_6920_01_395_2949_m16a2_25m_zero"
   ,"qualification_m16a2_25m_zero"
   ,"gunfun_32120_m16a2_green_25m_zero"
+  ,"rite_9125_m16a2_25m_zero"
+  ,"national_23075_m16a2_25m_zero"
+  ,"alco_ar0_m16a2_25m_zero"
+  ,"gunfun_32110_m16a2_red_25m_zero"
 ]);
 const speedwell = resolveMFAMFamilyTargetProfile("speedwell_dodm4_m16a2_25m_zero");
 const army = resolveMFAMFamilyTargetProfile("army_nsn_6920_01_395_2949_m16a2_25m_zero");
@@ -40,15 +44,22 @@ assert.deepEqual(speedwell.familyAuthorityPackage, baker.familyAuthorityPackage)
 assert.deepEqual(army.familyAuthorityPackage, baker.familyAuthorityPackage);
 assert.deepEqual(qualification.familyAuthorityPackage, baker.familyAuthorityPackage);
 assert.deepEqual(gunfunGreen.familyAuthorityPackage, baker.familyAuthorityPackage);
-assert.equal(resolveMFAMFamilyTargetProfile("rite-in-rain:9125:m16a2-m16a4-front"), null, "candidate family membership cannot create a runtime binding");
+const rite = resolveMFAMFamilyTargetProfile("rite_9125_m16a2_25m_zero");
+const national = resolveMFAMFamilyTargetProfile("national_23075_m16a2_25m_zero");
+const alco = resolveMFAMFamilyTargetProfile("alco_ar0_m16a2_25m_zero");
+const gunfunRed = resolveMFAMFamilyTargetProfile("gunfun_32110_m16a2_red_25m_zero");
+for (const record of [rite, national, alco, gunfunRed]) {
+  assert(record, "new material-admission binding must resolve");
+  assert.deepEqual(record.familyAuthorityPackage, baker.familyAuthorityPackage);
+}
 
 const conformance = await loadFamilyConformanceRegistry();
 assert.equal(source.familyConformanceRegistry.registryId, conformance.registryId);
 const proof = conformance.scaleProof;
 const batch = runFamilyAdmissionBatch(conformance, proof.contractId, proof.candidateFaceIds);
 assert.equal(batch.candidatesEvaluated, 8);
-assert.equal(batch.admitted.length, 4);
-assert.equal(batch.held.length, 4);
-assert.equal(proof.counts.totalExecutableFamilyBindings, 5);
+assert.equal(batch.admitted.length, 8);
+assert.equal(batch.held.length, 0);
+assert.equal(proof.counts.totalExecutableFamilyBindings, 9);
 
 console.log("PASS generated M/FAM family registry matches Backend authority and fails closed");
