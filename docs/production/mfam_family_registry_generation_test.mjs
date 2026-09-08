@@ -35,6 +35,12 @@ assert.deepEqual(generatedProfileIds, [
   ,"gunfun_32110_m16a2_red_25m_zero"
   ,"gunfun_82020_m16a2_25m_zero"
   ,"baker_m4_25m_zero"
+  ,"rite_9125_m4_25m_zero"
+  ,"national_23075_m4_25m_zero"
+  ,"qualification_m4_25m_zero"
+  ,"speedwell_dodm4_m4_25m_zero"
+  ,"action_m4_carbine_25m_zero"
+  ,"army_nsn_6920_01_395_2949_m4_25m_zero"
 ]);
 const speedwell = resolveMFAMFamilyTargetProfile("speedwell_dodm4_m16a2_25m_zero");
 const army = resolveMFAMFamilyTargetProfile("army_nsn_6920_01_395_2949_m16a2_25m_zero");
@@ -60,6 +66,19 @@ const bakerM4 = resolveMFAMFamilyTargetProfile("baker_m4_25m_zero");
 assert.equal(bakerM4.binding.familyAuthorityPackageId, "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1");
 assert.equal(bakerM4.binding.mechanicalAuthorityId, "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011");
 assert.equal(bakerM4.familyAuthorityPackage.universalZeroingCapabilityId, "sczn3-governed-zeroing-road-v1");
+for (const profileId of [
+  "rite_9125_m4_25m_zero",
+  "national_23075_m4_25m_zero",
+  "qualification_m4_25m_zero",
+  "speedwell_dodm4_m4_25m_zero",
+  "action_m4_carbine_25m_zero",
+  "army_nsn_6920_01_395_2949_m4_25m_zero"
+]) {
+  const record = resolveMFAMFamilyTargetProfile(profileId);
+  assert.equal(record.familyAuthorityPackage.familyAuthorityPackageId, "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1");
+  assert.equal(record.binding.mechanicalAuthorityId, "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011");
+  assert.equal(record.binding.canonicalRepresentationAuthority.authorityScope, "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY");
+}
 
 const conformance = await loadFamilyConformanceRegistry();
 assert.equal(source.familyConformanceRegistry.registryId, conformance.registryId);

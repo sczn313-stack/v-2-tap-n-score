@@ -70,6 +70,7 @@ def mfam_authority_binding(target_profile_id: str) -> Dict[str, Any]:
         if isinstance(family_package, Mapping)
         else resolved["family"]["procedure"]
     )
+    inventory_face = resolved.get("inventoryFace") or {}
     return {
         "registryId": resolved["registryId"],
         "registryVersion": resolved["version"],
@@ -83,7 +84,13 @@ def mfam_authority_binding(target_profile_id: str) -> Dict[str, Any]:
             "identifiers": deepcopy(resolved["product"].get("identifiers") or {}),
             "inventoryFaceId": binding.get("inventoryFaceId"),
         },
-        "faceIdentity": deepcopy(resolved["product"]["face"]),
+        "faceIdentity": {
+            "faceId": inventory_face.get("faceId"),
+            "side": inventory_face.get("side") or resolved["product"]["face"].get("side"),
+            "representationId": inventory_face.get("representationId"),
+            "representation": inventory_face.get("representation"),
+            "printerAuthorityPreserved": True,
+        },
         "familyId": binding["familyId"],
         "familyAuthorityPackageId": binding.get("familyAuthorityPackageId"),
         "familyAuthorityVersion": family_package.get("authorityVersion") if isinstance(family_package, Mapping) else None,
@@ -315,6 +322,48 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         atp_id="baker-m4-25m-zero-atp-v1", mission_id="BAKER_M4_25M_300M_ZERO",
         registration_package_id="baker-st-m16a2-m4-m4-photo-registration-v1",
         canonical_coordinate_system_id="BAKER_ST_M16A2_M4_M4_FACE_AUTHORITY_v1",
+    ),
+    "rite_9125_m4_25m_zero": standard_m4_family_profile(
+        "rite_9125_m4_25m_zero", "RITE_9125_M4_AUTHORITY_v1",
+        "Rite in the Rain 9125 M4 25 Meter Zeroing Target",
+        atp_id="rite-9125-m4-25m-zero-atp-v1", mission_id="RITE_9125_M4_25M_300M_ZERO",
+        registration_package_id="rite-9125-m4-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "national_23075_m4_25m_zero": standard_m4_family_profile(
+        "national_23075_m4_25m_zero", "NATIONAL_23075_M4_AUTHORITY_v1",
+        "National 23075 M4 25 Meter Zeroing Target",
+        atp_id="national-23075-m4-25m-zero-atp-v1", mission_id="NATIONAL_23075_M4_25M_300M_ZERO",
+        registration_package_id="national-23075-m4-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "qualification_m4_25m_zero": standard_m4_family_profile(
+        "qualification_m4_25m_zero", "QUALIFICATION_M4_25M_AUTHORITY_v1",
+        "Qualification Targets M4 Carbine 25 Meter Zeroing Target",
+        atp_id="qualification-m4-25m-zero-atp-v1", mission_id="QUALIFICATION_M4_25M_300M_ZERO",
+        registration_package_id="qualification-m4-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "speedwell_dodm4_m4_25m_zero": standard_m4_family_profile(
+        "speedwell_dodm4_m4_25m_zero", "SPEEDWELL_DODM4_M4_AUTHORITY_v1",
+        "Speedwell DODM4 M4 25 Meter Zeroing Target",
+        atp_id="speedwell-dodm4-m4-25m-zero-atp-v1", mission_id="SPEEDWELL_DODM4_M4_25M_300M_ZERO",
+        registration_package_id="speedwell-dodm4-m4-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "action_m4_carbine_25m_zero": standard_m4_family_profile(
+        "action_m4_carbine_25m_zero", "ACTION_M4_CARBINE_AUTHORITY_v1",
+        "Action Target M4 Carbine 25 Meter Zeroing Target",
+        atp_id="action-m4-carbine-25m-zero-atp-v1", mission_id="ACTION_M4_CARBINE_25M_300M_ZERO",
+        registration_package_id="action-m4-carbine-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "army_nsn_6920_01_395_2949_m4_25m_zero": standard_m4_family_profile(
+        "army_nsn_6920_01_395_2949_m4_25m_zero", "ARMY_NSN_6920_01_395_2949_M4_AUTHORITY_v1",
+        "Army-Issued M4/M4A1 25 Meter Zeroing Target",
+        atp_id="army-nsn-6920-01-395-2949-m4-25m-zero-atp-v1", mission_id="ARMY_ISSUED_M4_25M_300M_ZERO",
+        registration_package_id="army-nsn-6920-01-395-2949-m4-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
     ),
     "m4_25m_zero": {
         "targetId": "m4_25m_zero",

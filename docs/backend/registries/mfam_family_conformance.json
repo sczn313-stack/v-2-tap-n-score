@@ -1,15 +1,15 @@
 {
   "schemaId": "sczn3-target-family-conformance-v1",
   "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
-  "version": "2026-09-07.5",
+  "version": "2026-09-07.6",
   "status": "governed",
   "authorityRegistryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
   "admissionPolicy": {
-    "rule": "A face is ADMITTED only when every required gate in its family contract is PROVEN and an explicit governed Target Profile binding exists.",
+    "rule": "A face is ADMITTED when printer or issuer authority establishes its exact product/face purpose, runtime UGO can prove mapping and orientation to the governed family, the applicable mechanical branch is governed, and an explicit Target Profile binding exists.",
     "inheritanceRule": "A proven family geometry, aim reference, procedure, mechanical branch, or confirmation fact is evaluated once and inherited by every traceably conforming face; publisher/product/face/representation identity never changes.",
-    "antiRedundancyRule": "Publisher, SKU, color, logo, paper, branding, and non-operative wording differences never trigger re-governance of a family fact. Only the exact representation-to-family conformance and registration facts remain product-specific.",
+    "antiRedundancyRule": "Printer Authority is Authority. Do not independently re-prove a printer's own product, face, purpose, configuration, dimensions, or printed-content statement. Publisher, SKU, color, logo, paper, branding, and non-operative wording differences never trigger re-governance of a family fact.",
     "materialityRule": "Govern what can change the executable result; record what cannot. Once an exact face is structurally reconciled to the governed 18 x 20 / center-aim family and no operative geometry difference is observed, raster scaling, paper carrier size, color, and non-operative wording remain representation metadata rather than a demand to re-prove family geometry.",
-    "registrationRule": "Registration and orientation proof are exact-representation facts and are never inherited from a different publisher face.",
+    "registrationRule": "Printer identity is preserved independently. A shared family UGO template may prove that a submitted photo maps to the governed geometry and orientation, but it never substitutes for or renames the printer's product representation. Registration and source reconciliation remain fail closed at runtime.",
     "equipmentRule": "Mechanical authority is inherited from the governed family only for an explicitly proven applicable equipment branch; unrelated marketing claims are ignored.",
     "failureRule": "Any unresolved required gate produces HOLD with exact missing facts. Candidate family assignment, visual similarity, or shared branding cannot create a runtime binding."
   },
@@ -77,14 +77,14 @@
       "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
       "status": "GOVERNED",
       "requiredGates": [
-        {"gateId": "physical_geometry_pitch", "name": "Physical geometry and pitch", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove conformance to the governed 14 x 16 / 1.3 cm physical family geometry without treating the outer carrier as the zeroing geometry.", "failureCode": "family_geometry_conformance_unverified"},
+        {"gateId": "physical_geometry_pitch", "name": "Physical geometry and pitch", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Accept the printer's M4 face identity and use runtime UGO to prove mapping to the governed 14 x 16 / 1.3 cm family geometry; do not independently re-measure printer facts.", "failureCode": "family_geometry_conformance_unverified"},
         {"gateId": "aim_reference", "name": "Aim reference", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the center crosshairs/white-dot aim at 7 columns and 8 rows from the grid origin.", "failureCode": "family_aim_reference_unverified"},
-        {"gateId": "representation_landmarks", "name": "Exact representation and landmarks", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Preserve the exact printer face and asymmetric orientation landmarks without substituting the modern Universal MOA face.", "failureCode": "target_representation_unverified"},
+        {"gateId": "representation_landmarks", "name": "Printer-authorized representation identity", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Preserve the printer-authorized product/face identity and provenance. The family UGO template is geometry/orientation machinery, never product identity substitution.", "failureCode": "target_representation_unverified"},
         {"gateId": "procedure", "name": "Standard M4 25m/300m procedure", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the 25-meter M4/M4A1 procedure with 6/3 setup and no Z; the family owns the procedure once.", "failureCode": "family_procedure_conformance_unverified"},
         {"gateId": "mechanical_applicability", "name": "Applicable governed mechanical branch", "scope": "EQUIPMENT_BRANCH", "required": true, "proofRule": "Prove M4/M4A1 detachable-carrying-handle rear and standard four-notch front sight applicability. M16A4 does not inherit this branch.", "failureCode": "mechanical_applicability_unverified"},
-        {"gateId": "registration_orientation", "name": "Exact-face registration and orientation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Build and verify an exact-face UGO package with TOP/BOTTOM/LEFT/RIGHT proof and source-evidence reconciliation.", "failureCode": "target_registration_unverified"}
+        {"gateId": "registration_orientation", "name": "Fail-closed family UGO registration and orientation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Provide a Target Profile registration package that keeps printer identity distinct while proving source-photo mapping, TOP/BOTTOM/LEFT/RIGHT orientation, and source-evidence reconciliation against the governed family geometry.", "failureCode": "target_registration_unverified"}
       ],
-      "admissionRule": "all six required gates PROVEN + explicit Target Profile binding + M4/M4A1 DCH/FSP branch"
+      "admissionRule": "printer-authorized M4 face + runtime family UGO + explicit Target Profile binding + governed M4/M4A1 DCH/FSP branch"
     }
   ],
   "reusableEvidencePackages": [
@@ -410,6 +410,72 @@
       "disposition": "ADMITTED",
       "targetProfileId": "baker_m4_25m_zero",
       "irreducibleMissingFacts": []
+    },
+    {
+      "faceId": "face-007", "productId": "product-ritr-9125", "representationId": "representation-006-ritr-9125-m4", "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"Rite authoritatively identifies its M4 face; runtime UGO must map the submitted photo to the governed 14 x 16 family geometry.","sourceIds":["RITR-9125"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the 7-column / 8-row aim relationship only after mapping passes.","sourceIds":["RITR-9125"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Rite printer authority owns product 9125 and its M4 back-face identity; that identity is not inferred from the family template.","sourceIds":["RITR-9125","RITR-NSN-2021"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"Rite identifies a 25m M4 zero face; the governed family owns the common 25m/300m procedure.","sourceIds":["RITR-9125"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The M4 face binds only the governed M4/M4A1 DCH/FSP branch.","sourceIds":["RITR-9125","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"rite-9125-m4-family-ugo-registration-v1 preserves Rite identity separately and requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["RITR-9125"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"rite_9125_m4_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId": "face-014", "productId": "product-national-m16a2-m4-carbine", "representationId": "representation-013-national-dual-m4", "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"National authoritatively identifies its M4 face; runtime UGO must map the submitted photo to the governed family geometry.","sourceIds":["NATIONAL-23075"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the center aim relationship only after mapping passes.","sourceIds":["NATIONAL-23075"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"National publisher authority owns product 23075 and its M4 face identity; publisher identity remains distinct.","sourceIds":["NATIONAL-23075"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"National identifies an M4 25m/300m product; family procedure is inherited once.","sourceIds":["NATIONAL-23075"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The binding is restricted to the governed M4/M4A1 DCH/FSP branch.","sourceIds":["NATIONAL-23075","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"national-23075-m4-family-ugo-registration-v1 requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["NATIONAL-23075"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"national_23075_m4_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId": "face-017", "productId": "product-qualification-m4", "representationId": "representation-016-qualification-m4", "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"Qualification Targets authoritatively identifies the M4 Carbine target; runtime UGO, not a second ruler, must prove family mapping.","sourceIds":["QUALIFICATION-M4"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the center aim relationship only after mapping passes.","sourceIds":["QUALIFICATION-M4"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Qualification Targets owns its product identity and NSN statement; those are preserved as printer provenance.","sourceIds":["QUALIFICATION-M4"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"The printer identifies an M4 Carbine zero target; common procedure is inherited from the family.","sourceIds":["QUALIFICATION-M4"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The M4 Carbine identity binds only the governed M4/M4A1 DCH/FSP branch.","sourceIds":["QUALIFICATION-M4","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"qualification-m4-family-ugo-registration-v1 requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["QUALIFICATION-M4"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"qualification_m4_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId": "face-019", "productId": "product-speedwell-dodm4", "representationId": "representation-018-speedwell-m4", "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"Speedwell authoritatively identifies the DODM4 M4 side; runtime UGO must prove family geometry mapping.","sourceIds":["SPEEDWELL-DODM4"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the center aim relationship only after mapping passes.","sourceIds":["SPEEDWELL-DODM4"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Speedwell publisher authority owns the DODM4 product and M4-side identity independently of its M16A2 side.","sourceIds":["SPEEDWELL-DODM4"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"Speedwell identifies the M4 zero face; the governed family supplies common procedure.","sourceIds":["SPEEDWELL-DODM4"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The binding is restricted to the governed M4/M4A1 DCH/FSP branch.","sourceIds":["SPEEDWELL-DODM4","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"speedwell-dodm4-m4-family-ugo-registration-v1 requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["SPEEDWELL-DODM4"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"speedwell_dodm4_m4_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId": "face-021", "productId": "product-action-m4-carbine", "representationId": "representation-020-action-m4", "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"Action Target authoritatively identifies its M4 face; runtime UGO must prove family geometry mapping before use.","sourceIds":["ACTION-M4-CARBINE"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the center aim relationship only after mapping passes.","sourceIds":["ACTION-M4-CARBINE"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Action Target owns the M4 CARBINE product and M4-side identity; no substitute printer identity is asserted.","sourceIds":["ACTION-M4-CARBINE"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"The printer identifies a 25 Meter M4 zero face; common procedure is inherited from the family.","sourceIds":["ACTION-M4-CARBINE"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The M4 face binds only the governed M4/M4A1 DCH/FSP branch; its M16 side is not admitted here.","sourceIds":["ACTION-M4-CARBINE","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"action-m4-carbine-family-ugo-registration-v1 requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["ACTION-M4-CARBINE"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"action_m4_carbine_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId": "face-033", "productId": "product-army-dual-m16-m4", "representationId": "representation-032-army-m16a4-m4", "contractId": "MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence": [
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"The Army authoritatively identifies the issued M16A4/M4/M4A face and its 14 x 16 / 1.3 cm form; runtime UGO proves submitted-image mapping.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The Army-issued face and governed family establish center aim at 7 columns and 8 rows.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Issuer authority owns the exact NSN product and second-face identity; the M16A4 label is retained without granting M16A4 mechanics.","sourceIds":["ARMY-FM-3-22-9-2011"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"Army authority governs the M4/M4A1 25m/300m branch inherited by this binding.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"Execution is restricted to the governed M4/M4A1 DCH/FSP branch; M16A4 remains unavailable.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"army-nsn-6920-01-395-2949-m4-family-ugo-registration-v1 requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["ARMY-FM-3-22-9-2011"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"army_nsn_6920_01_395_2949_m4_25m_zero", "irreducibleMissingFacts":[]
     }
   ],
   "scaleProof": {

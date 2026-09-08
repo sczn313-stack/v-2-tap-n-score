@@ -293,6 +293,74 @@ def orientation_evidence(
     }
 
 
+def geometry_topology_evidence(
+    package: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+    matrix: np.ndarray,
+    canonical_width: int,
+    canonical_height: int,
+) -> Dict[str, Any]:
+    """Independently prove the registered grid topology, not merely homography fit."""
+    policy = package.get("geometryTopologyProof")
+    if not isinstance(policy, Mapping):
+        return {"status": "not_required", "method": "not-configured"}
+    bounds = policy.get("gridBoundsPx") or {}
+    try:
+        left = max(0, int(round(float(bounds["left"]))))
+        top = max(0, int(round(float(bounds["top"]))))
+        right = min(canonical_width, int(round(float(bounds["right"]))) + 1)
+        bottom = min(canonical_height, int(round(float(bounds["bottom"]))) + 1)
+        expected_vertical = int(policy["expectedVerticalLines"])
+        expected_horizontal = int(policy["expectedHorizontalLines"])
+    except (KeyError, TypeError, ValueError):
+        return {"status": "unverified", "reason": "geometry_topology_authority_invalid"}
+    if right - left < 8 or bottom - top < 8:
+        return {"status": "unverified", "reason": "geometry_topology_authority_invalid"}
+
+    warped = cv2.warpPerspective(evidence["decoded"], matrix, (canonical_width, canonical_height))
+    gray = cv2.cvtColor(warped[top:bottom, left:right], cv2.COLOR_BGR2GRAY)
+    dark = cv2.threshold(gray, int(policy.get("darkThreshold", 160)), 255, cv2.THRESH_BINARY_INV)[1] > 0
+
+    def count_lines(values: np.ndarray, minimum_fraction: float, merge_distance: int) -> tuple[int, list[int]]:
+        peaks: list[int] = []
+        for index, value in enumerate(values):
+            if float(value) < minimum_fraction:
+                continue
+            if not peaks or index - peaks[-1] > merge_distance:
+                peaks.append(index)
+            elif value > values[peaks[-1]]:
+                peaks[-1] = index
+        return len(peaks), peaks
+
+    vertical_count, vertical_peaks = count_lines(
+        dark.mean(axis=0),
+        float(policy.get("minimumLineFraction", 0.42)),
+        max(2, int((right - left) / max(1, expected_vertical - 1) * 0.35)),
+    )
+    horizontal_count, horizontal_peaks = count_lines(
+        dark.mean(axis=1),
+        float(policy.get("minimumLineFraction", 0.42)),
+        max(2, int((bottom - top) / max(1, expected_horizontal - 1) * 0.35)),
+    )
+    tolerance = int(policy.get("lineCountTolerance", 0))
+    proven = (
+        abs(vertical_count - expected_vertical) <= tolerance
+        and abs(horizontal_count - expected_horizontal) <= tolerance
+    )
+    return {
+        "status": "proven" if proven else "unverified",
+        "reason": None if proven else "target_geometry_unverified",
+        "method": "warped-grid-line-topology-v1",
+        "expectedVerticalLines": expected_vertical,
+        "observedVerticalLines": vertical_count,
+        "expectedHorizontalLines": expected_horizontal,
+        "observedHorizontalLines": horizontal_count,
+        "lineCountTolerance": tolerance,
+        "verticalLinePositionsPx": vertical_peaks,
+        "horizontalLinePositionsPx": horizontal_peaks,
+    }
+
+
 def _point_from_normalized(value: Mapping[str, Any] | None) -> Dict[str, float] | None:
     if not isinstance(value, Mapping):
         return None
@@ -528,7 +596,10 @@ def canonical_point_to_source_percent(registration: Mapping[str, Any] | None, po
 
 
 def _unavailable_evidence(package: Mapping[str, Any], evidence: Mapping[str, Any], reason: str, details: Mapping[str, Any] | None = None) -> Dict[str, Any]:
-    if reason == "target_identity_unverified":
+    if reason == "target_geometry_unverified":
+        recovery_action = "check_target_identity"
+        shooter_message = "SCZN3 recognizes the selected product, but this photo does not map to its governed target geometry. Check the target face and try again."
+    elif reason == "target_identity_unverified":
         recovery_action = "check_target_identity"
         shooter_message = "SCZN3 could not verify that this photo matches the target selected for this session. Check the target identity and choose a photo that clearly shows its title, grid, and bottom instructions."
     else:
@@ -546,6 +617,8 @@ def _unavailable_evidence(package: Mapping[str, Any], evidence: Mapping[str, Any
         "canonicalRepresentation": dict(package["canonicalRepresentation"]),
         "canonicalCoordinateSystemId": package["canonicalCoordinateSystemId"],
         "ugoAuthorityId": package["ugoAuthorityId"],
+        "productIdentityAuthority": dict(package.get("productIdentityAuthority") or {}),
+        "registrationClaimBoundary": package.get("claimBoundary"),
         "reason": reason,
         "details": dict(details or {}),
         "claimSufficiencyOwner": "downstream_mission_authority",
@@ -669,6 +742,20 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
         method,
         context["canonicalGray"],
     )
+    topology = geometry_topology_evidence(
+        package,
+        evidence,
+        matrix,
+        canonical_width,
+        canonical_height,
+    )
+    if topology.get("status") == "unverified":
+        return _unavailable_evidence(
+            package,
+            evidence,
+            str(topology.get("reason") or "target_geometry_unverified"),
+            {"geometryTopologyEvidence": topology},
+        )
 
     result = {
         "ok": True,
@@ -682,11 +769,14 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
         "canonicalRepresentation": dict(representation),
         "canonicalCoordinateSystemId": package["canonicalCoordinateSystemId"],
         "ugoAuthorityId": package["ugoAuthorityId"],
+        "productIdentityAuthority": dict(package.get("productIdentityAuthority") or {}),
+        "registrationClaimBoundary": package.get("claimBoundary"),
         "registrationMethod": method,
         "sourceToCanonicalMatrix": [[round(float(value), 12) for value in row] for row in matrix.tolist()],
         "metrics": metrics,
         "globalUncertaintyPx": round(base_uncertainty + float(metrics["reprojectionP95Px"] or 0), 4),
         "orientationEvidence": orientation,
+        "geometryTopologyEvidence": topology,
         "canonicalObservations": canonical_observations,
         "claimSufficiencyOwner": "downstream_mission_authority",
         "claimSufficiency": "not_evaluated",

@@ -15,7 +15,9 @@ The shared capability owns:
 
 An exact Target Profile supplies only:
 
-> **product and face identity → representation → physical geometry → aim/procedure → applicable equipment configuration → mechanical authority → registration**
+> **printer-authorized product and face identity → exact representation → UGO conformance/orientation → governed family binding → applicable equipment configuration**
+
+The governed family supplies the already-solved geometry, aim, procedure, mechanics, and confirmation authority. The printer's artifact is authority for the identity and claims of that printer's own product; a family UGO template may prove spatial conformance but never substitutes its publisher identity.
 
 Backend structured data is runtime authority. This record explains that data to humans; it does not supersede it.
 
@@ -24,7 +26,7 @@ Backend structured data is runtime authority. This record explains that data to 
 - Product/face audit registry: `docs/backend/registries/mfam_inventory_audit.json`
 - Product/face audit schema: `docs/backend/registries/mfam_inventory_audit.schema.json`
 - Fail-closed resolver: `docs/backend/mfam_family_authority.py`
-- Industry authorization result: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md`
+- Current industry authorization result: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-07/M_FAM_SCALE_SWEEP_07_PRINTER_AUTHORITY_LOCK.md`
 - Family hold-clearance plan: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md`
 - Standard M16A2/A3 scale proof: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md`
 - Universal zeroing capability: `sczn3-governed-zeroing-road-v1`
@@ -53,7 +55,7 @@ Each layer answers a different question:
 | Procedure | At what distance and with what setup/confirmation sequence? | A reusable mechanical default |
 | Equipment configuration | Which weapon and sight/optic/laser is mounted? | Authority for a related configuration |
 | Mechanical authority | Which control, value, rotation, and observer view are true? | Product identity or registration |
-| Registration | Is this exact physical face, scale, and orientation proven? | “Close enough” admission |
+| Registration / UGO | Does this printer-identified representation map to the governed family geometry in a proven orientation? | Another publisher's product identity or “close enough” admission |
 
 ## Governing classifications
 
@@ -84,7 +86,7 @@ The original 31 rows are evidence records. They are not interchangeable counts o
         → 23 cataloged physical-geometry identities/candidates
           → 14 cataloged procedure identities/buckets
             → 9 candidate governed families
-              → 12 executable runtime bindings
+              → 18 executable runtime bindings
 ```
 
 Count qualifications:
@@ -104,7 +106,7 @@ The machine-enforced counts live in `mfam_inventory_audit.json`. The face-by-fac
 |---|---|---|---|---|---|
 | `mfam_m16a1_25m_250m` — Legacy M16A1 | exact grid/pitch unproven | 25m represents 250m; `L` aperture then unmarked; M16A1 | complete mechanical package unproven | Army NSN `6920-01-167-1392` / face-031 | issuer procedure evidence; `EVIDENCE_ONLY` |
 | `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 18 × 20; 0.96 cm uniform squares | 25m/300m; 8/3 + one; M16A2 branch | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | Baker face-003; Rite face-006; National face-013; QTI face-016; Alco face-018; Speedwell face-020; GunFun faces 025/027/029; Army face-032 | ten exact physical-face bindings governed through one family package |
-| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 14 × 16; 1.3 cm uniform squares | 25m/300m; M4/M4A1 DCH/FSP branch governed; M16A4 held | `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`; `MFAM-M16A4-IRON-EVIDENCE-2011` | Baker face-004; Rite face-007; National face-014; QTI face-017; Speedwell face-019; Action face-021; GunFun faces 026/028; Army face-033 | one family package and Baker runtime binding governed; eight representations remain held at exact UGO/branch evidence |
+| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 14 × 16; 1.3 cm uniform squares | 25m/300m; M4/M4A1 DCH/FSP branch governed; M16A4 held | `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`; `MFAM-M16A4-IRON-EVIDENCE-2011` | Baker face-004; Rite face-007; National face-014; QTI face-017; Speedwell face-019; Action face-021; GunFun faces 026/028; Army face-033 | seven M4/M4A1 bindings governed through one family package; GunFun faces 026/028 remain held only for an executable M16A4 mechanical branch |
 | `mfam_modern_a8_moa_25m` — Modern Universal MOA/A8 | protected geometry: 32 × 32 quarter-inch lattice, 8 × 8-inch grid | modern 25m grouping/zero; final/confirmation by exact profile | `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01`; printed rows remain evidence-only | Baker face-001 (reverse face-002 unresolved/unmapped); Rite face-009; National faces 011/012; Action face-023; Army face-034; plus protected reference representation | protected reference runtime `GOVERNED`; all product faces held |
 | `mfam_m16a2r_enlarged_23x35` — Baker enlarged M16A2R | 23 × 35; internal pitch/origin unproven | M16A2-related 25m/300m | mechanical applicability unproven | Baker `ST-M16A2R` / face-005 | proven different scale; `HOLD` |
 | `mfam_10m_boresight_offset` — 10m boresight/offset | separately manufactured 10m target; exact symbol geometry incomplete | 10m device/mount-specific aim/strike offset | exact optic/laser/mount required | Army 10m form / face-035 | issuer evidence; `EVIDENCE_ONLY` |
@@ -116,25 +118,28 @@ Qualification, composite, True-MOA, and True-MIL targets do not inherit a 25-met
 
 ## Runtime admission
 
-### Scale Proofs 01–06 — family admission at catalog scale
+### Scale Proofs 01–07 — family admission at catalog scale
 
 Scale Proofs 01–05 established one Standard M16A2/A3 Backend package for common geometry, aim, measurement, procedure, mechanics, and confirmation, then admitted nine exact publisher/issuer faces through independent conformance and registration packages.
 
 Scale Sweep #6 applied the model across all 35 known physical faces in one batch. GunFun `82020` became the tenth Standard M16A2/A3 physical-face consumer. The sweep also governed one Standard M16A4/M4 family package for the proven M4/M4A1 DCH/FSP branch and admitted Baker's exact M4 face. No product-specific zeroing implementation and no new universal road were created.
 
-Candidate-family placement still never substitutes for exact face conformance and registration.
+Scale Sweep #7 applied the Founder lock **PRINTER AUTHORITY IS AUTHORITY** to the remaining Standard M4 batch. Rite `9125`, National `23075`, Qualification `M4 Carbine`, Speedwell `DODM4`, Action `M4 CARBINE`, and the Army-issued M4 face now preserve their exact printer/issuer identities while using runtime UGO to prove conformance and orientation against the already-governed Standard M4 geometry. No new evidence artifact, family authority package, product-specific zeroing implementation, or universal road was created.
+
+Candidate-family placement still never grants execution by itself. Printer authority establishes product identity; UGO establishes the representation-to-family spatial mapping and orientation; applicable family mechanics establish the executable branch.
 
 The completed industry-wide authorization sweep applies the existing evidence ledger without starting another product investigation:
 
 | Disposition | Result |
 |---|---:|
-| `AUTHORIZED NOW` — new executable bindings | 2 |
-| `ALREADY AUTHORIZED` — executable bindings | 10 |
-| `ALREADY AUTHORIZED` — physical product faces | 11 |
-| `HOLD` — known physical product faces | 24 |
-| Held faces with already-authorized reusable geometry | 3 |
+| `AUTHORIZED NOW` — new executable bindings | 6 |
+| `ALREADY AUTHORIZED` — executable bindings | 12 |
+| `EXECUTABLE` — physical product faces | 17 |
+| `TRUE AUTHORITY GAP` — physical product faces | 18 |
+| `TOTAL` — physical product faces | 35 |
+| Held faces with already-authorized reusable geometry | 5 |
 
-Nineteen held faces are assigned to candidate families; five remain unassigned pending the minimum fact required for truthful placement. Every HOLD is expressed at a material identity, UGO, family procedure/completion, mechanical, or course boundary—not as a repeated demand to re-prove inherited geometry.
+Thirteen held faces are assigned to candidate families; five remain unassigned pending the minimum fact required for truthful placement. Every remaining HOLD is a true execution gap in identity, UGO, family procedure/completion, mechanics, or course authority—not a repeated demand to independently prove a printer's own statement.
 
 The three geometry-authorized Modern MOA holds are Baker `ST-Uni25mMOA` front (`face-001`) and the two National `23112` representations (`face-011`, `face-012`). Their geometry is reusable, but their printed procedure requires true-distance confirmation that the current 25m-only universal-road branch cannot truthfully provide. This is one family-level completion hold, not three product-specific zeroing projects.
 
@@ -149,7 +154,7 @@ Backend admission exposes four distinct outcomes:
 
 Known holds use `THIS TARGET IS KNOWN` and name the unresolved fact. They do not tell a shooter to take another photograph unless the actual registration decision proves that photograph coverage failed.
 
-The registry exposes 12 executable M/FAM bindings: ten Standard M16A2/A3 physical faces, Baker's Standard M4 face, and one protected modern reference. The exact machine-readable list is in `mfam_family_authority.json`; every binding enters `sczn3-governed-zeroing-road-v1`.
+The registry exposes 18 executable M/FAM bindings: ten Standard M16A2/A3 physical faces, seven Standard M4/M4A1 physical faces, and one protected modern reference. The exact machine-readable list is in `mfam_family_authority.json`; every binding enters `sczn3-governed-zeroing-road-v1`.
 
 Every other product remains cataloged as `HOLD`, `EVIDENCE_ONLY`, or `UNPROVEN`. Candidate-family placement grants nothing until exact representation-to-UGO conformance, orientation, and the applicable equipment branch are proven.
 
@@ -171,12 +176,12 @@ The M16A2 rear elevation drum remains a setup/finalization control:
 
 ## Fail-closed invariants
 
-1. Candidate-family placement grants nothing. Once exact representation-to-family conformance and equipment applicability are proven, the face inherits the already-governed family geometry, aim, procedure, mechanics, and confirmation without redundant re-proof.
+1. Printer authority establishes what that printer published: product, face, purpose, configuration, and printed claims. SCZN3 preserves that identity and provenance without demanding redundant independent proof.
 2. One two-sided SKU produces at least two exact face identities.
-3. Matching title, NSN, overall sheet size, or artwork does not prove geometry equivalence.
+3. UGO must still prove that the printer-identified representation maps to the governed family geometry and orientation; printer authority is not permission to guess spatial equivalence.
 4. A manufactured enlargement is new physical geometry even when artwork is recognizable.
-5. Representation reuse requires proof that ink changes do not move spatial landmarks.
-6. Registration must prove exact face, scale, coverage, and top/bottom/left/right orientation.
+5. A family geometry template may prove UGO conformance but never becomes the product-identity artifact for another publisher.
+6. Registration must prove the governed spatial mapping, coverage, topology, and top/bottom/left/right orientation.
 7. Equipment and mechanical authority are selected after face/geometry admission and must match their exact evidence scope.
 8. Unknown values are stored as `null`/`UNPROVEN`; no nearby product supplies them.
 9. Only an explicit `GOVERNED` Target Profile binding may reach correction, confirmation, SEC, or Vault.
@@ -194,8 +199,9 @@ The M16A2 rear elevation drum remains a setup/finalization control:
 - Ranked family hold-clearance plan: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md`
 - Standard M16A2/A3 Scale Proof 01: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md`
 - Full-catalog Scale Sweep 06: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-06/M_FAM_SCALE_SWEEP_06_BATCH_ADMISSION.md`
+- Printer-authority Scale Sweep 07: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-07/M_FAM_SCALE_SWEEP_07_PRINTER_AUTHORITY_LOCK.md`
 - Source ledger: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/EVIDENCE_LEDGER.md`
 
 ## Current scale boundary
 
-The next high-leverage work is family-level, not face-level: add a truthful true-distance completion branch for Modern MOA faces, or acquire exact calibrated representations for additional Standard M4 candidates. Neither is inferred from similar artwork. Scale Sweep #6 records those material boundaries and stops without creating speculative runtime authority.
+Scale Sweep #7 closes every Standard M4/M4A1 HOLD that existed only because SCZN3 was demanding independent proof of printer-authorized identity or content. The remaining high-leverage work is still family-level: add a truthful true-distance completion branch for Modern MOA faces or govern the missing M16A4 mechanical branch. UGO and fail-closed orientation remain mandatory; redundant identity bureaucracy does not.

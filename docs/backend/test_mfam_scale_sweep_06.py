@@ -110,13 +110,17 @@ def authority_payload(profile_id: str, case: dict) -> dict:
     }
 
 
-def test_batch_counts_and_zero_duplicate_roads():
+def test_latest_batch_counts_and_zero_duplicate_roads():
     sweep = industry_authorization_sweep()
-    assert sweep["counts"]["authorizedNowRuntimeBindings"] == 2
-    assert sweep["counts"]["heldPhysicalFaces"] == 24
+    assert sweep["counts"]["authorizedNowRuntimeBindings"] == 6
+    assert sweep["counts"]["heldPhysicalFaces"] == 18
     assert {
         item["runtimeBinding"] for item in sweep["authorizedNow"]
-    } == set(CASES)
+    } == {
+        "rite_9125_m4_25m_zero", "national_23075_m4_25m_zero",
+        "qualification_m4_25m_zero", "speedwell_dodm4_m4_25m_zero",
+        "action_m4_carbine_25m_zero", "army_nsn_6920_01_395_2949_m4_25m_zero",
+    }
 
 
 def test_each_new_face_inherits_the_correct_family_package():

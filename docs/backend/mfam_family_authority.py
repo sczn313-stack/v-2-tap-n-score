@@ -168,6 +168,16 @@ def _load_registry() -> Dict[str, Any]:
             }
             if not required_representation_fields.issubset(representation):
                 raise MFAMAuthorityError(f"mfam_binding_representation_authority_incomplete:{binding['targetProfileId']}")
+            if representation.get("authorityScope") == "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY":
+                identity = representation.get("productIdentityAuthority") or {}
+                if (
+                    identity.get("faceId") != binding.get("inventoryFaceId")
+                    or not identity.get("publisher")
+                    or not identity.get("sourceIds")
+                ):
+                    raise MFAMAuthorityError(
+                        f"mfam_binding_printer_identity_authority_incomplete:{binding['targetProfileId']}"
+                    )
 
     for pair in payload.get("pairClassifications") or []:
         if pair.get("leftProductId") not in products or pair.get("rightProductId") not in products:
@@ -629,10 +639,16 @@ def resolve_target_profile(target_profile_id: str) -> Dict[str, Any]:
     if not binding:
         raise MFAMAuthorityError("mfam_target_profile_not_governed")
     family_package_id = binding.get("familyAuthorityPackageId")
+    inventory_face_id = binding.get("inventoryFaceId")
+    inventory_face = (
+        _REGISTRY["_inventoryIndex"]["faces"].get(inventory_face_id)
+        if inventory_face_id else None
+    )
     return deepcopy({
         **registry_metadata(),
         "binding": binding,
         "product": _REGISTRY["_index"]["products"][binding["productId"]],
+        "inventoryFace": inventory_face,
         "family": _REGISTRY["_index"]["families"][binding["familyId"]],
         "familyAuthorityPackage": (
             _REGISTRY["_index"]["familyPackages"].get(family_package_id)
