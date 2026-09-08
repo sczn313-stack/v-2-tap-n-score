@@ -1,5 +1,5 @@
 import { createReadStream } from "node:fs";
-import { stat } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { createServer, request as requestHttp } from "node:http";
 import { networkInterfaces } from "node:os";
 import path from "node:path";
@@ -71,6 +71,7 @@ const publicFiles = new Map([
   ["/target-experience.css", "target-experience.css"],
   ["/founder-nine-target-review.html", "founder-nine-target-review.html"],
   ["/founder-nine-target-review.css", "founder-nine-target-review.css"],
+  ["/founder-nine-target-review-loader.js", "founder-nine-target-review-loader.js"],
   ["/review-assets/target-01.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/13120.jpg"],
   ["/review-assets/target-02.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22200.jpg"],
   ["/review-assets/target-03.jpeg", "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg"],
@@ -158,7 +159,8 @@ function proxyAuthority(request, response) {
 }
 
 const server = createServer(async (request, response) => {
-  const pathname = request.url ? new URL(request.url, "http://review.local").pathname : "";
+  const parsedUrl = new URL(request.url || "/", "http://review.local");
+  const pathname = parsedUrl.pathname;
   if (pathname.startsWith("/api/")) {
     proxyAuthority(request, response);
     return;
@@ -177,6 +179,19 @@ const server = createServer(async (request, response) => {
   try {
     const info = await stat(file);
     if (!info.isFile()) throw new Error("not_file");
+    if (pathname === "/target-experience.html" && parsedUrl.searchParams.get("founderReview") === "nine-target") {
+      const source = await readFile(file, "utf8");
+      const body = Buffer.from(source.replace("</body>", '  <script src="founder-nine-target-review-loader.js" defer></script>\n</body>'));
+      response.writeHead(200, {
+        "Cache-Control": "no-store",
+        "Content-Length": body.length,
+        "Content-Type": types[".html"],
+        "X-Content-Type-Options": "nosniff"
+      });
+      if (request.method === "HEAD") response.end();
+      else response.end(body);
+      return;
+    }
     response.writeHead(200, {
       "Cache-Control": "no-store",
       "Content-Length": info.size,

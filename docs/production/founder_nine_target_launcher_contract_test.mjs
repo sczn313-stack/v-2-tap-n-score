@@ -6,7 +6,9 @@ const cohort = JSON.parse(await readFile(
   "utf8",
 ));
 const launcher = await readFile("founder-nine-target-review.html", "utf8");
+const loader = await readFile("founder-nine-target-review-loader.js", "utf8");
 const reviewServer = await readFile("production/m16a2_tstt_review_server.mjs", "utf8");
+const productionRoad = await readFile("target-experience.html", "utf8");
 
 assert.equal(cohort.targets.length, 9, "locked proof cohort must contain exactly nine targets");
 assert.equal((launcher.match(/class="review-card"/g) || []).length, 9, "launcher must contain exactly nine cards");
@@ -26,10 +28,16 @@ for (const [index, target] of cohort.targets.entries()) {
   assert.equal(url.pathname, "/target-experience.html", `shared road for target ${ordinal}`);
   assert.equal(url.searchParams.get("missionFamily"), "targetScoring", `mission family for target ${ordinal}`);
   assert.equal(url.searchParams.get("target"), target.targetProfileId, `exact runtime profile for target ${ordinal}`);
+  assert.equal(url.searchParams.get("founderReview"), "nine-target", `review image handoff for target ${ordinal}`);
+  assert.match(loader, new RegExp(`${target.targetProfileId}:[\\s\\S]*?/review-assets/target-0${ordinal}\\.(?:jpe?g|webp)`), `exact packaged image binding for target ${ordinal}`);
 }
 
 assert.match(reviewServer, /\["\/founder-nine-target-review\.html", "founder-nine-target-review\.html"\]/);
 assert.match(reviewServer, /\["\/founder-nine-target-review\.css", "founder-nine-target-review\.css"\]/);
+assert.match(reviewServer, /founderReview"\) === "nine-target"/);
+assert.match(reviewServer, /founder-nine-target-review-loader\.js/);
 assert.equal((reviewServer.match(/\["\/review-assets\/target-0[1-9]\./g) || []).length, 9, "review server must expose exactly nine curated representations");
+assert.doesNotMatch(productionRoad, /founder-nine-target-review-loader/);
+assert.doesNotMatch(productionRoad, /founderReview/);
 
-console.log("PASS Founder launcher: exact locked 9/9 cohort, exact runtime IDs, one shared road, nine curated representations");
+console.log("PASS Founder launcher: exact locked 9/9 cohort, exact runtime IDs, one shared road, nine curated review-only image handoffs");
