@@ -20,6 +20,9 @@ from preserved_sec_store import PreservedSECError, list_preserved_secs, preserve
 from session_authority import SessionAuthorityError, prepare_session, start_session  # noqa: E402
 from target_execution_contract import runtime_resolver  # noqa: E402
 from target_image_registration_authority import TargetImageRegistrationError, register_target_image  # noqa: E402
+from baker_sl_st2_idpa_authority import BakerSLST2AuthorityError, analyze_baker_sl_st2_evidence  # noqa: E402
+from baker_fun_target_authority import BakerFunAuthorityError, analyze_fun_target_evidence  # noqa: E402
+from gunfun_vital_dude_evidence_authority import VitalDudeEvidenceError, analyze_vital_dude_evidence  # noqa: E402
 from test_target_execution_scale_architecture import MemoryStore  # noqa: E402
 
 
@@ -77,6 +80,15 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/target-execution":
                 self.send_json(200, execute_authoritative_session(payload, STORE, resolver=RESOLVER))
                 return
+            if path == "/api/target/baker-sl-st2/analyze":
+                self.send_json(200, analyze_baker_sl_st2_evidence(payload))
+                return
+            if path in {"/api/target/baker-fun/analyze", "/api/target/fun/analyze"}:
+                self.send_json(200, analyze_fun_target_evidence(payload))
+                return
+            if path == "/api/target/gunfun/vital-dude/analyze":
+                self.send_json(200, analyze_vital_dude_evidence(payload))
+                return
             if path in {"/api/authority/ugeo", "/api/authority/ugeo/"}:
                 self.send_json(200, build_authority_package(payload))
                 return
@@ -96,6 +108,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(error.http_status, error.payload)
         except TargetImageRegistrationError as error:
             self.send_json(error.http_status, error.payload)
+        except (BakerSLST2AuthorityError, BakerFunAuthorityError, VitalDudeEvidenceError) as error:
+            self.send_json(400, error.payload)
         except PreservedSECError as error:
             self.send_json(error.http_status, error.payload)
         except (json.JSONDecodeError, UnicodeDecodeError):

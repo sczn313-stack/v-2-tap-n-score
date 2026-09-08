@@ -7,7 +7,8 @@
   const MISSION_AUTHORITY_ID = "SCZN3_SL_ST2_TIMED_PAIR_7YD_V1";
   const RULES_AUTHORITY_ID = "IDPA_RULEBOOK_2026_2";
   const local = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
-  const authorityOrigin = local ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com";
+  const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
+  const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority.onrender.com");
   const analyzeEndpoint = `${authorityOrigin}/api/target/baker-sl-st2/analyze`;
   const preservedSecEndpoint = `${authorityOrigin}/api/session/sec`;
   const reviewAsset = "../../../authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg";
@@ -59,8 +60,7 @@
   }
 
   async function digestFile(file) {
-    const bytes = await file.arrayBuffer(); const digest = await crypto.subtle.digest("SHA-256", bytes);
-    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+    return SCZN3TargetExecutionRuntime.sha256Hex(await file.arrayBuffer());
   }
   function fileDataUrl(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || "")); reader.onerror = reject; reader.readAsDataURL(file); }); }
   function imageDimensions(url) { return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve({ widthPx: image.naturalWidth, heightPx: image.naturalHeight }); image.onerror = reject; image.src = url; }); }

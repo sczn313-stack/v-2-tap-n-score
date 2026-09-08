@@ -76,6 +76,25 @@ const publicFiles = new Map([
   ["/founder-scale-batch-1-review.css", "founder-scale-batch-1-review.css"],
   ["/founder-scale-batch-1-review-loader.js", "founder-scale-batch-1-review-loader.js"],
   ["/founder-scale-batch-1-zeroing-loader.js", "founder-scale-batch-1-zeroing-loader.js"],
+  ["/t/baker/sl-st2/", "t/baker/sl-st2/index.html"],
+  ["/t/baker/sl-st2/index.html", "t/baker/sl-st2/index.html"],
+  ["/t/baker/sl-st2/target-page.css", "t/baker/sl-st2/target-page.css"],
+  ["/t/baker/sl-st2/target-page.js", "t/baker/sl-st2/target-page.js"],
+  ["/t/baker/fun/", "t/baker/fun/index.html"],
+  ["/t/baker/fun/index.html", "t/baker/fun/index.html"],
+  ["/t/baker/fun/target-page.css", "t/baker/fun/target-page.css"],
+  ["/t/baker/fun/target-page.js", "t/baker/fun/target-page.js"],
+  ["/t/gunfun/vital-dude/", "t/gunfun/vital-dude/index.html"],
+  ["/t/gunfun/vital-dude/index.html", "t/gunfun/vital-dude/index.html"],
+  ["/t/gunfun/vital-dude/target-page.css", "t/gunfun/vital-dude/target-page.css"],
+  ["/t/gunfun/vital-dude/target-page.js", "t/gunfun/vital-dude/target-page.js"],
+  ["/baker-sl-st1-sec.css", "baker-sl-st1-sec.css"],
+  ["/baker-sl-st2-idpa-sec.css", "baker-sl-st2-idpa-sec.css"],
+  ["/baker-fun-sec.css", "baker-fun-sec.css"],
+  ["/gunfun-vital-dude-sec.css", "gunfun-vital-dude-sec.css"],
+  ["/baker_sl_st2_idpa_sec.js", "baker_sl_st2_idpa_sec.js"],
+  ["/baker_fun_sec.js", "baker_fun_sec.js"],
+  ["/gunfun_vital_dude_sec.js", "gunfun_vital_dude_sec.js"],
   ["/review-assets/target-01.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/13120.jpg"],
   ["/review-assets/target-02.jpg", "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/22200.jpg"],
   ["/review-assets/target-03.jpeg", "authority-evidence/baker-sl-st2/BAKER_SL_ST2_23X35_GATE3_REPRESENTATION_EVIDENCE_V1.jpeg"],
@@ -220,6 +239,19 @@ const server = createServer(async (request, response) => {
     if (pathname === "/target-experience.html" && parsedUrl.searchParams.get("founderReview") === "scale-batch-1") {
       const source = await readFile(file, "utf8");
       const body = Buffer.from(source.replace("</body>", '  <script src="founder-scale-batch-1-review-loader.js" defer></script>\n</body>'));
+      response.writeHead(200, {
+        "Cache-Control": "no-store",
+        "Content-Length": body.length,
+        "Content-Type": types[".html"],
+        "X-Content-Type-Options": "nosniff"
+      });
+      if (request.method === "HEAD") response.end();
+      else response.end(body);
+      return;
+    }
+    if (["/t/baker/sl-st2/", "/t/baker/fun/", "/t/gunfun/vital-dude/"].includes(pathname) && parsedUrl.searchParams.get("founderReview") === "scale-batch-1") {
+      const source = await readFile(file, "utf8");
+      const body = Buffer.from(source.replace("</body>", '  <script src="../../../founder-scale-batch-1-review-loader.js" defer></script>\n</body>'));
       response.writeHead(200, {
         "Cache-Control": "no-store",
         "Content-Length": body.length,

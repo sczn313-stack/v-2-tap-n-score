@@ -44,16 +44,26 @@
   }
 
   function initialize() {
-    const definition = reviewImages[params.get("target")];
-    const input = document.getElementById("contractFile");
-    const action = document.querySelector('label[for="contractFile"]');
-    if (!definition || !input || !action) return;
+    const pathname = window.location.pathname.replace(/\/+$/, "/");
+    const exactRouteTargets = Object.freeze({
+      "/t/baker/sl-st2/": "idpa_silhouette_sl_st2",
+      "/t/baker/fun/": params.get("target") === "gf-bb" ? "baker_gf_bb_c" : "",
+      "/t/gunfun/vital-dude/": "gunfun_22740_vital_dude"
+    });
+    const targetId = exactRouteTargets[pathname] || params.get("target") || "";
+    const definition = reviewImages[targetId];
+    const inputId = document.getElementById("contractFile") ? "contractFile" : "libraryInput";
+    const input = document.getElementById(inputId);
+    if (!definition || !input) return;
     let loading = false;
-    action.addEventListener("click", async event => {
+    document.addEventListener("click", async event => {
+      const action = event.target.closest(`label[for="${inputId}"]`);
+      if (!action) return;
       event.preventDefault();
       if (loading) return;
       loading = true;
-      await loadReviewImage(input, action, document.getElementById("contractStatus"), definition);
+      const status = document.getElementById("contractStatus") || document.getElementById("workspaceFeedback") || document.getElementById("targetInstruction");
+      await loadReviewImage(input, action, status, definition);
       loading = false;
     });
   }

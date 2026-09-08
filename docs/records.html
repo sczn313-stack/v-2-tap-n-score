@@ -1194,7 +1194,7 @@ function normalizedVaultResultSummary(summary) {
 }
 
 function resolveVaultResultSummary(session, pkg, dispatch) {
-  if (dispatch && [SCZN3SECDispatch.ADAPTERS.CONTRACT_SMART_EVIDENCE, SCZN3SECDispatch.ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, SCZN3SECDispatch.ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE].includes(dispatch.adapter) && window.SCZN3TargetExecutionRuntime) {
+  if (dispatch && [SCZN3SECDispatch.ADAPTERS.CONTRACT_SMART_EVIDENCE, SCZN3SECDispatch.ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, SCZN3SECDispatch.ADAPTERS.CONTRACT_TARGET_SCORING, SCZN3SECDispatch.ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE, SCZN3SECDispatch.ADAPTERS.CONTRACT_COLLECTION_HAND, SCZN3SECDispatch.ADAPTERS.CONTRACT_CUE_DRILL, SCZN3SECDispatch.ADAPTERS.CONTRACT_DECISION_SCENARIO, SCZN3SECDispatch.ADAPTERS.CONTRACT_QUALIFICATION, SCZN3SECDispatch.ADAPTERS.CONTRACT_DIAGNOSTIC_FEEDBACK].includes(dispatch.adapter) && window.SCZN3TargetExecutionRuntime) {
     return normalizedVaultResultSummary(SCZN3TargetExecutionRuntime.vaultResultSummary(pkg));
   }
   if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE && window.SCZN3GunFunVitalDudeSEC) {
@@ -1278,8 +1278,8 @@ function renderCompactVaultRecord(session) {
   const bakerFun = dispatch && [SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_POINTS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_DB_NUMBERS, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BP, SCZN3SECDispatch.ADAPTERS.EZ2C_DOT_TORTURE, SCZN3SECDispatch.ADAPTERS.BAKER_GF_BB_C].includes(dispatch.adapter);
   const gssf = dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GSSF;
   const lowestScoreTarget = gssf || bakerSLST2IDPA;
-  const scoredEvidenceTarget = bakerSLST1 || vitalDude || bakerSLST2IDPA || bakerFun;
   const resultSummary = resolveVaultResultSummary(session, pkg, dispatch);
+  const scoredEvidenceTarget = bakerSLST1 || vitalDude || bakerSLST2IDPA || bakerFun || Boolean(resultSummary);
   const lowestScoreModel = resolveLowestScoreWinsVaultModel(pkg, dispatch);
   const completedEvidence = resolveVaultEvidenceModel(session, pkg, dispatch);
   const evidence = session.targetEvidenceImage || {};

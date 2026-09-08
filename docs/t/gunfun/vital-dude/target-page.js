@@ -6,7 +6,8 @@
   const VARIANT_ID = "GUNFUN_22740_VITAL_DUDE_23X35";
   const MISSION_ID = "GUNFUN_22740_EVIDENCE_CAPTURE_V1";
   const local = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
-  const authorityOrigin = local ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com";
+  const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
+  const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority.onrender.com");
   const analyzeEndpoint = `${authorityOrigin}/api/target/gunfun/vital-dude/analyze`;
   const preservedSecEndpoint = `${authorityOrigin}/api/session/sec`;
 
@@ -58,7 +59,7 @@
     elements.tapSurface.setAttribute("aria-label", state.mode === "aim" ? "Declare aim point" : "Record a visible shot observation");
   }
 
-  async function digestFile(file) { const bytes = await file.arrayBuffer(); const digest = await crypto.subtle.digest("SHA-256", bytes); return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join(""); }
+  async function digestFile(file) { return SCZN3TargetExecutionRuntime.sha256Hex(await file.arrayBuffer()); }
   function fileDataUrl(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || "")); reader.onerror = reject; reader.readAsDataURL(file); }); }
   function imageDimensions(url) { return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve({ widthPx: image.naturalWidth, heightPx: image.naturalHeight }); image.onerror = reject; image.src = url; }); }
   function canvasBlob(canvas, quality) { return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("evidence_representation_unavailable")), "image/jpeg", quality)); }

@@ -26,8 +26,9 @@
     }
   };
   const config = configs[targetKind];
-  if (!["localhost", "127.0.0.1", "::1"].includes(location.hostname)) throw new Error("baker_fun_authority_origin_not_configured");
-  const authorityOrigin = "http://127.0.0.1:8098";
+  const local = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+  const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
+  const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority.onrender.com");
   const analyzeEndpoint = `${authorityOrigin}/api/target/fun/analyze`;
   const preservedSecEndpoint = `${authorityOrigin}/api/session/sec`;
   const $ = id => document.getElementById(id);
@@ -72,7 +73,7 @@
     const expected = expectedEvent(); elements.announcementField.hidden = !((targetKind === "gf-db" && gameMode() === "game_of_points" && expected.phase === "regular") || (targetKind === "gf-battleship" && expected.phase !== "challenge_replacement")); document.querySelectorAll("[data-points-only]").forEach(node => { node.hidden = gameMode() !== "game_of_points"; });
     if (targetKind === "gf-battleship" && expected.phase !== "challenge_replacement") { const board = expected.playerId === "p1" ? "player_2_board" : "player_1_board"; const cells = board === "player_2_board" ? ["r1c2","r2c6","r2c9","r3c9","r3c10","r5c5","r6c1","r6c4","r6c9","r10c4"] : ["r1c9","r2c5","r3c1","r4c2","r5c2","r5c6","r8c2","r9c7","r10c8","r10c10"]; const prior = elements.announced.value; elements.announced.replaceChildren(new Option("Ship square", "ship"), ...cells.map(cell => new Option(`Challenge ${cell.toUpperCase()}`, `${board}:${cell}`))); elements.announced.value = Array.from(elements.announced.options).some(option => option.value === prior) ? prior : "ship"; elements.announcementField.querySelector("label").firstChild.textContent = "Attack "; }
   }
-  async function digest(bytes) { const value = await crypto.subtle.digest("SHA-256", bytes); return Array.from(new Uint8Array(value), byte => byte.toString(16).padStart(2, "0")).join(""); }
+  async function digest(bytes) { return SCZN3TargetExecutionRuntime.sha256Hex(bytes); }
   function dataUrl(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file); }); }
   function dimensions(url) { return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve({ widthPx: image.naturalWidth, heightPx: image.naturalHeight }); image.onerror = reject; image.src = url; }); }
   async function loadImage(file) {
