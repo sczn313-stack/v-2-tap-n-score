@@ -239,6 +239,57 @@ def standard_m4_family_profile(
     }
 
 
+def standard_m16a1_family_profile(
+    target_profile_id: str,
+    target_profile_version: str,
+    target_name: str,
+    *,
+    atp_id: str,
+    mission_id: str,
+    registration_package_id: str,
+    canonical_coordinate_system_id: str,
+) -> Dict[str, Any]:
+    """Bind the issuer M16A1 click-grid family to the universal zeroing road."""
+    family_binding = mfam_authority_binding(target_profile_id)
+    return {
+        "targetId": target_profile_id,
+        "targetAuthorityId": target_profile_version,
+        "targetName": target_name,
+        "targetProfileVersion": target_profile_version,
+        "atpId": atp_id,
+        "zeroingExperience": zeroing_experience(
+            target_profile_id, target_profile_version,
+            authority_family="mfam", entry_mode="photo", confirmation_mode="governed",
+        ),
+        "mfamAuthorityBinding": family_binding,
+        "confirmationAuthority": deepcopy(family_binding["confirmationAuthority"]),
+        "registrationAuthority": {
+            "registrationPackageId": registration_package_id,
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": canonical_coordinate_system_id,
+            "status": "available",
+        },
+        "missionIdentity": {
+            "missionFamily": "zeroingCorrection",
+            "missionId": mission_id,
+            "resultPackageType": "zeroCorrectionResult",
+        },
+        "governedDistance": {"value": 25, "unit": "M", "locked": True},
+        "equipmentRequirements": {
+            "weaponCategories": ["Rifle"],
+            "modelFamilies": ["M16A1"],
+            "requiresAdjustmentSystem": True,
+            "allowedAdjustmentUnits": ["GRID_INTERVAL"],
+        },
+        "standardSetupAuthority": {
+            "setupId": "standard-m16a1-iron-printed-click-grid",
+            "authorityId": "M16A1-IRON-PRINTED-GRID-ADJUSTMENT-PROFILE-2011",
+            "kind": "family_direct_click_grid",
+            "equipmentConfigurationId": "M16A1-STANDARD-IRON-L-APERTURE",
+        },
+    }
+
+
 TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
     "baker_m16a2_25m_zero": standard_m16a2_family_profile(
         "baker_m16a2_25m_zero",
@@ -361,6 +412,27 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         atp_id="action-m4-carbine-25m-zero-atp-v1", mission_id="ACTION_M4_CARBINE_25M_300M_ZERO",
         registration_package_id="action-m4-carbine-family-ugo-registration-v1",
         canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "action_m16_m16a2_25m_zero": standard_m16a2_family_profile(
+        "action_m16_m16a2_25m_zero", "ACTION_M16_M16A2_AUTHORITY_v1",
+        "Action Target M16A2 25 Meter Zeroing Target",
+        atp_id="action-m16-m16a2-25m-zero-atp-v1", mission_id="ACTION_M16A2_25M_300M_ZERO",
+        registration_package_id="action-m16-m16a2-family-ugo-registration-v1",
+        canonical_coordinate_system_id="BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1",
+    ),
+    "gunfun_22460_embedded_m4_25m_zero": standard_m4_family_profile(
+        "gunfun_22460_embedded_m4_25m_zero", "GUNFUN_22460_EMBEDDED_M4_AUTHORITY_v1",
+        "GunFun 22460 Navy Composite · M4 Zeroing Subface",
+        atp_id="gunfun-22460-embedded-m4-zero-atp-v1", mission_id="GUNFUN_22460_EMBEDDED_M4_25M_300M_ZERO",
+        registration_package_id="gunfun-22460-embedded-m4-subface-registration-v1",
+        canonical_coordinate_system_id="GUNFUN_22460_NAVY_COMPOSITE_M4_SUBFACE_AUTHORITY_v1",
+    ),
+    "army_nsn_6920_01_167_1392_m16a1_25m_zero": standard_m16a1_family_profile(
+        "army_nsn_6920_01_167_1392_m16a1_25m_zero", "ARMY_M16A1_FIGURE_5_18_AUTHORITY_v1",
+        "Army-Issued M16A1 25 Meter Zeroing Target",
+        atp_id="army-m16a1-25m-zero-atp-v1", mission_id="ARMY_M16A1_25M_250M_ZERO",
+        registration_package_id="army-m16a1-figure-5-18-photo-registration-v1",
+        canonical_coordinate_system_id="ARMY_FM_3_22_9_FIGURE_5_18_M16A1_FACE_v1",
     ),
     "army_nsn_6920_01_395_2949_m4_25m_zero": standard_m4_family_profile(
         "army_nsn_6920_01_395_2949_m4_25m_zero", "ARMY_NSN_6920_01_395_2949_M4_AUTHORITY_v1",
@@ -897,8 +969,14 @@ def standard_setup_for(profile: Mapping[str, Any]) -> Dict[str, Any]:
         if str(adjustment_profile.get("equipmentConfigurationId") or "") != str(authority.get("equipmentConfigurationId") or ""):
             raise SessionAuthorityError("authority_unavailable", "registered_adjustment_profile_configuration_mismatch", 503)
         model = authority_model_from_adjustment_profile(adjustment_profile)
+        configuration_id = str(model.get("equipmentConfigurationId") or "")
+        firearm_label = (
+            "M4/M4A1 Carbine" if configuration_id.startswith("M4-")
+            else "M16A4 Rifle" if configuration_id.startswith("M16A4-")
+            else "M16A2 Rifle"
+        )
         display_fields.extend([
-            {"label": "Firearm", "value": "M16A2 Rifle"},
+            {"label": "Firearm", "value": firearm_label},
             {"label": "Sighting configuration", "value": model["label"]},
             {"label": "Windage", "value": f"{model['windagePerClick']} {model['unit']} per click"},
             {"label": "Elevation", "value": f"{model['elevationPerClick']} {model['unit']} per click"},
@@ -907,7 +985,7 @@ def standard_setup_for(profile: Mapping[str, Any]) -> Dict[str, Any]:
             "candidateId": authority["setupId"],
             "weaponCategory": "Rifle",
             "manufacturer": "Military M-Series Rifles",
-            "modelType": "M16A2 Rifle",
+            "modelType": firearm_label,
             "modelCaliber": "5.56 NATO",
             "opticType": "Iron Sights",
             "adjustmentUnit": model["unit"],
@@ -920,6 +998,28 @@ def standard_setup_for(profile: Mapping[str, Any]) -> Dict[str, Any]:
                 "elevationPerClick": model["elevationPerClick"],
                 "unit": model["unit"],
             },
+        }
+    elif kind == "family_direct_click_grid":
+        family_binding = profile.get("mfamAuthorityBinding") or {}
+        direct = family_binding.get("geometry") or {}
+        display_fields.extend([
+            {"label": "Firearm", "value": "M16A1 Rifle"},
+            {"label": "Sighting configuration", "value": "M16A1 iron sights · L aperture"},
+            {"label": "Adjustment", "value": "One printed grid interval per sight click"},
+        ])
+        candidate = {
+            "candidateId": authority["setupId"],
+            "weaponCategory": "Rifle",
+            "manufacturer": "U.S. Military",
+            "modelType": "M16A1",
+            "modelCaliber": "5.56 NATO",
+            "opticType": "Iron Sights",
+            "adjustmentUnit": "GRID_INTERVAL",
+            "clickValue": None,
+            "adjustmentSystem": "M16A1_IRON_PRINTED_GRID",
+            "equipmentConfigurationId": authority["equipmentConfigurationId"],
+            "axisAdjustment": {"windagePerClick": 1, "elevationPerClick": 1, "unit": "GRID_INTERVAL"},
+            "mechanicalAuthority": {"status": "proven", "source": family_binding.get("registryId")},
         }
     elif kind == "registered_m4_iron_sight":
         record = resolve_proven_equipment_record(authority["authorityId"], "M4_IRON_DCH_FSP")
@@ -1092,7 +1192,11 @@ def correction_capability(profile: Mapping[str, Any], candidate: Mapping[str, An
         isinstance(axis_adjustment.get(axis), (int, float)) and axis_adjustment.get(axis) > 0
         for axis in ("windagePerClick", "elevationPerClick")
     )
-    if unit not in ("MOA", "MRAD"):
+    allowed_units = {
+        clean_text(value).upper()
+        for value in (profile.get("equipmentRequirements", {}).get("allowedAdjustmentUnits") or [])
+    }
+    if unit not in ("MOA", "MRAD") and not (unit == "GRID_INTERVAL" and unit in allowed_units):
         return {"status": "unavailable", "reason": "adjustment_unit_not_available"}
     if (not isinstance(click_value, (int, float)) or click_value <= 0) and not has_axis_adjustment:
         return {"status": "unavailable", "reason": "positive_click_or_axis_adjustment_not_available"}

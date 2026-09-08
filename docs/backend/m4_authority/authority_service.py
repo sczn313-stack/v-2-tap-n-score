@@ -126,7 +126,12 @@ def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
         family_geometry = package["geometryAuthority"]
         aim = representation["aimCoordinate"]
         square = family_geometry["square"]
-        square_inches = float(square["value"]) / 2.54 if str(square["unit"]).upper() == "CM" else float(square["value"])
+        direct_grid = str(square["unit"]).upper() == "M16A1_SIGHT_CLICK"
+        square_inches = 1.0 if direct_grid else (
+            float(square["value"]) / 2.54
+            if str(square["unit"]).upper() == "CM"
+            else float(square["value"])
+        )
         return {
             "targetId": representation["targetId"],
             "imageWidth": representation["imageWidth"],
@@ -141,7 +146,8 @@ def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
             "gridSquareYPx": representation["gridSquareYPx"],
             "gridSquarePx": representation["gridSquareXPx"],
             "gridSquareInches": square_inches,
-            "unit": "inch",
+            "unit": "grid_interval" if direct_grid else "inch",
+            "measurementMode": "DIRECT_GRID_CLICKS" if direct_grid else "PHYSICAL_DISPLACEMENT",
             "authorityOwner": package["familyAuthorityPackageId"],
             "authorityVersion": package["authorityVersion"],
             "familyId": package["familyId"],
@@ -226,6 +232,18 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
         or ""
     )
     family_context = governed_family_context(payload)
+    direct_grid_authority = (
+        family_context["package"].get("directGridClickAuthority")
+        if family_context else None
+    )
+    if isinstance(direct_grid_authority, dict):
+        return {
+            **direct_grid_authority,
+            "authorityStatus": "proven",
+            "authorityId": (family_context["package"].get("mechanicalAuthorityIds") or [None])[0],
+            "authoritySource": family_context["package"].get("sourceIds"),
+            "authorityRecord": direct_grid_authority,
+        }
     allowed_profile_ids = set(
         family_context["package"].get("mechanicalAuthorityIds") or []
     ) if family_context else set()
@@ -329,8 +347,8 @@ def adjustment_model(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def axis_clicks(moa: float, mrad: float, model: Dict[str, Any], axis: str) -> int:
-    magnitude = mrad if model["unit"] == "MRAD" else moa
+def axis_clicks(moa: float, mrad: float, model: Dict[str, Any], axis: str, direct_grid: float | None = None) -> int:
+    magnitude = direct_grid if model["unit"] == "GRID_INTERVAL" else (mrad if model["unit"] == "MRAD" else moa)
     return nearest_click_half_to_even(magnitude / float(model[f"{axis}PerClick"]))
 
 
@@ -377,7 +395,8 @@ def registration_claim_sufficiency(
         }
 
     maximum_uncertainty_px = max(float(item.get("localUncertaintyPx") or 0) for item in observations)
-    combined_uncertainty_inches = (
+    measurement_unit = "GRID_INTERVAL" if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else "IN"
+    combined_axis_uncertainty = (
         maximum_uncertainty_px
         * 2
         * float(geometry.get("gridSquareInches", 1))
@@ -392,11 +411,11 @@ def registration_claim_sufficiency(
         ("elevation", "yInches", MOA_INCHES_AT_100_YARDS, MRAD_INCHES_AT_100_YARDS),
     ):
         signed_offset = aim_grid[coordinate] - poib_grid[coordinate]
-        angular_scale = (yards / 100) * (mrad_inches if model["unit"] == "MRAD" else moa_inches)
+        angular_scale = 1.0 if model["unit"] == "GRID_INTERVAL" else (yards / 100) * (mrad_inches if model["unit"] == "MRAD" else moa_inches)
         angular_per_click = float(model[f"{axis}PerClick"])
         quantization = quantize_mechanical_axis(
             signed_offset / angular_scale / angular_per_click,
-            combined_uncertainty_inches / angular_scale / angular_per_click,
+            combined_axis_uncertainty / angular_scale / angular_per_click,
         )
         governed = governed and quantization["status"] == "released"
         candidates = quantization["signedClickCandidates"]
@@ -412,16 +431,38 @@ def registration_claim_sufficiency(
             aim_grid["xInches"] - poib_grid["xInches"],
             aim_grid["yInches"] - poib_grid["yInches"],
         )
-        tolerance = number(mission.get("confirmationResidualToleranceInches"), 1.0) or 1.0
-        radial_uncertainty = math.sqrt(2) * combined_uncertainty_inches
+        tolerance_record = mission.get("confirmationResidualTolerance")
+        tolerance = (
+            number(tolerance_record.get("value"), 1.0)
+            if isinstance(tolerance_record, dict)
+            else number(mission.get("confirmationResidualToleranceInches"), 1.0)
+        ) or 1.0
+        tolerance_unit = (
+            str(tolerance_record.get("unit") or measurement_unit).upper()
+            if isinstance(tolerance_record, dict)
+            else "IN"
+        )
+        if tolerance_unit != measurement_unit:
+            return {
+                "status": "insufficient",
+                "owner": owner,
+                "reason": "confirmation_tolerance_unit_mismatch",
+                "measurementUnit": measurement_unit,
+                "toleranceUnit": tolerance_unit,
+            }
+        radial_uncertainty = math.sqrt(2) * combined_axis_uncertainty
         minimum_residual = max(0.0, residual - radial_uncertainty)
         maximum_residual = residual + radial_uncertainty
         confirmation_stable = maximum_residual <= tolerance or minimum_residual > tolerance
         confirmation_assessment = {
             "status": "stable" if confirmation_stable else "ambiguous",
-            "minimumResidualInches": rounded(minimum_residual),
-            "maximumResidualInches": rounded(maximum_residual),
-            "toleranceInches": rounded(tolerance),
+            "minimumResidual": rounded(minimum_residual),
+            "maximumResidual": rounded(maximum_residual),
+            "tolerance": rounded(tolerance),
+            "unit": measurement_unit,
+            "minimumResidualInches": rounded(minimum_residual) if measurement_unit == "IN" else None,
+            "maximumResidualInches": rounded(maximum_residual) if measurement_unit == "IN" else None,
+            "toleranceInches": rounded(tolerance) if measurement_unit == "IN" else None,
         }
     sufficient_for_claim = governed or (phase == "confirmation" and confirmation_stable)
     return {
@@ -436,7 +477,9 @@ def registration_claim_sufficiency(
         "reason": None if sufficient_for_claim else "mechanical_quantization_uncertainty_exceeds_governed_policy",
         "knowledgeState": registration.get("knowledgeState"),
         "maximumLocalUncertaintyPx": rounded(maximum_uncertainty_px),
-        "combinedAxisUncertaintyInches": rounded(combined_uncertainty_inches),
+        "combinedAxisUncertainty": rounded(combined_axis_uncertainty),
+        "measurementUnit": measurement_unit,
+        "combinedAxisUncertaintyInches": rounded(combined_axis_uncertainty) if measurement_unit == "IN" else None,
         "axisAssessments": axis_assessments,
         "confirmationAssessment": confirmation_assessment,
     }
@@ -448,9 +491,10 @@ def reconcile_click_axis(
     mrad: float,
     model: Dict[str, Any],
     displayed_clicks: int,
+    direct_grid: float | None = None,
 ) -> Dict[str, Any]:
     unit = str(model.get("unit") or "").upper()
-    angular_value = mrad if unit == "MRAD" else moa
+    angular_value = direct_grid if unit == "GRID_INTERVAL" else (mrad if unit == "MRAD" else moa)
     displayed_angular_value = rounded(angular_value, 2)
     click_constant = number(model.get(f"{axis}PerClick"))
     rounding_rule = str(model.get("roundingRule") or "")
@@ -471,7 +515,11 @@ def reconcile_click_axis(
     return {
         "status": "reconciled" if reconciled else "mismatch",
         "axis": axis,
-        "chain": "measured offset → MOA/MRAD → sight constant → raw clicks → rounding → displayed clicks",
+        "chain": (
+            "issuer-registered grid offset → printed one-interval-per-click authority → rounding → displayed clicks"
+            if unit == "GRID_INTERVAL"
+            else "measured offset → MOA/MRAD → sight constant → raw clicks → rounding → displayed clicks"
+        ),
         "adjustmentUnit": unit,
         "angularValue": rounded(angular_value),
         "displayedAngularValue": displayed_angular_value,
@@ -494,17 +542,19 @@ def reconcile_click_calculation(
     axes = {
         "windage": reconcile_click_axis(
             "windage",
-            float(angular["windageMOA"]),
-            float(angular["windageMRAD"]),
+            number(angular.get("windageMOA"), 0) or 0,
+            number(angular.get("windageMRAD"), 0) or 0,
             model,
             windage_clicks,
+            float(angular.get("windageGridIntervals") or 0),
         ),
         "elevation": reconcile_click_axis(
             "elevation",
-            float(angular["elevationMOA"]),
-            float(angular["elevationMRAD"]),
+            number(angular.get("elevationMOA"), 0) or 0,
+            number(angular.get("elevationMRAD"), 0) or 0,
             model,
             elevation_clicks,
+            float(angular.get("elevationGridIntervals") or 0),
         ),
     }
     reconciled = all(axis["status"] == "reconciled" for axis in axes.values())
@@ -528,6 +578,12 @@ def score_and_classify(
     }
     if not aim or not impacts:
         result["reason"] = "confirmed aim point and confirmed impacts required"
+        return result
+    if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS":
+        result.update({
+            "method": "issuer-printed-click-grid-no-score-v1",
+            "reason": "the issuer face governs zero correction and confirmation, not a point score",
+        })
         return result
     aim_grid = grid_inches(aim, geometry)
     rows = []
@@ -585,6 +641,14 @@ def group_measurement(impacts: List[Dict[str, Any]], geometry: Dict[str, Any], y
         for index, first in enumerate(points)
         for second in points[index + 1:]
     )
+    if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS":
+        return {
+            "status": "calculated",
+            "diameterGridIntervals": rounded(spread),
+            "unit": "GRID_INTERVAL",
+            "display": f"{spread:.2f} grid intervals",
+            "method": "issuer-registered-grid-max-spread-v1",
+        }
     moa = spread / ((yards / 100) * MOA_INCHES_AT_100_YARDS)
     return {
         "status": "calculated",
@@ -638,8 +702,22 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         discrepancy_x = rounded(aim_grid["xInches"] - bull_grid["xInches"])
         discrepancy_y = rounded(aim_grid["yInches"] - bull_grid["yInches"])
         aim_discrepancy.update({
-            "aimMinusBullInches": {"x": discrepancy_x, "y": discrepancy_y},
-            "magnitudeInches": rounded(math.hypot(discrepancy_x, discrepancy_y)),
+            "aimMinusBull": {
+                "x": discrepancy_x,
+                "y": discrepancy_y,
+                "unit": "GRID_INTERVAL" if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else "IN",
+            },
+            "magnitude": rounded(math.hypot(discrepancy_x, discrepancy_y)),
+            "aimMinusBullInches": (
+                None
+                if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS"
+                else {"x": discrepancy_x, "y": discrepancy_y}
+            ),
+            "magnitudeInches": (
+                None
+                if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS"
+                else rounded(math.hypot(discrepancy_x, discrepancy_y))
+            ),
         })
 
     if aim and poib:
@@ -656,18 +734,38 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         windage_direction = "RIGHT" if correction_x > 0 else "LEFT" if correction_x < 0 else "CENTER"
         elevation_direction = "DOWN" if correction_y > 0 else "UP" if correction_y < 0 else "CENTER"
         correction = {
-            "impactOffsetInches": {"x": impact_x, "y": impact_y},
-            "aimMinusPOIBInches": {"x": correction_x, "y": correction_y},
+            "impactOffsetInches": (
+                None
+                if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS"
+                else {"x": impact_x, "y": impact_y}
+            ),
+            "aimMinusPOIBInches": (
+                None
+                if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS"
+                else {"x": correction_x, "y": correction_y}
+            ),
+            "impactOffset": {
+                "x": impact_x,
+                "y": impact_y,
+                "unit": "GRID_INTERVAL" if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else "IN",
+            },
+            "aimMinusPOIB": {
+                "x": correction_x,
+                "y": correction_y,
+                "unit": "GRID_INTERVAL" if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else "IN",
+            },
             "windageDirection": windage_direction,
             "elevationDirection": elevation_direction,
             "windage": None,
             "elevation": None,
         }
         angular = {
-            "windageMOA": rounded(windage_moa),
-            "elevationMOA": rounded(elevation_moa),
-            "windageMRAD": rounded(windage_mrad),
-            "elevationMRAD": rounded(elevation_mrad),
+            "windageMOA": None if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else rounded(windage_moa),
+            "elevationMOA": None if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else rounded(elevation_moa),
+            "windageMRAD": None if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else rounded(windage_mrad),
+            "elevationMRAD": None if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else rounded(elevation_mrad),
+            "windageGridIntervals": rounded(abs(correction_x)) if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else None,
+            "elevationGridIntervals": rounded(abs(correction_y)) if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else None,
         }
         vector = {"start": poib, "end": aim, "intent": "POIB_TO_CONFIRMED_AIM"}
         geometry_validation = {
@@ -677,10 +775,18 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
             "vectorEnd": "CONFIRMED_AIM_POINT",
             "physicalDisplacementInches": {"x": correction_x, "y": correction_y},
             "magnitudeInches": rounded(math.hypot(correction_x, correction_y)),
+            "coordinateDisplacement": {
+                "x": correction_x,
+                "y": correction_y,
+                "unit": "GRID_INTERVAL" if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else "IN",
+            },
         }
+        if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS":
+            geometry_validation["physicalDisplacementInches"] = None
+            geometry_validation["magnitudeInches"] = None
         if model.get("authorityStatus") == "proven":
-            windage_clicks = axis_clicks(windage_moa, windage_mrad, model, "windage")
-            elevation_clicks = axis_clicks(elevation_moa, elevation_mrad, model, "elevation")
+            windage_clicks = axis_clicks(windage_moa, windage_mrad, model, "windage", abs(correction_x))
+            elevation_clicks = axis_clicks(elevation_moa, elevation_mrad, model, "elevation", abs(correction_y))
             turn_directions = model.get("turnDirections") or {}
             windage_turn = (turn_directions.get("windage") or {}).get(windage_direction)
             elevation_turn = (turn_directions.get("elevation") or {}).get(elevation_direction)
@@ -727,31 +833,49 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
         mission.update({
             "confirmationAuthorityId": confirmation_authority["authorityId"],
             "confirmationMinimumShots": confirmation_authority["minimumShots"],
-            "confirmationResidualToleranceInches": confirmation_authority["residualTolerance"]["value"],
+            "confirmationResidualTolerance": dict(confirmation_authority["residualTolerance"]),
+            "confirmationResidualToleranceInches": (
+                confirmation_authority["residualTolerance"]["value"]
+                if str(confirmation_authority["residualTolerance"].get("unit") or "").upper() == "IN"
+                else None
+            ),
             "confirmationEvidenceRequirement": confirmation_authority["evidenceRequirement"],
         })
     validation = {"status": "not-requested", "outcome": "PENDING"}
     if phase == "confirmation":
         minimum_shots = int(number(mission.get("confirmationMinimumShots"), 3) or 3)
-        tolerance = number(mission.get("confirmationResidualToleranceInches"), 1.0) or 1.0
+        tolerance_record = mission.get("confirmationResidualTolerance")
+        tolerance = (
+            number(tolerance_record.get("value"), 1.0)
+            if isinstance(tolerance_record, dict)
+            else number(mission.get("confirmationResidualToleranceInches"), 1.0)
+        ) or 1.0
+        tolerance_unit = (
+            str(tolerance_record.get("unit") or "IN").upper()
+            if isinstance(tolerance_record, dict)
+            else "IN"
+        )
+        measurement_unit = "GRID_INTERVAL" if geometry.get("measurementMode") == "DIRECT_GRID_CLICKS" else "IN"
         residual = math.hypot(
-            correction["impactOffsetInches"]["x"],
-            correction["impactOffsetInches"]["y"],
+            correction["impactOffset"]["x"],
+            correction["impactOffset"]["y"],
         ) if correction else None
         mechanical_chain_valid = (
             model.get("authorityStatus") != "proven"
             or calculation_reconciliation.get("status") == "reconciled"
         )
+        tolerance_unit_valid = tolerance_unit == measurement_unit
         confirmed = (
             len(impacts) >= minimum_shots
             and residual is not None
             and residual <= tolerance
             and mechanical_chain_valid
+            and tolerance_unit_valid
         )
         validation = {
             "status": (
                 "calculated"
-                if correction and mechanical_chain_valid
+                if correction and mechanical_chain_valid and tolerance_unit_valid
                 else "integrity-failed"
                 if correction
                 else "unavailable"
@@ -760,13 +884,15 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "CONFIRMED"
                 if confirmed
                 else "CALCULATION INTEGRITY FAILED"
-                if correction and not mechanical_chain_valid
+                if correction and (not mechanical_chain_valid or not tolerance_unit_valid)
                 else "REQUIRES ADDITIONAL CORRECTION"
             ),
             "confirmed": confirmed,
             "minimumShotsMet": len(impacts) >= minimum_shots,
-            "residualOffsetInches": rounded(residual) if residual is not None else None,
-            "standard": f"{minimum_shots}+ confirmed shots; POIB within {tolerance:.2f} inch of confirmed aim point",
+            "residualOffset": rounded(residual) if residual is not None else None,
+            "residualUnit": measurement_unit,
+            "residualOffsetInches": rounded(residual) if residual is not None and measurement_unit == "IN" else None,
+            "standard": f"{minimum_shots}+ confirmed shots; POIB within {tolerance:.2f} {tolerance_unit.lower().replace('_', ' ')} of confirmed aim point",
             "method": "zeroing-confirmation-authority-v1",
         }
 

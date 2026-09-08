@@ -121,9 +121,12 @@ function geometryFor(payload) {
     const representation = context.representation;
     const physical = family.geometryAuthority;
     const aim = representation.aimCoordinate;
-    const squareInches = String(physical.square.unit).toUpperCase() === "CM"
-      ? Number(physical.square.value) / 2.54
-      : Number(physical.square.value);
+    const directGrid = String(physical.square.unit).toUpperCase() === "M16A1_SIGHT_CLICK";
+    const squareInches = directGrid
+      ? 1
+      : String(physical.square.unit).toUpperCase() === "CM"
+        ? Number(physical.square.value) / 2.54
+        : Number(physical.square.value);
     const bullAuthority = {
       authorityId: representation.aimAuthorityId,
       status: "registered-production-face",
@@ -152,7 +155,8 @@ function geometryFor(payload) {
       gridSquareYPx: pythonFloat(representation.gridSquareYPx),
       gridSquarePx: pythonFloat(representation.gridSquareXPx),
       gridSquareInches: pythonFloat(squareInches),
-      unit: "inch",
+      unit: directGrid ? "grid_interval" : "inch",
+      measurementMode: directGrid ? "DIRECT_GRID_CLICKS" : "PHYSICAL_DISPLACEMENT",
       authorityOwner: family.familyAuthorityPackageId,
       authorityVersion: family.authorityVersion,
       familyId: family.familyId,
@@ -288,6 +292,17 @@ function adjustmentModel(payload) {
       || setup.adjustmentSystem
       || (opticType.toLowerCase().includes("iron") ? "M4_IRON" : "OPTIC")
   ).toUpperCase();
+  const familyContext = governedFamilyContext(payload);
+  const directGridAuthority = familyContext?.package?.directGridClickAuthority;
+  if (directGridAuthority && typeof directGridAuthority === "object") {
+    return {
+      ...directGridAuthority,
+      authorityStatus: "proven",
+      authorityId: (familyContext.package.mechanicalAuthorityIds || [null])[0],
+      authoritySource: familyContext.package.sourceIds || null,
+      authorityRecord: directGridAuthority
+    };
+  }
   if (requested.startsWith("M16A2_IRON")) {
     const adjustmentProfileId = String(payload.adjustmentProfileId || setup.adjustmentProfileId || "");
     const equipmentConfigurationId = String(setup.equipmentConfigurationId || "");
@@ -372,14 +387,14 @@ function adjustmentModel(payload) {
   };
 }
 
-function axisClicks(moa, mrad, model, axis) {
-  const magnitude = model.unit === "MRAD" ? Number(mrad) : Number(moa);
+function axisClicks(moa, mrad, model, axis, directGrid = null) {
+  const magnitude = model.unit === "GRID_INTERVAL" ? Number(directGrid) : (model.unit === "MRAD" ? Number(mrad) : Number(moa));
   return bankersRound(magnitude / Number(model[`${axis}PerClick`]));
 }
 
-function reconcileClickAxis(axis, moa, mrad, model, displayedClicks) {
+function reconcileClickAxis(axis, moa, mrad, model, displayedClicks, directGrid = null) {
   const unit = String(model.unit || "").toUpperCase();
-  const angularValue = unit === "MRAD" ? Number(mrad) : Number(moa);
+  const angularValue = unit === "GRID_INTERVAL" ? Number(directGrid) : (unit === "MRAD" ? Number(mrad) : Number(moa));
   const displayedAngularValue = Number(angularValue.toFixed(2));
   const clickConstant = Number(model[`${axis}PerClick`]);
   const roundingRule = String(model.roundingRule || "");
@@ -400,7 +415,9 @@ function reconcileClickAxis(axis, moa, mrad, model, displayedClicks) {
   return {
     status: reconciled ? "reconciled" : "mismatch",
     axis,
-    chain: "measured offset → MOA/MRAD → sight constant → raw clicks → rounding → displayed clicks",
+    chain: unit === "GRID_INTERVAL"
+      ? "issuer-registered grid offset → printed one-interval-per-click authority → rounding → displayed clicks"
+      : "measured offset → MOA/MRAD → sight constant → raw clicks → rounding → displayed clicks",
     adjustmentUnit: unit,
     angularValue: rounded(angularValue),
     displayedAngularValue: rounded(displayedAngularValue, 2),
@@ -421,14 +438,16 @@ function reconcileClickCalculation(angular, model, windageClicks, elevationClick
       angular.windageMOA,
       angular.windageMRAD,
       model,
-      windageClicks
+      windageClicks,
+      angular.windageGridIntervals || 0
     ),
     elevation: reconcileClickAxis(
       "elevation",
       angular.elevationMOA,
       angular.elevationMRAD,
       model,
-      elevationClicks
+      elevationClicks,
+      angular.elevationGridIntervals || 0
     )
   };
   const reconciled = Object.values(axes).every((axis) => axis.status === "reconciled");
@@ -448,6 +467,11 @@ function scoreAndClassify(aim, impacts, geometry) {
   };
   if (!aim || !impacts.length) {
     result.reason = "confirmed aim point and confirmed impacts required";
+    return result;
+  }
+  if (geometry.measurementMode === "DIRECT_GRID_CLICKS") {
+    result.method = "issuer-printed-click-grid-no-score-v1";
+    result.reason = "the issuer face governs zero correction and confirmation, not a point score";
     return result;
   }
   const aimGrid = gridInches(aim, geometry);
@@ -515,6 +539,15 @@ function groupMeasurement(impacts, geometry, yards) {
       );
     });
   });
+  if (geometry.measurementMode === "DIRECT_GRID_CLICKS") {
+    return {
+      status: "calculated",
+      diameterGridIntervals: rounded(spread),
+      unit: "GRID_INTERVAL",
+      display: `${spread.toFixed(2)} grid intervals`,
+      method: "issuer-registered-grid-max-spread-v1"
+    };
+  }
   const moa = spread / ((yards / 100) * MOA_INCHES_AT_100_YARDS);
   return {
     status: "calculated",
@@ -596,8 +629,13 @@ export async function buildAuthorityPackage(input) {
     const bullGrid = gridInches(bull, geometry);
     const discrepancyX = rounded(Number(aimGrid.xInches) - Number(bullGrid.xInches));
     const discrepancyY = rounded(Number(aimGrid.yInches) - Number(bullGrid.yInches));
-    aimPointDiscrepancy.aimMinusBullInches = { x: discrepancyX, y: discrepancyY };
-    aimPointDiscrepancy.magnitudeInches = rounded(Math.hypot(Number(discrepancyX), Number(discrepancyY)));
+    const discrepancyUnit = geometry.measurementMode === "DIRECT_GRID_CLICKS" ? "GRID_INTERVAL" : "IN";
+    aimPointDiscrepancy.aimMinusBull = { x: discrepancyX, y: discrepancyY, unit: discrepancyUnit };
+    aimPointDiscrepancy.magnitude = rounded(Math.hypot(Number(discrepancyX), Number(discrepancyY)));
+    aimPointDiscrepancy.aimMinusBullInches = discrepancyUnit === "IN" ? { x: discrepancyX, y: discrepancyY } : null;
+    aimPointDiscrepancy.magnitudeInches = discrepancyUnit === "IN"
+      ? rounded(Math.hypot(Number(discrepancyX), Number(discrepancyY)))
+      : null;
   }
 
   if (aim && poib) {
@@ -614,18 +652,30 @@ export async function buildAuthorityPackage(input) {
     const windageDirection = Number(correctionX) > 0 ? "RIGHT" : Number(correctionX) < 0 ? "LEFT" : "CENTER";
     const elevationDirection = Number(correctionY) > 0 ? "DOWN" : Number(correctionY) < 0 ? "UP" : "CENTER";
     correction = {
-      impactOffsetInches: { x: impactX, y: impactY },
-      aimMinusPOIBInches: { x: correctionX, y: correctionY },
+      impactOffsetInches: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : { x: impactX, y: impactY },
+      aimMinusPOIBInches: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : { x: correctionX, y: correctionY },
+      impactOffset: {
+        x: impactX,
+        y: impactY,
+        unit: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? "GRID_INTERVAL" : "IN"
+      },
+      aimMinusPOIB: {
+        x: correctionX,
+        y: correctionY,
+        unit: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? "GRID_INTERVAL" : "IN"
+      },
       windageDirection,
       elevationDirection,
       windage: null,
       elevation: null
     };
     angular = {
-      windageMOA: rounded(windageMoa),
-      elevationMOA: rounded(elevationMoa),
-      windageMRAD: rounded(windageMrad),
-      elevationMRAD: rounded(elevationMrad)
+      windageMOA: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : rounded(windageMoa),
+      elevationMOA: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : rounded(elevationMoa),
+      windageMRAD: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : rounded(windageMrad),
+      elevationMRAD: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : rounded(elevationMrad),
+      windageGridIntervals: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? rounded(Math.abs(Number(correctionX))) : null,
+      elevationGridIntervals: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? rounded(Math.abs(Number(correctionY))) : null
     };
     vector = { start: poib, end: aim, intent: "POIB_TO_CONFIRMED_AIM" };
     geometryValidation = {
@@ -633,12 +683,17 @@ export async function buildAuthorityPackage(input) {
       method: "confirmed-aim-minus-confirmed-poib-v1",
       vectorStart: "POIB",
       vectorEnd: "CONFIRMED_AIM_POINT",
-      physicalDisplacementInches: { x: correctionX, y: correctionY },
-      magnitudeInches: rounded(Math.hypot(Number(correctionX), Number(correctionY)))
+      physicalDisplacementInches: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : { x: correctionX, y: correctionY },
+      magnitudeInches: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? null : rounded(Math.hypot(Number(correctionX), Number(correctionY))),
+      coordinateDisplacement: {
+        x: correctionX,
+        y: correctionY,
+        unit: geometry.measurementMode === "DIRECT_GRID_CLICKS" ? "GRID_INTERVAL" : "IN"
+      }
     };
     if (model.authorityStatus === "proven") {
-      const windageClicks = axisClicks(windageMoa, windageMrad, model, "windage");
-      const elevationClicks = axisClicks(elevationMoa, elevationMrad, model, "elevation");
+      const windageClicks = axisClicks(windageMoa, windageMrad, model, "windage", Math.abs(Number(correctionX)));
+      const elevationClicks = axisClicks(elevationMoa, elevationMrad, model, "elevation", Math.abs(Number(correctionY)));
       const turnDirections = model.turnDirections || {};
       const windageTurn = (turnDirections.windage || {})[windageDirection] || null;
       const elevationTurn = (turnDirections.elevation || {})[elevationDirection] || null;
@@ -690,38 +745,55 @@ export async function buildAuthorityPackage(input) {
     Object.assign(mission, {
       confirmationAuthorityId: confirmation.authorityId,
       confirmationMinimumShots: confirmation.minimumShots,
-      confirmationResidualToleranceInches: pythonFloat(confirmation.residualTolerance.value),
+      confirmationResidualTolerance: {
+        ...confirmation.residualTolerance,
+        value: pythonFloat(confirmation.residualTolerance.value)
+      },
+      confirmationResidualToleranceInches: String(confirmation.residualTolerance.unit || "").toUpperCase() === "IN"
+        ? pythonFloat(confirmation.residualTolerance.value)
+        : null,
       confirmationEvidenceRequirement: confirmation.evidenceRequirement
     });
   }
   let validation = { status: "not-requested", outcome: "PENDING" };
   if (phase === "confirmation") {
     const minimumShots = Math.trunc(Number(number(mission.confirmationMinimumShots, pythonFloat(3)) || pythonFloat(3)));
-    const tolerance = number(mission.confirmationResidualToleranceInches, pythonFloat(1)) || pythonFloat(1);
+    const toleranceRecord = mission.confirmationResidualTolerance && typeof mission.confirmationResidualTolerance === "object"
+      ? mission.confirmationResidualTolerance
+      : null;
+    const tolerance = toleranceRecord
+      ? number(toleranceRecord.value, pythonFloat(1)) || pythonFloat(1)
+      : number(mission.confirmationResidualToleranceInches, pythonFloat(1)) || pythonFloat(1);
+    const toleranceUnit = toleranceRecord ? String(toleranceRecord.unit || "IN").toUpperCase() : "IN";
+    const measurementUnit = geometry.measurementMode === "DIRECT_GRID_CLICKS" ? "GRID_INTERVAL" : "IN";
     const residual = correction
-      ? Math.hypot(Number(correction.impactOffsetInches.x), Number(correction.impactOffsetInches.y))
+      ? Math.hypot(Number(correction.impactOffset.x), Number(correction.impactOffset.y))
       : null;
     const mechanicalChainValid =
       model.authorityStatus !== "proven"
       || calculationReconciliation.status === "reconciled";
+    const toleranceUnitValid = toleranceUnit === measurementUnit;
     const confirmed =
       impacts.length >= minimumShots
       && residual !== null
       && residual <= Number(tolerance)
-      && mechanicalChainValid;
+      && mechanicalChainValid
+      && toleranceUnitValid;
     validation = {
       status: correction
-        ? mechanicalChainValid ? "calculated" : "integrity-failed"
+        ? mechanicalChainValid && toleranceUnitValid ? "calculated" : "integrity-failed"
         : "unavailable",
       outcome: confirmed
         ? "CONFIRMED"
-        : correction && !mechanicalChainValid
+        : correction && (!mechanicalChainValid || !toleranceUnitValid)
           ? "CALCULATION INTEGRITY FAILED"
           : "REQUIRES ADDITIONAL CORRECTION",
       confirmed,
       minimumShotsMet: impacts.length >= minimumShots,
-      residualOffsetInches: residual !== null ? rounded(residual) : null,
-      standard: `${minimumShots}+ confirmed shots; POIB within ${Number(tolerance).toFixed(2)} inch of confirmed aim point`,
+      residualOffset: residual !== null ? rounded(residual) : null,
+      residualUnit: measurementUnit,
+      residualOffsetInches: residual !== null && measurementUnit === "IN" ? rounded(residual) : null,
+      standard: `${minimumShots}+ confirmed shots; POIB within ${Number(tolerance).toFixed(2)} ${toleranceUnit.toLowerCase().replaceAll("_", " ")} of confirmed aim point`,
       method: "zeroing-confirmation-authority-v1"
     };
   }

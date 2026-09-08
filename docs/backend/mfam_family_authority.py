@@ -359,7 +359,8 @@ def _load_registry() -> Dict[str, Any]:
     current_scale_proof = scale_proofs.get(current_scale_proof_id) or {}
     batch_summary = current_scale_proof.get("batchSummary") or {}
     newly_authorized_count = len(
-        batch_summary.get("newlyAdmittedTargetProfileIds")
+        authorization_sweep.get("newlyAdmittedTargetProfileIds")
+        or batch_summary.get("newlyAdmittedTargetProfileIds")
         or current_scale_proof.get("newlyAdmittedTargetProfileIds")
         or []
     )

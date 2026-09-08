@@ -1,5 +1,7 @@
 # M/FAM Industry Authorization Sweep
 
+> Current-floor note (2026-09-08): Authority-floor Scale Completion #9 supersedes the live counts and dispositions in this historical sweep report. The current governed result is 22 executable physical faces, 13 held physical faces, 23 runtime bindings, and seven shared root gaps. See `authority-floor-scale-completion-09/M_FAM_AUTHORITY_FLOOR_SCALE_COMPLETION_09.md`; the original sweep record below is preserved as history.
+
 > **Historical Scale Sweep #6 record.** The current batch disposition is Authority-floor Sweep #8: `authority-floor-sweep-08/M_FAM_AUTHORITY_FLOOR_SWEEP_08.md` — **19 executable / 16 true authority gaps / 35 physical faces**. The tables below preserve the prior decision state and are not the current runtime inventory.
 
 Date: 2026-09-06; updated by Scale Sweep #6 on 2026-09-07

@@ -39,8 +39,8 @@ def test_registry_metadata_and_vocabulary_are_governed():
     assert set(payload["classificationVocabulary"]) == ALLOWED_CLASSIFICATIONS
     metadata = registry_metadata()
     assert metadata["universalZeroingCapabilityId"] == "sczn3-governed-zeroing-road-v1"
-    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 16
-    assert len(metadata["rootAuthorityGaps"]) == 9
+    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 13
+    assert len(metadata["rootAuthorityGaps"]) == 7
     assert metadata["authorizationSweep"]["reportPath"].endswith("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
 
 
@@ -78,7 +78,7 @@ def test_inventory_schema_and_exact_audit_counts():
         "exactUniqueProcedures": None,
         "exactUniqueProceduresStatus": "UNPROVEN_WHERE_PRODUCT_INSTRUCTIONS_ARE_MISSING",
         "candidateGovernedFamilies": 9,
-        "runtimeBindings": 20,
+        "runtimeBindings": 23,
     }
 
 
@@ -117,7 +117,7 @@ def test_exact_nine_candidate_families_are_cataloged():
     ]
 
 
-def test_twenty_exact_profiles_have_executable_mfam_bindings():
+def test_twenty_three_exact_profiles_have_executable_mfam_bindings():
     payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     assert {item["targetProfileId"] for item in payload["targetProfileBindings"]} == {
         "baker_m16a2_25m_zero",
@@ -140,6 +140,9 @@ def test_twenty_exact_profiles_have_executable_mfam_bindings():
         "gunfun_32110_m16a4_red_25m_zero",
         "gunfun_32120_m16a4_green_25m_zero",
         "m4_25m_zero",
+        "action_m16_m16a2_25m_zero",
+        "gunfun_22460_embedded_m4_25m_zero",
+        "army_nsn_6920_01_167_1392_m16a1_25m_zero",
     }
     for target_profile_id in (
         "baker_m16a2_25m_zero",
@@ -162,6 +165,9 @@ def test_twenty_exact_profiles_have_executable_mfam_bindings():
         "gunfun_32110_m16a4_red_25m_zero",
         "gunfun_32120_m16a4_green_25m_zero",
         "m4_25m_zero",
+        "action_m16_m16a2_25m_zero",
+        "gunfun_22460_embedded_m4_25m_zero",
+        "army_nsn_6920_01_167_1392_m16a1_25m_zero",
     ):
         resolved = resolve_target_profile(target_profile_id)
         assert resolved["binding"]["status"] == "GOVERNED"
@@ -173,7 +179,7 @@ def test_twenty_exact_profiles_have_executable_mfam_bindings():
 def test_standard_m16a2_family_authority_is_one_reusable_backend_package():
     payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     packages = payload["familyAuthorityPackages"]
-    assert len(packages) == 2
+    assert len(packages) == 3
     package = next(item for item in packages if item["familyAuthorityPackageId"] == "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1")
     assert package["familyAuthorityPackageId"] == "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1"
     assert package["familyId"] == "mfam_m16a2_a3_standard_25m_300m"
@@ -255,17 +261,18 @@ def test_standard_m16a2_scale_proof_is_auditable_and_evidence_limited():
 def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority():
     sweep = industry_authorization_sweep()
     assert sweep["counts"] == {
-        "authorizedNowRuntimeBindings": 2,
-        "alreadyAuthorizedRuntimeBindings": 18,
-        "alreadyAuthorizedPhysicalFaces": 19,
-        "heldPhysicalFaces": 16,
+        "authorizedNowRuntimeBindings": 3,
+        "alreadyAuthorizedRuntimeBindings": 20,
+        "alreadyAuthorizedPhysicalFaces": 22,
+        "heldPhysicalFaces": 13,
         "knownHeldFacesWithAuthorizedGeometry": 3,
-        "heldFacesAssignedToCandidateFamily": 11,
-        "heldFacesUnassigned": 5,
+        "heldFacesAssignedToCandidateFamily": 9,
+        "heldFacesUnassigned": 4,
         "candidateFamilies": 9,
     }
     assert {item["runtimeBinding"] for item in sweep["authorizedNow"]} == {
-        "gunfun_32110_m16a4_red_25m_zero", "gunfun_32120_m16a4_green_25m_zero",
+        "action_m16_m16a2_25m_zero", "gunfun_22460_embedded_m4_25m_zero",
+        "army_nsn_6920_01_167_1392_m16a1_25m_zero",
     }
     assert {item.get("targetProfileId") or item.get("runtimeBinding") for item in sweep["alreadyAuthorized"]} == {
         "baker_m16a2_25m_zero",
@@ -283,30 +290,31 @@ def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority
         "qualification_m4_25m_zero", "speedwell_dodm4_m4_25m_zero",
         "action_m4_carbine_25m_zero", "army_nsn_6920_01_395_2949_m4_25m_zero",
         "m4_25m_zero",
+        "gunfun_32110_m16a4_red_25m_zero", "gunfun_32120_m16a4_green_25m_zero",
     }
-    assert len(sweep["hold"]) == 16
+    assert len(sweep["hold"]) == 13
     assert {item["faceId"] for item in sweep["hold"]} == {
         f"face-{index:03d}" for index in range(1, 36)
-    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-025", "face-026", "face-027", "face-028", "face-029", "face-032", "face-033"}
+    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-022", "face-025", "face-026", "face-027", "face-028", "face-029", "face-030", "face-031", "face-032", "face-033"}
 
 
 def test_hold_clearance_inventory_groups_every_hold_without_forcing_family_membership():
     plan = hold_clearance_inventory()
-    assert plan["heldFaceCount"] == 16
-    assert plan["assignedHeldFaceCount"] == 11
-    assert plan["unassignedHeldFaceCount"] == 5
+    assert plan["heldFaceCount"] == 13
+    assert plan["assignedHeldFaceCount"] == 9
+    assert plan["unassignedHeldFaceCount"] == 4
     assert len(plan["families"]) == 9
     grouped = {face_id for family_record in plan["families"] for face_id in family_record["heldFaceIds"]}
     unassigned = set(plan["unassignedFaceIds"])
-    assert len(grouped) == 11
-    assert len(unassigned) == 5
+    assert len(grouped) == 9
+    assert len(unassigned) == 4
     assert not grouped.intersection(unassigned)
     assert grouped | unassigned == {
         f"face-{index:03d}" for index in range(1, 36)
-    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-025", "face-026", "face-027", "face-028", "face-029", "face-032", "face-033"}
+    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-022", "face-025", "face-026", "face-027", "face-028", "face-029", "face-030", "face-031", "face-032", "face-033"}
     counts = {record["familyId"]: record["heldFaceCount"] for record in plan["families"]}
     assert counts == {
-        "mfam_m16a1_25m_250m": 1,
+        "mfam_m16a1_25m_250m": 0,
         "mfam_m16a2_a3_standard_25m_300m": 0,
         "mfam_m16a4_m4_standard_25m_300m": 0,
         "mfam_modern_a8_moa_25m": 6,
@@ -314,7 +322,7 @@ def test_hold_clearance_inventory_groups_every_hold_without_forcing_family_membe
         "mfam_10m_boresight_offset": 1,
         "mfam_configuration_offset_overlay_on_base": 0,
         "mfam_usmc_36m_bzo": 0,
-        "mfam_qualification_course_product_specific": 2,
+        "mfam_qualification_course_product_specific": 1,
     }
 
 

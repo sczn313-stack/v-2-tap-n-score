@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-07.12",
+  "version": "2026-09-08.13",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -9,7 +9,7 @@
     "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
     "path": "registries/mfam_family_conformance.json",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
-    "scaleProofId": "MFAM-AUTHORITY-FLOOR-SWEEP-08"
+    "scaleProofId": "MFAM-AUTHORITY-FLOOR-SCALE-COMPLETION-09-M4"
   },
   "classificationVocabulary": [
     "EXACTLY_THE_SAME",
@@ -47,7 +47,7 @@
       "geometryCatalogRecords": 23,
       "procedureCatalogRecords": 14,
       "candidateGovernedFamilies": 9,
-      "runtimeBindings": 20
+      "runtimeBindings": 23
     }
   },
   "authorizationSweep": {
@@ -56,27 +56,26 @@
     "holdClearancePlanPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md",
     "dispositions": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"],
     "counts": {
-      "authorizedNowRuntimeBindings": 2,
-      "alreadyAuthorizedRuntimeBindings": 18,
-      "alreadyAuthorizedPhysicalFaces": 19,
-      "heldPhysicalFaces": 16,
+      "authorizedNowRuntimeBindings": 3,
+      "alreadyAuthorizedRuntimeBindings": 20,
+      "alreadyAuthorizedPhysicalFaces": 22,
+      "heldPhysicalFaces": 13,
       "knownHeldFacesWithAuthorizedGeometry": 3,
-      "heldFacesAssignedToCandidateFamily": 11,
-      "heldFacesUnassigned": 5,
+      "heldFacesAssignedToCandidateFamily": 9,
+      "heldFacesUnassigned": 4,
       "candidateFamilies": 9
     },
-    "decision": "One authority-floor sweep grouped every remaining face by reusable root cause. The preserved Army authority closes the shared M16A4 mechanical/procedure branch once, unlocking both GunFun reverse faces through the existing Standard M16A4/M4 family UGO and universal zeroing road. Sixteen faces remain held by nine explicit root authority gaps; redundant printer-identity, carrier-size, ink, and repeated family-fact gates are prohibited."
+    "newlyAdmittedTargetProfileIds": ["action_m16_m16a2_25m_zero", "gunfun_22460_embedded_m4_25m_zero", "army_nsn_6920_01_167_1392_m16a1_25m_zero"],
+    "decision": "The remaining authority floor was processed as one batch. Printer identity plus exact UGO conformance admits Action's M16 face to the Standard M16A2/A3 family; GunFun's exact Navy composite representation admits only its embedded M4 zero subface; and one Army-issued M16A1 family package admits the exact NSN face. Thirteen faces remain held by seven genuinely result-changing authority gaps."
   },
   "rootAuthorityGaps": [
-    {"gapId":"MFAM-ROOT-GAP-MODERN-TRUE-DISTANCE-COMPLETION-v1","faceIds":["face-001","face-009","face-011","face-012","face-023","face-034"],"category":"COMPLETION_AUTHORITY","sharedMissingAuthority":"A governed true-distance confirmation/completion branch for Modern Universal-MOA/A8 faces and the active equipment configuration.","whyUGOCannotExecute":"UGO can prove image geometry and orientation, but cannot convert a 25-meter proxy result into a truthfully confirmed true-distance zero.","redundantGatesRemoved":["publisher identity re-proof","family geometry re-proof when runtime UGO passes","paper/ink/branding comparisons"]},
-    {"gapId":"MFAM-ROOT-GAP-UNKNOWN-REVERSE-FACE-v1","faceIds":["face-002"],"category":"PRODUCT_FACE_IDENTITY","sharedMissingAuthority":"The printer proves a two-sided product but the preserved evidence does not identify the reverse face's printed content or purpose.","whyUGOCannotExecute":"UGO cannot select a geometry family until the printer's second physical face is identified.","redundantGatesRemoved":[]},
-    {"gapId":"MFAM-ROOT-GAP-M16A2R-UGO-SCALE-v1","faceIds":["face-005"],"category":"GEOMETRY_AUTHORITY","sharedMissingAuthority":"Operative grid scale and aim/origin mapping for the 23 x 35 enlarged ST-M16A2R face.","whyUGOCannotExecute":"The printer proves product identity and carrier size, but the enlarged operative geometry is not the Standard Letter-face geometry and has no governed UGO mapping.","redundantGatesRemoved":["publisher identity re-proof","M16A2 mechanics re-proof"]},
-    {"gapId":"MFAM-ROOT-GAP-ANGULAR-OPTIC-UGO-v1","faceIds":["face-008","face-010"],"category":"GEOMETRY_AND_EQUIPMENT_AUTHORITY","sharedMissingAuthority":"A governed angular-grid UGO contract plus the exact active optic adjustment branch for True-MOA and True-MIL faces.","whyUGOCannotExecute":"Printer authority establishes the products and purpose; it does not supply SCZN3's canonical source-to-angular-coordinate transform or select the shooter's optic mechanics.","redundantGatesRemoved":["publisher product/purpose re-proof"]},
-    {"gapId":"MFAM-ROOT-GAP-QUALIFICATION-COURSE-v1","faceIds":["face-015","face-030"],"category":"COURSE_EXECUTION_AUTHORITY","sharedMissingAuthority":"Course-specific subface geometry, scoring, procedure, and completion authority.","whyUGOCannotExecute":"These are qualification-course products, not interchangeable zeroing faces; the universal zeroing road cannot invent course scoring or completion.","redundantGatesRemoved":["printer product/purpose re-proof"]},
-    {"gapId":"MFAM-ROOT-GAP-GENERIC-M16-FAMILY-DISPATCH-v1","faceIds":["face-022"],"category":"EQUIPMENT_FAMILY_DISPATCH","sharedMissingAuthority":"A governed rule that resolves the printer's generic M16 face to the correct M16 generation/equipment branch after UGO.","whyUGOCannotExecute":"UGO can classify geometry, but generic 'M16' printer language does not by itself select M16A1, M16A2/A3, or M16A4 mechanics.","redundantGatesRemoved":["publisher identity re-proof","two-sided product re-proof"]},
-    {"gapId":"MFAM-ROOT-GAP-M68-CONFIGURATION-v1","faceIds":["face-024"],"category":"DEVICE_CONFIGURATION_AUTHORITY","sharedMissingAuthority":"The exact M68 optic/mount branch, operative aim/offset mapping, and governed registration package.","whyUGOCannotExecute":"The product is known, but UGO cannot choose a device/mount offset or mechanics that the evidence does not identify.","redundantGatesRemoved":["publisher product/purpose re-proof"]},
-    {"gapId":"MFAM-ROOT-GAP-M16A1-FAMILY-v1","faceIds":["face-031"],"category":"FAMILY_AUTHORITY","sharedMissingAuthority":"A complete canonical M16A1 face registration and confirmation package tied to the 25m-to-250m procedure.","whyUGOCannotExecute":"Army evidence establishes identity, purpose, aim, and basic click displacement, but the current corpus lacks the executable face mapping and confirmation contract.","redundantGatesRemoved":["Army identity/procedure re-proof"]},
-    {"gapId":"MFAM-ROOT-GAP-10M-DEVICE-OFFSET-v1","faceIds":["face-035"],"category":"DEVICE_OFFSET_AUTHORITY","sharedMissingAuthority":"Complete issued symbol geometry and configuration-specific optic/laser/mount offset branches.","whyUGOCannotExecute":"This is a 10-meter boresight capability; UGO cannot infer device offsets or treat it as the 25-meter live-fire zero road.","redundantGatesRemoved":["issuer identity and 10-meter purpose re-proof"]}
+    {"gapId":"MFAM-ROOT-GAP-MODERN-TRUE-DISTANCE-COMPLETION-v1","faceIds":["face-001","face-009","face-011","face-012","face-023","face-034"],"category":"COMPLETION_AUTHORITY","sharedMissingAuthority":"A governed true-distance confirmation/completion branch for Modern Universal-MOA/A8 faces and the active equipment configuration.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the applicable true-distance confirmation/completion authority is genuinely unknown; UGO cannot turn a 25-meter proxy result into a confirmed true-distance zero.","redundantGatesRemoved":["publisher identity re-proof","family geometry re-proof when runtime UGO passes","paper/ink/branding comparisons"]},
+    {"gapId":"MFAM-ROOT-GAP-UNKNOWN-REVERSE-FACE-v1","faceIds":["face-002"],"category":"PRODUCT_FACE_IDENTITY","sharedMissingAuthority":"The exact reverse face's printed content and purpose.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the second physical face is genuinely unknown; UGO cannot select a geometry family before the face is identified.","redundantGatesRemoved":[]},
+    {"gapId":"MFAM-ROOT-GAP-M16A2R-UGO-SCALE-v1","faceIds":["face-005"],"category":"GEOMETRY_AUTHORITY","sharedMissingAuthority":"Operative grid scale and aim/origin mapping for the 23 x 35 enlarged ST-M16A2R face.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the enlarged face's operative scale and aim/origin mapping are genuinely unknown; printer-authorized carrier size does not establish them.","redundantGatesRemoved":["publisher identity re-proof","M16A2 mechanics re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-ANGULAR-OPTIC-UGO-v1","faceIds":["face-008","face-010"],"category":"GEOMETRY_AND_EQUIPMENT_AUTHORITY","sharedMissingAuthority":"A governed angular-grid UGO contract plus the exact active optic adjustment branch for True-MOA and True-MIL faces.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the canonical source-to-angular transform and the shooter's exact optic mechanics are genuinely unknown.","redundantGatesRemoved":["publisher product/purpose re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-QUALIFICATION-COURSE-v1","faceIds":["face-015"],"category":"COURSE_EXECUTION_AUTHORITY","sharedMissingAuthority":"Alternate-C course scoring, procedure, and completion authority.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the complete course scoring and completion authority is genuinely unknown; the universal zeroing road cannot invent it.","redundantGatesRemoved":["printer product/purpose re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-M68-CONFIGURATION-v1","faceIds":["face-024"],"category":"DEVICE_CONFIGURATION_AUTHORITY","sharedMissingAuthority":"The exact M68 optic/mount branch, operative aim/offset mapping, and governed registration package.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the device/mount offset and applicable mechanics are genuinely unknown.","redundantGatesRemoved":["publisher product/purpose re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-10M-DEVICE-OFFSET-v1","faceIds":["face-035"],"category":"DEVICE_OFFSET_AUTHORITY","sharedMissingAuthority":"Complete issued symbol geometry and configuration-specific optic/laser/mount offset branches.","whyUGOCannotExecute":"SCZN3 cannot truthfully execute because the configuration-specific device offsets are genuinely unknown; this is not the 25-meter live-fire road.","redundantGatesRemoved":["issuer identity and 10-meter purpose re-proof"]}
   ],
   "scaleProofs": [
     {
@@ -402,16 +401,61 @@
       },
       "familyLeverage": 9.0,
       "decision": "The 18-face batch collapsed to nine root authority gaps. Existing Army authority governs the M16A4 iron-sight branch once; GunFun 32110 red and 32120 green reverse faces preserve printer identity, use the shared 14 x 16 family UGO, and inherit the same family and universal road. No face-level mechanical package or zeroing road was created."
+    },
+    {
+      "proofId": "MFAM-AUTHORITY-FLOOR-SCALE-COMPLETION-09-M4",
+      "observedAt": "2026-09-08",
+      "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/authority-floor-scale-completion-09/M_FAM_AUTHORITY_FLOOR_SCALE_COMPLETION_09.md",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "candidateFaceIds": ["face-004", "face-007", "face-014", "face-017", "face-019", "face-021", "face-026", "face-028", "face-030", "face-033"],
+      "investigatedFaceIds": ["face-030"],
+      "admittedTargetProfileIds": [
+        "baker_m4_25m_zero", "rite_9125_m4_25m_zero", "national_23075_m4_25m_zero",
+        "qualification_m4_25m_zero", "speedwell_dodm4_m4_25m_zero", "action_m4_carbine_25m_zero",
+        "army_nsn_6920_01_395_2949_m4_25m_zero", "gunfun_32110_m16a4_red_25m_zero",
+        "gunfun_32120_m16a4_green_25m_zero", "gunfun_22460_embedded_m4_25m_zero"
+      ],
+      "newlyAdmittedTargetProfileIds": ["gunfun_22460_embedded_m4_25m_zero"],
+      "holdReasons": [],
+      "counts": {
+        "candidateFaces": 10,
+        "candidatesInvestigated": 1,
+        "startingExecutableBindings": 9,
+        "alreadyExecutable": 9,
+        "familyAuthorityPackagesCreated": 0,
+        "newAuthoritativeEvidenceArtifactsAcquired": 0,
+        "reusableEvidenceArtifacts": 1,
+        "newRegistrationOrientationPackages": 1,
+        "newlyExecutableThroughInheritance": 1,
+        "stillHold": 0,
+        "totalExecutableBindingsAfterProof": 10,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0
+      },
+      "batchSummary": {
+        "knownPhysicalFacesProcessed": 35,
+        "startingExecutableBindings": 20,
+        "newlyAdmittedTargetProfileIds": ["action_m16_m16a2_25m_zero", "gunfun_22460_embedded_m4_25m_zero", "army_nsn_6920_01_167_1392_m16a1_25m_zero"],
+        "newlyExecutableThroughInheritance": 3,
+        "remainingHeldPhysicalFaces": 13,
+        "endingExecutableBindings": 23,
+        "endingExecutablePhysicalFaces": 22,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0
+      },
+      "familyLeverage": 10.0,
+      "decision": "The exact GunFun Navy composite representation contributes one registered M4 zero subface to the already-governed M4 family. Qualification-course scoring remains excluded. The batch also admits Action M16 and creates one Army M16A1 family package, as recorded in the shared report."
     }
   ],
   "families": [
     {
       "familyId": "mfam_m16a1_25m_250m",
       "name": "Legacy M16A1 25-meter / 250-meter zero",
-      "status": "EVIDENCE_ONLY",
-      "geometry": {"sheetInches": null, "rows": null, "columns": null, "square": null, "uniform": null, "aimPoint": null, "status": "UNPROVEN"},
-      "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 250, "weaponFamilies": ["M16A1"], "status": "EVIDENCE_ONLY"},
-      "registration": {"status": "UNPROVEN", "orientationLandmarks": []},
+      "status": "GOVERNED",
+      "geometry": {"sheetInches": null, "rows": 30, "columns": 26, "square": {"value": 1, "unit": "M16A1_SIGHT_CLICK"}, "uniform": true, "gridOriginToAim": {"columns": 13, "rows": 16}, "status": "GOVERNED_AS_PRINTED_CLICK_LATTICE"},
+      "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 250, "weaponFamilies": ["M16A1"], "setup": "use the L sight aperture", "finalization": "after zeroing, rotate to the unmarked aperture for the 250-meter battlesight zero", "status": "GOVERNED"},
+      "registration": {"status": "GOVERNED_FOR_EXACT_ISSUER_FACE", "orientationLandmarks": ["NSN and issue block above grid", "asymmetric sight-control diagrams", "250 M and USE L SIGHT marks", "instruction block below grid"]},
       "sourceIds": ["ARMY-FM-3-22-9-2011", "RITR-NSN-2021"]
     },
     {
@@ -593,6 +637,64 @@
         "BAKER-ST-M16A2-M4-PRODUCT",
         "SCZN3-M4-MECHANICS"
       ]
+    },
+    {
+      "familyAuthorityPackageId": "MFAM-M16A1-25M-250M-FAMILY-AUTHORITY-v1",
+      "familyId": "mfam_m16a1_25m_250m",
+      "status": "GOVERNED",
+      "authorityVersion": "sczn3-m16a1-25m-250m-family-authority-v1",
+      "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
+      "geometryAuthority": {
+        "authorityId": "MFAM-M16A1-26X30-PRINTED-CLICK-GRID-v1",
+        "columns": 26,
+        "rows": 30,
+        "square": {"value": 1, "unit": "M16A1_SIGHT_CLICK"},
+        "uniform": true,
+        "physicalScaleRule": "The issuing target defines each grid interval as one M16A1 sight click; no inferred carrier dimension or MOA conversion is required."
+      },
+      "aimAuthority": {
+        "authorityId": "MFAM-M16A1-WHITE-DOT-AIM-v1",
+        "reference": "center white dot / printed target center",
+        "gridOriginToAim": {"columns": 13, "rows": 16}
+      },
+      "measurementAuthority": {
+        "authorityId": "MFAM-M16A1-DIRECT-CLICK-GRID-MEASUREMENT-v1",
+        "coordinateMeaning": "signed displacement on the issuer-printed one-interval-per-click lattice",
+        "mode": "DIRECT_GRID_CLICKS"
+      },
+      "procedureAuthority": {
+        "authorityId": "MFAM-M16A1-25M-250M-PROCEDURE-v1",
+        "zeroDistance": {"value": 25, "unit": "M"},
+        "finalDistance": {"value": 250, "unit": "M"},
+        "groupSize": {"minimum": 3, "unit": "SHOTS"},
+        "setup": "use the L sight aperture and aim at target center",
+        "adjustment": "move the shot-group center to the center white dot using the target's printed sight-control directions",
+        "finalization": "after the zero is confirmed, rotate to the unmarked aperture for the 250-meter battlesight zero"
+      },
+      "mechanicalAuthorityIds": [
+        "M16A1-IRON-PRINTED-GRID-ADJUSTMENT-PROFILE-2011"
+      ],
+      "directGridClickAuthority": {
+        "system": "M16A1_IRON_PRINTED_GRID",
+        "label": "M16A1 iron sights · issuer-printed click grid",
+        "unit": "GRID_INTERVAL",
+        "windagePerClick": 1,
+        "elevationPerClick": 1,
+        "roundingRule": "nearest-whole-click-half-to-even",
+        "turnDirections": {
+          "windage": {"RIGHT": "FOLLOW PRINTED REAR SIGHT WINDAGE ARROW", "LEFT": "FOLLOW PRINTED REAR SIGHT WINDAGE ARROW"},
+          "elevation": {"UP": "FOLLOW PRINTED FRONT SIGHT ARROW", "DOWN": "FOLLOW PRINTED FRONT SIGHT ARROW"}
+        }
+      },
+      "confirmationAuthority": {
+        "authorityId": "MFAM-M16A1-25M-CONFIRMATION-v1",
+        "minimumShots": 3,
+        "zeroRegion": {"diameter": 4, "unit": "CM"},
+        "residualTolerance": {"value": 2.75, "unit": "GRID_INTERVAL", "basis": "issuer-printed zero region on the exact registered face"},
+        "evidenceRequirement": "a second target photograph containing only the new confirmation-group observations",
+        "method": "issuer-printed-zero-region-confirmation-v1"
+      },
+      "sourceIds": ["ARMY-FM-3-22-9-2011"]
     }
   ],
   "mechanicalAuthorities": [
@@ -658,6 +760,17 @@
         {"axis": "elevation", "control": "front sight post", "movementPerClick": 1.25, "unit": "MOA", "up": "CLOCKWISE viewed from above", "down": "COUNTERCLOCKWISE viewed from above"},
         {"axis": "windage", "control": "rear windage knob", "movementPerClick": 0.5, "unit": "MOA", "right": "CLOCKWISE viewed squarely at right-side knob face", "left": "COUNTERCLOCKWISE viewed squarely at right-side knob face"},
         {"axis": "configuration", "control": "rear elevation drum", "movementPerClick": 0.5, "unit": "MOA", "purpose": "6/3 plus two-click Z setup and two-click return after confirmation only"}
+      ],
+      "sourceIds": ["ARMY-FM-3-22-9-2011"]
+    },
+    {
+      "mechanicalAuthorityId": "M16A1-IRON-PRINTED-GRID-ADJUSTMENT-PROFILE-2011",
+      "status": "GOVERNED",
+      "equipmentConfiguration": {"weapon": "M16A1", "sight": "standard M16A1 iron sight using the L aperture during 25-meter zero"},
+      "controls": [
+        {"axis": "elevation", "control": "front sight post", "movementPerClick": 1, "unit": "PRINTED_GRID_INTERVAL", "directionAuthority": "follow the issuer-printed FRONT SIGHT arrow"},
+        {"axis": "windage", "control": "rear sight windage", "movementPerClick": 1, "unit": "PRINTED_GRID_INTERVAL", "directionAuthority": "follow the issuer-printed REAR SIGHT WINDAGE arrow"},
+        {"axis": "configuration", "control": "rear sight aperture", "purpose": "use L for 25-meter zero; rotate to the unmarked aperture after confirmation"}
       ],
       "sourceIds": ["ARMY-FM-3-22-9-2011"]
     },
@@ -1066,15 +1179,15 @@
       "grid": {"columns": 14, "rows": 16, "square": {"value": 1.3, "unit": "CM"}, "uniform": true, "authorityScope": "inherited after runtime UGO conformance"},
       "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 7, "rows": 8}, "authorityScope": "family"},
       "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "family governed"},
-      "applicableEquipment": ["M4/M4A1 standard DCH/FSP iron sights"],
-      "mechanicalAuthorityIds": ["M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"],
-      "registration": {"status": "GOVERNED", "packageId": "action-m4-carbine-family-ugo-registration-v1", "orientationProofRequired": true, "identityAuthority": "printer", "geometryAuthority": "family UGO"},
+      "applicableEquipment": ["M4/M4A1 standard DCH/FSP iron sights", "M16A2 standard iron sights when the exact M16 face is selected"],
+      "mechanicalAuthorityIds": ["M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011", "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageIds": ["action-m4-carbine-family-ugo-registration-v1", "action-m16-m16a2-family-ugo-registration-v1"], "orientationProofRequired": true, "identityAuthority": "printer", "geometryAuthority": "family UGO"},
       "candidateFamilyId": "mfam_m16a4_m4_standard_25m_300m",
       "mappingClassification": "IDENTITY_REGISTRATION_DIFFERENCE",
       "evidenceQuality": "PUBLISHER_PRIMARY",
       "runtimeStatus": "GOVERNED",
       "sourceIds": ["ACTION-M4-CARBINE"],
-      "notes": ["Action Target governs its M4 face identity and purpose. Runtime UGO must prove the submitted face maps to the Standard M4 geometry and orientation; the M16 side remains outside this binding."]
+      "notes": ["Action Target governs its separate M4 and M16 face identities and purposes. Runtime UGO must prove the submitted face maps to the selected governed family and orientation; the equipment branch is explicit."]
     },
     {
       "productId": "action-target:moa-25-1s:face",
@@ -1187,20 +1300,20 @@
       "exactName": "Navy Qual M4",
       "identifiers": {"sku": "22460"},
       "generationOrApplication": "Navy qualification target",
-      "face": {"side": "cataloged product", "printedTitle": null},
-      "dimensions": {"width": null, "height": null, "unit": "IN"},
-      "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
-      "procedure": {"zeroDistance": null, "finalDistance": null, "confirmation": null},
+      "face": {"side": "single Navy qualification composite", "printedTitle": "25 METER ZEROING TARGET / M4"},
+      "dimensions": {"width": 23, "height": 35, "unit": "IN"},
+      "grid": {"columns": 14, "rows": 16, "square": {"value": 1.3, "unit": "CM"}, "uniform": true, "scope": "embedded lower-left M4 zeroing subface only"},
+      "aim": {"reference": "embedded M4 subface center crosshairs / white dot", "gridOrigin": {"columns": 7, "rows": 8}},
+      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "Standard M16A4/M4 family confirmation for the embedded zeroing subface only"},
       "applicableEquipment": ["M4"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
-      "candidateFamilyId": "mfam_qualification_course_product_specific",
-      "mappingClassification": "GENUINELY_DIFFERENT_TARGET_FAMILY",
-      "evidenceQuality": "PRIMARY_PARTIAL",
-      "runtimeStatus": "EVIDENCE_ONLY",
+      "mechanicalAuthorityIds": ["M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "gunfun-22460-embedded-m4-subface-registration-v1", "orientationProofRequired": true},
+      "candidateFamilyId": "mfam_m16a4_m4_standard_25m_300m",
+      "mappingClassification": "SAME_GOVERNED_CAPABILITY_DIFFERENT_VALUE",
+      "evidenceQuality": "PUBLISHER_PRIMARY",
+      "runtimeStatus": "GOVERNED",
       "sourceIds": ["GUNFUN-CATALOG", "P-OS-12-PUBLISHER-SEED"],
-      "notes": ["Qualification role is not a standard zeroing family."]
+      "notes": ["Only the exact embedded M4 zeroing subface enters the universal zeroing road. Navy qualification scoring and the other composite regions remain outside this binding."]
     },
     {
       "productId": "army:nsn-6920-01-167-1392:m16a1",
@@ -1208,20 +1321,20 @@
       "exactName": "M16A1 25-meter zero target",
       "identifiers": {"nsn": "6920-01-167-1392"},
       "generationOrApplication": "Legacy M16A1 zero",
-      "face": {"side": "issued face", "printedTitle": null},
+      "face": {"side": "issued face", "printedTitle": "25 METER ZEROING TARGET / M16A1"},
       "dimensions": {"width": null, "height": null, "unit": "IN"},
-      "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
-      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 250, "unit": "M"}, "confirmation": null},
+      "grid": {"columns": 26, "rows": 30, "square": {"value": 1, "unit": "M16A1_SIGHT_CLICK"}, "uniform": true},
+      "aim": {"reference": "center white dot / target center", "gridOrigin": {"columns": 13, "rows": 16}},
+      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 250, "unit": "M"}, "setup": "use the L sight aperture", "finalization": "rotate to the unmarked aperture after confirmation for the 250-meter battlesight zero", "confirmation": "three-round group inside the issued 4-centimeter zero standard"},
       "applicableEquipment": ["M16A1"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
+      "mechanicalAuthorityIds": ["M16A1-IRON-PRINTED-GRID-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "army-m16a1-figure-5-18-photo-registration-v1", "orientationProofRequired": true},
       "candidateFamilyId": "mfam_m16a1_25m_250m",
       "mappingClassification": "EXACTLY_THE_SAME",
       "evidenceQuality": "ISSUER_PRIMARY",
-      "runtimeStatus": "EVIDENCE_ONLY",
+      "runtimeStatus": "GOVERNED",
       "sourceIds": ["ARMY-FM-3-22-9-2011"],
-      "notes": ["Issuing identity and procedure are authoritative; runtime registration is absent."]
+      "notes": ["The exact issuer face supplies the one-interval-per-click lattice, center aim, L-aperture procedure, 4-centimeter confirmation standard, and asymmetric orientation evidence."]
     },
     {
       "productId": "army:nsn-6920-01-395-2949:dual-face",
@@ -1654,6 +1767,62 @@
         "sourceAssetSha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6",
         "authorityScope": "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY",
         "productIdentityAuthority": {"publisher": "Action Target", "faceId": "face-021", "sourceIds": ["ACTION-M4-CARBINE"]}
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "action_m16_m16a2_25m_zero",
+      "productId": "action-target:m4-carbine:two-sided",
+      "inventoryFaceId": "face-022",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "action-m16-m16a2-family-ugo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1", "imageWidth": 773, "imageHeight": 1000,
+        "gridLeftPx": 64.0, "gridTopPx": 129.0, "gridRightPx": 709.0, "gridBottomPx": 845.0,
+        "gridSquareXPx": 35.833333333333336, "gridSquareYPx": 35.8,
+        "aimCoordinate": {"xPercent": 50.0, "yPercent": 48.7},
+        "aimAuthorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "sourceAssetSha256": "250f77079bd13198a8d3c301e204f58c8e96752631f9aec479c29f8f2f5c7993",
+        "authorityScope": "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY",
+        "productIdentityAuthority": {"publisher": "Action Target", "faceId": "face-022", "sourceIds": ["ACTION-M4-CARBINE"]}
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "gunfun_22460_embedded_m4_25m_zero",
+      "productId": "gunfun:22460:navy-qual-m4",
+      "inventoryFaceId": "face-030",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "gunfun-22460-embedded-m4-subface-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "GUNFUN_22460_NAVY_COMPOSITE_M4_SUBFACE_AUTHORITY_v1", "imageWidth": 400, "imageHeight": 609,
+        "gridLeftPx": 31.0, "gridTopPx": 352.0, "gridRightPx": 169.0, "gridBottomPx": 498.0,
+        "gridSquareXPx": 9.857142857142858, "gridSquareYPx": 9.125,
+        "aimCoordinate": {"xPercent": 25.0, "yPercent": 69.78653530377669},
+        "aimAuthorityId": "MFAM-STANDARD-M16A4-M4-CENTER-AIM-v1",
+        "sourceAssetSha256": "f2fc490a4f65f6b04dd656e5ad6320807b946b93ef13d6022d07f000fbc01765"
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "army_nsn_6920_01_167_1392_m16a1_25m_zero",
+      "productId": "army:nsn-6920-01-167-1392:m16a1",
+      "inventoryFaceId": "face-031",
+      "familyId": "mfam_m16a1_25m_250m",
+      "familyAuthorityPackageId": "MFAM-M16A1-25M-250M-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A1-IRON-PRINTED-GRID-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "army-m16a1-figure-5-18-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "ARMY_FM_3_22_9_FIGURE_5_18_M16A1_FACE_v1", "imageWidth": 993, "imageHeight": 1142,
+        "gridLeftPx": 161.0, "gridTopPx": 87.0, "gridRightPx": 847.0, "gridBottomPx": 901.0,
+        "gridSquareXPx": 26.384615384615383, "gridSquareYPx": 27.133333333333333,
+        "aimCoordinate": {"xPercent": 50.75528700906344, "yPercent": 45.62171628721541},
+        "aimAuthorityId": "MFAM-M16A1-WHITE-DOT-AIM-v1",
+        "sourceAssetSha256": "d0549a9b3c11d2cfa7e8b536d2cd5e2a5a73833fac1d16070074082718a8994c"
       },
       "status": "GOVERNED"
     },

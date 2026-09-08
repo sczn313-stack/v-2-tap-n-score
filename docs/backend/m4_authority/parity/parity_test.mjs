@@ -48,6 +48,25 @@ const fixtures = [
   },
   {
     ...common,
+    caseName: "army-m16a1-issuer-printed-click-grid",
+    target_profile_id: "army_nsn_6920_01_167_1392_m16a1_25m_zero",
+    targetProfileId: "army_nsn_6920_01_167_1392_m16a1_25m_zero",
+    targetId: "ARMY_FM_3_22_9_FIGURE_5_18_M16A1_FACE_v1",
+    targetName: "Army-Issued M16A1 25 Meter Zeroing Target",
+    aimCoordinate: point(50.75528700906344, 45.62171628721541, "aim"),
+    impactCoordinates: [
+      point(40.0, 48.0, "initial-1"),
+      point(40.1, 48.1, "initial-2"),
+      point(39.9, 47.9, "initial-3")
+    ],
+    shooterSetup: {
+      opticType: "Iron Sights",
+      adjustmentSystem: "M16A1_IRON_PRINTED_GRID",
+      equipmentConfigurationId: "M16A1-STANDARD-IRON-L-APERTURE"
+    }
+  },
+  {
+    ...common,
     caseName: "registered-m4-detachable-carry-handle-iron-sight",
     aimCoordinate: point(50, 43.181818, "aim"),
     impactCoordinates: [

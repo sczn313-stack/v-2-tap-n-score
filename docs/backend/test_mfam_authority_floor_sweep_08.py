@@ -29,8 +29,8 @@ def test_every_remaining_hold_has_one_reusable_root_cause():
     grouped = [face_id for group in groups for face_id in group["faceIds"]]
     inventory = json.loads(INVENTORY_AUDIT_PATH.read_text(encoding="utf-8"))
     held = [face["faceId"] for face in inventory["faces"] if not face["runtimeBinding"]]
-    assert len(groups) == 9
-    assert len(grouped) == len(set(grouped)) == 16
+    assert len(groups) == 7
+    assert len(grouped) == len(set(grouped)) == 13
     assert set(grouped) == set(held)
     assert all(group["sharedMissingAuthority"] for group in groups)
     assert all(group["whyUGOCannotExecute"] for group in groups)
@@ -85,13 +85,13 @@ def test_current_sweep_counts_and_scale_are_exact():
     assert proof["batchSummary"]["remainingHeldPhysicalFaces"] == 16
     assert proof["batchSummary"]["endingExecutablePhysicalFaces"] == 19
     assert registry_metadata()["authorizationSweep"]["counts"] == {
-        "authorizedNowRuntimeBindings": 2,
-        "alreadyAuthorizedRuntimeBindings": 18,
-        "alreadyAuthorizedPhysicalFaces": 19,
-        "heldPhysicalFaces": 16,
+        "authorizedNowRuntimeBindings": 3,
+        "alreadyAuthorizedRuntimeBindings": 20,
+        "alreadyAuthorizedPhysicalFaces": 22,
+        "heldPhysicalFaces": 13,
         "knownHeldFacesWithAuthorizedGeometry": 3,
-        "heldFacesAssignedToCandidateFamily": 11,
-        "heldFacesUnassigned": 5,
+        "heldFacesAssignedToCandidateFamily": 9,
+        "heldFacesUnassigned": 4,
         "candidateFamilies": 9,
     }
 

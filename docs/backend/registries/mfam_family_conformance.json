@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-target-family-conformance-v1",
   "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
-  "version": "2026-09-07.7",
+  "version": "2026-09-08.8",
   "status": "governed",
   "authorityRegistryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
   "admissionPolicy": {
@@ -85,6 +85,21 @@
         {"gateId": "registration_orientation", "name": "Fail-closed family UGO registration and orientation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Provide a Target Profile registration package that keeps printer identity distinct while proving source-photo mapping, TOP/BOTTOM/LEFT/RIGHT orientation, and source-evidence reconciliation against the governed family geometry.", "failureCode": "target_registration_unverified"}
       ],
       "admissionRule": "printer-authorized M16A4/M4 face + runtime family UGO + explicit Target Profile binding + one exact governed equipment branch"
+    },
+    {
+      "contractId": "MFAM-M16A1-25M-250M-FAMILY-CONFORMANCE-v1",
+      "familyId": "mfam_m16a1_25m_250m",
+      "familyAuthorityPackageId": "MFAM-M16A1-25M-250M-FAMILY-AUTHORITY-v1",
+      "status": "GOVERNED",
+      "requiredGates": [
+        {"gateId": "physical_geometry_pitch", "name": "Issuer-printed click-grid geometry", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Use the issuing face's 26 x 30 one-interval-per-click lattice without inventing an outer carrier dimension or MOA pitch.", "failureCode": "family_geometry_conformance_unverified"},
+        {"gateId": "aim_reference", "name": "Aim reference", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the center white dot at 13 columns and 16 rows from the grid origin.", "failureCode": "family_aim_reference_unverified"},
+        {"gateId": "representation_landmarks", "name": "Exact issuer representation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Preserve the NSN face and asymmetric issue, sight-control, and procedure landmarks.", "failureCode": "target_representation_unverified"},
+        {"gateId": "procedure", "name": "M16A1 25m/250m procedure", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Use L aperture at 25m, move the group center to the white dot, then rotate to the unmarked aperture after confirmation.", "failureCode": "family_procedure_conformance_unverified"},
+        {"gateId": "mechanical_applicability", "name": "M16A1 printed sight-control branch", "scope": "EQUIPMENT_BRANCH", "required": true, "proofRule": "Bind only M16A1 iron sights and the issuer-printed one-grid-interval-per-click directions.", "failureCode": "mechanical_applicability_unverified"},
+        {"gateId": "registration_orientation", "name": "Exact-face registration and orientation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Require the exact issuer-face UGO, TOP/BOTTOM/LEFT/RIGHT proof, and source reconciliation.", "failureCode": "target_registration_unverified"}
+      ],
+      "admissionRule": "all six gates PROVEN + exact Army Target Profile binding + M16A1 family authority"
     }
   ],
   "reusableEvidencePackages": [
@@ -499,6 +514,39 @@
         {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The binding is restricted to the governed M16A4 standard-iron 1.25/0.5 MOA branch.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
         {"gateId":"registration_orientation","status":"PROVEN","basis":"gunfun-32120-m16a4-green-family-ugo-registration-v1 preserves printer identity and requires fail-closed UGO mapping, orientation, and source reconciliation.","sourceIds":["GUNFUN-32120"]}
       ], "disposition":"ADMITTED", "targetProfileId":"gunfun_32120_m16a4_green_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId":"face-022", "productId":"product-action-m4-carbine", "representationId":"representation-021-action-m16", "contractId":"MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
+      "gateEvidence":[
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"Action Target authoritatively identifies its M16 zeroing face; runtime UGO must prove the submitted face maps to the governed 18 x 20 family geometry.","sourceIds":["ACTION-M4-CARBINE"],"evidencePackageIds":["MFAM-STANDARD-M16A2-A3-GEOMETRY-FACT-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The family aim is inherited only after UGO proves the center white-dot relationship.","sourceIds":["ACTION-M4-CARBINE"],"evidencePackageIds":["MFAM-STANDARD-M16A2-A3-AIM-FACT-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Action printer authority preserves the exact M16 face identity independently from the M4 side and family template.","sourceIds":["ACTION-M4-CARBINE"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"Action identifies a 25-meter M16 zeroing face; the Standard M16A2/A3 family supplies the governed 300-meter procedure.","sourceIds":["ACTION-M4-CARBINE","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"This binding is restricted to active M16A2 standard-iron equipment; generic M16 wording never dispatches another generation.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"action-m16-m16a2-family-ugo-registration-v1 requires family mapping, asymmetric orientation proof, and source reconciliation.","sourceIds":["ACTION-M4-CARBINE"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"action_m16_m16a2_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId":"face-030", "productId":"product-gunfun-22460", "representationId":"representation-029-gunfun-22460", "contractId":"MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence":[
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"The exact publisher-preserved composite contains a distinct 14 x 16 M4 zeroing subface; only that subface inherits family geometry.","sourceIds":["GUNFUN-CATALOG"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The embedded M4 subface visibly and structurally supplies the governed 7-column / 8-row center aim.","sourceIds":["GUNFUN-CATALOG"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"GunFun's exact Navy composite identity and its embedded M4 subface are preserved; no claim is made for other course regions.","sourceIds":["GUNFUN-CATALOG"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"Only the embedded M4 25-meter zeroing subface consumes the family procedure; Navy qualification scoring remains excluded.","sourceIds":["GUNFUN-CATALOG","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"Execution is restricted to the governed M4/M4A1 DCH/FSP branch.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"gunfun-22460-embedded-m4-subface-registration-v1 uses the exact composite and asymmetric Navy/subface anchors.","sourceIds":["GUNFUN-CATALOG"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"gunfun_22460_embedded_m4_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId":"face-031", "productId":"product-army-m16a1-zero", "representationId":"representation-030-army-m16a1", "contractId":"MFAM-M16A1-25M-250M-FAMILY-CONFORMANCE-v1",
+      "gateEvidence":[
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"Army Figure 5-18 authoritatively supplies the 26 x 30 one-printed-interval-per-click lattice; an outer paper dimension is not an operative requirement.","sourceIds":["ARMY-FM-3-22-9-2011"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The exact issuer face places the center white dot at 13 columns and 16 rows from grid origin.","sourceIds":["ARMY-FM-3-22-9-2011"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"The exact NSN, issue block, asymmetric sight diagrams, 250 M/L SIGHT marks, and footer are preserved.","sourceIds":["ARMY-FM-3-22-9-2011"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"Army authority supplies L aperture, three-round groups, group-center-to-white-dot adjustment, and unmarked-aperture finalization for 250 meters.","sourceIds":["ARMY-FM-3-22-9-2011"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The issuer face directly governs one printed grid interval per M16A1 sight click and printed sight-control direction.","sourceIds":["ARMY-FM-3-22-9-2011"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"army-m16a1-figure-5-18-photo-registration-v1 binds the exact issuer representation, topology, and asymmetric orientation anchors.","sourceIds":["ARMY-FM-3-22-9-2011"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"army_nsn_6920_01_167_1392_m16a1_25m_zero", "irreducibleMissingFacts":[]
     }
   ],
   "scaleProof": {
