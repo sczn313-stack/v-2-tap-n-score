@@ -1,8 +1,12 @@
-"""Fail-closed resolver for the governed M/FAM target-family registry.
+"""Lean runtime authority resolver for governed M/FAM targets.
 
-The registry compresses evidence into family candidates, but family membership
-never grants executable authority. Only an explicit GOVERNED Target Profile
-binding may resolve for runtime use.
+The executable path is deliberately small:
+
+printer product/face -> exact registration (UGO) -> family authority ->
+equipment mechanics -> universal zeroing road.
+
+Historical comparisons, admission exercises, scale proofs, and evidence-quality
+rankings live in preservation records. They are not runtime prerequisites.
 """
 from __future__ import annotations
 
@@ -14,22 +18,14 @@ from typing import Any, Dict, Mapping
 
 REGISTRY_PATH = Path(__file__).resolve().parent / "registries" / "mfam_family_authority.json"
 INVENTORY_AUDIT_PATH = Path(__file__).resolve().parent / "registries" / "mfam_inventory_audit.json"
-SCHEMA_ID = "sczn3-mfam-family-authority-v1"
-ALLOWED_CLASSIFICATIONS = {
-    "EXACTLY_THE_SAME",
-    "REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY",
-    "SAME_GOVERNED_CAPABILITY_DIFFERENT_VALUE",
-    "GEOMETRY_DIFFERENCE",
-    "MECHANICAL_AUTHORITY_DIFFERENCE",
-    "PROCEDURE_DIFFERENCE",
-    "IDENTITY_REGISTRATION_DIFFERENCE",
-    "GENUINELY_DIFFERENT_TARGET_FAMILY",
-    "UNPROVEN",
-}
+REGISTRATION_REGISTRY_PATH = (
+    Path(__file__).resolve().parent / "registries" / "target_image_registration_packages.json"
+)
+SCHEMA_ID = "sczn3-mfam-authority-v2"
 
 
 class MFAMAuthorityError(RuntimeError):
-    """Raised when M/FAM evidence cannot support the requested authority."""
+    """Raised when a requested M/FAM runtime authority cannot be resolved."""
 
 
 def _unique_index(items: list[Mapping[str, Any]], key: str) -> Dict[str, Dict[str, Any]]:
@@ -44,340 +40,187 @@ def _unique_index(items: list[Mapping[str, Any]], key: str) -> Dict[str, Dict[st
     return index
 
 
-def _face_has_authorized_geometry(
-    face_record: Mapping[str, Any],
-    geometries: Mapping[str, Mapping[str, Any]],
-) -> bool:
-    """Require face-level physical proof before declaring reusable geometry."""
-    geometry = geometries.get(str(face_record.get("geometryId"))) or {}
-    if geometry.get("evidenceStatus") != "PROVEN_REUSABLE":
-        return False
-    dimensions = face_record.get("dimensions") or {}
-    grid = face_record.get("grid") or {}
-    if grid.get("status") == "FAMILY_CANDIDATE":
-        return False
-    spacing = grid.get("spacing") or {}
-    aim = str(face_record.get("aimReference") or "")
-    return bool(
-        dimensions.get("width")
-        and dimensions.get("height")
-        and grid.get("columns")
-        and grid.get("rows")
-        and spacing.get("value")
-        and spacing.get("unit")
-        and aim
-        and "UNPROVEN" not in aim.upper()
-    )
+def _source_ids_exist(
+    record: Mapping[str, Any],
+    sources: Mapping[str, Mapping[str, Any]],
+    error_prefix: str,
+) -> None:
+    for source_id in record.get("sourceIds") or []:
+        if source_id not in sources:
+            raise MFAMAuthorityError(f"{error_prefix}:{source_id}")
 
 
 def _load_registry() -> Dict[str, Any]:
-    with REGISTRY_PATH.open("r", encoding="utf-8") as handle:
-        payload = json.load(handle)
+    payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     if payload.get("schemaId") != SCHEMA_ID or payload.get("status") != "governed":
         raise MFAMAuthorityError("mfam_registry_not_governed")
-    vocabulary = set(payload.get("classificationVocabulary") or [])
-    if vocabulary != ALLOWED_CLASSIFICATIONS:
-        raise MFAMAuthorityError("mfam_registry_classification_vocabulary_invalid")
+    if payload.get("universalZeroingCapabilityId") != "sczn3-governed-zeroing-road-v1":
+        raise MFAMAuthorityError("mfam_registry_zeroing_capability_mismatch")
 
-    with INVENTORY_AUDIT_PATH.open("r", encoding="utf-8") as handle:
-        inventory = json.load(handle)
-    audit_pointer = payload.get("inventoryAudit") or {}
+    inventory = json.loads(INVENTORY_AUDIT_PATH.read_text(encoding="utf-8"))
+    inventory_pointer = payload.get("inventory") or {}
     if inventory.get("schemaId") != "sczn3-mfam-inventory-audit-v1":
         raise MFAMAuthorityError("mfam_inventory_audit_invalid")
-    if inventory.get("catalogId") != audit_pointer.get("catalogId"):
+    if inventory.get("catalogId") != inventory_pointer.get("catalogId"):
         raise MFAMAuthorityError("mfam_inventory_audit_catalog_mismatch")
-    if audit_pointer.get("path") != "registries/mfam_inventory_audit.json":
+    if inventory_pointer.get("path") != "registries/mfam_inventory_audit.json":
         raise MFAMAuthorityError("mfam_inventory_audit_path_mismatch")
     if inventory.get("authorityRegistryId") != payload.get("registryId"):
         raise MFAMAuthorityError("mfam_inventory_audit_registry_mismatch")
-    for name, expected in (audit_pointer.get("counts") or {}).items():
-        if inventory.get("counts", {}).get(name) != expected:
-            raise MFAMAuthorityError(f"mfam_inventory_audit_count_mismatch:{name}")
 
     families = _unique_index(payload.get("families") or [], "familyId")
     family_packages = _unique_index(
-        payload.get("familyAuthorityPackages") or [],
-        "familyAuthorityPackageId",
+        payload.get("familyAuthorityPackages") or [], "familyAuthorityPackageId"
     )
-    mechanics = _unique_index(payload.get("mechanicalAuthorities") or [], "mechanicalAuthorityId")
+    mechanics = _unique_index(
+        payload.get("mechanicalAuthorities") or [], "mechanicalAuthorityId"
+    )
     products = _unique_index(payload.get("products") or [], "productId")
     sources = _unique_index(payload.get("sources") or [], "sourceId")
     bindings = _unique_index(payload.get("targetProfileBindings") or [], "targetProfileId")
-    scale_proofs = _unique_index(payload.get("scaleProofs") or [], "proofId")
-    root_authority_gaps = _unique_index(payload.get("rootAuthorityGaps") or [], "gapId")
 
-    for collection_name, collection in (("family", families.values()), ("mechanical_authority", mechanics.values())):
-        for record in collection:
-            for source_id in record.get("sourceIds") or []:
-                if source_id not in sources:
-                    raise MFAMAuthorityError(f"mfam_{collection_name}_source_missing:{source_id}")
-
-    for package in family_packages.values():
-        if package.get("status") != "GOVERNED":
-            raise MFAMAuthorityError(f"mfam_family_package_not_governed:{package['familyAuthorityPackageId']}")
-        if package.get("familyId") not in families:
-            raise MFAMAuthorityError(f"mfam_family_package_family_missing:{package['familyAuthorityPackageId']}")
-        if package.get("universalZeroingCapabilityId") != payload.get("universalZeroingCapabilityId"):
-            raise MFAMAuthorityError(f"mfam_family_package_capability_mismatch:{package['familyAuthorityPackageId']}")
-        for authority_id in package.get("mechanicalAuthorityIds") or []:
-            authority = mechanics.get(authority_id)
-            if not authority or authority.get("status") != "GOVERNED":
-                raise MFAMAuthorityError(f"mfam_family_package_mechanics_not_governed:{package['familyAuthorityPackageId']}")
-        for source_id in package.get("sourceIds") or []:
-            if source_id not in sources:
-                raise MFAMAuthorityError(f"mfam_family_package_source_missing:{package['familyAuthorityPackageId']}:{source_id}")
-
-    for product in products.values():
-        family_id = product.get("candidateFamilyId")
-        if family_id and family_id not in families:
-            raise MFAMAuthorityError(f"mfam_product_family_missing:{product['productId']}")
-        for authority_id in product.get("mechanicalAuthorityIds") or []:
-            if authority_id not in mechanics:
-                raise MFAMAuthorityError(f"mfam_product_mechanical_authority_missing:{product['productId']}")
-        for source_id in product.get("sourceIds") or []:
-            if source_id not in sources:
-                raise MFAMAuthorityError(f"mfam_product_source_missing:{product['productId']}")
-
-    for binding in bindings.values():
-        product = products.get(binding.get("productId"))
-        family = families.get(binding.get("familyId"))
-        mechanical = mechanics.get(binding.get("mechanicalAuthorityId"))
-        if not product or not family or not mechanical:
-            raise MFAMAuthorityError(f"mfam_binding_reference_missing:{binding['targetProfileId']}")
-        governed = (
-            binding.get("status") == "GOVERNED"
-            and product.get("runtimeStatus") == "GOVERNED"
-            and family.get("status") == "GOVERNED"
-            and mechanical.get("status") == "GOVERNED"
-            and product.get("registration", {}).get("status") == "GOVERNED"
-            and bool(binding.get("registrationPackageId"))
-        )
-        if not governed:
-            raise MFAMAuthorityError(f"mfam_binding_not_fully_governed:{binding['targetProfileId']}")
-        package_id = binding.get("familyAuthorityPackageId")
-        if package_id:
-            package = family_packages.get(package_id)
-            if not package or package.get("familyId") != binding.get("familyId"):
-                raise MFAMAuthorityError(f"mfam_binding_family_package_mismatch:{binding['targetProfileId']}")
-            if binding.get("mechanicalAuthorityId") not in package.get("mechanicalAuthorityIds", []):
-                raise MFAMAuthorityError(f"mfam_binding_mechanics_outside_family_package:{binding['targetProfileId']}")
-            representation = binding.get("canonicalRepresentationAuthority") or {}
-            required_representation_fields = {
-                "targetId", "imageWidth", "imageHeight", "gridLeftPx", "gridTopPx",
-                "gridRightPx", "gridBottomPx", "gridSquareXPx", "gridSquareYPx",
-                "aimCoordinate", "aimAuthorityId", "sourceAssetSha256",
-            }
-            if not required_representation_fields.issubset(representation):
-                raise MFAMAuthorityError(f"mfam_binding_representation_authority_incomplete:{binding['targetProfileId']}")
-            if representation.get("authorityScope") == "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY":
-                identity = representation.get("productIdentityAuthority") or {}
-                if (
-                    identity.get("faceId") != binding.get("inventoryFaceId")
-                    or not identity.get("publisher")
-                    or not identity.get("sourceIds")
-                ):
-                    raise MFAMAuthorityError(
-                        f"mfam_binding_printer_identity_authority_incomplete:{binding['targetProfileId']}"
-                    )
-
-    for pair in payload.get("pairClassifications") or []:
-        if pair.get("leftProductId") not in products or pair.get("rightProductId") not in products:
-            raise MFAMAuthorityError("mfam_pair_product_missing")
-        classes = set(pair.get("classifications") or [])
-        if not classes or not classes.issubset(ALLOWED_CLASSIFICATIONS):
-            raise MFAMAuthorityError("mfam_pair_classification_invalid")
-        for source_id in pair.get("sourceIds") or []:
-            if source_id not in sources:
-                raise MFAMAuthorityError(f"mfam_pair_source_missing:{source_id}")
-
-    inventory_publishers = _unique_index(inventory.get("publisherAuthorities") or [], "publisherAuthorityId")
+    inventory_publishers = _unique_index(
+        inventory.get("publisherAuthorities") or [], "publisherAuthorityId"
+    )
     inventory_products = _unique_index(inventory.get("products") or [], "productId")
     inventory_faces = _unique_index(inventory.get("faces") or [], "faceId")
-    inventory_representations = _unique_index(
-        [{"representationId": face.get("representationId")} for face in inventory_faces.values()],
-        "representationId",
-    )
-    reference_representations = _unique_index(
-        inventory.get("referenceRepresentations") or [], "representationId"
-    )
     inventory_geometries = _unique_index(inventory.get("geometryCatalog") or [], "geometryId")
     inventory_procedures = _unique_index(inventory.get("procedureCatalog") or [], "procedureId")
-    held_face_ids = {
-        face_id for face_id, face in inventory_faces.items()
-        if not face.get("runtimeBinding")
-    }
-    grouped_face_ids: set[str] = set()
-    for gap in root_authority_gaps.values():
-        face_ids = set(gap.get("faceIds") or [])
-        if not face_ids or not face_ids.issubset(inventory_faces):
-            raise MFAMAuthorityError(f"mfam_root_authority_gap_face_missing:{gap['gapId']}")
-        overlap = grouped_face_ids.intersection(face_ids)
-        if overlap:
+
+    registration_payload = json.loads(REGISTRATION_REGISTRY_PATH.read_text(encoding="utf-8"))
+    registration_packages = _unique_index(
+        registration_payload.get("packages") or [], "registrationPackageId"
+    )
+
+    # Printer/product facts retain provenance. Provenance is recorded once; it
+    # is not converted into another admission score or evidence-ranking gate.
+    for family_record in families.values():
+        _source_ids_exist(family_record, sources, "mfam_family_source_missing")
+    for mechanical in mechanics.values():
+        _source_ids_exist(mechanical, sources, "mfam_mechanical_source_missing")
+    for product_record in products.values():
+        family_id = product_record.get("familyId")
+        if family_id and family_id not in families:
             raise MFAMAuthorityError(
-                f"mfam_root_authority_gap_face_duplicated:{sorted(overlap)[0]}"
+                f"mfam_product_family_missing:{product_record['productId']}"
             )
-        grouped_face_ids.update(face_ids)
-    if grouped_face_ids != held_face_ids:
-        raise MFAMAuthorityError("mfam_root_authority_gap_coverage_mismatch")
-    inventory_counts = inventory.get("counts") or {}
-    computed_counts = {
-        "sourceEvidenceRecords": len(products),
-        "publisherIssuingAuthorities": len(inventory_publishers),
-        "commercialGovernmentProducts": len(inventory_products),
-        "physicalTargetFaces": len(inventory_faces),
-        "productFaceRepresentationRecords": len(inventory_representations),
-        "representationCatalogRecords": len(inventory_representations) + len(reference_representations),
-        "geometryCatalogRecords": len(inventory_geometries),
-        "procedureCatalogRecords": len(inventory_procedures),
-        "candidateGovernedFamilies": len(families),
-        "runtimeBindings": len(bindings),
-    }
-    for name, actual in computed_counts.items():
-        if inventory_counts.get(name) != actual:
-            raise MFAMAuthorityError(f"mfam_inventory_computed_count_mismatch:{name}")
-    if set(inventory_representations).intersection(reference_representations):
-        raise MFAMAuthorityError("mfam_inventory_representation_identity_collision")
-    for representation in reference_representations.values():
-        if representation.get("evidenceRecordId") not in products:
+        for authority_id in product_record.get("mechanicalAuthorityIds") or []:
+            if authority_id not in mechanics:
+                raise MFAMAuthorityError(
+                    f"mfam_product_mechanical_authority_missing:{product_record['productId']}"
+                )
+        _source_ids_exist(product_record, sources, "mfam_product_source_missing")
+
+    # A family package is executable authority because it is present in this
+    # governed registry, references real mechanics, and names the shared road.
+    for package in family_packages.values():
+        family_id = package.get("familyId")
+        if family_id not in families:
             raise MFAMAuthorityError(
-                f"mfam_inventory_reference_evidence_missing:{representation['representationId']}"
+                f"mfam_family_package_family_missing:{package['familyAuthorityPackageId']}"
+            )
+        if package.get("universalZeroingCapabilityId") != payload["universalZeroingCapabilityId"]:
+            raise MFAMAuthorityError(
+                f"mfam_family_package_capability_mismatch:{package['familyAuthorityPackageId']}"
+            )
+        authority_ids = package.get("mechanicalAuthorityIds") or []
+        if not authority_ids or any(authority_id not in mechanics for authority_id in authority_ids):
+            raise MFAMAuthorityError(
+                f"mfam_family_package_mechanics_missing:{package['familyAuthorityPackageId']}"
+            )
+        _source_ids_exist(package, sources, "mfam_family_package_source_missing")
+
+    # An explicit binding is the entire runtime authorization decision. It
+    # connects exact identity, exact registration, one family package, and one
+    # applicable mechanical authority. No second admission registry votes.
+    for binding in bindings.values():
+        profile_id = binding["targetProfileId"]
+        product_record = products.get(binding.get("productId"))
+        family_record = families.get(binding.get("familyId"))
+        family_package = family_packages.get(binding.get("familyAuthorityPackageId"))
+        mechanical = mechanics.get(binding.get("mechanicalAuthorityId"))
+        registration_package = registration_packages.get(binding.get("registrationPackageId"))
+        if not all((product_record, family_record, family_package, mechanical, registration_package)):
+            raise MFAMAuthorityError(f"mfam_binding_reference_missing:{profile_id}")
+        if family_package.get("familyId") != binding.get("familyId"):
+            raise MFAMAuthorityError(f"mfam_binding_family_package_mismatch:{profile_id}")
+        if binding.get("mechanicalAuthorityId") not in family_package.get("mechanicalAuthorityIds", []):
+            raise MFAMAuthorityError(f"mfam_binding_mechanics_outside_family_package:{profile_id}")
+        if registration_package.get("targetProfileId") != profile_id:
+            raise MFAMAuthorityError(f"mfam_binding_registration_profile_mismatch:{profile_id}")
+
+        inventory_face_id = binding.get("inventoryFaceId")
+        if inventory_face_id:
+            inventory_face = inventory_faces.get(inventory_face_id)
+            if not inventory_face or inventory_face.get("runtimeBinding") != profile_id:
+                raise MFAMAuthorityError(f"mfam_binding_inventory_face_mismatch:{profile_id}")
+
+        representation = binding.get("canonicalRepresentationAuthority") or {}
+        required_representation_fields = {
+            "targetId", "imageWidth", "imageHeight", "gridLeftPx", "gridTopPx",
+            "gridRightPx", "gridBottomPx", "gridSquareXPx", "gridSquareYPx",
+            "aimCoordinate", "aimAuthorityId", "sourceAssetSha256",
+        }
+        if not required_representation_fields.issubset(representation):
+            raise MFAMAuthorityError(
+                f"mfam_binding_representation_authority_incomplete:{profile_id}"
+            )
+        identity = representation.get("productIdentityAuthority") or {}
+        if representation.get("authorityScope") == "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY":
+            if (
+                identity.get("faceId") != inventory_face_id
+                or not identity.get("publisher")
+                or not identity.get("sourceIds")
+            ):
+                raise MFAMAuthorityError(
+                    f"mfam_binding_printer_identity_authority_incomplete:{profile_id}"
+                )
+
+    # The inventory remains the knowledge catalog. These checks protect exact
+    # printer/product/face links without making inventory bookkeeping an
+    # additional authority gate.
+    for product_record in inventory_products.values():
+        if product_record.get("publisherAuthorityId") not in inventory_publishers:
+            raise MFAMAuthorityError(
+                f"mfam_inventory_product_publisher_missing:{product_record['productId']}"
+            )
+        face_ids = product_record.get("faceIds") or []
+        if not face_ids or any(face_id not in inventory_faces for face_id in face_ids):
+            raise MFAMAuthorityError(
+                f"mfam_inventory_product_face_missing:{product_record['productId']}"
             )
 
-    cataloged_face_ids = set(inventory_faces)
-    for inventory_product in inventory_products.values():
-        if inventory_product.get("publisherAuthorityId") not in inventory_publishers:
-            raise MFAMAuthorityError(f"mfam_inventory_product_publisher_missing:{inventory_product['productId']}")
-        declared_faces = set(inventory_product.get("faceIds") or [])
-        if not declared_faces or not declared_faces.issubset(cataloged_face_ids):
-            raise MFAMAuthorityError(f"mfam_inventory_product_face_missing:{inventory_product['productId']}")
-        for evidence_record_id in inventory_product.get("evidenceRecordIds") or []:
-            if evidence_record_id not in products:
-                raise MFAMAuthorityError(f"mfam_inventory_evidence_record_missing:{evidence_record_id}")
-
-    claimed_faces: set[str] = set()
-    claimed_face_count = 0
-    for inventory_product in inventory_products.values():
-        claimed_faces.update(inventory_product["faceIds"])
-        claimed_face_count += len(inventory_product["faceIds"])
-    if claimed_faces != cataloged_face_ids or claimed_face_count != len(cataloged_face_ids):
-        raise MFAMAuthorityError("mfam_inventory_unclaimed_face")
+    claimed_faces = [
+        face_id
+        for product_record in inventory_products.values()
+        for face_id in product_record.get("faceIds") or []
+    ]
+    if len(claimed_faces) != len(set(claimed_faces)) or set(claimed_faces) != set(inventory_faces):
+        raise MFAMAuthorityError("mfam_inventory_face_ownership_invalid")
 
     for face_record in inventory_faces.values():
-        inventory_product = inventory_products.get(face_record.get("productId"))
-        if not inventory_product or face_record["faceId"] not in inventory_product["faceIds"]:
-            raise MFAMAuthorityError(f"mfam_inventory_face_product_mismatch:{face_record['faceId']}")
-        if face_record.get("publisherAuthorityId") != inventory_product.get("publisherAuthorityId"):
-            raise MFAMAuthorityError(f"mfam_inventory_face_publisher_mismatch:{face_record['faceId']}")
+        product_record = inventory_products.get(face_record.get("productId"))
+        if not product_record or face_record["faceId"] not in product_record.get("faceIds", []):
+            raise MFAMAuthorityError(
+                f"mfam_inventory_face_product_mismatch:{face_record['faceId']}"
+            )
+        if face_record.get("publisherAuthorityId") != product_record.get("publisherAuthorityId"):
+            raise MFAMAuthorityError(
+                f"mfam_inventory_face_publisher_mismatch:{face_record['faceId']}"
+            )
         if face_record.get("geometryId") not in inventory_geometries:
-            raise MFAMAuthorityError(f"mfam_inventory_face_geometry_missing:{face_record['faceId']}")
+            raise MFAMAuthorityError(
+                f"mfam_inventory_face_geometry_missing:{face_record['faceId']}"
+            )
         if face_record.get("procedureId") not in inventory_procedures:
-            raise MFAMAuthorityError(f"mfam_inventory_face_procedure_missing:{face_record['faceId']}")
-        family_id = face_record.get("governedFamilyId")
-        if family_id and family_id not in families:
-            raise MFAMAuthorityError(f"mfam_inventory_face_family_missing:{face_record['faceId']}")
+            raise MFAMAuthorityError(
+                f"mfam_inventory_face_procedure_missing:{face_record['faceId']}"
+            )
         runtime_binding = face_record.get("runtimeBinding")
         if runtime_binding and runtime_binding not in bindings:
-            raise MFAMAuthorityError(f"mfam_inventory_face_binding_missing:{face_record['faceId']}")
-        for authority_id in face_record.get("mechanicalAuthorityIds") or []:
-            if authority_id not in mechanics:
-                raise MFAMAuthorityError(f"mfam_inventory_face_mechanical_authority_missing:{face_record['faceId']}")
-        for source_id in face_record.get("evidenceSourceIds") or []:
-            if source_id not in sources:
-                raise MFAMAuthorityError(f"mfam_inventory_face_source_missing:{face_record['faceId']}:{source_id}")
-
-    current_scale_proof_id = (payload.get("familyConformanceRegistry") or {}).get("scaleProofId")
-    for proof in scale_proofs.values():
-        proof_id = proof["proofId"]
-        family_id = proof.get("familyId")
-        package_id = proof.get("familyAuthorityPackageId")
-        package = family_packages.get(package_id)
-        if family_id not in families or not package or package.get("familyId") != family_id:
-            raise MFAMAuthorityError(f"mfam_scale_proof_authority_mismatch:{proof_id}")
-        candidate_faces = {
-            face["faceId"] for face in inventory_faces.values()
-            if face.get("governedFamilyId") == family_id
-        }
-        admitted_profiles = set(proof.get("admittedTargetProfileIds") or [])
-        if any(
-            profile_id not in bindings or bindings[profile_id].get("familyId") != family_id
-            for profile_id in admitted_profiles
-        ):
-            raise MFAMAuthorityError(f"mfam_scale_proof_binding_mismatch:{proof_id}")
-        if proof_id != current_scale_proof_id:
-            continue
-        # Historical scale proofs preserve the candidate universe known at the
-        # time. Only the current proof must reconcile to the live catalog.
-        if set(proof.get("candidateFaceIds") or []) != candidate_faces:
-            raise MFAMAuthorityError(f"mfam_scale_proof_candidate_faces_mismatch:{proof_id}")
-        held_faces = {
-            face_id for face_id in candidate_faces
-            if not inventory_faces[face_id].get("runtimeBinding")
-        }
-        hold_reasons = {item.get("faceId"): item for item in proof.get("holdReasons") or []}
-        if set(hold_reasons) != held_faces:
-            raise MFAMAuthorityError(f"mfam_scale_proof_hold_faces_mismatch:{proof_id}")
-        for face_id, reason in hold_reasons.items():
-            if reason.get("missingFacts") != inventory_faces[face_id].get("unresolvedFacts"):
-                raise MFAMAuthorityError(f"mfam_scale_proof_hold_reason_mismatch:{proof_id}:{face_id}")
-        counts = proof.get("counts") or {}
-        newly_admitted = set(proof.get("newlyAdmittedTargetProfileIds") or [])
-        if not newly_admitted.issubset(admitted_profiles):
-            raise MFAMAuthorityError(f"mfam_scale_proof_new_binding_mismatch:{proof_id}")
-        expected_counts = {
-            "candidateFaces": len(candidate_faces),
-            "candidatesInvestigated": len(proof.get("investigatedFaceIds") or []),
-            "startingExecutableBindings": len(admitted_profiles) - len(newly_admitted),
-            "alreadyExecutable": len(admitted_profiles) - len(newly_admitted),
-            "newRegistrationOrientationPackages": len(newly_admitted),
-            "newlyExecutableThroughInheritance": len(newly_admitted),
-            "stillHold": len(held_faces),
-            "productSpecificZeroingImplementationsCreated": 0,
-            "universalZeroingRoadsCreated": 0,
-            "totalExecutableBindingsAfterProof": len(admitted_profiles),
-        }
-        if any(counts.get(key) != value for key, value in expected_counts.items()):
-            raise MFAMAuthorityError(f"mfam_scale_proof_count_mismatch:{proof_id}")
-        if counts.get("familyAuthorityPackagesCreated") not in {0, 1}:
-            raise MFAMAuthorityError(f"mfam_scale_proof_package_count_invalid:{proof_id}")
-        if any(int(counts.get(key, -1)) < 0 for key in ("newAuthoritativeEvidenceArtifactsAcquired", "reusableEvidenceArtifacts")):
-            raise MFAMAuthorityError(f"mfam_scale_proof_evidence_count_invalid:{proof_id}")
-        family_package_count = len({package_id})
-        expected_leverage = counts["totalExecutableBindingsAfterProof"] / family_package_count
-        if float(proof.get("familyLeverage", -1)) != expected_leverage:
-            raise MFAMAuthorityError(f"mfam_scale_proof_leverage_mismatch:{proof_id}")
-
-    authorization_sweep = payload.get("authorizationSweep") or {}
-    sweep_counts = authorization_sweep.get("counts") or {}
-    bound_physical_faces = [face for face in inventory_faces.values() if face.get("runtimeBinding")]
-    held_physical_faces = [face for face in inventory_faces.values() if not face.get("runtimeBinding")]
-    held_authorized_geometries = [
-        face for face in held_physical_faces
-        if _face_has_authorized_geometry(face, inventory_geometries)
-    ]
-    held_assigned_faces = [face for face in held_physical_faces if face.get("governedFamilyId")]
-    held_unassigned_faces = [face for face in held_physical_faces if not face.get("governedFamilyId")]
-    current_scale_proof = scale_proofs.get(current_scale_proof_id) or {}
-    batch_summary = current_scale_proof.get("batchSummary") or {}
-    newly_authorized_count = len(
-        authorization_sweep.get("newlyAdmittedTargetProfileIds")
-        or batch_summary.get("newlyAdmittedTargetProfileIds")
-        or current_scale_proof.get("newlyAdmittedTargetProfileIds")
-        or []
-    )
-    computed_sweep_counts = {
-        "authorizedNowRuntimeBindings": newly_authorized_count,
-        "alreadyAuthorizedRuntimeBindings": len(bindings) - newly_authorized_count,
-        "alreadyAuthorizedPhysicalFaces": len(bound_physical_faces),
-        "heldPhysicalFaces": len(held_physical_faces),
-        "knownHeldFacesWithAuthorizedGeometry": len(held_authorized_geometries),
-        "heldFacesAssignedToCandidateFamily": len(held_assigned_faces),
-        "heldFacesUnassigned": len(held_unassigned_faces),
-        "candidateFamilies": len(families),
-    }
-    if sweep_counts != computed_sweep_counts:
-        raise MFAMAuthorityError("mfam_authorization_sweep_count_mismatch")
-    if authorization_sweep.get("dispositions") != ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"]:
-        raise MFAMAuthorityError("mfam_authorization_sweep_dispositions_invalid")
+            raise MFAMAuthorityError(
+                f"mfam_inventory_face_binding_missing:{face_record['faceId']}"
+            )
 
     payload["_index"] = {
         "families": families,
@@ -385,8 +228,8 @@ def _load_registry() -> Dict[str, Any]:
         "mechanics": mechanics,
         "products": products,
         "bindings": bindings,
-        "scaleProofs": scale_proofs,
-        "rootAuthorityGaps": root_authority_gaps,
+        "sources": sources,
+        "registrationPackages": registration_packages,
     }
     payload["_inventoryIndex"] = {
         "publishers": inventory_publishers,
@@ -394,8 +237,6 @@ def _load_registry() -> Dict[str, Any]:
         "faces": inventory_faces,
         "geometries": inventory_geometries,
         "procedures": inventory_procedures,
-        "representations": inventory_representations,
-        "referenceRepresentations": reference_representations,
     }
     payload["_inventory"] = inventory
     return payload
@@ -408,287 +249,114 @@ def registry_metadata() -> Dict[str, Any]:
     return {
         "registryId": _REGISTRY["registryId"],
         "version": _REGISTRY["version"],
+        "authorityChain": deepcopy(_REGISTRY["authorityChain"]),
         "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
-        "inventoryCatalogId": _REGISTRY["inventoryAudit"]["catalogId"],
-        "familyConformanceRegistry": deepcopy(_REGISTRY["familyConformanceRegistry"]),
-        "authorizationSweep": deepcopy(_REGISTRY["authorizationSweep"]),
-        "scaleProofs": deepcopy(_REGISTRY["scaleProofs"]),
-        "rootAuthorityGaps": deepcopy(_REGISTRY["rootAuthorityGaps"]),
+        "inventoryCatalogId": _REGISTRY["inventory"]["catalogId"],
+        "targetProfileCount": len(_REGISTRY["_index"]["bindings"]),
+        "familyAuthorityPackageCount": len(_REGISTRY["_index"]["familyPackages"]),
     }
 
 
 def inventory_audit() -> Dict[str, Any]:
+    """Return the preserved human-auditable printer/product/face knowledge."""
     return deepcopy(_REGISTRY["_inventory"])
 
 
-def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
-    geometry = _REGISTRY["_inventoryIndex"]["geometries"][face_record["geometryId"]]
-    procedure = _REGISTRY["_inventoryIndex"]["procedures"][face_record["procedureId"]]
-    runtime_binding = face_record.get("runtimeBinding")
-    binding = _REGISTRY["_index"]["bindings"].get(runtime_binding) if runtime_binding else None
-    geometry_authorized = _face_has_authorized_geometry(
-        face_record,
-        _REGISTRY["_inventoryIndex"]["geometries"],
-    )
-    missing_facts = list(face_record.get("unresolvedFacts") or [])
-    root_gap = next(
-        (
-            gap for gap in _REGISTRY["_index"]["rootAuthorityGaps"].values()
-            if face_record["faceId"] in gap.get("faceIds", [])
-        ),
-        None,
-    )
-    shared_missing_authority = (
-        root_gap.get("sharedMissingAuthority")
-        if root_gap
-        else "; ".join(missing_facts)
-    )
-    if runtime_binding:
-        target_state = "KNOWN_TARGET_EXECUTION_AUTHORIZED"
-        disposition = "ALREADY_AUTHORIZED"
-        shooter_recovery = None
-    elif geometry_authorized:
-        target_state = "KNOWN_TARGET_GEOMETRY_AUTHORIZED"
-        disposition = "HOLD"
-        shooter_recovery = {
-            "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
-            "title": "THIS TARGET IS KNOWN",
-            "message": f"Tap-n-Score knows this target, but {shared_missing_authority} is not yet governed.",
-        }
-    else:
-        target_state = "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
-        disposition = "HOLD"
-        shooter_recovery = {
-            "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
-            "title": "THIS TARGET IS KNOWN",
-            "message": f"Tap-n-Score knows this target, but {shared_missing_authority} is not yet governed.",
-        }
-    return {
-        "targetKnowledge": "KNOWN_TARGET",
-        "targetState": target_state,
-        "disposition": disposition,
-        "faceId": face_record["faceId"],
-        "productId": face_record["productId"],
-        "publisherAuthorityId": face_record["publisherAuthorityId"],
-        "exactProduct": face_record["exactProduct"],
-        "side": face_record["side"],
-        "representationId": face_record["representationId"],
-        "geometryId": face_record["geometryId"],
-        "geometryAuthorityStatus": "AUTHORIZED_REUSABLE" if geometry_authorized else geometry["evidenceStatus"],
-        "procedureId": face_record["procedureId"],
-        "procedureAuthorityStatus": procedure["evidenceStatus"],
-        "mechanicalAuthorityIds": list(face_record.get("mechanicalAuthorityIds") or []),
-        "registration": deepcopy(face_record.get("registration") or {}),
-        "runtimeBinding": runtime_binding,
-        "familyAuthorityPackageId": binding.get("familyAuthorityPackageId") if binding else None,
-        "missingFacts": missing_facts,
-        "rootAuthorityGap": deepcopy(root_gap),
-        "whyExecutionBlocked": None if runtime_binding else f"Execution requires shared authority for: {shared_missing_authority}.",
-        "shooterRecovery": shooter_recovery,
-    }
-
-
-def resolve_face_admission(identity: str) -> Dict[str, Any]:
-    """Classify known identity separately from geometry and execution authority."""
+def resolve_known_target(identity: str) -> Dict[str, Any]:
+    """Resolve identity without inventing an admission taxonomy."""
     requested = str(identity or "").strip()
     inventory_index = _REGISTRY["_inventoryIndex"]
-    face = inventory_index["faces"].get(requested)
-    if not face:
-        face = next(
-            (item for item in inventory_index["faces"].values()
-             if requested in {item.get("representationId"), item.get("runtimeBinding")}),
+
+    face_record = inventory_index["faces"].get(requested)
+    if not face_record:
+        face_record = next(
+            (
+                face for face in inventory_index["faces"].values()
+                if requested in {face.get("representationId"), face.get("runtimeBinding")}
+            ),
             None,
         )
-    if face:
-        return deepcopy(_face_admission_record(face))
+    if face_record:
+        profile_id = face_record.get("runtimeBinding")
+        return deepcopy({
+            "recognized": True,
+            "executable": bool(profile_id),
+            "faceId": face_record["faceId"],
+            "productId": face_record["productId"],
+            "publisherAuthorityId": face_record["publisherAuthorityId"],
+            "exactProduct": face_record["exactProduct"],
+            "side": face_record["side"],
+            "representationId": face_record["representationId"],
+            "targetProfileId": profile_id,
+            "missingFacts": [] if profile_id else list(face_record.get("unresolvedFacts") or []),
+        })
 
     product_record = inventory_index["products"].get(requested)
     if not product_record:
-        product_matches = [
-            item for item in inventory_index["products"].values()
-            if requested == item.get("exactName")
-            or requested in set((item.get("identifiers") or {}).values())
-            or requested in set(item.get("evidenceRecordIds") or [])
+        matches = [
+            product_record
+            for product_record in inventory_index["products"].values()
+            if requested == product_record.get("exactName")
+            or requested in set((product_record.get("identifiers") or {}).values())
+            or requested in set(product_record.get("evidenceRecordIds") or [])
         ]
-        if len(product_matches) == 1:
-            product_record = product_matches[0]
-        elif len(product_matches) > 1:
+        if len(matches) == 1:
+            product_record = matches[0]
+        elif len(matches) > 1:
             return {
-                "targetKnowledge": "KNOWN_TARGET",
-                "targetState": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
-                "disposition": "HOLD",
-                "candidateProductIds": [item["productId"] for item in product_matches],
+                "recognized": True,
+                "executable": False,
+                "candidateProductIds": [item["productId"] for item in matches],
                 "missingFacts": ["exact publisher product identity"],
-                "whyExecutionBlocked": "This identifier matches more than one cataloged product.",
-                "shooterRecovery": {
-                    "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
-                    "title": "THIS TARGET IS KNOWN",
-                    "message": "Choose the exact publisher product.",
-                },
             }
     if product_record:
         face_ids = list(product_record.get("faceIds") or [])
         if len(face_ids) == 1:
-            return deepcopy(_face_admission_record(inventory_index["faces"][face_ids[0]]))
+            return resolve_known_target(face_ids[0])
         return {
-            "targetKnowledge": "KNOWN_TARGET",
-            "targetState": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
-            "disposition": "HOLD",
+            "recognized": True,
+            "executable": False,
             "productId": product_record["productId"],
             "exactProduct": product_record["exactName"],
             "candidateFaceIds": face_ids,
             "missingFacts": ["exact face/side selection"],
-            "whyExecutionBlocked": "A two-sided product cannot execute until its exact face/side is established.",
-            "shooterRecovery": {
-                "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
-                "title": "THIS TARGET IS KNOWN",
-                "message": "Choose the exact face or side of this target.",
-            },
         }
 
-    binding = _REGISTRY["_index"]["bindings"].get(requested)
-    if binding:
+    if requested in _REGISTRY["_index"]["bindings"]:
         return {
-            "targetKnowledge": "KNOWN_TARGET",
-            "targetState": "KNOWN_TARGET_EXECUTION_AUTHORIZED",
-            "disposition": "ALREADY_AUTHORIZED",
-            "recordKind": "governed_reference_representation",
+            "recognized": True,
+            "executable": True,
             "targetProfileId": requested,
-            "productId": binding["productId"],
-            "familyId": binding["familyId"],
-            "mechanicalAuthorityId": binding["mechanicalAuthorityId"],
-            "registrationPackageId": binding["registrationPackageId"],
             "missingFacts": [],
-            "shooterRecovery": None,
         }
-
     return {
-        "targetKnowledge": "UNKNOWN_TARGET",
-        "targetState": "UNKNOWN_TARGET",
-        "disposition": "HOLD",
+        "recognized": False,
+        "executable": False,
         "missingFacts": ["publisher product and exact face identity"],
-        "whyExecutionBlocked": "No admitted publisher product and exact face identity matches this identifier.",
-        "shooterRecovery": {
-            "code": "UNKNOWN_TARGET",
-            "title": "WE CAN’T IDENTIFY THIS TARGET",
-            "message": "Select the exact target product or scan its target identity.",
-        },
     }
 
 
-def industry_authorization_sweep() -> Dict[str, Any]:
-    """Return the complete evidence-limited disposition of the audited industry set."""
-    face_results = [
-        _face_admission_record(face)
-        for face in _REGISTRY["_inventoryIndex"]["faces"].values()
-    ]
-    bound_face_profiles = {item["runtimeBinding"] for item in face_results if item.get("runtimeBinding")}
-    reference_bindings = [
-        {
-            "targetKnowledge": "KNOWN_TARGET",
-            "targetState": "KNOWN_TARGET_EXECUTION_AUTHORIZED",
-            "disposition": "ALREADY_AUTHORIZED",
-            "recordKind": "governed_reference_representation",
-            "targetProfileId": binding["targetProfileId"],
-            "productId": binding["productId"],
-            "familyId": binding["familyId"],
-            "mechanicalAuthorityId": binding["mechanicalAuthorityId"],
-            "registrationPackageId": binding["registrationPackageId"],
-            "missingFacts": [],
-        }
-        for binding in _REGISTRY["_index"]["bindings"].values()
-        if binding["targetProfileId"] not in bound_face_profiles
-    ]
-    current_proof = _REGISTRY["_index"]["scaleProofs"].get(
-        _REGISTRY["familyConformanceRegistry"].get("scaleProofId")
-    ) or {}
-    batch_summary = current_proof.get("batchSummary") or {}
-    newly_authorized = set(
-        batch_summary.get("newlyAdmittedTargetProfileIds")
-        or current_proof.get("newlyAdmittedTargetProfileIds")
-        or []
-    )
-    physical_authorized = [
-        item for item in face_results if item["disposition"] == "ALREADY_AUTHORIZED"
-    ]
-    reference_authorized = physical_authorized + reference_bindings
-    return deepcopy({
-        "registryId": _REGISTRY["registryId"],
-        "registryVersion": _REGISTRY["version"],
-        "universalZeroingCapabilityId": _REGISTRY["universalZeroingCapabilityId"],
-        "reportPath": _REGISTRY["authorizationSweep"]["reportPath"],
-        "counts": _REGISTRY["authorizationSweep"]["counts"],
-        "authorizedNow": [
-            item for item in reference_authorized
-            if (item.get("targetProfileId") or item.get("runtimeBinding")) in newly_authorized
-        ],
-        "alreadyAuthorized": [
-            item for item in reference_authorized
-            if (item.get("targetProfileId") or item.get("runtimeBinding")) not in newly_authorized
-        ],
-        "hold": [item for item in face_results if item["disposition"] == "HOLD"],
-    })
-
-
-def hold_clearance_inventory() -> Dict[str, Any]:
-    """Group every held physical face without upgrading candidate membership to proof."""
-    held_faces = [
-        face for face in _REGISTRY["_inventoryIndex"]["faces"].values()
-        if not face.get("runtimeBinding")
-    ]
-    family_groups = []
-    for family_record in _REGISTRY["families"]:
-        face_ids = [
-            face["faceId"] for face in held_faces
-            if face.get("governedFamilyId") == family_record["familyId"]
-        ]
-        family_groups.append({
-            "familyId": family_record["familyId"],
-            "familyName": family_record["name"],
-            "familyStatus": family_record["status"],
-            "heldFaceIds": face_ids,
-            "heldFaceCount": len(face_ids),
-        })
-    unassigned = [face["faceId"] for face in held_faces if not face.get("governedFamilyId")]
-    return deepcopy({
-        "planPath": _REGISTRY["authorizationSweep"]["holdClearancePlanPath"],
-        "heldFaceCount": len(held_faces),
-        "assignedHeldFaceCount": len(held_faces) - len(unassigned),
-        "unassignedHeldFaceCount": len(unassigned),
-        "families": family_groups,
-        "unassignedFaceIds": unassigned,
-    })
-
-
-def family_scale_proof(proof_id: str) -> Dict[str, Any]:
-    """Return one evidence-limited family leverage result."""
-    proof = _REGISTRY["_index"]["scaleProofs"].get(str(proof_id))
-    if not proof:
-        raise MFAMAuthorityError("mfam_scale_proof_not_found")
-    return deepcopy(proof)
-
-
 def resolve_target_profile(target_profile_id: str) -> Dict[str, Any]:
+    """Resolve one explicit governed Target Profile for Backend execution."""
     binding = _REGISTRY["_index"]["bindings"].get(str(target_profile_id))
     if not binding:
         raise MFAMAuthorityError("mfam_target_profile_not_governed")
-    family_package_id = binding.get("familyAuthorityPackageId")
     inventory_face_id = binding.get("inventoryFaceId")
-    inventory_face = (
-        _REGISTRY["_inventoryIndex"]["faces"].get(inventory_face_id)
-        if inventory_face_id else None
-    )
     return deepcopy({
         **registry_metadata(),
         "binding": binding,
         "product": _REGISTRY["_index"]["products"][binding["productId"]],
-        "inventoryFace": inventory_face,
-        "family": _REGISTRY["_index"]["families"][binding["familyId"]],
-        "familyAuthorityPackage": (
-            _REGISTRY["_index"]["familyPackages"].get(family_package_id)
-            if family_package_id else None
+        "inventoryFace": (
+            _REGISTRY["_inventoryIndex"]["faces"].get(inventory_face_id)
+            if inventory_face_id else None
         ),
-        "mechanicalAuthority": _REGISTRY["_index"]["mechanics"][binding["mechanicalAuthorityId"]],
+        "family": _REGISTRY["_index"]["families"][binding["familyId"]],
+        "familyAuthorityPackage": _REGISTRY["_index"]["familyPackages"]
+            [binding["familyAuthorityPackageId"]],
+        "mechanicalAuthority": _REGISTRY["_index"]["mechanics"]
+            [binding["mechanicalAuthorityId"]],
+        "registrationPackage": _REGISTRY["_index"]["registrationPackages"]
+            [binding["registrationPackageId"]],
     })
 
 
@@ -704,11 +372,3 @@ def family(family_id: str) -> Dict[str, Any]:
     if not record:
         raise MFAMAuthorityError("mfam_family_not_found")
     return deepcopy(record)
-
-
-def classify_pair(left_product_id: str, right_product_id: str) -> Dict[str, Any]:
-    wanted = {str(left_product_id), str(right_product_id)}
-    for record in _REGISTRY.get("pairClassifications") or []:
-        if {record["leftProductId"], record["rightProductId"]} == wanted:
-            return deepcopy(record)
-    raise MFAMAuthorityError("mfam_pair_not_classified")

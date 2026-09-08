@@ -136,15 +136,15 @@ def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
             "targetId": representation["targetId"],
             "imageWidth": representation["imageWidth"],
             "imageHeight": representation["imageHeight"],
-            "gridLeftPx": representation["gridLeftPx"],
-            "gridTopPx": representation["gridTopPx"],
-            "gridRightPx": representation["gridRightPx"],
-            "gridBottomPx": representation["gridBottomPx"],
+            "gridLeftPx": float(representation["gridLeftPx"]),
+            "gridTopPx": float(representation["gridTopPx"]),
+            "gridRightPx": float(representation["gridRightPx"]),
+            "gridBottomPx": float(representation["gridBottomPx"]),
             "gridColumns": family_geometry["columns"],
             "gridRows": family_geometry["rows"],
-            "gridSquareXPx": representation["gridSquareXPx"],
-            "gridSquareYPx": representation["gridSquareYPx"],
-            "gridSquarePx": representation["gridSquareXPx"],
+            "gridSquareXPx": float(representation["gridSquareXPx"]),
+            "gridSquareYPx": float(representation["gridSquareYPx"]),
+            "gridSquarePx": float(representation["gridSquareXPx"]),
             "gridSquareInches": square_inches,
             "unit": "grid_interval" if direct_grid else "inch",
             "measurementMode": "DIRECT_GRID_CLICKS" if direct_grid else "PHYSICAL_DISPLACEMENT",
@@ -155,8 +155,8 @@ def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
             "bullAuthority": {
                 "authorityId": representation["aimAuthorityId"],
                 "status": "registered-production-face",
-                "xPercent": aim["xPercent"],
-                "yPercent": aim["yPercent"],
+                "xPercent": float(aim["xPercent"]),
+                "yPercent": float(aim["yPercent"]),
                 "coordinateSystem": "continuous-edge-origin-normalized-percent",
                 "sourceDimensionsPx": {
                     "width": representation["imageWidth"],
@@ -170,8 +170,8 @@ def geometry_for(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "scope": "exact registered representation aim reference",
             },
             "bullCoordinate": {
-                "xPercent": aim["xPercent"],
-                "yPercent": aim["yPercent"],
+                "xPercent": float(aim["xPercent"]),
+                "yPercent": float(aim["yPercent"]),
                 "source": representation["aimAuthorityId"],
             },
         }
@@ -830,13 +830,15 @@ def build_authority_package(payload: Dict[str, Any]) -> Dict[str, Any]:
     family_context = governed_family_context(payload)
     if family_context:
         confirmation_authority = family_context["package"]["confirmationAuthority"]
+        confirmation_tolerance = dict(confirmation_authority["residualTolerance"])
+        confirmation_tolerance["value"] = float(confirmation_tolerance["value"])
         mission.update({
             "confirmationAuthorityId": confirmation_authority["authorityId"],
             "confirmationMinimumShots": confirmation_authority["minimumShots"],
-            "confirmationResidualTolerance": dict(confirmation_authority["residualTolerance"]),
+            "confirmationResidualTolerance": confirmation_tolerance,
             "confirmationResidualToleranceInches": (
-                confirmation_authority["residualTolerance"]["value"]
-                if str(confirmation_authority["residualTolerance"].get("unit") or "").upper() == "IN"
+                confirmation_tolerance["value"]
+                if str(confirmation_tolerance.get("unit") or "").upper() == "IN"
                 else None
             ),
             "confirmationEvidenceRequirement": confirmation_authority["evidenceRequirement"],

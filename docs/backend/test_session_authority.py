@@ -173,18 +173,13 @@ def test_mfam_profiles_receive_exact_backend_family_bindings_without_frontend_de
             "mfam_m16a4_m4_standard_25m_300m",
             "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
         ),
-        "m4_25m_zero": (
-            "sczn3:protected-modern-m4-m16-moa:face",
-            "mfam_modern_a8_moa_25m",
-            "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01",
-        ),
     }
     for target_id, expected in cases.items():
         store = TestStore()
         preparation = prepared(store, target_id, equipment())
         binding = preparation["mfamAuthorityBinding"]
         assert (binding["productId"], binding["familyId"], binding["mechanicalAuthorityId"]) == expected
-        assert binding["status"] == "GOVERNED"
+        assert "status" not in binding
         if target_id in {
             "baker_m16a2_25m_zero",
             "speedwell_dodm4_m16a2_25m_zero",
@@ -213,6 +208,8 @@ def test_mfam_profiles_receive_exact_backend_family_bindings_without_frontend_de
 def test_non_mfam_zeroing_profile_has_no_mfam_binding():
     result = prepared(TestStore(), "baker_st_100yd_smart_zero", equipment(model="Bolt Action"))
     assert result["mfamAuthorityBinding"] is None
+    protected_m4 = prepared(TestStore(), "m4_25m_zero", equipment())
+    assert protected_m4["mfamAuthorityBinding"] is None
 
 
 def test_equipment_library_profile_identity_and_reusable_facts_survive_backend_handoff():

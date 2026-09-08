@@ -2,7 +2,6 @@ import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { verifyFamilyConformanceRegistry } from "./mfam_family_conformance.mjs";
 
 const modulePath = fileURLToPath(import.meta.url);
 const moduleDir = path.dirname(modulePath);
@@ -14,7 +13,9 @@ const parityOutputPath = path.join(root, "backend", "m4_authority", "parity", "g
 export async function generateMFAMFamilyRegistry() {
   const sourceBytes = await readFile(sourcePath);
   const registry = JSON.parse(sourceBytes.toString("utf8"));
-  await verifyFamilyConformanceRegistry(registry);
+  if (registry.schemaId !== "sczn3-mfam-authority-v2" || registry.status !== "governed") {
+    throw new Error("M/FAM runtime authority registry is not governed.");
+  }
   const sourceSha256 = createHash("sha256").update(sourceBytes).digest("hex");
   const packages = new Map(
     (registry.familyAuthorityPackages || [])
@@ -22,7 +23,6 @@ export async function generateMFAMFamilyRegistry() {
   );
   const targetProfiles = Object.fromEntries(
     (registry.targetProfileBindings || [])
-      .filter((binding) => binding.status === "GOVERNED" && binding.familyAuthorityPackageId)
       .map((binding) => [
         binding.targetProfileId,
         {

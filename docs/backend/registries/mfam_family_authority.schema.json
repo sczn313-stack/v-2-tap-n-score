@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sczn3.local/schemas/mfam-family-authority-v1.schema.json",
-  "title": "SCZN3 M/FAM Family Authority Registry",
+  "$id": "https://sczn3.local/schemas/mfam-authority-v2.schema.json",
+  "title": "SCZN3 Lean M/FAM Runtime Authority Registry",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,212 +9,160 @@
     "registryId",
     "version",
     "status",
-    "classificationVocabulary",
-    "evidencePolicy",
-    "inventoryAudit",
-    "authorizationSweep",
-    "familyConformanceRegistry",
-    "rootAuthorityGaps",
-    "scaleProofs",
+    "universalZeroingCapabilityId",
+    "authorityChain",
+    "inventory",
     "families",
     "familyAuthorityPackages",
     "mechanicalAuthorities",
     "products",
     "targetProfileBindings",
-    "pairClassifications",
-    "publisherSweep",
-    "unresolvedGaps",
     "sources"
   ],
   "properties": {
-    "schemaId": {"const": "sczn3-mfam-family-authority-v1"},
+    "schemaId": {"const": "sczn3-mfam-authority-v2"},
     "registryId": {"type": "string", "minLength": 1},
     "version": {"type": "string", "minLength": 1},
-    "status": {"enum": ["governed", "draft", "retired"]},
+    "status": {"const": "governed"},
     "observedAt": {"type": "string"},
     "universalZeroingCapabilityId": {"const": "sczn3-governed-zeroing-road-v1"},
-    "classificationVocabulary": {
-      "type": "array",
-      "uniqueItems": true,
-      "minItems": 9,
-      "items": {
-        "enum": [
-          "EXACTLY_THE_SAME",
-          "REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY",
-          "SAME_GOVERNED_CAPABILITY_DIFFERENT_VALUE",
-          "GEOMETRY_DIFFERENCE",
-          "MECHANICAL_AUTHORITY_DIFFERENCE",
-          "PROCEDURE_DIFFERENCE",
-          "IDENTITY_REGISTRATION_DIFFERENCE",
-          "GENUINELY_DIFFERENT_TARGET_FAMILY",
-          "UNPROVEN"
-        ]
-      }
-    },
-    "evidencePolicy": {"type": "object"},
-    "inventoryAudit": {
-      "type": "object",
-      "required": ["catalogId", "path", "counts"],
-      "properties": {
-        "catalogId": {"type": "string"},
-        "path": {"type": "string"},
-        "counts": {"type": "object"}
-      }
-    },
-    "authorizationSweep": {
-      "type": "object",
-      "required": ["observedAt", "reportPath", "holdClearancePlanPath", "dispositions", "counts", "decision"],
-      "properties": {
-        "observedAt": {"type": "string"},
-        "reportPath": {"type": "string", "minLength": 1},
-        "holdClearancePlanPath": {"type": "string", "minLength": 1},
-        "dispositions": {
-          "type": "array",
-          "items": {"enum": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"]},
-          "uniqueItems": true
-        },
-        "counts": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "authorizedNowRuntimeBindings",
-            "alreadyAuthorizedRuntimeBindings",
-            "alreadyAuthorizedPhysicalFaces",
-            "heldPhysicalFaces",
-            "knownHeldFacesWithAuthorizedGeometry",
-            "heldFacesAssignedToCandidateFamily",
-            "heldFacesUnassigned",
-            "candidateFamilies"
-          ],
-          "properties": {
-            "authorizedNowRuntimeBindings": {"type": "integer", "minimum": 0},
-            "alreadyAuthorizedRuntimeBindings": {"type": "integer", "minimum": 0},
-            "alreadyAuthorizedPhysicalFaces": {"type": "integer", "minimum": 0},
-            "heldPhysicalFaces": {"type": "integer", "minimum": 0},
-            "knownHeldFacesWithAuthorizedGeometry": {"type": "integer", "minimum": 0},
-            "heldFacesAssignedToCandidateFamily": {"type": "integer", "minimum": 0},
-            "heldFacesUnassigned": {"type": "integer", "minimum": 0},
-            "candidateFamilies": {"type": "integer", "minimum": 0}
-          }
-        },
-        "decision": {"type": "string", "minLength": 1}
-      }
-    },
-    "familyConformanceRegistry": {
+    "authorityChain": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["registryId", "path", "contractId", "scaleProofId"],
-      "properties": {
-        "registryId": {"type": "string", "minLength": 1},
-        "path": {"const": "registries/mfam_family_conformance.json"},
-        "contractId": {"type": "string", "minLength": 1},
-        "scaleProofId": {"type": "string", "minLength": 1}
-      }
-    },
-    "rootAuthorityGaps": {
-      "type": "array",
-      "items": {"$ref": "#/$defs/rootAuthorityGap"}
-    },
-    "scaleProofs": {"type": "array", "items": {"$ref": "#/$defs/scaleProof"}},
-    "families": {"type": "array", "items": {"$ref": "#/$defs/family"}},
-    "familyAuthorityPackages": {"type": "array", "items": {"$ref": "#/$defs/familyAuthorityPackage"}},
-    "mechanicalAuthorities": {"type": "array", "items": {"$ref": "#/$defs/mechanicalAuthority"}},
-    "products": {"type": "array", "items": {"$ref": "#/$defs/product"}},
-    "targetProfileBindings": {"type": "array", "items": {"$ref": "#/$defs/binding"}},
-    "pairClassifications": {"type": "array", "items": {"$ref": "#/$defs/pair"}},
-    "publisherSweep": {"type": "array", "items": {"type": "object"}},
-    "unresolvedGaps": {"type": "array", "items": {"type": "object"}},
-    "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
-  },
-  "$defs": {
-    "status": {"enum": ["GOVERNED", "EVIDENCE_ONLY", "HOLD", "UNPROVEN"]},
-    "rootAuthorityGap": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["gapId", "faceIds", "category", "sharedMissingAuthority", "whyUGOCannotExecute", "redundantGatesRemoved"],
-      "properties": {
-        "gapId": {"type": "string", "minLength": 1},
-        "faceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
-        "category": {"type": "string", "minLength": 1},
-        "sharedMissingAuthority": {"type": "string", "minLength": 1},
-        "whyUGOCannotExecute": {"type": "string", "minLength": 1},
-        "redundantGatesRemoved": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
-      }
-    },
-    "scaleProof": {
-      "type": "object",
       "required": [
-        "proofId", "observedAt", "reportPath", "familyId",
-        "familyAuthorityPackageId", "candidateFaceIds", "admittedTargetProfileIds",
-        "holdReasons", "counts", "familyLeverage", "decision"
+        "printerAuthority",
+        "recognition",
+        "ugo",
+        "equipmentAuthority",
+        "backend",
+        "tapNScore",
+        "expandedLearning"
       ],
       "properties": {
-        "proofId": {"type": "string", "minLength": 1},
-        "observedAt": {"type": "string", "minLength": 1},
-        "reportPath": {"type": "string", "minLength": 1},
-        "familyId": {"type": "string", "minLength": 1},
-        "familyAuthorityPackageId": {"type": "string", "minLength": 1},
-        "candidateFaceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
-        "admittedTargetProfileIds": {"type": "array", "items": {"type": "string"}},
-        "holdReasons": {"type": "array", "items": {"type": "object"}},
-        "counts": {"type": "object"},
-        "familyLeverage": {"type": "number", "minimum": 0},
-        "decision": {"type": "string", "minLength": 1}
+        "printerAuthority": {"type": "string", "minLength": 1},
+        "recognition": {"type": "string", "minLength": 1},
+        "ugo": {"type": "string", "minLength": 1},
+        "equipmentAuthority": {"type": "string", "minLength": 1},
+        "backend": {"type": "string", "minLength": 1},
+        "tapNScore": {"type": "string", "minLength": 1},
+        "expandedLearning": {"type": "string", "minLength": 1}
       }
     },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalogId", "path"],
+      "properties": {
+        "catalogId": {"type": "string", "minLength": 1},
+        "path": {"const": "registries/mfam_inventory_audit.json"}
+      }
+    },
+    "families": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/family"}
+    },
+    "familyAuthorityPackages": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/familyAuthorityPackage"}
+    },
+    "mechanicalAuthorities": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/mechanicalAuthority"}
+    },
+    "products": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/product"}
+    },
+    "targetProfileBindings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/binding"}
+    },
+    "sources": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/source"}
+    }
+  },
+  "$defs": {
     "family": {
       "type": "object",
-      "required": ["familyId", "name", "status", "geometry", "procedure", "registration"],
+      "additionalProperties": false,
+      "required": ["familyId", "name", "geometry", "procedure", "registration", "sourceIds"],
       "properties": {
         "familyId": {"type": "string", "minLength": 1},
         "name": {"type": "string", "minLength": 1},
-        "status": {"$ref": "#/$defs/status"},
         "geometry": {"type": "object"},
         "procedure": {"type": "object"},
         "registration": {"type": "object"},
         "sourceIds": {"type": "array", "items": {"type": "string"}}
       }
     },
-    "mechanicalAuthority": {
-      "type": "object",
-      "required": ["mechanicalAuthorityId", "status", "equipmentConfiguration", "controls"],
-      "properties": {
-        "mechanicalAuthorityId": {"type": "string", "minLength": 1},
-        "status": {"$ref": "#/$defs/status"},
-        "equipmentConfiguration": {"type": "object"},
-        "controls": {"type": "array", "items": {"type": "object"}},
-        "sourceIds": {"type": "array", "items": {"type": "string"}}
-      }
-    },
     "familyAuthorityPackage": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
-        "familyAuthorityPackageId", "familyId", "status", "authorityVersion",
-        "universalZeroingCapabilityId", "geometryAuthority", "aimAuthority",
-        "measurementAuthority", "procedureAuthority", "mechanicalAuthorityIds",
-        "confirmationAuthority", "sourceIds"
+        "familyAuthorityPackageId",
+        "familyId",
+        "authorityVersion",
+        "universalZeroingCapabilityId",
+        "geometryAuthority",
+        "aimAuthority",
+        "measurementAuthority",
+        "procedureAuthority",
+        "mechanicalAuthorityIds",
+        "confirmationAuthority",
+        "sourceIds"
       ],
       "properties": {
         "familyAuthorityPackageId": {"type": "string", "minLength": 1},
         "familyId": {"type": "string", "minLength": 1},
-        "status": {"const": "GOVERNED"},
         "authorityVersion": {"type": "string", "minLength": 1},
         "universalZeroingCapabilityId": {"const": "sczn3-governed-zeroing-road-v1"},
         "geometryAuthority": {"type": "object"},
         "aimAuthority": {"type": "object"},
         "measurementAuthority": {"type": "object"},
         "procedureAuthority": {"type": "object"},
-        "mechanicalAuthorityIds": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "mechanicalAuthorityIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
         "confirmationAuthority": {"type": "object"},
-        "sourceIds": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        "sourceIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "mechanicalAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanicalAuthorityId", "equipmentConfiguration", "controls", "sourceIds"],
+      "properties": {
+        "mechanicalAuthorityId": {"type": "string", "minLength": 1},
+        "equipmentConfiguration": {"type": "object"},
+        "controls": {"type": "array", "items": {"type": "object"}},
+        "sourceIds": {"type": "array", "items": {"type": "string"}}
       }
     },
     "product": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
-        "productId", "publisherOrIssuer", "exactName", "face", "dimensions",
-        "grid", "aim", "procedure", "applicableEquipment", "mechanicalAuthorityIds",
-        "registration", "evidenceQuality", "runtimeStatus", "sourceIds"
+        "productId",
+        "publisherOrIssuer",
+        "exactName",
+        "face",
+        "dimensions",
+        "grid",
+        "aim",
+        "procedure",
+        "applicableEquipment",
+        "mechanicalAuthorityIds",
+        "registration",
+        "familyId",
+        "sourceIds"
       ],
       "properties": {
         "productId": {"type": "string", "minLength": 1},
@@ -230,17 +178,23 @@
         "applicableEquipment": {"type": "array", "items": {"type": "string"}},
         "mechanicalAuthorityIds": {"type": "array", "items": {"type": "string"}},
         "registration": {"type": "object"},
-        "candidateFamilyId": {"type": ["string", "null"]},
-        "mappingClassification": {"type": "string"},
-        "evidenceQuality": {"enum": ["PRIMARY_GOVERNED", "PRIMARY_PARTIAL", "PUBLISHER_PRIMARY", "ISSUER_PRIMARY", "SECONDARY", "UNPROVEN"]},
-        "runtimeStatus": {"$ref": "#/$defs/status"},
+        "familyId": {"type": ["string", "null"]},
         "sourceIds": {"type": "array", "items": {"type": "string"}},
         "notes": {"type": "array", "items": {"type": "string"}}
       }
     },
     "binding": {
       "type": "object",
-      "required": ["targetProfileId", "productId", "familyId", "mechanicalAuthorityId", "registrationPackageId", "status"],
+      "additionalProperties": false,
+      "required": [
+        "targetProfileId",
+        "productId",
+        "familyId",
+        "familyAuthorityPackageId",
+        "mechanicalAuthorityId",
+        "registrationPackageId",
+        "canonicalRepresentationAuthority"
+      ],
       "properties": {
         "targetProfileId": {"type": "string", "minLength": 1},
         "productId": {"type": "string", "minLength": 1},
@@ -248,31 +202,20 @@
         "familyAuthorityPackageId": {"type": "string", "minLength": 1},
         "mechanicalAuthorityId": {"type": "string", "minLength": 1},
         "registrationPackageId": {"type": "string", "minLength": 1},
-        "canonicalRepresentationAuthority": {"type": "object"},
-        "status": {"const": "GOVERNED"}
-      }
-    },
-    "pair": {
-      "type": "object",
-      "required": ["leftProductId", "rightProductId", "classifications", "status", "rationale"],
-      "properties": {
-        "leftProductId": {"type": "string"},
-        "rightProductId": {"type": "string"},
-        "classifications": {"type": "array", "items": {"type": "string"}},
-        "status": {"enum": ["PROVEN", "UNPROVEN"]},
-        "rationale": {"type": "string"},
-        "sourceIds": {"type": "array", "items": {"type": "string"}}
+        "inventoryFaceId": {"type": "string", "minLength": 1},
+        "canonicalRepresentationAuthority": {"type": "object"}
       }
     },
     "source": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["sourceId", "title", "publisher", "url", "quality"],
       "properties": {
         "sourceId": {"type": "string", "minLength": 1},
         "title": {"type": "string", "minLength": 1},
         "publisher": {"type": "string", "minLength": 1},
         "url": {"type": "string", "minLength": 1},
-        "quality": {"enum": ["PRIMARY_GOVERNMENT", "PRIMARY_PUBLISHER", "PRESERVED_FIRST_PARTY", "GOVERNED_DERIVED_EVIDENCE", "SECONDARY"]},
+        "quality": {"type": "string", "minLength": 1},
         "scope": {"type": "array", "items": {"type": "string"}}
       }
     }

@@ -103,7 +103,6 @@ def mfam_authority_binding(target_profile_id: str) -> Dict[str, Any]:
         "confirmationAuthority": deepcopy(family_package.get("confirmationAuthority")) if isinstance(family_package, Mapping) else None,
         "registrationPackageId": binding["registrationPackageId"],
         "canonicalRepresentationAuthority": deepcopy(binding.get("canonicalRepresentationAuthority")),
-        "status": binding["status"],
     }
 
 
@@ -474,7 +473,10 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             entry_mode="registered-reference",
             confirmation_mode="governed",
         ),
-        "mfamAuthorityBinding": mfam_authority_binding("m4_25m_zero"),
+        # The protected modern reference is owned by its original target
+        # authority. It is M/FAM knowledge, but it does not need a duplicate
+        # family-registry authorization record.
+        "mfamAuthorityBinding": None,
         "registrationAuthority": {
             "registrationPackageId": "m4-m16-25m-zero-photo-registration-v1",
             "registrationPackageVersion": "1",

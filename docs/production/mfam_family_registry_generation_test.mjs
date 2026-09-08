@@ -5,7 +5,6 @@ import {
   MFAM_FAMILY_REGISTRY_SOURCE_SHA256,
   resolveMFAMFamilyTargetProfile
 } from "./generated_mfam_family_registry.mjs";
-import { loadFamilyConformanceRegistry, runFamilyAdmissionBatch } from "./mfam_family_conformance.mjs";
 
 const sourceBytes = await readFile("backend/registries/mfam_family_authority.json");
 const source = JSON.parse(sourceBytes.toString("utf8"));
@@ -21,7 +20,6 @@ assert.equal(baker.familyAuthorityPackage.familyId, "mfam_m16a2_a3_standard_25m_
 assert.equal(baker.familyAuthorityPackage.universalZeroingCapabilityId, "sczn3-governed-zeroing-road-v1");
 
 const generatedProfileIds = source.targetProfileBindings
-  .filter(binding => binding.status === "GOVERNED" && binding.familyAuthorityPackageId)
   .map(binding => binding.targetProfileId);
 assert.deepEqual(generatedProfileIds, [
   "baker_m16a2_25m_zero",
@@ -94,13 +92,13 @@ for (const [profileId, faceId] of [
   assert.equal(record.binding.canonicalRepresentationAuthority.productIdentityAuthority.faceId, faceId);
 }
 
-const conformance = await loadFamilyConformanceRegistry();
-assert.equal(source.familyConformanceRegistry.registryId, conformance.registryId);
-const proof = conformance.scaleProof;
-const batch = runFamilyAdmissionBatch(conformance, proof.contractId, proof.candidateFaceIds);
-assert.equal(batch.candidatesEvaluated, 8);
-assert.equal(batch.admitted.length, 8);
-assert.equal(batch.held.length, 0);
-assert.equal(proof.counts.totalExecutableFamilyBindings, 9);
+assert.equal(generatedProfileIds.length, 22);
+assert.equal(source.familyAuthorityPackages.length, 3);
+assert.equal(source.universalZeroingCapabilityId, "sczn3-governed-zeroing-road-v1");
+assert(!("familyConformanceRegistry" in source));
+assert(!("classificationVocabulary" in source));
+assert(!("authorizationSweep" in source));
+assert(!("scaleProofs" in source));
+assert(!("pairClassifications" in source));
 
-console.log("PASS generated M/FAM family registry matches Backend authority and fails closed");
+console.log("PASS generated M/FAM registry uses the lean authority chain");

@@ -9,7 +9,7 @@
     "test:authority-m4": "python3 -m backend.m4_authority.test_authority_service",
     "test:equipment": "node production/weapon_equipment_registry_test.mjs && node production/equipment_adjustment_profile_test.mjs && python3 -B -m unittest backend.m4_authority.test_equipment_adjustment_profiles && node production/m4_mechanical_testability_gate.mjs",
     "test:parity": "node production/parity_test.mjs",
-    "test:mfam-conformance": "node production/mfam_family_conformance_test.mjs && node production/mfam_family_registry_generation_test.mjs && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_mfam_family_conformance.py && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_mfam_family_authority.py",
+    "test:mfam-authority": "node production/mfam_family_registry_generation_test.mjs && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_mfam_family_authority.py",
     "test:integration": "node production/integration_contract_test.mjs",
     "test:zeroing-sop": "node production/zeroing_sop_test.mjs",
     "test:gssf-results": "node production/gssf_show_results_contract_test.mjs",
