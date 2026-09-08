@@ -1,0 +1,53 @@
+{
+  "manifestId": "MFAM-AUTHORITY-FLOOR-SWEEP-08-DECISION-MANIFEST-v1",
+  "date": "2026-09-07",
+  "startingState": {
+    "executablePhysicalFaces": 17,
+    "trueAuthorityGapPhysicalFaces": 18,
+    "totalPhysicalFaces": 35
+  },
+  "endingState": {
+    "executablePhysicalFaces": 19,
+    "trueAuthorityGapPhysicalFaces": 16,
+    "totalPhysicalFaces": 35,
+    "runtimeBindingsIncludingProtectedReference": 20
+  },
+  "batchDecision": {
+    "facesProcessed": 18,
+    "actualSharedRootAuthorityProblems": 9,
+    "redundantGateClassesPermanentlyCorrected": 1,
+    "newlyExecutableFaces": [
+      "face-026",
+      "face-028"
+    ],
+    "sharedSolution": "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+    "newFamilyPackages": 0,
+    "productSpecificZeroingImplementations": 0,
+    "newZeroingRoads": 0
+  },
+  "permanentContract": {
+    "field": "rootAuthorityGaps",
+    "requirements": [
+      "every non-executable physical face appears exactly once",
+      "no face may appear in multiple root authority gaps",
+      "every grouped face must exist in the inventory",
+      "printer identity, paper, ink, branding, non-operative wording, and already-governed family facts cannot independently create a HOLD"
+    ]
+  },
+  "validation": {
+    "authorityFloorSweep": "6/6 PASS",
+    "equipmentAuthorityProfiles": "5/5 PASS",
+    "backendSessionAuthority": "22/22 PASS",
+    "mfamConformance": "2 Node contracts + 6/6 Python PASS",
+    "mfamFamilyAuthority": "20/20 PASS",
+    "generatedRegistryParity": "PASS",
+    "browserEquipmentProfileSelection": "PASS",
+    "zeroingPlatformSop": "PASS",
+    "targetExecutionScaleArchitecture": "PASS",
+    "productionBuild": "422 public files",
+    "environmentLimitations": [
+      "image-registration parity requires unavailable cv2",
+      "legacy integration assertion expects removed target-scoped authority ID in built target page"
+    ]
+  }
+}

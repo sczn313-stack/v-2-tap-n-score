@@ -104,6 +104,7 @@ def _load_registry() -> Dict[str, Any]:
     sources = _unique_index(payload.get("sources") or [], "sourceId")
     bindings = _unique_index(payload.get("targetProfileBindings") or [], "targetProfileId")
     scale_proofs = _unique_index(payload.get("scaleProofs") or [], "proofId")
+    root_authority_gaps = _unique_index(payload.get("rootAuthorityGaps") or [], "gapId")
 
     for collection_name, collection in (("family", families.values()), ("mechanical_authority", mechanics.values())):
         for record in collection:
@@ -201,6 +202,23 @@ def _load_registry() -> Dict[str, Any]:
     )
     inventory_geometries = _unique_index(inventory.get("geometryCatalog") or [], "geometryId")
     inventory_procedures = _unique_index(inventory.get("procedureCatalog") or [], "procedureId")
+    held_face_ids = {
+        face_id for face_id, face in inventory_faces.items()
+        if not face.get("runtimeBinding")
+    }
+    grouped_face_ids: set[str] = set()
+    for gap in root_authority_gaps.values():
+        face_ids = set(gap.get("faceIds") or [])
+        if not face_ids or not face_ids.issubset(inventory_faces):
+            raise MFAMAuthorityError(f"mfam_root_authority_gap_face_missing:{gap['gapId']}")
+        overlap = grouped_face_ids.intersection(face_ids)
+        if overlap:
+            raise MFAMAuthorityError(
+                f"mfam_root_authority_gap_face_duplicated:{sorted(overlap)[0]}"
+            )
+        grouped_face_ids.update(face_ids)
+    if grouped_face_ids != held_face_ids:
+        raise MFAMAuthorityError("mfam_root_authority_gap_coverage_mismatch")
     inventory_counts = inventory.get("counts") or {}
     computed_counts = {
         "sourceEvidenceRecords": len(products),
@@ -367,6 +385,7 @@ def _load_registry() -> Dict[str, Any]:
         "products": products,
         "bindings": bindings,
         "scaleProofs": scale_proofs,
+        "rootAuthorityGaps": root_authority_gaps,
     }
     payload["_inventoryIndex"] = {
         "publishers": inventory_publishers,
@@ -393,6 +412,7 @@ def registry_metadata() -> Dict[str, Any]:
         "familyConformanceRegistry": deepcopy(_REGISTRY["familyConformanceRegistry"]),
         "authorizationSweep": deepcopy(_REGISTRY["authorizationSweep"]),
         "scaleProofs": deepcopy(_REGISTRY["scaleProofs"]),
+        "rootAuthorityGaps": deepcopy(_REGISTRY["rootAuthorityGaps"]),
     }
 
 
@@ -410,6 +430,18 @@ def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
         _REGISTRY["_inventoryIndex"]["geometries"],
     )
     missing_facts = list(face_record.get("unresolvedFacts") or [])
+    root_gap = next(
+        (
+            gap for gap in _REGISTRY["_index"]["rootAuthorityGaps"].values()
+            if face_record["faceId"] in gap.get("faceIds", [])
+        ),
+        None,
+    )
+    shared_missing_authority = (
+        root_gap.get("sharedMissingAuthority")
+        if root_gap
+        else "; ".join(missing_facts)
+    )
     if runtime_binding:
         target_state = "KNOWN_TARGET_EXECUTION_AUTHORIZED"
         disposition = "ALREADY_AUTHORIZED"
@@ -420,7 +452,7 @@ def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
         shooter_recovery = {
             "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
             "title": "THIS TARGET IS KNOWN",
-            "message": f"Tap-n-Score knows this target, but {missing_facts[0]} is not yet governed.",
+            "message": f"Tap-n-Score knows this target, but {shared_missing_authority} is not yet governed.",
         }
     else:
         target_state = "KNOWN_TARGET_AUTHORITY_UNRESOLVED"
@@ -428,7 +460,7 @@ def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
         shooter_recovery = {
             "code": "KNOWN_TARGET_AUTHORITY_UNRESOLVED",
             "title": "THIS TARGET IS KNOWN",
-            "message": f"Tap-n-Score knows this target, but {missing_facts[0]} is not yet governed.",
+            "message": f"Tap-n-Score knows this target, but {shared_missing_authority} is not yet governed.",
         }
     return {
         "targetKnowledge": "KNOWN_TARGET",
@@ -449,7 +481,8 @@ def _face_admission_record(face_record: Mapping[str, Any]) -> Dict[str, Any]:
         "runtimeBinding": runtime_binding,
         "familyAuthorityPackageId": binding.get("familyAuthorityPackageId") if binding else None,
         "missingFacts": missing_facts,
-        "whyExecutionBlocked": None if runtime_binding else f"Execution requires the unresolved authority fact(s): {'; '.join(missing_facts)}.",
+        "rootAuthorityGap": deepcopy(root_gap),
+        "whyExecutionBlocked": None if runtime_binding else f"Execution requires shared authority for: {shared_missing_authority}.",
         "shooterRecovery": shooter_recovery,
     }
 

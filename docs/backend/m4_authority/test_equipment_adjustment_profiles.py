@@ -9,6 +9,7 @@ from .weapon_equipment_registry import (
 
 M4_PROFILE_ID = "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"
 M16A2_PROFILE_ID = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
+M16A4_PROFILE_ID = "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
 FORT_BENNING_AUTHORITY_ID = "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01"
 
 
@@ -76,6 +77,24 @@ class EquipmentAdjustmentProfileTests(unittest.TestCase):
             if control["axis"] == "elevation"
         )
         self.assertEqual(reusable_elevation["movementPerClick"], 1.5)
+
+
+    def test_reusable_m16a4_branch_is_distinct_and_executable(self):
+        selection = resolve_target_adjustment_authority(
+            _reusable_relationship(
+                M16A4_PROFILE_ID,
+                "M16A4-STANDARD-IRON-FSP-REAR-DRUM",
+                "GUNFUN_M16A4_PROFILE_PENDING",
+            )
+        )
+        controls = {
+            control["controlId"]: control
+            for control in selection["adjustmentProfile"]["controls"]
+        }
+        self.assertEqual(controls["M16A4-STANDARD-FRONT-SIGHT-POST"]["movementPerClick"], 1.25)
+        self.assertEqual(controls["M16A4-REAR-WINDAGE-KNOB"]["movementPerClick"], 0.5)
+        self.assertEqual(controls["M16A4-REAR-ELEVATION-DRUM"]["movementPerClick"], 0.5)
+        self.assertEqual(controls["M16A4-REAR-ELEVATION-DRUM"]["operationPurpose"], "configuration_setting")
 
 
     def test_ambiguous_or_mismatched_selection_fails_closed(self):

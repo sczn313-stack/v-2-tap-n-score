@@ -39,7 +39,8 @@ def test_registry_metadata_and_vocabulary_are_governed():
     assert set(payload["classificationVocabulary"]) == ALLOWED_CLASSIFICATIONS
     metadata = registry_metadata()
     assert metadata["universalZeroingCapabilityId"] == "sczn3-governed-zeroing-road-v1"
-    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 18
+    assert metadata["authorizationSweep"]["counts"]["heldPhysicalFaces"] == 16
+    assert len(metadata["rootAuthorityGaps"]) == 9
     assert metadata["authorizationSweep"]["reportPath"].endswith("M_FAM_INDUSTRY_AUTHORIZATION_SWEEP.md")
 
 
@@ -49,7 +50,7 @@ def test_registry_schema_contract_is_present_and_matches_runtime_schema_id():
     assert schema["properties"]["schemaId"]["const"] == "sczn3-mfam-family-authority-v1"
     assert set(schema["required"]) == {
         "schemaId", "registryId", "version", "status", "classificationVocabulary",
-        "evidencePolicy", "inventoryAudit", "authorizationSweep", "familyConformanceRegistry", "scaleProofs", "families", "familyAuthorityPackages", "mechanicalAuthorities", "products",
+        "evidencePolicy", "inventoryAudit", "authorizationSweep", "familyConformanceRegistry", "rootAuthorityGaps", "scaleProofs", "families", "familyAuthorityPackages", "mechanicalAuthorities", "products",
         "targetProfileBindings", "pairClassifications", "publisherSweep",
         "unresolvedGaps", "sources",
     }
@@ -77,7 +78,7 @@ def test_inventory_schema_and_exact_audit_counts():
         "exactUniqueProcedures": None,
         "exactUniqueProceduresStatus": "UNPROVEN_WHERE_PRODUCT_INSTRUCTIONS_ARE_MISSING",
         "candidateGovernedFamilies": 9,
-        "runtimeBindings": 18,
+        "runtimeBindings": 20,
     }
 
 
@@ -116,7 +117,7 @@ def test_exact_nine_candidate_families_are_cataloged():
     ]
 
 
-def test_eighteen_exact_profiles_have_executable_mfam_bindings():
+def test_twenty_exact_profiles_have_executable_mfam_bindings():
     payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     assert {item["targetProfileId"] for item in payload["targetProfileBindings"]} == {
         "baker_m16a2_25m_zero",
@@ -136,6 +137,8 @@ def test_eighteen_exact_profiles_have_executable_mfam_bindings():
         "speedwell_dodm4_m4_25m_zero",
         "action_m4_carbine_25m_zero",
         "army_nsn_6920_01_395_2949_m4_25m_zero",
+        "gunfun_32110_m16a4_red_25m_zero",
+        "gunfun_32120_m16a4_green_25m_zero",
         "m4_25m_zero",
     }
     for target_profile_id in (
@@ -156,6 +159,8 @@ def test_eighteen_exact_profiles_have_executable_mfam_bindings():
         "speedwell_dodm4_m4_25m_zero",
         "action_m4_carbine_25m_zero",
         "army_nsn_6920_01_395_2949_m4_25m_zero",
+        "gunfun_32110_m16a4_red_25m_zero",
+        "gunfun_32120_m16a4_green_25m_zero",
         "m4_25m_zero",
     ):
         resolved = resolve_target_profile(target_profile_id)
@@ -198,7 +203,10 @@ def test_printer_authority_sweep_reuses_one_standard_m4_family_package():
     assert package["geometryAuthority"]["rows"] == 16
     assert package["geometryAuthority"]["square"] == {"value": 1.3, "unit": "CM"}
     assert package["aimAuthority"]["gridOriginToAim"] == {"columns": 7, "rows": 8}
-    assert package["mechanicalAuthorityIds"] == ["M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"]
+    assert package["mechanicalAuthorityIds"] == [
+        "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+        "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+    ]
     baker = resolve_target_profile("baker_m4_25m_zero")
     gunfun = resolve_target_profile("gunfun_82020_m16a2_25m_zero")
     assert baker["familyAuthorityPackage"] == package
@@ -212,6 +220,8 @@ def test_printer_authority_sweep_reuses_one_standard_m4_family_package():
         "speedwell_dodm4_m4_25m_zero": "face-019",
         "action_m4_carbine_25m_zero": "face-021",
         "army_nsn_6920_01_395_2949_m4_25m_zero": "face-033",
+        "gunfun_32110_m16a4_red_25m_zero": "face-026",
+        "gunfun_32120_m16a4_green_25m_zero": "face-028",
     }.items():
         resolved = resolve_target_profile(profile_id)
         assert resolved["familyAuthorityPackage"] == package
@@ -245,19 +255,17 @@ def test_standard_m16a2_scale_proof_is_auditable_and_evidence_limited():
 def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority():
     sweep = industry_authorization_sweep()
     assert sweep["counts"] == {
-        "authorizedNowRuntimeBindings": 6,
-        "alreadyAuthorizedRuntimeBindings": 12,
-        "alreadyAuthorizedPhysicalFaces": 17,
-        "heldPhysicalFaces": 18,
-        "knownHeldFacesWithAuthorizedGeometry": 5,
-        "heldFacesAssignedToCandidateFamily": 13,
+        "authorizedNowRuntimeBindings": 2,
+        "alreadyAuthorizedRuntimeBindings": 18,
+        "alreadyAuthorizedPhysicalFaces": 19,
+        "heldPhysicalFaces": 16,
+        "knownHeldFacesWithAuthorizedGeometry": 3,
+        "heldFacesAssignedToCandidateFamily": 11,
         "heldFacesUnassigned": 5,
         "candidateFamilies": 9,
     }
     assert {item["runtimeBinding"] for item in sweep["authorizedNow"]} == {
-        "rite_9125_m4_25m_zero", "national_23075_m4_25m_zero",
-        "qualification_m4_25m_zero", "speedwell_dodm4_m4_25m_zero",
-        "action_m4_carbine_25m_zero", "army_nsn_6920_01_395_2949_m4_25m_zero",
+        "gunfun_32110_m16a4_red_25m_zero", "gunfun_32120_m16a4_green_25m_zero",
     }
     assert {item.get("targetProfileId") or item.get("runtimeBinding") for item in sweep["alreadyAuthorized"]} == {
         "baker_m16a2_25m_zero",
@@ -271,33 +279,36 @@ def test_industry_authorization_sweep_uses_all_faces_without_inventing_authority
         "gunfun_32110_m16a2_red_25m_zero",
         "gunfun_82020_m16a2_25m_zero",
         "baker_m4_25m_zero",
+        "rite_9125_m4_25m_zero", "national_23075_m4_25m_zero",
+        "qualification_m4_25m_zero", "speedwell_dodm4_m4_25m_zero",
+        "action_m4_carbine_25m_zero", "army_nsn_6920_01_395_2949_m4_25m_zero",
         "m4_25m_zero",
     }
-    assert len(sweep["hold"]) == 18
+    assert len(sweep["hold"]) == 16
     assert {item["faceId"] for item in sweep["hold"]} == {
         f"face-{index:03d}" for index in range(1, 36)
-    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-025", "face-027", "face-029", "face-032", "face-033"}
+    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-025", "face-026", "face-027", "face-028", "face-029", "face-032", "face-033"}
 
 
 def test_hold_clearance_inventory_groups_every_hold_without_forcing_family_membership():
     plan = hold_clearance_inventory()
-    assert plan["heldFaceCount"] == 18
-    assert plan["assignedHeldFaceCount"] == 13
+    assert plan["heldFaceCount"] == 16
+    assert plan["assignedHeldFaceCount"] == 11
     assert plan["unassignedHeldFaceCount"] == 5
     assert len(plan["families"]) == 9
     grouped = {face_id for family_record in plan["families"] for face_id in family_record["heldFaceIds"]}
     unassigned = set(plan["unassignedFaceIds"])
-    assert len(grouped) == 13
+    assert len(grouped) == 11
     assert len(unassigned) == 5
     assert not grouped.intersection(unassigned)
     assert grouped | unassigned == {
         f"face-{index:03d}" for index in range(1, 36)
-    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-025", "face-027", "face-029", "face-032", "face-033"}
+    } - {"face-003", "face-004", "face-006", "face-007", "face-013", "face-014", "face-016", "face-017", "face-018", "face-019", "face-020", "face-021", "face-025", "face-026", "face-027", "face-028", "face-029", "face-032", "face-033"}
     counts = {record["familyId"]: record["heldFaceCount"] for record in plan["families"]}
     assert counts == {
         "mfam_m16a1_25m_250m": 1,
         "mfam_m16a2_a3_standard_25m_300m": 0,
-        "mfam_m16a4_m4_standard_25m_300m": 2,
+        "mfam_m16a4_m4_standard_25m_300m": 0,
         "mfam_modern_a8_moa_25m": 6,
         "mfam_m16a2r_enlarged_23x35": 1,
         "mfam_10m_boresight_offset": 1,
@@ -352,11 +363,12 @@ def test_two_sided_known_product_requires_face_identity_instead_of_becoming_unkn
     assert result["missingFacts"] == ["exact face/side selection"]
 
 
-def test_true_mechanical_gap_still_does_not_gain_execution_authority():
-    held = resolve_face_admission("face-026")
-    assert held["missingFacts"] == ["governed M16A4 mechanical authority branch"]
-    assert held["disposition"] == "HOLD"
-    expect_error(lambda: resolve_target_profile("gunfun_32110_m16a4_red_25m_zero"), "mfam_target_profile_not_governed")
+def test_shared_m16a4_mechanical_gap_is_governed_once_and_inherited():
+    admitted = resolve_face_admission("face-026")
+    assert admitted["missingFacts"] == []
+    assert admitted["disposition"] == "ALREADY_AUTHORIZED"
+    resolved = resolve_target_profile("gunfun_32110_m16a4_red_25m_zero")
+    assert resolved["mechanicalAuthority"]["mechanicalAuthorityId"] == "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
     assert family("mfam_m16a2_a3_standard_25m_300m")["status"] == "GOVERNED"
 
 

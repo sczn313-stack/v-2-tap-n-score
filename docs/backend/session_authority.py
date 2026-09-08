@@ -190,8 +190,12 @@ def standard_m4_family_profile(
     mission_id: str,
     registration_package_id: str,
     canonical_coordinate_system_id: str,
+    model_families: list[str] | None = None,
+    setup_id: str = "standard-m4-iron-dch-fsp",
+    setup_authority_id: str = "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+    equipment_configuration_id: str = "M4-M4A1-DCH-FSP",
 ) -> Dict[str, Any]:
-    """Bind one exact product representation to the shared Standard M4 family road."""
+    """Bind one exact product representation/equipment branch to the shared family road."""
     family_binding = mfam_authority_binding(target_profile_id)
     return {
         "targetId": target_profile_id,
@@ -222,15 +226,15 @@ def standard_m4_family_profile(
         "governedDistance": {"value": 25, "unit": "M", "locked": True},
         "equipmentRequirements": {
             "weaponCategories": ["Rifle"],
-            "modelFamilies": ["M4", "M4A1"],
+            "modelFamilies": model_families or ["M4", "M4A1"],
             "requiresAdjustmentSystem": True,
             "allowedAdjustmentUnits": ["MOA"],
         },
         "standardSetupAuthority": {
-            "setupId": "standard-m4-iron-dch-fsp",
-            "authorityId": "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+            "setupId": setup_id,
+            "authorityId": setup_authority_id,
             "kind": "registered_adjustment_profile",
-            "equipmentConfigurationId": "M4-M4A1-DCH-FSP",
+            "equipmentConfigurationId": equipment_configuration_id,
         },
     }
 
@@ -364,6 +368,26 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
         atp_id="army-nsn-6920-01-395-2949-m4-25m-zero-atp-v1", mission_id="ARMY_ISSUED_M4_25M_300M_ZERO",
         registration_package_id="army-nsn-6920-01-395-2949-m4-family-ugo-registration-v1",
         canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+    ),
+    "gunfun_32110_m16a4_red_25m_zero": standard_m4_family_profile(
+        "gunfun_32110_m16a4_red_25m_zero", "GUNFUN_32110_M16A4_RED_AUTHORITY_v1",
+        "GunFun 32110 M16A4 Red 25 Meter Zeroing Target",
+        atp_id="gunfun-32110-m16a4-red-25m-zero-atp-v1", mission_id="GUNFUN_32110_M16A4_25M_300M_ZERO",
+        registration_package_id="gunfun-32110-m16a4-red-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+        model_families=["M16A4"], setup_id="standard-m16a4-iron-fsp-rear-drum",
+        setup_authority_id="M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+        equipment_configuration_id="M16A4-STANDARD-IRON-FSP-REAR-DRUM",
+    ),
+    "gunfun_32120_m16a4_green_25m_zero": standard_m4_family_profile(
+        "gunfun_32120_m16a4_green_25m_zero", "GUNFUN_32120_M16A4_GREEN_AUTHORITY_v1",
+        "GunFun 32120 M16A4 Green 25 Meter Zeroing Target",
+        atp_id="gunfun-32120-m16a4-green-25m-zero-atp-v1", mission_id="GUNFUN_32120_M16A4_25M_300M_ZERO",
+        registration_package_id="gunfun-32120-m16a4-green-family-ugo-registration-v1",
+        canonical_coordinate_system_id="MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1",
+        model_families=["M16A4"], setup_id="standard-m16a4-iron-fsp-rear-drum",
+        setup_authority_id="M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+        equipment_configuration_id="M16A4-STANDARD-IRON-FSP-REAR-DRUM",
     ),
     "m4_25m_zero": {
         "targetId": "m4_25m_zero",

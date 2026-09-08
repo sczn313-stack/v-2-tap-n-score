@@ -89,11 +89,11 @@ def authority_payload(profile_id: str, version: str, package_id: str) -> dict:
     }
 
 
-def test_batch_disposition_is_seventeen_executable_eighteen_true_gaps():
+def test_later_authority_floor_preserves_sweep_07_admissions():
     sweep = industry_authorization_sweep()
-    assert sweep["counts"]["alreadyAuthorizedPhysicalFaces"] == 17
-    assert sweep["counts"]["heldPhysicalFaces"] == 18
-    assert {item["runtimeBinding"] for item in sweep["authorizedNow"]} == set(CASES)
+    assert sweep["counts"]["alreadyAuthorizedPhysicalFaces"] == 19
+    assert sweep["counts"]["heldPhysicalFaces"] == 16
+    assert set(CASES).issubset({item["runtimeBinding"] for item in sweep["alreadyAuthorized"]})
 
 
 def test_all_six_preserve_printer_face_identity_and_inherit_one_family():
@@ -138,11 +138,11 @@ def test_all_six_release_the_same_governed_m4_mechanics_without_product_logic():
         assert result["clicks"]["elevationClicks"] == 1
 
 
-def test_m16a4_faces_keep_their_true_mechanical_hold():
+def test_m16a4_faces_inherit_the_later_shared_mechanical_branch():
     for face_id in ("face-026", "face-028"):
         result = resolve_face_admission(face_id)
-        assert result["disposition"] == "HOLD"
-        assert result["missingFacts"] == ["governed M16A4 mechanical authority branch"]
+        assert result["disposition"] == "ALREADY_AUTHORIZED"
+        assert result["missingFacts"] == []
 
 
 if __name__ == "__main__":

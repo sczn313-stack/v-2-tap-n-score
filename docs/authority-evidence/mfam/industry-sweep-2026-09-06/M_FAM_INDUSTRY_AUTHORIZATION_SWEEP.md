@@ -1,6 +1,6 @@
 # M/FAM Industry Authorization Sweep
 
-> **Historical Scale Sweep #6 record.** The current batch disposition is Scale Sweep #7: `scale-sweep-07/M_FAM_SCALE_SWEEP_07_PRINTER_AUTHORITY_LOCK.md` — **17 executable / 18 true authority gaps / 35 physical faces**. The tables below preserve the prior decision state and are not the current runtime inventory.
+> **Historical Scale Sweep #6 record.** The current batch disposition is Authority-floor Sweep #8: `authority-floor-sweep-08/M_FAM_AUTHORITY_FLOOR_SWEEP_08.md` — **19 executable / 16 true authority gaps / 35 physical faces**. The tables below preserve the prior decision state and are not the current runtime inventory.
 
 Date: 2026-09-06; updated by Scale Sweep #6 on 2026-09-07
 Authority floor: completed M/FAM evidence ledger, face inventory, geometry catalog, procedure catalog, family registry, and existing registration/mechanical authorities  

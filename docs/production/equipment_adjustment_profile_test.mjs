@@ -8,6 +8,7 @@ import {
 
 const M4_PROFILE_ID = "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011";
 const M16A2_PROFILE_ID = "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
+const M16A4_PROFILE_ID = "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011";
 const FORT_BENNING_AUTHORITY_ID = "M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01";
 
 const registrySchema = JSON.parse(await readFile(
@@ -21,7 +22,7 @@ assert.ok(registrySchema.$defs.observerView);
 assert.equal(registrySchema.$defs.targetZeroRelationship.oneOf.length, 2);
 
 assert.equal(WEAPON_EQUIPMENT_REGISTRY.schemaVersion, "1.1.0");
-assert.equal(WEAPON_EQUIPMENT_REGISTRY.adjustmentProfiles.length, 2);
+assert.equal(WEAPON_EQUIPMENT_REGISTRY.adjustmentProfiles.length, 3);
 
 for (const profile of WEAPON_EQUIPMENT_REGISTRY.adjustmentProfiles) {
   assert.equal(profile.recordType, "equipment_adjustment_profile");
@@ -80,6 +81,12 @@ const m16A2RearDrum = bakerM16A2Selection.adjustmentProfile.controls.find((contr
 assert.equal(m16A2RearDrum.movementPerClick, 1);
 assert.equal(m16A2RearDrum.operationPurpose, "configuration_setting");
 assert.doesNotMatch(JSON.stringify(bakerM16A2Selection.adjustmentProfile), /one click past 300|return one click to 300/i);
+
+const m16A4Profile = getAdjustmentProfile(M16A4_PROFILE_ID);
+assert.equal(m16A4Profile.equipmentConfigurationId, "M16A4-STANDARD-IRON-FSP-REAR-DRUM");
+assert.equal(m16A4Profile.controls.find((control) => control.axis === "elevation" && control.operationPurpose === "correction").movementPerClick, 1.25);
+assert.equal(m16A4Profile.controls.find((control) => control.axis === "windage").movementPerClick, 0.5);
+assert.equal(m16A4Profile.controls.find((control) => control.operationPurpose === "configuration_setting").movementPerClick, 0.5);
 
 const fortBenningRecord = WEAPON_EQUIPMENT_REGISTRY.records.find((record) => record.recordId === FORT_BENNING_AUTHORITY_ID);
 const fortBenningSelection = resolveTargetAdjustmentAuthority(fortBenningRecord.targetZeroRelationship);

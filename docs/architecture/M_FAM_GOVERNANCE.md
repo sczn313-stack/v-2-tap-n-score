@@ -86,7 +86,7 @@ The original 31 rows are evidence records. They are not interchangeable counts o
         → 23 cataloged physical-geometry identities/candidates
           → 14 cataloged procedure identities/buckets
             → 9 candidate governed families
-              → 18 executable runtime bindings
+              → 20 executable runtime bindings
 ```
 
 Count qualifications:
@@ -106,7 +106,7 @@ The machine-enforced counts live in `mfam_inventory_audit.json`. The face-by-fac
 |---|---|---|---|---|---|
 | `mfam_m16a1_25m_250m` — Legacy M16A1 | exact grid/pitch unproven | 25m represents 250m; `L` aperture then unmarked; M16A1 | complete mechanical package unproven | Army NSN `6920-01-167-1392` / face-031 | issuer procedure evidence; `EVIDENCE_ONLY` |
 | `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 18 × 20; 0.96 cm uniform squares | 25m/300m; 8/3 + one; M16A2 branch | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | Baker face-003; Rite face-006; National face-013; QTI face-016; Alco face-018; Speedwell face-020; GunFun faces 025/027/029; Army face-032 | ten exact physical-face bindings governed through one family package |
-| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 14 × 16; 1.3 cm uniform squares | 25m/300m; M4/M4A1 DCH/FSP branch governed; M16A4 held | `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`; `MFAM-M16A4-IRON-EVIDENCE-2011` | Baker face-004; Rite face-007; National face-014; QTI face-017; Speedwell face-019; Action face-021; GunFun faces 026/028; Army face-033 | seven M4/M4A1 bindings governed through one family package; GunFun faces 026/028 remain held only for an executable M16A4 mechanical branch |
+| `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 14 × 16; 1.3 cm uniform squares | 25m/300m; separately governed M4/M4A1 DCH/FSP and M16A4 standard-iron branches | `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`; `M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | Baker face-004; Rite face-007; National face-014; QTI face-017; Speedwell face-019; Action face-021; GunFun faces 026/028; Army face-033 | all nine faces execute through one family package; equipment branch selection prevents mechanical cross-application |
 | `mfam_modern_a8_moa_25m` — Modern Universal MOA/A8 | protected geometry: 32 × 32 quarter-inch lattice, 8 × 8-inch grid | modern 25m grouping/zero; final/confirmation by exact profile | `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01`; printed rows remain evidence-only | Baker face-001 (reverse face-002 unresolved/unmapped); Rite face-009; National faces 011/012; Action face-023; Army face-034; plus protected reference representation | protected reference runtime `GOVERNED`; all product faces held |
 | `mfam_m16a2r_enlarged_23x35` — Baker enlarged M16A2R | 23 × 35; internal pitch/origin unproven | M16A2-related 25m/300m | mechanical applicability unproven | Baker `ST-M16A2R` / face-005 | proven different scale; `HOLD` |
 | `mfam_10m_boresight_offset` — 10m boresight/offset | separately manufactured 10m target; exact symbol geometry incomplete | 10m device/mount-specific aim/strike offset | exact optic/laser/mount required | Army 10m form / face-035 | issuer evidence; `EVIDENCE_ONLY` |
@@ -126,20 +126,22 @@ Scale Sweep #6 applied the model across all 35 known physical faces in one batch
 
 Scale Sweep #7 applied the Founder lock **PRINTER AUTHORITY IS AUTHORITY** to the remaining Standard M4 batch. Rite `9125`, National `23075`, Qualification `M4 Carbine`, Speedwell `DODM4`, Action `M4 CARBINE`, and the Army-issued M4 face now preserve their exact printer/issuer identities while using runtime UGO to prove conformance and orientation against the already-governed Standard M4 geometry. No new evidence artifact, family authority package, product-specific zeroing implementation, or universal road was created.
 
+Authority-floor Sweep #8 processed all 18 remaining faces together. It governed the already-preserved Army M16A4 mechanical/procedure branch once and unlocked GunFun `32110` and `32120` M16A4 reverse faces through the same family UGO and universal road. The remaining 16 faces are represented by nine required `rootAuthorityGaps`; redundant printer-identity, carrier-size, ink, and repeated family-fact gates are prohibited at registry load.
+
 Candidate-family placement still never grants execution by itself. Printer authority establishes product identity; UGO establishes the representation-to-family spatial mapping and orientation; applicable family mechanics establish the executable branch.
 
 The completed industry-wide authorization sweep applies the existing evidence ledger without starting another product investigation:
 
 | Disposition | Result |
 |---|---:|
-| `AUTHORIZED NOW` — new executable bindings | 6 |
-| `ALREADY AUTHORIZED` — executable bindings | 12 |
-| `EXECUTABLE` — physical product faces | 17 |
-| `TRUE AUTHORITY GAP` — physical product faces | 18 |
+| `AUTHORIZED NOW` — new executable bindings | 2 |
+| `ALREADY AUTHORIZED` — executable bindings | 18 |
+| `EXECUTABLE` — physical product faces | 19 |
+| `TRUE AUTHORITY GAP` — physical product faces | 16 |
 | `TOTAL` — physical product faces | 35 |
-| Held faces with already-authorized reusable geometry | 5 |
+| Held faces with already-authorized reusable geometry | 3 |
 
-Thirteen held faces are assigned to candidate families; five remain unassigned pending the minimum fact required for truthful placement. Every remaining HOLD is a true execution gap in identity, UGO, family procedure/completion, mechanics, or course authority—not a repeated demand to independently prove a printer's own statement.
+Eleven held faces are assigned to candidate families; five remain unassigned pending the minimum fact required for truthful placement. The registry groups all 16 exactly once under nine reusable `rootAuthorityGaps`. It will not load if a HOLD is left as ungrouped face-level paperwork.
 
 The three geometry-authorized Modern MOA holds are Baker `ST-Uni25mMOA` front (`face-001`) and the two National `23112` representations (`face-011`, `face-012`). Their geometry is reusable, but their printed procedure requires true-distance confirmation that the current 25m-only universal-road branch cannot truthfully provide. This is one family-level completion hold, not three product-specific zeroing projects.
 
@@ -154,7 +156,7 @@ Backend admission exposes four distinct outcomes:
 
 Known holds use `THIS TARGET IS KNOWN` and name the unresolved fact. They do not tell a shooter to take another photograph unless the actual registration decision proves that photograph coverage failed.
 
-The registry exposes 18 executable M/FAM bindings: ten Standard M16A2/A3 physical faces, seven Standard M4/M4A1 physical faces, and one protected modern reference. The exact machine-readable list is in `mfam_family_authority.json`; every binding enters `sczn3-governed-zeroing-road-v1`.
+The registry exposes 20 executable M/FAM bindings: ten Standard M16A2/A3 physical faces, nine Standard M16A4/M4 physical faces, and one protected modern reference. The exact machine-readable list is in `mfam_family_authority.json`; every binding enters `sczn3-governed-zeroing-road-v1`.
 
 Every other product remains cataloged as `HOLD`, `EVIDENCE_ONLY`, or `UNPROVEN`. Candidate-family placement grants nothing until exact representation-to-UGO conformance, orientation, and the applicable equipment branch are proven.
 
@@ -200,6 +202,7 @@ The M16A2 rear elevation drum remains a setup/finalization control:
 - Standard M16A2/A3 Scale Proof 01: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_SCALE_PROOF_01_STANDARD_M16A2_A3.md`
 - Full-catalog Scale Sweep 06: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-06/M_FAM_SCALE_SWEEP_06_BATCH_ADMISSION.md`
 - Printer-authority Scale Sweep 07: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-sweep-07/M_FAM_SCALE_SWEEP_07_PRINTER_AUTHORITY_LOCK.md`
+- Authority-floor Sweep 08: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/authority-floor-sweep-08/M_FAM_AUTHORITY_FLOOR_SWEEP_08.md`
 - Source ledger: `docs/authority-evidence/mfam/industry-sweep-2026-09-06/EVIDENCE_LEDGER.md`
 
 ## Current scale boundary

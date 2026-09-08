@@ -1,5 +1,7 @@
 # M/FAM Hold-Clearance Plan
 
+> **Historical planning record.** Current disposition: `authority-floor-sweep-08/M_FAM_AUTHORITY_FLOOR_SWEEP_08.md` — **19 executable / 16 true authority gaps / 35 faces**.
+
 Date: 2026-09-06; updated by Scale Sweep #7 on 2026-09-07
 Authority floor: M/FAM inventory and family authority registry version `2026-09-07.11`
 Purpose: clear shared authority by governed family without collapsing product identity or copying the universal zeroing road

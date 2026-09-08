@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-07.11",
+  "version": "2026-09-07.12",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -9,7 +9,7 @@
     "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
     "path": "registries/mfam_family_conformance.json",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
-    "scaleProofId": "MFAM-SCALE-SWEEP-07-PRINTER-AUTHORITY-LOCK"
+    "scaleProofId": "MFAM-AUTHORITY-FLOOR-SWEEP-08"
   },
   "classificationVocabulary": [
     "EXACTLY_THE_SAME",
@@ -47,7 +47,7 @@
       "geometryCatalogRecords": 23,
       "procedureCatalogRecords": 14,
       "candidateGovernedFamilies": 9,
-      "runtimeBindings": 18
+      "runtimeBindings": 20
     }
   },
   "authorizationSweep": {
@@ -56,17 +56,28 @@
     "holdClearancePlanPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/M_FAM_HOLD_CLEARANCE_PLAN.md",
     "dispositions": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"],
     "counts": {
-      "authorizedNowRuntimeBindings": 6,
-      "alreadyAuthorizedRuntimeBindings": 12,
-      "alreadyAuthorizedPhysicalFaces": 17,
-      "heldPhysicalFaces": 18,
-      "knownHeldFacesWithAuthorizedGeometry": 5,
-      "heldFacesAssignedToCandidateFamily": 13,
+      "authorizedNowRuntimeBindings": 2,
+      "alreadyAuthorizedRuntimeBindings": 18,
+      "alreadyAuthorizedPhysicalFaces": 19,
+      "heldPhysicalFaces": 16,
+      "knownHeldFacesWithAuthorizedGeometry": 3,
+      "heldFacesAssignedToCandidateFamily": 11,
       "heldFacesUnassigned": 5,
       "candidateFamilies": 9
     },
-    "decision": "The Founder printer-authority lock removes six redundant-evidence HOLDs in one batch. Rite 9125 M4, National 23075 M4, Qualification M4, Speedwell DODM4 M4, Action M4, and the Army-issued M4/M4A1 branch preserve exact printer identity, prove mapping/orientation through one family UGO pattern, and inherit the governed Standard M4 family. Eighteen faces retain only true UGO, mechanical, procedure, course, or completion authority gaps."
+    "decision": "One authority-floor sweep grouped every remaining face by reusable root cause. The preserved Army authority closes the shared M16A4 mechanical/procedure branch once, unlocking both GunFun reverse faces through the existing Standard M16A4/M4 family UGO and universal zeroing road. Sixteen faces remain held by nine explicit root authority gaps; redundant printer-identity, carrier-size, ink, and repeated family-fact gates are prohibited."
   },
+  "rootAuthorityGaps": [
+    {"gapId":"MFAM-ROOT-GAP-MODERN-TRUE-DISTANCE-COMPLETION-v1","faceIds":["face-001","face-009","face-011","face-012","face-023","face-034"],"category":"COMPLETION_AUTHORITY","sharedMissingAuthority":"A governed true-distance confirmation/completion branch for Modern Universal-MOA/A8 faces and the active equipment configuration.","whyUGOCannotExecute":"UGO can prove image geometry and orientation, but cannot convert a 25-meter proxy result into a truthfully confirmed true-distance zero.","redundantGatesRemoved":["publisher identity re-proof","family geometry re-proof when runtime UGO passes","paper/ink/branding comparisons"]},
+    {"gapId":"MFAM-ROOT-GAP-UNKNOWN-REVERSE-FACE-v1","faceIds":["face-002"],"category":"PRODUCT_FACE_IDENTITY","sharedMissingAuthority":"The printer proves a two-sided product but the preserved evidence does not identify the reverse face's printed content or purpose.","whyUGOCannotExecute":"UGO cannot select a geometry family until the printer's second physical face is identified.","redundantGatesRemoved":[]},
+    {"gapId":"MFAM-ROOT-GAP-M16A2R-UGO-SCALE-v1","faceIds":["face-005"],"category":"GEOMETRY_AUTHORITY","sharedMissingAuthority":"Operative grid scale and aim/origin mapping for the 23 x 35 enlarged ST-M16A2R face.","whyUGOCannotExecute":"The printer proves product identity and carrier size, but the enlarged operative geometry is not the Standard Letter-face geometry and has no governed UGO mapping.","redundantGatesRemoved":["publisher identity re-proof","M16A2 mechanics re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-ANGULAR-OPTIC-UGO-v1","faceIds":["face-008","face-010"],"category":"GEOMETRY_AND_EQUIPMENT_AUTHORITY","sharedMissingAuthority":"A governed angular-grid UGO contract plus the exact active optic adjustment branch for True-MOA and True-MIL faces.","whyUGOCannotExecute":"Printer authority establishes the products and purpose; it does not supply SCZN3's canonical source-to-angular-coordinate transform or select the shooter's optic mechanics.","redundantGatesRemoved":["publisher product/purpose re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-QUALIFICATION-COURSE-v1","faceIds":["face-015","face-030"],"category":"COURSE_EXECUTION_AUTHORITY","sharedMissingAuthority":"Course-specific subface geometry, scoring, procedure, and completion authority.","whyUGOCannotExecute":"These are qualification-course products, not interchangeable zeroing faces; the universal zeroing road cannot invent course scoring or completion.","redundantGatesRemoved":["printer product/purpose re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-GENERIC-M16-FAMILY-DISPATCH-v1","faceIds":["face-022"],"category":"EQUIPMENT_FAMILY_DISPATCH","sharedMissingAuthority":"A governed rule that resolves the printer's generic M16 face to the correct M16 generation/equipment branch after UGO.","whyUGOCannotExecute":"UGO can classify geometry, but generic 'M16' printer language does not by itself select M16A1, M16A2/A3, or M16A4 mechanics.","redundantGatesRemoved":["publisher identity re-proof","two-sided product re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-M68-CONFIGURATION-v1","faceIds":["face-024"],"category":"DEVICE_CONFIGURATION_AUTHORITY","sharedMissingAuthority":"The exact M68 optic/mount branch, operative aim/offset mapping, and governed registration package.","whyUGOCannotExecute":"The product is known, but UGO cannot choose a device/mount offset or mechanics that the evidence does not identify.","redundantGatesRemoved":["publisher product/purpose re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-M16A1-FAMILY-v1","faceIds":["face-031"],"category":"FAMILY_AUTHORITY","sharedMissingAuthority":"A complete canonical M16A1 face registration and confirmation package tied to the 25m-to-250m procedure.","whyUGOCannotExecute":"Army evidence establishes identity, purpose, aim, and basic click displacement, but the current corpus lacks the executable face mapping and confirmation contract.","redundantGatesRemoved":["Army identity/procedure re-proof"]},
+    {"gapId":"MFAM-ROOT-GAP-10M-DEVICE-OFFSET-v1","faceIds":["face-035"],"category":"DEVICE_OFFSET_AUTHORITY","sharedMissingAuthority":"Complete issued symbol geometry and configuration-specific optic/laser/mount offset branches.","whyUGOCannotExecute":"This is a 10-meter boresight capability; UGO cannot infer device offsets or treat it as the 25-meter live-fire zero road.","redundantGatesRemoved":["issuer identity and 10-meter purpose re-proof"]}
+  ],
   "scaleProofs": [
     {
       "proofId": "MFAM-SCALE-PROOF-01-STANDARD-M16A2-A3",
@@ -346,6 +357,51 @@
       },
       "familyLeverage": 7.0,
       "decision": "Printer or issuer authority establishes the six product/face identities and their M4 purpose. One shared family UGO mapping pattern proves each submitted photo's geometry and orientation at runtime; all six then inherit the existing Standard M4 family procedure, M4/M4A1 mechanical branch, confirmation authority, and universal zeroing road. The two remaining family faces are held only because M16A4 mechanics are not governed."
+    },
+    {
+      "proofId": "MFAM-AUTHORITY-FLOOR-SWEEP-08",
+      "observedAt": "2026-09-07",
+      "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/authority-floor-sweep-08/M_FAM_AUTHORITY_FLOOR_SWEEP_08.md",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "candidateFaceIds": ["face-004", "face-007", "face-014", "face-017", "face-019", "face-021", "face-026", "face-028", "face-033"],
+      "investigatedFaceIds": ["face-026", "face-028"],
+      "admittedTargetProfileIds": [
+        "baker_m4_25m_zero", "rite_9125_m4_25m_zero", "national_23075_m4_25m_zero",
+        "qualification_m4_25m_zero", "speedwell_dodm4_m4_25m_zero", "action_m4_carbine_25m_zero",
+        "army_nsn_6920_01_395_2949_m4_25m_zero", "gunfun_32110_m16a4_red_25m_zero",
+        "gunfun_32120_m16a4_green_25m_zero"
+      ],
+      "newlyAdmittedTargetProfileIds": ["gunfun_32110_m16a4_red_25m_zero", "gunfun_32120_m16a4_green_25m_zero"],
+      "holdReasons": [],
+      "counts": {
+        "candidateFaces": 9,
+        "candidatesInvestigated": 2,
+        "startingExecutableBindings": 7,
+        "alreadyExecutable": 7,
+        "familyAuthorityPackagesCreated": 0,
+        "newAuthoritativeEvidenceArtifactsAcquired": 0,
+        "reusableEvidenceArtifacts": 1,
+        "newRegistrationOrientationPackages": 2,
+        "newlyExecutableThroughInheritance": 2,
+        "stillHold": 0,
+        "totalExecutableBindingsAfterProof": 9,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0
+      },
+      "batchSummary": {
+        "knownPhysicalFacesProcessed": 35,
+        "startingExecutableBindings": 18,
+        "newlyAdmittedTargetProfileIds": ["gunfun_32110_m16a4_red_25m_zero", "gunfun_32120_m16a4_green_25m_zero"],
+        "newlyExecutableThroughInheritance": 2,
+        "remainingHeldPhysicalFaces": 16,
+        "endingExecutableBindings": 20,
+        "endingExecutablePhysicalFaces": 19,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0
+      },
+      "familyLeverage": 9.0,
+      "decision": "The 18-face batch collapsed to nine root authority gaps. Existing Army authority governs the M16A4 iron-sight branch once; GunFun 32110 red and 32120 green reverse faces preserve printer identity, use the shared 14 x 16 family UGO, and inherit the same family and universal road. No face-level mechanical package or zeroing road was created."
     }
   ],
   "families": [
@@ -372,7 +428,7 @@
       "name": "Legacy standard M16A4/M4 25-meter / 300-meter zero face",
       "status": "GOVERNED",
       "geometry": {"referenceSheetInches": [8.5, 11.0], "sheetCarrierRule": "outer paper dimensions are product facts; the governed family geometry is the physical 14 x 16 grid, 1.3 cm pitch, origin, and aim relationship", "rows": 16, "columns": 14, "square": {"value": 1.3, "unit": "CM"}, "uniform": true, "gridOriginToAim": {"columns": 7, "rows": 8}, "status": "GOVERNED"},
-      "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 300, "weaponFamilies": ["M4", "M4A1"], "setup": "set rear elevation to 6/3; do not use Z", "finalization": "after the governed 25-meter zero is confirmed, the standard M4 zero is established for 300 meters", "status": "GOVERNED_M4_BRANCH_ONLY"},
+      "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 300, "weaponFamilies": ["M16A4", "M4", "M4A1"], "branchRule": "select the exact governed equipment branch; M4/M4A1 uses 6/3 without Z, while M16A4 uses 6/3 plus two clockwise clicks to Z and returns two counterclockwise clicks after confirmation", "status": "GOVERNED_PER_EQUIPMENT_BRANCH"},
       "registration": {"status": "GOVERNED_PER_EXACT_REPRESENTATION", "orientationLandmarks": ["printed M4 title", "numbered 14 x 16 axes", "asymmetric sight diagrams", "center silhouette and 300 METERS label", "instructional footer"]},
       "sourceIds": ["ARMY-FM-3-22-9-2011", "BAKER-ST-M16A2-M4-PRODUCT"]
     },
@@ -509,12 +565,21 @@
         "authorityId": "MFAM-STANDARD-M16A4-M4-25M-300M-PROCEDURE-v1",
         "zeroDistance": {"value": 25, "unit": "M"},
         "finalDistance": {"value": 300, "unit": "M"},
-        "setup": "set the M4/M4A1 rear elevation drum to 6/3; do not use Z",
-        "finalization": "after the governed 25-meter zero is confirmed, the standard M4/M4A1 zero is established for 300 meters",
-        "branchScope": "M4/M4A1 detachable-carrying-handle rear sight and standard four-notch front sight post only; M16A4 remains held"
+        "equipmentBranches": {
+          "M4_M4A1_DCH_FSP": {
+            "setup": "set the rear elevation drum to 6/3; do not use Z",
+            "finalization": "after the governed 25-meter zero is confirmed, the standard zero is established for 300 meters"
+          },
+          "M16A4_STANDARD_IRON": {
+            "setup": "set the rear elevation drum to 6/3, then turn two clicks CLOCKWISE to Z",
+            "finalization": "after the governed 25-meter zero is confirmed, turn two clicks COUNTERCLOCKWISE back to 6/3 for the 300-meter setting"
+          }
+        },
+        "branchScope": "M4/M4A1 DCH/FSP and M16A4 standard-iron branches are separately selected; family geometry is shared but mechanics and setup are never cross-applied"
       },
       "mechanicalAuthorityIds": [
-        "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011"
+        "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011",
+        "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
       ],
       "confirmationAuthority": {
         "authorityId": "MFAM-STANDARD-M16A4-M4-CONFIRMATION-v1",
@@ -582,6 +647,17 @@
         {"axis": "elevation", "control": "front sight post", "movementPerClick": 1.25, "unit": "MOA"},
         {"axis": "elevation", "control": "rear elevation", "movementPerClick": 0.5, "unit": "MOA"},
         {"axis": "windage", "control": "rear windage", "movementPerClick": 0.5, "unit": "MOA"}
+      ],
+      "sourceIds": ["ARMY-FM-3-22-9-2011"]
+    },
+    {
+      "mechanicalAuthorityId": "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "status": "GOVERNED",
+      "equipmentConfiguration": {"weapon": "M16A4", "sight": "standard iron sight with front sight post, rear windage knob, and 6/3 rear elevation drum"},
+      "controls": [
+        {"axis": "elevation", "control": "front sight post", "movementPerClick": 1.25, "unit": "MOA", "up": "CLOCKWISE viewed from above", "down": "COUNTERCLOCKWISE viewed from above"},
+        {"axis": "windage", "control": "rear windage knob", "movementPerClick": 0.5, "unit": "MOA", "right": "CLOCKWISE viewed squarely at right-side knob face", "left": "COUNTERCLOCKWISE viewed squarely at right-side knob face"},
+        {"axis": "configuration", "control": "rear elevation drum", "movementPerClick": 0.5, "unit": "MOA", "purpose": "6/3 plus two-click Z setup and two-click return after confirmation only"}
       ],
       "sourceIds": ["ARMY-FM-3-22-9-2011"]
     },
@@ -1045,23 +1121,23 @@
     {
       "productId": "gunfun:32110:side-a",
       "publisherOrIssuer": "GunFun Shooting Targets",
-      "exactName": "M16 A2 and A4 Zeroing Target Red — Side A",
+      "exactName": "M16 A2 and A4 Zeroing Target Red",
       "identifiers": {"sku": "32110"},
       "generationOrApplication": "M16A2/A4 zeroing",
-      "face": {"side": "A", "printedTitle": "M16 A2 and A4 Zeroing Target"},
+      "face": {"side": "M16A2 red face and M16A4 red reverse", "printedTitle": "M16 A2 and A4 Zeroing Target"},
       "dimensions": {"width": 9.5, "height": 12.0, "unit": "IN"},
       "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true},
       "aim": {"reference": "center crosshairs", "gridOrigin": {"columnsToAim": 9, "rowsToAim": 10}},
       "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "family governed"},
-      "applicableEquipment": ["M16A2 standard iron sights"],
-      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
-      "registration": {"status": "GOVERNED", "packageId": "gunfun-32110-m16a2-red-photo-registration-v1", "orientationProofRequired": true},
+      "applicableEquipment": ["M16A2 standard iron sights", "M16A4 standard iron sights"],
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011", "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageIds": ["gunfun-32110-m16a2-red-photo-registration-v1", "gunfun-32110-m16a4-red-family-ugo-registration-v1"], "orientationProofRequired": true},
       "candidateFamilyId": "mfam_m16a2_a3_standard_25m_300m",
       "mappingClassification": "REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY",
       "evidenceQuality": "PUBLISHER_PRIMARY",
       "runtimeStatus": "GOVERNED",
       "sourceIds": ["GUNFUN-32110", "P-OS-12-PUBLISHER-SEED", "SCZN3-MFAM-SCALE-PROOF-05"],
-      "notes": ["Red ink and 9.5 x 12 carrier are recorded representation facts. The operative M16A2 face materially conforms to the already-admitted green sibling and inherits family authority; the reverse face is outside this binding."]
+      "notes": ["Red ink and the 9.5 x 12 carrier remain representation facts. Each exact face retains identity and inherits only its applicable governed family/equipment branch after UGO."]
     },
     {
       "productId": "gunfun:32120:two-sided",
@@ -1069,20 +1145,20 @@
       "exactName": "M16 A2 and A4 Zeroing Target Green",
       "identifiers": {"sku": "32120"},
       "generationOrApplication": "M16A2/A4 zeroing",
-      "face": {"side": "M16A2 green face governed; reverse M16A4 face remains held", "printedTitle": "M16 A2 Zeroing Target"},
+      "face": {"side": "M16A2 green face and M16A4 green reverse", "printedTitle": "M16 A2 and A4 Zeroing Target"},
       "dimensions": {"width": 9.5, "height": 12.0, "unit": "IN"},
       "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "scope": "M16A2 green face"},
       "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 9, "rows": 10}, "scope": "M16A2 green face"},
       "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "governed Standard M16A2/A3 family confirmation"},
       "applicableEquipment": ["M16A2", "M16A4"],
-      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
-      "registration": {"status": "GOVERNED", "packageId": "gunfun-32120-m16a2-green-photo-registration-v1", "orientationProofRequired": true, "scope": "M16A2 green face only"},
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011", "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageIds": ["gunfun-32120-m16a2-green-photo-registration-v1", "gunfun-32120-m16a4-green-family-ugo-registration-v1"], "orientationProofRequired": true, "scope": "face-specific M16A2 and M16A4 bindings"},
       "candidateFamilyId": null,
       "mappingClassification": "REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY",
       "evidenceQuality": "PUBLISHER_PRIMARY",
       "runtimeStatus": "GOVERNED",
       "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"],
-      "notes": ["Only the exact M16A2 green face is admitted. Page-normalized measurements prove the common family pitch; the green wedges are representation ink, not new geometry."]
+      "notes": ["Both exact faces are admitted through distinct equipment branches. Page-normalized measurements and runtime UGO preserve family geometry; green ink remains representation metadata."]
     },
     {
       "productId": "gunfun:82020:m16-zero",
@@ -1598,6 +1674,46 @@
         "sourceAssetSha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6",
         "authorityScope": "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY",
         "productIdentityAuthority": {"publisher": "Headquarters, Department of the Army", "faceId": "face-033", "sourceIds": ["ARMY-FM-3-22-9-2011"]}
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "gunfun_32110_m16a4_red_25m_zero",
+      "productId": "gunfun:32110:side-a",
+      "inventoryFaceId": "face-026",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "gunfun-32110-m16a4-red-family-ugo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1", "imageWidth": 773, "imageHeight": 1000,
+        "gridLeftPx": 68.0, "gridTopPx": 122.0, "gridRightPx": 705.0, "gridBottomPx": 850.0,
+        "gridSquareXPx": 45.5, "gridSquareYPx": 45.5,
+        "aimCoordinate": {"xPercent": 50.0, "yPercent": 48.6},
+        "aimAuthorityId": "MFAM-STANDARD-M16A4-M4-CENTER-AIM-v1",
+        "sourceAssetSha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6",
+        "authorityScope": "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY",
+        "productIdentityAuthority": {"publisher": "GunFun Shooting Targets", "faceId": "face-026", "sourceIds": ["GUNFUN-32110", "P-OS-12-PUBLISHER-SEED"]}
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "gunfun_32120_m16a4_green_25m_zero",
+      "productId": "gunfun:32120:two-sided",
+      "inventoryFaceId": "face-028",
+      "familyId": "mfam_m16a4_m4_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "gunfun-32120-m16a4-green-family-ugo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "MFAM_STANDARD_M4_FAMILY_UGO_TEMPLATE_v1", "imageWidth": 773, "imageHeight": 1000,
+        "gridLeftPx": 68.0, "gridTopPx": 122.0, "gridRightPx": 705.0, "gridBottomPx": 850.0,
+        "gridSquareXPx": 45.5, "gridSquareYPx": 45.5,
+        "aimCoordinate": {"xPercent": 50.0, "yPercent": 48.6},
+        "aimAuthorityId": "MFAM-STANDARD-M16A4-M4-CENTER-AIM-v1",
+        "sourceAssetSha256": "e92a451f19b82ca01de307ddc8ab9ab54ac2d511b8adf966497d987cc5d857b6",
+        "authorityScope": "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY",
+        "productIdentityAuthority": {"publisher": "GunFun Shooting Targets", "faceId": "face-028", "sourceIds": ["GUNFUN-32120", "P-OS-12-PUBLISHER-SEED"]}
       },
       "status": "GOVERNED"
     },

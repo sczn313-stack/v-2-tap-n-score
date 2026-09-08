@@ -1,6 +1,6 @@
 # M/FAM Face-Level Master Catalog
 
-Date: 2026-09-06; runtime bindings updated by Scale Sweep #7 on 2026-09-07
+Date: 2026-09-06; runtime bindings updated by Authority-floor Sweep #8 on 2026-09-07
 Authority source: `docs/backend/registries/mfam_inventory_audit.json`
 
 This is the human-readable audit of 35 physical faces belonging to 25 commercial/government products. Every two-sided product has two stable Face IDs even when one side remains unresolved. No unresolved faces are merged. The catalog therefore has 35 product-face representation records; the exact number of unique face designs remains `UNPROVEN` until every unresolved side is preserved and compared.
@@ -9,7 +9,7 @@ Abbreviations used below:
 
 - `M16A2-2011`: `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011`
 - `M4-2011`: `M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011`
-- `M16A4-E`: `MFAM-M16A4-IRON-EVIDENCE-2011`
+- `M16A4-2011`: `M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011`
 - `MODERN-ROWS-E`: `MFAM-MODERN-PRINTED-SIGHT-ROWS-EVIDENCE-ONLY`
 - `M68-E`: `MFAM-M68-CCO-EVIDENCE`
 - `—`: no executable authority supplied
@@ -69,9 +69,9 @@ Abbreviations used below:
 | `face-023` | `product-action-moa-25-1s`; Action; `MOA-25-1S` | single; `representation-022` | dimensions/grid/aim unproven; MOA name is not geometry | 25m claim only | M4/M16 context candidate; — | no package; modern MOA candidate; `HOLD` | Action catalog; geometry/equipment/procedure/registration unresolved |
 | `face-024` | `product-action-m68-optic`; Action; `M68 OPTIC` | single; `representation-023` | dimensions/optic geometry/aim unproven | M68 training details unproven | M68; `M68-E` evidence only | no package/family; `EVIDENCE_ONLY` | Action catalog; weapon relationship, geometry, distance, procedure unresolved |
 | `face-025` | `product-gunfun-32110`; GunFun; `32110` | A red; `representation-024` | 9.5×12 carrier; inherited 18×20 at 0.96 cm; center aim | governed Standard M16A2 25m→300m procedure | M16A2 standard iron; `M16A2-2011` | `gunfun-32110-m16a2-red-photo-registration-v1`; `GOVERNED` as `gunfun_32110_m16a2_red_25m_zero` | exact red representation + admitted green sibling conformance + Scale Proof #5; M16A4/reverse scope remains separate |
-| `face-026` | same product/ID | B / M16A4 red; `representation-025` | 9.5×12 carrier; printer-authorized M16A4 face; Standard M4-family geometry available through UGO | family procedure available | M16A4 branch held; `M16A4-E` is evidence-only | no executable package; Standard M4 family; `HOLD` | true gap: governed M16A4 mechanical authority branch |
+| `face-026` | same product/ID | B / M16A4 red; `representation-025` | 9.5×12 carrier; printer-authorized M16A4 face; Standard family geometry proven at runtime by UGO | 25m/300m M16A4 branch; 6/3 +2 to Z, return −2 after confirmation | M16A4 standard iron; `M16A4-2011` | `gunfun-32110-m16a4-red-family-ugo-registration-v1`; Standard M16A4/M4 family; `gunfun_32110_m16a4_red_25m_zero` | printer identity retained; family geometry/procedure/confirmation and universal road inherited |
 | `face-027` | `product-gunfun-32120`; GunFun; `32120` | A green; `representation-026` | 9.5×12; page-normalized 18×20 at 0.96 cm; center aim; green wedges are ink | governed Standard M16A2 25m→300m procedure | M16A2 standard iron; `M16A2-2011` | `gunfun-32120-m16a2-green-photo-registration-v1`; standard M16A2 family; `GOVERNED` as `gunfun_32120_m16a2_green_25m_zero` | GunFun primary representation + independent axis normalization + Scale Proof #4; M16A4 reverse/scope remains separate |
-| `face-028` | same product/ID | B / M16A4 green; `representation-027` | 9.5×12 carrier; printer-authorized M16A4 face; Standard M4-family geometry available through UGO | family procedure available | M16A4 branch held; `M16A4-E` is evidence-only | no executable package; Standard M4 family; `HOLD` | true gap: governed M16A4 mechanical authority branch |
+| `face-028` | same product/ID | B / M16A4 green; `representation-027` | 9.5×12 carrier; printer-authorized M16A4 face; Standard family geometry proven at runtime by UGO | 25m/300m M16A4 branch; 6/3 +2 to Z, return −2 after confirmation | M16A4 standard iron; `M16A4-2011` | `gunfun-32120-m16a4-green-family-ugo-registration-v1`; Standard M16A4/M4 family; `gunfun_32120_m16a4_green_25m_zero` | printer identity retained; family geometry/procedure/confirmation and universal road inherited |
 | `face-029` | `product-gunfun-82020`; GunFun; `82020` | single; `representation-028` | 14×20 carrier; 18×20 Standard M16A2 operative grid at 0.96 cm; center aim | governed Standard M16A2 25m→300m procedure | M16A2 standard iron; `M16A2-2011`; M16A4 excluded | `gunfun-82020-m16a2-photo-registration-v1`; Standard M16A2 family; `GOVERNED` as `gunfun_82020_m16a2_25m_zero` | exact GunFun representation + UGO conformance + Scale Sweep #6; no unresolved M16A2 facts |
 | `face-030` | `product-gunfun-22460`; GunFun; `22460` | single composite; `representation-029` | 23×35; qualification regions + embedded subface; transform unproven | Navy M4 qualification | course-specific; — | no package; qualification family; `EVIDENCE_ONLY` | GunFun + P-OS; course geometry/subface transform/mechanics unresolved |
 

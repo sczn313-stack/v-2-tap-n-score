@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-target-family-conformance-v1",
   "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
-  "version": "2026-09-07.6",
+  "version": "2026-09-07.7",
   "status": "governed",
   "authorityRegistryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
   "admissionPolicy": {
@@ -80,11 +80,11 @@
         {"gateId": "physical_geometry_pitch", "name": "Physical geometry and pitch", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Accept the printer's M4 face identity and use runtime UGO to prove mapping to the governed 14 x 16 / 1.3 cm family geometry; do not independently re-measure printer facts.", "failureCode": "family_geometry_conformance_unverified"},
         {"gateId": "aim_reference", "name": "Aim reference", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the center crosshairs/white-dot aim at 7 columns and 8 rows from the grid origin.", "failureCode": "family_aim_reference_unverified"},
         {"gateId": "representation_landmarks", "name": "Printer-authorized representation identity", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Preserve the printer-authorized product/face identity and provenance. The family UGO template is geometry/orientation machinery, never product identity substitution.", "failureCode": "target_representation_unverified"},
-        {"gateId": "procedure", "name": "Standard M4 25m/300m procedure", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the 25-meter M4/M4A1 procedure with 6/3 setup and no Z; the family owns the procedure once.", "failureCode": "family_procedure_conformance_unverified"},
-        {"gateId": "mechanical_applicability", "name": "Applicable governed mechanical branch", "scope": "EQUIPMENT_BRANCH", "required": true, "proofRule": "Prove M4/M4A1 detachable-carrying-handle rear and standard four-notch front sight applicability. M16A4 does not inherit this branch.", "failureCode": "mechanical_applicability_unverified"},
+        {"gateId": "procedure", "name": "Standard M16A4/M4 25m/300m procedure", "scope": "FACE_CONFORMANCE", "required": true, "proofRule": "Prove the 25-meter/300-meter family purpose, then select the governed equipment branch: M4/M4A1 uses 6/3 with no Z; M16A4 uses 6/3 plus two CLOCKWISE clicks to Z and returns two COUNTERCLOCKWISE clicks after confirmation.", "failureCode": "family_procedure_conformance_unverified"},
+        {"gateId": "mechanical_applicability", "name": "Applicable governed mechanical branch", "scope": "EQUIPMENT_BRANCH", "required": true, "proofRule": "Resolve the active equipment to either the governed M4/M4A1 DCH/FSP branch or the governed M16A4 standard-iron branch. Shared geometry never permits cross-application of mechanics.", "failureCode": "mechanical_applicability_unverified"},
         {"gateId": "registration_orientation", "name": "Fail-closed family UGO registration and orientation", "scope": "REPRESENTATION_SPECIFIC", "required": true, "proofRule": "Provide a Target Profile registration package that keeps printer identity distinct while proving source-photo mapping, TOP/BOTTOM/LEFT/RIGHT orientation, and source-evidence reconciliation against the governed family geometry.", "failureCode": "target_registration_unverified"}
       ],
-      "admissionRule": "printer-authorized M4 face + runtime family UGO + explicit Target Profile binding + governed M4/M4A1 DCH/FSP branch"
+      "admissionRule": "printer-authorized M16A4/M4 face + runtime family UGO + explicit Target Profile binding + one exact governed equipment branch"
     }
   ],
   "reusableEvidencePackages": [
@@ -206,7 +206,8 @@
         "center aim at 7 columns and 8 rows from grid origin",
         "M4/M4A1 25-meter to 300-meter procedure uses 6/3 and not Z",
         "M4/M4A1 detachable-carrying-handle rear plus standard four-notch front sight uses the existing governed 1.5 MOA elevation and 0.75 MOA windage branch",
-        "M16A4 mechanical execution remains outside this package"
+        "M16A4 standard iron uses 1.25 MOA front-sight elevation and 0.5 MOA rear windage",
+        "M16A4 setup is 6/3 plus two clockwise clicks to Z; after confirmed zero it returns two counterclockwise clicks to 6/3"
       ],
       "sourceIds": ["ARMY-FM-3-22-9-2011", "BAKER-ST-M16A2-M4-PRODUCT", "SCZN3-M4-MECHANICS"]
     },
@@ -476,6 +477,28 @@
         {"gateId":"mechanical_applicability","status":"PROVEN","basis":"Execution is restricted to the governed M4/M4A1 DCH/FSP branch; M16A4 remains unavailable.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
         {"gateId":"registration_orientation","status":"PROVEN","basis":"army-nsn-6920-01-395-2949-m4-family-ugo-registration-v1 requires fail-closed family mapping, orientation, and source reconciliation.","sourceIds":["ARMY-FM-3-22-9-2011"]}
       ], "disposition":"ADMITTED", "targetProfileId":"army_nsn_6920_01_395_2949_m4_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId":"face-026", "productId":"product-gunfun-32110", "representationId":"representation-025-gunfun-32110-b", "contractId":"MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence":[
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"GunFun authoritatively identifies its 32110 M16A4 reverse; runtime UGO must prove mapping to the governed 14 x 16 family geometry.","sourceIds":["GUNFUN-32110"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the 7-column / 8-row center aim only after mapping passes.","sourceIds":["GUNFUN-32110"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Printer authority owns the exact red M16A4 reverse identity; color and carrier size are representation metadata.","sourceIds":["GUNFUN-32110"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"The printer identifies M16A4 zeroing purpose; Army authority supplies the family M16A4 6/3-Z branch once.","sourceIds":["GUNFUN-32110","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The binding is restricted to the governed M16A4 standard-iron 1.25/0.5 MOA branch.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"gunfun-32110-m16a4-red-family-ugo-registration-v1 preserves printer identity and requires fail-closed UGO mapping, orientation, and source reconciliation.","sourceIds":["GUNFUN-32110"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"gunfun_32110_m16a4_red_25m_zero", "irreducibleMissingFacts":[]
+    },
+    {
+      "faceId":"face-028", "productId":"product-gunfun-32120", "representationId":"representation-027-gunfun-32120-b", "contractId":"MFAM-STANDARD-M16A4-M4-FAMILY-CONFORMANCE-v1",
+      "gateEvidence":[
+        {"gateId":"physical_geometry_pitch","status":"PROVEN","basis":"GunFun authoritatively identifies its 32120 M16A4 reverse; runtime UGO must prove mapping to the governed 14 x 16 family geometry.","sourceIds":["GUNFUN-32120"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"aim_reference","status":"PROVEN","basis":"The governed family UGO supplies the 7-column / 8-row center aim only after mapping passes.","sourceIds":["GUNFUN-32120"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"representation_landmarks","status":"PROVEN","basis":"Printer authority owns the exact green M16A4 reverse identity; color and carrier size are representation metadata.","sourceIds":["GUNFUN-32120"]},
+        {"gateId":"procedure","status":"PROVEN","basis":"The printer identifies M16A4 zeroing purpose; Army authority supplies the family M16A4 6/3-Z branch once.","sourceIds":["GUNFUN-32120","ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"mechanical_applicability","status":"PROVEN","basis":"The binding is restricted to the governed M16A4 standard-iron 1.25/0.5 MOA branch.","sourceIds":["ARMY-FM-3-22-9-2011"],"evidencePackageIds":["MFAM-STANDARD-M16A4-M4-FAMILY-FACTS-v1"]},
+        {"gateId":"registration_orientation","status":"PROVEN","basis":"gunfun-32120-m16a4-green-family-ugo-registration-v1 preserves printer identity and requires fail-closed UGO mapping, orientation, and source reconciliation.","sourceIds":["GUNFUN-32120"]}
+      ], "disposition":"ADMITTED", "targetProfileId":"gunfun_32120_m16a4_green_25m_zero", "irreducibleMissingFacts":[]
     }
   ],
   "scaleProof": {

@@ -41,6 +41,8 @@ assert.deepEqual(generatedProfileIds, [
   ,"speedwell_dodm4_m4_25m_zero"
   ,"action_m4_carbine_25m_zero"
   ,"army_nsn_6920_01_395_2949_m4_25m_zero"
+  ,"gunfun_32110_m16a4_red_25m_zero"
+  ,"gunfun_32120_m16a4_green_25m_zero"
 ]);
 const speedwell = resolveMFAMFamilyTargetProfile("speedwell_dodm4_m16a2_25m_zero");
 const army = resolveMFAMFamilyTargetProfile("army_nsn_6920_01_395_2949_m16a2_25m_zero");
@@ -78,6 +80,15 @@ for (const profileId of [
   assert.equal(record.familyAuthorityPackage.familyAuthorityPackageId, "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1");
   assert.equal(record.binding.mechanicalAuthorityId, "M4-IRON-DCH-FSP-ADJUSTMENT-PROFILE-2011");
   assert.equal(record.binding.canonicalRepresentationAuthority.authorityScope, "UGO_GEOMETRY_TEMPLATE_NOT_PRODUCT_IDENTITY");
+}
+for (const [profileId, faceId] of [
+  ["gunfun_32110_m16a4_red_25m_zero", "face-026"],
+  ["gunfun_32120_m16a4_green_25m_zero", "face-028"]
+]) {
+  const record = resolveMFAMFamilyTargetProfile(profileId);
+  assert.equal(record.familyAuthorityPackage.familyAuthorityPackageId, "MFAM-STANDARD-M16A4-M4-FAMILY-AUTHORITY-v1");
+  assert.equal(record.binding.mechanicalAuthorityId, "M16A4-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011");
+  assert.equal(record.binding.canonicalRepresentationAuthority.productIdentityAuthority.faceId, faceId);
 }
 
 const conformance = await loadFamilyConformanceRegistry();
