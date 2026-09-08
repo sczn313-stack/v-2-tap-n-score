@@ -72,6 +72,32 @@
     }
   });
 
+  registerStandardM16A2Profile({
+    targetProfileId: "qualification_m16a2_25m_zero",
+    targetProfileVersion: "QUALIFICATION_M16A2_25M_AUTHORITY_v1",
+    exactAsset: {
+      sha256: "c3028042b6ba600ef983a2fd1cbb035d4f05c4687f8ec54c359ea86369896290",
+      widthPx: 1500,
+      heightPx: 1967,
+      authorityId: "qualification-m16a2-photo-registration-v1",
+      authoritySource: "registered_exact_asset",
+      coordinateSystemVersion: "QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1"
+    }
+  });
+
+  registerStandardM16A2Profile({
+    targetProfileId: "gunfun_32120_m16a2_green_25m_zero",
+    targetProfileVersion: "GUNFUN_32120_M16A2_GREEN_AUTHORITY_v1",
+    exactAsset: {
+      sha256: "2be8f6e1b8e92e7ec6011042b8165314b8c83fda31a6b30f26bf44dec34859a3",
+      widthPx: 400,
+      heightPx: 480,
+      authorityId: "gunfun-32120-m16a2-green-photo-registration-v1",
+      authoritySource: "registered_exact_asset",
+      coordinateSystemVersion: "GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1"
+    }
+  });
+
   platform.registerTargetProfile({
     ...shared,
     targetProfileId: "m4_25m_zero",

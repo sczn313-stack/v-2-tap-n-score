@@ -42,6 +42,8 @@
     zeroingDefinition("m16a2-zeroing", "baker_m16a2_25m_zero", "BAKER_M16A2_25M_AUTHORITY_v1"),
     zeroingDefinition("speedwell-m16a2-zeroing", "speedwell_dodm4_m16a2_25m_zero", "SPEEDWELL_DODM4_M16A2_AUTHORITY_v1"),
     zeroingDefinition("army-m16a2-zeroing", "army_nsn_6920_01_395_2949_m16a2_25m_zero", "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1"),
+    zeroingDefinition("qualification-m16a2-zeroing", "qualification_m16a2_25m_zero", "QUALIFICATION_M16A2_25M_AUTHORITY_v1"),
+    zeroingDefinition("gunfun-32120-m16a2-zeroing", "gunfun_32120_m16a2_green_25m_zero", "GUNFUN_32120_M16A2_GREEN_AUTHORITY_v1"),
     zeroingDefinition("m4-zeroing", "m4_25m_zero", "M4_TARGET_AUTHORITY_v1_ORIGINAL"),
     {
       schemaVersion: SCHEMA,

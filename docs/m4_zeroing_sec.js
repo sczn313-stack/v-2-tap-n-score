@@ -9,7 +9,9 @@
     const zeroingAdapters = {
       baker_m16a2_25m_zero: "m16a2-zeroing",
       speedwell_dodm4_m16a2_25m_zero: "speedwell-m16a2-zeroing",
-      army_nsn_6920_01_395_2949_m16a2_25m_zero: "army-m16a2-zeroing"
+      army_nsn_6920_01_395_2949_m16a2_25m_zero: "army-m16a2-zeroing",
+      qualification_m16a2_25m_zero: "qualification-m16a2-zeroing",
+      gunfun_32120_m16a2_green_25m_zero: "gunfun-32120-m16a2-zeroing"
     };
     return zeroingAdapters[profile] || "m4-zeroing";
   }

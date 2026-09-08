@@ -49,3 +49,4 @@ Publisher pages can prove that a product exists, its claimed use, dimensions, an
 ## Family admission proof
 
 - [Scale Proof 02 - Family Admission](M_FAM_SCALE_PROOF_02_FAMILY_ADMISSION.md) preserves the six-gate `MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1` contract, the eight-face batch result, the issued-NSN evidence bridge, and the exact irreducible representation gap for every remaining HOLD.
+- [Scale Proof 04 - No Redundant Geometry](scale-proof-04/M_FAM_SCALE_PROOF_04_NO_REDUNDANT_GEOMETRY.md) preserves the Qualification NSN bridge, GunFun 32120 page-normalized conformance proof, two exact registrations, and the four remaining single representation gaps.

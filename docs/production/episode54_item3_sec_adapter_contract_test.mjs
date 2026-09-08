@@ -19,6 +19,8 @@ const expected = [
   ["m16a2-zeroing", "baker_m16a2_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
   ["speedwell-m16a2-zeroing", "speedwell_dodm4_m16a2_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
   ["army-m16a2-zeroing", "army_nsn_6920_01_395_2949_m16a2_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
+  ["qualification-m16a2-zeroing", "qualification_m16a2_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
+  ["gunfun-32120-m16a2-zeroing", "gunfun_32120_m16a2_green_25m_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
   ["baker-100yd-zeroing", "baker_st_100yd_smart_zero", "zeroingCorrection", "zeroCorrectionResult", families.ZEROING_CORRECTION, ["evidence", "measurement", "recommendation", "execution", "validation", "preservation"]],
   ["gssf", "gssf_ac_1", "gssf", "gssfPaperPenaltyResult", families.LOWEST_SCORE_WINS, ["evidence", "measurement", "execution", "validation", "preservation"]],
   ["baker-sl-st1", "baker_sl_st1_practice", "smartEvidenceCapture", "smartEvidenceResult", families.HIGHEST_SCORE_WINS, ["evidence", "measurement", "validation", "preservation"]],

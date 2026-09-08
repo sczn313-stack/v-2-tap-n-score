@@ -6,6 +6,8 @@
     M16A2_ZEROING: "m16a2-zeroing",
     SPEEDWELL_M16A2_ZEROING: "speedwell-m16a2-zeroing",
     ARMY_M16A2_ZEROING: "army-m16a2-zeroing",
+    QUALIFICATION_M16A2_ZEROING: "qualification-m16a2-zeroing",
+    GUNFUN_32120_M16A2_ZEROING: "gunfun-32120-m16a2-zeroing",
     BAKER_100YD_ZEROING: "baker-100yd-zeroing",
     BAKER_SL_ST1: "baker-sl-st1",
     GUNFUN_VITAL_DUDE: "gunfun-vital-dude-evidence",
@@ -172,6 +174,12 @@
     if (target === "army_nsn_6920_01_395_2949_m16a2_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.ARMY_M16A2_ZEROING;
     }
+    if (target === "qualification_m16a2_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
+      return ADAPTERS.QUALIFICATION_M16A2_ZEROING;
+    }
+    if (target === "gunfun_32120_m16a2_green_25m_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
+      return ADAPTERS.GUNFUN_32120_M16A2_ZEROING;
+    }
     if (target === "baker_st_100yd_smart_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.BAKER_100YD_ZEROING;
     }
@@ -226,7 +234,7 @@
   function destinationFor(session, options = {}) {
     const dispatch = resolve(session);
     const sessionId = text(session && session.sessionId);
-    if ([ADAPTERS.M4_ZEROING, ADAPTERS.M16A2_ZEROING].includes(dispatch.adapter)) {
+    if ([ADAPTERS.M4_ZEROING, ADAPTERS.M16A2_ZEROING, ADAPTERS.SPEEDWELL_M16A2_ZEROING, ADAPTERS.ARMY_M16A2_ZEROING, ADAPTERS.QUALIFICATION_M16A2_ZEROING, ADAPTERS.GUNFUN_32120_M16A2_ZEROING].includes(dispatch.adapter)) {
       const params = new URLSearchParams(options.current
         ? { v: options.version || "sec-dispatch-v1" }
         : { sessionId, v: options.version || "sec-dispatch-v1" });

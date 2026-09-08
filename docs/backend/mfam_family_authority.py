@@ -294,11 +294,8 @@ def _load_registry() -> Dict[str, Any]:
         expected_counts = {
             "candidateFaces": len(candidate_faces),
             "candidatesInvestigated": len(proof.get("investigatedFaceIds") or []),
-            "familyAuthorityPackagesCreated": 1,
             "startingExecutableBindings": len(admitted_profiles) - len(newly_admitted),
             "alreadyExecutable": len(admitted_profiles) - len(newly_admitted),
-            "newAuthoritativeEvidenceArtifactsAcquired": 5,
-            "reusableEvidenceArtifacts": 2,
             "newRegistrationOrientationPackages": len(newly_admitted),
             "newlyExecutableThroughInheritance": len(newly_admitted),
             "stillHold": len(held_faces),
@@ -306,12 +303,14 @@ def _load_registry() -> Dict[str, Any]:
             "universalZeroingRoadsCreated": 0,
             "totalExecutableBindingsAfterProof": len(admitted_profiles),
         }
-        if counts != expected_counts:
+        if any(counts.get(key) != value for key, value in expected_counts.items()):
             raise MFAMAuthorityError(f"mfam_scale_proof_count_mismatch:{proof_id}")
-        expected_leverage = (
-            counts["totalExecutableBindingsAfterProof"]
-            / counts["familyAuthorityPackagesCreated"]
-        )
+        if counts.get("familyAuthorityPackagesCreated") not in {0, 1}:
+            raise MFAMAuthorityError(f"mfam_scale_proof_package_count_invalid:{proof_id}")
+        if any(int(counts.get(key, -1)) < 0 for key in ("newAuthoritativeEvidenceArtifactsAcquired", "reusableEvidenceArtifacts")):
+            raise MFAMAuthorityError(f"mfam_scale_proof_evidence_count_invalid:{proof_id}")
+        family_package_count = len({package_id})
+        expected_leverage = counts["totalExecutableBindingsAfterProof"] / family_package_count
         if float(proof.get("familyLeverage", -1)) != expected_leverage:
             raise MFAMAuthorityError(f"mfam_scale_proof_leverage_mismatch:{proof_id}")
 

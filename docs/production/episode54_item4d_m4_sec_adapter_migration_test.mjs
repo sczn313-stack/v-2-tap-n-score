@@ -82,6 +82,20 @@ for (const inherited of [
     adapterId: "army-m16a2-zeroing",
     publisherId: "us-army",
     productId: "NSN-6920-01-395-2949-M16A2"
+  },
+  {
+    profileId: "qualification_m16a2_25m_zero",
+    profileVersion: "QUALIFICATION_M16A2_25M_AUTHORITY_v1",
+    adapterId: "qualification-m16a2-zeroing",
+    publisherId: "qualification-targets",
+    productId: "M16A2"
+  },
+  {
+    profileId: "gunfun_32120_m16a2_green_25m_zero",
+    profileVersion: "GUNFUN_32120_M16A2_GREEN_AUTHORITY_v1",
+    adapterId: "gunfun-32120-m16a2-zeroing",
+    publisherId: "gunfun",
+    productId: "32120-M16A2"
   }
 ]) {
   const inheritedPackage = {

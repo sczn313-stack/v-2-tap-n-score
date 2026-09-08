@@ -10,6 +10,9 @@ Date: 2026-09-06
 | Protected modern Universal ↔ National `23112` no-yellow face | lattice, rings, center references and table layout shown by publisher face evidence | publisher product, production-scale registration, configuration authority |
 | National `23112` no-yellow ↔ yellow-circle | physical geometry and landmarks | face representation/ink and registration variant |
 | Standard M16A2 face ↔ exact Baker standard representation | 18 × 20, 0.96 cm Army geometry and standard procedure | Baker product identity remains explicit |
+| Standard M16A2 family ↔ Qualification Targets M16A2 | exact issued NSN identifies the same governed geometry, aim, and procedure | Qualification publisher/product identity and exact registration |
+| Standard M16A2 family ↔ Speedwell / Army issued faces | issued NSN bridge identifies the same governed geometry, aim, and procedure | commercial versus issuer identity and exact registrations |
+| Standard M16A2 family ↔ GunFun `32120` green M16A2 face | independently normalized 18 × 20 grid at 0.956/0.962 cm axis pitch, center aim, same governed action | 9.5×12 carrier sheet, green wedges/branding, exact registration; M16A4 reverse remains separate |
 | All admitted zero targets | universal SCZN3 interaction and preservation road | every target/profile difference listed below |
 
 ## Proven different
@@ -28,10 +31,9 @@ Date: 2026-09-06
 ## Unproven—not “probably common”
 
 - Rite in the Rain `9125` faces versus Baker/Army standard faces.
-- Qualification Targets M16A2/M4 versus other standard products.
-- Speedwell `DODM4` versus Baker or issued production sheets.
+- Qualification Targets M4 versus other standard-M4 products.
 - Alco `AR-0` versus standard M16A2 at physical print scale.
-- GunFun red versus green and either versus a standard face.
+- GunFun `32110` red versus the governed family; its production-scale bridge remains unproven even though `32120` green now conforms.
 - Action `MOA-25-1S` and Rite `9126` versus the protected Universal geometry.
 - Army A8 production face versus the protected SCZN3 modern representation.
 - Embedded zero subfaces inside Navy/composite sheets.
@@ -44,7 +46,7 @@ What is truly common is the governed zeroing capability and, for proven products
 
 - product and face identity;
 - representation;
-- page scale, grid, aim and landmarks;
+- carrier-page dimensions, physical grid scale, aim and landmarks;
 - zero/final distance and procedure;
 - weapon/sight/optic/laser configuration;
 - per-control mechanical authority;

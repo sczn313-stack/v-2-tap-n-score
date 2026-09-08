@@ -1,7 +1,7 @@
 {
   "schemaId": "sczn3-mfam-family-authority-v1",
   "registryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
-  "version": "2026-09-07.7",
+  "version": "2026-09-07.8",
   "status": "governed",
   "observedAt": "2026-09-06",
   "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
@@ -9,7 +9,7 @@
     "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
     "path": "registries/mfam_family_conformance.json",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
-    "scaleProofId": "MFAM-SCALE-PROOF-03-EVIDENCE-TO-ADMISSIONS"
+    "scaleProofId": "MFAM-SCALE-PROOF-04-NO-REDUNDANT-GEOMETRY"
   },
   "classificationVocabulary": [
     "EXACTLY_THE_SAME",
@@ -23,7 +23,7 @@
     "UNPROVEN"
   ],
   "evidencePolicy": {
-    "governingRule": "Family membership never grants geometry, registration, procedure, configuration, mechanical authority, or runtime admission.",
+    "governingRule": "Family membership grants no authority until exact representation-to-family conformance is proven; after conformance, already-governed family geometry, aim, procedure, mechanical branch, and confirmation are inherited without redundant re-proof.",
     "unknownRule": "A missing value is null and UNPROVEN; it is never copied from a visually similar product.",
     "productRule": "A publisher product and each exact face retain independent identity even when geometry is later proven reusable.",
     "executionRule": "Only an explicit GOVERNED targetProfileBinding may enter the universal zeroing capability.",
@@ -45,7 +45,7 @@
       "geometryCatalogRecords": 23,
       "procedureCatalogRecords": 14,
       "candidateGovernedFamilies": 9,
-      "runtimeBindings": 4
+      "runtimeBindings": 6
     }
   },
   "authorizationSweep": {
@@ -55,15 +55,15 @@
     "dispositions": ["AUTHORIZED_NOW", "ALREADY_AUTHORIZED", "HOLD"],
     "counts": {
       "authorizedNowRuntimeBindings": 2,
-      "alreadyAuthorizedRuntimeBindings": 2,
-      "alreadyAuthorizedPhysicalFaces": 3,
-      "heldPhysicalFaces": 32,
+      "alreadyAuthorizedRuntimeBindings": 4,
+      "alreadyAuthorizedPhysicalFaces": 5,
+      "heldPhysicalFaces": 30,
       "knownHeldFacesWithAuthorizedGeometry": 3,
-      "heldFacesAssignedToCandidateFamily": 24,
+      "heldFacesAssignedToCandidateFamily": 22,
       "heldFacesUnassigned": 8,
       "candidateFamilies": 9
     },
-    "decision": "The Speedwell DODM4 M16A2 side and Army-issued NSN 6920-01-395-2949 M16A2 face now have exact representation/orientation packages and inherit one Standard M16A2/A3 family authority. Six candidate faces remain held at irreducible product-specific physical-conformance evidence gaps."
+    "decision": "Qualification M16A2 and GunFun 32120 green now have exact representation/orientation packages and inherit the already-solved Standard M16A2/A3 family facts. Four candidate faces remain held only at irreducible representation-to-family conformance gaps."
   },
   "scaleProofs": [
     {
@@ -149,6 +149,47 @@
       "familyLeverage": 3.0,
       "admissionLeverage": 2.0,
       "decision": "One reusable issued-NSN production-representation bridge plus two exact-face registration/orientation packages admit Speedwell and Army identities to the existing family authority and universal zeroing road. Six remaining products stay held at irreducible physical-conformance evidence gaps."
+    },
+    {
+      "proofId": "MFAM-SCALE-PROOF-04-NO-REDUNDANT-GEOMETRY",
+      "observedAt": "2026-09-07",
+      "reportPath": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-proof-04/M_FAM_SCALE_PROOF_04_NO_REDUNDANT_GEOMETRY.md",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "candidateFaceIds": ["face-003", "face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"],
+      "investigatedFaceIds": ["face-006", "face-013", "face-016", "face-018", "face-025", "face-027"],
+      "admittedTargetProfileIds": [
+        "baker_m16a2_25m_zero",
+        "speedwell_dodm4_m16a2_25m_zero",
+        "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+        "qualification_m16a2_25m_zero",
+        "gunfun_32120_m16a2_green_25m_zero"
+      ],
+      "newlyAdmittedTargetProfileIds": ["qualification_m16a2_25m_zero", "gunfun_32120_m16a2_green_25m_zero"],
+      "holdReasons": [
+        {"faceId": "face-006", "missingFacts": ["exact registration-ready front-face representation bridge to governed geometry and aim"]},
+        {"faceId": "face-013", "missingFacts": ["dimensioned representation-to-family physical-scale bridge and exact registration"]},
+        {"faceId": "face-018", "missingFacts": ["dimensioned representation-to-family physical-scale bridge and exact registration"]},
+        {"faceId": "face-025", "missingFacts": ["production-scale representation-to-family bridge and exact registration"]}
+      ],
+      "counts": {
+        "candidateFaces": 9,
+        "candidatesInvestigated": 6,
+        "familyAuthorityPackagesCreated": 0,
+        "startingExecutableBindings": 3,
+        "alreadyExecutable": 3,
+        "newAuthoritativeEvidenceArtifactsAcquired": 4,
+        "reusableEvidenceArtifacts": 2,
+        "newRegistrationOrientationPackages": 2,
+        "newlyExecutableThroughInheritance": 2,
+        "stillHold": 4,
+        "productSpecificZeroingImplementationsCreated": 0,
+        "universalZeroingRoadsCreated": 0,
+        "totalExecutableBindingsAfterProof": 5
+      },
+      "familyLeverage": 5.0,
+      "admissionLeverage": 1.0,
+      "decision": "No family fact was re-proven. Qualification is admitted by the official NSN identity bridge; GunFun 32120 green is admitted by page-normalized physical conformance. Both preserve exact representation identity and inherit one family authority and one universal road."
     }
   ],
   "families": [
@@ -165,7 +206,7 @@
       "familyId": "mfam_m16a2_a3_standard_25m_300m",
       "name": "Standard M16A2/A3 25-meter / 300-meter zero face",
       "status": "GOVERNED",
-      "geometry": {"sheetInches": [8.5, 11.0], "rows": 20, "columns": 18, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "gridOriginToAim": {"columns": 9, "rows": 10}, "status": "GOVERNED"},
+      "geometry": {"referenceSheetInches": [8.5, 11.0], "sheetCarrierRule": "publisher sheet dimensions remain product facts; family equivalence requires the same physical grid pitch/origin/aim, not the same outer paper size", "rows": 20, "columns": 18, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "gridOriginToAim": {"columns": 9, "rows": 10}, "status": "GOVERNED"},
       "procedure": {"zeroDistanceMeters": 25, "finalDistanceMeters": 300, "weaponFamilies": ["M16A2", "M16A3"], "setup": "8/3 then one click CLOCKWISE past 8/3", "finalization": "after confirmed zero, one click COUNTERCLOCKWISE back to 8/3", "status": "GOVERNED"},
       "registration": {"status": "GOVERNED", "orientationLandmarks": ["printed title", "top data block", "asymmetric instructional footer", "grid bounds", "center silhouette and 300 METERS label"]},
       "sourceIds": ["ARMY-FM-3-22-9-2011", "BAKER-ST-M16A2-FACE", "SCZN3-M16A2-REGISTRATION"]
@@ -243,7 +284,8 @@
       "universalZeroingCapabilityId": "sczn3-governed-zeroing-road-v1",
       "geometryAuthority": {
         "authorityId": "MFAM-STANDARD-M16A2-A3-096CM-18X20-GEOMETRY-v1",
-        "sheetInches": [8.5, 11.0],
+        "referenceSheetInches": [8.5, 11.0],
+        "sheetCarrierRule": "outer paper dimensions are product-specific; the governed family geometry is the physical 18 x 20 grid, 0.96 cm pitch, origin, and aim relationship",
         "columns": 18,
         "rows": 20,
         "square": {"value": 0.96, "unit": "CM"},
@@ -654,20 +696,20 @@
       "exactName": "M16A2 Paper Target",
       "identifiers": {"sku": "M16A2", "nsn": "6920-01-253-4005"},
       "generationOrApplication": "M16A2 military paper target",
-      "face": {"side": "single cataloged face", "printedTitle": null},
+      "face": {"side": "single cataloged face", "printedTitle": "25 Meter Zeroing Target M16A2"},
       "dimensions": {"width": 8.5, "height": 11.0, "unit": "IN"},
-      "grid": {"columns": 18, "rows": 20, "square": null, "uniform": true},
-      "aim": {"reference": null, "gridOrigin": null},
-      "procedure": {"zeroDistance": null, "finalDistance": null, "confirmation": null},
+      "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true},
+      "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 9, "rows": 10}},
+      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "governed Standard M16A2/A3 family confirmation"},
       "applicableEquipment": ["M16A2"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
-      "candidateFamilyId": "mfam_m16a2_a3_standard_25m_300m",
-      "mappingClassification": "UNPROVEN",
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "qualification-m16a2-photo-registration-v1", "orientationProofRequired": true},
+      "candidateFamilyId": null,
+      "mappingClassification": "IDENTITY_REGISTRATION_DIFFERENCE",
       "evidenceQuality": "PUBLISHER_PRIMARY",
-      "runtimeStatus": "HOLD",
-      "sourceIds": ["QUALIFICATION-M16A2"],
-      "notes": ["Publisher image shows an 18 x 20 face and 8/3 + 1 procedure; exact manufactured pitch remains unmeasured."]
+      "runtimeStatus": "GOVERNED",
+      "sourceIds": ["QUALIFICATION-M16A2", "ARMY-M16A2-NSN-253-4005", "SCZN3-MFAM-SCALE-PROOF-04"],
+      "notes": ["Exact publisher identity and representation remain separate; official NSN identity establishes family conformance, so common family facts are inherited once."]
     },
     {
       "productId": "qualification-targets:m4-carbine:face",
@@ -678,7 +720,7 @@
       "face": {"side": "single cataloged face", "printedTitle": null},
       "dimensions": {"width": 8.5, "height": 11.0, "unit": "IN"},
       "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
+      "aim": {"reference": "center crosshairs", "gridOrigin": {"columns": 9, "rows": 10}},
       "procedure": {"zeroDistance": null, "finalDistance": null, "confirmation": null},
       "applicableEquipment": ["M4 Carbine"],
       "mechanicalAuthorityIds": [],
@@ -709,7 +751,7 @@
       "evidenceQuality": "PUBLISHER_PRIMARY",
       "runtimeStatus": "HOLD",
       "sourceIds": ["ALCO-AR-0"],
-      "notes": ["Observed face and 8/3 instructions are M16A2-specific; broad M4/M16A4 marketing applicability does not grant those mechanics."]
+      "notes": ["Current publisher representation says AIM AT TARGET CENTER. Physical pitch and exact registration remain the only execution gap; broad M4/M16A4 marketing applicability does not grant those mechanics."]
     },
     {
       "productId": "speedwell:dodm4:two-sided",
@@ -822,20 +864,20 @@
       "exactName": "M16 A2 and A4 Zeroing Target Green",
       "identifiers": {"sku": "32120"},
       "generationOrApplication": "M16A2/A4 zeroing",
-      "face": {"side": "two-sided product", "printedTitle": null},
-      "dimensions": {"width": null, "height": null, "unit": "IN"},
-      "grid": {"columns": null, "rows": null, "square": null, "uniform": null},
-      "aim": {"reference": null, "gridOrigin": null},
-      "procedure": {"zeroDistance": null, "finalDistance": null, "confirmation": null},
+      "face": {"side": "M16A2 green face governed; reverse M16A4 face remains held", "printedTitle": "M16 A2 Zeroing Target"},
+      "dimensions": {"width": 9.5, "height": 12.0, "unit": "IN"},
+      "grid": {"columns": 18, "rows": 20, "square": {"value": 0.96, "unit": "CM"}, "uniform": true, "scope": "M16A2 green face"},
+      "aim": {"reference": "center crosshairs / center white dot", "gridOrigin": {"columns": 9, "rows": 10}, "scope": "M16A2 green face"},
+      "procedure": {"zeroDistance": {"value": 25, "unit": "M"}, "finalDistance": {"value": 300, "unit": "M"}, "confirmation": "governed Standard M16A2/A3 family confirmation"},
       "applicableEquipment": ["M16A2", "M16A4"],
-      "mechanicalAuthorityIds": [],
-      "registration": {"status": "UNPROVEN", "packageId": null, "orientationProofRequired": true},
+      "mechanicalAuthorityIds": ["M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"],
+      "registration": {"status": "GOVERNED", "packageId": "gunfun-32120-m16a2-green-photo-registration-v1", "orientationProofRequired": true, "scope": "M16A2 green face only"},
       "candidateFamilyId": null,
-      "mappingClassification": "UNPROVEN",
-      "evidenceQuality": "PRIMARY_PARTIAL",
-      "runtimeStatus": "UNPROVEN",
-      "sourceIds": ["GUNFUN-CATALOG", "P-OS-12-PUBLISHER-SEED"],
-      "notes": ["Color similarity to 32110 is not proof of identical geometry."]
+      "mappingClassification": "REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY",
+      "evidenceQuality": "PUBLISHER_PRIMARY",
+      "runtimeStatus": "GOVERNED",
+      "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"],
+      "notes": ["Only the exact M16A2 green face is admitted. Page-normalized measurements prove the common family pitch; the green wedges are representation ink, not new geometry."]
     },
     {
       "productId": "gunfun:82020:m16-zero",
@@ -1079,6 +1121,54 @@
       "status": "GOVERNED"
     },
     {
+      "targetProfileId": "qualification_m16a2_25m_zero",
+      "productId": "qualification-targets:m16a2:face",
+      "inventoryFaceId": "face-016",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "qualification-m16a2-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1",
+        "imageWidth": 1500,
+        "imageHeight": 1967,
+        "gridLeftPx": 123.0,
+        "gridTopPx": 223.5,
+        "gridRightPx": 1394.5,
+        "gridBottomPx": 1512.5,
+        "gridSquareXPx": 70.63888888888889,
+        "gridSquareYPx": 64.45,
+        "aimCoordinate": {"xPercent": 50.583333333333336, "yPercent": 44.128113879003564},
+        "aimAuthorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "sourceAssetSha256": "c3028042b6ba600ef983a2fd1cbb035d4f05c4687f8ec54c359ea86369896290"
+      },
+      "status": "GOVERNED"
+    },
+    {
+      "targetProfileId": "gunfun_32120_m16a2_green_25m_zero",
+      "productId": "gunfun:32120:two-sided",
+      "inventoryFaceId": "face-027",
+      "familyId": "mfam_m16a2_a3_standard_25m_300m",
+      "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+      "mechanicalAuthorityId": "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011",
+      "registrationPackageId": "gunfun-32120-m16a2-green-photo-registration-v1",
+      "canonicalRepresentationAuthority": {
+        "targetId": "GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1",
+        "imageWidth": 400,
+        "imageHeight": 480,
+        "gridLeftPx": 58.0,
+        "gridTopPx": 64.0,
+        "gridRightPx": 343.0,
+        "gridBottomPx": 367.0,
+        "gridSquareXPx": 15.833333333333334,
+        "gridSquareYPx": 15.15,
+        "aimCoordinate": {"xPercent": 50.125, "yPercent": 44.895833333333336},
+        "aimAuthorityId": "MFAM-STANDARD-M16A2-A3-CENTER-AIM-v1",
+        "sourceAssetSha256": "2be8f6e1b8e92e7ec6011042b8165314b8c83fda31a6b30f26bf44dec34859a3"
+      },
+      "status": "GOVERNED"
+    },
+    {
       "targetProfileId": "m4_25m_zero",
       "productId": "sczn3:protected-modern-m4-m16-moa:face",
       "familyId": "mfam_modern_a8_moa_25m",
@@ -1088,6 +1178,22 @@
     }
   ],
   "pairClassifications": [
+    {
+      "leftProductId": "baker:st-m16a2-m4:m16a2-face",
+      "rightProductId": "qualification-targets:m16a2:face",
+      "classifications": ["EXACTLY_THE_SAME", "IDENTITY_REGISTRATION_DIFFERENCE"],
+      "status": "PROVEN",
+      "rationale": "The official NSN identity bridge establishes the same issued Standard M16A2 geometry and procedure; publisher/product representation and registration remain independent.",
+      "sourceIds": ["ARMY-M16A2-NSN-253-4005", "QUALIFICATION-M16A2", "SCZN3-MFAM-SCALE-PROOF-04"]
+    },
+    {
+      "leftProductId": "baker:st-m16a2-m4:m16a2-face",
+      "rightProductId": "gunfun:32120:two-sided",
+      "classifications": ["REPRESENTATION_INK_PUBLISHER_DIFFERENCE_ONLY", "IDENTITY_REGISTRATION_DIFFERENCE"],
+      "status": "PROVEN",
+      "rationale": "Independent page-normalized measurements establish the same 18 x 20 / 0.96 cm grid and center aim. Green wedges, branding, and wording are representation differences only.",
+      "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"]
+    },
     {
       "leftProductId": "baker:st-uni25mmoa:face",
       "rightProductId": "sczn3:protected-modern-m4-m16-moa:face",
@@ -1191,7 +1297,7 @@
     {"publisher": "U.S. Marine Corps", "seed12": false, "substantiatedMFAM": true, "result": "36m BZO procedure substantiated; exact target product/geometry unresolved"}
   ],
   "unresolvedGaps": [
-    {"gapId": "MFAM-GAP-001", "scope": "Rite 9125, Qualification M16A2/M4, Action, Alco, National, GunFun", "missing": "flat production face, measured landmarks, physical scale, and orientation proof", "effect": "no geometry equivalence or registration reuse"},
+    {"gapId": "MFAM-GAP-001", "scope": "Rite 9125, National 23075, Alco AR-0, and GunFun 32110 Standard M16A2 candidates", "missing": "one exact representation-to-family physical-conformance bridge and registration package per remaining representation", "effect": "family geometry/procedure/mechanics remain solved; only those exact representations stay held"},
     {"gapId": "MFAM-GAP-002", "scope": "Army A8 NSN 6920-01-660-9191", "missing": "exact issued production face and measured comparison to the protected SCZN3 face", "effect": "doctrine is evidence; product equivalence remains unproven"},
     {"gapId": "MFAM-GAP-003", "scope": "Modern optic rows", "missing": "complete device/configuration authority including observer view, rotation, applicability and procedure", "effect": "printed values remain evidence-only except the exact governed M4 row"},
     {"gapId": "MFAM-GAP-004", "scope": "M16A1 and 10m/36m families", "missing": "exact face geometry, target identity, registration and full confirmation authority", "effect": "separate families cataloged but not executable"},
@@ -1211,6 +1317,7 @@
     {"sourceId": "RITR-9125", "title": "Military Target", "publisher": "Rite in the Rain", "url": "https://www.riteintherain.com/military-target", "quality": "PRIMARY_PUBLISHER", "scope": ["9125/9126/9129 product identity", "size", "sides", "UPC"]},
     {"sourceId": "RITR-NSN-2021", "title": "Rite in the Rain NSN Product List", "publisher": "Rite in the Rain", "url": "https://www.riteintherain.com/assets/site/docs/RITR_NSN_Product_list_2021.pdf", "quality": "PRIMARY_PUBLISHER", "scope": ["9125/9127/9128/9129 NSNs and dimensions"]},
     {"sourceId": "QUALIFICATION-M16A2", "title": "M16A2 Paper Target", "publisher": "Qualification Targets", "url": "https://targets.net/collections/u-s-air-force/products/m16a2-paper-target", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "NSN", "sheet size"]},
+    {"sourceId": "ARMY-M16A2-NSN-253-4005", "title": "PS Magazine Issue 762 and Small Arms Range Supply Reference", "publisher": "Department of the Army / Defense Acquisition University", "url": "https://www.ascrad.army.mil/Portals/74/PDFs/PS_762.pdf", "quality": "PRIMARY_GOVERNMENT", "scope": ["NSN 6920-01-253-4005 exact M16A2 25-meter zero-target identity", "distinction from dual M16A2/M4 NSN 6920-01-395-2949"]},
     {"sourceId": "QUALIFICATION-M4", "title": "M4 Carbine Paper Target", "publisher": "Qualification Targets", "url": "https://targets.net/products/m4-carbine-paper-target", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "NSN", "sheet size"]},
     {"sourceId": "ACTION-M4-CARBINE", "title": "M4/M16 25 Meter Two-Sided Zeroing Target", "publisher": "Action Target", "url": "https://shop.actiontarget.com/content/m4-carbine-m4-m16-25-meter-two-sided-zeroing-target.asp", "quality": "PRIMARY_PUBLISHER", "scope": ["product identity", "two-sided claim"]},
     {"sourceId": "ACTION-CATALOG", "title": "Paper shooting target catalog", "publisher": "Action Target", "url": "https://shop.actiontarget.com/content/paper-shooting-targets.asp", "quality": "PRIMARY_PUBLISHER", "scope": ["M4 CARBINE", "MOA-25-1S", "ALT C(2)", "M68 OPTIC"]},
@@ -1221,7 +1328,9 @@
     {"sourceId": "SPEEDWELL-DODM4", "title": "DOD M4", "publisher": "Speedwell", "url": "https://www.speedwelltargets.com/DOD-M4-p/dodm4.htm", "quality": "PRIMARY_PUBLISHER", "scope": ["DODM4 SKU", "NSN", "two sides", "dimensions"]},
     {"sourceId": "SPEEDWELL-DODM16A2-FACE", "title": "DOD M16A2 official military target and publisher face", "publisher": "Speedwell", "url": "https://web.archive.org/web/20231210161137id_/https://www.speedwelltargets.com/DOD-M16-A2-p/dodm16a2.htm", "quality": "PRIMARY_PUBLISHER", "scope": ["high-resolution exact M16A2 face representation", "Speedwell product identity", "orientation landmarks"]},
     {"sourceId": "SCZN3-MFAM-SCALE-PROOF-03", "title": "M/FAM Scale Proof #3 evidence manifest", "publisher": "SCZN3", "url": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-proof-03/SCALE_PROOF_03_EVIDENCE_MANIFEST.json", "quality": "PRESERVED_FIRST_PARTY", "scope": ["artifact hashes", "Speedwell-to-issued-NSN representation bridge", "registration/orientation package validation", "hold evidence boundaries"]},
+    {"sourceId": "SCZN3-MFAM-SCALE-PROOF-04", "title": "M/FAM Scale Proof #4 no-redundant-geometry evidence manifest", "publisher": "SCZN3", "url": "docs/authority-evidence/mfam/industry-sweep-2026-09-06/scale-proof-04/SCALE_PROOF_04_EVIDENCE_MANIFEST.json", "quality": "PRESERVED_FIRST_PARTY", "scope": ["Qualification issued-NSN bridge", "GunFun 32120 page-normalized grid proof", "exact representation hashes", "four irreducible hold boundaries"]},
     {"sourceId": "GUNFUN-32110", "title": "M16 A2 and A4 Zeroing Target Red", "publisher": "GunFun Shooting Targets", "url": "https://gunfun.com/shop/m16-a2-a4-zeroing-target-red-32110/", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "size", "two-sided identity", "printed instructions"]},
+    {"sourceId": "GUNFUN-32120", "title": "M16 A2 and A4 Zeroing Target Green", "publisher": "GunFun Shooting Targets", "url": "https://gunfun.com/shop/m16-a2-a4-zeroing-target-green-32120/", "quality": "PRIMARY_PUBLISHER", "scope": ["SKU", "9.5 x 12 sheet", "two-sided identity", "exact green face representation"]},
     {"sourceId": "GUNFUN-CATALOG", "title": "Preserved GunFun catalog corpus", "publisher": "GunFun Shooting Targets", "url": "docs/authority-evidence/publisher-os/11-publisher-master-2026-08-21", "quality": "PRESERVED_FIRST_PARTY", "scope": ["32120", "82020", "22460"]},
     {"sourceId": "P-OS-12-PUBLISHER-SEED", "title": "P-OS 12-publisher preserved corpus", "publisher": "SCZN3 Publisher Operating System", "url": "docs/authority-evidence/publisher-os/11-publisher-master-2026-08-21/PUBLISHER_PROFILES.json", "quality": "PRESERVED_FIRST_PARTY", "scope": ["publisher identities", "normalized products", "negative findings"]},
     {"sourceId": "SCZN3-M16A2-REGISTRATION", "title": "Baker standard M16A2 face registration evidence", "publisher": "SCZN3", "url": "docs/authority-evidence/mfam/BAKER_M16A2_STANDARD_FACE_REGISTRATION_EVIDENCE.md", "quality": "PRESERVED_FIRST_PARTY", "scope": ["exact face hash", "geometry", "landmarks", "registration"]},

@@ -1,23 +1,23 @@
 # M/FAM Industry Authorization Sweep
 
-Date: 2026-09-06; updated by Scale Proof #3 on 2026-09-07
+Date: 2026-09-06; updated by Scale Proof #4 on 2026-09-07
 Authority floor: completed M/FAM evidence ledger, face inventory, geometry catalog, procedure catalog, family registry, and existing registration/mechanical authorities  
 Runtime owner: `sczn3-governed-zeroing-road-v1`
 
 ## Decision
 
-Scale Proof #3 converted preserved publisher/government evidence into two new executable Standard M16A2 bindings. The registry now contains two newly authorized bindings, two previously authorized bindings, three authorized physical product faces, and 32 known physical-face holds. Three held faces have reusable Geometry Authority already proven; their remaining registration, configuration/mechanical, or confirmation facts still prevent execution.
+Scale Proof #4 converted two exact representation-conformance proofs into two more executable Standard M16A2 bindings without re-governing family geometry, procedure, mechanics, or confirmation. The registry now contains two newly authorized bindings, four previously authorized bindings, five authorized physical product faces, and 30 known physical-face holds.
 
 This is not a request for another industry sweep. It is the evidence-limited result of the sweep already completed.
 
 | Disposition | Count |
 |---|---:|
 | `AUTHORIZED NOW` — new runtime bindings | 2 |
-| `ALREADY AUTHORIZED` — runtime bindings | 2 |
-| `ALREADY AUTHORIZED` — physical product faces | 3 |
-| `HOLD` — known physical product faces | 32 |
+| `ALREADY AUTHORIZED` — runtime bindings | 4 |
+| `ALREADY AUTHORIZED` — physical product faces | 5 |
+| `HOLD` — known physical product faces | 30 |
 | Held faces with reusable Geometry Authority already proven | 3 |
-| Held faces assigned to a candidate family | 26 |
+| Held faces assigned to a candidate family | 22 |
 | Held faces awaiting truthful family assignment | 8 |
 
 The ranked family-level closure strategy is recorded in `M_FAM_HOLD_CLEARANCE_PLAN.md`.
@@ -37,16 +37,18 @@ A known target hold is reported as `THIS TARGET IS KNOWN` with the missing autho
 
 | Product / face | Geometry | Procedure | Mechanical authority | Runtime binding |
 |---|---|---|---|---|
-| Speedwell `DODM4` — DoD M16A2 face (`face-020`) | inherited `geometry-standard-m16a2-096cm` through the issued-NSN conformance bridge | inherited `procedure-m16a2-25m-300m` | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | `speedwell_dodm4_m16a2_25m_zero` |
-| Army NSN `6920-01-395-2949` — M16A2/A3 face (`face-032`) | `geometry-standard-m16a2-096cm` | `procedure-m16a2-25m-300m` | governed M16A2 branch only | `army_nsn_6920_01_395_2949_m16a2_25m_zero` |
+| Qualification Targets `M16A2`, NSN `6920-01-253-4005` (`face-016`) | inherited `geometry-standard-m16a2-096cm` through official NSN identity | inherited `procedure-m16a2-25m-300m` | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | `qualification_m16a2_25m_zero` |
+| GunFun `32120` — green M16A2 face (`face-027`) | page-normalized proof of `geometry-standard-m16a2-096cm` | inherited `procedure-m16a2-25m-300m` | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | `gunfun_32120_m16a2_green_25m_zero` |
 
-Evidence and claim limits: `scale-proof-03/M_FAM_SCALE_PROOF_03_EVIDENCE_TO_ADMISSIONS.md`.
+Evidence and claim limits: `scale-proof-04/M_FAM_SCALE_PROOF_04_NO_REDUNDANT_GEOMETRY.md`.
 
 ## ALREADY AUTHORIZED
 
 | Product / face | Geometry | Procedure | Mechanical authority | Runtime binding |
 |---|---|---|---|---|
 | Baker `ST-M16A2/M4` — M16A2 face (`face-003`) | `geometry-standard-m16a2-096cm` | `procedure-m16a2-25m-300m` | `M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011` | `baker_m16a2_25m_zero` |
+| Speedwell `DODM4` — DoD M16A2 face (`face-020`) | inherited `geometry-standard-m16a2-096cm` | inherited `procedure-m16a2-25m-300m` | governed M16A2 branch | `speedwell_dodm4_m16a2_25m_zero` |
+| Army NSN `6920-01-395-2949` — M16A2/A3 face (`face-032`) | `geometry-standard-m16a2-096cm` | `procedure-m16a2-25m-300m` | governed M16A2 branch | `army_nsn_6920_01_395_2949_m16a2_25m_zero` |
 | SCZN3 protected modern M4/M16 MOA reference | `geometry-universal-moa-quarter-inch` | `procedure-universal-25m-governed` | `M4-M16-25M-ZERO-FSP-AUTHORITY-2026-09-01` | `m4_25m_zero` |
 
 ## HOLD — exact unresolved execution facts
@@ -69,7 +71,6 @@ Evidence and claim limits: `scale-proof-03/M_FAM_SCALE_PROOF_03_EVIDENCE_TO_ADMI
 | `face-013` | National `M-16A2/M4-CARBINE` / M16A2-derived | non-letter M16 candidate | M16A2 25m/300m | none | physical square pitch; aim; registration; mechanical binding |
 | `face-014` | National `M-16A2/M4-CARBINE` / M4-derived | non-letter M4 candidate | M4 25m/300m | none | grid count; physical pitch; aim; registration; mechanical binding |
 | `face-015` | National `25M ALT-C` | proven different qualification geometry, incomplete | Alt-C qualification | none | course geometry; aim; scoring; registration; mechanics |
-| `face-016` | Qualification Targets `M16A2` | standard M16 candidate | M16A2 25m/300m | none | physical pitch; exact landmarks; mechanical binding; registration |
 | `face-017` | Qualification Targets `M4 Carbine` | standard M4 candidate | commercial 25m unresolved | none | grid; physical pitch; aim; procedure; mechanics; registration |
 | `face-018` | Alco `AR-0` | standard M16 candidate | M16A2 25m/300m | none | physical pitch; registration; authority for M4/M16A4 claims |
 | `face-019` | Speedwell `DODM4` / M4 | standard M4 candidate | M4 25m/300m | none | physical pitch; aim; mechanical binding; registration |
@@ -79,7 +80,6 @@ Evidence and claim limits: `scale-proof-03/M_FAM_SCALE_PROOF_03_EVIDENCE_TO_ADMI
 | `face-024` | Action `M68 OPTIC` | unresolved optic geometry | M68 training unresolved | M68 evidence-only | dimensions; geometry; aim; distance; procedure; weapon relationship; registration |
 | `face-025` | GunFun `32110` / red side A | standard-derived 9.5×12 candidate | commercial 25m unresolved | none | physical pitch; aim; weapon-specific mechanics; registration |
 | `face-026` | GunFun `32110` / side B | unresolved reverse geometry | M16 zero unresolved | none | exact face identity; artwork; geometry; aim; distance; procedure; equipment; registration |
-| `face-027` | GunFun `32120` / green side A | standard-derived 9.5×12 candidate | commercial 25m unresolved | none | physical pitch; ink/wedge geometry effect; aim; procedure; mechanics; registration |
 | `face-028` | GunFun `32120` / side B | unresolved reverse geometry | M16 zero unresolved | none | exact face identity; artwork; geometry; aim; distance; procedure; equipment; registration |
 | `face-029` | GunFun `82020` / 14×20 | proven different enlargement; internal geometry incomplete | M16 zero unresolved | none | weapon generation; grid; pitch; aim; procedure; mechanics; registration |
 | `face-030` | GunFun `22460` / Navy composite | proven different qualification/composite geometry, incomplete | Navy qualification | none | course geometry; embedded subface transform; aim; procedure detail; mechanics; registration |
@@ -98,4 +98,4 @@ Evidence and claim limits: `scale-proof-03/M_FAM_SCALE_PROOF_03_EVIDENCE_TO_ADMI
 
 ## Scale result
 
-Every known face remains individually identified. Proven common geometries are reused without merging publishers or representations. Three Standard M16A2 product/issuer faces now consume one family authority and the existing universal zeroing capability; no target-specific zeroing road was created.
+Every known face remains individually identified. Proven common geometries are reused without merging publishers or representations. Five Standard M16A2 product/issuer faces now consume one family authority and the existing universal zeroing capability; no target-specific zeroing road was created.

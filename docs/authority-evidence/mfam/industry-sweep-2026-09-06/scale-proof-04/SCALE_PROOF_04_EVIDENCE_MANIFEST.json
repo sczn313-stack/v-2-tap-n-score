@@ -1,0 +1,67 @@
+{
+  "schemaId": "sczn3-mfam-scale-proof-04-evidence-v1",
+  "proofId": "MFAM-SCALE-PROOF-04-NO-REDUNDANT-GEOMETRY",
+  "observedAt": "2026-09-07",
+  "governingRule": "Once exact representation-to-family conformance is proven, Standard M16A2/A3 geometry, aim, procedure, mechanics, and confirmation are inherited once rather than re-governed per publisher.",
+  "familyAuthorityPackageId": "MFAM-STANDARD-M16A2-A3-FAMILY-AUTHORITY-v1",
+  "newAdmissions": [
+    {
+      "faceId": "face-016",
+      "targetProfileId": "qualification_m16a2_25m_zero",
+      "productIdentity": {"publisher": "Qualification Targets", "sku": "M16A2", "nsn": "6920-01-253-4005"},
+      "conformanceBasis": "The publisher binds the exact product and face to NSN 6920-01-253-4005; Army primary evidence identifies that NSN as the M16A2 25-meter zero target.",
+      "representation": {
+        "path": "../../../../assets/QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg",
+        "sha256": "c3028042b6ba600ef983a2fd1cbb035d4f05c4687f8ec54c359ea86369896290",
+        "pixelWidth": 1500,
+        "pixelHeight": 1967
+      },
+      "registrationPackageId": "qualification-m16a2-photo-registration-v1"
+    },
+    {
+      "faceId": "face-027",
+      "targetProfileId": "gunfun_32120_m16a2_green_25m_zero",
+      "productIdentity": {"publisher": "GunFun Shooting Targets", "sku": "32120", "side": "M16A2 green face"},
+      "conformanceBasis": "The publisher declares a 9.5 x 12 inch sheet. The complete face's 18-column by 20-row grid normalizes independently to 0.956 cm horizontal and 0.962 cm vertical pitch, consistent with the governed 0.96 cm family pitch; center aim is at 9 columns and 10 rows.",
+      "measurement": {
+        "sourcePixels": {"width": 400, "height": 480},
+        "gridPixels": {"left": 58, "top": 64, "right": 343, "bottom": 367},
+        "pitchCm": {"horizontal": 0.956, "vertical": 0.962},
+        "method": "axis-specific page-normalization against publisher-declared physical sheet dimensions"
+      },
+      "representation": {
+        "path": "../../../../assets/GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1.jpg",
+        "sha256": "2be8f6e1b8e92e7ec6011042b8165314b8c83fda31a6b30f26bf44dec34859a3",
+        "pixelWidth": 400,
+        "pixelHeight": 480
+      },
+      "registrationPackageId": "gunfun-32120-m16a2-green-photo-registration-v1"
+    }
+  ],
+  "holds": [
+    {"faceId": "face-006", "product": "Rite in the Rain 9125", "missing": "exact registration-ready front-face representation bridge to governed geometry and aim"},
+    {"faceId": "face-013", "product": "National 23075", "missing": "dimensioned representation-to-family physical-scale bridge and exact registration"},
+    {"faceId": "face-018", "product": "Alco AR-0", "missing": "dimensioned representation-to-family physical-scale bridge and exact registration"},
+    {"faceId": "face-025", "product": "GunFun 32110 red", "missing": "production-scale representation-to-family bridge and exact registration"}
+  ],
+  "preservedHoldArtifacts": [
+    {"path": "NATIONAL_23075_M16A2_FACE_PRIMARY_2025.png", "sha256": "542652fca186d57d3258ff3a2f2515fc01109acad9f97d2194f436b7d100051d", "use": "exact representation evidence; not calibrated physical-scale authority"},
+    {"path": "ALCO_AR0_M16A2_FACE_PRIMARY_2026.webp", "sha256": "864e88a124837666b26165ee1bb73563fec6f9869c9a09b7f76f6acaa7ca77cc", "use": "exact representation and center-aim evidence; not calibrated physical-scale authority"}
+  ],
+  "sources": [
+    {"sourceId": "QUALIFICATION-M16A2", "url": "https://targets.net/collections/u-s-air-force/products/m16a2-paper-target"},
+    {"sourceId": "ARMY-M16A2-NSN-253-4005", "url": "https://www.ascrad.army.mil/Portals/74/PDFs/PS_762.pdf"},
+    {"sourceId": "GUNFUN-32120", "url": "https://gunfun.com/shop/m16-a2-a4-zeroing-target-green-32120/"},
+    {"sourceId": "NATIONAL-23075", "url": "https://nationaltarget.com/shop/m-16a2-m4-carbine/"},
+    {"sourceId": "ALCO-AR-0", "url": "https://alcotarget.com/ar-zero-shooting-target/"}
+  ],
+  "scaleResult": {
+    "startingExecutableFamilyBindings": 3,
+    "newlyExecutableThroughInheritance": 2,
+    "endingExecutableFamilyBindings": 5,
+    "familyAuthorityPackagesCreated": 0,
+    "productSpecificZeroingImplementationsCreated": 0,
+    "universalZeroingRoadsCreated": 0,
+    "familyLeverage": 5.0
+  }
+}

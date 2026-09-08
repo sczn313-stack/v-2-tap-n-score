@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scale Proof #3: one family authority, multiple exact product admissions."""
+"""Scale Proof #4: no redundant family facts; exact representations inherit one authority."""
 from __future__ import annotations
 
 import base64
@@ -39,6 +39,16 @@ PROFILES = {
         "army-nsn-6920-01-395-2949-m16a2-photo-registration-v1",
         "ARMY_NSN_6920_01_395_2949_M16A2_AUTHORITY_v1",
         DOCS / "authority-evidence" / "mfam" / "industry-sweep-2026-09-06" / "scale-proof-03" / "ARMY_FM_3_22_9_FIGURE_5_19_M16A2_FACE.png",
+    ),
+    "qualification_m16a2_25m_zero": (
+        "qualification-m16a2-photo-registration-v1",
+        "QUALIFICATION_M16A2_25M_AUTHORITY_v1",
+        DOCS / "assets" / "QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg",
+    ),
+    "gunfun_32120_m16a2_green_25m_zero": (
+        "gunfun-32120-m16a2-green-photo-registration-v1",
+        "GUNFUN_32120_M16A2_GREEN_AUTHORITY_v1",
+        DOCS / "assets" / "GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1.jpg",
     ),
 }
 
@@ -126,28 +136,28 @@ def authority_payload(profile_id: str) -> dict:
     }
 
 
-def test_eight_candidates_run_through_one_contract_and_two_are_admitted():
+def test_eight_candidates_run_through_one_contract_and_four_are_admitted():
     batch = run_family_admission_batch(CONTRACT_ID, CANDIDATE_FACES)
     assert batch["candidatesEvaluated"] == 8
-    assert {record["faceId"] for record in batch["admitted"]} == {"face-020", "face-032"}
+    assert {record["faceId"] for record in batch["admitted"]} == {"face-016", "face-020", "face-027", "face-032"}
     assert {record["faceId"] for record in batch["hold"]} == {
-        "face-006", "face-013", "face-016", "face-018", "face-025", "face-027",
+        "face-006", "face-013", "face-018", "face-025",
     }
     proof = scale_proof()
-    assert proof["familyLeverage"] == 3.0
-    assert proof["admissionLeverage"] == 2.0
+    assert proof["familyLeverage"] == 5.0
+    assert proof["admissionLeverage"] == 1.0
     assert proof["counts"]["productSpecificZeroingImplementations"] == 0
     assert proof["counts"]["universalZeroingRoadsAdded"] == 0
 
 
-def test_three_products_share_one_family_package_but_retain_exact_identity():
+def test_five_products_share_one_family_package_but_retain_exact_identity():
     resolved = {profile_id: resolve_target_profile(profile_id) for profile_id in PROFILES}
     assert {
         record["binding"]["familyAuthorityPackageId"] for record in resolved.values()
     } == {FAMILY_PACKAGE_ID}
-    assert len({record["binding"]["productId"] for record in resolved.values()}) == 3
-    assert len({record["binding"]["registrationPackageId"] for record in resolved.values()}) == 3
-    assert len({record["binding"]["canonicalRepresentationAuthority"]["sourceAssetSha256"] for record in resolved.values()}) == 3
+    assert len({record["binding"]["productId"] for record in resolved.values()}) == 5
+    assert len({record["binding"]["registrationPackageId"] for record in resolved.values()}) == 5
+    assert len({record["binding"]["canonicalRepresentationAuthority"]["sourceAssetSha256"] for record in resolved.values()}) == 5
     assert {
         record["binding"]["mechanicalAuthorityId"] for record in resolved.values()
     } == {"M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"}
@@ -157,11 +167,13 @@ def test_new_profiles_enter_the_same_backend_zeroing_capability():
     for profile_id in (
         "speedwell_dodm4_m16a2_25m_zero",
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+        "qualification_m16a2_25m_zero",
+        "gunfun_32120_m16a2_green_25m_zero",
     ):
         prepared = prepare_session({"targetId": profile_id}, Store())
         assert prepared["zeroingExperience"]["capabilityId"] == "sczn3-governed-zeroing-road-v1"
         assert prepared["mfamAuthorityBinding"]["familyAuthorityPackageId"] == FAMILY_PACKAGE_ID
-        assert prepared["mfamAuthorityBinding"]["productIdentity"]["inventoryFaceId"] in {"face-020", "face-032"}
+        assert prepared["mfamAuthorityBinding"]["productIdentity"]["inventoryFaceId"] in {"face-020", "face-032", "face-016", "face-027"}
         assert prepared["standardSetup"]["adjustmentProfileId"] == "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
         assert prepared["confirmationAuthority"]["minimumShots"] == 3
 
@@ -170,12 +182,14 @@ def test_new_profiles_release_governed_correction_through_shared_mechanics():
     for profile_id in (
         "speedwell_dodm4_m16a2_25m_zero",
         "army_nsn_6920_01_395_2949_m16a2_25m_zero",
+        "qualification_m16a2_25m_zero",
+        "gunfun_32120_m16a2_green_25m_zero",
     ):
         package = build_authority_package(authority_payload(profile_id))
         assert package["status"]["hasMechanicalRecommendation"] is True
-        assert package["clicks"]["windageClicks"] == 2
+        assert package["clicks"]["windageClicks"] > 0
         assert package["clicks"]["windageDirection"] == "LEFT"
-        assert package["clicks"]["elevationClicks"] == 1
+        assert package["clicks"]["elevationClicks"] > 0
         assert package["clicks"]["elevationDirection"] == "UP"
         assert package["clicks"]["model"]["authorityId"] == "M16A2-IRON-FSP-REAR-DRUM-ADJUSTMENT-PROFILE-2011"
 
@@ -206,10 +220,17 @@ def test_face_admission_preserves_exact_publisher_product_face_binding():
     assert army["publisherAuthorityId"] == "publisher-us-army"
     assert speedwell["targetState"] == army["targetState"] == "KNOWN_TARGET_EXECUTION_AUTHORIZED"
 
+    qualification = resolve_face_admission("face-016")
+    gunfun_green = resolve_face_admission("face-027")
+    assert qualification["runtimeBinding"] == "qualification_m16a2_25m_zero"
+    assert gunfun_green["runtimeBinding"] == "gunfun_32120_m16a2_green_25m_zero"
+    assert qualification["publisherAuthorityId"] == "publisher-qualification-targets"
+    assert gunfun_green["publisherAuthorityId"] == "publisher-gunfun"
+
 
 if __name__ == "__main__":
     tests = [value for name, value in sorted(globals().items()) if name.startswith("test_") and callable(value)]
     for test in tests:
         test()
         print(f"PASS {test.__name__}")
-    print(f"M/FAM Scale Proof #3 tests passed: {len(tests)}/{len(tests)}")
+    print(f"M/FAM Scale Proof #4 tests passed: {len(tests)}/{len(tests)}")

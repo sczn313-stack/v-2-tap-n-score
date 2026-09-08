@@ -1,14 +1,14 @@
 # M/FAM Hold-Clearance Plan
 
-Date: 2026-09-06; updated by Scale Proof #3 on 2026-09-07
-Authority floor: M/FAM inventory and family authority registry version `2026-09-07.7`
+Date: 2026-09-06; updated by Scale Proof #4 on 2026-09-07
+Authority floor: M/FAM inventory and family authority registry version `2026-09-07.8`
 Purpose: clear shared authority by governed family without collapsing product identity or copying the universal zeroing road
 
 ## Decision
 
-The 32 held physical faces are not 32 independent zeroing applications.
+The 30 held physical faces are not 30 independent zeroing applications.
 
-- 24 held faces are assigned to seven candidate families.
+- 22 held faces are assigned to seven candidate families.
 - 8 held faces remain deliberately unassigned because present evidence cannot truthfully place them in a family.
 - Two candidate families currently contain no admitted physical face.
 - Registration remains representation-specific. A family proof may supply common geometry, procedure, confirmation, or mechanical authority, but it cannot prove the landmarks and orientation of ink it has never examined.
@@ -24,7 +24,7 @@ This preserves publisher/product identity while eliminating repeated geometry, p
 | Candidate family | Faces held | Common proven facts | Common missing facts | One family-level closure package | Representation-specific remainder | Potential runtime bindings gained |
 |---|---:|---|---|---|---|---:|
 | `mfam_m16a1_25m_250m` — Legacy M16A1 | 1: `face-031` | issued M16A1 identity; 25m/250m procedure; aperture sequence evidence | canonical physical geometry; complete sight mechanics; confirmation authority | govern the issued M16A1 face geometry, complete mechanical controls/directions, and confirmation standard once | exact production-face registration | 1 |
-| `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 6: `face-006`, `face-013`, `face-016`, `face-018`, `face-025`, `face-027` | **governed** 18 × 20 / 0.96 cm geometry; center aim; 25m/300m procedure; M16A2 mechanics; confirmation; three exact family bindings now execute | no new common family authority for the exact M16A2 branch; six publisher faces still need physical conformance proof | reuse the existing governed family package and six-gate conformance contract | calibrated physical pitch/aim proof, then exact landmarks, orientation, and registration per representation; non-A2 claims remain separate | **up to 6 additional** |
+| `mfam_m16a2_a3_standard_25m_300m` — Standard M16A2/A3 | 4: `face-006`, `face-013`, `face-018`, `face-025` | **governed** 18 × 20 / 0.96 cm geometry; center aim; 25m/300m procedure; M16A2 mechanics; confirmation; five exact family bindings now execute | no new common family authority; four faces need only a representation-to-family physical-scale bridge and registration | reuse the existing governed family package and six-gate conformance contract | exact conformance/registration per remaining representation; non-A2 claims remain separate | **up to 4 additional** |
 | `mfam_m16a4_m4_standard_25m_300m` — Standard M16A4/M4 | 7: `face-004`, `face-007`, `face-014`, `face-017`, `face-019`, `face-021`, `face-033` | issued 14 × 16 / 1.3 cm family dimensions; 25m/300m purpose; governed M4 DCH/front-post mechanics | canonical page origin and aim; full procedure/finalization; confirmation; exact M16A4 versus M4 configuration scope | govern one canonical standard-M4 family geometry/aim/procedure/confirmation package and an explicit equipment-configuration matrix | each publisher face must prove physical conformance and receive its own registration package | **up to 7** |
 | `mfam_modern_a8_moa_25m` — Modern Universal MOA/A8 | 6: `face-001`, `face-009`, `face-011`, `face-012`, `face-023`, `face-034` | governed quarter-inch Universal-MOA geometry on protected reference; geometry equivalence already proven for `face-001`, `face-011`, `face-012`; protected M4 mechanical branch exists | common procedure/finalization and confirmation by equipment branch; complete equipment/mechanical matrix | govern the reusable equipment-branch + procedure + confirmation matrix against the existing Universal-MOA Geometry Authority | registration for every representation; geometry conformance first for `face-009`, `face-023`, `face-034` | **3 near-term; up to 6** |
 | `mfam_m16a2r_enlarged_23x35` — Baker enlarged M16A2R | 1: `face-005` | Baker `ST-M16A2R` product identity; 23 × 35-inch sheet; M16A2-related 25m/300m purpose; proven different from Letter-size M16A2 | internal grid pitch; page origin; physical aim; mechanical applicability; confirmation | measure and govern the enlarged family geometry/aim, then prove whether the existing M16A2 procedure/mechanics apply at that physical scale | Baker `ST-M16A2R` registration package | 1 |
@@ -55,7 +55,7 @@ The ranking uses potential bindings gained, existing governed reuse, and the amo
 
 | Rank | Family package | Faces affected | Exact missing evidence to acquire once | Expected bindings gained | Why this order |
 |---:|---|---:|---|---:|---|
-| 1 | Standard M16A2/A3 | 6 | **No new shared M16A2 geometry/procedure/mechanics proof.** Acquire only calibrated physical-conformance evidence for the six remaining exact representations, then build exact registration; isolate non-M16A2 equipment claims. | up to 6 additional | Scale Proof #3 already admitted Speedwell and Army through one evidence bridge; remaining work is evidence-limited |
+| 1 | Standard M16A2/A3 | 4 | **No new shared M16A2 geometry/procedure/mechanics proof.** Acquire only one representation-to-family physical-scale bridge and registration for each remaining face. | up to 4 additional | Scale Proof #4 admitted Qualification and GunFun green without re-governing family facts; remaining work is representation-limited |
 | 2 | Modern Universal MOA/A8 — proven-geometry tranche | 3 immediately; 6 total | one equipment-branch/procedure/confirmation matrix; registration for Baker `ST-Uni25mMOA`, National `23112` no-yellow, and National `23112` yellow-circle | 3 near-term | three faces already have reusable Geometry Authority; no geometry research is needed for them |
 | 3 | Standard M16A4/M4 | 7 | one canonical page-origin/aim/procedure/confirmation package plus exact M4/M16A4 configuration matrix | up to 7 | large family return, but more common authority remains open than M16A2 |
 | 4 | Modern Universal MOA/A8 — remaining tranche | 3 | conformance proof for Rite `9126`, Action `MOA-25-1S`, and Army A8 before their representation registrations | 3 additional | reuses the rank-2 common package after geometry is proven |
@@ -69,7 +69,7 @@ The ranking uses potential bindings gained, existing governed reuse, and the amo
 
 Start with `mfam_m16a2_a3_standard_25m_300m`.
 
-Scale Proofs 01–03 executed this package. The shared family authority is a machine-enforced Backend record. Baker, Speedwell DODM4 M16A2, and the Army-issued M16A2 face now consume it through inheritance. Scale Proof #3 added one reusable issued-NSN evidence bridge and two exact representation registrations; six candidates remain held at irreducible physical-conformance gaps. See `scale-proof-03/M_FAM_SCALE_PROOF_03_EVIDENCE_TO_ADMISSIONS.md`.
+Scale Proofs 01–04 executed this package. Baker, Speedwell, Army, Qualification, and GunFun 32120 green now consume the same machine-enforced family authority through inheritance. Four candidates remain held at one representation-to-family conformance/registration gap each. See `scale-proof-04/M_FAM_SCALE_PROOF_04_NO_REDUNDANT_GEOMETRY.md`.
 
 The family already owns the facts that must not be repurchased per publisher:
 
@@ -81,7 +81,7 @@ The family already owns the facts that must not be repurchased per publisher:
 - confirmation/finalization behavior;
 - the universal zeroing capability.
 
-The remaining work is a batch **representation-conformance and registration** pass across six held faces. Each face must prove that it physically conforms; once it does, it inherits the family Geometry/Procedure/Mechanical Authority and receives only its own Product Identity, Representation, and registration package. No publisher-specific zeroing workflow is created.
+The remaining work is a batch **representation-conformance and registration** pass across four held faces. Each face must prove only that its exact printing maps to the solved family; once it does, all common authority is inherited. No publisher-specific zeroing workflow is created.
 
 ## Named priority faces
 

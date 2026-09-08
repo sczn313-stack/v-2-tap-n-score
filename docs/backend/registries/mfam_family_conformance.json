@@ -1,12 +1,13 @@
 {
   "schemaId": "sczn3-target-family-conformance-v1",
   "registryId": "SCZN3-MFAM-TARGET-FAMILY-CONFORMANCE-2026-09-06",
-  "version": "2026-09-07.2",
+  "version": "2026-09-07.3",
   "status": "governed",
   "authorityRegistryId": "SCZN3-MFAM-FAMILY-AUTHORITY-2026-09-06",
   "admissionPolicy": {
     "rule": "A face is ADMITTED only when every required gate in its family contract is PROVEN and an explicit governed Target Profile binding exists.",
-    "inheritanceRule": "A proven family or issued-product fact is evaluated once and may satisfy the same gate for every traceably conforming face; publisher/product/face/representation identity never changes.",
+    "inheritanceRule": "A proven family geometry, aim reference, procedure, mechanical branch, or confirmation fact is evaluated once and inherited by every traceably conforming face; publisher/product/face/representation identity never changes.",
+    "antiRedundancyRule": "Publisher, SKU, color, logo, paper, branding, and non-operative wording differences never trigger re-governance of a family fact. Only the exact representation-to-family conformance and registration facts remain product-specific.",
     "registrationRule": "Registration and orientation proof are exact-representation facts and are never inherited from a different publisher face.",
     "equipmentRule": "Mechanical authority is inherited from the governed family only for an explicitly proven applicable equipment branch; unrelated marketing claims are ignored.",
     "failureRule": "Any unresolved required gate produces HOLD with exact missing facts. Candidate family assignment, visual similarity, or shared branding cannot create a runtime binding."
@@ -131,6 +132,29 @@
         "each product retains its own publisher/product/representation identity and registration package"
       ],
       "sourceIds": ["SPEEDWELL-DODM4", "SPEEDWELL-DODM16A2-FACE", "ARMY-FM-3-22-9-2011", "SCZN3-MFAM-SCALE-PROOF-03"]
+    },
+    {
+      "evidencePackageId": "NSN-6920-01-253-4005-M16A2-FACE-CONFORMANCE-v1",
+      "scope": "ISSUED_PRODUCT_IDENTITY",
+      "status": "PROVEN",
+      "facts": [
+        "Army evidence identifies NSN 6920-01-253-4005 as the 25-meter M16A2 zero target",
+        "Qualification Targets binds its exact M16A2 product and production representation to NSN 6920-01-253-4005",
+        "the exact issued identity inherits the governed Standard M16A2/A3 family geometry, aim, procedure, mechanics, and confirmation facts"
+      ],
+      "sourceIds": ["ARMY-M16A2-NSN-253-4005", "QUALIFICATION-M16A2", "SCZN3-MFAM-SCALE-PROOF-04"]
+    },
+    {
+      "evidencePackageId": "GUNFUN-32120-PAGE-NORMALIZED-CONFORMANCE-v1",
+      "scope": "FACE_CONFORMANCE",
+      "status": "PROVEN",
+      "facts": [
+        "publisher declares a 9.5 x 12 inch production sheet",
+        "the complete publisher representation contains an 18 x 20 grid whose independently normalized horizontal and vertical pitches are 0.956 cm and 0.962 cm",
+        "the center aim is 9 columns and 10 rows from grid origin",
+        "green wedges are representation ink and do not alter the governed physical grid"
+      ],
+      "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"]
     }
   ],
   "evaluations": [
@@ -157,16 +181,16 @@
       "representationId": "representation-005-ritr-9125-m16",
       "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
       "gateEvidence": [
-        {"gateId": "physical_geometry_pitch", "status": "UNRESOLVED", "basis": "Publisher proves 8.5 x 11 and the exact front-side use, but not 0.96 cm manufactured pitch.", "sourceIds": ["RITR-9125", "RITR-NSN-2021"]},
-        {"gateId": "aim_reference", "status": "UNRESOLVED", "basis": "The exact physical aim-to-grid relationship is not dimensioned in preserved evidence.", "sourceIds": ["RITR-9125"]},
+        {"gateId": "physical_geometry_pitch", "status": "UNRESOLVED", "basis": "The exact front-side representation has not yet been traceably bridged to the already-governed 0.96 cm family geometry.", "sourceIds": ["RITR-9125", "RITR-NSN-2021"]},
+        {"gateId": "aim_reference", "status": "UNRESOLVED", "basis": "The missing exact representation bridge also prevents proof of the printed aim-to-grid mapping; the family aim itself is not being re-governed.", "sourceIds": ["RITR-9125"]},
         {"gateId": "representation_landmarks", "status": "UNRESOLVED", "basis": "Product/side identity is primary, but an exact flat front-face asset and landmark inventory are not preserved.", "sourceIds": ["RITR-9125"]},
-        {"gateId": "procedure", "status": "UNRESOLVED", "basis": "25-meter use is proven; the exact Standard M16A2 300-meter branch is not traceably captured for this face.", "sourceIds": ["RITR-9125"]},
+        {"gateId": "procedure", "status": "PROVEN", "basis": "Publisher identifies the M16A2/M16A4 25-meter front face; its M16A2 operational branch inherits the common family procedure without re-proving printer wording.", "sourceIds": ["RITR-9125"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
         {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "Publisher explicitly assigns the front face to M16A2; it may use the existing M16A2 equipment branch.", "sourceIds": ["RITR-9125"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
         {"gateId": "registration_orientation", "status": "UNRESOLVED", "basis": "No exact Rite in the Rain representation registration package exists.", "sourceIds": ["RITR-9125"]}
       ],
       "disposition": "HOLD",
       "targetProfileId": null,
-      "irreducibleMissingFacts": ["calibrated exact front-face artifact proving 0.96 cm pitch, center aim, Standard M16A2 procedure, landmarks, and registration"]
+      "irreducibleMissingFacts": ["one exact registration-ready front-face representation bridge proving this printing conforms to the governed family geometry and aim"]
     },
     {
       "faceId": "face-013",
@@ -191,16 +215,16 @@
       "representationId": "representation-015-qualification-m16a2",
       "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
       "gateEvidence": [
-        {"gateId": "physical_geometry_pitch", "status": "UNRESOLVED", "basis": "Publisher proves 8.5 x 11, SKU, NSN, and 25-meter use, but not manufactured square pitch.", "sourceIds": ["QUALIFICATION-M16A2"]},
-        {"gateId": "aim_reference", "status": "UNRESOLVED", "basis": "The face image suggests center aim but does not dimension it as physical authority.", "sourceIds": ["QUALIFICATION-M16A2"]},
+        {"gateId": "physical_geometry_pitch", "status": "PROVEN", "basis": "Exact product NSN 6920-01-253-4005 is independently identified by Army evidence as the issued M16A2 25-meter zero target and therefore inherits the already-governed family geometry.", "sourceIds": ["QUALIFICATION-M16A2", "ARMY-M16A2-NSN-253-4005", "SCZN3-MFAM-SCALE-PROOF-04"], "evidencePackageIds": ["NSN-6920-01-253-4005-M16A2-FACE-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-GEOMETRY-FACT-v1"]},
+        {"gateId": "aim_reference", "status": "PROVEN", "basis": "The exact issued identity and preserved production representation inherit the family center aim at 9 columns and 10 rows.", "sourceIds": ["QUALIFICATION-M16A2", "ARMY-M16A2-NSN-253-4005", "SCZN3-MFAM-SCALE-PROOF-04"], "evidencePackageIds": ["NSN-6920-01-253-4005-M16A2-FACE-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-AIM-FACT-v1"]},
         {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "The publisher identifies and displays the exact M16A2 representation.", "sourceIds": ["QUALIFICATION-M16A2"]},
         {"gateId": "procedure", "status": "PROVEN", "basis": "The face is publisher-identified as the M16A2 25-meter target and displays the governed setup/return branch.", "sourceIds": ["QUALIFICATION-M16A2"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
         {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "Exact M16A2 product identity permits the existing M16A2 equipment branch.", "sourceIds": ["QUALIFICATION-M16A2"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
-        {"gateId": "registration_orientation", "status": "UNRESOLVED", "basis": "No exact Qualification Targets registration package exists.", "sourceIds": ["QUALIFICATION-M16A2"]}
+        {"gateId": "registration_orientation", "status": "PROVEN", "basis": "qualification-m16a2-photo-registration-v1 preserves the exact publisher face by hash and proves asymmetric title/NSN/footer orientation plus source-plane reconciliation.", "sourceIds": ["QUALIFICATION-M16A2", "SCZN3-MFAM-SCALE-PROOF-04"], "evidencePackageIds": ["NSN-6920-01-253-4005-M16A2-FACE-CONFORMANCE-v1"]}
       ],
-      "disposition": "HOLD",
-      "targetProfileId": null,
-      "irreducibleMissingFacts": ["physical 0.96 cm pitch/center-aim conformance and verified Qualification-face registration package"]
+      "disposition": "ADMITTED",
+      "targetProfileId": "qualification_m16a2_25m_zero",
+      "irreducibleMissingFacts": []
     },
     {
       "faceId": "face-018",
@@ -209,7 +233,7 @@
       "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
       "gateEvidence": [
         {"gateId": "physical_geometry_pitch", "status": "UNRESOLVED", "basis": "Publisher proves 8.5 x 11 and military-style 25-meter use, but not 0.96 cm pitch.", "sourceIds": ["ALCO-AR-0"]},
-        {"gateId": "aim_reference", "status": "UNRESOLVED", "basis": "Publisher describes an offset aiming point but does not prove the Standard M16A2 center-aim geometry for this face.", "sourceIds": ["ALCO-AR-0"]},
+        {"gateId": "aim_reference", "status": "PROVEN", "basis": "The current exact publisher representation explicitly instructs AIM AT TARGET CENTER and visibly places the aim at the center grid crosshairs.", "sourceIds": ["ALCO-AR-0"]},
         {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "The exact Alco AR-0 representation is publisher-identified and displayed.", "sourceIds": ["ALCO-AR-0"]},
         {"gateId": "procedure", "status": "PROVEN", "basis": "Publisher states 25-meter zero with 300-meter confirmation for the M16A2 branch.", "sourceIds": ["ALCO-AR-0"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
         {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "Only the publisher's explicit M16A2 branch is evaluated; M4/M16A4/AR15 claims are excluded.", "sourceIds": ["ALCO-AR-0"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
@@ -217,7 +241,7 @@
       ],
       "disposition": "HOLD",
       "targetProfileId": null,
-      "irreducibleMissingFacts": ["physical 0.96 cm pitch/center-aim conformance and verified Alco-face registration package"]
+      "irreducibleMissingFacts": ["one dimensioned representation-to-family bridge proving the printed 0.96 cm pitch, followed by exact Alco-face registration"]
     },
     {
       "faceId": "face-020",
@@ -259,16 +283,16 @@
       "representationId": "representation-026-gunfun-32120-a",
       "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
       "gateEvidence": [
-        {"gateId": "physical_geometry_pitch", "status": "UNRESOLVED", "basis": "The low-resolution publisher image is resized and does not prove 0.96 cm production pitch or that green wedges leave physical geometry unchanged.", "sourceIds": ["GUNFUN-CATALOG"]},
-        {"gateId": "aim_reference", "status": "UNRESOLVED", "basis": "A center aim is visible, but physical grid conformance is unresolved.", "sourceIds": ["GUNFUN-CATALOG"]},
+        {"gateId": "physical_geometry_pitch", "status": "PROVEN", "basis": "The declared 9.5 x 12 inch sheet and complete publisher representation independently normalize to 0.956 cm horizontal and 0.962 cm vertical pitch across the 18 x 20 grid; green wedges are ink only.", "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"], "evidencePackageIds": ["GUNFUN-32120-PAGE-NORMALIZED-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-GEOMETRY-FACT-v1"]},
+        {"gateId": "aim_reference", "status": "PROVEN", "basis": "The complete representation places center aim at 9 columns and 10 rows from grid origin.", "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"], "evidencePackageIds": ["GUNFUN-32120-PAGE-NORMALIZED-CONFORMANCE-v1", "MFAM-STANDARD-M16A2-A3-AIM-FACT-v1"]},
         {"gateId": "representation_landmarks", "status": "PROVEN", "basis": "The exact green side-A representation and its asymmetric wedges/footer are preserved.", "sourceIds": ["GUNFUN-CATALOG"]},
         {"gateId": "procedure", "status": "PROVEN", "basis": "The preserved face prints the M16A2 25-meter/300-meter plus-one and return procedure.", "sourceIds": ["GUNFUN-CATALOG"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-A3-PROCEDURE-FACT-v1"]},
         {"gateId": "mechanical_applicability", "status": "PROVEN", "basis": "The printed M16A2 branch may use the existing governed M16A2 authority; M16A4 remains separate.", "sourceIds": ["GUNFUN-CATALOG"], "evidencePackageIds": ["MFAM-STANDARD-M16A2-MECHANICS-FACT-v1"]},
-        {"gateId": "registration_orientation", "status": "UNRESOLVED", "basis": "A source representation exists, but no registration package may be governed until physical conformance is proven.", "sourceIds": ["GUNFUN-CATALOG"]}
+        {"gateId": "registration_orientation", "status": "PROVEN", "basis": "gunfun-32120-m16a2-green-photo-registration-v1 preserves the exact green face by hash and proves asymmetric green top wedges/title/footer orientation plus source-plane reconciliation.", "sourceIds": ["GUNFUN-32120", "SCZN3-MFAM-SCALE-PROOF-04"], "evidencePackageIds": ["GUNFUN-32120-PAGE-NORMALIZED-CONFORMANCE-v1"]}
       ],
-      "disposition": "HOLD",
-      "targetProfileId": null,
-      "irreducibleMissingFacts": ["calibrated production-scale proof of 0.96 cm pitch/center aim and wedge non-effect, then registration against the preserved green representation"]
+      "disposition": "ADMITTED",
+      "targetProfileId": "gunfun_32120_m16a2_green_25m_zero",
+      "irreducibleMissingFacts": []
     },
     {
       "faceId": "face-032",
@@ -289,7 +313,7 @@
     }
   ],
   "scaleProof": {
-    "proofId": "MFAM-SCALE-PROOF-03-EVIDENCE-TO-ADMISSIONS",
+    "proofId": "MFAM-SCALE-PROOF-04-NO-REDUNDANT-GEOMETRY",
     "contractId": "MFAM-STANDARD-M16A2-A3-FAMILY-CONFORMANCE-v1",
     "candidateFaceIds": ["face-006", "face-013", "face-016", "face-018", "face-020", "face-025", "face-027", "face-032"],
     "counts": {
@@ -298,20 +322,20 @@
       "reusableEvidenceFactsEstablished": 8,
       "representationSpecificRequirementTypes": 2,
       "representationSpecificFactInstancesRequired": 12,
-      "newAuthoritativeEvidenceArtifactsAcquired": 5,
+      "newAuthoritativeEvidenceArtifactsAcquired": 4,
       "reusableEvidenceArtifacts": 2,
       "newRegistrationOrientationPackages": 2,
       "newlyAdmittedFaces": 2,
-      "remainingHold": 6,
-      "startingExecutableFamilyBindings": 1,
-      "totalExecutableFamilyBindings": 3,
+      "remainingHold": 4,
+      "startingExecutableFamilyBindings": 3,
+      "totalExecutableFamilyBindings": 5,
       "familyAuthorityPackages": 1,
       "newReusableEvidenceConformancePackagesRequired": 1,
       "productSpecificZeroingImplementations": 0,
       "universalZeroingRoadsAdded": 0
     },
-    "familyLeverage": 3.0,
-    "admissionLeverage": 2.0,
-    "decision": "One NSN production-representation bridge and two exact-representation registration packages admit Speedwell DODM4 M16A2 and the Army-issued M16A2 face. Six faces remain HOLD at product-specific physical-conformance evidence gaps; no zeroing workflow, family mechanics, procedure, or confirmation authority was duplicated."
+    "familyLeverage": 5.0,
+    "admissionLeverage": 1.0,
+    "decision": "Family geometry, aim, procedure, mechanics, and confirmation were reused without re-governance. One issued-NSN bridge admits Qualification M16A2 and one page-normalized representation bridge admits GunFun 32120 green. Four faces remain HOLD only at exact representation-to-family conformance/registration gaps; no zeroing workflow or family authority was duplicated."
   }
 }

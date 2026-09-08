@@ -79,6 +79,24 @@
       productIdentity: Object.freeze({ productId: "NSN-6920-01-395-2949-M16A2", nsn: "6920-01-395-2949", productLabel: "Issued M16A2/A3 25 Meter Zero Target Face" })
     }),
     Object.freeze({
+      targetProfileId: "qualification_m16a2_25m_zero",
+      targetProfileVersion: "QUALIFICATION_M16A2_25M_AUTHORITY_v1",
+      targetProfileLabel: "Qualification Targets M16A2 25 Meter Zeroing Target",
+      missionLabel: "25 Meter Zero",
+      aliases: Object.freeze(["QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1"]),
+      publisherIdentity: Object.freeze({ publisherId: "qualification-targets", publisherLabel: "Qualification Targets", publisherUrl: "https://targets.net", publisherLinkLabel: "Targets.net" }),
+      productIdentity: Object.freeze({ productId: "M16A2", sku: "M16A2", nsn: "6920-01-253-4005", productLabel: "M16A2 Paper Target", productUrl: "https://targets.net/collections/u-s-air-force/products/m16a2-paper-target" })
+    }),
+    Object.freeze({
+      targetProfileId: "gunfun_32120_m16a2_green_25m_zero",
+      targetProfileVersion: "GUNFUN_32120_M16A2_GREEN_AUTHORITY_v1",
+      targetProfileLabel: "GunFun 32120 M16A2 Green 25 Meter Zeroing Target",
+      missionLabel: "25 Meter Zero",
+      aliases: Object.freeze(["GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1"]),
+      publisherIdentity: Object.freeze({ publisherId: "gunfun", publisherLabel: "GunFun", publisherUrl: "https://gunfun.com", publisherLinkLabel: "GunFun.com" }),
+      productIdentity: Object.freeze({ productId: "32120-M16A2", sku: "32120", productLabel: "M16 A2 and A4 Zeroing Target Green — M16A2 Face", productUrl: "https://gunfun.com/shop/m16-a2-a4-zeroing-target-green-32120/" })
+    }),
+    Object.freeze({
       targetProfileId: "m4_25m_zero",
       targetProfileVersion: "M4_TARGET_AUTHORITY_v1_ORIGINAL",
       targetProfileLabel: "M4 25m Zero",

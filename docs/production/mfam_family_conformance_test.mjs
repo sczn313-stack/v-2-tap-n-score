@@ -28,8 +28,8 @@ assert.deepEqual(baker.missingGateIds, []);
 
 const batch = runFamilyAdmissionBatch(registry, contract.contractId, registry.scaleProof.candidateFaceIds);
 assert.equal(batch.candidatesEvaluated, 8);
-assert.deepEqual(batch.admitted.map(candidate => candidate.faceId), ["face-020", "face-032"]);
-assert.equal(batch.held.length, 6);
+assert.deepEqual(batch.admitted.map(candidate => candidate.faceId), ["face-016", "face-020", "face-027", "face-032"]);
+assert.equal(batch.held.length, 4);
 assert(batch.held.every((candidate) => candidate.irreducibleMissingFacts.length === 1));
 
 const speedwell = evaluateFamilyCandidate(registry, "face-020");
@@ -42,17 +42,25 @@ assert.deepEqual(army.missingGateIds, []);
 assert.equal(army.disposition, "ADMITTED");
 assert.equal(army.targetProfileId, "army_nsn_6920_01_395_2949_m16a2_25m_zero");
 
+const qualification = evaluateFamilyCandidate(registry, "face-016");
+assert.equal(qualification.targetProfileId, "qualification_m16a2_25m_zero");
+assert.deepEqual(qualification.missingGateIds, []);
+
+const gunfunGreen = evaluateFamilyCandidate(registry, "face-027");
+assert.equal(gunfunGreen.targetProfileId, "gunfun_32120_m16a2_green_25m_zero");
+assert.deepEqual(gunfunGreen.missingGateIds, []);
+
 const gunfun = evaluateFamilyCandidate(registry, "face-025");
 assert(gunfun.missingGateIds.includes("physical_geometry_pitch"));
 assert(gunfun.missingGateIds.includes("registration_orientation"));
 
 assert.equal(registry.scaleProof.counts.productSpecificZeroingImplementations, 0);
 assert.equal(registry.scaleProof.counts.universalZeroingRoadsAdded, 0);
-assert.equal(registry.scaleProof.counts.newAuthoritativeEvidenceArtifactsAcquired, 5);
+assert.equal(registry.scaleProof.counts.newAuthoritativeEvidenceArtifactsAcquired, 4);
 assert.equal(registry.scaleProof.counts.newRegistrationOrientationPackages, 2);
-assert.equal(registry.scaleProof.familyLeverage, 3);
-assert.equal(registry.scaleProof.admissionLeverage, 2);
+assert.equal(registry.scaleProof.familyLeverage, 5);
+assert.equal(registry.scaleProof.admissionLeverage, 1);
 
 console.log("PASS reusable M/FAM Target Family Conformance/Admission Pattern");
 console.log("PASS 8 Standard M16A2/A3 candidates evaluated by one six-gate contract");
-console.log("PASS Speedwell and Army admitted through exact representation registration");
+console.log("PASS Qualification and GunFun green admitted without re-governing family facts");
