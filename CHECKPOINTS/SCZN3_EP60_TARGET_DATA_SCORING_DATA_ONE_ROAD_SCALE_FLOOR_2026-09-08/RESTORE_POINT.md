@@ -7,7 +7,7 @@
 - Keepsake: #24 — TARGET IS DATA — SCALE PROVEN
 - Master Vault: `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-The preservation commit containing this checkpoint and the Keepsake archive name/hash are recorded in `ARCHIVE_MANIFEST.md` after the canonical archive is built.
+The preservation commit bundled by Keepsake #24 is `7c9a06a30671d07ae06ee1a0e4d21530efadba3d`. The canonical archive name, size, and SHA-256 are recorded in `ARCHIVE_MANIFEST.md`.
 
 ## Restore procedure
 

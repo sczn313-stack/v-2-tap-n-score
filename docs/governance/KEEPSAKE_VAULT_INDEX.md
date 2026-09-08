@@ -2,9 +2,9 @@
 
 Status: **ACTIVE — FOUNDER APPROVED**
 
-Index version: **1.9**
+Index version: **2.0**
 
-Last reconciled against the Master Keepsake Vault: **2026-09-02**
+Last reconciled against the Master Keepsake Vault: **2026-09-08**
 
 ## The Two Homes
 
@@ -14,7 +14,7 @@ Artifact authority:
 
 `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/`
 
-Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#19 are immutable.
+Home 1 owns the executable deposits, ZIP archives, Git bundles, checksums, restore/start instructions, and restore-verification evidence. Keepsakes #1–#24 are immutable.
 
 ### Home 2 — SCZN3 Durable Vault Index
 
@@ -33,6 +33,8 @@ Recovery rule:
 > **KNOWN GOOD → FIND IN INDEX → RETRIEVE FROM MASTER VAULT → RESTORE → VERIFY → BUILD FORWARD**
 
 ## Current recommended known-good recovery floor
+
+**Keepsake #24 — TARGET IS DATA — SCALE PROVEN** is the current Founder-approved Episode 60 scale-development floor. It preserves the exact source state `e249872`, SCMM v2.5, Snapshot 26, one shared data-defined scoring/execution road, the nine-target 1180px and 390px proof, exact SEC/Vault reopen, and the Founder lock that target diversity must not reintroduce target-specific applications. It does not replace the live production recovery floor in #19 or authorize deployment.
 
 **Keepsake #19 — Shared Links — Recipient Activity Tracking — Production Proven** is the current recommended production frontend recovery floor. It preserves the live shared-link funnel, reliable event delivery, and the protected Baker/Talking Smart Target production-road assets at `df2eef7`.
 
@@ -408,15 +410,34 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Public boundary:** Episode 60 remains active. M4 remains COMING SOON. No deployment or Home activation is included or authorized.
 - **Relationship:** Founder-approved successor to #22 for the complete governed M4 Victory #2 road. #19 remains the production recovery floor; #23 becomes the canonical M4 development floor for the next bounded Episode 60 Victory.
 
+### Keepsake #24 — TARGET IS DATA — SCALE PROVEN
+
+- **Status:** FOUNDER APPROVED · IMMUTABLE · RESTORE VERIFIED · EPISODE 60 SCALE MILESTONE
+- **Purpose / capability proven:** Locks **TARGET = DATA / SCORING = DATA / ROAD = SOFTWARE**. Nine materially different targets execute through one shared road at 1180px and 390px with zero target-specific production implementations, zero new shooter roads, and exact SEC → Ballistic Vault → reopen preservation.
+- **Exact implementation floor:** `e249872850409536a368a695b69b682e2584bb01`
+- **Preservation commit:** `7c9a06a30671d07ae06ee1a0e4d21530efadba3d`
+- **Source tree:** `b1508e09d8d7913bc6938af6d5052c90ddf50018`
+- **Predecessor:** Keepsake #23 / M4 Governed Road — Victory #2
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_024_Target_Is_Data_Scale_Proven/`
+- **Archive:** `SCZN3_KEEP_024_TARGET_IS_DATA_SCALE_PROVEN_7c9a06a.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_024_TARGET_IS_DATA_SCALE_PROVEN_7c9a06a.zip`
+- **SHA-256:** `3955f406b72bc8808ecb29f4a0994427ea822fa0b88ea247e1c519c8d5d2d027`
+- **Size:** `145889373` bytes
+- **Restore:** Verify the checksum sidecar, extract the canonical ZIP, clone the embedded bundle, check out preservation commit `7c9a06a`, then run `Deposit_024_Target_Is_Data_Scale_Proven/VERIFY_SCALE_FLOOR.sh /path/to/restored/repository`.
+- **Restore verification:** PASS — ZIP integrity, fresh extraction, complete Git bundle, independent clone, exact checkout, protected-code identity, declarative scoring, shared execution contract, private-LAN runtime, Founder launcher, SEC preservation, and 426-file production build passed.
+- **Scale boundary:** The 2,570-target inventory is context, not a claim that every target is executable. Printer/P-OS supplies target/scoring data; UGO supplies photographed-target geometry; shared software consumes the data. Future work must not reintroduce target-specific scoring applications where the shared contract applies.
+- **Release boundary:** No push, deployment, or public activation is included or authorized. #19 remains the production recovery floor.
+- **Relationship:** Scale-development successor to #23. #24 preserves the platform economics breakthrough without invalidating #23's governed M4 road or #19's live production truth.
+
 ## Physical-vault reconciliation
 
-The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, #21, #22, and #23 deposits through 2026-09-02, inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, #21, #22, #23, and #24 deposits through 2026-09-08, inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#23 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#24 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#23 resolve to their recorded source commits; #6 through #23 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all twenty-three deposits.
-- Keepsakes #1–#23 retain their assigned numbers and directories.
+- Git bundles #1–#24 resolve to their recorded source commits; #6 through #24 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all twenty-four deposits.
+- Keepsakes #1–#24 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
