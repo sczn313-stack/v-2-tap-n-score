@@ -4,6 +4,64 @@
   const clean = value => typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
   const CONTRACT_ADAPTERS = Object.freeze(["collection-hand-family", "cue-drill-family", "decision-scenario-family", "diagnostic-feedback-family", "qualification-family", "smart-evidence-family", "precision-open-score-family", "recreational-challenge-family", "target-scoring-family"]);
+  const SHA256_CONSTANTS = Object.freeze([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+
+  function runtimeId() {
+    if (global.crypto && typeof global.crypto.randomUUID === "function") return global.crypto.randomUUID();
+    const bytes = new Uint8Array(16);
+    if (global.crypto && typeof global.crypto.getRandomValues === "function") global.crypto.getRandomValues(bytes);
+    else for (let index = 0; index < bytes.length; index += 1) bytes[index] = Math.floor(Math.random() * 256);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, value => value.toString(16).padStart(2, "0"));
+    return `${hex.slice(0, 4).join("")}-${hex.slice(4, 6).join("")}-${hex.slice(6, 8).join("")}-${hex.slice(8, 10).join("")}-${hex.slice(10).join("")}`;
+  }
+
+  function sha256Fallback(buffer) {
+    const input = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+    const paddedLength = Math.ceil((input.length + 9) / 64) * 64;
+    const message = new Uint8Array(paddedLength);
+    message.set(input);
+    message[input.length] = 0x80;
+    const view = new DataView(message.buffer);
+    const bitLength = input.length * 8;
+    view.setUint32(paddedLength - 8, Math.floor(bitLength / 0x100000000), false);
+    view.setUint32(paddedLength - 4, bitLength >>> 0, false);
+    const state = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    const words = new Uint32Array(64);
+    const rotate = (value, count) => (value >>> count) | (value << (32 - count));
+    for (let offset = 0; offset < paddedLength; offset += 64) {
+      for (let index = 0; index < 16; index += 1) words[index] = view.getUint32(offset + index * 4, false);
+      for (let index = 16; index < 64; index += 1) {
+        const s0 = rotate(words[index - 15], 7) ^ rotate(words[index - 15], 18) ^ (words[index - 15] >>> 3);
+        const s1 = rotate(words[index - 2], 17) ^ rotate(words[index - 2], 19) ^ (words[index - 2] >>> 10);
+        words[index] = (words[index - 16] + s0 + words[index - 7] + s1) >>> 0;
+      }
+      let [a,b,c,d,e,f,g,h] = state;
+      for (let index = 0; index < 64; index += 1) {
+        const sum1 = rotate(e, 6) ^ rotate(e, 11) ^ rotate(e, 25);
+        const choice = (e & f) ^ (~e & g);
+        const temp1 = (h + sum1 + choice + SHA256_CONSTANTS[index] + words[index]) >>> 0;
+        const sum0 = rotate(a, 2) ^ rotate(a, 13) ^ rotate(a, 22);
+        const majority = (a & b) ^ (a & c) ^ (b & c);
+        const temp2 = (sum0 + majority) >>> 0;
+        h = g; g = f; f = e; e = (d + temp1) >>> 0; d = c; c = b; b = a; a = (temp1 + temp2) >>> 0;
+      }
+      state[0] = (state[0] + a) >>> 0; state[1] = (state[1] + b) >>> 0; state[2] = (state[2] + c) >>> 0; state[3] = (state[3] + d) >>> 0;
+      state[4] = (state[4] + e) >>> 0; state[5] = (state[5] + f) >>> 0; state[6] = (state[6] + g) >>> 0; state[7] = (state[7] + h) >>> 0;
+    }
+    return state.map(value => value.toString(16).padStart(8, "0")).join("");
+  }
+
+  async function sha256Hex(buffer) {
+    if (global.crypto && global.crypto.subtle && typeof global.crypto.subtle.digest === "function") {
+      try {
+        const digest = await global.crypto.subtle.digest("SHA-256", buffer);
+        return Array.from(new Uint8Array(digest), value => value.toString(16).padStart(2, "0")).join("");
+      } catch (_) {}
+    }
+    return sha256Fallback(buffer);
+  }
 
   function canonicalResult(session) {
     return session && (session.authorityPackage || session.backendAuthorityPackage) || null;
@@ -191,7 +249,7 @@
     return Object.freeze({ status: "unavailable", primaryLabel: value.label.toUpperCase(), objectiveLabel: value.value, evidenceLabel: value.detail });
   }
 
-  global.SCZN3TargetExecutionRuntime = Object.freeze({ canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, vaultResultSummary });
+  global.SCZN3TargetExecutionRuntime = Object.freeze({ canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, vaultResultSummary, runtimeId, sha256Hex });
 
   function initializePage() {
     const root = document.querySelector("[data-contract-target-page]");
@@ -202,7 +260,8 @@
     const reopenSessionId = clean(params.get("session"));
     const reopenProgressionId = clean(params.get("progression"));
     const local = ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname);
-    const authorityOrigin = local ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com";
+    const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
+    const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority.onrender.com");
     const state = { session: null, image: null, imageDataUrl: "", observations: [], aim: null, aimMode: false, isCueDrill: false, isQualification: false, isDiagnostic: false, isDecision: false, isStaged: false, cueSequence: 0, cueRunState: null, noObservationDeclared: false };
     const byId = id => document.getElementById(id);
     const status = message => { byId("contractStatus").textContent = message; };
@@ -225,7 +284,7 @@
       if (!targetId) throw new Error("registered_target_required");
       status("Resolving registered capability…");
       const prepared = await request("/api/session/prepare", { method: "POST", body: JSON.stringify({ targetId, missionFamily: missionFamily || undefined }) });
-      const started = await request("/api/session/start", { method: "POST", headers: { "Idempotency-Key": `contract-${crypto.randomUUID()}` }, body: JSON.stringify({ preparationToken: prepared.preparationToken, selectedEquipment: prepared.standardSetup }) });
+      const started = await request("/api/session/start", { method: "POST", headers: { "Idempotency-Key": `contract-${runtimeId()}` }, body: JSON.stringify({ preparationToken: prepared.preparationToken, selectedEquipment: prepared.standardSetup }) });
       state.session = global.SCZN3M4.createAuthoritativeSession(started, { targetProfileId: started.target.targetId, target_profile_id: started.target.targetId, targetName: started.target.targetName, missionFamily: started.missionIdentity.missionFamily, resultPackageType: started.missionIdentity.resultPackageType });
       state.isCueDrill = started.missionIdentity.missionFamily === "cueDrillOrchestration";
       state.isQualification = started.missionIdentity.missionFamily === "qualificationCourseEvaluation";
@@ -241,7 +300,7 @@
     async function loadFile(file) {
       if (!file) return;
       const bytes = await file.arrayBuffer();
-      const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))).map(value => value.toString(16).padStart(2, "0")).join("");
+      const hash = await sha256Hex(bytes);
       const dataUrl = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
       const dimensions = await new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve({ widthPx: image.naturalWidth, heightPx: image.naturalHeight }); image.onerror = reject; image.src = dataUrl; });
       state.imageDataUrl = dataUrl;
@@ -255,7 +314,7 @@
     }
 
     async function cueAction(type, fields = {}) {
-      const response = await request("/api/target-execution/action", { method: "POST", body: JSON.stringify({ authoritativeSessionId: state.session.sessionId, actionId: crypto.randomUUID(), expectedSequence: state.cueSequence, action: { type, ...fields } }) });
+      const response = await request("/api/target-execution/action", { method: "POST", body: JSON.stringify({ authoritativeSessionId: state.session.sessionId, actionId: runtimeId(), expectedSequence: state.cueSequence, action: { type, ...fields } }) });
       state.cueSequence = response.sequenceNumber;
       state.cueRunState = response.runState;
       return response;

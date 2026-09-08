@@ -67,6 +67,8 @@ const publicFiles = new Map([
   ["/sec_session_timeline.js", "sec_session_timeline.js"],
   ["/sec_v1.js", "sec_v1.js"],
   ["/target_execution_runtime.js", "target_execution_runtime.js"],
+  ["/target-experience.html", "target-experience.html"],
+  ["/target-experience.css", "target-experience.css"],
   ["/universal_practice_sec.js", "universal_practice_sec.js"],
   ["/vendor/html2canvas-1.4.1.min.js", "vendor/html2canvas-1.4.1.min.js"],
   ["/assets/crosshair-cross-emblem.png", "assets/crosshair-cross-emblem.png"],
