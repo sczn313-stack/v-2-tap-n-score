@@ -155,6 +155,37 @@
     return source ? `<figure class="contract-evidence"><div><img src="${escapeHtml(source)}" alt="Registered target session evidence" />${markers}${aimMarker}</div></figure>` : `<p>Evidence image unavailable.</p>`;
   }
 
+  function targetScoringRows(result) {
+    if (!result || result.missionFamily !== "targetScoring" || !result.scoring) return [];
+    const scoring = result.scoring;
+    const classifications = Array.isArray(result.classifications) ? result.classifications : [];
+    if (["multiple_bulls", "ordered_objects"].includes(scoring.model) && Array.isArray(scoring.objectResults)) {
+      return scoring.objectResults.map(item => ({
+        label: clean(item.label) || clean(item.objectId) || "Object",
+        value: Number(item.observationCount || 0),
+        displayValue: Number(item.observationCount || 0) === 1 ? "1 hit" : `${Number(item.observationCount || 0)} hits`,
+        hit: item.hit === true,
+      }));
+    }
+    return Object.entries(scoring.regionCounts || {}).map(([regionId, count]) => {
+      const classified = classifications.find(item => clean(item.regionId) === clean(regionId));
+      return {
+        label: clean(classified && classified.label) || clean(regionId).replaceAll("_", " ") || "Outside",
+        value: Number(count || 0),
+        displayValue: String(Number(count || 0)),
+        hit: Number(count || 0) > 0,
+      };
+    });
+  }
+
+  function targetScoringDetailMarkup(result) {
+    const scoring = result && result.scoring || {};
+    if (result && result.missionFamily !== "targetScoring" || scoring.status === "not_applicable") return "";
+    const rows = targetScoringRows(result);
+    if (!rows.length) return "";
+    return `<section class="contract-cue-records contract-scoring-details" aria-label="Target scoring detail">${rows.map(row => `<div><span>${escapeHtml(row.label)}</span><strong>${escapeHtml(row.displayValue)}</strong></div>`).join("")}</section>`;
+  }
+
   function summary(result) {
     if (result.missionFamily === "collectionHandEvaluation") {
       const winner = result.comparison && result.comparison.winnerPlayerId;
@@ -170,10 +201,16 @@
     if (result.missionFamily === "precisionRingScore") return { label: "Open Score", value: String(result.scoring.total), detail: result.scoring.completion === "open" ? "Shooter-controlled completion" : "Shooter declared complete" };
     if (result.missionFamily === "targetScoring") {
       const scoring = result.scoring || {};
+      const rows = targetScoringRows(result);
       if (scoring.status === "not_applicable") return { label: "Target Result", value: `${scoring.observationCount || 0} recorded`, detail: "Printer defines no score · evidence preserved" };
       if (["numeric_regions", "penalty_regions"].includes(scoring.model)) return { label: scoring.model === "penalty_regions" ? "Penalty Total" : "Target Score", value: String(scoring.total), detail: `${scoring.observationCount} governed observations` };
       if (scoring.model === "ordered_objects") return { label: "Ordered Objects", value: `${scoring.completedInOrder} in order`, detail: scoring.nextExpectedObjectId ? `Next: ${scoring.nextExpectedObjectId}` : "Sequence complete" };
-      return { label: "Target Result", value: `${scoring.observationCount} classified`, detail: `${Object.keys(scoring.regionCounts || {}).length} target region${Object.keys(scoring.regionCounts || {}).length === 1 ? "" : "s"}` };
+      if (scoring.model === "multiple_bulls") {
+        const hits = rows.filter(row => row.hit).length;
+        return { label: "Target Objects", value: `${hits} of ${rows.length} hit`, detail: `${scoring.observationCount} governed observations` };
+      }
+      const detail = rows.map(row => `${row.label}: ${row.value}`).join(" · ");
+      return { label: "Target Regions", value: `${scoring.observationCount} classified`, detail: detail || "No classified region" };
     }
     const winner = result.challenge && result.challenge.winnerPlayerId;
     return { label: "Challenge", value: winner ? `Winner: ${winner}` : "In progress", detail: `${(result.events || []).length} governed events` };
@@ -239,7 +276,7 @@
       articleClassName: "history-card contract-family-sec-card",
       articleAttributes: { "data-target-id": target.id, "data-target-profile-id": target.id, "data-target-profile-version": target.version, "data-sec-adapter-id": contract.secAdapterFamilyId, "data-contract-fingerprint": contract.contractFingerprint, "data-publisher-id": publisher.id, "data-product-id": product.id, "data-sec-mode": mode },
       regions: [
-        { key: "target", className: "sec-v1-evidence-content", ariaLabel: "Target", contentHtml: `<section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>${result.missionFamily === "secProgressionEvaluation" ? "" : global.SCZN3SECComponents.Evidence({ contentHtml: evidenceMarkup(session, result) })}<section class="contract-result"><span>${escapeHtml(resultSummary.label)}</span><strong>${escapeHtml(resultSummary.value)}</strong><small>${escapeHtml(resultSummary.detail)}</small><small>Scoring: ${escapeHtml(result.missionFamily === "qualificationCourseEvaluation" ? "Governed course evaluation" : (scoringState === "not_applicable" ? "Not applicable" : scoringState))}</small>${cueResultMarkup(result)}${qualificationResultMarkup(result)}${diagnosticResultMarkup(result)}${decisionResultMarkup(result)}${progressionResultMarkup(result)}${collectionHandResultMarkup(result)}</section>` },
+        { key: "target", className: "sec-v1-evidence-content", ariaLabel: "Target", contentHtml: `<section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>${result.missionFamily === "secProgressionEvaluation" ? "" : global.SCZN3SECComponents.Evidence({ contentHtml: evidenceMarkup(session, result) })}<section class="contract-result"><span>${escapeHtml(resultSummary.label)}</span><strong>${escapeHtml(resultSummary.value)}</strong><small>${escapeHtml(resultSummary.detail)}</small><small>Scoring: ${escapeHtml(result.missionFamily === "qualificationCourseEvaluation" ? "Governed course evaluation" : (scoringState === "not_applicable" ? "Not applicable" : scoringState))}</small>${targetScoringDetailMarkup(result)}${cueResultMarkup(result)}${qualificationResultMarkup(result)}${diagnosticResultMarkup(result)}${decisionResultMarkup(result)}${progressionResultMarkup(result)}${collectionHandResultMarkup(result)}</section>` },
         { key: "session", className: "sec-v1-measurement-content", ariaLabel: "Authority", contentHtml: global.SCZN3SECComponents.Measurement({ contentHtml: `<dl class="contract-authority"><div><dt>Target Execution Contract</dt><dd>${escapeHtml(contract.contractId)} @ ${escapeHtml(contract.contractVersion)}</dd></div><div><dt>Backend authority</dt><dd>${escapeHtml(result.authoritySource)}</dd></div><div><dt>Claim grade</dt><dd>${escapeHtml(result.claim && result.claim.claimGrade || "not_applicable")}</dd></div><div><dt>Scoring status</dt><dd>${escapeHtml(scoringState)}</dd></div></dl>` }) },
         { key: "actions", className: "sec-v1-preservation-content", ariaLabel: "Shooter Action Bar", contentHtml: global.SCZN3SECComponents.Preservation({ contentHtml: actions }) }
       ]
@@ -249,6 +286,22 @@
   function vaultResultSummary(result) {
     if (!contractIdentity(result) || !targetIdentity(result) || !familyReconciles(result)) return null;
     const value = summary(result);
+    if (result.missionFamily === "targetScoring" && result.scoring && result.scoring.status === "complete") {
+      const scoring = result.scoring;
+      const rows = targetScoringRows(result);
+      const numeric = ["numeric_regions", "penalty_regions"].includes(scoring.model);
+      const multiple = scoring.model === "multiple_bulls";
+      const ordered = scoring.model === "ordered_objects";
+      const hitCount = rows.filter(row => row.hit).length;
+      return Object.freeze({
+        status: "complete",
+        primaryValue: numeric ? String(scoring.total) : (multiple ? String(hitCount) : (ordered ? String(scoring.completedInOrder) : String(scoring.observationCount))),
+        primaryUnit: numeric ? (scoring.model === "penalty_regions" ? "PENALTY" : "POINTS") : (multiple ? "OBJECTS HIT" : (ordered ? "IN ORDER" : "CLASSIFIED")),
+        objectiveLabel: value.label.toUpperCase(),
+        breakdown: rows.map(row => ({ label: row.label, value: row.displayValue })),
+        evidenceLabel: `${scoring.observationCount} governed observation${scoring.observationCount === 1 ? "" : "s"}`,
+      });
+    }
     return Object.freeze({ status: "unavailable", primaryLabel: value.label.toUpperCase(), objectiveLabel: value.value, evidenceLabel: value.detail });
   }
 
@@ -418,6 +471,7 @@
       const preserved = global.SCZN3M4.preserveActiveSEC("", state.session);
       if (!preserved) throw new Error("preservation_admission_failed");
       const response = await request("/api/session/sec", { method: "POST", body: JSON.stringify({ session: preserved }) });
+      if (!global.SCZN3SECReopenAuthority?.remember(response)) throw new Error("sec_reopen_authority_unavailable");
       state.session = response.session;
       byId("contractSecRoot").innerHTML = renderSEC({ session: state.session, package: canonicalResult(state.session), preserved: true });
       const saveStatus = document.querySelector("[data-contract-save-status]");
@@ -425,7 +479,9 @@
     }
 
     async function reopen(sessionId) {
-      const response = await request(`/api/session/sec?session=${encodeURIComponent(sessionId)}`);
+      const response = await request(`/api/session/sec?session=${encodeURIComponent(sessionId)}`, {
+        headers: global.SCZN3SECReopenAuthority?.authorizedHeaders(sessionId)
+      });
       state.session = response.session;
       byId("contractCaptureView").hidden = true;
       byId("contractSecView").hidden = false;

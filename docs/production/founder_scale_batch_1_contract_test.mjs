@@ -12,6 +12,11 @@ const reviewServer = await readFile("production/m16a2_tstt_review_server.mjs", "
 const matrix = await readFile("matrix.html", "utf8");
 const productionScoringRoad = await readFile("target-experience.html", "utf8");
 const productionZeroingRoad = await readFile("shoot.html", "utf8");
+const zeroingSEC = await readFile("sec.html", "utf8");
+const productionScoringRuntime = await readFile("target_execution_runtime.js", "utf8");
+const appState = await readFile("app_state.js", "utf8");
+const m4Runtime = await readFile("m4_runtime.js", "utf8");
+const batchAuthority = await readFile("production/target_data_one_road_scale_review_server.py", "utf8");
 
 assert.equal(cohort.targets.length, 21, "batch must contain exactly 21 targets");
 assert.equal((launcher.match(/class="review-card"/g) || []).length, 21, "launcher must contain exactly 21 cards");
@@ -62,5 +67,16 @@ assert.match(matrix, /backendSession && backendSession\.target && backendSession
 assert.match(matrix, /JSON\.stringify\(useStandardSetup/);
 assert.doesNotMatch(productionScoringRoad, /founder-scale-batch-1-review-loader/);
 assert.doesNotMatch(productionZeroingRoad, /founder-scale-batch-1-zeroing-loader/);
+assert.match(productionScoringRuntime, /function targetScoringRows\(result\)/, "shared runtime consumes preserved region/object results");
+assert.match(productionScoringRuntime, /aria-label="Target scoring detail"/, "SEC exposes target-defined scoring detail");
+assert.match(productionScoringRuntime, /status: "complete"[\s\S]*?breakdown: rows\.map/, "Vault exposes the same target-defined scoring detail");
+assert.match(productionScoringRoad, /sec_reopen_capability\.js/, "shared scoring road loads the existing SEC reopen capability");
+assert.match(productionScoringRuntime, /SCZN3SECReopenAuthority\?\.remember\(response\)/, "shared scoring road preserves the backend-issued reopen capability");
+assert.match(productionScoringRuntime, /authorizedHeaders\(sessionId\)/, "shared scoring exact reopen presents the backend-issued capability");
+assert.match(batchAuthority, /from m4_authority\.authority_service import build_authority_package as build_m4_authority/, "Batch authority reuses existing M4\/M16 service");
+assert.match(batchAuthority, /path in \{"\/api\/authority\/m4", "\/api\/authority\/m4\/"\}[\s\S]*?build_m4_authority\(payload\)/, "Batch authority exposes existing M4\/M16 endpoint");
+assert.match(appState, /selectedEquipment\.adjustmentProfileId[\s\S]*selectedEquipment\.equipmentConfigurationId[\s\S]*selectedEquipment\.mechanicalAuthority/, "shared session state preserves backend-selected mechanical authority for every family target");
+assert.match(zeroingSEC, /ZEROING_SEC_ADAPTERS[\s\S]*SPEEDWELL_M16A2_ZEROING[\s\S]*GUNFUN_32120_M16A2_ZEROING/, "shared zeroing SEC admits every existing family adapter without redispatch loops");
+assert.match(m4Runtime, /zeroingAdapters[\s\S]*SPEEDWELL_M16A2_ZEROING[\s\S]*GUNFUN_32120_M16A2_ZEROING[\s\S]*supportedConfirmationResult/, "shared preservation admits confirmed sessions from every existing family adapter");
 
 console.log("PASS Scale Batch #1: 21 targets, 7 categories, 3/category, >=2 printers/category, 12 printers, shared scoring/zeroing roads, exact review-only image handoffs");

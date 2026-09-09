@@ -136,11 +136,18 @@
     const impacts = Array.isArray(evidencePackage && evidencePackage.impacts) ? evidencePackage.impacts : [];
     const impactCount = Number(evidencePackage && evidencePackage.supportedAnalysis && evidencePackage.supportedAnalysis.impactCount);
     const evidence = session && session.targetEvidenceImage;
-    const supportedConfirmationResult = dispatch && (
-      dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.M4_ZEROING
-      || dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING
-      || dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.BAKER_100YD_ZEROING
-    ) && session.confirmationAuthorityPackage;
+    const zeroingAdapters = window.SCZN3SECDispatch ? [
+      window.SCZN3SECDispatch.ADAPTERS.M4_ZEROING,
+      window.SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING,
+      window.SCZN3SECDispatch.ADAPTERS.SPEEDWELL_M16A2_ZEROING,
+      window.SCZN3SECDispatch.ADAPTERS.ARMY_M16A2_ZEROING,
+      window.SCZN3SECDispatch.ADAPTERS.QUALIFICATION_M16A2_ZEROING,
+      window.SCZN3SECDispatch.ADAPTERS.GUNFUN_32120_M16A2_ZEROING,
+      window.SCZN3SECDispatch.ADAPTERS.BAKER_100YD_ZEROING
+    ] : [];
+    const supportedConfirmationResult = dispatch
+      && zeroingAdapters.includes(dispatch.adapter)
+      && session.confirmationAuthorityPackage;
     const supportedEvidenceResult = dispatch
       && dispatch.adapter === window.SCZN3SECDispatch.ADAPTERS.BAKER_SL_ST1
       && evidencePackage

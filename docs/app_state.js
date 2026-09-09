@@ -1091,8 +1091,11 @@
       opticAdjustmentUnit: selectedEquipment.adjustmentUnit || "",
       opticClickValue: selectedEquipment.clickValue || "",
       adjustmentSystem: selectedEquipment.adjustmentSystem || "",
+      adjustmentProfileId: selectedEquipment.adjustmentProfileId || "",
+      equipmentConfigurationId: selectedEquipment.equipmentConfigurationId || "",
       equipmentAuthorityRecordId: selectedEquipment.equipmentAuthorityRecordId || "",
       axisAdjustment: selectedEquipment.axisAdjustment || {},
+      mechanicalAuthority: selectedEquipment.mechanicalAuthority || {},
       setupAuthority: selectedEquipment.setupAuthority || "backend-target-authority",
       setupAuthorityId: selectedEquipment.setupAuthorityId || "",
       setupMode: "standard"

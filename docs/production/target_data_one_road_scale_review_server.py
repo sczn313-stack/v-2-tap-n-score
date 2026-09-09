@@ -16,7 +16,14 @@ sys.path.insert(0, str(BACKEND))
 
 from execution_authority import ExecutionAuthorityError, execute_authoritative_session  # noqa: E402
 from authority_service import build_authority_package, build_distance_click_query  # noqa: E402
+from m4_authority.authority_service import build_authority_package as build_m4_authority  # noqa: E402
 from preserved_sec_store import PreservedSECError, list_preserved_secs, preserve_sec, read_preserved_sec  # noqa: E402
+from sec_reopen_authority import (  # noqa: E402
+    CAPABILITY_HEADER,
+    SECReopenAuthorityError,
+    issue_reopen_capability,
+    verify_reopen_capability,
+)
 from session_authority import SessionAuthorityError, prepare_session, start_session  # noqa: E402
 from target_execution_contract import runtime_resolver  # noqa: E402
 from target_image_registration_authority import TargetImageRegistrationError, register_target_image  # noqa: E402
@@ -60,8 +67,15 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/session/sec":
             session_id = parse_qs(urlparse(self.path).query).get("session", [""])[0]
             try:
-                self.send_json(200, read_preserved_sec(session_id, STORE) if session_id else list_preserved_secs(STORE))
-            except PreservedSECError as error:
+                if session_id:
+                    claims = verify_reopen_capability(self.headers.get(CAPABILITY_HEADER), session_id)
+                    package = read_preserved_sec(session_id, STORE)
+                    if claims["artifactSha256"] != package["artifactSha256"]:
+                        raise SECReopenAuthorityError("preserved_sec_reopen_capability_invalid")
+                    self.send_json(200, package)
+                else:
+                    self.send_json(200, list_preserved_secs(STORE))
+            except (PreservedSECError, SECReopenAuthorityError) as error:
                 self.send_json(error.http_status, error.payload)
             return
         self.send_json(404, {"ok": False, "reason": "not_found"})
@@ -92,6 +106,9 @@ class Handler(BaseHTTPRequestHandler):
             if path in {"/api/authority/ugeo", "/api/authority/ugeo/"}:
                 self.send_json(200, build_authority_package(payload))
                 return
+            if path in {"/api/authority/m4", "/api/authority/m4/"}:
+                self.send_json(200, build_m4_authority(payload))
+                return
             if path in {"/api/authority/distance-click-query", "/api/authority/distance-click-query/"}:
                 self.send_json(200, build_distance_click_query(payload))
                 return
@@ -99,7 +116,11 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json(200, register_target_image(payload))
                 return
             if path == "/api/session/sec":
-                self.send_json(201, preserve_sec(payload, STORE, execution_contract_resolver=RESOLVER))
+                package = preserve_sec(payload, STORE, execution_contract_resolver=RESOLVER)
+                package["reopenCapability"] = issue_reopen_capability(
+                    package["session"]["sessionId"], package["artifactSha256"]
+                )
+                self.send_json(201, package)
                 return
             self.send_json(404, {"ok": False, "reason": "not_found"})
         except SessionAuthorityError as error:
@@ -111,6 +132,8 @@ class Handler(BaseHTTPRequestHandler):
         except (BakerSLST2AuthorityError, BakerFunAuthorityError, VitalDudeEvidenceError) as error:
             self.send_json(400, error.payload)
         except PreservedSECError as error:
+            self.send_json(error.http_status, error.payload)
+        except SECReopenAuthorityError as error:
             self.send_json(error.http_status, error.payload)
         except (json.JSONDecodeError, UnicodeDecodeError):
             self.send_json(400, {"ok": False, "reason": "invalid_json"})

@@ -147,11 +147,20 @@ function isValidFounderReviewSession(candidate) {
   );
 }
 
+const ZEROING_SEC_ADAPTERS = new Set(window.SCZN3SECDispatch ? [
+  SCZN3SECDispatch.ADAPTERS.M4_ZEROING,
+  SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING,
+  SCZN3SECDispatch.ADAPTERS.SPEEDWELL_M16A2_ZEROING,
+  SCZN3SECDispatch.ADAPTERS.ARMY_M16A2_ZEROING,
+  SCZN3SECDispatch.ADAPTERS.QUALIFICATION_M16A2_ZEROING,
+  SCZN3SECDispatch.ADAPTERS.GUNFUN_32120_M16A2_ZEROING
+] : []);
+
 function isCompletedZeroingSession(candidate) {
   return Boolean(
     candidate &&
     window.SCZN3SECDispatch &&
-    [SCZN3SECDispatch.ADAPTERS.M4_ZEROING, SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING].includes(SCZN3SECDispatch.resolve(candidate).adapter) &&
+    ZEROING_SEC_ADAPTERS.has(SCZN3SECDispatch.resolve(candidate).adapter) &&
     window.SCZN3ZeroingPlatform &&
     window.SCZN3ZeroingPlatform.isCompletedSession(candidate) &&
     (candidate.m4AuthorityPackage || candidate.backendAuthorityPackage) &&
@@ -162,7 +171,7 @@ function isCompletedZeroingSession(candidate) {
 const dispatchCandidate = requestedPersistedSession || (!founderReviewSession ? persistedSession : null);
 if (dispatchCandidate && window.SCZN3SECDispatch) {
   const dispatch = SCZN3SECDispatch.resolve(dispatchCandidate);
-  if (![SCZN3SECDispatch.ADAPTERS.M4_ZEROING, SCZN3SECDispatch.ADAPTERS.M16A2_ZEROING].includes(dispatch.adapter)) {
+  if (!ZEROING_SEC_ADAPTERS.has(dispatch.adapter)) {
     window.location.replace(SCZN3SECDispatch.destinationFor(dispatchCandidate));
   }
 }
