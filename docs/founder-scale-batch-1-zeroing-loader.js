@@ -7,7 +7,8 @@
   const reviewImages = Object.freeze({
     baker_m16a2_25m_zero: ["/scale-batch-assets/target-19.jpg", "baker-standard-m16a2.jpg"],
     gunfun_32120_m16a2_green_25m_zero: ["/scale-batch-assets/target-20.jpg", "gunfun-32120-m16a2-green.jpg"],
-    speedwell_dodm4_m16a2_25m_zero: ["/scale-batch-assets/target-21.jpg", "speedwell-dodm4-m16a2.jpg"]
+    speedwell_dodm4_m16a2_25m_zero: ["/scale-batch-assets/target-21.jpg", "speedwell-dodm4-m16a2.jpg"],
+    m4_25m_zero: ["/scale-batch-assets/target-22-runtime.png", "baker-st-uni25mmoa.png"]
   });
 
   function initialize() {

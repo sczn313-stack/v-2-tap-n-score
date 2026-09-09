@@ -18,8 +18,8 @@ const appState = await readFile("app_state.js", "utf8");
 const m4Runtime = await readFile("m4_runtime.js", "utf8");
 const batchAuthority = await readFile("production/target_data_one_road_scale_review_server.py", "utf8");
 
-assert.equal(cohort.targets.length, 21, "batch must contain exactly 21 targets");
-assert.equal((launcher.match(/class="review-card"/g) || []).length, 21, "launcher must contain exactly 21 cards");
+assert.equal(cohort.targets.length, 22, "batch must contain exactly 22 targets");
+assert.equal((launcher.match(/class="review-card"/g) || []).length, 22, "launcher must contain exactly 22 cards");
 assert.equal(cohort.implementationResult.targetSpecificProductionImplementationsAdded, 0);
 assert.equal(cohort.implementationResult.newShooterRoadsAdded, 0);
 assert.deepEqual(cohort.implementationResult.missingReusableBehaviors, []);
@@ -37,7 +37,7 @@ for (const target of cohort.targets) {
 }
 assert.equal(categories.size, 7, "seven requested categories");
 for (const [category, targets] of categories) {
-  assert.equal(targets.length, 3, `${category} must contain exactly three targets`);
+  assert.ok(targets.length >= 3, `${category} must contain at least three targets`);
   assert.ok(new Set(targets.map(target => target.publisher)).size >= 2, `${category} must span at least two printers`);
 }
 assert.equal(publishers.size, 12, "the complete batch must represent all 12 printers");
@@ -53,13 +53,17 @@ for (const target of cohort.targets.filter(target => target.runtimeType === "tar
 
 for (const target of cohort.targets.filter(target => target.runtimeType === "zeroingCorrection")) {
   assert.match(launcher, new RegExp(`target_profile_id=${target.targetProfileId}[\\s\\S]*?founderReview=scale-batch-1`), `zeroing launcher ${target.ordinal}`);
-  assert.match(zeroingLoader, new RegExp(`${target.targetProfileId}:[\\s\\S]*?/scale-batch-assets/target-${target.ordinal}\\.`), `zeroing review image handoff ${target.ordinal}`);
+  const reviewImagePattern = target.ordinal === 22
+    ? "/scale-batch-assets/target-22-runtime\\.png"
+    : `/scale-batch-assets/target-${target.ordinal}\\.`;
+  assert.match(zeroingLoader, new RegExp(`${target.targetProfileId}:[\\s\\S]*?${reviewImagePattern}`), `zeroing review image handoff ${target.ordinal}`);
 }
 
 assert.match(reviewServer, /founder-scale-batch-1-review\.html/);
 assert.match(reviewServer, /founder-scale-batch-1-review-loader\.js/);
 assert.match(reviewServer, /founder-scale-batch-1-zeroing-loader\.js/);
-assert.equal((reviewServer.match(/\["\/scale-batch-assets\/target-(?:0[1-9]|1\d|2[01])\./g) || []).length, 21, "review server exposes 21 exact representations");
+assert.equal((reviewServer.match(/\["\/scale-batch-assets\/target-(?:0[1-9]|1\d|2[0-2])\./g) || []).length, 22, "review server exposes 22 exact representations");
+assert.match(reviewServer, /\["\/scale-batch-assets\/target-22-runtime\.png", "assets\/M4_M16_25M_ZERO_AUTHORITY_v1\.png"\]/, "Target #22 reuses the finished Universal registered image");
 assert.match(matrix, /scaleBatchReviewQuery/);
 assert.match(matrix, /!queryTargetProfileId && window\.SCZN3SmartTargetIdentity/);
 assert.match(matrix, /target_profile_id: queryTargetProfileId\.toLowerCase\(\)/);
@@ -79,4 +83,4 @@ assert.match(appState, /selectedEquipment\.adjustmentProfileId[\s\S]*selectedEqu
 assert.match(zeroingSEC, /ZEROING_SEC_ADAPTERS[\s\S]*SPEEDWELL_M16A2_ZEROING[\s\S]*GUNFUN_32120_M16A2_ZEROING/, "shared zeroing SEC admits every existing family adapter without redispatch loops");
 assert.match(m4Runtime, /zeroingAdapters[\s\S]*SPEEDWELL_M16A2_ZEROING[\s\S]*GUNFUN_32120_M16A2_ZEROING[\s\S]*supportedConfirmationResult/, "shared preservation admits confirmed sessions from every existing family adapter");
 
-console.log("PASS Scale Batch #1: 21 targets, 7 categories, 3/category, >=2 printers/category, 12 printers, shared scoring/zeroing roads, exact review-only image handoffs");
+console.log("PASS Scale Batch #1: 22 targets, 7 categories, >=3/category, >=2 printers/category, 12 printers, shared scoring/zeroing roads, exact review-only image handoffs");

@@ -125,6 +125,8 @@ const publicFiles = new Map([
   ["/scale-batch-assets/target-19.jpg", "assets/BAKER_ST_M16A2_STANDARD_FACE_AUTHORITY_v1.jpg"],
   ["/scale-batch-assets/target-20.jpg", "assets/GUNFUN_32120_M16A2_GREEN_FACE_AUTHORITY_v1.jpg"],
   ["/scale-batch-assets/target-21.jpg", "assets/SPEEDWELL_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg"],
+  ["/scale-batch-assets/target-22.png", "authority-evidence/mfam/founder-supplied-baker-product-evidence/FOUNDER_BAKER_ST_UNI25MMOA_PRODUCT_SCREENSHOT_2026-09-02.png"],
+  ["/scale-batch-assets/target-22-runtime.png", "assets/M4_M16_25M_ZERO_AUTHORITY_v1.png"],
   ["/universal_practice_sec.js", "universal_practice_sec.js"],
   ["/vendor/html2canvas-1.4.1.min.js", "vendor/html2canvas-1.4.1.min.js"],
   ["/assets/crosshair-cross-emblem.png", "assets/crosshair-cross-emblem.png"],
