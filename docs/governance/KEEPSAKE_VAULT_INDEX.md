@@ -429,15 +429,34 @@ For recovery of the smallest pre-demo complete Baker runtime, use Keepsake #1.
 - **Release boundary:** No push, deployment, or public activation is included or authorized. #19 remains the production recovery floor.
 - **Relationship:** Scale-development successor to #23. #24 preserves the platform economics breakthrough without invalidating #23's governed M4 road or #19's live production truth.
 
+### Keepsake #25 — Episode 60 True North Closure
+
+- **Status:** FOUNDER DIRECTED · IMMUTABLE · RESTORE VERIFIED · EPISODE 60 CLOSURE
+- **Purpose / capability proven:** Preserves the complete Episode 60 floor, SCMM v2.6, Snapshot 27, the 2,570-product / 12-publisher inventory context, eight-family recovery, 95.4% defensible minimum existing-capability floor, TF-08 D-mixed finding, and the successor rule that scale proceeds through existing mature roads and reusable owners rather than a replacement generalized shell.
+- **Exact implementation source:** `a9ba035659e873f5704a35ee7a10541b270fec3a`
+- **Preservation commit:** `bd01c7facb85b9d0135559086a757639366d8414`
+- **Source tree:** `d2d6f5ff333e238f0de1fa1822e81514cb04282c`
+- **Predecessor:** Keepsake #24 / TARGET IS DATA — SCALE PROVEN
+- **Master Vault deposit:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/Deposit_025_Episode_60_True_North_Closure/`
+- **Archive:** `SCZN3_KEEP_025_EPISODE_60_TRUE_NORTH_CLOSURE_bd01c7f.zip`
+- **Archive path:** `/Users/ronnieseay/Documents/ChatGPT/Shortest mental model/Keepsake Vault/SCZN3_KEEP_025_EPISODE_60_TRUE_NORTH_CLOSURE_bd01c7f.zip`
+- **SHA-256:** `eefaef8a138b4fe828bc0750b38abfa01ac8cd13b2a45ebc86a4650fd430cf73`
+- **Size:** `149101924` bytes
+- **Restore:** Verify the checksum sidecar, extract the canonical ZIP, clone the embedded bundle, check out preservation commit `bd01c7f`, then run `Deposit_025_Episode_60_True_North_Closure/VERIFY_EPISODE_60_CLOSURE.sh /path/to/restored/repository`.
+- **Restore verification:** PASS — ZIP integrity, fresh extraction, complete Git bundle, independent clone, exact preservation checkout, protected-source identity, Episode Registry closure, SCMM/Snapshot/handoff presence, cue/drill, progression, shared scoring, known-good mature roads, 22-target scale cohort, TSTT/PLAYER contracts, and 435-file production build passed.
+- **Inventory boundary:** 95.4% means existing capability applies to families containing at least 2,451 products; it does not mean those products are individually production-ready. TF-08 proves a higher actual floor, but the exact additional percentage remains unavailable until its missing 119-product membership artifact is recovered.
+- **Release boundary:** No next Episode, implementation, push, deployment, public activation, or generalized replacement road is included or authorized. #19 remains the live production recovery floor.
+- **Relationship:** Canonical Episode 60 closure successor to #24. #25 protects the full Episode 60 development state and makes recovery/inheritance the opening rule for future scale work.
+
 ## Physical-vault reconciliation
 
-The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, #21, #22, #23, and #24 deposits through 2026-09-08, inspected the actual Master Vault rather than relying on conversation memory:
+The 2026-08-30 Two-Homes validation, extended by the independently restored #19, #20, #21, #22, #23, #24, and #25 deposits through 2026-09-09, inspected the actual Master Vault rather than relying on conversation memory:
 
-- Canonical ZIPs #1–#24 exist at the recorded paths and match the SHA-256 values above.
+- Canonical ZIPs #1–#25 exist at the recorded paths and match the SHA-256 values above.
 - Each deposit directory exists and contains its recorded runtime/start and evidence references.
-- Git bundles #1–#24 resolve to their recorded source commits; #6 through #24 were cloned independently from their preserved artifacts.
-- Restore records report PASS for all twenty-four deposits.
-- Keepsakes #1–#24 retain their assigned numbers and directories.
+- Git bundles #1–#25 resolve to their recorded source commits; #6 through #25 were cloned independently from their preserved artifacts.
+- Restore records report PASS for all twenty-five deposits.
+- Keepsakes #1–#25 retain their assigned numbers and directories.
 
 An additional file named `SCZN3_KEEP_005_FIRST_TALKING_SMART_TARGET_afbcaf7 2.zip` exists in Home 1. Its SHA-256 is `63f246031150ef3af4891c92d6c6dd200624d39c9d8c4628556d5c50859ded5e`. It is an earlier pre-final archive copy, **not** a sixth Keepsake and **not** the canonical #5 artifact. The canonical #5 archive is the exact filename and checksum recorded in the #5 entry above. The additional file was left untouched.
 
