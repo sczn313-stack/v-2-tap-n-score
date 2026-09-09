@@ -10,7 +10,8 @@ This index identifies the governing records for implementation control, episode 
 4. [Authoritative Episode Registry](../../governance/episode-registry/EPISODE_REGISTRY.json) — single authoritative owner of episode identity.
 5. [Episode Reconciliation Report](../../governance/episode-registry/EPISODE_RECONCILIATION_REPORT.md) — evidence-backed reconciliation of historical episode references.
 6. [Keepsake Vault Index — Two Homes](./KEEPSAKE_VAULT_INDEX.md) — the Founder-approved artifact-authority/index model, immutable deposit lineage, recovery map, and dual-home preservation rule.
-7. [Episode 60 M/FAM / TSTT Course Correction](./EPISODE60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02.md) — current three-product, standalone Smart Target, TSTT, business-architecture, and implementation-prohibition record.
+7. [Episode 60 True North Existing-Capability Floor](./EPISODE60_TRUE_NORTH_EXISTING_CAPABILITY_FLOOR_2026-09-09.md) — closing authority for the 2,570-product, eight-family recovery and 95.4% defensible minimum floor.
+8. [Episode 60 M/FAM / TSTT Course Correction](./EPISODE60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02.md) — three-product, standalone Smart Target, TSTT, business-architecture, and implementation-prohibition record.
 8. [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](../history/snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md) — clean pre-amendment architecture/governance floor.
 9. [Episode 60 TSTT Adaptive Routing Amendment](./EPISODE60_TSTT_ADAPTIVE_ROUTING_AMENDMENT_2026-09-02.md) — equipment-selected instruction and result-gated confirmation-loop governance.
 10. [Snapshot 22 — Episode 60 TSTT Adaptive Routing Amendment](../history/snapshots/SNAPSHOT_022_EPISODE_60_TSTT_ADAPTIVE_ROUTING_AMENDMENT.md) — current adaptive architecture/governance floor; runtime remains pending.
@@ -29,6 +30,8 @@ This index identifies the governing records for implementation control, episode 
 
 ## Current locked checkpoint
 
+- [Episode 60 True North closure checkpoint](../../CHECKPOINTS/SCZN3_EP60_TRUE_NORTH_CLOSURE_2026-09-09/CHECKPOINT.md)
+- [Episode 60 True North restore point](../../CHECKPOINTS/SCZN3_EP60_TRUE_NORTH_CLOSURE_2026-09-09/RESTORE_POINT.md)
 - [Episode 60 M/FAM / TSTT course-correction checkpoint](../../CHECKPOINTS/SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02/CHECKPOINT.md)
 - [Episode 60 M/FAM / TSTT restore point](../../CHECKPOINTS/SCZN3_EP60_M_FAM_TSTT_COURSE_CORRECTION_2026-09-02/RESTORE_POINT.md)
 - [Episode 60 TSTT adaptive-routing checkpoint](../../CHECKPOINTS/SCZN3_EP60_TSTT_ADAPTIVE_ROUTING_2026-09-02/CHECKPOINT.md)

@@ -2,9 +2,9 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.5 — Founder Approved / SCALE FLOOR LOCKED
-**Current through:** 2026-09-08
-**Status:** Episode 59 — I KNOW THIS SHOOTER is closed; Episode 60 — M4: LET THE TARGET TALK is active with its Target Data / Scoring Data / One Road scale floor locked
+**Version:** 2.6 — Founder Approved / EPISODE 60 TRUE NORTH CLOSURE
+**Current through:** 2026-09-09
+**Status:** Episode 60 — M4: LET THE TARGET TALK is closed under the 2,570 Target True North / Existing-Capability Floor; the next episode is reserved but not opened
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
 
 > **SCZN3 FIRST.**
@@ -19,19 +19,19 @@
 
 | State | Current truth |
 |---|---|
-| Active episode | **Episode 60 — M4: LET THE TARGET TALK** — Victory #2 Founder Approved; episode remains active |
-| Last closed episode | **Episode 59 — I KNOW THIS SHOOTER** — closed, archived, and locked |
-| Next reserved episode | Not assigned |
-| Episode Registry | PASS — 60 continuous slots; Episodes 58–59 locked; Episode 60 active |
+| Active episode | None |
+| Last closed episode | **Episode 60 — M4: LET THE TARGET TALK** — closed, archived, and locked |
+| Next reserved episode | **Episode 61** — title and implementation scope not assigned |
+| Episode Registry | PASS — 60 continuous slots; Episodes 58–60 locked; no active episode |
 | Production | `https://tap-n-score.com` — frontend `df2eef730deca3f108ebe6e592dd6b643bb8a530`; backend `ace773c7de221c5c5bf70f28b9bc96cb1208213d` |
 | Production platform | Netlify frontend + Render authority service; Baker 100 Yard Talking Smart Target is the sole AVAILABLE public target |
-| Current development | Episode 60 scale milestone: nine materially different targets execute through one shared road with data-defined scoring and exact SEC → Vault → reopen preservation |
+| Current development | Episode 60 closing floor: 2,570 commercial target products across 12 publishers; eight working Target Families investigated against existing SCZN3 capability |
 | Prior continuity baseline | Snapshot 15 — Episode 59 Final Founder Audit Lock / Keepsake #8 |
-| Latest locked snapshot | Snapshot 26 — Target Data / Scoring Data / One Road Scale Floor |
-| Latest checkpoint | `SCZN3_EP60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR_2026-09-08` |
+| Latest locked snapshot | Snapshot 27 — Episode 60 Closure: 2,570 Target True North / Existing-Capability Floor |
+| Latest checkpoint | `SCZN3_EP60_TRUE_NORTH_CLOSURE_2026-09-09` |
 | Current P-OS baseline | **12 publishers; 2,924 publisher product records; 2,570 target-only products in the current scale denominator** |
 | Current General Shooting Knowledge baseline | **12 source/publisher inputs; 20 synthesized domains; 6 contextual conflicts reconciled; 9 deliberate learning priorities** |
-| Next active priority | **Begin only from the locked scale floor when separately authorized. Express another target through existing target/scoring data before considering new software. No push, deployment, or public activation is authorized by this floor.** |
+| Next active priority | **When a new episode is separately authorized, prove scale through existing SCZN3. Recover first, connect mature roads, and build only a genuinely missing reusable behavior once. No next-episode implementation, push, deployment, or public activation is authorized by this closure.** |
 
 Do not confuse the production product commit, backend commit, deployment IDs, continuity-metadata commit, Snapshot 16, and Keepsake archives. Product truth is the deployed frontend/backend pair; recovery truth is the indexed, restore-verified Keepsake floor.
 
@@ -719,6 +719,16 @@ The operational ownership boundary is locked:
 
 The 2,570-target inventory is scale context, not a claim that all 2,570 targets are executable. The nine-target proof establishes that materially different target structures can be data running through one software road. Future work must first ask **“Does SCZN3 already know how to do this?”** If yes, express the target in data and move. If no, implement the smallest reusable missing behavior once and prove multiple applicable targets can consume it.
 
+## 11.3 Episode 60 — True North Closure
+
+SCZN3 already has universality. Target Families route and organize products; they are not eight replacement software architectures. Product-specific identity, geometry, scoring, rules, and other governed information supply what an applicable mature road requires. That road retains its result, Universal SEC, Ballistic Vault preservation, and exact reopen.
+
+Before implementation, determine whether SCZN3 already knows, built, tested, or preserved the behavior. Reuse existing behavior instead of recreating it. Build a genuine reusable gap once, then let every applicable product inherit it.
+
+The recovered 2,570-product inventory establishes **95.4% / 2,451 products** as the defensible minimum family-level existing-capability floor for TF-01 through TF-07. This does **not** claim that 2,451 products are individually production-ready. TF-08 Training is mixed and contains current, reusable, historical, and Smart Evidence capability, proving the real floor is higher; its exact additional percentage cannot be calculated until the missing 119-product TF-08 membership artifact is recovered.
+
+> **RECOVER FIRST → USE WHAT EXISTS → CONNECT WHAT EXISTS → BUILD ONLY GENUINELY MISSING REUSABLE BEHAVIOR.**
+
 ## 12. Do Not Redo
 
 Do not reopen or recreate these settled foundations without contradictory authority and Founder authorization:
@@ -814,6 +824,10 @@ Update this existing file only when meaningful SCZN3 knowledge changes: a substa
 
 Primary current records:
 
+- [Snapshot 27 — Episode 60 Closure: 2,570 Target True North / Existing-Capability Floor](../history/snapshots/SNAPSHOT_027_EPISODE_60_CLOSURE_2570_TARGET_TRUE_NORTH_EXISTING_CAPABILITY_FLOOR.md)
+- [Episode 60 Closing Record](../history/episodes/EPISODE_60_CLOSING_RECORD.md)
+- [Episode 60 True North Existing-Capability Floor](../governance/EPISODE60_TRUE_NORTH_EXISTING_CAPABILITY_FLOOR_2026-09-09.md)
+- [Next-Episode Opening Handoff](../history/episodes/NEXT_EPISODE_OPENING_HANDOFF_AFTER_EPISODE_60.md)
 - [Snapshot 26 — Target Data / Scoring Data / One Road Scale Floor](../history/snapshots/SNAPSHOT_026_EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md)
 - [Episode 60 Scale Floor Governance](../governance/EPISODE60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR_2026-09-08.md)
 - [Scale Pass Evidence](../authority-evidence/platform/target-scoring-data-2026-09-08/SCZN3_SCALE_PASS.md)

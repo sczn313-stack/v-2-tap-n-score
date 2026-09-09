@@ -12,6 +12,9 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current locked archive
 
+- [Snapshot 27 — Episode 60 Closure: 2,570 Target True North / Existing-Capability Floor](./snapshots/SNAPSHOT_027_EPISODE_60_CLOSURE_2570_TARGET_TRUE_NORTH_EXISTING_CAPABILITY_FLOOR.md)
+- [Episode 60 Closing Record](./episodes/EPISODE_60_CLOSING_RECORD.md)
+- [Next-Episode Opening Handoff](./episodes/NEXT_EPISODE_OPENING_HANDOFF_AFTER_EPISODE_60.md)
 - [Snapshot 26 — Target Data / Scoring Data / One Road Scale Floor](./snapshots/SNAPSHOT_026_EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md)
 - [Episode 60 Target Data / Scoring Data / One Road Scale Floor](./episodes/EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md)
 - [Snapshot 21 — Episode 60 M/FAM / TSTT Course Correction](./snapshots/SNAPSHOT_021_EPISODE_60_M_FAM_TSTT_COURSE_CORRECTION.md)
@@ -46,26 +49,29 @@ This directory is the living historical record for SCZN3. It separates the story
 
 ## Current episode continuity
 
+- [Episode 60 Closing Record](./episodes/EPISODE_60_CLOSING_RECORD.md) closes M4: LET THE TARGET TALK under Snapshot 27; no next Episode is active.
+- [Next-Episode Opening Handoff](./episodes/NEXT_EPISODE_OPENING_HANDOFF_AFTER_EPISODE_60.md) protects scale-through-inheritance without opening Episode 61 or authorizing implementation.
 - [Episode 60 Target Data / Scoring Data / One Road Scale Floor](./episodes/EPISODE_60_TARGET_DATA_SCORING_DATA_ONE_ROAD_SCALE_FLOOR.md) locks the nine-target, one-road scale milestone under Snapshot 26 and Keepsake #24.
 - [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is Founder Approved, closed, archived, and locked.
 - [Episode 60 TSTT Founder Review Pass #4](./episodes/EPISODE_60_TSTT_FOUNDER_REVIEW_PASS4.md) removes the equipment-confirmation entry gate and makes pre-start PLAYER discovery immediate while preserving strict equipment-specific execution authority.
 - [Episode 60 TSTT Chapter 1 Founder-Approved Floor](./episodes/EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) closes KNOW YOUR TARGET and establishes Snapshot 24 as the clean Chapter 2 next floor.
 - [Episode 60 TSTT Chapter 2 Founder-Approved Floor](./episodes/EPISODE_60_TSTT_CHAPTER_2_FOUNDER_APPROVED_FLOOR.md) closes THE SIGHTS and establishes Snapshot 25 as the clean Chapter 3 next floor.
-- Episode 60 — **M4: LET THE TARGET TALK** remains active. [Snapshot 25](./snapshots/SNAPSHOT_025_EPISODE_60_TSTT_CHAPTER_2_FOUNDER_APPROVED_FLOOR.md) locks the Founder-approved Chapter 2 runtime and establishes Chapter 3 as the next bounded floor. Earlier snapshots remain intact. All three products remain COMING SOON.
+- Episode 60 — **M4: LET THE TARGET TALK** is closed, archived, and locked under Snapshot 27. Earlier snapshots remain intact. All three M/FAM products remain COMING SOON.
 - Baker 100 Yard Talking Smart Target is live and is the sole AVAILABLE public target.
 - [Episode 59 Baker Production Deployment Record](../governance/EPISODE59_BAKER_PRODUCTION_DEPLOYMENT_RECORD_2026-08-31.md)
 - [Founder Shared-Link Activity Dashboard Production Proof](../governance/FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md)
 - [Keepsake #19](../governance/KEEPSAKE_VAULT_INDEX.md) is the production-proven frontend recovery floor.
-- [Keepsake #24](../governance/KEEPSAKE_VAULT_INDEX.md) is the canonical Episode 60 Target Data / Scoring Data / One Road scale-development floor.
+- [Keepsake #25](../governance/KEEPSAKE_VAULT_INDEX.md) is the canonical Episode 60 closure and successor scale-through-existing-capability floor.
 
 ## Latest closed episode
 
-- [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) is the latest Founder-approved closed episode.
+- [Episode 60 — M4: LET THE TARGET TALK](./episodes/EPISODE_60_CLOSING_RECORD.md) is the latest Founder-directed closed episode.
+- [Episode 59 — I KNOW THIS SHOOTER](./episodes/EPISODE_59_I_KNOW_THIS_SHOOTER.md) remains the preceding Founder-approved closed episode.
 - [Episode 58 — Equipment Library](./episodes/EPISODE_58_EQUIPMENT_LIBRARY.md) remains closed, archived, and locked.
 - [Episode 58 Closeout Readiness Reconciliation](./episodes/EPISODE_58_CLOSEOUT_READINESS_RECONCILIATION.md) is the current handoff; the [Episode 58 New-Agent Handoff](./episodes/EPISODE_58_NEW_AGENT_HANDOFF.md) preserves the Snapshot 12 starting point.
 - [Weapon Library Full-Catalog Intelligence Study](../authority-evidence/publisher-os/2026-08-23-weapon-library-full-catalog-intelligence/README.md) is the starting evidence baseline.
 - [Snapshot 12 — Episode 58 Equipment Library Continuity Baseline](./snapshots/SNAPSHOT_012_EPISODE_58_EQUIPMENT_LIBRARY_CONTINUITY_BASELINE.md) locks the Founder-approved Episode 58 starting context.
-- [Snapshot 13 — Episode 58 Equipment Library Closure](./snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md) locks the final Episode 58 implementation and evidence state. Episode 59 is closed under Snapshot 17; Episode 60 is active. Survey remains not Founder Approved.
+- [Snapshot 13 — Episode 58 Equipment Library Closure](./snapshots/SNAPSHOT_013_EPISODE_58_EQUIPMENT_LIBRARY_CLOSURE.md) locks the final Episode 58 implementation and evidence state. Episode 59 is closed under Snapshot 17; Episode 60 is closed under Snapshot 27; no episode is active. Survey remains not Founder Approved.
 
 ## Evidence policy
 

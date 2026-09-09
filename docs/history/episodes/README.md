@@ -26,11 +26,11 @@ Episode numbers are recorded only when committed documentation establishes them.
 | Episode 57 | Discovery-Driven Smart Target Landing Page | 2026-08-22 | [Locked record](./EPISODE_57_DISCOVERY_DRIVEN_SMART_TARGET_LANDING_PAGE.md) | CLOSED / ARCHIVED / LOCKED — Survey excluded |
 | Episode 58 | Equipment Library | 2026-08-23 through 2026-08-24 | [Locked record](./EPISODE_58_EQUIPMENT_LIBRARY.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
 | Episode 59 | I KNOW THIS SHOOTER | 2026-08-30 through 2026-09-01 | [Closed record](./EPISODE_59_I_KNOW_THIS_SHOOTER.md) | CLOSED / ARCHIVED / LOCKED — Founder Approved |
-| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 onward | [Chapter 1 Founder-Approved Floor](./EPISODE_60_TSTT_CHAPTER_1_FOUNDER_APPROVED_FLOOR.md) | ACTIVE — Snapshot 24 floor; Chapter 1 closed; Chapter 2 next |
+| Episode 60 | M4: LET THE TARGET TALK | 2026-09-01 through 2026-09-09 | [Closing record](./EPISODE_60_CLOSING_RECORD.md) | CLOSED / ARCHIVED / LOCKED — Snapshot 27 True North floor |
 
 ## Episode records
 
-Episodes 55–59 are closed, archived, and locked. Episode 60 — M4: LET THE TARGET TALK is active under Snapshot 24. Chapter 1 — KNOW YOUR TARGET is Founder Approved and closed; Chapter 2 — THE SIGHTS is the next bounded floor. Victory #2 and earlier snapshots remain protected. The local TSTT does not enter the live Tap-n-Score road. All three products remain COMING SOON. Survey remains outside Founder approval.
+Episodes 55–60 are closed, archived, and locked. Episode 60 closes under Snapshot 27 with the 2,570 Target True North / Existing-Capability Floor. No next Episode is active; Episode 61 is reserved but unassigned. Victory #2 and earlier snapshots remain protected. The local TSTT does not change the live Tap-n-Score production road. All three M/FAM products remain COMING SOON. Survey remains outside Founder approval.
 
 ### First Stable Zeroing Pipeline
 
