@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_2195665813577-smart-evidence-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "EVIDENCE_ONLY",
       "qtFamilyGroup": "EVIDENCE_ONLY",
       "episode64IntelligenceFamily": "EVIDENCE_ONLY",
-      "homieLockedCapability": "Evidence Only"
+      "homieLockedCapability": "Evidence Only",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "smartEvidenceCapture",
@@ -143,9 +144,22 @@
           "values": [],
           "labels": [],
           "storedTargetRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        },
+        "publisherRuleAuthority": {
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualifications Targets Inc. Product SN-3 Paper Target - Sniper Target - Rear View - Full Color - 10\" X 14\" For large or custom orders, please call 866-498-8228",
+          "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [],
+          "regionObjectIds": [],
+          "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
         }
       },
-      "digest": "85c4c790a9f74b1669829463aea596f3148a5ea16384c5d14a9e93b7f89e2b26"
+      "digest": "4840c8d148f8d5c137ebb6fe94b5ddb8a1aba8fe0c4eb9fc3ef7c99306e735a5"
     },
     "mission": {
       "id": "qt_printer13_product_2195665813577-mission",
@@ -193,28 +207,29 @@
           "resultAction": "show_result"
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "EVIDENCE_ONLY",
           "highestTruthfulCapability": "Evidence Only",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualifications Targets Inc. Product SN-3 Paper Target - Sniper Target - Rear View - Full Color - 10\" X 14\" For large or custom orders, please call 866-498-8228",
                 "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
                 "labels": [],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
-              "registeredGeometryStatus": "registered_image_plane_only",
+              "registeredGeometryStatus": "no_governed_regions",
               "registeredRegionCount": 0,
               "registeredRegionIds": [],
               "observedPhysicalStructure": {
@@ -317,13 +332,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "inventedscoring",
             "inventedregions",
             "inventedqualification",
@@ -332,19 +340,45 @@
             "inventedzeroingcorrection"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 205,
             "visualStackChair": 240,
-            "priorSurgicalCapability": null,
-            "changedFromPriorSurgicalReview": false,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Preserve every tap at the exact source-image location. Report total taps, shot-pattern center, dispersion/distribution and history. Upgrade only when the face itself provides bindable regions/objects/values."
+          "smartBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-2195665813577",
+              "productName": "SN-3 Paper Target",
+              "sku": "SN-3",
+              "imageFilename": "qt-2195665813577-01.jpg",
+              "imageSha256": "0f81ad65322dca94cd5c9b0fbf78fc181a8d5437b6fdde2bb91f397875368563"
+            },
+            "publisherCatalogEvidence": "Qualifications Targets Inc. Product SN-3 Paper Target - Sniper Target - Rear View - Full Color - 10\" X 14\" For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
+            "capability": "Evidence Only",
+            "intelligenceFamily": "EVIDENCE_ONLY",
+            "explicitGovernedLabels": [],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [],
+            "requiredBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+            "geometryInstruction": "Use the registered target-specific geometry where it matches the printed face.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "invented_scoring",
+              "invented_regions",
+              "invented_qualification",
+              "invented_course_rules",
+              "invented_penalties",
+              "invented_zeroing_correction."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "f9964596b522452a040664d2a89513c3c171f8063887aca7286103ab78c4aa24"
+      "digest": "06fd9122fc3640c2d3fba362817ecd87ef1ba512843d3e481f31444bcd605c33"
     }
   },
   "executor": {

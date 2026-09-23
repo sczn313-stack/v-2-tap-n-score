@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1956005085257-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -40,7 +40,8 @@
         "unit": "inch"
       },
       "episode64IntelligenceFamily": "COMPETITION_SCORING",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -287,8 +288,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product IPSC-Paper Target has the USPSA/IPSC Training Target zones printed on Paper. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "printed A/B/C/D region names; no numeric value inferred"
         },
         "homieLockedArtworkFacts": {
@@ -302,9 +304,28 @@
             "D"
           ],
           "storedTargetRule": "printed A/B/C/D region names; no numeric value inferred"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "A",
+            "B",
+            "A",
+            "C",
+            "D"
+          ],
+          "regionObjectIds": [
+            "a_head",
+            "b_head",
+            "a_body",
+            "c_body",
+            "d_body"
+          ],
+          "storedGoverningRule": "printed A/B/C/D region names; no numeric value inferred"
         }
       },
-      "digest": "c3062e62709fe7cd5dcc803457b32100da470fd8b46bcb788450aa109c2c0e96"
+      "digest": "3c0f006f6c55b06063733e8e0de982492bfdd68cf5ac578043487dd9e6a5ea1c"
     },
     "mission": {
       "id": "qt_printer13_product_1956005085257-mission",
@@ -348,19 +369,20 @@
           "legTwoManifest": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json"
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "COMPETITION_SCORING",
-          "highestTruthfulCapability": "Scoring",
+          "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product IPSC-Paper Target has the USPSA/IPSC Training Target zones printed on Paper. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "printed A/B/C/D region names; no numeric value inferred"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "established IPSC surface authority is already inherited by the QT contract",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -371,7 +393,7 @@
                   "C",
                   "D"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -461,11 +483,11 @@
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "score_and_regions"
+            "meaningfulBreakdown": "regions_or_objects"
           },
           "result": {
             "totalTaps": true,
-            "publisherScore": true,
+            "publisherScore": false,
             "regionObjectBreakdown": true,
             "shotPattern": true
           },
@@ -481,16 +503,9 @@
           },
           "progress": {
             "tightestPatternPersonalBest": true,
-            "scoreHistoryWhenGoverned": true
+            "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "physicalholeextentorlinetouchadjudication",
             "qtsemanticsbeyondexactpriorsurfaceinheritance",
             "qualificationorcertification",
@@ -498,19 +513,56 @@
             "zeroingcorrection"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 152,
             "visualStackChair": 182,
-            "priorSurgicalCapability": "Zone / Object Counting",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture printed competition zones/objects. Score only printed/stored values; otherwise zone count. Report totals, zone distribution, misses, pattern, and history. No invented match procedure."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: A, B, A, C, D.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1956005085257",
+              "productName": "IPSC-Paper Target",
+              "sku": "IPSC-PAPER",
+              "imageFilename": "qt-1956005085257-01.jpg",
+              "imageSha256": "5e23db42bd760cea52761416a66f3e72c7bb79e63d571730af8c9aa1b95b5a29"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product IPSC-Paper Target has the USPSA/IPSC Training Target zones printed on Paper. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "printed A/B/C/D region names; no numeric value inferred",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "COMPETITION_SCORING",
+            "explicitGovernedLabels": [
+              "A",
+              "B",
+              "A",
+              "C",
+              "D"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "a_head",
+              "b_head",
+              "a_body",
+              "c_body",
+              "d_body"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: A, B, A, C, D.",
+            "geometryInstruction": "Use the registered target-specific geometry where it matches the printed face.",
+            "authorityLimitOrUnresolved": "established IPSC surface authority is already inherited by the QT contract",
+            "forbiddenInference": [
+              "physical_hole_extent_or_line_touch_adjudication",
+              "qt_semantics_beyond_exact_prior_surface_inheritance",
+              "qualification_or_certification",
+              "scoring_rules_not_present_in_publisher_authority",
+              "zeroing_correction."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "8722c93d8f0eb50b2f9c5cab6f14980e7a8027b358a77c69676f0f73a3d684d3"
+      "digest": "7318f15e0ee1f6469fdfad303703de28536ecf7bea8395b2f748bc2b1869b791"
     }
   },
   "executor": {

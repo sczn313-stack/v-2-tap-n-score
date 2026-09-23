@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1977688096841-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "DISCRIMINATION_OBJECTS",
       "qtFamilyGroup": "TRNG_FAMILY",
       "episode64IntelligenceFamily": "DISCRIMINATION_OBJECTS",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -234,8 +235,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product TRNG-8A Paper Target - TRNG Training Target. Multiple Shape and Color Training Target FULL COLOR 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "6 visible discrimination objects are independently counted; cue sequence remains unpublished"
         },
         "outsideRule": {
@@ -254,9 +256,30 @@
             "Discrimination Object 6"
           ],
           "storedTargetRule": "6 visible discrimination objects are independently counted; cue sequence remains unpublished"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Discrimination Object 1",
+            "Discrimination Object 2",
+            "Discrimination Object 3",
+            "Discrimination Object 4",
+            "Discrimination Object 5",
+            "Discrimination Object 6"
+          ],
+          "regionObjectIds": [
+            "discrimination_object_1",
+            "discrimination_object_2",
+            "discrimination_object_3",
+            "discrimination_object_4",
+            "discrimination_object_5",
+            "discrimination_object_6"
+          ],
+          "storedGoverningRule": "6 visible discrimination objects are independently counted; cue sequence remains unpublished"
         }
       },
-      "digest": "6ca9bdaf7fc9cb8769a856631271fb18424a51af84b49b6ec8ce8174626baca2"
+      "digest": "4ac454be4aec533e7a66abb0044a0ce7a6a500de331a207210b3bfc03ae16435"
     },
     "mission": {
       "id": "qt_printer13_product_1977688096841-mission",
@@ -300,19 +323,20 @@
         "unresolvedReason": "Publisher establishes selectable shapes, colors, faces, numbers, and silhouettes; cue vocabulary, order, rounds, and score are instructor-defined/not published.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "DISCRIMINATION_OBJECTS",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product TRNG-8A Paper Target - TRNG Training Target. Multiple Shape and Color Training Target FULL COLOR 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "6 visible discrimination objects are independently counted; cue sequence remains unpublished"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Publisher establishes selectable shapes, colors, faces, numbers, and silhouettes; cue vocabulary, order, rounds, and score are instructor-defined/not published.",
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -324,7 +348,7 @@
                   "Discrimination Object 5",
                   "Discrimination Object 6"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -438,13 +462,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -452,19 +469,58 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 238,
             "visualStackChair": 274,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture each printed number/color/shape/object as its own object. Report hits by object, untouched objects, total taps, misses, distribution, and history. Do not invent a sequence unless printed/stored."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Discrimination Object 1, Discrimination Object 2, Discrimination Object 3, Discrimination Object 4, Discrimination Object 5, Discrimination Object 6.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1977688096841",
+              "productName": "TRNG-8A Paper Target",
+              "sku": "TRNG-8A",
+              "imageFilename": "qt-1977688096841-01.jpg",
+              "imageSha256": "800f055137754b31d4ea3ff8ac330cb26aaceeeb005faec15767ff90ef1c091a"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product TRNG-8A Paper Target - TRNG Training Target. Multiple Shape and Color Training Target FULL COLOR 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "6 visible discrimination objects are independently counted; cue sequence remains unpublished",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "DISCRIMINATION_OBJECTS",
+            "explicitGovernedLabels": [
+              "Discrimination Object 1",
+              "Discrimination Object 2",
+              "Discrimination Object 3",
+              "Discrimination Object 4",
+              "Discrimination Object 5",
+              "Discrimination Object 6"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "discrimination_object_1",
+              "discrimination_object_2",
+              "discrimination_object_3",
+              "discrimination_object_4",
+              "discrimination_object_5",
+              "discrimination_object_6"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Discrimination Object 1, Discrimination Object 2, Discrimination Object 3, Discrimination Object 4, Discrimination Object 5, Discrimination Object 6.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "32368280f88b3feddba19a1ba5c440804d343b5f5516f816be6f71d50b6984fe"
+      "digest": "9a71183ae29ec4be57888445cd97d63aba92590335fea6a5d73d40348c2f96da"
     }
   },
   "executor": {

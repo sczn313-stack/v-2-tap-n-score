@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1772145967177-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "VALUED_REGION_QUALIFICATION",
       "qtFamilyGroup": "SQT_A1_FAMILY",
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -188,8 +189,9 @@
           "mode": "sum_and_classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product SQT-A1 Paper Target for Georgia Dept. of Public Safety Training Target. Blue or Green Ink SQTA-1 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
         },
         "outsideRule": {
@@ -208,9 +210,27 @@
             "Silhouette"
           ],
           "storedTargetRule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [
+            "5",
+            "10"
+          ],
+          "labels": [
+            "10",
+            "5",
+            "Silhouette"
+          ],
+          "regionObjectIds": [
+            "zone_10",
+            "zone_5",
+            "silhouette"
+          ],
+          "storedGoverningRule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
         }
       },
-      "digest": "7275d7614c16f2792df8ced761f49ca40f459015946e165bb5a2662e76591e72"
+      "digest": "2052d97b735ea23903c25358267b3da8ba6e111c284d483a23f9c92283447c05"
     },
     "mission": {
       "id": "qt_printer13_product_1772145967177-mission",
@@ -254,19 +274,20 @@
         "unresolvedReason": "Artwork publishes visible 10/5 regions and a score table, but the current governing course, rounds, timing, and pass threshold were not located.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product SQT-A1 Paper Target for Georgia Dept. of Public Safety Training Target. Blue or Green Ink SQTA-1 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
               },
               "publishedValuesAvailable": true,
-              "unresolved": "Artwork publishes visible 10/5 regions and a score table, but the current governing course, rounds, timing, and pass threshold were not located.",
+              "unresolved": "The current QT contract already exactly inherits an approved Printers 1\u201312 surface contract.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -278,7 +299,7 @@
                   "5",
                   "Silhouette"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -389,13 +410,6 @@
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -403,19 +417,55 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 210,
             "visualStackChair": 245,
-            "priorSurgicalCapability": null,
-            "changedFromPriorSurgicalReview": false,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every visibly bounded/labeled region or object. If the face itself prints numeric point values, score them; otherwise count by region/object. Report totals, distribution, misses, pattern, and history. Do not invent a qualification threshold."
+          "smartBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 5, Silhouette. Published point values available to scoring: 5, 10.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1772145967177",
+              "productName": "SQT-A1 Paper Target",
+              "sku": "SQT-A1 Blue, SQT-A1 Green",
+              "imageFilename": "qt-1772145967177-01.jpg",
+              "imageSha256": "4cc3a8bfdeb30b050ba8ae6c891921a079f612e3dacdea5daa7e220842a33159"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product SQT-A1 Paper Target for Georgia Dept. of Public Safety Training Target. Blue or Green Ink SQTA-1 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "visible printed 10/5 regions score; unpublished course administration remains withheld",
+            "capability": "Scoring",
+            "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
+            "explicitGovernedLabels": [
+              "10",
+              "5",
+              "Silhouette"
+            ],
+            "explicitGovernedValues": [
+              "5",
+              "10"
+            ],
+            "registeredSemanticRegionObjectIds": [
+              "zone_10",
+              "zone_5",
+              "silhouette"
+            ],
+            "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 5, Silhouette. Published point values available to scoring: 5, 10.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "The current QT contract already exactly inherits an approved Printers 1\u201312 surface contract.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "eb051cde88ca9398289d5258eeab40fee027afa5e79f1067e94086d5d6349fef"
+      "digest": "a15fe952aca1c08d43fd28ecfc6da250bda9139e78ca18a7f09af1035f119efa"
     }
   },
   "executor": {

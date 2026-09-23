@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974268231753-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "BULLSEYE_MULTI_BULL",
       "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
       "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -164,8 +165,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-IP1 - FBI Bullseye Paper Target Black Ink 15\" x 15\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "1 visible bulls are independently counted without invented ring values"
         },
         "outsideRule": {
@@ -179,9 +181,20 @@
             "Bull 1"
           ],
           "storedTargetRule": "1 visible bulls are independently counted without invented ring values"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Bull 1"
+          ],
+          "regionObjectIds": [
+            "bull_1"
+          ],
+          "storedGoverningRule": "1 visible bulls are independently counted without invented ring values"
         }
       },
-      "digest": "8b4b8da70cf776f66c6b88b7ff8de9b8e3ec20fdcfa7ec4c605f9ca0cdd4966e"
+      "digest": "c513da7b30a73aa66469899d45a1f2ff2a0d31778eec154701dc4b37d9d81cf5"
     },
     "mission": {
       "id": "qt_printer13_product_1974268231753-mission",
@@ -225,26 +238,27 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "BULLSEYE_MULTI_BULL",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-IP1 - FBI Bullseye Paper Target Black Ink 15\" x 15\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "1 visible bulls are independently counted without invented ring values"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
                 "labels": [
                   "Bull 1"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -353,13 +367,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -367,19 +374,48 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 121,
             "visualStackChair": 150,
-            "priorSurgicalCapability": "Scoring",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture each bull/spot independently, including visible center/aim-point subsets. Count hits by bull and center subset; score rings only when values are printed/stored. Report balance across bulls, misses, pattern, and history."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1974268231753",
+              "productName": "FBI-IP1 Paper Target",
+              "sku": "FBI-IP1",
+              "imageFilename": "qt-1974268231753-01.jpg",
+              "imageSha256": "4b3fe0dc5aec776a97ed1ee1fe43bfaec11c71259f3c84f08b99befe17b3d44d"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-IP1 - FBI Bullseye Paper Target Black Ink 15\" x 15\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "1 visible bulls are independently counted without invented ring values",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "BULLSEYE_MULTI_BULL",
+            "explicitGovernedLabels": [
+              "Bull 1"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "bull_1"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "3bf4ba600ef0a7ef6c613972741086f91509fb2f9437fa0bad13c1a12a432eda"
+      "digest": "f833d2576e908449f5e85d0e5a9ee8e21e0223b59d0641f2c97097f13db8a2cf"
     }
   },
   "executor": {

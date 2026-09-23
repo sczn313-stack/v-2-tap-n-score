@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1960352415817-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "VALUED_REGION_QUALIFICATION",
       "qtFamilyGroup": "BT5_FAMILY",
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -208,8 +209,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product BT-5-Antioch - 25 Yard Silhouette Paper Target Police Training Target GREEN INK - HIDDEN ZONES 17.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "registered BT-5 Antioch artwork governs two upper aiming circles and two central outlined regions; no values are assigned"
         },
         "outsideRule": {
@@ -226,9 +228,26 @@
             "Central outer outline"
           ],
           "storedTargetRule": "registered BT-5 Antioch artwork governs two upper aiming circles and two central outlined regions; no values are assigned"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Upper left aiming circle",
+            "Upper right aiming circle",
+            "Central inner outline",
+            "Central outer outline"
+          ],
+          "regionObjectIds": [
+            "upper_left_aiming_circle",
+            "upper_right_aiming_circle",
+            "central_inner_outline",
+            "central_outer_outline"
+          ],
+          "storedGoverningRule": "registered BT-5 Antioch artwork governs two upper aiming circles and two central outlined regions; no values are assigned"
         }
       },
-      "digest": "e30090d185074212efb8388db081f664bb8d1f5b3e2b57a2bf4853cd54628d81"
+      "digest": "7f43840f01c6116f3ad4840f94164a1607724be0ac84f326c70cf59306f0b2a0"
     },
     "mission": {
       "id": "qt_printer13_product_1960352415817-mission",
@@ -272,19 +291,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product BT-5-Antioch - 25 Yard Silhouette Paper Target Police Training Target GREEN INK - HIDDEN ZONES 17.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "registered BT-5 Antioch artwork governs two upper aiming circles and two central outlined regions; no values are assigned"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "stored QT artwork proves two upper aiming circles and central outlines",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -294,7 +314,7 @@
                   "Central inner outline",
                   "Central outer outline"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -406,13 +426,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -420,19 +433,54 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 40,
             "visualStackChair": 43,
-            "priorSurgicalCapability": null,
-            "changedFromPriorSurgicalReview": false,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every visibly bounded/labeled region or object. If the face itself prints numeric point values, score them; otherwise count by region/object. Report totals, distribution, misses, pattern, and history. Do not invent a qualification threshold."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Upper left aiming circle, Upper right aiming circle, Central inner outline, Central outer outline.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1960352415817",
+              "productName": "BT-5-Antioch Paper Target",
+              "sku": "BT-5-Antioch",
+              "imageFilename": "qt-1960352415817-01.jpg",
+              "imageSha256": "c5bb6ae1c168df15b4293fdb1d0d6a412316493f7c1976286b57db0c5dde7fdb"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product BT-5-Antioch - 25 Yard Silhouette Paper Target Police Training Target GREEN INK - HIDDEN ZONES 17.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "registered BT-5 Antioch artwork governs two upper aiming circles and two central outlined regions; no values are assigned",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
+            "explicitGovernedLabels": [
+              "Upper left aiming circle",
+              "Upper right aiming circle",
+              "Central inner outline",
+              "Central outer outline"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "upper_left_aiming_circle",
+              "upper_right_aiming_circle",
+              "central_inner_outline",
+              "central_outer_outline"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Upper left aiming circle, Upper right aiming circle, Central inner outline, Central outer outline.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "stored QT artwork proves two upper aiming circles and central outlines",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "a153750e7669f243c54175557cad80de54236bed1eb05dc54e0a3a0780ccc840"
+      "digest": "df814ee0828d8e5d26ff51c547a3b33b848b0b0e876107e170d098980266487f"
     }
   },
   "executor": {

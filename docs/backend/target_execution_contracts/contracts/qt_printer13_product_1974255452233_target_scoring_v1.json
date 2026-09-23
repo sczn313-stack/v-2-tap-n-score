@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974255452233-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "B_FAMILY_SCORING",
       "qtFamilyGroup": "B_FAMILY",
       "episode64IntelligenceFamily": "B_FAMILY_SCORING",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -222,8 +223,9 @@
           "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "B-8 Paper Target - Qualification Targets Inc Product 25 Yard Timed Rapid Fire Bullseye Target Black Ink 20\" x 24\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "governed B-family concentric numeric regions retain their printed values"
         },
         "outsideRule": {
@@ -250,9 +252,37 @@
             "5"
           ],
           "storedTargetRule": "governed B-family concentric numeric regions retain their printed values"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "labels": [
+            "10",
+            "9",
+            "8",
+            "7",
+            "6",
+            "5"
+          ],
+          "regionObjectIds": [
+            "ring_10",
+            "ring_9",
+            "ring_8",
+            "ring_7",
+            "ring_6",
+            "ring_5"
+          ],
+          "storedGoverningRule": "governed B-family concentric numeric regions retain their printed values"
         }
       },
-      "digest": "d026fcaa5136d55b433ca2b1c52d000c0f02e968ccae19ca1c952514bea05459"
+      "digest": "4c02e345eb4461784f7241a59172c569f69a91f731f1121d67331ab56b3e1a2a"
     },
     "mission": {
       "id": "qt_printer13_product_1974255452233-mission",
@@ -296,19 +326,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "B_FAMILY_SCORING",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "B-8 Paper Target - Qualification Targets Inc Product 25 Yard Timed Rapid Fire Bullseye Target Black Ink 20\" x 24\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "governed B-family concentric numeric regions retain their printed values"
               },
               "publishedValuesAvailable": true,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -327,7 +358,7 @@
                   "6",
                   "5"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -441,13 +472,6 @@
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -455,19 +479,65 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 33,
             "visualStackChair": 36,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every tap against the printed B-family regions. Score only the numeric/X values visibly printed or otherwise stored. Report total taps, region counts, points, X-count when present, misses, distribution, shot-pattern center, and session history."
+          "smartBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7, 6, 5. Published point values available to scoring: 5, 6, 7, 8, 9, 10.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1974255452233",
+              "productName": "B-8 Paper Target",
+              "sku": "B-8",
+              "imageFilename": "qt-1974255452233-01.png",
+              "imageSha256": "cc8c05b4a61833813dd5e935e16a849b702542edea8469c74491308c1a06279e"
+            },
+            "publisherCatalogEvidence": "B-8 Paper Target - Qualification Targets Inc Product 25 Yard Timed Rapid Fire Bullseye Target Black Ink 20\" x 24\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "governed B-family concentric numeric regions retain their printed values",
+            "capability": "Scoring",
+            "intelligenceFamily": "B_FAMILY_SCORING",
+            "explicitGovernedLabels": [
+              "10",
+              "9",
+              "8",
+              "7",
+              "6",
+              "5"
+            ],
+            "explicitGovernedValues": [
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "registeredSemanticRegionObjectIds": [
+              "ring_10",
+              "ring_9",
+              "ring_8",
+              "ring_7",
+              "ring_6",
+              "ring_5"
+            ],
+            "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7, 6, 5. Published point values available to scoring: 5, 6, 7, 8, 9, 10.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "583b077c8e303cd26c850395d23eb100c844b6982f0008d0db9b58c6f90c9dad"
+      "digest": "fa05dd9c3e80a436ba7c14d927c8895555957240c22d6fb7f477a14c9b930b2f"
     }
   },
   "executor": {

@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1873683447881-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "BULLSEYE_MULTI_BULL",
       "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
       "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -305,8 +306,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualifications Targets Inc. Product 5-Spot - Paper Target with 5 Bullseyes - Shaded 1\" Square Centers - Black Ink - 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "The preserved QT artwork governs five independent spots and one square center aim point within each spot. Aim-point hits are subsets of spot hits; no shot quota, sequence, or perfect drill is claimed."
         },
         "outsideRule": {
@@ -329,9 +331,38 @@
             "Spot 5"
           ],
           "storedTargetRule": "The preserved QT artwork governs five independent spots and one square center aim point within each spot. Aim-point hits are subsets of spot hits; no shot quota, sequence, or perfect drill is claimed."
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Spot 1 aim point",
+            "Spot 1",
+            "Spot 2 aim point",
+            "Spot 2",
+            "Spot 3 aim point",
+            "Spot 3",
+            "Spot 4 aim point",
+            "Spot 4",
+            "Spot 5 aim point",
+            "Spot 5"
+          ],
+          "regionObjectIds": [
+            "spot_1_aim_point",
+            "spot_1",
+            "spot_2_aim_point",
+            "spot_2",
+            "spot_3_aim_point",
+            "spot_3",
+            "spot_4_aim_point",
+            "spot_4",
+            "spot_5_aim_point",
+            "spot_5"
+          ],
+          "storedGoverningRule": "The preserved QT artwork governs five independent spots and one square center aim point within each spot. Aim-point hits are subsets of spot hits; no shot quota, sequence, or perfect drill is claimed."
         }
       },
-      "digest": "5f442a9bfdb770b11c56234f026466f69695e2896e62c6443c3728193d9cb2d3"
+      "digest": "fcdf8a80f3ba599d650bcfb89cb8dcf20f526f873c62a556e71831aa8b438a36"
     },
     "mission": {
       "id": "qt_printer13_product_1873683447881-mission",
@@ -375,19 +406,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "BULLSEYE_MULTI_BULL",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualifications Targets Inc. Product 5-Spot - Paper Target with 5 Bullseyes - Shaded 1\" Square Centers - Black Ink - 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "The preserved QT artwork governs five independent spots and one square center aim point within each spot. Aim-point hits are subsets of spot hits; no shot quota, sequence, or perfect drill is claimed."
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -403,7 +435,7 @@
                   "Spot 5 aim point",
                   "Spot 5"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -521,13 +553,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -535,19 +560,66 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 1,
             "visualStackChair": 1,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture each bull/spot independently, including visible center/aim-point subsets. Count hits by bull and center subset; score rings only when values are printed/stored. Report balance across bulls, misses, pattern, and history."
+          "smartBehavior": "Treat the face as 5 parent spot zones plus 5 inner square aim-point zones = 10 governed target zones. An inner aim-point hit is also a hit on its parent spot. Report total taps, five spot counts, five aim-point subset counts, misses, objects hit, distribution/evenness, and center of shot pattern. If all spot counts tie, report the tie/even distribution; never invent strongest/weakest. No points, quota, sequence, or perfect-drill rule.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1873683447881",
+              "productName": "5-Spot Paper Target",
+              "sku": "5-Spot",
+              "imageFilename": "qt-1873683447881-01.png",
+              "imageSha256": "3da0f82fd3a9b8945fe92e468a1fd0800d51078817ff64c46bce16e2203184c3"
+            },
+            "publisherCatalogEvidence": "Qualifications Targets Inc. Product 5-Spot - Paper Target with 5 Bullseyes - Shaded 1\" Square Centers - Black Ink - 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "The preserved QT artwork governs five independent spots and one square center aim point within each spot. Aim-point hits are subsets of spot hits; no shot quota, sequence, or perfect drill is claimed.",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "BULLSEYE_MULTI_BULL",
+            "explicitGovernedLabels": [
+              "Spot 1 aim point",
+              "Spot 1",
+              "Spot 2 aim point",
+              "Spot 2",
+              "Spot 3 aim point",
+              "Spot 3",
+              "Spot 4 aim point",
+              "Spot 4",
+              "Spot 5 aim point",
+              "Spot 5"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "spot_1_aim_point",
+              "spot_1",
+              "spot_2_aim_point",
+              "spot_2",
+              "spot_3_aim_point",
+              "spot_3",
+              "spot_4_aim_point",
+              "spot_4",
+              "spot_5_aim_point",
+              "spot_5"
+            ],
+            "requiredBehavior": "Treat the face as 5 parent spot zones plus 5 inner square aim-point zones = 10 governed target zones. An inner aim-point hit is also a hit on its parent spot. Report total taps, five spot counts, five aim-point subset counts, misses, objects hit, distribution/evenness, and center of shot pattern. If all spot counts tie, report the tie/even distribution; never invent strongest/weakest. No points, quota, sequence, or perfect-drill rule.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "28596b12ac61488603fb51362fbc6a7c14a97a56b9c5f0e237f66d4bce87a7bc"
+      "digest": "8ac58c8769085b626482646f169dd3a88125068c05a133e6e3b6b0723204e57b"
     }
   },
   "executor": {

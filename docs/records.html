@@ -57,7 +57,7 @@
 <script src="app_state.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_dispatch.js?v=qt-episode64-local-authority-0922"></script>
 <script src="sec_reopen_capability.js?v=supabase-security-repair-1"></script>
-<script src="target_execution_runtime.js?v=episode56-scale-1"></script>
+<script src="target_execution_runtime.js?v=qt-5spot-founder-defects-1"></script>
 <script src="m4_runtime.js?v=mission-a-fresh-score-0814"></script>
 <script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
 <script src="sec_v1.js?v=episode59-baker-demo-cleanup-1"></script>
@@ -1133,8 +1133,8 @@ function historicalSecUrl(session, pkg = authorityPackage(session)) {
 }
 
 function evidenceDimensions(evidence, fallbackWidth = 2550, fallbackHeight = 3300) {
-  const width = Number(evidence && (evidence.imageWidth || evidence.width)) || fallbackWidth;
-  const height = Number(evidence && (evidence.imageHeight || evidence.height)) || fallbackHeight;
+  const width = Number(evidence && (evidence.imageWidthPx || evidence.widthPx || evidence.imageWidth || evidence.width)) || fallbackWidth;
+  const height = Number(evidence && (evidence.imageHeightPx || evidence.heightPx || evidence.imageHeight || evidence.height)) || fallbackHeight;
   return { width, height };
 }
 
@@ -1230,6 +1230,9 @@ function normalizedVaultEvidenceModel(model) {
 }
 
 function resolveVaultEvidenceModel(session, pkg, dispatch) {
+  if (dispatch && [SCZN3SECDispatch.ADAPTERS.CONTRACT_SMART_EVIDENCE, SCZN3SECDispatch.ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, SCZN3SECDispatch.ADAPTERS.CONTRACT_TARGET_SCORING, SCZN3SECDispatch.ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE, SCZN3SECDispatch.ADAPTERS.CONTRACT_COLLECTION_HAND, SCZN3SECDispatch.ADAPTERS.CONTRACT_CUE_DRILL, SCZN3SECDispatch.ADAPTERS.CONTRACT_DECISION_SCENARIO, SCZN3SECDispatch.ADAPTERS.CONTRACT_QUALIFICATION, SCZN3SECDispatch.ADAPTERS.CONTRACT_DIAGNOSTIC_FEEDBACK].includes(dispatch.adapter) && window.SCZN3TargetExecutionRuntime) {
+    return normalizedVaultEvidenceModel(SCZN3TargetExecutionRuntime.vaultEvidenceModel(session, pkg));
+  }
   if (dispatch && dispatch.adapter === SCZN3SECDispatch.ADAPTERS.GUNFUN_VITAL_DUDE && window.SCZN3GunFunVitalDudeSEC) {
     return normalizedVaultEvidenceModel(SCZN3GunFunVitalDudeSEC.vaultEvidenceModel(session, pkg));
   }
@@ -1287,13 +1290,13 @@ function renderCompactVaultRecord(session) {
   const preservedAt = session.preservedAt || session.savedAt || session.timestamp;
   const destination = historicalSecUrl(session, pkg);
   const sessionLabel = session.sessionLabel || `Session ${vaultSessionNumber(session)}`;
-  const compactEvidence = evidence.dataUrl
+  const compactEvidence = evidence.dataUrl || evidence.assetUrl
     ? evidence
     : isBaker100YardZeroingSession(session, pkg)
       ? { imageWidth: 1102, imageHeight: 1713 }
       : evidence;
   const before = vaultTargetPanel(
-    completedEvidence ? completedEvidence.imageUrl : evidence.dataUrl || (isBaker100YardZeroingSession(session, pkg) ? "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" : ""),
+    completedEvidence ? completedEvidence.imageUrl : evidence.dataUrl || evidence.assetUrl || (isBaker100YardZeroingSession(session, pkg) ? "assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png" : ""),
     completedEvidence ? completedEvidence.imageAlt : `${sessionLabel} saved target evidence`,
     completedEvidence ? vaultEvidenceOverlay(completedEvidence) : pkg ? authorityVisualForPackage(pkg) : "",
     "",

@@ -241,6 +241,20 @@
     }).filter(Boolean);
   }
 
+  function sourceImagePoint(clientX, clientY, imageBox) {
+    const left = Number(imageBox && imageBox.left);
+    const top = Number(imageBox && imageBox.top);
+    const width = Number(imageBox && imageBox.width);
+    const height = Number(imageBox && imageBox.height);
+    const x = Number(clientX);
+    const y = Number(clientY);
+    if (![left, top, width, height, x, y].every(Number.isFinite) || width <= 0 || height <= 0) return null;
+    const xNorm = (x - left) / width;
+    const yNorm = (y - top) / height;
+    if (xNorm < 0 || xNorm > 1 || yNorm < 0 || yNorm > 1) return null;
+    return { xNorm, yNorm };
+  }
+
   function targetUsesPointTerminology(scoring) {
     return ["numeric_regions", "penalty_regions", "mixed_regions"].includes(clean(scoring && scoring.model));
   }
@@ -516,7 +530,16 @@
     const comparison = previous && Number.isFinite(Number(previous.percentage))
       ? `<div class="contract-session-progress"><span>Previous on this target</span><strong>${escapeHtml(previous.percentage)}%</strong><small>${Number(progress.percentagePointChange) >= 0 ? "+" : ""}${escapeHtml(progress.percentagePointChange)} percentage points</small></div>`
       : "";
-    return `<section class="contract-hit-rate${publisherHasScore ? " is-supplemental" : ""}" aria-label="SCZN3 measured hit rate"><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong><small>${escapeHtml(hitRate.validHitCount)} of ${escapeHtml(hitRate.governedShotCount)} taps hit valid regions</small>${coverage && Number(coverage.scorableObjectCount) > 0 ? `<small>${escapeHtml(coverage.objectsHit)} of ${escapeHtml(coverage.scorableObjectCount)} target objects hit</small>` : ""}${distribution ? `<small>Strongest: ${escapeHtml(distribution.strongest.label)} (${escapeHtml(distribution.strongest.tapCount)}) · Weakest: ${escapeHtml(distribution.weakest.label)} (${escapeHtml(distribution.weakest.tapCount)}) · Evenness ${escapeHtml(distribution.evennessPercentage)}%</small>` : ""}${comparison}</section>`;
+    const objectResults = result && result.scoring && Array.isArray(result.scoring.objectResults) ? result.scoring.objectResults : [];
+    const objectCount = Number(coverage && coverage.scorableObjectCount) || objectResults.length;
+    const spotFamily = objectCount > 0 && objectResults.length === objectCount && objectResults.every(item => /^spot\s+\d+$/i.test(clean(item && item.label)));
+    const tiedDistribution = distribution && Number(distribution.countRange) === 0 && distribution.strongest && distribution.weakest && Number(distribution.strongest.tapCount) === Number(distribution.weakest.tapCount);
+    const distributionMarkup = tiedDistribution
+      ? `<small class="contract-even-distribution">EVEN DISTRIBUTION · ALL ${escapeHtml(objectCount)} ${spotFamily ? "SPOTS" : "OBJECTS"}: ${escapeHtml(distribution.strongest.tapCount)} TAPS EACH · ${escapeHtml(distribution.evennessPercentage)}% EVENNESS</small>`
+      : distribution
+        ? `<small>Strongest: ${escapeHtml(distribution.strongest.label)} (${escapeHtml(distribution.strongest.tapCount)}) · Weakest: ${escapeHtml(distribution.weakest.label)} (${escapeHtml(distribution.weakest.tapCount)}) · Evenness ${escapeHtml(distribution.evennessPercentage)}%</small>`
+        : "";
+    return `<section class="contract-hit-rate${publisherHasScore ? " is-supplemental" : ""}" aria-label="SCZN3 measured hit rate"><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong><small>${escapeHtml(hitRate.validHitCount)} of ${escapeHtml(hitRate.governedShotCount)} taps hit valid regions</small>${coverage && Number(coverage.scorableObjectCount) > 0 ? `<small>${escapeHtml(coverage.objectsHit)} of ${escapeHtml(coverage.scorableObjectCount)} target objects hit</small>` : ""}${distributionMarkup}${comparison}</section>`;
   }
 
   function shotPatternMarkup(result, session = {}) {
@@ -870,7 +893,7 @@
     return compact;
   }
 
-  global.SCZN3TargetExecutionRuntime = Object.freeze({ bindRepeatedObjectAccordions, initializeSECInteractions, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage });
+  global.SCZN3TargetExecutionRuntime = Object.freeze({ bindRepeatedObjectAccordions, initializeSECInteractions, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, sourceImagePoint });
 
   function initializePage() {
     const root = document.querySelector("[data-contract-target-page]");
@@ -1211,7 +1234,7 @@
 
     byId("contractStart").addEventListener("click", () => start().catch(error => status(`Unavailable: ${error.message}`)));
     byId("contractFile").addEventListener("change", event => loadFile(event.target.files[0]).catch(error => status(`Unable to load evidence: ${error.message}`)));
-    byId("contractTapSurface").addEventListener("click", event => { const box = event.currentTarget.getBoundingClientRect(); const point = { xNorm: (event.clientX - box.left) / box.width, yNorm: (event.clientY - box.top) / box.height }; if (state.aimMode) { state.aim = point; state.aimMode = false; } else { const objects = participantObjects(); if (objects.length && !state.selectedObjectId) { status("Choose the governed scoring object before recording the shot."); return; } state.observations.push(objects.length ? { ...point, declaredObjectId: state.selectedObjectId } : point); status("Review your shots. Undo, Clear, or Show Result."); } paintMarkers(); });
+    byId("contractTapSurface").addEventListener("click", event => { const point = sourceImagePoint(event.clientX, event.clientY, byId("contractTargetImage").getBoundingClientRect()); if (!point) { status("Tap inside the visible target image."); return; } if (state.aimMode) { state.aim = point; state.aimMode = false; } else { const objects = participantObjects(); if (objects.length && !state.selectedObjectId) { status("Choose the governed scoring object before recording the shot."); return; } state.observations.push(objects.length ? { ...point, declaredObjectId: state.selectedObjectId } : point); status("Review your shots. Undo, Clear, or Show Result."); } paintMarkers(); });
     byId("contractUndoObservation").addEventListener("click", () => { if (!state.observations.length) return; state.observations.pop(); paintMarkers(); status(state.observations.length ? "Last shot removed. Review your shots, Undo, Clear, or Show Result." : "Last shot removed. Tap your shot holes."); });
     byId("contractClearObservations").addEventListener("click", () => { if (!state.observations.length) return; state.observations = []; paintMarkers(); status("Shots cleared. Tap your shot holes."); });
     byId("contractObjectChoices").addEventListener("click", event => { const button = event.target.closest("[data-contract-object]"); if (!button || button.disabled) return; state.selectedObjectId = clean(button.dataset.contractObject); renderObjectCourse(); status("Scoring object selected. Tap that printed object."); });

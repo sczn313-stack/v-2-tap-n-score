@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1960335212617-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "B_FAMILY_SCORING",
       "qtFamilyGroup": "B_FAMILY",
       "episode64IntelligenceFamily": "B_FAMILY_SCORING",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -202,8 +203,9 @@
           "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product B-21M is a Fullsized Silhouette Paper Target - Black Ink SC Criminal Justice Target with K5 Scoring 24\" x 40\" Paper \ufeff For large or custom orders, please call 866-498-8228",
           "rule": "governed B-family silhouette regions retain their printed numeric values"
         },
         "outsideRule": {
@@ -226,9 +228,31 @@
             "7"
           ],
           "storedTargetRule": "governed B-family silhouette regions retain their printed numeric values"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "labels": [
+            "10",
+            "9",
+            "8",
+            "7"
+          ],
+          "regionObjectIds": [
+            "zone_10",
+            "zone_9",
+            "zone_8",
+            "zone_7"
+          ],
+          "storedGoverningRule": "governed B-family silhouette regions retain their printed numeric values"
         }
       },
-      "digest": "fb71bf3e9af64027cae03e0a1c5f2f02ab6ec0f0af3ad0c0c3b8078ec5399a3d"
+      "digest": "16900c86f86da23722aa8c4dd6847c2c24340b49850695feca944cb5044e9d20"
     },
     "mission": {
       "id": "qt_printer13_product_1960335212617-mission",
@@ -272,19 +296,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "B_FAMILY_SCORING",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product B-21M is a Fullsized Silhouette Paper Target - Black Ink SC Criminal Justice Target with K5 Scoring 24\" x 40\" Paper \ufeff For large or custom orders, please call 866-498-8228",
                 "rule": "governed B-family silhouette regions retain their printed numeric values"
               },
               "publishedValuesAvailable": true,
-              "unresolved": null,
+              "unresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -299,7 +324,7 @@
                   "8",
                   "7"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -411,13 +436,6 @@
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -425,19 +443,59 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 7,
             "visualStackChair": 8,
-            "priorSurgicalCapability": "Zone / Object Counting",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every tap against the printed B-family regions. Score only the numeric/X values visibly printed or otherwise stored. Report total taps, region counts, points, X-count when present, misses, distribution, shot-pattern center, and session history."
+          "smartBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1960335212617",
+              "productName": "B-21M Paper Target",
+              "sku": "B-21M",
+              "imageFilename": "qt-1960335212617-01.png",
+              "imageSha256": "cb66e13a0b78b26cecf800e1b71161bc8f1110894af5a16f61d3020809d6394c"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product B-21M is a Fullsized Silhouette Paper Target - Black Ink SC Criminal Justice Target with K5 Scoring 24\" x 40\" Paper \ufeff For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "governed B-family silhouette regions retain their printed numeric values",
+            "capability": "Scoring",
+            "intelligenceFamily": "B_FAMILY_SCORING",
+            "explicitGovernedLabels": [
+              "10",
+              "9",
+              "8",
+              "7"
+            ],
+            "explicitGovernedValues": [
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "registeredSemanticRegionObjectIds": [
+              "zone_10",
+              "zone_9",
+              "zone_8",
+              "zone_7"
+            ],
+            "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "1c5efc1df0111c5055aeae2de70a82a9830c1e88a5bb3e7e436400cf66b2355d"
+      "digest": "53207ba28d2c64f8a94505488d4cd583e597144434c6f8576211984e6b9ef568"
     }
   },
   "executor": {

@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1954039070793-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "qtFamilyGroup": "CR_ACTIVE_SHOOTER_FAMILY",
       "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -180,8 +181,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Click here for CR-116-O Overlay Set Qualification Targets Inc Product White Male Shooter Target with Hidden Zone CR-116 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
           "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         },
         "outsideRule": {
@@ -196,9 +198,22 @@
             "Right visible figure"
           ],
           "storedTargetRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Left visible figure",
+            "Right visible figure"
+          ],
+          "regionObjectIds": [
+            "left_figure",
+            "right_figure"
+          ],
+          "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         }
       },
-      "digest": "5546a26315849685352a7f458e40e80dafc4fe08a973f500c124c701f4c899ca"
+      "digest": "1d2a2bb3ea001e7aa23cdd9c3175dcf59bfab65ddf7000c4ce4e0d07d755abb5"
     },
     "mission": {
       "id": "qt_printer13_product_1954039070793-mission",
@@ -242,19 +257,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Click here for CR-116-O Overlay Set Qualification Targets Inc Product White Male Shooter Target with Hidden Zone CR-116 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
                 "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -262,7 +278,7 @@
                   "Left visible figure",
                   "Right visible figure"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -372,13 +388,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -386,19 +395,50 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 72,
             "visualStackChair": 87,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture visibly distinct figures/regions/objects exactly as printed. Count hits by printed/visible object or governed region and show misses and distribution. Do not invent tactical success, threat priority, penalties, or engagement order."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Left visible figure, Right visible figure.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1954039070793",
+              "productName": "CR-116 Paper Target",
+              "sku": "CR-116",
+              "imageFilename": "qt-1954039070793-01.png",
+              "imageSha256": "f7909a0cf683598038597ec0a4a169dd5a8e8fee009b47ff3e87c4d3ae196c48"
+            },
+            "publisherCatalogEvidence": "Click here for CR-116-O Overlay Set Qualification Targets Inc Product White Male Shooter Target with Hidden Zone CR-116 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
+            "explicitGovernedLabels": [
+              "Left visible figure",
+              "Right visible figure"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "left_figure",
+              "right_figure"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Left visible figure, Right visible figure.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "a2807108fcce003503ee1dbbd0c194a5ead8d61bae0ff743ebc0203503ec250f"
+      "digest": "577ce354054f78692615b6b3bc47e05feae1c917d8157e537692d6ae3adcdd78"
     }
   },
   "executor": {

@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1955982606409-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "BULLSEYE_MULTI_BULL",
       "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
       "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -178,8 +179,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-QIT-G Paper Target is an FBI Target with Orange Center Mass and 2 Bullseyes Training Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "2 visible bulls are independently counted without invented ring values"
         },
         "outsideRule": {
@@ -194,9 +196,22 @@
             "Bull 2"
           ],
           "storedTargetRule": "2 visible bulls are independently counted without invented ring values"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Bull 1",
+            "Bull 2"
+          ],
+          "regionObjectIds": [
+            "bull_1",
+            "bull_2"
+          ],
+          "storedGoverningRule": "2 visible bulls are independently counted without invented ring values"
         }
       },
-      "digest": "3e8393f77be91a567aa43bc2afb46fbd52ab8e807480e968204457004112f7c2"
+      "digest": "288d18f0d9494cad14be899d2ceb70f5117f3555321b7fb833ba48cd43aedb0a"
     },
     "mission": {
       "id": "qt_printer13_product_1955982606409-mission",
@@ -240,19 +255,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "BULLSEYE_MULTI_BULL",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-QIT-G Paper Target is an FBI Target with Orange Center Mass and 2 Bullseyes Training Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "2 visible bulls are independently counted without invented ring values"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -260,7 +276,7 @@
                   "Bull 1",
                   "Bull 2"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -370,13 +386,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -384,19 +393,50 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 129,
             "visualStackChair": 158,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture each bull/spot independently, including visible center/aim-point subsets. Count hits by bull and center subset; score rings only when values are printed/stored. Report balance across bulls, misses, pattern, and history."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1, Bull 2.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1955982606409",
+              "productName": "FBI-QIT-G Paper Target",
+              "sku": "FBI-QIT-G",
+              "imageFilename": "qt-1955982606409-01.png",
+              "imageSha256": "16d5c1489de8fdf8d1842201cd7266f9810b18e4ce4a32e838d2f512e26fb3eb"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-QIT-G Paper Target is an FBI Target with Orange Center Mass and 2 Bullseyes Training Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "2 visible bulls are independently counted without invented ring values",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "BULLSEYE_MULTI_BULL",
+            "explicitGovernedLabels": [
+              "Bull 1",
+              "Bull 2"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "bull_1",
+              "bull_2"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1, Bull 2.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "f9cd267fe5a74a0b587e97ca68913300fb189985e00fab33496323ed439ae8e8"
+      "digest": "d607354830cc7c85680daef2b9cce6537b7686cb9e20c8d6324cdffee16b6a9f"
     }
   },
   "executor": {

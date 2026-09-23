@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_8197771264284-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "M16_M4_QUALIFICATION",
       "qtFamilyGroup": "M16_M4_FAMILY",
       "episode64IntelligenceFamily": "M16_M4_QUALIFICATION",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -185,8 +186,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product USAF-M4-AFQC Paper Target has the M16A1-SF Slow Fire Target plus the M16A2 and M4 Carbine Targets all incorporated onto one single sheet of 24\" x 40\" Paper USAF-CASR For large or custom orders, please call 866-498-8228",
           "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
         },
         "outsideRule": {
@@ -202,9 +204,24 @@
             "Qualification object"
           ],
           "storedTargetRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Aim reference",
+            "Adjustment grid",
+            "Qualification object"
+          ],
+          "regionObjectIds": [
+            "aim_reference",
+            "adjustment_grid",
+            "qualification_object"
+          ],
+          "storedGoverningRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
         }
       },
-      "digest": "200b37e08a1bf185ba8c74b4bba53c7558ceb89024ddbc66ff2a4369dbe794fb"
+      "digest": "6acc67279d25e9cc28f8d76fde08469eb68d29d0812160dcc3a4fa3f0cf89ef1"
     },
     "mission": {
       "id": "qt_printer13_product_8197771264284-mission",
@@ -248,19 +265,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "M16_M4_QUALIFICATION",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product USAF-M4-AFQC Paper Target has the M16A1-SF Slow Fire Target plus the M16A2 and M4 Carbine Targets all incorporated onto one single sheet of 24\" x 40\" Paper USAF-CASR For large or custom orders, please call 866-498-8228",
                 "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -269,7 +287,7 @@
                   "Adjustment grid",
                   "Qualification object"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -380,13 +398,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -394,19 +405,52 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 249,
             "visualStackChair": 286,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every printed aim area/qualification object. Count or score only what the face/stored authority proves. M16A2 keeps the governed zeroing road. Do not invent qualification thresholds or stage rules."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Aim reference, Adjustment grid, Qualification object.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-8197771264284",
+              "productName": "USAF-M4-AFQC Paper Target",
+              "sku": "USAF-M4-AFQC",
+              "imageFilename": "qt-8197771264284-01.jpg",
+              "imageSha256": "31519274e5374d3e3e215628bad11b62b46d6e0a38e2f28958d44c7300a9e7b2"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product USAF-M4-AFQC Paper Target has the M16A1-SF Slow Fire Target plus the M16A2 and M4 Carbine Targets all incorporated onto one single sheet of 24\" x 40\" Paper USAF-CASR For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "M16_M4_QUALIFICATION",
+            "explicitGovernedLabels": [
+              "Aim reference",
+              "Adjustment grid",
+              "Qualification object"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "aim_reference",
+              "adjustment_grid",
+              "qualification_object"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Aim reference, Adjustment grid, Qualification object.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "7ca98d187f50f9afbc5728f8a7f982a4cec42e85219f57391d3252538a943cb8"
+      "digest": "7f698bde8980e868575ea904efd51ee4582407fc327bebe0da51f066d74944cb"
     }
   },
   "executor": {

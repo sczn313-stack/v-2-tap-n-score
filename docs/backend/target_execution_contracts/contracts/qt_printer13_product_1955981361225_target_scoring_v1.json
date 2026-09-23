@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1955981361225-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "ZEROING_SIGHT_IN",
       "qtFamilyGroup": "ZEROING_SIGHT_IN",
       "episode64IntelligenceFamily": "ZEROING_SIGHT_IN",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -276,8 +277,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-CIR-2 Paper Target is a Five Circle FBI Training Target with Four 1\" Sighting Squares. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         },
         "outsideRule": {
@@ -299,9 +301,36 @@
             "Sighting Object 9"
           ],
           "storedTargetRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Sighting Object 1",
+            "Sighting Object 2",
+            "Sighting Object 3",
+            "Sighting Object 4",
+            "Sighting Object 5",
+            "Sighting Object 6",
+            "Sighting Object 7",
+            "Sighting Object 8",
+            "Sighting Object 9"
+          ],
+          "regionObjectIds": [
+            "sighting_object_1",
+            "sighting_object_2",
+            "sighting_object_3",
+            "sighting_object_4",
+            "sighting_object_5",
+            "sighting_object_6",
+            "sighting_object_7",
+            "sighting_object_8",
+            "sighting_object_9"
+          ],
+          "storedGoverningRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         }
       },
-      "digest": "2fa38d9093f4ae2ec5e4604f7ae77e5f33259815f98c8f2506ab9ea74849aae0"
+      "digest": "3b9386b12cb9e359c89a92bf8633a5e9f02acb528487b29d5e6bf30bfc26bd08"
     },
     "mission": {
       "id": "qt_printer13_product_1955981361225-mission",
@@ -345,19 +374,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "ZEROING_SIGHT_IN",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-CIR-2 Paper Target is a Five Circle FBI Training Target with Four 1\" Sighting Squares. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -372,7 +402,7 @@
                   "Sighting Object 8",
                   "Sighting Object 9"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -489,13 +519,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -503,19 +526,64 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 120,
             "visualStackChair": 149,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture printed aiming/scoring structures. Use governed zeroing correction only where the stored zeroing authority exists; otherwise provide counts/score from printed values plus shot-pattern center and displacement observations."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Sighting Object 1, Sighting Object 2, Sighting Object 3, Sighting Object 4, Sighting Object 5, Sighting Object 6, Sighting Object 7, Sighting Object 8, Sighting Object 9.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1955981361225",
+              "productName": "FBI-CIR-2 Paper Target",
+              "sku": "FBI-CIR-2",
+              "imageFilename": "qt-1955981361225-01.png",
+              "imageSha256": "6c2c4a9d6f99303c504e0178ec17b19fc5e563ce1d3ba7f87a242dd8e0a65fdd"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-CIR-2 Paper Target is a Five Circle FBI Training Target with Four 1\" Sighting Squares. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "ZEROING_SIGHT_IN",
+            "explicitGovernedLabels": [
+              "Sighting Object 1",
+              "Sighting Object 2",
+              "Sighting Object 3",
+              "Sighting Object 4",
+              "Sighting Object 5",
+              "Sighting Object 6",
+              "Sighting Object 7",
+              "Sighting Object 8",
+              "Sighting Object 9"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "sighting_object_1",
+              "sighting_object_2",
+              "sighting_object_3",
+              "sighting_object_4",
+              "sighting_object_5",
+              "sighting_object_6",
+              "sighting_object_7",
+              "sighting_object_8",
+              "sighting_object_9"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Sighting Object 1, Sighting Object 2, Sighting Object 3, Sighting Object 4, Sighting Object 5, Sighting Object 6, Sighting Object 7, Sighting Object 8, Sighting Object 9.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "3116b46c252b4ef8ce319019984f4cbbcfb664155b28bd6e7adac81770a77f00"
+      "digest": "4cadec2b961f8aeed84778cecf66701ef45fa631b0178e40be2b6ebc40543017"
     }
   },
   "executor": {

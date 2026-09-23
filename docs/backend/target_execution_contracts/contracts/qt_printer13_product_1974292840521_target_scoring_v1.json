@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974292840521-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "DIAGNOSTIC_FEEDBACK",
       "qtFamilyGroup": "DIAG_L_R",
       "episode64IntelligenceFamily": "DIAGNOSTIC_FEEDBACK",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -202,8 +203,9 @@
           "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product DIAG-R - Shot Diagnostic Paper Target - Right Hand - 100 Targets 8.5\" x 11\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
         },
         "outsideRule": {
@@ -226,9 +228,31 @@
             "7"
           ],
           "storedTargetRule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "labels": [
+            "10",
+            "9",
+            "8",
+            "7"
+          ],
+          "regionObjectIds": [
+            "ring_10",
+            "ring_9",
+            "ring_8",
+            "ring_7"
+          ],
+          "storedGoverningRule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
         }
       },
-      "digest": "b6bd6f2024a0cbdc266a1f812ddc5d0e8ee718332c7ef71e3b24d71c97b33ee0"
+      "digest": "4c848a557c5835b1908eeeb20932ec679b447ed9f763bfe9bef3e415bc7f4972"
     },
     "mission": {
       "id": "qt_printer13_product_1974292840521-mission",
@@ -610,19 +634,20 @@
           ]
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "DIAGNOSTIC_FEEDBACK",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product DIAG-R - Shot Diagnostic Paper Target - Right Hand - 100 Targets 8.5\" x 11\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
               },
               "publishedValuesAvailable": true,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -637,7 +662,7 @@
                   "8",
                   "7"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -749,13 +774,6 @@
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "inventedcorrection",
             "sczn3causaldiagnosis",
             "unpublishedcourserules",
@@ -765,19 +783,61 @@
             "unpublishedtiming"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 88,
             "visualStackChair": 116,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture printed scoring rings plus printed diagnostic sectors. Score the visible numeric rings and report the sector(s) containing impacts as artwork-derived feedback. No invented causal diagnosis beyond the target's printed wording."
+          "smartBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1974292840521",
+              "productName": "DIAG-R Paper Target",
+              "sku": "DIAG-R",
+              "imageFilename": "qt-1974292840521-01.jpg",
+              "imageSha256": "83d7017719445fa5153c1e3560ae10c3349e25a1c0e76ba7a82733d0cb8c12a6"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product DIAG-R - Shot Diagnostic Paper Target - Right Hand - 100 Targets 8.5\" x 11\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses.",
+            "capability": "Scoring",
+            "intelligenceFamily": "DIAGNOSTIC_FEEDBACK",
+            "explicitGovernedLabels": [
+              "10",
+              "9",
+              "8",
+              "7"
+            ],
+            "explicitGovernedValues": [
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "registeredSemanticRegionObjectIds": [
+              "ring_10",
+              "ring_9",
+              "ring_8",
+              "ring_7"
+            ],
+            "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "invented_correction",
+              "sczn3_causal_diagnosis",
+              "unpublished_course_rules",
+              "unpublished_pass_threshold",
+              "unpublished_penalties",
+              "unpublished_sequence",
+              "unpublished_timing."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "b80909ecad98837594322d404d0e3cec98750b18d3831c60b02ca2b2b9436d8b"
+      "digest": "28fcd5b1f696e5be0cc93602f07275ff8b1f246c83018c433c0fbf9e1335c218"
     }
   },
   "executor": {

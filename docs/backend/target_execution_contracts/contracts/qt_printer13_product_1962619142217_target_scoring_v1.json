@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1962619142217-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "REPEATED_OBJECT_COUNTING",
       "qtFamilyGroup": "DS_MG_FAMILY",
       "episode64IntelligenceFamily": "REPEATED_OBJECT_COUNTING",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -234,8 +235,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product DS-MG1A Paper Target is a Multiple Tombstone Target - Thicker Zones U.S. Military Machine Gun Training Target Grey Background 35\" x 23 \" Paper For large or custom orders, please call 866-498-8228",
           "rule": "6 published repeated objects are independently counted; drill order remains unpublished"
         },
         "outsideRule": {
@@ -254,9 +256,30 @@
             "Object 6"
           ],
           "storedTargetRule": "6 published repeated objects are independently counted; drill order remains unpublished"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Object 1",
+            "Object 2",
+            "Object 3",
+            "Object 4",
+            "Object 5",
+            "Object 6"
+          ],
+          "regionObjectIds": [
+            "object_1",
+            "object_2",
+            "object_3",
+            "object_4",
+            "object_5",
+            "object_6"
+          ],
+          "storedGoverningRule": "6 published repeated objects are independently counted; drill order remains unpublished"
         }
       },
-      "digest": "d4464afc9a3c1446c6019a2deac3a884cbb7d2bfdb1afd1bbf4e91ce50659837"
+      "digest": "5b2cb6b3cfe6073ec381237193aad660a51e3e7bfc89c324b70f32c085a6543b"
     },
     "mission": {
       "id": "qt_printer13_product_1962619142217-mission",
@@ -300,19 +323,20 @@
         "unresolvedReason": "Publisher establishes repeated tombstone objects and a thicker-zone variant; the military course, order, and hit/count rules are not published.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "REPEATED_OBJECT_COUNTING",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product DS-MG1A Paper Target is a Multiple Tombstone Target - Thicker Zones U.S. Military Machine Gun Training Target Grey Background 35\" x 23 \" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "6 published repeated objects are independently counted; drill order remains unpublished"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Publisher establishes repeated tombstone objects and a thicker-zone variant; the military course, order, and hit/count rules are not published.",
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -324,7 +348,7 @@
                   "Object 5",
                   "Object 6"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -438,13 +462,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -452,19 +469,58 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 100,
             "visualStackChair": 128,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture each repeated dot/object independently. Report per-object hits, objects used/unused, total taps, misses, distribution/evenness, and repeat-session progress. No invented shot quota or sequence."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Object 1, Object 2, Object 3, Object 4, Object 5, Object 6.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1962619142217",
+              "productName": "DS-MG1A Paper Target",
+              "sku": "DS-MG1A",
+              "imageFilename": "qt-1962619142217-01.jpg",
+              "imageSha256": "04c4daa275353465d81d8abe94f93c199b836aa7fc392644b0384dc4e5b91762"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product DS-MG1A Paper Target is a Multiple Tombstone Target - Thicker Zones U.S. Military Machine Gun Training Target Grey Background 35\" x 23 \" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "6 published repeated objects are independently counted; drill order remains unpublished",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "REPEATED_OBJECT_COUNTING",
+            "explicitGovernedLabels": [
+              "Object 1",
+              "Object 2",
+              "Object 3",
+              "Object 4",
+              "Object 5",
+              "Object 6"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "object_1",
+              "object_2",
+              "object_3",
+              "object_4",
+              "object_5",
+              "object_6"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Object 1, Object 2, Object 3, Object 4, Object 5, Object 6.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "8025ced61bc6f3ace8c590b23c223253aa4afdb1ee488e742d603869e3c06f0c"
+      "digest": "e9b18148e3b11c3aa633ab76affaca65dac4755d7324321341f65c84c6c9b0fb"
     }
   },
   "executor": {

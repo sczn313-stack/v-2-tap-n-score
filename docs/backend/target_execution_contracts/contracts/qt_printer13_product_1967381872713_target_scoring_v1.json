@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1967381872713-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "B_FAMILY_SCORING",
       "qtFamilyGroup": "B_FAMILY",
       "episode64IntelligenceFamily": "B_FAMILY_SCORING",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -216,8 +217,9 @@
           "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product B-27-P1 is a Full-sized Photo Paper Target printed with Hidden B-27 Scoring Zones 24\" x 45\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "stored B-27 authority governs X/10/9/8/7 and the geometry is registered to the B-27-P1 printed rings"
         },
         "outsideRule": {
@@ -241,9 +243,33 @@
             "7"
           ],
           "storedTargetRule": "stored B-27 authority governs X/10/9/8/7 and the geometry is registered to the B-27-P1 printed rings"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "labels": [
+            "X",
+            "10",
+            "9",
+            "8",
+            "7"
+          ],
+          "regionObjectIds": [
+            "x_ring",
+            "ring_10",
+            "ring_9",
+            "ring_8",
+            "ring_7"
+          ],
+          "storedGoverningRule": "stored B-27 authority governs X/10/9/8/7 and the geometry is registered to the B-27-P1 printed rings"
         }
       },
-      "digest": "681b696cbd59ed8eb713ceb264bf949734aaa3ef60d43a37664eb84dc21777b4"
+      "digest": "d47435e1805b796f502e14705d03312ac2fca7e1c99c1f6f013970a57ebe33b8"
     },
     "mission": {
       "id": "qt_printer13_product_1967381872713-mission",
@@ -287,19 +313,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "B_FAMILY_SCORING",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product B-27-P1 is a Full-sized Photo Paper Target printed with Hidden B-27 Scoring Zones 24\" x 45\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "stored B-27 authority governs X/10/9/8/7 and the geometry is registered to the B-27-P1 printed rings"
               },
               "publishedValuesAvailable": true,
-              "unresolved": null,
+              "unresolved": "stored QT artwork plus established B-27 authority proves X/10/9/8/7",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -315,7 +342,7 @@
                   "8",
                   "7"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -428,13 +455,6 @@
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -442,19 +462,61 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 14,
             "visualStackChair": 15,
-            "priorSurgicalCapability": null,
-            "changedFromPriorSurgicalReview": false,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every tap against the printed B-family regions. Score only the numeric/X values visibly printed or otherwise stored. Report total taps, region counts, points, X-count when present, misses, distribution, shot-pattern center, and session history."
+          "smartBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: X, 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1967381872713",
+              "productName": "B-27-P1 Paper Target",
+              "sku": "B-27-P1",
+              "imageFilename": "qt-1967381872713-01.png",
+              "imageSha256": "0fecd1bf3481ea8fcdcd063f33378bfd8937a93bd8ebb8e0b37a59db84ce2f83"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product B-27-P1 is a Full-sized Photo Paper Target printed with Hidden B-27 Scoring Zones 24\" x 45\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "stored B-27 authority governs X/10/9/8/7 and the geometry is registered to the B-27-P1 printed rings",
+            "capability": "Scoring",
+            "intelligenceFamily": "B_FAMILY_SCORING",
+            "explicitGovernedLabels": [
+              "X",
+              "10",
+              "9",
+              "8",
+              "7"
+            ],
+            "explicitGovernedValues": [
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "registeredSemanticRegionObjectIds": [
+              "x_ring",
+              "ring_10",
+              "ring_9",
+              "ring_8",
+              "ring_7"
+            ],
+            "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: X, 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "stored QT artwork plus established B-27 authority proves X/10/9/8/7",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "bd0fd34f749b6834c14f4bc410c3a2519f915ef7a7ea27adb3aa40ad6bc6f0af"
+      "digest": "bc54bf3d756f7ba88972d7256a73885395ee8854494e42fcc7987a6227cff743"
     }
   },
   "executor": {

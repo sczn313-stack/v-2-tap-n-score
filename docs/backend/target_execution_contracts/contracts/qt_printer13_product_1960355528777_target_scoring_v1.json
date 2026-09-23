@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1960355528777-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "ZEROING_SIGHT_IN",
       "qtFamilyGroup": "BT5_FAMILY",
       "episode64IntelligenceFamily": "ZEROING_SIGHT_IN",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -184,8 +185,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product BT-5-EL DORADO DA - 25 Yard Silhouette Paper Target Police Training Target ORANGE HEAD and CENTER MASS Shaded Spinal Zone - Sighting Zones Printed with Black Ink and Orange Ink on 17.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         },
         "outsideRule": {
@@ -201,9 +203,24 @@
             "Target Field"
           ],
           "storedTargetRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Sighting Center",
+            "Sighting Outer",
+            "Target Field"
+          ],
+          "regionObjectIds": [
+            "sighting_center",
+            "sighting_outer",
+            "target_field"
+          ],
+          "storedGoverningRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         }
       },
-      "digest": "cc431f7fc0661f1361c62cba60f177f46f7d82fe525fda3127719b584b6abff8"
+      "digest": "75fab0d4381f10ac4b0d3a016dc0257e19d942db7f9bbb6a4ae2a201ae020bb7"
     },
     "mission": {
       "id": "qt_printer13_product_1960355528777-mission",
@@ -247,19 +264,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "ZEROING_SIGHT_IN",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product BT-5-EL DORADO DA - 25 Yard Silhouette Paper Target Police Training Target ORANGE HEAD and CENTER MASS Shaded Spinal Zone - Sighting Zones Printed with Black Ink and Orange Ink on 17.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -268,7 +286,7 @@
                   "Sighting Outer",
                   "Target Field"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -379,13 +397,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -393,19 +404,52 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 41,
             "visualStackChair": 44,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture printed aiming/scoring structures. Use governed zeroing correction only where the stored zeroing authority exists; otherwise provide counts/score from printed values plus shot-pattern center and displacement observations."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Sighting Center, Sighting Outer, Target Field.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1960355528777",
+              "productName": "BT-5-EL DORADO DA Paper Target",
+              "sku": "BT-5-EL DORADO DA",
+              "imageFilename": "qt-1960355528777-01.png",
+              "imageSha256": "5751f509da0c3c8323540224087660ba382db80f0ce99ac966d8e2c1be2aeab2"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product BT-5-EL DORADO DA - 25 Yard Silhouette Paper Target Police Training Target ORANGE HEAD and CENTER MASS Shaded Spinal Zone - Sighting Zones Printed with Black Ink and Orange Ink on 17.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "ZEROING_SIGHT_IN",
+            "explicitGovernedLabels": [
+              "Sighting Center",
+              "Sighting Outer",
+              "Target Field"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "sighting_center",
+              "sighting_outer",
+              "target_field"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Sighting Center, Sighting Outer, Target Field.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "449c1c252916dd1de1e6bee64ee6a76682d795bf5061fdbedc0125391c750121"
+      "digest": "3e7580fd59ed125704356954e4d74435bb4df3064742fd37cf17b3f9e403acfc"
     }
   },
   "executor": {

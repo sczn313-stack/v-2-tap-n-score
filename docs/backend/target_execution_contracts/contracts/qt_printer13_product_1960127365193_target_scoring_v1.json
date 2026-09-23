@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1960127365193-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "VALUED_REGION_QUALIFICATION",
       "qtFamilyGroup": "TQ_19E_AZ",
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -209,8 +210,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product TQ-19E-AZ is a Full-sized TQ-19 Silhouette with 2\" and 4\" Head Zones 4\" and 8\" Center Mass Zones 6\" x 8\" Hip Zone Dual Spotting Circles State of AZ Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
         },
         "outsideRule": {
@@ -227,9 +229,26 @@
             "Remaining governed target area"
           ],
           "storedTargetRule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Upper governed region",
+            "Central governed region",
+            "Lower governed region",
+            "Remaining governed target area"
+          ],
+          "regionObjectIds": [
+            "upper_governed_region",
+            "central_governed_region",
+            "lower_governed_region",
+            "remaining_target_area"
+          ],
+          "storedGoverningRule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
         }
       },
-      "digest": "377b08ca57871caed32ed29beb66c5a3eddf993d35eabeed6345d2aa2da9746e"
+      "digest": "32cff04b3cf2807108354a48b38d693b7911d024be4ecec330ca0f5952394c0d"
     },
     "mission": {
       "id": "qt_printer13_product_1960127365193-mission",
@@ -273,19 +292,20 @@
         "unresolvedReason": "Publisher establishes region dimensions and spotting circles; point values and Arizona course semantics are not published.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product TQ-19E-AZ is a Full-sized TQ-19 Silhouette with 2\" and 4\" Head Zones 4\" and 8\" Center Mass Zones 6\" x 8\" Hip Zone Dual Spotting Circles State of AZ Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Publisher establishes region dimensions and spotting circles; point values and Arizona course semantics are not published.",
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -295,7 +315,7 @@
                   "Lower governed region",
                   "Remaining governed target area"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -407,13 +427,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -421,19 +434,54 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 225,
             "visualStackChair": 261,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every visibly bounded/labeled region or object. If the face itself prints numeric point values, score them; otherwise count by region/object. Report totals, distribution, misses, pattern, and history. Do not invent a qualification threshold."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Upper governed region, Central governed region, Lower governed region, Remaining governed target area.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1960127365193",
+              "productName": "TQ-19E-AZ Paper Target",
+              "sku": "TQ-19E-AZ",
+              "imageFilename": "qt-1960127365193-01.jpg",
+              "imageSha256": "b1c3fc810dabb162513beba95257b9ee5ab17d049943bd2e058ac30d7fb09325"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product TQ-19E-AZ is a Full-sized TQ-19 Silhouette with 2\" and 4\" Head Zones 4\" and 8\" Center Mass Zones 6\" x 8\" Hip Zone Dual Spotting Circles State of AZ Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
+            "explicitGovernedLabels": [
+              "Upper governed region",
+              "Central governed region",
+              "Lower governed region",
+              "Remaining governed target area"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "upper_governed_region",
+              "central_governed_region",
+              "lower_governed_region",
+              "remaining_target_area"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Upper governed region, Central governed region, Lower governed region, Remaining governed target area.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "cb97713d6a707a1c1c34dd9246aa0c1810cefb2285d6467889c755f3dafd7e6f"
+      "digest": "17d1cb49a5ee7b122fc32e3dd57af02ae9b2a890526eeba98590388b40fa17bb"
     }
   },
   "executor": {

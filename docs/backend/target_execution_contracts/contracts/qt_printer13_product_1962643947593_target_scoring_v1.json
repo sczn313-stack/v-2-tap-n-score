@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1962643947593-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "M16_M4_QUALIFICATION",
       "qtFamilyGroup": "DSQ_FAMILY",
       "episode64IntelligenceFamily": "M16_M4_QUALIFICATION",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -185,8 +186,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product DSQ-M4R Paper Target also Known as The IZZY Target with AK-47 Multiple Reduced DS-Q1A Silhouettes to Simulate 50 and 100 yards 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
         },
         "outsideRule": {
@@ -202,9 +204,24 @@
             "Qualification object"
           ],
           "storedTargetRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Aim reference",
+            "Adjustment grid",
+            "Qualification object"
+          ],
+          "regionObjectIds": [
+            "aim_reference",
+            "adjustment_grid",
+            "qualification_object"
+          ],
+          "storedGoverningRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
         }
       },
-      "digest": "0ad6d54a1193d278dd51f7183b3b9c420fc633a73477057fec0bb35ffe2515d2"
+      "digest": "c9d8f93e0ab7dab3ae1c255a738a55aea44135041db000828c3ae26577ac957a"
     },
     "mission": {
       "id": "qt_printer13_product_1962643947593-mission",
@@ -248,19 +265,20 @@
         "unresolvedReason": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "M16_M4_QUALIFICATION",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product DSQ-M4R Paper Target also Known as The IZZY Target with AK-47 Multiple Reduced DS-Q1A Silhouettes to Simulate 50 and 100 yards 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -269,7 +287,7 @@
                   "Adjustment grid",
                   "Qualification object"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -380,13 +398,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -394,19 +405,52 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 108,
             "visualStackChair": 137,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture every printed aim area/qualification object. Count or score only what the face/stored authority proves. M16A2 keeps the governed zeroing road. Do not invent qualification thresholds or stage rules."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Aim reference, Adjustment grid, Qualification object.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1962643947593",
+              "productName": "DSQ-M4R Paper Target",
+              "sku": "DSQ-M4R",
+              "imageFilename": "qt-1962643947593-01.png",
+              "imageSha256": "924c9edf5e85f77bf8f970b69869a49a942e83f48cc063a388c7966f0e9fe35d"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product DSQ-M4R Paper Target also Known as The IZZY Target with AK-47 Multiple Reduced DS-Q1A Silhouettes to Simulate 50 and 100 yards 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "M16_M4_QUALIFICATION",
+            "explicitGovernedLabels": [
+              "Aim reference",
+              "Adjustment grid",
+              "Qualification object"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "aim_reference",
+              "adjustment_grid",
+              "qualification_object"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Aim reference, Adjustment grid, Qualification object.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "f67fe4acd6d2e1a2586750910662e1358bf27ef8388ca2f8127cae81a6be23d6"
+      "digest": "0ef6db1e8b729db58809b70075da278cf45fdeb11797287de81ca276c00a43ab"
     }
   },
   "executor": {

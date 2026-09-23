@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1953776926793-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "REPEATED_OBJECT_COUNTING",
       "qtFamilyGroup": "DOT_FAMILY",
       "episode64IntelligenceFamily": "REPEATED_OBJECT_COUNTING",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -318,8 +319,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product DOT-7 Paper Target has 8 - 8 Inch Dots 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "12 published repeated objects are independently counted; drill order remains unpublished"
         },
         "outsideRule": {
@@ -344,9 +346,42 @@
             "Object 12"
           ],
           "storedTargetRule": "12 published repeated objects are independently counted; drill order remains unpublished"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Object 1",
+            "Object 2",
+            "Object 3",
+            "Object 4",
+            "Object 5",
+            "Object 6",
+            "Object 7",
+            "Object 8",
+            "Object 9",
+            "Object 10",
+            "Object 11",
+            "Object 12"
+          ],
+          "regionObjectIds": [
+            "object_1",
+            "object_2",
+            "object_3",
+            "object_4",
+            "object_5",
+            "object_6",
+            "object_7",
+            "object_8",
+            "object_9",
+            "object_10",
+            "object_11",
+            "object_12"
+          ],
+          "storedGoverningRule": "12 published repeated objects are independently counted; drill order remains unpublished"
         }
       },
-      "digest": "2189592a25c25723620b8957a75f703ce3729bbec7a3d2cd71099d76eb930de2"
+      "digest": "ee632589c2cd18217fbeb1a037256137198c6bdf5a989bf850c689367d4a7cde"
     },
     "mission": {
       "id": "qt_printer13_product_1953776926793-mission",
@@ -390,19 +425,20 @@
         "unresolvedReason": "Publisher establishes dot counts, sizes, and numbering but publishes no target-specific drill/course, order, round count, or score.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "REPEATED_OBJECT_COUNTING",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product DOT-7 Paper Target has 8 - 8 Inch Dots 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "12 published repeated objects are independently counted; drill order remains unpublished"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Publisher establishes dot counts, sizes, and numbering but publishes no target-specific drill/course, order, round count, or score.",
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -420,7 +456,7 @@
                   "Object 11",
                   "Object 12"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -540,13 +576,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -554,19 +583,70 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 96,
             "visualStackChair": 124,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture each repeated dot/object independently. Report per-object hits, objects used/unused, total taps, misses, distribution/evenness, and repeat-session progress. No invented shot quota or sequence."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Object 1, Object 2, Object 3, Object 4, Object 5, Object 6, Object 7, Object 8, Object 9, Object 10, Object 11, Object 12.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1953776926793",
+              "productName": "DOT-7 Paper Target",
+              "sku": "DOT-7",
+              "imageFilename": "qt-1953776926793-01.png",
+              "imageSha256": "234461ade7595003ef7e7cdc80eec34f5d1fe95449460f54380ea8c8642756ea"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product DOT-7 Paper Target has 8 - 8 Inch Dots 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "12 published repeated objects are independently counted; drill order remains unpublished",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "REPEATED_OBJECT_COUNTING",
+            "explicitGovernedLabels": [
+              "Object 1",
+              "Object 2",
+              "Object 3",
+              "Object 4",
+              "Object 5",
+              "Object 6",
+              "Object 7",
+              "Object 8",
+              "Object 9",
+              "Object 10",
+              "Object 11",
+              "Object 12"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "object_1",
+              "object_2",
+              "object_3",
+              "object_4",
+              "object_5",
+              "object_6",
+              "object_7",
+              "object_8",
+              "object_9",
+              "object_10",
+              "object_11",
+              "object_12"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Object 1, Object 2, Object 3, Object 4, Object 5, Object 6, Object 7, Object 8, Object 9, Object 10, Object 11, Object 12.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "9565caa1e26cbe8b3e4cdf7f2cce05bf6d1094ae6f4a3e81e8d26ae7d97529ab"
+      "digest": "36fe621e566fca6c93adb659f7b30286babfea9faf82477792d5c6a61faf012f"
     }
   },
   "executor": {

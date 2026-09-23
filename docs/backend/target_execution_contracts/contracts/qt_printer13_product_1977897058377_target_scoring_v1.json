@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1977897058377-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "ZEROING_SIGHT_IN",
       "qtFamilyGroup": "SI_FAMILY",
       "episode64IntelligenceFamily": "ZEROING_SIGHT_IN",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -318,8 +319,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product SI-3 Paper Target is a Sighting Target with 4 Bullseyes with Orange Centers. 11.5\" x 11.5\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         },
         "outsideRule": {
@@ -344,9 +346,42 @@
             "Bull 4 outer ring"
           ],
           "storedTargetRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Bull 1 inner ring",
+            "Bull 1 middle ring",
+            "Bull 1 outer ring",
+            "Bull 2 inner ring",
+            "Bull 2 middle ring",
+            "Bull 2 outer ring",
+            "Bull 3 inner ring",
+            "Bull 3 middle ring",
+            "Bull 3 outer ring",
+            "Bull 4 inner ring",
+            "Bull 4 middle ring",
+            "Bull 4 outer ring"
+          ],
+          "regionObjectIds": [
+            "bull_1_inner",
+            "bull_1_middle",
+            "bull_1_outer",
+            "bull_2_inner",
+            "bull_2_middle",
+            "bull_2_outer",
+            "bull_3_inner",
+            "bull_3_middle",
+            "bull_3_outer",
+            "bull_4_inner",
+            "bull_4_middle",
+            "bull_4_outer"
+          ],
+          "storedGoverningRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         }
       },
-      "digest": "9820a9a7c8415af3705265ad451e79c9441ffd05fccd8123760c3a1edfe2b9ba"
+      "digest": "8ebb6cb7f3626efbc15b6935d43bdd7f986463f40b6170f8e1057b56d107ec72"
     },
     "mission": {
       "id": "qt_printer13_product_1977897058377-mission",
@@ -390,19 +425,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "ZEROING_SIGHT_IN",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product SI-3 Paper Target is a Sighting Target with 4 Bullseyes with Orange Centers. 11.5\" x 11.5\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
               },
               "publishedValuesAvailable": false,
-              "unresolved": null,
+              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -420,7 +456,7 @@
                   "Bull 4 middle ring",
                   "Bull 4 outer ring"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -540,13 +576,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -554,19 +583,70 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 201,
             "visualStackChair": 236,
-            "priorSurgicalCapability": "Evidence Only",
-            "changedFromPriorSurgicalReview": true,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture printed aiming/scoring structures. Use governed zeroing correction only where the stored zeroing authority exists; otherwise provide counts/score from printed values plus shot-pattern center and displacement observations."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1 inner ring, Bull 1 middle ring, Bull 1 outer ring, Bull 2 inner ring, Bull 2 middle ring, Bull 2 outer ring, Bull 3 inner ring, Bull 3 middle ring, Bull 3 outer ring, Bull 4 inner ring, Bull 4 middle ring, Bull 4 outer ring.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1977897058377",
+              "productName": "SI-3 Paper Target",
+              "sku": "SI-3",
+              "imageFilename": "qt-1977897058377-01.png",
+              "imageSha256": "289e41f9f344d9daa6aba116d1ae0447568b8e584ac8abb40d76d9e603f7568b"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product SI-3 Paper Target is a Sighting Target with 4 Bullseyes with Orange Centers. 11.5\" x 11.5\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "ZEROING_SIGHT_IN",
+            "explicitGovernedLabels": [
+              "Bull 1 inner ring",
+              "Bull 1 middle ring",
+              "Bull 1 outer ring",
+              "Bull 2 inner ring",
+              "Bull 2 middle ring",
+              "Bull 2 outer ring",
+              "Bull 3 inner ring",
+              "Bull 3 middle ring",
+              "Bull 3 outer ring",
+              "Bull 4 inner ring",
+              "Bull 4 middle ring",
+              "Bull 4 outer ring"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "bull_1_inner",
+              "bull_1_middle",
+              "bull_1_outer",
+              "bull_2_inner",
+              "bull_2_middle",
+              "bull_2_outer",
+              "bull_3_inner",
+              "bull_3_middle",
+              "bull_3_outer",
+              "bull_4_inner",
+              "bull_4_middle",
+              "bull_4_outer"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1 inner ring, Bull 1 middle ring, Bull 1 outer ring, Bull 2 inner ring, Bull 2 middle ring, Bull 2 outer ring, Bull 3 inner ring, Bull 3 middle ring, Bull 3 outer ring, Bull 4 inner ring, Bull 4 middle ring, Bull 4 outer ring.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "aea27b67dc437b97337e20e689ceca88bb3a5f167392be1c7ba81bd7197c1e6c"
+      "digest": "7d6eadea25059927d401c56919c0fa7b699dbd9c95c65e185f0e448b9e47716b"
     }
   },
   "executor": {

@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1977912131657-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "ZEROING_SIGHT_IN",
       "qtFamilyGroup": "SI_FAMILY",
       "episode64IntelligenceFamily": "ZEROING_SIGHT_IN",
-      "homieLockedCapability": "Scoring"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -197,8 +198,9 @@
           "mode": "sum_and_classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product SI-4 Paper Target is a Sighting Target with One Orange Centered Bullseye Target. 11.5\" x 11.5\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "visible printed 9/8/7 rings score; unlabeled orange center remains an unvalued counted region"
         },
         "outsideRule": {
@@ -219,9 +221,30 @@
             "7"
           ],
           "storedTargetRule": "visible printed 9/8/7 rings score; unlabeled orange center remains an unvalued counted region"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [
+            "7",
+            "8",
+            "9"
+          ],
+          "labels": [
+            "Orange center",
+            "9",
+            "8",
+            "7"
+          ],
+          "regionObjectIds": [
+            "orange_center",
+            "ring_9",
+            "ring_8",
+            "ring_7"
+          ],
+          "storedGoverningRule": "visible printed 9/8/7 rings score; unlabeled orange center remains an unvalued counted region"
         }
       },
-      "digest": "105c566bc4297f8aa469215080b72a75449887355e3b9dce7700cf5d6a77828c"
+      "digest": "a17075b882d72b6930e4cae3ded9e4d007acf053d0d29709962a27d4116a9d66"
     },
     "mission": {
       "id": "qt_printer13_product_1977912131657-mission",
@@ -265,19 +288,20 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "ZEROING_SIGHT_IN",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product SI-4 Paper Target is a Sighting Target with One Orange Centered Bullseye Target. 11.5\" x 11.5\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "visible printed 9/8/7 rings score; unlabeled orange center remains an unvalued counted region"
               },
               "publishedValuesAvailable": true,
-              "unresolved": null,
+              "unresolved": "stored QT artwork proves printed SI-4 ring values",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -291,7 +315,7 @@
                   "8",
                   "7"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -403,13 +427,6 @@
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -417,19 +434,58 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 202,
             "visualStackChair": 237,
-            "priorSurgicalCapability": null,
-            "changedFromPriorSurgicalReview": false,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture printed aiming/scoring structures. Use governed zeroing correction only where the stored zeroing authority exists; otherwise provide counts/score from printed values plus shot-pattern center and displacement observations."
+          "smartBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: Orange center, 9, 8, 7. Published point values available to scoring: 7, 8, 9.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1977912131657",
+              "productName": "SI-4 Paper Target",
+              "sku": "SI-4",
+              "imageFilename": "qt-1977912131657-01.png",
+              "imageSha256": "2db72e67800d3f5b2e8b3b53ebfd1543bfe836b8f3c3dcddaa3b07b1ca886379"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product SI-4 Paper Target is a Sighting Target with One Orange Centered Bullseye Target. 11.5\" x 11.5\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "visible printed 9/8/7 rings score; unlabeled orange center remains an unvalued counted region",
+            "capability": "Scoring",
+            "intelligenceFamily": "ZEROING_SIGHT_IN",
+            "explicitGovernedLabels": [
+              "Orange center",
+              "9",
+              "8",
+              "7"
+            ],
+            "explicitGovernedValues": [
+              "7",
+              "8",
+              "9"
+            ],
+            "registeredSemanticRegionObjectIds": [
+              "orange_center",
+              "ring_9",
+              "ring_8",
+              "ring_7"
+            ],
+            "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: Orange center, 9, 8, 7. Published point values available to scoring: 7, 8, 9.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "stored QT artwork proves printed SI-4 ring values",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "a6760c7baa7e0698e4e2c12a17387aceb95f202a7020e077fbb15b3755506c0b"
+      "digest": "d8918462d5d5386002c31ea225aa0b07e0382d9866f6116e5f2c0e5a49697bb9"
     }
   },
   "executor": {

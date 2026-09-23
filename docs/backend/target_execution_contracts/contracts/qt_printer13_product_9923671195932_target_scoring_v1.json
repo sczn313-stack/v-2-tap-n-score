@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_9923671195932-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,7 +35,8 @@
       "behaviorFamily": "ANATOMY_VITAL_REGIONS",
       "qtFamilyGroup": "DSQ_FAMILY",
       "episode64IntelligenceFamily": "ANATOMY_VITAL_REGIONS",
-      "homieLockedCapability": "Zone / Object Counting"
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
     }
   },
   "missionFamily": "targetScoring",
@@ -266,8 +267,9 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product DSQ \u2013 FTU Qual Alt 2 - ( Two sided Target) has a full Skeletal image on the front side of the target and the back side has Bullseyes and other cross grids for measuring MOA (Qty 250 per Box) 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
           "rule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
         },
         "outsideRule": {
@@ -288,9 +290,34 @@
             "Outer figure region"
           ],
           "storedTargetRule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
+        },
+        "homieCorrectedArtworkFacts": {
+          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "values": [],
+          "labels": [
+            "Printed object 1",
+            "Printed object 2",
+            "Printed object 3",
+            "Printed object 4",
+            "Upper outlined region",
+            "Central outlined region",
+            "Lower outlined region",
+            "Outer figure region"
+          ],
+          "regionObjectIds": [
+            "numbered_object_1",
+            "numbered_object_2",
+            "numbered_object_3",
+            "numbered_object_4",
+            "upper_outlined_region",
+            "central_outlined_region",
+            "lower_outlined_region",
+            "outer_figure_region"
+          ],
+          "storedGoverningRule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
         }
       },
-      "digest": "2abd11680ede0816ca3c6e150a622fc13b9d3c2fe69ae434df55a72e75243ee9"
+      "digest": "906bc151db12c4cd1b30368bd6ccc4b57e6ef4bb75b4c0dd84c48310bc554f5d"
     },
     "mission": {
       "id": "qt_printer13_product_9923671195932-mission",
@@ -334,19 +361,20 @@
         "unresolvedReason": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "ANATOMY_VITAL_REGIONS",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product DSQ \u2013 FTU Qual Alt 2 - ( Two sided Target) has a full Skeletal image on the front side of the target and the back side has Bullseyes and other cross grids for measuring MOA (Qty 250 per Box) 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
                 "rule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
+              "unresolved": "stored QT artwork proves numbered peripheral objects and outlined regions without anatomy inference",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -360,7 +388,7 @@
                   "Lower outlined region",
                   "Outer figure region"
                 ],
-                "authorityClass": "explicit_source_artwork"
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
               }
             },
             "targetStructure": {
@@ -476,13 +504,6 @@
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
-            "invented_score",
-            "invented_qualification",
-            "invented_sequence",
-            "invented_timing",
-            "invented_penalty",
-            "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning",
             "unpublishedcourserules",
             "unpublishedsequence",
             "unpublishedtiming",
@@ -490,19 +511,62 @@
             "unpublishedpenalties"
           ],
           "homieFounderLock": {
-            "status": "FOUNDER_LOCKED",
-            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
-            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
             "catalogChair": 105,
             "visualStackChair": 134,
-            "priorSurgicalCapability": null,
-            "changedFromPriorSurgicalReview": false,
-            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Capture visibly printed/labeled anatomical regions only where boundaries can be bound to the artwork. Report region counts and pattern; no invented medical, tactical, or lethality meaning."
+          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Printed object 1, Printed object 2, Printed object 3, Printed object 4, Upper outlined region, Central outlined region, Lower outlined region, Outer figure region.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-9923671195932",
+              "productName": "DSQ-FTU Qual Alt 2",
+              "sku": "DSQ-FTU Qual Alt 2",
+              "imageFilename": "qt-9923671195932-01.jpg",
+              "imageSha256": "32a6a9e094544c8872f88b0fc180ea74dae0e8e788c815d73a388242989a6714"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product DSQ \u2013 FTU Qual Alt 2 - ( Two sided Target) has a full Skeletal image on the front side of the target and the back side has Bullseyes and other cross grids for measuring MOA (Qty 250 per Box) 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "ANATOMY_VITAL_REGIONS",
+            "explicitGovernedLabels": [
+              "Printed object 1",
+              "Printed object 2",
+              "Printed object 3",
+              "Printed object 4",
+              "Upper outlined region",
+              "Central outlined region",
+              "Lower outlined region",
+              "Outer figure region"
+            ],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [
+              "numbered_object_1",
+              "numbered_object_2",
+              "numbered_object_3",
+              "numbered_object_4",
+              "upper_outlined_region",
+              "central_outlined_region",
+              "lower_outlined_region",
+              "outer_figure_region"
+            ],
+            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Printed object 1, Printed object 2, Printed object 3, Printed object 4, Upper outlined region, Central outlined region, Lower outlined region, Outer figure region.",
+            "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
+            "authorityLimitOrUnresolved": "stored QT artwork proves numbered peripheral objects and outlined regions without anatomy inference",
+            "forbiddenInference": [
+              "unpublished_course_rules",
+              "unpublished_sequence",
+              "unpublished_timing",
+              "unpublished_pass_threshold",
+              "unpublished_penalties."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          }
         }
       },
-      "digest": "552605f5683ee89196f285ae39f7bfebc3ede693629b968d4a41ef382d69993e"
+      "digest": "6c987ccce219bbbcdf7df15347fdf77215206dabefb7e2a6f73dfe9ffc58bc66"
     }
   },
   "executor": {
