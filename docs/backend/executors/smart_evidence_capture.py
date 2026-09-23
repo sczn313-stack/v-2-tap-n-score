@@ -5,6 +5,7 @@ from copy import deepcopy
 from typing import Any, Dict, Mapping
 
 from target_execution_contract import canonical_json, digest
+from shot_pattern_metrics import derive_shot_pattern
 
 
 class SmartEvidenceError(ValueError):
@@ -53,6 +54,9 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     limit = int(contract["components"]["mission"]["definition"].get("maxObservations", 500))
     if len(observations) > limit:
         raise SmartEvidenceError("shot_observation_limit_exceeded")
+    exact = contract["components"]["mission"]["definition"].get("exactObservations")
+    if exact is not None and (not isinstance(exact, int) or exact < 1 or len(observations) != exact):
+        raise SmartEvidenceError("exact_shot_observation_count_required")
     normalized = []
     for index, observation in enumerate(observations, start=1):
         if not isinstance(observation, Mapping):
@@ -89,6 +93,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "resultPackageType": contract["resultPackageType"],
         "resultPackageVersion": contract["resultPackageVersion"],
         "target": deepcopy(contract["targetProfile"]),
+        "smartTargetTreatment": deepcopy(contract["components"]["mission"]["definition"].get("smartTargetTreatment")),
         "executionContract": {
             "contractId": contract["contractId"],
             "contractVersion": contract["contractVersion"],
@@ -105,6 +110,12 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "impacts": deepcopy(normalized),
         "shooterDeclaredAimPoint": aim,
         "supportedAnalysis": {"impactCount": len(normalized)},
+        "sczn3Metrics": {
+            "status": "complete",
+            "metricAuthority": "sczn3_measured_supplemental",
+            "doesNotReplacePublisherResult": True,
+            "shotPattern": derive_shot_pattern(normalized, aim),
+        },
         "reconciliation": {
             "capturedObservationCount": len(normalized),
             "acceptedObservationCount": len(normalized),

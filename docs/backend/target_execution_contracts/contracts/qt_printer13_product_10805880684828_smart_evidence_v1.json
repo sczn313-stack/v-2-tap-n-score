@@ -1,0 +1,361 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_10805880684828-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
+    "approvedAt": "2026-09-22T00:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_10805880684828",
+    "version": "1",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_10805880684828_V1",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-10805880684828",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-10805880684828",
+      "name": "LSP Paper Target",
+      "sku": "LSP",
+      "qtCatalogId": "QT-PRODUCT-10805880684828",
+      "shopifyProductId": 10805880684828,
+      "sourceUrl": "https://targets.net/products/lsp-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-10805880684828",
+      "behaviorFamily": "EVIDENCE_ONLY",
+      "qtFamilyGroup": "EVIDENCE_ONLY",
+      "episode64IntelligenceFamily": "EVIDENCE_PLAIN_SILHOUETTE"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "qt_printer13_product_10805880684828-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "image_plane_evidence_only",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "canonicalRegionMapping": "unavailable",
+        "semanticClassification": "recognized_family_not_executable_without_governed_coordinate_map",
+        "physicalMeasurement": "unavailable",
+        "observedPhysicalStructure": {
+          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+          "semanticMeaningAttributed": false,
+          "widthPx": 3000,
+          "heightPx": 4565,
+          "aspectRatio": 0.657174,
+          "cornerBackgroundRgb": [
+            255,
+            255,
+            255
+          ],
+          "contrastCoverage": 0.6033,
+          "contrastBoundingBox": {
+            "xMin": 0.0397,
+            "yMin": 0.026,
+            "xMax": 0.9603,
+            "yMax": 0.9896
+          },
+          "contrastCentroid": {
+            "xNorm": 0.5106,
+            "yNorm": 0.5556
+          },
+          "thirdsContrastDistribution": [
+            {
+              "cell": "r1c1",
+              "contrastCoverage": 0.3062
+            },
+            {
+              "cell": "r1c2",
+              "contrastCoverage": 0.6161
+            },
+            {
+              "cell": "r1c3",
+              "contrastCoverage": 0.1176
+            },
+            {
+              "cell": "r2c1",
+              "contrastCoverage": 0.6793
+            },
+            {
+              "cell": "r2c2",
+              "contrastCoverage": 0.9996
+            },
+            {
+              "cell": "r2c3",
+              "contrastCoverage": 0.7065
+            },
+            {
+              "cell": "r3c1",
+              "contrastCoverage": 0.375
+            },
+            {
+              "cell": "r3c2",
+              "contrastCoverage": 0.9602
+            },
+            {
+              "cell": "r3c3",
+              "contrastCoverage": 0.6689
+            }
+          ]
+        }
+      },
+      "digest": "cdc249d6bfd51cfd481b1dea74288fa8d7fe89cf490eea89e63578607513c46e"
+    },
+    "registration": {
+      "id": "qt_printer13_product_10805880684828-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-10805880684828-01.png",
+        "assetSha256": "1a0ddd99af53bfd49209916579317eda290392731370852b1376d4acf9378a65",
+        "assetAlt": "LSP Paper Target (QT-PRODUCT-10805880684828)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/lsp-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "de2695c661a04467c519093d0ec67cf30d32ce20a3442e44b33a4321a336fa71"
+    },
+    "scoring": {
+      "id": "qt_printer13_product_10805880684828-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority"
+      },
+      "digest": "212465cca2bb787266fece95d9a2340982e7ec2773fb7da98e87c6674a18f3ee"
+    },
+    "mission": {
+      "id": "qt_printer13_product_10805880684828-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "authorityResolution": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "recognizedQtGroup": "EVIDENCE_ONLY",
+        "legTwoHighestTruthfulCapability": "evidence-only target recognition",
+        "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+        "unresolvedReason": null,
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": false,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        },
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "intelligenceFamily": "EVIDENCE_PLAIN_SILHOUETTE",
+          "highestTruthfulCapability": "Evidence Only",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+              "publishedRuleAuthority": null,
+              "publishedValuesAvailable": false,
+              "unresolved": null,
+              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "registered_image_plane_only",
+              "registeredRegionCount": 0,
+              "registeredRegionIds": [],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 3000,
+                "heightPx": 4565,
+                "aspectRatio": 0.657174,
+                "cornerBackgroundRgb": [
+                  255,
+                  255,
+                  255
+                ],
+                "contrastCoverage": 0.6033,
+                "contrastBoundingBox": {
+                  "xMin": 0.0397,
+                  "yMin": 0.026,
+                  "xMax": 0.9603,
+                  "yMax": 0.9896
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.5106,
+                  "yNorm": 0.5556
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.3062
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.6161
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.1176
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.6793
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 0.9996
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.7065
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.375
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.9602
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.6689
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
+              "distribution": true,
+              "dispersion": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "measured_shot_pattern"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "regionObjectBreakdown": false,
+            "shotPattern": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": true,
+            "dispersionChange": true
+          },
+          "progress": {
+            "tightestPatternPersonalBest": true,
+            "scoreHistoryWhenGoverned": false
+          },
+          "unsupported": [
+            "invented_score",
+            "invented_qualification",
+            "invented_sequence",
+            "invented_timing",
+            "invented_penalty",
+            "invented_pass_threshold",
+            "invented_tactical_or_anatomical_meaning"
+          ]
+        }
+      },
+      "digest": "c684284ce926ba5dafa1be10bb84365bf665fac5b61a781eea9e7ad4a56fcc6a"
+    }
+  },
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "invented_scoring",
+    "invented_regions",
+    "invented_qualification",
+    "invented_course_rules",
+    "invented_penalties",
+    "invented_zeroing_correction"
+  ]
+}

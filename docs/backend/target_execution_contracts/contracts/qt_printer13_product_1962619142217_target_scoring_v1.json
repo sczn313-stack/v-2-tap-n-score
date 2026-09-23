@@ -1,0 +1,469 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_1962619142217-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
+    "approvedAt": "2026-09-22T00:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_1962619142217",
+    "version": "1",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_1962619142217_V1",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-1962619142217",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-1962619142217",
+      "name": "DS-MG1A Paper Target",
+      "sku": "DS-MG1A",
+      "qtCatalogId": "QT-PRODUCT-1962619142217",
+      "shopifyProductId": 1962619142217,
+      "sourceUrl": "https://targets.net/products/ds-mg1a-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1962619142217",
+      "behaviorFamily": "REPEATED_OBJECT_COUNTING",
+      "qtFamilyGroup": "DS_MG_FAMILY",
+      "episode64IntelligenceFamily": "DOT_OBJECT"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "qt_printer13_product_1962619142217-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "object_1",
+            "shape": "circle",
+            "cx": 0.295,
+            "cy": 0.24,
+            "radius": 0.0806,
+            "priority": 50,
+            "objectId": "object_1"
+          },
+          {
+            "regionId": "object_2",
+            "shape": "circle",
+            "cx": 0.705,
+            "cy": 0.24,
+            "radius": 0.0806,
+            "priority": 50,
+            "objectId": "object_2"
+          },
+          {
+            "regionId": "object_3",
+            "shape": "circle",
+            "cx": 0.295,
+            "cy": 0.5,
+            "radius": 0.0806,
+            "priority": 50,
+            "objectId": "object_3"
+          },
+          {
+            "regionId": "object_4",
+            "shape": "circle",
+            "cx": 0.705,
+            "cy": 0.5,
+            "radius": 0.0806,
+            "priority": 50,
+            "objectId": "object_4"
+          },
+          {
+            "regionId": "object_5",
+            "shape": "circle",
+            "cx": 0.295,
+            "cy": 0.76,
+            "radius": 0.0806,
+            "priority": 50,
+            "objectId": "object_5"
+          },
+          {
+            "regionId": "object_6",
+            "shape": "circle",
+            "cx": 0.705,
+            "cy": 0.76,
+            "radius": 0.0806,
+            "priority": 50,
+            "objectId": "object_6"
+          }
+        ],
+        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "derivation": {
+          "method": "leg-two-family-plus-preserved-visible-structure",
+          "family": "REPEATED_OBJECT_COUNTING",
+          "qtGroup": "DS_MG_FAMILY"
+        },
+        "observedPhysicalStructure": {
+          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+          "semanticMeaningAttributed": false,
+          "widthPx": 761,
+          "heightPx": 500,
+          "aspectRatio": 1.522,
+          "cornerBackgroundRgb": [
+            255,
+            255,
+            255
+          ],
+          "contrastCoverage": 0.9288,
+          "contrastBoundingBox": {
+            "xMin": 0.0156,
+            "yMin": 0.0238,
+            "xMax": 0.9844,
+            "yMax": 0.9841
+          },
+          "contrastCentroid": {
+            "xNorm": 0.4994,
+            "yNorm": 0.5069
+          },
+          "thirdsContrastDistribution": [
+            {
+              "cell": "r1c1",
+              "contrastCoverage": 0.8847
+            },
+            {
+              "cell": "r1c2",
+              "contrastCoverage": 0.9286
+            },
+            {
+              "cell": "r1c3",
+              "contrastCoverage": 0.8839
+            },
+            {
+              "cell": "r2c1",
+              "contrastCoverage": 0.9513
+            },
+            {
+              "cell": "r2c2",
+              "contrastCoverage": 1.0
+            },
+            {
+              "cell": "r2c3",
+              "contrastCoverage": 0.9531
+            },
+            {
+              "cell": "r3c1",
+              "contrastCoverage": 0.8984
+            },
+            {
+              "cell": "r3c2",
+              "contrastCoverage": 0.9524
+            },
+            {
+              "cell": "r3c3",
+              "contrastCoverage": 0.907
+            }
+          ]
+        }
+      },
+      "digest": "0d42090cd3c88516ae920699203758906261e9996c704ef8a6f91cf6b020cbb2"
+    },
+    "registration": {
+      "id": "qt_printer13_product_1962619142217-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1962619142217-01.jpg",
+        "assetSha256": "04c4daa275353465d81d8abe94f93c199b836aa7fc392644b0384dc4e5b91762",
+        "assetAlt": "DS-MG1A Paper Target (QT-PRODUCT-1962619142217)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/ds-mg1a-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "2d4b9bfdd66ca5de8b88f32b27c0ed507075048a7cd265ed831865a9a2cc9af5"
+    },
+    "scoring": {
+      "id": "qt_printer13_product_1962619142217-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "object_1": {
+            "label": "Object 1",
+            "objectId": "object_1",
+            "objectLabel": "Object 1"
+          },
+          "object_2": {
+            "label": "Object 2",
+            "objectId": "object_2",
+            "objectLabel": "Object 2"
+          },
+          "object_3": {
+            "label": "Object 3",
+            "objectId": "object_3",
+            "objectLabel": "Object 3"
+          },
+          "object_4": {
+            "label": "Object 4",
+            "objectId": "object_4",
+            "objectLabel": "Object 4"
+          },
+          "object_5": {
+            "label": "Object 5",
+            "objectId": "object_5",
+            "objectLabel": "Object 5"
+          },
+          "object_6": {
+            "label": "Object 6",
+            "objectId": "object_6",
+            "objectLabel": "Object 6"
+          }
+        },
+        "aggregation": {
+          "mode": "classification_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "rule": "6 published repeated objects are independently counted; drill order remains unpublished"
+        },
+        "outsideRule": {
+          "label": "Missed"
+        },
+        "classificationFootprintMode": "tap_center"
+      },
+      "digest": "a133883f3ca5bbfac47d0e527801b5de574970bbe469fd2188bf924b23e56475"
+    },
+    "mission": {
+      "id": "qt_printer13_product_1962619142217-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "6 published repeated objects are independently counted; drill order remains unpublished",
+        "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+        "unresolvedReason": "Publisher establishes repeated tombstone objects and a thicker-zone variant; the military course, order, and hit/count rules are not published.",
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "intelligenceFamily": "DOT_OBJECT",
+          "highestTruthfulCapability": "Zone / Object Counting",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+              "publishedRuleAuthority": {
+                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "rule": "6 published repeated objects are independently counted; drill order remains unpublished"
+              },
+              "publishedValuesAvailable": false,
+              "unresolved": "Publisher establishes repeated tombstone objects and a thicker-zone variant; the military course, order, and hit/count rules are not published.",
+              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 6,
+              "registeredRegionIds": [
+                "object_1",
+                "object_2",
+                "object_3",
+                "object_4",
+                "object_5",
+                "object_6"
+              ],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 761,
+                "heightPx": 500,
+                "aspectRatio": 1.522,
+                "cornerBackgroundRgb": [
+                  255,
+                  255,
+                  255
+                ],
+                "contrastCoverage": 0.9288,
+                "contrastBoundingBox": {
+                  "xMin": 0.0156,
+                  "yMin": 0.0238,
+                  "xMax": 0.9844,
+                  "yMax": 0.9841
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.4994,
+                  "yNorm": 0.5069
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.8847
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.9286
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.8839
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.9513
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 1.0
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.9531
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.8984
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.9524
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.907
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
+              "distribution": true,
+              "dispersion": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "regions_or_objects"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "regionObjectBreakdown": true,
+            "shotPattern": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": true,
+            "dispersionChange": true
+          },
+          "progress": {
+            "tightestPatternPersonalBest": true,
+            "scoreHistoryWhenGoverned": false
+          },
+          "unsupported": [
+            "invented_score",
+            "invented_qualification",
+            "invented_sequence",
+            "invented_timing",
+            "invented_penalty",
+            "invented_pass_threshold",
+            "invented_tactical_or_anatomical_meaning"
+          ]
+        }
+      },
+      "digest": "9989b98b0eacd16f369dd494726414e3c2e87e1257e711662f55317c5e9a433a"
+    }
+  },
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "unpublished_course_rules",
+    "unpublished_sequence",
+    "unpublished_timing",
+    "unpublished_pass_threshold",
+    "unpublished_penalties"
+  ]
+}

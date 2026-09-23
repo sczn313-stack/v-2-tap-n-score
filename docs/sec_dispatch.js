@@ -34,6 +34,15 @@
     UNAVAILABLE: "unavailable"
   });
 
+  function localAuthoritySuffix() {
+    const value = new URLSearchParams(global.location && global.location.search || "").get("authorityPort") || "";
+    const number = Number(value);
+    const local = ["127.0.0.1", "localhost", "[::1]"].includes(global.location && global.location.hostname);
+    return local && /^\d{2,5}$/.test(value) && number > 0 && number <= 65535
+      ? `&authorityPort=${encodeURIComponent(value)}`
+      : "";
+  }
+
   const TARGET_ALIASES = Object.freeze({
     baker_st_100yd_smart: "baker_st_100yd_smart_zero",
     baker_sl_st1_practice: "baker_sl_st1",
@@ -245,7 +254,7 @@
       return `sec.html?${params.toString()}`;
     }
     if ([ADAPTERS.CONTRACT_SMART_EVIDENCE, ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, ADAPTERS.CONTRACT_TARGET_SCORING, ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE, ADAPTERS.CONTRACT_COLLECTION_HAND, ADAPTERS.CONTRACT_CUE_DRILL, ADAPTERS.CONTRACT_DECISION_SCENARIO, ADAPTERS.CONTRACT_QUALIFICATION, ADAPTERS.CONTRACT_DIAGNOSTIC_FEEDBACK].includes(dispatch.adapter)) {
-      return `target-experience.html?session=${encodeURIComponent(sessionId)}&view=sec`;
+      return `target-experience.html?session=${encodeURIComponent(sessionId)}&view=sec${localAuthoritySuffix()}`;
     }
     return `records.html?session=${encodeURIComponent(sessionId)}&view=sec`;
   }

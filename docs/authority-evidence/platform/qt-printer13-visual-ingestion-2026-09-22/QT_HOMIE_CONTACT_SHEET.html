@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QT Homie Contact Sheet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #11100e;
+      --paper: #ece8dd;
+      --card: #fffdf7;
+      --orange: #e8622c;
+      --blue: #24455a;
+      --line: #c8bfad;
+      --muted: #665f54;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 14px/1.3 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px;
+      padding: 4px 8px;
+      background: rgba(17, 16, 14, 0.97);
+      color: #fff;
+      border-bottom: 3px solid var(--orange);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(16px, 1.6vw, 21px);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      white-space: nowrap;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    input[type="search"] {
+      width: min(440px, 100%);
+      min-width: 120px;
+      height: 28px;
+      padding: 4px 8px;
+      border: 1px solid #827b70;
+      border-radius: 3px;
+      background: #fff;
+      color: #111;
+      font: inherit;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #e8e3d8;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .count {
+      margin-left: auto;
+      padding: 5px 8px;
+      border: 1px solid #5d5850;
+      border-radius: 3px;
+      color: #e8e3d8;
+      white-space: nowrap;
+      font: 700 12px/1.1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 4px;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 4px;
+    }
+
+    .card {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 7px rgba(44, 36, 24, 0.08);
+    }
+
+    .primary {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .primary:hover .image,
+    .primary:focus-visible .image {
+      background: #d7d2c7;
+    }
+
+    .image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 150px;
+      max-height: 150px;
+      padding: 2px;
+      background: #e4e0d7;
+      transition: background 120ms ease;
+    }
+
+    .image img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: 150px;
+      object-fit: contain;
+    }
+
+    .meta {
+      min-height: 23px;
+      padding: 4px 6px;
+      border-top: 1px solid var(--line);
+    }
+
+    .sequence {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      z-index: 2;
+      padding: 3px 5px;
+      border-radius: 2px;
+      background: rgba(17, 16, 14, 0.9);
+      color: var(--orange);
+      font: 900 20px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .name {
+      overflow: hidden;
+      margin: 0;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .message {
+      grid-column: 1 / -1;
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      .topbar { position: static; flex-wrap: wrap; }
+      .controls { flex-wrap: wrap; }
+      .count { margin-left: 0; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 500px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1>QT Homie Contact Sheet</h1>
+    <div class="controls">
+      <input id="query" type="search" placeholder="Filter name, SKU, or QT ID" aria-label="Filter contact sheet">
+      <label class="toggle"><input id="all-paper" type="checkbox"> Show all 291 paper cards</label>
+      <span id="count" class="count" aria-live="polite">Loading…</span>
+    </div>
+  </header>
+  <main id="grid" class="grid"><p class="message">Loading preserved QT dataset…</p></main>
+
+  <script>
+    const MANIFEST = "QT_VISUAL_STACK_MANIFEST.json";
+    const CANDIDATE = "CANDIDATE_EXECUTABLE_PAPER_SURFACE";
+
+    const grid = document.querySelector("#grid");
+    const query = document.querySelector("#query");
+    const allPaper = document.querySelector("#all-paper");
+    const count = document.querySelector("#count");
+    let cards = [];
+
+    const escapeHtml = (value) => String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+    function cardMarkup(card) {
+      const image = card.images.find((item) => item.preserved) || card.images[0];
+      const fullImage = image?.localPath || "";
+      const searchText = [card.productName, card.qtCatalogId, ...(card.skuProductIdentifiers || [])].join(" ").toLowerCase();
+      return `
+        <article class="card" data-disposition="${escapeHtml(card.disposition)}" data-search="${escapeHtml(searchText)}">
+          <a class="primary" href="${escapeHtml(fullImage)}" target="_blank" rel="noreferrer" title="Open ${escapeHtml(card.productName)} full size">
+            <div class="sequence">#${String(card.sequence).padStart(3, "0")}</div>
+            <div class="image"><img src="${escapeHtml(fullImage)}" alt="${escapeHtml(card.productName)}" loading="lazy"></div>
+            <div class="meta">
+              <p class="name" title="${escapeHtml(card.productName)}">${escapeHtml(card.productName)}</p>
+            </div>
+          </a>
+        </article>`;
+    }
+
+    function render() {
+      const needle = query.value.trim().toLowerCase();
+      const visible = cards.filter((card) => {
+        const candidateMatch = allPaper.checked || card.disposition === CANDIDATE;
+        const textMatch = !needle || [
+          card.productName,
+          card.qtCatalogId,
+          ...(card.skuProductIdentifiers || [])
+        ].join(" ").toLowerCase().includes(needle);
+        return candidateMatch && textMatch;
+      });
+
+      grid.innerHTML = visible.length
+        ? visible.map(cardMarkup).join("")
+        : '<p class="message">No preserved QT cards match this filter.</p>';
+      count.textContent = `${visible.length} shown · ${cards.length} preserved`;
+    }
+
+    fetch(MANIFEST)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Manifest request failed (${response.status})`);
+        return response.json();
+      })
+      .then((manifest) => {
+        cards = manifest.cards.map((card, index) => ({ ...card, sequence: index + 1 }));
+        render();
+      })
+      .catch((error) => {
+        grid.innerHTML = `<p class="message">Unable to load preserved QT manifest: ${escapeHtml(error.message)}</p>`;
+        count.textContent = "Dataset unavailable";
+      });
+
+    query.addEventListener("input", render);
+    allPaper.addEventListener("change", render);
+  </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_1960320401481-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
+    "approvedAt": "2026-09-22T00:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_1960320401481",
+    "version": "1",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_1960320401481_V1",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-1960320401481",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-1960320401481",
+      "name": "CR-201 Paper Target",
+      "sku": "CR-201",
+      "qtCatalogId": "QT-PRODUCT-1960320401481",
+      "shopifyProductId": 1960320401481,
+      "sourceUrl": "https://targets.net/products/cr-201-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1960320401481",
+      "behaviorFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
+      "qtFamilyGroup": "CR_ACTIVE_SHOOTER_FAMILY",
+      "episode64IntelligenceFamily": "PHOTO_SCENARIO"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "qt_printer13_product_1960320401481-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "left_figure",
+            "shape": "ellipse",
+            "cx": 0.39,
+            "cy": 0.53,
+            "radiusX": 0.19,
+            "radiusY": 0.38,
+            "priority": 50,
+            "objectId": "left_figure"
+          },
+          {
+            "regionId": "right_figure",
+            "shape": "ellipse",
+            "cx": 0.62,
+            "cy": 0.52,
+            "radiusX": 0.2,
+            "radiusY": 0.39,
+            "priority": 50,
+            "objectId": "right_figure"
+          }
+        ],
+        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "derivation": {
+          "method": "leg-two-family-plus-preserved-visible-structure",
+          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
+          "qtGroup": "CR_ACTIVE_SHOOTER_FAMILY"
+        },
+        "observedPhysicalStructure": {
+          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+          "semanticMeaningAttributed": false,
+          "widthPx": 500,
+          "heightPx": 726,
+          "aspectRatio": 0.688705,
+          "cornerBackgroundRgb": [
+            146,
+            140,
+            117
+          ],
+          "contrastCoverage": 0.7253,
+          "contrastBoundingBox": {
+            "xMin": 0.0,
+            "yMin": 0.0,
+            "xMax": 1.0,
+            "yMax": 1.0
+          },
+          "contrastCentroid": {
+            "xNorm": 0.4847,
+            "yNorm": 0.5373
+          },
+          "thirdsContrastDistribution": [
+            {
+              "cell": "r1c1",
+              "contrastCoverage": 0.8587
+            },
+            {
+              "cell": "r1c2",
+              "contrastCoverage": 0.63
+            },
+            {
+              "cell": "r1c3",
+              "contrastCoverage": 0.6538
+            },
+            {
+              "cell": "r2c1",
+              "contrastCoverage": 0.7603
+            },
+            {
+              "cell": "r2c2",
+              "contrastCoverage": 0.3931
+            },
+            {
+              "cell": "r2c3",
+              "contrastCoverage": 0.908
+            },
+            {
+              "cell": "r3c1",
+              "contrastCoverage": 0.7276
+            },
+            {
+              "cell": "r3c2",
+              "contrastCoverage": 0.9439
+            },
+            {
+              "cell": "r3c3",
+              "contrastCoverage": 0.652
+            }
+          ]
+        }
+      },
+      "digest": "bd24a94bed441344896eef050d40e3df54d792fb96a7b7f2e3b6e503eebb088c"
+    },
+    "registration": {
+      "id": "qt_printer13_product_1960320401481-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1960320401481-01.png",
+        "assetSha256": "938e1b7e0fd6887b8b421c2c63760a8a50b9cb8a26a5421ec7b9bfe0dc10593e",
+        "assetAlt": "CR-201 Paper Target (QT-PRODUCT-1960320401481)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/cr-201-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "bd16cce22b8bcc168f1fc4982f80bcbfbfa87853ca3f758c8a41391377f8e505"
+    },
+    "scoring": {
+      "id": "qt_printer13_product_1960320401481-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "left_figure": {
+            "label": "Left visible figure",
+            "objectId": "left_figure",
+            "objectLabel": "Left visible figure"
+          },
+          "right_figure": {
+            "label": "Right visible figure",
+            "objectId": "right_figure",
+            "objectLabel": "Right visible figure"
+          }
+        },
+        "aggregation": {
+          "mode": "classification_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+        },
+        "outsideRule": {
+          "label": "Missed"
+        },
+        "classificationFootprintMode": "tap_center"
+      },
+      "digest": "a2ad16e3d2ee2ba5a5c3430e44772dd5ccfe7f89ae1c0f5d9b542b59ad15928f"
+    },
+    "mission": {
+      "id": "qt_printer13_product_1960320401481-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld",
+        "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+        "unresolvedReason": null,
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "intelligenceFamily": "PHOTO_SCENARIO",
+          "highestTruthfulCapability": "Zone / Object Counting",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+              "publishedRuleAuthority": {
+                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+              },
+              "publishedValuesAvailable": false,
+              "unresolved": null,
+              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 2,
+              "registeredRegionIds": [
+                "left_figure",
+                "right_figure"
+              ],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 500,
+                "heightPx": 726,
+                "aspectRatio": 0.688705,
+                "cornerBackgroundRgb": [
+                  146,
+                  140,
+                  117
+                ],
+                "contrastCoverage": 0.7253,
+                "contrastBoundingBox": {
+                  "xMin": 0.0,
+                  "yMin": 0.0,
+                  "xMax": 1.0,
+                  "yMax": 1.0
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.4847,
+                  "yNorm": 0.5373
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.8587
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.63
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.6538
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.7603
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 0.3931
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.908
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.7276
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.9439
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.652
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
+              "distribution": true,
+              "dispersion": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "regions_or_objects"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "regionObjectBreakdown": true,
+            "shotPattern": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": true,
+            "dispersionChange": true
+          },
+          "progress": {
+            "tightestPatternPersonalBest": true,
+            "scoreHistoryWhenGoverned": false
+          },
+          "unsupported": [
+            "invented_score",
+            "invented_qualification",
+            "invented_sequence",
+            "invented_timing",
+            "invented_penalty",
+            "invented_pass_threshold",
+            "invented_tactical_or_anatomical_meaning"
+          ]
+        }
+      },
+      "digest": "a62a892e2e7093b50817817b4b78e89dc995c088b33bb6e7780c73f391c5400f"
+    }
+  },
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "unpublished_course_rules",
+    "unpublished_sequence",
+    "unpublished_timing",
+    "unpublished_pass_threshold",
+    "unpublished_penalties"
+  ]
+}

@@ -12,6 +12,7 @@ from typing import Any, Mapping, Sequence
 SCHEMA_VERSION = "sczn3-target-scoring-data-v1"
 MODEL_AGGREGATIONS = {
     "numeric_regions": "sum",
+    "mixed_regions": "sum_and_classification_counts",
     "named_regions": "classification_counts",
     "penalty_regions": "sum",
     "ordered_objects": "ordered_progression",
@@ -20,6 +21,11 @@ MODEL_AGGREGATIONS = {
 }
 LAYOUT_MODELS = {"concentric_regions", "regions", "repeated_regions", "discrete_objects", "unstructured_evidence"}
 AIM_MODES = {"fixed", "region_centers", "shooter_declared", "not_required"}
+BOUNDARY_POLICY_MODES = {"authority_scoring_gauge"}
+PARTICIPANT_AGGREGATION_MODES = {"owned_object_totals"}
+OBJECT_SCOREBOARD_MODES = {"score_x"}
+COUNTED_HIT_POLICY_MODES = {"per_object_cap"}
+SCORING_MODE_POLICY_MODES = {"shooter_selected_region_values"}
 
 
 class TargetScoringDataContractError(ValueError):
@@ -59,6 +65,15 @@ def _region(region: Any) -> str:
         x1 = _number(region.get("xMax"), "scoring_region_coordinate_invalid")
         y1 = _number(region.get("yMax"), "scoring_region_coordinate_invalid")
         if x0 >= x1 or y0 >= y1:
+            raise TargetScoringDataContractError("scoring_region_bounds_invalid")
+    elif shape == "rounded_rectangle":
+        x0 = _number(region.get("xMin"), "scoring_region_coordinate_invalid")
+        y0 = _number(region.get("yMin"), "scoring_region_coordinate_invalid")
+        x1 = _number(region.get("xMax"), "scoring_region_coordinate_invalid")
+        y1 = _number(region.get("yMax"), "scoring_region_coordinate_invalid")
+        rx = _number(region.get("cornerRadiusX"), "scoring_region_radius_invalid")
+        ry = _number(region.get("cornerRadiusY"), "scoring_region_radius_invalid")
+        if x0 >= x1 or y0 >= y1 or rx <= 0 or ry <= 0 or rx * 2 > x1 - x0 + 1e-9 or ry * 2 > y1 - y0 + 1e-9:
             raise TargetScoringDataContractError("scoring_region_bounds_invalid")
     elif shape == "polygon":
         points = region.get("points")
@@ -106,6 +121,184 @@ def _aim(interaction: Any, region_ids: set[str]) -> None:
             raise TargetScoringDataContractError("target_scoring_aim_region_invalid")
 
 
+def _boundary_policy(scoring: Mapping[str, Any], regions: Sequence[Mapping[str, Any]]) -> None:
+    policy = scoring.get("boundaryPolicy")
+    if policy is None:
+        return
+    if not isinstance(policy, Mapping) or policy.get("mode") not in BOUNDARY_POLICY_MODES:
+        raise TargetScoringDataContractError("target_scoring_boundary_policy_invalid")
+    if policy.get("lineTouchRule") != "higher_value" or policy.get("materialFact") != "caliber":
+        raise TargetScoringDataContractError("target_scoring_boundary_policy_rule_invalid")
+    if policy.get("selectionRule") != "request_only_if_score_material":
+        raise TargetScoringDataContractError("target_scoring_boundary_policy_selection_invalid")
+    if scoring.get("model") not in {"numeric_regions", "penalty_regions", "mixed_regions"}:
+        raise TargetScoringDataContractError("target_scoring_boundary_policy_model_invalid")
+    authority = policy.get("authority")
+    if not isinstance(authority, Mapping) or not all(str(authority.get(field) or "").strip() for field in ("source", "section", "rule")):
+        raise TargetScoringDataContractError("target_scoring_boundary_policy_authority_required")
+    groups = policy.get("authorizedGaugeGroups")
+    if not isinstance(groups, list) or not groups:
+        raise TargetScoringDataContractError("target_scoring_gauge_groups_required")
+    group_ids: set[str] = set()
+    aliases: set[str] = set()
+    for group in groups:
+        if not isinstance(group, Mapping):
+            raise TargetScoringDataContractError("target_scoring_gauge_group_invalid")
+        group_id = str(group.get("caliberId") or "").strip()
+        group_aliases = group.get("aliases")
+        diameter_range = group.get("diameterRangeInches")
+        if not group_id or group_id in group_ids or not isinstance(group_aliases, list) or not group_aliases:
+            raise TargetScoringDataContractError("target_scoring_gauge_group_invalid")
+        if not isinstance(diameter_range, Mapping):
+            raise TargetScoringDataContractError("target_scoring_gauge_range_invalid")
+        minimum, maximum = diameter_range.get("min"), diameter_range.get("max")
+        if not isinstance(minimum, Real) or isinstance(minimum, bool) or not isinstance(maximum, Real) or isinstance(maximum, bool):
+            raise TargetScoringDataContractError("target_scoring_gauge_range_invalid")
+        if not 0.05 <= float(minimum) <= float(maximum) <= 1.0:
+            raise TargetScoringDataContractError("target_scoring_gauge_range_invalid")
+        normalized_aliases = {str(alias or "").strip().casefold() for alias in group_aliases}
+        if "" in normalized_aliases or aliases.intersection(normalized_aliases):
+            raise TargetScoringDataContractError("target_scoring_gauge_alias_invalid")
+        group_ids.add(group_id)
+        aliases.update(normalized_aliases)
+    rules = scoring.get("regionRules") or {}
+    ordered = sorted(regions, key=lambda region: int(region.get("priority", 0)), reverse=True)
+    ordered_values = [float(rules[region["regionId"]]["value"]) for region in ordered]
+    if ordered_values != sorted(ordered_values, reverse=True):
+        raise TargetScoringDataContractError("target_scoring_boundary_priority_must_follow_higher_value")
+
+
+def _participant_aggregation(scoring: Mapping[str, Any], object_ids: set[str], interaction: Mapping[str, Any]) -> None:
+    policy = scoring.get("participantAggregation")
+    course = interaction.get("participantCourse") if isinstance(interaction, Mapping) else None
+    if policy is None:
+        if course is not None:
+            raise TargetScoringDataContractError("target_scoring_participant_policy_required")
+        return
+    if not isinstance(policy, Mapping) or policy.get("mode") not in PARTICIPANT_AGGREGATION_MODES:
+        raise TargetScoringDataContractError("target_scoring_participant_aggregation_invalid")
+    participants = policy.get("participants")
+    objects = policy.get("objects")
+    if not isinstance(participants, list) or len(participants) < 2 or not isinstance(objects, list) or not objects:
+        raise TargetScoringDataContractError("target_scoring_participant_structure_invalid")
+    participant_ids = [str(item.get("participantId") or "").strip() for item in participants if isinstance(item, Mapping)]
+    if len(participant_ids) != len(participants) or any(not value for value in participant_ids) or len(set(participant_ids)) != len(participant_ids):
+        raise TargetScoringDataContractError("target_scoring_participant_identity_invalid")
+    object_records = {}
+    for item in objects:
+        if not isinstance(item, Mapping):
+            raise TargetScoringDataContractError("target_scoring_participant_object_invalid")
+        object_id = str(item.get("objectId") or "").strip()
+        participant_id = str(item.get("participantId") or "").strip()
+        quota = item.get("shotQuota")
+        if not object_id or object_id in object_records or object_id not in object_ids or participant_id not in participant_ids:
+            raise TargetScoringDataContractError("target_scoring_participant_object_invalid")
+        if not isinstance(quota, int) or isinstance(quota, bool) or quota < 1:
+            raise TargetScoringDataContractError("target_scoring_participant_quota_invalid")
+        object_records[object_id] = (participant_id, quota)
+    if set(object_records) != object_ids:
+        raise TargetScoringDataContractError("target_scoring_participant_objects_incomplete")
+    if policy.get("completionRule") != "all_object_quotas_met" or policy.get("overQuotaBehavior") != "reject":
+        raise TargetScoringDataContractError("target_scoring_participant_quota_policy_invalid")
+    if not isinstance(course, Mapping) or course.get("selectionMode") != "shooter_declared_object_any_order":
+        raise TargetScoringDataContractError("target_scoring_participant_course_invalid")
+    course_participants = course.get("participants")
+    if not isinstance(course_participants, list):
+        raise TargetScoringDataContractError("target_scoring_participant_course_invalid")
+    course_objects = {
+        str(obj.get("objectId") or ""): (str(item.get("participantId") or ""), obj.get("shotQuota"))
+        for item in course_participants if isinstance(item, Mapping)
+        for obj in (item.get("objects") or []) if isinstance(obj, Mapping)
+    }
+    if course_objects != object_records:
+        raise TargetScoringDataContractError("target_scoring_participant_course_mismatch")
+
+
+def _object_scoreboard(scoring: Mapping[str, Any], object_ids: set[str]) -> None:
+    presentation = scoring.get("objectScoreboard")
+    if presentation is None:
+        return
+    if (
+        not isinstance(presentation, Mapping)
+        or presentation.get("mode") not in OBJECT_SCOREBOARD_MODES
+        or len(object_ids) < 2
+        or not all(str(presentation.get(field) or "").strip() for field in ("heading", "totalScoreLabel", "totalXCountLabel"))
+    ):
+        raise TargetScoringDataContractError("target_scoring_object_scoreboard_invalid")
+
+
+def _counted_hit_policy(scoring: Mapping[str, Any], object_ids: set[str]) -> None:
+    policy = scoring.get("countedHitPolicy")
+    if policy is None:
+        return
+    maximum = policy.get("maximumCountedHitsPerObject") if isinstance(policy, Mapping) else None
+    if (
+        not isinstance(policy, Mapping)
+        or policy.get("mode") not in COUNTED_HIT_POLICY_MODES
+        or scoring.get("model") != "numeric_regions"
+        or not object_ids
+        or not isinstance(maximum, int)
+        or isinstance(maximum, bool)
+        or maximum < 1
+        or policy.get("selectionRule") != "observation_order"
+        or policy.get("overflowValue") != 0
+        or policy.get("preserveAllObservations") is not True
+    ):
+        raise TargetScoringDataContractError("target_scoring_counted_hit_policy_invalid")
+
+
+def _scoring_mode_policy(scoring: Mapping[str, Any], region_ids: set[str], interaction: Mapping[str, Any]) -> None:
+    policy = scoring.get("scoringModePolicy")
+    selector = interaction.get("scoringMode") if isinstance(interaction, Mapping) else None
+    if policy is None:
+        if selector is not None:
+            raise TargetScoringDataContractError("target_scoring_mode_policy_required")
+        return
+    options = policy.get("options") if isinstance(policy, Mapping) else None
+    if (
+        not isinstance(policy, Mapping)
+        or policy.get("mode") not in SCORING_MODE_POLICY_MODES
+        or scoring.get("model") != "numeric_regions"
+        or policy.get("materialFact") != "scoring_mode"
+        or policy.get("selectionSource") != "shooter_declared"
+        or policy.get("required") is not True
+        or not isinstance(options, list)
+        or len(options) < 2
+    ):
+        raise TargetScoringDataContractError("target_scoring_mode_policy_invalid")
+    identities = []
+    labels = []
+    for option in options:
+        mode_id = str(option.get("modeId") or "").strip() if isinstance(option, Mapping) else ""
+        label = str(option.get("label") or "").strip() if isinstance(option, Mapping) else ""
+        values = option.get("regionValues") if isinstance(option, Mapping) else None
+        outside_value = option.get("outsideValue") if isinstance(option, Mapping) else None
+        if (
+            not mode_id
+            or not label
+            or not isinstance(values, Mapping)
+            or set(values) != region_ids
+            or any(not isinstance(value, Real) or isinstance(value, bool) for value in values.values())
+            or not isinstance(outside_value, Real)
+            or isinstance(outside_value, bool)
+        ):
+            raise TargetScoringDataContractError("target_scoring_mode_option_invalid")
+        identities.append(mode_id)
+        labels.append(label)
+    if len(set(identities)) != len(identities) or len(set(labels)) != len(labels):
+        raise TargetScoringDataContractError("target_scoring_mode_option_duplicate")
+    selector_options = selector.get("options") if isinstance(selector, Mapping) else None
+    if (
+        not isinstance(selector, Mapping)
+        or selector.get("materialFact") != "scoring_mode"
+        or selector.get("selectionMode") != "shooter_required_before_result"
+        or not str(selector.get("label") or "").strip()
+        or not isinstance(selector_options, list)
+        or [(str(item.get("modeId") or ""), str(item.get("label") or "")) for item in selector_options if isinstance(item, Mapping)] != list(zip(identities, labels))
+    ):
+        raise TargetScoringDataContractError("target_scoring_mode_interaction_invalid")
+
+
 def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
     if contract.get("missionFamily") != "targetScoring":
         return
@@ -141,8 +334,15 @@ def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
         values = [rule.get("value") for rule in rules.values()] + [scoring["outsideRule"].get("value")]
         if any(not isinstance(value, Real) or isinstance(value, bool) for value in values):
             raise TargetScoringDataContractError("target_scoring_numeric_value_required")
-    if model in {"multiple_bulls", "ordered_objects"}:
-        object_ids = [rule.get("objectId") for rule in rules.values()]
+    if model == "mixed_regions":
+        values = [rule.get("value") for rule in rules.values() if "value" in rule]
+        if not values or any(not isinstance(value, Real) or isinstance(value, bool) for value in values):
+            raise TargetScoringDataContractError("target_scoring_mixed_numeric_value_required")
+        if "value" in scoring["outsideRule"]:
+            raise TargetScoringDataContractError("target_scoring_mixed_outside_must_be_count_only")
+    object_ids = [rule.get("objectId") for rule in rules.values()]
+    has_object_identity = any(value is not None and str(value).strip() for value in object_ids)
+    if model in {"multiple_bulls", "ordered_objects"} or has_object_identity:
         if any(value is None or str(value).strip() == "" for value in object_ids):
             raise TargetScoringDataContractError("target_scoring_object_identity_invalid")
         if model == "ordered_objects":
@@ -154,4 +354,9 @@ def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
                 raise TargetScoringDataContractError("target_scoring_sequence_policy_invalid")
     if model == "not_applicable" and (scoring.get("status") != "not_applicable" or regions or rules or not str(scoring.get("reason") or "").strip()):
         raise TargetScoringDataContractError("target_scoring_not_applicable_invalid")
+    _participant_aggregation(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()}, mission.get("interaction") or {})
+    _object_scoreboard(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
+    _counted_hit_policy(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
+    _scoring_mode_policy(scoring, region_id_set, mission.get("interaction") or {})
+    _boundary_policy(scoring, regions)
     _aim(mission.get("interaction"), region_id_set)

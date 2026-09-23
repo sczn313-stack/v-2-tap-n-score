@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QT Printer #13 · Founder N/N Test Stack</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #090b0f; color: #f4f6fa; }
+    body { margin: 0; }
+    header { position: sticky; top: 0; z-index: 1; padding: 14px 18px; background: #111521; border-bottom: 1px solid #303747; }
+    h1 { margin: 0 0 4px; font-size: 20px; }
+    p { margin: 0; color: #aeb7c8; }
+    main { max-width: 980px; margin: 0 auto; padding: 12px; }
+    ol { margin: 0; padding: 0; list-style: none; }
+    li { display: grid; grid-template-columns: 82px 1fr auto; gap: 12px; align-items: center; padding: 10px 8px; border-bottom: 1px solid #252b36; }
+    .chair { font-size: 18px; font-weight: 800; }
+    strong, small { display: block; }
+    small { color: #9ba6b8; margin-top: 2px; }
+    a { color: #081018; background: #f1c84b; padding: 8px 12px; border-radius: 5px; font-weight: 800; text-decoration: none; }
+    #status { padding: 24px; }
+    @media (max-width: 680px) { li { grid-template-columns: 70px 1fr; } a { grid-column: 1 / -1; text-align: center; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Qualification Targets · Printer #13 · Founder N/N</h1>
+    <p>254 executable surfaces · THE 13 surgical correctness sweep · select one chair and run its governed Smart Target road</p>
+  </header>
+  <main>
+    <p id="status">Loading repaired QT inventory…</p>
+    <ol id="stack" aria-label="QT executable Founder test stack"></ol>
+  </main>
+  <script>
+    const stack = document.getElementById("stack");
+    const status = document.getElementById("status");
+    const authorityPort = "8098";
+    fetch("QT_LEG3_EXECUTION_MANIFEST.json")
+      .then(response => {
+        if (!response.ok) throw new Error(`execution_manifest_${response.status}`);
+        return response.json();
+      })
+      .then(record => {
+        const surfaces = Array.isArray(record.surfaces) ? record.surfaces : [];
+        if (surfaces.length !== 254) throw new Error("repaired_inventory_invalid");
+        status.remove();
+        stack.innerHTML = surfaces.map((surface, index) => {
+          const n = index + 1;
+          const zeroing = surface.executionCapability === "Zeroing";
+          const href = zeroing
+            ? `../../../shoot.html?target_profile_id=${encodeURIComponent(surface.targetProfileId)}&missionFamily=zeroingCorrection&authorityPort=${authorityPort}`
+            : `../../../target-experience.html?missionFamily=${encodeURIComponent(surface.missionFamily)}&target=${encodeURIComponent(surface.targetProfileId)}&source=registered&authorityPort=${authorityPort}`;
+          const identity = `${surface.qtCatalogId} · ${surface.executionCapability} · ${surface.behaviorFamily}`;
+          return `<li><span class="chair">${n}/254</span><span><strong>${escapeHtml(surface.productName)}</strong><small>${escapeHtml(identity)}</small></span><a href="${href}">Run ${n}/254</a></li>`;
+        }).join("");
+      })
+      .catch(error => { status.textContent = `Stack unavailable: ${error.message}`; });
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[character]);
+    }
+  </script>
+</body>
+</html>

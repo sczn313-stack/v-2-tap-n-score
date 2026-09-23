@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import math
 from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any, Dict, Mapping, Optional
@@ -70,6 +71,134 @@ def _validate_contract_backed_artifact(
         raise PreservedSECError("authority_unavailable", "result_package_validation_failed", 409)
 
 
+def _hit_rate(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    result = session.get("authorityPackage") or session.get("backendAuthorityPackage")
+    metric = result.get("sczn3Metrics", {}).get("hitRate") if isinstance(result, Mapping) else None
+    if not isinstance(metric, Mapping):
+        return None
+    valid, total, percentage = metric.get("validHitCount"), metric.get("governedShotCount"), metric.get("percentage")
+    if not isinstance(valid, int) or not isinstance(total, int) or total < 1 or not isinstance(percentage, (int, float)):
+        return None
+    return {"validHitCount": valid, "governedShotCount": total, "percentage": float(percentage)}
+
+
+def _numeric_score(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    result = session.get("authorityPackage") or session.get("backendAuthorityPackage")
+    scoring = result.get("scoring") if isinstance(result, Mapping) else None
+    if (
+        not isinstance(scoring, Mapping)
+        or scoring.get("model") not in {"numeric_regions", "penalty_regions", "mixed_regions"}
+        or isinstance(scoring.get("participantResults"), list)
+    ):
+        return None
+    total = scoring.get("total")
+    regions = scoring.get("regionResults")
+    if not isinstance(total, (int, float)) or isinstance(total, bool) or not isinstance(regions, list):
+        return None
+    return {"targetScore": total, "regionResults": deepcopy(regions)}
+
+
+def _shot_pattern(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    result = session.get("authorityPackage") or session.get("backendAuthorityPackage")
+    pattern = result.get("sczn3Metrics", {}).get("shotPattern") if isinstance(result, Mapping) else None
+    center = pattern.get("center") if isinstance(pattern, Mapping) else None
+    dispersion = pattern.get("dispersion") if isinstance(pattern, Mapping) else None
+    if (
+        not isinstance(center, Mapping)
+        or not isinstance(dispersion, Mapping)
+        or not isinstance(center.get("xNorm"), (int, float))
+        or not isinstance(center.get("yNorm"), (int, float))
+        or not isinstance(pattern.get("tapCount"), int)
+    ):
+        return None
+    return {
+        "tapCount": pattern["tapCount"],
+        "center": deepcopy(center),
+        "dispersion": deepcopy(dispersion),
+    }
+
+
+def _same_target_progress(session: Mapping[str, Any], target_id: str, store: Any) -> Dict[str, Any]:
+    current = _hit_rate(session)
+    current_score = _numeric_score(session)
+    current_pattern = _shot_pattern(session)
+    continuity_id = _text(session.get("shooterContinuityId"))
+    progress = {
+        "status": "current_only" if current or current_pattern else "not_applicable",
+        "scope": "same_shooter_same_permanent_target",
+        "current": deepcopy(current) if current else {},
+        "previous": None,
+    }
+    if current_pattern:
+        progress["current"]["shotPattern"] = current_pattern
+    if current and current_score:
+        progress["current"].update(current_score)
+    if not current and not current_pattern:
+        return progress
+    if not continuity_id:
+        progress["comparisonUnavailableReason"] = "shooter_continuity_not_present"
+        return progress
+    records = list(store.prior_applicable(target_id, continuity_id)) if hasattr(store, "prior_applicable") else list(reversed(store.list()))
+    applicable = []
+    for record in records:
+        prior = record.get("artifact") if isinstance(record, Mapping) else None
+        if not isinstance(prior, Mapping) or _text(record.get("targetId")).lower() != target_id.lower():
+            continue
+        if _text(prior.get("shooterContinuityId")) != continuity_id:
+            continue
+        prior_rate = _hit_rate(prior)
+        prior_pattern = _shot_pattern(prior)
+        if not prior_rate and not prior_pattern:
+            continue
+        prior_score = _numeric_score(prior)
+        applicable.append((prior, prior_rate, prior_score, prior_pattern))
+    if applicable:
+        prior, prior_rate, prior_score, prior_pattern = applicable[0]
+        previous = {**(prior_rate or {}), "sessionId": _text(prior.get("sessionId")), "savedAt": _text(prior.get("savedAt"))}
+        if prior_pattern:
+            previous["shotPattern"] = prior_pattern
+        if prior_score:
+            previous.update(prior_score)
+        progress.update({"status": "comparison_available", "previous": previous})
+        if current and prior_rate:
+            progress["percentagePointChange"] = round(current["percentage"] - prior_rate["percentage"], 1)
+        if current_pattern and prior_pattern:
+            current_center, prior_center = current_pattern["center"], prior_pattern["center"]
+            current_radius = current_pattern["dispersion"].get("rmsRadiusNorm")
+            prior_radius = prior_pattern["dispersion"].get("rmsRadiusNorm")
+            progress["shotPatternComparison"] = {
+                "status": "comparable",
+                "centerMovementNorm": round(math.hypot(current_center["xNorm"] - prior_center["xNorm"], current_center["yNorm"] - prior_center["yNorm"]), 4),
+                "xMovementNorm": round(current_center["xNorm"] - prior_center["xNorm"], 4),
+                "yMovementNorm": round(current_center["yNorm"] - prior_center["yNorm"], 4),
+                "rmsRadiusChangeNorm": round(current_radius - prior_radius, 4) if isinstance(current_radius, (int, float)) and isinstance(prior_radius, (int, float)) else None,
+                "tapCountChange": current_pattern["tapCount"] - prior_pattern["tapCount"],
+            }
+        if current_score and prior_score:
+            progress["scoreChange"] = round(current_score["targetScore"] - prior_score["targetScore"], 1)
+            progress["regionDistributionComparison"] = {
+                "status": "comparable",
+                "current": deepcopy(current_score["regionResults"]),
+                "previous": deepcopy(prior_score["regionResults"]),
+            }
+        score_candidates = [
+            (current_score, _text(session.get("sessionId"))),
+            *((score, _text(prior.get("sessionId"))) for prior, _, score, _ in applicable),
+        ]
+        scores = [(score["targetScore"], session_id) for score, session_id in score_candidates if score]
+        rates = ([(current["percentage"], _text(session.get("sessionId")))] if current else []) + [(rate["percentage"], _text(prior.get("sessionId"))) for prior, rate, _, _ in applicable if rate]
+        patterns = [(current_pattern, _text(session.get("sessionId")))] + [(pattern, _text(prior.get("sessionId"))) for prior, _, _, pattern in applicable] if current_pattern else [(pattern, _text(prior.get("sessionId"))) for prior, _, _, pattern in applicable if pattern]
+        dispersion_candidates = [(pattern["dispersion"].get("rmsRadiusNorm"), session_id) for pattern, session_id in patterns if pattern and pattern["dispersion"].get("status") == "complete"]
+        progress["best"] = {
+            "targetScore": {"value": max(scores, key=lambda item: item[0])[0], "sessionId": max(scores, key=lambda item: item[0])[1]} if scores else None,
+            "hitRate": {"percentage": max(rates, key=lambda item: item[0])[0], "sessionId": max(rates, key=lambda item: item[0])[1]} if rates else None,
+            "tightestPattern": {"rmsRadiusNorm": min(dispersion_candidates, key=lambda item: item[0])[0], "sessionId": min(dispersion_candidates, key=lambda item: item[0])[1]} if dispersion_candidates else None,
+        }
+    else:
+        progress["comparisonUnavailableReason"] = "no_previous_applicable_session"
+    return progress
+
+
 def preserve_sec(
     payload: Any,
     store: Any,
@@ -98,6 +227,7 @@ def preserve_sec(
     session["authoritativeSessionId"] = session_id
     session["savedToSEC"] = True
     session.setdefault("savedAt", preserved_at)
+    session["sczn3Progress"] = _same_target_progress(session, governed_target_id, store)
     record = {
         "sessionId": session_id,
         "targetId": governed_target_id,
@@ -225,6 +355,23 @@ class PostgresPreservedSECStore:
                 )
                 rows = cursor.fetchall()
         return [self._row(row) for row in rows]
+
+    def prior_applicable(self, target_id: str, continuity_id: str):
+        with self._connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    select session_id, target_id, artifact, artifact_sha256, preserved_at
+                      from preserved_secs
+                     where lower(target_id) = lower(%s)
+                       and artifact ->> 'shooterContinuityId' = %s
+                       and artifact #> '{authorityPackage,sczn3Metrics,hitRate}' is not null
+                     order by preserved_at desc
+                    """,
+                    (target_id, continuity_id),
+                )
+                row = cursor.fetchone()
+        return [self._row(row)] if row else []
 
     @staticmethod
     def _row(row: Mapping[str, Any]) -> Dict[str, Any]:

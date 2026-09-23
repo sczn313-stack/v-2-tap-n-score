@@ -1,0 +1,442 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_1960359919689-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
+    "approvedAt": "2026-09-22T00:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_1960359919689",
+    "version": "1",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_1960359919689_V1",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-1960359919689",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-1960359919689",
+      "name": "DSQ-COMBO Paper Target",
+      "sku": "DSQ-COMBO",
+      "qtCatalogId": "QT-PRODUCT-1960359919689",
+      "shopifyProductId": 1960359919689,
+      "sourceUrl": "https://targets.net/products/dsq-combo-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1960359919689",
+      "behaviorFamily": "VALUED_REGION_QUALIFICATION",
+      "qtFamilyGroup": "DSQ_FAMILY",
+      "episode64IntelligenceFamily": "MULTI_STAGE_DRILL"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "qt_printer13_product_1960359919689-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "upper_governed_region",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radius": 0.08,
+            "priority": 80,
+            "objectId": "upper_governed_region"
+          },
+          {
+            "regionId": "central_governed_region",
+            "shape": "rectangle",
+            "xMin": 0.4,
+            "yMin": 0.34,
+            "xMax": 0.6,
+            "yMax": 0.57,
+            "priority": 70,
+            "objectId": "central_governed_region"
+          },
+          {
+            "regionId": "lower_governed_region",
+            "shape": "rectangle",
+            "xMin": 0.41,
+            "yMin": 0.68,
+            "xMax": 0.59,
+            "yMax": 0.82,
+            "priority": 60,
+            "objectId": "lower_governed_region"
+          },
+          {
+            "regionId": "remaining_target_area",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.52,
+            "radiusX": 0.29,
+            "radiusY": 0.43,
+            "priority": 20,
+            "objectId": "remaining_target_area"
+          }
+        ],
+        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "derivation": {
+          "method": "leg-two-family-plus-preserved-visible-structure",
+          "family": "VALUED_REGION_QUALIFICATION",
+          "qtGroup": "DSQ_FAMILY"
+        },
+        "observedPhysicalStructure": {
+          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+          "semanticMeaningAttributed": false,
+          "widthPx": 657,
+          "heightPx": 500,
+          "aspectRatio": 1.314,
+          "cornerBackgroundRgb": [
+            255,
+            255,
+            255
+          ],
+          "contrastCoverage": 0.3002,
+          "contrastBoundingBox": {
+            "xMin": 0.0208,
+            "yMin": 0.0205,
+            "xMax": 0.9688,
+            "yMax": 0.9658
+          },
+          "contrastCentroid": {
+            "xNorm": 0.399,
+            "yNorm": 0.6014
+          },
+          "thirdsContrastDistribution": [
+            {
+              "cell": "r1c1",
+              "contrastCoverage": 0.1929
+            },
+            {
+              "cell": "r1c2",
+              "contrastCoverage": 0.1221
+            },
+            {
+              "cell": "r1c3",
+              "contrastCoverage": 0.0925
+            },
+            {
+              "cell": "r2c1",
+              "contrastCoverage": 0.6452
+            },
+            {
+              "cell": "r2c2",
+              "contrastCoverage": 0.4105
+            },
+            {
+              "cell": "r2c3",
+              "contrastCoverage": 0.2471
+            },
+            {
+              "cell": "r3c1",
+              "contrastCoverage": 0.3913
+            },
+            {
+              "cell": "r3c2",
+              "contrastCoverage": 0.301
+            },
+            {
+              "cell": "r3c3",
+              "contrastCoverage": 0.3071
+            }
+          ]
+        }
+      },
+      "digest": "1d12299e2f69cbcb6b7323c40215c1460200d6bdeacb5acb46d0c6f03f26883c"
+    },
+    "registration": {
+      "id": "qt_printer13_product_1960359919689-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1960359919689-01.png",
+        "assetSha256": "97262c05875e41b23d8b85021f62df700b921eeec89488d35e40b7ff079c8c57",
+        "assetAlt": "DSQ-COMBO Paper Target (QT-PRODUCT-1960359919689)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/dsq-combo-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "c2118d65b1cdd42fc8850abc4aa07b54827cce4c1904e4500dac4c89b3f64b78"
+    },
+    "scoring": {
+      "id": "qt_printer13_product_1960359919689-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "upper_governed_region": {
+            "label": "Upper governed region",
+            "objectId": "upper_governed_region",
+            "objectLabel": "Upper governed region"
+          },
+          "central_governed_region": {
+            "label": "Central governed region",
+            "objectId": "central_governed_region",
+            "objectLabel": "Central governed region"
+          },
+          "lower_governed_region": {
+            "label": "Lower governed region",
+            "objectId": "lower_governed_region",
+            "objectLabel": "Lower governed region"
+          },
+          "remaining_target_area": {
+            "label": "Remaining governed target area",
+            "objectId": "remaining_target_area",
+            "objectLabel": "Remaining governed target area"
+          }
+        },
+        "aggregation": {
+          "mode": "classification_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+        },
+        "outsideRule": {
+          "label": "Missed"
+        },
+        "classificationFootprintMode": "tap_center"
+      },
+      "digest": "d0e1beeb24ea6716cb3ed932ef95f57c47e09bd559cec6e9ec98367cfa0d6310"
+    },
+    "mission": {
+      "id": "qt_printer13_product_1960359919689-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld",
+        "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+        "unresolvedReason": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "intelligenceFamily": "MULTI_STAGE_DRILL",
+          "highestTruthfulCapability": "Zone / Object Counting",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+              "publishedRuleAuthority": {
+                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+              },
+              "publishedValuesAvailable": false,
+              "unresolved": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
+              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 4,
+              "registeredRegionIds": [
+                "upper_governed_region",
+                "central_governed_region",
+                "lower_governed_region",
+                "remaining_target_area"
+              ],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 657,
+                "heightPx": 500,
+                "aspectRatio": 1.314,
+                "cornerBackgroundRgb": [
+                  255,
+                  255,
+                  255
+                ],
+                "contrastCoverage": 0.3002,
+                "contrastBoundingBox": {
+                  "xMin": 0.0208,
+                  "yMin": 0.0205,
+                  "xMax": 0.9688,
+                  "yMax": 0.9658
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.399,
+                  "yNorm": 0.6014
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.1929
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.1221
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.0925
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.6452
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 0.4105
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.2471
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.3913
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.301
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.3071
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
+              "distribution": true,
+              "dispersion": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "regions_or_objects"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "regionObjectBreakdown": true,
+            "shotPattern": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": true,
+            "dispersionChange": true
+          },
+          "progress": {
+            "tightestPatternPersonalBest": true,
+            "scoreHistoryWhenGoverned": false
+          },
+          "unsupported": [
+            "invented_score",
+            "invented_qualification",
+            "invented_sequence",
+            "invented_timing",
+            "invented_penalty",
+            "invented_pass_threshold",
+            "invented_tactical_or_anatomical_meaning"
+          ]
+        }
+      },
+      "digest": "8f98c3356a47cd3e6f03e34017b78a3e0b087148829ae8f633e1c0afecb253e1"
+    }
+  },
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "unpublished_course_rules",
+    "unpublished_sequence",
+    "unpublished_timing",
+    "unpublished_pass_threshold",
+    "unpublished_penalties"
+  ]
+}

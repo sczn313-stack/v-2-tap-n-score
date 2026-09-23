@@ -1,0 +1,417 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_2195083657289-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
+    "approvedAt": "2026-09-22T00:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_2195083657289",
+    "version": "1",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_2195083657289_V1",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-2195083657289",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-2195083657289",
+      "name": "DSQ-M4-50R Paper Target",
+      "sku": "DSQ-M4-50R",
+      "qtCatalogId": "QT-PRODUCT-2195083657289",
+      "shopifyProductId": 2195083657289,
+      "sourceUrl": "https://targets.net/products/dsq-m4-50r-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-2195083657289",
+      "behaviorFamily": "M16_M4_QUALIFICATION",
+      "qtFamilyGroup": "DSQ_FAMILY",
+      "episode64IntelligenceFamily": "MULTI_STAGE_DRILL"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "qt_printer13_product_2195083657289-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "aim_reference",
+            "shape": "circle",
+            "cx": 0.5,
+            "cy": 0.48,
+            "radius": 0.045,
+            "priority": 90
+          },
+          {
+            "regionId": "adjustment_grid",
+            "shape": "rectangle",
+            "xMin": 0.28,
+            "yMin": 0.2,
+            "xMax": 0.72,
+            "yMax": 0.78,
+            "priority": 50
+          },
+          {
+            "regionId": "qualification_object",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.22,
+            "radiusY": 0.36,
+            "priority": 30
+          }
+        ],
+        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "derivation": {
+          "method": "leg-two-family-plus-preserved-visible-structure",
+          "family": "M16_M4_QUALIFICATION",
+          "qtGroup": "DSQ_FAMILY"
+        },
+        "observedPhysicalStructure": {
+          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+          "semanticMeaningAttributed": false,
+          "widthPx": 2625,
+          "heightPx": 3450,
+          "aspectRatio": 0.76087,
+          "cornerBackgroundRgb": [
+            255,
+            255,
+            255
+          ],
+          "contrastCoverage": 0.2333,
+          "contrastBoundingBox": {
+            "xMin": 0.0753,
+            "yMin": 0.0208,
+            "xMax": 0.9589,
+            "yMax": 0.8698
+          },
+          "contrastCentroid": {
+            "xNorm": 0.5551,
+            "yNorm": 0.5847
+          },
+          "thirdsContrastDistribution": [
+            {
+              "cell": "r1c1",
+              "contrastCoverage": 0.0558
+            },
+            {
+              "cell": "r1c2",
+              "contrastCoverage": 0.1995
+            },
+            {
+              "cell": "r1c3",
+              "contrastCoverage": 0.059
+            },
+            {
+              "cell": "r2c1",
+              "contrastCoverage": 0.1569
+            },
+            {
+              "cell": "r2c2",
+              "contrastCoverage": 0.6663
+            },
+            {
+              "cell": "r2c3",
+              "contrastCoverage": 0.3453
+            },
+            {
+              "cell": "r3c1",
+              "contrastCoverage": 0.0
+            },
+            {
+              "cell": "r3c2",
+              "contrastCoverage": 0.4626
+            },
+            {
+              "cell": "r3c3",
+              "contrastCoverage": 0.1671
+            }
+          ]
+        }
+      },
+      "digest": "b7ce605fd7217dbebb0235ad1c3492bac6094ee35a08dcd098039f9c6b763c04"
+    },
+    "registration": {
+      "id": "qt_printer13_product_2195083657289-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-2195083657289-01.jpg",
+        "assetSha256": "274196ff6d220edf6b9b511f4d6e946919cf0aedc7a3f399b7d2501c385d316a",
+        "assetAlt": "DSQ-M4-50R Paper Target (QT-PRODUCT-2195083657289)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/dsq-m4-50r-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "a49b5928180edfa5a12ec1fdddf1a28c5400241f37d32ad98cd728be0adb924a"
+    },
+    "scoring": {
+      "id": "qt_printer13_product_2195083657289-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "aim_reference": {
+            "label": "Aim reference"
+          },
+          "adjustment_grid": {
+            "label": "Adjustment grid"
+          },
+          "qualification_object": {
+            "label": "Qualification object"
+          }
+        },
+        "aggregation": {
+          "mode": "classification_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+        },
+        "outsideRule": {
+          "label": "Missed"
+        },
+        "classificationFootprintMode": "tap_center"
+      },
+      "digest": "ffac79d5fe43f15582755ddcd52089c74ab5c9e52e8f36487afc87b7e5fa0d05"
+    },
+    "mission": {
+      "id": "qt_printer13_product_2195083657289-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld",
+        "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+        "unresolvedReason": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "intelligenceFamily": "MULTI_STAGE_DRILL",
+          "highestTruthfulCapability": "Zone / Object Counting",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+              "publishedRuleAuthority": {
+                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+              },
+              "publishedValuesAvailable": false,
+              "unresolved": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
+              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 3,
+              "registeredRegionIds": [
+                "aim_reference",
+                "adjustment_grid",
+                "qualification_object"
+              ],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 2625,
+                "heightPx": 3450,
+                "aspectRatio": 0.76087,
+                "cornerBackgroundRgb": [
+                  255,
+                  255,
+                  255
+                ],
+                "contrastCoverage": 0.2333,
+                "contrastBoundingBox": {
+                  "xMin": 0.0753,
+                  "yMin": 0.0208,
+                  "xMax": 0.9589,
+                  "yMax": 0.8698
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.5551,
+                  "yNorm": 0.5847
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.0558
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.1995
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.059
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.1569
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 0.6663
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.3453
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.0
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.4626
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.1671
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
+              "distribution": true,
+              "dispersion": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "regions_or_objects"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "regionObjectBreakdown": true,
+            "shotPattern": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": true,
+            "dispersionChange": true
+          },
+          "progress": {
+            "tightestPatternPersonalBest": true,
+            "scoreHistoryWhenGoverned": false
+          },
+          "unsupported": [
+            "invented_score",
+            "invented_qualification",
+            "invented_sequence",
+            "invented_timing",
+            "invented_penalty",
+            "invented_pass_threshold",
+            "invented_tactical_or_anatomical_meaning"
+          ]
+        }
+      },
+      "digest": "59ecc7685b94efcf800c35e9475f1d1c4cb56609a84bb9546242493a19fee225"
+    }
+  },
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "unpublished_course_rules",
+    "unpublished_sequence",
+    "unpublished_timing",
+    "unpublished_pass_threshold",
+    "unpublished_penalties"
+  ]
+}

@@ -1,0 +1,776 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_1974291431497-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
+    "approvedAt": "2026-09-22T00:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_1974291431497",
+    "version": "1",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_1974291431497_V1",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-1974291431497",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-1974291431497",
+      "name": "DIAG-L Paper Target",
+      "sku": "DIAG-L",
+      "qtCatalogId": "QT-PRODUCT-1974291431497",
+      "shopifyProductId": 1974291431497,
+      "sourceUrl": "https://targets.net/products/diag-l-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1974291431497",
+      "behaviorFamily": "DIAGNOSTIC_FEEDBACK",
+      "qtFamilyGroup": "DIAG_L_R",
+      "episode64IntelligenceFamily": "DIAGNOSTIC"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "qt_printer13_product_1974291431497-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "ring_10",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.515,
+            "radiusX": 0.115,
+            "radiusY": 0.09,
+            "priority": 110
+          },
+          {
+            "regionId": "ring_9",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.515,
+            "radiusX": 0.175,
+            "radiusY": 0.14,
+            "priority": 100
+          },
+          {
+            "regionId": "ring_8",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.515,
+            "radiusX": 0.235,
+            "radiusY": 0.19,
+            "priority": 90
+          },
+          {
+            "regionId": "ring_7",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.515,
+            "radiusX": 0.295,
+            "radiusY": 0.24,
+            "priority": 80
+          }
+        ],
+        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "derivation": {
+          "method": "leg-two-family-plus-preserved-visible-structure",
+          "family": "DIAGNOSTIC_FEEDBACK",
+          "qtGroup": "DIAG_L_R"
+        },
+        "observedPhysicalStructure": {
+          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+          "semanticMeaningAttributed": false,
+          "widthPx": 1500,
+          "heightPx": 1943,
+          "aspectRatio": 0.772002,
+          "cornerBackgroundRgb": [
+            255,
+            255,
+            255
+          ],
+          "contrastCoverage": 0.3115,
+          "contrastBoundingBox": {
+            "xMin": 0.0405,
+            "yMin": 0.026,
+            "xMax": 0.9797,
+            "yMax": 0.9219
+          },
+          "contrastCentroid": {
+            "xNorm": 0.5066,
+            "yNorm": 0.4976
+          },
+          "thirdsContrastDistribution": [
+            {
+              "cell": "r1c1",
+              "contrastCoverage": 0.1221
+            },
+            {
+              "cell": "r1c2",
+              "contrastCoverage": 0.1963
+            },
+            {
+              "cell": "r1c3",
+              "contrastCoverage": 0.1913
+            },
+            {
+              "cell": "r2c1",
+              "contrastCoverage": 0.3728
+            },
+            {
+              "cell": "r2c2",
+              "contrastCoverage": 1.0
+            },
+            {
+              "cell": "r2c3",
+              "contrastCoverage": 0.3976
+            },
+            {
+              "cell": "r3c1",
+              "contrastCoverage": 0.0934
+            },
+            {
+              "cell": "r3c2",
+              "contrastCoverage": 0.3206
+            },
+            {
+              "cell": "r3c3",
+              "contrastCoverage": 0.0976
+            }
+          ]
+        }
+      },
+      "digest": "ee0d2cd7ad8d22641c61e7f5c05de696677641837407cd61d79c41e058d62726"
+    },
+    "registration": {
+      "id": "qt_printer13_product_1974291431497-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1974291431497-01.jpg",
+        "assetSha256": "781e7a01ab6615b2ce87159becfeac8b54bf07d54a565bf5d9a5f3d225966ba5",
+        "assetAlt": "DIAG-L Paper Target (QT-PRODUCT-1974291431497)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/diag-l-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "203c679b0e5a7297b25c8a8b128abfc02760e069d67ef6f391f835692c0feadb"
+    },
+    "scoring": {
+      "id": "qt_printer13_product_1974291431497-scoring",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "ring_10": {
+            "label": "10",
+            "value": 10
+          },
+          "ring_9": {
+            "label": "9",
+            "value": 9
+          },
+          "ring_8": {
+            "label": "8",
+            "value": 8
+          },
+          "ring_7": {
+            "label": "7",
+            "value": 7
+          }
+        },
+        "aggregation": {
+          "mode": "sum"
+        },
+        "publisherRuleAuthority": {
+          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "rule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
+        },
+        "outsideRule": {
+          "label": "Missed",
+          "value": 0
+        },
+        "classificationFootprintMode": "tap_center"
+      },
+      "digest": "cb3e965c50d74e5a7d77d9902fb1478ca46eda666f3bd2526e0da270985f6d4c"
+    },
+    "mission": {
+      "id": "qt_printer13_product_1974291431497-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "available"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses.",
+        "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+        "unresolvedReason": null,
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "diagnosticOverlay": {
+          "status": "governed_publisher_printed_labels",
+          "handedness": "left",
+          "regions": [
+            {
+              "regionId": "diagnostic_sector_1",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.92756,
+                  0.35938
+                ],
+                [
+                  0.94664,
+                  0.42818
+                ],
+                [
+                  0.95472,
+                  0.49912
+                ],
+                [
+                  0.95161,
+                  0.57045
+                ],
+                [
+                  0.93737,
+                  0.64041
+                ],
+                [
+                  0.91237,
+                  0.70729
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_2",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.91237,
+                  0.70729
+                ],
+                [
+                  0.8816,
+                  0.76281
+                ],
+                [
+                  0.84339,
+                  0.81351
+                ],
+                [
+                  0.79851,
+                  0.85839
+                ],
+                [
+                  0.74781,
+                  0.8966
+                ],
+                [
+                  0.69229,
+                  0.92737
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_3",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.69229,
+                  0.92737
+                ],
+                [
+                  0.6675,
+                  0.93805
+                ],
+                [
+                  0.64211,
+                  0.94724
+                ],
+                [
+                  0.61623,
+                  0.9549
+                ],
+                [
+                  0.58993,
+                  0.96102
+                ],
+                [
+                  0.56332,
+                  0.96557
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_4",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.56332,
+                  0.96557
+                ],
+                [
+                  0.51588,
+                  0.96972
+                ],
+                [
+                  0.46826,
+                  0.96889
+                ],
+                [
+                  0.42099,
+                  0.96309
+                ],
+                [
+                  0.37459,
+                  0.95237
+                ],
+                [
+                  0.32955,
+                  0.93687
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_5",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.32955,
+                  0.93687
+                ],
+                [
+                  0.27526,
+                  0.91062
+                ],
+                [
+                  0.22491,
+                  0.87742
+                ],
+                [
+                  0.17939,
+                  0.83785
+                ],
+                [
+                  0.13951,
+                  0.79262
+                ],
+                [
+                  0.10596,
+                  0.7425
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_6",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.10596,
+                  0.7425
+                ],
+                [
+                  0.06979,
+                  0.66313
+                ],
+                [
+                  0.04943,
+                  0.57832
+                ],
+                [
+                  0.04562,
+                  0.49119
+                ],
+                [
+                  0.05852,
+                  0.40493
+                ],
+                [
+                  0.08763,
+                  0.32271
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_7",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.08763,
+                  0.32271
+                ],
+                [
+                  0.1184,
+                  0.26719
+                ],
+                [
+                  0.15661,
+                  0.21649
+                ],
+                [
+                  0.20149,
+                  0.17161
+                ],
+                [
+                  0.25219,
+                  0.1334
+                ],
+                [
+                  0.30771,
+                  0.10263
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_8",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.30771,
+                  0.10263
+                ],
+                [
+                  0.38224,
+                  0.0755
+                ],
+                [
+                  0.46034,
+                  0.06173
+                ],
+                [
+                  0.53966,
+                  0.06173
+                ],
+                [
+                  0.61776,
+                  0.0755
+                ],
+                [
+                  0.69229,
+                  0.10263
+                ]
+              ],
+              "priority": 20
+            },
+            {
+              "regionId": "diagnostic_sector_9",
+              "shape": "polygon",
+              "points": [
+                [
+                  0.5,
+                  0.515
+                ],
+                [
+                  0.69229,
+                  0.10263
+                ],
+                [
+                  0.75443,
+                  0.13779
+                ],
+                [
+                  0.81031,
+                  0.18223
+                ],
+                [
+                  0.85854,
+                  0.23487
+                ],
+                [
+                  0.89795,
+                  0.29441
+                ],
+                [
+                  0.92756,
+                  0.35938
+                ]
+              ],
+              "priority": 20
+            }
+          ],
+          "labels": {
+            "diagnostic_sector_1": "Too Much Or Too Little Trigger Finger",
+            "diagnostic_sector_2": "Squeezing Finger Tips While Applying Trigger Pull",
+            "diagnostic_sector_3": "Jerking",
+            "diagnostic_sector_4": "Breaking Wrist Down Or Relaxing Too Soon",
+            "diagnostic_sector_5": "Squeezing Whole Hand With Trigger Pull",
+            "diagnostic_sector_6": "Thumbing",
+            "diagnostic_sector_7": "Heeling, Anticipating Recoil",
+            "diagnostic_sector_8": "Breaking Wrist Up",
+            "diagnostic_sector_9": "Pushing, Anticipating Recoil Or No Follow Through"
+          },
+          "authority": "Preserved QT DIAG-L/DIAG-R publisher artwork and Leg Two DIAG_L_R finding",
+          "unsupportedClaims": [
+            "causal_diagnosis",
+            "correction",
+            "coaching"
+          ]
+        },
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "intelligenceFamily": "DIAGNOSTIC",
+          "highestTruthfulCapability": "Scoring",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+              "publishedRuleAuthority": {
+                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "rule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
+              },
+              "publishedValuesAvailable": true,
+              "unresolved": null,
+              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 4,
+              "registeredRegionIds": [
+                "ring_10",
+                "ring_9",
+                "ring_8",
+                "ring_7"
+              ],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 1500,
+                "heightPx": 1943,
+                "aspectRatio": 0.772002,
+                "cornerBackgroundRgb": [
+                  255,
+                  255,
+                  255
+                ],
+                "contrastCoverage": 0.3115,
+                "contrastBoundingBox": {
+                  "xMin": 0.0405,
+                  "yMin": 0.026,
+                  "xMax": 0.9797,
+                  "yMax": 0.9219
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.5066,
+                  "yNorm": 0.4976
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.1221
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.1963
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.1913
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.3728
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 1.0
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.3976
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.0934
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.3206
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.0976
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
+              "distribution": true,
+              "dispersion": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "score_and_regions"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": true,
+            "regionObjectBreakdown": true,
+            "shotPattern": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": true,
+            "dispersionChange": true
+          },
+          "progress": {
+            "tightestPatternPersonalBest": true,
+            "scoreHistoryWhenGoverned": true
+          },
+          "unsupported": [
+            "invented_score",
+            "invented_qualification",
+            "invented_sequence",
+            "invented_timing",
+            "invented_penalty",
+            "invented_pass_threshold",
+            "invented_tactical_or_anatomical_meaning"
+          ]
+        }
+      },
+      "digest": "74f842246d5b290b63e9eeca8219aae86c814bf22705f2fa4a64847115be8fb4"
+    }
+  },
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "available"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "invented_correction",
+    "sczn3_causal_diagnosis",
+    "unpublished_course_rules",
+    "unpublished_pass_threshold",
+    "unpublished_penalties",
+    "unpublished_sequence",
+    "unpublished_timing"
+  ]
+}
