@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3.qt-founder-confirmed-defect-repair-verification.v1",
+  "status": "PASS",
+  "founderAcceptance": "PENDING",
+  "scope": {
+    "allQtChairsRescoped": 254,
+    "sharedTargetExperiencePresentationChairs": 253,
+    "inheritedZeroingChairsUnaffected": 1,
+    "registrationCorrectedChairs": 1,
+    "registrationCorrectedIds": [
+      "QT-PRODUCT-1873655562313"
+    ]
+  },
+  "firstDivergence": {
+    "tapDisplay": "TARGET presentation reflow immediately after click: wrapped status feedback increased the auto-height intro block and moved the rendered image after the physical click was captured.",
+    "storedCoordinates": "No divergence found; normalized source-image coordinates remained invariant through RESULT, SEC, Vault, and exact reopen.",
+    "530Classification": "Registered Bull 1-5 geometry used a generic 3-top/2-bottom layout that did not match the preserved 530 face's 2-top/1-middle/2-bottom layout."
+  },
+  "rootCause": {
+    "tapDisplay": "Rendered image bounds changed after the click because the status element above the target had content-dependent height; the overlay correctly followed the moved image, so it no longer occupied the original screen point.",
+    "530Classification": "Implementation registration defect in one contract, not a Homie semantic-treatment defect and not a stored-coordinate defect.",
+    "falsePriorPass": "The prior coordinate test asserted numeric lifecycle equality and generated test observations from the same registered geometry. It never compared a real browser click to the post-feedback rendered image, and it could not independently challenge malformed 530 registration."
+  },
+  "repair": {
+    "presentation": "Fixed the status block height so feedback text cannot reposition the rendered target; normalization and overlays continue to use actual rendered image bounds.",
+    "registration530": "Replaced only Bull 1-5 extents with pixel-measured outer extents from the preserved 500x746 source face; identities, capability, labels, and semantics are unchanged.",
+    "verification": "Added real-browser click/projection checks at narrow and desktop widths across the two Founder targets plus aspect-ratio extremes, and an independent 10-tap 530 replay through exact reopen."
+  },
+  "results": {
+    "renderedProjectionRuns": 8,
+    "renderedProjectionRepresentatives": [
+      {
+        "chair": 1,
+        "qtCatalogId": "QT-PRODUCT-1873683447881",
+        "name": "5-Spot Paper Target",
+        "aspectRatio": 0.64433
+      },
+      {
+        "chair": 2,
+        "qtCatalogId": "QT-PRODUCT-1873655562313",
+        "name": "530 Paper Target",
+        "aspectRatio": 0.670241
+      },
+      {
+        "chair": 267,
+        "qtCatalogId": "QT-PRODUCT-1960145125449",
+        "name": "TQ-22 Paper Target",
+        "aspectRatio": 0.477099
+      },
+      {
+        "chair": 234,
+        "qtCatalogId": "QT-PRODUCT-1974294741065",
+        "name": "Shootin Aces Paper Target",
+        "aspectRatio": 1.52207
+      }
+    ],
+    "lifecyclePass": 254,
+    "lifecycleFail": 0,
+    "numericCoordinatePersistencePass": 254,
+    "scoringCountingReconciliationPass": 253,
+    "scoringCountingReconciliationApplicable": 253,
+    "vaultEvidencePass": 254,
+    "vaultResultPass": 254,
+    "targetFitAspectPass": 254,
+    "founder530": {
+      "totalTaps": 10,
+      "validBullHits": 10,
+      "missed": 0,
+      "bullsHit": 5,
+      "bullCount": 5,
+      "tapsPerBull": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "exactReopenMarkers": 10
+    }
+  },
+  "checks": {
+    "authorityHas254UniqueChairs": true,
+    "sharedRoadHas253Contracts": true,
+    "inheritedZeroingRoadIsSeparate": true,
+    "statusBlockCannotReflowTarget": true,
+    "browserRenderedProjectionPass": true,
+    "browserCoversNarrowAndDesktop": true,
+    "browserCoversAspectExtremesAndFounderTargets": true,
+    "browserCoversEveryLifecycleProjection": true,
+    "lifecycle254Pass": true,
+    "numericCoordinatePersistence254Pass": true,
+    "vaultEvidence254Pass": true,
+    "vaultResult254Pass": true,
+    "targetFit254Pass": true,
+    "scoringCounting253Pass": true,
+    "530CapabilityPreserved": true,
+    "530SemanticRegionIdsPreserved": true,
+    "530FaceRegistrationExact": true,
+    "530FounderReplay10Of10": true
+  },
+  "failures": [],
+  "evidence": {
+    "browserVerification": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_FOUNDER_TRANSFORM_CLASSIFICATION_BROWSER_VERIFICATION.json",
+    "lifecycleVerification": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_LIFECYCLE_VERIFICATION.json"
+  }
+}

@@ -37,6 +37,7 @@ assert.match(vaultSource, /evidence\.dataUrl \|\| evidence\.assetUrl/);
 assert.match(vaultSource, /evidence\.imageWidthPx \|\| evidence\.widthPx/);
 assert.match(cssSource, /\.contract-even-distribution\{color:#fff3b0/);
 assert.match(cssSource, /\.contract-product-identity\{color:#151515\}/);
+assert.match(cssSource, /\.contract-intro #contractStatus\{height:3\.6em;overflow:auto/);
 assert.match(cssSource, /\.contract-image-frame img\{display:block;max-width:100%;max-height:66vh\}/);
 assert.match(cssSource, /\.contract-evidence img\{display:block;max-width:100%;max-height:42vh\}/);
 assert.match(cssSource, /contractSecRoot>\.sec-v1\[data-sec-mode="live"\]/);

@@ -18,7 +18,7 @@
 - Existing unresolved publisher semantic sets retained: 45.
 - Evidence Only truthful limits retained: 63.
 - Shared frontend defect verification: PASS.
-- Verification runtime: 7.116 seconds.
+- Verification runtime: 6.926 seconds.
 
 No target artwork was reinterpreted during implementation. No unsupported timing, sequence, qualification threshold, penalty, score, or course-of-fire rule was created.
 

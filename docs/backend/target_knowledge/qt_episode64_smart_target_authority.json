@@ -1,7 +1,7 @@
 {
   "schemaVersion": "sczn3-qt-episode64-homie-corrected-authority-v3",
   "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
-  "status": "HOMIE_CORRECTED_VERIFIED_254_OF_254",
+  "status": "FOUNDER_CONFIRMED_DEFECT_REPAIR_VERIFIED_254_OF_254",
   "publisher": "Qualification Targets Inc",
   "chairCount": 254,
   "identityCount": 254,
@@ -555,8 +555,8 @@
       "targetProfileId": "qt_printer13_product_1873655562313",
       "missionFamily": "targetScoring",
       "contractPath": "backend/target_execution_contracts/contracts/qt_printer13_product_1873655562313_target_scoring_v1.json",
-      "contractSha256": "af11edb50cd84f9460fa973758125bbd7bd6279fe9258312e13965ffcf6a7fd8",
-      "contractFingerprint": "67f30369378577ebba3c1f0c9c291b5f5e5879770bc75c4db68f611a5a6fc01f",
+      "contractSha256": "0d4864165d1b503a0236c15e794411f85f57717253e9108a328cae2c8f195c63",
+      "contractFingerprint": "08cdab64581125bd43222d6627cc5d1d7241702588a0eba256d1db8bfbbe1337",
       "behaviorFamily": "BULLSEYE_MULTI_BULL",
       "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
       "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
@@ -569,55 +569,72 @@
         "regions": [
           {
             "regionId": "bull_1",
-            "shape": "circle",
-            "cx": 0.22667,
-            "cy": 0.305,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.112,
+            "yMin": 0.088472,
+            "xMax": 0.366,
+            "yMax": 0.306971,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_1"
           },
           {
             "regionId": "bull_2",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.305,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.658,
+            "yMin": 0.087131,
+            "xMax": 0.898,
+            "yMax": 0.310992,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_2"
           },
           {
             "regionId": "bull_3",
-            "shape": "circle",
-            "cx": 0.77333,
-            "cy": 0.305,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.39,
+            "yMin": 0.348525,
+            "xMax": 0.64,
+            "yMax": 0.576408,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_3"
           },
           {
             "regionId": "bull_4",
-            "shape": "circle",
-            "cx": 0.22667,
-            "cy": 0.695,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.112,
+            "yMin": 0.60992,
+            "xMax": 0.366,
+            "yMax": 0.837802,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_4"
           },
           {
             "regionId": "bull_5",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.695,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.64,
+            "yMin": 0.615282,
+            "xMax": 0.886,
+            "yMax": 0.839142,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_5"
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "ugoAuthority": "founder-confirmed-preserved-530-face-registration-v1",
         "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "BULLSEYE_MULTI_BULL",
-          "qtGroup": "BULLSEYE_MULTI_BULL"
+          "method": "pixel-measured-outer-extents-on-preserved-source-face",
+          "sourceImageWidthPx": 500,
+          "sourceImageHeightPx": 746,
+          "semanticAuthority": "Homie corrected treatment ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "founderExpectedDistribution": "2 taps on each of Bull 1 through Bull 5"
         },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -938,6 +955,13 @@
           "unpublished_penalties."
         ],
         "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+      },
+      "founderDefectRepair": {
+        "repairId": "QT_FOUNDER_CONFIRMED_DEFECT_REPAIR_2026_09_23",
+        "status": "VERIFIED_FOUNDER_ACCEPTANCE_PENDING",
+        "semanticChange": false,
+        "registrationChange": "530 generic 3-top/2-bottom coordinates replaced by preserved-face 2-top/1-middle/2-bottom coordinates",
+        "sharedPresentationChange": "Target header status height fixed so tap feedback cannot vertically reposition the rendered image"
       }
     },
     {
@@ -97006,5 +97030,7 @@
     "inventedRules": 0
   },
   "verification": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_LIFECYCLE_VERIFICATION.json",
-  "exceptions": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_EXCEPTION_LIST.json"
+  "exceptions": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_EXCEPTION_LIST.json",
+  "founderDefectRepairVerification": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_FOUNDER_CONFIRMED_DEFECT_REPAIR_VERIFICATION.json",
+  "founderDefectRepairBrowserVerification": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_FOUNDER_TRANSFORM_CLASSIFICATION_BROWSER_VERIFICATION.json"
 }

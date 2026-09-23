@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1873655562313-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-FOUNDER-REPAIR-v4",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CONFIRMED_DEFECT_REPAIR_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -36,7 +36,8 @@
       "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
       "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
       "homieLockedCapability": "Zone / Object Counting",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "founderConfirmedRegistrationVersion": "530-face-v1"
     }
   },
   "missionFamily": "targetScoring",
@@ -45,7 +46,7 @@
   "components": {
     "geometry": {
       "id": "qt_printer13_product_1873655562313-geometry",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
@@ -53,55 +54,72 @@
         "regions": [
           {
             "regionId": "bull_1",
-            "shape": "circle",
-            "cx": 0.22667,
-            "cy": 0.305,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.112,
+            "yMin": 0.088472,
+            "xMax": 0.366,
+            "yMax": 0.306971,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_1"
           },
           {
             "regionId": "bull_2",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.305,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.658,
+            "yMin": 0.087131,
+            "xMax": 0.898,
+            "yMax": 0.310992,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_2"
           },
           {
             "regionId": "bull_3",
-            "shape": "circle",
-            "cx": 0.77333,
-            "cy": 0.305,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.39,
+            "yMin": 0.348525,
+            "xMax": 0.64,
+            "yMax": 0.576408,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_3"
           },
           {
             "regionId": "bull_4",
-            "shape": "circle",
-            "cx": 0.22667,
-            "cy": 0.695,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.112,
+            "yMin": 0.60992,
+            "xMax": 0.366,
+            "yMax": 0.837802,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_4"
           },
           {
             "regionId": "bull_5",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.695,
-            "radius": 0.08473,
+            "shape": "rounded_rectangle",
+            "xMin": 0.64,
+            "yMin": 0.615282,
+            "xMax": 0.886,
+            "yMax": 0.839142,
+            "cornerRadiusX": 0.055,
+            "cornerRadiusY": 0.045,
             "priority": 50,
             "objectId": "bull_5"
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "ugoAuthority": "founder-confirmed-preserved-530-face-registration-v1",
         "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "BULLSEYE_MULTI_BULL",
-          "qtGroup": "BULLSEYE_MULTI_BULL"
+          "method": "pixel-measured-outer-extents-on-preserved-source-face",
+          "sourceImageWidthPx": 500,
+          "sourceImageHeightPx": 746,
+          "semanticAuthority": "Homie corrected treatment ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+          "founderExpectedDistribution": "2 taps on each of Bull 1 through Bull 5"
         },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -165,7 +183,7 @@
           ]
         }
       },
-      "digest": "858029232dd843d09f895c07d2a8e6ed92984c28229ddaff8df1fbee2aa417ef"
+      "digest": "cd7f0fd45aed8b065a567de8a6e34db7aa852e9a7e877a96ccdd586aa98e41aa"
     },
     "registration": {
       "id": "qt_printer13_product_1873655562313-registration",
@@ -497,9 +515,16 @@
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
           }
+        },
+        "founderDefectRepair": {
+          "repairId": "QT_FOUNDER_CONFIRMED_DEFECT_REPAIR_2026_09_23",
+          "status": "VERIFIED_FOUNDER_ACCEPTANCE_PENDING",
+          "semanticChange": false,
+          "registrationChange": "530 generic 3-top/2-bottom coordinates replaced by preserved-face 2-top/1-middle/2-bottom coordinates",
+          "sharedPresentationChange": "Target header status height fixed so tap feedback cannot vertically reposition the rendered image"
         }
       },
-      "digest": "e73eeae61cb4b878a507f045cabdff89a06f7f43654d7c45b2293d67e692d060"
+      "digest": "947abde47f84a9b6c867361557f3fa54543e6c697ccd82932657983e7368f821"
     }
   },
   "executor": {
