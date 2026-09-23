@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_8197771264284-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-8197771264284",
       "behaviorFamily": "M16_M4_QUALIFICATION",
       "qtFamilyGroup": "M16_M4_FAMILY",
-      "episode64IntelligenceFamily": "QUALIFICATION_SILHOUETTE"
+      "episode64IntelligenceFamily": "M16_M4_QUALIFICATION",
+      "homieLockedCapability": "Zone / Object Counting"
     }
   },
   "missionFamily": "targetScoring",
@@ -184,15 +185,26 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [
+            "Aim reference",
+            "Adjustment grid",
+            "Qualification object"
+          ],
+          "storedTargetRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+        }
       },
-      "digest": "8e69a63afef494bd6f1050cb6de9f40de554ae7db04d2f19d9ee9e2c7b1162e0"
+      "digest": "200b37e08a1bf185ba8c74b4bba53c7558ceb89024ddbc66ff2a4369dbe794fb"
     },
     "mission": {
       "id": "qt_printer13_product_8197771264284-mission",
@@ -236,19 +248,29 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "QUALIFICATION_SILHOUETTE",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "M16_M4_QUALIFICATION",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
               },
               "publishedValuesAvailable": false,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [
+                  "Aim reference",
+                  "Adjustment grid",
+                  "Qualification object"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -364,11 +386,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 249,
+            "visualStackChair": 286,
+            "priorSurgicalCapability": "Evidence Only",
+            "changedFromPriorSurgicalReview": true,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture every printed aim area/qualification object. Count or score only what the face/stored authority proves. M16A2 keeps the governed zeroing road. Do not invent qualification thresholds or stage rules."
         }
       },
-      "digest": "b81667112716703c5f65a70a46822ad4f55e1f6e3feef5477849db9fb8cf6efa"
+      "digest": "7ca98d187f50f9afbc5728f8a7f982a4cec42e85219f57391d3252538a943cb8"
     }
   },
   "executor": {

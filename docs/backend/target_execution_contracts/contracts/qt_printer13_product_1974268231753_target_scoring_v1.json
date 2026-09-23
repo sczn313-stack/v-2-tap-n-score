@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974268231753-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1974268231753",
       "behaviorFamily": "BULLSEYE_MULTI_BULL",
       "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
-      "episode64IntelligenceFamily": "MULTI_AIM_AREA"
+      "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
+      "homieLockedCapability": "Zone / Object Counting"
     }
   },
   "missionFamily": "targetScoring",
@@ -163,15 +164,24 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "1 visible bulls are independently counted without invented ring values"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [
+            "Bull 1"
+          ],
+          "storedTargetRule": "1 visible bulls are independently counted without invented ring values"
+        }
       },
-      "digest": "f8cb401ac103cac45cdeba34289a87da2220e0137c2bd9473e994ed462506a2c"
+      "digest": "8b4b8da70cf776f66c6b88b7ff8de9b8e3ec20fdcfa7ec4c605f9ca0cdd4966e"
     },
     "mission": {
       "id": "qt_printer13_product_1974268231753-mission",
@@ -215,19 +225,27 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "MULTI_AIM_AREA",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "BULLSEYE_MULTI_BULL",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "1 visible bulls are independently counted without invented ring values"
               },
               "publishedValuesAvailable": false,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [
+                  "Bull 1"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -341,11 +359,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 121,
+            "visualStackChair": 150,
+            "priorSurgicalCapability": "Scoring",
+            "changedFromPriorSurgicalReview": true,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture each bull/spot independently, including visible center/aim-point subsets. Count hits by bull and center subset; score rings only when values are printed/stored. Report balance across bulls, misses, pattern, and history."
         }
       },
-      "digest": "15508c0ea257da75f04f1e58de79a62e271e7bd9f1efdd84c4c52bce8eb1fe1d"
+      "digest": "3bf4ba600ef0a7ef6c613972741086f91509fb2f9437fa0bad13c1a12a432eda"
     }
   },
   "executor": {

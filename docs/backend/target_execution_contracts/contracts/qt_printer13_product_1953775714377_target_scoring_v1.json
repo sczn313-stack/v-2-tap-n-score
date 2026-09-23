@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1953775714377-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1953775714377",
       "behaviorFamily": "REPEATED_OBJECT_COUNTING",
       "qtFamilyGroup": "DOT_FAMILY",
-      "episode64IntelligenceFamily": "DOT_OBJECT"
+      "episode64IntelligenceFamily": "REPEATED_OBJECT_COUNTING",
+      "homieLockedCapability": "Zone / Object Counting"
     }
   },
   "missionFamily": "targetScoring",
@@ -289,15 +290,33 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "10 published repeated objects are independently counted; drill order remains unpublished"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [
+            "Object 1",
+            "Object 2",
+            "Object 3",
+            "Object 4",
+            "Object 5",
+            "Object 6",
+            "Object 7",
+            "Object 8",
+            "Object 9",
+            "Object 10"
+          ],
+          "storedTargetRule": "10 published repeated objects are independently counted; drill order remains unpublished"
+        }
       },
-      "digest": "2581954e0a897983e66e4a860eecf122a07abc0ea2ad9bea5edb4c5b4d6e8672"
+      "digest": "ecd0f083d8536999e8f20ea6642a08f63553c51e722092b473b1fe0a866d8bba"
     },
     "mission": {
       "id": "qt_printer13_product_1953775714377-mission",
@@ -341,19 +360,36 @@
         "unresolvedReason": "Publisher establishes dot counts, sizes, and numbering but publishes no target-specific drill/course, order, round count, or score.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "DOT_OBJECT",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "REPEATED_OBJECT_COUNTING",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "10 published repeated objects are independently counted; drill order remains unpublished"
               },
               "publishedValuesAvailable": false,
               "unresolved": "Publisher establishes dot counts, sizes, and numbering but publishes no target-specific drill/course, order, round count, or score.",
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [
+                  "Object 1",
+                  "Object 2",
+                  "Object 3",
+                  "Object 4",
+                  "Object 5",
+                  "Object 6",
+                  "Object 7",
+                  "Object 8",
+                  "Object 9",
+                  "Object 10"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -476,11 +512,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 95,
+            "visualStackChair": 123,
+            "priorSurgicalCapability": "Evidence Only",
+            "changedFromPriorSurgicalReview": true,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture each repeated dot/object independently. Report per-object hits, objects used/unused, total taps, misses, distribution/evenness, and repeat-session progress. No invented shot quota or sequence."
         }
       },
-      "digest": "74b24beeb9fa926c307e71521bd17998ef053a1d15edcc336775273064cfe6ee"
+      "digest": "465732377816a91c0794c051de78dbb4115fe2ba9e291a271702520ea25ee3f6"
     }
   },
   "executor": {

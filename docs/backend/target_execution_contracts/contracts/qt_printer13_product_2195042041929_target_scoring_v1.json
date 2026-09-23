@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_2195042041929-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-2195042041929",
       "behaviorFamily": "B_FAMILY_SCORING",
       "qtFamilyGroup": "B_FAMILY",
-      "episode64IntelligenceFamily": "SCORED_RING_BULLSEYE"
+      "episode64IntelligenceFamily": "B_FAMILY_SCORING",
+      "homieLockedCapability": "Scoring"
     }
   },
   "missionFamily": "targetScoring",
@@ -163,15 +164,26 @@
           "mode": "sum_and_classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "the printed center is 5X; other printed codes remain unscored because their point semantics are not published"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [
+            "5"
+          ],
+          "labels": [
+            "5X"
+          ],
+          "storedTargetRule": "the printed center is 5X; other printed codes remain unscored because their point semantics are not published"
+        }
       },
-      "digest": "8406121c42e637d8379b0de079d3960d62b670bb6ed8a60b14a3467a82bcc812"
+      "digest": "6452b25b4edebb7daa54d17a14c927062cddf325ce6947327412b6efc6ac0f5e"
     },
     "mission": {
       "id": "qt_printer13_product_2195042041929-mission",
@@ -215,19 +227,29 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "SCORED_RING_BULLSEYE",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "B_FAMILY_SCORING",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "the printed center is 5X; other printed codes remain unscored because their point semantics are not published"
               },
               "publishedValuesAvailable": true,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [
+                  "5"
+                ],
+                "labels": [
+                  "5X"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -341,11 +363,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 6,
+            "visualStackChair": 7,
+            "priorSurgicalCapability": null,
+            "changedFromPriorSurgicalReview": false,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture every tap against the printed B-family regions. Score only the numeric/X values visibly printed or otherwise stored. Report total taps, region counts, points, X-count when present, misses, distribution, shot-pattern center, and session history."
         }
       },
-      "digest": "d7367407ee791efced821b760f459c01f5c4dee7deabf8b7b3019198d7183919"
+      "digest": "b6b1fee79b8d3e79afaba2c4e6d08f7bd34c6b49d157977eeb6aa111832bf6b4"
     }
   },
   "executor": {

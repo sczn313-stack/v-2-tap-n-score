@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1873701797961-smart-evidence-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1873701797961",
       "behaviorFamily": "ANATOMY_VITAL_REGIONS",
       "qtFamilyGroup": "ANATOMY_VITAL_REGIONS",
-      "episode64IntelligenceFamily": "ANATOMICAL_SPECIALIZED_ZONE"
+      "episode64IntelligenceFamily": "ANATOMY_VITAL_REGIONS",
+      "homieLockedCapability": "Evidence Only"
     }
   },
   "missionFamily": "smartEvidenceCapture",
@@ -136,9 +137,15 @@
       "status": "approved",
       "definition": {
         "status": "not_applicable",
-        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority"
+        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [],
+          "storedTargetRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        }
       },
-      "digest": "5f581ef8b9219129d457a17adea0423c38f9692564b8e7a230572b74201226f4"
+      "digest": "74899a0f6599390fead9aca13fe044bf5c3787c991d8bfcbc068f81bf8008f72"
     },
     "mission": {
       "id": "qt_printer13_product_1873701797961-mission",
@@ -186,16 +193,25 @@
           "resultAction": "show_result"
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "ANATOMICAL_SPECIALIZED_ZONE",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "ANATOMY_VITAL_REGIONS",
           "highestTruthfulCapability": "Evidence Only",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
-              "publishedRuleAuthority": null,
+              "publishedRuleAuthority": {
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+              },
               "publishedValuesAvailable": false,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "registered_image_plane_only",
@@ -307,11 +323,28 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "inventedscoring",
+            "inventedregions",
+            "inventedqualification",
+            "inventedcourserules",
+            "inventedpenalties",
+            "inventedzeroingcorrection"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 3,
+            "visualStackChair": 3,
+            "priorSurgicalCapability": null,
+            "changedFromPriorSurgicalReview": false,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture visibly printed/labeled anatomical regions only where boundaries can be bound to the artwork. Report region counts and pattern; no invented medical, tactical, or lethality meaning."
         }
       },
-      "digest": "d96c6f54a9dc19d2aae4ee702b3d13c18ba42636e239c5241e0d4f0f3c1114bd"
+      "digest": "4f4bcb8fade06655b7e127802d0ad1702e686ff2e55ac4583615eeb974719512"
     }
   },
   "executor": {

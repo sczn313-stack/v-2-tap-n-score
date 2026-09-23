@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1956005085257-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -39,7 +39,8 @@
         "height": 32,
         "unit": "inch"
       },
-      "episode64IntelligenceFamily": "COMPETITION_SCORING"
+      "episode64IntelligenceFamily": "COMPETITION_SCORING",
+      "homieLockedCapability": "Scoring"
     }
   },
   "missionFamily": "targetScoring",
@@ -286,11 +287,24 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "P-OS american-target:law-enforcement:58-Q100 and publisher representation",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "printed A/B/C/D region names; no numeric value inferred"
+        },
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [
+            "A",
+            "B",
+            "A",
+            "C",
+            "D"
+          ],
+          "storedTargetRule": "printed A/B/C/D region names; no numeric value inferred"
         }
       },
-      "digest": "eeba80f6a02b3966b51e1fe5f7385c9eca30f9b47219104810fa4099c473a5a1"
+      "digest": "c3062e62709fe7cd5dcc803457b32100da470fd8b46bcb788450aa109c2c0e96"
     },
     "mission": {
       "id": "qt_printer13_product_1956005085257-mission",
@@ -334,19 +348,31 @@
           "legTwoManifest": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json"
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
           "intelligenceFamily": "COMPETITION_SCORING",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "P-OS american-target:law-enforcement:58-Q100 and publisher representation",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "printed A/B/C/D region names; no numeric value inferred"
               },
               "publishedValuesAvailable": false,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [
+                  "A",
+                  "B",
+                  "A",
+                  "C",
+                  "D"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -435,11 +461,11 @@
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "regions_or_objects"
+            "meaningfulBreakdown": "score_and_regions"
           },
           "result": {
             "totalTaps": true,
-            "publisherScore": false,
+            "publisherScore": true,
             "regionObjectBreakdown": true,
             "shotPattern": true
           },
@@ -455,7 +481,7 @@
           },
           "progress": {
             "tightestPatternPersonalBest": true,
-            "scoreHistoryWhenGoverned": false
+            "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
             "invented_score",
@@ -464,11 +490,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "physicalholeextentorlinetouchadjudication",
+            "qtsemanticsbeyondexactpriorsurfaceinheritance",
+            "qualificationorcertification",
+            "scoringrulesnotpresentinpublisherauthority",
+            "zeroingcorrection"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 152,
+            "visualStackChair": 182,
+            "priorSurgicalCapability": "Zone / Object Counting",
+            "changedFromPriorSurgicalReview": true,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture printed competition zones/objects. Score only printed/stored values; otherwise zone count. Report totals, zone distribution, misses, pattern, and history. No invented match procedure."
         }
       },
-      "digest": "575b87dd27999ceb294d590f1d753825bf4e29e7e0a71d6f39b7a0c721c6a0ce"
+      "digest": "8722c93d8f0eb50b2f9c5cab6f14980e7a8027b358a77c69676f0f73a3d684d3"
     }
   },
   "executor": {

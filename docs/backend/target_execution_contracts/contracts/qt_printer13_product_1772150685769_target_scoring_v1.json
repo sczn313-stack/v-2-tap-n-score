@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1772150685769-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1772150685769",
       "behaviorFamily": "VALUED_REGION_QUALIFICATION",
       "qtFamilyGroup": "SQT_A1_FAMILY",
-      "episode64IntelligenceFamily": "MULTI_STAGE_DRILL"
+      "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
+      "homieLockedCapability": "Scoring"
     }
   },
   "missionFamily": "targetScoring",
@@ -187,15 +188,29 @@
           "mode": "sum_and_classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [
+            "5",
+            "10"
+          ],
+          "labels": [
+            "10",
+            "5",
+            "Silhouette"
+          ],
+          "storedTargetRule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
+        }
       },
-      "digest": "69ff8f89cb867db0c2d101c57b9365c0b835f097e74bca0f3ec84f4e8ce9064d"
+      "digest": "10338628a1ee2f94e5c229dd0b5ec072e789bce4e2edf487c26215aaa2f86964"
     },
     "mission": {
       "id": "qt_printer13_product_1772150685769-mission",
@@ -239,19 +254,32 @@
         "unresolvedReason": "Artwork publishes visible 10/5 regions and a score table, but the current governing course, rounds, timing, and pass threshold were not located.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "MULTI_STAGE_DRILL",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "visible printed 10/5 regions score; unpublished course administration remains withheld"
               },
               "publishedValuesAvailable": true,
               "unresolved": "Artwork publishes visible 10/5 regions and a score table, but the current governing course, rounds, timing, and pass threshold were not located.",
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [
+                  "5",
+                  "10"
+                ],
+                "labels": [
+                  "10",
+                  "5",
+                  "Silhouette"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -367,11 +395,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 211,
+            "visualStackChair": 246,
+            "priorSurgicalCapability": null,
+            "changedFromPriorSurgicalReview": false,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture every visibly bounded/labeled region or object. If the face itself prints numeric point values, score them; otherwise count by region/object. Report totals, distribution, misses, pattern, and history. Do not invent a qualification threshold."
         }
       },
-      "digest": "433aad97da9fa2d69de4d2b1557aff77142e2ecf71efabc1809a5aee8c38defb"
+      "digest": "d3203eab29baa1302c638e80c7e2a688a83b545b8dd4014c40ddac921d808d9a"
     }
   },
   "executor": {

@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1960358051913-smart-evidence-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1960358051913",
       "behaviorFamily": "EVIDENCE_ONLY",
       "qtFamilyGroup": "BT5_FAMILY",
-      "episode64IntelligenceFamily": "EVIDENCE_PLAIN_SILHOUETTE"
+      "episode64IntelligenceFamily": "EVIDENCE_ONLY",
+      "homieLockedCapability": "Evidence Only"
     }
   },
   "missionFamily": "smartEvidenceCapture",
@@ -136,9 +137,15 @@
       "status": "approved",
       "definition": {
         "status": "not_applicable",
-        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority"
+        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [],
+          "storedTargetRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        }
       },
-      "digest": "9c576e4a1ee016253151c3bd7408f4b8329d2be37ddbfe7dd4aaff616ff10f70"
+      "digest": "9d43199964abf1580f7536fd001394a4908b5e819027a39cd68391da4280ab58"
     },
     "mission": {
       "id": "qt_printer13_product_1960358051913-mission",
@@ -186,16 +193,25 @@
           "resultAction": "show_result"
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "EVIDENCE_PLAIN_SILHOUETTE",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "EVIDENCE_ONLY",
           "highestTruthfulCapability": "Evidence Only",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
-              "publishedRuleAuthority": null,
+              "publishedRuleAuthority": {
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+                "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+              },
               "publishedValuesAvailable": false,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "registered_image_plane_only",
@@ -307,11 +323,28 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "inventedscoring",
+            "inventedregions",
+            "inventedqualification",
+            "inventedcourserules",
+            "inventedpenalties",
+            "inventedzeroingcorrection"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 44,
+            "visualStackChair": 47,
+            "priorSurgicalCapability": null,
+            "changedFromPriorSurgicalReview": false,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Preserve every tap at the exact source-image location. Report total taps, shot-pattern center, dispersion/distribution and history. Upgrade only when the face itself provides bindable regions/objects/values."
         }
       },
-      "digest": "c04ab9ffdc30c46e3a153d2dcf6349e5fcf33aedb0503266781ad1d3948a657a"
+      "digest": "8e0a388b337e6721dce15e616989874e3d919215c730f2326ec287ff3b2ec8f9"
     }
   },
   "executor": {

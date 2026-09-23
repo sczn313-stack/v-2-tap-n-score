@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1955981361225-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1955981361225",
       "behaviorFamily": "ZEROING_SIGHT_IN",
       "qtFamilyGroup": "ZEROING_SIGHT_IN",
-      "episode64IntelligenceFamily": "ZEROING_GRID"
+      "episode64IntelligenceFamily": "ZEROING_SIGHT_IN",
+      "homieLockedCapability": "Zone / Object Counting"
     }
   },
   "missionFamily": "targetScoring",
@@ -275,15 +276,32 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [
+            "Sighting Object 1",
+            "Sighting Object 2",
+            "Sighting Object 3",
+            "Sighting Object 4",
+            "Sighting Object 5",
+            "Sighting Object 6",
+            "Sighting Object 7",
+            "Sighting Object 8",
+            "Sighting Object 9"
+          ],
+          "storedTargetRule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
+        }
       },
-      "digest": "96d0faea6fa3919a34203549f3443839f0158f0b0d1401cbfe1e5fa16f90d83e"
+      "digest": "2fa38d9093f4ae2ec5e4604f7ae77e5f33259815f98c8f2506ab9ea74849aae0"
     },
     "mission": {
       "id": "qt_printer13_product_1955981361225-mission",
@@ -327,19 +345,35 @@
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "ZEROING_GRID",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "ZEROING_SIGHT_IN",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "visible sighting bulls and rings are independently counted without inventing zeroing mechanics"
               },
               "publishedValuesAvailable": false,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [
+                  "Sighting Object 1",
+                  "Sighting Object 2",
+                  "Sighting Object 3",
+                  "Sighting Object 4",
+                  "Sighting Object 5",
+                  "Sighting Object 6",
+                  "Sighting Object 7",
+                  "Sighting Object 8",
+                  "Sighting Object 9"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -461,11 +495,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 120,
+            "visualStackChair": 149,
+            "priorSurgicalCapability": "Evidence Only",
+            "changedFromPriorSurgicalReview": true,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture printed aiming/scoring structures. Use governed zeroing correction only where the stored zeroing authority exists; otherwise provide counts/score from printed values plus shot-pattern center and displacement observations."
         }
       },
-      "digest": "ff1e8d9d315764a629f47084418a04e639ab6d4cfb1acb631afc8fe0ce568568"
+      "digest": "3116b46c252b4ef8ce319019984f4cbbcfb664155b28bd6e7adac81770a77f00"
     }
   },
   "executor": {

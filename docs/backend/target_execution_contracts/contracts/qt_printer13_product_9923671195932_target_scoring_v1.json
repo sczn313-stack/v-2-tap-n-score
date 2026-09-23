@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_9923671195932-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-9923671195932",
       "behaviorFamily": "ANATOMY_VITAL_REGIONS",
       "qtFamilyGroup": "DSQ_FAMILY",
-      "episode64IntelligenceFamily": "ANATOMICAL_SPECIALIZED_ZONE"
+      "episode64IntelligenceFamily": "ANATOMY_VITAL_REGIONS",
+      "homieLockedCapability": "Zone / Object Counting"
     }
   },
   "missionFamily": "targetScoring",
@@ -265,15 +266,31 @@
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
         },
         "outsideRule": {
           "label": "Missed"
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [],
+          "labels": [
+            "Printed object 1",
+            "Printed object 2",
+            "Printed object 3",
+            "Printed object 4",
+            "Upper outlined region",
+            "Central outlined region",
+            "Lower outlined region",
+            "Outer figure region"
+          ],
+          "storedTargetRule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
+        }
       },
-      "digest": "08cbc5998f45dca4c566d29f8bbd2045117feed0e045aa153bcd9f67281a6777"
+      "digest": "2abd11680ede0816ca3c6e150a622fc13b9d3c2fe69ae434df55a72e75243ee9"
     },
     "mission": {
       "id": "qt_printer13_product_9923671195932-mission",
@@ -317,19 +334,34 @@
         "unresolvedReason": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "ANATOMICAL_SPECIALIZED_ZONE",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "ANATOMY_VITAL_REGIONS",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "registered DSQ Alt 2 artwork governs numbered peripheral objects and outlined figure regions; no anatomy or values are inferred"
               },
               "publishedValuesAvailable": false,
               "unresolved": "Publisher establishes DS-Q1A lineage, scaling, two-sided compositions, and visible structures; the governing course and target-specific score aggregation are not published.",
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [
+                  "Printed object 1",
+                  "Printed object 2",
+                  "Printed object 3",
+                  "Printed object 4",
+                  "Upper outlined region",
+                  "Central outlined region",
+                  "Lower outlined region",
+                  "Outer figure region"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -450,11 +482,27 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "unpublishedcourserules",
+            "unpublishedsequence",
+            "unpublishedtiming",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 105,
+            "visualStackChair": 134,
+            "priorSurgicalCapability": null,
+            "changedFromPriorSurgicalReview": false,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture visibly printed/labeled anatomical regions only where boundaries can be bound to the artwork. Report region counts and pattern; no invented medical, tactical, or lethality meaning."
         }
       },
-      "digest": "1ccd48d5a129a2fd96bdfc36240270621128192a1b9ecf2ba3b4fac50e6f80eb"
+      "digest": "552605f5683ee89196f285ae39f7bfebc3ede693629b968d4a41ef382d69993e"
     }
   },
   "executor": {

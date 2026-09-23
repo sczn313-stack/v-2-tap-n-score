@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974292840521-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-SMART-TARGET-v1",
+  "authorityContractVersion": "QT-EPISODE64-HOMIE-LOCKED-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_SMART_TARGET_AUTHORITY_2026_09_22",
-    "approvedAt": "2026-09-22T00:00:00-04:00"
+    "authorityId": "QT_EPISODE64_HOMIE_LOCKED_AUTHORITY_2026_09_23",
+    "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,7 +34,8 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1974292840521",
       "behaviorFamily": "DIAGNOSTIC_FEEDBACK",
       "qtFamilyGroup": "DIAG_L_R",
-      "episode64IntelligenceFamily": "DIAGNOSTIC"
+      "episode64IntelligenceFamily": "DIAGNOSTIC_FEEDBACK",
+      "homieLockedCapability": "Scoring"
     }
   },
   "missionFamily": "targetScoring",
@@ -201,16 +202,33 @@
           "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+          "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
           "rule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
         },
         "outsideRule": {
           "label": "Missed",
           "value": 0
         },
-        "classificationFootprintMode": "tap_center"
+        "classificationFootprintMode": "tap_center",
+        "homieLockedArtworkFacts": {
+          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+          "values": [
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "labels": [
+            "10",
+            "9",
+            "8",
+            "7"
+          ],
+          "storedTargetRule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
+        }
       },
-      "digest": "0fcbb6bd66ffafbba69a7048461787e88e4320d0d17a1609b682c39dc534266c"
+      "digest": "b6bd6f2024a0cbdc266a1f812ddc5d0e8ee718332c7ef71e3b24d71c97b33ee0"
     },
     "mission": {
       "id": "qt_printer13_product_1974292840521-mission",
@@ -592,19 +610,35 @@
           ]
         },
         "smartTargetTreatment": {
-          "schemaVersion": "sczn3-episode64-smart-target-treatment-v1",
-          "intelligenceFamily": "DIAGNOSTIC",
+          "schemaVersion": "sczn3-episode64-homie-locked-treatment-v2",
+          "intelligenceFamily": "DIAGNOSTIC_FEEDBACK",
           "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Leg Two family recognition + preserved QT registered artwork + existing SCZN3 family machinery",
+                "source": "Homie Founder-locked catalog 73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+                "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
                 "rule": "The preserved QT DIAG artwork prints governed 10/9/8/7 rings. Printed handedness-specific diagnostic labels are reported separately as publisher label matches, not SCZN3 causal diagnoses."
               },
               "publishedValuesAvailable": true,
               "unresolved": null,
-              "rule": "Only source-backed publisher/governing semantics may score or qualify."
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [
+                  "7",
+                  "8",
+                  "9",
+                  "10"
+                ],
+                "labels": [
+                  "10",
+                  "9",
+                  "8",
+                  "7"
+                ],
+                "authorityClass": "explicit_source_artwork"
+              }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
@@ -721,11 +755,29 @@
             "invented_timing",
             "invented_penalty",
             "invented_pass_threshold",
-            "invented_tactical_or_anatomical_meaning"
-          ]
+            "invented_tactical_or_anatomical_meaning",
+            "inventedcorrection",
+            "sczn3causaldiagnosis",
+            "unpublishedcourserules",
+            "unpublishedpassthreshold",
+            "unpublishedpenalties",
+            "unpublishedsequence",
+            "unpublishedtiming"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED",
+            "catalogPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_SMART_CATALOG_ARTWORK_AUGMENTED.md",
+            "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
+            "catalogChair": 88,
+            "visualStackChair": 116,
+            "priorSurgicalCapability": "Evidence Only",
+            "changedFromPriorSurgicalReview": true,
+            "governingRule": "Stored authority + explicit source artwork = maximum truthful Smart Target."
+          },
+          "smartBehavior": "Capture printed scoring rings plus printed diagnostic sectors. Score the visible numeric rings and report the sector(s) containing impacts as artwork-derived feedback. No invented causal diagnosis beyond the target's printed wording."
         }
       },
-      "digest": "1ed174261d79a67be367a76616a59a638399794c8d91d9c54b84e992635a401e"
+      "digest": "b80909ecad98837594322d404d0e3cec98750b18d3831c60b02ca2b2b9436d8b"
     }
   },
   "executor": {

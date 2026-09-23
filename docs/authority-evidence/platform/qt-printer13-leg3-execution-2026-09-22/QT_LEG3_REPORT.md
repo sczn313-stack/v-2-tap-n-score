@@ -41,4 +41,4 @@ None.
 
 The 45 surfaces with unpublished semantics remain explicitly unresolved at the semantic level. They execute at the highest contract-backed floor without invented rules. Every surface independently completed TARGET → TAP → RESULT → SEC → VAULT → exact reopen.
 
-Verification runtime: **3.836 seconds**.
+Verification runtime: **4.231 seconds**.
