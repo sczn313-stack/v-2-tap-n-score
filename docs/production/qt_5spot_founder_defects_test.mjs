@@ -12,6 +12,7 @@ vm.runInNewContext(runtimeSource, { window, document, Uint8Array, Uint32Array, A
 const runtime = window.SCZN3TargetExecutionRuntime;
 const spots = Array.from({ length: 5 }, (_, index) => ({ objectId: `spot_${index + 1}`, label: `Spot ${index + 1}`, observationCount: 2, observationPercentage: 20, hit: true }));
 const result = {
+  target: { id: "qt_printer13_product_test" },
   missionFamily: "targetScoring",
   scoring: { status: "complete", model: "named_regions", observationCount: 10, outsideCount: 0, objectResults: spots },
   sczn3Metrics: {
@@ -22,8 +23,8 @@ const result = {
   },
 };
 const markup = runtime.shooterFacingResultMarkup(result, { label: "Target Areas", value: "10", detail: "10 taps" });
-assert.match(markup, /EVEN DISTRIBUTION · ALL 5 SPOTS: 2 TAPS EACH · 100% EVENNESS/);
-assert.doesNotMatch(markup, /Strongest:|Weakest:/);
+assert.doesNotMatch(markup, /Strongest:|Weakest:|EVEN DISTRIBUTION|Evenness/);
+assert.doesNotMatch(runtimeSource, /\$\{shotPatternMarkup\(result, session\)\}\$\{cueResultMarkup/);
 
 assert.deepEqual(
   JSON.parse(JSON.stringify(runtime.sourceImagePoint(150, 260, { left: 50, top: 60, width: 400, height: 800 }))),
@@ -45,4 +46,4 @@ assert.match(runtimeSource, /resolve\(\{ widthPx: image\.naturalWidth, heightPx:
 assert.match(runtimeSource, /state\.image = \{ sha256: hash, \.\.\.dimensions, mediaType:/);
 assert.match(runtimeSource, /vaultResultSummary/);
 
-console.log("PASS QT shared Founder defects: tied language, readable presentation, Vault evidence/result, target fit/aspect, and source-image coordinate invariance");
+console.log("PASS QT shared Founder defects: RESULT meta cleanup, readable presentation, Vault evidence/result, target fit/aspect, and source-image coordinate invariance");

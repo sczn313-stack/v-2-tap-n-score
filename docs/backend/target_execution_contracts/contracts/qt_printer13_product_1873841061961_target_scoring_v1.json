@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1873841061961-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -401,13 +401,11 @@
             },
             "sczn3MeasuredIntelligence": {
               "totalTapsFirst": true,
-              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
-              "distribution": true,
-              "dispersion": true,
               "sameTargetComparison": true,
               "personalBest": true,
               "consistencyHistory": true,
-              "publisherMeaningAttributed": false
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only"
             }
           },
           "accounting": {
@@ -419,7 +417,8 @@
             "totalTaps": true,
             "publisherScore": true,
             "regionObjectBreakdown": true,
-            "shotPattern": true
+            "shotPattern": false,
+            "distributionMeta": false
           },
           "sec": {
             "preserveAuthorityPackage": true,
@@ -428,11 +427,11 @@
           },
           "session": {
             "sameTargetComparisonAfterSecondSession": true,
-            "centerMovement": true,
-            "dispersionChange": true
+            "centerMovement": false,
+            "dispersionChange": false
           },
           "progress": {
-            "tightestPatternPersonalBest": true,
+            "tightestPatternPersonalBest": false,
             "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
@@ -495,7 +494,7 @@
           }
         }
       },
-      "digest": "cde08bab14b393058b178fc46b016ac7d4396a755c7aecf93faa578e5f1b2e12"
+      "digest": "3492bcc48f74906ccef77b213d2907920af023bcf289c629e2875e85927ed5a4"
     }
   },
   "executor": {

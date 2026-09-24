@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1962643947593-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -363,13 +363,11 @@
             },
             "sczn3MeasuredIntelligence": {
               "totalTapsFirst": true,
-              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
-              "distribution": true,
-              "dispersion": true,
               "sameTargetComparison": true,
               "personalBest": true,
               "consistencyHistory": true,
-              "publisherMeaningAttributed": false
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only"
             }
           },
           "accounting": {
@@ -381,7 +379,8 @@
             "totalTaps": true,
             "publisherScore": false,
             "regionObjectBreakdown": true,
-            "shotPattern": true
+            "shotPattern": false,
+            "distributionMeta": false
           },
           "sec": {
             "preserveAuthorityPackage": true,
@@ -390,11 +389,11 @@
           },
           "session": {
             "sameTargetComparisonAfterSecondSession": true,
-            "centerMovement": true,
-            "dispersionChange": true
+            "centerMovement": false,
+            "dispersionChange": false
           },
           "progress": {
-            "tightestPatternPersonalBest": true,
+            "tightestPatternPersonalBest": false,
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
@@ -450,7 +449,7 @@
           }
         }
       },
-      "digest": "0ef6db1e8b729db58809b70075da278cf45fdeb11797287de81ca276c00a43ab"
+      "digest": "f91b9309efef77cb6e100ab85b765805531d9f0b08bf37c34c050d760342e882"
     }
   },
   "executor": {

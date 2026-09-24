@@ -518,12 +518,16 @@
     return [];
   }
 
+  function isQtPrinter13Result(result) {
+    return /^qt_printer13_product_/.test(clean(result && result.target && result.target.id));
+  }
+
   function hitRateMarkup(result, session = {}) {
     const metrics = result && result.sczn3Metrics;
     const hitRate = metrics && metrics.status === "complete" ? metrics.hitRate : null;
     if (!hitRate || !Number.isFinite(Number(hitRate.percentage))) return "";
     const coverage = metrics.objectCoverage;
-    const distribution = metrics.objectDistribution;
+    const distribution = isQtPrinter13Result(result) ? null : metrics.objectDistribution;
     const publisherHasScore = result && result.scoring && ["numeric_regions", "penalty_regions", "mixed_regions"].includes(result.scoring.model);
     const progress = session && session.sczn3Progress;
     const previous = progress && progress.previous;
@@ -708,7 +712,7 @@
       afterHtml: objectScoreboardMarkup(result),
       regions: [
         { key: "target", className: "sec-v1-evidence-content", ariaLabel: "Target", contentHtml: `<section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>${result.missionFamily === "secProgressionEvaluation" ? "" : global.SCZN3SECComponents.Evidence({ contentHtml: evidenceMarkup(session, result) })}` },
-        { key: "session", className: "sec-v1-measurement-content", ariaLabel: "Session Result", contentHtml: global.SCZN3SECComponents.Measurement({ contentHtml: `${shooterFacingResultMarkup(result, resultSummary, session)}${shotPatternMarkup(result, session)}${cueResultMarkup(result)}${qualificationResultMarkup(result)}${diagnosticResultMarkup(result)}${decisionResultMarkup(result)}${progressionResultMarkup(result)}${collectionHandResultMarkup(result)}` }) },
+        { key: "session", className: "sec-v1-measurement-content", ariaLabel: "Session Result", contentHtml: global.SCZN3SECComponents.Measurement({ contentHtml: `${shooterFacingResultMarkup(result, resultSummary, session)}${isQtPrinter13Result(result) ? "" : shotPatternMarkup(result, session)}${cueResultMarkup(result)}${qualificationResultMarkup(result)}${diagnosticResultMarkup(result)}${decisionResultMarkup(result)}${progressionResultMarkup(result)}${collectionHandResultMarkup(result)}` }) },
         { key: "actions", className: "sec-v1-preservation-content", ariaLabel: "Shooter Action Bar", contentHtml: global.SCZN3SECComponents.Preservation({ contentHtml: actions }) }
       ]
     });
@@ -719,7 +723,7 @@
     const value = summary(result);
     if (result.missionFamily === "smartEvidenceCapture") {
       const tapCount = Array.isArray(result.observations) ? result.observations.length : 0;
-      const shotPattern = result.sczn3Metrics && result.sczn3Metrics.shotPattern || null;
+      const shotPattern = isQtPrinter13Result(result) ? null : result.sczn3Metrics && result.sczn3Metrics.shotPattern || null;
       const progress = session && session.sczn3Progress;
       return Object.freeze({
         status: "complete",
@@ -730,7 +734,7 @@
         evidenceLabel: `${tapCount} saved tap${tapCount === 1 ? "" : "s"}`,
         groups: [], numericObjects: [], numericRegions: [], participantResults: [],
         tapSummary: null, hitRate: null, objectCoverage: null, shotPattern,
-        progress: progress && progress.shotPatternComparison ? {
+        progress: !isQtPrinter13Result(result) && progress && progress.shotPatternComparison ? {
           shotPatternComparison: progress.shotPatternComparison,
           tightestPattern: progress.best && progress.best.tightestPattern || null
         } : null,
@@ -804,7 +808,7 @@
           governedShotCount: Number(hitRate.governedShotCount)
         } : null,
         objectCoverage: result.sczn3Metrics && result.sczn3Metrics.objectCoverage || null,
-        shotPattern: result.sczn3Metrics && result.sczn3Metrics.shotPattern || null,
+        shotPattern: isQtPrinter13Result(result) ? null : result.sczn3Metrics && result.sczn3Metrics.shotPattern || null,
         progress: progress && progress.previous ? {
           previousPercentage: Number(progress.previous.percentage),
           percentagePointChange: Number(progress.percentagePointChange),

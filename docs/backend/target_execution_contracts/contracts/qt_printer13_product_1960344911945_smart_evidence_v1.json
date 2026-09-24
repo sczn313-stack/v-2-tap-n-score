@@ -1,13 +1,13 @@
 {
   "schemaVersion": "sczn3-target-execution-contract-v1",
-  "contractId": "tec-qt_printer13_product_1960344911945-smart-evidence-v1",
+  "contractId": "tec-qt_printer13_product_1960344911945-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -34,25 +34,150 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1960344911945",
       "behaviorFamily": "EVIDENCE_ONLY",
       "qtFamilyGroup": "EVIDENCE_ONLY",
-      "episode64IntelligenceFamily": "EVIDENCE_ONLY",
-      "homieLockedCapability": "Evidence Only",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
     }
   },
-  "missionFamily": "smartEvidenceCapture",
-  "resultPackageType": "smartEvidenceResult",
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
   "resultPackageVersion": "1",
   "components": {
     "geometry": {
       "id": "qt_printer13_product_1960344911945-geometry",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
-        "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
-        "canonicalRegionMapping": "unavailable",
-        "semanticClassification": "recognized_family_not_executable_without_governed_coordinate_map",
-        "physicalMeasurement": "unavailable",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "zone_5",
+            "shape": "ellipse",
+            "cx": 0.505,
+            "cy": 0.375,
+            "radiusX": 0.235,
+            "radiusY": 0.155,
+            "priority": 100
+          },
+          {
+            "regionId": "zone_4",
+            "shape": "polygon",
+            "points": [
+              [
+                0.15,
+                0.8
+              ],
+              [
+                0.14,
+                0.32
+              ],
+              [
+                0.23,
+                0.26
+              ],
+              [
+                0.35,
+                0.23
+              ],
+              [
+                0.65,
+                0.23
+              ],
+              [
+                0.78,
+                0.26
+              ],
+              [
+                0.86,
+                0.32
+              ],
+              [
+                0.86,
+                0.8
+              ],
+              [
+                0.72,
+                0.83
+              ],
+              [
+                0.28,
+                0.83
+              ]
+            ],
+            "priority": 90
+          },
+          {
+            "regionId": "zone_3",
+            "shape": "polygon",
+            "points": [
+              [
+                0.1,
+                0.94
+              ],
+              [
+                0.04,
+                0.84
+              ],
+              [
+                0.03,
+                0.35
+              ],
+              [
+                0.13,
+                0.28
+              ],
+              [
+                0.37,
+                0.22
+              ],
+              [
+                0.39,
+                0.06
+              ],
+              [
+                0.44,
+                0.02
+              ],
+              [
+                0.56,
+                0.02
+              ],
+              [
+                0.62,
+                0.06
+              ],
+              [
+                0.64,
+                0.22
+              ],
+              [
+                0.88,
+                0.28
+              ],
+              [
+                0.97,
+                0.35
+              ],
+              [
+                0.96,
+                0.84
+              ],
+              [
+                0.9,
+                0.94
+              ]
+            ],
+            "priority": 80
+          }
+        ],
+        "ugoAuthority": "founder-homie-individual-target-lock-v1",
+        "derivation": {
+          "method": "target-specific-visible-boundary-registration",
+          "semanticSource": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
+        },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
           "semanticMeaningAttributed": false,
@@ -115,7 +240,7 @@
           ]
         }
       },
-      "digest": "6b5c16a0e0cf8fefcba97358a3e927878d3214668ec09e7a77a8f51c88fd8191"
+      "digest": "8d40a0345bad9a1adcb56316b8a894d71be5694e05e053560a5cd3230f95694f"
     },
     "registration": {
       "id": "qt_printer13_product_1960344911945-registration",
@@ -134,43 +259,55 @@
     },
     "scoring": {
       "id": "qt_printer13_product_1960344911945-scoring",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
-        "status": "not_applicable",
-        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [],
-          "storedTargetRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "zone_5": {
+            "label": "5",
+            "value": 5
+          },
+          "zone_4": {
+            "label": "4",
+            "value": 4
+          },
+          "zone_3": {
+            "label": "3",
+            "value": 3
+          }
+        },
+        "aggregation": {
+          "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product TX-PT Paper Target - Texas Department of Public Safety Training Target. Fullsized Silhouette - Blue Ink 24\" x 45\" Paper For large or custom orders, please call 866-498-8228",
-          "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+          "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "rule": "Artwork-established scoring values 5, 4, and 3; unpublished course mechanics remain UNKNOWN."
         },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [],
-          "regionObjectIds": [],
-          "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        "outsideRule": {
+          "label": "Outside target miss",
+          "value": 0
+        },
+        "classificationFootprintMode": "tap_center",
+        "founderLateReviewLock": {
+          "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         }
       },
-      "digest": "a5f826651a6382ed463e9a758521f5ee41d2141fe90374beaa55fbf2aa7c3436"
+      "digest": "b52b47a8a6d74d387604f52f600d7c477d777005bbc080853a02dac61271da3a"
     },
     "mission": {
       "id": "qt_printer13_product_1960344911945-mission",
       "version": "1",
       "status": "approved",
       "definition": {
-        "missionFamily": "smartEvidenceCapture",
-        "resultPackageType": "smartEvidenceResult",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
-        "authorityResolution": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
-        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "authorityResolution": "Artwork-established scoring values 5, 4, and 3; unpublished course mechanics remain UNKNOWN.",
+        "recognizedBehaviorFamily": "VALUED_REGION_QUALIFICATION",
         "recognizedQtGroup": "EVIDENCE_ONLY",
         "legTwoHighestTruthfulCapability": "evidence-only target recognition",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
@@ -189,7 +326,7 @@
             "status": "not_applicable"
           },
           "officialScore": {
-            "status": "not_applicable"
+            "status": "available"
           },
           "qualification": {
             "status": "not_applicable"
@@ -208,30 +345,41 @@
         },
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
-          "intelligenceFamily": "EVIDENCE_ONLY",
-          "highestTruthfulCapability": "Evidence Only",
+          "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
+          "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product TX-PT Paper Target - Texas Department of Public Safety Training Target. Fullsized Silhouette - Blue Ink 24\" x 45\" Paper For large or custom orders, please call 866-498-8228",
-                "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+                "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+                "rule": "Artwork-established scoring values 5, 4, and 3; unpublished course mechanics remain UNKNOWN.",
+                "authorityOrder": "Founder/Homie exact treatment supersedes prior packet where listed"
               },
-              "publishedValuesAvailable": false,
-              "unresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+              "publishedValuesAvailable": true,
+              "unresolved": "Timing, sequence, qualification thresholds, penalties, and unpublished course-of-fire rules remain UNKNOWN.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
-                "values": [],
-                "labels": [],
-                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+                "values": [
+                  5,
+                  4,
+                  3
+                ],
+                "labels": [
+                  "5",
+                  "4",
+                  "3"
+                ],
+                "authorityClass": "founder_homie_late_review_lock"
               }
             },
             "targetStructure": {
-              "registeredGeometryStatus": "no_governed_regions",
-              "registeredRegionCount": 0,
-              "registeredRegionIds": [],
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 3,
+              "registeredRegionIds": [
+                "zone_5",
+                "zone_4",
+                "zone_3"
+              ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
                 "semanticMeaningAttributed": false,
@@ -297,25 +445,24 @@
             },
             "sczn3MeasuredIntelligence": {
               "totalTapsFirst": true,
-              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
-              "distribution": true,
-              "dispersion": true,
               "sameTargetComparison": true,
               "personalBest": true,
               "consistencyHistory": true,
-              "publisherMeaningAttributed": false
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only"
             }
           },
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "measured_shot_pattern"
+            "meaningfulBreakdown": "score_and_regions"
           },
           "result": {
             "totalTaps": true,
-            "publisherScore": false,
-            "regionObjectBreakdown": false,
-            "shotPattern": true
+            "publisherScore": true,
+            "regionObjectBreakdown": true,
+            "shotPattern": false,
+            "distributionMeta": false
           },
           "sec": {
             "preserveAuthorityPackage": true,
@@ -324,12 +471,12 @@
           },
           "session": {
             "sameTargetComparisonAfterSecondSession": true,
-            "centerMovement": true,
-            "dispersionChange": true
+            "centerMovement": false,
+            "dispersionChange": false
           },
           "progress": {
-            "tightestPatternPersonalBest": true,
-            "scoreHistoryWhenGoverned": false
+            "tightestPatternPersonalBest": false,
+            "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
             "inventedscoring",
@@ -347,7 +494,7 @@
             "visualStackChair": 285,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+          "smartBehavior": "Artwork-established scoring values 5, 4, and 3; unpublished course mechanics remain UNKNOWN.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-1960344911945",
@@ -375,23 +522,30 @@
               "invented_zeroing_correction."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "founderLateReviewLock": {
+            "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+            "product": "TX-PT",
+            "capability": "Scoring",
+            "familyGeneralization": false,
+            "rule": "Artwork-established scoring values 5, 4, and 3; unpublished course mechanics remain UNKNOWN."
           }
         }
       },
-      "digest": "83f551f98df2d3a06e97f12a6ff70f9b6ebb8d37a04108af5bec1ec7f491bbb1"
+      "digest": "5748b886d197f0a594d775333545d9e7b959e8450ead5358f2f8559978b80df6"
     }
   },
   "executor": {
-    "id": "smart-evidence-capture",
+    "id": "declarative-target-score",
     "version": "1"
   },
   "secAdapter": {
-    "id": "smart-evidence-family",
+    "id": "target-scoring-family",
     "version": "1",
     "scoringPresentationFamily": "target-data"
   },
   "preservationValidator": {
-    "id": "smart-evidence-preservation",
+    "id": "target-scoring-preservation",
     "version": "1"
   },
   "session": {
@@ -406,7 +560,7 @@
         "status": "not_applicable"
       },
       "officialScore": {
-        "status": "not_applicable"
+        "status": "available"
       },
       "qualification": {
         "status": "not_applicable"

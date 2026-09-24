@@ -43,7 +43,9 @@ def test_final_qt_smart_target_inventory_and_shared_intelligence():
     assert len(rows) == len({row["qtCatalogId"] for row in rows}) == 254
     assert sum(completion["finalTreatmentCounts"].values()) == 254
     assert completion["nonQtContractBoundary"]["unchanged"] is True
-    assert completion["smartSessionProgressCoverage"]["shotPattern"] == 254
+    assert completion["founderCorrectedCapabilityCounts"] == {"Scoring": 39, "Zone / Object Counting": 153, "Evidence Only": 61, "Zeroing": 1}
+    assert completion["smartSessionProgressCoverage"]["shotPattern"] == 0
+    assert completion["lockedResultMetaRemovedChairs"] == 254
 
     packages = [load(path) for path in CONTRACTS.glob("qt_printer13_product_*.json")]
     assert len(packages) == 253
@@ -66,7 +68,8 @@ def test_final_qt_smart_target_inventory_and_shared_intelligence():
     assert sum(item["observationCount"] for item in five_result["scoring"]["subsetResults"]) == 5
     assert all(item["accountingRole"] == "subset_not_additional_primary_tap" for item in five_result["scoring"]["subsetResults"])
     assert five_result["sczn3Metrics"]["objectCoverage"] == {"objectsHit": 5, "scorableObjectCount": 5}
-    assert five_result["sczn3Metrics"]["shotPattern"]["tapCount"] == 11
+    assert five_result["sczn3Metrics"]["shotPattern"] is None
+    assert five_result["sczn3Metrics"]["objectDistribution"] is None
 
     diagnostic = next(row for row in rows if row["visualStackOrdinal"] == 116)
     diagnostic_contract = resolver.resolve(diagnostic["targetProfileId"], "targetScoring")
@@ -80,17 +83,14 @@ def test_final_qt_smart_target_inventory_and_shared_intelligence():
     anatomy_contract = resolver.resolve(anatomy["targetProfileId"], "smartEvidenceCapture")
     anatomy_result = execute_evidence(anatomy_contract, {"imageEvidence": image(anatomy), "observations": [{"xNorm": 0.4, "yNorm": 0.4}, {"xNorm": 0.6, "yNorm": 0.6}]})
     assert anatomy_result["scoring"]["status"] == "not_applicable"
-    assert anatomy_result["sczn3Metrics"]["shotPattern"]["center"] == {"xNorm": 0.5, "yNorm": 0.5, "horizontalBand": "center", "verticalBand": "middle"}
+    assert anatomy_result["sczn3Metrics"]["shotPattern"] is None
 
     continuity = "qt-smartness-test"
     prior_session = {"sessionId": "prior", "savedAt": "2026-09-21", "shooterContinuityId": continuity, "authorityPackage": anatomy_result}
     current_result = execute_evidence(anatomy_contract, {"imageEvidence": image(anatomy), "observations": [{"xNorm": 0.48, "yNorm": 0.48}, {"xNorm": 0.52, "yNorm": 0.52}]})
     current_session = {"sessionId": "current", "shooterContinuityId": continuity, "authorityPackage": current_result}
     progress = _same_target_progress(current_session, anatomy["targetProfileId"], PriorStore([{"targetId": anatomy["targetProfileId"], "artifact": prior_session}]))
-    assert progress["status"] == "comparison_available"
-    assert progress["shotPatternComparison"]["centerMovementNorm"] == 0
-    assert progress["shotPatternComparison"]["rmsRadiusChangeNorm"] < 0
-    assert progress["best"]["tightestPattern"]["sessionId"] == "current"
+    assert progress["status"] != "comparison_available"
 
 
 if __name__ == "__main__":

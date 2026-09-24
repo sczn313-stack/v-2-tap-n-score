@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_8197771264284-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -36,7 +36,8 @@
       "qtFamilyGroup": "M16_M4_FAMILY",
       "episode64IntelligenceFamily": "M16_M4_QUALIFICATION",
       "homieLockedCapability": "Zone / Object Counting",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
     }
   },
   "missionFamily": "targetScoring",
@@ -45,44 +46,306 @@
   "components": {
     "geometry": {
       "id": "qt_printer13_product_8197771264284-geometry",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "aim_reference",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.48,
-            "radius": 0.045,
-            "priority": 90
+            "regionId": "silhouette_300m_1",
+            "shape": "polygon",
+            "points": [
+              [
+                0.2749,
+                0.13
+              ],
+              [
+                0.30010000000000003,
+                0.13
+              ],
+              [
+                0.30535,
+                0.14445
+              ],
+              [
+                0.3043,
+                0.1555
+              ],
+              [
+                0.3316,
+                0.16655
+              ],
+              [
+                0.34,
+                0.215
+              ],
+              [
+                0.235,
+                0.215
+              ],
+              [
+                0.24339999999999998,
+                0.16655
+              ],
+              [
+                0.2707,
+                0.1555
+              ],
+              [
+                0.26965,
+                0.14445
+              ]
+            ],
+            "priority": 50,
+            "objectId": "silhouette_300m_1"
           },
           {
-            "regionId": "adjustment_grid",
-            "shape": "rectangle",
-            "xMin": 0.28,
-            "yMin": 0.2,
-            "xMax": 0.72,
-            "yMax": 0.78,
-            "priority": 50
+            "regionId": "silhouette_75m_1",
+            "shape": "polygon",
+            "points": [
+              [
+                0.6206,
+                0.12
+              ],
+              [
+                0.7094,
+                0.12
+              ],
+              [
+                0.7279,
+                0.13785
+              ],
+              [
+                0.7242,
+                0.1515
+              ],
+              [
+                0.8204,
+                0.16515
+              ],
+              [
+                0.85,
+                0.225
+              ],
+              [
+                0.48,
+                0.225
+              ],
+              [
+                0.5095999999999999,
+                0.16515
+              ],
+              [
+                0.6058,
+                0.1515
+              ],
+              [
+                0.6021,
+                0.13785
+              ]
+            ],
+            "priority": 50,
+            "objectId": "silhouette_75m_1"
           },
           {
-            "regionId": "qualification_object",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radiusX": 0.22,
-            "radiusY": 0.36,
-            "priority": 30
+            "regionId": "silhouette_175m_1",
+            "shape": "polygon",
+            "points": [
+              [
+                0.3394,
+                0.28
+              ],
+              [
+                0.3706,
+                0.28
+              ],
+              [
+                0.3771,
+                0.30295
+              ],
+              [
+                0.37579999999999997,
+                0.3205
+              ],
+              [
+                0.40959999999999996,
+                0.33805
+              ],
+              [
+                0.42,
+                0.415
+              ],
+              [
+                0.29,
+                0.415
+              ],
+              [
+                0.3004,
+                0.33805
+              ],
+              [
+                0.3342,
+                0.3205
+              ],
+              [
+                0.3329,
+                0.30295
+              ]
+            ],
+            "priority": 50,
+            "objectId": "silhouette_175m_1"
+          },
+          {
+            "regionId": "silhouette_175m_2",
+            "shape": "polygon",
+            "points": [
+              [
+                0.6344,
+                0.28
+              ],
+              [
+                0.6656,
+                0.28
+              ],
+              [
+                0.6720999999999999,
+                0.30295
+              ],
+              [
+                0.6708,
+                0.3205
+              ],
+              [
+                0.7046,
+                0.33805
+              ],
+              [
+                0.715,
+                0.415
+              ],
+              [
+                0.585,
+                0.415
+              ],
+              [
+                0.5953999999999999,
+                0.33805
+              ],
+              [
+                0.6292,
+                0.3205
+              ],
+              [
+                0.6279,
+                0.30295
+              ]
+            ],
+            "priority": 50,
+            "objectId": "silhouette_175m_2"
+          },
+          {
+            "regionId": "silhouette_75m_2",
+            "shape": "polygon",
+            "points": [
+              [
+                0.3268,
+                0.45
+              ],
+              [
+                0.4132,
+                0.45
+              ],
+              [
+                0.4312,
+                0.47295
+              ],
+              [
+                0.42760000000000004,
+                0.4905
+              ],
+              [
+                0.5212000000000001,
+                0.50805
+              ],
+              [
+                0.55,
+                0.585
+              ],
+              [
+                0.19,
+                0.585
+              ],
+              [
+                0.2188,
+                0.50805
+              ],
+              [
+                0.3124,
+                0.4905
+              ],
+              [
+                0.3088,
+                0.47295
+              ]
+            ],
+            "priority": 50,
+            "objectId": "silhouette_75m_2"
+          },
+          {
+            "regionId": "silhouette_300m_2",
+            "shape": "polygon",
+            "points": [
+              [
+                0.7337,
+                0.48
+              ],
+              [
+                0.7613,
+                0.48
+              ],
+              [
+                0.76705,
+                0.49784999999999996
+              ],
+              [
+                0.7659,
+                0.5115
+              ],
+              [
+                0.7958000000000001,
+                0.52515
+              ],
+              [
+                0.805,
+                0.585
+              ],
+              [
+                0.69,
+                0.585
+              ],
+              [
+                0.6991999999999999,
+                0.52515
+              ],
+              [
+                0.7291,
+                0.5115
+              ],
+              [
+                0.72795,
+                0.49784999999999996
+              ]
+            ],
+            "priority": 50,
+            "objectId": "silhouette_300m_2"
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "ugoAuthority": "founder-homie-individual-target-lock-v1",
         "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "M16_M4_QUALIFICATION",
-          "qtGroup": "M16_M4_FAMILY"
+          "method": "target-specific-visible-boundary-registration",
+          "semanticSource": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -146,7 +409,7 @@
           ]
         }
       },
-      "digest": "7a7e0e26d08669a94f9648546ccccc8089b11d4aee4381cc0a2da56dadaf47ca"
+      "digest": "a9ea827ca407872ac3b09c582784ad0b63ce65a8bed8cd4bc3d4b07500aaac67"
     },
     "registration": {
       "id": "qt_printer13_product_8197771264284-registration",
@@ -165,63 +428,61 @@
     },
     "scoring": {
       "id": "qt_printer13_product_8197771264284-scoring",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
         "schemaVersion": "sczn3-target-scoring-data-v1",
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "aim_reference": {
-            "label": "Aim reference"
+          "silhouette_300m_1": {
+            "label": "300 M silhouette 1",
+            "objectId": "silhouette_300m_1",
+            "objectLabel": "300 M silhouette 1"
           },
-          "adjustment_grid": {
-            "label": "Adjustment grid"
+          "silhouette_75m_1": {
+            "label": "75 M silhouette 1",
+            "objectId": "silhouette_75m_1",
+            "objectLabel": "75 M silhouette 1"
           },
-          "qualification_object": {
-            "label": "Qualification object"
+          "silhouette_175m_1": {
+            "label": "175 M silhouette 1",
+            "objectId": "silhouette_175m_1",
+            "objectLabel": "175 M silhouette 1"
+          },
+          "silhouette_175m_2": {
+            "label": "175 M silhouette 2",
+            "objectId": "silhouette_175m_2",
+            "objectLabel": "175 M silhouette 2"
+          },
+          "silhouette_75m_2": {
+            "label": "75 M silhouette 2",
+            "objectId": "silhouette_75m_2",
+            "objectLabel": "75 M silhouette 2"
+          },
+          "silhouette_300m_2": {
+            "label": "300 M silhouette 2",
+            "objectId": "silhouette_300m_2",
+            "objectLabel": "300 M silhouette 2"
           }
         },
         "aggregation": {
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product USAF-M4-AFQC Paper Target has the M16A1-SF Slow Fire Target plus the M16A2 and M4 Carbine Targets all incorporated onto one single sheet of 24\" x 40\" Paper USAF-CASR For large or custom orders, please call 866-498-8228",
-          "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+          "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "rule": "Six qualification silhouettes only: two 75 M, two 175 M, and two 300 M; lower diagrams are reference/zeroing elements."
         },
         "outsideRule": {
-          "label": "Missed"
+          "label": "Outside target miss"
         },
         "classificationFootprintMode": "tap_center",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [
-            "Aim reference",
-            "Adjustment grid",
-            "Qualification object"
-          ],
-          "storedTargetRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
-        },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [
-            "Aim reference",
-            "Adjustment grid",
-            "Qualification object"
-          ],
-          "regionObjectIds": [
-            "aim_reference",
-            "adjustment_grid",
-            "qualification_object"
-          ],
-          "storedGoverningRule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+        "founderLateReviewLock": {
+          "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         }
       },
-      "digest": "6acc67279d25e9cc28f8d76fde08469eb68d29d0812160dcc3a4fa3f0cf89ef1"
+      "digest": "744a6db787633c7b5d1973ca77c23fba3f2fea7377eca42e735873206ec143fa"
     },
     "mission": {
       "id": "qt_printer13_product_8197771264284-mission",
@@ -260,7 +521,7 @@
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld",
+        "authorityResolution": "Six qualification silhouettes only: two 75 M, two 175 M, and two 300 M; lower diagrams are reference/zeroing elements.",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
@@ -272,31 +533,36 @@
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product USAF-M4-AFQC Paper Target has the M16A1-SF Slow Fire Target plus the M16A2 and M4 Carbine Targets all incorporated onto one single sheet of 24\" x 40\" Paper USAF-CASR For large or custom orders, please call 866-498-8228",
-                "rule": "existing M16/M4 aim, grid, and qualification structures are counted; unbound mechanics remain withheld"
+                "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+                "rule": "Six qualification silhouettes only: two 75 M, two 175 M, and two 300 M; lower diagrams are reference/zeroing elements.",
+                "authorityOrder": "Founder/Homie exact treatment supersedes prior packet where listed"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+              "unresolved": "Timing, sequence, qualification thresholds, penalties, and unpublished course-of-fire rules remain UNKNOWN.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
                 "labels": [
-                  "Aim reference",
-                  "Adjustment grid",
-                  "Qualification object"
+                  "300 M silhouette 1",
+                  "75 M silhouette 1",
+                  "175 M silhouette 1",
+                  "175 M silhouette 2",
+                  "75 M silhouette 2",
+                  "300 M silhouette 2"
                 ],
-                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+                "authorityClass": "founder_homie_late_review_lock"
               }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
-              "registeredRegionCount": 3,
+              "registeredRegionCount": 6,
               "registeredRegionIds": [
-                "aim_reference",
-                "adjustment_grid",
-                "qualification_object"
+                "silhouette_300m_1",
+                "silhouette_75m_1",
+                "silhouette_175m_1",
+                "silhouette_175m_2",
+                "silhouette_75m_2",
+                "silhouette_300m_2"
               ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -363,13 +629,11 @@
             },
             "sczn3MeasuredIntelligence": {
               "totalTapsFirst": true,
-              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
-              "distribution": true,
-              "dispersion": true,
               "sameTargetComparison": true,
               "personalBest": true,
               "consistencyHistory": true,
-              "publisherMeaningAttributed": false
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only"
             }
           },
           "accounting": {
@@ -381,7 +645,8 @@
             "totalTaps": true,
             "publisherScore": false,
             "regionObjectBreakdown": true,
-            "shotPattern": true
+            "shotPattern": false,
+            "distributionMeta": false
           },
           "sec": {
             "preserveAuthorityPackage": true,
@@ -390,11 +655,11 @@
           },
           "session": {
             "sameTargetComparisonAfterSecondSession": true,
-            "centerMovement": true,
-            "dispersionChange": true
+            "centerMovement": false,
+            "dispersionChange": false
           },
           "progress": {
-            "tightestPatternPersonalBest": true,
+            "tightestPatternPersonalBest": false,
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
@@ -412,7 +677,7 @@
             "visualStackChair": 286,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Aim reference, Adjustment grid, Qualification object.",
+          "smartBehavior": "Six qualification silhouettes only: two 75 M, two 175 M, and two 300 M; lower diagrams are reference/zeroing elements.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-8197771264284",
@@ -447,10 +712,18 @@
               "unpublished_penalties."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "founderLateReviewLock": {
+            "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+            "product": "USAF-M4-AFQC",
+            "capability": "Zone / Object Counting",
+            "familyGeneralization": false,
+            "rule": "Six qualification silhouettes only: two 75 M, two 175 M, and two 300 M; lower diagrams are reference/zeroing elements."
           }
-        }
+        },
+        "recognizedBehaviorFamily": "M16_M4_QUALIFICATION"
       },
-      "digest": "7f698bde8980e868575ea904efd51ee4582407fc327bebe0da51f066d74944cb"
+      "digest": "4f12a614b017778f21df8d618ebfe820623844223039c6602aaf50ff77494b39"
     }
   },
   "executor": {

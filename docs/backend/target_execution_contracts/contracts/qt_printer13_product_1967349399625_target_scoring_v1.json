@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1967349399625-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -35,8 +35,9 @@
       "behaviorFamily": "VALUED_REGION_QUALIFICATION",
       "qtFamilyGroup": "VALUED_REGION_QUALIFICATION",
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
-      "homieLockedCapability": "Zone / Object Counting",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "homieLockedCapability": "Scoring",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
     }
   },
   "missionFamily": "targetScoring",
@@ -45,57 +46,328 @@
   "components": {
     "geometry": {
       "id": "qt_printer13_product_1967349399625-geometry",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "upper_governed_region",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.18,
-            "radius": 0.08,
-            "priority": 80,
-            "objectId": "upper_governed_region"
+            "regionId": "zone_5",
+            "shape": "polygon",
+            "points": [
+              [
+                0.37,
+                0.12
+              ],
+              [
+                0.5,
+                0.1
+              ],
+              [
+                0.63,
+                0.12
+              ],
+              [
+                0.66,
+                0.2
+              ],
+              [
+                0.63,
+                0.3
+              ],
+              [
+                0.59,
+                0.34
+              ],
+              [
+                0.7,
+                0.42
+              ],
+              [
+                0.72,
+                0.55
+              ],
+              [
+                0.7,
+                0.63
+              ],
+              [
+                0.64,
+                0.68
+              ],
+              [
+                0.57,
+                0.7
+              ],
+              [
+                0.43,
+                0.7
+              ],
+              [
+                0.36,
+                0.68
+              ],
+              [
+                0.3,
+                0.63
+              ],
+              [
+                0.28,
+                0.55
+              ],
+              [
+                0.3,
+                0.42
+              ],
+              [
+                0.41,
+                0.34
+              ],
+              [
+                0.37,
+                0.3
+              ],
+              [
+                0.34,
+                0.2
+              ]
+            ],
+            "priority": 100
           },
           {
-            "regionId": "central_governed_region",
+            "regionId": "zone_3",
+            "shape": "polygon",
+            "points": [
+              [
+                0.18,
+                0.8
+              ],
+              [
+                0.11,
+                0.72
+              ],
+              [
+                0.1,
+                0.62
+              ],
+              [
+                0.14,
+                0.48
+              ],
+              [
+                0.25,
+                0.39
+              ],
+              [
+                0.4,
+                0.33
+              ],
+              [
+                0.35,
+                0.28
+              ],
+              [
+                0.35,
+                0.17
+              ],
+              [
+                0.4,
+                0.12
+              ],
+              [
+                0.5,
+                0.1
+              ],
+              [
+                0.6,
+                0.12
+              ],
+              [
+                0.65,
+                0.17
+              ],
+              [
+                0.65,
+                0.28
+              ],
+              [
+                0.6,
+                0.33
+              ],
+              [
+                0.75,
+                0.39
+              ],
+              [
+                0.86,
+                0.48
+              ],
+              [
+                0.9,
+                0.62
+              ],
+              [
+                0.89,
+                0.72
+              ],
+              [
+                0.82,
+                0.8
+              ]
+            ],
+            "priority": 90
+          },
+          {
+            "regionId": "zone_1",
+            "shape": "polygon",
+            "points": [
+              [
+                0.14,
+                0.92
+              ],
+              [
+                0.1,
+                0.86
+              ],
+              [
+                0.15,
+                0.8
+              ],
+              [
+                0.17,
+                0.77
+              ],
+              [
+                0.08,
+                0.74
+              ],
+              [
+                0.02,
+                0.68
+              ],
+              [
+                0.02,
+                0.58
+              ],
+              [
+                0.05,
+                0.52
+              ],
+              [
+                0.07,
+                0.42
+              ],
+              [
+                0.16,
+                0.35
+              ],
+              [
+                0.34,
+                0.29
+              ],
+              [
+                0.36,
+                0.26
+              ],
+              [
+                0.34,
+                0.22
+              ],
+              [
+                0.34,
+                0.15
+              ],
+              [
+                0.38,
+                0.11
+              ],
+              [
+                0.44,
+                0.09
+              ],
+              [
+                0.56,
+                0.09
+              ],
+              [
+                0.63,
+                0.11
+              ],
+              [
+                0.67,
+                0.15
+              ],
+              [
+                0.67,
+                0.22
+              ],
+              [
+                0.65,
+                0.26
+              ],
+              [
+                0.67,
+                0.29
+              ],
+              [
+                0.84,
+                0.35
+              ],
+              [
+                0.94,
+                0.42
+              ],
+              [
+                0.96,
+                0.52
+              ],
+              [
+                0.99,
+                0.58
+              ],
+              [
+                0.98,
+                0.68
+              ],
+              [
+                0.92,
+                0.74
+              ],
+              [
+                0.83,
+                0.77
+              ],
+              [
+                0.86,
+                0.8
+              ],
+              [
+                0.91,
+                0.86
+              ],
+              [
+                0.86,
+                0.92
+              ]
+            ],
+            "priority": 80
+          },
+          {
+            "regionId": "zone_0",
             "shape": "rectangle",
-            "xMin": 0.4,
-            "yMin": 0.34,
-            "xMax": 0.6,
-            "yMax": 0.57,
-            "priority": 70,
-            "objectId": "central_governed_region"
-          },
-          {
-            "regionId": "lower_governed_region",
-            "shape": "rectangle",
-            "xMin": 0.41,
-            "yMin": 0.68,
-            "xMax": 0.59,
-            "yMax": 0.82,
-            "priority": 60,
-            "objectId": "lower_governed_region"
-          },
-          {
-            "regionId": "remaining_target_area",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.52,
-            "radiusX": 0.29,
-            "radiusY": 0.43,
-            "priority": 20,
-            "objectId": "remaining_target_area"
+            "xMin": 0.1,
+            "yMin": 0.925,
+            "xMax": 0.9,
+            "yMax": 0.98,
+            "priority": 1
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "ugoAuthority": "founder-homie-individual-target-lock-v1",
         "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "VALUED_REGION_QUALIFICATION",
-          "qtGroup": "VALUED_REGION_QUALIFICATION"
+          "method": "target-specific-visible-boundary-registration",
+          "semanticSource": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -159,7 +431,7 @@
           ]
         }
       },
-      "digest": "9f7e0f62baa313933ad5c389731cf1e72b9bc90eecab4cc101727b8a0a4b386a"
+      "digest": "02296e1119f690cb81afa92846319ddbfddb22d28ee77560ecf4d69312cf96d2"
     },
     "registration": {
       "id": "qt_printer13_product_1967349399625-registration",
@@ -178,77 +450,48 @@
     },
     "scoring": {
       "id": "qt_printer13_product_1967349399625-scoring",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
         "schemaVersion": "sczn3-target-scoring-data-v1",
         "status": "complete",
-        "model": "named_regions",
+        "model": "numeric_regions",
         "regionRules": {
-          "upper_governed_region": {
-            "label": "Upper governed region",
-            "objectId": "upper_governed_region",
-            "objectLabel": "Upper governed region"
+          "zone_5": {
+            "label": "5",
+            "value": 5
           },
-          "central_governed_region": {
-            "label": "Central governed region",
-            "objectId": "central_governed_region",
-            "objectLabel": "Central governed region"
+          "zone_3": {
+            "label": "3",
+            "value": 3
           },
-          "lower_governed_region": {
-            "label": "Lower governed region",
-            "objectId": "lower_governed_region",
-            "objectLabel": "Lower governed region"
+          "zone_1": {
+            "label": "1",
+            "value": 1
           },
-          "remaining_target_area": {
-            "label": "Remaining governed target area",
-            "objectId": "remaining_target_area",
-            "objectLabel": "Remaining governed target area"
+          "zone_0": {
+            "label": "0",
+            "value": 0
           }
         },
         "aggregation": {
-          "mode": "classification_counts"
+          "mode": "sum"
         },
         "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product TSR-IV Blue Paper Target - Transtar Transition Target with Neck Line and Pelvic Zones. FLETC Specific Training and Qualification Target. US Dept. of the Treasury Transitional Target II The US Dept of Treasury Training Targets are used by numerous agencies across the Country. Fullsized Silhouette - Blue Ink. 24\" x 40\" Paper For large or custom orders, please call 866-498-8228",
-          "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+          "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN."
         },
         "outsideRule": {
-          "label": "Missed"
+          "label": "Outside target miss",
+          "value": 0
         },
         "classificationFootprintMode": "tap_center",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [
-            "Upper governed region",
-            "Central governed region",
-            "Lower governed region",
-            "Remaining governed target area"
-          ],
-          "storedTargetRule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
-        },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [
-            "Upper governed region",
-            "Central governed region",
-            "Lower governed region",
-            "Remaining governed target area"
-          ],
-          "regionObjectIds": [
-            "upper_governed_region",
-            "central_governed_region",
-            "lower_governed_region",
-            "remaining_target_area"
-          ],
-          "storedGoverningRule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+        "founderLateReviewLock": {
+          "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         }
       },
-      "digest": "27072f8d103d6de3cb3115feddd2847decaf61330e9402d07ac7bfe343d3e22f"
+      "digest": "74b71c45126240782e72ae0e235b8d6d310b122fc3e6dad1281d2d1e10f2c53d"
     },
     "mission": {
       "id": "qt_printer13_product_1967349399625-mission",
@@ -275,7 +518,7 @@
             "status": "available"
           },
           "officialScore": {
-            "status": "not_applicable"
+            "status": "available"
           },
           "qualification": {
             "status": "not_applicable"
@@ -287,45 +530,49 @@
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld",
+        "authorityResolution": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN.",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
-          "highestTruthfulCapability": "Zone / Object Counting",
+          "highestTruthfulCapability": "Scoring",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product TSR-IV Blue Paper Target - Transtar Transition Target with Neck Line and Pelvic Zones. FLETC Specific Training and Qualification Target. US Dept. of the Treasury Transitional Target II The US Dept of Treasury Training Targets are used by numerous agencies across the Country. Fullsized Silhouette - Blue Ink. 24\" x 40\" Paper For large or custom orders, please call 866-498-8228",
-                "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+                "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+                "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN.",
+                "authorityOrder": "Founder/Homie exact treatment supersedes prior packet where listed"
               },
-              "publishedValuesAvailable": false,
-              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+              "publishedValuesAvailable": true,
+              "unresolved": "Timing, sequence, qualification thresholds, penalties, and unpublished course-of-fire rules remain UNKNOWN.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
-                "values": [],
-                "labels": [
-                  "Upper governed region",
-                  "Central governed region",
-                  "Lower governed region",
-                  "Remaining governed target area"
+                "values": [
+                  5,
+                  3,
+                  1,
+                  0
                 ],
-                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+                "labels": [
+                  "5",
+                  "3",
+                  "1",
+                  "0"
+                ],
+                "authorityClass": "founder_homie_late_review_lock"
               }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
               "registeredRegionCount": 4,
               "registeredRegionIds": [
-                "upper_governed_region",
-                "central_governed_region",
-                "lower_governed_region",
-                "remaining_target_area"
+                "zone_5",
+                "zone_3",
+                "zone_1",
+                "zone_0"
               ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -392,25 +639,24 @@
             },
             "sczn3MeasuredIntelligence": {
               "totalTapsFirst": true,
-              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
-              "distribution": true,
-              "dispersion": true,
               "sameTargetComparison": true,
               "personalBest": true,
               "consistencyHistory": true,
-              "publisherMeaningAttributed": false
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only"
             }
           },
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "regions_or_objects"
+            "meaningfulBreakdown": "score_and_regions"
           },
           "result": {
             "totalTaps": true,
-            "publisherScore": false,
+            "publisherScore": true,
             "regionObjectBreakdown": true,
-            "shotPattern": true
+            "shotPattern": false,
+            "distributionMeta": false
           },
           "sec": {
             "preserveAuthorityPackage": true,
@@ -419,12 +665,12 @@
           },
           "session": {
             "sameTargetComparisonAfterSecondSession": true,
-            "centerMovement": true,
-            "dispersionChange": true
+            "centerMovement": false,
+            "dispersionChange": false
           },
           "progress": {
-            "tightestPatternPersonalBest": true,
-            "scoreHistoryWhenGoverned": false
+            "tightestPatternPersonalBest": false,
+            "scoreHistoryWhenGoverned": true
           },
           "unsupported": [
             "unpublishedcourserules",
@@ -441,7 +687,7 @@
             "visualStackChair": 283,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Upper governed region, Central governed region, Lower governed region, Remaining governed target area.",
+          "smartBehavior": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-1967349399625",
@@ -478,10 +724,18 @@
               "unpublished_penalties."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "founderLateReviewLock": {
+            "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+            "product": "TSR-IV",
+            "capability": "Scoring",
+            "familyGeneralization": false,
+            "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN."
           }
-        }
+        },
+        "recognizedBehaviorFamily": "VALUED_REGION_QUALIFICATION"
       },
-      "digest": "95180ffba89b1af6db21293ff5a16ecdf598827e77c6791eb2070b6cbe085a22"
+      "digest": "ff0296839863dffad954cf0b860dda0b772896465ccf86a68710858e77691fc9"
     }
   },
   "executor": {
@@ -506,7 +760,7 @@
         "status": "available"
       },
       "officialScore": {
-        "status": "not_applicable"
+        "status": "available"
       },
       "qualification": {
         "status": "not_applicable"

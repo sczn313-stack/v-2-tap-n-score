@@ -507,6 +507,12 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "objectDistribution": object_distribution,
         "shotPattern": derive_shot_pattern(classifications, _aim(evidence.get("shooterDeclaredAimPoint"), mission["interaction"]["aim"]["mode"])),
     }
+    if str(contract.get("targetProfile", {}).get("id") or "").startswith("qt_printer13_product_"):
+        # Founder-locked QT RESULT is target truth only: counts, governed points,
+        # misses, and totals. Distribution and shot-pattern meta are intentionally
+        # absent rather than merely hidden by the frontend.
+        sczn3_metrics["objectDistribution"] = None
+        sczn3_metrics["shotPattern"] = None
 
     diagnostic_overlay = None
     overlay = mission.get("diagnosticOverlay")

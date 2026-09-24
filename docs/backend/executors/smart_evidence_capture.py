@@ -114,7 +114,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             "status": "complete",
             "metricAuthority": "sczn3_measured_supplemental",
             "doesNotReplacePublisherResult": True,
-            "shotPattern": derive_shot_pattern(normalized, aim),
+            "shotPattern": None if str(contract.get("targetProfile", {}).get("id") or "").startswith("qt_printer13_product_") else derive_shot_pattern(normalized, aim),
         },
         "reconciliation": {
             "capturedObservationCount": len(normalized),

@@ -2,12 +2,12 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1891723542601-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-EPISODE64-HOMIE-CORRECTED-v3",
+  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_EPISODE64_HOMIE_CORRECTED_AUTHORITY_2026_09_23",
+    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
     "approvedAt": "2026-09-23T00:00:00-04:00"
   },
   "effective": {
@@ -34,9 +34,10 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1891723542601",
       "behaviorFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "qtFamilyGroup": "HOSTAGE_THREAT_RELATIONSHIPS",
-      "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
+      "episode64IntelligenceFamily": "ANATOMY_VITAL_REGIONS",
       "homieLockedCapability": "Zone / Object Counting",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
     }
   },
   "missionFamily": "targetScoring",
@@ -45,38 +46,90 @@
   "components": {
     "geometry": {
       "id": "qt_printer13_product_1891723542601-geometry",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "left_figure",
+            "regionId": "head_circle",
             "shape": "ellipse",
-            "cx": 0.39,
-            "cy": 0.53,
-            "radiusX": 0.19,
-            "radiusY": 0.38,
-            "priority": 50,
-            "objectId": "left_figure"
+            "cx": 0.5,
+            "cy": 0.125,
+            "radiusX": 0.125,
+            "radiusY": 0.073,
+            "priority": 100,
+            "objectId": "head_circle"
           },
           {
-            "regionId": "right_figure",
+            "regionId": "head_outline",
             "shape": "ellipse",
-            "cx": 0.62,
-            "cy": 0.52,
-            "radiusX": 0.2,
-            "radiusY": 0.39,
-            "priority": 50,
-            "objectId": "right_figure"
+            "cx": 0.5,
+            "cy": 0.145,
+            "radiusX": 0.17,
+            "radiusY": 0.12,
+            "priority": 90,
+            "objectId": "head_outline"
+          },
+          {
+            "regionId": "center_chest",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.438,
+            "radiusX": 0.205,
+            "radiusY": 0.16,
+            "priority": 80,
+            "objectId": "center_chest"
+          },
+          {
+            "regionId": "center_mass",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.285,
+            "radiusY": 0.25,
+            "priority": 70,
+            "objectId": "center_mass"
+          },
+          {
+            "regionId": "pelvic_zone",
+            "shape": "polygon",
+            "points": [
+              [
+                0.23,
+                0.69
+              ],
+              [
+                0.77,
+                0.69
+              ],
+              [
+                0.81,
+                0.75
+              ],
+              [
+                0.66,
+                0.92
+              ],
+              [
+                0.35,
+                0.92
+              ],
+              [
+                0.2,
+                0.75
+              ]
+            ],
+            "priority": 60,
+            "objectId": "pelvic_zone"
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
+        "ugoAuthority": "founder-homie-individual-target-lock-v1",
         "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
-          "qtGroup": "HOSTAGE_THREAT_RELATIONSHIPS"
+          "method": "target-specific-visible-boundary-registration",
+          "semanticSource": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -140,7 +193,7 @@
           ]
         }
       },
-      "digest": "d5eac19b3ba46f9b5d1942f4eb2ccb9370bd18cb32c098dd0f151528a6199608"
+      "digest": "31bd74a64dafca0ab19fe4d9c89ae5ca8cdcd0d81ef147a4c04f6eca7ee09695"
     },
     "registration": {
       "id": "qt_printer13_product_1891723542601-registration",
@@ -159,61 +212,56 @@
     },
     "scoring": {
       "id": "qt_printer13_product_1891723542601-scoring",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
         "schemaVersion": "sczn3-target-scoring-data-v1",
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "left_figure": {
-            "label": "Left visible figure",
-            "objectId": "left_figure",
-            "objectLabel": "Left visible figure"
+          "head_circle": {
+            "label": "Head circle",
+            "objectId": "head_circle",
+            "objectLabel": "Head circle"
           },
-          "right_figure": {
-            "label": "Right visible figure",
-            "objectId": "right_figure",
-            "objectLabel": "Right visible figure"
+          "head_outline": {
+            "label": "Head outline",
+            "objectId": "head_outline",
+            "objectLabel": "Head outline"
+          },
+          "center_chest": {
+            "label": "Center chest zone",
+            "objectId": "center_chest",
+            "objectLabel": "Center chest zone"
+          },
+          "center_mass": {
+            "label": "Center mass zone",
+            "objectId": "center_mass",
+            "objectLabel": "Center mass zone"
+          },
+          "pelvic_zone": {
+            "label": "Pelvic zone",
+            "objectId": "pelvic_zone",
+            "objectLabel": "Pelvic zone"
           }
         },
         "aggregation": {
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product USMC-THREAT Paper Target - U.S. Marine Corps Threat Training Target Designed to replace the Table 2, 3 and Short Range Modified Echo Targets. 5 Hidden Zones Outline of Head Zone 5 Inch Circle Head Zone 19 1/2 Inch Center Mass Zone 10 Inch Center Chest Zone Full Polygonal Pelvic Zone NSN 6920-01-642-1406 DIE CUT FACER TARGET Black Ink 19.5\" x 40 \" Paper NSN: 6920-01-642-1406 For large or custom orders, please call 866-498-8228",
-          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+          "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "rule": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics."
         },
         "outsideRule": {
-          "label": "Missed"
+          "label": "Outside target miss"
         },
         "classificationFootprintMode": "tap_center",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [
-            "Left visible figure",
-            "Right visible figure"
-          ],
-          "storedTargetRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
-        },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [
-            "Left visible figure",
-            "Right visible figure"
-          ],
-          "regionObjectIds": [
-            "left_figure",
-            "right_figure"
-          ],
-          "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+        "founderLateReviewLock": {
+          "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "familyGeneralization": false
         }
       },
-      "digest": "c79500d363557880d52a4c5f0e0364389951f5a0119c5258c8239a981b61194d"
+      "digest": "1de88b954482ca158937164436da935c3662e8f9b31935e7a30dc972b5da175b"
     },
     "mission": {
       "id": "qt_printer13_product_1891723542601-mission",
@@ -252,41 +300,46 @@
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld",
+        "authorityResolution": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics.",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
-          "intelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
+          "intelligenceFamily": "ANATOMY_VITAL_REGIONS",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product USMC-THREAT Paper Target - U.S. Marine Corps Threat Training Target Designed to replace the Table 2, 3 and Short Range Modified Echo Targets. 5 Hidden Zones Outline of Head Zone 5 Inch Circle Head Zone 19 1/2 Inch Center Mass Zone 10 Inch Center Chest Zone Full Polygonal Pelvic Zone NSN 6920-01-642-1406 DIE CUT FACER TARGET Black Ink 19.5\" x 40 \" Paper NSN: 6920-01-642-1406 For large or custom orders, please call 866-498-8228",
-                "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+                "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+                "rule": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics.",
+                "authorityOrder": "Founder/Homie exact treatment supersedes prior packet where listed"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
+              "unresolved": "Timing, sequence, qualification thresholds, penalties, and unpublished course-of-fire rules remain UNKNOWN.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
                 "labels": [
-                  "Left visible figure",
-                  "Right visible figure"
+                  "Head circle",
+                  "Head outline",
+                  "Center chest zone",
+                  "Center mass zone",
+                  "Pelvic zone"
                 ],
-                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+                "authorityClass": "founder_homie_late_review_lock"
               }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
-              "registeredRegionCount": 2,
+              "registeredRegionCount": 5,
               "registeredRegionIds": [
-                "left_figure",
-                "right_figure"
+                "head_circle",
+                "head_outline",
+                "center_chest",
+                "center_mass",
+                "pelvic_zone"
               ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -353,13 +406,11 @@
             },
             "sczn3MeasuredIntelligence": {
               "totalTapsFirst": true,
-              "shotPatternCenter": "THE CENTER OF YOUR SHOT PATTERN",
-              "distribution": true,
-              "dispersion": true,
               "sameTargetComparison": true,
               "personalBest": true,
               "consistencyHistory": true,
-              "publisherMeaningAttributed": false
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only"
             }
           },
           "accounting": {
@@ -371,7 +422,8 @@
             "totalTaps": true,
             "publisherScore": false,
             "regionObjectBreakdown": true,
-            "shotPattern": true
+            "shotPattern": false,
+            "distributionMeta": false
           },
           "sec": {
             "preserveAuthorityPackage": true,
@@ -380,11 +432,11 @@
           },
           "session": {
             "sameTargetComparisonAfterSecondSession": true,
-            "centerMovement": true,
-            "dispersionChange": true
+            "centerMovement": false,
+            "dispersionChange": false
           },
           "progress": {
-            "tightestPatternPersonalBest": true,
+            "tightestPatternPersonalBest": false,
             "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
@@ -402,7 +454,7 @@
             "visualStackChair": 288,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Left visible figure, Right visible figure.",
+          "smartBehavior": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-1891723542601",
@@ -435,10 +487,18 @@
               "unpublished_penalties."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "founderLateReviewLock": {
+            "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+            "product": "USMC-THREAT",
+            "capability": "Zone / Object Counting",
+            "familyGeneralization": false,
+            "rule": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics."
           }
-        }
+        },
+        "recognizedBehaviorFamily": "ANATOMY_VITAL_REGIONS"
       },
-      "digest": "e46d1ea434236433ad5880273a3f67f7d0b61f3365c0cb38e625e786569e186b"
+      "digest": "3d532cbc70601ee118d42816a7703a801b3969ab1153e361dd554fcafdb6ed18"
     }
   },
   "executor": {
