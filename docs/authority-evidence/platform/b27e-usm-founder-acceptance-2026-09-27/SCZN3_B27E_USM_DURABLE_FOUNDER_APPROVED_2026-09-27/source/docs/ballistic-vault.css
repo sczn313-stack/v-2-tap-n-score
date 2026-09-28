@@ -1,0 +1,222 @@
+.records-page{
+  background:
+    radial-gradient(circle at 50% -20%,rgba(210,149,15,.16),transparent 42%),
+    #070707;
+}
+.records-page .m4-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+}
+.records-page .m4-header .vendor-slot{justify-self:start}
+.records-sec-badge{display:grid;place-items:center;min-height:30px;padding:4px 10px;border-radius:999px;background:#fff;color:#111;font-size:12px;font-weight:950;letter-spacing:.06em}
+.vault-header-title{
+  margin:0;
+  color:#fff;
+  font-family:Impact,"Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:clamp(22px,3vw,36px);
+  font-weight:900;
+  letter-spacing:.035em;
+  line-height:1;
+  text-align:center;
+  white-space:nowrap;
+}
+.records-page .m4-header .records-menu-button{justify-self:end}
+.records-historical-promo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;padding:9px 12px;border:1px solid #9d6b07;border-radius:var(--radius);background:#d9960b;color:#0c0c0c;font-size:12px;font-weight:800}
+.records-historical-promo a{color:#0c0c0c;font-weight:950}
+.records-vault-back{display:inline-flex;align-items:center;min-height:38px;margin-top:8px;padding:7px 10px;border:1px solid #8f650d;border-radius:7px;background:#111;color:#fff;font-size:11px;font-weight:900;text-decoration:none}
+.records-vault-back[hidden],.records-historical-promo[hidden]{display:none!important}
+.records-page .history-panel.ballistic-vault{
+  display:grid;
+  gap:0;
+  margin-top:8px;
+  padding:12px;
+  border-color:#9b6c0a;
+  background:linear-gradient(160deg,#17130b,#090909 36%);
+}
+.records-page .vault-gallery{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  align-items:start;
+}
+.vault-entry{
+  min-width:0;
+  overflow:hidden;
+  border:1px solid #a8750c;
+  border-radius:12px;
+  background:#101010;
+  box-shadow:0 16px 34px rgba(0,0,0,.38);
+}
+.vault-record-summary{min-width:0;overflow:hidden;border:1px solid #a8750c;border-radius:12px;background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.38)}
+.vault-record-summary.is-selected{border:3px solid #ffd85a;box-shadow:0 0 0 3px rgba(255,216,90,.24),0 16px 34px rgba(0,0,0,.48)}
+.vault-record-summary>header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:9px 11px;background:#111;color:#fff}
+.vault-record-summary>header strong{font-size:14px}
+.vault-record-summary>header time{color:#ddd;font-size:11px;font-weight:800}
+.vault-evidence-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px}
+.vault-evidence-pair figure{display:grid;gap:5px;min-width:0;margin:0}
+.vault-evidence-pair figcaption{color:#111;font-size:10px;font-weight:950;letter-spacing:.05em;text-align:center}
+.vault-target-panel{position:relative;display:grid;place-items:center;aspect-ratio:4/3;overflow:hidden;border:1px solid #bdb7aa;background:#f5f0df}
+.vault-target-panel img{display:block;width:100%;height:100%;object-fit:contain}
+.vault-target-panel .history-evidence-layer{position:absolute;inset:0}
+.vault-target-panel .vault-governed-correction-vector{z-index:4;filter:drop-shadow(0 1px 1px rgba(255,255,255,.95)) drop-shadow(0 2px 2px rgba(0,0,0,.5))}
+.vault-target-panel .vault-governed-correction-vector line{stroke:#087432;stroke-width:2.75}
+.vault-target-panel .vault-governed-correction-vector marker path{fill:#087432}
+.vault-target-unavailable{display:grid;place-items:center;position:absolute;inset:0;padding:10px;background:rgba(10,10,10,.75);color:#fff;font-size:10px;font-weight:900;text-align:center}
+.vault-scoring-panel{grid-template-columns:repeat(2,minmax(0,1fr));align-content:center;gap:6px;padding:8px;background:linear-gradient(160deg,#17130b,#090909);color:#fff}
+.vault-scoring-panel>span{display:grid;gap:2px;padding:7px;border:1px solid rgba(217,150,11,.55);border-radius:6px}
+.vault-scoring-panel b{color:#e7b642;font-size:8px;text-transform:uppercase}
+.vault-scoring-panel strong{font-size:18px}
+.vault-record-summary--baker-scored .vault-evidence-pair{grid-template-columns:minmax(0,1.35fr) minmax(180px,.65fr)}
+.vault-result-summary{display:grid;align-content:center;justify-items:center;gap:6px;aspect-ratio:auto;height:100%;min-height:0;padding:10px;overflow:hidden;background:linear-gradient(155deg,#17130b,#080808);color:#fff;text-align:center}
+.vault-result-summary>header{display:flex;align-items:baseline;justify-content:center;gap:5px}
+.vault-result-summary>header strong{color:#ffd85a;font-family:Impact,"Arial Narrow","Roboto Condensed",Arial,sans-serif;font-size:clamp(32px,5vw,58px);letter-spacing:.025em;line-height:.86}
+.vault-result-summary>header span{color:#ffd85a;font-size:10px;font-weight:950;letter-spacing:.08em}
+.vault-result-summary>small{font-size:9px;font-weight:950;letter-spacing:.06em}
+.vault-result-breakdown{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;max-width:100%;gap:4px;color:#fff;font-size:11px;font-weight:900;line-height:1.25}
+.vault-result-breakdown span{white-space:nowrap}
+.vault-result-breakdown b{color:#e7b642;margin-right:3px}
+.vault-result-breakdown i{color:#8d8068;font-style:normal}
+.vault-result-summary>p{margin:0;color:#ddd;font-size:10px;font-weight:800}
+.vault-result-summary--unavailable>strong{font-size:17px}
+.vault-result-summary--unavailable>small{color:#e7b642}
+.vault-result-summary--unavailable>span{color:#ddd;font-size:10px;font-weight:800}
+.vault-record-link{display:flex;justify-content:flex-end;color:#111;text-decoration:none}
+.vault-open-label{display:flex;justify-content:flex-end;padding:0 11px 10px;color:#277a35;font-size:10px;font-weight:950}
+.vault-record-link:focus-visible{outline:3px solid #ffd85a;outline-offset:-4px}
+.vault-approved-result-panel{display:block;aspect-ratio:auto;height:100%;min-height:0;overflow:auto;border:0;background:#fff}
+.vault-approved-result-panel>.sec-component-result{width:100%;min-width:0;margin:0}
+.vault-sec-thumbnail{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border-bottom:1px solid #8f650d;
+  background:#0b0b0b;
+  text-decoration:none;
+}
+.vault-sec-thumbnail iframe{
+  display:block;
+  width:200%;
+  height:200%;
+  border:0;
+  background:#0b0b0b;
+  pointer-events:none;
+  transform:scale(.5);
+  transform-origin:top left;
+}
+.vault-card-footer{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:48px;
+  padding:7px 9px;
+  color:#fff;
+  font-size:10px;
+  white-space:nowrap;
+}
+.vault-sec-thumbnail:focus-visible{
+  outline:3px solid #ffd85a;
+  outline-offset:-5px;
+}
+.vault-card-footer strong{font-size:12px}
+.vault-card-footer time{color:#d7c8a8;font-weight:800}
+.vault-card-footer a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:32px;
+  margin-left:auto;
+  padding:7px 10px;
+  border:1px solid #8f6200;
+  border-radius:7px;
+  background:linear-gradient(180deg,#ffd85a,#e6a007);
+  color:#090909;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.035em;
+  text-decoration:none;
+}
+.vault-card-footer a:hover{filter:brightness(1.08)}
+.vault-loading,
+.vault-gallery .empty-state{
+  grid-column:1/-1;
+  display:grid;
+  place-items:center;
+  min-height:260px;
+  padding:28px;
+  border:1px dashed #8f650d;
+  border-radius:10px;
+  background:#0c0c0c;
+  color:#fff;
+  text-align:center;
+}
+
+/* Talking Target reuses the actual Universal SEC/Vault inside its stationary stage. */
+body[data-talking-target-demo-stage="true"] .shell{width:100%;max-width:none;padding:0}
+body[data-talking-target-demo-stage="true"] .m4-header,
+body[data-talking-target-demo-stage="true"] .records-historical-promo,
+body[data-talking-target-demo-stage="true"] .records-vault-back{display:none!important}
+body[data-talking-target-demo-stage="true"] .history-panel.ballistic-vault{
+  margin:0;
+  padding:8px;
+  border:0;
+  border-radius:0;
+  background:#07080a;
+  box-shadow:none;
+}
+body[data-talking-target-demo-stage="true"] .vault-gallery{grid-template-columns:1fr;gap:8px}
+body[data-talking-target-demo-stage="true"][data-vault-view="browse"] .vault-record-summary{max-width:900px;margin:0 auto}
+.talking-target-memory-reinforcement{
+  display:grid;
+  width:min(92%,980px);
+  gap:5px;
+  margin:8px auto 4px;
+  padding:9px 15px 10px;
+  border-left:3px solid rgba(244,198,79,.74);
+  background:linear-gradient(90deg,rgba(244,198,79,.1),rgba(244,198,79,0));
+  color:#fff;
+}
+.talking-target-memory-reinforcement strong{font-size:clamp(20px,4.2vw,38px);font-weight:950;letter-spacing:.045em;line-height:1}
+.talking-target-memory-reinforcement span{color:#d9cfb7;font-size:clamp(10px,1.8vw,15px);font-weight:850;letter-spacing:.025em}
+@media(max-width:720px){
+  .records-page .m4-header{
+    grid-template-columns:minmax(0,1fr) auto auto 46px;
+    gap:7px;
+  }
+  .records-sec-badge{grid-column:2;min-height:26px;padding:3px 7px;font-size:10px}
+  .vault-header-title{grid-column:3;font-size:clamp(15px,4.5vw,21px)}
+  .records-page .m4-header .records-menu-button{grid-column:4}
+  .records-page .m4-header .vendor-slot img{flex-basis:36px;width:36px;height:36px}
+  .records-page .m4-header .vendor-name{font-size:13px}
+  .records-page .history-panel.ballistic-vault{padding:8px}
+  .records-page .vault-gallery{grid-template-columns:1fr;gap:16px}
+  .vault-card-footer{gap:5px;padding:6px 7px;font-size:9px}
+  .vault-card-footer strong{font-size:11px}
+  .vault-card-footer a{padding-inline:8px;font-size:8px}
+  .records-historical-promo{gap:6px;padding:7px 8px;font-size:10px}
+  .talking-target-memory-reinforcement{width:calc(100% - 16px);margin:6px 8px 2px;padding:8px 10px}
+  .talking-target-memory-reinforcement strong{font-size:clamp(17px,6vw,25px)}
+  .talking-target-memory-reinforcement span{font-size:10px;line-height:1.25}
+  .vault-evidence-pair{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:stretch;gap:8px;padding:8px}
+  .vault-evidence-pair figure{grid-template-rows:auto minmax(0,1fr)}
+  .vault-evidence-pair figure:first-child .vault-target-panel{height:auto;aspect-ratio:3/4}
+  .vault-evidence-pair figure:last-child .vault-target-panel{height:100%;aspect-ratio:auto}
+  .vault-approved-result-panel{overflow:visible}
+  .vault-approved-result-panel .contract-combined-score-rate{grid-template-columns:repeat(2,minmax(0,1fr));padding:.3rem}
+  .vault-approved-result-panel .contract-combined-score-rate>div{padding:.12rem .2rem}
+  .vault-approved-result-panel .contract-combined-score-rate>div+div{border-top:0;border-left:1px solid rgba(255,216,77,.4)}
+  .vault-approved-result-panel .contract-combined-score-rate strong{font-size:clamp(1.15rem,7vw,1.8rem)}
+  .vault-approved-result-panel .contract-combined-score-rate span{font-size:.52rem}
+  .vault-approved-result-panel .contract-combined-score-rate small{display:none}
+  .vault-approved-result-panel .contract-tap-summary{gap:.2rem;margin:.25rem 0;padding:.3rem .25rem}
+  .vault-approved-result-panel .contract-tap-summary strong{font-size:.58rem}.vault-approved-result-panel .contract-tap-summary i{font-size:.55rem}
+  .vault-approved-result-panel .contract-numeric-region-results{margin-top:.25rem}
+  .vault-approved-result-panel .contract-numeric-region-results>summary{grid-template-columns:1fr;gap:.16rem;min-height:52px;padding:.34rem .36rem}
+  .vault-approved-result-panel .contract-numeric-region-results>summary .contract-distribution-title{font-size:.68rem;letter-spacing:.035em}.vault-approved-result-panel .contract-disclosure-instruction{font-size:.48rem;letter-spacing:.015em}
+  .vault-record-summary--baker-scored .vault-evidence-pair{grid-template-columns:1fr}
+  .vault-record-summary--baker-scored .vault-result-summary{min-height:142px}
+  .vault-record-summary>header{padding:8px 9px}
+}

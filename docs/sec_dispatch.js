@@ -34,6 +34,23 @@
     UNAVAILABLE: "unavailable"
   });
 
+  const CONTRACT_ADAPTERS = Object.freeze([
+    ADAPTERS.CONTRACT_SMART_EVIDENCE,
+    ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE,
+    ADAPTERS.CONTRACT_TARGET_SCORING,
+    ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE,
+    ADAPTERS.CONTRACT_COLLECTION_HAND,
+    ADAPTERS.CONTRACT_CUE_DRILL,
+    ADAPTERS.CONTRACT_DECISION_SCENARIO,
+    ADAPTERS.CONTRACT_SEC_PROGRESSION,
+    ADAPTERS.CONTRACT_QUALIFICATION,
+    ADAPTERS.CONTRACT_DIAGNOSTIC_FEEDBACK
+  ]);
+
+  function isContractAdapter(adapter) {
+    return CONTRACT_ADAPTERS.includes(adapter);
+  }
+
   function localAuthoritySuffix() {
     const value = new URLSearchParams(global.location && global.location.search || "").get("authorityPort") || "";
     const number = Number(value);
@@ -253,7 +270,7 @@
       if (options.thumbnail) params.set("vaultThumbnail", "1");
       return `sec.html?${params.toString()}`;
     }
-    if ([ADAPTERS.CONTRACT_SMART_EVIDENCE, ADAPTERS.CONTRACT_PRECISION_OPEN_SCORE, ADAPTERS.CONTRACT_TARGET_SCORING, ADAPTERS.CONTRACT_RECREATIONAL_CHALLENGE, ADAPTERS.CONTRACT_COLLECTION_HAND, ADAPTERS.CONTRACT_CUE_DRILL, ADAPTERS.CONTRACT_DECISION_SCENARIO, ADAPTERS.CONTRACT_QUALIFICATION, ADAPTERS.CONTRACT_DIAGNOSTIC_FEEDBACK].includes(dispatch.adapter)) {
+    if (isContractAdapter(dispatch.adapter)) {
       return `target-experience.html?session=${encodeURIComponent(sessionId)}&view=sec${localAuthoritySuffix()}`;
     }
     return `records.html?session=${encodeURIComponent(sessionId)}&view=sec`;
@@ -265,6 +282,7 @@
     resolveIdentity,
     selectAdapter,
     resolve,
+    isContractAdapter,
     destinationFor
   });
 })(window);

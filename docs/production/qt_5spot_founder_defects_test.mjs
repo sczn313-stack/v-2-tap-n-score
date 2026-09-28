@@ -27,9 +27,27 @@ assert.doesNotMatch(markup, /Strongest:|Weakest:|EVEN DISTRIBUTION|Evenness/);
 assert.doesNotMatch(runtimeSource, /\$\{shotPatternMarkup\(result, session\)\}\$\{cueResultMarkup/);
 
 assert.deepEqual(
-  JSON.parse(JSON.stringify(runtime.sourceImagePoint(150, 260, { left: 50, top: 60, width: 400, height: 800 }))),
-  { xNorm: .25, yNorm: .25 },
-  "tap coordinates normalize against the rendered source image"
+  JSON.parse(JSON.stringify(runtime.sourceImagePoint(150, 260, { left: 50, top: 60, width: 400, height: 800 }, {
+    targetProfileId: "qt_printer13_product_1873683447881",
+    sourceImageSha256: "a".repeat(64),
+    sourceImageWidthPx: 500,
+    sourceImageHeightPx: 776,
+  }))),
+  {
+    xNorm: .25,
+    yNorm: .25,
+    canonicalTargetCoordinate: {
+      schemaVersion: "sczn3.ugo.normalized-source-image-point.v1",
+      coordinateSystem: "normalized_source_image_top_left",
+      targetProfileId: "qt_printer13_product_1873683447881",
+      sourceImageSha256: "a".repeat(64),
+      sourceImageWidthPx: 500,
+      sourceImageHeightPx: 776,
+      xNorm: .25,
+      yNorm: .25,
+    },
+  },
+  "tap coordinates convert once into a target-and-source-bound canonical UGO coordinate"
 );
 assert.equal(runtime.sourceImagePoint(20, 260, { left: 50, top: 60, width: 400, height: 800 }), null);
 

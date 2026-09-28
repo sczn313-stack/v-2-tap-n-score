@@ -1,0 +1,522 @@
+/* Founder UI Standard — one control language across every mission and preserved SEC. */
+.button,
+.platform-page .button,
+.records-page .button,
+.sec-shell .button,
+.trace-button,
+.guidance-calc-button,
+.unit-button,
+.home-survey-button,
+.ecosystem-family-actions .button,
+.ecosystem-survey-page .button,
+.analytics-filter-row button,
+.ops-window-row button,
+.matrix-page .weapon-top-row .button,
+.matrix-page .setup-save-row .button,
+.target-page .correction-context-panel .button,
+.target-page .gssf-mode-button,
+#gssfCanonicalValidationExport,
+.records-page .sec-v1-record-actions button,
+.records-page .sec-v1-record-actions .sec-action-link{
+  box-sizing:border-box;
+  height:var(--sczn3-control-height);
+  min-height:var(--sczn3-control-height);
+  padding:0 var(--sczn3-control-padding-inline);
+  border:2px solid var(--sczn3-control-border);
+  border-radius:var(--sczn3-control-radius);
+  background:var(--sczn3-control-background);
+  color:var(--sczn3-control-text);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-control-font-size);
+  font-weight:900;
+  line-height:1.1;
+  letter-spacing:0;
+  text-align:center;
+  text-transform:uppercase;
+  box-shadow:none;
+}
+
+.button.primary,
+.platform-page .button.primary,
+.ecosystem-family-actions .button.primary,
+.ecosystem-survey-page .button.primary,
+.button.is-active,
+.button[aria-pressed="true"],
+.unit-button.is-active,
+.analytics-filter-row button[aria-pressed="true"],
+.ops-window-row button[aria-pressed="true"],
+.target-page .gssf-mode-button.is-active,
+.workflow-control-row .button.next-step,
+.neon-file-button.next-step,
+.sec-story-command-bar #saveSEC,
+.sec-preserved-history-row #viewHistory.is-next-action{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-active-background);
+  color:var(--sczn3-control-active-text);
+  box-shadow:none;
+}
+
+.sec-story-command-bar #saveSEC.is-preserved,
+.sec-story-command-bar #saveSEC.is-preserved[disabled]{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-background);
+  color:var(--sczn3-control-text);
+  box-shadow:none;
+}
+
+.status-pill,
+.profile-chip-row span,
+.category-pill,
+.target-mode-pill,
+.vendor-pill,
+.records-page .vendor-pill,
+.sec-source-row span,
+.sec-save-status,
+.records-page .sec-save-status,
+.sec-authority-missing{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-width:0;
+  height:var(--sczn3-pill-height);
+  min-height:var(--sczn3-pill-height);
+  padding:0 var(--sczn3-pill-padding-inline);
+  border-radius:var(--sczn3-pill-radius);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-pill-font-size);
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.proof-pill,
+.ops-live-pill{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-width:0;
+  height:var(--sczn3-pill-height);
+  min-height:var(--sczn3-pill-height);
+  padding:0 var(--sczn3-pill-padding-inline);
+  border-radius:var(--sczn3-pill-radius);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-pill-font-size);
+  font-weight:900;
+  line-height:1;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.category-pill.is-active,
+.status-pill.is-active{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-active-background);
+  color:var(--sczn3-control-active-text);
+}
+
+/* The SEC intelligence rail is one compound pill; its internal result fields are not controls. */
+.sec-intel-pill,
+.records-page .sec-intel-pill{
+  min-height:var(--sczn3-pill-height);
+  border-radius:var(--sczn3-pill-radius);
+  font-size:var(--sczn3-pill-font-size);
+}
+
+/* Stay-on-screen target controls retain their constrained height as a functional exception. */
+.target-page .workflow-control-row > .button,
+.target-page .workflow-control-row > .neon-file-button{
+  height:100%;
+  min-height:0;
+  padding:3px;
+  border-radius:var(--sczn3-control-radius);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:var(--sczn3-control-font-size);
+  font-weight:900;
+  line-height:1.1;
+}
+
+.target-page .workflow-control-row > .button.next-step,
+.target-page .workflow-control-row > .neon-file-button.next-step,
+.target-page .workflow-control-row #chooseTargetButton.next-step,
+.target-page .workflow-control-row .button.next-step:not([disabled]){
+  border-color:var(--sczn3-control-border)!important;
+  background:var(--sczn3-control-active-background)!important;
+  color:var(--sczn3-control-active-text)!important;
+  font-size:var(--sczn3-control-font-size)!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
+
+.target-page .workflow-control-row > .button:not(.next-step){
+  border-color:var(--sczn3-control-border)!important;
+  background:var(--sczn3-control-background)!important;
+  color:var(--sczn3-control-text)!important;
+  font-size:var(--sczn3-control-font-size)!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
+
+.target-page .correction-context-actions #confirmCorrectionContext{
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-active-background);
+  color:var(--sczn3-control-active-text);
+  font-size:var(--sczn3-control-font-size);
+}
+
+.target-page .gssf-mode-button{
+  height:28px;
+  min-height:28px;
+  padding:0 9px;
+  border-color:var(--sczn3-control-border);
+  background:var(--sczn3-control-background);
+  color:var(--sczn3-control-text);
+}
+
+/* Founder Review Batch 3 — navigation rests neutrally and signals only interaction. */
+.package-menu,
+.platform-page .mobile-platform-menu summary,
+.target-page .target-mobile-menu summary,
+.matrix-page .mobile-platform-menu summary,
+.records-page .records-menu-button{
+  border-color:rgba(255,255,255,.34);
+  background:#101010;
+  color:#f5f1e8;
+  box-shadow:none;
+}
+
+.package-menu span{
+  background:#f5f1e8;
+}
+
+/* Item 1 — one governed hamburger placement across the primary application. */
+.app-header{
+  position:relative;
+  z-index:90;
+  box-sizing:border-box;
+  padding-right:12px;
+}
+
+.app-header .platform-quick-nav{gap:12px}
+
+.target-page .app-header{
+  display:flex;
+  align-items:center;
+  width:100%;
+}
+
+.target-page .workspace-top-overlay{
+  top:54px!important;
+}
+
+.app-header > .package-menu{
+  flex:0 0 44px;
+  align-self:center;
+  justify-self:end;
+  width:44px;
+  min-width:44px;
+  height:44px;
+  min-height:44px;
+  margin-left:auto;
+}
+
+.app-header > .package-menu span,
+.app-header-menu > summary span{
+  display:block;
+  width:24px;
+  height:3px;
+  border-radius:99px;
+  background:#f5f1e8;
+  transition:opacity .16s ease, transform .16s ease;
+}
+
+.app-header > .app-header-menu{
+  position:absolute;
+  z-index:80;
+  top:50%;
+  right:12px;
+  display:block!important;
+  width:44px;
+  margin:0;
+  transform:translateY(-50%);
+}
+
+.app-header-menu > summary{
+  display:grid!important;
+  gap:5px;
+  place-content:center;
+  width:44px!important;
+  min-width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+  margin-left:auto;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  border-radius:8px;
+  background:#101010!important;
+  color:#f5f1e8;
+  font-size:0!important;
+  box-shadow:none!important;
+}
+
+.app-header-menu[open]{
+  top:calc(50% - 22px);
+  width:min(230px,72vw);
+  transform:none;
+}
+
+.app-header-menu[open] > summary span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.app-header-menu[open] > summary span:nth-child(2){opacity:0}
+.app-header-menu[open] > summary span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+.app-header-menu > a{
+  box-sizing:border-box;
+  width:100%;
+  margin-top:4px;
+}
+
+.package-menu:hover,
+.package-menu:focus-visible,
+.package-menu[aria-expanded="true"],
+.platform-page .mobile-platform-menu summary:hover,
+.platform-page .mobile-platform-menu summary:focus-visible,
+.platform-page .mobile-platform-menu[open] summary,
+.records-page .records-menu-button:hover,
+.records-page .records-menu-button:focus-visible,
+.records-page .records-menu-button[aria-expanded="true"]{
+  border-color:var(--sczn3-control-border);
+  color:var(--sczn3-control-border);
+}
+
+.package-menu:hover span,
+.package-menu:focus-visible span,
+.package-menu[aria-expanded="true"] span,
+.records-page .records-menu-button:hover span,
+.records-page .records-menu-button:focus-visible span,
+.records-page .records-menu-button[aria-expanded="true"] span{
+  background:var(--sczn3-control-border);
+}
+
+/* Founder-approved voluntary Rate Us side trip. */
+.platform-quick-nav .navigation-rate-us,
+.package-menu-drawer .navigation-rate-us,
+.mobile-platform-menu > .navigation-rate-us{
+  box-sizing:border-box;
+  min-height:44px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+.platform-quick-nav .navigation-rate-us{
+  flex:0 0 auto;
+  padding:8px 0;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.04em;
+  line-height:1;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.package-menu-drawer .navigation-rate-us,
+.mobile-platform-menu > .navigation-rate-us{
+  display:block;
+  width:100%;
+  padding:12px 16px;
+}
+
+.navigation-rate-us:hover,
+.navigation-rate-us:focus-visible{
+  color:var(--sczn3-control-border,#f5b400);
+  outline:2px solid currentColor;
+  outline-offset:-2px;
+}
+
+@media (max-width:1000px){
+  .platform-quick-nav{display:none}
+}
+
+body.rate-us-open{
+  overflow:hidden;
+}
+
+.rate-us-dialog{
+  position:fixed;
+  z-index:10000;
+  inset:0;
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  padding:20px;
+  background:rgba(0,0,0,.78);
+}
+
+.rate-us-dialog[hidden]{display:none}
+
+.rate-us-card{
+  position:relative;
+  box-sizing:border-box;
+  width:min(500px,calc(100vw - 40px));
+  max-height:calc(100dvh - 40px);
+  overflow:auto;
+  padding:34px 30px 30px;
+  border:1px solid rgba(245,180,0,.55);
+  border-radius:18px;
+  background:#111;
+  color:#fff;
+  box-shadow:0 24px 80px rgba(0,0,0,.55);
+}
+
+.rate-us-card h2{
+  margin:0 42px 22px 0;
+  color:#fff;
+  font-size:clamp(1.45rem,4.8vw,2rem);
+  line-height:1.08;
+}
+
+.rate-us-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  background:#080808;
+  color:#fff;
+  font-size:2rem;
+  line-height:1;
+  cursor:pointer;
+}
+
+.rate-us-stars{
+  display:flex;
+  justify-content:center;
+  gap:4px;
+  margin:0 0 24px;
+  padding:0;
+  border:0;
+}
+
+.rate-us-stars label{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:52px;
+  height:52px;
+  cursor:pointer;
+}
+
+.rate-us-stars input{
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  opacity:0;
+}
+
+.rate-us-stars label span[aria-hidden="true"]{
+  color:#777;
+  font-size:2.65rem;
+  line-height:1;
+  transition:color .12s ease,transform .12s ease;
+}
+
+.rate-us-stars input:checked + span,
+.rate-us-stars label:hover span[aria-hidden="true"]{
+  color:#f5b400;
+  transform:scale(1.08);
+}
+
+.rate-us-stars input:focus-visible + span{
+  border-radius:5px;
+  outline:3px solid #fff;
+  outline-offset:2px;
+}
+
+.rate-us-comment{
+  display:block;
+  margin-bottom:9px;
+  color:#fff;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.rate-us-comment span{
+  color:#c8c8c8;
+  font-weight:500;
+}
+
+.rate-us-card textarea{
+  box-sizing:border-box;
+  width:100%;
+  min-height:112px;
+  resize:vertical;
+  padding:12px;
+  border:1px solid #888;
+  border-radius:10px;
+  background:#fff;
+  color:#111;
+  font:inherit;
+}
+
+.rate-us-card textarea:focus{
+  border-color:#f5b400;
+  outline:3px solid rgba(245,180,0,.3);
+}
+
+.rate-us-status{
+  min-height:1.4em;
+  margin:10px 0;
+  color:#bde8c8;
+  font-weight:700;
+}
+
+.rate-us-status[data-error="true"]{color:#ffb6b6}
+
+.rate-us-submit{
+  width:100%;
+  min-height:50px;
+  font-size:1rem;
+  font-weight:900;
+}
+
+.rate-us-submit:disabled{opacity:.6;cursor:wait}
+
+.rate-us-visually-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+@media (max-width:480px){
+  .rate-us-dialog{padding:12px}
+  .rate-us-card{
+    width:calc(100vw - 24px);
+    max-height:calc(100dvh - 24px);
+    padding:30px 18px 22px;
+    border-radius:15px;
+  }
+  .rate-us-card h2{margin-bottom:18px}
+  .rate-us-stars{gap:0}
+  .rate-us-stars label{width:50px;height:50px}
+  .rate-us-stars label span[aria-hidden="true"]{font-size:2.45rem}
+}

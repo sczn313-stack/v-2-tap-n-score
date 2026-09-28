@@ -62,6 +62,8 @@ async function verifyOne(browser, row) {
     assert.ok(source, "no fixed physical probe produced a non-ambiguous result");
     await page.locator("#contractSecView").waitFor({ state: "visible" });
     assert.doesNotMatch(await page.locator("#contractSecRoot").innerText(), forbiddenResultMeta);
+    const universalResultText = (await page.locator('#contractSecRoot [data-sec-component="result"]').textContent()).trim();
+    assert.ok(universalResultText, "RESULT must expose the recovered Founder-approved target result");
     const resultImage = await page.locator(".contract-evidence img").first().boundingBox();
     const resultMarker = await page.locator(".contract-evidence .contract-observation-marker").first().boundingBox();
     assert.ok(resultImage && resultMarker);
@@ -71,6 +73,14 @@ async function verifyOne(browser, row) {
     await page.getByText("SEC preserved. Exact reopen available.", { exact: true }).waitFor();
     const href = await page.getByRole("link", { name: "Exact Reopen", exact: true }).getAttribute("href");
     assert.ok(href);
+    const sessionId = new URL(href, `${origin}/`).searchParams.get("session");
+    assert.ok(sessionId);
+    await page.goto(`${origin}/records.html?selected=${encodeURIComponent(sessionId)}&authorityPort=${authorityPort}&v=qt-universal-result-1`, { waitUntil: "domcontentloaded" });
+    const vaultResult = page.locator('article.vault-record-summary.is-selected .vault-approved-result-panel [data-sec-component="result"]');
+    await vaultResult.waitFor({ state: "visible" });
+    assert.equal((await vaultResult.textContent()).trim(), universalResultText, "Vault must preserve the approved RESULT without transforming it");
+    assert.equal(await page.locator('article.vault-record-summary.is-selected .vault-evidence-pair figcaption').allTextContents().then(items => items.join(" | ")), "BEFORE | RESULT");
+    assert.equal(await page.locator("article.vault-record-summary.is-selected .vault-result-summary").count(), 0, "targetScoring Vault must not render a substitute summary");
     await page.goto(new URL(href, `${origin}/`).href, { waitUntil: "domcontentloaded" });
     await page.locator("#contractSecView").waitFor({ state: "visible" });
     assert.doesNotMatch(await page.locator("#contractSecRoot").innerText(), forbiddenResultMeta);

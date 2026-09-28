@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Registered Smart Target</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="platform-ui.css?v=universal-shot-marker-contrast-1" />
+  <link rel="stylesheet" href="m4-sec.css" />
+  <link rel="stylesheet" href="sec-framework.css?v=ep54-approved-result-recovery-1" />
+  <link rel="stylesheet" href="platform_actions.css" />
+  <link rel="stylesheet" href="target-experience.css?v=usm-history-header-1" />
+  <style>.contract-evidence img{max-height:72vh}</style>
+  <script src="platform_actions.js"></script>
+  <script src="sec_reopen_capability.js?v=portable-exact-reopen-1" defer></script>
+  <script src="sec_reopen_lifecycle.js?v=result-first-1" defer></script>
+  <script src="platform_contracts.js" defer></script>
+  <script src="sec_adapter_model.js" defer></script>
+  <script src="app_state.js" defer></script>
+  <script src="sec_dispatch.js?v=canonical-sec-road-1" defer></script>
+  <script src="usm_proof_registry.js?v=controlled-proof-1" defer></script>
+  <script src="target_execution_runtime.js?v=usm-history-header-1" defer></script>
+  <script src="m4_runtime.js" defer></script>
+  <script src="sec_v1.js?v=universal-disclosure-affordance-1" defer></script>
+  <script src="sec_framework.js?v=ep54-approved-result-recovery-1" defer></script>
+</head>
+<body class="platform-page" data-contract-target-page>
+  <header class="m4-header app-header"><div class="brand-lockup"><a class="vendor-name" href="index.html">Tap-n-Score™</a></div><span>Registered Smart Target</span></header>
+  <main class="contract-target-shell" id="contractCaptureView">
+    <section class="contract-intro"><span id="contractExperienceLabel">Target experience</span><h1 id="contractProductName">Registered Smart Target</h1><p id="contractStatus" role="status" aria-live="polite">Start to open the registered target.</p></section>
+    <button class="button primary" id="contractStart" type="button">Start</button>
+    <section id="contractCapture" hidden><label class="button primary" for="contractFile">Load / Capture Target</label><input id="contractFile" type="file" accept="image/*" hidden /></section>
+    <section class="contract-workspace" id="contractWorkspace" hidden>
+      <section class="contract-cue-panel" id="contractDiagnosticPanel" hidden><p class="contract-claim-grade"><strong>Publisher Label Match — Not an SCZN3 Diagnosis</strong><br />Matches exact publisher-authorized regions only. No cause, correction, scoring, or coaching is inferred.</p><label id="contractDiagnosticHandednessControl" hidden><span id="contractDiagnosticHandednessLabel">WHAT HAND ARE YOU SHOOTING WITH?</span> <select id="contractDiagnosticHandedness"></select></label></section>
+      <section class="contract-cue-panel" id="contractCuePanel" hidden aria-live="polite">
+        <p class="contract-claim-grade" id="contractClaimGrade" hidden><strong>Practice Simulation — Not Official Qualification</strong><br />SCZN3 does not issue a credential, certification, or agency qualification.</p>
+        <p class="contract-claim-grade" id="contractDecisionClaim" hidden><strong>Publisher-Designated Response Match — Not Legal or Tactical Judgment</strong><br />The expected response comes only from the governed publisher Profile. Missing evidence is never a successful no-response.</p>
+        <span id="contractCueProgress">Cue / Drill</span>
+        <h2 id="contractCueStage">Ready</h2>
+        <p id="contractCueLabel">Load the target to begin the governed sequence.</p>
+        <div id="contractExternalCueControls" hidden><label>External cue <select id="contractExternalCue"></select></label><label>Declared by <select id="contractExternalDeclaredBy"><option value="instructor">Instructor</option><option value="shooter">Shooter</option></select></label><button class="button primary" id="contractCueIssue" type="button">Declare Cue</button></div>
+      </section>
+      <section class="contract-object-course" id="contractObjectCourse" hidden aria-label="Governed scoring object">
+        <span>Scoring object</span>
+        <div id="contractObjectChoices"></div>
+        <p id="contractObjectProgress"></p>
+      </section>
+      <div class="contract-image-frame"><img id="contractTargetImage" alt="Loaded registered target evidence" /><div id="contractMarkers"></div><button id="contractTapSurface" type="button" aria-label="Record visible shot tap"></button></div>
+      <div class="contract-controls">
+        <section class="contract-scoring-mode" id="contractScoringModePanel" hidden aria-label="Governed scoring mode">
+          <label><span id="contractScoringModeLabel">Scoring mode</span><select id="contractScoringMode"></select></label>
+        </section>
+        <div class="contract-observation-actions"><button class="button" id="contractUndoObservation" type="button" hidden disabled>Undo</button><button class="button" id="contractClearObservations" type="button" hidden disabled>Clear</button><button class="button" id="contractMarkAim" type="button">Mark Aim</button><button class="button primary" id="contractShowResult" type="button" disabled>Tap Your Holes</button></div>
+        <span class="contract-observation-count"><strong id="contractObservationCount">0</strong> Taps</span>
+      </div>
+      <div class="contract-cue-controls" id="contractCueControls" hidden><button class="button" id="contractCueNoObservation" type="button">Record No Observation</button><label>Optional practice / external time (ms) <input id="contractCueElapsed" type="number" min="0" step="1" inputmode="numeric" /></label><button class="button primary" id="contractCueAdvance" type="button" disabled>Advance</button><button class="button" id="contractCueStop" type="button">Stop Run</button></div>
+    </section>
+  </main>
+  <main class="contract-sec-shell" id="contractSecView" hidden><p class="contract-sec-status" id="contractSecStatus" role="status" aria-live="polite"></p><div id="contractSecRoot"></div></main>
+  <dialog class="contract-material-fact-dialog" id="contractScoringCaliberDialog" aria-labelledby="contractScoringCaliberTitle">
+    <section>
+      <span>Score-changing boundary</span>
+      <h2 id="contractScoringCaliberTitle">Which caliber applies?</h2>
+      <p>This shot is close enough to a scoring line that the authorized scoring gauge can change the score. Choose only this missing fact.</p>
+      <div id="contractScoringCaliberChoices"></div>
+      <button class="button" id="contractScoringCaliberCancel" type="button">Keep taps and cancel</button>
+    </section>
+  </dialog>
+</body>
+</html>

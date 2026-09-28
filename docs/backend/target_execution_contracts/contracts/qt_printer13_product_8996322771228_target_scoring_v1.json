@@ -2,13 +2,14 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_8996322771228-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
+  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-    "approvedAt": "2026-09-23T00:00:00-04:00"
+    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "founderAcceptance": "pending"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -36,7 +37,8 @@
       "qtFamilyGroup": "LKPD_DRILLS",
       "episode64IntelligenceFamily": "REPEATED_OBJECT_COUNTING",
       "homieLockedCapability": "Zone / Object Counting",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
     }
   },
   "missionFamily": "targetScoring",
@@ -545,7 +547,9 @@
               "personalBest": true,
               "consistencyHistory": true,
               "publisherMeaningAttributed": false,
-              "qtLockedResultCleanup": "counts_scores_and_misses_only"
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
             }
           },
           "accounting": {
@@ -589,7 +593,7 @@
             "visualStackChair": 187,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Object 1, Object 2, Object 3, Object 4, Object 5, Object 6, Object 7, Object 8, Object 9, Object 10, Object 11, Object 12.",
+          "smartBehavior": "Twelve published repeated objects; no drill order invented. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-8996322771228",
@@ -631,7 +635,7 @@
               "object_11",
               "object_12"
             ],
-            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Object 1, Object 2, Object 3, Object 4, Object 5, Object 6, Object 7, Object 8, Object 9, Object 10, Object 11, Object 12.",
+            "requiredBehavior": "Twelve published repeated objects; no drill order invented. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
             "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
             "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
             "forbiddenInference": [
@@ -642,10 +646,30 @@
               "unpublished_penalties."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": {
+              "homieChair": 156,
+              "qtChair": 187,
+              "skuTarget": "LKPD-Drills",
+              "capabilityLabel": "COUNTING",
+              "capability": "Zone / Object Counting",
+              "implementationTreatment": "Twelve published repeated objects; no drill order invented."
+            },
+            "founderAcceptance": "PENDING"
           }
+        },
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
         }
       },
-      "digest": "1f0c7025e0b31aea5e3fc7143c6f078d60f9cd50c4a90c4e04073cd1b964d9e6"
+      "digest": "8f28b68c3fbd43fe12d092dd5e8b1b3fee88dffc9dc61ec47f98848bd7b50672"
     }
   },
   "executor": {

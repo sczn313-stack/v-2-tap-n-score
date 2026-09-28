@@ -44,6 +44,40 @@ def _image(value: Any) -> Dict[str, Any]:
     }
 
 
+def _canonical_target_coordinate(value: Mapping[str, Any], contract: Mapping[str, Any], image: Mapping[str, Any], x: float, y: float) -> Dict[str, Any]:
+    geometry = contract["components"]["geometry"]["definition"]
+    coordinate_system = str(geometry.get("coordinateSystem") or "normalized_source_image_top_left")
+    if coordinate_system != "normalized_source_image_top_left":
+        raise SmartEvidenceError("ugo_coordinate_system_unsupported")
+    supplied = value.get("canonicalTargetCoordinate")
+    if supplied is not None:
+        if not isinstance(supplied, Mapping):
+            raise SmartEvidenceError("ugo_canonical_coordinate_invalid")
+        if str(supplied.get("schemaVersion") or "") != "sczn3.ugo.normalized-source-image-point.v1":
+            raise SmartEvidenceError("ugo_canonical_coordinate_schema_invalid")
+        if str(supplied.get("coordinateSystem") or "") != coordinate_system:
+            raise SmartEvidenceError("ugo_canonical_coordinate_system_mismatch")
+        if str(supplied.get("targetProfileId") or "") != str(contract["targetProfile"]["id"]):
+            raise SmartEvidenceError("ugo_canonical_target_identity_mismatch")
+        if str(supplied.get("sourceImageSha256") or "").lower() != str(image["sha256"]).lower():
+            raise SmartEvidenceError("ugo_canonical_source_image_mismatch")
+        if int(supplied.get("sourceImageWidthPx") or 0) != int(image["widthPx"]) or int(supplied.get("sourceImageHeightPx") or 0) != int(image["heightPx"]):
+            raise SmartEvidenceError("ugo_canonical_source_dimensions_mismatch")
+        if float(supplied.get("xNorm")) != x or float(supplied.get("yNorm")) != y:
+            raise SmartEvidenceError("ugo_canonical_coordinate_value_mismatch")
+        return deepcopy(dict(supplied))
+    return {
+        "schemaVersion": "sczn3.ugo.normalized-source-image-point.v1",
+        "coordinateSystem": coordinate_system,
+        "targetProfileId": str(contract["targetProfile"]["id"]),
+        "sourceImageSha256": str(image["sha256"]).lower(),
+        "sourceImageWidthPx": int(image["widthPx"]),
+        "sourceImageHeightPx": int(image["heightPx"]),
+        "xNorm": x,
+        "yNorm": y,
+    }
+
+
 def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     if not isinstance(evidence, Mapping):
         raise SmartEvidenceError("evidence_object_required")
@@ -61,10 +95,13 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     for index, observation in enumerate(observations, start=1):
         if not isinstance(observation, Mapping):
             raise SmartEvidenceError("shot_observation_invalid")
+        x = _coordinate(observation.get("xNorm"), "shot_observation_x_out_of_bounds")
+        y = _coordinate(observation.get("yNorm"), "shot_observation_y_out_of_bounds")
         normalized.append({
             "observationId": f"observation-{index:03d}",
-            "xNorm": _coordinate(observation.get("xNorm"), "shot_observation_x_out_of_bounds"),
-            "yNorm": _coordinate(observation.get("yNorm"), "shot_observation_y_out_of_bounds"),
+            "xNorm": x,
+            "yNorm": y,
+            "canonicalTargetCoordinate": _canonical_target_coordinate(observation, contract, image, x, y),
             "evidenceMeaning": "shooter_recorded_visible_shot_observation",
         })
     declared = evidence.get("shooterDeclaredAimPoint")

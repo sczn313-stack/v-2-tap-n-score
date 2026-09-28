@@ -51,10 +51,9 @@
 }
 .vault-record-summary{min-width:0;overflow:hidden;border:1px solid #a8750c;border-radius:12px;background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.38)}
 .vault-record-summary.is-selected{border:3px solid #ffd85a;box-shadow:0 0 0 3px rgba(255,216,90,.24),0 16px 34px rgba(0,0,0,.48)}
-.vault-record-link{display:block;color:#111;text-decoration:none}
-.vault-record-link>header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:9px 11px;background:#111;color:#fff}
-.vault-record-link>header strong{font-size:14px}
-.vault-record-link>header time{color:#ddd;font-size:11px;font-weight:800}
+.vault-record-summary>header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:9px 11px;background:#111;color:#fff}
+.vault-record-summary>header strong{font-size:14px}
+.vault-record-summary>header time{color:#ddd;font-size:11px;font-weight:800}
 .vault-evidence-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px}
 .vault-evidence-pair figure{display:grid;gap:5px;min-width:0;margin:0}
 .vault-evidence-pair figcaption{color:#111;font-size:10px;font-weight:950;letter-spacing:.05em;text-align:center}
@@ -70,21 +69,24 @@
 .vault-scoring-panel b{color:#e7b642;font-size:8px;text-transform:uppercase}
 .vault-scoring-panel strong{font-size:18px}
 .vault-record-summary--baker-scored .vault-evidence-pair{grid-template-columns:minmax(0,1.35fr) minmax(180px,.65fr)}
-.vault-result-summary{display:grid;align-content:center;justify-items:center;gap:6px;aspect-ratio:auto;height:100%;min-height:0;padding:10px;background:linear-gradient(155deg,#17130b,#080808);color:#fff;text-align:center}
+.vault-result-summary{display:grid;align-content:center;justify-items:center;gap:6px;aspect-ratio:auto;height:100%;min-height:0;padding:10px;overflow:hidden;background:linear-gradient(155deg,#17130b,#080808);color:#fff;text-align:center}
 .vault-result-summary>header{display:flex;align-items:baseline;justify-content:center;gap:5px}
 .vault-result-summary>header strong{color:#ffd85a;font-family:Impact,"Arial Narrow","Roboto Condensed",Arial,sans-serif;font-size:clamp(32px,5vw,58px);letter-spacing:.025em;line-height:.86}
 .vault-result-summary>header span{color:#ffd85a;font-size:10px;font-weight:950;letter-spacing:.08em}
 .vault-result-summary>small{font-size:9px;font-weight:950;letter-spacing:.06em}
-.vault-result-breakdown{display:flex;align-items:center;justify-content:center;gap:4px;color:#fff;font-size:11px;font-weight:900}
+.vault-result-breakdown{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;max-width:100%;gap:4px;color:#fff;font-size:11px;font-weight:900;line-height:1.25}
 .vault-result-breakdown span{white-space:nowrap}
-.vault-result-breakdown b{color:#e7b642;margin-right:1px}
+.vault-result-breakdown b{color:#e7b642;margin-right:3px}
 .vault-result-breakdown i{color:#8d8068;font-style:normal}
 .vault-result-summary>p{margin:0;color:#ddd;font-size:10px;font-weight:800}
 .vault-result-summary--unavailable>strong{font-size:17px}
 .vault-result-summary--unavailable>small{color:#e7b642}
 .vault-result-summary--unavailable>span{color:#ddd;font-size:10px;font-weight:800}
+.vault-record-link{display:flex;justify-content:flex-end;color:#111;text-decoration:none}
 .vault-open-label{display:flex;justify-content:flex-end;padding:0 11px 10px;color:#277a35;font-size:10px;font-weight:950}
 .vault-record-link:focus-visible{outline:3px solid #ffd85a;outline-offset:-4px}
+.vault-approved-result-panel{display:block;aspect-ratio:auto;height:100%;min-height:0;overflow:auto;border:0;background:#fff}
+.vault-approved-result-panel>.sec-component-result{width:100%;min-width:0;margin:0}
 .vault-sec-thumbnail{
   position:relative;
   display:block;
@@ -198,8 +200,23 @@ body[data-talking-target-demo-stage="true"][data-vault-view="browse"] .vault-rec
   .talking-target-memory-reinforcement{width:calc(100% - 16px);margin:6px 8px 2px;padding:8px 10px}
   .talking-target-memory-reinforcement strong{font-size:clamp(17px,6vw,25px)}
   .talking-target-memory-reinforcement span{font-size:10px;line-height:1.25}
-  .vault-evidence-pair{gap:8px;padding:8px}
+  .vault-evidence-pair{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:stretch;gap:8px;padding:8px}
+  .vault-evidence-pair figure{grid-template-rows:auto minmax(0,1fr)}
+  .vault-evidence-pair figure:first-child .vault-target-panel{height:auto;aspect-ratio:3/4}
+  .vault-evidence-pair figure:last-child .vault-target-panel{height:100%;aspect-ratio:auto}
+  .vault-approved-result-panel{overflow:visible}
+  .vault-approved-result-panel .contract-combined-score-rate{grid-template-columns:repeat(2,minmax(0,1fr));padding:.3rem}
+  .vault-approved-result-panel .contract-combined-score-rate>div{padding:.12rem .2rem}
+  .vault-approved-result-panel .contract-combined-score-rate>div+div{border-top:0;border-left:1px solid rgba(255,216,77,.4)}
+  .vault-approved-result-panel .contract-combined-score-rate strong{font-size:clamp(1.15rem,7vw,1.8rem)}
+  .vault-approved-result-panel .contract-combined-score-rate span{font-size:.52rem}
+  .vault-approved-result-panel .contract-combined-score-rate small{display:none}
+  .vault-approved-result-panel .contract-tap-summary{gap:.2rem;margin:.25rem 0;padding:.3rem .25rem}
+  .vault-approved-result-panel .contract-tap-summary strong{font-size:.58rem}.vault-approved-result-panel .contract-tap-summary i{font-size:.55rem}
+  .vault-approved-result-panel .contract-numeric-region-results{margin-top:.25rem}
+  .vault-approved-result-panel .contract-numeric-region-results>summary{grid-template-columns:1fr;gap:.16rem;min-height:52px;padding:.34rem .36rem}
+  .vault-approved-result-panel .contract-numeric-region-results>summary .contract-distribution-title{font-size:.68rem;letter-spacing:.035em}.vault-approved-result-panel .contract-disclosure-instruction{font-size:.48rem;letter-spacing:.015em}
   .vault-record-summary--baker-scored .vault-evidence-pair{grid-template-columns:1fr}
   .vault-record-summary--baker-scored .vault-result-summary{min-height:142px}
-  .vault-record-link>header{padding:8px 9px}
+  .vault-record-summary>header{padding:8px 9px}
 }

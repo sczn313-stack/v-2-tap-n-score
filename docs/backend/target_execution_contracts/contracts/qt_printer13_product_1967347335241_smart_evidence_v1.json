@@ -2,13 +2,14 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1967347335241-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
+  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-    "approvedAt": "2026-09-23T00:00:00-04:00"
+    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "founderAcceptance": "pending"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -37,7 +38,8 @@
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
       "homieLockedCapability": "Scoring",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
     }
   },
   "missionFamily": "targetScoring",
@@ -647,7 +649,9 @@
               "personalBest": true,
               "consistencyHistory": true,
               "publisherMeaningAttributed": false,
-              "qtLockedResultCleanup": "counts_scores_and_misses_only"
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
             }
           },
           "accounting": {
@@ -703,12 +707,12 @@
             },
             "publisherCatalogEvidence": "Qualification Targets Inc Product TSR-III PPSO Paper Target - U.S. Probation and Pretrial Services Target with Neck Line. US Dept. of the Treasury Transitional Target II The US Dept of Treasury Training Targets are used by numerous agencies across the Country. LTR-III-PPSO Full sized Silhouette - Blue Ink. 24\" x 40\" Paper For large or custom orders, please call 866-498-8228",
             "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
-            "capability": "Evidence Only",
-            "intelligenceFamily": "EVIDENCE_ONLY",
+            "capability": "Scoring",
+            "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
             "explicitGovernedLabels": [],
             "explicitGovernedValues": [],
             "registeredSemanticRegionObjectIds": [],
-            "requiredBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+            "requiredBehavior": "Report total taps, governed scoring-region counts, points by region, misses, and total score. Every tap reconciles exactly once. USM uses governed Score, Hit Rate, and Points per Tap.",
             "geometryInstruction": "Use the registered target-specific geometry where it matches the printed face.",
             "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
             "forbiddenInference": [
@@ -727,10 +731,23 @@
             "capability": "Scoring",
             "familyGeneralization": false,
             "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": null,
+            "founderAcceptance": "PENDING"
           }
+        },
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
         }
       },
-      "digest": "aab5d5d37ad30dfb758e1702a0aa42892ee1ca7020a14a09134705ddb232aa15"
+      "digest": "534abe89576a3ec6c0a01fa1da8e117f7f36ecf2b27bdd3d920122877d063f9b"
     }
   },
   "executor": {

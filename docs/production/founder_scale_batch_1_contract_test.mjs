@@ -73,7 +73,10 @@ assert.doesNotMatch(productionScoringRoad, /founder-scale-batch-1-review-loader/
 assert.doesNotMatch(productionZeroingRoad, /founder-scale-batch-1-zeroing-loader/);
 assert.match(productionScoringRuntime, /function targetScoringRows\(result\)/, "shared runtime consumes preserved region/object results");
 assert.match(productionScoringRuntime, /aria-label="Target scoring detail"/, "SEC exposes target-defined scoring detail");
-assert.match(productionScoringRuntime, /status: "complete"[\s\S]*?breakdown: rows\.map/, "Vault exposes the same target-defined scoring detail");
+assert.match(productionScoringRuntime, /function approvedResultComponent\(result, session = \{\}\)/, "one approved Result component owns generic target presentation");
+assert.match(productionScoringRuntime, /SCZN3SECComponents\.Result\(\{ family: approvedResultFamily\(result\), contentHtml \}\)/, "generic SEC delegates target-defined scoring detail to the approved universal Result");
+const productionVault = await readFile("records.html", "utf8");
+assert.match(productionVault, /SCZN3TargetExecutionRuntime\.approvedResultComponent\(pkg, session\)/, "Vault consumes the same approved target-defined Result without a separate summary interpretation");
 assert.match(productionScoringRoad, /sec_reopen_capability\.js/, "shared scoring road loads the existing SEC reopen capability");
 assert.match(productionScoringRuntime, /SCZN3SECReopenAuthority\?\.remember\(response\)/, "shared scoring road preserves the backend-issued reopen capability");
 assert.match(productionScoringRuntime, /authorizedHeaders\(sessionId\)/, "shared scoring exact reopen presents the backend-issued capability");

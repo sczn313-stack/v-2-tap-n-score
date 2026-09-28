@@ -1,14 +1,15 @@
 {
   "schemaVersion": "sczn3-target-execution-contract-v1",
-  "contractId": "tec-qt_printer13_product_2195098894409-smart-evidence-v1",
+  "contractId": "tec-qt_printer13_product_2195098894409-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
+  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-    "approvedAt": "2026-09-23T00:00:00-04:00"
+    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "founderAcceptance": "pending"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,25 +35,95 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-2195098894409",
       "behaviorFamily": "EVIDENCE_ONLY",
       "qtFamilyGroup": "EVIDENCE_ONLY",
-      "episode64IntelligenceFamily": "EVIDENCE_ONLY",
-      "homieLockedCapability": "Evidence Only",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "episode64IntelligenceFamily": "DISCRIMINATION_OBJECTS",
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
     }
   },
-  "missionFamily": "smartEvidenceCapture",
-  "resultPackageType": "smartEvidenceResult",
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
   "resultPackageVersion": "1",
   "components": {
     "geometry": {
       "id": "qt_printer13_product_2195098894409-geometry",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
-        "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
-        "canonicalRegionMapping": "unavailable",
-        "semanticClassification": "recognized_family_not_executable_without_governed_coordinate_map",
-        "physicalMeasurement": "unavailable",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "shape_1",
+            "shape": "ellipse",
+            "cx": 0.156,
+            "cy": 0.259,
+            "radiusX": 0.078,
+            "radiusY": 0.06,
+            "priority": 100,
+            "objectId": "shape_1"
+          },
+          {
+            "regionId": "shape_2",
+            "shape": "rectangle",
+            "xMin": 0.67,
+            "yMin": 0.21,
+            "xMax": 0.812,
+            "yMax": 0.321,
+            "priority": 99,
+            "objectId": "shape_2"
+          },
+          {
+            "regionId": "shape_3",
+            "shape": "polygon",
+            "points": [
+              [
+                0.76,
+                0.72
+              ],
+              [
+                0.686,
+                0.861
+              ],
+              [
+                0.834,
+                0.861
+              ]
+            ],
+            "priority": 98,
+            "objectId": "shape_3"
+          },
+          {
+            "regionId": "shape_4",
+            "shape": "polygon",
+            "points": [
+              [
+                0.148,
+                0.715
+              ],
+              [
+                0.077,
+                0.805
+              ],
+              [
+                0.148,
+                0.891
+              ],
+              [
+                0.222,
+                0.805
+              ]
+            ],
+            "priority": 97,
+            "objectId": "shape_4"
+          }
+        ],
+        "ugoAuthority": "sczn3.ugo.normalized-source-image-point.v1",
+        "derivation": {
+          "method": "target-specific-visible-boundary-registration",
+          "semanticSource": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "familyGeneralization": false
+        },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
           "semanticMeaningAttributed": false,
@@ -115,7 +186,7 @@
           ]
         }
       },
-      "digest": "2fb123fcc993a0651f93c259c049236b6b341fa698ae566c74f8066a455d3fb6"
+      "digest": "8d162bbe64a64921e837b25a5297edd7f1ef94919c5baecd7f48bc540a01a1ec"
     },
     "registration": {
       "id": "qt_printer13_product_2195098894409-registration",
@@ -134,43 +205,63 @@
     },
     "scoring": {
       "id": "qt_printer13_product_2195098894409-scoring",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
-        "status": "not_applicable",
-        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [],
-          "storedTargetRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "shape_1": {
+            "label": "Numbered shape 1",
+            "objectId": "shape_1",
+            "objectLabel": "Numbered shape 1"
+          },
+          "shape_2": {
+            "label": "Numbered shape 2",
+            "objectId": "shape_2",
+            "objectLabel": "Numbered shape 2"
+          },
+          "shape_3": {
+            "label": "Numbered shape 3",
+            "objectId": "shape_3",
+            "objectLabel": "Numbered shape 3"
+          },
+          "shape_4": {
+            "label": "Numbered shape 4",
+            "objectId": "shape_4",
+            "objectLabel": "Numbered shape 4"
+          }
+        },
+        "aggregation": {
+          "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-Q-R PLUS Paper Target is a Reduced FBI-Q Silhouette with four numbered shapes - 17 1/2\" X 23\" - Black Ink For large or custom orders, please call 866-498-8228",
-          "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+          "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "rule": "Four numbered shapes; count each object without assigning the printed identifiers as point values."
         },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [],
-          "regionObjectIds": [],
-          "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        "outsideRule": {
+          "label": "Outside target miss"
+        },
+        "classificationFootprintMode": "tap_center",
+        "correctedPacketLock": {
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "familyGeneralization": false
         }
       },
-      "digest": "e5a1da7b7880c4e586d824d4272e8446b44d055cb1a3d1e1edfd0708a941d09d"
+      "digest": "ed4f7478ebfcdaa6f8f7a842cf7a31664619c0620b60b6e4f6035ed46d387ed8"
     },
     "mission": {
       "id": "qt_printer13_product_2195098894409-mission",
       "version": "1",
       "status": "approved",
       "definition": {
-        "missionFamily": "smartEvidenceCapture",
-        "resultPackageType": "smartEvidenceResult",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
-        "authorityResolution": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
-        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "authorityResolution": "Four numbered shapes; count each object without assigning the printed identifiers as point values.",
+        "recognizedBehaviorFamily": "DISCRIMINATION_OBJECTS",
         "recognizedQtGroup": "EVIDENCE_ONLY",
         "legTwoHighestTruthfulCapability": "evidence-only target recognition",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
@@ -208,30 +299,39 @@
         },
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
-          "intelligenceFamily": "EVIDENCE_ONLY",
-          "highestTruthfulCapability": "Evidence Only",
+          "intelligenceFamily": "DISCRIMINATION_OBJECTS",
+          "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-Q-R PLUS Paper Target is a Reduced FBI-Q Silhouette with four numbered shapes - 17 1/2\" X 23\" - Black Ink For large or custom orders, please call 866-498-8228",
-                "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+                "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+                "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+                "rule": "Four numbered shapes; count each object without assigning the printed identifiers as point values."
               },
               "publishedValuesAvailable": false,
               "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
-                "labels": [],
-                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+                "labels": [
+                  "Numbered shape 1",
+                  "Numbered shape 2",
+                  "Numbered shape 3",
+                  "Numbered shape 4"
+                ],
+                "authorityClass": "homie_corrected_packet_and_exact_registered_face"
               }
             },
             "targetStructure": {
-              "registeredGeometryStatus": "no_governed_regions",
-              "registeredRegionCount": 0,
-              "registeredRegionIds": [],
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 4,
+              "registeredRegionIds": [
+                "shape_1",
+                "shape_2",
+                "shape_3",
+                "shape_4"
+              ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
                 "semanticMeaningAttributed": false,
@@ -301,18 +401,20 @@
               "personalBest": true,
               "consistencyHistory": true,
               "publisherMeaningAttributed": false,
-              "qtLockedResultCleanup": "counts_scores_and_misses_only"
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
             }
           },
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "measured_shot_pattern"
+            "meaningfulBreakdown": "regions_or_objects"
           },
           "result": {
             "totalTaps": true,
             "publisherScore": false,
-            "regionObjectBreakdown": false,
+            "regionObjectBreakdown": true,
             "shotPattern": false,
             "distributionMeta": false
           },
@@ -346,7 +448,7 @@
             "visualStackChair": 154,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+          "smartBehavior": "Four numbered shapes; count zones/objects without inventing values. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-2195098894409",
@@ -357,12 +459,12 @@
             },
             "publisherCatalogEvidence": "Qualification Targets Inc Product FBI-Q-R PLUS Paper Target is a Reduced FBI-Q Silhouette with four numbered shapes - 17 1/2\" X 23\" - Black Ink For large or custom orders, please call 866-498-8228",
             "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
-            "capability": "Evidence Only",
-            "intelligenceFamily": "EVIDENCE_ONLY",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "DISCRIMINATION_OBJECTS",
             "explicitGovernedLabels": [],
             "explicitGovernedValues": [],
             "registeredSemanticRegionObjectIds": [],
-            "requiredBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+            "requiredBehavior": "Four numbered shapes; count zones/objects without inventing values. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
             "geometryInstruction": "Use the registered target-specific geometry where it matches the printed face.",
             "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
             "forbiddenInference": [
@@ -374,23 +476,43 @@
               "invented_zeroing_correction."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": {
+              "homieChair": 125,
+              "qtChair": 154,
+              "skuTarget": "FBI-Q-R PLUS",
+              "capabilityLabel": "COUNTING",
+              "capability": "Zone / Object Counting",
+              "implementationTreatment": "Four numbered shapes; count zones/objects without inventing values."
+            },
+            "founderAcceptance": "PENDING"
           }
+        },
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
         }
       },
-      "digest": "fc84886efce6faa01de4bde1ffc9a1a86582fc467d5656c3e7a92715c5de49e5"
+      "digest": "f5ab8948bc4316a3cfeb66781370285f3fcb2d10d1cddfa622a0273cbb9c883e"
     }
   },
   "executor": {
-    "id": "smart-evidence-capture",
+    "id": "declarative-target-score",
     "version": "1"
   },
   "secAdapter": {
-    "id": "smart-evidence-family",
+    "id": "target-scoring-family",
     "version": "1",
     "scoringPresentationFamily": "target-data"
   },
   "preservationValidator": {
-    "id": "smart-evidence-preservation",
+    "id": "target-scoring-preservation",
     "version": "1"
   },
   "session": {

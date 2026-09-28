@@ -2,13 +2,14 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1891723542601-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
+  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-    "approvedAt": "2026-09-23T00:00:00-04:00"
+    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "founderAcceptance": "pending"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -37,7 +38,8 @@
       "episode64IntelligenceFamily": "ANATOMY_VITAL_REGIONS",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
     }
   },
   "missionFamily": "targetScoring",
@@ -59,7 +61,7 @@
             "cy": 0.125,
             "radiusX": 0.125,
             "radiusY": 0.073,
-            "priority": 100,
+            "priority": 110,
             "objectId": "head_circle"
           },
           {
@@ -69,7 +71,7 @@
             "cy": 0.145,
             "radiusX": 0.17,
             "radiusY": 0.12,
-            "priority": 90,
+            "priority": 100,
             "objectId": "head_outline"
           },
           {
@@ -79,7 +81,7 @@
             "cy": 0.438,
             "radiusX": 0.205,
             "radiusY": 0.16,
-            "priority": 80,
+            "priority": 90,
             "objectId": "center_chest"
           },
           {
@@ -89,7 +91,7 @@
             "cy": 0.5,
             "radiusX": 0.285,
             "radiusY": 0.25,
-            "priority": 70,
+            "priority": 80,
             "objectId": "center_mass"
           },
           {
@@ -121,14 +123,14 @@
                 0.75
               ]
             ],
-            "priority": 60,
+            "priority": 70,
             "objectId": "pelvic_zone"
           }
         ],
-        "ugoAuthority": "founder-homie-individual-target-lock-v1",
+        "ugoAuthority": "sczn3.ugo.normalized-source-image-point.v1",
         "derivation": {
           "method": "target-specific-visible-boundary-registration",
-          "semanticSource": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "semanticSource": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
           "familyGeneralization": false
         },
         "observedPhysicalStructure": {
@@ -193,7 +195,7 @@
           ]
         }
       },
-      "digest": "31bd74a64dafca0ab19fe4d9c89ae5ca8cdcd0d81ef147a4c04f6eca7ee09695"
+      "digest": "01d8efb5c16306c36ed1aef8f5e097177fd0bb7016c695c2e44f2fa153d888a9"
     },
     "registration": {
       "id": "qt_printer13_product_1891723542601-registration",
@@ -220,48 +222,49 @@
         "model": "named_regions",
         "regionRules": {
           "head_circle": {
-            "label": "Head circle",
+            "label": "5-inch Circle Head Zone",
             "objectId": "head_circle",
-            "objectLabel": "Head circle"
+            "objectLabel": "5-inch Circle Head Zone"
           },
           "head_outline": {
-            "label": "Head outline",
+            "label": "Outline of Head Zone",
             "objectId": "head_outline",
-            "objectLabel": "Head outline"
+            "objectLabel": "Outline of Head Zone"
           },
           "center_chest": {
-            "label": "Center chest zone",
+            "label": "10-inch Center Chest Zone",
             "objectId": "center_chest",
-            "objectLabel": "Center chest zone"
+            "objectLabel": "10-inch Center Chest Zone"
           },
           "center_mass": {
-            "label": "Center mass zone",
+            "label": "19.5-inch Center Mass Zone",
             "objectId": "center_mass",
-            "objectLabel": "Center mass zone"
+            "objectLabel": "19.5-inch Center Mass Zone"
           },
           "pelvic_zone": {
-            "label": "Pelvic zone",
+            "label": "Full Polygonal Pelvic Zone",
             "objectId": "pelvic_zone",
-            "objectLabel": "Pelvic zone"
+            "objectLabel": "Full Polygonal Pelvic Zone"
           }
         },
         "aggregation": {
           "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-          "rule": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics."
+          "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "rule": "Count the five publisher-established hidden zones; no point values, threat/hostage penalties, or scenario rules are implemented."
         },
         "outsideRule": {
           "label": "Outside target miss"
         },
         "classificationFootprintMode": "tap_center",
-        "founderLateReviewLock": {
-          "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+        "correctedPacketLock": {
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
           "familyGeneralization": false
         }
       },
-      "digest": "1de88b954482ca158937164436da935c3662e8f9b31935e7a30dc972b5da175b"
+      "digest": "cbb8ff3ca345623b9bfa63104a52f546a5fc3f3c59572f47d4d68c9ae903dd3b"
     },
     "mission": {
       "id": "qt_printer13_product_1891723542601-mission",
@@ -300,7 +303,7 @@
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics.",
+        "authorityResolution": "Count the five publisher-established hidden zones; no point values, threat/hostage penalties, or scenario rules are implemented.",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
@@ -312,9 +315,9 @@
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-                "rule": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics.",
-                "authorityOrder": "Founder/Homie exact treatment supersedes prior packet where listed"
+                "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+                "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+                "rule": "Count the five publisher-established hidden zones; no point values, threat/hostage penalties, or scenario rules are implemented."
               },
               "publishedValuesAvailable": false,
               "unresolved": "Timing, sequence, qualification thresholds, penalties, and unpublished course-of-fire rules remain UNKNOWN.",
@@ -322,13 +325,13 @@
               "artworkFacts": {
                 "values": [],
                 "labels": [
-                  "Head circle",
-                  "Head outline",
-                  "Center chest zone",
-                  "Center mass zone",
-                  "Pelvic zone"
+                  "5-inch Circle Head Zone",
+                  "Outline of Head Zone",
+                  "10-inch Center Chest Zone",
+                  "19.5-inch Center Mass Zone",
+                  "Full Polygonal Pelvic Zone"
                 ],
-                "authorityClass": "founder_homie_late_review_lock"
+                "authorityClass": "homie_corrected_packet_and_exact_registered_face"
               }
             },
             "targetStructure": {
@@ -410,7 +413,9 @@
               "personalBest": true,
               "consistencyHistory": true,
               "publisherMeaningAttributed": false,
-              "qtLockedResultCleanup": "counts_scores_and_misses_only"
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
             }
           },
           "accounting": {
@@ -454,7 +459,7 @@
             "visualStackChair": 288,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics.",
+          "smartBehavior": "CORRECTION: use five publisher-established hidden zones, NOT stale left/right figure model: outline head zone; 5-inch head circle; 19.5-inch center-mass zone; 10-inch center-chest zone; polygonal pelvic zone. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-1891723542601",
@@ -466,7 +471,7 @@
             "publisherCatalogEvidence": "Qualification Targets Inc Product USMC-THREAT Paper Target - U.S. Marine Corps Threat Training Target Designed to replace the Table 2, 3 and Short Range Modified Echo Targets. 5 Hidden Zones Outline of Head Zone 5 Inch Circle Head Zone 19 1/2 Inch Center Mass Zone 10 Inch Center Chest Zone Full Polygonal Pelvic Zone NSN 6920-01-642-1406 DIE CUT FACER TARGET Black Ink 19.5\" x 40 \" Paper NSN: 6920-01-642-1406 For large or custom orders, please call 866-498-8228",
             "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld",
             "capability": "Zone / Object Counting",
-            "intelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
+            "intelligenceFamily": "ANATOMY_VITAL_REGIONS",
             "explicitGovernedLabels": [
               "Left visible figure",
               "Right visible figure"
@@ -476,7 +481,7 @@
               "left_figure",
               "right_figure"
             ],
-            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Left visible figure, Right visible figure.",
+            "requiredBehavior": "CORRECTION: use five publisher-established hidden zones, NOT stale left/right figure model: outline head zone; 5-inch head circle; 19.5-inch center-mass zone; 10-inch center-chest zone; polygonal pelvic zone. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
             "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
             "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
             "forbiddenInference": [
@@ -494,11 +499,31 @@
             "capability": "Zone / Object Counting",
             "familyGeneralization": false,
             "rule": "Count taps by the five established visible zones; no point values or unpublished threat-course mechanics."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": {
+              "homieChair": 251,
+              "qtChair": 288,
+              "skuTarget": "USMC-THREAT",
+              "capabilityLabel": "COUNTING",
+              "capability": "Zone / Object Counting",
+              "implementationTreatment": "CORRECTION: use five publisher-established hidden zones, NOT stale left/right figure model: outline head zone; 5-inch head circle; 19.5-inch center-mass zone; 10-inch center-chest zone; polygonal pelvic zone."
+            },
+            "founderAcceptance": "PENDING"
           }
         },
-        "recognizedBehaviorFamily": "ANATOMY_VITAL_REGIONS"
+        "recognizedBehaviorFamily": "ANATOMY_VITAL_REGIONS",
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
+        }
       },
-      "digest": "3d532cbc70601ee118d42816a7703a801b3969ab1153e361dd554fcafdb6ed18"
+      "digest": "e7a5c1e52e41124b8d63558deb2cbfaafa3a681d8168aee45df452deaef23929"
     }
   },
   "executor": {

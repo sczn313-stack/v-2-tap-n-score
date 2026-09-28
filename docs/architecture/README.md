@@ -19,9 +19,10 @@ This index is the front door to SCZN3 architecture. Read the documents in order 
 ### Adopted architecture decision
 
 - [ADR-001 — Composable Target Authority](./decisions/ADR-001_COMPOSABLE_TARGET_AUTHORITY.md)
+- [ADR-002 — UGO Location Authority](./decisions/ADR-002_UGO_LOCATION_AUTHORITY.md)
 - [Composable Target Authority Ownership Matrix](./COMPOSABLE_TARGET_AUTHORITY_OWNERSHIP_MATRIX.md)
 
-These documents are locked architecture. They generalize the Phase 1 model without changing Phase 1 runtime behavior or independently authorizing implementation.
+These documents are locked architecture. ADR-001 generalizes the Phase 1 model without independently authorizing implementation. ADR-002 records the Founder-approved runtime invariant that UGO/canonical target coordinates are durable location truth and rendered pixels are projection only.
 
 ## 2. Document roles and authority boundaries
 

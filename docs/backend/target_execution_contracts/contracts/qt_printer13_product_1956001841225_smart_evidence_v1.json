@@ -1,14 +1,15 @@
 {
   "schemaVersion": "sczn3-target-execution-contract-v1",
-  "contractId": "tec-qt_printer13_product_1956001841225-smart-evidence-v1",
+  "contractId": "tec-qt_printer13_product_1956001841225-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
+  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-    "approvedAt": "2026-09-23T00:00:00-04:00"
+    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "founderAcceptance": "pending"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -34,25 +35,71 @@
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1956001841225",
       "behaviorFamily": "EVIDENCE_ONLY",
       "qtFamilyGroup": "EVIDENCE_ONLY",
-      "episode64IntelligenceFamily": "EVIDENCE_ONLY",
-      "homieLockedCapability": "Evidence Only",
-      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44"
+      "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
     }
   },
-  "missionFamily": "smartEvidenceCapture",
-  "resultPackageType": "smartEvidenceResult",
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
   "resultPackageVersion": "1",
   "components": {
     "geometry": {
       "id": "qt_printer13_product_1956001841225-geometry",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
-        "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
-        "canonicalRegionMapping": "unavailable",
-        "semanticClassification": "recognized_family_not_executable_without_governed_coordinate_map",
-        "physicalMeasurement": "unavailable",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "innermost_region",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.665,
+            "radiusX": 0.085,
+            "radiusY": 0.065,
+            "priority": 110,
+            "objectId": "innermost_region"
+          },
+          {
+            "regionId": "inner_region",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.665,
+            "radiusX": 0.155,
+            "radiusY": 0.125,
+            "priority": 100,
+            "objectId": "inner_region"
+          },
+          {
+            "regionId": "middle_region",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.665,
+            "radiusX": 0.285,
+            "radiusY": 0.235,
+            "priority": 90,
+            "objectId": "middle_region"
+          },
+          {
+            "regionId": "outer_region",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.665,
+            "radiusX": 0.425,
+            "radiusY": 0.345,
+            "priority": 80,
+            "objectId": "outer_region"
+          }
+        ],
+        "ugoAuthority": "sczn3.ugo.normalized-source-image-point.v1",
+        "derivation": {
+          "method": "target-specific-visible-boundary-registration",
+          "semanticSource": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "familyGeneralization": false
+        },
         "observedPhysicalStructure": {
           "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
           "semanticMeaningAttributed": false,
@@ -115,7 +162,7 @@
           ]
         }
       },
-      "digest": "c2f283b5de58a7a5eca9d0961b9ba41d021fd4105314d5a5c8af50246d2b71c1"
+      "digest": "b771ba5fa674e4e09dc52ce32eafab5da7882981860a1a4e504093f5fe7c440a"
     },
     "registration": {
       "id": "qt_printer13_product_1956001841225-registration",
@@ -134,43 +181,63 @@
     },
     "scoring": {
       "id": "qt_printer13_product_1956001841225-scoring",
-      "version": "1",
+      "version": "3",
       "status": "approved",
       "definition": {
-        "status": "not_applicable",
-        "reason": "no_governed_per_image_scoring_geometry_in_leg_two_authority",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [],
-          "storedTargetRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "innermost_region": {
+            "label": "Innermost printed region",
+            "objectId": "innermost_region",
+            "objectLabel": "Innermost printed region"
+          },
+          "inner_region": {
+            "label": "Inner printed region",
+            "objectId": "inner_region",
+            "objectLabel": "Inner printed region"
+          },
+          "middle_region": {
+            "label": "Middle printed region",
+            "objectId": "middle_region",
+            "objectLabel": "Middle printed region"
+          },
+          "outer_region": {
+            "label": "Outer printed region",
+            "objectId": "outer_region",
+            "objectLabel": "Outer printed region"
+          }
+        },
+        "aggregation": {
+          "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product IL-PT Paper Target is an Illinois Police Training Target. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
-          "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+          "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "rule": "Count the visible nested printed regions; do not apply point values from this treatment."
         },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [],
-          "regionObjectIds": [],
-          "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+        "outsideRule": {
+          "label": "Outside target miss"
+        },
+        "classificationFootprintMode": "tap_center",
+        "correctedPacketLock": {
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "familyGeneralization": false
         }
       },
-      "digest": "1bf3d76580d9d0fb1a228098ef092b2288abe23b91ce9582a491932b7bdabecc"
+      "digest": "b1696b023e203c370e2972a36fd05101f322a9b93416329a3ad59653ed38f703"
     },
     "mission": {
       "id": "qt_printer13_product_1956001841225-mission",
       "version": "1",
       "status": "approved",
       "definition": {
-        "missionFamily": "smartEvidenceCapture",
-        "resultPackageType": "smartEvidenceResult",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
-        "authorityResolution": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
-        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "authorityResolution": "Count the visible nested printed regions; do not apply point values from this treatment.",
+        "recognizedBehaviorFamily": "BULLSEYE_MULTI_BULL",
         "recognizedQtGroup": "EVIDENCE_ONLY",
         "legTwoHighestTruthfulCapability": "evidence-only target recognition",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
@@ -208,30 +275,39 @@
         },
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
-          "intelligenceFamily": "EVIDENCE_ONLY",
-          "highestTruthfulCapability": "Evidence Only",
+          "intelligenceFamily": "BULLSEYE_MULTI_BULL",
+          "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product IL-PT Paper Target is an Illinois Police Training Target. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
-                "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+                "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+                "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+                "rule": "Count the visible nested printed regions; do not apply point values from this treatment."
               },
               "publishedValuesAvailable": false,
               "unresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
-                "labels": [],
-                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+                "labels": [
+                  "Innermost printed region",
+                  "Inner printed region",
+                  "Middle printed region",
+                  "Outer printed region"
+                ],
+                "authorityClass": "homie_corrected_packet_and_exact_registered_face"
               }
             },
             "targetStructure": {
-              "registeredGeometryStatus": "no_governed_regions",
-              "registeredRegionCount": 0,
-              "registeredRegionIds": [],
+              "registeredGeometryStatus": "regions_available",
+              "registeredRegionCount": 4,
+              "registeredRegionIds": [
+                "innermost_region",
+                "inner_region",
+                "middle_region",
+                "outer_region"
+              ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
                 "semanticMeaningAttributed": false,
@@ -301,18 +377,20 @@
               "personalBest": true,
               "consistencyHistory": true,
               "publisherMeaningAttributed": false,
-              "qtLockedResultCleanup": "counts_scores_and_misses_only"
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
             }
           },
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "measured_shot_pattern"
+            "meaningfulBreakdown": "regions_or_objects"
           },
           "result": {
             "totalTaps": true,
             "publisherScore": false,
-            "regionObjectBreakdown": false,
+            "regionObjectBreakdown": true,
             "shotPattern": false,
             "distributionMeta": false
           },
@@ -346,7 +424,7 @@
             "visualStackChair": 179,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+          "smartBehavior": "Visible nested printed regions; no values inferred. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-1956001841225",
@@ -357,12 +435,12 @@
             },
             "publisherCatalogEvidence": "Qualification Targets Inc Product IL-PT Paper Target is an Illinois Police Training Target. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
             "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
-            "capability": "Evidence Only",
-            "intelligenceFamily": "EVIDENCE_ONLY",
+            "capability": "Zone / Object Counting",
+            "intelligenceFamily": "BULLSEYE_MULTI_BULL",
             "explicitGovernedLabels": [],
             "explicitGovernedValues": [],
             "registeredSemanticRegionObjectIds": [],
-            "requiredBehavior": "Preserve shot evidence, total taps, coordinates, center-of-shot-pattern/session measurements that do not invent target semantics; do not manufacture zones or scores.",
+            "requiredBehavior": "Visible nested printed regions; no values inferred. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
             "geometryInstruction": "Use the registered target-specific geometry where it matches the printed face.",
             "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
             "forbiddenInference": [
@@ -374,23 +452,43 @@
               "invented_zeroing_correction."
             ],
             "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": {
+              "homieChair": 150,
+              "qtChair": 179,
+              "skuTarget": "IL-PT",
+              "capabilityLabel": "COUNTING",
+              "capability": "Zone / Object Counting",
+              "implementationTreatment": "Visible nested printed regions; no values inferred."
+            },
+            "founderAcceptance": "PENDING"
           }
+        },
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
         }
       },
-      "digest": "a61b398c2ddbf8f6dcd905fed678f40f914f229f7ee751fc0477145ac8e54bd4"
+      "digest": "f472705525541c0f4e018fe7714d2effcc698164b4579a7a8a575d72eca90d83"
     }
   },
   "executor": {
-    "id": "smart-evidence-capture",
+    "id": "declarative-target-score",
     "version": "1"
   },
   "secAdapter": {
-    "id": "smart-evidence-family",
+    "id": "target-scoring-family",
     "version": "1",
     "scoringPresentationFamily": "target-data"
   },
   "preservationValidator": {
-    "id": "smart-evidence-preservation",
+    "id": "target-scoring-preservation",
     "version": "1"
   },
   "session": {

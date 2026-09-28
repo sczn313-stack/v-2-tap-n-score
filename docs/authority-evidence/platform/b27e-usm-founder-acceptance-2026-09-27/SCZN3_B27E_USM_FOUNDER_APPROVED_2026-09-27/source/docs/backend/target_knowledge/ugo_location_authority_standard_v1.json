@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "sczn3.ugo-location-authority-standard.v1",
+  "standardId": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+  "status": "FOUNDER_APPROVED_LOCKED",
+  "approvedOn": "2026-09-24",
+  "principle": "UGO/canonical target coordinate is location truth; pixels and rendered geometry are display projection only.",
+  "canonicalPointSchema": {
+    "schemaVersion": "sczn3.ugo.normalized-source-image-point.v1",
+    "coordinateSystem": "normalized_source_image_top_left",
+    "requiredIdentityBinding": [
+      "targetProfileId",
+      "sourceImageSha256",
+      "sourceImageWidthPx",
+      "sourceImageHeightPx"
+    ],
+    "requiredLocation": [
+      "xNorm",
+      "yNorm"
+    ]
+  },
+  "captureRule": "Convert the selected physical point once using the actual visible registered source-image content rectangle, then persist the canonical object unchanged.",
+  "lifecycle": [
+    "TARGET",
+    "RESULT",
+    "SEC",
+    "VAULT",
+    "EXACT_REOPEN"
+  ],
+  "projectionRule": "Each lifecycle view projects the stored canonical point onto the actual visible rendered target-image content rectangle.",
+  "prohibitedDurableAuthoritySources": [
+    "screen_pixels",
+    "marker_pixels",
+    "wrapper_coordinates",
+    "viewport_coordinates",
+    "resized_image_coordinates",
+    "css_element_dimensions",
+    "letterboxed_element_bounds",
+    "presentation_coordinates"
+  ],
+  "forbiddenMutations": [
+    "lifecycle_renormalization",
+    "marker_pixel_recapture",
+    "presentation_offset_compensation",
+    "target_specific_coordinate_exception",
+    "geometry_enlargement_to_hide_projection_error"
+  ],
+  "founderApprovedReference": {
+    "publisher": "Qualification Targets",
+    "target": "5-Spot",
+    "approvalMeaning": "The physical target point remains invariant through the UGO projection road; no pixel-authority approval is implied."
+  },
+  "architectureDecision": "docs/architecture/decisions/ADR-002_UGO_LOCATION_AUTHORITY.md",
+  "sharedRuntime": "docs/target_execution_runtime.js",
+  "regressionGuard": "docs/production/ugo_location_authority_lock_test.mjs"
+}

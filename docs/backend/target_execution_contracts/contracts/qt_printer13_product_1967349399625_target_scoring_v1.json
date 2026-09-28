@@ -2,13 +2,14 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1967349399625-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-FOUNDER-CORRECTED-IMPLEMENTATION-v5",
+  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-    "approvedAt": "2026-09-23T00:00:00-04:00"
+    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "founderAcceptance": "pending"
   },
   "effective": {
     "from": "2026-09-22T00:00:00-04:00",
@@ -35,9 +36,10 @@
       "behaviorFamily": "VALUED_REGION_QUALIFICATION",
       "qtFamilyGroup": "VALUED_REGION_QUALIFICATION",
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
-      "homieLockedCapability": "Scoring",
+      "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23"
+      "founderLateReviewLock": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
     }
   },
   "missionFamily": "targetScoring",
@@ -53,320 +55,80 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "zone_5",
-            "shape": "polygon",
-            "points": [
-              [
-                0.37,
-                0.12
-              ],
-              [
-                0.5,
-                0.1
-              ],
-              [
-                0.63,
-                0.12
-              ],
-              [
-                0.66,
-                0.2
-              ],
-              [
-                0.63,
-                0.3
-              ],
-              [
-                0.59,
-                0.34
-              ],
-              [
-                0.7,
-                0.42
-              ],
-              [
-                0.72,
-                0.55
-              ],
-              [
-                0.7,
-                0.63
-              ],
-              [
-                0.64,
-                0.68
-              ],
-              [
-                0.57,
-                0.7
-              ],
-              [
-                0.43,
-                0.7
-              ],
-              [
-                0.36,
-                0.68
-              ],
-              [
-                0.3,
-                0.63
-              ],
-              [
-                0.28,
-                0.55
-              ],
-              [
-                0.3,
-                0.42
-              ],
-              [
-                0.41,
-                0.34
-              ],
-              [
-                0.37,
-                0.3
-              ],
-              [
-                0.34,
-                0.2
-              ]
-            ],
-            "priority": 100
+            "regionId": "head_region",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.175,
+            "radiusY": 0.145,
+            "priority": 110,
+            "objectId": "head_region"
           },
           {
-            "regionId": "zone_3",
+            "regionId": "center_mass_region",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.515,
+            "radiusX": 0.225,
+            "radiusY": 0.235,
+            "priority": 100,
+            "objectId": "center_mass_region"
+          },
+          {
+            "regionId": "lower_torso_region",
             "shape": "polygon",
             "points": [
               [
                 0.18,
-                0.8
-              ],
-              [
-                0.11,
-                0.72
-              ],
-              [
-                0.1,
-                0.62
-              ],
-              [
-                0.14,
-                0.48
-              ],
-              [
-                0.25,
-                0.39
-              ],
-              [
-                0.4,
                 0.33
-              ],
-              [
-                0.35,
-                0.28
-              ],
-              [
-                0.35,
-                0.17
-              ],
-              [
-                0.4,
-                0.12
-              ],
-              [
-                0.5,
-                0.1
-              ],
-              [
-                0.6,
-                0.12
-              ],
-              [
-                0.65,
-                0.17
-              ],
-              [
-                0.65,
-                0.28
-              ],
-              [
-                0.6,
-                0.33
-              ],
-              [
-                0.75,
-                0.39
-              ],
-              [
-                0.86,
-                0.48
-              ],
-              [
-                0.9,
-                0.62
-              ],
-              [
-                0.89,
-                0.72
               ],
               [
                 0.82,
-                0.8
-              ]
-            ],
-            "priority": 90
-          },
-          {
-            "regionId": "zone_1",
-            "shape": "polygon",
-            "points": [
-              [
-                0.14,
-                0.92
+                0.33
               ],
               [
-                0.1,
-                0.86
+                0.93,
+                0.48
               ],
               [
-                0.15,
-                0.8
+                0.93,
+                0.82
               ],
               [
-                0.17,
-                0.77
+                0.82,
+                0.88
               ],
               [
-                0.08,
-                0.74
-              ],
-              [
-                0.02,
-                0.68
-              ],
-              [
-                0.02,
-                0.58
-              ],
-              [
-                0.05,
-                0.52
+                0.18,
+                0.88
               ],
               [
                 0.07,
-                0.42
+                0.82
               ],
               [
-                0.16,
-                0.35
-              ],
-              [
-                0.34,
-                0.29
-              ],
-              [
-                0.36,
-                0.26
-              ],
-              [
-                0.34,
-                0.22
-              ],
-              [
-                0.34,
-                0.15
-              ],
-              [
-                0.38,
-                0.11
-              ],
-              [
-                0.44,
-                0.09
-              ],
-              [
-                0.56,
-                0.09
-              ],
-              [
-                0.63,
-                0.11
-              ],
-              [
-                0.67,
-                0.15
-              ],
-              [
-                0.67,
-                0.22
-              ],
-              [
-                0.65,
-                0.26
-              ],
-              [
-                0.67,
-                0.29
-              ],
-              [
-                0.84,
-                0.35
-              ],
-              [
-                0.94,
-                0.42
-              ],
-              [
-                0.96,
-                0.52
-              ],
-              [
-                0.99,
-                0.58
-              ],
-              [
-                0.98,
-                0.68
-              ],
-              [
-                0.92,
-                0.74
-              ],
-              [
-                0.83,
-                0.77
-              ],
-              [
-                0.86,
-                0.8
-              ],
-              [
-                0.91,
-                0.86
-              ],
-              [
-                0.86,
-                0.92
+                0.07,
+                0.48
               ]
             ],
-            "priority": 80
+            "priority": 90,
+            "objectId": "lower_torso_region"
           },
           {
-            "regionId": "zone_0",
+            "regionId": "pelvic_region",
             "shape": "rectangle",
-            "xMin": 0.1,
-            "yMin": 0.925,
-            "xMax": 0.9,
-            "yMax": 0.98,
-            "priority": 1
+            "xMin": 0.19,
+            "yMin": 0.875,
+            "xMax": 0.81,
+            "yMax": 0.985,
+            "priority": 80,
+            "objectId": "pelvic_region"
           }
         ],
-        "ugoAuthority": "founder-homie-individual-target-lock-v1",
+        "ugoAuthority": "sczn3.ugo.normalized-source-image-point.v1",
         "derivation": {
           "method": "target-specific-visible-boundary-registration",
-          "semanticSource": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+          "semanticSource": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
           "familyGeneralization": false
         },
         "observedPhysicalStructure": {
@@ -431,7 +193,7 @@
           ]
         }
       },
-      "digest": "02296e1119f690cb81afa92846319ddbfddb22d28ee77560ecf4d69312cf96d2"
+      "digest": "511af1b9507e178374eed030ac4cced71b5415fb7ab7becba3e31524d4cfc24e"
     },
     "registration": {
       "id": "qt_printer13_product_1967349399625-registration",
@@ -455,43 +217,47 @@
       "definition": {
         "schemaVersion": "sczn3-target-scoring-data-v1",
         "status": "complete",
-        "model": "numeric_regions",
+        "model": "named_regions",
         "regionRules": {
-          "zone_5": {
-            "label": "5",
-            "value": 5
+          "head_region": {
+            "label": "Upper qualification region",
+            "objectId": "head_region",
+            "objectLabel": "Upper qualification region"
           },
-          "zone_3": {
-            "label": "3",
-            "value": 3
+          "center_mass_region": {
+            "label": "Center-mass qualification region",
+            "objectId": "center_mass_region",
+            "objectLabel": "Center-mass qualification region"
           },
-          "zone_1": {
-            "label": "1",
-            "value": 1
+          "lower_torso_region": {
+            "label": "Lower-torso qualification region",
+            "objectId": "lower_torso_region",
+            "objectLabel": "Lower-torso qualification region"
           },
-          "zone_0": {
-            "label": "0",
-            "value": 0
+          "pelvic_region": {
+            "label": "Pelvic qualification region",
+            "objectId": "pelvic_region",
+            "objectLabel": "Pelvic qualification region"
           }
         },
         "aggregation": {
-          "mode": "sum"
+          "mode": "classification_counts"
         },
         "publisherRuleAuthority": {
-          "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-          "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN."
+          "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+          "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "rule": "Count neck-line, pelvic, and established qualification regions; no point values are implemented."
         },
         "outsideRule": {
-          "label": "Outside target miss",
-          "value": 0
+          "label": "Outside target miss"
         },
         "classificationFootprintMode": "tap_center",
-        "founderLateReviewLock": {
-          "lockId": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
+        "correctedPacketLock": {
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
           "familyGeneralization": false
         }
       },
-      "digest": "74b71c45126240782e72ae0e235b8d6d310b122fc3e6dad1281d2d1e10f2c53d"
+      "digest": "edf4a181b27fa8cdc262b8fdf6d1e8a2abb91489f27144dd7f7473550c70dfb4"
     },
     "mission": {
       "id": "qt_printer13_product_1967349399625-mission",
@@ -518,7 +284,7 @@
             "status": "available"
           },
           "officialScore": {
-            "status": "available"
+            "status": "not_applicable"
           },
           "qualification": {
             "status": "not_applicable"
@@ -530,49 +296,44 @@
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN.",
+        "authorityResolution": "Count neck-line, pelvic, and established qualification regions; no point values are implemented.",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
           "intelligenceFamily": "VALUED_REGION_QUALIFICATION",
-          "highestTruthfulCapability": "Scoring",
+          "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
               "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
               "publishedRuleAuthority": {
-                "source": "QT_FOUNDER_CORRECTED_IMPLEMENTATION_PASS_2026_09_23",
-                "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN.",
-                "authorityOrder": "Founder/Homie exact treatment supersedes prior packet where listed"
+                "source": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+                "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+                "rule": "Count neck-line, pelvic, and established qualification regions; no point values are implemented."
               },
-              "publishedValuesAvailable": true,
+              "publishedValuesAvailable": false,
               "unresolved": "Timing, sequence, qualification thresholds, penalties, and unpublished course-of-fire rules remain UNKNOWN.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
-                "values": [
-                  5,
-                  3,
-                  1,
-                  0
-                ],
+                "values": [],
                 "labels": [
-                  "5",
-                  "3",
-                  "1",
-                  "0"
+                  "Upper qualification region",
+                  "Center-mass qualification region",
+                  "Lower-torso qualification region",
+                  "Pelvic qualification region"
                 ],
-                "authorityClass": "founder_homie_late_review_lock"
+                "authorityClass": "homie_corrected_packet_and_exact_registered_face"
               }
             },
             "targetStructure": {
               "registeredGeometryStatus": "regions_available",
               "registeredRegionCount": 4,
               "registeredRegionIds": [
-                "zone_5",
-                "zone_3",
-                "zone_1",
-                "zone_0"
+                "head_region",
+                "center_mass_region",
+                "lower_torso_region",
+                "pelvic_region"
               ],
               "observedPhysicalStructure": {
                 "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
@@ -643,17 +404,19 @@
               "personalBest": true,
               "consistencyHistory": true,
               "publisherMeaningAttributed": false,
-              "qtLockedResultCleanup": "counts_scores_and_misses_only"
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
             }
           },
           "accounting": {
             "everyTapReconcilesExactlyOnce": true,
             "childRegionsAreSubsetsNotAdditionalTaps": true,
-            "meaningfulBreakdown": "score_and_regions"
+            "meaningfulBreakdown": "regions_or_objects"
           },
           "result": {
             "totalTaps": true,
-            "publisherScore": true,
+            "publisherScore": false,
             "regionObjectBreakdown": true,
             "shotPattern": false,
             "distributionMeta": false
@@ -670,7 +433,7 @@
           },
           "progress": {
             "tightestPatternPersonalBest": false,
-            "scoreHistoryWhenGoverned": true
+            "scoreHistoryWhenGoverned": false
           },
           "unsupported": [
             "unpublishedcourserules",
@@ -687,7 +450,7 @@
             "visualStackChair": 283,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN.",
+          "smartBehavior": "Neck line + pelvic zones / qualification regions; no invented values. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-1967349399625",
@@ -713,7 +476,7 @@
               "lower_governed_region",
               "remaining_target_area"
             ],
-            "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Upper governed region, Central governed region, Lower governed region, Remaining governed target area.",
+            "requiredBehavior": "Neck line + pelvic zones / qualification regions; no invented values. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
             "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
             "authorityLimitOrUnresolved": "SCZN3 knows the behavior family, but stored authority does not bind target-specific executable coordinates/values for this QT face.",
             "forbiddenInference": [
@@ -731,11 +494,31 @@
             "capability": "Scoring",
             "familyGeneralization": false,
             "rule": "Four artwork-established scoring outcomes: 5, 3, 1, and 0; unpublished course mechanics remain UNKNOWN."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": {
+              "homieChair": 247,
+              "qtChair": 283,
+              "skuTarget": "TSR-IV Blue",
+              "capabilityLabel": "COUNTING",
+              "capability": "Zone / Object Counting",
+              "implementationTreatment": "Neck line + pelvic zones / qualification regions; no invented values."
+            },
+            "founderAcceptance": "PENDING"
           }
         },
-        "recognizedBehaviorFamily": "VALUED_REGION_QUALIFICATION"
+        "recognizedBehaviorFamily": "VALUED_REGION_QUALIFICATION",
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
+        }
       },
-      "digest": "ff0296839863dffad954cf0b860dda0b772896465ccf86a68710858e77691fc9"
+      "digest": "d438a8d4679c3d7500d8e07f2af47fae590fa486b0ad46b5ac57a6ae9c0e06ff"
     }
   },
   "executor": {
@@ -760,7 +543,7 @@
         "status": "available"
       },
       "officialScore": {
-        "status": "available"
+        "status": "not_applicable"
       },
       "qualification": {
         "status": "not_applicable"

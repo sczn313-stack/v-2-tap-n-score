@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>QT Printer #13 · Founder Representative Review</title>
+  <style>
+    *{box-sizing:border-box}html,body{height:100%;margin:0;background:#080b10;color:#f5f7fa;font:13px system-ui,sans-serif}body{display:grid;grid-template-rows:auto minmax(0,1fr)}header{display:grid;grid-template-columns:auto minmax(220px,1fr) minmax(270px,auto);gap:8px;align-items:center;padding:8px;background:#101722;border-bottom:1px solid #334155}.nav{display:flex;align-items:center;gap:7px}button,.launch{min-height:38px;border:1px solid #80671c;border-radius:6px;background:#e4bd45;color:#111827;padding:7px 12px;font-weight:900;cursor:pointer;text-decoration:none}button:disabled{opacity:.42;cursor:not-allowed}#progress{min-width:108px;text-align:center;color:#f1cc62;font-size:15px;font-weight:900}select{width:100%;min-height:38px;border:1px solid #465568;border-radius:6px;background:#151f2b;color:#fff;padding:6px 9px;font-weight:750}.identity{min-width:0;text-align:right}.identity strong,.identity small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.identity small{color:#aeb9c8}.launch{display:inline-block;margin-top:3px}iframe{width:100%;height:100%;border:0;background:#080b10}@media(max-width:760px){header{grid-template-columns:1fr}.nav{justify-content:space-between}.identity{text-align:left}.launch{display:block;text-align:center}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav"><button id="previous">PREVIOUS ←</button><strong id="progress">Founder 1/5</strong><button id="next">→ NEXT</button></div>
+    <select id="selector" aria-label="Select one of five representative QT targets"></select>
+    <div class="identity"><strong id="name"></strong><small id="detail"></small><a class="launch" id="launch" target="_blank" rel="noopener">OPEN TARGET ↗</a></div>
+  </header>
+  <iframe id="experience" title="Selected representative QT Smart Target"></iframe>
+  <script>
+    const authorityPort = new URLSearchParams(location.search).get("authorityPort") || location.port || "8128";
+    const targets = [
+      {chair:150,name:"FBI-IP1 Paper Target",capability:"Scoring → USM",family:"BULLSEYE MULTI BULL",target:"qt_printer13_product_1974268231753",missionFamily:"targetScoring"},
+      {chair:143,name:"FAC-USAF-BAT Paper Target",capability:"Zone / Object Counting",family:"REPEATED OBJECT COUNTING",target:"qt_printer13_product_2195089817673",missionFamily:"targetScoring"},
+      {chair:285,name:"TX-PT Paper Target",capability:"Evidence Only",family:"EVIDENCE ONLY",target:"qt_printer13_product_1960344911945",missionFamily:"smartEvidenceCapture"},
+      {chair:192,name:"M16A2 Paper Target",capability:"Zeroing",family:"M16A2 ZEROING",target:"qualification_m16a2_25m_zero",missionFamily:"zeroingCorrection"},
+      {chair:288,name:"USMC-THREAT Paper Target",capability:"Zone / Object Counting",family:"ANATOMY VITAL REGIONS · FIVE ZONES",target:"qt_printer13_product_1891723542601",missionFamily:"targetScoring"}
+    ];
+    const selector=document.getElementById("selector"),experience=document.getElementById("experience"),progress=document.getElementById("progress"),previous=document.getElementById("previous"),next=document.getElementById("next"),launch=document.getElementById("launch"),name=document.getElementById("name"),detail=document.getElementById("detail");
+    targets.forEach((target,index)=>selector.add(new Option(`${index+1}/5 · QT #${target.chair} · ${target.name}`,String(index))));
+    let index=Math.max(0,Math.min(4,Number((location.hash.match(/target-(\d+)/)||[])[1]||1)-1));
+    function targetUrl(target){return target.capability==="Zeroing"?`../../../matrix.html?target_profile_id=${encodeURIComponent(target.target)}&missionFamily=zeroingCorrection&founder_review=1`:`../../../target-experience.html?missionFamily=${encodeURIComponent(target.missionFamily)}&target=${encodeURIComponent(target.target)}&source=registered&authorityPort=${encodeURIComponent(authorityPort)}&v=qt-printer13-checkpoint-review`;}
+    function render(){const target=targets[index],href=targetUrl(target);selector.value=String(index);progress.textContent=`Founder ${index+1}/5`;name.textContent=target.name;detail.textContent=`QT #${target.chair} · ${target.capability} · ${target.family}`;launch.href=href;previous.disabled=index===0;next.disabled=index===4;experience.src=href;history.replaceState(null,"",`${location.pathname}${location.search}#target-${index+1}`);}
+    function move(delta){const nextIndex=index+delta;if(nextIndex<0||nextIndex>=targets.length)return;index=nextIndex;render();}
+    previous.onclick=()=>move(-1);next.onclick=()=>move(1);selector.onchange=()=>{index=Number(selector.value);render();};document.addEventListener("keydown",event=>{if(event.target===selector)return;if(event.key==="ArrowLeft")move(-1);if(event.key==="ArrowRight")move(1);});render();
+  </script>
+</body>
+</html>

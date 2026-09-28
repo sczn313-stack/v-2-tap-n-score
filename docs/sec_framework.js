@@ -294,7 +294,9 @@
     "zeroing-correction",
     "highest-score-wins",
     "lowest-score-wins",
-    "qualification-pass-fail"
+    "qualification-pass-fail",
+    "counts-only",
+    "evidence-only"
   ]);
   const ACTION_NAMES = Object.freeze(["save", "share", "export", "note", "note-save", "history", "session-details"]);
 

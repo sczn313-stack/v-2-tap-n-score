@@ -14,16 +14,22 @@ BACKEND = Path(__file__).resolve().parents[1] / "backend"
 sys.path.insert(0, str(BACKEND))
 
 from execution_authority import ExecutionAuthorityError, execute_authoritative_session  # noqa: E402
-from preserved_sec_store import PreservedSECError, list_preserved_secs, preserve_sec, read_preserved_sec  # noqa: E402
+from preserved_sec_store import (  # noqa: E402
+    PostgresPreservedSECStore,
+    PreservedSECError,
+    list_preserved_secs,
+    preserve_sec,
+    read_preserved_sec,
+)
 from sec_reopen_authority import CAPABILITY_HEADER, SECReopenAuthorityError, issue_reopen_capability, verify_reopen_capability  # noqa: E402
-from session_authority import SessionAuthorityError, prepare_session, start_session  # noqa: E402
+from session_authority import PostgresSessionStore, SessionAuthorityError, prepare_session, start_session  # noqa: E402
 from target_execution_contract import runtime_resolver  # noqa: E402
-from test_target_execution_scale_architecture import MemoryStore  # noqa: E402
 
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("QT_EP64_AUTHORITY_PORT", "8118"))
 RESOLVER = runtime_resolver()
-STORE = MemoryStore()
+SESSION_STORE = PostgresSessionStore()
+PRESERVED_SEC_STORE = PostgresPreservedSECStore()
 M4_ADAPTER = BACKEND / "m4_authority/parity/authority_adapter.mjs"
 LOCAL_REOPEN_SIGNING_KEY = os.environ.get(
     "SCZN3_SEC_REOPEN_SIGNING_KEY",
@@ -69,18 +75,17 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(200, {"ok": True, "service": "qt-episode64-founder-review", "qtChairs": 254})
             return
         if parsed.path == "/api/target-execution/catalog":
-            catalog = [item for item in RESOLVER.catalog() if item["targetProfileId"].startswith("qt_printer13_product_")]
-            self.send_json(200, {"ok": True, "status": "approved_execution_contract_catalog", "targets": catalog})
+            self.send_json(200, {"ok": True, "status": "approved_execution_contract_catalog", "targets": RESOLVER.catalog()})
             return
         if parsed.path == "/api/session/sec":
             session_id = parse_qs(parsed.query).get("session", [""])[0]
             try:
                 if not session_id:
-                    self.send_json(200, list_preserved_secs(STORE)); return
+                    self.send_json(200, list_preserved_secs(PRESERVED_SEC_STORE)); return
                 claims = verify_reopen_capability(
                     self.headers.get(CAPABILITY_HEADER), session_id, key=LOCAL_REOPEN_SIGNING_KEY
                 )
-                package = read_preserved_sec(session_id, STORE)
+                package = read_preserved_sec(session_id, PRESERVED_SEC_STORE)
                 if claims["artifactSha256"] != package["artifactSha256"]:
                     raise SECReopenAuthorityError("preserved_sec_reopen_capability_invalid")
                 self.send_json(200, package); return
@@ -93,16 +98,16 @@ class Handler(BaseHTTPRequestHandler):
         try:
             payload = self.body()
             if path == "/api/session/prepare":
-                self.send_json(200, prepare_session(payload, STORE, execution_contract_resolver=RESOLVER)); return
+                self.send_json(200, prepare_session(payload, SESSION_STORE, execution_contract_resolver=RESOLVER)); return
             if path == "/api/session/start":
-                value = start_session(payload, STORE, idempotency_key=self.headers.get("Idempotency-Key"), execution_contract_resolver=RESOLVER)
+                value = start_session(payload, SESSION_STORE, idempotency_key=self.headers.get("Idempotency-Key"), execution_contract_resolver=RESOLVER)
                 self.send_json(200 if value.get("idempotentReplay") else 201, value); return
             if path == "/api/target-execution":
-                self.send_json(200, execute_authoritative_session(payload, STORE, resolver=RESOLVER)); return
+                self.send_json(200, execute_authoritative_session(payload, SESSION_STORE, resolver=RESOLVER)); return
             if path in {"/api/authority/m4", "/api/authority/m4/"}:
                 self.send_json(200, build_m4_authority(payload)); return
             if path == "/api/session/sec":
-                package = preserve_sec(payload, STORE, execution_contract_resolver=RESOLVER)
+                package = preserve_sec(payload, PRESERVED_SEC_STORE, execution_contract_resolver=RESOLVER)
                 package["reopenCapability"] = issue_reopen_capability(
                     package["session"]["sessionId"],
                     package["artifactSha256"],

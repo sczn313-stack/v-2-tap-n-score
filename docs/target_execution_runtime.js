@@ -198,19 +198,27 @@
   function evidenceMarkup(session, result) {
     const image = session && session.targetEvidenceImage || {};
     const source = clean(image.dataUrl || image.assetUrl);
+    const sourceWidth = Number(image.imageWidthPx || image.widthPx || image.width);
+    const sourceHeight = Number(image.imageHeightPx || image.heightPx || image.height);
+    const governedPlane = sourceWidth > 0 && sourceHeight > 0
+      ? ` data-ugo-projection-plane="normalized-source-image" style="--ugo-source-aspect:${sourceWidth} / ${sourceHeight};--ugo-evidence-max-width:${42 * sourceWidth / sourceHeight}vh"`
+      : "";
     const observations = preservedObservations(session, result, image);
     const markers = observations.map((observation, index) => `<span class="contract-observation-marker" style="left:${observation.xNorm * 100}%;top:${observation.yNorm * 100}%" aria-label="${escapeHtml(observation.label)}">${index + 1}</span>`).join("");
     const targetAim = shouldRenderGovernedAim(result.missionFamily) && result.aimStructure && result.aimStructure.mode === "fixed" && Array.isArray(result.aimStructure.points) ? result.aimStructure.points[0] : null;
     const aim = normalizedEvidencePoint(result.shooterDeclaredAimPoint || session && session.aimPoint || targetAim, image);
     const aimLabel = result.shooterDeclaredAimPoint ? "Shooter-declared aim point" : "Governed target aim point";
     const aimMarker = aim ? `<span class="contract-aim-marker" style="left:${aim.xNorm * 100}%;top:${aim.yNorm * 100}%" aria-label="${aimLabel}"></span>` : "";
-    return source ? `<figure class="contract-evidence"><div><img src="${escapeHtml(source)}" alt="Registered target session evidence" />${markers}${aimMarker}</div></figure>` : `<p>Evidence image unavailable.</p>`;
+    return source ? `<figure class="contract-evidence"><div${governedPlane}><img src="${escapeHtml(source)}" alt="Registered target session evidence" /><div class="contract-evidence-marker-layer">${markers}${aimMarker}</div></div></figure>` : `<p>Evidence image unavailable.</p>`;
   }
 
   function normalizedEvidencePoint(value, image = {}) {
     if (!value || typeof value !== "object") return null;
-    let x = Number(value.xNorm);
-    let y = Number(value.yNorm);
+    const canonical = value.canonicalTargetCoordinate && typeof value.canonicalTargetCoordinate === "object"
+      ? value.canonicalTargetCoordinate
+      : null;
+    let x = Number(canonical ? canonical.xNorm : value.xNorm);
+    let y = Number(canonical ? canonical.yNorm : value.yNorm);
     if (!Number.isFinite(x) || !Number.isFinite(y)) {
       x = Number(value.xPercent) / 100;
       y = Number(value.yPercent) / 100;
@@ -220,7 +228,12 @@
       y = Number(value.yPx) / Number(image.imageHeightPx || image.heightPx || image.height);
     }
     if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1) return null;
-    return { xNorm: x, yNorm: y };
+    if (canonical && clean(canonical.coordinateSystem) !== "normalized_source_image_top_left") return null;
+    return {
+      xNorm: x,
+      yNorm: y,
+      ...(canonical ? { canonicalTargetCoordinate: { ...canonical, xNorm: x, yNorm: y } } : {})
+    };
   }
 
   function preservedObservations(session, result, image = {}) {
@@ -241,7 +254,7 @@
     }).filter(Boolean);
   }
 
-  function sourceImagePoint(clientX, clientY, imageBox) {
+  function sourceImagePoint(clientX, clientY, imageBox, identity = {}) {
     const left = Number(imageBox && imageBox.left);
     const top = Number(imageBox && imageBox.top);
     const width = Number(imageBox && imageBox.width);
@@ -252,7 +265,90 @@
     const xNorm = (x - left) / width;
     const yNorm = (y - top) / height;
     if (xNorm < 0 || xNorm > 1 || yNorm < 0 || yNorm > 1) return null;
-    return { xNorm, yNorm };
+    const canonicalTargetCoordinate = Object.freeze({
+      schemaVersion: "sczn3.ugo.normalized-source-image-point.v1",
+      coordinateSystem: "normalized_source_image_top_left",
+      targetProfileId: clean(identity.targetProfileId),
+      sourceImageSha256: clean(identity.sourceImageSha256).toLowerCase(),
+      sourceImageWidthPx: Number(identity.sourceImageWidthPx),
+      sourceImageHeightPx: Number(identity.sourceImageHeightPx),
+      xNorm,
+      yNorm
+    });
+    return { xNorm, yNorm, canonicalTargetCoordinate };
+  }
+
+  function renderedImageContentBox(image) {
+    if (!image) return null;
+    const rect = image.getBoundingClientRect();
+    if (!(rect.width > 0 && rect.height > 0)) return null;
+    const style = global.getComputedStyle ? global.getComputedStyle(image) : null;
+    const leftInset = style ? (Number.parseFloat(style.borderLeftWidth) || 0) + (Number.parseFloat(style.paddingLeft) || 0) : 0;
+    const rightInset = style ? (Number.parseFloat(style.borderRightWidth) || 0) + (Number.parseFloat(style.paddingRight) || 0) : 0;
+    const topInset = style ? (Number.parseFloat(style.borderTopWidth) || 0) + (Number.parseFloat(style.paddingTop) || 0) : 0;
+    const bottomInset = style ? (Number.parseFloat(style.borderBottomWidth) || 0) + (Number.parseFloat(style.paddingBottom) || 0) : 0;
+    const contentWidth = Math.max(0, rect.width - leftInset - rightInset);
+    const contentHeight = Math.max(0, rect.height - topInset - bottomInset);
+    if (!(contentWidth > 0 && contentHeight > 0)) return null;
+    let left = rect.left + leftInset;
+    let top = rect.top + topInset;
+    let width = contentWidth;
+    let height = contentHeight;
+    const objectFit = clean(style && style.objectFit) || "fill";
+    const naturalWidth = Number(image.naturalWidth || 0);
+    const naturalHeight = Number(image.naturalHeight || 0);
+    if (["contain", "scale-down"].includes(objectFit) && naturalWidth > 0 && naturalHeight > 0) {
+      const scale = Math.min(contentWidth / naturalWidth, contentHeight / naturalHeight, ...(objectFit === "scale-down" ? [1] : []));
+      width = naturalWidth * scale;
+      height = naturalHeight * scale;
+      left += (contentWidth - width) / 2;
+      top += (contentHeight - height) / 2;
+    }
+    return { left, top, width, height, right: left + width, bottom: top + height };
+  }
+
+  function syncProjectionLayerToImage(layer, image, container) {
+    if (!layer || !image || !container) return false;
+    if (container.dataset && container.dataset.ugoProjectionPlane === "normalized-source-image") {
+      layer.style.inset = "0";
+      layer.style.left = "";
+      layer.style.top = "";
+      layer.style.width = "";
+      layer.style.height = "";
+      return true;
+    }
+    const imageBox = renderedImageContentBox(image);
+    const containerBox = container.getBoundingClientRect();
+    if (!imageBox || !(containerBox.width > 0 && containerBox.height > 0)) return false;
+    layer.style.inset = "auto";
+    layer.style.left = `${imageBox.left - containerBox.left - Number(container.clientLeft || 0)}px`;
+    layer.style.top = `${imageBox.top - containerBox.top - Number(container.clientTop || 0)}px`;
+    layer.style.width = `${imageBox.width}px`;
+    layer.style.height = `${imageBox.height}px`;
+    return true;
+  }
+
+  function bindProjectionLayer(layer, image, container) {
+    if (!layer || !image || !container) return;
+    const sync = () => syncProjectionLayerToImage(layer, image, container);
+    if (image.complete) requestAnimationFrame(sync);
+    else image.addEventListener("load", sync, { once: true });
+    if (typeof ResizeObserver === "function") {
+      const observer = new ResizeObserver(sync);
+      observer.observe(image);
+      observer.observe(container);
+    }
+    requestAnimationFrame(sync);
+  }
+
+  function bindEvidenceProjection(root = document) {
+    root.querySelectorAll(".contract-evidence>div").forEach(container => {
+      const image = container.querySelector("img");
+      const layer = container.querySelector(".contract-evidence-marker-layer");
+      if (!image || !layer || layer.dataset.projectionBound === "true") return;
+      layer.dataset.projectionBound = "true";
+      bindProjectionLayer(layer, image, container);
+    });
   }
 
   function targetUsesPointTerminology(scoring) {
@@ -437,7 +533,7 @@
     const totalTaps = Number(result && result.scoring && result.scoring.observationCount);
     const missed = Number.isFinite(totalTaps) ? Math.max(0, totalTaps - totalHits) : Number(result && result.scoring && result.scoring.outsideCount || 0);
     const reconciledTotal = totalHits + missed;
-    return `<details class="contract-numeric-region-results" data-numeric-region-detail="true" open><summary data-disclosure-control="true"><span>Scoring distribution</span><small>Region · Taps · Points</small><i data-disclosure-indicator="true" aria-hidden="true"></i></summary><div><table><thead><tr><th scope="col">Region</th><th scope="col">Taps</th><th scope="col">Points</th></tr></thead><tbody>${rows.map(item => `<tr><th scope="row">${escapeHtml(item.label)}</th><td>${escapeHtml(measuredNumber(item.hitCount))}</td><td>${item.value === null ? "Count only" : escapeHtml(measuredNumber(item.points))}</td></tr>`).join("")}<tr><th scope="row">Missed</th><td>${escapeHtml(measuredNumber(missed))}</td><td>—</td></tr><tr class="is-total"><th scope="row">Total</th><td>${escapeHtml(measuredNumber(reconciledTotal))}</td><td>${escapeHtml(measuredNumber(totalPoints))}</td></tr></tbody></table></div></details>`;
+    return `<details class="contract-numeric-region-results" data-numeric-region-detail="true"><summary data-disclosure-control="true"><span class="contract-distribution-title">Scoring distribution</span><span class="contract-disclosure-instruction contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">▼</b></span><span class="contract-disclosure-instruction contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">▲</b></span></summary><div><table><thead><tr><th scope="col">Region</th><th scope="col">Taps</th><th scope="col">Points</th></tr></thead><tbody>${rows.map(item => `<tr><th scope="row">${escapeHtml(item.label)}</th><td>${escapeHtml(measuredNumber(item.hitCount))}</td><td>${item.value === null ? "Count only" : escapeHtml(measuredNumber(item.points))}</td></tr>`).join("")}<tr><th scope="row">Missed</th><td>${escapeHtml(measuredNumber(missed))}</td><td>—</td></tr><tr class="is-total"><th scope="row">Total</th><td>${escapeHtml(measuredNumber(reconciledTotal))}</td><td>${escapeHtml(measuredNumber(totalPoints))}</td></tr></tbody></table></div></details>`;
   }
 
   function participantResultsMarkup(result) {
@@ -687,6 +783,256 @@
     return `<p class="contract-claim-grade"><strong>${escapeHtml(result.claim.displayLabel)}</strong></p><section class="contract-cue-records" aria-label="Publisher-defined collection and hand results">${rows}</section><small>${escapeHtml(comparisonLabel)} · Conventional poker meaning: Not established · Path/board/deck/casino behavior: Unavailable</small>`;
   }
 
+  function approvedResultContent(result, session = {}) {
+    if (!contractIdentity(result) || !targetIdentity(result) || !familyReconciles(result)) return "";
+    const resultSummary = summary(result);
+    const shotPattern = result.missionFamily === "targetScoring" || isQtPrinter13Result(result) ? "" : shotPatternMarkup(result, session);
+    return `${shooterFacingResultMarkup(result, resultSummary, session)}${shotPattern}${cueResultMarkup(result)}${qualificationResultMarkup(result)}${diagnosticResultMarkup(result)}${decisionResultMarkup(result)}${progressionResultMarkup(result)}${collectionHandResultMarkup(result)}`;
+  }
+
+  function approvedResultFamily(result) {
+    if (result && result.missionFamily === "smartEvidenceCapture") return "evidence-only";
+    if (result && result.missionFamily === "qualificationCourseEvaluation") return "qualification-pass-fail";
+    if (result && result.missionFamily === "targetScoring") {
+      const model = clean(result.scoring && result.scoring.model);
+      return ["numeric_regions", "penalty_regions", "mixed_regions"].includes(model) ? "highest-score-wins" : "counts-only";
+    }
+    if (result && result.missionFamily === "precisionRingScore") return "highest-score-wins";
+    return "counts-only";
+  }
+
+  function approvedResultComponent(result, session = {}) {
+    if (!global.SCZN3SECComponents || typeof global.SCZN3SECComponents.Result !== "function") return "";
+    const contentHtml = approvedResultContent(result, session);
+    if (!contentHtml) return "";
+    return global.SCZN3SECComponents.Result({ family: approvedResultFamily(result), contentHtml });
+  }
+
+  function isUsmProofTarget(targetId) {
+    return global.SCZN3USMProofRegistry?.isEligible?.(clean(targetId)) === true;
+  }
+
+  function preservedProgressionPoint(session) {
+    const result = canonicalResult(session);
+    const scoring = result && result.scoring;
+    const rows = scoring && Array.isArray(scoring.regionResults) ? scoring.regionResults : [];
+    const totalTaps = Number(scoring && scoring.observationCount);
+    const target = targetIdentity(result);
+    const score = Number(scoring && scoring.total);
+    const preservedAt = clean(session && (session.preservedAt || session.savedAt || session.timestamp));
+    const preservedTime = Date.parse(preservedAt);
+    const hitCounts = rows.map(row => Number(row && row.hitCount));
+    const hitTaps = hitCounts.reduce((sum, count) => sum + count, 0);
+    if (!target || clean(result && result.missionFamily) !== "targetScoring" || clean(scoring && scoring.model) !== "numeric_regions" || clean(scoring && scoring.status) !== "complete" || !Number.isFinite(score) || !Number.isInteger(totalTaps) || totalTaps <= 0 || !rows.length || hitCounts.some(count => !Number.isInteger(count) || count < 0) || hitTaps > totalTaps || !Number.isFinite(preservedTime)) return null;
+    return Object.freeze({
+      sessionId: clean(session.sessionId),
+      sessionLabel: clean(session.sessionLabel) || `Session #${clean(session.sessionNumber)}`,
+      targetId: target.id,
+      targetName: target.product.name,
+      preservedAt,
+      preservedTime,
+      score,
+      hitTaps,
+      totalTaps,
+      hitRate: Math.round((hitTaps * 10000) / totalTaps) / 100,
+      pointsPerTap: Math.round((score * 10) / totalTaps) / 10
+    });
+  }
+
+  function comparableProgressionSeries(sessions, targetId, totalTaps) {
+    return (Array.isArray(sessions) ? sessions : [])
+      .map(preservedProgressionPoint)
+      .filter(point => point && point.targetId === clean(targetId) && point.totalTaps === Number(totalTaps))
+      .sort((left, right) => left.preservedTime - right.preservedTime || left.sessionId.localeCompare(right.sessionId));
+  }
+
+  function targetHistorySeries(sessions, targetId) {
+    return (Array.isArray(sessions) ? sessions : [])
+      .map(preservedProgressionPoint)
+      .filter(point => point && point.targetId === clean(targetId))
+      .sort((left, right) => left.preservedTime - right.preservedTime || left.sessionId.localeCompare(right.sessionId));
+  }
+
+  function usmHistorySeries(sessions, targetId) {
+    return isUsmProofTarget(targetId) ? targetHistorySeries(sessions, targetId) : [];
+  }
+
+  function usmSessionDate(point) {
+    if (!point || !Number.isFinite(point.preservedTime)) return "";
+    return new Intl.DateTimeFormat("en-US", { month: "2-digit", day: "2-digit", year: "2-digit" }).format(new Date(point.preservedTime));
+  }
+
+  function progressionChartMarkup(points, { label, valueKey, maximum, suffix = "", seriesHeading = "", seriesSupport = "" }) {
+    const pointSpacing = 72;
+    const width = Math.max(640, 52 + Math.max(1, points.length - 1) * pointSpacing + 52);
+    const height = 196;
+    const left = 52;
+    const right = 52;
+    const top = 34;
+    const bottom = 58;
+    const chartWidth = width - left - right;
+    const chartHeight = height - top - bottom;
+    const ceiling = Math.max(1, Number(maximum));
+    const xAt = index => left + (points.length === 1 ? chartWidth / 2 : (chartWidth * index) / (points.length - 1));
+    const yAt = value => top + chartHeight - (Math.max(0, Math.min(ceiling, Number(value))) / ceiling) * chartHeight;
+    const path = points.map((point, index) => `${xAt(index)},${yAt(point[valueKey])}`).join(" ");
+    const tickValues = [ceiling, ceiling / 2, 0];
+    const ticks = tickValues.map(value => `<g><line x1="${left}" y1="${yAt(value)}" x2="${width - right}" y2="${yAt(value)}"></line><text x="${left - 6}" y="${yAt(value) + 3}" text-anchor="end">${escapeHtml(Number.isInteger(value) ? value : value.toFixed(1))}</text></g>`).join("");
+    const values = points.map((point, index) => {
+      const value = Number(point[valueKey]);
+      const displayValue = valueKey === "hitRate"
+        ? `${Number.isInteger(value) ? value : value.toFixed(2)}%`
+        : (valueKey === "pointsPerTap" ? value.toFixed(1) : String(value));
+      const shortLabel = clean(point.sessionLabel).replace(/^Session\s*/i, "");
+      const dateLabel = usmSessionDate(point);
+      const textAnchor = index === 0 ? "start" : (index === points.length - 1 ? "end" : "middle");
+      const bandLeft = Math.max(0, xAt(index) - pointSpacing / 2);
+      const bandRight = Math.min(width, xAt(index) + pointSpacing / 2);
+      return `<g class="contract-progression-point${index % 2 ? " is-alternate" : ""}" data-usm-session-id="${escapeHtml(point.sessionId)}" role="button" tabindex="0" aria-label="Select ${escapeHtml(point.sessionLabel)} from ${escapeHtml(dateLabel)}"><rect class="contract-progression-band" x="${bandLeft}" y="0" width="${bandRight - bandLeft}" height="${height}"></rect><circle cx="${xAt(index)}" cy="${yAt(value)}" r="6"></circle><text class="contract-progression-value" x="${xAt(index)}" y="${Math.max(15, yAt(value) - 10)}" text-anchor="${textAnchor}">${escapeHtml(displayValue)}</text><text class="contract-progression-session" x="${xAt(index)}" y="${height - 29}" text-anchor="${textAnchor}">${escapeHtml(shortLabel)}</text><text class="contract-progression-date" x="${xAt(index)}" y="${height - 12}" text-anchor="${textAnchor}">${escapeHtml(dateLabel)}</text></g>`;
+    }).join("");
+    const cohort = seriesHeading ? `<p class="contract-history-series-heading">${escapeHtml(seriesHeading)}</p>${seriesSupport ? `<p class="contract-history-series-support">${escapeHtml(seriesSupport)}</p>` : ""}` : "";
+    return `<section class="contract-progression-chart" aria-label="${escapeHtml(label)} by preserved session">${cohort}<h3>${escapeHtml(label)}</h3><div class="contract-history-chart-scroll" data-history-chart-scroll tabindex="0" role="region" aria-label="${escapeHtml(label)} history; swipe horizontally for older sessions"><svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(label)} for ${escapeHtml(points.length)} chronological preserved sessions"><g class="contract-progression-grid">${ticks}</g><polyline points="${path}"></polyline>${values}</svg></div>${suffix ? `<small>${escapeHtml(suffix)}</small>` : ""}</section>`;
+  }
+
+  function usmNumber(value, digits = 2) {
+    return Number.isInteger(value) ? String(value) : Number(value).toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+  }
+
+  function usmMathDisclosure(point, reopenHref = "", open = false, accessState = "ready") {
+    if (!point) {
+      return "";
+    }
+    const exactHitRate = (point.hitTaps * 100) / point.totalTaps;
+    const exactPointsPerTap = point.score / point.totalTaps;
+    const hitRelation = Math.abs(exactHitRate - point.hitRate) < 0.0000001 ? "=" : "≈";
+    const pointsRelation = Math.abs(exactPointsPerTap - point.pointsPerTap) < 0.0000001 ? "=" : "≈";
+    const openSEC = reopenHref
+      ? `<a class="contract-usm-open-sec" href="${escapeHtml(reopenHref)}"><span aria-hidden="true">▤</span> OPEN ${escapeHtml(point.sessionLabel.toUpperCase())} SEC →</a>`
+      : `<span class="contract-usm-open-sec is-unavailable" aria-disabled="true">${accessState === "recovering" ? "OPENING SEC ACCESS…" : "OPEN SEC UNAVAILABLE"}</span>`;
+    return `<details class="contract-usm-math" data-usm-selected-detail data-usm-selected-session-id="${escapeHtml(point.sessionId)}"${open ? " open" : ""}><summary><strong>${escapeHtml(point.sessionLabel.toUpperCase())}</strong><time datetime="${escapeHtml(point.preservedAt)}">${escapeHtml(usmSessionDate(point))}</time><b aria-hidden="true"></b></summary><div><p><span class="contract-usm-metric-label">SCORE</span><strong>${escapeHtml(point.score)}</strong><span>${escapeHtml(point.score)} points ÷ ${escapeHtml(point.totalTaps)} taps<br>${pointsRelation} ${escapeHtml(point.pointsPerTap.toFixed(1))} points per tap</span></p><p><span class="contract-usm-metric-label">HIT RATE</span><strong>${escapeHtml(usmNumber(point.hitRate))}%</strong><span>${escapeHtml(point.hitTaps)} hits ÷ ${escapeHtml(point.totalTaps)} taps<br>${hitRelation} ${escapeHtml(usmNumber(point.hitRate))}%</span></p><p><span class="contract-usm-metric-label">POINTS PER TAP</span><strong>${escapeHtml(point.pointsPerTap.toFixed(1))}</strong><span>${escapeHtml(point.score)} points ÷ ${escapeHtml(point.totalTaps)} taps<br>${pointsRelation} ${escapeHtml(point.pointsPerTap.toFixed(1))}</span></p>${openSEC}</div></details>`;
+  }
+
+  function usmDrawerMarkup(points, currentSessionId = "") {
+    const series = Array.isArray(points) ? points : [];
+    if (!series.length || !isUsmProofTarget(series[0].targetId)) return "";
+    const targetName = series[0].targetName;
+    const detailsLabel = /^B27E\b/i.test(targetName) ? "B27E DETAILS" : `${targetName || "TARGET"} DETAILS`;
+    const currentPoint = series.find(point => point.sessionId === clean(currentSessionId)) || null;
+    const scoreChart = progressionChartMarkup(series, {
+      label: "Score",
+      valueKey: "score",
+      maximum: Math.max(10, Math.ceil(Math.max(...series.map(point => point.score)) / 10) * 10)
+    });
+    const hitRateChart = progressionChartMarkup(series, {
+      label: "Hit Rate",
+      valueKey: "hitRate",
+      maximum: 100,
+      suffix: ""
+    });
+    const pointsPerTapChart = progressionChartMarkup(series, {
+      label: "Points per Tap",
+      valueKey: "pointsPerTap",
+      maximum: Math.max(1, Math.ceil(Math.max(...series.map(point => point.pointsPerTap)))),
+      suffix: ""
+    });
+    return `<details class="contract-progression-drawer contract-usm-drawer" data-contract-progression-drawer="true" data-usm-proof-target="${escapeHtml(series[0].targetId)}"><summary><span class="contract-usm-history-identity"><em>3 · HISTORY</em><i>|</i><strong>${escapeHtml(targetName)}</strong></span><span class="contract-usm-details-label">${escapeHtml(detailsLabel)}</span><b aria-hidden="true"></b></summary><div class="contract-progression-body"><p class="contract-usm-heading">SCORE <i>|</i> HIT RATE <i>|</i> POINTS PER TAP</p><p class="contract-usm-instruction">TAP ANY BULLET TO VIEW THAT SESSION</p><div class="contract-progression-charts">${scoreChart}${hitRateChart}${pointsPerTapChart}</div><div data-usm-selected-detail-host>${usmMathDisclosure(currentPoint)}</div></div></details>`;
+  }
+
+  function usmReopenBaseHref(sessionId) {
+    return `target-experience.html?session=${encodeURIComponent(sessionId)}&view=sec${localAuthoritySuffix()}`;
+  }
+
+  function initializeUSMInteractions(host, points, sourceSessions, endpoint, initialSessionId) {
+    const scrollers = Array.from(host.querySelectorAll("[data-history-chart-scroll]"));
+    const pointById = new Map(points.map(point => [point.sessionId, point]));
+    const sourceById = new Map((Array.isArray(sourceSessions) ? sourceSessions : []).map(session => [clean(session && session.sessionId), session]));
+    const detailHost = host.querySelector("[data-usm-selected-detail-host]");
+    let selectedSessionId = pointById.has(clean(initialSessionId)) ? clean(initialSessionId) : points[points.length - 1].sessionId;
+    let synchronizingScroll = false;
+
+    const exactReopenHref = sessionId => {
+      const base = usmReopenBaseHref(sessionId);
+      const portable = global.SCZN3SECReopenAuthority?.portableUrl(base, sessionId) || base;
+      return portable.includes(`#${global.SCZN3SECReopenAuthority?.FRAGMENT_KEY || "secReopenCapability"}=`) ? portable : "";
+    };
+
+    const paintSelection = (sessionId, open, reopenHref = "", accessState = "ready") => {
+      const point = pointById.get(sessionId);
+      if (!point || !detailHost) return;
+      selectedSessionId = sessionId;
+      host.dataset.usmSelectedSessionId = sessionId;
+      host.querySelectorAll("[data-usm-session-id]").forEach(node => {
+        const selected = node.getAttribute("data-usm-session-id") === sessionId;
+        node.classList.toggle("is-selected", selected);
+        node.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+      detailHost.innerHTML = usmMathDisclosure(point, reopenHref, open, accessState);
+    };
+
+    const selectSession = async (sessionId, open = true) => {
+      const point = pointById.get(sessionId);
+      if (!point) return;
+      let reopenHref = exactReopenHref(sessionId);
+      paintSelection(sessionId, open, reopenHref, reopenHref ? "ready" : "recovering");
+      if (reopenHref) return;
+      const sourceSession = sourceById.get(sessionId);
+      if (!sourceSession || !global.SCZN3SECReopenAuthority?.provePossession) {
+        if (selectedSessionId === sessionId) paintSelection(sessionId, open, "", "unavailable");
+        return;
+      }
+      try {
+        await global.SCZN3SECReopenAuthority.provePossession(endpoint, sourceSession);
+        reopenHref = exactReopenHref(sessionId);
+      } catch (_) {
+        reopenHref = "";
+      }
+      if (selectedSessionId === sessionId) paintSelection(sessionId, open, reopenHref, reopenHref ? "ready" : "unavailable");
+    };
+
+    scrollers.forEach(source => source.addEventListener("scroll", () => {
+      if (synchronizingScroll) return;
+      synchronizingScroll = true;
+      scrollers.forEach(target => { if (target !== source) target.scrollLeft = source.scrollLeft; });
+      global.requestAnimationFrame(() => { synchronizingScroll = false; });
+    }, { passive: true }));
+
+    host.querySelectorAll("[data-usm-session-id]").forEach(node => {
+      const activate = () => selectSession(clean(node.getAttribute("data-usm-session-id")), true);
+      node.addEventListener("click", activate);
+      node.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        activate();
+      });
+    });
+
+    global.requestAnimationFrame(() => {
+      scrollers.forEach(scroller => { scroller.scrollLeft = scroller.scrollWidth; });
+      selectSession(selectedSessionId, true);
+    });
+  }
+
+  async function hydrateProgression(root = document) {
+    const hosts = Array.from(root.querySelectorAll("[data-contract-progression-host]"));
+    if (!hosts.length) return;
+    const local = ["127.0.0.1", "localhost", "[::1]"].includes(global.location && global.location.hostname);
+    const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(global.location && global.location.hostname || "") || /\.local$/i.test(global.location && global.location.hostname || "");
+    const origin = local ? `http://127.0.0.1:${localAuthorityPort() || "8098"}` : (privateLan ? "" : "https://sczn3-authority.onrender.com");
+    const endpoint = `${origin}/api/session/sec`;
+    const response = await global.fetch(endpoint, { headers: { Accept: "application/json" } });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload || !Array.isArray(payload.sessions)) return;
+    hosts.forEach(host => {
+      const targetId = clean(host.dataset.progressionTargetId);
+      const points = usmHistorySeries(payload.sessions, targetId);
+      const markup = usmDrawerMarkup(points, host.dataset.usmCurrentSessionId);
+      if (!markup) return;
+      host.innerHTML = markup;
+      host.hidden = false;
+      initializeUSMInteractions(host, points, payload.sessions, endpoint, host.dataset.usmCurrentSessionId);
+    });
+  }
+
   function renderSEC({ session = {}, package: supplied = null, mode = "live", preserved = session.savedToSEC === true } = {}) {
     const result = supplied || canonicalResult(session);
     const contract = contractIdentity(result);
@@ -696,26 +1042,50 @@
     if (!global.SCZN3SEC || !view || !view.ok || !target || !familyReconciles(result)) return global.SCZN3SEC ? global.SCZN3SEC.renderUnavailable("Result unavailable") : "";
     const product = target.product;
     const publisher = target.publisher;
-    const resultSummary = summary(result);
     const vaultHref = `records.html?runtimeView=sec-readable-diagnostic-1${localAuthorityPort() ? `&authorityPort=${encodeURIComponent(localAuthorityPort())}` : ""}`;
-    const reopenHref = `target-experience.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec${localAuthoritySuffix()}`;
+    const reopenBaseHref = `target-experience.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec${localAuthoritySuffix()}`;
+    const reopenHref = global.SCZN3SECReopenAuthority?.portableUrl(reopenBaseHref, session.sessionId) || reopenBaseHref;
     const actions = mode === "historical"
       ? global.SCZN3SECComponents.ActionBar({ actions: [{ label: "Ballistic Vault", href: vaultHref, action: "history" }] })
-      : global.SCZN3SECComponents.ActionBar({ actions: preserved
-        ? [{ label: "SEC Preserved", action: "save", disabled: true }, { label: "Ballistic Vault", href: vaultHref, action: "history" }, { label: "Exact Reopen", href: reopenHref, action: "history", primary: true }]
-        : [{ label: "Save SEC", action: "save", primary: true }], afterHtml: '<span data-contract-save-status role="status" aria-live="polite"></span>' });
-    return global.SCZN3SEC.render({
-      schemaVersion: "1.2", recordId: clean(session.sessionId || result.progressionEvaluationId) || "contract-sec", missionFamily: result.missionFamily,
-      sessionLabel: clean(session.sessionLabel) || "Session", scoreDisplay: resultSummary.value,
-      articleClassName: "history-card contract-family-sec-card",
-      articleAttributes: { "data-target-id": target.id, "data-target-profile-id": target.id, "data-target-profile-version": target.version, "data-sec-adapter-id": contract.secAdapterFamilyId, "data-contract-fingerprint": contract.contractFingerprint, "data-publisher-id": publisher.id, "data-product-id": product.id, "data-sec-mode": mode },
-      afterHtml: objectScoreboardMarkup(result),
-      regions: [
-        { key: "target", className: "sec-v1-evidence-content", ariaLabel: "Target", contentHtml: `<section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>${result.missionFamily === "secProgressionEvaluation" ? "" : global.SCZN3SECComponents.Evidence({ contentHtml: evidenceMarkup(session, result) })}` },
-        { key: "session", className: "sec-v1-measurement-content", ariaLabel: "Session Result", contentHtml: global.SCZN3SECComponents.Measurement({ contentHtml: `${shooterFacingResultMarkup(result, resultSummary, session)}${isQtPrinter13Result(result) ? "" : shotPatternMarkup(result, session)}${cueResultMarkup(result)}${qualificationResultMarkup(result)}${diagnosticResultMarkup(result)}${decisionResultMarkup(result)}${progressionResultMarkup(result)}${collectionHandResultMarkup(result)}` }) },
-        { key: "actions", className: "sec-v1-preservation-content", ariaLabel: "Shooter Action Bar", contentHtml: global.SCZN3SECComponents.Preservation({ contentHtml: actions }) }
-      ]
-    });
+      : global.SCZN3SECComponents.ActionBar({ actions: [
+        { label: preserved ? "SEC Preserved" : "Save SEC", action: "save", primary: !preserved, disabled: preserved },
+        ...(preserved ? [{ label: "Ballistic Vault", href: vaultHref, action: "history" }] : []),
+        ...(preserved ? [{ label: "Exact Reopen", href: reopenHref, action: "history" }] : [])
+      ], afterHtml: '<span data-contract-save-status role="status" aria-live="polite"></span>' });
+    const sessionLabel = clean(session.sessionLabel) || "Session";
+    const preservedAt = clean(session.preservedAt || session.savedAt || session.timestamp);
+    const dateLabel = preservedAt && !Number.isNaN(Date.parse(preservedAt))
+      ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(preservedAt))
+      : "";
+    const identityAttributes = [
+      ["data-session-id", clean(session.sessionId || result.authoritativeSessionId)],
+      ["data-target-id", target.id],
+      ["data-target-profile-id", target.id],
+      ["data-target-profile-version", target.version],
+      ["data-sec-adapter-id", contract.secAdapterFamilyId],
+      ["data-contract-fingerprint", contract.contractFingerprint],
+      ["data-publisher-id", publisher.id],
+      ["data-product-id", product.id],
+      ["data-sec-mode", mode]
+    ].map(([key, value]) => `${key}="${escapeHtml(value)}"`).join(" ");
+    const before = result.missionFamily === "secProgressionEvaluation"
+      ? ""
+      : `<figure class="contract-lifecycle-pane contract-lifecycle-before"><figcaption>BEFORE</figcaption>${global.SCZN3SECComponents.Evidence({ contentHtml: evidenceMarkup(session, result) })}</figure>`;
+    const progressionTapCount = Number(result && result.scoring && result.scoring.observationCount);
+    const progressionHost = isUsmProofTarget(target.id) && result.missionFamily === "targetScoring" && clean(result.scoring && result.scoring.model) === "numeric_regions" && Number.isFinite(progressionTapCount) && progressionTapCount > 0
+      ? `<section class="contract-progression-host" data-contract-progression-host data-progression-target-id="${escapeHtml(target.id)}" data-usm-current-session-id="${escapeHtml(clean(session.sessionId || result.authoritativeSessionId))}" hidden></section>`
+      : "";
+    return `<article class="contract-lifecycle-record" ${identityAttributes}>
+      <header class="contract-lifecycle-header"><strong>${escapeHtml(sessionLabel)}</strong>${dateLabel ? `<time datetime="${escapeHtml(preservedAt)}">${escapeHtml(dateLabel)}</time>` : ""}</header>
+      <section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>
+      <section class="contract-lifecycle-pair" aria-label="Preserved target evidence and approved result">
+        ${before}
+        <figure class="contract-lifecycle-pane contract-lifecycle-result"><figcaption>RESULT</figcaption>${approvedResultComponent(result, session)}</figure>
+      </section>
+      ${objectScoreboardMarkup(result)}
+      ${progressionHost}
+      <footer class="contract-lifecycle-actions" aria-label="Shooter Action Bar">${global.SCZN3SECComponents.Preservation({ contentHtml: actions })}</footer>
+    </article>`;
   }
 
   function vaultResultSummary(result, session = {}) {
@@ -772,51 +1142,14 @@
       const numeric = ["numeric_regions", "penalty_regions", "mixed_regions"].includes(scoring.model);
       const multiple = scoring.model === "multiple_bulls";
       const ordered = scoring.model === "ordered_objects";
-      const objectResults = Array.isArray(scoring.objectResults) ? scoring.objectResults : [];
-      const hitCount = objectResults.filter(item => item.hit === true).length;
-      const hitRate = result.sczn3Metrics && result.sczn3Metrics.hitRate;
-      const progress = session && session.sczn3Progress;
-      const numericObjects = numericObjectMeasurements(result);
-      const numericRegions = numericObjects.length ? [] : numericRegionMeasurements(result);
-      const groups = numericObjects.length ? [] : objectResultGroups(result);
-      const metricRows = hitRate && Number.isFinite(Number(hitRate.percentage)) ? [
-        { label: "SCZN3 Hit Rate", value: `${hitRate.percentage}%` },
-        ...(progress && progress.previous ? [{ label: "Previous", value: `${progress.previous.percentage}%` }] : [])
-      ] : [];
+      const hitCount = rows.filter(row => row.hit).length;
       return Object.freeze({
         status: "complete",
-        primaryValue: Array.isArray(scoring.participantResults) && scoring.participantResults.length ? scoring.participantResults.map(item => `${item.label} ${measuredNumber(item.finalScore)}`).join(" | ") : (numeric ? (scoring.xCount ? `${scoring.total}-${scoring.xCount}X` : String(scoring.total)) : (multiple ? `${hitCount}/${objectResults.length}` : (ordered ? String(scoring.completedInOrder) : String(scoring.observationCount)))),
-        primaryUnit: Array.isArray(scoring.participantResults) && scoring.participantResults.length ? "FINAL SCORES" : (numeric ? (scoring.model === "penalty_regions" ? "PENALTY" : "POINTS") : (multiple ? "TARGET OBJECTS HIT" : (ordered ? "IN ORDER" : "TARGET AREAS"))),
+        primaryValue: numeric ? String(scoring.total) : (multiple ? String(hitCount) : (ordered ? String(scoring.completedInOrder) : String(scoring.observationCount))),
+        primaryUnit: numeric ? (scoring.model === "penalty_regions" ? "PENALTY" : "POINTS") : (multiple ? "OBJECTS HIT" : (ordered ? "IN ORDER" : "CLASSIFIED")),
         objectiveLabel: value.label.toUpperCase(),
-        breakdown: groups.length ? metricRows : [...metricRows, ...rows.filter(row => Number(row.value) > 0).map(row => ({ label: row.label, value: row.displayValue }))],
-        evidenceLabel: `${scoring.observationCount} total tap${scoring.observationCount === 1 ? "" : "s"}`,
-        groups,
-        numericObjects,
-        objectScoreboard: scoring.objectScoreboard && scoring.objectScoreboard.mode === "score_x" ? {
-          mode: "score_x",
-          heading: clean(scoring.objectScoreboard.heading),
-          totalScoreLabel: clean(scoring.objectScoreboard.totalScoreLabel),
-          totalXCountLabel: clean(scoring.objectScoreboard.totalXCountLabel)
-        } : null,
-        numericRegions,
-        scoringMode: scoring.scoringMode && clean(scoring.scoringMode.modeId) && clean(scoring.scoringMode.label) ? { modeId: clean(scoring.scoringMode.modeId), label: clean(scoring.scoringMode.label) } : null,
-        participantResults: Array.isArray(scoring.participantResults) ? scoring.participantResults : [],
-        tapSummary: numeric ? shotTapSummary(result) : objectTapSummary(result),
-        hitRate: hitRate && Number.isFinite(Number(hitRate.percentage)) ? {
-          percentage: Number(hitRate.percentage),
-          validHitCount: Number(hitRate.validHitCount),
-          governedShotCount: Number(hitRate.governedShotCount)
-        } : null,
-        objectCoverage: result.sczn3Metrics && result.sczn3Metrics.objectCoverage || null,
-        shotPattern: isQtPrinter13Result(result) ? null : result.sczn3Metrics && result.sczn3Metrics.shotPattern || null,
-        progress: progress && progress.previous ? {
-          previousPercentage: Number(progress.previous.percentage),
-          percentagePointChange: Number(progress.percentagePointChange),
-          previousTargetScore: Number(progress.previous.targetScore),
-          scoreChange: Number(progress.scoreChange),
-          bestTargetScore: Number(progress.best && progress.best.targetScore && progress.best.targetScore.value),
-          bestHitRate: Number(progress.best && progress.best.hitRate && progress.best.hitRate.percentage)
-        } : null,
+        breakdown: rows.map(row => ({ label: row.label, value: row.displayValue })),
+        evidenceLabel: `${scoring.observationCount} governed observation${scoring.observationCount === 1 ? "" : "s"}`,
       });
     }
     return Object.freeze({ status: "unavailable", primaryLabel: value.label.toUpperCase(), objectiveLabel: value.value, evidenceLabel: value.detail });
@@ -840,6 +1173,7 @@
       markers: observations.map((observation, index) => ({
         xPercent: observation.xNorm * 100,
         yPercent: observation.yNorm * 100,
+        ...(observation.canonicalTargetCoordinate ? { canonicalTargetCoordinate: observation.canonicalTargetCoordinate } : {}),
         label: String(index + 1)
       })),
       aimPoint: aim ? { xPercent: aim.xNorm * 100, yPercent: aim.yNorm * 100, label: "Aim" } : null
@@ -880,6 +1214,8 @@
   function initializeSECInteractions(root = document, preferredRegion = "target") {
     global.SCZN3SECReopenLifecycle?.initialize(root, preferredRegion);
     bindRepeatedObjectAccordions(root);
+    bindEvidenceProjection(root);
+    hydrateProgression(root).catch(() => {});
   }
 
   function hasExecutableRegisteredAsset(registration) {
@@ -897,7 +1233,7 @@
     return compact;
   }
 
-  global.SCZN3TargetExecutionRuntime = Object.freeze({ bindRepeatedObjectAccordions, initializeSECInteractions, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, sourceImagePoint });
+  global.SCZN3TargetExecutionRuntime = Object.freeze({ bindRepeatedObjectAccordions, initializeSECInteractions, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, approvedResultComponent, approvedResultContent, approvedResultFamily, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, comparableProgressionSeries, targetHistorySeries, usmHistorySeries, usmDrawerMarkup, hydrateProgression, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, normalizedEvidencePoint, preservedObservations, sourceImagePoint, renderedImageContentBox, syncProjectionLayerToImage });
 
   function initializePage() {
     const root = document.querySelector("[data-contract-target-page]");
@@ -952,14 +1288,27 @@
       if (secStatus) secStatus.textContent = message;
     };
 
+    function syncTargetProjection() {
+      const image = byId("contractTargetImage");
+      const frame = image && image.closest(".contract-image-frame");
+      if (!image || !frame) return;
+      syncProjectionLayerToImage(byId("contractMarkers"), image, frame);
+      syncProjectionLayerToImage(byId("contractTapSurface"), image, frame);
+    }
+
     function fitTargetImage() {
       if (!state.image || !Number(state.image.widthPx) || !Number(state.image.heightPx)) return;
       const image = byId("contractTargetImage");
       const maximumWidth = Math.max(240, Math.min(1040, document.documentElement.clientWidth - 32));
       const maximumHeight = Math.max(300, Math.min(760, window.innerHeight * 0.68));
       const scale = Math.min(maximumWidth / state.image.widthPx, maximumHeight / state.image.heightPx, 4);
-      image.style.width = `${Math.round(state.image.widthPx * scale)}px`;
-      image.style.height = `${Math.round(state.image.heightPx * scale)}px`;
+      const frame = image.closest(".contract-image-frame");
+      if (frame) frame.dataset.ugoProjectionPlane = "normalized-source-image";
+      image.style.width = `${state.image.widthPx * scale}px`;
+      image.style.height = `${state.image.heightPx * scale}px`;
+      image.style.aspectRatio = `${state.image.widthPx} / ${state.image.heightPx}`;
+      image.style.objectFit = "fill";
+      requestAnimationFrame(syncTargetProjection);
     }
 
     function participantObjects() {
@@ -997,6 +1346,7 @@
     function paintMarkers() {
       const fixedAim = shouldRenderGovernedAim(missionFamily) && state.interaction.aim && state.interaction.aim.mode === "fixed" ? state.interaction.aim.points[0] : null;
       byId("contractMarkers").innerHTML = state.observations.map((point, index) => `<span class="contract-observation-marker" style="left:${point.xNorm * 100}%;top:${point.yNorm * 100}%">${index + 1}</span>`).join("") + (state.aim ? `<span class="contract-aim-marker" style="left:${state.aim.xNorm * 100}%;top:${state.aim.yNorm * 100}%"></span>` : (fixedAim ? `<span class="contract-aim-marker" style="left:${fixedAim.xNorm * 100}%;top:${fixedAim.yNorm * 100}%"></span>` : ""));
+      syncTargetProjection();
       byId("contractObservationCount").textContent = String(state.observations.length);
       const shooterReviewAvailable = !state.isStaged && state.observations.length > 0;
       byId("contractUndoObservation").hidden = !shooterReviewAvailable;
@@ -1238,12 +1588,22 @@
 
     byId("contractStart").addEventListener("click", () => start().catch(error => status(`Unavailable: ${error.message}`)));
     byId("contractFile").addEventListener("change", event => loadFile(event.target.files[0]).catch(error => status(`Unable to load evidence: ${error.message}`)));
-    byId("contractTapSurface").addEventListener("click", event => { const point = sourceImagePoint(event.clientX, event.clientY, byId("contractTargetImage").getBoundingClientRect()); if (!point) { status("Tap inside the visible target image."); return; } if (state.aimMode) { state.aim = point; state.aimMode = false; } else { const objects = participantObjects(); if (objects.length && !state.selectedObjectId) { status("Choose the governed scoring object before recording the shot."); return; } state.observations.push(objects.length ? { ...point, declaredObjectId: state.selectedObjectId } : point); status("Review your shots. Undo, Clear, or Show Result."); } paintMarkers(); });
+    byId("contractTapSurface").addEventListener("click", event => { const point = sourceImagePoint(event.clientX, event.clientY, renderedImageContentBox(byId("contractTargetImage")), { targetProfileId: targetId, sourceImageSha256: state.image && state.image.sha256, sourceImageWidthPx: state.image && state.image.widthPx, sourceImageHeightPx: state.image && state.image.heightPx }); if (!point) { status("Tap inside the visible target image."); return; } if (state.aimMode) { state.aim = point; state.aimMode = false; } else { const objects = participantObjects(); if (objects.length && !state.selectedObjectId) { status("Choose the governed scoring object before recording the shot."); return; } state.observations.push(objects.length ? { ...point, declaredObjectId: state.selectedObjectId } : point); status("Review your shots. Undo, Clear, or Show Result."); } paintMarkers(); });
     byId("contractUndoObservation").addEventListener("click", () => { if (!state.observations.length) return; state.observations.pop(); paintMarkers(); status(state.observations.length ? "Last shot removed. Review your shots, Undo, Clear, or Show Result." : "Last shot removed. Tap your shot holes."); });
     byId("contractClearObservations").addEventListener("click", () => { if (!state.observations.length) return; state.observations = []; paintMarkers(); status("Shots cleared. Tap your shot holes."); });
     byId("contractObjectChoices").addEventListener("click", event => { const button = event.target.closest("[data-contract-object]"); if (!button || button.disabled) return; state.selectedObjectId = clean(button.dataset.contractObject); renderObjectCourse(); status("Scoring object selected. Tap that printed object."); });
     byId("contractMarkAim").addEventListener("click", () => { state.aimMode = true; status("Tap the shooter-declared aim point."); });
-    window.addEventListener("resize", fitTargetImage);
+    const targetImage = byId("contractTargetImage");
+    const targetFrame = targetImage && targetImage.closest(".contract-image-frame");
+    if (targetImage && targetFrame) {
+      targetImage.addEventListener("load", syncTargetProjection);
+      if (typeof ResizeObserver === "function") {
+        const targetProjectionObserver = new ResizeObserver(syncTargetProjection);
+        targetProjectionObserver.observe(targetImage);
+        targetProjectionObserver.observe(targetFrame);
+      }
+    }
+    window.addEventListener("resize", () => { fitTargetImage(); syncTargetProjection(); });
     byId("contractShowResult").addEventListener("click", () => showResult().catch(error => status(`Result unavailable: ${error.message}`)));
     byId("contractCueIssue").addEventListener("click", () => issueCue().catch(error => status(`Cue unavailable: ${error.message}`)));
     byId("contractCueNoObservation").addEventListener("click", () => recordNoObservation().catch(error => status(`Evidence unavailable: ${error.message}`)));

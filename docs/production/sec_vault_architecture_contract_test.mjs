@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [sec, m4Adapter, sharedShell, records, lifecycle, appState, navigation, secCss, vaultCss, futureAuthority] = await Promise.all([
+const [sec, m4Adapter, sharedShell, records, lifecycle, appState, navigation, secCss, vaultCss, futureAuthority, targetRuntime, secDispatch] = await Promise.all([
   readFile("sec.html", "utf8"),
   readFile("m4_zeroing_sec.js", "utf8"),
   readFile("sec_v1.js", "utf8"),
@@ -12,6 +12,8 @@ const [sec, m4Adapter, sharedShell, records, lifecycle, appState, navigation, se
   readFile("m4-sec.css", "utf8"),
   readFile("ballistic-vault.css", "utf8"),
   readFile("architecture/FUTURE_BACKEND_SESSION_NUMBERING_AUTHORITY.md", "utf8"),
+  readFile("target_execution_runtime.js", "utf8"),
+  readFile("sec_dispatch.js", "utf8"),
 ]);
 const vaultDestinationSources = Object.fromEntries(await Promise.all(
   [
@@ -67,6 +69,15 @@ assert.match(records, /function historicalSecUrl/);
 assert.match(records, /function resolveVaultEvidenceModel/);
 assert.match(records, /function vaultEvidenceOverlay/);
 assert.match(records, /completedEvidence \? vaultEvidenceOverlay\(completedEvidence\)/);
+assert.match(records, /SCZN3TargetExecutionRuntime\.approvedResultComponent\(pkg, session\)/, "targetScoring Vault records preserve the approved universal RESULT component");
+assert.match(records, /<div class="vault-evidence-pair">/, "contract Vault records preserve the proven two-column evidence pair");
+assert.match(records, /<span class="vault-open-label">OPEN SEC →<\/span>/, "contract Vault records preserve the proven OPEN SEC action");
+assert.match(records, /vault-approved-result-panel/, "the approved universal RESULT occupies the checkpoint RESULT pane");
+assert.match(records, /function historicalSecUrl[\s\S]*?SCZN3SECDispatch\.destinationFor\(session\)[\s\S]*?SCZN3SECReopenAuthority\?\.portableUrl\(destination, session\.sessionId\)/, "OPEN SEC delegates exact reopen to the checkpoint dispatch road and preserves portable possession authority");
+assert.match(targetRuntime, /preserved \? \[\{ label: "Ballistic Vault", href: vaultHref/, "a preserved contract SEC carries its local authority route into the Vault");
+assert.match(targetRuntime, /records\.html\?runtimeView=sec-readable-diagnostic-1\$\{localAuthorityPort\(\) \? `&authorityPort=/, "the Vault handoff preserves the split local authority port");
+assert.match(secDispatch, /target-experience\.html\?session=\$\{encodeURIComponent\(sessionId\)\}&view=sec\$\{localAuthoritySuffix\(\)\}/, "OPEN SEC carries the Vault authority port into exact reopen");
+assert.doesNotMatch(records, /renderCompactVaultRecord\(requestedSession, \{ historical: true \}\)/, "exact reopen is not replaced with a second Vault card");
 assert.match(records, /function prepareHistoricalSec/);
 const prepareHistoricalSecSource = records.match(/function prepareHistoricalSec\(session\) \{[\s\S]*?\n\}/)?.[0] || "";
 assert.match(prepareHistoricalSecSource, /\[data-sec-shell="universal-v1"\]\[data-sec-record-id=/, "historical SEC lifecycle resolves the universal shell by its governed record identity");
@@ -94,6 +105,8 @@ assert.doesNotMatch(appState, /shooter-account-authoritative/);
 assert.match(secCss, /@media\(max-width:640px\)[\s\S]*?\.sec-before-after\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
 assert.match(secCss, /@media\(max-width:460px\)[\s\S]*?\.sec-target-story\{grid-template-columns:1fr\}/);
 assert.match(vaultCss, /@media\(max-width:720px\)[\s\S]*?\.records-page \.vault-gallery\{grid-template-columns:1fr/);
+assert.match(records, /const sessions = savedSessions;/, "Vault retains the full newest-first preserved-session collection for vertical navigation");
+assert.doesNotMatch(records, /savedSessions\.slice\(0,\s*10\)/, "Vault presentation does not make older preserved sessions unavailable");
 
 // Navigation warns only when an action can replace/discard active work.
 assert.match(navigation, /data-preserve-active-session/);

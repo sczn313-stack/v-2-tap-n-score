@@ -41,6 +41,40 @@ def _point(value: Any) -> tuple[float, float]:
     )
 
 
+def _canonical_target_coordinate(value: Mapping[str, Any], contract: Mapping[str, Any], image: Mapping[str, Any], x: float, y: float) -> Dict[str, Any]:
+    geometry = contract["components"]["geometry"]["definition"]
+    coordinate_system = str(geometry.get("coordinateSystem") or "")
+    if coordinate_system != "normalized_source_image_top_left":
+        raise DeclarativeTargetScoreError("ugo_coordinate_system_unsupported")
+    supplied = value.get("canonicalTargetCoordinate")
+    if supplied is not None:
+        if not isinstance(supplied, Mapping):
+            raise DeclarativeTargetScoreError("ugo_canonical_coordinate_invalid")
+        if str(supplied.get("schemaVersion") or "") != "sczn3.ugo.normalized-source-image-point.v1":
+            raise DeclarativeTargetScoreError("ugo_canonical_coordinate_schema_invalid")
+        if str(supplied.get("coordinateSystem") or "") != coordinate_system:
+            raise DeclarativeTargetScoreError("ugo_canonical_coordinate_system_mismatch")
+        if str(supplied.get("targetProfileId") or "") != str(contract["targetProfile"]["id"]):
+            raise DeclarativeTargetScoreError("ugo_canonical_target_identity_mismatch")
+        if str(supplied.get("sourceImageSha256") or "").lower() != str(image["sha256"]).lower():
+            raise DeclarativeTargetScoreError("ugo_canonical_source_image_mismatch")
+        if int(supplied.get("sourceImageWidthPx") or 0) != int(image["widthPx"]) or int(supplied.get("sourceImageHeightPx") or 0) != int(image["heightPx"]):
+            raise DeclarativeTargetScoreError("ugo_canonical_source_dimensions_mismatch")
+        if float(supplied.get("xNorm")) != x or float(supplied.get("yNorm")) != y:
+            raise DeclarativeTargetScoreError("ugo_canonical_coordinate_value_mismatch")
+        return deepcopy(dict(supplied))
+    return {
+        "schemaVersion": "sczn3.ugo.normalized-source-image-point.v1",
+        "coordinateSystem": coordinate_system,
+        "targetProfileId": str(contract["targetProfile"]["id"]),
+        "sourceImageSha256": str(image["sha256"]).lower(),
+        "sourceImageWidthPx": int(image["widthPx"]),
+        "sourceImageHeightPx": int(image["heightPx"]),
+        "xNorm": x,
+        "yNorm": y,
+    }
+
+
 def _aim(value: Any, mode: str) -> Dict[str, Any] | None:
     if value is None:
         return None
@@ -163,6 +197,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     validate_target_scoring_data(contract)
     if not isinstance(evidence, Mapping):
         raise DeclarativeTargetScoreError("evidence_object_required")
+    image_evidence = _image(evidence.get("imageEvidence"))
     observations = evidence.get("observations")
     if not isinstance(observations, list) or not observations:
         raise DeclarativeTargetScoreError("observations_required")
@@ -228,6 +263,10 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     footprint_radius_x = diameter_inches / float(physical["width"]) / 2 if diameter_inches > 0 and dimensions_usable else 0.0
     footprint_radius_y = diameter_inches / float(physical["height"]) / 2 if diameter_inches > 0 and dimensions_usable else 0.0
     observation_points = [_point(observation) for observation in observations]
+    canonical_points = [
+        _canonical_target_coordinate(observation, contract, image_evidence, observation_points[index][0], observation_points[index][1])
+        for index, observation in enumerate(observations)
+    ]
     authority_gauge = None
     governed_classifications = None
     if boundary_policy and boundary_policy.get("mode") == "authority_scoring_gauge":
@@ -278,6 +317,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         counts[region_id] += 1
         record = {
             "observationId": f"observation-{index:03d}", "xNorm": x, "yNorm": y,
+            "canonicalTargetCoordinate": canonical_points[index - 1],
             "regionId": region_id, "label": label, "value": value,
             "objectId": object_id, "participantId": participant_id, "declaredObjectId": declared_object_id,
             "groupId": str(participant_id or observation.get("groupId") or "all"),
@@ -544,7 +584,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "target": deepcopy(contract["targetProfile"]),
         "smartTargetTreatment": deepcopy(mission.get("smartTargetTreatment")),
         "executionContract": {"contractId": contract["contractId"], "contractVersion": contract["contractVersion"], "contractFingerprint": contract["contractFingerprint"], "executorId": contract["executor"]["id"], "executorVersion": contract["executor"]["version"], "secAdapterFamilyId": contract["secAdapter"]["id"], "secAdapterFamilyVersion": contract["secAdapter"]["version"], "preservationValidatorId": contract["preservationValidator"]["id"], "preservationValidatorVersion": contract["preservationValidator"]["version"]},
-        "imageEvidence": _image(evidence.get("imageEvidence")),
+        "imageEvidence": image_evidence,
         "observations": deepcopy(classifications), "classifications": classifications,
         "aimStructure": deepcopy(mission["interaction"]["aim"]),
         "shooterDeclaredAimPoint": _aim(evidence.get("shooterDeclaredAimPoint"), mission["interaction"]["aim"]["mode"]),
