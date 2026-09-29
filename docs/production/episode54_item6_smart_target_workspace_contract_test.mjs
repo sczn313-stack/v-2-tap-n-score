@@ -66,7 +66,7 @@ assert.match(rootHtml, /SCZN3SmartTargetWorkspace\.create/);
 assert.match(rootHtml, /SCZN3SmartTargetWorkspace\.configureContainedStage/);
 assert.match(rootHtml, /SCZN3SmartTargetWorkspace\.resetContainedStage/);
 assert.match(rootHtml, /smartTargetWorkspace\.decodeImage\(targetImage\)/);
-assert.match(rootHtml, /<div class="mark-surface" id="markSurface" data-sczn3-workspace-evidence="true" hidden>/);
+assert.match(rootHtml, /id="targetEvidencePreview" data-sczn3-workspace-evidence="true"/);
 
 for (const missionSpecific of [
   /function backendAuthorityRequest/,

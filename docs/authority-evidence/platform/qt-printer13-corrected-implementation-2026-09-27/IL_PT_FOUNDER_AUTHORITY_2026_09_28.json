@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "sczn3-founder-target-authority-v1",
+  "authorityId": "IL_PT_FOUNDER_AUTHORITY_2026_09_28",
+  "status": "FOUNDER_DIRECTED_PENDING_VISUAL_ACCEPTANCE",
+  "recordedAt": "2026-09-28T00:00:00-04:00",
+  "target": {
+    "targetProfileId": "qt_printer13_product_1956001841225",
+    "qtCatalogId": "QT-PRODUCT-1956001841225",
+    "productName": "IL-PT Paper Target",
+    "sku": "IL-PT",
+    "homieChair": 150,
+    "visualStackChair": 179
+  },
+  "decision": {
+    "capability": "Scoring",
+    "historyModel": "USM",
+    "scoringStructure": [
+      { "printedLabel": "X", "pointValue": 10, "registeredRegionId": "innermost_region", "countsAsX": true },
+      { "printedLabel": "9", "pointValue": 9, "registeredRegionId": "inner_region" },
+      { "printedLabel": "8", "pointValue": 8, "registeredRegionId": "middle_region" },
+      { "printedLabel": "7", "pointValue": 7, "registeredRegionId": "outer_region" }
+    ],
+    "outsideValue": 0,
+    "rectangleBehavior": "none",
+    "rule": "Use only the published 7 / 8 / 9 / X scoring structure. The additional rectangular artwork has no SCZN3 scoring or target-behavior role."
+  },
+  "architecture": {
+    "backendAuthority": true,
+    "ugoAuthority": "sczn3.ugo.normalized-source-image-point.v1",
+    "familyGeneralization": false,
+    "unrelatedTargetsChanged": false
+  },
+  "founderAcceptance": "PENDING"
+}

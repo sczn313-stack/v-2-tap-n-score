@@ -33,7 +33,7 @@ assert.match(records, /Result\(\{ family: "lowest-score-wins"/);
 assert.match(baker, /Result\(\{[\s\S]*family: "highest-score-wins"/);
 assert.doesNotMatch(combinedAdapters, /function zeroingReferenceMetric\(/, "duplicate metric presentation is retired");
 assert.doesNotMatch(records, /return `<div class="sec-sight-correction-axis"/, "100 Yard maps correction data into the shared zeroing presenter");
-assert.match(records, /<script src="sec_framework\.js\?v=episode55-lowest-score-1"><\/script>/, "historical SEC renderers consume the shared component owner");
+assert.match(records, /<script src="sec_framework\.js\?v=[^"]+"><\/script>/, "historical SEC renderers consume the shared component owner");
 assert.match(await readFile("sec-framework.css", "utf8"), /\.sec-component\{display:contents\}/, "component extraction preserves established layout");
 
 console.log("PASS Episode 54 Item 5 shared SEC components have one platform owner and all four adapters consume presentation without frontend authority");

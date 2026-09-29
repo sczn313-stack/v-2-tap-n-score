@@ -204,7 +204,7 @@
       ? ` data-ugo-projection-plane="normalized-source-image" style="--ugo-source-aspect:${sourceWidth} / ${sourceHeight};--ugo-evidence-max-width:${42 * sourceWidth / sourceHeight}vh"`
       : "";
     const observations = preservedObservations(session, result, image);
-    const markers = observations.map((observation, index) => `<span class="contract-observation-marker" style="left:${observation.xNorm * 100}%;top:${observation.yNorm * 100}%" aria-label="${escapeHtml(observation.label)}">${index + 1}</span>`).join("");
+    const markers = observations.map((observation, index) => `<span class="contract-observation-marker precision-tap-marker" data-shot-index="${index + 1}" style="left:${observation.xNorm * 100}%;top:${observation.yNorm * 100}%" aria-label="${escapeHtml(observation.label)}"></span>`).join("");
     const targetAim = shouldRenderGovernedAim(result.missionFamily) && result.aimStructure && result.aimStructure.mode === "fixed" && Array.isArray(result.aimStructure.points) ? result.aimStructure.points[0] : null;
     const aim = normalizedEvidencePoint(result.shooterDeclaredAimPoint || session && session.aimPoint || targetAim, image);
     const aimLabel = result.shooterDeclaredAimPoint ? "Shooter-declared aim point" : "Governed target aim point";
@@ -360,15 +360,29 @@
     return targetUsesPointTerminology(scoring) ? `${taps} · 0 points` : taps;
   }
 
+  function shooterFacingCountingLabel(value, fallback = "Region") {
+    const label = clean(value)
+      .replace(/\bgoverned\b/gi, "")
+      .replace(/\s+/g, " ")
+      .replace(/\s+([,.;:])/g, "$1")
+      .trim();
+    return label || fallback;
+  }
+
   function targetScoringRows(result) {
     if (!result || result.missionFamily !== "targetScoring" || !result.scoring) return [];
     const scoring = result.scoring;
     const classifications = Array.isArray(result.classifications) ? result.classifications : [];
     if (Array.isArray(scoring.objectResults) && scoring.objectResults.length) {
+      const countOnly = !targetUsesPointTerminology(scoring);
       const rows = scoring.objectResults.map(item => ({
-        label: clean(item.label) || clean(item.objectId) || "Object",
+        label: countOnly
+          ? shooterFacingCountingLabel(item.label || item.objectId, "Object")
+          : clean(item.label) || clean(item.objectId) || "Object",
         value: Number(item.observationCount || 0),
-        displayValue: `${Number(item.observationCount || 0) === 1 ? "1 hit" : `${Number(item.observationCount || 0)} hits`} · ${Number(item.observationPercentage || 0).toFixed(1)}%`,
+        displayValue: countOnly
+          ? `${Number(item.observationCount || 0) === 1 ? "1 hit" : `${Number(item.observationCount || 0)} hits`}`
+          : `${Number(item.observationCount || 0) === 1 ? "1 hit" : `${Number(item.observationCount || 0)} hits`} · ${Number(item.observationPercentage || 0).toFixed(1)}%`,
         hit: item.hit === true,
       }));
       const classifiedCount = rows.reduce((sum, row) => sum + Number(row.value || 0), 0);
@@ -384,7 +398,9 @@
     const rows = Object.entries(scoring.regionCounts || {}).filter(([regionId]) => clean(regionId) !== "outside").map(([regionId, count]) => {
       const classified = classifications.find(item => clean(item.regionId) === clean(regionId));
       return {
-        label: clean(classified && classified.label) || clean(regionId).replaceAll("_", " ") || "Outside",
+        label: targetUsesPointTerminology(scoring)
+          ? clean(classified && classified.label) || clean(regionId).replaceAll("_", " ") || "Outside"
+          : shooterFacingCountingLabel(clean(classified && classified.label) || clean(regionId).replaceAll("_", " "), "Region"),
         value: Number(count || 0),
         displayValue: String(Number(count || 0)),
         hit: Number(count || 0) > 0,
@@ -418,17 +434,65 @@
     const grouped = new Map();
     scoring.objectResults.forEach(item => {
       const count = Number(item.observationCount || 0);
-      const parts = objectLabelParts(item.label || item.objectId || "Target object");
+      const parts = objectLabelParts(shooterFacingCountingLabel(item.label || item.objectId, "Object"));
       if (!grouped.has(parts.group)) grouped.set(parts.group, []);
-      grouped.get(parts.group).push({ label: parts.location || parts.group, count, percentage: Number(item.observationPercentage || 0) });
+      grouped.get(parts.group).push({ label: parts.location || parts.group, count });
     });
     return Array.from(grouped, ([label, items]) => ({ label, items }));
   }
 
   function objectGroupsMarkup(result) {
-    const groups = objectResultGroups(result);
-    if (!groups.length) return "";
-    return `<section class="contract-object-groups" aria-label="Governed area tap counts and percentages">${groups.map(group => `<article class="contract-object-group"><h3>${escapeHtml(group.label)}</h3><div>${group.items.map(item => `<span><b>${escapeHtml(item.label)}</b><strong>${escapeHtml(item.count)} · ${escapeHtml(item.percentage.toFixed(1))}%</strong></span>`).join("")}</div></article>`).join("")}</section>`;
+    const scoring = result && result.scoring || {};
+    const regions = Array.isArray(scoring.objectResults) ? scoring.objectResults : [];
+    if (!regions.length) return "";
+    return countingDetailsMarkup(regions, {
+      title: "Region details",
+      column: "Region",
+      className: "contract-counting-details",
+      dataAttribute: 'data-counting-details="true"',
+      fallback: "Region"
+    });
+  }
+
+  function isUsmcThreatResult(result) {
+    return clean(result && result.target && result.target.id) === "qt_printer13_product_1891723542601";
+  }
+
+  function zoneDetailsMarkup(result) {
+    const scoring = result && result.scoring || {};
+    const zones = Array.isArray(scoring.objectResults) ? scoring.objectResults : [];
+    if (!zones.length) return "";
+    return countingDetailsMarkup(zones, {
+      title: "Zone details",
+      column: "Zone",
+      className: "contract-zone-details",
+      dataAttribute: 'data-zone-details="true"',
+      fallback: "Zone"
+    });
+  }
+
+  function countingDetailsMarkup(items, options = {}) {
+    const title = clean(options.title) || "Region details";
+    const column = clean(options.column) || "Region";
+    const className = clean(options.className) || "contract-counting-details";
+    const dataAttribute = clean(options.dataAttribute);
+    const fallback = clean(options.fallback) || column;
+    const rows = items.map(item => ({
+      label: shooterFacingCountingLabel(item.label || item.objectId, fallback),
+      count: Number(item.hitCount ?? item.observationCount ?? 0),
+      misses: Number(item.missCount || 0)
+    }));
+    const hasMisses = rows.some(row => row.misses > 0);
+    return `<details class="contract-numeric-region-results ${escapeHtml(className)}"${dataAttribute ? ` ${dataAttribute}` : ""}><summary data-disclosure-control="true"><span class="contract-distribution-title">${escapeHtml(title)}</span><span class="contract-disclosure-instruction contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">▼</b></span><span class="contract-disclosure-instruction contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">▲</b></span></summary><div><table><thead><tr><th scope="col">${escapeHtml(column)}</th><th scope="col">Hits</th>${hasMisses ? '<th scope="col">Misses</th>' : ""}</tr></thead><tbody>${rows.map(row => `<tr><th scope="row">${escapeHtml(row.label)}</th><td>${escapeHtml(measuredNumber(row.count))}</td>${hasMisses ? `<td>${escapeHtml(measuredNumber(row.misses))}</td>` : ""}</tr>`).join("")}</tbody></table></div></details>`;
+  }
+
+  function cumulativeColorTotalsMarkup(result) {
+    const scoring = result && result.scoring || {};
+    const groups = Array.isArray(scoring.cumulativeResults) ? scoring.cumulativeResults : [];
+    const whole = scoring.cumulativeWholeTarget;
+    if (!groups.length || !whole) return "";
+    const cells = group => `<span><b>Red total</b><strong>${escapeHtml(group.cumulative.redTotal)}</strong></span><span><b>White total</b><strong>${escapeHtml(group.cumulative.whiteTotal)}</strong></span><span><b>Blue total</b><strong>${escapeHtml(group.cumulative.blueTotal)}</strong></span><span><b>Missed</b><strong>${escapeHtml(group.missCount)}</strong></span>`;
+    return `<details class="contract-numeric-region-results contract-cumulative-color-results" data-cumulative-color-details="true"><summary data-disclosure-control="true"><span class="contract-distribution-title">Color totals</span><span class="contract-disclosure-instruction contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">▼</b></span><span class="contract-disclosure-instruction contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">▲</b></span></summary><div class="contract-object-groups">${groups.map(group => `<article class="contract-object-group"><h3>${escapeHtml(group.label)}</h3><div>${cells(group)}</div></article>`).join("")}<article class="contract-object-group"><h3>Whole target</h3><div>${cells(whole)}</div></article></div><small>SCZN3 method · Red is counted inside White; White is counted inside Blue. Atomic tap classifications remain exclusive.</small></details>`;
   }
 
   function subsetResultsMarkup(result) {
@@ -639,7 +703,7 @@
       : distribution
         ? `<small>Strongest: ${escapeHtml(distribution.strongest.label)} (${escapeHtml(distribution.strongest.tapCount)}) · Weakest: ${escapeHtml(distribution.weakest.label)} (${escapeHtml(distribution.weakest.tapCount)}) · Evenness ${escapeHtml(distribution.evennessPercentage)}%</small>`
         : "";
-    return `<section class="contract-hit-rate${publisherHasScore ? " is-supplemental" : ""}" aria-label="SCZN3 measured hit rate"><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong><small>${escapeHtml(hitRate.validHitCount)} of ${escapeHtml(hitRate.governedShotCount)} taps hit valid regions</small>${coverage && Number(coverage.scorableObjectCount) > 0 ? `<small>${escapeHtml(coverage.objectsHit)} of ${escapeHtml(coverage.scorableObjectCount)} target objects hit</small>` : ""}${distributionMarkup}${comparison}</section>`;
+    return `<section class="contract-hit-rate${publisherHasScore ? " is-supplemental" : ""}" aria-label="SCZN3 measured hit rate"><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong>${coverage && Number(coverage.scorableObjectCount) > 0 ? `<small>${escapeHtml(coverage.objectsHit)} of ${escapeHtml(coverage.scorableObjectCount)} target objects hit</small>` : ""}${distributionMarkup}${comparison}</section>`;
   }
 
   function shotPatternMarkup(result, session = {}) {
@@ -671,7 +735,7 @@
       ? `<small>${Number(progress.percentagePointChange) >= 0 ? "+" : ""}${escapeHtml(progress.percentagePointChange)} pts vs previous${progress.best && progress.best.hitRate ? ` · Best ${escapeHtml(progress.best.hitRate.percentage)}%` : ""}</small>`
       : "";
     const taps = objectTapSummary(result) ? objectTapSummaryMarkup(result, true) : numericTapSummaryMarkup(result);
-    return `<section class="contract-combined-score-rate" aria-label="Target score and SCZN3 Hit Rate"><div><span>${escapeHtml(resultSummary.label)}</span><strong>${escapeHtml(resultSummary.value)}</strong>${scoreComparison}</div><div><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong><small>${escapeHtml(hitRate.validHitCount)} of ${escapeHtml(hitRate.governedShotCount)} taps hit valid scoring regions</small>${rateComparison}</div></section>${taps}`;
+    return `<section class="contract-combined-score-rate" aria-label="Target score and SCZN3 Hit Rate"><div><span>${escapeHtml(resultSummary.label)}</span><strong>${escapeHtml(resultSummary.value)}</strong>${scoreComparison}</div><div><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong>${rateComparison}</div></section>${taps}`;
   }
 
   function shooterFacingResultMarkup(result, resultSummary, session = {}) {
@@ -681,7 +745,10 @@
       : "";
     const objectSummary = objectTapSummary(result);
     const publisherHasScore = result && result.scoring && ["numeric_regions", "penalty_regions", "mixed_regions"].includes(result.scoring.model);
-    if (objectSummary && !publisherHasScore) return `${modeMarkup}${objectTapSummaryMarkup(result)}${hitRateMarkup(result, session)}${objectGroupsMarkup(result)}${subsetResultsMarkup(result)}`;
+    if (objectSummary && !publisherHasScore) {
+      const objectDetail = isUsmcThreatResult(result) ? zoneDetailsMarkup(result) : objectGroupsMarkup(result);
+      return `${modeMarkup}${objectTapSummaryMarkup(result)}${hitRateMarkup(result, session)}${cumulativeColorTotalsMarkup(result) || objectDetail}${subsetResultsMarkup(result)}`;
+    }
     const numericObjects = numericObjectMeasurements(result);
     const numericRegions = numericRegionMeasurements(result);
     const participantMarkup = participantResultsMarkup(result);
@@ -694,7 +761,10 @@
     if (participantMarkup) return `${modeMarkup}${participantMarkup}${numericTapSummaryMarkup(result)}${numericObjectResultsMarkup(result, session)}`;
     if (objectSummary && numericObjects.length) return `${modeMarkup}${combinedNumericSummaryMarkup(result, resultSummary, session)}${numericObjectResultsMarkup(result, session)}`;
     if (publisherHasScore && numericRegions.length && !numericObjects.length) return `${modeMarkup}${combinedNumericSummaryMarkup(result, resultSummary, session)}${numericRegionResultsMarkup(result)}`;
-    if (objectSummary) return `${modeMarkup}${publisherResult}${objectTapSummaryMarkup(result)}${hitRateMarkup(result, session)}${objectGroupsMarkup(result)}`;
+    if (objectSummary) {
+      const objectDetail = isUsmcThreatResult(result) ? zoneDetailsMarkup(result) : objectGroupsMarkup(result);
+      return `${modeMarkup}${publisherResult}${objectTapSummaryMarkup(result)}${hitRateMarkup(result, session)}${objectDetail}`;
+    }
     return hitRateFirst ? `${modeMarkup}${hitRateMarkup(result, session)}${publisherResult}` : `${modeMarkup}${publisherResult}${hitRateMarkup(result, session)}`;
   }
 
@@ -808,8 +878,8 @@
     return global.SCZN3SECComponents.Result({ family: approvedResultFamily(result), contentHtml });
   }
 
-  function isUsmProofTarget(targetId) {
-    return global.SCZN3USMProofRegistry?.isEligible?.(clean(targetId)) === true;
+  function isUsmEligible(value) {
+    return global.SCZN3USMProofRegistry?.isEligible?.(value) === true;
   }
 
   function preservedProgressionPoint(session) {
@@ -829,6 +899,9 @@
       sessionLabel: clean(session.sessionLabel) || `Session #${clean(session.sessionNumber)}`,
       targetId: target.id,
       targetName: target.product.name,
+      missionFamily: clean(result && result.missionFamily),
+      scoringModel: clean(scoring && scoring.model),
+      scoringStatus: clean(scoring && scoring.status),
       preservedAt,
       preservedTime,
       score,
@@ -854,7 +927,7 @@
   }
 
   function usmHistorySeries(sessions, targetId) {
-    return isUsmProofTarget(targetId) ? targetHistorySeries(sessions, targetId) : [];
+    return targetHistorySeries(sessions, targetId).filter(isUsmEligible);
   }
 
   function usmSessionDate(point) {
@@ -907,14 +980,14 @@
     const hitRelation = Math.abs(exactHitRate - point.hitRate) < 0.0000001 ? "=" : "≈";
     const pointsRelation = Math.abs(exactPointsPerTap - point.pointsPerTap) < 0.0000001 ? "=" : "≈";
     const openSEC = reopenHref
-      ? `<a class="contract-usm-open-sec" href="${escapeHtml(reopenHref)}"><span aria-hidden="true">▤</span> OPEN ${escapeHtml(point.sessionLabel.toUpperCase())} SEC →</a>`
+      ? `<a class="contract-usm-open-sec" data-usm-exact-reopen href="${escapeHtml(reopenHref)}"><span aria-hidden="true">▤</span> OPEN ${escapeHtml(point.sessionLabel.toUpperCase())} SEC →</a>`
       : `<span class="contract-usm-open-sec is-unavailable" aria-disabled="true">${accessState === "recovering" ? "OPENING SEC ACCESS…" : "OPEN SEC UNAVAILABLE"}</span>`;
     return `<details class="contract-usm-math" data-usm-selected-detail data-usm-selected-session-id="${escapeHtml(point.sessionId)}"${open ? " open" : ""}><summary><strong>${escapeHtml(point.sessionLabel.toUpperCase())}</strong><time datetime="${escapeHtml(point.preservedAt)}">${escapeHtml(usmSessionDate(point))}</time><b aria-hidden="true"></b></summary><div><p><span class="contract-usm-metric-label">SCORE</span><strong>${escapeHtml(point.score)}</strong><span>${escapeHtml(point.score)} points ÷ ${escapeHtml(point.totalTaps)} taps<br>${pointsRelation} ${escapeHtml(point.pointsPerTap.toFixed(1))} points per tap</span></p><p><span class="contract-usm-metric-label">HIT RATE</span><strong>${escapeHtml(usmNumber(point.hitRate))}%</strong><span>${escapeHtml(point.hitTaps)} hits ÷ ${escapeHtml(point.totalTaps)} taps<br>${hitRelation} ${escapeHtml(usmNumber(point.hitRate))}%</span></p><p><span class="contract-usm-metric-label">POINTS PER TAP</span><strong>${escapeHtml(point.pointsPerTap.toFixed(1))}</strong><span>${escapeHtml(point.score)} points ÷ ${escapeHtml(point.totalTaps)} taps<br>${pointsRelation} ${escapeHtml(point.pointsPerTap.toFixed(1))}</span></p>${openSEC}</div></details>`;
   }
 
   function usmDrawerMarkup(points, currentSessionId = "") {
     const series = Array.isArray(points) ? points : [];
-    if (!series.length || !isUsmProofTarget(series[0].targetId)) return "";
+    if (!series.length || !series.every(isUsmEligible)) return "";
     const targetName = series[0].targetName;
     const detailsLabel = /^B27E\b/i.test(targetName) ? "B27E DETAILS" : `${targetName || "TARGET"} DETAILS`;
     const currentPoint = series.find(point => point.sessionId === clean(currentSessionId)) || null;
@@ -938,8 +1011,21 @@
     return `<details class="contract-progression-drawer contract-usm-drawer" data-contract-progression-drawer="true" data-usm-proof-target="${escapeHtml(series[0].targetId)}"><summary><span class="contract-usm-history-identity"><em>3 · HISTORY</em><i>|</i><strong>${escapeHtml(targetName)}</strong></span><span class="contract-usm-details-label">${escapeHtml(detailsLabel)}</span><b aria-hidden="true"></b></summary><div class="contract-progression-body"><p class="contract-usm-heading">SCORE <i>|</i> HIT RATE <i>|</i> POINTS PER TAP</p><p class="contract-usm-instruction">TAP ANY BULLET TO VIEW THAT SESSION</p><div class="contract-progression-charts">${scoreChart}${hitRateChart}${pointsPerTapChart}</div><div data-usm-selected-detail-host>${usmMathDisclosure(currentPoint)}</div></div></details>`;
   }
 
-  function usmReopenBaseHref(sessionId) {
-    return `target-experience.html?session=${encodeURIComponent(sessionId)}&view=sec${localAuthoritySuffix()}`;
+  function usmReopenBaseHref(point) {
+    const params = new URLSearchParams({
+      target: clean(point && point.targetId),
+      missionFamily: clean(point && point.missionFamily),
+      source: "registered",
+      session: clean(point && point.sessionId),
+      view: "sec"
+    });
+    const authorityPort = new URLSearchParams(global.location && global.location.search || "").get("authorityPort") || "";
+    const authorityPortNumber = Number(authorityPort);
+    const local = ["127.0.0.1", "localhost", "[::1]"].includes(global.location && global.location.hostname);
+    if (local && /^\d{2,5}$/.test(authorityPort) && authorityPortNumber > 0 && authorityPortNumber <= 65535) {
+      params.set("authorityPort", authorityPort);
+    }
+    return `target-experience.html?${params.toString()}`;
   }
 
   function initializeUSMInteractions(host, points, sourceSessions, endpoint, initialSessionId) {
@@ -951,7 +1037,9 @@
     let synchronizingScroll = false;
 
     const exactReopenHref = sessionId => {
-      const base = usmReopenBaseHref(sessionId);
+      const point = pointById.get(sessionId);
+      if (!point) return "";
+      const base = usmReopenBaseHref(point);
       const portable = global.SCZN3SECReopenAuthority?.portableUrl(base, sessionId) || base;
       return portable.includes(`#${global.SCZN3SECReopenAuthority?.FRAGMENT_KEY || "secReopenCapability"}=`) ? portable : "";
     };
@@ -996,6 +1084,19 @@
       global.requestAnimationFrame(() => { synchronizingScroll = false; });
     }, { passive: true }));
 
+    host.addEventListener("click", event => {
+      const link = event.target && event.target.closest && event.target.closest("[data-usm-exact-reopen]");
+      if (!link) return;
+      event.preventDefault();
+      const destination = link.href;
+      if (!destination) return;
+      if (destination === global.location.href) {
+        global.location.reload();
+        return;
+      }
+      global.location.assign(destination);
+    });
+
     host.querySelectorAll("[data-usm-session-id]").forEach(node => {
       const activate = () => selectSession(clean(node.getAttribute("data-usm-session-id")), true);
       node.addEventListener("click", activate);
@@ -1033,6 +1134,41 @@
     });
   }
 
+  function secSessionFields(session, result, target, preservedAt) {
+    const timestamp = preservedAt && !Number.isNaN(Date.parse(preservedAt)) ? new Date(preservedAt) : null;
+    const tapCount = Number(result && result.scoring && result.scoring.observationCount);
+    const observationCount = Number.isFinite(tapCount)
+      ? tapCount
+      : Array.isArray(result && result.observations) ? result.observations.length : 0;
+    return [
+      { label: "Target", value: target.product.name },
+      { label: "SKU", value: target.product.sku },
+      { label: "Publisher", value: target.publisher.name },
+      { label: "Date", value: timestamp ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(timestamp) : "" },
+      { label: "Time", value: timestamp ? new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(timestamp) : "" },
+      { label: "Taps", value: String(observationCount) }
+    ];
+  }
+
+  function secActions({ mode, preserved, vaultHref, reopenHref, note = "" }) {
+    const historical = mode === "historical";
+    const actions = [
+      ...(!historical ? [{ label: preserved ? "SEC Preserved" : "Save SEC", action: "save", primary: !preserved, disabled: preserved }] : []),
+      { label: "Share", action: "share" },
+      { label: "Export / Print PDF", action: "export" },
+      ...(!historical && !preserved ? [{ label: "Add Note", action: "note" }] : []),
+      ...(preserved || historical ? [{ label: "Ballistic Vault", href: vaultHref, action: "history" }] : []),
+      ...(preserved && !historical ? [{ label: "Exact Reopen", href: reopenHref, action: "history", className: "contract-exact-reopen" }] : [])
+    ];
+    const noteEditor = !historical && !preserved
+      ? `<div class="sec-note-editor is-hidden" data-sczn3-note-editor hidden><label>Session note<textarea rows="3" data-contract-sec-note placeholder="Instructor note, applied setting, or range observation">${escapeHtml(note)}</textarea></label><button class="button" type="button" data-sczn3-action="note-save">Save Note</button></div>`
+      : "";
+    return global.SCZN3SECComponents.Preservation({ contentHtml: global.SCZN3SECComponents.ActionBar({
+      actions,
+      afterHtml: `${noteEditor}<span class="sec-action-status" data-contract-save-status role="status" aria-live="polite"></span>`
+    }) });
+  }
+
   function renderSEC({ session = {}, package: supplied = null, mode = "live", preserved = session.savedToSEC === true } = {}) {
     const result = supplied || canonicalResult(session);
     const contract = contractIdentity(result);
@@ -1045,19 +1181,9 @@
     const vaultHref = `records.html?runtimeView=sec-readable-diagnostic-1${localAuthorityPort() ? `&authorityPort=${encodeURIComponent(localAuthorityPort())}` : ""}`;
     const reopenBaseHref = `target-experience.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec${localAuthoritySuffix()}`;
     const reopenHref = global.SCZN3SECReopenAuthority?.portableUrl(reopenBaseHref, session.sessionId) || reopenBaseHref;
-    const actions = mode === "historical"
-      ? global.SCZN3SECComponents.ActionBar({ actions: [{ label: "Ballistic Vault", href: vaultHref, action: "history" }] })
-      : global.SCZN3SECComponents.ActionBar({ actions: [
-        { label: preserved ? "SEC Preserved" : "Save SEC", action: "save", primary: !preserved, disabled: preserved },
-        ...(preserved ? [{ label: "Ballistic Vault", href: vaultHref, action: "history" }] : []),
-        ...(preserved ? [{ label: "Exact Reopen", href: reopenHref, action: "history" }] : [])
-      ], afterHtml: '<span data-contract-save-status role="status" aria-live="polite"></span>' });
     const sessionLabel = clean(session.sessionLabel) || "Session";
     const preservedAt = clean(session.preservedAt || session.savedAt || session.timestamp);
-    const dateLabel = preservedAt && !Number.isNaN(Date.parse(preservedAt))
-      ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(preservedAt))
-      : "";
-    const identityAttributes = [
+    const identityAttributes = Object.fromEntries([
       ["data-session-id", clean(session.sessionId || result.authoritativeSessionId)],
       ["data-target-id", target.id],
       ["data-target-profile-id", target.id],
@@ -1067,25 +1193,39 @@
       ["data-publisher-id", publisher.id],
       ["data-product-id", product.id],
       ["data-sec-mode", mode]
-    ].map(([key, value]) => `${key}="${escapeHtml(value)}"`).join(" ");
+    ]);
     const before = result.missionFamily === "secProgressionEvaluation"
       ? ""
       : `<figure class="contract-lifecycle-pane contract-lifecycle-before"><figcaption>BEFORE</figcaption>${global.SCZN3SECComponents.Evidence({ contentHtml: evidenceMarkup(session, result) })}</figure>`;
     const progressionTapCount = Number(result && result.scoring && result.scoring.observationCount);
-    const progressionHost = isUsmProofTarget(target.id) && result.missionFamily === "targetScoring" && clean(result.scoring && result.scoring.model) === "numeric_regions" && Number.isFinite(progressionTapCount) && progressionTapCount > 0
+    const progressionHost = isUsmEligible(result) && Number.isFinite(progressionTapCount) && progressionTapCount > 0
       ? `<section class="contract-progression-host" data-contract-progression-host data-progression-target-id="${escapeHtml(target.id)}" data-usm-current-session-id="${escapeHtml(clean(session.sessionId || result.authoritativeSessionId))}" hidden></section>`
       : "";
-    return `<article class="contract-lifecycle-record" ${identityAttributes}>
-      <header class="contract-lifecycle-header"><strong>${escapeHtml(sessionLabel)}</strong>${dateLabel ? `<time datetime="${escapeHtml(preservedAt)}">${escapeHtml(dateLabel)}</time>` : ""}</header>
-      <section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>
+    const targetContent = `<section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>
       <section class="contract-lifecycle-pair" aria-label="Preserved target evidence and approved result">
         ${before}
         <figure class="contract-lifecycle-pane contract-lifecycle-result"><figcaption>RESULT</figcaption>${approvedResultComponent(result, session)}</figure>
       </section>
       ${objectScoreboardMarkup(result)}
-      ${progressionHost}
-      <footer class="contract-lifecycle-actions" aria-label="Shooter Action Bar">${global.SCZN3SECComponents.Preservation({ contentHtml: actions })}</footer>
-    </article>`;
+      ${progressionHost}`;
+    const sessionContent = global.SCZN3SECComponents.Measurement({ contentHtml: global.SCZN3SECComponents.SessionDetails({
+      fields: secSessionFields(session, result, target, preservedAt)
+    }) });
+    const resultSummary = summary(result);
+    return global.SCZN3SEC.render({
+      schemaVersion: "1.2",
+      recordId: clean(session.sessionId || result.authoritativeSessionId) || "target-execution-sec",
+      missionFamily: result.missionFamily,
+      sessionLabel,
+      scoreDisplay: `${resultSummary.label} ${resultSummary.value}`,
+      articleClassName: "contract-family-sec-card contract-universal-sec",
+      articleAttributes: identityAttributes,
+      regions: [
+        { key: "target", className: "sec-v1-evidence-content", ariaLabel: "Target", contentHtml: targetContent },
+        { key: "session", className: "sec-v1-measurement-content", ariaLabel: "Session", contentHtml: sessionContent },
+        { key: "actions", className: "sec-v1-preservation-content", ariaLabel: "Shooter Action Bar", contentHtml: secActions({ mode, preserved, vaultHref, reopenHref, note: clean(session.secNote) }) }
+      ]
+    });
   }
 
   function vaultResultSummary(result, session = {}) {
@@ -1149,7 +1289,7 @@
         primaryUnit: numeric ? (scoring.model === "penalty_regions" ? "PENALTY" : "POINTS") : (multiple ? "OBJECTS HIT" : (ordered ? "IN ORDER" : "CLASSIFIED")),
         objectiveLabel: value.label.toUpperCase(),
         breakdown: rows.map(row => ({ label: row.label, value: row.displayValue })),
-        evidenceLabel: `${scoring.observationCount} governed observation${scoring.observationCount === 1 ? "" : "s"}`,
+        evidenceLabel: `${scoring.observationCount} observation${scoring.observationCount === 1 ? "" : "s"} preserved`,
       });
     }
     return Object.freeze({ status: "unavailable", primaryLabel: value.label.toUpperCase(), objectiveLabel: value.value, evidenceLabel: value.detail });
@@ -1250,6 +1390,21 @@
     // Missing interaction authority must fail closed.  MARK AIM is shown only
     // when the Backend returns an explicit shooter_declared interaction.
     const state = { session: null, image: null, imageDataUrl: "", observations: [], aim: null, aimMode: false, interaction: { aim: { mode: "not_required", points: [] } }, selectedObjectId: "", isCueDrill: false, isQualification: false, isDiagnostic: false, isDecision: false, isStaged: false, cueSequence: 0, cueRunState: null, noObservationDeclared: false };
+    const smartTargetWorkspace = global.SCZN3SmartTargetWorkspace?.create({
+      root: document.getElementById("contractWorkspace"),
+      evidenceRegion: document.querySelector("#contractWorkspace [data-sczn3-workspace-evidence]"),
+      actionRegion: document.querySelector("#contractWorkspace [data-sczn3-workspace-actions]"),
+      header: document.querySelector(".app-header")
+    });
+    global.SCZN3Actions?.markRegion(document.querySelector("#contractWorkspace [data-sczn3-action-region]"));
+    smartTargetWorkspace?.bindViewportLifecycle();
+    const precisionTapController = global.SCZN3SmartTargetWorkspace?.createPrecisionTap({
+      viewport: document.getElementById("contractPrecisionTapViewport"),
+      plane: document.getElementById("contractPrecisionTapPlane"),
+      image: document.getElementById("contractTargetImage"),
+      canTap: () => !byId("contractWorkspace").hidden && !byId("contractTapSurface").disabled,
+      onTap: capturePrecisionTap
+    });
 
     function renderScoringModeSelector() {
       const panel = byId("contractScoringModePanel");
@@ -1289,6 +1444,7 @@
     };
 
     function syncTargetProjection() {
+      if (precisionTapController) return;
       const image = byId("contractTargetImage");
       const frame = image && image.closest(".contract-image-frame");
       if (!image || !frame) return;
@@ -1304,11 +1460,13 @@
       const scale = Math.min(maximumWidth / state.image.widthPx, maximumHeight / state.image.heightPx, 4);
       const frame = image.closest(".contract-image-frame");
       if (frame) frame.dataset.ugoProjectionPlane = "normalized-source-image";
-      image.style.width = `${state.image.widthPx * scale}px`;
-      image.style.height = `${state.image.heightPx * scale}px`;
+      if (frame) {
+        frame.style.width = `${state.image.widthPx * scale}px`;
+        frame.style.height = `${state.image.heightPx * scale}px`;
+      }
       image.style.aspectRatio = `${state.image.widthPx} / ${state.image.heightPx}`;
       image.style.objectFit = "fill";
-      requestAnimationFrame(syncTargetProjection);
+      requestAnimationFrame(() => precisionTapController ? precisionTapController.resetView() : syncTargetProjection());
     }
 
     function participantObjects() {
@@ -1345,7 +1503,7 @@
 
     function paintMarkers() {
       const fixedAim = shouldRenderGovernedAim(missionFamily) && state.interaction.aim && state.interaction.aim.mode === "fixed" ? state.interaction.aim.points[0] : null;
-      byId("contractMarkers").innerHTML = state.observations.map((point, index) => `<span class="contract-observation-marker" style="left:${point.xNorm * 100}%;top:${point.yNorm * 100}%">${index + 1}</span>`).join("") + (state.aim ? `<span class="contract-aim-marker" style="left:${state.aim.xNorm * 100}%;top:${state.aim.yNorm * 100}%"></span>` : (fixedAim ? `<span class="contract-aim-marker" style="left:${fixedAim.xNorm * 100}%;top:${fixedAim.yNorm * 100}%"></span>` : ""));
+      byId("contractMarkers").innerHTML = state.observations.map((point, index) => `<span class="contract-observation-marker precision-tap-marker" data-shot-index="${index + 1}" style="left:${point.xNorm * 100}%;top:${point.yNorm * 100}%" aria-label="Shot ${index + 1}"></span>`).join("") + (state.aim ? `<span class="contract-aim-marker" style="left:${state.aim.xNorm * 100}%;top:${state.aim.yNorm * 100}%"></span>` : (fixedAim ? `<span class="contract-aim-marker" style="left:${fixedAim.xNorm * 100}%;top:${fixedAim.yNorm * 100}%"></span>` : ""));
       syncTargetProjection();
       byId("contractObservationCount").textContent = String(state.observations.length);
       const shooterReviewAvailable = !state.isStaged && state.observations.length > 0;
@@ -1431,7 +1589,8 @@
       state.image = { sha256: hash, ...dimensions, mediaType: file.type || "image/unknown", dataUrl, ...(registered || {}) };
       byId("contractTargetImage").src = dataUrl;
       fitTargetImage();
-      byId("contractWorkspace").hidden = false;
+      if (smartTargetWorkspace) await smartTargetWorkspace.revealAfterDecode(byId("contractTargetImage"), { scroll: false });
+      else byId("contractWorkspace").hidden = false;
       byId("contractDiagnosticPanel").hidden = !state.isDiagnostic;
       if (state.isDiagnostic || state.isStaged || !state.interaction.aim || state.interaction.aim.mode !== "shooter_declared") byId("contractMarkAim").hidden = true;
       if (state.isStaged) await startCueRun();
@@ -1548,7 +1707,7 @@
       byId("contractSecView").hidden = false;
       byId("contractSecRoot").innerHTML = renderSEC({ session: state.session, package: result });
       initializeSECInteractions(byId("contractSecRoot"), "session");
-      status("Backend-authoritative result ready.");
+      status("Result ready.");
     }
 
     async function save() {
@@ -1560,7 +1719,16 @@
       byId("contractSecRoot").innerHTML = renderSEC({ session: state.session, package: canonicalResult(state.session), preserved: true });
       initializeSECInteractions(byId("contractSecRoot"), "session");
       const saveStatus = document.querySelector("[data-contract-save-status]");
-      if (saveStatus) saveStatus.textContent = "SEC preserved. Exact reopen available.";
+      if (saveStatus) saveStatus.textContent = "";
+    }
+
+    async function saveNote() {
+      const input = byId("contractSecView").querySelector("[data-contract-sec-note]");
+      if (!input) throw new Error("sec_note_editor_unavailable");
+      state.session = await Promise.resolve(global.SCZN3M4.updateActiveSession({ secNote: clean(input.value) }));
+      const saveStatus = document.querySelector("[data-contract-save-status]");
+      if (saveStatus) saveStatus.textContent = "Note saved with this active session.";
+      return "saved";
     }
 
     async function reopen(sessionId) {
@@ -1588,7 +1756,18 @@
 
     byId("contractStart").addEventListener("click", () => start().catch(error => status(`Unavailable: ${error.message}`)));
     byId("contractFile").addEventListener("change", event => loadFile(event.target.files[0]).catch(error => status(`Unable to load evidence: ${error.message}`)));
-    byId("contractTapSurface").addEventListener("click", event => { const point = sourceImagePoint(event.clientX, event.clientY, renderedImageContentBox(byId("contractTargetImage")), { targetProfileId: targetId, sourceImageSha256: state.image && state.image.sha256, sourceImageWidthPx: state.image && state.image.widthPx, sourceImageHeightPx: state.image && state.image.heightPx }); if (!point) { status("Tap inside the visible target image."); return; } if (state.aimMode) { state.aim = point; state.aimMode = false; } else { const objects = participantObjects(); if (objects.length && !state.selectedObjectId) { status("Choose the governed scoring object before recording the shot."); return; } state.observations.push(objects.length ? { ...point, declaredObjectId: state.selectedObjectId } : point); status("Review your shots. Undo, Clear, or Show Result."); } paintMarkers(); });
+    function capturePrecisionTap(event) {
+      const point = sourceImagePoint(event.clientX, event.clientY, renderedImageContentBox(byId("contractTargetImage")), { targetProfileId: targetId, sourceImageSha256: state.image && state.image.sha256, sourceImageWidthPx: state.image && state.image.widthPx, sourceImageHeightPx: state.image && state.image.heightPx });
+      if (!point) { status("Tap inside the visible target image."); return; }
+      if (state.aimMode) { state.aim = point; state.aimMode = false; }
+      else {
+        const objects = participantObjects();
+        if (objects.length && !state.selectedObjectId) { status("Choose the governed scoring object before recording the shot."); return; }
+        state.observations.push(objects.length ? { ...point, declaredObjectId: state.selectedObjectId } : point);
+        status("Review your shots. Undo, Clear, or Show Result.");
+      }
+      paintMarkers();
+    }
     byId("contractUndoObservation").addEventListener("click", () => { if (!state.observations.length) return; state.observations.pop(); paintMarkers(); status(state.observations.length ? "Last shot removed. Review your shots, Undo, Clear, or Show Result." : "Last shot removed. Tap your shot holes."); });
     byId("contractClearObservations").addEventListener("click", () => { if (!state.observations.length) return; state.observations = []; paintMarkers(); status("Shots cleared. Tap your shot holes."); });
     byId("contractObjectChoices").addEventListener("click", event => { const button = event.target.closest("[data-contract-object]"); if (!button || button.disabled) return; state.selectedObjectId = clean(button.dataset.contractObject); renderObjectCourse(); status("Scoring object selected. Tap that printed object."); });
@@ -1596,7 +1775,7 @@
     const targetImage = byId("contractTargetImage");
     const targetFrame = targetImage && targetImage.closest(".contract-image-frame");
     if (targetImage && targetFrame) {
-      targetImage.addEventListener("load", syncTargetProjection);
+      targetImage.addEventListener("load", () => precisionTapController ? precisionTapController.resetView() : syncTargetProjection());
       if (typeof ResizeObserver === "function") {
         const targetProjectionObserver = new ResizeObserver(syncTargetProjection);
         targetProjectionObserver.observe(targetImage);
@@ -1604,12 +1783,32 @@
       }
     }
     window.addEventListener("resize", () => { fitTargetImage(); syncTargetProjection(); });
-    byId("contractShowResult").addEventListener("click", () => showResult().catch(error => status(`Result unavailable: ${error.message}`)));
+    byId("contractShowResult").addEventListener("click", event => {
+      const task = () => showResult();
+      const run = global.SCZN3Processing?.run
+        ? global.SCZN3Processing.run({ id: "target-result", message: "Building your result…", trigger: event.currentTarget, scope: byId("contractWorkspace") }, task)
+        : task();
+      Promise.resolve(run).catch(error => status(`Result unavailable: ${error.message}`));
+    });
     byId("contractCueIssue").addEventListener("click", () => issueCue().catch(error => status(`Cue unavailable: ${error.message}`)));
     byId("contractCueNoObservation").addEventListener("click", () => recordNoObservation().catch(error => status(`Evidence unavailable: ${error.message}`)));
     byId("contractCueAdvance").addEventListener("click", () => advanceCue().catch(error => status(`Advance unavailable: ${error.message}`)));
     byId("contractCueStop").addEventListener("click", () => stopCue().catch(error => status(`Stop unavailable: ${error.message}`)));
-    document.addEventListener("click", event => { if (event.target.closest('[data-sczn3-action="save"]')) save().catch(error => status(`Save unavailable: ${error.message}`)); });
+    if (global.SCZN3Actions) {
+      global.SCZN3Actions.bind(byId("contractSecView"), {
+        save: { run: save, fail: error => status(`Save unavailable: ${error.message}`) },
+        "note-save": { run: saveNote, fail: error => status(`Note unavailable: ${error.message}`) }
+      }, {
+        noteEditorSelector: "[data-sczn3-note-editor]",
+        shareData: () => ({
+          title: "Shooter Experience Card",
+          text: clean(state.session && state.session.sessionLabel) || "SCZN3 session",
+          url: global.location.href
+        })
+      });
+    } else {
+      document.addEventListener("click", event => { if (event.target.closest('[data-sczn3-action="save"]')) save().catch(error => status(`Save unavailable: ${error.message}`)); });
+    }
     if (reopenProgressionId) reopenProgression(reopenProgressionId).catch(error => status(`Progression reopen unavailable: ${error.message}`));
     else if (reopenSessionId) reopen(reopenSessionId).catch(error => status(`Reopen unavailable: ${error.message}`));
     else if (autoLoadRegistered) start({ autoLoadRegistered: true }).catch(error => status(`Unavailable: ${error.message}`));

@@ -2297,7 +2297,10 @@ async function goToTarget(options = {}) {
     const photoSource = ["camera", "existing"].includes(MATRIX_QUERY.get("photo_source"))
       ? `&photo_source=${encodeURIComponent(MATRIX_QUERY.get("photo_source"))}`
       : "";
-    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}${scaleBatchReviewQuery}${tsttChapterQuery}${photoSource}`;
+    const founderFixtureQuery = FOUNDER_REVIEW && MATRIX_QUERY.get("founder_fixture") === "qt_registered"
+      ? "&founder_fixture=qt_registered"
+      : "";
+    window.location.href = `shoot.html?session=${encodeURIComponent(session.sessionId)}${targetQuery}${founderReviewQuery}${scaleBatchReviewQuery}${tsttChapterQuery}${photoSource}${founderFixtureQuery}`;
   } catch (error) {
     const reason = error && error.packageData && error.packageData.reason;
     if (reason === "preparation_expired" || reason === "atp_changed_reconfirmation_required") {

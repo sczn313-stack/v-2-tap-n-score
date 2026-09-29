@@ -27,7 +27,16 @@ try {
     await page.waitForFunction(index => document.querySelector("#progress")?.textContent === `Founder ${index + 1}/5`, item.index);
     if (item.zeroing) {
       await page.waitForFunction(() => document.querySelector("#experience")?.src.includes("matrix.html"));
-      await page.waitForFunction(() => /READY TO BEGIN[\s\S]*M16A2 Rifle[\s\S]*CONTINUE WITH STANDARD SETUP/.test(document.querySelector("#experience")?.contentDocument?.body?.innerText || ""));
+      await page.waitForFunction(() => document.querySelector("#experience")?.contentWindow?.location?.pathname.endsWith("/shoot.html"), null, { timeout: 30000 });
+      await page.waitForFunction(() => {
+        const frame = document.querySelector("#experience")?.contentWindow;
+        const image = frame?.document?.querySelector("#targetEvidencePreview img");
+        return frame?.location?.search.includes("founder_fixture=qt_registered")
+          && image?.complete
+          && image?.naturalWidth > 0;
+      }, null, { timeout: 30000 });
+      assert.equal(await page.locator("#experience").evaluate(frame => frame.contentDocument?.querySelector("#precisionTapPhotoPicker")?.hidden), true, "M16A2 review fixture must bypass external photo entry");
+      assert.equal(await page.locator("#experience").evaluate(frame => frame.contentDocument?.querySelector("#setAimMode")?.offsetParent !== null), true, "M16A2 review fixture must be ready for the Founder to mark the aim point");
     } else {
       await page.waitForFunction(() => document.querySelector("#experience")?.src.includes("target-experience.html"));
       await page.waitForFunction(status => document.querySelector("#experience")?.contentDocument?.querySelector("#contractStatus")?.textContent?.trim() === status, item.status);
@@ -41,9 +50,9 @@ try {
 }
 
 const artifact = {
-  schemaVersion: "sczn3.qt-printer13.founder-representative-5-browser-verification.v1",
+  schemaVersion: "sczn3.qt-printer13.founder-representative-5-browser-verification.v2",
   status: "PASS", selectorUrl: `${origin}${selectorPath}`, count: 5,
-  zeroingEntryProof: "M16A2 governed standard setup is visible; Founder continues into the inherited Zeroing road.",
+  fixtureProof: "All five entries supply governed ready-to-use evidence; M16A2 automatically enters the inherited Zeroing road with its exact registered QT face and no external photo selection.",
   founderAcceptance: "PENDING", results
 };
 await writeFile(artifactPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");

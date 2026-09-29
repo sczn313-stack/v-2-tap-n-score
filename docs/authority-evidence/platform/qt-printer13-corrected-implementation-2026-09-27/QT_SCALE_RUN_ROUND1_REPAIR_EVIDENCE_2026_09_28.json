@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "sczn3.qt-printer13.scale-run-round1-repair-evidence.v1",
+  "date": "2026-09-28",
+  "status": "PASS_WITH_ONE_WITHHOLD_AND_ONE_PRESERVED_EXCEPTION",
+  "founderAcceptance": "PENDING",
+  "scope": {
+    "universalCountingPresentation": "PASS",
+    "resultLanguageCleanup": "PASS",
+    "secExactReopenPresentation": "PASS",
+    "si2FounderAuthority": "PASS",
+    "cr202": "PRESERVED_EXCEPTION",
+    "usafM4Sfqc": "UNCHANGED"
+  },
+  "capabilityReconciliation": {
+    "total": 254,
+    "scoring": 42,
+    "counting": 160,
+    "evidenceOnly": 51,
+    "zeroing": 1
+  },
+  "sharedPresentation": {
+    "countingDetailsDefault": "collapsed",
+    "countingDetailsLifecycleOwner": "shared shooter-facing RESULT markup preserved unchanged through SEC, Vault, and exact reopen",
+    "shooterFacingGovernedTerminology": "removed by shared label sanitation",
+    "identifierTreatment": "SCZN3 gold; font-weight 950",
+    "countTreatment": "white; font-weight 500",
+    "redundantValidRegionSentence": "removed",
+    "meaningfulObjectCoverage": "preserved",
+    "secPreservedSentence": "removed",
+    "exactReopenControl": "preserved and SCZN3 gold"
+  },
+  "si2": {
+    "targetId": "qt_printer13_product_1977883164745",
+    "capability": "Scoring",
+    "usmEligible": true,
+    "pointValues": {
+      "printed7": 7,
+      "printed8": 8,
+      "physicalRedAreas": 9,
+      "physicalWhiteInnerSquares": 10,
+      "outside": 0
+    },
+    "physicalScoringObjects": [
+      "Upper Scoring Zone",
+      "Center Small Red Square",
+      "Lower Scoring Zone"
+    ],
+    "circular9Invented": false,
+    "boundarySemantics": "not_newly_specified",
+    "browserLifecycleVerification": {
+      "status": "PASS",
+      "syntheticKnownCoordinates": {
+        "totalTaps": 11,
+        "hitTaps": 10,
+        "missed": 1,
+        "score": 87,
+        "hitRate": 90.9
+      },
+      "stages": ["RESULT", "SEC", "Vault", "exact reopen"],
+      "sessionId": "sczn3-session-f805d39b-1ee2-475b-8752-6da7095766ed"
+    },
+    "originalFounderObservationReprocessing": {
+      "status": "WITHHELD",
+      "reason": "The original 31-tap SI-2 observation artifact was not present in either current Vault and was not durably recoverable from workspace evidence. No observations were reconstructed or manufactured."
+    }
+  },
+  "cr202": {
+    "targetId": "qt_printer13_product_1960322924617",
+    "status": "PRESERVED_EXCEPTION",
+    "error": "geometry_classification_ambiguous",
+    "cause": "The current Backend Authority defines two equal-priority ellipses whose extents overlap. A normalized point such as 0.5,0.5 classifies into both regions, so the shared executor correctly fails closed.",
+    "authorityEvidence": "The preserved registered face depicts one photographic subject, while the current two-ellipse left/right approximation is not confirmed as physical source geometry.",
+    "repair": "WITHHELD",
+    "pixelDerivedRepair": false
+  },
+  "usafM4Sfqc": {
+    "capability": "Zone / Object Counting",
+    "changed": false,
+    "identities": {
+      "250 M": 1,
+      "300 M": 1,
+      "200 M": 2,
+      "150 M": 2,
+      "100 M": 2,
+      "50 M": 1
+    }
+  },
+  "verification": [
+    "PASS SI-2 Founder scoring authority; PASS CR-202 ambiguity preserved",
+    "PASS universal Counting RESULT: 160/160 contracts",
+    "PASS QT scale-run shared Counting, RESULT language, and Exact Reopen presentation locks",
+    "PASS universal Counting drawer and shooter-facing label sanitization",
+    "PASS USMC-THREAT compact Zone Details presentation",
+    "PASS canonical RESULT to SEC to Vault to exact-reopen ownership",
+    "PASS Target Execution Scale Architecture acceptance",
+    "PASS Declarative Target Scoring acceptance",
+    "PASS SI-2 Scoring to USM browser lifecycle"
+  ],
+  "commitPushDeploy": false
+}

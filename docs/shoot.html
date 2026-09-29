@@ -375,6 +375,8 @@ const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.loca
 const IS_FOUNDER_LAN_REVIEW = TARGET_QUERY.get("founder_review") === "1"
   && /^(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/.test(window.location.hostname);
 const FOUNDER_WORKSPACE_TEST_MODE = (IS_LOCAL_FRONTEND || IS_FOUNDER_LAN_REVIEW) && TARGET_QUERY.get("founder_review") === "1";
+const QT_FOUNDER_REGISTERED_FIXTURE_MODE = FOUNDER_WORKSPACE_TEST_MODE
+  && TARGET_QUERY.get("founder_fixture") === "qt_registered";
 const BACKEND_AUTHORITY_ENDPOINT = window.SCZN3_BACKEND_AUTHORITY_ENDPOINT || (TARGET_QUERY.get("founder_review") === "1"
   ? `${window.location.origin}/api/authority/ugeo`
   : IS_LOCAL_FRONTEND ? LOCAL_AUTHORITY_ENDPOINT : PRODUCTION_AUTHORITY_ENDPOINT);
@@ -2176,6 +2178,50 @@ function installZeroingEntryEvidence() {
   const evidence = { ...profile.entryEvidence };
   session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
   pendingEvidence = null;
+  return evidence;
+}
+
+const QT_FOUNDER_ZEROING_FIXTURES = Object.freeze({
+  qualification_m16a2_25m_zero: Object.freeze({
+    dataUrl: "assets/QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1.jpg",
+    name: "Qualification Targets M16A2 Founder review evidence fixture",
+    type: "image/jpeg",
+    assetRole: "shooter-captured-founder-test-fixture",
+    observationCoordinateConvention: "normalized_source_image_top_left",
+    observationAuthority: "shooter_declared",
+    registrationStatus: "complete",
+    registrationAuthoritySource: "registered_exact_asset",
+    registrationAuthorityId: "qualification-m16a2-photo-registration-v1",
+    registrationPackageId: "qualification-m16a2-photo-registration-v1",
+    registrationPackageVersion: "1",
+    canonicalAssetSha256: "c3028042b6ba600ef983a2fd1cbb035d4f05c4687f8ec54c359ea86369896290",
+    sourceImageSha256: "c3028042b6ba600ef983a2fd1cbb035d4f05c4687f8ec54c359ea86369896290",
+    originalSourceImageSha256: "c3028042b6ba600ef983a2fd1cbb035d4f05c4687f8ec54c359ea86369896290",
+    canonicalCoordinateSystemVersion: "QUALIFICATION_M16A2_PUBLISHER_FACE_AUTHORITY_v1",
+    imageWidthPx: 1500,
+    imageHeightPx: 1967,
+    originalImageWidthPx: 1500,
+    originalImageHeightPx: 1967,
+    targetProfileId: "qualification_m16a2_25m_zero",
+    targetId: "qualification_m16a2_25m_zero",
+    publisher: "Qualification Targets"
+  })
+});
+
+function installQtFounderZeroingFixture(options = {}) {
+  if (!QT_FOUNDER_REGISTERED_FIXTURE_MODE || !ensureTargetSession()) return null;
+  const profileId = sessionTargetProfileId(session) || String(TARGET_PROFILE_LAUNCH_ID).toLowerCase();
+  const template = QT_FOUNDER_ZEROING_FIXTURES[profileId];
+  if (!template) return null;
+  const confirmation = options.confirmation === true;
+  const evidence = { ...template, fixturePhase: confirmation ? "confirmation" : "initial" };
+  pendingEvidence = evidence;
+  if (confirmation) {
+    confirmationPhotoRequired = false;
+    session = SCZN3M4.updateActiveSession({ confirmationEvidenceImage: evidence }) || session;
+  } else {
+    session = SCZN3M4.updateActiveSession({ targetEvidenceImage: evidence }) || session;
+  }
   return evidence;
 }
 
@@ -3992,9 +4038,10 @@ async function resolveMissionFromTargetProfile() {
       ensureTargetAttribution();
       missionResolutionStatus = "resolved";
       missionResolutionMessage = "";
-      const evidence = zeroingProfile.entryMode === "registered-reference"
+      const evidence = installQtFounderZeroingFixture()
+        || (zeroingProfile.entryMode === "registered-reference"
         ? installZeroingEntryEvidence()
-        : activeEvidence();
+        : activeEvidence());
       if (evidence) renderEvidencePreview(evidence);
       setMode(currentAimPoint ? "impact" : "aim");
       renderSetupSummary();
@@ -6079,12 +6126,14 @@ document.getElementById("saveMarks").addEventListener("click", () => {
     authorityStatusMessage = "";
     hideShooterTip();
     renderEvidencePreview(null);
+    const founderConfirmationFixture = installQtFounderZeroingFixture({ confirmation: true });
+    if (founderConfirmationFixture) renderEvidencePreview(founderConfirmationFixture);
     setMode("impact");
     renderMarkers();
     renderResults();
     renderMarkStatus();
     setSaveSessionStatus("");
-    openPhotoEntryPicker();
+    if (!founderConfirmationFixture) openPhotoEntryPicker();
     playTsttChapterFourConfirmationNarration();
     finishExperienceProcessing(saveProcessingId, true);
     return;

@@ -8,10 +8,15 @@
   <link rel="stylesheet" href="platform-ui.css?v=universal-shot-marker-contrast-1" />
   <link rel="stylesheet" href="m4-sec.css" />
   <link rel="stylesheet" href="sec-framework.css?v=ep54-approved-result-recovery-1" />
+  <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
   <link rel="stylesheet" href="platform_actions.css" />
+  <link rel="stylesheet" href="smart_target_workspace.css?v=episode59-stay-on-screen-1" />
   <link rel="stylesheet" href="target-experience.css?v=usm-history-header-1" />
   <style>.contract-evidence img{max-height:72vh}</style>
+  <script src="navigation.js?v=episode57-rate-us-cleanup-1" defer></script>
+  <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
   <script src="platform_actions.js"></script>
+  <script src="smart_target_workspace.js?v=episode59-stay-on-screen-1"></script>
   <script src="sec_reopen_capability.js?v=portable-exact-reopen-1" defer></script>
   <script src="sec_reopen_lifecycle.js?v=result-first-1" defer></script>
   <script src="platform_contracts.js" defer></script>
@@ -25,12 +30,12 @@
   <script src="sec_framework.js?v=ep54-approved-result-recovery-1" defer></script>
 </head>
 <body class="platform-page" data-contract-target-page>
-  <header class="m4-header app-header"><div class="brand-lockup"><a class="vendor-name" href="index.html">Tap-n-Score™</a></div><span>Registered Smart Target</span></header>
+  <header class="m4-header app-header"><div class="brand-lockup"><a class="vendor-name" href="index.html">Tap-n-Score™</a></div><span>Registered Smart Target</span><details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary></details></header>
   <main class="contract-target-shell" id="contractCaptureView">
     <section class="contract-intro"><span id="contractExperienceLabel">Target experience</span><h1 id="contractProductName">Registered Smart Target</h1><p id="contractStatus" role="status" aria-live="polite">Start to open the registered target.</p></section>
     <button class="button primary" id="contractStart" type="button">Start</button>
     <section id="contractCapture" hidden><label class="button primary" for="contractFile">Load / Capture Target</label><input id="contractFile" type="file" accept="image/*" hidden /></section>
-    <section class="contract-workspace" id="contractWorkspace" hidden>
+    <section class="contract-workspace" id="contractWorkspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
       <section class="contract-cue-panel" id="contractDiagnosticPanel" hidden><p class="contract-claim-grade"><strong>Publisher Label Match — Not an SCZN3 Diagnosis</strong><br />Matches exact publisher-authorized regions only. No cause, correction, scoring, or coaching is inferred.</p><label id="contractDiagnosticHandednessControl" hidden><span id="contractDiagnosticHandednessLabel">WHAT HAND ARE YOU SHOOTING WITH?</span> <select id="contractDiagnosticHandedness"></select></label></section>
       <section class="contract-cue-panel" id="contractCuePanel" hidden aria-live="polite">
         <p class="contract-claim-grade" id="contractClaimGrade" hidden><strong>Practice Simulation — Not Official Qualification</strong><br />SCZN3 does not issue a credential, certification, or agency qualification.</p>
@@ -45,8 +50,14 @@
         <div id="contractObjectChoices"></div>
         <p id="contractObjectProgress"></p>
       </section>
-      <div class="contract-image-frame"><img id="contractTargetImage" alt="Loaded registered target evidence" /><div id="contractMarkers"></div><button id="contractTapSurface" type="button" aria-label="Record visible shot tap"></button></div>
-      <div class="contract-controls">
+      <div class="contract-image-frame precision-tap-viewport" id="contractPrecisionTapViewport" data-sczn3-workspace-evidence="true">
+        <div class="contract-image-plane precision-tap-plane" id="contractPrecisionTapPlane">
+          <img id="contractTargetImage" alt="Loaded registered target evidence" />
+          <div class="marker-layer" id="contractMarkers"></div>
+          <button id="contractTapSurface" type="button" aria-label="Record visible shot tap"></button>
+        </div>
+      </div>
+      <div class="contract-controls" data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1" data-processing-host>
         <section class="contract-scoring-mode" id="contractScoringModePanel" hidden aria-label="Governed scoring mode">
           <label><span id="contractScoringModeLabel">Scoring mode</span><select id="contractScoringMode"></select></label>
         </section>

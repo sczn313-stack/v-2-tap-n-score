@@ -3,10 +3,11 @@ import vm from "node:vm";
 import { readFile } from "node:fs/promises";
 
 const source = await readFile("target_execution_runtime.js", "utf8");
+const registrySource = await readFile("usm_proof_registry.js", "utf8");
 const window = {
-  location: { hostname: "127.0.0.1", search: "?authorityPort=8118" },
-  SCZN3USMProofRegistry: { isEligible: targetId => targetId === "gunfun_22200_b27e_black" }
+  location: { hostname: "127.0.0.1", search: "?authorityPort=8118" }
 };
+vm.runInNewContext(registrySource, { window });
 const document = { readyState: "loading", addEventListener() {} };
 vm.runInNewContext(source, { URLSearchParams, Uint8Array, DataView, Math, Intl, Date, Object, Array, Number, String, Set, Map, document, window });
 const runtime = window.SCZN3TargetExecutionRuntime;
@@ -72,7 +73,11 @@ assert.match(markup561, /56 points ÷ 12 taps<br>≈ 4\.7/);
 assert.match(markup561, /HIT RATE<\/span><strong>50%/);
 assert.match(markup561, /6 hits ÷ 12 taps<br>= 50%/);
 
-assert.equal(runtime.usmHistorySeries(sessions, "another_target").length, 0, "USM does not generalize beyond the Founder-locked B27E proof");
-assert.equal(runtime.usmDrawerMarkup([], "session-055"), "", "History is withheld only when no valid preserved B27E scoring records exist");
+const otherTargetSessions = [session("201", 8, 6, 61, "2026-09-24T10:00:00Z", "another_target")];
+assert.equal(runtime.usmHistorySeries(otherTargetSessions, "another_target").length, 1, "USM inherits by governed additive scoring capability rather than target identity");
+assert.equal(window.SCZN3USMProofRegistry.isEligible({ missionFamily: "targetScoring", scoring: { model: "counts_only", status: "complete", total: 6, observationCount: 8 } }), false, "counts-only targets do not inherit additive-score USM");
+assert.equal(window.SCZN3USMProofRegistry.isEligible({ missionFamily: "targetScoring", scoring: { model: "penalty_regions", status: "complete", total: 6, observationCount: 8 } }), false, "penalty scoring does not inherit without separate eligibility review");
+assert.equal(window.SCZN3USMProofRegistry.isEligible({ missionFamily: "targetScoring", scoring: { model: "numeric_regions", status: "withheld", total: 6, observationCount: 8 } }), false, "withheld scoring cannot inherit USM");
+assert.equal(runtime.usmDrawerMarkup([], "session-055"), "", "History is withheld when no eligible preserved scoring records exist");
 
 console.log("PASS B27E Universal Scoring Model: Score / Hit Rate / Points per Tap");

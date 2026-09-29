@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "sczn3-qt-round2-nm-family-correction-evidence-v1",
+  "recordedAt": "2026-09-28T00:00:00-04:00",
+  "authorityId": "QT_PRINTER13_FOUNDER_ROUND2_NM_CORRECTION_2026_09_28",
+  "founderAcceptance": "pending",
+  "git": {
+    "startingHead": "309d3bb5e3f65c2454b77f7489274bfeb2ac1236",
+    "commitCreated": false,
+    "pushPerformed": false,
+    "deployPerformed": false
+  },
+  "changedTargets": [
+    {
+      "targetId": "qt_printer13_product_1955968221257",
+      "sku": "IN-QT",
+      "name": "IN-QT Paper Target",
+      "beforeCapability": "Zone / Object Counting",
+      "afterCapability": "Zone / Object Counting",
+      "correction": "Replaced the rejected generic four-region model with six physical areas: Head Zone, Center Mass Zone, Inner Chest Zone, Outer Chest Zone, Hip Zone, and Spotting Circle. No point values were assigned.",
+      "lifecycleSessionId": "sczn3-session-0c51e772-b5bd-4d17-a30d-285d0191d2de",
+      "lifecycle": "PASS"
+    },
+    {
+      "targetId": "qt_printer13_product_4717153681492",
+      "sku": "NM-DOT",
+      "name": "NM-DOT",
+      "beforeCapability": "Zone / Object Counting",
+      "afterCapability": "Zone / Object Counting",
+      "correction": "Replaced the one-bull model with three independent bull zones. Each bull reports hit and miss counts and rolls into target totals.",
+      "lifecycleSessionId": "sczn3-session-dd784e87-bd11-46ba-9ecd-f3d9e6ae6245",
+      "lifecycle": "PASS"
+    },
+    {
+      "targetId": "qt_printer13_product_1962631430217",
+      "sku": "NM-DPS-Q",
+      "name": "NM-DPS-Q Paper Target",
+      "beforeCapability": "Zone / Object Counting",
+      "afterCapability": "Scoring",
+      "correction": "Bound the Founder-approved SCZN3 Upper/Lower nested color-counting method through the shared NM_DPS_NESTED_COLOR_UPPER_LOWER_V1 family contract.",
+      "lifecycleSessionId": "sczn3-session-a7497c37-30c3-4a28-86f7-294d8780e3a3",
+      "lifecycle": "PASS"
+    },
+    {
+      "targetId": "qt_printer13_product_1967276982345",
+      "sku": "NM-DPS-Q1",
+      "name": "NM-DPS-Q1 Paper Target",
+      "beforeCapability": "Zone / Object Counting",
+      "afterCapability": "Scoring",
+      "correction": "Bound the Founder-approved SCZN3 Upper/Lower nested color-counting method through the shared NM_DPS_NESTED_COLOR_UPPER_LOWER_V1 family contract.",
+      "lifecycleSessionId": "sczn3-session-e61d90de-23bf-40bb-9339-27658ba4f0f9",
+      "lifecycle": "PASS"
+    },
+    {
+      "targetId": "qt_printer13_product_1967280455753",
+      "sku": "NM-DPS-Q3",
+      "name": "NM-DPS-Q3 Paper Target",
+      "beforeCapability": "Zone / Object Counting",
+      "afterCapability": "Scoring",
+      "correction": "Bound the Founder-approved SCZN3 Upper/Lower nested color-counting method through the shared NM_DPS_NESTED_COLOR_UPPER_LOWER_V1 family contract.",
+      "lifecycleSessionId": "sczn3-session-b47316f6-0f3c-4730-9b89-b3fc0a93445e",
+      "lifecycle": "PASS"
+    },
+    {
+      "targetId": "qt_printer13_product_1960132477001",
+      "sku": "TQ-20",
+      "name": "TQ-20 Paper Target",
+      "beforeCapability": "Evidence Only",
+      "afterCapability": "Zone / Object Counting",
+      "correction": "Registered four explicit physical zones without point values. Conflicting governing-course values prevent a truthful target-wide numeric scoring contract.",
+      "lifecycleSessionId": "sczn3-session-0e8d6222-425a-4fe6-956e-ef3821971266",
+      "lifecycle": "PASS"
+    }
+  ],
+  "withheld": [
+    {
+      "targetId": "qt_printer13_product_1977897058377",
+      "sku": "SI-3",
+      "currentCapability": "Zone / Object Counting",
+      "requestedConversion": "Scoring",
+      "status": "WITHHELD_PENDING_SCORING_METHOD_AUTHORITY",
+      "reason": "Publisher evidence establishes four bullseyes with orange centers but does not publish the complete scoring method, center value, boundary rule, or course semantics. No conversion was invented."
+    },
+    {
+      "targetId": "qt_printer13_product_1960132477001",
+      "sku": "TQ-20",
+      "currentCapability": "Zone / Object Counting",
+      "requestedConversion": "Zone Scoring",
+      "status": "NUMERIC_VALUES_WITHHELD_AUTHORITY_CONFLICT",
+      "reason": "The publisher establishes the reduced TQ-19 identity, while located governing uses apply conflicting value systems. Physical-zone counting is supported; universal point values are not."
+    }
+  ],
+  "explicitNonInheritance": [
+    {
+      "sku": "NM-DPS",
+      "reason": "Its photographic target geometry is not identical to NM-DPS-Q/Q1/Q3."
+    },
+    {
+      "sku": "NMCD-Qual",
+      "reason": "Its numbered-zone geometry is not identical to NM-DPS-Q/Q1/Q3."
+    }
+  ],
+  "unchangedFounderLocks": [
+    {
+      "sku": "USMC-THREAT",
+      "capability": "Zone / Object Counting",
+      "status": "UNCHANGED"
+    }
+  ],
+  "sharedImplementation": {
+    "dataContract": "docs/backend/target_scoring_data_contract.py",
+    "executor": "docs/backend/executors/declarative_target_score.py",
+    "runtimePresentation": "docs/target_execution_runtime.js",
+    "cumulativeMethod": "sczn3_founder_approved_nested_color_totals",
+    "atomicRule": "Every observation is classified once as Red, White-only, Blue-only, or Miss within Upper or Lower.",
+    "derivedRule": "Red Total = Red; White Total = Red + White-only; Blue Total = Red + White-only + Blue-only. Derived totals do not duplicate atomic observation custody."
+  },
+  "uiLanguage": {
+    "removed": "Backend-authoritative result ready.",
+    "replacement": "Result ready."
+  },
+  "verification": {
+    "authorityExecution": "PASS",
+    "changedTargetBrowserLifecycle": "6/6 PASS",
+    "browserRoad": "RESULT -> SEC -> Vault -> exact reopen",
+    "countingPopulation": "158/158 PASS",
+    "declarativeScoringRegression": "PASS",
+    "scaleRunSharedPresentation": "PASS",
+    "universalCountingDrawer": "PASS",
+    "usmcThreatRegression": "PASS",
+    "canonicalPreservedLifecycle": "PASS",
+    "backendLanguageAbsentFromCurrentRuntime": true
+  },
+  "finalCapabilityCensus": {
+    "Scoring": 45,
+    "Zone / Object Counting": 158,
+    "Evidence Only": 50,
+    "Zeroing": 1,
+    "total": 254
+  }
+}
