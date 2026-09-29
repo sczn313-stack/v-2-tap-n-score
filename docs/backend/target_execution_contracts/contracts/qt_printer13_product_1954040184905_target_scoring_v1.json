@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1954040184905-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -54,95 +59,207 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "left_figure",
-            "shape": "ellipse",
-            "cx": 0.39,
-            "cy": 0.53,
-            "radiusX": 0.19,
-            "radiusY": 0.38,
-            "priority": 50,
-            "objectId": "left_figure"
-          },
-          {
-            "regionId": "right_figure",
-            "shape": "ellipse",
-            "cx": 0.62,
-            "cy": 0.52,
-            "radiusX": 0.2,
-            "radiusY": 0.39,
-            "priority": 50,
-            "objectId": "right_figure"
+            "regionId": "target_figure",
+            "shape": "polygon",
+            "points": [
+              [
+                0.91,
+                0.4002607561929596
+              ],
+              [
+                0.9,
+                0.4302477183833116
+              ],
+              [
+                0.848,
+                0.4315514993481095
+              ],
+              [
+                0.844,
+                0.42633637548891784
+              ],
+              [
+                0.824,
+                0.4380704041720991
+              ],
+              [
+                0.788,
+                0.4380704041720991
+              ],
+              [
+                0.786,
+                0.46153846153846156
+              ],
+              [
+                0.762,
+                0.46284224250325945
+              ],
+              [
+                0.762,
+                0.4954367666232073
+              ],
+              [
+                0.702,
+                0.5045632333767927
+              ],
+              [
+                0.748,
+                0.5084745762711864
+              ],
+              [
+                0.746,
+                0.5749674054758801
+              ],
+              [
+                0.672,
+                0.5749674054758801
+              ],
+              [
+                0.67,
+                0.5671447196870926
+              ],
+              [
+                0.642,
+                0.560625814863103
+              ],
+              [
+                0.636,
+                0.5410691003911343
+              ],
+              [
+                0.63,
+                0.5397653194263363
+              ],
+              [
+                0.628,
+                0.5202086049543677
+              ],
+              [
+                0.608,
+                0.5202086049543677
+              ],
+              [
+                0.604,
+                0.5514993481095176
+              ],
+              [
+                0.612,
+                0.5528031290743155
+              ],
+              [
+                0.62,
+                0.5867014341590613
+              ],
+              [
+                0.622,
+                0.6649282920469362
+              ],
+              [
+                0.662,
+                0.6649282920469362
+              ],
+              [
+                0.688,
+                0.6753585397653195
+              ],
+              [
+                0.726,
+                0.666232073011734
+              ],
+              [
+                0.75,
+                0.6544980443285529
+              ],
+              [
+                0.78,
+                0.6310299869621904
+              ],
+              [
+                0.8,
+                0.6088657105606258
+              ],
+              [
+                0.816,
+                0.5788787483702738
+              ],
+              [
+                0.84,
+                0.5749674054758801
+              ],
+              [
+                0.868,
+                0.5580182529335072
+              ],
+              [
+                0.884,
+                0.5149934810951761
+              ],
+              [
+                0.874,
+                0.5084745762711864
+              ],
+              [
+                0.874,
+                0.4863102998696219
+              ],
+              [
+                0.858,
+                0.485006518904824
+              ],
+              [
+                0.858,
+                0.45241199478487615
+              ],
+              [
+                0.876,
+                0.439374185136897
+              ],
+              [
+                0.91,
+                0.4302477183833116
+              ],
+              [
+                0.922,
+                0.42242503259452413
+              ],
+              [
+                0.912,
+                0.4132985658409387
+              ]
+            ],
+            "priority": 100
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
-          "qtGroup": "CR_ACTIVE_SHOOTER_FAMILY"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 767,
-          "aspectRatio": 0.65189,
-          "cornerBackgroundRgb": [
-            135,
-            127,
-            89
-          ],
-          "contrastCoverage": 0.8478,
-          "contrastBoundingBox": {
-            "xMin": 0.0,
-            "yMin": 0.0,
-            "xMax": 1.0,
-            "yMax": 1.0
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4311,
-            "yNorm": 0.5193
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1954040184905-01.png",
+          "sourceAssetSha256": "6f9f2b86558e3490b08b7b41cbb64ef42e23c3ce550c361ff2bfd7ecb26e63f7",
+          "publisherEvidence": "Click here for CR-117-O Overlay Set Qualification Targets Inc Product Black Female Shooter Target with Hidden Zone CR-117 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
+          "mapping": "dominant target-specific foreground figure scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.891
-            },
-            {
-              "cell": "r1c2",
-              "contrastCoverage": 0.9009
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.6644
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.9937
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 0.9909
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.9747
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.952
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.9215
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.3475
+              "regionId": "target_figure",
+              "boundarySampleCount": 761,
+              "edgeThreshold": 17.0294,
+              "alignedFraction": 0.8344,
+              "medianGradient": 62.0
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "06712f445d21d3a0d53a396818ab237e793d99aad9423d579d45472e7db6b5ed"
+      "digest": "43158f2b5efe2a995a833f062d71f0524c2e3b8e853360d5b0948d3cd23b416b"
     },
     "registration": {
       "id": "qt_printer13_product_1954040184905-registration",
@@ -168,15 +285,10 @@
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "left_figure": {
-            "label": "Left visible figure",
-            "objectId": "left_figure",
-            "objectLabel": "Left visible figure"
-          },
-          "right_figure": {
-            "label": "Right visible figure",
-            "objectId": "right_figure",
-            "objectLabel": "Right visible figure"
+          "target_figure": {
+            "label": "Target Figure",
+            "objectId": "target_figure",
+            "objectLabel": "Target Figure"
           }
         },
         "aggregation": {
@@ -186,7 +298,7 @@
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
           "publisherCatalogEvidence": "Click here for CR-117-O Overlay Set Qualification Targets Inc Product Black Female Shooter Target with Hidden Zone CR-117 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
-          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+          "rule": "the exact printed target figure is counted as one physical object; no unpublished values or course rules are inferred"
         },
         "outsideRule": {
           "label": "Missed"
@@ -215,7 +327,7 @@
           "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         }
       },
-      "digest": "f2bd6037aa782afb67b0b4805bac26e2ba76fbafd42bda4a93fa3699106551fa"
+      "digest": "f6800dc6d5f7d1e9e1fd9755fa4881946301e64e98455ce58a26b561b5c4fbf3"
     },
     "mission": {
       "id": "qt_printer13_product_1954040184905-mission",
@@ -437,7 +549,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

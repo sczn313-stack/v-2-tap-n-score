@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1953767456841-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "REPEATED_OBJECT_COUNTING",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -55,182 +60,792 @@
         "regions": [
           {
             "regionId": "object_1",
-            "shape": "circle",
-            "cx": 0.172,
-            "cy": 0.24,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_1"
+            "shape": "polygon",
+            "points": [
+              [
+                0.096,
+                0.13008130081300814
+              ],
+              [
+                0.086,
+                0.13685636856368563
+              ],
+              [
+                0.082,
+                0.14363143631436315
+              ],
+              [
+                0.084,
+                0.15582655826558264
+              ],
+              [
+                0.098,
+                0.16395663956639567
+              ],
+              [
+                0.124,
+                0.16260162601626016
+              ],
+              [
+                0.136,
+                0.15176151761517614
+              ],
+              [
+                0.134,
+                0.13685636856368563
+              ],
+              [
+                0.118,
+                0.12872628726287264
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_2",
-            "shape": "circle",
-            "cx": 0.336,
-            "cy": 0.24,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_2"
+            "shape": "polygon",
+            "points": [
+              [
+                0.294,
+                0.12330623306233063
+              ],
+              [
+                0.288,
+                0.12195121951219512
+              ],
+              [
+                0.296,
+                0.12737127371273713
+              ],
+              [
+                0.294,
+                0.13143631436314362
+              ],
+              [
+                0.27,
+                0.12737127371273713
+              ],
+              [
+                0.258,
+                0.13008130081300814
+              ],
+              [
+                0.25,
+                0.13550135501355012
+              ],
+              [
+                0.246,
+                0.14227642276422764
+              ],
+              [
+                0.246,
+                0.15040650406504066
+              ],
+              [
+                0.256,
+                0.16124661246612465
+              ],
+              [
+                0.266,
+                0.16395663956639567
+              ],
+              [
+                0.286,
+                0.16260162601626016
+              ],
+              [
+                0.298,
+                0.15582655826558264
+              ],
+              [
+                0.302,
+                0.14769647696476965
+              ],
+              [
+                0.308,
+                0.14905149051490515
+              ],
+              [
+                0.306,
+                0.15311653116531165
+              ],
+              [
+                0.312,
+                0.15853658536585366
+              ],
+              [
+                0.308,
+                0.15176151761517614
+              ],
+              [
+                0.312,
+                0.14905149051490515
+              ],
+              [
+                0.318,
+                0.14905149051490515
+              ],
+              [
+                0.312,
+                0.14634146341463414
+              ],
+              [
+                0.312,
+                0.14227642276422764
+              ],
+              [
+                0.3,
+                0.14227642276422764
+              ],
+              [
+                0.3,
+                0.13685636856368563
+              ],
+              [
+                0.296,
+                0.13550135501355012
+              ],
+              [
+                0.296,
+                0.13279132791327913
+              ],
+              [
+                0.302,
+                0.13143631436314362
+              ],
+              [
+                0.304,
+                0.13414634146341464
+              ],
+              [
+                0.304,
+                0.13143631436314362
+              ],
+              [
+                0.294,
+                0.12601626016260162
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_3",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.24,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_3"
+            "shape": "polygon",
+            "points": [
+              [
+                0.428,
+                0.13008130081300814
+              ],
+              [
+                0.412,
+                0.14092140921409213
+              ],
+              [
+                0.41,
+                0.14905149051490515
+              ],
+              [
+                0.414,
+                0.15718157181571815
+              ],
+              [
+                0.422,
+                0.16260162601626016
+              ],
+              [
+                0.434,
+                0.16531165311653118
+              ],
+              [
+                0.444,
+                0.16531165311653118
+              ],
+              [
+                0.458,
+                0.16124661246612465
+              ],
+              [
+                0.466,
+                0.15176151761517614
+              ],
+              [
+                0.464,
+                0.13821138211382114
+              ],
+              [
+                0.454,
+                0.13143631436314362
+              ],
+              [
+                0.442,
+                0.12872628726287264
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_4",
-            "shape": "circle",
-            "cx": 0.664,
-            "cy": 0.24,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_4"
+            "shape": "polygon",
+            "points": [
+              [
+                0.588,
+                0.13143631436314362
+              ],
+              [
+                0.578,
+                0.13956639566395665
+              ],
+              [
+                0.578,
+                0.15582655826558264
+              ],
+              [
+                0.59,
+                0.16395663956639567
+              ],
+              [
+                0.618,
+                0.16395663956639567
+              ],
+              [
+                0.628,
+                0.15718157181571815
+              ],
+              [
+                0.632,
+                0.14905149051490515
+              ],
+              [
+                0.63,
+                0.13956639566395665
+              ],
+              [
+                0.616,
+                0.13008130081300814
+              ],
+              [
+                0.604,
+                0.12872628726287264
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_5",
-            "shape": "circle",
-            "cx": 0.828,
-            "cy": 0.24,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_5"
+            "shape": "polygon",
+            "points": [
+              [
+                0.752,
+                0.13279132791327913
+              ],
+              [
+                0.74,
+                0.14363143631436315
+              ],
+              [
+                0.74,
+                0.15176151761517614
+              ],
+              [
+                0.744,
+                0.15853658536585366
+              ],
+              [
+                0.752,
+                0.16395663956639567
+              ],
+              [
+                0.762,
+                0.16666666666666666
+              ],
+              [
+                0.784,
+                0.16395663956639567
+              ],
+              [
+                0.794,
+                0.15447154471544716
+              ],
+              [
+                0.794,
+                0.14092140921409213
+              ],
+              [
+                0.78,
+                0.13143631436314362
+              ],
+              [
+                0.772,
+                0.13008130081300814
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_6",
-            "shape": "circle",
-            "cx": 0.172,
-            "cy": 0.5,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_6"
+            "shape": "polygon",
+            "points": [
+              [
+                0.098,
+                0.3699186991869919
+              ],
+              [
+                0.088,
+                0.37262872628726285
+              ],
+              [
+                0.08,
+                0.3780487804878049
+              ],
+              [
+                0.076,
+                0.38482384823848237
+              ],
+              [
+                0.078,
+                0.3970189701897019
+              ],
+              [
+                0.086,
+                0.4037940379403794
+              ],
+              [
+                0.094,
+                0.4065040650406504
+              ],
+              [
+                0.112,
+                0.4065040650406504
+              ],
+              [
+                0.128,
+                0.3983739837398374
+              ],
+              [
+                0.13,
+                0.3821138211382114
+              ],
+              [
+                0.126,
+                0.37669376693766937
+              ],
+              [
+                0.116,
+                0.3712737127371274
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_7",
-            "shape": "circle",
-            "cx": 0.336,
-            "cy": 0.5,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_7"
+            "shape": "polygon",
+            "points": [
+              [
+                0.256,
+                0.3712737127371274
+              ],
+              [
+                0.248,
+                0.37533875338753386
+              ],
+              [
+                0.242,
+                0.38346883468834686
+              ],
+              [
+                0.244,
+                0.3983739837398374
+              ],
+              [
+                0.26,
+                0.4065040650406504
+              ],
+              [
+                0.276,
+                0.4065040650406504
+              ],
+              [
+                0.286,
+                0.4037940379403794
+              ],
+              [
+                0.296,
+                0.39295392953929537
+              ],
+              [
+                0.294,
+                0.3794037940379404
+              ],
+              [
+                0.286,
+                0.37262872628726285
+              ],
+              [
+                0.276,
+                0.3699186991869919
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_8",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_8"
+            "shape": "polygon",
+            "points": [
+              [
+                0.43,
+                0.3712737127371274
+              ],
+              [
+                0.42,
+                0.37398373983739835
+              ],
+              [
+                0.41,
+                0.3807588075880759
+              ],
+              [
+                0.408,
+                0.3943089430894309
+              ],
+              [
+                0.418,
+                0.4051490514905149
+              ],
+              [
+                0.428,
+                0.4078590785907859
+              ],
+              [
+                0.444,
+                0.4078590785907859
+              ],
+              [
+                0.46,
+                0.3997289972899729
+              ],
+              [
+                0.464,
+                0.3875338753387534
+              ],
+              [
+                0.46,
+                0.3794037940379404
+              ],
+              [
+                0.452,
+                0.37398373983739835
+              ],
+              [
+                0.442,
+                0.3712737127371274
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_9",
-            "shape": "circle",
-            "cx": 0.664,
-            "cy": 0.5,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_9"
+            "shape": "polygon",
+            "points": [
+              [
+                0.586,
+                0.37398373983739835
+              ],
+              [
+                0.576,
+                0.3821138211382114
+              ],
+              [
+                0.576,
+                0.3983739837398374
+              ],
+              [
+                0.588,
+                0.4065040650406504
+              ],
+              [
+                0.614,
+                0.4078590785907859
+              ],
+              [
+                0.626,
+                0.4010840108401084
+              ],
+              [
+                0.63,
+                0.3943089430894309
+              ],
+              [
+                0.626,
+                0.3794037940379404
+              ],
+              [
+                0.618,
+                0.37398373983739835
+              ],
+              [
+                0.606,
+                0.3712737127371274
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_10",
-            "shape": "circle",
-            "cx": 0.828,
-            "cy": 0.5,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_10"
+            "shape": "polygon",
+            "points": [
+              [
+                0.764,
+                0.3712737127371274
+              ],
+              [
+                0.75,
+                0.37533875338753386
+              ],
+              [
+                0.744,
+                0.3807588075880759
+              ],
+              [
+                0.742,
+                0.3956639566395664
+              ],
+              [
+                0.754,
+                0.4065040650406504
+              ],
+              [
+                0.776,
+                0.4078590785907859
+              ],
+              [
+                0.792,
+                0.4010840108401084
+              ],
+              [
+                0.796,
+                0.3956639566395664
+              ],
+              [
+                0.794,
+                0.3807588075880759
+              ],
+              [
+                0.784,
+                0.37398373983739835
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_11",
-            "shape": "circle",
-            "cx": 0.172,
-            "cy": 0.76,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_11"
+            "shape": "polygon",
+            "points": [
+              [
+                0.092,
+                0.8604336043360433
+              ],
+              [
+                0.084,
+                0.8644986449864499
+              ],
+              [
+                0.078,
+                0.8726287262872628
+              ],
+              [
+                0.078,
+                0.8821138211382114
+              ],
+              [
+                0.082,
+                0.8888888888888888
+              ],
+              [
+                0.098,
+                0.8956639566395664
+              ],
+              [
+                0.114,
+                0.8956639566395664
+              ],
+              [
+                0.122,
+                0.8929539295392954
+              ],
+              [
+                0.132,
+                0.8834688346883469
+              ],
+              [
+                0.13,
+                0.8685636856368564
+              ],
+              [
+                0.12,
+                0.8617886178861789
+              ],
+              [
+                0.11,
+                0.8590785907859079
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "object_12",
-            "shape": "circle",
-            "cx": 0.336,
-            "cy": 0.76,
-            "radius": 0.05084,
-            "priority": 50,
-            "objectId": "object_12"
+            "shape": "polygon",
+            "points": [
+              [
+                0.256,
+                0.8617886178861789
+              ],
+              [
+                0.248,
+                0.8658536585365854
+              ],
+              [
+                0.242,
+                0.8753387533875339
+              ],
+              [
+                0.248,
+                0.8902439024390244
+              ],
+              [
+                0.268,
+                0.8970189701897019
+              ],
+              [
+                0.286,
+                0.8943089430894309
+              ],
+              [
+                0.294,
+                0.8888888888888888
+              ],
+              [
+                0.298,
+                0.8821138211382114
+              ],
+              [
+                0.294,
+                0.8685636856368564
+              ],
+              [
+                0.278,
+                0.8604336043360433
+              ]
+            ],
+            "priority": 50
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "REPEATED_OBJECT_COUNTING",
-          "qtGroup": "DOT_FAMILY"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 738,
-          "aspectRatio": 0.677507,
-          "cornerBackgroundRgb": [
-            223,
-            229,
-            232
-          ],
-          "contrastCoverage": 0.0937,
-          "contrastBoundingBox": {
-            "xMin": 0.0,
-            "yMin": 0.0156,
-            "xMax": 0.9692,
-            "yMax": 1.0
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.5215,
-            "yNorm": 0.5073
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1953767456841-01.png",
+          "sourceAssetSha256": "9f2702588e87a3bb9d69ed038010cf2ebcb7b444879459b49d6d8cd73873e565",
+          "publisherEvidence": "Qualification Targets Inc Product DOT - Paper Target with 24 - 1 1/4 Inch Dots 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "closed exact-face edges scaled by publisher physical sheet extent; quarantined geometry used for correspondence only",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.068
+              "regionId": "object_1",
+              "boundarySampleCount": 77,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 807.9418
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.0433
+              "regionId": "object_2",
+              "boundarySampleCount": 133,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 0.8647,
+              "medianGradient": 557.2863
             },
             {
-              "cell": "r1c3",
-              "contrastCoverage": 0.1294
+              "regionId": "object_3",
+              "boundarySampleCount": 78,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 802.1072
             },
             {
-              "cell": "r2c1",
-              "contrastCoverage": 0.0745
+              "regionId": "object_4",
+              "boundarySampleCount": 78,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 737.9681
             },
             {
-              "cell": "r2c2",
-              "contrastCoverage": 0.2106
+              "regionId": "object_5",
+              "boundarySampleCount": 78,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 706.3516
             },
             {
-              "cell": "r2c3",
-              "contrastCoverage": 0.2078
+              "regionId": "object_6",
+              "boundarySampleCount": 79,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 820.0024
             },
             {
-              "cell": "r3c1",
-              "contrastCoverage": 0.0392
+              "regionId": "object_7",
+              "boundarySampleCount": 80,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 839.4534
             },
             {
-              "cell": "r3c2",
-              "contrastCoverage": 0.0348
+              "regionId": "object_8",
+              "boundarySampleCount": 79,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 833.5526
             },
             {
-              "cell": "r3c3",
-              "contrastCoverage": 0.0356
+              "regionId": "object_9",
+              "boundarySampleCount": 80,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 804.8617
+            },
+            {
+              "regionId": "object_10",
+              "boundarySampleCount": 79,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 807.5209
+            },
+            {
+              "regionId": "object_11",
+              "boundarySampleCount": 79,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 852.1503
+            },
+            {
+              "regionId": "object_12",
+              "boundarySampleCount": 79,
+              "edgeThreshold": 12.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 830.2915
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": true,
+          "specializedExtractorFailure": "exact_semantic_object_count_not_isolated_from_exact_face"
         }
       },
-      "digest": "1f328f182aad47ee7075c3435480061a18ac20be99eeba3ec39734582bec2591"
+      "digest": "4f3010099b7cd00e0de97ce7311b21d18d2622ac69b8e29603636985d399689c"
     },
     "registration": {
       "id": "qt_printer13_product_1953767456841-registration",
@@ -645,7 +1260,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

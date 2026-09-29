@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1873655562313-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -39,7 +39,12 @@
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
       "founderConfirmedRegistrationVersion": "530-face-v1",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -56,136 +61,558 @@
         "regions": [
           {
             "regionId": "bull_1",
-            "shape": "rounded_rectangle",
-            "xMin": 0.112,
-            "yMin": 0.088472,
-            "xMax": 0.366,
-            "yMax": 0.306971,
-            "cornerRadiusX": 0.055,
-            "cornerRadiusY": 0.045,
-            "priority": 50,
-            "objectId": "bull_1"
+            "shape": "polygon",
+            "points": [
+              [
+                0.242,
+                0.08847184986595175
+              ],
+              [
+                0.208,
+                0.09517426273458444
+              ],
+              [
+                0.182,
+                0.10589812332439678
+              ],
+              [
+                0.156,
+                0.12332439678284182
+              ],
+              [
+                0.14,
+                0.14209115281501342
+              ],
+              [
+                0.134,
+                0.1554959785522788
+              ],
+              [
+                0.132,
+                0.23726541554959785
+              ],
+              [
+                0.146,
+                0.2667560321715818
+              ],
+              [
+                0.178,
+                0.29088471849865954
+              ],
+              [
+                0.218,
+                0.3042895442359249
+              ],
+              [
+                0.236,
+                0.306970509383378
+              ],
+              [
+                0.274,
+                0.306970509383378
+              ],
+              [
+                0.306,
+                0.30160857908847183
+              ],
+              [
+                0.334,
+                0.29088471849865954
+              ],
+              [
+                0.36,
+                0.2734584450402145
+              ],
+              [
+                0.376,
+                0.2546916890080429
+              ],
+              [
+                0.384,
+                0.2359249329758713
+              ],
+              [
+                0.386,
+                0.1554959785522788
+              ],
+              [
+                0.372,
+                0.12734584450402145
+              ],
+              [
+                0.356,
+                0.1126005361930295
+              ],
+              [
+                0.342,
+                0.10455764075067024
+              ],
+              [
+                0.314,
+                0.0938337801608579
+              ],
+              [
+                0.286,
+                0.08847184986595175
+              ]
+            ],
+            "priority": 101
           },
           {
             "regionId": "bull_2",
-            "shape": "rounded_rectangle",
-            "xMin": 0.658,
-            "yMin": 0.087131,
-            "xMax": 0.898,
-            "yMax": 0.310992,
-            "cornerRadiusX": 0.055,
-            "cornerRadiusY": 0.045,
-            "priority": 50,
-            "objectId": "bull_2"
+            "shape": "polygon",
+            "points": [
+              [
+                0.768,
+                0.0871313672922252
+              ],
+              [
+                0.746,
+                0.08981233243967829
+              ],
+              [
+                0.714,
+                0.09919571045576407
+              ],
+              [
+                0.682,
+                0.1193029490616622
+              ],
+              [
+                0.666,
+                0.1380697050938338
+              ],
+              [
+                0.658,
+                0.1581769436997319
+              ],
+              [
+                0.658,
+                0.24396782841823056
+              ],
+              [
+                0.664,
+                0.26005361930294907
+              ],
+              [
+                0.674,
+                0.2734584450402145
+              ],
+              [
+                0.702,
+                0.2949061662198391
+              ],
+              [
+                0.724,
+                0.3042895442359249
+              ],
+              [
+                0.746,
+                0.3096514745308311
+              ],
+              [
+                0.798,
+                0.3109919571045576
+              ],
+              [
+                0.82,
+                0.306970509383378
+              ],
+              [
+                0.852,
+                0.2949061662198391
+              ],
+              [
+                0.872,
+                0.28150134048257375
+              ],
+              [
+                0.888,
+                0.2640750670241287
+              ],
+              [
+                0.898,
+                0.23994638069705093
+              ],
+              [
+                0.9,
+                0.1648793565683646
+              ],
+              [
+                0.894,
+                0.14343163538873996
+              ],
+              [
+                0.882,
+                0.1260053619302949
+              ],
+              [
+                0.852,
+                0.1032171581769437
+              ],
+              [
+                0.812,
+                0.08981233243967829
+              ]
+            ],
+            "priority": 102
           },
           {
             "regionId": "bull_3",
-            "shape": "rounded_rectangle",
-            "xMin": 0.39,
-            "yMin": 0.348525,
-            "xMax": 0.64,
-            "yMax": 0.576408,
-            "cornerRadiusX": 0.055,
-            "cornerRadiusY": 0.045,
-            "priority": 50,
-            "objectId": "bull_3"
+            "shape": "polygon",
+            "points": [
+              [
+                0.502,
+                0.3485254691689008
+              ],
+              [
+                0.466,
+                0.3552278820375335
+              ],
+              [
+                0.444,
+                0.3632707774798928
+              ],
+              [
+                0.418,
+                0.37935656836461124
+              ],
+              [
+                0.4,
+                0.39946380697050937
+              ],
+              [
+                0.39,
+                0.43297587131367293
+              ],
+              [
+                0.39,
+                0.5
+              ],
+              [
+                0.394,
+                0.5160857908847185
+              ],
+              [
+                0.408,
+                0.5375335120643432
+              ],
+              [
+                0.436,
+                0.5589812332439679
+              ],
+              [
+                0.48,
+                0.5737265415549598
+              ],
+              [
+                0.498,
+                0.5764075067024129
+              ],
+              [
+                0.53,
+                0.5764075067024129
+              ],
+              [
+                0.566,
+                0.5697050938337802
+              ],
+              [
+                0.592,
+                0.5589812332439679
+              ],
+              [
+                0.62,
+                0.5388739946380697
+              ],
+              [
+                0.632,
+                0.5227882037533512
+              ],
+              [
+                0.64,
+                0.5026809651474531
+              ],
+              [
+                0.64,
+                0.4195710455764075
+              ],
+              [
+                0.628,
+                0.3941018766756032
+              ],
+              [
+                0.596,
+                0.3672922252010724
+              ],
+              [
+                0.55,
+                0.3512064343163539
+              ]
+            ],
+            "priority": 103
           },
           {
             "regionId": "bull_4",
-            "shape": "rounded_rectangle",
-            "xMin": 0.112,
-            "yMin": 0.60992,
-            "xMax": 0.366,
-            "yMax": 0.837802,
-            "cornerRadiusX": 0.055,
-            "cornerRadiusY": 0.045,
-            "priority": 50,
-            "objectId": "bull_4"
+            "shape": "polygon",
+            "points": [
+              [
+                0.234,
+                0.6099195710455764
+              ],
+              [
+                0.208,
+                0.6126005361930295
+              ],
+              [
+                0.178,
+                0.6206434316353887
+              ],
+              [
+                0.16,
+                0.628686327077748
+              ],
+              [
+                0.13,
+                0.6514745308310992
+              ],
+              [
+                0.116,
+                0.6729222520107239
+              ],
+              [
+                0.112,
+                0.6903485254691689
+              ],
+              [
+                0.112,
+                0.7627345844504021
+              ],
+              [
+                0.12,
+                0.7841823056300268
+              ],
+              [
+                0.13,
+                0.7975871313672922
+              ],
+              [
+                0.158,
+                0.8190348525469169
+              ],
+              [
+                0.182,
+                0.8297587131367292
+              ],
+              [
+                0.204,
+                0.8351206434316354
+              ],
+              [
+                0.248,
+                0.8378016085790885
+              ],
+              [
+                0.272,
+                0.8351206434316354
+              ],
+              [
+                0.302,
+                0.8270777479892761
+              ],
+              [
+                0.32,
+                0.8190348525469169
+              ],
+              [
+                0.348,
+                0.7975871313672922
+              ],
+              [
+                0.364,
+                0.7694369973190348
+              ],
+              [
+                0.366,
+                0.6849865951742627
+              ],
+              [
+                0.358,
+                0.6635388739946381
+              ],
+              [
+                0.348,
+                0.6501340482573726
+              ],
+              [
+                0.322,
+                0.6300268096514745
+              ],
+              [
+                0.284,
+                0.6152815013404825
+              ]
+            ],
+            "priority": 104
           },
           {
             "regionId": "bull_5",
-            "shape": "rounded_rectangle",
-            "xMin": 0.64,
-            "yMin": 0.615282,
-            "xMax": 0.886,
-            "yMax": 0.839142,
-            "cornerRadiusX": 0.055,
-            "cornerRadiusY": 0.045,
-            "priority": 50,
-            "objectId": "bull_5"
+            "shape": "polygon",
+            "points": [
+              [
+                0.75,
+                0.6152815013404825
+              ],
+              [
+                0.72,
+                0.6206434316353887
+              ],
+              [
+                0.694,
+                0.6300268096514745
+              ],
+              [
+                0.674,
+                0.6420911528150134
+              ],
+              [
+                0.656,
+                0.6595174262734584
+              ],
+              [
+                0.642,
+                0.6863270777479893
+              ],
+              [
+                0.638,
+                0.760053619302949
+              ],
+              [
+                0.64,
+                0.7734584450402144
+              ],
+              [
+                0.652,
+                0.7975871313672922
+              ],
+              [
+                0.662,
+                0.8083109919571045
+              ],
+              [
+                0.684,
+                0.8230563002680965
+              ],
+              [
+                0.722,
+                0.8364611260053619
+              ],
+              [
+                0.774,
+                0.839142091152815
+              ],
+              [
+                0.806,
+                0.8337801608579088
+              ],
+              [
+                0.828,
+                0.8257372654155496
+              ],
+              [
+                0.85,
+                0.8123324396782842
+              ],
+              [
+                0.866,
+                0.7975871313672922
+              ],
+              [
+                0.882,
+                0.7694369973190348
+              ],
+              [
+                0.886,
+                0.6890080428954424
+              ],
+              [
+                0.872,
+                0.6568364611260054
+              ],
+              [
+                0.844,
+                0.6340482573726541
+              ],
+              [
+                0.798,
+                0.6179624664879356
+              ],
+              [
+                0.78,
+                0.6152815013404825
+              ]
+            ],
+            "priority": 105
           }
         ],
-        "ugoAuthority": "founder-confirmed-preserved-530-face-registration-v1",
-        "derivation": {
-          "method": "pixel-measured-outer-extents-on-preserved-source-face",
-          "sourceImageWidthPx": 500,
-          "sourceImageHeightPx": 746,
-          "semanticAuthority": "Homie corrected treatment ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "founderExpectedDistribution": "2 taps on each of Bull 1 through Bull 5"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 746,
-          "aspectRatio": 0.670241,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.2538,
-          "contrastBoundingBox": {
-            "xMin": 0.0775,
-            "yMin": 0.0052,
-            "xMax": 0.907,
-            "yMax": 0.9323
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4945,
-            "yNorm": 0.449
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1873655562313-01.png",
+          "sourceAssetSha256": "388ec5151d875d6053d04abae3753ad5268be9d86d82e9e1befcc7e4572257d6",
+          "publisherEvidence": "Qualification Targets Inc Product 530 -Paper Target with 5 Bullseyes - 3 Shaded Zones - Black or Green Ink - Paper Target - 23\" x 35\" For large or custom orders, please call: 866-498-8228",
+          "mapping": "exact_representation_edges_to_publisher_physical_sheet_extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.3983
+              "regionId": "bull_1",
+              "boundarySampleCount": 438,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 892.1266
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.0938
+              "regionId": "bull_2",
+              "boundarySampleCount": 435,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 838.3615
             },
             {
-              "cell": "r1c3",
-              "contrastCoverage": 0.4255
+              "regionId": "bull_3",
+              "boundarySampleCount": 444,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 769.1124
             },
             {
-              "cell": "r2c1",
-              "contrastCoverage": 0.1028
+              "regionId": "bull_4",
+              "boundarySampleCount": 445,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 775.1387
             },
             {
-              "cell": "r2c2",
-              "contrastCoverage": 0.4491
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.0996
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.3383
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.0898
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.2874
+              "regionId": "bull_5",
+              "boundarySampleCount": 436,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 645.3974
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "cd7f0fd45aed8b065a567de8a6e34db7aa852e9a7e877a96ccdd586aa98e41aa"
+      "digest": "35cc7af2fcdf149819c2e51e378ce872bfabf8d13a50c288ff8b96ac8b4d6fea"
     },
     "registration": {
       "id": "qt_printer13_product_1873655562313-registration",
@@ -339,7 +766,7 @@
                 "rule": "5 visible bulls are independently counted without invented ring values"
               },
               "publishedValuesAvailable": false,
-              "unresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+              "unresolved": "Current Printers 1–12 authority contains an approved executable contract for the exact prior surface identity.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [],
@@ -508,7 +935,7 @@
             ],
             "requiredBehavior": "Classify taps by the explicitly governed printed zones/objects; report total taps first, then per-zone/object counts and misses; do not assign point values. Required governed labels: Bull 1, Bull 2, Bull 3, Bull 4, Bull 5.",
             "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
-            "authorityLimitOrUnresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+            "authorityLimitOrUnresolved": "Current Printers 1–12 authority contains an approved executable contract for the exact prior surface identity.",
             "forbiddenInference": [
               "unpublished_course_rules",
               "unpublished_sequence",
@@ -516,7 +943,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974186836041-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -54,95 +59,143 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "left_figure",
-            "shape": "ellipse",
-            "cx": 0.39,
-            "cy": 0.53,
-            "radiusX": 0.19,
-            "radiusY": 0.38,
-            "priority": 50,
-            "objectId": "left_figure"
-          },
-          {
-            "regionId": "right_figure",
-            "shape": "ellipse",
-            "cx": 0.62,
-            "cy": 0.52,
-            "radiusX": 0.2,
-            "radiusY": 0.39,
-            "priority": 50,
-            "objectId": "right_figure"
+            "regionId": "target_figure",
+            "shape": "polygon",
+            "points": [
+              [
+                0.532,
+                0.020293122886133032
+              ],
+              [
+                0.414,
+                0.036076662908680945
+              ],
+              [
+                0.356,
+                0.07440811724915446
+              ],
+              [
+                0.362,
+                0.24239007891770012
+              ],
+              [
+                0.294,
+                0.2593010146561443
+              ],
+              [
+                0.232,
+                0.2965050732807215
+              ],
+              [
+                0.186,
+                0.35400225479143177
+              ],
+              [
+                0.052,
+                0.46223224351747466
+              ],
+              [
+                0.048,
+                0.5231116121758738
+              ],
+              [
+                0.078,
+                0.552423900789177
+              ],
+              [
+                0.204,
+                0.560315670800451
+              ],
+              [
+                0.072,
+                0.9402480270574972
+              ],
+              [
+                0.072,
+                0.9988726042841037
+              ],
+              [
+                0.858,
+                0.9988726042841037
+              ],
+              [
+                0.864,
+                0.5749718151071026
+              ],
+              [
+                0.932,
+                0.5084554678692221
+              ],
+              [
+                0.972,
+                0.4363021420518602
+              ],
+              [
+                0.998,
+                0.4351747463359639
+              ],
+              [
+                0.998,
+                0.3461104847801578
+              ],
+              [
+                0.972,
+                0.34498308906426156
+              ],
+              [
+                0.916,
+                0.2965050732807215
+              ],
+              [
+                0.72,
+                0.24577226606538896
+              ],
+              [
+                0.688,
+                0.1984216459977452
+              ],
+              [
+                0.7,
+                0.11724915445321307
+              ],
+              [
+                0.634,
+                0.05749718151071026
+              ]
+            ],
+            "priority": 100
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
-          "qtGroup": "HOSTAGE_THREAT_RELATIONSHIPS"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 887,
-          "aspectRatio": 0.563698,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.6383,
-          "contrastBoundingBox": {
-            "xMin": 0.037,
-            "yMin": 0.0156,
-            "xMax": 0.9815,
-            "yMax": 0.9896
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4945,
-            "yNorm": 0.5848
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1974186836041-01.png",
+          "sourceAssetSha256": "81a1b8698ab11df35e5cb49ee63bffd3f0122f9e154f8822fa85f8d3ed7dedc1",
+          "publisherEvidence": "Qualification Targets Inc Product SEAL-1 Paper Target has a Male with AK-47 - Checkered Turban - 23\" X 35\" - Full Color For large or custom orders, please call 866-498-8228",
+          "mapping": "dominant target-specific foreground figure scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.079
-            },
-            {
-              "cell": "r1c2",
-              "contrastCoverage": 0.8524
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.204
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.6306
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 1.0
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.7904
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.6519
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.9688
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.5677
+              "regionId": "target_figure",
+              "boundarySampleCount": 2362,
+              "edgeThreshold": 54.5894,
+              "alignedFraction": 0.7553,
+              "medianGradient": 383.8528
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "9d3354af65820220788b950fadbc172736015942fd7da240a73fd8c777ffe892"
+      "digest": "684e8af3fb21caabcc7c2343ba15fcd15cf30ad58ab3e011aa9b79ad3088cc86"
     },
     "registration": {
       "id": "qt_printer13_product_1974186836041-registration",
@@ -168,15 +221,10 @@
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "left_figure": {
-            "label": "Left visible figure",
-            "objectId": "left_figure",
-            "objectLabel": "Left visible figure"
-          },
-          "right_figure": {
-            "label": "Right visible figure",
-            "objectId": "right_figure",
-            "objectLabel": "Right visible figure"
+          "target_figure": {
+            "label": "Target Figure",
+            "objectId": "target_figure",
+            "objectLabel": "Target Figure"
           }
         },
         "aggregation": {
@@ -186,7 +234,7 @@
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
           "publisherCatalogEvidence": "Qualification Targets Inc Product SEAL-1 Paper Target has a Male with AK-47 - Checkered Turban - 23\" X 35\" - Full Color For large or custom orders, please call 866-498-8228",
-          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+          "rule": "the exact printed target figure is counted as one physical object; no unpublished values or course rules are inferred"
         },
         "outsideRule": {
           "label": "Missed"
@@ -215,7 +263,7 @@
           "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         }
       },
-      "digest": "f00ecb8adf14a8070fecc2439e887c57cb29a90a3d12c489edfcd9c68b199d1c"
+      "digest": "a4c5b36aa87ce75fad081f558126a1594890600fee3cce88976e36ecc83510d0"
     },
     "mission": {
       "id": "qt_printer13_product_1974186836041-mission",
@@ -437,7 +485,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

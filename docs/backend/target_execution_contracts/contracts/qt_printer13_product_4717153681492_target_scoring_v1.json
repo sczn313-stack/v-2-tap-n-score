@@ -1,14 +1,14 @@
 {
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_4717153681492-target-scoring-v1",
-  "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "contractVersion": "2",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -33,12 +33,17 @@
       "shopifyProductId": 4717153681492,
       "sourceUrl": "https://targets.net/products/nm-dot",
       "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-4717153681492",
-      "behaviorFamily": "BULLSEYE_MULTI_BULL",
-      "qtFamilyGroup": "BULLSEYE_MULTI_BULL",
-      "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
+      "behaviorFamily": "NM_DOT_THREE_BULL_COUNTING_V1",
+      "qtFamilyGroup": "NM_DOT_THREE_BULL_COUNTING_V1",
+      "episode64IntelligenceFamily": "NM_DOT_THREE_BULL_COUNTING_V1",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -47,91 +52,482 @@
   "components": {
     "geometry": {
       "id": "qt_printer13_product_4717153681492-geometry",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
         "coordinateSystem": "normalized_source_image_top_left",
-        "layoutModel": "regions",
+        "layoutModel": "repeated_regions",
         "regions": [
           {
             "regionId": "bull_1",
-            "shape": "circle",
-            "cx": 0.295,
-            "cy": 0.5,
-            "radius": 0.1271,
-            "priority": 50,
-            "objectId": "bull_1"
+            "shape": "polygon",
+            "points": [
+              [
+                0.4855072463768116,
+                0.17103174603174603
+              ],
+              [
+                0.45893719806763283,
+                0.175
+              ],
+              [
+                0.4438405797101449,
+                0.18055555555555555
+              ],
+              [
+                0.4329710144927536,
+                0.1869047619047619
+              ],
+              [
+                0.42330917874396135,
+                0.19523809523809524
+              ],
+              [
+                0.4166666666666667,
+                0.20476190476190476
+              ],
+              [
+                0.41304347826086957,
+                0.21468253968253967
+              ],
+              [
+                0.41243961352657005,
+                0.22341269841269842
+              ],
+              [
+                0.4142512077294686,
+                0.23214285714285715
+              ],
+              [
+                0.4196859903381642,
+                0.24285714285714285
+              ],
+              [
+                0.4281400966183575,
+                0.251984126984127
+              ],
+              [
+                0.4384057971014493,
+                0.25912698412698415
+              ],
+              [
+                0.4601449275362319,
+                0.26785714285714285
+              ],
+              [
+                0.4776570048309179,
+                0.271031746031746
+              ],
+              [
+                0.4927536231884058,
+                0.2714285714285714
+              ],
+              [
+                0.5193236714975845,
+                0.26746031746031745
+              ],
+              [
+                0.535024154589372,
+                0.2615079365079365
+              ],
+              [
+                0.5471014492753623,
+                0.25396825396825395
+              ],
+              [
+                0.5555555555555556,
+                0.24603174603174602
+              ],
+              [
+                0.5609903381642513,
+                0.23809523809523808
+              ],
+              [
+                0.5646135265700483,
+                0.22857142857142856
+              ],
+              [
+                0.5652173913043478,
+                0.21746031746031746
+              ],
+              [
+                0.5585748792270532,
+                0.2003968253968254
+              ],
+              [
+                0.5495169082125604,
+                0.19047619047619047
+              ],
+              [
+                0.5392512077294686,
+                0.18333333333333332
+              ],
+              [
+                0.517512077294686,
+                0.1746031746031746
+              ],
+              [
+                0.5024154589371981,
+                0.17182539682539683
+              ]
+            ],
+            "priority": 100
+          },
+          {
+            "regionId": "bull_2",
+            "shape": "polygon",
+            "points": [
+              [
+                0.4855072463768116,
+                0.3996031746031746
+              ],
+              [
+                0.45893719806763283,
+                0.4035714285714286
+              ],
+              [
+                0.4438405797101449,
+                0.4091269841269841
+              ],
+              [
+                0.4329710144927536,
+                0.4154761904761905
+              ],
+              [
+                0.42330917874396135,
+                0.4238095238095238
+              ],
+              [
+                0.4166666666666667,
+                0.43333333333333335
+              ],
+              [
+                0.41304347826086957,
+                0.44325396825396823
+              ],
+              [
+                0.41243961352657005,
+                0.451984126984127
+              ],
+              [
+                0.4142512077294686,
+                0.4607142857142857
+              ],
+              [
+                0.4196859903381642,
+                0.4714285714285714
+              ],
+              [
+                0.4281400966183575,
+                0.48055555555555557
+              ],
+              [
+                0.4384057971014493,
+                0.4876984126984127
+              ],
+              [
+                0.4601449275362319,
+                0.49642857142857144
+              ],
+              [
+                0.4746376811594203,
+                0.4992063492063492
+              ],
+              [
+                0.4927536231884058,
+                0.5
+              ],
+              [
+                0.5193236714975845,
+                0.49603174603174605
+              ],
+              [
+                0.535024154589372,
+                0.49007936507936506
+              ],
+              [
+                0.5471014492753623,
+                0.48253968253968255
+              ],
+              [
+                0.5555555555555556,
+                0.4746031746031746
+              ],
+              [
+                0.5609903381642513,
+                0.4666666666666667
+              ],
+              [
+                0.5646135265700483,
+                0.45714285714285713
+              ],
+              [
+                0.5652173913043478,
+                0.44603174603174606
+              ],
+              [
+                0.5585748792270532,
+                0.42896825396825394
+              ],
+              [
+                0.5495169082125604,
+                0.41904761904761906
+              ],
+              [
+                0.5392512077294686,
+                0.4119047619047619
+              ],
+              [
+                0.517512077294686,
+                0.4031746031746032
+              ],
+              [
+                0.5024154589371981,
+                0.4003968253968254
+              ]
+            ],
+            "priority": 100
+          },
+          {
+            "regionId": "bull_3",
+            "shape": "polygon",
+            "points": [
+              [
+                0.4758454106280193,
+                0.628968253968254
+              ],
+              [
+                0.44565217391304346,
+                0.6357142857142857
+              ],
+              [
+                0.42934782608695654,
+                0.6436507936507937
+              ],
+              [
+                0.4172705314009662,
+                0.6527777777777778
+              ],
+              [
+                0.40942028985507245,
+                0.6619047619047619
+              ],
+              [
+                0.4033816425120773,
+                0.6742063492063493
+              ],
+              [
+                0.4027777777777778,
+                0.6948412698412698
+              ],
+              [
+                0.40640096618357485,
+                0.7043650793650794
+              ],
+              [
+                0.4142512077294686,
+                0.7154761904761905
+              ],
+              [
+                0.4221014492753623,
+                0.7226190476190476
+              ],
+              [
+                0.4384057971014493,
+                0.7325396825396825
+              ],
+              [
+                0.4522946859903382,
+                0.7376984126984127
+              ],
+              [
+                0.47041062801932365,
+                0.7416666666666667
+              ],
+              [
+                0.501207729468599,
+                0.7424603174603175
+              ],
+              [
+                0.5181159420289855,
+                0.7396825396825397
+              ],
+              [
+                0.533816425120773,
+                0.734920634920635
+              ],
+              [
+                0.5483091787439613,
+                0.7277777777777777
+              ],
+              [
+                0.5603864734299517,
+                0.7186507936507937
+              ],
+              [
+                0.5682367149758454,
+                0.7095238095238096
+              ],
+              [
+                0.5754830917874396,
+                0.6928571428571428
+              ],
+              [
+                0.5748792270531401,
+                0.6757936507936508
+              ],
+              [
+                0.5640096618357487,
+                0.6563492063492063
+              ],
+              [
+                0.5543478260869565,
+                0.6476190476190476
+              ],
+              [
+                0.5428743961352657,
+                0.6404761904761904
+              ],
+              [
+                0.5150966183574879,
+                0.6309523809523809
+              ],
+              [
+                0.4975845410628019,
+                0.6285714285714286
+              ]
+            ],
+            "priority": 100
+          },
+          {
+            "regionId": "bull_1_miss",
+            "shape": "polygon",
+            "points": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.33607583242136385
+              ],
+              [
+                0.0,
+                0.335586558699277
+              ]
+            ],
+            "priority": 1
+          },
+          {
+            "regionId": "bull_2_miss",
+            "shape": "polygon",
+            "points": [
+              [
+                1.0,
+                0.33607583242136396
+              ],
+              [
+                1.0,
+                0.569265101959149
+              ],
+              [
+                0.0,
+                0.5690013164020437
+              ],
+              [
+                0.0,
+                0.335586558699277
+              ]
+            ],
+            "priority": 1
+          },
+          {
+            "regionId": "bull_3_miss",
+            "shape": "polygon",
+            "points": [
+              [
+                1.0,
+                0.569265101959149
+              ],
+              [
+                1.0,
+                1.0
+              ],
+              [
+                0.0,
+                1.0
+              ],
+              [
+                0.0,
+                0.5690013164020437
+              ]
+            ],
+            "priority": 1
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "BULLSEYE_MULTI_BULL",
-          "qtGroup": "BULLSEYE_MULTI_BULL"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 1656,
-          "heightPx": 2520,
-          "aspectRatio": 0.657143,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.0304,
-          "contrastBoundingBox": {
-            "xMin": 0.0476,
-            "yMin": 0.0208,
-            "xMax": 0.9683,
-            "yMax": 0.7448
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.5017,
-            "yNorm": 0.5864
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-4717153681492-01.png",
+          "sourceAssetSha256": "58d8de8023842a6b90e89bae3df9551faf7971d97e1402cf02465c2211d6c45e",
+          "publisherEvidence": "Qualifications Targets Inc. Product New Mexico DPS Target with 2 - 3.5\" White Circles with 1/8\" Black Border & 1 - 4\" Black Circle on 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "closed exact-face edges scaled by publisher physical sheet extent; quarantined geometry used for correspondence only",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.0108
+              "regionId": "bull_1",
+              "boundarySampleCount": 716,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 952.3455
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.0406
+              "regionId": "bull_2",
+              "boundarySampleCount": 716,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 951.7839
             },
             {
-              "cell": "r1c3",
-              "contrastCoverage": 0.0272
+              "regionId": "bull_3",
+              "boundarySampleCount": 817,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 1020.0706
             },
             {
-              "cell": "r2c1",
-              "contrastCoverage": 0.0
+              "regionId": "bull_1_miss",
+              "derivedComplement": true,
+              "derivation": "nearest-object partition derived from exact physical object centers"
             },
             {
-              "cell": "r2c2",
-              "contrastCoverage": 0.0867
+              "regionId": "bull_2_miss",
+              "derivedComplement": true,
+              "derivation": "nearest-object partition derived from exact physical object centers"
             },
             {
-              "cell": "r2c3",
-              "contrastCoverage": 0.0
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.0
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.1086
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.0
+              "regionId": "bull_3_miss",
+              "derivedComplement": true,
+              "derivation": "nearest-object partition derived from exact physical object centers"
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": true,
+          "specializedExtractorFailure": "exact_semantic_object_count_not_isolated_from_exact_face"
         }
       },
-      "digest": "13e4ddd26c10dd155fac848b958458ba80058229b6ffd53843da7d9a2fcea2d1"
+      "digest": "2de6c9f33c5df4b03edc3a775796c97fb073d76fcdf24e82c72411dd6ac07194"
     },
     "registration": {
       "id": "qt_printer13_product_4717153681492-registration",
@@ -150,57 +546,68 @@
     },
     "scoring": {
       "id": "qt_printer13_product_4717153681492-scoring",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
         "schemaVersion": "sczn3-target-scoring-data-v1",
-        "status": "complete",
         "model": "named_regions",
         "regionRules": {
           "bull_1": {
             "label": "Bull 1",
             "objectId": "bull_1",
-            "objectLabel": "Bull 1"
+            "objectLabel": "Bull 1",
+            "countsAsHit": true
+          },
+          "bull_1_miss": {
+            "label": "Bull 1 Miss",
+            "objectId": "bull_1",
+            "objectLabel": "Bull 1",
+            "countsAsHit": false
+          },
+          "bull_2": {
+            "label": "Bull 2",
+            "objectId": "bull_2",
+            "objectLabel": "Bull 2",
+            "countsAsHit": true
+          },
+          "bull_2_miss": {
+            "label": "Bull 2 Miss",
+            "objectId": "bull_2",
+            "objectLabel": "Bull 2",
+            "countsAsHit": false
+          },
+          "bull_3": {
+            "label": "Bull 3",
+            "objectId": "bull_3",
+            "objectLabel": "Bull 3",
+            "countsAsHit": true
+          },
+          "bull_3_miss": {
+            "label": "Bull 3 Miss",
+            "objectId": "bull_3",
+            "objectLabel": "Bull 3",
+            "countsAsHit": false
           }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "countsAsHit": false
         },
         "aggregation": {
           "mode": "classification_counts"
         },
-        "publisherRuleAuthority": {
-          "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualifications Targets Inc. Product New Mexico DPS Target with 2 - 3.5\" White Circles with 1/8\" Black Border & 1 - 4\" Black Circle on 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
-          "rule": "1 visible bulls are independently counted without invented ring values"
-        },
-        "outsideRule": {
-          "label": "Missed"
-        },
         "classificationFootprintMode": "tap_center",
-        "homieLockedArtworkFacts": {
-          "catalogSha256": "73898cc036e01bc79f954d65009a693e997b9819d3242e0cf02d9afea028aaed",
-          "values": [],
-          "labels": [
-            "Bull 1"
-          ],
-          "storedTargetRule": "1 visible bulls are independently counted without invented ring values"
-        },
-        "homieCorrectedArtworkFacts": {
-          "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-          "values": [],
-          "labels": [
-            "Bull 1"
-          ],
-          "regionObjectIds": [
-            "bull_1"
-          ],
-          "storedGoverningRule": "1 visible bulls are independently counted without invented ring values"
+        "publisherRuleAuthority": {
+          "source": "Founder-reviewed registered NM-DOT face: two 3.5-inch white circles and one 4-inch black circle, each independently meaningful.",
+          "rule": "Each row is one bull zone; classify its circle as a hit and the remainder of its row as that bull's miss.",
+          "publisherValuesAttributed": false
         }
       },
-      "digest": "b2ed1aa51c9ce370cb67a5b59751979349be7688ecd3f0847cda19242ae17013"
+      "digest": "d65eaadb97d9c2203560953d75096a3e2b9a3864d03b1992a2cdcb8ac534fa56"
     },
     "mission": {
       "id": "qt_printer13_product_4717153681492-mission",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
         "missionFamily": "targetScoring",
@@ -209,8 +616,27 @@
         "maxObservations": 500,
         "interaction": {
           "aim": {
-            "mode": "not_required",
-            "points": []
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_1",
+                "xNorm": 0.4891,
+                "yNorm": 0.2214,
+                "regionId": "bull_1"
+              },
+              {
+                "aimId": "aim_2",
+                "xNorm": 0.4891,
+                "yNorm": 0.4498,
+                "regionId": "bull_2"
+              },
+              {
+                "aimId": "aim_3",
+                "xNorm": 0.4888,
+                "yNorm": 0.6857,
+                "regionId": "bull_3"
+              }
+            ]
           },
           "observationInput": "normalized_taps",
           "resultAction": "show_result"
@@ -222,6 +648,9 @@
           "measurement": {
             "status": "available"
           },
+          "correction": {
+            "status": "not_applicable"
+          },
           "officialScore": {
             "status": "not_applicable"
           },
@@ -230,18 +659,15 @@
           },
           "publisherMission": {
             "status": "not_applicable"
-          },
-          "correction": {
-            "status": "not_applicable"
           }
         },
-        "authorityResolution": "1 visible bulls are independently counted without invented ring values",
+        "authorityResolution": "Count hits and misses independently for all three physical bulls, then roll up Total Hits, Total Misses, Total Taps, and Hit Rate.",
         "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
         "unresolvedReason": null,
         "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
         "smartTargetTreatment": {
           "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
-          "intelligenceFamily": "BULLSEYE_MULTI_BULL",
+          "intelligenceFamily": "NM_DOT_THREE_BULL_COUNTING_V1",
           "highestTruthfulCapability": "Zone / Object Counting",
           "truthLayers": {
             "publisherTruth": {
@@ -384,7 +810,7 @@
             "visualStackChair": 204,
             "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
           },
-          "smartBehavior": "Two 3.5-inch white circles + one 4-inch black circle. Report total taps, counts by established zone/object, useful zones/objects hit, and misses/outside where applicable. No points. Every tap reconciles exactly once.",
+          "smartBehavior": "Count hits and misses independently for all three physical bulls, then roll up Total Hits, Total Misses, Total Taps, and Hit Rate.",
           "homieCorrectedTreatment": {
             "identity": {
               "qtCatalogId": "QT-PRODUCT-4717153681492",
@@ -414,7 +840,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
@@ -430,15 +856,34 @@
               "implementationTreatment": "Two 3.5-inch white circles + one 4-inch black circle."
             },
             "founderAcceptance": "PENDING"
+          },
+          "founderRound2Authority": {
+            "authorityId": "QT_PRINTER13_FOUNDER_ROUND2_NM_CORRECTION_2026_09_28",
+            "capability": "Zone / Object Counting",
+            "familyExecutionContract": "NM_DOT_THREE_BULL_COUNTING_V1",
+            "sczn3CumulativeMethod": false,
+            "publisherScoringClaim": false,
+            "unresolved": null
           }
         },
         "correctedPacket": {
           "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
           "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
           "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
+        },
+        "recognizedBehaviorFamily": "NM_DOT_THREE_BULL_COUNTING_V1",
+        "recognizedQtGroup": "NM_DOT_THREE_BULL_COUNTING_V1",
+        "legTwoHighestTruthfulCapability": "Zone / Object Counting",
+        "founderRound2Authority": {
+          "authorityId": "QT_PRINTER13_FOUNDER_ROUND2_NM_CORRECTION_2026_09_28",
+          "capability": "Zone / Object Counting",
+          "familyExecutionContract": "NM_DOT_THREE_BULL_COUNTING_V1",
+          "sczn3CumulativeMethod": false,
+          "publisherScoringClaim": false,
+          "unresolved": null
         }
       },
-      "digest": "85701887d6029fb723d31e0c649f5a43e56f03bb9a48642dc1c8a0448256bcf7"
+      "digest": "70293c5f2301cd99a01af41342bd4c81184c781e1a0840b260523148453893d0"
     }
   },
   "executor": {
@@ -483,5 +928,6 @@
     "unpublished_timing",
     "unpublished_pass_threshold",
     "unpublished_penalties"
-  ]
+  ],
+  "contractFingerprint": "4384e15e15d036eccf8a9500d13580b96d457e54d11c264583b9f50eec1b1bb0"
 }

@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1974195519561-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -54,95 +59,171 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "left_figure",
-            "shape": "ellipse",
-            "cx": 0.39,
-            "cy": 0.53,
-            "radiusX": 0.19,
-            "radiusY": 0.38,
-            "priority": 50,
-            "objectId": "left_figure"
-          },
-          {
-            "regionId": "right_figure",
-            "shape": "ellipse",
-            "cx": 0.62,
-            "cy": 0.52,
-            "radiusX": 0.2,
-            "radiusY": 0.39,
-            "priority": 50,
-            "objectId": "right_figure"
+            "regionId": "target_figure",
+            "shape": "polygon",
+            "points": [
+              [
+                0.544,
+                0.030525030525030524
+              ],
+              [
+                0.394,
+                0.03418803418803419
+              ],
+              [
+                0.328,
+                0.07814407814407814
+              ],
+              [
+                0.266,
+                0.08791208791208792
+              ],
+              [
+                0.244,
+                0.10622710622710622
+              ],
+              [
+                0.246,
+                0.1855921855921856
+              ],
+              [
+                0.284,
+                0.27472527472527475
+              ],
+              [
+                0.17,
+                0.33943833943833945
+              ],
+              [
+                0.11,
+                0.4371184371184371
+              ],
+              [
+                0.072,
+                0.45665445665445664
+              ],
+              [
+                0.042,
+                0.5054945054945055
+              ],
+              [
+                0.034,
+                0.5726495726495726
+              ],
+              [
+                0.062,
+                0.6007326007326007
+              ],
+              [
+                0.206,
+                0.6019536019536019
+              ],
+              [
+                0.112,
+                0.9755799755799756
+              ],
+              [
+                0.122,
+                0.9987789987789988
+              ],
+              [
+                0.334,
+                0.9987789987789988
+              ],
+              [
+                0.342,
+                0.9816849816849816
+              ],
+              [
+                0.926,
+                0.9304029304029304
+              ],
+              [
+                0.902,
+                0.8583638583638583
+              ],
+              [
+                0.916,
+                0.8095238095238095
+              ],
+              [
+                0.9,
+                0.5726495726495726
+              ],
+              [
+                0.942,
+                0.5286935286935287
+              ],
+              [
+                0.972,
+                0.44078144078144077
+              ],
+              [
+                0.998,
+                0.43956043956043955
+              ],
+              [
+                0.998,
+                0.3894993894993895
+              ],
+              [
+                0.972,
+                0.3882783882783883
+              ],
+              [
+                0.956,
+                0.34798534798534797
+              ],
+              [
+                0.922,
+                0.32112332112332115
+              ],
+              [
+                0.726,
+                0.26495726495726496
+              ],
+              [
+                0.66,
+                0.1452991452991453
+              ],
+              [
+                0.65,
+                0.08913308913308914
+              ]
+            ],
+            "priority": 100
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
-          "qtGroup": "HOSTAGE_THREAT_RELATIONSHIPS"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 819,
-          "aspectRatio": 0.610501,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.6469,
-          "contrastBoundingBox": {
-            "xMin": 0.0256,
-            "yMin": 0.026,
-            "xMax": 0.9829,
-            "yMax": 0.9896
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4922,
-            "yNorm": 0.5564
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1974195519561-01.png",
+          "sourceAssetSha256": "ff3ab747c661ffec156639b789faa7c29cdaf3b689c19048315b9625bde15ad6",
+          "publisherEvidence": "Qualification Targets Inc Product SEAL-2 Paper Target is a Male with AK-47 - Gray Turban - 23\" X 35\" - Full Color For large or custom orders, please call 866-498-8228",
+          "mapping": "dominant target-specific foreground figure scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.1827
-            },
-            {
-              "cell": "r1c2",
-              "contrastCoverage": 0.869
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.1647
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.6923
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 1.0
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.8389
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.5449
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.9135
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.6166
+              "regionId": "target_figure",
+              "boundarySampleCount": 2227,
+              "edgeThreshold": 29.5296,
+              "alignedFraction": 0.8846,
+              "medianGradient": 633.8533
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "459fa1f13bed35e5be2950603fb88c80f7f97e883385eeb794178d70f202a893"
+      "digest": "850f5a5eda01d0268d52d5240086354a15b19741d5fafe7ccc407fc82f0ccc31"
     },
     "registration": {
       "id": "qt_printer13_product_1974195519561-registration",
@@ -168,15 +249,10 @@
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "left_figure": {
-            "label": "Left visible figure",
-            "objectId": "left_figure",
-            "objectLabel": "Left visible figure"
-          },
-          "right_figure": {
-            "label": "Right visible figure",
-            "objectId": "right_figure",
-            "objectLabel": "Right visible figure"
+          "target_figure": {
+            "label": "Target Figure",
+            "objectId": "target_figure",
+            "objectLabel": "Target Figure"
           }
         },
         "aggregation": {
@@ -186,7 +262,7 @@
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
           "publisherCatalogEvidence": "Qualification Targets Inc Product SEAL-2 Paper Target is a Male with AK-47 - Gray Turban - 23\" X 35\" - Full Color For large or custom orders, please call 866-498-8228",
-          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+          "rule": "the exact printed target figure is counted as one physical object; no unpublished values or course rules are inferred"
         },
         "outsideRule": {
           "label": "Missed"
@@ -215,7 +291,7 @@
           "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         }
       },
-      "digest": "18768df83517333159b37005ea20f791b39854fc85ae77c10d72f1b2031eb15e"
+      "digest": "8345f0d7197d74a7632e3cdbccb3dcaf0757dc030d7955167bfe98ef068e5184"
     },
     "mission": {
       "id": "qt_printer13_product_1974195519561-mission",
@@ -437,7 +513,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

@@ -26,6 +26,7 @@ PARTICIPANT_AGGREGATION_MODES = {"owned_object_totals"}
 OBJECT_SCOREBOARD_MODES = {"score_x"}
 COUNTED_HIT_POLICY_MODES = {"per_object_cap"}
 SCORING_MODE_POLICY_MODES = {"shooter_selected_region_values"}
+CUMULATIVE_COUNT_POLICY_MODES = {"nested_color_totals"}
 
 
 class TargetScoringDataContractError(ValueError):
@@ -299,6 +300,42 @@ def _scoring_mode_policy(scoring: Mapping[str, Any], region_ids: set[str], inter
         raise TargetScoringDataContractError("target_scoring_mode_interaction_invalid")
 
 
+def _cumulative_count_policy(scoring: Mapping[str, Any], region_ids: set[str]) -> None:
+    policy = scoring.get("cumulativeCountPolicy")
+    if policy is None:
+        return
+    groups = policy.get("groups") if isinstance(policy, Mapping) else None
+    if (
+        not isinstance(policy, Mapping)
+        or policy.get("mode") not in CUMULATIVE_COUNT_POLICY_MODES
+        or scoring.get("model") != "named_regions"
+        or not isinstance(groups, list)
+        or not groups
+    ):
+        raise TargetScoringDataContractError("target_scoring_cumulative_count_policy_invalid")
+    seen_groups: set[str] = set()
+    used_regions: set[str] = set()
+    for group in groups:
+        group_id = str(group.get("groupId") or "").strip() if isinstance(group, Mapping) else ""
+        label = str(group.get("label") or "").strip() if isinstance(group, Mapping) else ""
+        atomic = group.get("atomicRegions") if isinstance(group, Mapping) else None
+        required = {"red", "whiteOnly", "blueOnly", "miss"}
+        if (
+            not group_id
+            or group_id in seen_groups
+            or not label
+            or not isinstance(atomic, Mapping)
+            or set(atomic) != required
+            or any(str(region_id or "").strip() not in region_ids for region_id in atomic.values())
+        ):
+            raise TargetScoringDataContractError("target_scoring_cumulative_count_group_invalid")
+        group_regions = {str(region_id) for region_id in atomic.values()}
+        if used_regions.intersection(group_regions):
+            raise TargetScoringDataContractError("target_scoring_cumulative_count_region_reused")
+        seen_groups.add(group_id)
+        used_regions.update(group_regions)
+
+
 def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
     if contract.get("missionFamily") != "targetScoring":
         return
@@ -358,5 +395,6 @@ def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
     _object_scoreboard(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
     _counted_hit_policy(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
     _scoring_mode_policy(scoring, region_id_set, mission.get("interaction") or {})
+    _cumulative_count_policy(scoring, region_id_set)
     _boundary_policy(scoring, regions)
     _aim(mission.get("interaction"), region_id_set)

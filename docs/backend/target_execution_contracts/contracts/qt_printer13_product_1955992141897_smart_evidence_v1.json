@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1955992141897-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -55,94 +60,264 @@
         "regions": [
           {
             "regionId": "head_region",
-            "shape": "rectangle",
-            "xMin": 0.408,
-            "yMin": 0.145,
-            "xMax": 0.624,
-            "yMax": 0.245,
-            "priority": 100,
-            "objectId": "head_region"
+            "shape": "polygon",
+            "points": [
+              [
+                0.456,
+                0.08888888888888889
+              ],
+              [
+                0.508,
+                0.08496732026143791
+              ],
+              [
+                0.566,
+                0.09019607843137255
+              ],
+              [
+                0.59,
+                0.09934640522875816
+              ],
+              [
+                0.61,
+                0.11764705882352941
+              ],
+              [
+                0.618,
+                0.13856209150326798
+              ],
+              [
+                0.616,
+                0.1934640522875817
+              ],
+              [
+                0.622,
+                0.23137254901960785
+              ],
+              [
+                0.588,
+                0.27320261437908494
+              ],
+              [
+                0.586,
+                0.29411764705882354
+              ],
+              [
+                0.592,
+                0.3045751633986928
+              ],
+              [
+                0.59,
+                0.30980392156862746
+              ],
+              [
+                0.52,
+                0.3032679738562091
+              ],
+              [
+                0.4,
+                0.3084967320261438
+              ],
+              [
+                0.406,
+                0.2980392156862745
+              ],
+              [
+                0.408,
+                0.2758169934640523
+              ],
+              [
+                0.386,
+                0.25098039215686274
+              ],
+              [
+                0.374,
+                0.23006535947712417
+              ],
+              [
+                0.38,
+                0.1437908496732026
+              ],
+              [
+                0.388,
+                0.12418300653594772
+              ],
+              [
+                0.402,
+                0.1111111111111111
+              ],
+              [
+                0.426,
+                0.09803921568627451
+              ]
+            ],
+            "priority": 100
           },
           {
             "regionId": "torso_region",
-            "shape": "rectangle",
-            "xMin": 0.337,
-            "yMin": 0.4,
-            "xMax": 0.625,
-            "yMax": 0.676,
-            "priority": 90,
-            "objectId": "torso_region"
+            "shape": "polygon",
+            "points": [
+              [
+                0.456,
+                0.08888888888888889
+              ],
+              [
+                0.402,
+                0.10980392156862745
+              ],
+              [
+                0.38,
+                0.1437908496732026
+              ],
+              [
+                0.374,
+                0.23006535947712417
+              ],
+              [
+                0.408,
+                0.2758169934640523
+              ],
+              [
+                0.4,
+                0.30718954248366015
+              ],
+              [
+                0.324,
+                0.3411764705882353
+              ],
+              [
+                0.18,
+                0.37777777777777777
+              ],
+              [
+                0.142,
+                0.403921568627451
+              ],
+              [
+                0.124,
+                0.4339869281045752
+              ],
+              [
+                0.132,
+                0.48104575163398694
+              ],
+              [
+                0.23,
+                0.5830065359477125
+              ],
+              [
+                0.266,
+                0.681045751633987
+              ],
+              [
+                0.26,
+                0.8130718954248366
+              ],
+              [
+                0.2,
+                0.8823529411764706
+              ],
+              [
+                0.196,
+                0.9228758169934641
+              ],
+              [
+                0.802,
+                0.9254901960784314
+              ],
+              [
+                0.8,
+                0.8836601307189542
+              ],
+              [
+                0.738,
+                0.8052287581699347
+              ],
+              [
+                0.736,
+                0.6483660130718955
+              ],
+              [
+                0.78,
+                0.5450980392156862
+              ],
+              [
+                0.862,
+                0.4954248366013072
+              ],
+              [
+                0.866,
+                0.4326797385620915
+              ],
+              [
+                0.796,
+                0.37516339869281046
+              ],
+              [
+                0.68,
+                0.34901960784313724
+              ],
+              [
+                0.592,
+                0.3058823529411765
+              ],
+              [
+                0.588,
+                0.27320261437908494
+              ],
+              [
+                0.622,
+                0.23137254901960785
+              ],
+              [
+                0.604,
+                0.1084967320261438
+              ],
+              [
+                0.55,
+                0.08758169934640522
+              ]
+            ],
+            "priority": 90
           }
         ],
-        "ugoAuthority": "sczn3.ugo.normalized-source-image-point.v1",
-        "derivation": {
-          "method": "target-specific-visible-boundary-registration",
-          "semanticSource": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-          "familyGeneralization": false
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 765,
-          "aspectRatio": 0.653595,
-          "cornerBackgroundRgb": [
-            221,
-            229,
-            228
-          ],
-          "contrastCoverage": 0.5007,
-          "contrastBoundingBox": {
-            "xMin": 0.0,
-            "yMin": 0.0,
-            "xMax": 1.0,
-            "yMax": 1.0
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.5062,
-            "yNorm": 0.5604
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1955992141897-01.png",
+          "sourceAssetSha256": "c884eba4f9dedd052e99aa694f31be7e4f53119810fb10b687f3f742f6305afa",
+          "publisherEvidence": "Qualification Targets Inc Product GA-PT-R Paper Target is a Georgia State Police Training Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "target-specific ordered spatial exact-face boundaries scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.0424
+              "regionId": "head_region",
+              "boundarySampleCount": 501,
+              "edgeThreshold": 22.8473,
+              "alignedFraction": 1.0,
+              "medianGradient": 733.6825
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.5979
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.4245
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.4658
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 0.9996
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.76
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.2232
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.7851
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.2284
+              "regionId": "torso_region",
+              "boundarySampleCount": 1769,
+              "edgeThreshold": 22.8473,
+              "alignedFraction": 1.0,
+              "medianGradient": 774.9542
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "6ee91d3915b89a9b72a05a66b2fd749e88e957887810d6b88d1fc50780af45c2"
+      "digest": "3ba84c0f78fa10fbd7df1f200e7274f3c0462f496432d1bdb24725d692498e5d"
     },
     "registration": {
       "id": "qt_printer13_product_1955992141897-registration",
@@ -417,7 +592,7 @@
               "invented_penalties",
               "invented_zeroing_correction."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

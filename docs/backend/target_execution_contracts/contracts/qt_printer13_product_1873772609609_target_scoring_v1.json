@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1873772609609-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "B_FAMILY_SCORING",
       "homieLockedCapability": "Scoring",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -55,110 +60,644 @@
         "regions": [
           {
             "regionId": "zone_10",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radiusX": 0.06,
-            "radiusY": 0.09,
+            "shape": "polygon",
+            "points": [
+              [
+                0.274,
+                0.48927613941018766
+              ],
+              [
+                0.28,
+                0.4906166219839142
+              ],
+              [
+                0.314,
+                0.5348525469168901
+              ],
+              [
+                0.338,
+                0.5871313672922251
+              ],
+              [
+                0.344,
+                0.6166219839142091
+              ],
+              [
+                0.344,
+                0.6581769436997319
+              ],
+              [
+                0.342,
+                0.6729222520107239
+              ],
+              [
+                0.338,
+                0.675603217158177
+              ],
+              [
+                0.332,
+                0.6742627345844504
+              ],
+              [
+                0.292,
+                0.6340482573726541
+              ],
+              [
+                0.274,
+                0.6219839142091153
+              ],
+              [
+                0.242,
+                0.5911528150134048
+              ],
+              [
+                0.206,
+                0.5656836461126006
+              ],
+              [
+                0.2,
+                0.5576407506702413
+              ],
+              [
+                0.202,
+                0.5495978552278821
+              ]
+            ],
             "priority": 109
           },
           {
             "regionId": "zone_9",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radiusX": 0.12,
-            "radiusY": 0.18,
+            "shape": "polygon",
+            "points": [
+              [
+                0.514,
+                0.06702412868632708
+              ],
+              [
+                0.438,
+                0.12466487935656836
+              ],
+              [
+                0.468,
+                0.21045576407506703
+              ],
+              [
+                0.414,
+                0.1863270777479893
+              ],
+              [
+                0.402,
+                0.14209115281501342
+              ],
+              [
+                0.486,
+                0.26541554959785524
+              ],
+              [
+                0.366,
+                0.467828418230563
+              ],
+              [
+                0.476,
+                0.2855227882037534
+              ],
+              [
+                0.442,
+                0.19973190348525469
+              ],
+              [
+                0.476,
+                0.2855227882037534
+              ],
+              [
+                0.362,
+                0.4691689008042895
+              ],
+              [
+                0.396,
+                0.7627345844504021
+              ],
+              [
+                0.428,
+                0.8123324396782842
+              ],
+              [
+                0.398,
+                0.7841823056300268
+              ],
+              [
+                0.366,
+                0.8136729222520107
+              ],
+              [
+                0.394,
+                0.8190348525469169
+              ],
+              [
+                0.396,
+                0.7868632707774799
+              ],
+              [
+                0.408,
+                0.8176943699731903
+              ],
+              [
+                0.578,
+                0.8458445040214477
+              ],
+              [
+                0.678,
+                0.82171581769437
+              ],
+              [
+                0.716,
+                0.7828418230563002
+              ],
+              [
+                0.742,
+                0.5214477211796247
+              ],
+              [
+                0.706,
+                0.4249329758713137
+              ],
+              [
+                0.606,
+                0.3096514745308311
+              ],
+              [
+                0.622,
+                0.2064343163538874
+              ],
+              [
+                0.606,
+                0.3096514745308311
+              ],
+              [
+                0.708,
+                0.4289544235924933
+              ],
+              [
+                0.742,
+                0.5214477211796247
+              ],
+              [
+                0.724,
+                0.7613941018766756
+              ],
+              [
+                0.648,
+                0.8324396782841823
+              ],
+              [
+                0.466,
+                0.8337801608579088
+              ],
+              [
+                0.398,
+                0.7707774798927614
+              ],
+              [
+                0.364,
+                0.4865951742627346
+              ],
+              [
+                0.408,
+                0.7801608579088471
+              ],
+              [
+                0.506,
+                0.8404825737265416
+              ],
+              [
+                0.608,
+                0.8378016085790885
+              ],
+              [
+                0.698,
+                0.8016085790884718
+              ],
+              [
+                0.738,
+                0.5442359249329759
+              ],
+              [
+                0.704,
+                0.4316353887399464
+              ],
+              [
+                0.596,
+                0.2975871313672922
+              ],
+              [
+                0.614,
+                0.09651474530831099
+              ]
+            ],
             "priority": 108
           },
           {
             "regionId": "zone_8",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radiusX": 0.18,
-            "radiusY": 0.27,
+            "shape": "polygon",
+            "points": [
+              [
+                0.494,
+                0.054959785522788206
+              ],
+              [
+                0.444,
+                0.08042895442359249
+              ],
+              [
+                0.418,
+                0.1380697050938338
+              ],
+              [
+                0.402,
+                0.14209115281501342
+              ],
+              [
+                0.414,
+                0.1876675603217158
+              ],
+              [
+                0.434,
+                0.19302949061662197
+              ],
+              [
+                0.458,
+                0.23190348525469168
+              ],
+              [
+                0.456,
+                0.26541554959785524
+              ],
+              [
+                0.402,
+                0.289544235924933
+              ],
+              [
+                0.282,
+                0.31233243967828417
+              ],
+              [
+                0.08,
+                0.4571045576407507
+              ],
+              [
+                0.022,
+                0.5603217158176944
+              ],
+              [
+                0.226,
+                0.7520107238605898
+              ],
+              [
+                0.282,
+                0.7171581769436998
+              ],
+              [
+                0.296,
+                0.7265415549597856
+              ],
+              [
+                0.308,
+                0.7613941018766756
+              ],
+              [
+                0.27,
+                0.8619302949061662
+              ],
+              [
+                0.278,
+                0.9249329758713136
+              ],
+              [
+                0.376,
+                0.9369973190348525
+              ],
+              [
+                0.844,
+                0.9343163538873994
+              ],
+              [
+                0.896,
+                0.953083109919571
+              ],
+              [
+                0.962,
+                0.9101876675603218
+              ],
+              [
+                0.944,
+                0.8605898123324397
+              ],
+              [
+                0.976,
+                0.853887399463807
+              ],
+              [
+                0.984,
+                0.6541554959785523
+              ],
+              [
+                0.964,
+                0.5603217158176944
+              ],
+              [
+                0.852,
+                0.35656836461126007
+              ],
+              [
+                0.612,
+                0.257372654155496
+              ],
+              [
+                0.632,
+                0.19571045576407506
+              ],
+              [
+                0.652,
+                0.1903485254691689
+              ],
+              [
+                0.658,
+                0.1380697050938338
+              ],
+              [
+                0.638,
+                0.13404825737265416
+              ],
+              [
+                0.63,
+                0.08310991957104558
+              ],
+              [
+                0.576,
+                0.054959785522788206
+              ]
+            ],
             "priority": 107
           },
           {
             "regionId": "zone_7",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radiusX": 0.24,
-            "radiusY": 0.36,
+            "shape": "polygon",
+            "points": [
+              [
+                0.512,
+                0.06702412868632708
+              ],
+              [
+                0.436,
+                0.128686327077748
+              ],
+              [
+                0.468,
+                0.21045576407506703
+              ],
+              [
+                0.402,
+                0.14209115281501342
+              ],
+              [
+                0.46,
+                0.2587131367292225
+              ],
+              [
+                0.352,
+                0.3002680965147453
+              ],
+              [
+                0.28,
+                0.4865951742627346
+              ],
+              [
+                0.342,
+                0.6689008042895442
+              ],
+              [
+                0.272,
+                0.9182305630026809
+              ],
+              [
+                0.822,
+                0.9396782841823056
+              ],
+              [
+                0.85,
+                0.8351206434316354
+              ],
+              [
+                0.976,
+                0.853887399463807
+              ],
+              [
+                0.982,
+                0.6367292225201072
+              ],
+              [
+                0.872,
+                0.3806970509383378
+              ],
+              [
+                0.742,
+                0.3096514745308311
+              ],
+              [
+                0.728,
+                0.40884718498659517
+              ],
+              [
+                0.844,
+                0.6420911528150134
+              ],
+              [
+                0.836,
+                0.7654155495978552
+              ],
+              [
+                0.844,
+                0.6420911528150134
+              ],
+              [
+                0.732,
+                0.42359249329758714
+              ],
+              [
+                0.736,
+                0.3096514745308311
+              ],
+              [
+                0.86,
+                0.36595174262734587
+              ],
+              [
+                0.964,
+                0.5603217158176944
+              ],
+              [
+                0.976,
+                0.8525469168900804
+              ],
+              [
+                0.846,
+                0.8364611260053619
+              ],
+              [
+                0.81,
+                0.9410187667560321
+              ],
+              [
+                0.272,
+                0.9182305630026809
+              ],
+              [
+                0.342,
+                0.6689008042895442
+              ],
+              [
+                0.28,
+                0.4879356568364611
+              ],
+              [
+                0.352,
+                0.30160857908847183
+              ],
+              [
+                0.456,
+                0.2667560321715818
+              ],
+              [
+                0.436,
+                0.19436997319034852
+              ],
+              [
+                0.482,
+                0.28418230563002683
+              ],
+              [
+                0.364,
+                0.4584450402144772
+              ],
+              [
+                0.476,
+                0.2868632707774799
+              ],
+              [
+                0.442,
+                0.19973190348525469
+              ],
+              [
+                0.476,
+                0.2868632707774799
+              ],
+              [
+                0.364,
+                0.4584450402144772
+              ],
+              [
+                0.406,
+                0.7868632707774799
+              ],
+              [
+                0.468,
+                0.8351206434316354
+              ],
+              [
+                0.574,
+                0.8458445040214477
+              ],
+              [
+                0.68,
+                0.8203753351206434
+              ],
+              [
+                0.722,
+                0.7667560321715817
+              ],
+              [
+                0.728,
+                0.4718498659517426
+              ],
+              [
+                0.604,
+                0.30563002680965146
+              ],
+              [
+                0.622,
+                0.2064343163538874
+              ],
+              [
+                0.604,
+                0.30563002680965146
+              ],
+              [
+                0.734,
+                0.5040214477211796
+              ],
+              [
+                0.598,
+                0.3042895442359249
+              ],
+              [
+                0.612,
+                0.09249329758713137
+              ]
+            ],
             "priority": 106
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "B_FAMILY_SCORING",
-          "qtGroup": "B_FAMILY"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 746,
-          "aspectRatio": 0.670241,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.5268,
-          "contrastBoundingBox": {
-            "xMin": 0.0155,
-            "yMin": 0.0521,
-            "xMax": 0.9922,
-            "yMax": 0.9583
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.5603,
-            "yNorm": 0.5757
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1873772609609-01.png",
+          "sourceAssetSha256": "e4c88045d76704a8fc5a3fa1e60a29a093c7bf3171c7eb72ea6db5f8b531a756",
+          "publisherEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper ﻿Available in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
+          "mapping": "closed exact-face edges scaled by publisher physical sheet extent; quarantined geometry used for correspondence only",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.0171
+              "regionId": "zone_10",
+              "boundarySampleCount": 282,
+              "edgeThreshold": 14.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 597.9724
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.5658
+              "regionId": "zone_9",
+              "boundarySampleCount": 3731,
+              "edgeThreshold": 14.0,
+              "alignedFraction": 0.9759,
+              "medianGradient": 454.8165
             },
             {
-              "cell": "r1c3",
-              "contrastCoverage": 0.0338
+              "regionId": "zone_8",
+              "boundarySampleCount": 1894,
+              "edgeThreshold": 14.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 623.0409
             },
             {
-              "cell": "r2c1",
-              "contrastCoverage": 0.6225
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 0.9953
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.7551
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.2017
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.8041
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.7456
+              "regionId": "zone_7",
+              "boundarySampleCount": 5814,
+              "edgeThreshold": 14.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 607.1121
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": true,
+          "specializedExtractorFailure": "target_specific_concentric_boundary_set_not_isolated"
         }
       },
-      "digest": "7da6a049c92bc2cc850c8fc30184dcfb5fe9128660541579019c845b232b4158"
+      "digest": "2083c3b3ef16636bcfb7bd4fc784ac773a030037f726aeadf32042df3ce24433"
     },
     "registration": {
       "id": "qt_printer13_product_1873772609609-registration",
@@ -207,7 +746,7 @@
         "publisherRuleAuthority": {
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper \ufeffAvailable in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
+          "publisherCatalogEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper ﻿Available in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
           "rule": "governed B-family silhouette regions retain their printed numeric values"
         },
         "outsideRule": {
@@ -307,11 +846,11 @@
               "publishedRuleAuthority": {
                 "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
                 "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper \ufeffAvailable in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper ﻿Available in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
                 "rule": "governed B-family silhouette regions retain their printed numeric values"
               },
               "publishedValuesAvailable": true,
-              "unresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+              "unresolved": "Current Printers 1–12 authority contains an approved executable contract for the exact prior surface identity.",
               "rule": "Only source-backed publisher/governing semantics may score or qualify.",
               "artworkFacts": {
                 "values": [
@@ -462,7 +1001,7 @@
               "imageFilename": "qt-1873772609609-01.png",
               "imageSha256": "e4c88045d76704a8fc5a3fa1e60a29a093c7bf3171c7eb72ea6db5f8b531a756"
             },
-            "publisherCatalogEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper \ufeffAvailable in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
+            "publisherCatalogEvidence": "Qualification Targets Inc Product B-21E Paper Target is a Full-sized Silhouette - 25 Yard Silhouette - 23\" x 35\" Paper ﻿Available in Black, Blue, and Red For large or custom orders, please call 866-498-8228",
             "storedGoverningRule": "governed B-family silhouette regions retain their printed numeric values",
             "capability": "Scoring",
             "intelligenceFamily": "B_FAMILY_SCORING",
@@ -486,7 +1025,7 @@
             ],
             "requiredBehavior": "Classify each tap into the smallest/highest-priority governed printed scoring region; preserve the printed label and value; report per-region counts, points, misses, total taps, and total score. Required governed labels: 10, 9, 8, 7. Published point values available to scoring: 7, 8, 9, 10.",
             "geometryInstruction": "Use the stored coordinates only after they are confirmed to trace this target image; class-level/generic geometry is not acceptance proof.",
-            "authorityLimitOrUnresolved": "Current Printers 1\u201312 authority contains an approved executable contract for the exact prior surface identity.",
+            "authorityLimitOrUnresolved": "Current Printers 1–12 authority contains an approved executable contract for the exact prior surface identity.",
             "forbiddenInference": [
               "unpublished_course_rules",
               "unpublished_sequence",
@@ -494,7 +1033,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

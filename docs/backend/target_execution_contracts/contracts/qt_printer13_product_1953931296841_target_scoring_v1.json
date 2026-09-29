@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1953931296841-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -54,95 +59,311 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "left_figure",
-            "shape": "ellipse",
-            "cx": 0.39,
-            "cy": 0.53,
-            "radiusX": 0.19,
-            "radiusY": 0.38,
-            "priority": 50,
-            "objectId": "left_figure"
-          },
-          {
-            "regionId": "right_figure",
-            "shape": "ellipse",
-            "cx": 0.62,
-            "cy": 0.52,
-            "radiusX": 0.2,
-            "radiusY": 0.39,
-            "priority": 50,
-            "objectId": "right_figure"
+            "regionId": "target_figure",
+            "shape": "polygon",
+            "points": [
+              [
+                0.44,
+                0.03602484472049689
+              ],
+              [
+                0.35,
+                0.07204968944099378
+              ],
+              [
+                0.264,
+                0.21739130434782608
+              ],
+              [
+                0.31,
+                0.3416149068322981
+              ],
+              [
+                0.282,
+                0.3950310559006211
+              ],
+              [
+                0.208,
+                0.3987577639751553
+              ],
+              [
+                0.214,
+                0.43105590062111804
+              ],
+              [
+                0.18,
+                0.45714285714285713
+              ],
+              [
+                0.216,
+                0.47080745341614905
+              ],
+              [
+                0.216,
+                0.5167701863354037
+              ],
+              [
+                0.266,
+                0.55527950310559
+              ],
+              [
+                0.252,
+                0.6211180124223602
+              ],
+              [
+                0.262,
+                0.6062111801242236
+              ],
+              [
+                0.318,
+                0.6149068322981367
+              ],
+              [
+                0.328,
+                0.6695652173913044
+              ],
+              [
+                0.28,
+                0.6782608695652174
+              ],
+              [
+                0.374,
+                0.6807453416149069
+              ],
+              [
+                0.384,
+                0.7329192546583851
+              ],
+              [
+                0.316,
+                0.7341614906832298
+              ],
+              [
+                0.314,
+                0.7217391304347827
+              ],
+              [
+                0.31,
+                0.7440993788819876
+              ],
+              [
+                0.226,
+                0.7453416149068323
+              ],
+              [
+                0.208,
+                0.7639751552795031
+              ],
+              [
+                0.214,
+                0.8546583850931677
+              ],
+              [
+                0.176,
+                0.8658385093167702
+              ],
+              [
+                0.134,
+                0.9428571428571428
+              ],
+              [
+                0.24,
+                0.9527950310559006
+              ],
+              [
+                0.25,
+                0.9900621118012423
+              ],
+              [
+                0.0,
+                0.9987577639751553
+              ],
+              [
+                0.998,
+                0.9987577639751553
+              ],
+              [
+                0.864,
+                0.9950310559006211
+              ],
+              [
+                0.864,
+                0.9577639751552796
+              ],
+              [
+                0.956,
+                0.9354037267080745
+              ],
+              [
+                0.924,
+                0.9217391304347826
+              ],
+              [
+                0.866,
+                0.8273291925465839
+              ],
+              [
+                0.83,
+                0.8708074534161491
+              ],
+              [
+                0.776,
+                0.8695652173913043
+              ],
+              [
+                0.788,
+                0.7863354037267081
+              ],
+              [
+                0.838,
+                0.7838509316770186
+              ],
+              [
+                0.802,
+                0.7279503105590062
+              ],
+              [
+                0.78,
+                0.7267080745341615
+              ],
+              [
+                0.78,
+                0.6931677018633541
+              ],
+              [
+                0.812,
+                0.6919254658385093
+              ],
+              [
+                0.812,
+                0.6633540372670808
+              ],
+              [
+                0.838,
+                0.662111801242236
+              ],
+              [
+                0.826,
+                0.6211180124223602
+              ],
+              [
+                0.768,
+                0.6049689440993788
+              ],
+              [
+                0.774,
+                0.5428571428571428
+              ],
+              [
+                0.798,
+                0.5416149068322982
+              ],
+              [
+                0.768,
+                0.5391304347826087
+              ],
+              [
+                0.768,
+                0.4956521739130435
+              ],
+              [
+                0.814,
+                0.47577639751552797
+              ],
+              [
+                0.756,
+                0.45962732919254656
+              ],
+              [
+                0.744,
+                0.39254658385093166
+              ],
+              [
+                0.774,
+                0.39006211180124223
+              ],
+              [
+                0.774,
+                0.35403726708074534
+              ],
+              [
+                0.804,
+                0.34782608695652173
+              ],
+              [
+                0.754,
+                0.3440993788819876
+              ],
+              [
+                0.718,
+                0.3813664596273292
+              ],
+              [
+                0.64,
+                0.37888198757763975
+              ],
+              [
+                0.642,
+                0.3341614906832298
+              ],
+              [
+                0.692,
+                0.3391304347826087
+              ],
+              [
+                0.696,
+                0.3130434782608696
+              ],
+              [
+                0.772,
+                0.30062111801242236
+              ],
+              [
+                0.726,
+                0.2708074534161491
+              ],
+              [
+                0.658,
+                0.12919254658385093
+              ],
+              [
+                0.584,
+                0.06583850931677018
+              ]
+            ],
+            "priority": 100
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
-          "qtGroup": "CR_ACTIVE_SHOOTER_FAMILY"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 805,
-          "aspectRatio": 0.621118,
-          "cornerBackgroundRgb": [
-            166,
-            129,
-            56
-          ],
-          "contrastCoverage": 0.7897,
-          "contrastBoundingBox": {
-            "xMin": 0.0,
-            "yMin": 0.0,
-            "xMax": 1.0,
-            "yMax": 1.0
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4742,
-            "yNorm": 0.547
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1953931296841-01.png",
+          "sourceAssetSha256": "e31559654f6fb99182758bf075ba05074ef7071819a4033c0ef043f8cee0158d",
+          "publisherEvidence": "Click here for CR-101-O Overlay Set Qualification Targets Inc Product Female Shooter Target with Hidden Zone. CR-101 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "dominant target-specific foreground figure scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.882
-            },
-            {
-              "cell": "r1c2",
-              "contrastCoverage": 0.8958
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.4281
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.991
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 0.9663
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.7195
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.6395
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.9615
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.6352
+              "regionId": "target_figure",
+              "boundarySampleCount": 3355,
+              "edgeThreshold": 32.5576,
+              "alignedFraction": 0.4495,
+              "medianGradient": 28.6356
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "dd809d16a4e0e0cc5728f0625e7062de9a67db857ee93054ebbef0005b269b09"
+      "digest": "524292c5daea04a4e8cff4467d52000138a09c21174858d15a834895d1ed733f"
     },
     "registration": {
       "id": "qt_printer13_product_1953931296841-registration",
@@ -168,15 +389,10 @@
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "left_figure": {
-            "label": "Left visible figure",
-            "objectId": "left_figure",
-            "objectLabel": "Left visible figure"
-          },
-          "right_figure": {
-            "label": "Right visible figure",
-            "objectId": "right_figure",
-            "objectLabel": "Right visible figure"
+          "target_figure": {
+            "label": "Target Figure",
+            "objectId": "target_figure",
+            "objectLabel": "Target Figure"
           }
         },
         "aggregation": {
@@ -186,7 +402,7 @@
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
           "publisherCatalogEvidence": "Click here for CR-101-O Overlay Set Qualification Targets Inc Product Female Shooter Target with Hidden Zone. CR-101 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
-          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+          "rule": "the exact printed target figure is counted as one physical object; no unpublished values or course rules are inferred"
         },
         "outsideRule": {
           "label": "Missed"
@@ -215,7 +431,7 @@
           "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         }
       },
-      "digest": "935dfd185aa0c9df215d556131c86dbefeae2a40224f185fb7bf48c49766136b"
+      "digest": "dcfc5d1fe147a79e16ba10111b433a3e9149e8b661abbfde82348bf9db2e835b"
     },
     "mission": {
       "id": "qt_printer13_product_1953931296841-mission",
@@ -437,7 +653,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

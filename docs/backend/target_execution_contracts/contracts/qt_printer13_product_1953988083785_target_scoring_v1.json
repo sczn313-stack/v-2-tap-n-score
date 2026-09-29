@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1953988083785-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -54,95 +59,199 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "left_figure",
-            "shape": "ellipse",
-            "cx": 0.39,
-            "cy": 0.53,
-            "radiusX": 0.19,
-            "radiusY": 0.38,
-            "priority": 50,
-            "objectId": "left_figure"
-          },
-          {
-            "regionId": "right_figure",
-            "shape": "ellipse",
-            "cx": 0.62,
-            "cy": 0.52,
-            "radiusX": 0.2,
-            "radiusY": 0.39,
-            "priority": 50,
-            "objectId": "right_figure"
+            "regionId": "target_figure",
+            "shape": "polygon",
+            "points": [
+              [
+                0.358,
+                0.0
+              ],
+              [
+                0.37,
+                0.038410596026490065
+              ],
+              [
+                0.328,
+                0.05827814569536424
+              ],
+              [
+                0.306,
+                0.11655629139072848
+              ],
+              [
+                0.34,
+                0.25165562913907286
+              ],
+              [
+                0.228,
+                0.2900662251655629
+              ],
+              [
+                0.152,
+                0.33642384105960266
+              ],
+              [
+                0.086,
+                0.47019867549668876
+              ],
+              [
+                0.132,
+                0.49801324503311256
+              ],
+              [
+                0.132,
+                0.5311258278145695
+              ],
+              [
+                0.092,
+                0.5642384105960265
+              ],
+              [
+                0.294,
+                0.6609271523178808
+              ],
+              [
+                0.278,
+                0.8119205298013245
+              ],
+              [
+                0.242,
+                0.8675496688741722
+              ],
+              [
+                0.236,
+                0.9920529801324504
+              ],
+              [
+                0.158,
+                0.9986754966887417
+              ],
+              [
+                0.516,
+                0.9986754966887417
+              ],
+              [
+                0.528,
+                0.9615894039735099
+              ],
+              [
+                0.576,
+                0.9615894039735099
+              ],
+              [
+                0.588,
+                0.9986754966887417
+              ],
+              [
+                0.838,
+                0.9986754966887417
+              ],
+              [
+                0.848,
+                0.8304635761589404
+              ],
+              [
+                0.828,
+                0.7774834437086092
+              ],
+              [
+                0.828,
+                0.6251655629139072
+              ],
+              [
+                0.676,
+                0.6529801324503312
+              ],
+              [
+                0.59,
+                0.6529801324503312
+              ],
+              [
+                0.58,
+                0.6026490066225165
+              ],
+              [
+                0.656,
+                0.5880794701986755
+              ],
+              [
+                0.676,
+                0.5562913907284768
+              ],
+              [
+                0.726,
+                0.56158940397351
+              ],
+              [
+                0.742,
+                0.5059602649006623
+              ],
+              [
+                0.906,
+                0.49271523178807947
+              ],
+              [
+                0.866,
+                0.35496688741721855
+              ],
+              [
+                0.786,
+                0.2768211920529801
+              ],
+              [
+                0.552,
+                0.22251655629139072
+              ],
+              [
+                0.556,
+                0.14172185430463577
+              ],
+              [
+                0.512,
+                0.05562913907284768
+              ],
+              [
+                0.454,
+                0.038410596026490065
+              ],
+              [
+                0.456,
+                0.0
+              ]
+            ],
+            "priority": 100
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "HOSTAGE_THREAT_RELATIONSHIPS",
-          "qtGroup": "CR_ACTIVE_SHOOTER_FAMILY"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 755,
-          "aspectRatio": 0.662252,
-          "cornerBackgroundRgb": [
-            180,
-            162,
-            109
-          ],
-          "contrastCoverage": 0.8418,
-          "contrastBoundingBox": {
-            "xMin": 0.0,
-            "yMin": 0.0,
-            "xMax": 1.0,
-            "yMax": 1.0
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.489,
-            "yNorm": 0.5263
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1953988083785-01.png",
+          "sourceAssetSha256": "778d6049dacec1d68f8f119a0f64edaa198f574e1b183ff06464f878cea73231",
+          "publisherEvidence": "Click here for CR-109-O Overlay Set﻿ Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
+          "mapping": "dominant target-specific foreground figure scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.91
-            },
-            {
-              "cell": "r1c2",
-              "contrastCoverage": 0.923
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.5547
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.9635
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 0.9364
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.9732
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.6644
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.9691
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.6745
+              "regionId": "target_figure",
+              "boundarySampleCount": 2507,
+              "edgeThreshold": 20.3961,
+              "alignedFraction": 0.7782,
+              "medianGradient": 230.4951
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "8d8fb64fe4504493a511a413084792c2a3ed620cfaf5d57e606eec0a35fd0244"
+      "digest": "a50151ac1a8b6cab61166fd2c484b0fff79be7bc7c444a0032a3812c51924761"
     },
     "registration": {
       "id": "qt_printer13_product_1953988083785-registration",
@@ -168,15 +277,10 @@
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "left_figure": {
-            "label": "Left visible figure",
-            "objectId": "left_figure",
-            "objectLabel": "Left visible figure"
-          },
-          "right_figure": {
-            "label": "Right visible figure",
-            "objectId": "right_figure",
-            "objectLabel": "Right visible figure"
+          "target_figure": {
+            "label": "Target Figure",
+            "objectId": "target_figure",
+            "objectLabel": "Target Figure"
           }
         },
         "aggregation": {
@@ -185,8 +289,8 @@
         "publisherRuleAuthority": {
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-          "publisherCatalogEvidence": "Click here for CR-109-O Overlay Set\ufeff Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
-          "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
+          "publisherCatalogEvidence": "Click here for CR-109-O Overlay Set﻿ Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
+          "rule": "the exact printed target figure is counted as one physical object; no unpublished values or course rules are inferred"
         },
         "outsideRule": {
           "label": "Missed"
@@ -215,7 +319,7 @@
           "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
         }
       },
-      "digest": "7663a3ecf09c2d23724df870683a4515c9f948c2106c9f8bb57fbf96820396c5"
+      "digest": "06d5433c8b206de330a18cbb25e14b2259700079421bbd57c0b2838e9ec4a414"
     },
     "mission": {
       "id": "qt_printer13_product_1953988083785-mission",
@@ -268,7 +372,7 @@
               "publishedRuleAuthority": {
                 "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
                 "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
-                "publisherCatalogEvidence": "Click here for CR-109-O Overlay Set\ufeff Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
+                "publisherCatalogEvidence": "Click here for CR-109-O Overlay Set﻿ Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
                 "rule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld"
               },
               "publishedValuesAvailable": false,
@@ -414,7 +518,7 @@
               "imageFilename": "qt-1953988083785-01.png",
               "imageSha256": "778d6049dacec1d68f8f119a0f64edaa198f574e1b183ff06464f878cea73231"
             },
-            "publisherCatalogEvidence": "Click here for CR-109-O Overlay Set\ufeff Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
+            "publisherCatalogEvidence": "Click here for CR-109-O Overlay Set﻿ Qualification Targets Inc Product Black Male Shooter Target with Hidden Zone. CR-109 - Active Shooter Training Target. Full color target on 23\" x 35\" Paper. For large or custom orders, please call 866-498-8228",
             "storedGoverningRule": "visible figures are independently counted; threat/hostage penalties and unpublished scenarios remain withheld",
             "capability": "Zone / Object Counting",
             "intelligenceFamily": "HOSTAGE_THREAT_RELATIONSHIPS",
@@ -437,7 +541,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

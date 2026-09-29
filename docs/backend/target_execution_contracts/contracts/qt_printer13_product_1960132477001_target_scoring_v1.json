@@ -1,0 +1,806 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-qt_printer13_product_1960132477001-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
+    "founderAcceptance": "pending"
+  },
+  "effective": {
+    "from": "2026-09-22T00:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "qt_printer13_product_1960132477001",
+    "version": "2",
+    "atpId": "ATP_QT_PRINTER13_PRODUCT_1960132477001_V2",
+    "authorityId": "QT_PRINTER13_LEG3_EXECUTION_2026_09_22:QT-PRODUCT-1960132477001",
+    "publisher": {
+      "id": "qualification-targets-inc",
+      "name": "Qualification Targets Inc",
+      "url": "https://targets.net/"
+    },
+    "product": {
+      "id": "QT-PRODUCT-1960132477001",
+      "name": "TQ-20 Paper Target",
+      "sku": "TQ-20",
+      "qtCatalogId": "QT-PRODUCT-1960132477001",
+      "shopifyProductId": 1960132477001,
+      "sourceUrl": "https://targets.net/products/tq-20-paper-target",
+      "permanentIdentity": "Qualification Targets Inc + QT-PRODUCT-1960132477001",
+      "behaviorFamily": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+      "qtFamilyGroup": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+      "episode64IntelligenceFamily": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+      "homieLockedCapability": "Zone / Object Counting",
+      "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 11.5,
+        "height": 23.0,
+        "unit": "inch"
+      }
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "components": {
+    "geometry": {
+      "id": "geo-qt_printer13_product_1960132477001-target-specific-v2",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "regions",
+        "regions": [
+          {
+            "regionId": "marked_head_zone",
+            "shape": "polygon",
+            "points": [
+              [
+                0.414,
+                0.20297029702970298
+              ],
+              [
+                0.54,
+                0.201980198019802
+              ],
+              [
+                0.554,
+                0.20495049504950494
+              ],
+              [
+                0.556,
+                0.2633663366336634
+              ],
+              [
+                0.544,
+                0.27722772277227725
+              ],
+              [
+                0.534,
+                0.28316831683168314
+              ],
+              [
+                0.518,
+                0.2891089108910891
+              ],
+              [
+                0.488,
+                0.29405940594059404
+              ],
+              [
+                0.458,
+                0.29207920792079206
+              ],
+              [
+                0.434,
+                0.2851485148514851
+              ],
+              [
+                0.422,
+                0.27920792079207923
+              ],
+              [
+                0.412,
+                0.2712871287128713
+              ],
+              [
+                0.406,
+                0.25544554455445545
+              ],
+              [
+                0.406,
+                0.2089108910891089
+              ]
+            ],
+            "priority": 130
+          },
+          {
+            "regionId": "marked_chest_zone",
+            "shape": "polygon",
+            "points": [
+              [
+                0.34,
+                0.4178217821782178
+              ],
+              [
+                0.34,
+                0.5
+              ],
+              [
+                0.344,
+                0.502970297029703
+              ],
+              [
+                0.616,
+                0.503960396039604
+              ],
+              [
+                0.624,
+                0.501980198019802
+              ],
+              [
+                0.626,
+                0.4188118811881188
+              ],
+              [
+                0.62,
+                0.41485148514851483
+              ],
+              [
+                0.348,
+                0.41485148514851483
+              ]
+            ],
+            "priority": 125
+          },
+          {
+            "regionId": "gray_silhouette_zone",
+            "shape": "polygon",
+            "points": [
+              [
+                0.378,
+                0.18514851485148515
+              ],
+              [
+                0.572,
+                0.18415841584158416
+              ],
+              [
+                0.6,
+                0.1910891089108911
+              ],
+              [
+                0.61,
+                0.20594059405940593
+              ],
+              [
+                0.61,
+                0.28316831683168314
+              ],
+              [
+                0.596,
+                0.3108910891089109
+              ],
+              [
+                0.562,
+                0.33564356435643566
+              ],
+              [
+                0.556,
+                0.36534653465346534
+              ],
+              [
+                0.702,
+                0.404950495049505
+              ],
+              [
+                0.746,
+                0.43267326732673267
+              ],
+              [
+                0.732,
+                0.6871287128712872
+              ],
+              [
+                0.704,
+                0.7158415841584158
+              ],
+              [
+                0.644,
+                0.7306930693069307
+              ],
+              [
+                0.318,
+                0.7306930693069307
+              ],
+              [
+                0.274,
+                0.7217821782178218
+              ],
+              [
+                0.24,
+                0.693069306930693
+              ],
+              [
+                0.22,
+                0.43663366336633663
+              ],
+              [
+                0.254,
+                0.4089108910891089
+              ],
+              [
+                0.4,
+                0.37326732673267327
+              ],
+              [
+                0.41,
+                0.36435643564356435
+              ],
+              [
+                0.398,
+                0.3346534653465347
+              ],
+              [
+                0.36,
+                0.3079207920792079
+              ],
+              [
+                0.35,
+                0.28316831683168314
+              ],
+              [
+                0.352,
+                0.2
+              ]
+            ],
+            "priority": 110
+          },
+          {
+            "regionId": "black_silhouette_zone",
+            "shape": "polygon",
+            "points": [
+              [
+                0.524,
+                0.16930693069306932
+              ],
+              [
+                0.406,
+                0.17227722772277226
+              ],
+              [
+                0.338,
+                0.1900990099009901
+              ],
+              [
+                0.324,
+                0.29504950495049503
+              ],
+              [
+                0.374,
+                0.3613861386138614
+              ],
+              [
+                0.14,
+                0.42475247524752474
+              ],
+              [
+                0.084,
+                0.45544554455445546
+              ],
+              [
+                0.068,
+                0.48217821782178216
+              ],
+              [
+                0.082,
+                0.7831683168316832
+              ],
+              [
+                0.112,
+                0.8188118811881188
+              ],
+              [
+                0.178,
+                0.8584158415841584
+              ],
+              [
+                0.322,
+                0.8920792079207921
+              ],
+              [
+                0.602,
+                0.8930693069306931
+              ],
+              [
+                0.726,
+                0.8782178217821782
+              ],
+              [
+                0.832,
+                0.8366336633663366
+              ],
+              [
+                0.87,
+                0.806930693069307
+              ],
+              [
+                0.896,
+                0.7584158415841584
+              ],
+              [
+                0.89,
+                0.47227722772277225
+              ],
+              [
+                0.864,
+                0.44653465346534654
+              ],
+              [
+                0.808,
+                0.4198019801980198
+              ],
+              [
+                0.592,
+                0.36237623762376237
+              ],
+              [
+                0.636,
+                0.29207920792079206
+              ],
+              [
+                0.63,
+                0.20396039603960395
+              ],
+              [
+                0.59,
+                0.1782178217821782
+              ]
+            ],
+            "priority": 100
+          }
+        ],
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 11.5,
+            "height": 23.0,
+            "unit": "inch",
+            "origin": "top_left"
+          },
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1960132477001-01.png",
+          "sourceAssetSha256": "d0a7ae4f6e65a6dddd3c6a89291157a926e218b31742e657b25b18b4c1d2132d",
+          "publisherEvidence": "Qualification Targets Inc Product TQ-20 Paper Target is a Reduced TQ-19, 50 Foot Police Silhouette Target 11.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "closed exact-face edges scaled by publisher physical sheet extent; quarantined geometry used for correspondence only",
+          "edgeProof": [
+            {
+              "regionId": "marked_head_zone",
+              "boundarySampleCount": 282,
+              "edgeThreshold": 7.2111,
+              "alignedFraction": 1.0,
+              "medianGradient": 160.4546
+            },
+            {
+              "regionId": "marked_chest_zone",
+              "boundarySampleCount": 454,
+              "edgeThreshold": 7.2111,
+              "alignedFraction": 1.0,
+              "medianGradient": 213.2932
+            },
+            {
+              "regionId": "gray_silhouette_zone",
+              "boundarySampleCount": 1474,
+              "edgeThreshold": 7.2111,
+              "alignedFraction": 1.0,
+              "medianGradient": 304.0658
+            },
+            {
+              "regionId": "black_silhouette_zone",
+              "boundarySampleCount": 1904,
+              "edgeThreshold": 7.2111,
+              "alignedFraction": 1.0,
+              "medianGradient": 743.1029
+            }
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": true,
+          "specializedExtractorFailure": "no_specialized_topology_extractor"
+        }
+      },
+      "digest": "6a701c7702e9f312c2a273aa434f49a023528af0cd64f45ccb7f259d81c3c1bc"
+    },
+    "registration": {
+      "id": "qt_printer13_product_1960132477001-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "evidence_capture_asset",
+        "assetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1960132477001-01.png",
+        "assetSha256": "d0a7ae4f6e65a6dddd3c6a89291157a926e218b31742e657b25b18b4c1d2132d",
+        "assetAlt": "TQ-20 Paper Target (QT-PRODUCT-1960132477001)",
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceUrl": "https://targets.net/products/tq-20-paper-target",
+        "sourceManifest": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/QT_VISUAL_STACK_MANIFEST.json"
+      },
+      "digest": "deb167a2dd07fd7954bb2d823b97926eac829bca803654114a0a6c0e01a5fd64"
+    },
+    "scoring": {
+      "id": "score-qt_printer13_product_1960132477001-v2",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "model": "named_regions",
+        "regionRules": {
+          "marked_head_zone": {
+            "label": "Marked Head Zone",
+            "objectId": "marked_head_zone",
+            "objectLabel": "Marked Head Zone",
+            "countsAsHit": true
+          },
+          "marked_chest_zone": {
+            "label": "Marked Chest Zone",
+            "objectId": "marked_chest_zone",
+            "objectLabel": "Marked Chest Zone",
+            "countsAsHit": true
+          },
+          "gray_silhouette_zone": {
+            "label": "Gray Silhouette Zone",
+            "objectId": "gray_silhouette_zone",
+            "objectLabel": "Gray Silhouette Zone",
+            "countsAsHit": true
+          },
+          "black_silhouette_zone": {
+            "label": "Black Silhouette Zone",
+            "objectId": "black_silhouette_zone",
+            "objectLabel": "Black Silhouette Zone",
+            "countsAsHit": true
+          }
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "countsAsHit": false
+        },
+        "aggregation": {
+          "mode": "classification_counts"
+        },
+        "classificationFootprintMode": "tap_center",
+        "publisherRuleAuthority": {
+          "source": "Qualification Targets identifies TQ-20 as a reduced TQ-19 50-foot silhouette. Preserved source artwork explicitly establishes head, chest, gray, and black physical zones. Published course authorities apply conflicting values, so no target-wide point values are assigned.",
+          "rule": "Count the four physical zones. Numeric values are withheld because available governing uses conflict and the publisher page supplies none.",
+          "publisherValuesAttributed": false
+        }
+      },
+      "digest": "5b6e983186e614411db6f2bd381af994c312b389dd12a419f69d7645443bc2b9"
+    },
+    "mission": {
+      "id": "mission-qt_printer13_product_1960132477001-v2",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "authorityResolution": "Count the four real TQ-20 physical zones. Zone values remain unresolved and are not invented.",
+        "recognizedBehaviorFamily": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+        "recognizedQtGroup": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+        "legTwoHighestTruthfulCapability": "Zone / Object Counting",
+        "semanticStatus": "PARTIAL_UNRESOLVED_NOT_PUBLISHED",
+        "unresolvedReason": "TQ-20 publisher material establishes the reduced TQ-19 identity but no values. Located governing uses conflict (including 11/10/9/8 and 5/3 methods), so no universal target score is proven.",
+        "sourcePacket": "authority-evidence/platform/qt-printer13-leg2-recognition-compression-delta-2026-09-22/QT_LEG2_FAMILY_COMPRESSION_MANIFEST.json",
+        "maxObservations": 500,
+        "allowShooterDeclaredAim": false,
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        },
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_1",
+                "xNorm": 0.485,
+                "yNorm": 0.245,
+                "regionId": "marked_head_zone"
+              },
+              {
+                "aimId": "aim_2",
+                "xNorm": 0.482,
+                "yNorm": 0.462,
+                "regionId": "marked_chest_zone"
+              },
+              {
+                "aimId": "aim_3",
+                "xNorm": 0.5,
+                "yNorm": 0.65,
+                "regionId": "gray_silhouette_zone"
+              },
+              {
+                "aimId": "aim_4",
+                "xNorm": 0.18,
+                "yNorm": 0.65,
+                "regionId": "black_silhouette_zone"
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-homie-corrected-treatment-v3",
+          "intelligenceFamily": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+          "highestTruthfulCapability": "Zone / Object Counting",
+          "truthLayers": {
+            "publisherTruth": {
+              "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+              "publishedRuleAuthority": {
+                "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+                "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+                "publisherCatalogEvidence": "Qualification Targets Inc Product TQ-20 Paper Target is a Reduced TQ-19, 50 Foot Police Silhouette Target 11.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
+                "rule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties."
+              },
+              "publishedValuesAvailable": false,
+              "unresolved": "Current Printers 1–12 authority contains an approved executable contract for the exact prior surface identity.",
+              "rule": "Only source-backed publisher/governing semantics may score or qualify.",
+              "artworkFacts": {
+                "values": [],
+                "labels": [],
+                "authorityClass": "homie_verified_source_artwork_and_stored_authority"
+              }
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "no_governed_regions",
+              "registeredRegionCount": 0,
+              "registeredRegionIds": [],
+              "observedPhysicalStructure": {
+                "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
+                "semanticMeaningAttributed": false,
+                "widthPx": 500,
+                "heightPx": 1010,
+                "aspectRatio": 0.49505,
+                "cornerBackgroundRgb": [
+                  255,
+                  255,
+                  255
+                ],
+                "contrastCoverage": 0.4586,
+                "contrastBoundingBox": {
+                  "xMin": 0.0632,
+                  "yMin": 0.1667,
+                  "xMax": 0.9053,
+                  "yMax": 0.8958
+                },
+                "contrastCentroid": {
+                  "xNorm": 0.4857,
+                  "yNorm": 0.6147
+                },
+                "thirdsContrastDistribution": [
+                  {
+                    "cell": "r1c1",
+                    "contrastCoverage": 0.019
+                  },
+                  {
+                    "cell": "r1c2",
+                    "contrastCoverage": 0.4425
+                  },
+                  {
+                    "cell": "r1c3",
+                    "contrastCoverage": 0.0
+                  },
+                  {
+                    "cell": "r2c1",
+                    "contrastCoverage": 0.626
+                  },
+                  {
+                    "cell": "r2c2",
+                    "contrastCoverage": 0.9698
+                  },
+                  {
+                    "cell": "r2c3",
+                    "contrastCoverage": 0.5396
+                  },
+                  {
+                    "cell": "r3c1",
+                    "contrastCoverage": 0.4648
+                  },
+                  {
+                    "cell": "r3c2",
+                    "contrastCoverage": 0.687
+                  },
+                  {
+                    "cell": "r3c3",
+                    "contrastCoverage": 0.4014
+                  }
+                ]
+              },
+              "rule": "Pixel measurements describe the face; they do not create publisher semantics."
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "sameTargetComparison": true,
+              "personalBest": true,
+              "consistencyHistory": true,
+              "publisherMeaningAttributed": false,
+              "qtLockedResultCleanup": "counts_scores_and_misses_only",
+              "centerPatternAnalytics": false,
+              "distributionEvennessAnalytics": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "measured_shot_pattern"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "regionObjectBreakdown": true,
+            "shotPattern": false,
+            "distributionMeta": false
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true,
+            "centerMovement": false,
+            "dispersionChange": false
+          },
+          "progress": {
+            "tightestPatternPersonalBest": false,
+            "scoreHistoryWhenGoverned": false
+          },
+          "unsupported": [
+            "inventedscoring",
+            "inventedregions",
+            "inventedqualification",
+            "inventedcourserules",
+            "inventedpenalties",
+            "inventedzeroingcorrection"
+          ],
+          "homieFounderLock": {
+            "status": "FOUNDER_LOCKED_CORRECTED",
+            "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
+            "packetSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
+            "catalogChair": 226,
+            "visualStackChair": 262,
+            "governingRule": "Homie defines target semantics; Cody implements without reinterpretation."
+          },
+          "smartBehavior": "Count the four real TQ-20 physical zones. Zone values remain unresolved and are not invented.",
+          "homieCorrectedTreatment": {
+            "identity": {
+              "qtCatalogId": "QT-PRODUCT-1960132477001",
+              "productName": "TQ-20 Paper Target",
+              "sku": "TQ-20",
+              "imageFilename": "qt-1960132477001-01.png",
+              "imageSha256": "d0a7ae4f6e65a6dddd3c6a89291157a926e218b31742e657b25b18b4c1d2132d"
+            },
+            "publisherCatalogEvidence": "Qualification Targets Inc Product TQ-20 Paper Target is a Reduced TQ-19, 50 Foot Police Silhouette Target 11.5\" x 23\" Paper For large or custom orders, please call 866-498-8228",
+            "storedGoverningRule": "Preserve exact QT identity, registered artwork, normalized taps, TOTAL TAPS, SEC and exact reopen. Do not convert family recognition into invented executable regions, values, course rules, or penalties.",
+            "capability": "Evidence Only",
+            "intelligenceFamily": "EVIDENCE_ONLY",
+            "explicitGovernedLabels": [],
+            "explicitGovernedValues": [],
+            "registeredSemanticRegionObjectIds": [],
+            "requiredBehavior": "Preserve source evidence, total taps, and exact canonical coordinates through RESULT, SEC, Vault, and exact reopen. Do not add target semantics, zones, values, or scoring.",
+            "geometryInstruction": "Use the registered target-specific geometry where it matches the printed face.",
+            "authorityLimitOrUnresolved": "Current Printers 1–12 authority contains an approved executable contract for the exact prior surface identity.",
+            "forbiddenInference": [
+              "invented_scoring",
+              "invented_regions",
+              "invented_qualification",
+              "invented_course_rules",
+              "invented_penalties",
+              "invented_zeroing_correction."
+            ],
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
+          },
+          "correctedPacketLock": {
+            "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
+            "packetPath": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+            "packetSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+            "universalLocksApplied": true,
+            "explicitOverride": null,
+            "founderAcceptance": "PENDING"
+          },
+          "founderRound2Authority": {
+            "authorityId": "QT_PRINTER13_FOUNDER_ROUND2_NM_CORRECTION_2026_09_28",
+            "capability": "Zone / Object Counting",
+            "familyExecutionContract": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+            "sczn3CumulativeMethod": false,
+            "publisherScoringClaim": false,
+            "unresolved": "TQ-20 publisher material establishes the reduced TQ-19 identity but no values. Located governing uses conflict (including 11/10/9/8 and 5/3 methods), so no universal target score is proven."
+          }
+        },
+        "correctedPacket": {
+          "path": "authority-evidence/platform/qt-printer13-corrected-implementation-2026-09-27/SCZN3_QT_Printer13_Corrected_Implementation_Packet_2026-09-27.docx",
+          "sha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+          "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27"
+        },
+        "founderRound2Authority": {
+          "authorityId": "QT_PRINTER13_FOUNDER_ROUND2_NM_CORRECTION_2026_09_28",
+          "capability": "Zone / Object Counting",
+          "familyExecutionContract": "TQ20_PHYSICAL_ZONE_COUNTING_VALUES_WITHHELD_V1",
+          "sczn3CumulativeMethod": false,
+          "publisherScoringClaim": false,
+          "unresolved": "TQ-20 publisher material establishes the reduced TQ-19 identity but no values. Located governing uses conflict (including 11/10/9/8 and 5/3 methods), so no universal target score is proven."
+        }
+      },
+      "digest": "ece8a067866ee9227dae65239a242d4dd01cbd5ac64110e7e611d42363b6b458"
+    }
+  },
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "invented_scoring",
+    "invented_regions",
+    "invented_qualification",
+    "invented_course_rules",
+    "invented_penalties",
+    "invented_zeroing_correction"
+  ],
+  "contractFingerprint": "1d12423c1e7e0a0757d6a941ad5a9bcdc36b11bc05d048a1373f19e1da7f912a"
+}

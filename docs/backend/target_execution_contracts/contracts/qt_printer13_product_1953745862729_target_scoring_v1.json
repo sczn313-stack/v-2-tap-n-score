@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1953745862729-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "VALUED_REGION_QUALIFICATION",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -54,114 +59,135 @@
         "layoutModel": "regions",
         "regions": [
           {
-            "regionId": "upper_governed_region",
-            "shape": "circle",
-            "cx": 0.5,
-            "cy": 0.18,
-            "radius": 0.08,
-            "priority": 80,
-            "objectId": "upper_governed_region"
-          },
-          {
-            "regionId": "central_governed_region",
-            "shape": "rectangle",
-            "xMin": 0.4,
-            "yMin": 0.34,
-            "xMax": 0.6,
-            "yMax": 0.57,
-            "priority": 70,
-            "objectId": "central_governed_region"
-          },
-          {
-            "regionId": "lower_governed_region",
-            "shape": "rectangle",
-            "xMin": 0.41,
-            "yMin": 0.68,
-            "xMax": 0.59,
-            "yMax": 0.82,
-            "priority": 60,
-            "objectId": "lower_governed_region"
-          },
-          {
-            "regionId": "remaining_target_area",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.52,
-            "radiusX": 0.29,
-            "radiusY": 0.43,
-            "priority": 20,
-            "objectId": "remaining_target_area"
+            "regionId": "target_figure",
+            "shape": "polygon",
+            "points": [
+              [
+                0.414,
+                0.0
+              ],
+              [
+                0.372,
+                0.07235142118863049
+              ],
+              [
+                0.404,
+                0.2713178294573643
+              ],
+              [
+                0.098,
+                0.3359173126614987
+              ],
+              [
+                0.052,
+                0.3643410852713178
+              ],
+              [
+                0.026,
+                0.40568475452196384
+              ],
+              [
+                0.0,
+                0.4069767441860465
+              ],
+              [
+                0.0,
+                0.541343669250646
+              ],
+              [
+                0.026,
+                0.5426356589147286
+              ],
+              [
+                0.03,
+                0.5839793281653747
+              ],
+              [
+                0.026,
+                0.7002583979328165
+              ],
+              [
+                0.0,
+                0.7015503875968992
+              ],
+              [
+                0.0,
+                0.9987080103359173
+              ],
+              [
+                0.962,
+                0.9987080103359173
+              ],
+              [
+                0.96,
+                0.6770025839793282
+              ],
+              [
+                0.972,
+                0.5943152454780362
+              ],
+              [
+                0.998,
+                0.5930232558139535
+              ],
+              [
+                0.998,
+                0.4134366925064599
+              ],
+              [
+                0.974,
+                0.4134366925064599
+              ],
+              [
+                0.92,
+                0.36563307493540054
+              ],
+              [
+                0.628,
+                0.28036175710594313
+              ],
+              [
+                0.664,
+                0.10335917312661498
+              ],
+              [
+                0.624,
+                0.0
+              ]
+            ],
+            "priority": 100
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "VALUED_REGION_QUALIFICATION",
-          "qtGroup": "VALUED_REGION_QUALIFICATION"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 774,
-          "aspectRatio": 0.645995,
-          "cornerBackgroundRgb": [
-            247,
-            247,
-            248
-          ],
-          "contrastCoverage": 0.7256,
-          "contrastBoundingBox": {
-            "xMin": 0.0,
-            "yMin": 0.0,
-            "xMax": 0.9919,
-            "yMax": 1.0
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4803,
-            "yNorm": 0.581
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1953745862729-01.png",
+          "sourceAssetSha256": "1957a6fce3c76fb8b50f060fbd9488ea4750c7f8ebdc19a1a408d5c8315be55d",
+          "publisherEvidence": "Qualification Targets Inc Product CJ-100 - Basic Silhouette Paper Target with Hidden \"Q\" Scoring Zone 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "dominant target-specific foreground figure scaled by publisher physical sheet extent",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.0774
-            },
-            {
-              "cell": "r1c2",
-              "contrastCoverage": 0.801
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.0293
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.9192
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 1.0
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.9021
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.9398
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.9885
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.8586
+              "regionId": "target_figure",
+              "boundarySampleCount": 2382,
+              "edgeThreshold": 17.2627,
+              "alignedFraction": 0.5684,
+              "medianGradient": 273.2012
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": false,
+          "specializedExtractorFailure": null
         }
       },
-      "digest": "205eacb84e76529028434e77b83dfed23d85a475653d3e55dee8d4e6d5359258"
+      "digest": "d3c55847bb3079ffa29de45df4103d634217a212f116a62e6cac2f5cbe5f23bb"
     },
     "registration": {
       "id": "qt_printer13_product_1953745862729-registration",
@@ -187,25 +213,10 @@
         "status": "complete",
         "model": "named_regions",
         "regionRules": {
-          "upper_governed_region": {
-            "label": "Upper governed region",
-            "objectId": "upper_governed_region",
-            "objectLabel": "Upper governed region"
-          },
-          "central_governed_region": {
-            "label": "Central governed region",
-            "objectId": "central_governed_region",
-            "objectLabel": "Central governed region"
-          },
-          "lower_governed_region": {
-            "label": "Lower governed region",
-            "objectId": "lower_governed_region",
-            "objectLabel": "Lower governed region"
-          },
-          "remaining_target_area": {
-            "label": "Remaining governed target area",
-            "objectId": "remaining_target_area",
-            "objectLabel": "Remaining governed target area"
+          "target_figure": {
+            "label": "Target Figure",
+            "objectId": "target_figure",
+            "objectLabel": "Target Figure"
           }
         },
         "aggregation": {
@@ -215,7 +226,7 @@
           "source": "Homie corrected treatment packet ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
           "packetPath": "authority-evidence/platform/qt-episode64-homie-locked-treatment-2026-09-23/QT_HOMIE_254_CORRECTED_TREATMENTS.md",
           "publisherCatalogEvidence": "Qualification Targets Inc Product CJ-100 - Basic Silhouette Paper Target with Hidden \"Q\" Scoring Zone 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
-          "rule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
+          "rule": "the exact printed target figure is counted as one physical object; no unpublished values or course rules are inferred"
         },
         "outsideRule": {
           "label": "Missed"
@@ -250,7 +261,7 @@
           "storedGoverningRule": "qualification regions are counted with neutral labels; unpublished anatomy, values, stages, timing, and pass rules remain withheld"
         }
       },
-      "digest": "d2bbb3df23c7ad6440185b3544c70bc4475e3741ca8fd68dcb17e34045dae410"
+      "digest": "701633d320de45d12c82a2d0bc13931d53487e6e952f16b82cb23bd4b3ef1af1"
     },
     "mission": {
       "id": "qt_printer13_product_1953745862729-mission",
@@ -480,7 +491,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

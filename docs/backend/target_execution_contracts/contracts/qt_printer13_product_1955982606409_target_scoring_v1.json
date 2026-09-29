@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_1955982606409-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "BULLSEYE_MULTI_BULL",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -55,92 +60,464 @@
         "regions": [
           {
             "regionId": "bull_1",
-            "shape": "circle",
-            "cx": 0.295,
-            "cy": 0.5,
-            "radius": 0.1271,
-            "priority": 50,
-            "objectId": "bull_1"
+            "shape": "polygon",
+            "points": [
+              [
+                0.208,
+                0.23655913978494625
+              ],
+              [
+                0.218,
+                0.24193548387096775
+              ],
+              [
+                0.218,
+                0.26344086021505375
+              ],
+              [
+                0.206,
+                0.2661290322580645
+              ],
+              [
+                0.218,
+                0.271505376344086
+              ],
+              [
+                0.218,
+                0.29435483870967744
+              ],
+              [
+                0.212,
+                0.29838709677419356
+              ],
+              [
+                0.174,
+                0.30510752688172044
+              ],
+              [
+                0.144,
+                0.3225806451612903
+              ],
+              [
+                0.132,
+                0.33602150537634407
+              ],
+              [
+                0.122,
+                0.3602150537634409
+              ],
+              [
+                0.092,
+                0.3602150537634409
+              ],
+              [
+                0.084,
+                0.353494623655914
+              ],
+              [
+                0.084,
+                0.37231182795698925
+              ],
+              [
+                0.092,
+                0.3655913978494624
+              ],
+              [
+                0.12,
+                0.3655913978494624
+              ],
+              [
+                0.132,
+                0.3924731182795699
+              ],
+              [
+                0.146,
+                0.40860215053763443
+              ],
+              [
+                0.176,
+                0.42473118279569894
+              ],
+              [
+                0.216,
+                0.43413978494623656
+              ],
+              [
+                0.214,
+                0.45564516129032256
+              ],
+              [
+                0.204,
+                0.45698924731182794
+              ],
+              [
+                0.214,
+                0.46236559139784944
+              ],
+              [
+                0.214,
+                0.48655913978494625
+              ],
+              [
+                0.204,
+                0.49193548387096775
+              ],
+              [
+                0.232,
+                0.49193548387096775
+              ],
+              [
+                0.222,
+                0.48655913978494625
+              ],
+              [
+                0.222,
+                0.46236559139784944
+              ],
+              [
+                0.234,
+                0.4596774193548387
+              ],
+              [
+                0.224,
+                0.45564516129032256
+              ],
+              [
+                0.224,
+                0.4327956989247312
+              ],
+              [
+                0.268,
+                0.42338709677419356
+              ],
+              [
+                0.294,
+                0.40860215053763443
+              ],
+              [
+                0.308,
+                0.39381720430107525
+              ],
+              [
+                0.32,
+                0.36693548387096775
+              ],
+              [
+                0.35,
+                0.36693548387096775
+              ],
+              [
+                0.354,
+                0.3736559139784946
+              ],
+              [
+                0.358,
+                0.37231182795698925
+              ],
+              [
+                0.358,
+                0.353494623655914
+              ],
+              [
+                0.352,
+                0.3548387096774194
+              ],
+              [
+                0.35,
+                0.36155913978494625
+              ],
+              [
+                0.32,
+                0.36155913978494625
+              ],
+              [
+                0.31,
+                0.33736559139784944
+              ],
+              [
+                0.294,
+                0.31989247311827956
+              ],
+              [
+                0.272,
+                0.3064516129032258
+              ],
+              [
+                0.226,
+                0.2956989247311828
+              ],
+              [
+                0.226,
+                0.271505376344086
+              ],
+              [
+                0.236,
+                0.26881720430107525
+              ],
+              [
+                0.226,
+                0.26344086021505375
+              ],
+              [
+                0.226,
+                0.24193548387096775
+              ],
+              [
+                0.238,
+                0.23655913978494625
+              ]
+            ],
+            "priority": 50
           },
           {
             "regionId": "bull_2",
-            "shape": "circle",
-            "cx": 0.705,
-            "cy": 0.5,
-            "radius": 0.1271,
-            "priority": 50,
-            "objectId": "bull_2"
+            "shape": "polygon",
+            "points": [
+              [
+                0.764,
+                0.23655913978494625
+              ],
+              [
+                0.774,
+                0.24327956989247312
+              ],
+              [
+                0.772,
+                0.2647849462365591
+              ],
+              [
+                0.764,
+                0.2661290322580645
+              ],
+              [
+                0.764,
+                0.2701612903225806
+              ],
+              [
+                0.774,
+                0.2728494623655914
+              ],
+              [
+                0.774,
+                0.2956989247311828
+              ],
+              [
+                0.738,
+                0.30376344086021506
+              ],
+              [
+                0.71,
+                0.3172043010752688
+              ],
+              [
+                0.69,
+                0.3387096774193548
+              ],
+              [
+                0.68,
+                0.36155913978494625
+              ],
+              [
+                0.652,
+                0.36155913978494625
+              ],
+              [
+                0.644,
+                0.353494623655914
+              ],
+              [
+                0.644,
+                0.3736559139784946
+              ],
+              [
+                0.652,
+                0.36693548387096775
+              ],
+              [
+                0.68,
+                0.36693548387096775
+              ],
+              [
+                0.688,
+                0.38844086021505375
+              ],
+              [
+                0.704,
+                0.40860215053763443
+              ],
+              [
+                0.728,
+                0.42338709677419356
+              ],
+              [
+                0.772,
+                0.4327956989247312
+              ],
+              [
+                0.774,
+                0.45564516129032256
+              ],
+              [
+                0.764,
+                0.46102150537634407
+              ],
+              [
+                0.774,
+                0.4637096774193548
+              ],
+              [
+                0.774,
+                0.4879032258064516
+              ],
+              [
+                0.764,
+                0.489247311827957
+              ],
+              [
+                0.764,
+                0.4932795698924731
+              ],
+              [
+                0.788,
+                0.4932795698924731
+              ],
+              [
+                0.79,
+                0.489247311827957
+              ],
+              [
+                0.782,
+                0.4879032258064516
+              ],
+              [
+                0.78,
+                0.4637096774193548
+              ],
+              [
+                0.792,
+                0.4583333333333333
+              ],
+              [
+                0.782,
+                0.45698924731182794
+              ],
+              [
+                0.78,
+                0.43413978494623656
+              ],
+              [
+                0.826,
+                0.42338709677419356
+              ],
+              [
+                0.85,
+                0.40860215053763443
+              ],
+              [
+                0.862,
+                0.3951612903225806
+              ],
+              [
+                0.872,
+                0.3682795698924731
+              ],
+              [
+                0.902,
+                0.3682795698924731
+              ],
+              [
+                0.91,
+                0.375
+              ],
+              [
+                0.91,
+                0.3548387096774194
+              ],
+              [
+                0.902,
+                0.3629032258064516
+              ],
+              [
+                0.874,
+                0.3629032258064516
+              ],
+              [
+                0.862,
+                0.33602150537634407
+              ],
+              [
+                0.85,
+                0.3225806451612903
+              ],
+              [
+                0.826,
+                0.3077956989247312
+              ],
+              [
+                0.782,
+                0.2970430107526882
+              ],
+              [
+                0.782,
+                0.271505376344086
+              ],
+              [
+                0.79,
+                0.2701612903225806
+              ],
+              [
+                0.782,
+                0.2647849462365591
+              ],
+              [
+                0.782,
+                0.24193548387096775
+              ],
+              [
+                0.79,
+                0.23655913978494625
+              ]
+            ],
+            "priority": 50
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "BULLSEYE_MULTI_BULL",
-          "qtGroup": "BULLSEYE_MULTI_BULL"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 500,
-          "heightPx": 744,
-          "aspectRatio": 0.672043,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.1449,
-          "contrastBoundingBox": {
-            "xMin": 0.0853,
-            "yMin": 0.2135,
-            "xMax": 0.9147,
-            "yMax": 0.875
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4983,
-            "yNorm": 0.5099
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-1955982606409-01.png",
+          "sourceAssetSha256": "16d5c1489de8fdf8d1842201cd7266f9810b18e4ce4a32e838d2f512e26fb3eb",
+          "publisherEvidence": "Qualification Targets Inc Product FBI-QIT-G Paper Target is an FBI Target with Orange Center Mass and 2 Bullseyes Training Target 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "closed exact-face edges scaled by publisher physical sheet extent; quarantined geometry used for correspondence only",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.0342
+              "regionId": "bull_1",
+              "boundarySampleCount": 624,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 833.003
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.1428
-            },
-            {
-              "cell": "r1c3",
-              "contrastCoverage": 0.0331
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.1152
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 0.5872
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.1123
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.0342
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.2108
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.0345
+              "regionId": "bull_2",
+              "boundarySampleCount": 615,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 781.7686
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": true,
+          "specializedExtractorFailure": "exact_semantic_object_count_not_isolated_from_exact_face"
         }
       },
-      "digest": "e9d6cfca2a9769aca4d9a94333dab97f38cfcb57888026ea9c8337e4000226a2"
+      "digest": "ae4351e8cfd9d21e7fffdd8283f2768d2a1c2489a33ecd5765156e998f5bdd8d"
     },
     "registration": {
       "id": "qt_printer13_product_1955982606409-registration",
@@ -435,7 +812,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

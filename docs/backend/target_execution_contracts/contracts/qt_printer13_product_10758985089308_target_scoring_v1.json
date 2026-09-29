@@ -2,13 +2,13 @@
   "schemaVersion": "sczn3-target-execution-contract-v1",
   "contractId": "tec-qt_printer13_product_10758985089308-target-scoring-v1",
   "contractVersion": "1",
-  "authorityContractVersion": "QT-PRINTER13-CORRECTED-PACKET-2026-09-27-v1",
+  "authorityContractVersion": "QT-PHYSICAL-AUTHORITY-2026-09-28-v2",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",
-    "approvedAt": "2026-09-27T00:00:00-04:00",
+    "authorityId": "QT_PRINTER13_SCALED_EXACT_FACE_AUTHORITY_2026_09_28",
+    "approvedAt": "2026-09-28T00:00:00-04:00",
     "founderAcceptance": "pending"
   },
   "effective": {
@@ -38,7 +38,12 @@
       "episode64IntelligenceFamily": "COMPETITION_SCORING",
       "homieLockedCapability": "Zone / Object Counting",
       "homieCorrectedPacketSha256": "ac73166e47bd17ca76882d27260b7528419f2b174ea4d0bc1b4ef8cfdb6daa44",
-      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935"
+      "correctedPacketSha256": "e78cae75bd1c65e8bf5fb1d541296e65085be61db066eaafa29a6eaed2e91935",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      }
     }
   },
   "missionFamily": "targetScoring",
@@ -55,101 +60,266 @@
         "regions": [
           {
             "regionId": "a_zone",
-            "shape": "rectangle",
-            "xMin": 0.43,
-            "yMin": 0.24,
-            "xMax": 0.57,
-            "yMax": 0.63,
+            "shape": "polygon",
+            "points": [
+              [
+                0.3590664272890485,
+                0.24239007891770012
+              ],
+              [
+                0.3590664272890485,
+                0.5715896279594137
+              ],
+              [
+                0.6337522441651705,
+                0.5715896279594137
+              ],
+              [
+                0.6355475763016158,
+                0.2502818489289741
+              ],
+              [
+                0.6463195691202872,
+                0.2491544532130778
+              ],
+              [
+                0.644524236983842,
+                0.24239007891770012
+              ],
+              [
+                0.6355475763016158,
+                0.24239007891770012
+              ],
+              [
+                0.6409335727109515,
+                0.2491544532130778
+              ],
+              [
+                0.3644524236983842,
+                0.2480270574971815
+              ]
+            ],
             "priority": 80
           },
           {
             "regionId": "c_zone",
-            "shape": "rectangle",
-            "xMin": 0.34,
-            "yMin": 0.17,
-            "xMax": 0.66,
-            "yMax": 0.76,
+            "shape": "polygon",
+            "points": [
+              [
+                0.3518850987432675,
+                0.013528748590755355
+              ],
+              [
+                0.3500897666068223,
+                0.18376550169109357
+              ],
+              [
+                0.1741472172351885,
+                0.17925591882750846
+              ],
+              [
+                0.1867145421903052,
+                0.18376550169109357
+              ],
+              [
+                0.1561938958707361,
+                0.1882750845546787
+              ],
+              [
+                0.1687612208258528,
+                0.1927846674182638
+              ],
+              [
+                0.10951526032315978,
+                0.2277339346110485
+              ],
+              [
+                0.07001795332136446,
+                0.23675310033821872
+              ],
+              [
+                0.07001795332136446,
+                0.25140924464487036
+              ],
+              [
+                0.09156193895870736,
+                0.23562570462232243
+              ],
+              [
+                0.07540394973070018,
+                0.25366403607666294
+              ],
+              [
+                0.07001795332136446,
+                0.7249154453213078
+              ],
+              [
+                0.07899461400359066,
+                0.7158962795941376
+              ],
+              [
+                0.21543985637342908,
+                0.8928974069898534
+              ],
+              [
+                0.7809694793536804,
+                0.8928974069898534
+              ],
+              [
+                0.9174147217235189,
+                0.7294250281848929
+              ],
+              [
+                0.9174147217235189,
+                0.23449830890642615
+              ],
+              [
+                0.8886894075403949,
+                0.22998872604284104
+              ],
+              [
+                0.9048473967684022,
+                0.2254791431792559
+              ],
+              [
+                0.874326750448833,
+                0.20631341600901917
+              ],
+              [
+                0.8671454219030521,
+                0.21758737316798196
+              ],
+              [
+                0.8186714542190305,
+                0.17925591882750846
+              ],
+              [
+                0.644524236983842,
+                0.18376550169109357
+              ],
+              [
+                0.6427289048473968,
+                0.013528748590755355
+              ]
+            ],
             "priority": 60
           },
           {
             "regionId": "target_body",
-            "shape": "ellipse",
-            "cx": 0.5,
-            "cy": 0.5,
-            "radiusX": 0.28,
-            "radiusY": 0.43,
+            "shape": "polygon",
+            "points": [
+              [
+                0.18491921005385997,
+                0.1939120631341601
+              ],
+              [
+                0.3500897666068223,
+                0.1939120631341601
+              ],
+              [
+                0.22082585278276481,
+                0.2491544532130778
+              ],
+              [
+                0.22082585278276481,
+                0.5704622322435174
+              ],
+              [
+                0.3141831238779174,
+                0.7102593010146562
+              ],
+              [
+                0.6804308797127468,
+                0.7091319052987599
+              ],
+              [
+                0.7737881508078994,
+                0.5704622322435174
+              ],
+              [
+                0.7737881508078994,
+                0.2491544532130778
+              ],
+              [
+                0.644524236983842,
+                0.1939120631341601
+              ],
+              [
+                0.8025134649910234,
+                0.1927846674182638
+              ],
+              [
+                0.9066427289048474,
+                0.2502818489289741
+              ],
+              [
+                0.9066427289048474,
+                0.7080045095828635
+              ],
+              [
+                0.7684021543985637,
+                0.8782412626832018
+              ],
+              [
+                0.2244165170556553,
+                0.8759864712514093
+              ],
+              [
+                0.08797127468581688,
+                0.7080045095828635
+              ],
+              [
+                0.08797127468581688,
+                0.2502818489289741
+              ]
+            ],
             "priority": 20
           }
         ],
-        "ugoAuthority": "qt-leg3-class-level-visible-structure-v2",
-        "derivation": {
-          "method": "leg-two-family-plus-preserved-visible-structure",
-          "family": "COMPETITION_SCORING",
-          "qtGroup": "FCSO_FAMILY"
-        },
-        "observedPhysicalStructure": {
-          "measurementAuthority": "sczn3_measured_from_registered_face_pixels",
-          "semanticMeaningAttributed": false,
-          "widthPx": 557,
-          "heightPx": 887,
-          "aspectRatio": 0.627959,
-          "cornerBackgroundRgb": [
-            255,
-            255,
-            255
-          ],
-          "contrastCoverage": 0.6344,
-          "contrastBoundingBox": {
-            "xMin": 0.0744,
-            "yMin": 0.0104,
-            "xMax": 0.9835,
-            "yMax": 0.9948
+        "ugoAuthority": "qt-exact-face-governed-physical-scale-v1",
+        "physicalAuthority": {
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch",
+            "origin": "top_left"
           },
-          "contrastCentroid": {
-            "xNorm": 0.4999,
-            "yNorm": 0.496
-          },
-          "thirdsContrastDistribution": [
+          "sourceAssetPath": "authority-evidence/platform/qt-printer13-visual-ingestion-2026-09-22/assets/qt-10758985089308-01.jpg",
+          "sourceAssetSha256": "fa1b2e83bdabe37e69a4dd5eae61d76a9c715834b79fce8afee8d663437b675a",
+          "publisherEvidence": "Qualification Targets Inc Product Fresno County Sheriff's Office IPSC Target on Paper. 23\" x 35\" Paper For large or custom orders, please call 866-498-8228",
+          "mapping": "closed exact-face edges scaled by publisher physical sheet extent; quarantined geometry used for correspondence only",
+          "edgeProof": [
             {
-              "cell": "r1c1",
-              "contrastCoverage": 0.3578
+              "regionId": "a_zone",
+              "boundarySampleCount": 920,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 0.9989,
+              "medianGradient": 704.0
             },
             {
-              "cell": "r1c2",
-              "contrastCoverage": 0.9055
+              "regionId": "c_zone",
+              "boundarySampleCount": 2893,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 0.9886,
+              "medianGradient": 300.0
             },
             {
-              "cell": "r1c3",
-              "contrastCoverage": 0.373
-            },
-            {
-              "cell": "r2c1",
-              "contrastCoverage": 0.775
-            },
-            {
-              "cell": "r2c2",
-              "contrastCoverage": 1.0
-            },
-            {
-              "cell": "r2c3",
-              "contrastCoverage": 0.75
-            },
-            {
-              "cell": "r3c1",
-              "contrastCoverage": 0.4437
-            },
-            {
-              "cell": "r3c2",
-              "contrastCoverage": 0.6566
-            },
-            {
-              "cell": "r3c3",
-              "contrastCoverage": 0.4313
+              "regionId": "target_body",
+              "boundarySampleCount": 2872,
+              "edgeThreshold": 4.0,
+              "alignedFraction": 1.0,
+              "medianGradient": 712.0
             }
-          ]
+          ],
+          "compileRule": "exact-face boundary coordinates scaled by publisher-governed physical sheet extent",
+          "unscaledPixelsAreAuthority": false,
+          "genericOrFamilyGeometryUsed": false,
+          "boundaryGate": "PASS",
+          "correspondenceOnlySeed": true,
+          "specializedExtractorFailure": "target_specific_concentric_boundary_set_not_isolated"
         }
       },
-      "digest": "ae84338ca0368d23b5878a6c535b47b11faef62cf5082b0ed7a5d5029754b6a0"
+      "digest": "66344735bd136dca76da160bae3d245df2afde03d0a752cb1b377f45f5891afa"
     },
     "registration": {
       "id": "qt_printer13_product_10758985089308-registration",
@@ -450,7 +620,7 @@
               "unpublished_pass_threshold",
               "unpublished_penalties."
             ],
-            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT \u2192 SEC \u2192 VAULT \u2192 exact reopen."
+            "requiredPersistence": "original target evidence + exact tap coordinates + governed classification/distribution + RESULT → SEC → VAULT → exact reopen."
           },
           "correctedPacketLock": {
             "lockId": "QT_PRINTER13_CORRECTED_IMPLEMENTATION_PACKET_2026_09_27",

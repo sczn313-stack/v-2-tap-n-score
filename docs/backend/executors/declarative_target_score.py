@@ -315,6 +315,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             total += counted_value
             group_totals[str(participant_id or observation.get("groupId") or "all")] += counted_value
         counts[region_id] += 1
+        counts_as_hit = region_id != "outside" and (rule or {}).get("countsAsHit") is not False
         record = {
             "observationId": f"observation-{index:03d}", "xNorm": x, "yNorm": y,
             "canonicalTargetCoordinate": canonical_points[index - 1],
@@ -323,6 +324,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             "groupId": str(participant_id or observation.get("groupId") or "all"),
             "classificationStatus": classified["classificationStatus"],
             "classificationMethod": classified["classificationMethod"],
+            "countsAsHit": counts_as_hit,
         }
         if numeric and counted_hit_policy and object_id and region_id != "outside":
             record.update({
@@ -417,14 +419,24 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                 ) if classifications else 0.0,
                 "hit": any(
                     str(item.get("objectId")) == str(object_id)
+                    and item.get("countsAsHit") is True
                     and (not numeric or float(item.get("value") or 0) > 0)
                     for item in classifications
+                ),
+                "hitCount": sum(
+                    1 for item in classifications
+                    if str(item.get("objectId")) == str(object_id) and item.get("countsAsHit") is True
+                ),
+                "missCount": sum(
+                    1 for item in classifications
+                    if str(item.get("objectId")) == str(object_id) and item.get("countsAsHit") is False
                 ),
             }
             for object_id, label in object_rules.items()
         ]
         if numeric:
             outside_is_assignable = len(object_rules) == 1 or participant_policy is not None
+            single_object_miss_count = counts.get("outside", 0) if len(object_rules) == 1 else None
             for object_result in scoring["objectResults"]:
                 object_id = object_result["objectId"]
                 assigned = [item for item in classifications if str(item.get("objectId")) == str(object_id)]
@@ -443,7 +455,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                     "maximumPointsPerAssignedTap": max_value,
                     "maximumPossiblePoints": max_possible,
                     "performancePercentage": round(score / max_possible * 100, 1) if max_possible > 0 else None,
-                    "missCount": sum(1 for item in assigned if item.get("regionId") == "outside") if outside_is_assignable else None,
+                    "missCount": single_object_miss_count if single_object_miss_count is not None else (sum(1 for item in assigned if item.get("regionId") == "outside") if outside_is_assignable else None),
                     "missesDetermination": "determined_by_declared_object" if participant_policy else ("determined_single_object" if outside_is_assignable else "not_determinable_without_object_assignment"),
                 })
                 if counted_hit_policy:
@@ -495,6 +507,41 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             })
         if subset_results:
             scoring["subsetResults"] = subset_results
+    cumulative_policy = scoring_data.get("cumulativeCountPolicy")
+    if isinstance(cumulative_policy, Mapping):
+        cumulative_results = []
+        whole = Counter()
+        for group in cumulative_policy["groups"]:
+            atomic = group["atomicRegions"]
+            red = counts.get(str(atomic["red"]), 0)
+            white_only = counts.get(str(atomic["whiteOnly"]), 0)
+            blue_only = counts.get(str(atomic["blueOnly"]), 0)
+            misses = counts.get(str(atomic["miss"]), 0)
+            record = {
+                "groupId": str(group["groupId"]),
+                "label": str(group["label"]),
+                "atomic": {"red": red, "whiteOnly": white_only, "blueOnly": blue_only, "miss": misses},
+                "cumulative": {"redTotal": red, "whiteTotal": red + white_only, "blueTotal": red + white_only + blue_only},
+                "hitCount": red + white_only + blue_only,
+                "missCount": misses,
+                "totalTaps": red + white_only + blue_only + misses,
+            }
+            cumulative_results.append(record)
+            for key, value in record["atomic"].items():
+                whole[key] += value
+        scoring["cumulativeCountMethod"] = "sczn3_founder_approved_nested_color_totals"
+        scoring["cumulativeResults"] = cumulative_results
+        scoring["cumulativeWholeTarget"] = {
+            "atomic": dict(whole),
+            "cumulative": {
+                "redTotal": whole["red"],
+                "whiteTotal": whole["red"] + whole["whiteOnly"],
+                "blueTotal": whole["red"] + whole["whiteOnly"] + whole["blueOnly"],
+            },
+            "hitCount": whole["red"] + whole["whiteOnly"] + whole["blueOnly"],
+            "missCount": whole["miss"],
+            "totalTaps": sum(whole.values()),
+        }
     if model == "ordered_objects":
         observed = [item.get("objectId") for item in classifications]
         aggregation = scoring_data["aggregation"]
@@ -515,7 +562,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         scoring["reason"] = str(scoring_data.get("reason") or "printer_defines_no_score")
 
     governed_shots = len(classifications)
-    governed_hits = governed_shots - counts.get("outside", 0)
+    governed_hits = sum(1 for item in classifications if item.get("countsAsHit") is True)
     object_count = len(scoring.get("objectResults") or [])
     objects_hit = sum(1 for item in scoring.get("objectResults") or [] if item.get("hit") is True)
     object_counts = [int(item.get("observationCount") or 0) for item in scoring.get("objectResults") or []]
