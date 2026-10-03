@@ -18,13 +18,14 @@ const result = {
       { objectId: "region", label: "Governed Region", observationCount: 2, hit: true },
       { objectId: "central", label: "Central Governed Region", observationCount: 1, hit: true },
       { objectId: "remaining", label: "Remaining Governed Target Area", observationCount: 2, hit: true },
-      { objectId: "named", label: "Pistol Zone", observationCount: 9, hit: true }
+      { objectId: "named", label: "Pistol Zone", observationCount: 9, hit: true },
+      { objectId: "inactive", label: "Dormant Zone", observationCount: 0, hit: false }
     ]
   },
   sczn3Metrics: {
     status: "complete",
     hitRate: { validHitCount: 14, governedShotCount: 25, percentage: 56 },
-    objectCoverage: { objectsHit: 4, scorableObjectCount: 4 }
+    objectCoverage: { objectsHit: 4, scorableObjectCount: 5 }
   }
 };
 
@@ -32,12 +33,15 @@ const markup = window.SCZN3TargetExecutionRuntime.shooterFacingResultMarkup(resu
 assert.match(markup, /14 HIT TAPS[\s\S]*11 MISSED[\s\S]*25 TOTAL TAPS/);
 assert.match(markup, /<details class="contract-numeric-region-results contract-counting-details" data-counting-details="true">/);
 assert.doesNotMatch(markup, /<details[^>]*\sopen(?:\s|>)/i);
-assert.match(markup, /Region details/);
+assert.match(markup, /Zones hit/);
 assert.match(markup, /Tap to view/);
 assert.match(markup, /Region[\s\S]*?<td>2<\/td>/);
 assert.match(markup, /Central Region[\s\S]*?<td>1<\/td>/);
 assert.match(markup, /Remaining Target Area[\s\S]*?<td>2<\/td>/);
 assert.match(markup, /Pistol Zone[\s\S]*?<td>9<\/td>/);
+const primaryDetail = markup.split('<details class="contract-all-target-regions"')[0];
+assert.doesNotMatch(primaryDetail, /Dormant Zone|<td>0<\/td>/, "inactive regions stay off the primary shooter-facing breakdown");
+assert.match(markup, /All target regions[\s\S]*Dormant Zone[\s\S]*<td>0<\/td>/, "zero-hit regions remain available one disclosure level deeper");
 assert.doesNotMatch(markup, /governed/i);
 assert.doesNotMatch(markup, /observationPercentage|%<\/td>/i);
 

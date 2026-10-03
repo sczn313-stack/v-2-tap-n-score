@@ -28,6 +28,8 @@ This index identifies the governing records for implementation control, episode 
 12. [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](../history/snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md) — unchanged production-proven product floor.
 13. [Founder Shared-Link Activity Dashboard Production Proof](./FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md) — additive telemetry and live Baker non-regression proof.
 14. [Episode 64 Founder Authority — Printer, Shooter, and SCZN3](./EPISODE64_FOUNDER_AUTHORITY_PRINTER_SHOOTER_SCZN3_2026-10-03.md) — governs transparent SCZN3-derived Smart Target intelligence while preserving publisher truth, shooter ownership, provenance, and structural-grammar inheritance boundaries.
+15. [Episode 64 Founder Authority — SCZN3 X = 10 Ordered Grammar](./EPISODE64_FOUNDER_AUTHORITY_SCZN3_X10_ORDERED_GRAMMAR_2026-10-03.md) — automatically derives X=10 only when X is the superior scoring region above a governed 9/8/... sequence; explicit publisher/governing authority overrides.
+16. [Episode 64 Founder Authority — Activity-First RESULT/HISTORY Presentation](./EPISODE64_SHARED_RESULT_ACTIVITY_FIRST_PRESENTATION_2026-10-03.md) — preserve every region, show active regions and outcome groups first, and disclose inactive regions one level deeper without changing authority data.
 
 ## Current locked checkpoint
 

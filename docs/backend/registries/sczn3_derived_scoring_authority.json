@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "sczn3-derived-scoring-authority-v1",
+  "authorityId": "SCZN3_FOUNDER_X10_ORDERED_GRAMMAR_V1",
+  "status": "founder_approved",
+  "effectiveAt": "2026-10-03T20:30:00Z",
+  "source": "docs/governance/EPISODE64_FOUNDER_AUTHORITY_SCZN3_X10_ORDERED_GRAMMAR_2026-10-03.md",
+  "rules": [
+    {
+      "ruleId": "sczn3-derived-x10-superior-ordered-scoring-grammar-v1",
+      "symbol": "X",
+      "requiredRole": "superior_scoring_region",
+      "numericTail": {
+        "firstValue": 9,
+        "step": -1,
+        "minimumLength": 2
+      },
+      "derivedValue": 10,
+      "valueAuthority": "sczn3_derived",
+      "publisherAttribution": false,
+      "precedence": "explicit_publisher_governing_or_competition_authority_overrides",
+      "forbiddenTriggers": [
+        "text_match_only",
+        "target_name_only",
+        "ocr_only",
+        "decorative_x",
+        "aim_mark_x",
+        "non_numeric_x_count"
+      ]
+    }
+  ]
+}

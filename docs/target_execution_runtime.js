@@ -540,13 +540,14 @@
     if (!regions.length) return "";
     const vocabulary = naturalObjectVocabulary(result);
     return countingDetailsMarkup(regions, {
-      title: "Region details",
+      title: `${vocabulary.titlePlural} hit`,
       column: vocabulary.titleSingular,
       className: "contract-counting-details",
       dataAttribute: 'data-counting-details="true"',
       fallback: vocabulary.titleSingular,
       labeler: (item, index) => naturalObjectLabel(result, item.label || item.objectId, index + 1),
-      analysis: objectDistributionDetailMarkup(result)
+      analysis: objectDistributionDetailMarkup(result),
+      fullAnalysis: objectDistributionDetailMarkup(result, { includeInactive: true })
     });
   }
 
@@ -573,13 +574,15 @@
     const className = clean(options.className) || "contract-counting-details";
     const dataAttribute = clean(options.dataAttribute);
     const fallback = clean(options.fallback) || column;
-    const rows = items.map((item, index) => ({
+    const allRows = items.map((item, index) => ({
       label: typeof options.labeler === "function" ? options.labeler(item, index) : shooterFacingCountingLabel(item.label || item.objectId, fallback),
       count: Number(item.hitCount ?? item.observationCount ?? 0),
       misses: Number(item.missCount || 0)
     }));
-    const hasMisses = rows.some(row => row.misses > 0);
+    const rows = allRows.filter(row => row.count > 0 || row.misses > 0);
+    const hasMisses = allRows.some(row => row.misses > 0);
     const analysis = clean(options.analysis);
+    const fullAnalysis = clean(options.fullAnalysis);
     const table = (tableRows, rangeLabel = "") => `<table${rangeLabel ? ` aria-label="${escapeHtml(rangeLabel)}"` : ""}>${rangeLabel ? `<caption>${escapeHtml(rangeLabel)}</caption>` : ""}<thead><tr><th scope="col">${escapeHtml(column)}</th><th scope="col">Hits</th>${hasMisses ? '<th scope="col">Misses</th>' : ""}</tr></thead><tbody>${tableRows.map(row => `<tr><th scope="row">${escapeHtml(row.label)}</th><td>${escapeHtml(measuredNumber(row.count))}</td>${hasMisses ? `<td>${escapeHtml(measuredNumber(row.misses))}</td>` : ""}</tr>`).join("")}</tbody></table>`;
     const rangeLabel = tableRows => {
       const first = clean(tableRows[0] && tableRows[0].label);
@@ -588,7 +591,7 @@
       const lastNumbered = last.match(/^(.*?)(\d+)$/);
       return firstNumbered && lastNumbered && clean(firstNumbered[1]).toLowerCase() === clean(lastNumbered[1]).toLowerCase()
         ? `${clean(firstNumbered[1])} ${firstNumbered[2]}–${lastNumbered[2]}`
-        : `${first}–${last}`;
+        : "";
     };
     const body = rows.length > 8
       ? (() => {
@@ -596,8 +599,11 @@
           const columns = [rows.slice(0, splitAt), rows.slice(splitAt)];
           return `<div class="contract-counting-columns" data-counting-column-count="2">${columns.map(columnRows => table(columnRows, rangeLabel(columnRows))).join("")}</div>`;
         })()
-      : table(rows);
-    return `<details class="contract-numeric-region-results ${escapeHtml(className)}"${dataAttribute ? ` ${dataAttribute}` : ""}><summary data-disclosure-control="true"><span class="contract-distribution-title">${escapeHtml(title)}</span><span class="contract-disclosure-instruction contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">›</b></span><span class="contract-disclosure-instruction contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">›</b></span></summary><div>${body}${analysis}</div></details>`;
+      : (rows.length ? table(rows) : '<p class="contract-no-region-activity">No target-region activity.</p>');
+    const allRegions = allRows.length > rows.length
+      ? `<details class="contract-all-target-regions" data-all-target-regions="true"><summary data-disclosure-control="true"><span>All target regions</span><small>${escapeHtml(allRows.length)} preserved</small></summary><div>${table(allRows)}${fullAnalysis}</div></details>`
+      : "";
+    return `<details class="contract-numeric-region-results ${escapeHtml(className)}"${dataAttribute ? ` ${dataAttribute}` : ""}><summary data-disclosure-control="true"><span class="contract-distribution-title">${escapeHtml(title)}</span><span class="contract-disclosure-instruction contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">›</b></span><span class="contract-disclosure-instruction contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">›</b></span></summary><div>${body}${analysis}${allRegions}</div></details>`;
   }
 
   function cumulativeColorTotalsMarkup(result) {
@@ -895,8 +901,12 @@
       const completionPercentage = scorableObjectCount > 0
         ? measuredNumber(objectsHit / scorableObjectCount * 100)
         : "0";
-      const completionLabel = completion.label || `${vocabulary.singular.split(/\s+/).map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(" ")} Completion`;
-      return `<section class="contract-combined-score-rate contract-object-performance-truths${publisherHasScore ? " is-supplemental" : ""}" aria-label="Tap accuracy and ${escapeHtml(vocabulary.singular)} completion"><div><span>Tap Accuracy:</span><strong>${escapeHtml(hitRate.percentage)}%</strong><small>— ${escapeHtml(validHitCount)} of ${escapeHtml(governedShotCount)} taps landed on ${escapeHtml(vocabulary.plural)}</small></div><div><span>${escapeHtml(completionLabel)}:</span><strong>${escapeHtml(completionPercentage)}%</strong><small>— ${escapeHtml(objectsHit)} of ${escapeHtml(scorableObjectCount)} ${escapeHtml(vocabulary.plural)} ${escapeHtml(completion.verbPast)}</small></div>${comparison}</section>`;
+      const completionVerb = clean(completion.verbPast).toLowerCase() === "engaged" ? "hit" : completion.verbPast;
+      const declaredCompletionLabel = clean(completion.label);
+      const completionLabel = declaredCompletionLabel && !/\bengaged\b/i.test(declaredCompletionLabel)
+        ? declaredCompletionLabel
+        : `${vocabulary.titlePlural} Hit`;
+      return `<section class="contract-combined-score-rate contract-object-performance-truths${publisherHasScore ? " is-supplemental" : ""}" aria-label="Tap accuracy and ${escapeHtml(vocabulary.singular)} completion"><div><span>Tap Accuracy:</span><strong>${escapeHtml(hitRate.percentage)}%</strong><small>— ${escapeHtml(validHitCount)} of ${escapeHtml(governedShotCount)} taps landed on ${escapeHtml(vocabulary.plural)}</small></div><div><span>${escapeHtml(completionLabel)}:</span><strong>${escapeHtml(completionPercentage)}%</strong><small>— ${escapeHtml(objectsHit)} of ${escapeHtml(scorableObjectCount)} ${escapeHtml(vocabulary.plural)} ${escapeHtml(completionVerb)}</small></div>${comparison}</section>`;
     }
     const accuracyBasis = reportsTapAccuracy
       ? `<small>— ${escapeHtml(hitRate.validHitCount)} of ${escapeHtml(hitRate.governedShotCount)} taps landed in ${escapeHtml(hitAreaLabel)}</small>`
@@ -904,7 +914,7 @@
     return `<section class="contract-hit-rate${publisherHasScore ? " is-supplemental" : ""}" aria-label="${reportsTapAccuracy ? "Tap accuracy" : "SCZN3 measured hit rate"}"><span>${reportsTapAccuracy ? "Tap Accuracy" : "SCZN3 Hit Rate"}</span><strong>${escapeHtml(hitRate.percentage)}%</strong>${accuracyBasis}${comparison}</section>`;
   }
 
-  function objectDistributionDetailMarkup(result) {
+  function objectDistributionDetailMarkup(result, options = {}) {
     const treatment = result && result.smartTargetTreatment || {};
     const intelligence = Array.isArray(treatment.intelligence) ? treatment.intelligence : [];
     const sections = [];
@@ -925,9 +935,13 @@
     }
     const summaries = result && result.scoring && Array.isArray(result.scoring.summaryResults) ? result.scoring.summaryResults : [];
     summaries.forEach(summary => {
-      const groups = Array.isArray(summary.groups) ? summary.groups : [];
+      const allGroups = Array.isArray(summary.groups) ? summary.groups : [];
+      const groups = options.includeInactive ? allGroups : allGroups.filter(item => Number(item.observationCount || 0) > 0);
       if (!groups.length) return;
-      const items = groups.map(item => `${escapeHtml(item.label)} ${escapeHtml(measuredNumber(item.observationCount))} taps · ${escapeHtml(measuredNumber(item.objectsHit))}/${escapeHtml(measuredNumber(item.objectCount))} engaged`);
+      const items = groups.map(item => {
+        const count = Number(item.observationCount || 0);
+        return `${escapeHtml(item.label)} — ${escapeHtml(measuredNumber(count))} hit${count === 1 ? "" : "s"}`;
+      });
       sections.push(`<section class="contract-object-distribution" data-summary-dimension="${escapeHtml(summary.dimensionId)}" aria-label="${escapeHtml(summary.label)}"><strong>${escapeHtml(summary.label)}</strong><span>${items.join(" · ")}</span></section>`);
     });
     return sections.join("");

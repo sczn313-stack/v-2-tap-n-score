@@ -1,0 +1,836 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_gf_batterup-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_gf_batterup",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_0AD386161EE3CCC1FD64_V1",
+    "authorityId": "P_OS_BLOCKER_0AD386161EE3CCC1FD64_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/batter-up-target/"
+    },
+    "product": {
+      "id": "p-os-baker_16635",
+      "name": "Batter Up! Target",
+      "sku": "GF-BatterUp",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_gf_batterup-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
+        "regions": [
+          {
+            "regionId": "home_run_left",
+            "shape": "ellipse",
+            "cx": 0.08588957,
+            "cy": 0.10045962,
+            "radiusX": 0.04820333,
+            "radiusY": 0.03611293,
+            "priority": 800
+          },
+          {
+            "regionId": "home_run_right",
+            "shape": "ellipse",
+            "cx": 0.91235758,
+            "cy": 0.10045962,
+            "radiusX": 0.04820333,
+            "radiusY": 0.03611293,
+            "priority": 800
+          },
+          {
+            "regionId": "triple_left",
+            "shape": "ellipse",
+            "cx": 0.21297108,
+            "cy": 0.23374918,
+            "radiusX": 0.05872042,
+            "radiusY": 0.04333552,
+            "priority": 800
+          },
+          {
+            "regionId": "triple_center",
+            "shape": "ellipse",
+            "cx": 0.49956179,
+            "cy": 0.19829284,
+            "radiusX": 0.05696757,
+            "radiusY": 0.04399212,
+            "priority": 800
+          },
+          {
+            "regionId": "triple_right",
+            "shape": "ellipse",
+            "cx": 0.78439965,
+            "cy": 0.23374918,
+            "radiusX": 0.05872042,
+            "radiusY": 0.04333552,
+            "priority": 800
+          },
+          {
+            "regionId": "out_ball_left",
+            "shape": "ellipse",
+            "cx": 0.31200701,
+            "cy": 0.3328956,
+            "radiusX": 0.06397897,
+            "radiusY": 0.04924491,
+            "priority": 800
+          },
+          {
+            "regionId": "out_ball_right",
+            "shape": "ellipse",
+            "cx": 0.6739702,
+            "cy": 0.3328956,
+            "radiusX": 0.06397897,
+            "radiusY": 0.04924491,
+            "priority": 800
+          },
+          {
+            "regionId": "single_center",
+            "shape": "ellipse",
+            "cx": 0.49956179,
+            "cy": 0.36047275,
+            "radiusX": 0.06573181,
+            "radiusY": 0.05252791,
+            "priority": 800
+          },
+          {
+            "regionId": "double_left",
+            "shape": "ellipse",
+            "cx": 0.14548642,
+            "cy": 0.40052528,
+            "radiusX": 0.06748466,
+            "radiusY": 0.05187131,
+            "priority": 800
+          },
+          {
+            "regionId": "double_right",
+            "shape": "ellipse",
+            "cx": 0.84662577,
+            "cy": 0.40052528,
+            "radiusX": 0.06748466,
+            "radiusY": 0.05187131,
+            "priority": 800
+          },
+          {
+            "regionId": "single_lower_left",
+            "shape": "ellipse",
+            "cx": 0.30674847,
+            "cy": 0.49310571,
+            "radiusX": 0.06748466,
+            "radiusY": 0.05252791,
+            "priority": 800
+          },
+          {
+            "regionId": "single_lower_right",
+            "shape": "ellipse",
+            "cx": 0.68886941,
+            "cy": 0.49310571,
+            "radiusX": 0.06748466,
+            "radiusY": 0.05252791,
+            "priority": 800
+          },
+          {
+            "regionId": "base_on_balls",
+            "shape": "ellipse",
+            "cx": 0.49956179,
+            "cy": 0.8338805,
+            "radiusX": 0.07186678,
+            "radiusY": 0.0551543,
+            "priority": 800
+          },
+          {
+            "regionId": "first_base_safe_center",
+            "shape": "ellipse",
+            "cx": 0.77826468,
+            "cy": 0.67826658,
+            "radiusX": 0.03067485,
+            "radiusY": 0.02429416,
+            "priority": 950
+          },
+          {
+            "regionId": "first_base_out_ring",
+            "shape": "ellipse",
+            "cx": 0.77826468,
+            "cy": 0.67826658,
+            "radiusX": 0.07186678,
+            "radiusY": 0.0551543,
+            "priority": 700
+          },
+          {
+            "regionId": "second_base_safe_center",
+            "shape": "ellipse",
+            "cx": 0.49956179,
+            "cy": 0.51805647,
+            "radiusX": 0.03067485,
+            "radiusY": 0.02429416,
+            "priority": 950
+          },
+          {
+            "regionId": "second_base_out_ring",
+            "shape": "ellipse",
+            "cx": 0.49956179,
+            "cy": 0.51805647,
+            "radiusX": 0.07186678,
+            "radiusY": 0.0551543,
+            "priority": 700
+          },
+          {
+            "regionId": "third_base_safe_center",
+            "shape": "ellipse",
+            "cx": 0.2208589,
+            "cy": 0.67826658,
+            "radiusX": 0.03067485,
+            "radiusY": 0.02429416,
+            "priority": 950
+          },
+          {
+            "regionId": "third_base_out_ring",
+            "shape": "ellipse",
+            "cx": 0.2208589,
+            "cy": 0.67826658,
+            "radiusX": 0.07186678,
+            "radiusY": 0.0551543,
+            "priority": 700
+          },
+          {
+            "regionId": "pitcher_out",
+            "shape": "polygon",
+            "points": [
+              [
+                0.4312007,
+                0.65856861
+              ],
+              [
+                0.456617,
+                0.64412344
+              ],
+              [
+                0.48378615,
+                0.63361786
+              ],
+              [
+                0.51884312,
+                0.64281024
+              ],
+              [
+                0.54688869,
+                0.6664478
+              ],
+              [
+                0.55127082,
+                0.68942876
+              ],
+              [
+                0.53461876,
+                0.70256074
+              ],
+              [
+                0.54688869,
+                0.73604728
+              ],
+              [
+                0.52059597,
+                0.75049245
+              ],
+              [
+                0.49780894,
+                0.71569271
+              ],
+              [
+                0.47414549,
+                0.70912672
+              ],
+              [
+                0.46099912,
+                0.68942876
+              ],
+              [
+                0.43821209,
+                0.68417597
+              ]
+            ],
+            "priority": 850
+          },
+          {
+            "regionId": "infield_out",
+            "shape": "polygon",
+            "points": [
+              [
+                0.49956179,
+                0.48850952
+              ],
+              [
+                0.82383874,
+                0.66119501
+              ],
+              [
+                0.49956179,
+                0.85357846
+              ],
+              [
+                0.17528484,
+                0.66119501
+              ]
+            ],
+            "priority": 350
+          },
+          {
+            "regionId": "foul_ball_left",
+            "shape": "polygon",
+            "points": [
+              [
+                0.0,
+                0.52987525
+              ],
+              [
+                0.18229623,
+                0.65922521
+              ],
+              [
+                0.43295355,
+                0.84372948
+              ],
+              [
+                0.30148992,
+                0.91923835
+              ],
+              [
+                0.0,
+                0.87327643
+              ]
+            ],
+            "priority": 300
+          },
+          {
+            "regionId": "foul_ball_right",
+            "shape": "polygon",
+            "points": [
+              [
+                0.99912358,
+                0.52987525
+              ],
+              [
+                0.81682734,
+                0.65922521
+              ],
+              [
+                0.56617003,
+                0.84372948
+              ],
+              [
+                0.69763365,
+                0.91923835
+              ],
+              [
+                0.99912358,
+                0.87327643
+              ]
+            ],
+            "priority": 300
+          },
+          {
+            "regionId": "outfield_strike",
+            "shape": "polygon",
+            "points": [
+              [
+                0.0,
+                0.21667761
+              ],
+              [
+                0.99912358,
+                0.21667761
+              ],
+              [
+                0.99912358,
+                0.89954038
+              ],
+              [
+                0.0,
+                0.89954038
+              ]
+            ],
+            "priority": 100
+          }
+        ],
+        "ugoAuthority": "SCZN3_PUBLISHER_BATTER_UP_FACE_E1A7ED4757478EAF3B28_V1"
+      },
+      "digest": "cc7fe91118698ba6f5c6639e537e3063bb0eac8dd547985a1528b017929ab704"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_gf_batterup-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_a0abfc653ad4acce3d45.jpg",
+        "assetSha256": "e1a7ed4757478eaf3b281c0ecefea6c44af286e048f90127b9ae5d0a5be0e8f3",
+        "assetAlt": "Batter Up! Target, SKU GF-BatterUp",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "7ce8f2e7566fd57baf470bbd6291e0d62dbeaeb6891709204bb63123b951d88e"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_gf_batterup-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "named_regions",
+        "regionRules": {
+          "home_run_left": {
+            "label": "Home Run \u2014 Left",
+            "objectId": "home_run_left",
+            "objectLabel": "Home Run \u2014 Left",
+            "outcomeId": "home_run",
+            "outcomeLabel": "Home Run",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "home_run_right": {
+            "label": "Home Run \u2014 Right",
+            "objectId": "home_run_right",
+            "objectLabel": "Home Run \u2014 Right",
+            "outcomeId": "home_run",
+            "outcomeLabel": "Home Run",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "triple_left": {
+            "label": "Triple \u2014 Left",
+            "objectId": "triple_left",
+            "objectLabel": "Triple \u2014 Left",
+            "outcomeId": "triple",
+            "outcomeLabel": "Triple",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "triple_center": {
+            "label": "Triple \u2014 Center",
+            "objectId": "triple_center",
+            "objectLabel": "Triple \u2014 Center",
+            "outcomeId": "triple",
+            "outcomeLabel": "Triple",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "triple_right": {
+            "label": "Triple \u2014 Right",
+            "objectId": "triple_right",
+            "objectLabel": "Triple \u2014 Right",
+            "outcomeId": "triple",
+            "outcomeLabel": "Triple",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "out_ball_left": {
+            "label": "Out Ball \u2014 Left",
+            "objectId": "out_ball_left",
+            "objectLabel": "Out Ball \u2014 Left",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "out_ball_right": {
+            "label": "Out Ball \u2014 Right",
+            "objectId": "out_ball_right",
+            "objectLabel": "Out Ball \u2014 Right",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "single_center": {
+            "label": "Single \u2014 Center",
+            "objectId": "single_center",
+            "objectLabel": "Single \u2014 Center",
+            "outcomeId": "single",
+            "outcomeLabel": "Single",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "double_left": {
+            "label": "Double \u2014 Left",
+            "objectId": "double_left",
+            "objectLabel": "Double \u2014 Left",
+            "outcomeId": "double",
+            "outcomeLabel": "Double",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "double_right": {
+            "label": "Double \u2014 Right",
+            "objectId": "double_right",
+            "objectLabel": "Double \u2014 Right",
+            "outcomeId": "double",
+            "outcomeLabel": "Double",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "single_lower_left": {
+            "label": "Single \u2014 Lower Left",
+            "objectId": "single_lower_left",
+            "objectLabel": "Single \u2014 Lower Left",
+            "outcomeId": "single",
+            "outcomeLabel": "Single",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "single_lower_right": {
+            "label": "Single \u2014 Lower Right",
+            "objectId": "single_lower_right",
+            "objectLabel": "Single \u2014 Lower Right",
+            "outcomeId": "single",
+            "outcomeLabel": "Single",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "base_on_balls": {
+            "label": "Base on Balls",
+            "objectId": "base_on_balls",
+            "objectLabel": "Base on Balls",
+            "outcomeId": "base_on_balls",
+            "outcomeLabel": "Base on Balls",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "first_base_safe_center": {
+            "label": "1st Base \u2014 Safe Center",
+            "objectId": "first_base_safe_center",
+            "objectLabel": "1st Base \u2014 Safe Center",
+            "outcomeId": "safe_base_center",
+            "outcomeLabel": "Safe Base Center",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "first_base_out_ring": {
+            "label": "1st Base \u2014 Out Ring",
+            "objectId": "first_base_out_ring",
+            "objectLabel": "1st Base \u2014 Out Ring",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "second_base_safe_center": {
+            "label": "2nd Base \u2014 Safe Center",
+            "objectId": "second_base_safe_center",
+            "objectLabel": "2nd Base \u2014 Safe Center",
+            "outcomeId": "safe_base_center",
+            "outcomeLabel": "Safe Base Center",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "second_base_out_ring": {
+            "label": "2nd Base \u2014 Out Ring",
+            "objectId": "second_base_out_ring",
+            "objectLabel": "2nd Base \u2014 Out Ring",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "third_base_safe_center": {
+            "label": "3rd Base \u2014 Safe Center",
+            "objectId": "third_base_safe_center",
+            "objectLabel": "3rd Base \u2014 Safe Center",
+            "outcomeId": "safe_base_center",
+            "outcomeLabel": "Safe Base Center",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "third_base_out_ring": {
+            "label": "3rd Base \u2014 Out Ring",
+            "objectId": "third_base_out_ring",
+            "objectLabel": "3rd Base \u2014 Out Ring",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "pitcher_out": {
+            "label": "Pitcher \u2014 Out",
+            "objectId": "pitcher_out",
+            "objectLabel": "Pitcher \u2014 Out",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "infield_out": {
+            "label": "Infield \u2014 Out",
+            "objectId": "infield_out",
+            "objectLabel": "Infield \u2014 Out",
+            "outcomeId": "out",
+            "outcomeLabel": "Out",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "foul_ball_left": {
+            "label": "Foul Ball \u2014 Left",
+            "objectId": "foul_ball_left",
+            "objectLabel": "Foul Ball \u2014 Left",
+            "outcomeId": "foul_ball",
+            "outcomeLabel": "Foul Ball",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "foul_ball_right": {
+            "label": "Foul Ball \u2014 Right",
+            "objectId": "foul_ball_right",
+            "objectLabel": "Foul Ball \u2014 Right",
+            "outcomeId": "foul_ball",
+            "outcomeLabel": "Foul Ball",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          },
+          "outfield_strike": {
+            "label": "Outfield \u2014 Strike",
+            "objectId": "outfield_strike",
+            "objectLabel": "Outfield \u2014 Strike",
+            "outcomeId": "strike",
+            "outcomeLabel": "Strike",
+            "countsAsHit": true,
+            "valueAuthority": "publisher_outcome_non_numeric"
+          }
+        },
+        "outsideRule": {
+          "label": "Outside Governed Baseball Areas",
+          "countsAsHit": false
+        },
+        "classificationFootprintMode": "tap_center",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "classification_counts"
+        },
+        "summaryDimensions": [
+          {
+            "dimensionId": "baseball_outcome",
+            "label": "Baseball Outcome Distribution",
+            "groups": [
+              {
+                "groupId": "home_run",
+                "label": "Home Run",
+                "objectIds": [
+                  "home_run_left",
+                  "home_run_right"
+                ]
+              },
+              {
+                "groupId": "triple",
+                "label": "Triple",
+                "objectIds": [
+                  "triple_left",
+                  "triple_center",
+                  "triple_right"
+                ]
+              },
+              {
+                "groupId": "double",
+                "label": "Double",
+                "objectIds": [
+                  "double_left",
+                  "double_right"
+                ]
+              },
+              {
+                "groupId": "single",
+                "label": "Single",
+                "objectIds": [
+                  "single_center",
+                  "single_lower_left",
+                  "single_lower_right"
+                ]
+              },
+              {
+                "groupId": "base_on_balls",
+                "label": "Base on Balls",
+                "objectIds": [
+                  "base_on_balls"
+                ]
+              },
+              {
+                "groupId": "safe_base_center",
+                "label": "Safe Base Center",
+                "objectIds": [
+                  "first_base_safe_center",
+                  "second_base_safe_center",
+                  "third_base_safe_center"
+                ]
+              },
+              {
+                "groupId": "strike",
+                "label": "Strike",
+                "objectIds": [
+                  "outfield_strike"
+                ]
+              },
+              {
+                "groupId": "foul_ball",
+                "label": "Foul Ball",
+                "objectIds": [
+                  "foul_ball_left",
+                  "foul_ball_right"
+                ]
+              },
+              {
+                "groupId": "out",
+                "label": "Out",
+                "objectIds": [
+                  "out_ball_left",
+                  "out_ball_right",
+                  "first_base_out_ring",
+                  "second_base_out_ring",
+                  "third_base_out_ring",
+                  "pitcher_out",
+                  "infield_out"
+                ]
+              }
+            ]
+          }
+        ],
+        "publisherRuleAuthority": {
+          "source": "printed rules on publisher canonical face e1a7ed4757478eaf3b281c0ecefea6c44af286e048f90127b9ae5d0a5be0e8f3",
+          "rule": "Each observation resolves to the printed baseball play or governed field outcome. No numeric point score, shot quota, innings, runs, batting order, winner determination, or complete baseball simulation is authorized."
+        }
+      },
+      "digest": "76d8f32596685986930502aeaf0261c4fed83005b9bebf10d33feed3798ed412"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_gf_batterup-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "available"
+          }
+        },
+        "smartTargetTreatment": {
+          "grammar": [
+            "publisher_labeled_baseball_outcomes",
+            "nested_safe_center_and_out_ring",
+            "open_observation_count"
+          ],
+          "shooterFacingVocabulary": {
+            "singular": "outcome area",
+            "plural": "outcome areas"
+          },
+          "objectCompletionVerbPast": "engaged",
+          "objectCompletionLabel": "Outcome Areas Engaged",
+          "outsideLabel": "Outside Governed Baseball Areas",
+          "hitAreaLabel": "printed baseball outcomes and governed field areas",
+          "intelligence": [
+            "tap_accuracy",
+            "per_outcome_area_engagement",
+            "baseball_outcome_distribution",
+            "outside_observation_count",
+            "complete_observation_accounting",
+            "region_detail"
+          ],
+          "authorityScope": "publisher_visible_outcome_classification",
+          "publisherScoreStatus": "not_defined",
+          "fixedObservationCountStatus": "not_defined",
+          "inningsStatus": "not_defined",
+          "baserunnerAdvancementStatus": "not_defined",
+          "runsStatus": "not_defined",
+          "battingOrderStatus": "not_defined",
+          "winnerRuleStatus": "not_defined"
+        }
+      },
+      "digest": "e6fee76d9cb5ce6648a22393afcf69aa271c935a7f18b1556752e7e7fe522412"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "available"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "numeric_point_scoring",
+    "invented_fixed_shot_count",
+    "invented_innings_or_turn_sequence",
+    "invented_baserunner_advancement_or_run_total",
+    "invented_batting_order_or_winner_rule",
+    "invented_complete_baseball_game_procedure",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}
