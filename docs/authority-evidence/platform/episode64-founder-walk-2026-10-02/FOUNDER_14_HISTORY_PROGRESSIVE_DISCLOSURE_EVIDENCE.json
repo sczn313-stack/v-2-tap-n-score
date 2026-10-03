@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "sczn3-shared-history-presentation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 14,
+  "recordedAt": "2026-10-03T20:16:15Z",
+  "scope": "shared HISTORY presentation only",
+  "authorityOrScoringChanged": false,
+  "approvedPattern": {
+    "summaryCards": [
+      "SCORE",
+      "HIT RATE",
+      "POINTS PER TAP"
+    ],
+    "closedLabel": "DETAILS ⌄",
+    "openLabel": "DETAILS ⌃",
+    "exclusiveOpenDrawer": true,
+    "entireCardIsControl": true,
+    "keyboardInteraction": true,
+    "ariaExpanded": true,
+    "desktopObjectColumns": 2,
+    "mobile390ObjectColumns": 1
+  },
+  "preservationBoundary": "All scoring distributions, object details, zero-value regions, observation counts, session data, SEC evidence, and Vault evidence remain preserved beneath progressive disclosure.",
+  "proof": {
+    "focusedContract": {
+      "path": "docs/production/episode64_shared_history_progressive_disclosure_test.mjs",
+      "result": "PASS"
+    },
+    "exactLifecycle": {
+      "path": "docs/production/episode64_founder_14_balloons_lifecycle_browser_test.mjs",
+      "result": "PASS",
+      "sessionId": "sczn3-session-aca6429e-a560-4681-bd25-22c1817cf807",
+      "verified": [
+        "closed down chevron to open up chevron to closed down chevron",
+        "all three summary cards",
+        "exclusive drawer behavior",
+        "keyboard activation",
+        "desktop presentation",
+        "390px presentation",
+        "Vault exact reopen"
+      ]
+    },
+    "affectedPopulation": {
+      "result": "PASS",
+      "verified": [
+        "Founder #8 Bear shared HISTORY presentation",
+        "Founder #9 Hare shared HISTORY presentation",
+        "USM ready-batch presentation contract"
+      ]
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "sczn3-llm-pre-founder-review-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 14,
+  "reviewedAt": "2026-10-03T05:30:00Z",
+  "gateStatus": "LLM_SEMANTIC_CLEARED_IMPLEMENTATION_REQUIRED",
+  "readyForFounder": false,
+  "canonicalFaceId": "4e2fc902b18f2afe9a2776fe6882871b4e263a529abe3ba98cfa8243fbb7023d",
+  "canonicalFaceAuthority": "components.registration.definition.assetSha256",
+  "printer": "Baker Targets",
+  "canonicalTargetName": "Balloons Target",
+  "proposedFounderIdentity": "Balloons Target",
+  "proposedRuntimeId": "blocker_baker_targets_gf_balloons",
+  "skuProductIdentities": [
+    {
+      "runtimeId": "blocker_baker_targets_gf_balloons",
+      "productId": "p-os-baker_13505",
+      "sku": "GF-Balloons",
+      "productName": "Balloons Target",
+      "sourceIdentity": "https://bakertargets.com/product/balloons-target/"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_ladies_005",
+      "productId": "episode64-final-3301964f2a084da1227f",
+      "sku": "PK-Ladies",
+      "productName": "Ladies Pack — Balloons Target",
+      "sourceIdentity": "https://bakertargets.com/product/ladies-pack-24-targets-total/"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_partypack_002",
+      "productId": "episode64-final-2fe9ef7ce43cc403e125",
+      "sku": "PK-PartyPack",
+      "productName": "Party Pack — Balloons Target",
+      "sourceIdentity": "https://bakertargets.com/product/party-pack-30-targets-total/"
+    }
+  ],
+  "publisherSemanticAuthority": {
+    "canonicalRepresentation": "docs/authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_d5d7c4005703f928b67c.jpg",
+    "publisherProductPage": "https://bakertargets.com/product/balloons-target/",
+    "publisherProductFacts": [
+      "publisher product identity is Balloons Target, SKU GF-Balloons",
+      "publisher describes the target as a balloon-popping game and asks who can pop the most balloons",
+      "the exact face visibly contains eight distinct balloon objects",
+      "each balloon visibly contains nested X, 9, 8, 7, 6, and 5 target areas"
+    ],
+    "authorityStatus": "publisher_identity_face_and_balloon_objective_available; no publisher shot quota, shooting order, miss penalty, X numeric value, tie-break procedure, or complete game procedure found"
+  },
+  "faceSemantics": {
+    "faceFamily": "repeated_balloon_concentric_targets",
+    "universalGrammar": [
+      "repeated_target_objects",
+      "nested_concentric_regions",
+      "printed_numeric_regions",
+      "printed_x_region",
+      "object_engagement_and_completion",
+      "count_only_outside"
+    ],
+    "visibleStructure": {
+      "balloonCount": 8,
+      "perBalloonPrintedAreas": ["X", 9, 8, 7, 6, 5],
+      "numericRingValues": [9, 8, 7, 6, 5],
+      "xRegionCount": 8,
+      "numericRegionCount": 40,
+      "governedObjectCount": 8,
+      "patternDescription": "eight colored balloon objects, each carrying one X center and five nested numeric rings labeled 9 through 5"
+    },
+    "printedShotQuota": false,
+    "printedEngagementOrder": false,
+    "printedMissPenalty": false,
+    "printedNumericMeaningForX": false
+  },
+  "requiredRuntimeIntelligence": [
+    "map all eight balloon objects once at the canonical-face layer across all three identities",
+    "within each balloon, map the X center and the printed 9, 8, 7, 6, and 5 nested areas",
+    "award only the numeric values explicitly printed on the 9-through-5 regions",
+    "track X hits explicitly as X hits without silently assigning an invented numeric value",
+    "report per-balloon engagement, number of distinct balloons engaged/popped, overall balloon completion, ring/value distribution, X count, and complete observation accounting",
+    "preserve observations on unnumbered balloon material and outside all balloons truthfully as count-only categories rather than invented scores or penalties",
+    "preserve per-observation balloon and region assignments through RESULT, HISTORY, SEC, Vault, and exact reopen"
+  ],
+  "authorityBoundaries": {
+    "publisherBalloonObjective": "most_distinct_balloons_popped_or_engaged",
+    "publisherNumericValues": "9_8_7_6_5_defined_on_exact_face",
+    "publisherXNumericValue": "not_defined",
+    "publisherShotQuota": "not_defined",
+    "publisherEngagementOrder": "not_defined",
+    "publisherMissPenalty": "not_defined",
+    "publisherTieBreak": "not_defined",
+    "officialNumericTotalIncludingXAllowed": false,
+    "printedNumericSubtotalExcludingXAllowed": true,
+    "xCountAllowed": true,
+    "balloonCompletionAllowed": true,
+    "inventedSemantics": false,
+    "sczn3DerivedGeometryScope": "recognize and measure only the exact face's eight balloons and their visible X/9/8/7/6/5 structures; do not infer an unpublished X value, shot count, sequence, penalty, tie-break, or complete game procedure"
+  },
+  "currentRuntimeGap": {
+    "status": "implementation_required_before_founder",
+    "currentGeometry": "unstructured_evidence",
+    "currentScoring": "not_applicable",
+    "currentMaxObservations": 500,
+    "reason": "The evidence-floor runtime preserves taps but discards the exact face's eight balloon identities, their visible nested X/9/8/7/6/5 structure, and Baker's stated balloon-engagement objective."
+  },
+  "canonicalFaceGate": {
+    "founder13ApprovalRecorded": true,
+    "founder13CanonicalFaceId": "ee1dabee46df8a4eb458ec1ba2e3a67a2c45f99b5bafc98115c32496f9066e19",
+    "founder13CanonicalFaceClosedForWalk": true,
+    "founder14CanonicalFaceResolved": true,
+    "allFounder14FaceIdentitiesResolved": true,
+    "founder14PriorFounderOccurrence": false
+  },
+  "llmSemanticDecision": "CLEARED_FOR_BOUNDED_IMPLEMENTATION_AND_MECHANICAL_PREFLIGHT",
+  "founderAdvanceDecision": "BLOCKED_UNTIL_EIGHT_BALLOON_OBJECTS_AND_X_9_8_7_6_5_NESTED_GEOMETRY_COMPLETE_FULL_LIFECYCLE_PROOF",
+  "requiredPreFounderProof": [
+    "all three identities inherit one canonical-face treatment",
+    "all eight balloons and every X/9/8/7/6/5 nested area classify deterministically",
+    "X remains X-count intelligence and is not silently converted to an unsupported number",
+    "numeric 9-through-5 observations reconcile directly from printed values",
+    "per-balloon engagement/completion and distinct-balloon count derive from primary observations without duplicating taps",
+    "outside and unnumbered observations remain fully accounted for without invented penalty",
+    "no fixed shot count, sequence, X value, tie-break, or complete game procedure is introduced",
+    "the exact live Founder road preserves coordinates, balloon assignments, ring assignments, X count, numeric subtotal, and completion through HISTORY, Save SEC, Vault, and exact reopen",
+    "affected repeated-object, concentric-ring, numbered-region, and count-only populations regress cleanly"
+  ],
+  "stopCondition": "DO_NOT_PRESENT_FOUNDER_14_UNTIL_LLM_ISSUES_READY_FOR_FOUNDER"
+}

@@ -204,6 +204,13 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     mission = contract["components"]["mission"]["definition"]
     if len(observations) > int(mission.get("maxObservations", 500)):
         raise DeclarativeTargetScoreError("observation_limit_exceeded")
+    exact_observations = mission.get("exactObservations")
+    if exact_observations is not None and len(observations) != int(exact_observations):
+        raise DeclarativeTargetScoreError(
+            "observation_count_mismatch",
+            exactObservations=int(exact_observations),
+            receivedObservations=len(observations),
+        )
     scoring_data = contract["components"]["scoring"]["definition"]
     model = str(scoring_data.get("model") or "")
     if model not in MODEL_AGGREGATIONS:
@@ -230,6 +237,17 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         )
         if selected_scoring_mode is None:
             raise DeclarativeTargetScoreError("scoring_mode_not_authorized", receivedScoringMode=str(evidence.get("scoringMode") or ""), allowedScoringModes=choices)
+
+    elapsed_policy = mission.get("interaction", {}).get("elapsedTime")
+    elapsed_time_seconds = evidence.get("elapsedTimeSeconds")
+    if elapsed_time_seconds in (None, ""):
+        elapsed_time_seconds = None
+    elif not isinstance(elapsed_policy, Mapping):
+        raise DeclarativeTargetScoreError("elapsed_time_not_authorized")
+    elif not isinstance(elapsed_time_seconds, (int, float)) or isinstance(elapsed_time_seconds, bool) or not math.isfinite(float(elapsed_time_seconds)) or float(elapsed_time_seconds) <= 0:
+        raise DeclarativeTargetScoreError("elapsed_time_invalid")
+    else:
+        elapsed_time_seconds = round(float(elapsed_time_seconds), 2)
 
     def governed_value(region_id: str, rule: Mapping[str, Any]) -> Any:
         if selected_scoring_mode is None:
@@ -273,14 +291,23 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         governed_classifications, authority_gauge = _authority_scoring_gauge(boundary_policy, scoring_gauge_context, regions, observation_points, physical)
     for index, observation in enumerate(observations, start=1):
         x, y = observation_points[index - 1]
-        classified = governed_classifications[index - 1] if governed_classifications is not None else (classify(regions, x, y, id_key="regionId", shape_reason="geometry_shape_not_supported", error_type=DeclarativeTargetScoreError, footprint_radius_x=footprint_radius_x, footprint_radius_y=footprint_radius_y) if regions else {"classificationStatus": "unmapped", "entityId": None, "matchingEntityIds": [], "classificationMethod": "tap_center_point"})
+        classification_unavailable = model == "not_applicable"
+        classified = (
+            {"classificationStatus": "unavailable", "entityId": None, "matchingEntityIds": [], "classificationMethod": "not_applicable_no_governed_regions"}
+            if classification_unavailable
+            else governed_classifications[index - 1]
+            if governed_classifications is not None
+            else classify(regions, x, y, id_key="regionId", shape_reason="geometry_shape_not_supported", error_type=DeclarativeTargetScoreError, footprint_radius_x=footprint_radius_x, footprint_radius_y=footprint_radius_y)
+            if regions
+            else {"classificationStatus": "unmapped", "entityId": None, "matchingEntityIds": [], "classificationMethod": "tap_center_point"}
+        )
         if classified["classificationStatus"] == "ambiguous":
             raise DeclarativeTargetScoreError("geometry_classification_ambiguous")
-        region_id = classified["entityId"] or "outside"
-        rule = rules.get(region_id, scoring_data.get("outsideRule"))
+        region_id = None if classification_unavailable else classified["entityId"] or "outside"
+        rule = None if classification_unavailable else rules.get(region_id, scoring_data.get("outsideRule"))
         if model != "not_applicable" and not isinstance(rule, Mapping):
             raise DeclarativeTargetScoreError("scoring_rule_unavailable")
-        label = str((rule or {}).get("label") or region_id)
+        label = "Classification unavailable" if classification_unavailable else str((rule or {}).get("label") or region_id)
         value = governed_value(region_id, rule or {})
         declared_object_id = str(observation.get("declaredObjectId") or "").strip() or None
         classified_object_id = str((rule or {}).get("objectId") or "").strip() or None
@@ -314,8 +341,9 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             counted_value = value if scored_observation and counted_for_score else (float(counted_hit_policy["overflowValue"]) if scored_observation and counted_hit_policy else 0.0)
             total += counted_value
             group_totals[str(participant_id or observation.get("groupId") or "all")] += counted_value
-        counts[region_id] += 1
-        counts_as_hit = region_id != "outside" and (rule or {}).get("countsAsHit") is not False
+        if not classification_unavailable:
+            counts[region_id] += 1
+        counts_as_hit = None if classification_unavailable else region_id != "outside" and (rule or {}).get("countsAsHit") is not False
         record = {
             "observationId": f"observation-{index:03d}", "xNorm": x, "yNorm": y,
             "canonicalTargetCoordinate": canonical_points[index - 1],
@@ -358,11 +386,19 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "completion": "shooter_declared" if evidence.get("shooterDeclaredComplete") is True else "open",
         "observationCount": len(classifications),
         "regionCounts": dict(counts),
-        "outsideCount": counts.get("outside", 0),
+        "outsideCount": None if model == "not_applicable" else counts.get("outside", 0),
+        "classifiedObservationCount": 0 if model == "not_applicable" else len(classifications),
+        "unclassifiedObservationCount": len(classifications) if model == "not_applicable" else 0,
+        "classificationStatus": "unavailable" if model == "not_applicable" else "complete",
         "publisherRuleAuthority": deepcopy(scoring_data.get("publisherRuleAuthority")),
         "aggregation": deepcopy(scoring_data.get("aggregation")),
         "participantAggregation": deepcopy(participant_policy),
     }
+    if model != "not_applicable":
+        scoring["regionCatalog"] = [
+            {"regionId": str(region_id), "label": str(rule.get("label") or region_id)}
+            for region_id, rule in rules.items()
+        ]
     if counted_hit_policy:
         scoring["countedHitPolicy"] = deepcopy(counted_hit_policy)
     if selected_scoring_mode:
@@ -394,6 +430,42 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             region_results.append(region_result)
         x_count = sum(1 for item in classifications if rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is True and item.get("countedForScore") is not False)
         scoring.update({"total": total, "xCount": x_count, "groupTotals": dict(group_totals), "regionResults": region_results})
+        if scoring_data.get("xScoring") is not None:
+            scoring["xScoring"] = deepcopy(scoring_data["xScoring"])
+        if scoring_data.get("aggregateValueDistribution") is True:
+            numeric_distribution: Counter[float] = Counter()
+            x_numeric_count = 0
+            x_numeric_points = 0.0
+            for item in classifications:
+                if isinstance(item.get("value"), (int, float)) and not isinstance(item.get("value"), bool):
+                    rule = rules.get(str(item.get("regionId") or ""), {})
+                    if rule.get("countsAsX") is True:
+                        x_numeric_count += 1
+                        x_numeric_points += float(item["value"])
+                    else:
+                        numeric_distribution[float(item["value"])] += 1
+            scoring["valueDistribution"] = [
+                {
+                    "label": str(int(value)) if value.is_integer() else str(value),
+                    "value": int(value) if value.is_integer() else value,
+                    "hitCount": hit_count,
+                    "points": int(value * hit_count) if float(value * hit_count).is_integer() else value * hit_count,
+                    "countsAsX": False,
+                }
+                for value, hit_count in sorted(numeric_distribution.items(), reverse=True)
+            ]
+            if scoring_data.get("xScoring", {}).get("mode") == "separate_non_numeric":
+                scoring["valueDistribution"].insert(0, {
+                    "label": "X", "value": None, "hitCount": x_count, "points": None, "countsAsX": True,
+                })
+            elif scoring_data.get("xScoring", {}).get("mode") == "sczn3_derived_numeric":
+                scoring["valueDistribution"].insert(0, {
+                    "label": "X · SCZN3-derived 10", "value": scoring_data["xScoring"].get("value"),
+                    "hitCount": x_numeric_count,
+                    "points": int(x_numeric_points) if x_numeric_points.is_integer() else x_numeric_points,
+                    "countsAsX": True,
+                    "valueAuthority": "sczn3_derived",
+                })
         if scoring_data.get("objectScoreboard") is not None:
             scoring["objectScoreboard"] = deepcopy(scoring_data["objectScoreboard"])
     if object_hit_classification:
@@ -402,7 +474,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         for rule in rules.values():
             object_id = rule.get("objectId")
             object_rules.setdefault(object_id, rule.get("objectLabel") or rule.get("label"))
-            if numeric:
+            if numeric and isinstance(rule.get("value"), (int, float)) and not isinstance(rule.get("value"), bool):
                 object_max_values[object_id] = max(object_max_values.get(object_id, float("-inf")), float(rule["value"]))
         scoring["objectResults"] = [
             {
@@ -420,7 +492,11 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                 "hit": any(
                     str(item.get("objectId")) == str(object_id)
                     and item.get("countsAsHit") is True
-                    and (not numeric or float(item.get("value") or 0) > 0)
+                    and (
+                        not numeric
+                        or float(item.get("value") or 0) > 0
+                        or rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is True
+                    )
                     for item in classifications
                 ),
                 "hitCount": sum(
@@ -434,19 +510,63 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             }
             for object_id, label in object_rules.items()
         ]
+        summary_dimensions = scoring_data.get("summaryDimensions")
+        if isinstance(summary_dimensions, list):
+            scoring["summaryResults"] = []
+            for dimension in summary_dimensions:
+                group_results = []
+                for group in dimension["groups"]:
+                    members = {str(item) for item in group["objectIds"]}
+                    group_observations = [item for item in classifications if str(item.get("objectId") or "") in members]
+                    hit_objects = {
+                        str(item.get("objectId"))
+                        for item in group_observations
+                        if item.get("countsAsHit") is True
+                    }
+                    object_count = len(members)
+                    group_results.append({
+                        "groupId": str(group["groupId"]),
+                        "label": str(group["label"]),
+                        "objectIds": list(group["objectIds"]),
+                        "observationCount": len(group_observations),
+                        "objectsHit": len(hit_objects),
+                        "objectCount": object_count,
+                        "completionPercentage": round(len(hit_objects) / object_count * 100, 1) if object_count else 0.0,
+                    })
+                scoring["summaryResults"].append({
+                    "dimensionId": str(dimension["dimensionId"]),
+                    "label": str(dimension["label"]),
+                    "accountingRole": "derived_view_of_primary_observations",
+                    "groups": group_results,
+                })
         if numeric:
             outside_is_assignable = len(object_rules) == 1 or participant_policy is not None
             single_object_miss_count = counts.get("outside", 0) if len(object_rules) == 1 else None
             for object_result in scoring["objectResults"]:
                 object_id = object_result["objectId"]
                 assigned = [item for item in classifications if str(item.get("objectId")) == str(object_id)]
-                score = sum(float(item.get("countedValue", item["value"])) for item in assigned)
-                max_value = object_max_values[object_id]
+                scored_assigned = [
+                    item for item in assigned
+                    if isinstance(item.get("value"), (int, float)) and not isinstance(item.get("value"), bool)
+                ]
+                score = sum(float(item.get("countedValue", item["value"])) for item in scored_assigned)
+                max_value = object_max_values.get(object_id, 0.0)
                 object_cap = int(counted_hit_policy["maximumCountedHitsPerObject"]) if counted_hit_policy else None
                 counted_hit_count = sum(1 for item in assigned if item.get("countedForScore") is not False)
-                max_possible = (object_cap if object_cap is not None else len(assigned)) * max_value
-                ring_counts = Counter(str(int(item["value"])) if float(item["value"]).is_integer() else str(item["value"]) for item in assigned)
-                score_values = sorted({float(rule["value"]) for rule in rules.values() if str(rule.get("objectId")) == str(object_id)}, reverse=True)
+                max_possible = (object_cap if object_cap is not None else len(scored_assigned)) * max_value
+                ring_scored_assigned = [
+                    item for item in scored_assigned
+                    if rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is not True
+                ]
+                ring_counts = Counter(str(int(item["value"])) if float(item["value"]).is_integer() else str(item["value"]) for item in ring_scored_assigned)
+                score_values = sorted({
+                    float(rule["value"])
+                    for rule in rules.values()
+                    if str(rule.get("objectId")) == str(object_id)
+                    and isinstance(rule.get("value"), (int, float))
+                    and not isinstance(rule.get("value"), bool)
+                    and rule.get("countsAsX") is not True
+                }, reverse=True)
                 object_result.update({
                     "assignedTapCount": len(assigned),
                     "score": score,
@@ -458,14 +578,16 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                     "missCount": single_object_miss_count if single_object_miss_count is not None else (sum(1 for item in assigned if item.get("regionId") == "outside") if outside_is_assignable else None),
                     "missesDetermination": "determined_by_declared_object" if participant_policy else ("determined_single_object" if outside_is_assignable else "not_determinable_without_object_assignment"),
                 })
+                object_result["xCount"] = sum(
+                    1 for item in assigned
+                    if rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is True
+                )
                 if counted_hit_policy:
                     object_result.update({
                         "countedHitCount": counted_hit_count,
                         "uncountedHitCount": len(assigned) - counted_hit_count,
                         "maximumCountedHits": object_cap,
                     })
-                if scoring_data.get("objectScoreboard") is not None:
-                    object_result["xCount"] = sum(1 for item in assigned if rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is True)
         if participant_policy:
             by_object = {str(item["objectId"]): item for item in scoring["objectResults"]}
             scoring["participantResults"] = []
@@ -561,8 +683,8 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     elif model == "not_applicable":
         scoring["reason"] = str(scoring_data.get("reason") or "printer_defines_no_score")
 
-    governed_shots = len(classifications)
-    governed_hits = sum(1 for item in classifications if item.get("countsAsHit") is True)
+    governed_shots = 0 if model == "not_applicable" else len(classifications)
+    governed_hits = 0 if model == "not_applicable" else sum(1 for item in classifications if item.get("countsAsHit") is True)
     object_count = len(scoring.get("objectResults") or [])
     objects_hit = sum(1 for item in scoring.get("objectResults") or [] if item.get("hit") is True)
     object_counts = [int(item.get("observationCount") or 0) for item in scoring.get("objectResults") or []]
@@ -585,7 +707,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "status": "complete" if model != "not_applicable" and regions else "not_applicable",
         "metricAuthority": "sczn3_measured_supplemental",
         "doesNotReplacePublisherResult": True,
-        "hitRate": {
+        "hitRate": None if model == "not_applicable" else {
             "validHitCount": governed_hits,
             "governedShotCount": governed_shots,
             "percentage": round(governed_hits / governed_shots * 100, 1) if governed_shots else None,
@@ -625,6 +747,11 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             "labelCounts": {str(label_map.get(region_id) or region_id): count for region_id, count in overlay_counts.items()},
         }
 
+    smart_treatment = mission.get("smartTargetTreatment") if isinstance(mission.get("smartTargetTreatment"), Mapping) else {}
+    structural_classification_only = (
+        smart_treatment.get("authorityScope") == "sczn3_derived_visible_structure"
+        and smart_treatment.get("publisherScoreStatus") == "not_defined"
+    )
     result = {
         "ok": True, "status": "complete", "authoritySource": "backend-authoritative",
         "missionFamily": contract["missionFamily"], "resultPackageType": contract["resultPackageType"], "resultPackageVersion": contract["resultPackageVersion"],
@@ -636,6 +763,14 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "aimStructure": deepcopy(mission["interaction"]["aim"]),
         "shooterDeclaredAimPoint": _aim(evidence.get("shooterDeclaredAimPoint"), mission["interaction"]["aim"]["mode"]),
         "scoring": scoring,
+        "timing": {
+            "status": "recorded" if elapsed_time_seconds is not None else "not_entered",
+            "elapsedTimeSeconds": elapsed_time_seconds,
+            "source": elapsed_policy.get("source") if elapsed_time_seconds is not None and isinstance(elapsed_policy, Mapping) else None,
+            "required": False,
+            "officialHitFactorStatus": "withheld_without_course_scoring_method_stipulated_hits_and_penalties",
+            "grossPointsPerSecond": round(float(scoring.get("total", 0)) / elapsed_time_seconds, 4) if elapsed_time_seconds and isinstance(scoring.get("total"), (int, float)) else None,
+        } if isinstance(elapsed_policy, Mapping) else None,
         "sczn3Metrics": sczn3_metrics,
         "diagnosticOverlay": diagnostic_overlay,
         "ballisticGeometry": {
@@ -647,8 +782,18 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             "displayMarkerParticipatesInScoring": False,
             "authorityScoringGauge": deepcopy(authority_gauge),
         },
-        "reconciliation": {"status": "reconciled", "recordedObservationCount": len(classifications), "classifiedObservationCount": len(classifications), "countsMatch": sum(counts.values()) == len(classifications)},
-        "authorityTrace": {"targetExecutionContract": f"{contract['contractId']}@{contract['contractVersion']}", "classificationAuthority": "backend", "scoringAuthority": "printer-rules-through-target-data", "componentDigests": {name: component["digest"] for name, component in contract["components"].items()}},
+        "reconciliation": {
+            "status": "reconciled",
+            "recordedObservationCount": len(classifications),
+            "classifiedObservationCount": 0 if model == "not_applicable" else len(classifications),
+            "unclassifiedObservationCount": len(classifications) if model == "not_applicable" else 0,
+            "countsMatch": (
+                len(classifications) == len(observations)
+                if model == "not_applicable"
+                else sum(counts.values()) == len(classifications)
+            ),
+        },
+        "authorityTrace": {"targetExecutionContract": f"{contract['contractId']}@{contract['contractVersion']}", "classificationAuthority": "backend", "scoringAuthority": "sczn3-derived-structural-classification-no-publisher-score" if structural_classification_only else "printer-rules-through-target-data", "componentDigests": {name: component["digest"] for name, component in contract["components"].items()}},
     }
     result["resultHash"] = digest(canonical_json(result))
     return result
@@ -658,6 +803,20 @@ def validate_result(contract: Mapping[str, Any], result: Any) -> bool:
     scoring = result.get("scoring") if isinstance(result, Mapping) else None
     classifications = result.get("classifications") if isinstance(result, Mapping) else None
     reconciliation = result.get("reconciliation") if isinstance(result, Mapping) else None
+    elapsed_policy = contract.get("components", {}).get("mission", {}).get("definition", {}).get("interaction", {}).get("elapsedTime")
+    timing = result.get("timing") if isinstance(result, Mapping) else None
+    timing_valid = elapsed_policy is None and timing is None
+    if isinstance(elapsed_policy, Mapping) and isinstance(timing, Mapping):
+        elapsed = timing.get("elapsedTimeSeconds")
+        timing_valid = (
+            timing.get("status") == "not_entered" and elapsed is None and timing.get("grossPointsPerSecond") is None
+        ) or (
+            timing.get("status") == "recorded"
+            and isinstance(elapsed, (int, float)) and not isinstance(elapsed, bool) and elapsed > 0
+            and timing.get("source") == elapsed_policy.get("source")
+            and isinstance(timing.get("grossPointsPerSecond"), (int, float))
+        )
+        timing_valid = timing_valid and timing.get("officialHitFactorStatus") == "withheld_without_course_scoring_method_stipulated_hits_and_penalties"
     return bool(
         isinstance(result, Mapping) and result.get("ok") is True
         and result.get("authoritySource") == "backend-authoritative"
@@ -671,4 +830,5 @@ def validate_result(contract: Mapping[str, Any], result: Any) -> bool:
         and result.get("aimStructure") == contract["components"]["mission"]["definition"]["interaction"]["aim"]
         and isinstance(reconciliation, Mapping) and reconciliation.get("status") == "reconciled" and reconciliation.get("countsMatch") is True
         and result.get("imageEvidence", {}).get("backendHashVerified") is True
+        and timing_valid
     )

@@ -1,0 +1,600 @@
+{
+  "schemaVersion": "sczn3-founder-walk-ledger-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "walkSize": 20,
+  "census": {
+    "source": "authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+    "sheet": "THE 13 — 1993 Master",
+    "family": "1. Mona Lisa",
+    "total": 400,
+    "governedTargetCount": 328,
+    "unresolvedRuntimeCount": 72,
+    "orderKey": "Master # ascending",
+    "sha256": "f63c9d35eb19f17b99139fa437231f6bbb5ae3401a5872dc1ad24e3f7ded3e11"
+  },
+  "sequencePolicy": "retain reviewed Founder slots, then Master # ascending; first governed registered contract per census product-ID order and runtime ID; exclude reviewed runtime IDs",
+  "entries": [
+    {
+      "founderNumber": 1,
+      "censusOrder": 18,
+      "targetIdentity": "Billiard Ball Color Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-BB-C-Bulk, GF-BB-C",
+      "runtimeId": "baker_gf_bb_c",
+      "decision": "APPROVED",
+      "repairs": [
+        "Shared Region Details changed to two deterministic columns: Ball 1–8 and Ball 9–15, with Strongest, Weakest, and Evenness removed."
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "repairs": "Excessive Region Details scrolling; requested shared two-column presentation.",
+          "recordedAt": "2026-10-02T00:00:00-04:00"
+        },
+        {
+          "decision": "APPROVED",
+          "repairs": "Founder accepted the repaired Ball 1–15 / Hits accounting after removal of Strongest, Weakest, and Evenness.",
+          "recordedAt": "2026-10-02T00:01:00-04:00"
+        }
+      ],
+      "decidedAt": "2026-10-02T00:01:00-04:00",
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "founder-1-accepted-before-ledger",
+        "completedAt": "2026-10-02T00:01:00-04:00"
+      }
+    },
+    {
+      "founderNumber": 2,
+      "censusOrder": 152,
+      "targetIdentity": "EZ Aim® FUN Shootin' Eye Test Paper Shooting Target, 24\" x 19,\" 4-Pack, Multi",
+      "printer": "EZ Aim / Allen Company",
+      "skuOrProductId": "15787",
+      "runtimeId": "ez_aim_allen_15787_shootin_eye_test",
+      "decision": "APPROVED",
+      "repairs": [
+        "Separated Tap Accuracy from Circle Completion and made SAVE SEC retries idempotent across the immutable preservation boundary."
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "repairs": "Result language conflated tap accuracy with circle completion; SAVE SEC exposed AssertionError.",
+          "recordedAt": "2026-10-02T00:02:00-04:00"
+        },
+        {
+          "decision": "APPROVED",
+          "repairs": "Founder advanced the scoreboard to 2 APPROVED / 20 after the shared presentation and lifecycle repair.",
+          "recordedAt": "2026-10-02T00:03:00-04:00"
+        }
+      ],
+      "decidedAt": "2026-10-02T00:03:00-04:00",
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "founder-2-accepted-before-ledger",
+        "completedAt": "2026-10-02T00:03:00-04:00"
+      }
+    },
+    {
+      "founderNumber": 3,
+      "censusOrder": 1,
+      "targetIdentity": "250th Anniversary Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-250Anniversary-Bulk, GF-250Anniversary",
+      "runtimeId": "blocker_baker_targets_gf_250anniversary",
+      "decision": "APPROVED",
+      "repairs": [
+        "Add bullseye-level intelligence: per-bullseye hits, outside-bullseye taps, and completion across all visible bullseyes.",
+        "Bound the 13 visible bullseyes as SCZN3-derived aim areas with tap accuracy, outside-bullseye count, bullseye completion, and deterministic per-bull counts; no publisher score or sequence inferred."
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "repairs": "Lifecycle accepted with 20 taps preserved through Vault exact reopen; result remained evidence-only and discarded the target's visible multi-bull structure.",
+          "recordedAt": "2026-10-02T20:30:50.110293+00:00"
+        },
+        {
+          "decision": "HOLD",
+          "recordedAt": "2026-10-02T20:31:23.042918+00:00"
+        },
+        {
+          "decision": "HOLD",
+          "recordedAt": "2026-10-02T20:31:23.726975+00:00"
+        },
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-02T20:37:46.923113+00:00"
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-cdbaa9e3-d320-474c-8911-4cc6bf0ff645",
+        "completedAt": "2026-10-02T20:37:41.599982+00:00"
+      },
+      "decidedAt": "2026-10-02T20:37:46.923113+00:00",
+      "lifecycleHistory": [
+        {
+          "status": "complete",
+          "sessionId": "sczn3-session-f915f0e0-ca9d-424a-a8fd-0cb0f532e38c",
+          "completedAt": "2026-10-02T20:30:37.005456+00:00",
+          "supersededAt": "2026-10-02T20:33:06.522606+00:00",
+          "supersededByRepair": "Bound the 13 visible bullseyes as SCZN3-derived aim areas with tap accuracy, outside-bullseye count, bullseye completion, and deterministic per-bull counts; no publisher score or sequence inferred."
+        }
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Bound the 13 visible bullseyes as SCZN3-derived aim areas with tap accuracy, outside-bullseye count, bullseye completion, and deterministic per-bull counts; no publisher score or sequence inferred.",
+          "recordedAt": "2026-10-02T20:33:06.522606+00:00"
+        }
+      ]
+    },
+    {
+      "founderNumber": 4,
+      "censusOrder": 2,
+      "targetIdentity": "4th of July Special Pack - 30 Targets PLUS One Glossy Poster",
+      "printer": "Baker Targets",
+      "skuOrProductId": "SPEC-4thofJulyPack",
+      "runtimeId": "final_collection_baker_targets_spec_4thofjulypack_001",
+      "decision": "REMOVE",
+      "repairs": [],
+      "repairHistory": [],
+      "decisionHistory": [
+        {
+          "decision": "REMOVE",
+          "recordedAt": "2026-10-02T22:07:39.598980+00:00"
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-6b58277e-0138-471f-9c11-bdddb406e5f1",
+        "completedAt": "2026-10-02T22:07:35.048819+00:00"
+      },
+      "decidedAt": "2026-10-02T22:07:39.598980+00:00"
+    },
+    {
+      "founderNumber": 5,
+      "censusOrder": 3,
+      "targetIdentity": "4th of July Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-4thofJuly-Bulk, GF-4thofJuly",
+      "runtimeId": "blocker_baker_targets_gf_4thofjuly",
+      "decision": "APPROVED",
+      "repairs": [
+        "Lifecycle accepted with 15 observations preserved through Vault exact reopen; repair Smart Target intelligence by classifying every tap into one SCZN3-derived concentric ring/aim area or Outside Bullseye, reporting Hit Taps / Outside Bullseye / Total Taps, Tap Accuracy, ring distribution, and shared Region Details without inventing publisher scoring.",
+        "Replaced the evidence-only floor with seven SCZN3-derived visible concentric ring/aim areas; every tap now resolves to one area or Outside Bullseye. Shared Mona RESULT and Region Details now report Hit Taps / Outside Bullseye / Total Taps, Tap Accuracy, and complete per-ring counts (including zero-count rings), with no point values, official score, publisher rule, or physical dimension inferred. The reusable data-driven path applies to every target declaring the same concentric-ring treatment. Automated full lifecycle passed with the Founder exact 15 observations; Founder road retest remains required.",
+        "Founder accepted the repaired Smart Target road: 20 total taps, 13 bullseye hits, 7 Outside Bullseye, 65% Tap Accuracy, Region Details/ring intelligence preserved, and SAVE SEC → VAULT → EXACT REOPEN confirmed."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Replaced the evidence-only floor with seven SCZN3-derived visible concentric ring/aim areas; every tap now resolves to one area or Outside Bullseye. Shared Mona RESULT and Region Details now report Hit Taps / Outside Bullseye / Total Taps, Tap Accuracy, and complete per-ring counts (including zero-count rings), with no point values, official score, publisher rule, or physical dimension inferred. The reusable data-driven path applies to every target declaring the same concentric-ring treatment. Automated full lifecycle passed with the Founder exact 15 observations; Founder road retest remains required.",
+          "recordedAt": "2026-10-02T22:27:50.589139+00:00"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "recordedAt": "2026-10-02T22:18:10.635419+00:00",
+          "repairs": "Lifecycle accepted with 15 observations preserved through Vault exact reopen; repair Smart Target intelligence by classifying every tap into one SCZN3-derived concentric ring/aim area or Outside Bullseye, reporting Hit Taps / Outside Bullseye / Total Taps, Tap Accuracy, ring distribution, and shared Region Details without inventing publisher scoring."
+        },
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-02T22:40:27.124312+00:00",
+          "repairs": "Founder accepted the repaired Smart Target road: 20 total taps, 13 bullseye hits, 7 Outside Bullseye, 65% Tap Accuracy, Region Details/ring intelligence preserved, and SAVE SEC → VAULT → EXACT REOPEN confirmed."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-f67b5ddc-c288-4520-b454-32758be4a51f",
+        "completedAt": "2026-10-02T22:40:27.117964+00:00"
+      },
+      "decidedAt": "2026-10-02T22:40:27.124312+00:00",
+      "lifecycleHistory": [
+        {
+          "status": "complete",
+          "sessionId": "sczn3-session-7589da30-3a43-43a8-b846-c3c6dbc9f707",
+          "completedAt": "2026-10-02T22:18:10.626732+00:00",
+          "supersededAt": "2026-10-02T22:27:50.589139+00:00",
+          "supersededByRepair": "Replaced the evidence-only floor with seven SCZN3-derived visible concentric ring/aim areas; every tap now resolves to one area or Outside Bullseye. Shared Mona RESULT and Region Details now report Hit Taps / Outside Bullseye / Total Taps, Tap Accuracy, and complete per-ring counts (including zero-count rings), with no point values, official score, publisher rule, or physical dimension inferred. The reusable data-driven path applies to every target declaring the same concentric-ring treatment. Automated full lifecycle passed with the Founder exact 15 observations; Founder road retest remains required."
+        }
+      ]
+    },
+    {
+      "founderNumber": 6,
+      "censusOrder": 4,
+      "targetIdentity": "Alien Game Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-Alien-Bulk, GF-Alien",
+      "runtimeId": "blocker_baker_targets_gf_alien",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 2bc7e86234b634720f86198b5e870b4120d5efba33247ffa33a78797bc204ce1; canonical face closed for this walk."
+      ],
+      "repairHistory": [],
+      "decisionHistory": [
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-02T23:35:40.477563+00:00",
+          "repairs": "Founder approved canonical face 2bc7e86234b634720f86198b5e870b4120d5efba33247ffa33a78797bc204ce1; canonical face closed for this walk."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-e323d6f9-fd45-4031-9d5f-d47bccbb7653",
+        "completedAt": "2026-10-02T22:50:53.760046+00:00"
+      },
+      "decidedAt": "2026-10-02T23:35:40.477563+00:00"
+    },
+    {
+      "founderNumber": 7,
+      "censusOrder": 6,
+      "targetIdentity": "Arcade Game Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-Arc-Bulk, GF-Arc",
+      "runtimeId": "blocker_baker_targets_gf_arc",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 06f964bbb45cb70fc1b08a3fa389470eef0e139d7f4c76a751fe198dffc004e1 after the exact live road preserved 13 observations, score 325, 53.8% hit rate, SEC, Vault Session #002, and exact reopen.",
+        "Shared governed observation-limit machinery now accepts observations only through 13/13, prevents observation #14 at shot entry, and makes SHOW RESULTS the next action; backend observation_limit_exceeded remains a defensive integrity guard."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Moved fixed-count enforcement into shared shot-entry admission and exercised the exact live Founder control path after direct backend lifecycle proof failed to expose the UI blocker.",
+          "recordedAt": "2026-10-03T00:33:59Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "recordedAt": "2026-10-03T00:33:58Z",
+          "repairs": "Exact Founder road could not execute SHOW RESULTS; shared UI admitted result attempts before the backend-authored exact 13-shot requirement was satisfied."
+        },
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T00:33:59Z",
+          "repairs": "Founder accepted 13 taps -> score 325 -> 53.8% hit rate -> SEC -> Vault Session #002 -> exact reopen, including the shared governed observation-limit repair."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "Session #002",
+        "completedAt": "2026-10-03T00:33:59Z",
+        "observations": 13,
+        "targetScore": 325,
+        "hitRatePercent": 53.8,
+        "secPreserved": true,
+        "exactReopen": true
+      },
+      "decidedAt": "2026-10-03T00:33:59Z",
+      "canonicalFaceId": "06f964bbb45cb70fc1b08a3fa389470eef0e139d7f4c76a751fe198dffc004e1",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_7_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 8,
+      "censusOrder": 7,
+      "targetIdentity": "Bad Animals/Nutty Mug Combo Deal — Bear Encounter Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "PK-BadMugCombo",
+      "runtimeId": "final_collection_baker_targets_pk_badmugcombo_001",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 1d22477e50be4908e1f9c8b6c542c581c238f51ed661a0fa90a018e5c44c2ca2 across GF-Bear, PK-BadAnimals, and PK-BadMugCombo after the exact live road preserved 11 observations, score 56, 10 numbered-region hits, one outside count-only observation, SEC, Vault, and exact reopen.",
+        "Shared HISTORY machinery now preserves authority-defined count-only outside observations as Outside Scoring Area — count only instead of translating them to Missed or assigning zero points."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Corrected shared preserved-progression HISTORY presentation so a null-valued outside classification remains count only through saved and reopened sessions.",
+          "recordedAt": "2026-10-03T01:05:14Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T01:05:14Z",
+          "repairs": "Founder accepted the shared canonical-face scoring treatment and exact live road for all three Bear Encounter identities, including the universal HISTORY count-only repair."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-a426269d-db56-4c57-9d0e-bd350fe5b1f9",
+        "completedAt": "2026-10-03T01:05:14Z",
+        "observations": 11,
+        "numberedRegionHits": 10,
+        "outsideCountOnly": 1,
+        "targetScore": 56,
+        "hitRatePercent": 90.9,
+        "secPreserved": true,
+        "exactReopen": true
+      },
+      "decidedAt": "2026-10-03T01:05:14Z",
+      "canonicalFaceId": "1d22477e50be4908e1f9c8b6c542c581c238f51ed661a0fa90a018e5c44c2ca2",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_8_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 9,
+      "censusOrder": 8,
+      "targetIdentity": "Bad \u201cHare\u201d Day Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-Hare-Bulk, GF-Hare",
+      "runtimeId": "blocker_baker_targets_gf_hare",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face b655ac2004d55845bb7ebccde9b786070d663432292bbd10f2cd12a9a7c947b7 across GF-Hare, PK-BadAnimals, and PK-BadMugCombo after Founder evidence preserved 18 observations, score 42, 8 numbered-region hits, 10 outside count-only observations, SEC, and Vault Session #001.",
+        "The shared numbered-region scoring inheritance preserves every publisher-printed value and accounts for all non-valued observations as count only without inventing penalties or game rules."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Bound the eight printed 8/6/4/2 regions once at the canonical-face layer and inherited the Founder #8 count-only HISTORY semantics for the unnumbered camera/firearm bullseye and all other non-valued areas.",
+          "recordedAt": "2026-10-03T01:27:03Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T01:27:03Z",
+          "repairs": "Founder accepted Bad Hare Day with flying colors: score 42, 8 hit taps, 10 outside scoring area, 18 total taps, and the same result preserved in Vault Session #001."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "Session #001",
+        "completedAt": "2026-10-03T01:27:03Z",
+        "observations": 18,
+        "numberedRegionHits": 8,
+        "outsideCountOnly": 10,
+        "targetScore": 42,
+        "secPreserved": true,
+        "vaultPreserved": true
+      },
+      "decidedAt": "2026-10-03T01:27:03Z",
+      "canonicalFaceId": "b655ac2004d55845bb7ebccde9b786070d663432292bbd10f2cd12a9a7c947b7",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_9_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 10,
+      "censusOrder": 9,
+      "targetIdentity": "BakerGlo Arcade High-Visibility Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "BakerGlo_Arcade-Bulk, BakerGlo_Arcade",
+      "runtimeId": "blocker_baker_targets_bakerglo_arcade",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 1900baa5c588ac263830addfbd2ccb833d8776333f1b71ad7f424e4af3a043b6 across BakerGlo_Arcade, PK-BakerGlo1, and PK-BakerGlo3 with inherited Founder #7 Arcade rules on exact BakerGlo geometry.",
+        "The final reconciliation proves object/bullseye completion is distinct from scoring-tier performance: 13/13 governed objects can include 50-point outer-ring hits rather than thirteen 100-point red-center hits."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Inherited the shared exact 13-shot 100/50/25/-25 Arcade intelligence, mapped the exact BakerGlo face, and preserved the frontend 13/13 observation gate plus per-object drill-down.",
+          "recordedAt": "2026-10-03T02:23:20Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "recordedAt": "2026-10-03T02:11:07Z",
+          "repairs": "Founder required exact per-tap reconciliation of live scores 1200 and 1125 before approval."
+        },
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T02:23:20Z",
+          "repairs": "Founder accepted the traced scores, object completion, tiered scoring, tappable object drill-down, exact 13-shot control, and one-to-one observation authority."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessions": [
+          "sczn3-session-f4c33de3-6a5e-41f4-b13e-c90d44e6136d",
+          "sczn3-session-19cc43f9-9e38-4436-af15-d67ab99377ed"
+        ],
+        "completedAt": "2026-10-03T02:23:20Z",
+        "observationsPerRun": 13,
+        "scores": [1200, 1125],
+        "scoreReconciliationEvidence": "FOUNDER_10_FINAL_SCORE_RECONCILIATION.json",
+        "secPreserved": true,
+        "exactReopen": true
+      },
+      "decidedAt": "2026-10-03T02:23:20Z",
+      "canonicalFaceId": "1900baa5c588ac263830addfbd2ccb833d8776333f1b71ad7f424e4af3a043b6",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_10_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 11,
+      "censusOrder": 10,
+      "targetIdentity": "BakerGlo Martian Militia High-Visibility Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "BakerGlo_MartianMilitia-Bulk, BakerGlo_MartianMilitia",
+      "runtimeId": "blocker_baker_targets_bakerglo_martianmilitia",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 2cdca8c029e04f8fdd2ea7187af0fa0227f5d3456e45c192bf436049d7fc3b8d across BakerGlo_MartianMilitia, PK-BakerGlo1, and PK-BakerGlo3 after the exact live road preserved 28 observations, 27 aim-area hits, one outside count-only observation, 15/15 aim-area completion, SEC, Vault, and exact reopen.",
+        "The approved non-numeric Smart Target treatment preserves bullseye center/ring distribution, meaningful Martian feature engagement, complete observation accounting, and the authority boundary against invented score, shot count, sequence, maximum, penalty, or winner rule."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Bound six standalone bullseyes and nine nested Martian feature areas once at the canonical-face layer, inheriting shared multi-aim and count-only intelligence without inventing a publisher game.",
+          "recordedAt": "2026-10-03T02:57:15Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T02:57:15Z",
+          "repairs": "Founder accepted Martian Militia as wonderful and specifically approved its non-numeric Smart Target intelligence: bullseye distribution, Martian aim-area engagement/completion, complete observation accounting, and no invented game semantics."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-53665495-d54f-46c5-924b-9cb27756eb57",
+        "completedAt": "2026-10-03T02:57:15Z",
+        "observations": 28,
+        "aimAreaHits": 27,
+        "outsideCountOnly": 1,
+        "aimAreaCompletion": "15 of 15",
+        "numericScoreProduced": false,
+        "secPreserved": true,
+        "vaultPreserved": true,
+        "exactReopen": true
+      },
+      "decidedAt": "2026-10-03T02:57:15Z",
+      "canonicalFaceId": "2cdca8c029e04f8fdd2ea7187af0fa0227f5d3456e45c192bf436049d7fc3b8d",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_11_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 12,
+      "censusOrder": 11,
+      "targetIdentity": "BakerGlo Three Shooter High-Visibility Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "BakerGlo_3SH, PK-BakerGlo1, PK-BakerGlo3",
+      "runtimeId": "final_collection_baker_targets_pk_bakerglo3_001",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 46b44b52da01052a0136495c8bce00892226efcb02793768c0b22a560bd79a29 across BakerGlo_3SH, PK-BakerGlo1, and PK-BakerGlo3 after the exact live road preserved all fifteen orange aim areas, one outside count-only observation, SEC, Vault, and exact reopen.",
+        "The approved non-numeric Smart Target treatment preserves per-circle engagement, three-lane distribution and completion, five relative size-tier distributions, complete observation accounting, and the authority boundary against invented score, shot count, sequence, winner rule, KYL procedure, or physical dimensions inferred from pixels."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Bound three printed lanes and five progressively smaller aim areas per lane once at the canonical-face layer, inheriting shared multi-aim and count-only intelligence with generic data-driven lane and size-tier summaries.",
+          "recordedAt": "2026-10-03T04:15:00Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T04:15:00Z",
+          "repairs": "Founder approved the 3 lanes x 5 size tiers = 15 aim areas treatment, including per-circle, per-lane, per-tier intelligence and complete observation accounting."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "sessionId": "sczn3-session-77045ed9-0b93-4062-975c-ee0d74100a04",
+        "completedAt": "2026-10-03T04:15:00Z",
+        "observations": 16,
+        "aimAreaHits": 15,
+        "outsideCountOnly": 1,
+        "aimAreaCompletion": "15 of 15",
+        "laneCompletion": ["5 of 5", "5 of 5", "5 of 5"],
+        "sizeTierCompletion": ["3 of 3", "3 of 3", "3 of 3", "3 of 3", "3 of 3"],
+        "numericScoreProduced": false,
+        "secPreserved": true,
+        "vaultPreserved": true,
+        "exactReopen": true
+      },
+      "decidedAt": "2026-10-03T04:15:00Z",
+      "canonicalFaceId": "46b44b52da01052a0136495c8bce00892226efcb02793768c0b22a560bd79a29",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_12_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 13,
+      "censusOrder": 12,
+      "targetIdentity": "BakerGlo Pads Vertigo 11 x 17",
+      "printer": "Baker Targets",
+      "skuOrProductId": "BakerGlo Pads_Vertigo, PK-BakerGlo Fun",
+      "runtimeId": "final_collection_baker_targets_pk_bakerglo_fun_001",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face ee1dabee46df8a4eb458ec1ba2e3a67a2c45f99b5bafc98115c32496f9066e19 across BakerGlo Pads_Vertigo and PK-BakerGlo Fun after the corrected exact live road preserved eight scoring observations, score 205, zero outside observations, SEC, Vault, and exact reopen.",
+        "The live HOLD proved the shared numbered-region scorer was correct while canonical geometry was incomplete; preserved Session #002 identified two missing intermediate pads and one 25-point observation incorrectly absorbed by a 5-point arm. Only canonical-face geometry changed."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Mapped the printed 100, 50, 25, 10, and four 5-point areas once at the canonical-face layer using inherited numbered-region scoring.",
+          "recordedAt": "2026-10-03T05:00:00Z"
+        },
+        {
+          "repairs": "Founder HOLD evidence corrected the 50-, 25-, 10-, and lower-left 5-point polygon boundaries without changing the shared scoring engine.",
+          "recordedAt": "2026-10-03T05:30:00Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "HOLD",
+          "recordedAt": "2026-10-03T05:15:00Z",
+          "repairs": "Founder live Session #002 returned 125 points, 6 scoring hits, and 2 outside classifications from eight intended printed-region taps."
+        },
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T05:30:00Z",
+          "repairs": "Founder accepted the corrected canonical geometry and verified 100 + 50 + 25 + 10 + 5 + 5 + 5 + 5 = 205 with no shared scoring-engine change."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "heldSessionId": "sczn3-session-0396e3f5-049b-4732-b380-78055594b131",
+        "proofSessionId": "sczn3-session-ad814262-4a3f-4d87-8a48-080609182720",
+        "completedAt": "2026-10-03T05:30:00Z",
+        "observations": 8,
+        "numberedRegionHits": 8,
+        "outsideCountOnly": 0,
+        "targetScore": 205,
+        "scoreArithmetic": "100 + 50 + 25 + 10 + 5 + 5 + 5 + 5 = 205",
+        "secPreserved": true,
+        "vaultPreserved": true,
+        "exactReopen": true
+      },
+      "decidedAt": "2026-10-03T05:30:00Z",
+      "canonicalFaceId": "ee1dabee46df8a4eb458ec1ba2e3a67a2c45f99b5bafc98115c32496f9066e19",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_13_FOUNDER_APPROVAL.json"
+    },
+    {
+      "founderNumber": 14,
+      "censusOrder": 14,
+      "targetIdentity": "Balloons Target",
+      "printer": "Baker Targets",
+      "skuOrProductId": "GF-Balloons, PK-Ladies, PK-PartyPack",
+      "runtimeId": "blocker_baker_targets_gf_balloons",
+      "decision": "APPROVED",
+      "repairs": [
+        "Founder approved canonical face 4e2fc902b18f2afe9a2776fe6882871b4e263a529abe3ba98cfa8243fbb7023d across GF-Balloons, PK-Ladies, and PK-PartyPack after the exact live road preserved nine mixed observations, eight of eight balloons, score 64, SEC, Vault, and exact reopen.",
+        "Founder authority separates Baker physical/publisher truth from the contained SCZN3-derived X=10 interpretation; no unrelated target inherits an X value by text matching.",
+        "Founder approved the shared HISTORY summary-first progressive-disclosure architecture with exclusive SCORE, HIT RATE, and POINTS PER TAP drawers and DETAILS down/up chevrons."
+      ],
+      "repairHistory": [
+        {
+          "repairs": "Bound eight balloon objects and forty-eight nested X/9/8/7/6/5 regions once at the canonical-face layer, inheriting shared object and numbered-region intelligence.",
+          "recordedAt": "2026-10-03T06:00:00Z"
+        },
+        {
+          "repairs": "Applied Founder authority X=10 as a Balloons-specific SCZN3 derivation with explicit provenance and a no-text-matching containment safeguard.",
+          "recordedAt": "2026-10-03T06:30:00Z"
+        },
+        {
+          "repairs": "Moved rich HISTORY intelligence beneath three shared exclusive drawers and added small stateful disclosure chevrons without changing authority, scoring, or preserved data.",
+          "recordedAt": "2026-10-03T20:16:15Z"
+        }
+      ],
+      "decisionHistory": [
+        {
+          "decision": "APPROVED",
+          "recordedAt": "2026-10-03T20:16:15Z",
+          "repairs": "Founder approved Balloons, its contained SCZN3-derived X=10 treatment, combined object and scoring intelligence, and the shared HISTORY progressive-disclosure presentation."
+        }
+      ],
+      "lifecycle": {
+        "status": "complete",
+        "proofSessionId": "sczn3-session-aca6429e-a560-4681-bd25-22c1817cf807",
+        "completedAt": "2026-10-03T20:16:15Z",
+        "observations": 9,
+        "balloonsPopped": "8 of 8",
+        "xHits": 2,
+        "outsideCountOnly": 1,
+        "targetScore": 64,
+        "scoreArithmetic": "2x10 + 2x9 + 8 + 7 + 6 + 5 = 64",
+        "secPreserved": true,
+        "vaultPreserved": true,
+        "exactReopen": true,
+        "desktopHistoryDrawers": true,
+        "mobile390HistoryDrawers": true
+      },
+      "decidedAt": "2026-10-03T20:16:15Z",
+      "canonicalFaceId": "4e2fc902b18f2afe9a2776fe6882871b4e263a529abe3ba98cfa8243fbb7023d",
+      "canonicalFaceClosedForWalk": true,
+      "approvalEvidence": "FOUNDER_14_FOUNDER_APPROVAL.json"
+    }
+  ],
+  "updatedAt": "2026-10-03T20:16:15Z"
+}

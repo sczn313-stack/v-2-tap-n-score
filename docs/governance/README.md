@@ -27,6 +27,7 @@ This index identifies the governing records for implementation control, episode 
 11. [Snapshot 17 — Episode 59 Closure / Episode 60 Opening Floor](../history/snapshots/SNAPSHOT_017_EPISODE_59_CLOSURE_EPISODE_60_OPENING_FLOOR.md) — episode-transition continuity floor.
 12. [Snapshot 16 — Baker Live + Talking Smart Target + Shared-Link Production](../history/snapshots/SNAPSHOT_016_BAKER_LIVE_TST_SHARED_LINK_PRODUCTION.md) — unchanged production-proven product floor.
 13. [Founder Shared-Link Activity Dashboard Production Proof](./FOUNDER_SHARED_LINK_ACTIVITY_DASHBOARD_PRODUCTION_2026-08-31.md) — additive telemetry and live Baker non-regression proof.
+14. [Episode 64 Founder Authority — Printer, Shooter, and SCZN3](./EPISODE64_FOUNDER_AUTHORITY_PRINTER_SHOOTER_SCZN3_2026-10-03.md) — governs transparent SCZN3-derived Smart Target intelligence while preserving publisher truth, shooter ownership, provenance, and structural-grammar inheritance boundaries.
 
 ## Current locked checkpoint
 

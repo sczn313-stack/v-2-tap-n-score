@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "sczn3-founder-implementation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 14,
+  "recordedAt": "2026-10-03T06:00:00Z",
+  "status": "FOUNDER_APPROVED_CLOSED",
+  "readyForFounder": true,
+  "advanceToFounderNumber": 15,
+  "stopAt": "CANONICAL_FACE_GATE_15",
+  "canonicalFace": {
+    "id": "4e2fc902b18f2afe9a2776fe6882871b4e263a529abe3ba98cfa8243fbb7023d",
+    "name": "Balloons Target",
+    "treatment": "FOUNDER_14_BALLOONS_CANONICAL_FACE_TREATMENT.json",
+    "identityCount": 3,
+    "identities": [
+      { "runtimeId": "blocker_baker_targets_gf_balloons", "sku": "GF-Balloons" },
+      { "runtimeId": "final_collection_baker_targets_pk_ladies_005", "sku": "PK-Ladies" },
+      { "runtimeId": "final_collection_baker_targets_pk_partypack_002", "sku": "PK-PartyPack" }
+    ]
+  },
+  "authorityBoundary": {
+    "balloonObjectCount": 8,
+    "nestedPrintedRegions": ["X", "9", "8", "7", "6", "5"],
+    "numericPrintedValues": [9, 8, 7, 6, 5],
+    "publisherXNumericValue": "not_defined",
+    "sczn3DerivedXNumericValue": 10,
+    "sczn3DerivationId": "sczn3-balloons-visible-descending-hierarchy-x10-v1",
+    "founderAuthority": "docs/governance/EPISODE64_FOUNDER_AUTHORITY_PRINTER_SHOOTER_SCZN3_2026-10-03.md",
+    "publisherObjective": "How many balloons are popped",
+    "publisherShotCount": "not_defined",
+    "publisherSequence": "not_defined",
+    "publisherMissPenalty": "not_defined",
+    "publisherTieBreak": "not_defined",
+    "publisherAdditionalGameProcedure": "not_defined",
+    "fixedObservationCountIntroduced": false,
+    "publisherXNumericValueIntroduced": false,
+    "sczn3DerivedXValueIntroduced": true,
+    "outsideValueOrPenaltyIntroduced": false,
+    "sczn3Scope": "measure eight balloon objects, preserve publisher truth separately, derive X=10 transparently from this face's visible X/9/8/7/6/5 descending hierarchy, and account for all outside observations as count only"
+  },
+  "implementedSemantics": {
+    "model": "mixed_regions",
+    "balloonObjects": 8,
+    "governedNestedRegions": 48,
+    "resultIntelligence": [
+      "per-balloon engagement",
+      "distinct balloons popped out of eight",
+      "per-balloon tap and numeric-ring distribution",
+      "aggregate X/9/8/7/6/5 distribution",
+      "SCZN3 Target Score from derived X=10 plus printed 9/8/7/6/5",
+      "X-hit count preserved separately as X while contributing the explicitly derived 10 points",
+      "complete hit/outside/total observation accounting"
+    ],
+    "outsideTreatment": "count_only_no_invented_value_or_penalty",
+    "xTreatment": "sczn3_derived_10_included_in_target_score_not_attributed_to_baker"
+  },
+  "sharedImplementation": {
+    "generator": "docs/backend/apply_founder_14_balloons_canonical_face_treatment.py",
+    "contracts": [
+      "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gf_balloons_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_ladies_005_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_partypack_002_target_scoring_v1.json"
+    ],
+    "sharedExecutor": "docs/backend/executors/declarative_target_score.py (generic mixed nested-object aggregation consumes explicit governed X values; it never infers X=10 from text)",
+    "sharedPresentation": "docs/target_execution_runtime.js (data-driven numeric X distribution, per-object X count, aggregate value distribution, and object completion verb)",
+    "identitySpecificRuntimeBranch": false
+  },
+  "mechanicalProof": {
+    "allThreeIdentities": {
+      "test": "docs/backend/test_founder_14_balloons_object_scoring_intelligence.py",
+      "result": "PASS",
+      "road": "TARGET -> RESULT -> SESSION/HISTORY -> SAVE SEC -> VAULT -> EXACT REOPEN",
+      "verified": [
+        "all three identities inherit byte-equivalent geometry, scoring, mission, and Smart Target treatment",
+        "all eight balloons and all forty-eight nested X/9/8/7/6/5 regions classify deterministically",
+        "X observations pop and engage their balloon and contribute 10 points only through the explicit SCZN3-derived Balloons treatment",
+        "numeric 9/8/7/6/5 observations continue to contribute their publisher-printed values",
+        "outside observations remain preserved as count only",
+        "object engagement, per-object counts, aggregate distribution, numeric subtotal, X count, coordinates, and classifications survive exact reopen",
+        "no fixed shot count, sequence, miss penalty, tie-break, winner rule, or additional game procedure is produced",
+        "removing the explicit Balloons X value/provenance yields a count-only X with zero numeric contribution, proving there is no automatic X=10 text inference"
+      ],
+      "mixedExercise": {
+        "observations": 9,
+        "balloonsPopped": "8/8",
+        "xHits": 2,
+        "numericDistribution": { "9": 2, "8": 1, "7": 1, "6": 1, "5": 1 },
+        "numericArithmetic": "2x10 + 2x9 + 1x8 + 1x7 + 1x6 + 1x5 = 64",
+        "outsideCountOnly": 1
+      }
+    },
+    "exactLiveFounderRoad": {
+      "test": "docs/production/episode64_founder_14_balloons_lifecycle_browser_test.mjs",
+      "result": "PASS",
+      "runtimeIdentity": "blocker_baker_targets_gf_balloons",
+      "sessionId": "sczn3-session-aca6429e-a560-4681-bd25-22c1817cf807",
+      "runtimeUrl": "http://127.0.0.1:8158/target-experience.html?missionFamily=targetScoring&target=blocker_baker_targets_gf_balloons&source=registered&authorityPort=8158&v=founder-14-balloons-1",
+      "road": "TARGET -> mixed X/numeric/outside taps -> SHOW RESULT -> RESULT -> SESSION/HISTORY -> SAVE SEC -> VAULT -> EXACT REOPEN",
+      "observed": {
+        "numericTargetScore": 64,
+        "xHits": 2,
+        "hitTaps": 8,
+        "outsideBalloonAreas": 1,
+        "totalTaps": 9,
+        "balloonsPopped": "8 of 8",
+        "reopenedMarkerCount": 9
+      }
+    }
+  },
+  "affectedPopulationRegression": {
+    "result": "PASS",
+    "backend": [
+      "test_founder_7_arcade_game_intelligence.py",
+      "test_founder_8_bear_numbered_region_intelligence.py",
+      "test_founder_9_hare_numbered_region_intelligence.py",
+      "test_founder_10_bakerglo_arcade_inheritance.py",
+      "test_founder_11_martian_militia_aim_area_intelligence.py",
+      "test_founder_12_three_shooter_aim_area_intelligence.py",
+      "test_founder_13_vertigo_numbered_region_intelligence.py",
+      "test_founder_14_balloons_object_scoring_intelligence.py"
+    ],
+    "frontend": [
+      "episode64_founder_8_bear_presentation_test.mjs",
+      "episode64_founder_9_hare_presentation_test.mjs",
+      "episode64_founder_13_vertigo_lifecycle_browser_test.mjs",
+      "episode64_founder_14_balloons_lifecycle_browser_test.mjs",
+      "founder_walk_contract_test.mjs",
+      "node --check target_execution_runtime.js",
+      "git diff --check"
+    ]
+  },
+  "repository": {
+    "baseHead": "ef7ca22c819b1914f1a3c483ab966c15ac6d87a4",
+    "workingTreePolicy": "mixed pre-existing Founder-walk worktree preserved; no unrelated changes admitted or reverted",
+    "commitCreated": false
+  },
+  "sharedHistoryPresentation": {
+    "evidence": "FOUNDER_14_HISTORY_PROGRESSIVE_DISCLOSURE_EVIDENCE.json",
+    "result": "FOUNDER_APPROVED",
+    "pattern": "summary first, exclusive details drawer, deeper per-object/per-region disclosure",
+    "chevrons": "DETAILS ⌄ closed / DETAILS ⌃ open"
+  },
+  "founderApproval": "FOUNDER_14_FOUNDER_APPROVAL.json"
+}
