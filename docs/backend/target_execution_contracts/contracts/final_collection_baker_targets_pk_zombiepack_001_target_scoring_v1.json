@@ -1,0 +1,836 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-final_collection_baker_targets_pk_zombiepack_001-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "EPISODE64_FINAL_WIDGET_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "final_collection_baker_targets_pk_zombiepack_001",
+    "version": "1",
+    "atpId": "ATP_EP64_FINAL_E01D4F0970E7384D13F2_V1",
+    "authorityId": "EP64_FINAL_E01D4F0970E7384D13F2_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/zombie-pack/"
+    },
+    "product": {
+      "id": "episode64-final-e01d4f0970e7384d13f2",
+      "name": "Zombie Pack \u2013 21 Targets Total \u2014 Brainy Brian Zombie Target",
+      "sku": "PK-ZombiePack",
+      "dimensions": {
+        "width": 0.01,
+        "height": 24.0,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "final_collection_baker_targets_pk_zombiepack_001-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
+        "regions": [
+          {
+            "regionId": "left_eye_center",
+            "shape": "ellipse",
+            "cx": 0.5065,
+            "cy": 0.276,
+            "radiusX": 0.01,
+            "radiusY": 0.008,
+            "priority": 1000
+          },
+          {
+            "regionId": "right_eye_center",
+            "shape": "ellipse",
+            "cx": 0.607,
+            "cy": 0.246,
+            "radiusX": 0.0085,
+            "radiusY": 0.007,
+            "priority": 1000
+          },
+          {
+            "regionId": "left_eye",
+            "shape": "ellipse",
+            "cx": 0.5065,
+            "cy": 0.276,
+            "radiusX": 0.04,
+            "radiusY": 0.037,
+            "priority": 900
+          },
+          {
+            "regionId": "right_eye",
+            "shape": "ellipse",
+            "cx": 0.607,
+            "cy": 0.246,
+            "radiusX": 0.038,
+            "radiusY": 0.035,
+            "priority": 900
+          },
+          {
+            "regionId": "exposed_brain",
+            "shape": "polygon",
+            "points": [
+              [
+                0.486,
+                0.105
+              ],
+              [
+                0.526,
+                0.101
+              ],
+              [
+                0.575,
+                0.111
+              ],
+              [
+                0.618,
+                0.13
+              ],
+              [
+                0.647,
+                0.159
+              ],
+              [
+                0.642,
+                0.188
+              ],
+              [
+                0.609,
+                0.209
+              ],
+              [
+                0.565,
+                0.207
+              ],
+              [
+                0.523,
+                0.19
+              ],
+              [
+                0.493,
+                0.163
+              ]
+            ],
+            "priority": 860
+          },
+          {
+            "regionId": "mouth_teeth",
+            "shape": "polygon",
+            "points": [
+              [
+                0.551,
+                0.306
+              ],
+              [
+                0.598,
+                0.301
+              ],
+              [
+                0.642,
+                0.314
+              ],
+              [
+                0.673,
+                0.341
+              ],
+              [
+                0.67,
+                0.373
+              ],
+              [
+                0.638,
+                0.393
+              ],
+              [
+                0.596,
+                0.39
+              ],
+              [
+                0.56,
+                0.367
+              ],
+              [
+                0.54,
+                0.337
+              ]
+            ],
+            "priority": 850
+          },
+          {
+            "regionId": "exposed_abdomen_intestines",
+            "shape": "polygon",
+            "points": [
+              [
+                0.367,
+                0.657
+              ],
+              [
+                0.421,
+                0.641
+              ],
+              [
+                0.494,
+                0.657
+              ],
+              [
+                0.557,
+                0.697
+              ],
+              [
+                0.577,
+                0.759
+              ],
+              [
+                0.55,
+                0.817
+              ],
+              [
+                0.491,
+                0.842
+              ],
+              [
+                0.427,
+                0.83
+              ],
+              [
+                0.382,
+                0.794
+              ],
+              [
+                0.352,
+                0.733
+              ]
+            ],
+            "priority": 840
+          },
+          {
+            "regionId": "head_face",
+            "shape": "polygon",
+            "points": [
+              [
+                0.438,
+                0.121
+              ],
+              [
+                0.497,
+                0.099
+              ],
+              [
+                0.57,
+                0.105
+              ],
+              [
+                0.636,
+                0.137
+              ],
+              [
+                0.681,
+                0.193
+              ],
+              [
+                0.688,
+                0.259
+              ],
+              [
+                0.672,
+                0.329
+              ],
+              [
+                0.636,
+                0.397
+              ],
+              [
+                0.575,
+                0.421
+              ],
+              [
+                0.508,
+                0.401
+              ],
+              [
+                0.459,
+                0.361
+              ],
+              [
+                0.425,
+                0.302
+              ],
+              [
+                0.405,
+                0.234
+              ],
+              [
+                0.409,
+                0.169
+              ]
+            ],
+            "priority": 700
+          },
+          {
+            "regionId": "left_arm_hand",
+            "shape": "polygon",
+            "points": [
+              [
+                0.252,
+                0.299
+              ],
+              [
+                0.345,
+                0.331
+              ],
+              [
+                0.383,
+                0.42
+              ],
+              [
+                0.348,
+                0.525
+              ],
+              [
+                0.302,
+                0.622
+              ],
+              [
+                0.257,
+                0.72
+              ],
+              [
+                0.221,
+                0.827
+              ],
+              [
+                0.199,
+                0.916
+              ],
+              [
+                0.177,
+                0.982
+              ],
+              [
+                0.118,
+                0.978
+              ],
+              [
+                0.091,
+                0.914
+              ],
+              [
+                0.1,
+                0.824
+              ],
+              [
+                0.075,
+                0.723
+              ],
+              [
+                0.048,
+                0.616
+              ],
+              [
+                0.06,
+                0.491
+              ],
+              [
+                0.111,
+                0.385
+              ],
+              [
+                0.175,
+                0.322
+              ]
+            ],
+            "priority": 660
+          },
+          {
+            "regionId": "right_arm_hand",
+            "shape": "polygon",
+            "points": [
+              [
+                0.65,
+                0.35
+              ],
+              [
+                0.711,
+                0.358
+              ],
+              [
+                0.76,
+                0.408
+              ],
+              [
+                0.786,
+                0.355
+              ],
+              [
+                0.809,
+                0.306
+              ],
+              [
+                0.847,
+                0.312
+              ],
+              [
+                0.846,
+                0.379
+              ],
+              [
+                0.904,
+                0.414
+              ],
+              [
+                0.942,
+                0.463
+              ],
+              [
+                0.956,
+                0.539
+              ],
+              [
+                0.935,
+                0.59
+              ],
+              [
+                0.894,
+                0.567
+              ],
+              [
+                0.866,
+                0.527
+              ],
+              [
+                0.835,
+                0.578
+              ],
+              [
+                0.792,
+                0.565
+              ],
+              [
+                0.747,
+                0.525
+              ],
+              [
+                0.706,
+                0.611
+              ],
+              [
+                0.658,
+                0.683
+              ],
+              [
+                0.618,
+                0.634
+              ],
+              [
+                0.626,
+                0.532
+              ]
+            ],
+            "priority": 660
+          },
+          {
+            "regionId": "upper_torso",
+            "shape": "polygon",
+            "points": [
+              [
+                0.329,
+                0.334
+              ],
+              [
+                0.415,
+                0.363
+              ],
+              [
+                0.505,
+                0.397
+              ],
+              [
+                0.6,
+                0.385
+              ],
+              [
+                0.683,
+                0.401
+              ],
+              [
+                0.731,
+                0.475
+              ],
+              [
+                0.729,
+                0.59
+              ],
+              [
+                0.681,
+                0.703
+              ],
+              [
+                0.62,
+                0.815
+              ],
+              [
+                0.525,
+                0.85
+              ],
+              [
+                0.422,
+                0.827
+              ],
+              [
+                0.346,
+                0.751
+              ],
+              [
+                0.299,
+                0.633
+              ],
+              [
+                0.291,
+                0.485
+              ]
+            ],
+            "priority": 640
+          },
+          {
+            "regionId": "lower_body",
+            "shape": "polygon",
+            "points": [
+              [
+                0.294,
+                0.803
+              ],
+              [
+                0.381,
+                0.798
+              ],
+              [
+                0.481,
+                0.829
+              ],
+              [
+                0.584,
+                0.81
+              ],
+              [
+                0.674,
+                0.823
+              ],
+              [
+                0.692,
+                0.909
+              ],
+              [
+                0.673,
+                0.996
+              ],
+              [
+                0.273,
+                0.996
+              ],
+              [
+                0.258,
+                0.918
+              ]
+            ],
+            "priority": 620
+          }
+        ],
+        "ugoAuthority": "SCZN3_VISIBLE_BRAINY_BRIAN_FACE_3DE161EC482FC4D03D4B_V1"
+      },
+      "digest": "11936195bc04663d71a96c5933ec3ffcd358194336de904ab3d1b95196ebe719"
+    },
+    "registration": {
+      "id": "final_collection_baker_targets_pk_zombiepack_001-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/episode64-final-widget-run-2026-09-29/representations/FINAL_FACE_e3150e6fd7cc25b8b2e1.jpg",
+        "assetSha256": "3de161ec482fc4d03d4b228f2374f0e7e9e5dc5fc86db7994cbc83cd9ebeed1f",
+        "assetAlt": "Zombie Pack \u2013 21 Targets Total \u2014 Brainy Brian Zombie Target, SKU PK-ZombiePack",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "e25dc4caad25b14d6fa0e10af5658c89b474ba331cb4cfb56c0250579c6518ff"
+    },
+    "scoring": {
+      "id": "final_collection_baker_targets_pk_zombiepack_001-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "left_eye_center": {
+            "label": "Left Eye \u2014 White Center",
+            "objectId": "left_eye_center",
+            "objectLabel": "Left Eye \u2014 White Center"
+          },
+          "right_eye_center": {
+            "label": "Right Eye \u2014 White Center",
+            "objectId": "right_eye_center",
+            "objectLabel": "Right Eye \u2014 White Center"
+          },
+          "left_eye": {
+            "label": "Left Eye",
+            "objectId": "left_eye",
+            "objectLabel": "Left Eye"
+          },
+          "right_eye": {
+            "label": "Right Eye",
+            "objectId": "right_eye",
+            "objectLabel": "Right Eye"
+          },
+          "exposed_brain": {
+            "label": "Exposed Brain",
+            "objectId": "exposed_brain",
+            "objectLabel": "Exposed Brain"
+          },
+          "mouth_teeth": {
+            "label": "Mouth / Teeth",
+            "objectId": "mouth_teeth",
+            "objectLabel": "Mouth / Teeth"
+          },
+          "exposed_abdomen_intestines": {
+            "label": "Exposed Abdomen / Intestines",
+            "objectId": "exposed_abdomen_intestines",
+            "objectLabel": "Exposed Abdomen / Intestines"
+          },
+          "head_face": {
+            "label": "Head / Face",
+            "objectId": "head_face",
+            "objectLabel": "Head / Face"
+          },
+          "left_arm_hand": {
+            "label": "Left Arm / Hand",
+            "objectId": "left_arm_hand",
+            "objectLabel": "Left Arm / Hand"
+          },
+          "right_arm_hand": {
+            "label": "Right Arm / Hand",
+            "objectId": "right_arm_hand",
+            "objectLabel": "Right Arm / Hand"
+          },
+          "upper_torso": {
+            "label": "Upper Torso",
+            "objectId": "upper_torso",
+            "objectLabel": "Upper Torso"
+          },
+          "lower_body": {
+            "label": "Lower Body",
+            "objectId": "lower_body",
+            "objectLabel": "Lower Body"
+          }
+        },
+        "outsideRule": {
+          "label": "Outside Brainy Brian Areas",
+          "countsAsHit": false
+        },
+        "classificationFootprintMode": "score_on_touch",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "summaryDimensions": [
+          {
+            "dimensionId": "feature_class",
+            "label": "Brainy Brian feature distribution",
+            "groups": [
+              {
+                "groupId": "precision_features",
+                "label": "Distinct Features",
+                "objectIds": [
+                  "left_eye_center",
+                  "right_eye_center",
+                  "left_eye",
+                  "right_eye",
+                  "exposed_brain",
+                  "mouth_teeth",
+                  "exposed_abdomen_intestines"
+                ]
+              },
+              {
+                "groupId": "body_areas",
+                "label": "Body Areas",
+                "objectIds": [
+                  "head_face",
+                  "left_arm_hand",
+                  "right_arm_hand",
+                  "upper_torso",
+                  "lower_body"
+                ]
+              }
+            ]
+          }
+        ],
+        "publisherRuleAuthority": {
+          "source": "publisher canonical face 3de161ec482fc4d03d4b228f2374f0e7e9e5dc5fc86db7994cbc83cd9ebeed1f",
+          "rule": "Visible printed features and body areas are classified as non-numeric SCZN3-derived target intelligence. No publisher score, quota, sequence, maximum, penalty, winner, kill/vital/wound claim, or game procedure is defined."
+        }
+      },
+      "digest": "b272e9d96c707a7067227d46f5ca6cba1b319941e4a29663d21c17c9a595a658"
+    },
+    "mission": {
+      "id": "final_collection_baker_targets_pk_zombiepack_001-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_left_eye",
+                "regionId": "left_eye_center",
+                "xNorm": 0.5065,
+                "yNorm": 0.276
+              },
+              {
+                "aimId": "aim_right_eye",
+                "regionId": "right_eye_center",
+                "xNorm": 0.607,
+                "yNorm": 0.246
+              },
+              {
+                "aimId": "aim_exposed_brain",
+                "regionId": "exposed_brain",
+                "xNorm": 0.565,
+                "yNorm": 0.155
+              },
+              {
+                "aimId": "aim_mouth",
+                "regionId": "mouth_teeth",
+                "xNorm": 0.605,
+                "yNorm": 0.35
+              },
+              {
+                "aimId": "aim_exposed_abdomen",
+                "regionId": "exposed_abdomen_intestines",
+                "xNorm": 0.47,
+                "yNorm": 0.745
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        },
+        "smartTargetTreatment": {
+          "grammar": [
+            "nested_aim_area",
+            "feature_region",
+            "silhouette_region",
+            "count_only_performance"
+          ],
+          "shooterFacingVocabulary": {
+            "singular": "target area",
+            "plural": "target areas"
+          },
+          "outsideLabel": "Outside Brainy Brian Areas",
+          "hitAreaLabel": "the visible Brainy Brian features and body areas",
+          "intelligence": [
+            "tap_accuracy",
+            "target_area_completion",
+            "per_target_area_counts",
+            "nested_eye_center_accuracy",
+            "feature_distribution",
+            "body_area_distribution",
+            "outside_target_area_count",
+            "observation_accounting",
+            "region_detail"
+          ],
+          "authorityScope": "sczn3_derived_visible_structure",
+          "publisherScoreStatus": "not_defined",
+          "fixedObservationCountStatus": "not_defined",
+          "engagementSequenceStatus": "not_defined",
+          "winnerRuleStatus": "not_defined",
+          "x10AuthorityStatus": "not_applicable",
+          "classificationPrecedence": "most_specific_legitimate_feature_wins",
+          "presentationRule": "Preserve everything underneath. Present what happened first."
+        }
+      },
+      "digest": "50fe41b64c064a63c3715c361649b64628e07565911688f51e3dfcc250a779c0"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "invented_numeric_score",
+    "invented_fixed_shot_count_or_sequence",
+    "invented_maximum_score_or_winner_rule",
+    "invented_game_procedure",
+    "invented_outside_penalty",
+    "x10_scoring",
+    "vital_kill_wound_threat_tactical_or_effectiveness_claims",
+    "inferred_physical_dimensions_from_pixels"
+  ]
+}
