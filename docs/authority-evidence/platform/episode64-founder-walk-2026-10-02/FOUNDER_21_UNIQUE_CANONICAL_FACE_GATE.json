@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "sczn3-founder-unique-face-extension-gate-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 21,
+  "recordedAt": "2026-10-04T03:24:39Z",
+  "reason": "Numbered Founder slots 4 and 5 share one canonical face. A twenty-first numbered candidate is required to complete a genuine twenty-of-twenty unique-canonical-face audit.",
+  "selectionAuthority": {
+    "source": "SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+    "sheet": "THE 13 — 1993 Master",
+    "order": "Master # ascending",
+    "identityAuthority": "components.registration.definition.assetSha256",
+    "policy": "Select the first governed census identity after the existing walk whose canonical face SHA is absent from every numbered Founder slot."
+  },
+  "selectionProof": {
+    "existingNumberedSlots": 20,
+    "existingUniqueCanonicalFaces": 19,
+    "selectedCensusOrder": 24,
+    "selectedTarget": "Bull Shot Target",
+    "selectedRuntimeId": "blocker_baker_targets_gf_bullshot",
+    "selectedCanonicalFaceId": "416e346cdbbf4c23cc8aa0c8690b2bc0fac019749db7a117e4eb051129a668db",
+    "canonicalFaceAbsentFromPriorSlots": true,
+    "uniqueCanonicalFacesIfApproved": 20
+  },
+  "canonicalPopulation": {
+    "runtimeIds": [
+      "blocker_baker_targets_gf_bullshot",
+      "final_collection_baker_targets_pk_badanimals_003",
+      "final_collection_baker_targets_pk_badmugcombo_003"
+    ],
+    "skus": ["GF-BullShot", "PK-BadAnimals", "PK-BadMugCombo"],
+    "productIds": [
+      "p-os-baker_5563",
+      "episode64-final-a33021df3701bb089598",
+      "episode64-final-247d3c7c3e41c54fcc02"
+    ],
+    "identityCount": 3,
+    "allRegisteredAssetsByteMatchCanonicalFace": true
+  },
+  "gateStatus": "CANONICAL_FACE_CLEARED_TO_LLM_SEMANTIC_GATE"
+}

@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "sczn3-founder-implementation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20-unique",
+  "founderNumber": 21,
+  "generatedAt": "2026-10-04T03:39:21Z",
+  "status": "ready_for_founder",
+  "canonicalFaceId": "416e346cdbbf4c23cc8aa0c8690b2bc0fac019749db7a117e4eb051129a668db",
+  "targetName": "Bull Shot Target",
+  "identityPopulation": [
+    "blocker_baker_targets_gf_bullshot",
+    "final_collection_baker_targets_pk_badanimals_003",
+    "final_collection_baker_targets_pk_badmugcombo_003"
+  ],
+  "boundedDelta": {
+    "kind": "canonical-face geometry and printed-value bindings only",
+    "newArchitecture": false,
+    "sharedExecutorChanged": false,
+    "regionCount": 10,
+    "printedValueDistribution": {
+      "10": 1,
+      "8": 3,
+      "6": 2,
+      "4": 3,
+      "2": 1
+    },
+    "classificationFootprintMode": "score_on_touch",
+    "outsideTreatment": "count_only"
+  },
+  "mechanicalReconciliation": [
+    {"tap": 1, "regionId": "head_10", "printedValue": 10, "awardedPoints": 10},
+    {"tap": 2, "regionId": "left_middle_8", "printedValue": 8, "awardedPoints": 8},
+    {"tap": 3, "regionId": "right_middle_8", "printedValue": 8, "awardedPoints": 8},
+    {"tap": 4, "regionId": "center_lower_8", "printedValue": 8, "awardedPoints": 8},
+    {"tap": 5, "regionId": "left_lower_6", "printedValue": 6, "awardedPoints": 6},
+    {"tap": 6, "regionId": "right_lower_6", "printedValue": 6, "awardedPoints": 6},
+    {"tap": 7, "regionId": "left_upper_4", "printedValue": 4, "awardedPoints": 4},
+    {"tap": 8, "regionId": "right_upper_4", "printedValue": 4, "awardedPoints": 4},
+    {"tap": 9, "regionId": "left_outer_lower_4", "printedValue": 4, "awardedPoints": 4},
+    {"tap": 10, "regionId": "right_arm_2", "printedValue": 2, "awardedPoints": 2}
+  ],
+  "referenceArithmetic": "10 + 8 + 8 + 8 + 6 + 6 + 4 + 4 + 4 + 2 = 60",
+  "mixedProof": {
+    "observationCount": 11,
+    "scoringHits": 10,
+    "outsideCount": 1,
+    "totalScore": 60,
+    "hitRatePercentage": 90.9,
+    "unaccountedObservations": 0,
+    "ambiguousObservations": 0
+  },
+  "scoreOnTouchProof": {
+    "result": "PASS",
+    "method": "An observation center immediately outside the printed head boundary with an explicit source-image footprint touching the boundary classified as head_10 and received 10 points.",
+    "geometryExpanded": false,
+    "displayMarkerParticipatesInScoring": false
+  },
+  "lifecycleProof": {
+    "mechanicalAllIdentityRoad": "PASS",
+    "exactBrowserRoad": "PASS",
+    "browserStages": [
+      "TARGET",
+      "RESULT",
+      "HISTORY/SESSION",
+      "SAVE SEC",
+      "BALLISTIC VAULT",
+      "EXACT REOPEN"
+    ],
+    "browserSessionId": "sczn3-session-801933b7-4d26-4330-8d85-c24f33c7967d",
+    "browserObservedResult": "60 points; 10 hit taps; 1 outside scoring area; 11 total taps; 90.9% hit rate",
+    "exactReopenStatus": "Saved Session Opened",
+    "preservedObservationCount": 11,
+    "preservedScore": 60
+  },
+  "validation": [
+    {"test": "docs/backend/test_founder_21_bull_shot_numbered_region_intelligence.py", "result": "PASS"},
+    {"test": "Founder #8 Bear numbered-region regression", "result": "PASS"},
+    {"test": "Founder #9 Hare numbered-region regression", "result": "PASS"},
+    {"test": "Founder #13 Vertigo numbered-region regression", "result": "PASS"},
+    {"test": "Founder #17 Birthday Cake numbered-region regression", "result": "PASS"},
+    {"test": "Founder #18 Outdoor Challenge Score-on-Touch regression", "result": "PASS"},
+    {"test": "Founder #19 Boss Hog numbered-region regression", "result": "PASS"}
+  ],
+  "carriedEvidence": [
+    "The broad test_declarative_target_scoring.py remains blocked before execution by pre-existing duplicate contract identities from unrelated numbered-copy files; all directly affected shared-engine regressions passed."
+  ],
+  "directFounderRuntime": "http://127.0.0.1:8163/target-experience.html?missionFamily=targetScoring&target=blocker_baker_targets_gf_bullshot&source=registered&authorityPort=8163&v=founder-21-bull-shot-2",
+  "gateDecision": "READY_FOR_FOUNDER"
+}
