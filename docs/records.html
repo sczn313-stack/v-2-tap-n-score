@@ -87,6 +87,13 @@ const RECORDS_AUTHORITY_PORT = String(RECORD_QUERY.get("authorityPort") || "").t
 const RECORDS_AUTHORITY_ORIGIN = RECORDS_LOCAL && /^\d{2,5}$/.test(RECORDS_AUTHORITY_PORT)
   ? `http://127.0.0.1:${RECORDS_AUTHORITY_PORT}`
   : "";
+function preserveRecordsAuthority(destination) {
+  if (!RECORDS_AUTHORITY_ORIGIN) return destination;
+  const url = new URL(destination, window.location.href);
+  if (url.origin !== window.location.origin) return destination;
+  url.searchParams.set("authorityPort", RECORDS_AUTHORITY_PORT);
+  return url.href;
+}
 let vaultCorrectionVectorSequence = 0;
 const PRESERVED_SEC_ENDPOINT = `${RECORDS_AUTHORITY_ORIGIN || (PREPARED_DEMO_MODE || RECORDS_PRIVATE_LAN ? window.location.origin : RECORDS_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com")}/api/session/sec`;
 let serverSavedSessions = [];
@@ -842,7 +849,7 @@ function renderGssfSecCard(session, index, pkg) {
           <div class="sec-v1-record-actions" data-sczn3-action-region="platform-v1" aria-label="SEC actions">
             <button type="button" data-sczn3-action="export" data-sec-export>Export SEC</button>
             <button type="button" data-sczn3-action="share" data-sec-share>Share SEC</button>
-            <a class="sec-action-link button primary" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a>
+            <a class="sec-action-link button primary" href="${escapeHtml(preserveRecordsAuthority(`records.html?session=${encodeURIComponent(session.sessionId || "")}`))}">Reopen SEC</a>
           </div>
         `
       }
@@ -1145,6 +1152,7 @@ function historicalSecUrl(session, pkg = authorityPackage(session)) {
   if (window.SCZN3SECDispatch) destination = SCZN3SECDispatch.destinationFor(session);
   else if (isCompletedZeroingVaultSession(session, pkg)) destination = preservedSecUrl(session);
   else destination = `records.html?session=${encodeURIComponent(session.sessionId || "")}&view=sec`;
+  destination = preserveRecordsAuthority(destination);
   return window.SCZN3SECReopenAuthority?.portableUrl(destination, session.sessionId) || destination;
 }
 
@@ -1414,7 +1422,7 @@ function secFrameworkStageHtml(stage, title, contentHtml, scoreDisplay = "") {
 }
 
 function secFrameworkActionBarHtml(session) {
-  return `<div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar"><div class="sec-preservation-actions" data-sczn3-action-region="platform-v1"><button class="button" type="button" data-sczn3-action="export" data-sec-export>Export SEC</button><button class="button" type="button" data-sczn3-action="share" data-sec-share>Share SEC</button><a class="button primary" data-sczn3-action="history" href="records.html?session=${encodeURIComponent(session.sessionId || "")}">Reopen SEC</a></div></div>`;
+  return `<div class="sec-story-command-bar sec-shooter-action-bar" aria-label="Shooter Action Bar"><div class="sec-preservation-actions" data-sczn3-action-region="platform-v1"><button class="button" type="button" data-sczn3-action="export" data-sec-export>Export SEC</button><button class="button" type="button" data-sczn3-action="share" data-sec-share>Share SEC</button><a class="button primary" data-sczn3-action="history" href="${escapeHtml(preserveRecordsAuthority(`records.html?session=${encodeURIComponent(session.sessionId || "")}`))}">Reopen SEC</a></div></div>`;
 }
 
 function isBaker100YardZeroingSession(session, pkg) {
@@ -1523,7 +1531,7 @@ function render(session) {
   const actionsHtml = SCZN3SECComponents.ActionBar({ actions: [
     { label: "Export SEC", action: "export", attributes: { "data-sec-export": true } },
     { label: "Share SEC", action: "share", attributes: { "data-sec-share": true } },
-    { label: "Reopen SEC", href: `records.html?session=${encodeURIComponent(session.sessionId || "")}`, primary: true }
+    { label: "Reopen SEC", href: preserveRecordsAuthority(`records.html?session=${encodeURIComponent(session.sessionId || "")}`), primary: true }
   ] });
   return SCZN3SEC.render({
     schemaVersion: "1.2",
@@ -1656,7 +1664,7 @@ function render(session) {
   const actionsHtml = SCZN3SECComponents.ActionBar({ actions: [
     { label: "Export SEC", action: "export", attributes: { "data-sec-export": true } },
     { label: "Share SEC", action: "share", attributes: { "data-sec-share": true } },
-    { label: "Reopen SEC", href: `records.html?session=${encodeURIComponent(session.sessionId || "")}`, primary: true }
+    { label: "Reopen SEC", href: preserveRecordsAuthority(`records.html?session=${encodeURIComponent(session.sessionId || "")}`), primary: true }
   ] });
   return SCZN3SEC.render({
     schemaVersion: "1.2",
@@ -1757,7 +1765,7 @@ function renderHistory() {
   window.SCZN3PartnershipIdentity?.apply(partnershipSurface, requestedSession, authorityPackage(requestedSession));
   const vaultBack = document.getElementById("recordsVaultBack");
   vaultBack.hidden = false;
-  vaultBack.href = `records.html?selected=${encodeURIComponent(requestedSession.sessionId || "")}`;
+  vaultBack.href = preserveRecordsAuthority(`records.html?selected=${encodeURIComponent(requestedSession.sessionId || "")}`);
 
   const trainingRecords = savedSessions.map(trainingScoreRecord).filter(Boolean);
   const dotTortureTrendCard = "";

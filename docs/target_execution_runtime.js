@@ -1846,6 +1846,15 @@
     // Missing interaction authority must fail closed.  MARK AIM is shown only
     // when the Backend returns an explicit shooter_declared interaction.
     const state = { session: null, image: null, imageDataUrl: "", observations: [], aim: null, aimMode: false, interaction: { aim: { mode: "not_required", points: [] } }, selectedObjectId: "", isCueDrill: false, isQualification: false, isDiagnostic: false, isDecision: false, isStaged: false, cueSequence: 0, cueRunState: null, noObservationDeclared: false, elapsedTimeConfirmed: false };
+    global.SCZN3WorkspaceNavigationState = Object.freeze({
+      hasUnsavedProgress() {
+        return Boolean(
+          state.session
+          && state.session.savedToSEC !== true
+          && (state.image || state.observations.length || canonicalResult(state.session))
+        );
+      }
+    });
     const smartTargetWorkspace = global.SCZN3SmartTargetWorkspace?.create({
       root: document.getElementById("contractWorkspace"),
       evidenceRegion: document.querySelector("#contractWorkspace [data-sczn3-workspace-evidence]"),

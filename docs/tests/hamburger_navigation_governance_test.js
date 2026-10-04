@@ -33,6 +33,9 @@ assert(navigation.includes("session.savedToSEC === true"), "saved sessions navig
 assert(navigation.includes("openLeaveDialog(destination.href)"), "unsaved navigation always opens the Stay/Leave alert");
 assert(navigation.includes("Stay Here") && navigation.includes("Leave Session"), "the alert provides both governed choices");
 assert(navigation.includes("data-preserve-active-session"), "read-only historical navigation preserves the active session without warning");
+assert(navigation.includes("preserveLocalAuthority"), "local Ballistic Vault navigation retains the active authority port");
+assert(navigation.includes('document.body.hasAttribute("data-contract-target-page")'), "contract target workspaces receive the shared unsaved-session guard");
+assert(!navigation.includes('if (link.hasAttribute("data-preserve-active-session")) return;'), "historical destinations cannot bypass protection for unsaved target work");
 assert(navigation.includes("data-replaces-active-session"), "non-workspace warnings require an explicit active-session replacement contract");
 assert(navigation.includes('document.addEventListener("pointerdown"'), "outside pointer interaction closes menus");
 assert(navigation.includes('document.addEventListener("wheel"'), "desktop scrolling cannot leave an orphaned menu");

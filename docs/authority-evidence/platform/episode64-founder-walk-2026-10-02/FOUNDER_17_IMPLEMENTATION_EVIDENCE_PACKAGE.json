@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "sczn3-founder-implementation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 17,
+  "recordedAt": "2026-10-04T00:26:00Z",
+  "status": "IMPLEMENTED_LIVE_FAILURE_REPAIRED_AND_MECHANICALLY_PROVEN",
+  "canonicalFaceId": "9bb68c840f6d62e5f2a68cb3a0d9154ca688f20c4b3871565b946203877a016e",
+  "target": {
+    "printer": "Baker Targets",
+    "name": "Birthday Cake Target",
+    "runtimeIds": [
+      "blocker_baker_targets_gf_birthday_cake",
+      "final_collection_baker_targets_pk_partypack_001"
+    ],
+    "identityCount": 2
+  },
+  "implementationBoundary": {
+    "newSharedScoringEngine": false,
+    "sharedNumberedRegionMachineryChanged": false,
+    "sharedClassifierChanged": false,
+    "targetSpecificDelta": "Birthday Cake canonical-face geometry, printed values, labels, and legitimate illustration-layer precedence only",
+    "printedValues": [100, 75, 50, 30, 25, 20, 20],
+    "oneHitEachTotal": 320,
+    "unnumberedArtworkTreatment": "count-only outside scoring area"
+  },
+  "tapByTapReconciliation": [
+    {"tap": 1, "xNorm": 0.460, "yNorm": 0.560, "visibleArea": "cake body 100", "resolvedRegion": "cake_body_100", "awardedPoints": 100},
+    {"tap": 2, "xNorm": 0.770, "yNorm": 0.380, "visibleArea": "party hat 75", "resolvedRegion": "party_hat_75", "awardedPoints": 75},
+    {"tap": 3, "xNorm": 0.270, "yNorm": 0.650, "visibleArea": "left character area 50", "resolvedRegion": "left_character_area_50", "awardedPoints": 50},
+    {"tap": 4, "xNorm": 0.450, "yNorm": 0.720, "visibleArea": "lower face/frosting 30", "resolvedRegion": "lower_face_frosting_30", "awardedPoints": 30},
+    {"tap": 5, "xNorm": 0.676, "yNorm": 0.710, "visibleArea": "right strawberry 25", "resolvedRegion": "right_strawberry_25", "awardedPoints": 25},
+    {"tap": 6, "xNorm": 0.450, "yNorm": 0.160, "visibleArea": "red balloon 20", "resolvedRegion": "red_balloon_20", "awardedPoints": 20},
+    {"tap": 7, "xNorm": 0.430, "yNorm": 0.800, "visibleArea": "black cake base 20", "resolvedRegion": "black_cake_base_20", "awardedPoints": 20},
+    {"tap": 8, "xNorm": 0.660, "yNorm": 0.120, "visibleArea": "unnumbered yellow balloon", "resolvedRegion": "outside", "awardedPoints": null},
+    {"tap": 9, "xNorm": 0.790, "yNorm": 0.150, "visibleArea": "unnumbered blue balloon", "resolvedRegion": "outside", "awardedPoints": null},
+    {"tap": 10, "xNorm": 0.920, "yNorm": 0.850, "visibleArea": "page background", "resolvedRegion": "outside", "awardedPoints": null}
+  ],
+  "reconciliation": {
+    "recordedObservations": 10,
+    "resolvedExactlyOnce": 10,
+    "scoringHits": 7,
+    "outsideCountOnly": 3,
+    "ambiguous": 0,
+    "unaccounted": 0,
+    "arithmetic": "100 + 75 + 50 + 30 + 25 + 20 + 20 = 320",
+    "totalScore": 320,
+    "hitRatePercent": 70.0,
+    "pointsPerTap": 32.0
+  },
+  "authorityBoundariesVerified": [
+    "unnumbered yellow and blue balloons did not inherit the red balloon's printed 20",
+    "page background remained count-only",
+    "legitimate strawberry/base and lower-face/base seams resolved through explicit target-face precedence",
+    "no shot quota, sequence, maximum score, miss penalty, age rule, winner, or birthday procedure was produced",
+    "all seven printed values retain publisher-face provenance"
+  ],
+  "sharedImplementation": {
+    "generator": "docs/backend/apply_founder_17_birthday_cake_canonical_face_treatment.py",
+    "treatment": "FOUNDER_17_BIRTHDAY_CAKE_CANONICAL_FACE_TREATMENT.json",
+    "contracts": [
+      "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gf_birthday_cake_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_partypack_001_target_scoring_v1.json"
+    ],
+    "sharedExecutor": "docs/backend/executors/declarative_target_score.py",
+    "sharedPresentation": "docs/target_execution_runtime.js",
+    "identitySpecificRuntimeBranch": false
+  },
+  "mechanicalProof": {
+    "bothIdentities": {
+      "test": "docs/backend/test_founder_17_birthday_cake_numbered_region_intelligence.py",
+      "result": "PASS",
+      "road": "TARGET -> RESULT -> HISTORY/SESSION -> SAVE SEC -> VAULT -> EXACT REOPEN",
+      "verified": [
+        "both identities inherit byte-equivalent geometry, scoring, mission, and Smart Target treatment",
+        "all seven printed scoring areas classify deterministically",
+        "three unnumbered/background observations remain count-only",
+        "all twenty-three replay observations and classifications survive exact reopen",
+        "no unsupported rules or values are introduced"
+      ]
+    },
+    "exactBrowserRoad": {
+      "automatedTest": "docs/production/episode64_founder_17_birthday_cake_lifecycle_browser_test.mjs",
+      "automatedResult": "PASS",
+      "automatedSessionId": "sczn3-session-3be60c89-91c5-4bee-bba2-a8be74ba623f",
+      "personallyWalkedInAppBrowser": false,
+      "personalVerificationBoundary": "The original Founder browser was not connected. The focused Chromium road exercised the exact repaired universal-header navigation and Vault record click.",
+      "road": "TARGET -> 23 mixed taps -> unsaved Vault departure blocked -> SHOW RESULT -> RESULT -> SAVE SEC -> universal-header VAULT -> Vault record click -> EXACT REOPEN",
+      "reopenedMarkerCount": 23,
+      "runtimeUrl": "http://127.0.0.1:8160/target-experience.html?missionFamily=targetScoring&target=blocker_baker_targets_gf_birthday_cake&source=registered&authorityPort=8160&v=founder-17-birthday-cake-1"
+    },
+    "founderLiveRepair": "FOUNDER_17_LIVE_SEC_VAULT_REPAIR.json"
+  },
+  "affectedPopulationRegression": {
+    "result": "PASS_WITH_ONE_PRE_EXISTING_BROAD_ASSERTION_RECORDED",
+    "backendPassed": [
+      "Founder 8 Bear numbered regions",
+      "Founder 9 Hare numbered regions",
+      "Founder 13 Vertigo numbered regions",
+      "Founder 14 Balloons object/scoring intelligence",
+      "Founder 15 Batter Up outcome intelligence",
+      "Founder 17 Birthday Cake"
+    ],
+    "browserPassed": [
+      "Founder 13 Vertigo lifecycle",
+      "Founder 14 Balloons lifecycle and shared HISTORY desktop/390px",
+      "Founder 17 Birthday Cake lifecycle",
+      "Founder Walk census/lifecycle gate contract"
+    ],
+    "staticPassed": [
+      "node --check docs/target_execution_runtime.js",
+      "git diff --check on bounded Founder 17 files"
+    ],
+    "preExistingOpenEvidence": "canonical_preserved_lifecycle_test.mjs retains a stale B27E HISTORY CSS-width source assertion unrelated to Founder 17; no product or shared presentation code was changed in this pass"
+  },
+  "repository": {
+    "baseHead": "8c334020e7c2bc2b416daf7035a1f5bab36a31cd",
+    "workingTreePolicy": "mixed pre-existing Founder-walk worktree preserved; no unrelated changes admitted or reverted",
+    "commitCreated": false
+  },
+  "llmGateRecommendation": "READY_FOR_FOUNDER",
+  "nextInstruction": "Return Founder #17 to the LLM semantic gate. Do not advance Founder #18."
+}

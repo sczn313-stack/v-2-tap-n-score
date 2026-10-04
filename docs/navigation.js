@@ -33,6 +33,15 @@
       : [HOME_DESTINATION, ...DESKTOP_DESTINATIONS];
   }
 
+  function preserveLocalAuthority(destination) {
+    const current = new URL(window.location.href);
+    const authorityPort = String(current.searchParams.get("authorityPort") || "").trim();
+    const local = ["localhost", "127.0.0.1", "::1", "[::1]"].includes(current.hostname);
+    if (!local || !/^\d{2,5}$/.test(authorityPort) || destination.origin !== current.origin) return destination;
+    destination.searchParams.set("authorityPort", authorityPort);
+    return destination;
+  }
+
   function appendUniversalDestinations(container, rootUrl) {
     universalDestinations(rootUrl).forEach(item => {
       if (item.action === "rate-us") {
@@ -45,7 +54,8 @@
         return;
       }
       const link = document.createElement("a");
-      link.href = new URL(item.page, rootUrl).href;
+      const destination = new URL(item.page, rootUrl);
+      link.href = item.preserve ? preserveLocalAuthority(destination).href : destination.href;
       link.textContent = item.label;
       if (item.preserve) link.setAttribute("data-preserve-active-session", "");
       container.append(link);
@@ -231,11 +241,11 @@
     function protectActiveWorkspace(event) {
       const link = event.target.closest("a[href]");
       if (!link || link.hasAttribute("data-allow-mission-exit")) return;
-      if (link.hasAttribute("data-preserve-active-session")) return;
       const destination = new URL(link.href, window.location.href);
       if (destination.origin !== window.location.origin) return;
       if (destination.pathname.endsWith("/shoot.html")) return;
       const replacesOrDiscardsSession = document.body.classList.contains("target-page")
+        || document.body.hasAttribute("data-contract-target-page")
         || link.hasAttribute("data-replaces-active-session");
       if (!replacesOrDiscardsSession) return;
       if (!workspaceHasUnsavedProgress()) return;
