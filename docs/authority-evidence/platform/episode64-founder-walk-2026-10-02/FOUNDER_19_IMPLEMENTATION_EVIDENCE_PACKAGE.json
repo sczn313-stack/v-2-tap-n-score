@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "sczn3-founder-implementation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 19,
+  "recordedAt": "2026-10-04T02:39:18Z",
+  "status": "IMPLEMENTED_AND_MECHANICALLY_PROVEN",
+  "canonicalFaceId": "fa6b7512c2ee02c6299798909e9492a3202b7ec13a4766988b65b263909b92b3",
+  "target": {
+    "printer": "Baker Targets",
+    "name": "Boss Hog Target",
+    "runtimeIds": [
+      "blocker_baker_targets_gf_bosshog",
+      "final_collection_baker_targets_pk_badanimals_002",
+      "final_collection_baker_targets_pk_badmugcombo_002"
+    ],
+    "identityCount": 3
+  },
+  "implementationBoundary": {
+    "newSharedScoringEngine": false,
+    "sharedNumberedRegionMachineryChanged": false,
+    "sharedScoreOnTouchChanged": false,
+    "targetSpecificDelta": "eight Boss Hog polygons and their printed 8/6/4/2 bindings only",
+    "numberedRegionCount": 8,
+    "printedValueDistribution": {"8": 2, "6": 2, "4": 2, "2": 2},
+    "outsideTreatment": "count_only"
+  },
+  "tapByTapReconciliation": [
+    {"tap": 1, "coordinate": [0.452, 0.190], "resolvedRegion": "head_8", "awardedValue": 8},
+    {"tap": 2, "coordinate": [0.455, 0.790], "resolvedRegion": "center_body_8", "awardedValue": 8},
+    {"tap": 3, "coordinate": [0.174, 0.442], "resolvedRegion": "left_upper_2", "awardedValue": 2},
+    {"tap": 4, "coordinate": [0.676, 0.440], "resolvedRegion": "right_upper_2", "awardedValue": 2},
+    {"tap": 5, "coordinate": [0.176, 0.660], "resolvedRegion": "left_middle_4", "awardedValue": 4},
+    {"tap": 6, "coordinate": [0.700, 0.663], "resolvedRegion": "right_middle_4", "awardedValue": 4},
+    {"tap": 7, "coordinate": [0.181, 0.915], "resolvedRegion": "left_lower_6", "awardedValue": 6},
+    {"tap": 8, "coordinate": [0.715, 0.920], "resolvedRegion": "right_lower_6", "awardedValue": 6},
+    {"tap": 9, "coordinate": [0.930, 0.120], "resolvedRegion": "outside", "awardedValue": null}
+  ],
+  "reconciliation": {
+    "recordedObservations": 9,
+    "resolvedExactlyOnce": 9,
+    "scoringHits": 8,
+    "outsideCountOnly": 1,
+    "totalScore": 40,
+    "arithmetic": "8 + 8 + 6 + 6 + 4 + 4 + 2 + 2 = 40",
+    "ambiguous": 0,
+    "unaccounted": 0
+  },
+  "authorityBoundariesVerified": [
+    "no shot quota, sequence, maximum score, miss penalty, winner, or game procedure was introduced",
+    "no kill, vital, wound, or hunting-effectiveness claim was produced",
+    "outside observations receive no invented numeric value",
+    "Score on Touch uses observation footprint evidence without expanding target geometry"
+  ],
+  "sharedImplementation": {
+    "generator": "docs/backend/apply_founder_19_boss_hog_canonical_face_treatment.py",
+    "treatment": "FOUNDER_19_BOSS_HOG_CANONICAL_FACE_TREATMENT.json",
+    "contracts": [
+      "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gf_bosshog_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_badanimals_002_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_badmugcombo_002_target_scoring_v1.json"
+    ],
+    "identitySpecificRuntimeBranch": false
+  },
+  "mechanicalProof": {
+    "allThreeIdentities": {
+      "test": "docs/backend/test_founder_19_boss_hog_numbered_region_intelligence.py",
+      "result": "PASS",
+      "road": "TARGET -> RESULT -> HISTORY/SESSION -> SAVE SEC -> VAULT -> EXACT REOPEN"
+    },
+    "exactBrowserRoad": {
+      "test": "docs/production/episode64_founder_19_boss_hog_lifecycle_browser_test.mjs",
+      "result": "PASS",
+      "sessionId": "sczn3-session-76caa1e3-e95c-41ba-b7ec-732a7b3b6fe6",
+      "founderWalkIdentity": "blocker_baker_targets_gf_bosshog",
+      "reopenedMarkerCount": 9,
+      "runtimeUrl": "http://127.0.0.1:8161/target-experience.html?missionFamily=targetScoring&target=blocker_baker_targets_gf_bosshog&source=registered&authorityPort=8161&v=founder-19-boss-hog-1"
+    }
+  },
+  "affectedPopulationRegression": {
+    "result": "PASS",
+    "passed": [
+      "Founder 8 Bear Encounter",
+      "Founder 9 Bad Hare Day",
+      "Founder 13 Vertigo",
+      "Founder 14 Balloons",
+      "Founder 15 Batter Up",
+      "Founder 17 Birthday Cake",
+      "Founder 18 Outdoor Shooting Challenge",
+      "shared Score on Touch",
+      "UGO location authority",
+      "shared mixed-region RESULT presentation"
+    ]
+  },
+  "repository": {
+    "sourceHead": "a275cee2ba74a9f671692e2df35a729a6d20bd7f",
+    "workingTreePolicy": "mixed pre-existing Founder-walk worktree preserved; no unrelated changes admitted or reverted",
+    "commitCreated": false
+  },
+  "llmGateRecommendation": "READY_FOR_FOUNDER",
+  "nextInstruction": "Present Founder #19 only. Do not advance Founder #20."
+}
