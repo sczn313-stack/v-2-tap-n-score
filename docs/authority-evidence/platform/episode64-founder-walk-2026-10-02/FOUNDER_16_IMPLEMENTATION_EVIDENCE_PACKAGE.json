@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "sczn3-founder-implementation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 16,
+  "recordedAt": "2026-10-03T23:51:45Z",
+  "status": "IMPLEMENTED_AND_MECHANICALLY_PROVEN_AWAITING_FOUNDER",
+  "readyForFounder": true,
+  "advanceToFounderNumber": null,
+  "stopAt": "LLM_PRE_FOUNDER_GATE",
+  "canonicalFace": {
+    "id": "330819718b8bc8e4121a5cdc59845233d15eff86946e646a85b9a93700f5ceeb",
+    "name": "Bigfoot Target",
+    "treatment": "FOUNDER_16_BIGFOOT_CANONICAL_FACE_TREATMENT.json",
+    "identityCount": 2,
+    "identities": [
+      {"runtimeId": "blocker_baker_targets_gg_bigfoot", "sku": "GG-Bigfoot"},
+      {"runtimeId": "final_collection_baker_targets_pk_leftout2_002", "sku": "PK-LeftOut2"}
+    ]
+  },
+  "authorityBoundary": {
+    "publisherPointValues": "not_defined",
+    "publisherShotCount": "not_defined",
+    "publisherSequence": "not_defined",
+    "publisherWinnerRule": "not_defined",
+    "numericScoreProduced": false,
+    "fixedObservationCountIntroduced": false,
+    "outsidePenaltyIntroduced": false,
+    "x10Applied": false,
+    "vitalKillWoundOrTacticalClaimsIntroduced": false,
+    "physicalDimensionsInferred": false,
+    "sczn3Scope": "classify and compare the exact face's two nested eye aim areas and seven visibly bounded silhouette areas without inventing a score, game, or effectiveness claim"
+  },
+  "implementedSemantics": {
+    "model": "multiple_bulls",
+    "nestedEyeAreas": [
+      "left eye white center",
+      "left eye red area",
+      "right eye white center",
+      "right eye red area"
+    ],
+    "silhouetteAreas": [
+      "head / face",
+      "upper torso / chest",
+      "abdomen",
+      "left arm",
+      "right arm",
+      "left leg",
+      "right leg"
+    ],
+    "governedTargetAreas": 11,
+    "exactFounderObservationCount": 21,
+    "exactFounderHitCount": 11,
+    "exactFounderOutsideCount": 10,
+    "exactFounderActiveTargetAreas": "8 of 11",
+    "canonicalGeometryCoverageExercise": "11 of 11",
+    "resultIntelligence": [
+      "hit/outside/total accounting",
+      "tap accuracy",
+      "eye-center and eye-area accuracy",
+      "per-area hit counts",
+      "eye versus silhouette-area distribution",
+      "active-region-first presentation",
+      "complete governed-region preservation"
+    ]
+  },
+  "sharedImplementation": {
+    "generator": "docs/backend/apply_founder_16_bigfoot_canonical_face_treatment.py",
+    "contracts": [
+      "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gg_bigfoot_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_leftout2_002_target_scoring_v1.json"
+    ],
+    "sharedExecutor": "docs/backend/executors/declarative_target_score.py",
+    "sharedPresentation": "docs/target_execution_runtime.js",
+    "identitySpecificRuntimeBranch": false,
+    "sharedEngineChanged": false
+  },
+  "mechanicalProof": {
+    "bothIdentities": {
+      "test": "docs/backend/test_founder_16_bigfoot_aim_area_intelligence.py",
+      "result": "PASS",
+      "road": "TARGET -> RESULT -> SESSION/HISTORY -> SAVE SEC -> VAULT -> EXACT REOPEN",
+      "verified": [
+        "both identities inherit byte-equivalent geometry, scoring, mission, and Smart Target treatment",
+        "the exact 21 Founder coordinates resolve exactly once with zero ambiguity",
+        "both nested white centers and both red-eye areas classify deterministically",
+        "all seven bounded silhouette areas classify deterministically",
+        "all ten exact-Founder outside observations remain count-only",
+        "all 21 exact Founder coordinates and classifications survive exact reopen",
+        "no numeric total, X=10, shot count, sequence, winner rule, game procedure, physical measurement, or vital/kill/wound/tactical claim is produced"
+      ]
+    },
+    "exactLiveFounderRoad": {
+      "test": "docs/production/episode64_founder_16_bigfoot_lifecycle_browser_test.mjs",
+      "result": "PASS",
+      "runtimeIdentity": "blocker_baker_targets_gg_bigfoot",
+      "sessionId": "sczn3-session-2efa01b5-392f-4e9f-90e0-c0f77ed44817",
+      "runtimeUrl": "http://127.0.0.1:8159/target-experience.html?missionFamily=targetScoring&target=blocker_baker_targets_gg_bigfoot&source=registered&authorityPort=8159&v=founder-16-bigfoot-2",
+      "road": "TARGET -> 21 taps -> SHOW RESULT -> RESULT -> SESSION/HISTORY -> SAVE SEC -> VAULT -> EXACT REOPEN",
+      "observed": {
+        "hitTaps": 11,
+        "outsideBigfootAreas": 10,
+        "totalTaps": 21,
+        "tapAccuracyPercent": 52.4,
+        "activeTargetAreas": "8 of 11",
+        "reopenedMarkerCount": 21,
+        "numericScoreDisplayed": false
+      }
+    }
+  },
+  "liveFounderRepair": {
+    "record": "FOUNDER_16_LIVE_GEOMETRY_REPAIR.json",
+    "originalFailure": "geometry_classification_ambiguous",
+    "firstAmbiguousObservation": 5,
+    "beforeMatches": ["upper_torso_chest", "right_arm"],
+    "repairLayer": "Bigfoot canonical-face geometry/data",
+    "sharedClassifierChanged": false,
+    "ambiguityGateWeakened": false,
+    "exactFounderReplay": "PASS"
+  },
+  "affectedPopulationRegression": {
+    "result": "PASS",
+    "backend": [
+      "test_founder_6_alien_aim_area_intelligence.py",
+      "test_founder_11_martian_militia_aim_area_intelligence.py",
+      "test_founder_12_three_shooter_aim_area_intelligence.py",
+      "test_founder_15_batter_up_outcome_intelligence.py",
+      "test_founder_16_bigfoot_aim_area_intelligence.py"
+    ],
+    "frontend": [
+      "episode64_founder_11_martian_militia_lifecycle_browser_test.mjs",
+      "episode64_founder_12_three_shooter_lifecycle_browser_test.mjs",
+      "episode64_founder_15_batter_up_lifecycle_browser_test.mjs",
+      "episode64_founder_16_bigfoot_lifecycle_browser_test.mjs",
+      "founder_walk_contract_test.mjs",
+      "qt_universal_counting_details_test.mjs",
+      "node --check target_execution_runtime.js",
+      "git diff --check"
+    ]
+  },
+  "repository": {
+    "baseHead": "fcbbd2ff4aa57a65e2d16072929e153d27e8cbb1",
+    "workingTreePolicy": "mixed pre-existing Founder-walk worktree preserved; no unrelated changes admitted or reverted",
+    "commitCreated": false
+  },
+  "llmGateResult": "READY_FOR_FOUNDER_AFTER_LIVE_GEOMETRY_REPAIR",
+  "founderApproval": {
+    "status": "APPROVED",
+    "record": "FOUNDER_16_FOUNDER_APPROVAL.json"
+  },
+  "nextInstruction": "Founder #16 is closed. Advance Founder #17 through the Canonical Face Gate and LLM semantic review before Founder presentation."
+}

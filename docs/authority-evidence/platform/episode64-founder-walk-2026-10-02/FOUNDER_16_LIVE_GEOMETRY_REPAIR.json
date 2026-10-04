@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "sczn3-founder-live-geometry-repair-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 16,
+  "recordedAt": "2026-10-03T23:51:45Z",
+  "canonicalFaceId": "330819718b8bc8e4121a5cdc59845233d15eff86946e646a85b9a93700f5ceeb",
+  "status": "EXACT_FOUNDER_SET_REPAIRED_AND_PROVEN",
+  "liveFailure": {
+    "runtimeId": "blocker_baker_targets_gg_bigfoot",
+    "observationCount": 21,
+    "authorityError": "geometry_classification_ambiguous",
+    "source": "read-only extraction from the still-open Founder Chrome tab's 21 observation markers",
+    "resultProduced": false,
+    "preservedSecProduced": false
+  },
+  "rootCause": {
+    "firstAmbiguousObservation": 5,
+    "coordinate": {"xNorm": 0.6339877570346321, "yNorm": 0.3284203937727778},
+    "matchingRegionsBeforeRepair": ["upper_torso_chest", "right_arm"],
+    "priorityBeforeRepair": {"upper_torso_chest": 600, "right_arm": 600},
+    "mechanism": "Two peer Bigfoot polygons overlapped at the illustrated right shoulder/chest seam and carried equal priority, so the unchanged shared classifier correctly rejected the point as ambiguous.",
+    "additionalLiveGeometryFindings": [
+      {
+        "observation": 6,
+        "coordinate": {"xNorm": 0.6634114583333334, "yNorm": 0.6216390373326629},
+        "before": "outside",
+        "truthfulArea": "right_leg"
+      },
+      {
+        "observation": 21,
+        "coordinate": {"xNorm": 0.73241341991342, "yNorm": 0.2582719928755028},
+        "before": "outside",
+        "truthfulArea": "right_arm"
+      }
+    ]
+  },
+  "boundedCorrection": {
+    "layer": "Bigfoot canonical-face geometry/data only",
+    "sharedClassifierChanged": false,
+    "ambiguityGateWeakened": false,
+    "changes": [
+      "expanded the right-arm polygon to the visible upper-right shoulder/arm boundary",
+      "expanded the right-leg polygon to include the visible upper-right leg boundary",
+      "encoded deterministic visible seam ownership: arms 650, upper torso/chest 640, abdomen 630, legs 620",
+      "preserved eye-center 1000, red-eye 900, and head/face 700 nested precedence"
+    ]
+  },
+  "founderObservationReconciliation": [
+    {"tap": 1, "xNorm": 0.4562533820346321, "yNorm": 0.16973592551033473, "resolvedRegion": "left_red_eye", "label": "Left Eye — Red Area"},
+    {"tap": 2, "xNorm": 0.545606737012987, "yNorm": 0.17315105349020573, "resolvedRegion": "right_red_eye", "label": "Right Eye — Red Area"},
+    {"tap": 3, "xNorm": 0.4970829951298701, "yNorm": 0.1198017378724468, "resolvedRegion": "head_face", "label": "Head / Face"},
+    {"tap": 4, "xNorm": 0.39167343073593074, "yNorm": 0.3382348670256651, "resolvedRegion": "upper_torso_chest", "label": "Upper Torso / Chest"},
+    {"tap": 5, "xNorm": 0.6339877570346321, "yNorm": 0.3284203937727778, "resolvedRegion": "right_arm", "label": "Right Arm"},
+    {"tap": 6, "xNorm": 0.6634114583333334, "yNorm": 0.6216390373326629, "resolvedRegion": "right_leg", "label": "Right Leg"},
+    {"tap": 7, "xNorm": 0.37822138798701296, "yNorm": 0.6451333170133951, "resolvedRegion": "left_leg", "label": "Left Leg"},
+    {"tap": 8, "xNorm": 0.23960024350649352, "yNorm": 0.7187354349072628, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 9, "xNorm": 0.1236218208874459, "yNorm": 0.7139439653309843, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 10, "xNorm": 0.12880478896103897, "yNorm": 0.4543685128496401, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 11, "xNorm": 0.10453869047619047, "yNorm": 0.2264296225773082, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 12, "xNorm": 0.24660951028138527, "yNorm": 0.14934163017291297, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 13, "xNorm": 0.8313717532467533, "yNorm": 0.11093269552924133, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 14, "xNorm": 0.9007034632034632, "yNorm": 0.23738890332627275, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 15, "xNorm": 0.9579951298701299, "yNorm": 0.4227448136462018, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 16, "xNorm": 0.89159733495671, "yNorm": 0.7602636484026057, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 17, "xNorm": 0.7735305059523809, "yNorm": 0.8212407263256884, "resolvedRegion": "outside", "label": "Outside Bigfoot Areas"},
+    {"tap": 18, "xNorm": 0.3783059388528138, "yNorm": 0.8039142578176424, "resolvedRegion": "left_leg", "label": "Left Leg"},
+    {"tap": 19, "xNorm": 0.631933170995671, "yNorm": 0.7702774982418885, "resolvedRegion": "right_leg", "label": "Right Leg"},
+    {"tap": 20, "xNorm": 0.2754075351731602, "yNorm": 0.27221549091761265, "resolvedRegion": "left_arm", "label": "Left Arm"},
+    {"tap": 21, "xNorm": 0.73241341991342, "yNorm": 0.2582719928755028, "resolvedRegion": "right_arm", "label": "Right Arm"}
+  ],
+  "reconciliation": {
+    "recordedObservations": 21,
+    "resolvedExactlyOnce": 21,
+    "hitTaps": 11,
+    "outsideTaps": 10,
+    "ambiguousTaps": 0,
+    "unaccountedTaps": 0,
+    "tapAccuracyPercent": 52.4
+  },
+  "fullLifecycleProof": {
+    "test": "docs/production/episode64_founder_16_bigfoot_lifecycle_browser_test.mjs",
+    "result": "PASS",
+    "sessionId": "sczn3-session-2efa01b5-392f-4e9f-90e0-c0f77ed44817",
+    "road": "exact Founder 21 taps -> SHOW RESULT -> HISTORY/SESSION -> SAVE SEC -> VAULT -> EXACT REOPEN",
+    "reopenedMarkerCount": 21
+  }
+}

@@ -1,0 +1,708 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-final_collection_baker_targets_pk_leftout2_002-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "EPISODE64_FINAL_WIDGET_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "final_collection_baker_targets_pk_leftout2_002",
+    "version": "1",
+    "atpId": "ATP_EP64_FINAL_7578DE27D8240637489C_V1",
+    "authorityId": "EP64_FINAL_7578DE27D8240637489C_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/left-out-monsters-pack-30-targets-total/"
+    },
+    "product": {
+      "id": "episode64-final-7578de27d8240637489c",
+      "name": "Left-Out Monsters Pack \u2013 30 Targets Total \u2014 Bigfoot Target",
+      "sku": "PK-LeftOut2",
+      "dimensions": {
+        "width": 0.01,
+        "height": 24.0,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "final_collection_baker_targets_pk_leftout2_002-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
+        "regions": [
+          {
+            "regionId": "left_eye_center",
+            "shape": "ellipse",
+            "cx": 0.4592,
+            "cy": 0.1747,
+            "radiusX": 0.006,
+            "radiusY": 0.0048,
+            "priority": 1000
+          },
+          {
+            "regionId": "right_eye_center",
+            "shape": "ellipse",
+            "cx": 0.5346,
+            "cy": 0.174,
+            "radiusX": 0.006,
+            "radiusY": 0.0048,
+            "priority": 1000
+          },
+          {
+            "regionId": "left_red_eye",
+            "shape": "ellipse",
+            "cx": 0.4584,
+            "cy": 0.176,
+            "radiusX": 0.0205,
+            "radiusY": 0.0115,
+            "priority": 900
+          },
+          {
+            "regionId": "right_red_eye",
+            "shape": "ellipse",
+            "cx": 0.5355,
+            "cy": 0.1753,
+            "radiusX": 0.0205,
+            "radiusY": 0.0115,
+            "priority": 900
+          },
+          {
+            "regionId": "head_face",
+            "shape": "polygon",
+            "points": [
+              [
+                0.398,
+                0.073
+              ],
+              [
+                0.485,
+                0.069
+              ],
+              [
+                0.563,
+                0.085
+              ],
+              [
+                0.611,
+                0.126
+              ],
+              [
+                0.633,
+                0.191
+              ],
+              [
+                0.617,
+                0.258
+              ],
+              [
+                0.576,
+                0.309
+              ],
+              [
+                0.527,
+                0.342
+              ],
+              [
+                0.45,
+                0.342
+              ],
+              [
+                0.401,
+                0.31
+              ],
+              [
+                0.36,
+                0.26
+              ],
+              [
+                0.347,
+                0.191
+              ],
+              [
+                0.363,
+                0.126
+              ]
+            ],
+            "priority": 700
+          },
+          {
+            "regionId": "left_arm",
+            "shape": "polygon",
+            "points": [
+              [
+                0.266,
+                0.234
+              ],
+              [
+                0.355,
+                0.27
+              ],
+              [
+                0.341,
+                0.372
+              ],
+              [
+                0.306,
+                0.477
+              ],
+              [
+                0.285,
+                0.61
+              ],
+              [
+                0.244,
+                0.687
+              ],
+              [
+                0.184,
+                0.682
+              ],
+              [
+                0.135,
+                0.624
+              ],
+              [
+                0.125,
+                0.53
+              ],
+              [
+                0.151,
+                0.431
+              ],
+              [
+                0.174,
+                0.337
+              ]
+            ],
+            "priority": 650
+          },
+          {
+            "regionId": "right_arm",
+            "shape": "polygon",
+            "points": [
+              [
+                0.66,
+                0.22
+              ],
+              [
+                0.748,
+                0.245
+              ],
+              [
+                0.801,
+                0.337
+              ],
+              [
+                0.824,
+                0.431
+              ],
+              [
+                0.849,
+                0.53
+              ],
+              [
+                0.839,
+                0.624
+              ],
+              [
+                0.791,
+                0.682
+              ],
+              [
+                0.732,
+                0.687
+              ],
+              [
+                0.69,
+                0.61
+              ],
+              [
+                0.67,
+                0.477
+              ],
+              [
+                0.625,
+                0.372
+              ],
+              [
+                0.61,
+                0.27
+              ]
+            ],
+            "priority": 650
+          },
+          {
+            "regionId": "upper_torso_chest",
+            "shape": "polygon",
+            "points": [
+              [
+                0.35,
+                0.278
+              ],
+              [
+                0.42,
+                0.318
+              ],
+              [
+                0.487,
+                0.349
+              ],
+              [
+                0.555,
+                0.318
+              ],
+              [
+                0.625,
+                0.278
+              ],
+              [
+                0.697,
+                0.302
+              ],
+              [
+                0.741,
+                0.361
+              ],
+              [
+                0.686,
+                0.428
+              ],
+              [
+                0.59,
+                0.45
+              ],
+              [
+                0.487,
+                0.426
+              ],
+              [
+                0.388,
+                0.45
+              ],
+              [
+                0.29,
+                0.426
+              ],
+              [
+                0.237,
+                0.361
+              ],
+              [
+                0.279,
+                0.302
+              ]
+            ],
+            "priority": 640
+          },
+          {
+            "regionId": "abdomen",
+            "shape": "polygon",
+            "points": [
+              [
+                0.386,
+                0.424
+              ],
+              [
+                0.487,
+                0.405
+              ],
+              [
+                0.591,
+                0.424
+              ],
+              [
+                0.635,
+                0.518
+              ],
+              [
+                0.598,
+                0.588
+              ],
+              [
+                0.526,
+                0.632
+              ],
+              [
+                0.451,
+                0.632
+              ],
+              [
+                0.379,
+                0.588
+              ],
+              [
+                0.343,
+                0.518
+              ]
+            ],
+            "priority": 630
+          },
+          {
+            "regionId": "left_leg",
+            "shape": "polygon",
+            "points": [
+              [
+                0.35,
+                0.535
+              ],
+              [
+                0.479,
+                0.594
+              ],
+              [
+                0.487,
+                0.716
+              ],
+              [
+                0.471,
+                0.842
+              ],
+              [
+                0.455,
+                0.95
+              ],
+              [
+                0.401,
+                0.973
+              ],
+              [
+                0.323,
+                0.958
+              ],
+              [
+                0.279,
+                0.913
+              ],
+              [
+                0.286,
+                0.799
+              ],
+              [
+                0.3,
+                0.68
+              ]
+            ],
+            "priority": 620
+          },
+          {
+            "regionId": "right_leg",
+            "shape": "polygon",
+            "points": [
+              [
+                0.626,
+                0.535
+              ],
+              [
+                0.705,
+                0.68
+              ],
+              [
+                0.705,
+                0.799
+              ],
+              [
+                0.698,
+                0.913
+              ],
+              [
+                0.653,
+                0.958
+              ],
+              [
+                0.575,
+                0.973
+              ],
+              [
+                0.522,
+                0.95
+              ],
+              [
+                0.505,
+                0.842
+              ],
+              [
+                0.489,
+                0.716
+              ],
+              [
+                0.498,
+                0.594
+              ]
+            ],
+            "priority": 620
+          }
+        ],
+        "ugoAuthority": "SCZN3_VISIBLE_BIGFOOT_FACE_330819718B8BC8E4121A_V1"
+      },
+      "digest": "eb2fdba7bfe632d68b7a99b23783bba076d6d5adee76a87bfe8ad5b9d84b03d2"
+    },
+    "registration": {
+      "id": "final_collection_baker_targets_pk_leftout2_002-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/episode64-final-widget-run-2026-09-29/representations/FINAL_FACE_147c97fc046a421cecae.jpg",
+        "assetSha256": "330819718b8bc8e4121a5cdc59845233d15eff86946e646a85b9a93700f5ceeb",
+        "assetAlt": "Left-Out Monsters Pack \u2013 30 Targets Total \u2014 Bigfoot Target, SKU PK-LeftOut2",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "5418d9908096d75278f4e94f9272148e78a1b0c8b0843a3028d0e7fd9617fd8a"
+    },
+    "scoring": {
+      "id": "final_collection_baker_targets_pk_leftout2_002-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "left_eye_center": {
+            "label": "Left Eye \u2014 White Center",
+            "objectId": "left_eye_center",
+            "objectLabel": "Left Eye \u2014 White Center"
+          },
+          "left_red_eye": {
+            "label": "Left Eye \u2014 Red Area",
+            "objectId": "left_red_eye",
+            "objectLabel": "Left Eye \u2014 Red Area"
+          },
+          "right_eye_center": {
+            "label": "Right Eye \u2014 White Center",
+            "objectId": "right_eye_center",
+            "objectLabel": "Right Eye \u2014 White Center"
+          },
+          "right_red_eye": {
+            "label": "Right Eye \u2014 Red Area",
+            "objectId": "right_red_eye",
+            "objectLabel": "Right Eye \u2014 Red Area"
+          },
+          "head_face": {
+            "label": "Head / Face",
+            "objectId": "head_face",
+            "objectLabel": "Head / Face"
+          },
+          "upper_torso_chest": {
+            "label": "Upper Torso / Chest",
+            "objectId": "upper_torso_chest",
+            "objectLabel": "Upper Torso / Chest"
+          },
+          "abdomen": {
+            "label": "Abdomen",
+            "objectId": "abdomen",
+            "objectLabel": "Abdomen"
+          },
+          "left_arm": {
+            "label": "Left Arm",
+            "objectId": "left_arm",
+            "objectLabel": "Left Arm"
+          },
+          "right_arm": {
+            "label": "Right Arm",
+            "objectId": "right_arm",
+            "objectLabel": "Right Arm"
+          },
+          "left_leg": {
+            "label": "Left Leg",
+            "objectId": "left_leg",
+            "objectLabel": "Left Leg"
+          },
+          "right_leg": {
+            "label": "Right Leg",
+            "objectId": "right_leg",
+            "objectLabel": "Right Leg"
+          }
+        },
+        "outsideRule": {
+          "label": "Outside Bigfoot Areas",
+          "countsAsHit": false
+        },
+        "classificationFootprintMode": "tap_center",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "summaryDimensions": [
+          {
+            "dimensionId": "feature_class",
+            "label": "Bigfoot area distribution",
+            "groups": [
+              {
+                "groupId": "eyes",
+                "label": "Eyes",
+                "objectIds": [
+                  "left_eye_center",
+                  "left_red_eye",
+                  "right_eye_center",
+                  "right_red_eye"
+                ]
+              },
+              {
+                "groupId": "silhouette_areas",
+                "label": "Silhouette Areas",
+                "objectIds": [
+                  "head_face",
+                  "upper_torso_chest",
+                  "abdomen",
+                  "left_arm",
+                  "right_arm",
+                  "left_leg",
+                  "right_leg"
+                ]
+              }
+            ]
+          }
+        ],
+        "publisherRuleAuthority": {
+          "source": "publisher canonical face 330819718b8bc8e4121a5cdc59845233d15eff86946e646a85b9a93700f5ceeb",
+          "rule": "Visible eye and silhouette areas are classified as non-numeric SCZN3-derived target intelligence. No publisher score, fixed shot count, sequence, maximum, penalty, winner rule, vital-zone claim, or game procedure is defined."
+        }
+      },
+      "digest": "4deb3edc05c5a7264745ffd1ea1d4bd82feba57097a269ff9508aed57f4bb1cc"
+    },
+    "mission": {
+      "id": "final_collection_baker_targets_pk_leftout2_002-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_left_eye",
+                "regionId": "left_eye_center",
+                "xNorm": 0.4592,
+                "yNorm": 0.1747
+              },
+              {
+                "aimId": "aim_right_eye",
+                "regionId": "right_eye_center",
+                "xNorm": 0.5346,
+                "yNorm": 0.174
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        },
+        "smartTargetTreatment": {
+          "grammar": [
+            "nested_aim_area",
+            "silhouette_region",
+            "count_only_performance"
+          ],
+          "shooterFacingVocabulary": {
+            "singular": "target area",
+            "plural": "target areas"
+          },
+          "outsideLabel": "Outside Bigfoot Areas",
+          "hitAreaLabel": "the visible Bigfoot eye and silhouette areas",
+          "intelligence": [
+            "tap_accuracy",
+            "target_area_completion",
+            "per_target_area_counts",
+            "eye_center_accuracy",
+            "eye_distribution",
+            "silhouette_area_distribution",
+            "outside_target_area_count",
+            "observation_accounting",
+            "region_detail"
+          ],
+          "authorityScope": "sczn3_derived_visible_structure",
+          "publisherScoreStatus": "not_defined",
+          "fixedObservationCountStatus": "not_defined",
+          "engagementSequenceStatus": "not_defined",
+          "winnerRuleStatus": "not_defined",
+          "x10AuthorityStatus": "not_applicable",
+          "presentationRule": "Preserve everything underneath. Present what happened first."
+        }
+      },
+      "digest": "ca1d8c245ff12ed3068ea138818a62bbab7b60024b76b93ab08b77e812566d57"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "invented_numeric_score",
+    "invented_fixed_shot_count_or_sequence",
+    "invented_maximum_score_or_winner_rule",
+    "invented_game_procedure",
+    "invented_outside_penalty",
+    "x10_scoring",
+    "vital_kill_wound_threat_tactical_or_effectiveness_claims",
+    "inferred_physical_dimensions_from_pixels",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}
