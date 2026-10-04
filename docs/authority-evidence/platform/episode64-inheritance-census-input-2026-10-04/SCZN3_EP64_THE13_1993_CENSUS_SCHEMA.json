@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "sczn3-episode64-inheritance-census-data-dictionary-v1",
+  "rootCollections": {
+    "faces": "Exactly 1,993 authoritative workbook rows, one per census face key.",
+    "runtimeBindings": "Current canonical-filename Backend execution contracts, normalized by runtime ID. Complete stored contracts are included without semantic rewriting.",
+    "canonicalFaceGroups": "Runtime aliases grouped only by stored registration assetSha256."
+  },
+  "faceSections": {
+    "identity": "Census identity, registered face resolution, aliases, product/SKU and runtime bindings.",
+    "existingUnderstanding": "Only classifications, structures, and treatment data already stored in the workbook, QT authority, or linked contracts.",
+    "authority": "Publisher/governing, physical/face, SCZN3-derived, and runtime provenance boundaries.",
+    "reusableMachinery": "Stored executor/result/scoring/footprint/persistence machinery associated with linked runtime contracts.",
+    "history": "Stored Founder decisions, repairs, and approval evidence tied by runtime ID or canonical face hash.",
+    "executionState": "Mechanical contract/binding/lifecycle state. It is not a semantic inheritance grade.",
+    "provenance": "Exact source references for the face record."
+  },
+  "sentinels": {
+    "UNKNOWN": "A required identity/result cannot be resolved from stored evidence.",
+    "NOT_STORED": "The source has no stored value for the field."
+  },
+  "canonicalFaceResolutionValues": {
+    "ONE_REGISTERED_CANONICAL_FACE": "All matched runtime identities share one stored registration asset SHA-256.",
+    "MULTIPLE_REGISTERED_CANONICAL_FACES": "The census row mechanically matches runtime identities with more than one registration asset SHA-256; no face was selected.",
+    "NO_REGISTERED_RUNTIME_BINDING": "No exact QT identity, SKU/product token, or exact normalized product-name binding was found."
+  },
+  "matchMethods": {
+    "exact_qt_identity_id": "QT catalog/identity ID equality.",
+    "exact_sku_or_product_id_token": "Exact normalized token equality against stored SKU/product ID.",
+    "exact_normalized_product_name": "Exact normalized product-name equality, used only when no token match exists.",
+    "NO_RUNTIME_BINDING_MATCH": "No exact mechanical join succeeded."
+  },
+  "nonGoals": [
+    "No Full/Partial/New/Authority Blocked/Identity Blocked classification.",
+    "No target implementation or repair.",
+    "No contract mutation.",
+    "No inference of missing regions, rules, values, or authority."
+  ]
+}

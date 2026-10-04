@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "sczn3-episode64-inheritance-census-provenance-v1",
+  "generatedAt": "2026-10-04T17:32:10.345646+00:00",
+  "sourceCommit": "174d2d07297bff711b058619c9f1527049e087db",
+  "sources": [
+    {
+      "path": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "sha256": "f63c9d35eb19f17b99139fa437231f6bbb5ae3401a5872dc1ad24e3f7ded3e11",
+      "bytes": 1023873,
+      "role": "authoritative 1,993-face census and printer totals"
+    },
+    {
+      "path": "docs/authority-evidence/publisher-os/P_OS_12_PUBLISHER_TARGET_ONLY_2026-09-08.zip",
+      "sha256": "d061cef8cf27a7112ead2139d23387fadae9f0860789653bc42f8f401f400993",
+      "bytes": 862659,
+      "role": "publisher source records for printers 1-12"
+    },
+    {
+      "path": "docs/backend/target_knowledge/qt_episode64_smart_target_authority.json",
+      "sha256": "f23424bf7310c9f98711efa555465232e782b6262446ced91f768bf538930b23",
+      "bytes": 4049482,
+      "role": "stored Qualification Targets authority and treatments"
+    },
+    {
+      "path": "docs/authority-evidence/platform/episode64-founder-walk-2026-10-02/FOUNDER_WALK_LEDGER.json",
+      "sha256": "5796dae4221106d18e7b0bdf5d06f7e547250fe73a0ab4dea9d5bfb02364417e",
+      "bytes": 30992,
+      "role": "Founder walk history for early entries"
+    },
+    {
+      "path": "docs/authority-evidence/platform/episode64-founder-walk-2026-10-02/FOUNDER_20_OF_20_UNIQUE_AUDIT_CLOSURE.json",
+      "sha256": "ce9edd03dc03ea5e37e1095d0e4ca3a5735edac1820ac2ce5ce099b76bf8f319",
+      "bytes": 1766,
+      "role": "Founder 20/20 unique canonical-face closure"
+    },
+    {
+      "path": "docs/authority-evidence/platform/episode64-founder-walk-2026-10-02/SCZN3_SCORE_ON_TOUCH_FOUNDER_AUTHORITY.json",
+      "sha256": "b40adad70f1dc3721c8bc9d1d7156508cb40ca26daad8f5fdaf9c9315c2c56fa",
+      "bytes": 1148,
+      "role": "shared Score on Touch Founder authority"
+    },
+    {
+      "path": "docs/governance/EPISODE64_FOUNDER_AUTHORITY_PRINTER_SHOOTER_SCZN3_2026-10-03.md",
+      "sha256": "e588a6922d52ad0b0d268a6c57afd18e2fee106680d2d3b79ad562a60216d627",
+      "bytes": 3459,
+      "role": "Founder printer/shooter/SCZN3 authority boundary"
+    },
+    {
+      "path": "docs/governance/EPISODE64_FOUNDER_AUTHORITY_SCZN3_X10_ORDERED_GRAMMAR_2026-10-03.md",
+      "sha256": "af08a2dd6748e08502fdc3f6c1e7a49fd0fa3c5d9448f5ebc30406495cafd57f",
+      "bytes": 2036,
+      "role": "Founder X=10 ordered-grammar authority"
+    }
+  ],
+  "contractInventory": {
+    "directory": "docs/backend/target_execution_contracts/contracts",
+    "jsonFileCountIncludingVariants": 6798,
+    "selectedCanonicalRuntimeBindings": 2161,
+    "selectionRule": "prefer the contract filename without a trailing ' N' copy suffix; retain every variant path/digest and report conflicting content"
+  },
+  "joinRules": {
+    "exact_qt_identity_id": "QT catalog/identity ID equality.",
+    "exact_sku_or_product_id_token": "Exact normalized token equality against stored SKU/product ID.",
+    "exact_normalized_product_name": "Exact normalized product-name equality, used only when no token match exists.",
+    "NO_RUNTIME_BINDING_MATCH": "No exact mechanical join succeeded."
+  },
+  "outputNormalization": "Full execution contracts are stored once in runtimeBindings; face records reference runtime IDs and contain compact exact aggregates."
+}
