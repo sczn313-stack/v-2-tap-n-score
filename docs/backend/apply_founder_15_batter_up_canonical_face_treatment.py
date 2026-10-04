@@ -187,7 +187,7 @@ def build_treatment() -> dict:
             "model": "named_regions",
             "regionRules": rules,
             "outsideRule": {"label": "Outside Governed Baseball Areas", "countsAsHit": False},
-            "classificationFootprintMode": "tap_center",
+            "classificationFootprintMode": "score_on_touch",
             "schemaVersion": "sczn3-target-scoring-data-v1",
             "aggregation": {"mode": "classification_counts"},
             "summaryDimensions": [{"dimensionId": "baseball_outcome", "label": "Baseball Outcome Distribution", "groups": summary_groups}],
@@ -225,7 +225,7 @@ def build_treatment() -> dict:
         "unsupportedUses": [
             "numeric_point_scoring", "invented_fixed_shot_count", "invented_innings_or_turn_sequence",
             "invented_baserunner_advancement_or_run_total", "invented_batting_order_or_winner_rule",
-            "invented_complete_baseball_game_procedure", "physical_hole_extent_or_line_touch_adjudication",
+                "invented_complete_baseball_game_procedure",
         ],
     }
 

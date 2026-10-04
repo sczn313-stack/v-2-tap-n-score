@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "sczn3-founder-implementation-evidence-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 18,
+  "recordedAt": "2026-10-04T01:58:00Z",
+  "status": "IMPLEMENTED_AND_MECHANICALLY_PROVEN",
+  "canonicalFaceId": "e0e0d0eb46853cb57fcb7f9d8e151a62ffd15e0920e0d30e49a42aeda46b7376",
+  "target": {
+    "printer": "Baker Targets",
+    "name": "Outdoor Shooting Challenge Target",
+    "runtimeIds": [
+      "blocker_baker_targets_gf_outdoor",
+      "final_collection_baker_targets_pk_blastpack_001",
+      "final_collection_baker_targets_pk_outdoorspack_002"
+    ],
+    "identityCount": 3
+  },
+  "implementationBoundary": {
+    "newSharedScoringEngine": false,
+    "sharedAimAreaMachineryChanged": true,
+    "sharedClassifierChanged": true,
+    "targetSpecificDelta": "Outdoor Shooting Challenge canonical-face geometry, fifteen red aim-area labels, object bindings, and a truthful 6/9 scene grouping; shared classification now applies Founder-locked Score on Touch without altering those boundaries",
+    "redAimAreaCount": 15,
+    "treeCanopyAimAreaCount": 6,
+    "lowerSceneAimAreaCount": 9,
+    "surroundingArtworkTreatment": "count-only outside red aim areas",
+    "wantedPosterRewardTreatment": "artwork only; no monetary or scoring semantics"
+  },
+  "tapByTapReconciliation": [
+    {"tap": 1, "xNorm": 0.455515, "yNorm": 0.182865, "visibleArea": "Flying Bird red aim area", "resolvedRegion": "flying_bird", "sceneGroup": "tree_canopy"},
+    {"tap": 2, "xNorm": 0.703620, "yNorm": 0.242149, "visibleArea": "Upper Right Bird red aim area", "resolvedRegion": "upper_right_bird", "sceneGroup": "tree_canopy"},
+    {"tap": 3, "xNorm": 0.219630, "yNorm": 0.319757, "visibleArea": "Left Bird red aim area", "resolvedRegion": "left_bird", "sceneGroup": "tree_canopy"},
+    {"tap": 4, "xNorm": 0.552109, "yNorm": 0.341198, "visibleArea": "Center Tree Animal red aim area", "resolvedRegion": "center_tree_animal", "sceneGroup": "tree_canopy"},
+    {"tap": 5, "xNorm": 0.379579, "yNorm": 0.445849, "visibleArea": "Center Left Tree Animal red aim area", "resolvedRegion": "center_left_tree_animal", "sceneGroup": "tree_canopy"},
+    {"tap": 6, "xNorm": 0.786729, "yNorm": 0.484889, "visibleArea": "Right Tree Animal red aim area", "resolvedRegion": "right_tree_animal", "sceneGroup": "tree_canopy"},
+    {"tap": 7, "xNorm": 0.668886, "yNorm": 0.633388, "visibleArea": "Hanging Animal red aim area", "resolvedRegion": "hanging_animal", "sceneGroup": "lower_scene"},
+    {"tap": 8, "xNorm": 0.481290, "yNorm": 0.680667, "visibleArea": "Wanted Poster Silhouette red aim area", "resolvedRegion": "wanted_poster", "sceneGroup": "lower_scene"},
+    {"tap": 9, "xNorm": 0.135525, "yNorm": 0.695271, "visibleArea": "Brewery Bottle red aim area", "resolvedRegion": "brewery_bottle", "sceneGroup": "lower_scene"},
+    {"tap": 10, "xNorm": 0.708443, "yNorm": 0.726062, "visibleArea": "Fence White Container red aim area", "resolvedRegion": "fence_white_container", "sceneGroup": "lower_scene"},
+    {"tap": 11, "xNorm": 0.833670, "yNorm": 0.726177, "visibleArea": "Fence Dark Container red aim area", "resolvedRegion": "fence_dark_container", "sceneGroup": "lower_scene"},
+    {"tap": 12, "xNorm": 0.373715, "yNorm": 0.782609, "visibleArea": "Lower Left Large Animal red aim area", "resolvedRegion": "lower_left_large_animal", "sceneGroup": "lower_scene"},
+    {"tap": 13, "xNorm": 0.127193, "yNorm": 0.909672, "visibleArea": "Barrel-Side Small Animal red aim area", "resolvedRegion": "barrel_side_small_animal", "sceneGroup": "lower_scene"},
+    {"tap": 14, "xNorm": 0.848429, "yNorm": 0.920821, "visibleArea": "Lower Right Rabbit red aim area", "resolvedRegion": "lower_right_rabbit", "sceneGroup": "lower_scene"},
+    {"tap": 15, "xNorm": 0.467601, "yNorm": 0.933333, "visibleArea": "Lower Center Snake red aim area", "resolvedRegion": "lower_center_snake", "sceneGroup": "lower_scene"},
+    {"tap": 16, "xNorm": 0.400, "yNorm": 0.150, "visibleArea": "upper illustrated bird artwork outside red circle", "resolvedRegion": "outside", "sceneGroup": null},
+    {"tap": 17, "xNorm": 0.300, "yNorm": 0.770, "visibleArea": "lower large-animal artwork outside red circle", "resolvedRegion": "outside", "sceneGroup": null},
+    {"tap": 18, "xNorm": 0.800, "yNorm": 0.900, "visibleArea": "rabbit artwork outside red circle", "resolvedRegion": "outside", "sceneGroup": null},
+    {"tap": 19, "xNorm": 0.135, "yNorm": 0.650, "visibleArea": "bottle artwork outside red circle", "resolvedRegion": "outside", "sceneGroup": null},
+    {"tap": 20, "xNorm": 0.900, "yNorm": 0.100, "visibleArea": "background", "resolvedRegion": "outside", "sceneGroup": null},
+    {"tap": 21, "xNorm": 0.500, "yNorm": 0.550, "visibleArea": "tree/background", "resolvedRegion": "outside", "sceneGroup": null}
+  ],
+  "reconciliation": {
+    "recordedObservations": 21,
+    "resolvedExactlyOnce": 21,
+    "redAimAreaHits": 15,
+    "outsideCountOnly": 6,
+    "aimAreasHit": "15 of 15",
+    "completionPercentage": 100.0,
+    "tapAccuracyPercent": 71.4,
+    "treeCanopy": "6 hits / 6 aim areas",
+    "lowerChallengeScene": "9 hits / 9 aim areas",
+    "ambiguous": 0,
+    "unaccounted": 0,
+    "numericScore": null
+  },
+  "authorityBoundariesVerified": [
+    "surrounding object artwork did not inherit its object's red aim-area classification",
+    "background observations remained count-only",
+    "$10,000 REWARD remained decorative artwork with no monetary or score meaning",
+    "no points, quota, sequence, penalty, winner, reward/game procedure, hunting-effectiveness claim, or pixel-derived physical dimension was produced"
+  ],
+  "sharedImplementation": {
+    "generator": "docs/backend/apply_founder_18_outdoor_challenge_canonical_face_treatment.py",
+    "treatment": "FOUNDER_18_OUTDOOR_CHALLENGE_CANONICAL_FACE_TREATMENT.json",
+    "contracts": [
+      "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gf_outdoor_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_blastpack_001_target_scoring_v1.json",
+      "docs/backend/target_execution_contracts/contracts/final_collection_baker_targets_pk_outdoorspack_002_target_scoring_v1.json"
+    ],
+    "sharedExecutor": "docs/backend/executors/declarative_target_score.py",
+    "identitySpecificRuntimeBranch": false
+  },
+  "mechanicalProof": {
+    "allThreeIdentities": {
+      "test": "docs/backend/test_founder_18_outdoor_challenge_aim_area_intelligence.py",
+      "result": "PASS",
+      "road": "TARGET -> RESULT -> HISTORY/SESSION -> SAVE SEC -> VAULT -> EXACT REOPEN"
+    },
+    "exactBrowserRoad": {
+      "test": "docs/production/episode64_founder_18_outdoor_challenge_lifecycle_browser_test.mjs",
+      "result": "PASS",
+      "sessionId": "sczn3-session-90578da8-076c-48da-b691-159d8ea4317b",
+      "founderWalkIdentity": "final_collection_baker_targets_pk_blastpack_001",
+      "reopenedMarkerCount": 21,
+      "runtimeUrl": "http://127.0.0.1:8161/target-experience.html?missionFamily=targetScoring&target=final_collection_baker_targets_pk_blastpack_001&source=registered&authorityPort=8161&v=founder-18-outdoor-challenge-1"
+    }
+  },
+  "founderLiveRepair": "FOUNDER_18_LIVE_GEOMETRY_REPAIR.json",
+  "affectedPopulationRegression": {
+    "result": "PASS",
+    "passed": [
+      "Founder 11 Martian Militia non-numeric aim areas",
+      "Founder 12 Three Shooter lane/tier aim areas",
+      "Founder 16 Bigfoot ambiguity and aim-area intelligence",
+      "Founder 17 Birthday Cake numbered regions",
+      "Founder 14 Balloons nested object scoring",
+      "Founder 15 Batter Up outcome classification",
+      "Founder 7/8/9/13 numbered and Arcade scoring"
+    ]
+  },
+  "scoreOnTouchAuthority": {
+    "evidence": "SCZN3_SCORE_ON_TOUCH_FOUNDER_AUTHORITY.json",
+    "physicalBoundary": "Backend Authority",
+    "bulletHoleFootprint": "observation evidence",
+    "touchDetermination": "shared scoring engine",
+    "pixelsRedefineBoundary": false,
+    "founder18PrintedGeometryRestored": true
+  },
+  "repository": {
+    "baseHead": "b69481f6b9b2a3a1a93064f0b4e417953d735e3d",
+    "workingTreePolicy": "mixed pre-existing Founder-walk worktree preserved; no unrelated changes admitted or reverted",
+    "commitCreated": false
+  },
+  "llmGateRecommendation": "READY_FOR_FOUNDER",
+  "nextInstruction": "Return Founder #18 to the LLM semantic gate. Do not advance Founder #19."
+}

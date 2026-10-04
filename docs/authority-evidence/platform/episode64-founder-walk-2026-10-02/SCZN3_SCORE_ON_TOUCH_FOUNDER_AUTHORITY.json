@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "sczn3-founder-authority-v1",
+  "authorityId": "SCZN3_SCORE_ON_TOUCH",
+  "status": "founder_locked",
+  "rule": "If the physical bullet hole touches or crosses the boundary of a governed scoring or aim area, the shot receives that area's value or classification. When two valued regions are involved, the higher-value region wins unless overriding governing or publisher authority specifies otherwise.",
+  "architecture": {
+    "physicalBoundary": "backend_authority",
+    "bulletHoleFootprint": "observation_evidence",
+    "touchDetermination": "shared_scoring_engine",
+    "pixelsRedefineBoundary": false
+  },
+  "precedence": {
+    "multipleValuedRegions": "higher_value_wins",
+    "override": "explicit_governing_or_publisher_authority"
+  },
+  "containment": [
+    "Target geometry must not be enlarged to capture a tap center.",
+    "Display-marker dimensions do not participate in scoring.",
+    "Observation footprint and governed target boundary remain separate evidence domains."
+  ],
+  "initialApplications": [
+    "Founder #14 Balloons",
+    "Founder #15 Batter Up",
+    "Founder #18 Outdoor Shooting Challenge"
+  ]
+}

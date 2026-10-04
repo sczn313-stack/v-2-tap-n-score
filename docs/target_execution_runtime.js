@@ -232,7 +232,8 @@
     return {
       xNorm: x,
       yNorm: y,
-      ...(canonical ? { canonicalTargetCoordinate: { ...canonical, xNorm: x, yNorm: y } } : {})
+      ...(canonical ? { canonicalTargetCoordinate: { ...canonical, xNorm: x, yNorm: y } } : {}),
+      ...(value.observationFootprint && typeof value.observationFootprint === "object" ? { observationFootprint: { ...value.observationFootprint } } : {})
     };
   }
 
@@ -275,7 +276,17 @@
       xNorm,
       yNorm
     });
-    return { xNorm, yNorm, canonicalTargetCoordinate };
+    const sourceWidth = Number(identity.sourceImageWidthPx);
+    const sourceHeight = Number(identity.sourceImageHeightPx);
+    const observationFootprint = sourceWidth > 0 && sourceHeight > 0 ? Object.freeze({
+      schemaVersion: "sczn3.observation-footprint.v1",
+      coordinateSystem: "normalized_source_image_top_left",
+      radiusXNorm: 4.5 / sourceWidth,
+      radiusYNorm: 4.5 / sourceHeight,
+      authority: "shooter_observation",
+      source: "sczn3_precision_tap_standard_9_source_pixels"
+    }) : undefined;
+    return { xNorm, yNorm, canonicalTargetCoordinate, ...(observationFootprint ? { observationFootprint } : {}) };
   }
 
   function renderedImageContentBox(image) {

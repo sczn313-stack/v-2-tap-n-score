@@ -116,15 +116,27 @@ def footprint_touches(
     raise error_type(reason)
 
 
-def classify(regions: Sequence[Mapping[str, Any]], x: float, y: float, *, id_key: str = "zoneId", shape_reason: str = "geometry_shape_not_supported", error_type: Type[ValueError] = UGOClassificationError, footprint_radius_x: float = 0.0, footprint_radius_y: float = 0.0) -> Dict[str, Any]:
+def classify(regions: Sequence[Mapping[str, Any]], x: float, y: float, *, id_key: str = "zoneId", shape_reason: str = "geometry_shape_not_supported", error_type: Type[ValueError] = UGOClassificationError, footprint_radius_x: float = 0.0, footprint_radius_y: float = 0.0, touch_values: Mapping[str, float] | None = None) -> Dict[str, Any]:
     uses_footprint = footprint_radius_x > 0 and footprint_radius_y > 0
     matches = [
         region for region in regions
         if footprint_touches(region, x, y, footprint_radius_x, footprint_radius_y, shape_reason, error_type)
         if uses_footprint
     ] if uses_footprint else [region for region in regions if contains(region, x, y, shape_reason, error_type)]
-    matches.sort(key=lambda region: int(region.get("priority", 0)), reverse=True)
-    ambiguous = len(matches) > 1 and int(matches[0].get("priority", 0)) == int(matches[1].get("priority", 0))
+    priority_leader = max(matches, key=lambda region: int(region.get("priority", 0))) if matches else None
+    use_value_precedence = bool(
+        touch_values
+        and priority_leader is not None
+        and str(priority_leader[id_key]) in touch_values
+    )
+
+    def precedence(region: Mapping[str, Any]) -> tuple[float, int]:
+        region_id = str(region[id_key])
+        value = float(touch_values[region_id]) if use_value_precedence and region_id in touch_values else float("-inf")
+        return value, int(region.get("priority", 0))
+
+    matches.sort(key=precedence, reverse=True)
+    ambiguous = len(matches) > 1 and precedence(matches[0]) == precedence(matches[1])
     return {
         "classificationStatus": "ambiguous" if ambiguous else ("unmapped" if not matches else "matched"),
         "entityId": None if ambiguous or not matches else str(matches[0][id_key]),

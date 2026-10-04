@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "sczn3-founder-live-defect-repair-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 18,
+  "status": "REPAIRED_AND_MECHANICALLY_PROVEN_AWAITING_LLM_GATE",
+  "founderHoldReason": "The live Founder road preserved all 21 taps but classified 13 hits plus 8 outside instead of the intended 15 red-aim-area hits plus 6 deliberate perimeter misses.",
+  "preservedFounderSession": {
+    "sessionId": "sczn3-session-13c518b6-b5ef-461c-ac7c-873f2277f568",
+    "sessionLabel": "Session #002",
+    "artifactSha256": "e31a5d75adb55edf1b67344637ec646cd599b6b462fd2579638543b90d16a7ad",
+    "actualHitTaps": 13,
+    "actualOutsideCount": 8,
+    "actualTotalTaps": 21
+  },
+  "beforeTrace": [
+    {"tap": 1, "coordinate": [0.856737, 0.924993], "intendedArea": "Lower Right Rabbit", "resolvedRuntimeRegion": "lower_right_rabbit", "status": "correct"},
+    {"tap": 2, "coordinate": [0.469663, 0.935202], "intendedArea": "Lower Center Snake", "resolvedRuntimeRegion": "lower_center_snake", "status": "correct"},
+    {"tap": 3, "coordinate": [0.838415, 0.732085], "intendedArea": "Fence Dark Container", "resolvedRuntimeRegion": "fence_dark_container", "status": "correct"},
+    {"tap": 4, "coordinate": [0.700986, 0.725718], "intendedArea": "Fence White Container", "resolvedRuntimeRegion": "fence_white_container", "status": "correct"},
+    {"tap": 5, "coordinate": [0.488045, 0.684778], "intendedArea": "Wanted Poster Silhouette", "resolvedRuntimeRegion": "wanted_poster", "status": "correct"},
+    {"tap": 6, "coordinate": [0.674090, 0.629741], "intendedArea": "Hanging Animal", "resolvedRuntimeRegion": "hanging_animal", "status": "correct"},
+    {"tap": 7, "coordinate": [0.377892, 0.789459], "intendedArea": "Lower Left Large Animal", "resolvedRuntimeRegion": "lower_left_large_animal", "status": "correct"},
+    {"tap": 8, "coordinate": [0.133024, 0.908372], "intendedArea": "Barrel-Side Small Animal", "resolvedRuntimeRegion": "barrel_side_small_animal", "status": "correct"},
+    {"tap": 9, "coordinate": [0.135569, 0.699152], "intendedArea": "Brewery Bottle", "resolvedRuntimeRegion": "brewery_bottle", "status": "correct"},
+    {"tap": 10, "coordinate": [0.794837, 0.485117], "intendedArea": "Right Tree Animal", "resolvedRuntimeRegion": "right_tree_animal", "status": "correct"},
+    {"tap": 11, "coordinate": [0.378830, 0.451985], "intendedArea": "Center Left Tree Animal", "resolvedRuntimeRegion": "center_left_tree_animal", "status": "correct"},
+    {"tap": 12, "coordinate": [0.548515, 0.344569], "intendedArea": "Center Tree Animal", "resolvedRuntimeRegion": "center_tree_animal", "status": "correct"},
+    {"tap": 13, "coordinate": [0.703793, 0.244066], "intendedArea": "Upper Right Bird", "resolvedRuntimeRegion": "upper_right_bird", "status": "correct"},
+    {"tap": 14, "coordinate": [0.457555, 0.193669], "intendedArea": "Flying Bird", "resolvedRuntimeRegion": "outside", "status": "legitimate_edge_tap_rejected"},
+    {"tap": 15, "coordinate": [0.227636, 0.326989], "intendedArea": "Left Bird", "resolvedRuntimeRegion": "outside", "status": "legitimate_edge_tap_rejected"},
+    {"tap": 16, "coordinate": [0.052438, 0.203299], "intendedArea": "deliberate perimeter miss", "resolvedRuntimeRegion": "outside", "status": "correct"},
+    {"tap": 17, "coordinate": [0.039181, 0.283178], "intendedArea": "deliberate perimeter miss", "resolvedRuntimeRegion": "outside", "status": "correct"},
+    {"tap": 18, "coordinate": [0.044068, 0.397411], "intendedArea": "deliberate perimeter miss", "resolvedRuntimeRegion": "outside", "status": "correct"},
+    {"tap": 19, "coordinate": [0.922797, 0.223763], "intendedArea": "deliberate perimeter miss", "resolvedRuntimeRegion": "outside", "status": "correct"},
+    {"tap": 20, "coordinate": [0.946877, 0.303899], "intendedArea": "deliberate perimeter miss", "resolvedRuntimeRegion": "outside", "status": "correct"},
+    {"tap": 21, "coordinate": [0.955357, 0.430048], "intendedArea": "deliberate perimeter miss", "resolvedRuntimeRegion": "outside", "status": "correct"}
+  ],
+  "rootCause": {
+    "layer": "shared_observation_footprint_classification",
+    "sharedClassifierDefect": true,
+    "details": [
+      "the printed-disc geometry was truthful and must remain fixed",
+      "tap 14's center was outside Flying Bird while its preserved observation footprint touched the governed printed disc",
+      "tap 15's center was outside Left Bird while its preserved observation footprint touched the governed printed disc",
+      "center-point-only classification discarded the physical extent of those two observations"
+    ],
+    "repair": "Restore the true printed-disc geometry, preserve an observation footprint separately from the tap center, and apply the shared Founder-locked Score on Touch rule. A touch or crossing classifies to the governed area; if two valued regions are touched, higher value wins unless explicit governing or publisher authority overrides."
+  },
+  "afterTrace": [
+    {"tap": 1, "resolvedRuntimeRegion": "lower_right_rabbit"},
+    {"tap": 2, "resolvedRuntimeRegion": "lower_center_snake"},
+    {"tap": 3, "resolvedRuntimeRegion": "fence_dark_container"},
+    {"tap": 4, "resolvedRuntimeRegion": "fence_white_container"},
+    {"tap": 5, "resolvedRuntimeRegion": "wanted_poster"},
+    {"tap": 6, "resolvedRuntimeRegion": "hanging_animal"},
+    {"tap": 7, "resolvedRuntimeRegion": "lower_left_large_animal"},
+    {"tap": 8, "resolvedRuntimeRegion": "barrel_side_small_animal"},
+    {"tap": 9, "resolvedRuntimeRegion": "brewery_bottle"},
+    {"tap": 10, "resolvedRuntimeRegion": "right_tree_animal"},
+    {"tap": 11, "resolvedRuntimeRegion": "center_left_tree_animal"},
+    {"tap": 12, "resolvedRuntimeRegion": "center_tree_animal"},
+    {"tap": 13, "resolvedRuntimeRegion": "upper_right_bird"},
+    {"tap": 14, "resolvedRuntimeRegion": "flying_bird"},
+    {"tap": 15, "resolvedRuntimeRegion": "left_bird"},
+    {"tap": 16, "resolvedRuntimeRegion": "outside"},
+    {"tap": 17, "resolvedRuntimeRegion": "outside"},
+    {"tap": 18, "resolvedRuntimeRegion": "outside"},
+    {"tap": 19, "resolvedRuntimeRegion": "outside"},
+    {"tap": 20, "resolvedRuntimeRegion": "outside"},
+    {"tap": 21, "resolvedRuntimeRegion": "outside"}
+  ],
+  "afterReconciliation": {
+    "totalTaps": 21,
+    "redAimAreaHits": 15,
+    "outsideCount": 6,
+    "aimAreasHit": "15 of 15",
+    "ambiguous": 0,
+    "unaccounted": 0
+  },
+  "exactRoadProof": {
+    "sessionId": "sczn3-session-90578da8-076c-48da-b691-159d8ea4317b",
+    "road": "TARGET -> exact Founder 21 taps -> RESULT -> HISTORY/SESSION -> SAVE SEC -> VAULT -> EXACT REOPEN",
+    "reopenedMarkerCount": 21,
+    "result": "PASS",
+    "classificationRule": "score_on_touch",
+    "printedGeometryChanged": false,
+    "displayMarkerParticipatesInScoring": false
+  },
+  "stopCondition": "AWAIT_LLM_GATE; DO_NOT_ADVANCE_FOUNDER_19"
+}

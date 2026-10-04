@@ -131,7 +131,7 @@ def build_treatment() -> dict:
             "model": "mixed_regions",
             "regionRules": rules,
             "outsideRule": {"label": "Outside Governed Balloon Areas", "countsAsHit": False, "scoreTier": "outside_count_only"},
-            "classificationFootprintMode": "tap_center",
+            "classificationFootprintMode": "score_on_touch",
             "schemaVersion": "sczn3-target-scoring-data-v1",
             "aggregation": {"mode": "sum_and_classification_counts"},
             "aggregateValueDistribution": True,
@@ -192,7 +192,6 @@ def build_treatment() -> dict:
             "invented_fixed_shot_count_or_sequence",
             "invented_miss_penalty_or_tie_break",
             "invented_additional_balloon_game_procedure",
-            "physical_hole_extent_or_line_touch_adjudication",
         ],
     }
 

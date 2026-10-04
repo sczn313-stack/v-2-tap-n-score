@@ -46,6 +46,14 @@ assert.deepEqual(
       xNorm: .25,
       yNorm: .25,
     },
+    observationFootprint: {
+      schemaVersion: "sczn3.observation-footprint.v1",
+      coordinateSystem: "normalized_source_image_top_left",
+      radiusXNorm: 4.5 / 500,
+      radiusYNorm: 4.5 / 776,
+      authority: "shooter_observation",
+      source: "sczn3_precision_tap_standard_9_source_pixels",
+    },
   },
   "tap coordinates convert once into a target-and-source-bound canonical UGO coordinate"
 );
@@ -57,7 +65,8 @@ assert.match(vaultSource, /evidence\.imageWidthPx \|\| evidence\.widthPx/);
 assert.match(cssSource, /\.contract-even-distribution\{color:#fff3b0/);
 assert.match(cssSource, /\.contract-product-identity\{color:#151515\}/);
 assert.match(cssSource, /\.contract-intro #contractStatus\{height:3\.6em;overflow:auto/);
-assert.match(cssSource, /\.contract-image-frame img\{display:block;max-width:100%;max-height:66vh\}/);
+assert.match(cssSource, /\.contract-image-frame img\{max-height:76vh\}/);
+assert.match(cssSource, /\.contract-image-plane>#contractTargetImage\{display:block;width:100%;height:100%\}/);
 assert.match(cssSource, /\.contract-evidence img\{display:block;max-width:100%;max-height:42vh\}/);
 assert.match(cssSource, /contractSecRoot>\.sec-v1\[data-sec-mode="live"\]/);
 assert.match(runtimeSource, /resolve\(\{ widthPx: image\.naturalWidth, heightPx: image\.naturalHeight \}\)/);

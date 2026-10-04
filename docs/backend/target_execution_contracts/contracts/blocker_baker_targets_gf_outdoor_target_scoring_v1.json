@@ -1,0 +1,543 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_gf_outdoor-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_gf_outdoor",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_1C80761A2A6CBB24EF3B_V1",
+    "authorityId": "P_OS_BLOCKER_1C80761A2A6CBB24EF3B_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/outdoor-shooting-challenge-target-new/"
+    },
+    "product": {
+      "id": "p-os-baker_9794",
+      "name": "Outdoor Shooting Challenge Target",
+      "sku": "GF-Outdoor",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_gf_outdoor-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
+        "regions": [
+          {
+            "regionId": "flying_bird",
+            "shape": "ellipse",
+            "cx": 0.455515,
+            "cy": 0.182865,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "upper_right_bird",
+            "shape": "ellipse",
+            "cx": 0.70362,
+            "cy": 0.242149,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "left_bird",
+            "shape": "ellipse",
+            "cx": 0.21963,
+            "cy": 0.319757,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "center_tree_animal",
+            "shape": "ellipse",
+            "cx": 0.552109,
+            "cy": 0.341198,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "center_left_tree_animal",
+            "shape": "ellipse",
+            "cx": 0.379579,
+            "cy": 0.445849,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "right_tree_animal",
+            "shape": "ellipse",
+            "cx": 0.786729,
+            "cy": 0.484889,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "hanging_animal",
+            "shape": "ellipse",
+            "cx": 0.668886,
+            "cy": 0.633388,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "wanted_poster",
+            "shape": "ellipse",
+            "cx": 0.48129,
+            "cy": 0.680667,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "brewery_bottle",
+            "shape": "ellipse",
+            "cx": 0.135525,
+            "cy": 0.695271,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "fence_white_container",
+            "shape": "ellipse",
+            "cx": 0.708443,
+            "cy": 0.726062,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "fence_dark_container",
+            "shape": "ellipse",
+            "cx": 0.83367,
+            "cy": 0.726177,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "lower_left_large_animal",
+            "shape": "ellipse",
+            "cx": 0.373715,
+            "cy": 0.782609,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "barrel_side_small_animal",
+            "shape": "ellipse",
+            "cx": 0.127193,
+            "cy": 0.909672,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "lower_right_rabbit",
+            "shape": "ellipse",
+            "cx": 0.848429,
+            "cy": 0.920821,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          },
+          {
+            "regionId": "lower_center_snake",
+            "shape": "ellipse",
+            "cx": 0.467601,
+            "cy": 0.933333,
+            "radiusX": 0.0123,
+            "radiusY": 0.0094,
+            "priority": 500
+          }
+        ],
+        "ugoAuthority": "SCZN3_VISIBLE_OUTDOOR_CHALLENGE_FACE_E0E0D0EB46853CB57FCB_V1"
+      },
+      "digest": "8fb465be96c77b28867a81dee9dbeb73bc4418583bc06ffd9d6ebe0dcf5aef18"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_gf_outdoor-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_ec96e153068064c02b17.webp",
+        "assetSha256": "e0e0d0eb46853cb57fcb7f9d8e151a62ffd15e0920e0d30e49a42aeda46b7376",
+        "assetAlt": "Outdoor Shooting Challenge Target, SKU GF-Outdoor",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "44983ea7a55671187534a8a20edf543cf560017e945d979ce8554b3ac5df9e38"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_gf_outdoor-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "flying_bird": {
+            "label": "Flying Bird",
+            "objectId": "flying_bird",
+            "objectLabel": "Flying Bird"
+          },
+          "upper_right_bird": {
+            "label": "Upper Right Bird",
+            "objectId": "upper_right_bird",
+            "objectLabel": "Upper Right Bird"
+          },
+          "left_bird": {
+            "label": "Left Bird",
+            "objectId": "left_bird",
+            "objectLabel": "Left Bird"
+          },
+          "center_tree_animal": {
+            "label": "Center Tree Animal",
+            "objectId": "center_tree_animal",
+            "objectLabel": "Center Tree Animal"
+          },
+          "center_left_tree_animal": {
+            "label": "Center Left Tree Animal",
+            "objectId": "center_left_tree_animal",
+            "objectLabel": "Center Left Tree Animal"
+          },
+          "right_tree_animal": {
+            "label": "Right Tree Animal",
+            "objectId": "right_tree_animal",
+            "objectLabel": "Right Tree Animal"
+          },
+          "hanging_animal": {
+            "label": "Hanging Animal",
+            "objectId": "hanging_animal",
+            "objectLabel": "Hanging Animal"
+          },
+          "wanted_poster": {
+            "label": "Wanted Poster Silhouette",
+            "objectId": "wanted_poster",
+            "objectLabel": "Wanted Poster Silhouette"
+          },
+          "brewery_bottle": {
+            "label": "Brewery Bottle",
+            "objectId": "brewery_bottle",
+            "objectLabel": "Brewery Bottle"
+          },
+          "fence_white_container": {
+            "label": "Fence White Container",
+            "objectId": "fence_white_container",
+            "objectLabel": "Fence White Container"
+          },
+          "fence_dark_container": {
+            "label": "Fence Dark Container",
+            "objectId": "fence_dark_container",
+            "objectLabel": "Fence Dark Container"
+          },
+          "lower_left_large_animal": {
+            "label": "Lower Left Large Animal",
+            "objectId": "lower_left_large_animal",
+            "objectLabel": "Lower Left Large Animal"
+          },
+          "barrel_side_small_animal": {
+            "label": "Barrel-Side Small Animal",
+            "objectId": "barrel_side_small_animal",
+            "objectLabel": "Barrel-Side Small Animal"
+          },
+          "lower_right_rabbit": {
+            "label": "Lower Right Rabbit",
+            "objectId": "lower_right_rabbit",
+            "objectLabel": "Lower Right Rabbit"
+          },
+          "lower_center_snake": {
+            "label": "Lower Center Snake",
+            "objectId": "lower_center_snake",
+            "objectLabel": "Lower Center Snake"
+          }
+        },
+        "outsideRule": {
+          "label": "Outside Red Aim Areas",
+          "countsAsHit": false
+        },
+        "classificationFootprintMode": "score_on_touch",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "summaryDimensions": [
+          {
+            "dimensionId": "scene_group",
+            "label": "Scene distribution and completion",
+            "groups": [
+              {
+                "groupId": "tree_canopy",
+                "label": "Tree Canopy",
+                "objectIds": [
+                  "flying_bird",
+                  "upper_right_bird",
+                  "left_bird",
+                  "center_tree_animal",
+                  "center_left_tree_animal",
+                  "right_tree_animal"
+                ]
+              },
+              {
+                "groupId": "lower_scene",
+                "label": "Lower Challenge Scene",
+                "objectIds": [
+                  "hanging_animal",
+                  "wanted_poster",
+                  "brewery_bottle",
+                  "fence_white_container",
+                  "fence_dark_container",
+                  "lower_left_large_animal",
+                  "barrel_side_small_animal",
+                  "lower_right_rabbit",
+                  "lower_center_snake"
+                ]
+              }
+            ]
+          }
+        ],
+        "publisherRuleAuthority": {
+          "source": "publisher canonical face e0e0d0eb46853cb57fcb7f9d8e151a62ffd15e0920e0d30e49a42aeda46b7376",
+          "rule": "Fifteen visible red circles are classified as count-only aim areas. Surrounding object artwork and background are outside the red aim areas. No publisher score, quota, sequence, penalty, reward rule, winner, or game procedure is defined."
+        }
+      },
+      "digest": "fb42178d18a43ade94dc76ccd2059c74b5528bfa09577d4f0272159de0d41a0f"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_gf_outdoor-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "region_centers",
+            "points": [
+              {
+                "aimId": "aim_flying_bird",
+                "regionId": "flying_bird",
+                "xNorm": 0.455515,
+                "yNorm": 0.182865
+              },
+              {
+                "aimId": "aim_upper_right_bird",
+                "regionId": "upper_right_bird",
+                "xNorm": 0.70362,
+                "yNorm": 0.242149
+              },
+              {
+                "aimId": "aim_left_bird",
+                "regionId": "left_bird",
+                "xNorm": 0.21963,
+                "yNorm": 0.319757
+              },
+              {
+                "aimId": "aim_center_tree_animal",
+                "regionId": "center_tree_animal",
+                "xNorm": 0.552109,
+                "yNorm": 0.341198
+              },
+              {
+                "aimId": "aim_center_left_tree_animal",
+                "regionId": "center_left_tree_animal",
+                "xNorm": 0.379579,
+                "yNorm": 0.445849
+              },
+              {
+                "aimId": "aim_right_tree_animal",
+                "regionId": "right_tree_animal",
+                "xNorm": 0.786729,
+                "yNorm": 0.484889
+              },
+              {
+                "aimId": "aim_hanging_animal",
+                "regionId": "hanging_animal",
+                "xNorm": 0.668886,
+                "yNorm": 0.633388
+              },
+              {
+                "aimId": "aim_wanted_poster",
+                "regionId": "wanted_poster",
+                "xNorm": 0.48129,
+                "yNorm": 0.680667
+              },
+              {
+                "aimId": "aim_brewery_bottle",
+                "regionId": "brewery_bottle",
+                "xNorm": 0.135525,
+                "yNorm": 0.695271
+              },
+              {
+                "aimId": "aim_fence_white_container",
+                "regionId": "fence_white_container",
+                "xNorm": 0.708443,
+                "yNorm": 0.726062
+              },
+              {
+                "aimId": "aim_fence_dark_container",
+                "regionId": "fence_dark_container",
+                "xNorm": 0.83367,
+                "yNorm": 0.726177
+              },
+              {
+                "aimId": "aim_lower_left_large_animal",
+                "regionId": "lower_left_large_animal",
+                "xNorm": 0.373715,
+                "yNorm": 0.782609
+              },
+              {
+                "aimId": "aim_barrel_side_small_animal",
+                "regionId": "barrel_side_small_animal",
+                "xNorm": 0.127193,
+                "yNorm": 0.909672
+              },
+              {
+                "aimId": "aim_lower_right_rabbit",
+                "regionId": "lower_right_rabbit",
+                "xNorm": 0.848429,
+                "yNorm": 0.920821
+              },
+              {
+                "aimId": "aim_lower_center_snake",
+                "regionId": "lower_center_snake",
+                "xNorm": 0.467601,
+                "yNorm": 0.933333
+              }
+            ]
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        },
+        "smartTargetTreatment": {
+          "grammar": [
+            "multi_aim_area",
+            "challenge_object",
+            "scene_group",
+            "count_only_performance"
+          ],
+          "shooterFacingVocabulary": {
+            "singular": "aim area",
+            "plural": "aim areas"
+          },
+          "outsideLabel": "Outside Red Aim Areas",
+          "hitAreaLabel": "the fifteen red aim areas",
+          "intelligence": [
+            "tap_accuracy",
+            "aim_area_completion",
+            "per_aim_area_counts",
+            "object_distribution",
+            "scene_group_distribution",
+            "scene_group_completion",
+            "outside_aim_area_count",
+            "observation_accounting",
+            "region_detail"
+          ],
+          "authorityScope": "sczn3_derived_visible_structure",
+          "publisherScoreStatus": "not_defined",
+          "fixedObservationCountStatus": "not_defined",
+          "engagementSequenceStatus": "not_defined",
+          "missPenaltyStatus": "not_defined",
+          "winnerRuleStatus": "not_defined",
+          "rewardRuleStatus": "not_defined_artwork_only"
+        }
+      },
+      "digest": "6d4bac5da08c6b200d7c76a75c062d310b039b592291d62d2fa0a8102d310b2c"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "invented_numeric_score",
+    "invented_fixed_shot_count_or_sequence",
+    "invented_miss_penalty_or_winner_rule",
+    "invented_reward_or_game_procedure",
+    "monetary_interpretation_of_wanted_poster_artwork",
+    "kill_vital_wound_or_hunting_effectiveness_claims",
+    "inferred_physical_dimensions_from_pixels"
+  ]
+}

@@ -41,6 +41,33 @@ def _point(value: Any) -> tuple[float, float]:
     )
 
 
+def _observation_footprint(value: Any) -> Dict[str, Any] | None:
+    if not isinstance(value, Mapping) or value.get("observationFootprint") is None:
+        return None
+    footprint = value.get("observationFootprint")
+    if not isinstance(footprint, Mapping):
+        raise DeclarativeTargetScoreError("observation_footprint_invalid")
+    if str(footprint.get("schemaVersion") or "") != "sczn3.observation-footprint.v1":
+        raise DeclarativeTargetScoreError("observation_footprint_schema_invalid")
+    if str(footprint.get("coordinateSystem") or "") != "normalized_source_image_top_left":
+        raise DeclarativeTargetScoreError("observation_footprint_coordinate_system_invalid")
+    try:
+        radius_x = float(footprint.get("radiusXNorm"))
+        radius_y = float(footprint.get("radiusYNorm"))
+    except (TypeError, ValueError) as exc:
+        raise DeclarativeTargetScoreError("observation_footprint_radius_invalid") from exc
+    if not math.isfinite(radius_x) or not math.isfinite(radius_y) or radius_x <= 0 or radius_y <= 0 or radius_x > 0.1 or radius_y > 0.1:
+        raise DeclarativeTargetScoreError("observation_footprint_radius_invalid")
+    return {
+        "schemaVersion": "sczn3.observation-footprint.v1",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "radiusXNorm": radius_x,
+        "radiusYNorm": radius_y,
+        "authority": str(footprint.get("authority") or "shooter_observation"),
+        "source": str(footprint.get("source") or "unspecified"),
+    }
+
+
 def _canonical_target_coordinate(value: Mapping[str, Any], contract: Mapping[str, Any], image: Mapping[str, Any], x: float, y: float) -> Dict[str, Any]:
     geometry = contract["components"]["geometry"]["definition"]
     coordinate_system = str(geometry.get("coordinateSystem") or "")
@@ -281,6 +308,14 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     footprint_radius_x = diameter_inches / float(physical["width"]) / 2 if diameter_inches > 0 and dimensions_usable else 0.0
     footprint_radius_y = diameter_inches / float(physical["height"]) / 2 if diameter_inches > 0 and dimensions_usable else 0.0
     observation_points = [_point(observation) for observation in observations]
+    observation_footprints = [_observation_footprint(observation) for observation in observations]
+    score_on_touch = scoring_data.get("classificationFootprintMode") == "score_on_touch"
+    touch_values = {
+        str(region_id): float(governed_value(str(region_id), rule))
+        for region_id, rule in rules.items()
+        if isinstance(governed_value(str(region_id), rule), (int, float))
+        and not isinstance(governed_value(str(region_id), rule), bool)
+    } if score_on_touch else None
     canonical_points = [
         _canonical_target_coordinate(observation, contract, image_evidence, observation_points[index][0], observation_points[index][1])
         for index, observation in enumerate(observations)
@@ -291,13 +326,16 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         governed_classifications, authority_gauge = _authority_scoring_gauge(boundary_policy, scoring_gauge_context, regions, observation_points, physical)
     for index, observation in enumerate(observations, start=1):
         x, y = observation_points[index - 1]
+        observation_footprint = observation_footprints[index - 1] if score_on_touch else None
+        observation_radius_x = observation_footprint["radiusXNorm"] if observation_footprint else footprint_radius_x
+        observation_radius_y = observation_footprint["radiusYNorm"] if observation_footprint else footprint_radius_y
         classification_unavailable = model == "not_applicable"
         classified = (
             {"classificationStatus": "unavailable", "entityId": None, "matchingEntityIds": [], "classificationMethod": "not_applicable_no_governed_regions"}
             if classification_unavailable
             else governed_classifications[index - 1]
             if governed_classifications is not None
-            else classify(regions, x, y, id_key="regionId", shape_reason="geometry_shape_not_supported", error_type=DeclarativeTargetScoreError, footprint_radius_x=footprint_radius_x, footprint_radius_y=footprint_radius_y)
+            else classify(regions, x, y, id_key="regionId", shape_reason="geometry_shape_not_supported", error_type=DeclarativeTargetScoreError, footprint_radius_x=observation_radius_x, footprint_radius_y=observation_radius_y, touch_values=touch_values)
             if regions
             else {"classificationStatus": "unmapped", "entityId": None, "matchingEntityIds": [], "classificationMethod": "tap_center_point"}
         )
@@ -352,6 +390,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             "groupId": str(participant_id or observation.get("groupId") or "all"),
             "classificationStatus": classified["classificationStatus"],
             "classificationMethod": classified["classificationMethod"],
+            "observationFootprint": deepcopy(observation_footprint),
             "countsAsHit": counts_as_hit,
         }
         if numeric and counted_hit_policy and object_id and region_id != "outside":
@@ -776,7 +815,15 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "ballisticGeometry": {
             "tapMeaning": "center_of_sczn3_standard_observation_footprint" if object_hit_classification else "shooter_declared_point",
             "boundaryRule": "observation_footprint_touch_counts_for_object_hit_classification" if object_hit_classification else "target_profile_rule",
-            "classificationMethod": "physical_projectile_footprint" if footprint_radius_x > 0 and footprint_radius_y > 0 else "tap_center_point",
+            "classificationMethod": "observation_footprint_touch" if score_on_touch and any(observation_footprints) else ("physical_projectile_footprint" if footprint_radius_x > 0 and footprint_radius_y > 0 else "tap_center_point"),
+            "scoreOnTouch": {
+                "enabled": score_on_touch,
+                "rule": "touch_or_cross_counts",
+                "multipleValuedRegions": "higher_value_wins",
+                "authorityOverride": "explicit_governing_or_publisher_authority_controls",
+                "targetBoundarySource": "backend_authority",
+                "observationFootprintSource": "observation_evidence",
+            } if score_on_touch else None,
             "projectileDiameter": deepcopy(ballistic),
             "normalizedRadius": {"x": footprint_radius_x, "y": footprint_radius_y} if footprint_radius_x > 0 and footprint_radius_y > 0 else None,
             "displayMarkerParticipatesInScoring": False,
