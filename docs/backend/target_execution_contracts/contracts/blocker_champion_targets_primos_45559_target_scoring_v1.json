@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_champion_targets_primos_45559-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_champion_targets_primos_45559",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_0EDE29AC0560B0724DF4_V1",
+    "authorityId": "P_OS_BLOCKER_0EDE29AC0560B0724DF4_V1",
+    "publisher": {
+      "id": "champion_targets_primos",
+      "name": "Champion Targets / Primos",
+      "url": "https://www.primos.com/products/shotkeeper-targets"
+    },
+    "product": {
+      "id": "p-os-champion_45559",
+      "name": "Shotkeeper Targets \u2014 Large / 5-Bull / Orange/White",
+      "sku": "45559"
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_champion_targets_primos_45559-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_0EDE29AC0560B0724DF4_EXACT_FACE_V1"
+      },
+      "digest": "5eb26164b57476890ceca4403f33d20b36c3f555f1fe61530fdc58c2df7774d8"
+    },
+    "registration": {
+      "id": "blocker_champion_targets_primos_45559-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_df1f840505b647828caa.png",
+        "assetSha256": "95bf2d943a0487dbd03f4cb8bf1099421b18e5c424547ce4e2835f49b517c3b4",
+        "assetAlt": "Shotkeeper Targets \u2014 Large / 5-Bull / Orange/White, SKU 45559",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "cdc3e63c3268816170d2d27ffb48f2938fcde33a8cf9c78e2eb4ecb5121405b5"
+    },
+    "scoring": {
+      "id": "blocker_champion_targets_primos_45559-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "governed_evidence_only_ceiling",
+        "publisherRuleAuthority": {
+          "source": "champion:45559 + champion:0041 + publisher_primary_representation_position_1 + 95bf2d943a0487dbd03f4cb8bf1099421b18e5c424547ce4e2835f49b517c3b4",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "ae88f85ba4cd8ab309ead6d1f085ef6c61035347b212ddd0f505778edbec218e"
+    },
+    "mission": {
+      "id": "blocker_champion_targets_primos_45559-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "71b3daf0d6294d1f829e3dc9de32dd3923dc2abd3142001f9c2d1d8f56a91b2a"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_current_authority"
+  ],
+  "contractFingerprint": "a0c7837046c7f7b77109fff80d2317edcc6ff15b0d4ec8b2d81780ec2642a11b"
+}

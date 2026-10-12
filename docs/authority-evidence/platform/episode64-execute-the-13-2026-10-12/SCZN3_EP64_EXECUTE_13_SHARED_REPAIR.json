@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "sczn3.episode64.execute-13-shared-repair.v1",
+  "generatedAt": "2026-10-12T18:12:54.417428+00:00",
+  "targetId": "blocker_champion_targets_primos_45559",
+  "sharedRule": "A contract with an Evidence-Only authority ceiling, no governed regions, and no governed scoring must use smartEvidenceCapture rather than targetScoring.",
+  "before": {
+    "contractId": "tec-blocker_champion_targets_primos_45559-target-scoring-v1",
+    "contractFingerprint": "090e470e7b7b1760de0451b6f76d0f681c5ecc0715789955edf27ce3f5b29bd4",
+    "missionFamily": "targetScoring",
+    "executor": "declarative-target-score",
+    "scoringStatus": "not_applicable",
+    "regionCount": 0
+  },
+  "after": {
+    "contractId": "tec-blocker_champion_targets_primos_45559-smart-evidence-v1",
+    "contractFingerprint": "a0c7837046c7f7b77109fff80d2317edcc6ff15b0d4ec8b2d81780ec2642a11b",
+    "missionFamily": "smartEvidenceCapture",
+    "executor": "smart-evidence-capture",
+    "scoringStatus": "not_applicable",
+    "regionCount": 0
+  },
+  "authorityChanged": false,
+  "geometryChanged": false,
+  "publisherSemanticsInvented": false
+}
