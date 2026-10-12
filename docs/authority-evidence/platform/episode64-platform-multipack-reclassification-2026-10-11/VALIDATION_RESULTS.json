@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "sczn3-platform-multipack-validation-v1",
+  "validatedAt": "2026-10-11",
+  "population": {
+    "preservedMasterRecords": 1993,
+    "preservedCommercialSourceRecords": 2570,
+    "categoryTotal": 1993,
+    "duplicateCensusFaceKeys": 0,
+    "verifiedUniqueShootableFaceMinimum": 1855,
+    "exactUniqueFaceCountProven": false
+  },
+  "founderState": {
+    "conclusiveRecordsPreserved": 334,
+    "priorRegistryHashMatchesRollbackCheckpoint": true,
+    "lostFounderRecords": 0
+  },
+  "the13": {
+    "originalSelectionsPresent": 13,
+    "replacementSelections": 0,
+    "packageOrUnresolvedSelectionExclusionsPass": true,
+    "originalNumber4SafetySwitchPreserved": true
+  },
+  "executedChecks": [
+    {
+      "command": "python3 docs/backend/test_episode64_platform_multipack_reclassification.py",
+      "result": "PASS",
+      "detail": "7 tests"
+    },
+    {
+      "command": "python3 docs/backend/test_episode64_reconciled_ten_founder_acceptance.py",
+      "result": "PASS",
+      "detail": "5 tests"
+    },
+    {
+      "command": "python3 docs/backend/test_episode64_speedwell_ar_5_10_scoring_repair.py",
+      "result": "PASS",
+      "detail": "23 hits; 10/12 bulls; score 154; per-bull denominators; sighting exclusion; SEC/Vault/exact reopen"
+    },
+    {
+      "command": "python3 docs/backend/test_founder_7_arcade_game_intelligence.py",
+      "result": "PASS",
+      "detail": "13 bullseyes; governed 13-shot score; two identities; Session/SEC/Vault/exact reopen"
+    },
+    {
+      "command": "python3 docs/backend/test_founder_10_bakerglo_arcade_inheritance.py",
+      "result": "PASS",
+      "detail": "Arcade intelligence inherited on BakerGlo geometry; three identities; Session/SEC/Vault/exact reopen"
+    },
+    {
+      "command": "PYTHONPYCACHEPREFIX=/tmp/sczn3-population-pycache python3 -m py_compile docs/backend/build_episode64_platform_multipack_reclassification.py docs/backend/platform_population_registry.py docs/backend/test_episode64_platform_multipack_reclassification.py",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check -- docs/backend/build_episode64_platform_multipack_reclassification.py docs/backend/platform_population_registry.py docs/backend/test_episode64_platform_multipack_reclassification.py",
+      "result": "PASS"
+    }
+  ],
+  "runtimeClaim": "The canonical Backend population registry and reader are implemented and verified. Consumption by the live Library UI is not claimed in this readout.",
+  "repository": {
+    "startingHead": "90fa4505a7d7b4414e979d47348ec4b978d8c86e",
+    "commitCreated": false,
+    "pushPerformed": false,
+    "approvalGuardBypassed": false
+  }
+}

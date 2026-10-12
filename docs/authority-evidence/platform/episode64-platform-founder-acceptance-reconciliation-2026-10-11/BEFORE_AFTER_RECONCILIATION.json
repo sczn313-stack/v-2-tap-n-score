@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "sczn3-platform-fa-before-after-v1",
+  "before": {
+    "kind": "staging_workbook_labels_non_authoritative",
+    "counts": {
+      "total": 1993,
+      "Not FA": 1612,
+      "FA QT inheritance": 124,
+      "FA prior approval": 3,
+      "FA": 254
+    },
+    "warning": "These labels cannot be interpreted as the live FA ledger."
+  },
+  "after": {
+    "kind": "durable_identity_level_founder_evidence",
+    "counts": {
+      "total": 1993,
+      "FOUNDER_APPROVED": 32,
+      "FOUNDER_APPROVED_INHERITED": 253,
+      "FOUNDER_HOLD": 3,
+      "FOUNDER_OOS": 46,
+      "UNVERIFIED": 1659
+    },
+    "librarySelectionExcluded": 334,
+    "librarySelectionEligibleUnverified": 1659
+  },
+  "corrections": {
+    "staleWorkbookPromotionPrevented": true,
+    "oosCurrentScopeSeparatedFromHistoricalApproval": true,
+    "machinePassNotPromotedToFounderApproval": true,
+    "unresolvedIdentityLevelFounderStatus": 1659
+  }
+}

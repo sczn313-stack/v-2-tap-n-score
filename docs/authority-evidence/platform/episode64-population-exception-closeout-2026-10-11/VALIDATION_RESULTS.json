@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "sczn3-population-exception-closeout-validation-v1",
+  "validatedAt": "2026-10-11",
+  "scope": {
+    "expectedCases": 16,
+    "processedCases": 16,
+    "fullLibraryRescanPerformed": false
+  },
+  "result": {
+    "resolved": 11,
+    "newFounderAuthorizedOos": 0,
+    "hold": 5,
+    "preservedMasterRecords": 1993,
+    "duplicateCensusFaceKeys": 0,
+    "verifiedUniqueShootableFaceMinimum": 1860,
+    "exactUniqueFaceCountProven": false,
+    "founderAcceptanceRegistryChanged": false
+  },
+  "executedChecks": [
+    {
+      "command": "python3 docs/backend/test_episode64_population_exception_closeout.py",
+      "result": "PASS",
+      "detail": "6 targeted tests"
+    },
+    {
+      "command": "python3 docs/backend/test_episode64_platform_multipack_reclassification.py",
+      "result": "PASS",
+      "detail": "7 population-integrity tests"
+    },
+    {
+      "command": "python3 docs/backend/test_episode64_reconciled_ten_founder_acceptance.py",
+      "result": "PASS",
+      "detail": "5 Founder reconciliation tests"
+    },
+    {
+      "command": "python3 docs/backend/test_episode64_speedwell_ar_5_10_scoring_repair.py",
+      "result": "PASS",
+      "detail": "23 hits; 10/12 bulls; score 154; SEC/Vault/exact reopen"
+    },
+    {
+      "command": "python3 docs/backend/test_founder_7_arcade_game_intelligence.py",
+      "result": "PASS",
+      "detail": "13-shot scoring; two identities; Session/SEC/Vault/exact reopen"
+    },
+    {
+      "command": "python3 docs/backend/test_founder_10_bakerglo_arcade_inheritance.py",
+      "result": "PASS",
+      "detail": "Inherited Arcade intelligence; three identities; Session/SEC/Vault/exact reopen"
+    },
+    {
+      "command": "python3 -m py_compile closeout sources",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check -- closeout sources",
+      "result": "PASS"
+    }
+  ],
+  "repository": {
+    "commitCreated": false,
+    "pushPerformed": false,
+    "deploymentPerformed": false,
+    "approvalGuardBypassed": false
+  }
+}
