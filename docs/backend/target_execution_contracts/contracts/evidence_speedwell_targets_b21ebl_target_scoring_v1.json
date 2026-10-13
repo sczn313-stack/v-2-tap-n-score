@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_speedwell_targets_b21ebl-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_speedwell_targets_b21ebl",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_0F64F41AADE0372015F5_V1",
+    "authorityId": "P_OS_EVIDENCE_0F64F41AADE0372015F5_V1",
+    "publisher": {
+      "id": "speedwell_targets",
+      "name": "Speedwell Targets",
+      "url": "https://www.speedwelltargets.com/searchresults.asp"
+    },
+    "product": {
+      "id": "p-os-speedwell_b21ebl",
+      "name": "B21EBL - Florida Police Reduced Silhouette Blue - As low as$0.20",
+      "sku": "B21EBL",
+      "productUrl": "https://www.speedwelltargets.com/searchresults.asp",
+      "dimensions": {
+        "width": 2.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B21EBL - Florida Police Reduced Silhouette Blue - As low as$0.20 — Speedwell Targets. Shooter Experience draft: Present this exact target identity and its original artwork to the shooter. Support shot-by-shot registration and a review of where recorded shots landed. Treat this as a qualification target only to the extent supported by its published rules and governed target contract; do not invent target-specific objectives, scores, or object counts.",
+        "visibleArtworkDescription": "Original embedded artwork is present in IMAGE MASTER. Individual objects, their counts, and their physical boundaries have NOT been visually inventoried or verified in this batch.",
+        "authorityLimitations": "Target number matched. Existing governed rule: not established in this draft. Do not infer numeric scoring or physical geometry from artwork pixels; verify publisher/backend authority before enabling scoring.",
+        "supportedExperience": "Show registered observations and session history. Report hits, misses, zone counts, or scores ONLY where governed geometry and scoring semantics support those results; otherwise Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 693,
+          "sourceCells": "AC693:AG693",
+          "masterNumber": 692,
+          "inventoryRecordId": "speedwell:0014",
+          "sku": "B21EBL",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_speedwell_targets_b21ebl-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_0F64F41AADE0372015F5_EXACT_FACE_V1"
+      },
+      "digest": "4d3b6312d9d78dc1b2b6a6c6364b42aa3b01df707fe7d5a20fc630167544d0e1"
+    },
+    "registration": {
+      "id": "evidence_speedwell_targets_b21ebl-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_46a0514a4ebd4a254342.jpg",
+        "assetSha256": "f550198b1f4d1b384ccc3676e0b868946213eda9fb4e8ae2d064be3dfd265217",
+        "assetAlt": "B21EBL - Florida Police Reduced Silhouette Blue - As low as$0.20, SKU B21EBL",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "4336a4b6ed005306c7fbb00f02fbaa0301de748ccda2f47b5188bec58bcc19b0"
+    },
+    "scoring": {
+      "id": "evidence_speedwell_targets_b21ebl-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "speedwell:B21EBL + speedwell:0014 + preserved publisher representation f550198b1f4d1b384ccc3676e0b868946213eda9fb4e8ae2d064be3dfd265217",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "337e0c3d7b9a61194e9b667c9ffac2546254ba6734dd719aff273e8e62acee77"
+    },
+    "mission": {
+      "id": "evidence_speedwell_targets_b21ebl-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "832d4d28b72d9f152d5052fc5d4ab0dc0161b849d20ab2d77940548462b9ac30"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

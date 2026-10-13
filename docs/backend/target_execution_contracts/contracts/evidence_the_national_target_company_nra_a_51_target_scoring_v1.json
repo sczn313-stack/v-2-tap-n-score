@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_nra_a_51-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_nra_a_51",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_1082019A1EE27C1C4949_V1",
+    "authorityId": "P_OS_EVIDENCE_1082019A1EE27C1C4949_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/a-51/"
+    },
+    "product": {
+      "id": "p-os-national_target_nra_a_51",
+      "name": "A-51(14×24)",
+      "sku": "NRA A-51",
+      "productUrl": "https://nationaltarget.com/shop/a-51/",
+      "dimensions": {
+        "width": 14.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "A-51(14×24) — The National Target Company. Shooter registers individual shot observations against the original target face. The session must distinguish hits and misses only where governed object/region boundaries exist; show recorded shot distribution, repeat-session history, and measured progress without inventing a target-specific game or point system. Target-specific intended behavior and object inventory await full-artwork inspection.",
+        "visibleArtworkDescription": "Embedded artwork present for master #836; exact physical object counts, labels, and geometry have not been individually verified from the source image.",
+        "authorityLimitations": "Identity matched by master #836. Evidence Only until governed region geometry and scoring are available. Existing authority is not overwritten. Missing scoring is a review issue, not automatically OOS.",
+        "supportedExperience": "Preserve every registered observation; show total shots, governed hits/misses where supportable, and history. No unsupported numeric score or unverified object-hit totals.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 837,
+          "sourceCells": "AC837:AG837",
+          "masterNumber": 836,
+          "inventoryRecordId": "national-target:0135",
+          "sku": "NRA A-51",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_nra_a_51-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_1082019A1EE27C1C4949_EXACT_FACE_V1"
+      },
+      "digest": "0e115b1c0b112eda29aef1750a1e1a6a4c868c780d6c41f289947d3902994ff9"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_nra_a_51-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_6812dfcc04f24a5cb5c2.jpg",
+        "assetSha256": "94134afa91b6364e20330aa3ba107bfca02c6c47ac615d1be3748a623e902e69",
+        "assetAlt": "A-51(14×24), SKU NRA A-51",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "5a1fb2fd1d4b69c87de618b31bc947e857d7fb9a42f4db633f96b1e2ea0fb8c0"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_nra_a_51-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:NRA A-51 + national-target:0135 + preserved publisher representation 94134afa91b6364e20330aa3ba107bfca02c6c47ac615d1be3748a623e902e69",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "dcadad81b82a2f86ccaa5ea211af7af78489e6ebbef3c0e0e39e71de65bcd60c"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_nra_a_51-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "9506ac8c32b99a9173835fee728ceb083083f22a28d645544dafbabfabe74d22"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

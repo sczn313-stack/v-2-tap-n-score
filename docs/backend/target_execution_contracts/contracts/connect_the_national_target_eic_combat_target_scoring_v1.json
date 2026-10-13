@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_the_national_target_eic_combat-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_the_national_target_eic_combat",
+    "version": "1",
+    "atpId": "ATP_CONNECT_0A1C3E55D67B4F536963_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_0A1C3E55D67B4F536963_AUTHORITY_V1",
+    "publisher": {
+      "id": "the_national_target",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/eic-combat/"
+    },
+    "product": {
+      "id": "p-os-national_target_eic_combat",
+      "name": "EIC COMBAT",
+      "sku": "EIC-COMBAT",
+      "productUrl": "https://nationaltarget.com/shop/eic-combat/",
+      "dimensions": {
+        "width": 20.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "EIC COMBAT — The National Target Company. PROVISIONAL Shooter Experience: present the original target face and permit the shooter to register each shot as an individual observation. Preserve the sequence and total of observations; provide a session summary and repeat-session history. Only classify hits by physical objects or regions when those objects and boundaries have been separately governed. Apply published scoring only if its exact rules and region values are stored in Backend Authority. Do not manufacture a numeric score, object count, or progression requirement from the title or thumbnail.",
+        "visibleArtworkDescription": "Embedded target artwork exists for master #944; its exact visible objects, object count, physical boundaries, and publisher instructions have NOT been individually established in this batch.",
+        "authorityLimitations": "Matched by master #944; publisher The National Target Company. Evidence Only by default pending comparison to existing Backend Authority. Missing numeric scoring is a review item, not OOS. Pixel coordinates cannot establish physical geometry.",
+        "supportedExperience": "Account for all registered shots; show observed shot count and session history. Show hits, misses, zones, scores, and progression only when corresponding governed contracts exist.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 945,
+          "sourceCells": "AC945:AG945",
+          "masterNumber": 944,
+          "inventoryRecordId": "national-target:0046",
+          "sku": "EIC-COMBAT",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_the_national_target_eic_combat-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_0A1C3E55D67B4F536963_EXACT_FACE_V1"
+      },
+      "digest": "60b00848176c2974696ee4b6d8b0ed27c988796d0fa3733209be3d3798d52336"
+    },
+    "registration": {
+      "id": "connect_the_national_target_eic_combat-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_a474272957162dd27b7c.png",
+        "assetSha256": "85c1fedda7a7664cc96f2add2d6628133a7330bde60b15df660a49d03b768ffa",
+        "assetAlt": "EIC COMBAT, SKU EIC-COMBAT",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "e032c6fe865db15d9684e472101e15a506022d48480692363535af53bfa22a38"
+    },
+    "scoring": {
+      "id": "connect_the_national_target_eic_combat-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:EIC-COMBAT + national-target:0046 + preserved publisher representation 85c1fedda7a7664cc96f2add2d6628133a7330bde60b15df660a49d03b768ffa",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "841f06ffffa836249a0e3eb4c4b5da49f46a6bff282ca46a2d905fec9800ddb2"
+    },
+    "mission": {
+      "id": "connect_the_national_target_eic_combat-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "66bf12852baf4965d9e3e7072333368d2495ab6346491b7ab78e0783aaf06a41"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

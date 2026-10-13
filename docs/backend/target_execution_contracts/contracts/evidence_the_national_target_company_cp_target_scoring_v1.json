@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_cp-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_cp",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_52C586014BC8C750D4A8_V1",
+    "authorityId": "P_OS_EVIDENCE_52C586014BC8C750D4A8_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/cp/"
+    },
+    "product": {
+      "id": "p-os-national_target_cp",
+      "name": "CP – COMBAT PISTOL",
+      "sku": "CP",
+      "productUrl": "https://nationaltarget.com/shop/cp/",
+      "dimensions": {
+        "width": 4.0,
+        "height": 17.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "CP - COMBAT PISTOL — The National Target Company. PROVISIONAL Shooter Experience: present the original target face and permit the shooter to register each shot as an individual observation. Preserve the sequence and total of observations; provide a session summary and repeat-session history. Only classify hits by physical objects or regions when those objects and boundaries have been separately governed. Apply published scoring only if its exact rules and region values are stored in Backend Authority. Do not manufacture a numeric score, object count, or progression requirement from the title or thumbnail.",
+        "visibleArtworkDescription": "Embedded target artwork exists for master #938; its exact visible objects, object count, physical boundaries, and publisher instructions have NOT been individually established in this batch.",
+        "authorityLimitations": "Matched by master #938; publisher The National Target Company. Evidence Only by default pending comparison to existing Backend Authority. Missing numeric scoring is a review item, not OOS. Pixel coordinates cannot establish physical geometry.",
+        "supportedExperience": "Account for all registered shots; show observed shot count and session history. Show hits, misses, zones, scores, and progression only when corresponding governed contracts exist.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 939,
+          "sourceCells": "AC939:AG939",
+          "masterNumber": 938,
+          "inventoryRecordId": "national-target:0043",
+          "sku": "CP",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_cp-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_52C586014BC8C750D4A8_EXACT_FACE_V1"
+      },
+      "digest": "fba1432b2f869cb9be9801456767792d6a3dd7dd750580e3f073c008a18f6f79"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_cp-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_c1925baa6a0b0a2c572f.png",
+        "assetSha256": "0917ed6588bef0b1732a8261ef0d26472fe9e1b3b15fa561a0f3069156d3f057",
+        "assetAlt": "CP – COMBAT PISTOL, SKU CP",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "bea3f5b90b1127b442d4e10df02c7a1c825aad57bc656ead4e6b1075d25fa640"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_cp-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:CP + national-target:0043 + preserved publisher representation 0917ed6588bef0b1732a8261ef0d26472fe9e1b3b15fa561a0f3069156d3f057",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "b7834cd82eead7cfc01fd150bca57c951797d419ff1de411f59670a6d19396ef"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_cp-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "dfcdd62984fc4b50c6d0f73489e094bc8a284461af641a27bcae54995a0d6160"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

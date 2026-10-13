@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_sl_mwg_vitals-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_sl_mwg_vitals",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_82589B4ABC6D3B7C24B1_V1",
+    "authorityId": "P_OS_BLOCKER_82589B4ABC6D3B7C24B1_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/man-with-gun-target-w-vital-organs/"
+    },
+    "product": {
+      "id": "p-os-baker_577",
+      "name": "Man With Gun Target-w/ Vital Organs",
+      "sku": "SL-MWG-Vitals",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Man With Gun Target-w/ Vital Organs (Baker Targets) — scenario and skill-building target. Shooter experience: present this specific printed target face, let the shooter register each observed impact, and return an intelligible account of where shots landed. Explain outcomes only against governed regions, objects and published rules that are actually stored. Where the face supports distinct aim areas, retain their separate identities rather than collapsing them into one generic hit count. Preserve misses and every registered observation in the session record. No invented object counts, distances, time limits, point values or course-of-fire requirements.",
+        "visibleArtworkDescription": "Artwork source: embedded IMAGE MASTER thumbnail for master #478. Named design: Man With Gun Target-w/ Vital Organs. Exact visual object inventory and physical boundaries are NOT independently established by this draft; consult the full artwork and governed geometry before assigning counts.",
+        "authorityLimitations": "SCORING REVIEW — no numeric scoring inferred. Use Evidence Only unless governed zones/values already exist.",
+        "supportedExperience": "Record target identity, observations, misses and supported per-zone/per-object counts; show numeric score only if backend-authorized; preserve RESULT → SEC → Vault data when implemented.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 479,
+          "sourceCells": "AC479:AG479",
+          "masterNumber": 478,
+          "inventoryRecordId": "baker-targets:0356, baker-targets:0462",
+          "sku": "SL-MWG-Vitals-Bulk, SL-MWG-Vitals",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_sl_mwg_vitals-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_82589B4ABC6D3B7C24B1_EXACT_FACE_V1"
+      },
+      "digest": "46e89c331559d6f7b1ce0b4cc53f6419f3693242dc35cbd5bae1aa1d09522f94"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_sl_mwg_vitals-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_c488d9e38eddc609395c.webp",
+        "assetSha256": "d41e3db02c5d4b287fd9ec0ce7a65dff5f5ece960ebb3aeffd75625eb5fbf8cf",
+        "assetAlt": "Man With Gun Target-w/ Vital Organs, SKU SL-MWG-Vitals",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "ab3d88f4973b03c5e073394e5d207620cc9ec080ee8c0b589ee187edddf9ce27"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_sl_mwg_vitals-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:577 + baker-targets:0462 + publisher_primary_representation_position_1 + d41e3db02c5d4b287fd9ec0ce7a65dff5f5ece960ebb3aeffd75625eb5fbf8cf",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "8cbaaf08641c6e71440d9e795a93ffe82b351a73631472f91ed8b51bc4d2eb02"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_sl_mwg_vitals-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "6391d1e064c1a4670c6271f02393150538aadee6716d3606c40fd3220d3fc112"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

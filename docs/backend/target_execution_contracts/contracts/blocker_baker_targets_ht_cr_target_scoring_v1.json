@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_ht_cr-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_ht_cr",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_27F06D2E5814776A6498_V1",
+    "authorityId": "P_OS_BLOCKER_27F06D2E5814776A6498_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/crow-target/"
+    },
+    "product": {
+      "id": "p-os-baker_463",
+      "name": "Crow Target",
+      "sku": "HT-CR",
+      "dimensions": {
+        "width": 0.01,
+        "height": 13.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Crow Target — Baker Targets. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1264; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1264; printer Baker Targets. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1265,
+          "sourceCells": "AC1265:AG1265",
+          "masterNumber": 1264,
+          "inventoryRecordId": "baker-targets:0243, baker-targets:0495",
+          "sku": "HT-CR-Bulk, HT-CR",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_ht_cr-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_27F06D2E5814776A6498_EXACT_FACE_V1"
+      },
+      "digest": "08b0d5df629070d55d650a87f8b74db1eea3c61500a81883b87c082147b7ae8a"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_ht_cr-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_d240ed9efc6cc9cb44f4.jpg",
+        "assetSha256": "064f39834ef0e4e3a877493a3710d511ebd26b424b02daeb4a8070bda0b7c41c",
+        "assetAlt": "Crow Target, SKU HT-CR",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "42f5a654a1627850cf2da867b921a45f0eb65f14b209bd47f7a0887f44d5d13c"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_ht_cr-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:463 + baker-targets:0495 + publisher_primary_representation_position_1 + 064f39834ef0e4e3a877493a3710d511ebd26b424b02daeb4a8070bda0b7c41c",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "4703d073358ce4f2b51cb5e60bdad5d61ea42ca9974e4ab2cf825dee252c4665"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_ht_cr-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "9fabc78f435f50fcf809cfdb225a70e8d99ed45730d2213b9091aafabf280026"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

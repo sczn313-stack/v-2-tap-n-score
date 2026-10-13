@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_splatterburst_targets_1364-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_splatterburst_targets_1364",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_BD2406D1712884DA6E6D_V1",
+    "authorityId": "P_OS_BLOCKER_BD2406D1712884DA6E6D_V1",
+    "publisher": {
+      "id": "splatterburst_targets",
+      "name": "Splatterburst Targets",
+      "url": "https://splatterbursttargets.com/item/12-x-18-bad-guy-splatter-target/"
+    },
+    "product": {
+      "id": "p-os-splatterburst_source_1364",
+      "name": "12” x 18” Bad Guy Splatter Target",
+      "sku": "1364",
+      "dimensions": {
+        "width": 12.0,
+        "height": 18.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "12” x 18” Bad Guy Splatter Target — Splatterburst Targets. Shooter registers individual shot observations against the original target face. The session must distinguish hits and misses only where governed object/region boundaries exist; show recorded shot distribution, repeat-session history, and measured progress without inventing a target-specific game or point system. Target-specific intended behavior and object inventory await full-artwork inspection.",
+        "visibleArtworkDescription": "Embedded artwork present for master #814; exact physical object counts, labels, and geometry have not been individually verified from the source image.",
+        "authorityLimitations": "Identity matched by master #814. Evidence Only until governed region geometry and scoring are available. Existing authority is not overwritten. Missing scoring is a review issue, not automatically OOS.",
+        "supportedExperience": "Preserve every registered observation; show total shots, governed hits/misses where supportable, and history. No unsupported numeric score or unverified object-hit totals.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 815,
+          "sourceCells": "AC815:AG815",
+          "masterNumber": 814,
+          "inventoryRecordId": "splatterburst:0014",
+          "sku": "1364",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_splatterburst_targets_1364-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_BD2406D1712884DA6E6D_EXACT_FACE_V1"
+      },
+      "digest": "c2c14f2c7cbc402422f7525b60afa7749138c38eda99b845b02d1a3ba33987fc"
+    },
+    "registration": {
+      "id": "blocker_splatterburst_targets_1364-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_820d53f45ae55f8faca8.png",
+        "assetSha256": "ebce2b3a6ad3e27987ca4a7e33a65b317fffa83af89e15a5b4094076d2dcb640",
+        "assetAlt": "12” x 18” Bad Guy Splatter Target, SKU 1364",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "3bfa1ae6c24014b5a637bf21e1f2e8abcc304c623aa1eeb4b252b9f17e0cd4cb"
+    },
+    "scoring": {
+      "id": "blocker_splatterburst_targets_1364-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "splatterburst:SOURCE-1364 + splatterburst:0014 + publisher_clean_target_representation + ebce2b3a6ad3e27987ca4a7e33a65b317fffa83af89e15a5b4094076d2dcb640",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "991617d3a190123e5fe6f3f3070fc48889c22b45725892ffefb06dd2d9afb6ed"
+    },
+    "mission": {
+      "id": "blocker_splatterburst_targets_1364-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "1d0d5c257ae88a8925dc2677ebc823c29a4ceac73f92772b9e57f3276c58c78f"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

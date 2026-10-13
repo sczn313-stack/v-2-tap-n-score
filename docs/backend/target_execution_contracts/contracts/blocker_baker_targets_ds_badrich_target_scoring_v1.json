@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_ds_badrich-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_ds_badrich",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_5731F9EA7E6FE9A537A7_V1",
+    "authorityId": "P_OS_BLOCKER_5731F9EA7E6FE9A537A7_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/bad-rich-target/"
+    },
+    "product": {
+      "id": "p-os-baker_18663",
+      "name": "Bad Rich Target",
+      "sku": "DS-BadRich",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Bad Rich Target — Baker Targets. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1228; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1228; printer Baker Targets. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1229,
+          "sourceCells": "AC1229:AG1229",
+          "masterNumber": 1228,
+          "inventoryRecordId": "baker-targets:0074",
+          "sku": "DS-BadRich",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_ds_badrich-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_5731F9EA7E6FE9A537A7_EXACT_FACE_V1"
+      },
+      "digest": "3ccc038ef89926e330bf53d1bff1b0e6d6dc025497a5b32d2899ff9b9d4db40e"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_ds_badrich-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_94ec1b2af90156a2629a.jpg",
+        "assetSha256": "017d87791933be9218ba7b925faa724c79590effd9d165211c2eafe50df2333a",
+        "assetAlt": "Bad Rich Target, SKU DS-BadRich",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "0c73cccae843e893a1dd383c41f89e46277501cdf9b271d074bb291173f3e2eb"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_ds_badrich-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:18663 + baker-targets:0074 + publisher_primary_representation_position_1 + 017d87791933be9218ba7b925faa724c79590effd9d165211c2eafe50df2333a",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "cb3cfb951e83abad25e8202a2fa9016e7b4fffa0870739a3800ef88beae92fa0"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_ds_badrich-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "079bd01ff2702662161d78c6d41fcb84fd60440ced95db0ae808449fb9485c1c"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

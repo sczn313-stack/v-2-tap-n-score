@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_ez_aim_allen_company_6033-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_ez_aim_allen_company_6033",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_5342E06705AA04EE965B_V1",
+    "authorityId": "P_OS_EVIDENCE_5342E06705AA04EE965B_V1",
+    "publisher": {
+      "id": "ez_aim_allen_company",
+      "name": "EZ Aim / Allen Company",
+      "url": "https://byallen.com/products/ez-aim-cardboard-deer-shooting-target-folded"
+    },
+    "product": {
+      "id": "p-os-ez_aim_allen_6033",
+      "name": "EZ Aim® Cardboard Deer Shooting Target, Folded",
+      "sku": "6033",
+      "productUrl": "https://byallen.com/products/ez-aim-cardboard-deer-shooting-target-folded",
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "EZ Aim® Cardboard Deer Shooting Target, Folded: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1358; printer EZ Aim / Allen Company. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1359,
+          "sourceCells": "AC1359:AG1359",
+          "masterNumber": 1358,
+          "inventoryRecordId": "ez-aim-allen:0002",
+          "sku": "6033",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_ez_aim_allen_company_6033-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_5342E06705AA04EE965B_EXACT_FACE_V1"
+      },
+      "digest": "174c1e694beb14d40600ae5ccc205dc073c3e0c0dad14cb7952d548b1e58246d"
+    },
+    "registration": {
+      "id": "evidence_ez_aim_allen_company_6033-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_94bec642749fe1b3643b.jpg",
+        "assetSha256": "7738991c84185297f40b6932d14204e981edb0067182e1f51091b5674754c8dc",
+        "assetAlt": "EZ Aim® Cardboard Deer Shooting Target, Folded, SKU 6033",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "08225fa2f823817333169f84e118c7ddd310a6228823573537534eb85e07c65e"
+    },
+    "scoring": {
+      "id": "evidence_ez_aim_allen_company_6033-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "ez-aim-allen:6033 + ez-aim-allen:0002 + preserved publisher representation 7738991c84185297f40b6932d14204e981edb0067182e1f51091b5674754c8dc",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "55078b2eae9fd0a7aa6311f4ededb4811f34a82ac89408747e4664d8a0c45ca5"
+    },
+    "mission": {
+      "id": "evidence_ez_aim_allen_company_6033-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "e738e13de0e6f011944546f722afc7b6750419778e652df4b8b45f240ae4c49e"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_baker_targets_ht_wb_vitals-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_baker_targets_ht_wb_vitals",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_EE54E3EAB79B0DA4AC80_V1",
+    "authorityId": "P_OS_EVIDENCE_EE54E3EAB79B0DA4AC80_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/wild-boar-target-vitals/"
+    },
+    "product": {
+      "id": "p-os-baker_16915",
+      "name": "Wild Boar Target – w/ Vitals",
+      "sku": "HT-WB-Vitals",
+      "productUrl": "https://bakertargets.com/product/wild-boar-target-vitals/",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Wild Boar Target - w/ Vitals: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1314; printer Baker Targets. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1315,
+          "sourceCells": "AC1315:AG1315",
+          "masterNumber": 1314,
+          "inventoryRecordId": "baker-targets:0149",
+          "sku": "HT-WB-Vitals",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_baker_targets_ht_wb_vitals-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_EE54E3EAB79B0DA4AC80_EXACT_FACE_V1"
+      },
+      "digest": "1432b2a6a4aa5eda3218ec1860e5edf03ac89f434d9dec0908722ac4099d736e"
+    },
+    "registration": {
+      "id": "evidence_baker_targets_ht_wb_vitals-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_3c490c6feb53b9436351.jpg",
+        "assetSha256": "20bbe41bcfc3072fdee39c13fa2426b305fcfadc1895b9026d8d84dbc42fadf2",
+        "assetAlt": "Wild Boar Target – w/ Vitals, SKU HT-WB-Vitals",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "eff759d9eec8e5b7f98c0bbdb9518d30de9350bbaa39b9ed5febe34fe02f0ef5"
+    },
+    "scoring": {
+      "id": "evidence_baker_targets_ht_wb_vitals-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:16915 + baker-targets:0149 + preserved publisher representation 20bbe41bcfc3072fdee39c13fa2426b305fcfadc1895b9026d8d84dbc42fadf2",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "f7636b3ca68756e053789bcc27dd85284aa9232a4e0fac5c27c1da9feb9aa835"
+    },
+    "mission": {
+      "id": "evidence_baker_targets_ht_wb_vitals-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "0f47fd22db9ecfb88d9d22ff14dc0b2a05761c00e4e79dcd4bd281d0eae98459"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

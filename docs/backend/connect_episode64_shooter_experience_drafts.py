@@ -21,6 +21,7 @@ from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_DIR = ROOT / "docs/backend/target_execution_contracts/contracts"
+POPULATION_REGISTRY = ROOT / "docs/backend/registries/episode64_platform_population_registry.json"
 SHEET_NAME = "1993 Illustrated Master"
 CONNECTED_AT = date(2026, 10, 12).isoformat()
 NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
@@ -33,6 +34,16 @@ from target_execution_contract import validate_contract  # noqa: E402
 
 def normalized(value: Any) -> str:
     return re.sub(r"[^a-z0-9]+", "", str(value or "").lower())
+
+
+def publisher_key(value: Any) -> str:
+    words = re.findall(r"[a-z0-9]+", str(value or "").lower())
+    generic = {"the", "target", "targets", "shooting", "company", "co", "inc", "incorporated", "llc"}
+    return "".join(word for word in words if word not in generic)
+
+
+def publisher_equivalent(left: Any, right: Any) -> bool:
+    return bool(publisher_key(left)) and publisher_key(left) == publisher_key(right)
 
 
 def shared_strings(archive: ZipFile) -> list[str]:
@@ -89,10 +100,23 @@ def workbook_drafts(path: Path) -> list[dict[str, Any]]:
         if row_number == 1:
             continue
         values = {re.match(r"[A-Z]+", cell.attrib["r"])[0]: cell_value(cell, strings) for cell in row.findall("m:c", NS)}
-        description = str(values.get("AA") or "").strip()
-        draft_status = str(values.get("AE") or "").strip()
-        if not description or not draft_status.startswith("DESIGN DRAFTED"):
+        # Early reviewed rows use AA:AE. Later production batches use AC:AG
+        # after artwork columns were inserted. The status cell determines the
+        # layout; this prevents authority/gate text from being mistaken for a
+        # Shooter Experience description.
+        late_status = str(values.get("AG") or "").strip()
+        early_status = str(values.get("AE") or "").strip()
+        if "DRAFT" in late_status.upper():
+            description_column, visible_column = "AC", "AD"
+            authority_column, supported_column, status_column = "AE", "AF", "AG"
+            draft_status = late_status
+        elif "DRAFT" in early_status.upper():
+            description_column, visible_column = "AA", "AB"
+            authority_column, supported_column, status_column = "AC", "AD", "AE"
+            draft_status = early_status
+        else:
             continue
+        description = str(values.get(description_column) or "").strip()
         drafts.append({
             "row": row_number,
             "masterNumber": int(values["A"]),
@@ -102,10 +126,12 @@ def workbook_drafts(path: Path) -> list[dict[str, Any]]:
             "sku": str(values.get("H") or "").strip(),
             "sourceUrl": str(values.get("L") or "").strip(),
             "description": description,
-            "visibleArtworkDescription": str(values.get("AB") or "").strip(),
-            "authorityLimitations": str(values.get("AC") or "").strip(),
-            "supportedExperience": str(values.get("AD") or "").strip(),
+            "visibleArtworkDescription": str(values.get(visible_column) or "").strip(),
+            "authorityLimitations": str(values.get(authority_column) or "").strip(),
+            "supportedExperience": str(values.get(supported_column) or "").strip(),
             "draftStatus": draft_status,
+            "draftLayout": f"{description_column}:{status_column}",
+            "sourceCells": f"{description_column}{row_number}:{status_column}{row_number}",
         })
     return drafts
 
@@ -136,7 +162,7 @@ def exact_matches(draft: dict[str, Any], packages: list[tuple[Path, dict[str, An
         profile = package["targetProfile"]
         product = profile.get("product") or {}
         owner = profile.get("publisher") or {}
-        if normalized(owner.get("name")) != publisher:
+        if not publisher_equivalent(owner.get("name"), draft["printer"]):
             continue
         if sku and normalized(product.get("sku")) == sku:
             candidates.append((path, package))
@@ -145,9 +171,51 @@ def exact_matches(draft: dict[str, Any], packages: list[tuple[Path, dict[str, An
     return [
         (path, package)
         for path, package in packages
-        if normalized((package["targetProfile"].get("publisher") or {}).get("name")) == publisher
+        if publisher_equivalent((package["targetProfile"].get("publisher") or {}).get("name"), draft["printer"])
         and normalized((package["targetProfile"].get("product") or {}).get("name")) == name
     ]
+
+
+def population_records() -> dict[int, dict[str, Any]]:
+    payload = json.loads(POPULATION_REGISTRY.read_text(encoding="utf-8"))
+    return {int(row["masterNumber"]): row for row in payload["records"]}
+
+
+def identity_resolution(
+    draft: dict[str, Any],
+    packages: list[tuple[Path, dict[str, Any]]],
+    population: dict[int, dict[str, Any]],
+) -> tuple[list[tuple[Path, dict[str, Any]]], dict[str, Any]]:
+    """Resolve only when population identity and runtime contract agree.
+
+    Publisher/SKU matching remains useful corroboration, but cannot override a
+    canonical population/runtime identity. Duplicate numbered contract copies
+    are already excluded by ``contracts()``.
+    """
+    record = population.get(int(draft["masterNumber"]))
+    if not record:
+        return [], {"method": "NO_POPULATION_RECORD"}
+    expected_runtimes = list(record.get("runtimeIds") or [])
+    runtime_matches = [
+        (path, package) for path, package in packages
+        if package["targetProfile"].get("id") in expected_runtimes
+    ]
+    corroborating = exact_matches(draft, packages)
+    corroborating_ids = {package["targetProfile"].get("id") for _, package in corroborating}
+    fully_corroborated = [
+        (path, package) for path, package in runtime_matches
+        if package["targetProfile"].get("id") in corroborating_ids
+    ]
+    evidence = {
+        "method": "POPULATION_RUNTIME_PLUS_PUBLISHER_SKU_OR_NAME",
+        "canonicalFaceId": record.get("canonicalFaceId"),
+        "populationClassification": record.get("populationClassification"),
+        "populationRuntimeIds": expected_runtimes,
+        "runtimeContractMatches": len(runtime_matches),
+        "publisherSkuOrNameCorroboratedMatches": len(fully_corroborated),
+        "workbookSku": draft.get("sku"),
+    }
+    return fully_corroborated, evidence
 
 
 def experience(draft: dict[str, Any], workbook: Path) -> dict[str, Any]:
@@ -164,13 +232,23 @@ def experience(draft: dict[str, Any], workbook: Path) -> dict[str, Any]:
             "sourceWorkbook": workbook.name,
             "sourceSheet": SHEET_NAME,
             "sourceRow": row,
-            "sourceCells": f"AA{row}:AE{row}",
+            "sourceCells": draft["sourceCells"],
             "masterNumber": draft["masterNumber"],
             "inventoryRecordId": draft["inventoryRecordId"],
             "sku": draft["sku"],
             "connectedAt": CONNECTED_AT,
         },
     }
+
+
+def draft_suitability(draft: dict[str, Any], identity_evidence: dict[str, Any]) -> list[str]:
+    blockers = []
+    for field in ("description", "visibleArtworkDescription", "authorityLimitations", "supportedExperience"):
+        if not str(draft.get(field) or "").strip() or str(draft.get(field)).strip().lower() == "none":
+            blockers.append(f"missing_or_empty:{field}")
+    if identity_evidence.get("populationClassification") != "INDIVIDUAL_FACE":
+        blockers.append(f"non_individual_population:{identity_evidence.get('populationClassification') or 'UNKNOWN'}")
+    return blockers
 
 
 def write_contract(path: Path, package: dict[str, Any]) -> str:
@@ -188,14 +266,48 @@ def main() -> None:
     parser.add_argument("--workbook", type=Path, required=True)
     parser.add_argument("--apply", action="store_true", help="Attach metadata to uniquely matched contracts. Default is read-only.")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--preserve-blockers-from", type=Path, help="Prior connector ledger whose identity blockers remain quarantined.")
     args = parser.parse_args()
     drafts = workbook_drafts(args.workbook)
     packages = contracts()
+    population = population_records()
+    preserved_blockers: dict[int, str] = {}
+    if args.preserve_blockers_from:
+        prior = json.loads(args.preserve_blockers_from.read_text(encoding="utf-8"))
+        preserved_blockers = {
+            int(row["masterNumber"]): row["status"]
+            for row in prior["rows"]
+            if row["status"] in {"BLOCKED_AMBIGUOUS_MATCH", "BLOCKED_NO_MATCH"}
+        }
     rows = []
     for draft in drafts:
-        matches = exact_matches(draft, packages)
+        prior_status = preserved_blockers.get(int(draft["masterNumber"]))
+        if prior_status:
+            rows.append({
+                **draft,
+                "status": f"PRESERVED_{prior_status}",
+                "preservedFrom": str(args.preserve_blockers_from),
+                "writePerformed": False,
+            })
+            continue
+        matches, identity_evidence = identity_resolution(draft, packages, population)
         if len(matches) != 1:
-            rows.append({**draft, "status": "BLOCKED_NO_MATCH" if not matches else "BLOCKED_AMBIGUOUS_MATCH", "matchCount": len(matches)})
+            rows.append({
+                **draft,
+                "status": "BLOCKED_NO_MATCH" if not matches else "BLOCKED_AMBIGUOUS_MATCH",
+                "matchCount": len(matches),
+                "identityEvidence": identity_evidence,
+            })
+            continue
+        suitability_blockers = draft_suitability(draft, identity_evidence)
+        if suitability_blockers:
+            rows.append({
+                **draft,
+                "status": "BLOCKED_INCOMPLETE_DRAFT",
+                "matchCount": 1,
+                "identityEvidence": identity_evidence,
+                "suitabilityBlockers": suitability_blockers,
+            })
             continue
         path, package = matches[0]
         profile = package["targetProfile"]
@@ -215,6 +327,7 @@ def main() -> None:
             "missionFamily": package["missionFamily"],
             "governedRegionCount": len(package["components"]["geometry"]["definition"].get("regions", [])),
             "scoringStatus": package["components"]["scoring"]["definition"].get("status"),
+            "identityEvidence": identity_evidence,
             **({"contractFingerprint": fingerprint} if fingerprint else {}),
         })
     summary: dict[str, int] = {"draftCount": len(rows)}

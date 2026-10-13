@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_ht_jack-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_ht_jack",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_5CD1319DB94D31DB2FEA_V1",
+    "authorityId": "P_OS_BLOCKER_5CD1319DB94D31DB2FEA_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/jack-rabbit-target/"
+    },
+    "product": {
+      "id": "p-os-baker_6210",
+      "name": "Jack Rabbit Target",
+      "sku": "HT-Jack",
+      "dimensions": {
+        "width": 0.01,
+        "height": 13.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Jack Rabbit Target: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1290; printer Baker Targets. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1291,
+          "sourceCells": "AC1291:AG1291",
+          "masterNumber": 1290,
+          "inventoryRecordId": "baker-targets:0246, baker-targets:0247",
+          "sku": "HT-Jack-Bulk, HT-Jack",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_ht_jack-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_5CD1319DB94D31DB2FEA_EXACT_FACE_V1"
+      },
+      "digest": "2bb663fb2ac9db06c87b465d75f8e9ecaab41e332bf39fb358215ae447b6f9ae"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_ht_jack-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_d304150efbe46234fae7.jpg",
+        "assetSha256": "b1eaf71ba060f71b96320118951e287646e73a58d02524abc5ab994a0ae696d1",
+        "assetAlt": "Jack Rabbit Target, SKU HT-Jack",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "a98e359ce5869d6b488c495ea280e2c362780b7f2140001c805c809dd2ef16fc"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_ht_jack-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:6210 + baker-targets:0247 + publisher_primary_representation_position_1 + b1eaf71ba060f71b96320118951e287646e73a58d02524abc5ab994a0ae696d1",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "124537907ee427d37ac69d67133af5e5f387831840de1da247b7ae4f45fd10ac"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_ht_jack-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "efe29d5170015d6a7a47082f5cd7285ab7d189e72756c2611ac75fc619e29d51"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

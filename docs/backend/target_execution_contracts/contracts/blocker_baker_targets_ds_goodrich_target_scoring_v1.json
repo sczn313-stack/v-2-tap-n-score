@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_ds_goodrich-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_ds_goodrich",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_1BFCE106B821C1A8F0F9_V1",
+    "authorityId": "P_OS_BLOCKER_1BFCE106B821C1A8F0F9_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/good-rich-target/"
+    },
+    "product": {
+      "id": "p-os-baker_18660",
+      "name": "Good Rich Target",
+      "sku": "DS-GoodRich",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Good Rich Target: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1285; printer Baker Targets. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1286,
+          "sourceCells": "AC1286:AG1286",
+          "masterNumber": 1285,
+          "inventoryRecordId": "baker-targets:0075",
+          "sku": "DS-GoodRich",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_ds_goodrich-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_1BFCE106B821C1A8F0F9_EXACT_FACE_V1"
+      },
+      "digest": "2783f446f5eeec832d3ad1908f00f68bc3179465f03d8fa536e702b7527834af"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_ds_goodrich-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_5c0bb123e8397bbcb2e1.jpg",
+        "assetSha256": "33e5e31af405187f63a7e1c0d8158cffeda0dff6ce89a6ed75da5c13b441096c",
+        "assetAlt": "Good Rich Target, SKU DS-GoodRich",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "b8d8d86cbfb8a00a1abaaabccbbd0ac9dc25e1bbfdb81e22118b8730f582a157"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_ds_goodrich-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:18660 + baker-targets:0075 + publisher_primary_representation_position_1 + 33e5e31af405187f63a7e1c0d8158cffeda0dff6ce89a6ed75da5c13b441096c",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "f42a9a2bdcd4d1f0bea579fc8d19445b3c795c53443dab1d0ec91b07f319df43"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_ds_goodrich-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "10cfffc6e2b3521aa470d47fa845a8c833f7415c4eabd6d896c7f6dacecb9730"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_fbi_qit_rc-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_fbi_qit_rc",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_7F843142149C23797D89_V1",
+    "authorityId": "P_OS_EVIDENCE_7F843142149C23797D89_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/fbi-qitp-rc/"
+    },
+    "product": {
+      "id": "p-os-national_target_fbi_qit_rc",
+      "name": "FBI-QIT(P) RC",
+      "sku": "FBI-QIT-RC",
+      "productUrl": "https://nationaltarget.com/shop/fbi-qitp-rc/",
+      "dimensions": {
+        "width": 19.0,
+        "height": 31.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "FBI-QIT(P) RC — The National Target Company. PROVISIONAL Shooter Experience: present the original target face and permit the shooter to register each shot as an individual observation. Preserve the sequence and total of observations; provide a session summary and repeat-session history. Only classify hits by physical objects or regions when those objects and boundaries have been separately governed. Apply published scoring only if its exact rules and region values are stored in Backend Authority. Do not manufacture a numeric score, object count, or progression requirement from the title or thumbnail.",
+        "visibleArtworkDescription": "Embedded target artwork exists for master #950; its exact visible objects, object count, physical boundaries, and publisher instructions have NOT been individually established in this batch.",
+        "authorityLimitations": "Matched by master #950; publisher The National Target Company. Evidence Only by default pending comparison to existing Backend Authority. Missing numeric scoring is a review item, not OOS. Pixel coordinates cannot establish physical geometry.",
+        "supportedExperience": "Account for all registered shots; show observed shot count and session history. Show hits, misses, zones, scores, and progression only when corresponding governed contracts exist.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 951,
+          "sourceCells": "AC951:AG951",
+          "masterNumber": 950,
+          "inventoryRecordId": "national-target:0038",
+          "sku": "FBI-QIT-RC",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_fbi_qit_rc-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_7F843142149C23797D89_EXACT_FACE_V1"
+      },
+      "digest": "fcbe2048f8e5fb9529ada182040b7f424e2ffcc01472461021acfca0eaede521"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_fbi_qit_rc-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_4b6b7cf807c50eb55f7b.png",
+        "assetSha256": "e584239b40a1be9e2ab60380da5cea126d3020dab0e1deb148feee34e466a45b",
+        "assetAlt": "FBI-QIT(P) RC, SKU FBI-QIT-RC",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "231721a76c32e7dc950f48abc7e2a3bc62fbf1ceae2eaa3e5c13ab799f847daa"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_fbi_qit_rc-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:FBI-QIT-RC + national-target:0038 + preserved publisher representation e584239b40a1be9e2ab60380da5cea126d3020dab0e1deb148feee34e466a45b",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "c061e5545ce11fbdcd7d768c9ccd6c58788491ed9ac3eec3e4b765c76b9c7125"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_fbi_qit_rc-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "3f47205c2cd7046e9271697daf5df1e63727b26c7631bf9d96226d96ec063b8d"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

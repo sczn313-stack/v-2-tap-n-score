@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_ntc_209-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_ntc_209",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_037690629F7F184177CD_V1",
+    "authorityId": "P_OS_EVIDENCE_037690629F7F184177CD_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/ntc-209/"
+    },
+    "product": {
+      "id": "p-os-national_target_ntc_209",
+      "name": "NTC-209",
+      "sku": "NTC-209",
+      "productUrl": "https://nationaltarget.com/shop/ntc-209/",
+      "dimensions": {
+        "width": 22.5,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "NTC-209 — The National Target Company. PROVISIONAL Shooter Experience (target practice): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #996. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #996; publisher The National Target Company. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 997,
+          "sourceCells": "AC997:AG997",
+          "masterNumber": 996,
+          "inventoryRecordId": "national-target:0275",
+          "sku": "NTC-209",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_ntc_209-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_037690629F7F184177CD_EXACT_FACE_V1"
+      },
+      "digest": "5c856e55e5f59a9fa1bf02f87ccc2730e742d29963f01250472857a448c1ae07"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_ntc_209-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_79a4c109c42fc4387c69.gif",
+        "assetSha256": "ccef91cd794cc7436d6447baea26a789c362b90b1e07ff901ba27b890abd7481",
+        "assetAlt": "NTC-209, SKU NTC-209",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "d155080b85969d363f6a8032ed1f2c9b1de574665377c42bc78e7971fd5b5066"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_ntc_209-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:NTC-209 + national-target:0275 + preserved publisher representation ccef91cd794cc7436d6447baea26a789c362b90b1e07ff901ba27b890abd7481",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "d86578b3ea0c51695cbedaacf38381c1c2d32b57deb3f18c695ebe11c05450bf"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_ntc_209-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "935af0b79f4af35956dede7e8626543eb03f6f05225a02c84ceffb23ade2fdf8"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_the_national_target_ipsc_p-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_the_national_target_ipsc_p",
+    "version": "1",
+    "atpId": "ATP_CONNECT_2BA07656AD31C35E661C_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_2BA07656AD31C35E661C_AUTHORITY_V1",
+    "publisher": {
+      "id": "the_national_target",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/ipsc-p/"
+    },
+    "product": {
+      "id": "p-os-national_target_ipsc_p",
+      "name": "IPSC (P)(22.5×34.5)",
+      "sku": "IPSC(P)",
+      "productUrl": "https://nationaltarget.com/shop/ipsc-p/",
+      "dimensions": {
+        "width": 22.5,
+        "height": 34.5,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "IPSC (P)(22.5×34.5) — The National Target Company. PROVISIONAL Shooter Experience (qualification / practical shooting): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #969. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #969; publisher The National Target Company. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 970,
+          "sourceCells": "AC970:AG970",
+          "masterNumber": 969,
+          "inventoryRecordId": "national-target:0170",
+          "sku": "IPSC(P)",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_the_national_target_ipsc_p-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_2BA07656AD31C35E661C_EXACT_FACE_V1"
+      },
+      "digest": "cec82e578bc067d75a852eb2156588e5eac274fecf7f930eab4d97128744e91a"
+    },
+    "registration": {
+      "id": "connect_the_national_target_ipsc_p-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_219643c0dadf43d4133c.jpg",
+        "assetSha256": "cab5db18e85c2e145ccb1b62688629f677ece0e73961662d8f31c4447cce45f3",
+        "assetAlt": "IPSC (P)(22.5×34.5), SKU IPSC(P)",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f605d45ea714b723e901767f818ca31263f48ec2030ac11a3f712a53e124d0ca"
+    },
+    "scoring": {
+      "id": "connect_the_national_target_ipsc_p-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "richer_capability_authority_not_admitted",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "national-target:IPSC(P) + national-target:0170 + preserved publisher representation cab5db18e85c2e145ccb1b62688629f677ece0e73961662d8f31c4447cce45f3",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "aa7ee56b5c080597efc30800902578372a0ddb409ce2e696304af1b74ca12da1"
+    },
+    "mission": {
+      "id": "connect_the_national_target_ipsc_p-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "a5269c6ac5136dd05166e31bd9d1d553c264971ed7da0334dbfbc3aedd2c4af9"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

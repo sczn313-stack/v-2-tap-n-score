@@ -32,15 +32,34 @@
         "width": 23,
         "height": 35,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Friendly Competition (22920) — GunFun. Shooter Experience draft: present the original printed target-specific practice design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #601. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 602,
+          "sourceCells": "AC602:AG602",
+          "masterNumber": 601,
+          "inventoryRecordId": "gunfun:0141",
+          "sku": "22920",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
   "components": {
     "geometry": {
-    "id": "gunfun_22920_friendly_competition-geometry",
-    "version": "1",
-    "status": "approved",
-    "digest": "eb1e1dfec5fcf8dfce789df3f101205839736c2ff1e84683778c9032920d7635",
+      "id": "gunfun_22920_friendly_competition-geometry",
+      "version": "1",
+      "status": "approved",
+      "digest": "eb1e1dfec5fcf8dfce789df3f101205839736c2ff1e84683778c9032920d7635",
       "definition": {
         "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
@@ -50,10 +69,10 @@
       }
     },
     "registration": {
-    "id": "gunfun_22920_friendly_competition-registration",
-    "version": "1",
-    "status": "approved",
-    "digest": "1badc43583cb8941bd44fae05ec619e4e81ff1485b5f2b6734efe9b9dea540bd",
+      "id": "gunfun_22920_friendly_competition-registration",
+      "version": "1",
+      "status": "approved",
+      "digest": "1badc43583cb8941bd44fae05ec619e4e81ff1485b5f2b6734efe9b9dea540bd",
       "definition": {
         "role": "evidence_capture_asset",
         "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/22920.jpg",
@@ -63,20 +82,20 @@
       }
     },
     "scoring": {
-    "id": "gunfun_22920_friendly_competition-scoring",
-    "version": "1",
-    "status": "approved",
-    "digest": "d4667a8d34b2870c0113dca4b7ffcacd1f9f6515b8d4678d9c0f620e15095341",
+      "id": "gunfun_22920_friendly_competition-scoring",
+      "version": "1",
+      "status": "approved",
+      "digest": "d4667a8d34b2870c0113dca4b7ffcacd1f9f6515b8d4678d9c0f620e15095341",
       "definition": {
         "status": "not_applicable",
         "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
       }
     },
     "mission": {
-    "id": "gunfun_22920_friendly_competition-mission",
-    "version": "1",
-    "status": "approved",
-    "digest": "ca1582d40147b28ea4239cc364227b0b498ce78f5438f27b096ea1ca38fefe5f",
+      "id": "gunfun_22920_friendly_competition-mission",
+      "version": "1",
+      "status": "approved",
+      "digest": "ca1582d40147b28ea4239cc364227b0b498ce78f5438f27b096ea1ca38fefe5f",
       "definition": {
         "missionFamily": "smartEvidenceCapture",
         "resultPackageType": "smartEvidenceResult",

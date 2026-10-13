@@ -1,0 +1,3028 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_nra_a_17-target-scoring-v1",
+  "contractVersion": "2",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER_EP64_A17_ACCEPTANCE_2026_10_10",
+    "approvedAt": "2026-10-10T23:41:38Z",
+    "scope": "Founder-approved National Target A-17 scoring baseline: record-bull scoring, non-scoring sighting-bull hits, exact observation reconciliation, and accepted RESULT presentation"
+  },
+  "effective": {
+    "from": "2026-10-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_nra_a_17",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_263CDB6F64F431B07382_V1",
+    "authorityId": "P_OS_EVIDENCE_263CDB6F64F431B07382_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/a-17/"
+    },
+    "product": {
+      "id": "p-os-national_target_nra_a_17",
+      "name": "A-17(10.5×12)",
+      "sku": "NRA A-17",
+      "productUrl": "https://nationaltarget.com/shop/a-17/",
+      "dimensions": {
+        "width": 10.5,
+        "height": 12.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "A-17(10.5×12) — The National Target Company. Shooter registers individual shot observations against the original target face. The session must distinguish hits and misses only where governed object/region boundaries exist; show recorded shot distribution, repeat-session history, and measured progress without inventing a target-specific game or point system. Target-specific intended behavior and object inventory await full-artwork inspection.",
+        "visibleArtworkDescription": "Embedded artwork present for master #818; exact physical object counts, labels, and geometry have not been individually verified from the source image.",
+        "authorityLimitations": "Identity matched by master #818. Evidence Only until governed region geometry and scoring are available. Existing authority is not overwritten. Missing scoring is a review issue, not automatically OOS.",
+        "supportedExperience": "Preserve every registered observation; show total shots, governed hits/misses where supportable, and history. No unsupported numeric score or unverified object-hit totals.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 819,
+          "sourceCells": "AC819:AG819",
+          "masterNumber": 818,
+          "inventoryRecordId": "national-target:0136",
+          "sku": "NRA A-17",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_nra_a_17-geometry",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "status": "ugo_governed_backend_authority",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "concentric_regions",
+        "regions": [
+          {
+            "regionId": "record_1_5",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.18,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_1_6",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.18,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_1_7",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.18,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_1_8",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.18,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_1_9",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.18,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_1_x10",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.18,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_2_5",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_2_6",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_2_7",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_2_8",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_2_9",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_2_x10",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.18,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_3_5",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.18,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_3_6",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.18,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_3_7",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.18,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_3_8",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.18,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_3_9",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.18,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_3_x10",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.18,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_4_5",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.4,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_4_6",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.4,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_4_7",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.4,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_4_8",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.4,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_4_9",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.4,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_4_x10",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.4,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_5_5",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.4,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_5_6",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.4,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_5_7",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.4,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_5_8",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.4,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_5_9",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.4,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_5_x10",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.4,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_6_5",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.62,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_6_6",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.62,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_6_7",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.62,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_6_8",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.62,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_6_9",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.62,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_6_x10",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.62,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_7_5",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.62,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_7_6",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.62,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_7_7",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.62,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_7_8",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.62,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_7_9",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.62,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_7_x10",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.62,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_8_5",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.84,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_8_6",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.84,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_8_7",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.84,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_8_8",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.84,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_8_9",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.84,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_8_x10",
+            "shape": "ellipse",
+            "cx": 0.17,
+            "cy": 0.84,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_9_5",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.84,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_9_6",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.84,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_9_7",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.84,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_9_8",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.84,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_9_9",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.84,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_9_x10",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.84,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "record_10_5",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.84,
+            "radiusX": 0.075,
+            "radiusY": 0.066,
+            "priority": 10
+          },
+          {
+            "regionId": "record_10_6",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.84,
+            "radiusX": 0.0627,
+            "radiusY": 0.05517600000000001,
+            "priority": 20
+          },
+          {
+            "regionId": "record_10_7",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.84,
+            "radiusX": 0.0504,
+            "radiusY": 0.044352,
+            "priority": 30
+          },
+          {
+            "regionId": "record_10_8",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.84,
+            "radiusX": 0.0381,
+            "radiusY": 0.033528,
+            "priority": 40
+          },
+          {
+            "regionId": "record_10_9",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.84,
+            "radiusX": 0.025800000000000007,
+            "radiusY": 0.022704000000000005,
+            "priority": 50
+          },
+          {
+            "regionId": "record_10_x10",
+            "shape": "ellipse",
+            "cx": 0.82,
+            "cy": 0.84,
+            "radiusX": 0.013500000000000012,
+            "radiusY": 0.01188000000000001,
+            "priority": 60
+          },
+          {
+            "regionId": "sighting_bull_ring_1",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.14,
+            "radiusY": 0.12,
+            "priority": 20
+          },
+          {
+            "regionId": "sighting_bull_ring_2",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.11816,
+            "radiusY": 0.10128,
+            "priority": 30
+          },
+          {
+            "regionId": "sighting_bull_ring_3",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.09632,
+            "radiusY": 0.08256,
+            "priority": 40
+          },
+          {
+            "regionId": "sighting_bull_ring_4",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.07448,
+            "radiusY": 0.06384000000000001,
+            "priority": 50
+          },
+          {
+            "regionId": "sighting_bull_ring_5",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.052640000000000006,
+            "radiusY": 0.04512,
+            "priority": 60
+          },
+          {
+            "regionId": "sighting_bull_ring_6",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.5,
+            "radiusX": 0.030799999999999998,
+            "radiusY": 0.026399999999999996,
+            "priority": 70
+          }
+        ],
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "record_1_5",
+            "record_1_6",
+            "record_1_7",
+            "record_1_8",
+            "record_1_9",
+            "record_1_x10",
+            "record_2_5",
+            "record_2_6",
+            "record_2_7",
+            "record_2_8",
+            "record_2_9",
+            "record_2_x10",
+            "record_3_5",
+            "record_3_6",
+            "record_3_7",
+            "record_3_8",
+            "record_3_9",
+            "record_3_x10",
+            "record_4_5",
+            "record_4_6",
+            "record_4_7",
+            "record_4_8",
+            "record_4_9",
+            "record_4_x10",
+            "record_5_5",
+            "record_5_6",
+            "record_5_7",
+            "record_5_8",
+            "record_5_9",
+            "record_5_x10",
+            "record_6_5",
+            "record_6_6",
+            "record_6_7",
+            "record_6_8",
+            "record_6_9",
+            "record_6_x10",
+            "record_7_5",
+            "record_7_6",
+            "record_7_7",
+            "record_7_8",
+            "record_7_9",
+            "record_7_x10",
+            "record_8_5",
+            "record_8_6",
+            "record_8_7",
+            "record_8_8",
+            "record_8_9",
+            "record_8_x10",
+            "record_9_5",
+            "record_9_6",
+            "record_9_7",
+            "record_9_8",
+            "record_9_9",
+            "record_9_x10",
+            "record_10_5",
+            "record_10_6",
+            "record_10_7",
+            "record_10_8",
+            "record_10_9",
+            "record_10_x10",
+            "sighting_bull_ring_1",
+            "sighting_bull_ring_2",
+            "sighting_bull_ring_3",
+            "sighting_bull_ring_4",
+            "sighting_bull_ring_5",
+            "sighting_bull_ring_6"
+          ],
+          "boundaries": [
+            {
+              "boundaryId": "record_1_5_outer_boundary",
+              "regionId": "record_1_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.23885,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_5"
+                },
+                "edge": {
+                  "x": 0.24499999990000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_5"
+                },
+                "outside": {
+                  "x": 0.2451,
+                  "y": 0.18,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_1_6_outer_boundary",
+              "regionId": "record_1_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22655000000000003,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_6"
+                },
+                "edge": {
+                  "x": 0.2326999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_6"
+                },
+                "outside": {
+                  "x": 0.2328,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_1_7_outer_boundary",
+              "regionId": "record_1_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.21425,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_7"
+                },
+                "edge": {
+                  "x": 0.2203999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_7"
+                },
+                "outside": {
+                  "x": 0.22050000000000003,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_1_8_outer_boundary",
+              "regionId": "record_1_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.20195000000000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_8"
+                },
+                "edge": {
+                  "x": 0.2080999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_8"
+                },
+                "outside": {
+                  "x": 0.20820000000000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_1_9_outer_boundary",
+              "regionId": "record_1_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.18965,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_9"
+                },
+                "edge": {
+                  "x": 0.19579999990000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_9"
+                },
+                "outside": {
+                  "x": 0.19590000000000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_1_x10_outer_boundary",
+              "regionId": "record_1_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.17675000000000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_x10"
+                },
+                "edge": {
+                  "x": 0.18349999990000002,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_x10"
+                },
+                "outside": {
+                  "x": 0.1836,
+                  "y": 0.18,
+                  "expectedEntityId": "record_1_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_2_5_outer_boundary",
+              "regionId": "record_2_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.56885,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_5"
+                },
+                "edge": {
+                  "x": 0.5749999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_5"
+                },
+                "outside": {
+                  "x": 0.5751,
+                  "y": 0.18,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_2_6_outer_boundary",
+              "regionId": "record_2_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.55655,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_6"
+                },
+                "edge": {
+                  "x": 0.5626999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_6"
+                },
+                "outside": {
+                  "x": 0.5628,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_2_7_outer_boundary",
+              "regionId": "record_2_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.54425,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_7"
+                },
+                "edge": {
+                  "x": 0.5503999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_7"
+                },
+                "outside": {
+                  "x": 0.5505,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_2_8_outer_boundary",
+              "regionId": "record_2_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.53195,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_8"
+                },
+                "edge": {
+                  "x": 0.5380999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_8"
+                },
+                "outside": {
+                  "x": 0.5382,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_2_9_outer_boundary",
+              "regionId": "record_2_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5196500000000001,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_9"
+                },
+                "edge": {
+                  "x": 0.5257999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_9"
+                },
+                "outside": {
+                  "x": 0.5259,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_2_x10_outer_boundary",
+              "regionId": "record_2_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.50675,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_x10"
+                },
+                "edge": {
+                  "x": 0.5134999999000001,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_x10"
+                },
+                "outside": {
+                  "x": 0.5136000000000001,
+                  "y": 0.18,
+                  "expectedEntityId": "record_2_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_3_5_outer_boundary",
+              "regionId": "record_3_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8888499999999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_5"
+                },
+                "edge": {
+                  "x": 0.8949999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_5"
+                },
+                "outside": {
+                  "x": 0.8951,
+                  "y": 0.18,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_3_6_outer_boundary",
+              "regionId": "record_3_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8765499999999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_6"
+                },
+                "edge": {
+                  "x": 0.8826999998999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_6"
+                },
+                "outside": {
+                  "x": 0.8827999999999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_3_7_outer_boundary",
+              "regionId": "record_3_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.86425,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_7"
+                },
+                "edge": {
+                  "x": 0.8703999998999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_7"
+                },
+                "outside": {
+                  "x": 0.8704999999999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_3_8_outer_boundary",
+              "regionId": "record_3_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.85195,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_8"
+                },
+                "edge": {
+                  "x": 0.8580999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_8"
+                },
+                "outside": {
+                  "x": 0.8582,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_3_9_outer_boundary",
+              "regionId": "record_3_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.83965,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_9"
+                },
+                "edge": {
+                  "x": 0.8457999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_9"
+                },
+                "outside": {
+                  "x": 0.8459,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_3_x10_outer_boundary",
+              "regionId": "record_3_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.82675,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_x10"
+                },
+                "edge": {
+                  "x": 0.8334999999,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_x10"
+                },
+                "outside": {
+                  "x": 0.8336,
+                  "y": 0.18,
+                  "expectedEntityId": "record_3_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_4_5_outer_boundary",
+              "regionId": "record_4_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.23885,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_5"
+                },
+                "edge": {
+                  "x": 0.24499999990000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_5"
+                },
+                "outside": {
+                  "x": 0.2451,
+                  "y": 0.4,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_4_6_outer_boundary",
+              "regionId": "record_4_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22655000000000003,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_6"
+                },
+                "edge": {
+                  "x": 0.2326999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_6"
+                },
+                "outside": {
+                  "x": 0.2328,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_4_7_outer_boundary",
+              "regionId": "record_4_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.21425,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_7"
+                },
+                "edge": {
+                  "x": 0.2203999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_7"
+                },
+                "outside": {
+                  "x": 0.22050000000000003,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_4_8_outer_boundary",
+              "regionId": "record_4_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.20195000000000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_8"
+                },
+                "edge": {
+                  "x": 0.2080999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_8"
+                },
+                "outside": {
+                  "x": 0.20820000000000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_4_9_outer_boundary",
+              "regionId": "record_4_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.18965,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_9"
+                },
+                "edge": {
+                  "x": 0.19579999990000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_9"
+                },
+                "outside": {
+                  "x": 0.19590000000000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_4_x10_outer_boundary",
+              "regionId": "record_4_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.17675000000000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_x10"
+                },
+                "edge": {
+                  "x": 0.18349999990000002,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_x10"
+                },
+                "outside": {
+                  "x": 0.1836,
+                  "y": 0.4,
+                  "expectedEntityId": "record_4_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_5_5_outer_boundary",
+              "regionId": "record_5_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8888499999999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_5"
+                },
+                "edge": {
+                  "x": 0.8949999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_5"
+                },
+                "outside": {
+                  "x": 0.8951,
+                  "y": 0.4,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_5_6_outer_boundary",
+              "regionId": "record_5_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8765499999999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_6"
+                },
+                "edge": {
+                  "x": 0.8826999998999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_6"
+                },
+                "outside": {
+                  "x": 0.8827999999999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_5_7_outer_boundary",
+              "regionId": "record_5_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.86425,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_7"
+                },
+                "edge": {
+                  "x": 0.8703999998999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_7"
+                },
+                "outside": {
+                  "x": 0.8704999999999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_5_8_outer_boundary",
+              "regionId": "record_5_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.85195,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_8"
+                },
+                "edge": {
+                  "x": 0.8580999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_8"
+                },
+                "outside": {
+                  "x": 0.8582,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_5_9_outer_boundary",
+              "regionId": "record_5_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.83965,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_9"
+                },
+                "edge": {
+                  "x": 0.8457999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_9"
+                },
+                "outside": {
+                  "x": 0.8459,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_5_x10_outer_boundary",
+              "regionId": "record_5_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.82675,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_x10"
+                },
+                "edge": {
+                  "x": 0.8334999999,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_x10"
+                },
+                "outside": {
+                  "x": 0.8336,
+                  "y": 0.4,
+                  "expectedEntityId": "record_5_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_6_5_outer_boundary",
+              "regionId": "record_6_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.23885,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_5"
+                },
+                "edge": {
+                  "x": 0.24499999990000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_5"
+                },
+                "outside": {
+                  "x": 0.2451,
+                  "y": 0.62,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_6_6_outer_boundary",
+              "regionId": "record_6_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22655000000000003,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_6"
+                },
+                "edge": {
+                  "x": 0.2326999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_6"
+                },
+                "outside": {
+                  "x": 0.2328,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_6_7_outer_boundary",
+              "regionId": "record_6_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.21425,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_7"
+                },
+                "edge": {
+                  "x": 0.2203999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_7"
+                },
+                "outside": {
+                  "x": 0.22050000000000003,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_6_8_outer_boundary",
+              "regionId": "record_6_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.20195000000000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_8"
+                },
+                "edge": {
+                  "x": 0.2080999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_8"
+                },
+                "outside": {
+                  "x": 0.20820000000000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_6_9_outer_boundary",
+              "regionId": "record_6_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.18965,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_9"
+                },
+                "edge": {
+                  "x": 0.19579999990000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_9"
+                },
+                "outside": {
+                  "x": 0.19590000000000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_6_x10_outer_boundary",
+              "regionId": "record_6_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.17675000000000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_x10"
+                },
+                "edge": {
+                  "x": 0.18349999990000002,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_x10"
+                },
+                "outside": {
+                  "x": 0.1836,
+                  "y": 0.62,
+                  "expectedEntityId": "record_6_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_7_5_outer_boundary",
+              "regionId": "record_7_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8888499999999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_5"
+                },
+                "edge": {
+                  "x": 0.8949999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_5"
+                },
+                "outside": {
+                  "x": 0.8951,
+                  "y": 0.62,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_7_6_outer_boundary",
+              "regionId": "record_7_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8765499999999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_6"
+                },
+                "edge": {
+                  "x": 0.8826999998999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_6"
+                },
+                "outside": {
+                  "x": 0.8827999999999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_7_7_outer_boundary",
+              "regionId": "record_7_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.86425,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_7"
+                },
+                "edge": {
+                  "x": 0.8703999998999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_7"
+                },
+                "outside": {
+                  "x": 0.8704999999999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_7_8_outer_boundary",
+              "regionId": "record_7_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.85195,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_8"
+                },
+                "edge": {
+                  "x": 0.8580999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_8"
+                },
+                "outside": {
+                  "x": 0.8582,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_7_9_outer_boundary",
+              "regionId": "record_7_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.83965,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_9"
+                },
+                "edge": {
+                  "x": 0.8457999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_9"
+                },
+                "outside": {
+                  "x": 0.8459,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_7_x10_outer_boundary",
+              "regionId": "record_7_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.82675,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_x10"
+                },
+                "edge": {
+                  "x": 0.8334999999,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_x10"
+                },
+                "outside": {
+                  "x": 0.8336,
+                  "y": 0.62,
+                  "expectedEntityId": "record_7_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_8_5_outer_boundary",
+              "regionId": "record_8_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.23885,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_5"
+                },
+                "edge": {
+                  "x": 0.24499999990000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_5"
+                },
+                "outside": {
+                  "x": 0.2451,
+                  "y": 0.84,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_8_6_outer_boundary",
+              "regionId": "record_8_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22655000000000003,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_6"
+                },
+                "edge": {
+                  "x": 0.2326999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_6"
+                },
+                "outside": {
+                  "x": 0.2328,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_8_7_outer_boundary",
+              "regionId": "record_8_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.21425,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_7"
+                },
+                "edge": {
+                  "x": 0.2203999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_7"
+                },
+                "outside": {
+                  "x": 0.22050000000000003,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_8_8_outer_boundary",
+              "regionId": "record_8_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.20195000000000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_8"
+                },
+                "edge": {
+                  "x": 0.2080999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_8"
+                },
+                "outside": {
+                  "x": 0.20820000000000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_8_9_outer_boundary",
+              "regionId": "record_8_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.18965,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_9"
+                },
+                "edge": {
+                  "x": 0.19579999990000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_9"
+                },
+                "outside": {
+                  "x": 0.19590000000000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_8_x10_outer_boundary",
+              "regionId": "record_8_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.17675000000000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_x10"
+                },
+                "edge": {
+                  "x": 0.18349999990000002,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_x10"
+                },
+                "outside": {
+                  "x": 0.1836,
+                  "y": 0.84,
+                  "expectedEntityId": "record_8_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_9_5_outer_boundary",
+              "regionId": "record_9_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.56885,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_5"
+                },
+                "edge": {
+                  "x": 0.5749999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_5"
+                },
+                "outside": {
+                  "x": 0.5751,
+                  "y": 0.84,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_9_6_outer_boundary",
+              "regionId": "record_9_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.55655,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_6"
+                },
+                "edge": {
+                  "x": 0.5626999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_6"
+                },
+                "outside": {
+                  "x": 0.5628,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_9_7_outer_boundary",
+              "regionId": "record_9_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.54425,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_7"
+                },
+                "edge": {
+                  "x": 0.5503999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_7"
+                },
+                "outside": {
+                  "x": 0.5505,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_9_8_outer_boundary",
+              "regionId": "record_9_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.53195,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_8"
+                },
+                "edge": {
+                  "x": 0.5380999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_8"
+                },
+                "outside": {
+                  "x": 0.5382,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_9_9_outer_boundary",
+              "regionId": "record_9_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5196500000000001,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_9"
+                },
+                "edge": {
+                  "x": 0.5257999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_9"
+                },
+                "outside": {
+                  "x": 0.5259,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_9_x10_outer_boundary",
+              "regionId": "record_9_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.50675,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_x10"
+                },
+                "edge": {
+                  "x": 0.5134999999000001,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_x10"
+                },
+                "outside": {
+                  "x": 0.5136000000000001,
+                  "y": 0.84,
+                  "expectedEntityId": "record_9_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_10_5_outer_boundary",
+              "regionId": "record_10_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8888499999999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_5"
+                },
+                "edge": {
+                  "x": 0.8949999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_5"
+                },
+                "outside": {
+                  "x": 0.8951,
+                  "y": 0.84,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_10_6_outer_boundary",
+              "regionId": "record_10_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8765499999999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_6"
+                },
+                "edge": {
+                  "x": 0.8826999998999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_6"
+                },
+                "outside": {
+                  "x": 0.8827999999999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_5"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_10_7_outer_boundary",
+              "regionId": "record_10_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.86425,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_7"
+                },
+                "edge": {
+                  "x": 0.8703999998999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_7"
+                },
+                "outside": {
+                  "x": 0.8704999999999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_6"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_10_8_outer_boundary",
+              "regionId": "record_10_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.85195,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_8"
+                },
+                "edge": {
+                  "x": 0.8580999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_8"
+                },
+                "outside": {
+                  "x": 0.8582,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_10_9_outer_boundary",
+              "regionId": "record_10_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.83965,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_9"
+                },
+                "edge": {
+                  "x": 0.8457999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_9"
+                },
+                "outside": {
+                  "x": 0.8459,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "record_10_x10_outer_boundary",
+              "regionId": "record_10_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.82675,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_x10"
+                },
+                "edge": {
+                  "x": 0.8334999999,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_x10"
+                },
+                "outside": {
+                  "x": 0.8336,
+                  "y": 0.84,
+                  "expectedEntityId": "record_10_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "sighting_bull_ring_1_outer_boundary",
+              "regionId": "sighting_bull_ring_1",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.62908,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_1"
+                },
+                "edge": {
+                  "x": 0.6399999999,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_1"
+                },
+                "outside": {
+                  "x": 0.6401,
+                  "y": 0.5,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "sighting_bull_ring_2_outer_boundary",
+              "regionId": "sighting_bull_ring_2",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.60724,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_2"
+                },
+                "edge": {
+                  "x": 0.6181599999,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_2"
+                },
+                "outside": {
+                  "x": 0.61826,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_1"
+                }
+              }
+            },
+            {
+              "boundaryId": "sighting_bull_ring_3_outer_boundary",
+              "regionId": "sighting_bull_ring_3",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5854,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_3"
+                },
+                "edge": {
+                  "x": 0.5963199999,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_3"
+                },
+                "outside": {
+                  "x": 0.59642,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_2"
+                }
+              }
+            },
+            {
+              "boundaryId": "sighting_bull_ring_4_outer_boundary",
+              "regionId": "sighting_bull_ring_4",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5635600000000001,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_4"
+                },
+                "edge": {
+                  "x": 0.5744799999,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_4"
+                },
+                "outside": {
+                  "x": 0.57458,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_3"
+                }
+              }
+            },
+            {
+              "boundaryId": "sighting_bull_ring_5_outer_boundary",
+              "regionId": "sighting_bull_ring_5",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.54172,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_5"
+                },
+                "edge": {
+                  "x": 0.5526399999,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_5"
+                },
+                "outside": {
+                  "x": 0.55274,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_4"
+                }
+              }
+            },
+            {
+              "boundaryId": "sighting_bull_ring_6_outer_boundary",
+              "regionId": "sighting_bull_ring_6",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5154,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_6"
+                },
+                "edge": {
+                  "x": 0.5307999999,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_6"
+                },
+                "outside": {
+                  "x": 0.5309,
+                  "y": 0.5,
+                  "expectedEntityId": "sighting_bull_ring_5"
+                }
+              }
+            }
+          ]
+        },
+        "physicalAuthority": {
+          "authorityId": "EP64_RECONCILED_TEN_UGO_EVIDENCE_THE_NATIONAL_TARGET_COMPANY_NRA_A_17_2026_10_08",
+          "semanticAuthority": "NRA A-17 identity governs ten numbered record bulls; the exact face prints 5–9 and the center 10. The separate S bull is preserved as sighting, not added to record score.",
+          "physicalFaceAuthority": "Exact registered A-17(10.5×12) identity and stored commercial dimensions",
+          "ugoStandard": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+          "measurementMethod": "UGO physical-target-plane calibration against the exact registered face and stored commercial dimensions",
+          "sourceImageSha256": "ea7d1517377b17ab5d8e2060fad692dd9cdd336981c26fbaa1d3b5559d9ee956",
+          "representationRule": "Normalized coordinates represent governed physical regions on the exact target plane; rendered pixels do not create authority.",
+          "pixelIsAuthority": false
+        }
+      },
+      "digest": "f8183017ed07b0032f622b26d02e468bd62932b9ec67afab045f3a3936c0f5f0"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_nra_a_17-target-scoring-registration",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_23955b253d7a8f0e0a6d.jpg",
+        "assetSha256": "ea7d1517377b17ab5d8e2060fad692dd9cdd336981c26fbaa1d3b5559d9ee956",
+        "assetAlt": "A-17(10.5×12), SKU NRA A-17",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f7da3d936d5245b57b1525f8b3ddc7522afce8a7bd9ac3ff1cfab3302c150db0"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_nra_a_17-scoring",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "mixed_regions",
+        "regionRules": {
+          "record_1_5": {
+            "label": "Record 1 — 5",
+            "value": 5,
+            "objectId": "record_1",
+            "objectLabel": "Record 1"
+          },
+          "record_1_6": {
+            "label": "Record 1 — 6",
+            "value": 6,
+            "objectId": "record_1",
+            "objectLabel": "Record 1"
+          },
+          "record_1_7": {
+            "label": "Record 1 — 7",
+            "value": 7,
+            "objectId": "record_1",
+            "objectLabel": "Record 1"
+          },
+          "record_1_8": {
+            "label": "Record 1 — 8",
+            "value": 8,
+            "objectId": "record_1",
+            "objectLabel": "Record 1"
+          },
+          "record_1_9": {
+            "label": "Record 1 — 9",
+            "value": 9,
+            "objectId": "record_1",
+            "objectLabel": "Record 1"
+          },
+          "record_1_x10": {
+            "label": "Record 1 — X / 10",
+            "value": 10,
+            "objectId": "record_1",
+            "objectLabel": "Record 1"
+          },
+          "record_2_5": {
+            "label": "Record 2 — 5",
+            "value": 5,
+            "objectId": "record_2",
+            "objectLabel": "Record 2"
+          },
+          "record_2_6": {
+            "label": "Record 2 — 6",
+            "value": 6,
+            "objectId": "record_2",
+            "objectLabel": "Record 2"
+          },
+          "record_2_7": {
+            "label": "Record 2 — 7",
+            "value": 7,
+            "objectId": "record_2",
+            "objectLabel": "Record 2"
+          },
+          "record_2_8": {
+            "label": "Record 2 — 8",
+            "value": 8,
+            "objectId": "record_2",
+            "objectLabel": "Record 2"
+          },
+          "record_2_9": {
+            "label": "Record 2 — 9",
+            "value": 9,
+            "objectId": "record_2",
+            "objectLabel": "Record 2"
+          },
+          "record_2_x10": {
+            "label": "Record 2 — X / 10",
+            "value": 10,
+            "objectId": "record_2",
+            "objectLabel": "Record 2"
+          },
+          "record_3_5": {
+            "label": "Record 3 — 5",
+            "value": 5,
+            "objectId": "record_3",
+            "objectLabel": "Record 3"
+          },
+          "record_3_6": {
+            "label": "Record 3 — 6",
+            "value": 6,
+            "objectId": "record_3",
+            "objectLabel": "Record 3"
+          },
+          "record_3_7": {
+            "label": "Record 3 — 7",
+            "value": 7,
+            "objectId": "record_3",
+            "objectLabel": "Record 3"
+          },
+          "record_3_8": {
+            "label": "Record 3 — 8",
+            "value": 8,
+            "objectId": "record_3",
+            "objectLabel": "Record 3"
+          },
+          "record_3_9": {
+            "label": "Record 3 — 9",
+            "value": 9,
+            "objectId": "record_3",
+            "objectLabel": "Record 3"
+          },
+          "record_3_x10": {
+            "label": "Record 3 — X / 10",
+            "value": 10,
+            "objectId": "record_3",
+            "objectLabel": "Record 3"
+          },
+          "record_4_5": {
+            "label": "Record 4 — 5",
+            "value": 5,
+            "objectId": "record_4",
+            "objectLabel": "Record 4"
+          },
+          "record_4_6": {
+            "label": "Record 4 — 6",
+            "value": 6,
+            "objectId": "record_4",
+            "objectLabel": "Record 4"
+          },
+          "record_4_7": {
+            "label": "Record 4 — 7",
+            "value": 7,
+            "objectId": "record_4",
+            "objectLabel": "Record 4"
+          },
+          "record_4_8": {
+            "label": "Record 4 — 8",
+            "value": 8,
+            "objectId": "record_4",
+            "objectLabel": "Record 4"
+          },
+          "record_4_9": {
+            "label": "Record 4 — 9",
+            "value": 9,
+            "objectId": "record_4",
+            "objectLabel": "Record 4"
+          },
+          "record_4_x10": {
+            "label": "Record 4 — X / 10",
+            "value": 10,
+            "objectId": "record_4",
+            "objectLabel": "Record 4"
+          },
+          "record_5_5": {
+            "label": "Record 5 — 5",
+            "value": 5,
+            "objectId": "record_5",
+            "objectLabel": "Record 5"
+          },
+          "record_5_6": {
+            "label": "Record 5 — 6",
+            "value": 6,
+            "objectId": "record_5",
+            "objectLabel": "Record 5"
+          },
+          "record_5_7": {
+            "label": "Record 5 — 7",
+            "value": 7,
+            "objectId": "record_5",
+            "objectLabel": "Record 5"
+          },
+          "record_5_8": {
+            "label": "Record 5 — 8",
+            "value": 8,
+            "objectId": "record_5",
+            "objectLabel": "Record 5"
+          },
+          "record_5_9": {
+            "label": "Record 5 — 9",
+            "value": 9,
+            "objectId": "record_5",
+            "objectLabel": "Record 5"
+          },
+          "record_5_x10": {
+            "label": "Record 5 — X / 10",
+            "value": 10,
+            "objectId": "record_5",
+            "objectLabel": "Record 5"
+          },
+          "record_6_5": {
+            "label": "Record 6 — 5",
+            "value": 5,
+            "objectId": "record_6",
+            "objectLabel": "Record 6"
+          },
+          "record_6_6": {
+            "label": "Record 6 — 6",
+            "value": 6,
+            "objectId": "record_6",
+            "objectLabel": "Record 6"
+          },
+          "record_6_7": {
+            "label": "Record 6 — 7",
+            "value": 7,
+            "objectId": "record_6",
+            "objectLabel": "Record 6"
+          },
+          "record_6_8": {
+            "label": "Record 6 — 8",
+            "value": 8,
+            "objectId": "record_6",
+            "objectLabel": "Record 6"
+          },
+          "record_6_9": {
+            "label": "Record 6 — 9",
+            "value": 9,
+            "objectId": "record_6",
+            "objectLabel": "Record 6"
+          },
+          "record_6_x10": {
+            "label": "Record 6 — X / 10",
+            "value": 10,
+            "objectId": "record_6",
+            "objectLabel": "Record 6"
+          },
+          "record_7_5": {
+            "label": "Record 7 — 5",
+            "value": 5,
+            "objectId": "record_7",
+            "objectLabel": "Record 7"
+          },
+          "record_7_6": {
+            "label": "Record 7 — 6",
+            "value": 6,
+            "objectId": "record_7",
+            "objectLabel": "Record 7"
+          },
+          "record_7_7": {
+            "label": "Record 7 — 7",
+            "value": 7,
+            "objectId": "record_7",
+            "objectLabel": "Record 7"
+          },
+          "record_7_8": {
+            "label": "Record 7 — 8",
+            "value": 8,
+            "objectId": "record_7",
+            "objectLabel": "Record 7"
+          },
+          "record_7_9": {
+            "label": "Record 7 — 9",
+            "value": 9,
+            "objectId": "record_7",
+            "objectLabel": "Record 7"
+          },
+          "record_7_x10": {
+            "label": "Record 7 — X / 10",
+            "value": 10,
+            "objectId": "record_7",
+            "objectLabel": "Record 7"
+          },
+          "record_8_5": {
+            "label": "Record 8 — 5",
+            "value": 5,
+            "objectId": "record_8",
+            "objectLabel": "Record 8"
+          },
+          "record_8_6": {
+            "label": "Record 8 — 6",
+            "value": 6,
+            "objectId": "record_8",
+            "objectLabel": "Record 8"
+          },
+          "record_8_7": {
+            "label": "Record 8 — 7",
+            "value": 7,
+            "objectId": "record_8",
+            "objectLabel": "Record 8"
+          },
+          "record_8_8": {
+            "label": "Record 8 — 8",
+            "value": 8,
+            "objectId": "record_8",
+            "objectLabel": "Record 8"
+          },
+          "record_8_9": {
+            "label": "Record 8 — 9",
+            "value": 9,
+            "objectId": "record_8",
+            "objectLabel": "Record 8"
+          },
+          "record_8_x10": {
+            "label": "Record 8 — X / 10",
+            "value": 10,
+            "objectId": "record_8",
+            "objectLabel": "Record 8"
+          },
+          "record_9_5": {
+            "label": "Record 9 — 5",
+            "value": 5,
+            "objectId": "record_9",
+            "objectLabel": "Record 9"
+          },
+          "record_9_6": {
+            "label": "Record 9 — 6",
+            "value": 6,
+            "objectId": "record_9",
+            "objectLabel": "Record 9"
+          },
+          "record_9_7": {
+            "label": "Record 9 — 7",
+            "value": 7,
+            "objectId": "record_9",
+            "objectLabel": "Record 9"
+          },
+          "record_9_8": {
+            "label": "Record 9 — 8",
+            "value": 8,
+            "objectId": "record_9",
+            "objectLabel": "Record 9"
+          },
+          "record_9_9": {
+            "label": "Record 9 — 9",
+            "value": 9,
+            "objectId": "record_9",
+            "objectLabel": "Record 9"
+          },
+          "record_9_x10": {
+            "label": "Record 9 — X / 10",
+            "value": 10,
+            "objectId": "record_9",
+            "objectLabel": "Record 9"
+          },
+          "record_10_5": {
+            "label": "Record 10 — 5",
+            "value": 5,
+            "objectId": "record_10",
+            "objectLabel": "Record 10"
+          },
+          "record_10_6": {
+            "label": "Record 10 — 6",
+            "value": 6,
+            "objectId": "record_10",
+            "objectLabel": "Record 10"
+          },
+          "record_10_7": {
+            "label": "Record 10 — 7",
+            "value": 7,
+            "objectId": "record_10",
+            "objectLabel": "Record 10"
+          },
+          "record_10_8": {
+            "label": "Record 10 — 8",
+            "value": 8,
+            "objectId": "record_10",
+            "objectLabel": "Record 10"
+          },
+          "record_10_9": {
+            "label": "Record 10 — 9",
+            "value": 9,
+            "objectId": "record_10",
+            "objectLabel": "Record 10"
+          },
+          "record_10_x10": {
+            "label": "Record 10 — X / 10",
+            "value": 10,
+            "objectId": "record_10",
+            "objectLabel": "Record 10"
+          },
+          "sighting_bull_ring_1": {
+            "label": "Sighting bull — ring 1",
+            "objectId": "sighting_bull",
+            "objectLabel": "Sighting bull",
+            "countsForObjectCompletion": true,
+            "recordScoreEligible": false
+          },
+          "sighting_bull_ring_2": {
+            "label": "Sighting bull — ring 2",
+            "objectId": "sighting_bull",
+            "objectLabel": "Sighting bull",
+            "countsForObjectCompletion": true,
+            "recordScoreEligible": false
+          },
+          "sighting_bull_ring_3": {
+            "label": "Sighting bull — ring 3",
+            "objectId": "sighting_bull",
+            "objectLabel": "Sighting bull",
+            "countsForObjectCompletion": true,
+            "recordScoreEligible": false
+          },
+          "sighting_bull_ring_4": {
+            "label": "Sighting bull — ring 4",
+            "objectId": "sighting_bull",
+            "objectLabel": "Sighting bull",
+            "countsForObjectCompletion": true,
+            "recordScoreEligible": false
+          },
+          "sighting_bull_ring_5": {
+            "label": "Sighting bull — ring 5",
+            "objectId": "sighting_bull",
+            "objectLabel": "Sighting bull",
+            "countsForObjectCompletion": true,
+            "recordScoreEligible": false
+          },
+          "sighting_bull_ring_6": {
+            "label": "Sighting bull — ring 6",
+            "objectId": "sighting_bull",
+            "objectLabel": "Sighting bull",
+            "countsForObjectCompletion": true,
+            "recordScoreEligible": false
+          }
+        },
+        "aggregation": {
+          "mode": "sum_and_classification_counts"
+        },
+        "outsideRule": {
+          "label": "Miss"
+        },
+        "publisherRuleAuthority": {
+          "source": "Locked exact registered face plus stored publisher evidence",
+          "rule": "NRA A-17 identity governs ten numbered record bulls; the exact face prints 5–9 and the center 10. The separate S bull is preserved as sighting, not added to record score."
+        }
+      },
+      "digest": "6140036169160e308b37fa72b17a0c3cf73e97183ee3262ca10f98715c4f7a88"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_nra_a_17-mission",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "available"
+          },
+          "publisherMission": {
+            "status": "available"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Locked exact face plus UGO physical-target-plane calibration and stored publisher/printed-face evidence",
+        "semanticStatus": "GOVERNED_FOR_EP64_TEN_TARGET_PILOT",
+        "recognizedBehaviorFamily": "MIXED_REGIONS",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-reconciled-ten-v1",
+          "highestTruthfulCapability": "Scoring",
+          "targetStructure": {
+            "registeredGeometryStatus": "ugo_regions_available",
+            "registeredRegionCount": 66
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": true,
+            "pointsPerTap": true,
+            "regionObjectBreakdown": true,
+            "missesOutside": true
+          },
+          "historyProfile": {
+            "family": "numeric_score_history_v1",
+            "inheritedMachinery": "shared_session_drawer_3_history_v1",
+            "targetVocabulary": {
+              "objectSingular": "Bull",
+              "objectPlural": "Bulls",
+              "outside": "Miss"
+            },
+            "semanticInheritance": false
+          }
+        }
+      },
+      "digest": "6740c4a61eff277f429f9855f46ca7735f3b734eaf7f2f7abdc51926369e5a57"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "available"
+      },
+      "publisherMission": {
+        "status": "available"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "unpublished_rules_or_values"
+  ]
+}

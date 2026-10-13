@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_nra_b_11-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_nra_b_11",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_F54E14636292CC9AF182_V1",
+    "authorityId": "P_OS_EVIDENCE_F54E14636292CC9AF182_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/b-11/"
+    },
+    "product": {
+      "id": "p-os-national_target_nra_b_11",
+      "name": "B-11",
+      "sku": "NRA B-11",
+      "productUrl": "https://nationaltarget.com/shop/b-11/",
+      "dimensions": {
+        "width": 9.0,
+        "height": 10.5,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B-11 — The National Target Company. PROVISIONAL Shooter Experience: present the original target face and permit the shooter to register each shot as an individual observation. Preserve the sequence and total of observations; provide a session summary and repeat-session history. Only classify hits by physical objects or regions when those objects and boundaries have been separately governed. Apply published scoring only if its exact rules and region values are stored in Backend Authority. Do not manufacture a numeric score, object count, or progression requirement from the title or thumbnail.",
+        "visibleArtworkDescription": "Embedded target artwork exists for master #853; its exact visible objects, object count, physical boundaries, and publisher instructions have NOT been individually established in this batch.",
+        "authorityLimitations": "Matched by master #853; publisher The National Target Company. Evidence Only by default pending comparison to existing Backend Authority. Missing numeric scoring is a review item, not OOS. Pixel coordinates cannot establish physical geometry.",
+        "supportedExperience": "Account for all registered shots; show observed shot count and session history. Show hits, misses, zones, scores, and progression only when corresponding governed contracts exist.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 854,
+          "sourceCells": "AC854:AG854",
+          "masterNumber": 853,
+          "inventoryRecordId": "national-target:0235",
+          "sku": "NRA B-11",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_nra_b_11-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_F54E14636292CC9AF182_EXACT_FACE_V1"
+      },
+      "digest": "2f0e27ca32835f1422ff4be97944e385976159ffa93d6297d5feab56c4dae114"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_nra_b_11-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_7123809b872f35e65143.jpg",
+        "assetSha256": "cbf39741d534b6359ddbe81ae098d67f8c729f23b43fd812046c0a7e91249cdf",
+        "assetAlt": "B-11, SKU NRA B-11",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "e0a5071dc71cd816b0878111e412633ca4b0af771365c8d4d01d34a11b424e68"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_nra_b_11-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:NRA B-11 + national-target:0235 + preserved publisher representation cbf39741d534b6359ddbe81ae098d67f8c729f23b43fd812046c0a7e91249cdf",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "fd7577da8fdb7cad895bab16ad2dbc0b8cf72193cbfcdc564476805cd940bc58"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_nra_b_11-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "77dee5cf0988313e921ec4a36100c907c7c043e828a9f399d8ec9f957a0a468e"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

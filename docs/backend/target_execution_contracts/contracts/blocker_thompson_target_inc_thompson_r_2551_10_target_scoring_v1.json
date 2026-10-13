@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_r_2551_10-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_r_2551_10",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_BB6DC20473980E240D7F_V1",
+    "authorityId": "P_OS_BLOCKER_BB6DC20473980E240D7F_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/trouble-shooter-handgun-diagnostic-12-5x19-paper-shooting-targets/"
+    },
+    "product": {
+      "id": "p-os-thompson_r_2551_10",
+      "name": "Trouble-Shooter Handgun Diagnostic 12.5\"x19\" Paper Shooting Targets",
+      "sku": "thompson-R-2551-10",
+      "dimensions": {
+        "width": 12.5,
+        "height": 19.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Trouble-Shooter Handgun Diagnostic 12.5\"x19\" Paper Shooting Targets — Thompson Target Inc.. Provisional Shooter Experience: use this target as a pistol skills exercise, recording shooter observations on its actual printed surface. Do not assert specific printed objects, quantities, scoring zones, hit values, or a mandatory drill sequence until confirmed from the original artwork and governed publisher rules. SCZN3 should provide per-session observations and meaningful historical comparisons where supported.",
+        "visibleArtworkDescription": "Artwork listed as present in IMAGE MASTER for target #1063; individual physical objects and their counts have NOT been visually inventoried. Target-specific review required.",
+        "authorityLimitations": "Matched IMAGE MASTER #1063; publisher Thompson Target Inc.. Governed rule: NOT STORED in master. Registered objects: NOT STORED in master. Preserve Backend authority; do not infer scoring from artwork pixels or name.",
+        "supportedExperience": "Capture and reconcile observations, including misses when supported. Show numeric scoring only if governed region values and rules exist; otherwise use governed zone counting or Evidence Only as appropriate.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1064,
+          "sourceCells": "AC1064:AG1064",
+          "masterNumber": 1063,
+          "inventoryRecordId": "thompson-target:0105",
+          "sku": "thompson-R-2551-10",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_r_2551_10-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_BB6DC20473980E240D7F_EXACT_FACE_V1"
+      },
+      "digest": "4d3a323f30d83e3a3b60b09934813c47af28450c050ff4fb5fe195e854ce2b20"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_r_2551_10-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_b8bdaee8f05d5a0ab0d4.webp",
+        "assetSha256": "6071cadd85b7d85c6101bc2fa2649c982f7b7b55a0ad5a20484f805cb8b5eb02",
+        "assetAlt": "Trouble-Shooter Handgun Diagnostic 12.5\"x19\" Paper Shooting Targets, SKU thompson-R-2551-10",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "8a1f4cf727c916d6b109605f083476d765cbf6e4f2b5256aefaada6601310d97"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_r_2551_10-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "thompson-R-2551-10 + thompson-target:0105 + publisher_primary_representation_position_1 + 6071cadd85b7d85c6101bc2fa2649c982f7b7b55a0ad5a20484f805cb8b5eb02",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "22310c71c69c0f1207af9e33bdc17e3ad8f6482213f215b7e46a7af1eff9a3bb"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_r_2551_10-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "c5dd483f802149a8ced9a1635e86701a8a6f8f9cf88adad7e83f9db7aefaec04"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

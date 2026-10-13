@@ -32,6 +32,25 @@
         "width": 19,
         "height": 25,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Report results separately for the large upper heart and each lower heart; provide target-by-target hit distribution and optional pattern centers.",
+        "visibleArtworkDescription": "Large heart above two smaller pink and blue hearts with internal heart-shaped rings.",
+        "authorityLimitations": "Printed names/colors are not proof of point values or game rules.",
+        "supportedExperience": "preserve every registered observation; show object/area distribution where governed, misses only where governed boundaries support classification; retain result, SEC, Vault, exact reopen. No invented numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 200,
+          "sourceCells": "AC200:AG200",
+          "masterNumber": 199,
+          "inventoryRecordId": "gunfun:0004",
+          "sku": "11050",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
@@ -68,9 +87,17 @@
       "status": "approved",
       "definition": {
         "status": "not_applicable",
-        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No governed numeric scoring value established by this audit.",
+          "resultRequirement": "Preserve taps/evidence; do not invent score.",
+          "geometryAuthorityInstruction": "Retain exact-face registration. No pixel-derived geometry/value authority.",
+          "basis": "Publisher/source audit found no governed higher-order scoring rule in available authority."
+        }
       },
-      "digest": "c5101ca781650ff329106b4ec0e4ea9ffbec39c779e1bbe55ee9fa685903ce92"
+      "digest": "0167d13961ade506feda28a9e4a5e64210898c591799694d58126ec2a9017089"
     },
     "mission": {
       "id": "gunfun_11050_small_valentines_day-mission",
@@ -81,29 +108,47 @@
         "resultPackageType": "smartEvidenceResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
           },
           "measurement": {
-            "status": "unavailable"
+            "status": "not_applicable"
           },
           "correction": {
-            "status": "unavailable"
+            "status": "not_applicable"
           },
           "officialScore": {
-            "status": "unavailable"
-          },
-          "qualification": {
             "status": "not_applicable"
           },
           "publisherMission": {
-            "status": "unavailable"
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
           }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No governed numeric scoring value established by this audit.",
+          "resultRequirement": "Preserve taps/evidence; do not invent score.",
+          "geometryAuthorityInstruction": "Retain exact-face registration. No pixel-derived geometry/value authority.",
+          "basis": "Publisher/source audit found no governed higher-order scoring rule in available authority."
         }
       },
-      "digest": "09c7f416a28111ab3b0ff465ae5b9c82d3d0f3309d6725477bebf8d44d3a126c"
+      "digest": "f784706c3fd6868820be98807bae99bf5c6416f20cfc73aaabe86b0d08028cdf"
     }
   },
   "missionFamily": "smartEvidenceCapture",
@@ -128,29 +173,27 @@
         "status": "available"
       },
       "measurement": {
-        "status": "unavailable"
+        "status": "not_applicable"
       },
       "correction": {
-        "status": "unavailable"
+        "status": "not_applicable"
       },
       "officialScore": {
-        "status": "unavailable"
-      },
-      "qualification": {
         "status": "not_applicable"
       },
       "publisherMission": {
-        "status": "unavailable"
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
       }
     },
     "officialMissionRequired": false
   },
   "unsupportedUses": [
-    "numeric_scoring",
-    "qualification_or_pass_fail",
-    "anatomical_medical_tactical_or_diagnostic_interpretation",
-    "physical_measurement",
     "zeroing_correction",
-    "uncontracted_mission_completion"
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
   ]
 }

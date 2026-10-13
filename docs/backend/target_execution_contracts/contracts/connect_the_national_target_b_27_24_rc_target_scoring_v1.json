@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_the_national_target_b_27_24_rc-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_the_national_target_b_27_24_rc",
+    "version": "1",
+    "atpId": "ATP_CONNECT_6D94AA193B83DF0E1F4C_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_6D94AA193B83DF0E1F4C_AUTHORITY_V1",
+    "publisher": {
+      "id": "the_national_target",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/b-2724-rc/"
+    },
+    "product": {
+      "id": "p-os-national_target_b_27_24_rc",
+      "name": "B-27(24″) RC",
+      "sku": "B-27(24)RC",
+      "productUrl": "https://nationaltarget.com/shop/b-2724-rc/",
+      "dimensions": {
+        "width": 24.0,
+        "height": 45.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B-27(24″) RC — The National Target Company. PROVISIONAL Shooter Experience: present the original target face and permit the shooter to register each shot as an individual observation. Preserve the sequence and total of observations; provide a session summary and repeat-session history. Only classify hits by physical objects or regions when those objects and boundaries have been separately governed. Apply published scoring only if its exact rules and region values are stored in Backend Authority. Do not manufacture a numeric score, object count, or progression requirement from the title or thumbnail.",
+        "visibleArtworkDescription": "Embedded target artwork exists for master #881; its exact visible objects, object count, physical boundaries, and publisher instructions have NOT been individually established in this batch.",
+        "authorityLimitations": "Matched by master #881; publisher The National Target Company. Evidence Only by default pending comparison to existing Backend Authority. Missing numeric scoring is a review item, not OOS. Pixel coordinates cannot establish physical geometry.",
+        "supportedExperience": "Account for all registered shots; show observed shot count and session history. Show hits, misses, zones, scores, and progression only when corresponding governed contracts exist.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 882,
+          "sourceCells": "AC882:AG882",
+          "masterNumber": 881,
+          "inventoryRecordId": "national-target:0198",
+          "sku": "B-27(24)RC",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_the_national_target_b_27_24_rc-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_6D94AA193B83DF0E1F4C_EXACT_FACE_V1"
+      },
+      "digest": "006478bc258e032ca9ce183eae7cd1b0062c329ba27f799c6b71288dea57679b"
+    },
+    "registration": {
+      "id": "connect_the_national_target_b_27_24_rc-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_61eb6554132fe16c0e70.jpg",
+        "assetSha256": "84e52dfd5c77fdc01503c468692aab6c5036015d7d20e6df7be01d27c7d06434",
+        "assetAlt": "B-27(24″) RC, SKU B-27(24)RC",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "ff1a6b119b28fa6f35c73eab0026f42e9d811b6cf04613a4f7763d5e84a7ccb0"
+    },
+    "scoring": {
+      "id": "connect_the_national_target_b_27_24_rc-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:B-27(24)RC + national-target:0198 + preserved publisher representation 84e52dfd5c77fdc01503c468692aab6c5036015d7d20e6df7be01d27c7d06434",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "d792a69fdceb5383a49987c28b1e462e53a4dad8e925c0ff16aefda9d09f142c"
+    },
+    "mission": {
+      "id": "connect_the_national_target_b_27_24_rc-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "d8748bf2a0c0ffc3bca572d2271ab8e6cc6f8651d936b01bda9b57f214b02616"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_sl_b21e_kz-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_sl_b21e_kz",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_D0FD1C71EFC6B8E0DDEB_V1",
+    "authorityId": "P_OS_BLOCKER_D0FD1C71EFC6B8E0DDEB_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/b21e-kill-zone-target/"
+    },
+    "product": {
+      "id": "p-os-baker_18639",
+      "name": "B21E Kill Zone Target",
+      "sku": "SL-B21E-KZ",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B21E Kill Zone Target (Baker Targets) — qualification or law-enforcement target. Shooter experience: present this specific printed target face, let the shooter register each observed impact, and return an intelligible account of where shots landed. Explain outcomes only against governed regions, objects and published rules that are actually stored. Where the face supports distinct aim areas, retain their separate identities rather than collapsing them into one generic hit count. Preserve misses and every registered observation in the session record. No invented object counts, distances, time limits, point values or course-of-fire requirements.",
+        "visibleArtworkDescription": "Artwork source: embedded IMAGE MASTER thumbnail for master #414. Named design: B21E Kill Zone Target. Exact visual object inventory and physical boundaries are NOT independently established by this draft; consult the full artwork and governed geometry before assigning counts.",
+        "authorityLimitations": "SCORING REVIEW — potential published scoring/qualification semantics; check existing backend rule and region values before enabling numeric scores.",
+        "supportedExperience": "Record target identity, observations, misses and supported per-zone/per-object counts; show numeric score only if backend-authorized; preserve RESULT → SEC → Vault data when implemented.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 415,
+          "sourceCells": "AC415:AG415",
+          "masterNumber": 414,
+          "inventoryRecordId": "baker-targets:0078, baker-targets:0079",
+          "sku": "SL-B21E-KZ-Bulk, SL-B21E-KZ",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_sl_b21e_kz-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_D0FD1C71EFC6B8E0DDEB_EXACT_FACE_V1"
+      },
+      "digest": "dda2deb9dba562dd0553f1e39e09e7a44d3b2aa17303fbe9e0ca1e50968924d4"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_sl_b21e_kz-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_4091a2a122de6c4661d5.jpg",
+        "assetSha256": "e8e9eba796fa6103b8a602c511ff6e246600575775734e5440d1bada12f79a70",
+        "assetAlt": "B21E Kill Zone Target, SKU SL-B21E-KZ",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "2bf05304e61de720021c5e89478195fbec4abedf4bdba3bc7d921c78009999fc"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_sl_b21e_kz-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:18639 + baker-targets:0079 + publisher_primary_representation_position_1 + e8e9eba796fa6103b8a602c511ff6e246600575775734e5440d1bada12f79a70",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "7d385efbc774084c229709006201536f640615f98713eb34b7b12755d435df79"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_sl_b21e_kz-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "bc00355613d24a1f3b5b73ad0c6440e7af71e29dd1757d7898ecc495dbf2f9d2"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -32,15 +32,34 @@
         "width": 28,
         "height": 28,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Shotgun Target (53620): record the shooter’s impacts on the printed target and present a target-specific session review. The printed design and any publisher-defined activity must be checked before assigning object counts, win conditions, mandatory sequence, or numeric scoring. SCZN3 can preserve observations and progression without inventing rules.",
+        "visibleArtworkDescription": "Embedded artwork exists in IMAGE MASTER. Exact meaningful-object inventory and boundaries are NOT YET VERIFIED from this source.",
+        "authorityLimitations": "Matched master #1429; printer: GunFun. Existing rule: NOT STORED. Physical geometry and score values require Backend Authority; image pixels are not authority.",
+        "supportedExperience": "Record each observation, distinguish hits and misses only with governed geometry, and reconcile total taps. Numeric scoring only when publisher/governing values and rules are stored; otherwise governed Zone Counting or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1430,
+          "sourceCells": "AC1430:AG1430",
+          "masterNumber": 1429,
+          "inventoryRecordId": "gunfun:0200",
+          "sku": "53620",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
   "components": {
     "geometry": {
-    "id": "gunfun_53620_shotgun_target-geometry",
-    "version": "1",
-    "status": "approved",
-    "digest": "2ce9c37f84c8904da6beb67033ff254ec8b518dff35980fd2d6e847ba101733a",
+      "id": "gunfun_53620_shotgun_target-geometry",
+      "version": "1",
+      "status": "approved",
+      "digest": "2ce9c37f84c8904da6beb67033ff254ec8b518dff35980fd2d6e847ba101733a",
       "definition": {
         "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
@@ -50,10 +69,10 @@
       }
     },
     "registration": {
-    "id": "gunfun_53620_shotgun_target-registration",
-    "version": "1",
-    "status": "approved",
-    "digest": "a62a9ec06a1e8e3a6d5fdc585aa26240a1302559dcf0bb21af1d76ebfdda95ec",
+      "id": "gunfun_53620_shotgun_target-registration",
+      "version": "1",
+      "status": "approved",
+      "digest": "a62a9ec06a1e8e3a6d5fdc585aa26240a1302559dcf0bb21af1d76ebfdda95ec",
       "definition": {
         "role": "evidence_capture_asset",
         "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/53620.jpg",
@@ -63,20 +82,20 @@
       }
     },
     "scoring": {
-    "id": "gunfun_53620_shotgun_target-scoring",
-    "version": "1",
-    "status": "approved",
-    "digest": "574022516d7afe3a3c052b6008f23b593b0bddab767b7243c61879dda5a24618",
+      "id": "gunfun_53620_shotgun_target-scoring",
+      "version": "1",
+      "status": "approved",
+      "digest": "574022516d7afe3a3c052b6008f23b593b0bddab767b7243c61879dda5a24618",
       "definition": {
         "status": "not_applicable",
         "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
       }
     },
     "mission": {
-    "id": "gunfun_53620_shotgun_target-mission",
-    "version": "1",
-    "status": "approved",
-    "digest": "0ef446ff802a720988b3f20539aefc4d42620363532af0a64096aa7c62d96da9",
+      "id": "gunfun_53620_shotgun_target-mission",
+      "version": "1",
+      "status": "approved",
+      "digest": "0ef446ff802a720988b3f20539aefc4d42620363532af0a64096aa7c62d96da9",
       "definition": {
         "missionFamily": "smartEvidenceCapture",
         "resultPackageType": "smartEvidenceResult",

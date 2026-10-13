@@ -1,0 +1,3384 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_birchwood_casey_bc_35772-target-scoring-v1",
+  "contractVersion": "2",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER_EP64_RECONCILED_TEN_EXECUTION_GATE_2026_10_08",
+    "approvedAt": "2026-10-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-10-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_birchwood_casey_bc_35772",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_11CF7657334C07C5652E_V1",
+    "authorityId": "P_OS_BLOCKER_11CF7657334C07C5652E_V1",
+    "publisher": {
+      "id": "birchwood_casey",
+      "name": "Birchwood Casey",
+      "url": "https://www.birchwoodcasey.com/products/12-x-18-lucky-shot-bottles-dirty-bird-target.html"
+    },
+    "product": {
+      "id": "p-os-birchwood_casey_bc_35772",
+      "name": "12\" X 18\" Lucky Shot Bottles Dirty Bird Target",
+      "sku": "BC-35772",
+      "dimensions": {
+        "width": 12.0,
+        "height": 18.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "12\" X 18\" Lucky Shot Bottles Dirty Bird Target: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1318; printer Birchwood Casey. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1319,
+          "sourceCells": "AC1319:AG1319",
+          "masterNumber": 1318,
+          "inventoryRecordId": "birchwood-casey:0004",
+          "sku": "BC-35772",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_birchwood_casey_bc_35772-geometry",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "status": "ugo_governed_backend_authority",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
+        "regions": [
+          {
+            "regionId": "bottle_1",
+            "shape": "polygon",
+            "points": [
+              [
+                0.12399999999999999,
+                0.2
+              ],
+              [
+                0.15999999999999998,
+                0.2
+              ],
+              [
+                0.15999999999999998,
+                0.25320000000000004
+              ],
+              [
+                0.187,
+                0.2684
+              ],
+              [
+                0.187,
+                0.39
+              ],
+              [
+                0.09699999999999999,
+                0.39
+              ],
+              [
+                0.09699999999999999,
+                0.2684
+              ],
+              [
+                0.12399999999999999,
+                0.25320000000000004
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_1_bullseye",
+            "shape": "ellipse",
+            "cx": 0.142,
+            "cy": 0.318,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_2",
+            "shape": "polygon",
+            "points": [
+              [
+                0.23700000000000002,
+                0.2
+              ],
+              [
+                0.273,
+                0.2
+              ],
+              [
+                0.273,
+                0.25320000000000004
+              ],
+              [
+                0.3,
+                0.2684
+              ],
+              [
+                0.3,
+                0.39
+              ],
+              [
+                0.21000000000000002,
+                0.39
+              ],
+              [
+                0.21000000000000002,
+                0.2684
+              ],
+              [
+                0.23700000000000002,
+                0.25320000000000004
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_2_bullseye",
+            "shape": "ellipse",
+            "cx": 0.255,
+            "cy": 0.318,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_3",
+            "shape": "polygon",
+            "points": [
+              [
+                0.352,
+                0.2
+              ],
+              [
+                0.388,
+                0.2
+              ],
+              [
+                0.388,
+                0.25320000000000004
+              ],
+              [
+                0.415,
+                0.2684
+              ],
+              [
+                0.415,
+                0.39
+              ],
+              [
+                0.325,
+                0.39
+              ],
+              [
+                0.325,
+                0.2684
+              ],
+              [
+                0.352,
+                0.25320000000000004
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_3_bullseye",
+            "shape": "ellipse",
+            "cx": 0.37,
+            "cy": 0.318,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_4",
+            "shape": "polygon",
+            "points": [
+              [
+                0.612,
+                0.2
+              ],
+              [
+                0.648,
+                0.2
+              ],
+              [
+                0.648,
+                0.25320000000000004
+              ],
+              [
+                0.675,
+                0.2684
+              ],
+              [
+                0.675,
+                0.39
+              ],
+              [
+                0.585,
+                0.39
+              ],
+              [
+                0.585,
+                0.2684
+              ],
+              [
+                0.612,
+                0.25320000000000004
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_4_bullseye",
+            "shape": "ellipse",
+            "cx": 0.63,
+            "cy": 0.318,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_5",
+            "shape": "polygon",
+            "points": [
+              [
+                0.726,
+                0.2
+              ],
+              [
+                0.762,
+                0.2
+              ],
+              [
+                0.762,
+                0.25320000000000004
+              ],
+              [
+                0.789,
+                0.2684
+              ],
+              [
+                0.789,
+                0.39
+              ],
+              [
+                0.699,
+                0.39
+              ],
+              [
+                0.699,
+                0.2684
+              ],
+              [
+                0.726,
+                0.25320000000000004
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_5_bullseye",
+            "shape": "ellipse",
+            "cx": 0.744,
+            "cy": 0.318,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_6",
+            "shape": "polygon",
+            "points": [
+              [
+                0.84,
+                0.2
+              ],
+              [
+                0.876,
+                0.2
+              ],
+              [
+                0.876,
+                0.25320000000000004
+              ],
+              [
+                0.903,
+                0.2684
+              ],
+              [
+                0.903,
+                0.39
+              ],
+              [
+                0.813,
+                0.39
+              ],
+              [
+                0.813,
+                0.2684
+              ],
+              [
+                0.84,
+                0.25320000000000004
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_6_bullseye",
+            "shape": "ellipse",
+            "cx": 0.858,
+            "cy": 0.318,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_7",
+            "shape": "polygon",
+            "points": [
+              [
+                0.072,
+                0.37
+              ],
+              [
+                0.108,
+                0.37
+              ],
+              [
+                0.108,
+                0.4232
+              ],
+              [
+                0.135,
+                0.4384
+              ],
+              [
+                0.135,
+                0.56
+              ],
+              [
+                0.045,
+                0.56
+              ],
+              [
+                0.045,
+                0.4384
+              ],
+              [
+                0.072,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_7_bullseye",
+            "shape": "ellipse",
+            "cx": 0.09,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_8",
+            "shape": "polygon",
+            "points": [
+              [
+                0.18400000000000002,
+                0.37
+              ],
+              [
+                0.22,
+                0.37
+              ],
+              [
+                0.22,
+                0.4232
+              ],
+              [
+                0.247,
+                0.4384
+              ],
+              [
+                0.247,
+                0.56
+              ],
+              [
+                0.15700000000000003,
+                0.56
+              ],
+              [
+                0.15700000000000003,
+                0.4384
+              ],
+              [
+                0.18400000000000002,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_8_bullseye",
+            "shape": "ellipse",
+            "cx": 0.202,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_9",
+            "shape": "polygon",
+            "points": [
+              [
+                0.299,
+                0.37
+              ],
+              [
+                0.335,
+                0.37
+              ],
+              [
+                0.335,
+                0.4232
+              ],
+              [
+                0.362,
+                0.4384
+              ],
+              [
+                0.362,
+                0.56
+              ],
+              [
+                0.272,
+                0.56
+              ],
+              [
+                0.272,
+                0.4384
+              ],
+              [
+                0.299,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_9_bullseye",
+            "shape": "ellipse",
+            "cx": 0.317,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_10",
+            "shape": "polygon",
+            "points": [
+              [
+                0.412,
+                0.37
+              ],
+              [
+                0.448,
+                0.37
+              ],
+              [
+                0.448,
+                0.4232
+              ],
+              [
+                0.475,
+                0.4384
+              ],
+              [
+                0.475,
+                0.56
+              ],
+              [
+                0.385,
+                0.56
+              ],
+              [
+                0.385,
+                0.4384
+              ],
+              [
+                0.412,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_10_bullseye",
+            "shape": "ellipse",
+            "cx": 0.43,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_11",
+            "shape": "polygon",
+            "points": [
+              [
+                0.5519999999999999,
+                0.37
+              ],
+              [
+                0.588,
+                0.37
+              ],
+              [
+                0.588,
+                0.4232
+              ],
+              [
+                0.615,
+                0.4384
+              ],
+              [
+                0.615,
+                0.56
+              ],
+              [
+                0.5249999999999999,
+                0.56
+              ],
+              [
+                0.5249999999999999,
+                0.4384
+              ],
+              [
+                0.5519999999999999,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_11_bullseye",
+            "shape": "ellipse",
+            "cx": 0.57,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_12",
+            "shape": "polygon",
+            "points": [
+              [
+                0.667,
+                0.37
+              ],
+              [
+                0.7030000000000001,
+                0.37
+              ],
+              [
+                0.7030000000000001,
+                0.4232
+              ],
+              [
+                0.7300000000000001,
+                0.4384
+              ],
+              [
+                0.7300000000000001,
+                0.56
+              ],
+              [
+                0.64,
+                0.56
+              ],
+              [
+                0.64,
+                0.4384
+              ],
+              [
+                0.667,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_12_bullseye",
+            "shape": "ellipse",
+            "cx": 0.685,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_13",
+            "shape": "polygon",
+            "points": [
+              [
+                0.78,
+                0.37
+              ],
+              [
+                0.8160000000000001,
+                0.37
+              ],
+              [
+                0.8160000000000001,
+                0.4232
+              ],
+              [
+                0.8430000000000001,
+                0.4384
+              ],
+              [
+                0.8430000000000001,
+                0.56
+              ],
+              [
+                0.753,
+                0.56
+              ],
+              [
+                0.753,
+                0.4384
+              ],
+              [
+                0.78,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_13_bullseye",
+            "shape": "ellipse",
+            "cx": 0.798,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_14",
+            "shape": "polygon",
+            "points": [
+              [
+                0.892,
+                0.37
+              ],
+              [
+                0.928,
+                0.37
+              ],
+              [
+                0.928,
+                0.4232
+              ],
+              [
+                0.9550000000000001,
+                0.4384
+              ],
+              [
+                0.9550000000000001,
+                0.56
+              ],
+              [
+                0.865,
+                0.56
+              ],
+              [
+                0.865,
+                0.4384
+              ],
+              [
+                0.892,
+                0.4232
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_14_bullseye",
+            "shape": "ellipse",
+            "cx": 0.91,
+            "cy": 0.47,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_15",
+            "shape": "polygon",
+            "points": [
+              [
+                0.12399999999999999,
+                0.6
+              ],
+              [
+                0.15999999999999998,
+                0.6
+              ],
+              [
+                0.15999999999999998,
+                0.6504
+              ],
+              [
+                0.187,
+                0.6648
+              ],
+              [
+                0.187,
+                0.78
+              ],
+              [
+                0.09699999999999999,
+                0.78
+              ],
+              [
+                0.09699999999999999,
+                0.6648
+              ],
+              [
+                0.12399999999999999,
+                0.6504
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_15_bullseye",
+            "shape": "ellipse",
+            "cx": 0.142,
+            "cy": 0.694,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_16",
+            "shape": "polygon",
+            "points": [
+              [
+                0.23700000000000002,
+                0.6
+              ],
+              [
+                0.273,
+                0.6
+              ],
+              [
+                0.273,
+                0.6504
+              ],
+              [
+                0.3,
+                0.6648
+              ],
+              [
+                0.3,
+                0.78
+              ],
+              [
+                0.21000000000000002,
+                0.78
+              ],
+              [
+                0.21000000000000002,
+                0.6648
+              ],
+              [
+                0.23700000000000002,
+                0.6504
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_16_bullseye",
+            "shape": "ellipse",
+            "cx": 0.255,
+            "cy": 0.694,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_17",
+            "shape": "polygon",
+            "points": [
+              [
+                0.352,
+                0.6
+              ],
+              [
+                0.388,
+                0.6
+              ],
+              [
+                0.388,
+                0.6504
+              ],
+              [
+                0.415,
+                0.6648
+              ],
+              [
+                0.415,
+                0.78
+              ],
+              [
+                0.325,
+                0.78
+              ],
+              [
+                0.325,
+                0.6648
+              ],
+              [
+                0.352,
+                0.6504
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_17_bullseye",
+            "shape": "ellipse",
+            "cx": 0.37,
+            "cy": 0.694,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_18",
+            "shape": "polygon",
+            "points": [
+              [
+                0.612,
+                0.6
+              ],
+              [
+                0.648,
+                0.6
+              ],
+              [
+                0.648,
+                0.6504
+              ],
+              [
+                0.675,
+                0.6648
+              ],
+              [
+                0.675,
+                0.78
+              ],
+              [
+                0.585,
+                0.78
+              ],
+              [
+                0.585,
+                0.6648
+              ],
+              [
+                0.612,
+                0.6504
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_18_bullseye",
+            "shape": "ellipse",
+            "cx": 0.63,
+            "cy": 0.694,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_19",
+            "shape": "polygon",
+            "points": [
+              [
+                0.726,
+                0.6
+              ],
+              [
+                0.762,
+                0.6
+              ],
+              [
+                0.762,
+                0.6504
+              ],
+              [
+                0.789,
+                0.6648
+              ],
+              [
+                0.789,
+                0.78
+              ],
+              [
+                0.699,
+                0.78
+              ],
+              [
+                0.699,
+                0.6648
+              ],
+              [
+                0.726,
+                0.6504
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_19_bullseye",
+            "shape": "ellipse",
+            "cx": 0.744,
+            "cy": 0.694,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_20",
+            "shape": "polygon",
+            "points": [
+              [
+                0.84,
+                0.6
+              ],
+              [
+                0.876,
+                0.6
+              ],
+              [
+                0.876,
+                0.6504
+              ],
+              [
+                0.903,
+                0.6648
+              ],
+              [
+                0.903,
+                0.78
+              ],
+              [
+                0.813,
+                0.78
+              ],
+              [
+                0.813,
+                0.6648
+              ],
+              [
+                0.84,
+                0.6504
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_20_bullseye",
+            "shape": "ellipse",
+            "cx": 0.858,
+            "cy": 0.694,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_21",
+            "shape": "polygon",
+            "points": [
+              [
+                0.072,
+                0.77
+              ],
+              [
+                0.108,
+                0.77
+              ],
+              [
+                0.108,
+                0.8204
+              ],
+              [
+                0.135,
+                0.8348
+              ],
+              [
+                0.135,
+                0.95
+              ],
+              [
+                0.045,
+                0.95
+              ],
+              [
+                0.045,
+                0.8348
+              ],
+              [
+                0.072,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_21_bullseye",
+            "shape": "ellipse",
+            "cx": 0.09,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_22",
+            "shape": "polygon",
+            "points": [
+              [
+                0.18400000000000002,
+                0.77
+              ],
+              [
+                0.22,
+                0.77
+              ],
+              [
+                0.22,
+                0.8204
+              ],
+              [
+                0.247,
+                0.8348
+              ],
+              [
+                0.247,
+                0.95
+              ],
+              [
+                0.15700000000000003,
+                0.95
+              ],
+              [
+                0.15700000000000003,
+                0.8348
+              ],
+              [
+                0.18400000000000002,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_22_bullseye",
+            "shape": "ellipse",
+            "cx": 0.202,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_23",
+            "shape": "polygon",
+            "points": [
+              [
+                0.299,
+                0.77
+              ],
+              [
+                0.335,
+                0.77
+              ],
+              [
+                0.335,
+                0.8204
+              ],
+              [
+                0.362,
+                0.8348
+              ],
+              [
+                0.362,
+                0.95
+              ],
+              [
+                0.272,
+                0.95
+              ],
+              [
+                0.272,
+                0.8348
+              ],
+              [
+                0.299,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_23_bullseye",
+            "shape": "ellipse",
+            "cx": 0.317,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_24",
+            "shape": "polygon",
+            "points": [
+              [
+                0.412,
+                0.77
+              ],
+              [
+                0.448,
+                0.77
+              ],
+              [
+                0.448,
+                0.8204
+              ],
+              [
+                0.475,
+                0.8348
+              ],
+              [
+                0.475,
+                0.95
+              ],
+              [
+                0.385,
+                0.95
+              ],
+              [
+                0.385,
+                0.8348
+              ],
+              [
+                0.412,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_24_bullseye",
+            "shape": "ellipse",
+            "cx": 0.43,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_25",
+            "shape": "polygon",
+            "points": [
+              [
+                0.5519999999999999,
+                0.77
+              ],
+              [
+                0.588,
+                0.77
+              ],
+              [
+                0.588,
+                0.8204
+              ],
+              [
+                0.615,
+                0.8348
+              ],
+              [
+                0.615,
+                0.95
+              ],
+              [
+                0.5249999999999999,
+                0.95
+              ],
+              [
+                0.5249999999999999,
+                0.8348
+              ],
+              [
+                0.5519999999999999,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_25_bullseye",
+            "shape": "ellipse",
+            "cx": 0.57,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_26",
+            "shape": "polygon",
+            "points": [
+              [
+                0.667,
+                0.77
+              ],
+              [
+                0.7030000000000001,
+                0.77
+              ],
+              [
+                0.7030000000000001,
+                0.8204
+              ],
+              [
+                0.7300000000000001,
+                0.8348
+              ],
+              [
+                0.7300000000000001,
+                0.95
+              ],
+              [
+                0.64,
+                0.95
+              ],
+              [
+                0.64,
+                0.8348
+              ],
+              [
+                0.667,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_26_bullseye",
+            "shape": "ellipse",
+            "cx": 0.685,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_27",
+            "shape": "polygon",
+            "points": [
+              [
+                0.78,
+                0.77
+              ],
+              [
+                0.8160000000000001,
+                0.77
+              ],
+              [
+                0.8160000000000001,
+                0.8204
+              ],
+              [
+                0.8430000000000001,
+                0.8348
+              ],
+              [
+                0.8430000000000001,
+                0.95
+              ],
+              [
+                0.753,
+                0.95
+              ],
+              [
+                0.753,
+                0.8348
+              ],
+              [
+                0.78,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_27_bullseye",
+            "shape": "ellipse",
+            "cx": 0.798,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          },
+          {
+            "regionId": "bottle_28",
+            "shape": "polygon",
+            "points": [
+              [
+                0.892,
+                0.77
+              ],
+              [
+                0.928,
+                0.77
+              ],
+              [
+                0.928,
+                0.8204
+              ],
+              [
+                0.9550000000000001,
+                0.8348
+              ],
+              [
+                0.9550000000000001,
+                0.95
+              ],
+              [
+                0.865,
+                0.95
+              ],
+              [
+                0.865,
+                0.8348
+              ],
+              [
+                0.892,
+                0.8204
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "bottle_28_bullseye",
+            "shape": "ellipse",
+            "cx": 0.91,
+            "cy": 0.842,
+            "radiusX": 0.047,
+            "radiusY": 0.032,
+            "priority": 30
+          }
+        ],
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "bottle_1",
+            "bottle_1_bullseye",
+            "bottle_2",
+            "bottle_2_bullseye",
+            "bottle_3",
+            "bottle_3_bullseye",
+            "bottle_4",
+            "bottle_4_bullseye",
+            "bottle_5",
+            "bottle_5_bullseye",
+            "bottle_6",
+            "bottle_6_bullseye",
+            "bottle_7",
+            "bottle_7_bullseye",
+            "bottle_8",
+            "bottle_8_bullseye",
+            "bottle_9",
+            "bottle_9_bullseye",
+            "bottle_10",
+            "bottle_10_bullseye",
+            "bottle_11",
+            "bottle_11_bullseye",
+            "bottle_12",
+            "bottle_12_bullseye",
+            "bottle_13",
+            "bottle_13_bullseye",
+            "bottle_14",
+            "bottle_14_bullseye",
+            "bottle_15",
+            "bottle_15_bullseye",
+            "bottle_16",
+            "bottle_16_bullseye",
+            "bottle_17",
+            "bottle_17_bullseye",
+            "bottle_18",
+            "bottle_18_bullseye",
+            "bottle_19",
+            "bottle_19_bullseye",
+            "bottle_20",
+            "bottle_20_bullseye",
+            "bottle_21",
+            "bottle_21_bullseye",
+            "bottle_22",
+            "bottle_22_bullseye",
+            "bottle_23",
+            "bottle_23_bullseye",
+            "bottle_24",
+            "bottle_24_bullseye",
+            "bottle_25",
+            "bottle_25_bullseye",
+            "bottle_26",
+            "bottle_26_bullseye",
+            "bottle_27",
+            "bottle_27_bullseye",
+            "bottle_28",
+            "bottle_28_bullseye"
+          ],
+          "boundaries": [
+            {
+              "boundaryId": "bottle_1_outer_boundary",
+              "regionId": "bottle_1",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.142,
+                  "y": 0.2779,
+                  "expectedEntityId": "bottle_1"
+                },
+                "edge": {
+                  "x": 0.12399999999999999,
+                  "y": 0.2,
+                  "expectedEntityId": "bottle_1"
+                },
+                "outside": {
+                  "x": 0.12394599999999999,
+                  "y": 0.1997663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_1_bullseye_outer_boundary",
+              "regionId": "bottle_1_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.16549999999999998,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_1_bullseye"
+                },
+                "edge": {
+                  "x": 0.1889999999,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_1_bullseye"
+                },
+                "outside": {
+                  "x": 0.1891,
+                  "y": 0.318,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_2_outer_boundary",
+              "regionId": "bottle_2",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.255,
+                  "y": 0.2779,
+                  "expectedEntityId": "bottle_2"
+                },
+                "edge": {
+                  "x": 0.23700000000000002,
+                  "y": 0.2,
+                  "expectedEntityId": "bottle_2"
+                },
+                "outside": {
+                  "x": 0.23694600000000002,
+                  "y": 0.1997663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_2_bullseye_outer_boundary",
+              "regionId": "bottle_2_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2785,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_2_bullseye"
+                },
+                "edge": {
+                  "x": 0.3019999999,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_2_bullseye"
+                },
+                "outside": {
+                  "x": 0.30210000000000004,
+                  "y": 0.318,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_3_outer_boundary",
+              "regionId": "bottle_3",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.37000000000000005,
+                  "y": 0.2779,
+                  "expectedEntityId": "bottle_3"
+                },
+                "edge": {
+                  "x": 0.352,
+                  "y": 0.2,
+                  "expectedEntityId": "bottle_3"
+                },
+                "outside": {
+                  "x": 0.351946,
+                  "y": 0.1997663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_3_bullseye_outer_boundary",
+              "regionId": "bottle_3_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3935,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_3_bullseye"
+                },
+                "edge": {
+                  "x": 0.4169999999,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_3_bullseye"
+                },
+                "outside": {
+                  "x": 0.4171,
+                  "y": 0.318,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_4_outer_boundary",
+              "regionId": "bottle_4",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.63,
+                  "y": 0.2779,
+                  "expectedEntityId": "bottle_4"
+                },
+                "edge": {
+                  "x": 0.612,
+                  "y": 0.2,
+                  "expectedEntityId": "bottle_4"
+                },
+                "outside": {
+                  "x": 0.611946,
+                  "y": 0.1997663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_4_bullseye_outer_boundary",
+              "regionId": "bottle_4_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.6535,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_4_bullseye"
+                },
+                "edge": {
+                  "x": 0.6769999999,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_4_bullseye"
+                },
+                "outside": {
+                  "x": 0.6771,
+                  "y": 0.318,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_5_outer_boundary",
+              "regionId": "bottle_5",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.744,
+                  "y": 0.2779,
+                  "expectedEntityId": "bottle_5"
+                },
+                "edge": {
+                  "x": 0.726,
+                  "y": 0.2,
+                  "expectedEntityId": "bottle_5"
+                },
+                "outside": {
+                  "x": 0.725946,
+                  "y": 0.1997663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_5_bullseye_outer_boundary",
+              "regionId": "bottle_5_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7675,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_5_bullseye"
+                },
+                "edge": {
+                  "x": 0.7909999999,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_5_bullseye"
+                },
+                "outside": {
+                  "x": 0.7911,
+                  "y": 0.318,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_6_outer_boundary",
+              "regionId": "bottle_6",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8579999999999999,
+                  "y": 0.2779,
+                  "expectedEntityId": "bottle_6"
+                },
+                "edge": {
+                  "x": 0.84,
+                  "y": 0.2,
+                  "expectedEntityId": "bottle_6"
+                },
+                "outside": {
+                  "x": 0.839946,
+                  "y": 0.1997663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_6_bullseye_outer_boundary",
+              "regionId": "bottle_6_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8815,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_6_bullseye"
+                },
+                "edge": {
+                  "x": 0.9049999999,
+                  "y": 0.318,
+                  "expectedEntityId": "bottle_6_bullseye"
+                },
+                "outside": {
+                  "x": 0.9051,
+                  "y": 0.318,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_7_outer_boundary",
+              "regionId": "bottle_7",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.08370000000000001,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_7"
+                },
+                "edge": {
+                  "x": 0.072,
+                  "y": 0.37,
+                  "expectedEntityId": "bottle_7"
+                },
+                "outside": {
+                  "x": 0.071946,
+                  "y": 0.3697663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_7_bullseye_outer_boundary",
+              "regionId": "bottle_7_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.11349999999999999,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_7_bullseye"
+                },
+                "edge": {
+                  "x": 0.1369999999,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_7_bullseye"
+                },
+                "outside": {
+                  "x": 0.1371,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_8_outer_boundary",
+              "regionId": "bottle_8",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.19569999999999999,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_8"
+                },
+                "edge": {
+                  "x": 0.22,
+                  "y": 0.4232,
+                  "expectedEntityId": "bottle_8"
+                },
+                "outside": {
+                  "x": 0.220054,
+                  "y": 0.4231259,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_8_bullseye_outer_boundary",
+              "regionId": "bottle_8_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2255,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_8_bullseye"
+                },
+                "edge": {
+                  "x": 0.24899999990000002,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_8_bullseye"
+                },
+                "outside": {
+                  "x": 0.24910000000000002,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_9_outer_boundary",
+              "regionId": "bottle_9",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3107,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_9"
+                },
+                "edge": {
+                  "x": 0.335,
+                  "y": 0.4232,
+                  "expectedEntityId": "bottle_9"
+                },
+                "outside": {
+                  "x": 0.335054,
+                  "y": 0.4231259,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_9_bullseye_outer_boundary",
+              "regionId": "bottle_9_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3405,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_9_bullseye"
+                },
+                "edge": {
+                  "x": 0.3639999999,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_9_bullseye"
+                },
+                "outside": {
+                  "x": 0.3641,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_10_outer_boundary",
+              "regionId": "bottle_10",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.42369999999999997,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_10"
+                },
+                "edge": {
+                  "x": 0.448,
+                  "y": 0.37,
+                  "expectedEntityId": "bottle_10"
+                },
+                "outside": {
+                  "x": 0.448054,
+                  "y": 0.3697663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_10_bullseye_outer_boundary",
+              "regionId": "bottle_10_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.4535,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_10_bullseye"
+                },
+                "edge": {
+                  "x": 0.47699999989999997,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_10_bullseye"
+                },
+                "outside": {
+                  "x": 0.47709999999999997,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_11_outer_boundary",
+              "regionId": "bottle_11",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5637,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_11"
+                },
+                "edge": {
+                  "x": 0.5519999999999999,
+                  "y": 0.37,
+                  "expectedEntityId": "bottle_11"
+                },
+                "outside": {
+                  "x": 0.5519459999999999,
+                  "y": 0.3697663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_11_bullseye_outer_boundary",
+              "regionId": "bottle_11_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5934999999999999,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_11_bullseye"
+                },
+                "edge": {
+                  "x": 0.6169999999,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_11_bullseye"
+                },
+                "outside": {
+                  "x": 0.6171,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_12_outer_boundary",
+              "regionId": "bottle_12",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.6787,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_12"
+                },
+                "edge": {
+                  "x": 0.7030000000000001,
+                  "y": 0.4232,
+                  "expectedEntityId": "bottle_12"
+                },
+                "outside": {
+                  "x": 0.7030540000000001,
+                  "y": 0.4231259,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_12_bullseye_outer_boundary",
+              "regionId": "bottle_12_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7085,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_12_bullseye"
+                },
+                "edge": {
+                  "x": 0.7319999999000001,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_12_bullseye"
+                },
+                "outside": {
+                  "x": 0.7321000000000001,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_13_outer_boundary",
+              "regionId": "bottle_13",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7917000000000001,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_13"
+                },
+                "edge": {
+                  "x": 0.8160000000000001,
+                  "y": 0.4232,
+                  "expectedEntityId": "bottle_13"
+                },
+                "outside": {
+                  "x": 0.8160540000000001,
+                  "y": 0.4231259,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_13_bullseye_outer_boundary",
+              "regionId": "bottle_13_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8215,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_13_bullseye"
+                },
+                "edge": {
+                  "x": 0.8449999999000001,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_13_bullseye"
+                },
+                "outside": {
+                  "x": 0.8451000000000001,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_14_outer_boundary",
+              "regionId": "bottle_14",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.9037000000000001,
+                  "y": 0.42063500000000004,
+                  "expectedEntityId": "bottle_14"
+                },
+                "edge": {
+                  "x": 0.928,
+                  "y": 0.37,
+                  "expectedEntityId": "bottle_14"
+                },
+                "outside": {
+                  "x": 0.928054,
+                  "y": 0.3697663,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_14_bullseye_outer_boundary",
+              "regionId": "bottle_14_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.9335,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_14_bullseye"
+                },
+                "edge": {
+                  "x": 0.9569999999000001,
+                  "y": 0.47,
+                  "expectedEntityId": "bottle_14_bullseye"
+                },
+                "outside": {
+                  "x": 0.9571000000000001,
+                  "y": 0.47,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_15_outer_boundary",
+              "regionId": "bottle_15",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.1357,
+                  "y": 0.64797,
+                  "expectedEntityId": "bottle_15"
+                },
+                "edge": {
+                  "x": 0.12399999999999999,
+                  "y": 0.6,
+                  "expectedEntityId": "bottle_15"
+                },
+                "outside": {
+                  "x": 0.12394599999999999,
+                  "y": 0.5997785999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_15_bullseye_outer_boundary",
+              "regionId": "bottle_15_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.16549999999999998,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_15_bullseye"
+                },
+                "edge": {
+                  "x": 0.1889999999,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_15_bullseye"
+                },
+                "outside": {
+                  "x": 0.1891,
+                  "y": 0.694,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_16_outer_boundary",
+              "regionId": "bottle_16",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2487,
+                  "y": 0.64797,
+                  "expectedEntityId": "bottle_16"
+                },
+                "edge": {
+                  "x": 0.23700000000000002,
+                  "y": 0.6,
+                  "expectedEntityId": "bottle_16"
+                },
+                "outside": {
+                  "x": 0.23694600000000002,
+                  "y": 0.5997785999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_16_bullseye_outer_boundary",
+              "regionId": "bottle_16_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2785,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_16_bullseye"
+                },
+                "edge": {
+                  "x": 0.3019999999,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_16_bullseye"
+                },
+                "outside": {
+                  "x": 0.30210000000000004,
+                  "y": 0.694,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_17_outer_boundary",
+              "regionId": "bottle_17",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3637,
+                  "y": 0.64797,
+                  "expectedEntityId": "bottle_17"
+                },
+                "edge": {
+                  "x": 0.352,
+                  "y": 0.6,
+                  "expectedEntityId": "bottle_17"
+                },
+                "outside": {
+                  "x": 0.351946,
+                  "y": 0.5997785999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_17_bullseye_outer_boundary",
+              "regionId": "bottle_17_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3935,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_17_bullseye"
+                },
+                "edge": {
+                  "x": 0.4169999999,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_17_bullseye"
+                },
+                "outside": {
+                  "x": 0.4171,
+                  "y": 0.694,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_18_outer_boundary",
+              "regionId": "bottle_18",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.6237,
+                  "y": 0.64797,
+                  "expectedEntityId": "bottle_18"
+                },
+                "edge": {
+                  "x": 0.612,
+                  "y": 0.6,
+                  "expectedEntityId": "bottle_18"
+                },
+                "outside": {
+                  "x": 0.611946,
+                  "y": 0.5997785999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_18_bullseye_outer_boundary",
+              "regionId": "bottle_18_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.6535,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_18_bullseye"
+                },
+                "edge": {
+                  "x": 0.6769999999,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_18_bullseye"
+                },
+                "outside": {
+                  "x": 0.6771,
+                  "y": 0.694,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_19_outer_boundary",
+              "regionId": "bottle_19",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7377,
+                  "y": 0.64797,
+                  "expectedEntityId": "bottle_19"
+                },
+                "edge": {
+                  "x": 0.726,
+                  "y": 0.6,
+                  "expectedEntityId": "bottle_19"
+                },
+                "outside": {
+                  "x": 0.725946,
+                  "y": 0.5997785999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_19_bullseye_outer_boundary",
+              "regionId": "bottle_19_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7675,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_19_bullseye"
+                },
+                "edge": {
+                  "x": 0.7909999999,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_19_bullseye"
+                },
+                "outside": {
+                  "x": 0.7911,
+                  "y": 0.694,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_20_outer_boundary",
+              "regionId": "bottle_20",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8516999999999999,
+                  "y": 0.64797,
+                  "expectedEntityId": "bottle_20"
+                },
+                "edge": {
+                  "x": 0.84,
+                  "y": 0.6,
+                  "expectedEntityId": "bottle_20"
+                },
+                "outside": {
+                  "x": 0.839946,
+                  "y": 0.5997785999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_20_bullseye_outer_boundary",
+              "regionId": "bottle_20_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8815,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_20_bullseye"
+                },
+                "edge": {
+                  "x": 0.9049999999,
+                  "y": 0.694,
+                  "expectedEntityId": "bottle_20_bullseye"
+                },
+                "outside": {
+                  "x": 0.9051,
+                  "y": 0.694,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_21_outer_boundary",
+              "regionId": "bottle_21",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.10575000000000001,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_21"
+                },
+                "edge": {
+                  "x": 0.072,
+                  "y": 0.77,
+                  "expectedEntityId": "bottle_21"
+                },
+                "outside": {
+                  "x": 0.071946,
+                  "y": 0.7697786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_21_bullseye_outer_boundary",
+              "regionId": "bottle_21_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.11349999999999999,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_21_bullseye"
+                },
+                "edge": {
+                  "x": 0.1369999999,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_21_bullseye"
+                },
+                "outside": {
+                  "x": 0.1371,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_22_outer_boundary",
+              "regionId": "bottle_22",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.21775,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_22"
+                },
+                "edge": {
+                  "x": 0.247,
+                  "y": 0.95,
+                  "expectedEntityId": "bottle_22"
+                },
+                "outside": {
+                  "x": 0.247135,
+                  "y": 0.9503185999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_22_bullseye_outer_boundary",
+              "regionId": "bottle_22_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2255,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_22_bullseye"
+                },
+                "edge": {
+                  "x": 0.24899999990000002,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_22_bullseye"
+                },
+                "outside": {
+                  "x": 0.24910000000000002,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_23_outer_boundary",
+              "regionId": "bottle_23",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.33275,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_23"
+                },
+                "edge": {
+                  "x": 0.362,
+                  "y": 0.95,
+                  "expectedEntityId": "bottle_23"
+                },
+                "outside": {
+                  "x": 0.362135,
+                  "y": 0.9503185999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_23_bullseye_outer_boundary",
+              "regionId": "bottle_23_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3405,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_23_bullseye"
+                },
+                "edge": {
+                  "x": 0.3639999999,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_23_bullseye"
+                },
+                "outside": {
+                  "x": 0.3641,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_24_outer_boundary",
+              "regionId": "bottle_24",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.44575,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_24"
+                },
+                "edge": {
+                  "x": 0.448,
+                  "y": 0.77,
+                  "expectedEntityId": "bottle_24"
+                },
+                "outside": {
+                  "x": 0.448054,
+                  "y": 0.7697786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_24_bullseye_outer_boundary",
+              "regionId": "bottle_24_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.4535,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_24_bullseye"
+                },
+                "edge": {
+                  "x": 0.47699999989999997,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_24_bullseye"
+                },
+                "outside": {
+                  "x": 0.47709999999999997,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_25_outer_boundary",
+              "regionId": "bottle_25",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.58575,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_25"
+                },
+                "edge": {
+                  "x": 0.5519999999999999,
+                  "y": 0.77,
+                  "expectedEntityId": "bottle_25"
+                },
+                "outside": {
+                  "x": 0.5519459999999999,
+                  "y": 0.7697786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_25_bullseye_outer_boundary",
+              "regionId": "bottle_25_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5934999999999999,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_25_bullseye"
+                },
+                "edge": {
+                  "x": 0.6169999999,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_25_bullseye"
+                },
+                "outside": {
+                  "x": 0.6171,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_26_outer_boundary",
+              "regionId": "bottle_26",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.70075,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_26"
+                },
+                "edge": {
+                  "x": 0.7300000000000001,
+                  "y": 0.95,
+                  "expectedEntityId": "bottle_26"
+                },
+                "outside": {
+                  "x": 0.7301350000000001,
+                  "y": 0.9503185999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_26_bullseye_outer_boundary",
+              "regionId": "bottle_26_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7085,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_26_bullseye"
+                },
+                "edge": {
+                  "x": 0.7319999999000001,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_26_bullseye"
+                },
+                "outside": {
+                  "x": 0.7321000000000001,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_27_outer_boundary",
+              "regionId": "bottle_27",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8137500000000001,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_27"
+                },
+                "edge": {
+                  "x": 0.8430000000000001,
+                  "y": 0.95,
+                  "expectedEntityId": "bottle_27"
+                },
+                "outside": {
+                  "x": 0.8431350000000001,
+                  "y": 0.9503185999999999,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_27_bullseye_outer_boundary",
+              "regionId": "bottle_27_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8215,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_27_bullseye"
+                },
+                "edge": {
+                  "x": 0.8449999999000001,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_27_bullseye"
+                },
+                "outside": {
+                  "x": 0.8451000000000001,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_28_outer_boundary",
+              "regionId": "bottle_28",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.9257500000000001,
+                  "y": 0.88097,
+                  "expectedEntityId": "bottle_28"
+                },
+                "edge": {
+                  "x": 0.928,
+                  "y": 0.77,
+                  "expectedEntityId": "bottle_28"
+                },
+                "outside": {
+                  "x": 0.928054,
+                  "y": 0.7697786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottle_28_bullseye_outer_boundary",
+              "regionId": "bottle_28_bullseye",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.9335,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_28_bullseye"
+                },
+                "edge": {
+                  "x": 0.9569999999000001,
+                  "y": 0.842,
+                  "expectedEntityId": "bottle_28_bullseye"
+                },
+                "outside": {
+                  "x": 0.9571000000000001,
+                  "y": 0.842,
+                  "expectedEntityId": "outside"
+                }
+              }
+            }
+          ]
+        },
+        "physicalAuthority": {
+          "authorityId": "EP64_RECONCILED_TEN_UGO_BLOCKER_BIRCHWOOD_CASEY_BC_35772_2026_10_08",
+          "semanticAuthority": "Publisher calls this Bottle Bullseye; the 28 printed bottle silhouettes and their 28 associated bullseyes are governed separately. SCZN3 reports bullseye/body classification, bottle coverage, and misses; no points are invented.",
+          "physicalFaceAuthority": "Exact registered 12\" X 18\" Lucky Shot Bottles Dirty Bird Target identity and stored commercial dimensions",
+          "ugoStandard": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+          "measurementMethod": "UGO physical-target-plane calibration against the exact registered face and stored commercial dimensions",
+          "sourceImageSha256": "c7f36505e5935f9ab817159ceabd83f626f797fd177e82a78643da6b7caa0a97",
+          "representationRule": "Normalized coordinates represent governed physical regions on the exact target plane; rendered pixels do not create authority.",
+          "pixelIsAuthority": false
+        }
+      },
+      "digest": "10e40061ff3c40638093fc8e34f8a1bc18d1ed96f0c6ebb7a509ed9ee6739470"
+    },
+    "registration": {
+      "id": "blocker_birchwood_casey_bc_35772-target-scoring-registration",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_661c5824a402b81edbbf.webp",
+        "assetSha256": "c7f36505e5935f9ab817159ceabd83f626f797fd177e82a78643da6b7caa0a97",
+        "assetAlt": "12\" X 18\" Lucky Shot Bottles Dirty Bird Target, SKU BC-35772",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "5933eeb9dd5461d23da81178b2f02ea3de21190de761e65aae44e68944d4da4f"
+    },
+    "scoring": {
+      "id": "blocker_birchwood_casey_bc_35772-scoring",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "bottle_1": {
+            "label": "Bottle 1",
+            "objectId": "bottle_1",
+            "objectLabel": "Bottle 1"
+          },
+          "bottle_1_bullseye": {
+            "label": "Bottle 1 bullseye",
+            "objectId": "bottle_1",
+            "objectLabel": "Bottle 1",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_2": {
+            "label": "Bottle 2",
+            "objectId": "bottle_2",
+            "objectLabel": "Bottle 2"
+          },
+          "bottle_2_bullseye": {
+            "label": "Bottle 2 bullseye",
+            "objectId": "bottle_2",
+            "objectLabel": "Bottle 2",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_3": {
+            "label": "Bottle 3",
+            "objectId": "bottle_3",
+            "objectLabel": "Bottle 3"
+          },
+          "bottle_3_bullseye": {
+            "label": "Bottle 3 bullseye",
+            "objectId": "bottle_3",
+            "objectLabel": "Bottle 3",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_4": {
+            "label": "Bottle 4",
+            "objectId": "bottle_4",
+            "objectLabel": "Bottle 4"
+          },
+          "bottle_4_bullseye": {
+            "label": "Bottle 4 bullseye",
+            "objectId": "bottle_4",
+            "objectLabel": "Bottle 4",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_5": {
+            "label": "Bottle 5",
+            "objectId": "bottle_5",
+            "objectLabel": "Bottle 5"
+          },
+          "bottle_5_bullseye": {
+            "label": "Bottle 5 bullseye",
+            "objectId": "bottle_5",
+            "objectLabel": "Bottle 5",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_6": {
+            "label": "Bottle 6",
+            "objectId": "bottle_6",
+            "objectLabel": "Bottle 6"
+          },
+          "bottle_6_bullseye": {
+            "label": "Bottle 6 bullseye",
+            "objectId": "bottle_6",
+            "objectLabel": "Bottle 6",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_7": {
+            "label": "Bottle 7",
+            "objectId": "bottle_7",
+            "objectLabel": "Bottle 7"
+          },
+          "bottle_7_bullseye": {
+            "label": "Bottle 7 bullseye",
+            "objectId": "bottle_7",
+            "objectLabel": "Bottle 7",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_8": {
+            "label": "Bottle 8",
+            "objectId": "bottle_8",
+            "objectLabel": "Bottle 8"
+          },
+          "bottle_8_bullseye": {
+            "label": "Bottle 8 bullseye",
+            "objectId": "bottle_8",
+            "objectLabel": "Bottle 8",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_9": {
+            "label": "Bottle 9",
+            "objectId": "bottle_9",
+            "objectLabel": "Bottle 9"
+          },
+          "bottle_9_bullseye": {
+            "label": "Bottle 9 bullseye",
+            "objectId": "bottle_9",
+            "objectLabel": "Bottle 9",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_10": {
+            "label": "Bottle 10",
+            "objectId": "bottle_10",
+            "objectLabel": "Bottle 10"
+          },
+          "bottle_10_bullseye": {
+            "label": "Bottle 10 bullseye",
+            "objectId": "bottle_10",
+            "objectLabel": "Bottle 10",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_11": {
+            "label": "Bottle 11",
+            "objectId": "bottle_11",
+            "objectLabel": "Bottle 11"
+          },
+          "bottle_11_bullseye": {
+            "label": "Bottle 11 bullseye",
+            "objectId": "bottle_11",
+            "objectLabel": "Bottle 11",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_12": {
+            "label": "Bottle 12",
+            "objectId": "bottle_12",
+            "objectLabel": "Bottle 12"
+          },
+          "bottle_12_bullseye": {
+            "label": "Bottle 12 bullseye",
+            "objectId": "bottle_12",
+            "objectLabel": "Bottle 12",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_13": {
+            "label": "Bottle 13",
+            "objectId": "bottle_13",
+            "objectLabel": "Bottle 13"
+          },
+          "bottle_13_bullseye": {
+            "label": "Bottle 13 bullseye",
+            "objectId": "bottle_13",
+            "objectLabel": "Bottle 13",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_14": {
+            "label": "Bottle 14",
+            "objectId": "bottle_14",
+            "objectLabel": "Bottle 14"
+          },
+          "bottle_14_bullseye": {
+            "label": "Bottle 14 bullseye",
+            "objectId": "bottle_14",
+            "objectLabel": "Bottle 14",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_15": {
+            "label": "Bottle 15",
+            "objectId": "bottle_15",
+            "objectLabel": "Bottle 15"
+          },
+          "bottle_15_bullseye": {
+            "label": "Bottle 15 bullseye",
+            "objectId": "bottle_15",
+            "objectLabel": "Bottle 15",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_16": {
+            "label": "Bottle 16",
+            "objectId": "bottle_16",
+            "objectLabel": "Bottle 16"
+          },
+          "bottle_16_bullseye": {
+            "label": "Bottle 16 bullseye",
+            "objectId": "bottle_16",
+            "objectLabel": "Bottle 16",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_17": {
+            "label": "Bottle 17",
+            "objectId": "bottle_17",
+            "objectLabel": "Bottle 17"
+          },
+          "bottle_17_bullseye": {
+            "label": "Bottle 17 bullseye",
+            "objectId": "bottle_17",
+            "objectLabel": "Bottle 17",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_18": {
+            "label": "Bottle 18",
+            "objectId": "bottle_18",
+            "objectLabel": "Bottle 18"
+          },
+          "bottle_18_bullseye": {
+            "label": "Bottle 18 bullseye",
+            "objectId": "bottle_18",
+            "objectLabel": "Bottle 18",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_19": {
+            "label": "Bottle 19",
+            "objectId": "bottle_19",
+            "objectLabel": "Bottle 19"
+          },
+          "bottle_19_bullseye": {
+            "label": "Bottle 19 bullseye",
+            "objectId": "bottle_19",
+            "objectLabel": "Bottle 19",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_20": {
+            "label": "Bottle 20",
+            "objectId": "bottle_20",
+            "objectLabel": "Bottle 20"
+          },
+          "bottle_20_bullseye": {
+            "label": "Bottle 20 bullseye",
+            "objectId": "bottle_20",
+            "objectLabel": "Bottle 20",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_21": {
+            "label": "Bottle 21",
+            "objectId": "bottle_21",
+            "objectLabel": "Bottle 21"
+          },
+          "bottle_21_bullseye": {
+            "label": "Bottle 21 bullseye",
+            "objectId": "bottle_21",
+            "objectLabel": "Bottle 21",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_22": {
+            "label": "Bottle 22",
+            "objectId": "bottle_22",
+            "objectLabel": "Bottle 22"
+          },
+          "bottle_22_bullseye": {
+            "label": "Bottle 22 bullseye",
+            "objectId": "bottle_22",
+            "objectLabel": "Bottle 22",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_23": {
+            "label": "Bottle 23",
+            "objectId": "bottle_23",
+            "objectLabel": "Bottle 23"
+          },
+          "bottle_23_bullseye": {
+            "label": "Bottle 23 bullseye",
+            "objectId": "bottle_23",
+            "objectLabel": "Bottle 23",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_24": {
+            "label": "Bottle 24",
+            "objectId": "bottle_24",
+            "objectLabel": "Bottle 24"
+          },
+          "bottle_24_bullseye": {
+            "label": "Bottle 24 bullseye",
+            "objectId": "bottle_24",
+            "objectLabel": "Bottle 24",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_25": {
+            "label": "Bottle 25",
+            "objectId": "bottle_25",
+            "objectLabel": "Bottle 25"
+          },
+          "bottle_25_bullseye": {
+            "label": "Bottle 25 bullseye",
+            "objectId": "bottle_25",
+            "objectLabel": "Bottle 25",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_26": {
+            "label": "Bottle 26",
+            "objectId": "bottle_26",
+            "objectLabel": "Bottle 26"
+          },
+          "bottle_26_bullseye": {
+            "label": "Bottle 26 bullseye",
+            "objectId": "bottle_26",
+            "objectLabel": "Bottle 26",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_27": {
+            "label": "Bottle 27",
+            "objectId": "bottle_27",
+            "objectLabel": "Bottle 27"
+          },
+          "bottle_27_bullseye": {
+            "label": "Bottle 27 bullseye",
+            "objectId": "bottle_27",
+            "objectLabel": "Bottle 27",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          },
+          "bottle_28": {
+            "label": "Bottle 28",
+            "objectId": "bottle_28",
+            "objectLabel": "Bottle 28"
+          },
+          "bottle_28_bullseye": {
+            "label": "Bottle 28 bullseye",
+            "objectId": "bottle_28",
+            "objectLabel": "Bottle 28",
+            "countsForObjectCompletion": true,
+            "printedScoreEligible": false
+          }
+        },
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "outsideRule": {
+          "label": "Miss"
+        },
+        "publisherRuleAuthority": {
+          "source": "Locked exact registered face plus stored publisher evidence",
+          "rule": "Publisher calls this Bottle Bullseye; the 28 printed bottle silhouettes and their 28 associated bullseyes are governed separately. SCZN3 reports bullseye/body classification, bottle coverage, and misses; no points are invented."
+        }
+      },
+      "digest": "79efe629eb1143bc453d1287c978e815c2fcb1b978b0930c87f776c935290758"
+    },
+    "mission": {
+      "id": "blocker_birchwood_casey_bc_35772-mission",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "available"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Locked exact face plus UGO physical-target-plane calibration and stored publisher/printed-face evidence",
+        "semanticStatus": "GOVERNED_FOR_EP64_TEN_TARGET_PILOT",
+        "recognizedBehaviorFamily": "MULTIPLE_BULLS",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-reconciled-ten-v1",
+          "highestTruthfulCapability": "Object / Zone Distribution",
+          "targetStructure": {
+            "registeredGeometryStatus": "ugo_regions_available",
+            "registeredRegionCount": 56
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "pointsPerTap": false,
+            "regionObjectBreakdown": true,
+            "missesOutside": true
+          },
+          "historyProfile": {
+            "family": "object_coverage_history_v1",
+            "inheritedMachinery": "shared_session_drawer_3_history_v1",
+            "targetVocabulary": {
+              "objectSingular": "Bottle",
+              "objectPlural": "Bottles",
+              "outside": "Miss"
+            },
+            "semanticInheritance": false
+          }
+        }
+      },
+      "digest": "1f93b53e2ef5327fee9f3853cafd446b03e523f7a602cdf166fa7b2a9ed9bdf7"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "available"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "unpublished_rules_or_values"
+  ]
+}

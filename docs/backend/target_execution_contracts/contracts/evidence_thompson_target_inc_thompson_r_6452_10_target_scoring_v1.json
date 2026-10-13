@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_thompson_target_inc_thompson_r_6452_10-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_thompson_target_inc_thompson_r_6452_10",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_8B45A9D2B200C1055D9A_V1",
+    "authorityId": "P_OS_EVIDENCE_8B45A9D2B200C1055D9A_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/center-fire-life-size-12-5x19-silhouette-targets/"
+    },
+    "product": {
+      "id": "p-os-thompson_r_6452_10",
+      "name": "Center-Fire Life Size 12.5\"x19\" Silhouette Targets",
+      "sku": "thompson-R-6452-10",
+      "productUrl": "https://www.thompsontarget.com/center-fire-life-size-12-5x19-silhouette-targets/",
+      "dimensions": {
+        "width": 12.5,
+        "height": 19.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Center-Fire Life Size 12.5\"x19\" Silhouette Targets — Thompson Target Inc.. PROVISIONAL Shooter Experience (target practice): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #1051. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #1051; publisher Thompson Target Inc.. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1052,
+          "sourceCells": "AC1052:AG1052",
+          "masterNumber": 1051,
+          "inventoryRecordId": "thompson-target:0024",
+          "sku": "thompson-R-6452-10",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_thompson_target_inc_thompson_r_6452_10-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_8B45A9D2B200C1055D9A_EXACT_FACE_V1"
+      },
+      "digest": "dfc0ce55163b628353f7c3fe5749a7c33c68df143849eb7c8b485c32544937f8"
+    },
+    "registration": {
+      "id": "evidence_thompson_target_inc_thompson_r_6452_10-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_9c75bd352c696d3f1f6b.webp",
+        "assetSha256": "5ec8f9e7dba4acbaa4a537d139c8bef75fb6c34fbe87fb5f10ea5aa2e785fde0",
+        "assetAlt": "Center-Fire Life Size 12.5\"x19\" Silhouette Targets, SKU thompson-R-6452-10",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "350327f791e6fce35c53c4ef60a2c5d390f9cdf26b6b0f62cd4cfbc7c34f33a8"
+    },
+    "scoring": {
+      "id": "evidence_thompson_target_inc_thompson_r_6452_10-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "thompson-R-6452-10 + thompson-target:0024 + preserved publisher representation 5ec8f9e7dba4acbaa4a537d139c8bef75fb6c34fbe87fb5f10ea5aa2e785fde0",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "802bfa740e26e90ee35dbebbbe1711c8f398e44cc710048fa0d6c2a9e572a80b"
+    },
+    "mission": {
+      "id": "evidence_thompson_target_inc_thompson_r_6452_10-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "ce0688e571dc8b46fa282aa4fea7703b094ee7e49e1559d63b7fdb657dd56695"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_sl_skeleton-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_sl_skeleton",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_C2A359B62C1E4DE5BE79_V1",
+    "authorityId": "P_OS_BLOCKER_C2A359B62C1E4DE5BE79_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/tactical-skeleton-target/"
+    },
+    "product": {
+      "id": "p-os-baker_21385",
+      "name": "Tactical Skeleton Target",
+      "sku": "SL-Skeleton",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Tactical Skeleton Target — Baker Targets. Shooter Experience draft: present the original printed target-specific practice design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #496. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 497,
+          "sourceCells": "AC497:AG497",
+          "masterNumber": 496,
+          "inventoryRecordId": "baker-targets:0047, baker-targets:0048",
+          "sku": "SL-Skeleton-Bulk, SL-Skeleton",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_sl_skeleton-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_C2A359B62C1E4DE5BE79_EXACT_FACE_V1"
+      },
+      "digest": "c90ab884fb856cfcd63fca8ae42f33ec0223394eb15b1a9a942aa3f0d2a85a1a"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_sl_skeleton-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_b12022d8029ca9fb9c8c.jpg",
+        "assetSha256": "84bdbd08f087ac814f68f6e057705c15e5b658937c7bd51f3a9d1b7a79edcd2b",
+        "assetAlt": "Tactical Skeleton Target, SKU SL-Skeleton",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "31c7f1c052e9f17d5e16fc985d78f3784ede916a6ea9e5599285d2aa4fac83f6"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_sl_skeleton-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:21385 + baker-targets:0048 + publisher_primary_representation_position_1 + 84bdbd08f087ac814f68f6e057705c15e5b658937c7bd51f3a9d1b7a79edcd2b",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "84a62ed1f33cac8f72d1177a0d7350d7dfe0e4da95a9717df5c7193934761cbe"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_sl_skeleton-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "2d999e684dbdf0e156e0f55045bcc6874d23e29ba139e46820793f10fbe4cfa2"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

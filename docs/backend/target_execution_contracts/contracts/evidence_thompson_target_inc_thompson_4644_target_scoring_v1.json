@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_thompson_target_inc_thompson_4644-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_thompson_target_inc_thompson_4644",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_B1C886599557E1668B79_V1",
+    "authorityId": "P_OS_EVIDENCE_B1C886599557E1668B79_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/halo-life-size-human-silhouette-reactive-splatter-shooting-targets-12-5x19/"
+    },
+    "product": {
+      "id": "p-os-thompson_4644",
+      "name": "HALO Life-Size Human Silhouette Reactive Splatter Shooting Targets - 12.5\"x19\"",
+      "sku": "thompson-4644",
+      "productUrl": "https://www.thompsontarget.com/halo-life-size-human-silhouette-reactive-splatter-shooting-targets-12-5x19/",
+      "dimensions": {
+        "width": 12.5,
+        "height": 19.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "HALO Life-Size Human Silhouette Reactive Splatter Shooting Targets - 12.5\"x19\" — Thompson Target Inc.. PROVISIONAL Shooter Experience (target practice): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #1058. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #1058; publisher Thompson Target Inc.. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1059,
+          "sourceCells": "AC1059:AG1059",
+          "masterNumber": 1058,
+          "inventoryRecordId": "thompson-target:0046",
+          "sku": "thompson-4644",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_thompson_target_inc_thompson_4644-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_B1C886599557E1668B79_EXACT_FACE_V1"
+      },
+      "digest": "89438a777f6e5aec37bb5b94f95c1e6c107f8a2453763134052768cd7588d2c7"
+    },
+    "registration": {
+      "id": "evidence_thompson_target_inc_thompson_4644-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_9b3061e4a622bcf6b7a4.webp",
+        "assetSha256": "e4b5a3d184a1312b43293fd16ea63310794401cb7b43b0b9c4983cfc7ec0f14f",
+        "assetAlt": "HALO Life-Size Human Silhouette Reactive Splatter Shooting Targets - 12.5\"x19\", SKU thompson-4644",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f1f5c8b7941195b5a6ff669b61deb564ec84a73268f6218a3724aaa4046ea574"
+    },
+    "scoring": {
+      "id": "evidence_thompson_target_inc_thompson_4644-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "thompson-4644 + thompson-target:0046 + preserved publisher representation e4b5a3d184a1312b43293fd16ea63310794401cb7b43b0b9c4983cfc7ec0f14f",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "673761dc8222597a3d4f3297911940a0e5eb463d0daa86ae8a2371098613c0fb"
+    },
+    "mission": {
+      "id": "evidence_thompson_target_inc_thompson_4644-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "a5f6e0fedc49e8a632bd9c01c51e03291ba744acca5c65dfa701aa546a836df0"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

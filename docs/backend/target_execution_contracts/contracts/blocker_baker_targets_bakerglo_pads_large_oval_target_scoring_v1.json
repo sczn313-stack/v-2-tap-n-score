@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_bakerglo_pads_large_oval-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_bakerglo_pads_large_oval",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_96D3F3A091F83F18DD16_V1",
+    "authorityId": "P_OS_BLOCKER_96D3F3A091F83F18DD16_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/bakerglo-pads_large-oval-11-x-17/"
+    },
+    "product": {
+      "id": "p-os-baker_1561",
+      "name": "BakerGlo Pads_Large Oval 11 x 17",
+      "sku": "BakerGlo Pads_Large Oval",
+      "dimensions": {
+        "width": 8.0,
+        "height": 11.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "BakerGlo Pads_Large Oval 11 x 17 — Baker Targets. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1244; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1244; printer Baker Targets. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1245,
+          "sourceCells": "AC1245:AG1245",
+          "masterNumber": 1244,
+          "inventoryRecordId": "baker-targets:0420",
+          "sku": "BakerGlo Pads_Large Oval",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_bakerglo_pads_large_oval-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_96D3F3A091F83F18DD16_EXACT_FACE_V1"
+      },
+      "digest": "495222902f826a1e113609b4229010a889653ac67edb338084c93164198180f6"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_bakerglo_pads_large_oval-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_d14a2c70b0f45f3c61b8.jpg",
+        "assetSha256": "198edb593716f0104d799f29c9dd80fc1069fa212abb02949a8d92a73fd8ce7f",
+        "assetAlt": "BakerGlo Pads_Large Oval 11 x 17, SKU BakerGlo Pads_Large Oval",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f7a32244a2a28f0c4054d247dd398b400f51debeaab16fb80d26628a01647061"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_bakerglo_pads_large_oval-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:1561 + baker-targets:0420 + publisher_primary_representation_position_1 + 198edb593716f0104d799f29c9dd80fc1069fa212abb02949a8d92a73fd8ce7f",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "12ef3b00ce5c429f649d6cff63257696d41645a2bc4657134be6e9fbf8addfa1"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_bakerglo_pads_large_oval-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "2a547cdf1ee8029a845427983337963386e29f52aa8297beedd61257c7f97d5c"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

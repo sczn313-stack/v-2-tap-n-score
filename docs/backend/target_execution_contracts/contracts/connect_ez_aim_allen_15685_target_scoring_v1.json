@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_ez_aim_allen_15685-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_ez_aim_allen_15685",
+    "version": "1",
+    "atpId": "ATP_CONNECT_AF11383E6903007AADBB_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_AF11383E6903007AADBB_AUTHORITY_V1",
+    "publisher": {
+      "id": "ez_aim_allen",
+      "name": "EZ Aim / Allen Company",
+      "url": "https://byallen.com/products/ez-aim-ipsc-cl-uspsa-full-size-corrugated-silhouette-paper-shooting-target-1-target-14-x-22-tan"
+    },
+    "product": {
+      "id": "p-os-ez_aim_allen_15685",
+      "name": "EZ Aim® IPSC CL USPSA Full Size Corrugated Silhouette Paper Shooting Target, 1-Target, 14\" x 22,\" Tan",
+      "sku": "15685",
+      "productUrl": "https://byallen.com/products/ez-aim-ipsc-cl-uspsa-full-size-corrugated-silhouette-paper-shooting-target-1-target-14-x-22-tan",
+      "dimensions": {
+        "width": 14.0,
+        "height": 22.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "EZ Aim® IPSC CL USPSA Full Size Corrugated Silhouette Paper Shooting Target — EZ Aim / Allen Company. Shooter Experience draft: present the original printed printed aiming/scoring design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #531. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 532,
+          "sourceCells": "AC532:AG532",
+          "masterNumber": 531,
+          "inventoryRecordId": "ez-aim-allen:0084",
+          "sku": "15685",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_ez_aim_allen_15685-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_AF11383E6903007AADBB_EXACT_FACE_V1"
+      },
+      "digest": "6f4f7b9f54dab192b4328d44997ba36f1bbad8fce533dd3d1d7c08b792bab226"
+    },
+    "registration": {
+      "id": "connect_ez_aim_allen_15685-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_cb4455d27d8bf21d16ea.jpg",
+        "assetSha256": "d1551cbf7a1832baab4c668be004450bf3cf4502e6b9acf6f7e1b707df84d295",
+        "assetAlt": "EZ Aim® IPSC CL USPSA Full Size Corrugated Silhouette Paper Shooting Target, 1-Target, 14\" x 22,\" Tan, SKU 15685",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "80c1aa11ce5bcda0aec53831edc8ebb48c4f0375399b4773175cda346301fb58"
+    },
+    "scoring": {
+      "id": "connect_ez_aim_allen_15685-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "ez-aim-allen:15685 + ez-aim-allen:0084 + preserved publisher representation d1551cbf7a1832baab4c668be004450bf3cf4502e6b9acf6f7e1b707df84d295",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "cf2b267b5fbdc330ccc3e942a399efbed44acf25434fcae414aa7421e24947d9"
+    },
+    "mission": {
+      "id": "connect_ez_aim_allen_15685-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "ae6cb26d7d033b18b897f349609887dba8697ca36f5d547c66217b3829228308"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

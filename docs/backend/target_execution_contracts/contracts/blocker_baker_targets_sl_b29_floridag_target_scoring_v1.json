@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_sl_b29_floridag-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_sl_b29_floridag",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_FA5A4925616AF54C1C72_V1",
+    "authorityId": "P_OS_BLOCKER_FA5A4925616AF54C1C72_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/b29-florida-g-license-qualification-target/"
+    },
+    "product": {
+      "id": "p-os-baker_11358",
+      "name": "B29 Florida G License Qualification Target",
+      "sku": "SL-B29-FloridaG",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B29 Florida G License Qualification Target (Baker Targets) — scenario and skill-building target. Shooter experience: present this specific printed target face, let the shooter register each observed impact, and return an intelligible account of where shots landed. Explain outcomes only against governed regions, objects and published rules that are actually stored. Where the face supports distinct aim areas, retain their separate identities rather than collapsing them into one generic hit count. Preserve misses and every registered observation in the session record. No invented object counts, distances, time limits, point values or course-of-fire requirements.",
+        "visibleArtworkDescription": "Artwork source: embedded IMAGE MASTER thumbnail for master #435. Named design: B29 Florida G License Qualification Target. Exact visual object inventory and physical boundaries are NOT independently established by this draft; consult the full artwork and governed geometry before assigning counts.",
+        "authorityLimitations": "SCORING REVIEW — potential published scoring/qualification semantics; check existing backend rule and region values before enabling numeric scores.",
+        "supportedExperience": "Record target identity, observations, misses and supported per-zone/per-object counts; show numeric score only if backend-authorized; preserve RESULT → SEC → Vault data when implemented.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 436,
+          "sourceCells": "AC436:AG436",
+          "masterNumber": 435,
+          "inventoryRecordId": "baker-targets:0206, baker-targets:0207",
+          "sku": "SL-B29-FloridaG-Bulk, SL-B29-FloridaG",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_sl_b29_floridag-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_FA5A4925616AF54C1C72_EXACT_FACE_V1"
+      },
+      "digest": "7769ff31121c059c73c356bb70d5a1d83e26843da021e6e2b33b1e3db5e79fbf"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_sl_b29_floridag-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_3c5e0eaceada46824c13.jpg",
+        "assetSha256": "69d0ce3796085b383ccf58faf24aab56f9a7381df0e6695576cea6675127d255",
+        "assetAlt": "B29 Florida G License Qualification Target, SKU SL-B29-FloridaG",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "12bdfcb5ef53ef9759adaa15ebfd932ddd4043b468fe4e7bb34b19e4f061ced0"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_sl_b29_floridag-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:11358 + baker-targets:0207 + publisher_primary_representation_position_1 + 69d0ce3796085b383ccf58faf24aab56f9a7381df0e6695576cea6675127d255",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "40f4103fef6ea88a9de8d6c3a3bc8b2d19dbf58ef2af75d8718d25c41f99d2d1"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_sl_b29_floridag-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "eacf8a51b3dddd4f11c97f3ebad19dcc8c78d98171a2c7487eaae668507473fa"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

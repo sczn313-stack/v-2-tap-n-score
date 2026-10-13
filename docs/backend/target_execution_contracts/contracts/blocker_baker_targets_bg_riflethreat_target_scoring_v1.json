@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_bg_riflethreat-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_bg_riflethreat",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_4E195EE196920B7BCFD0_V1",
+    "authorityId": "P_OS_BLOCKER_4E195EE196920B7BCFD0_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/rifle-threat-target/"
+    },
+    "product": {
+      "id": "p-os-baker_5477",
+      "name": "Rifle Threat Target",
+      "sku": "BG-RifleThreat",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Rifle Threat Target (Baker Targets) — scenario and skill-building target. Shooter experience: present this specific printed target face, let the shooter register each observed impact, and return an intelligible account of where shots landed. Explain outcomes only against governed regions, objects and published rules that are actually stored. Where the face supports distinct aim areas, retain their separate identities rather than collapsing them into one generic hit count. Preserve misses and every registered observation in the session record. No invented object counts, distances, time limits, point values or course-of-fire requirements.",
+        "visibleArtworkDescription": "Artwork source: embedded IMAGE MASTER thumbnail for master #486. Named design: Rifle Threat Target. Exact visual object inventory and physical boundaries are NOT independently established by this draft; consult the full artwork and governed geometry before assigning counts.",
+        "authorityLimitations": "SCORING REVIEW — no numeric scoring inferred. Use Evidence Only unless governed zones/values already exist.",
+        "supportedExperience": "Record target identity, observations, misses and supported per-zone/per-object counts; show numeric score only if backend-authorized; preserve RESULT → SEC → Vault data when implemented.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 487,
+          "sourceCells": "AC487:AG487",
+          "masterNumber": 486,
+          "inventoryRecordId": "baker-targets:0255, baker-targets:0257",
+          "sku": "BG-RifleThreat-Bulk, BG-RifleThreat",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_bg_riflethreat-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_4E195EE196920B7BCFD0_EXACT_FACE_V1"
+      },
+      "digest": "573221a8edb80c91f200083311a0b5a8e3fa29110566e995e9ffbfc5e59287ad"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_bg_riflethreat-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_0c78e951bf16c1d3abe3.jpg",
+        "assetSha256": "97a4aa3d613a811e2522eb0358ce88102296bc8d57805d3f87a29f64f12bc467",
+        "assetAlt": "Rifle Threat Target, SKU BG-RifleThreat",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "1df311846cda37caa06256cab9e826a54c620abeb5079e0c084b3b738edba8e8"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_bg_riflethreat-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:5477 + baker-targets:0257 + publisher_primary_representation_position_1 + 97a4aa3d613a811e2522eb0358ce88102296bc8d57805d3f87a29f64f12bc467",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "74fe994766147add5a31afa09a7c1b89f6edfe15afe9b887779f9db49dd067ea"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_bg_riflethreat-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "c9a758de2d9ef907e9d33fd13c88e313bb89d3a5ddc8598101212c868a3f57a7"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

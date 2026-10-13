@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_baker_targets_bakerglo_pads_spiders-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_baker_targets_bakerglo_pads_spiders",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_46AFC5936681C203C879_V1",
+    "authorityId": "P_OS_EVIDENCE_46AFC5936681C203C879_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/bakerglo-pads_spiders-11-x-17/"
+    },
+    "product": {
+      "id": "p-os-baker_1567",
+      "name": "BakerGlo Pads_Spiders 11 x 17",
+      "sku": "BakerGlo Pads_Spiders",
+      "productUrl": "https://bakertargets.com/product/bakerglo-pads_spiders-11-x-17/",
+      "dimensions": {
+        "width": 8.0,
+        "height": 11.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "BakerGlo Pads_Spiders 11 x 17 — Baker Targets. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1248; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1248; printer Baker Targets. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1249,
+          "sourceCells": "AC1249:AG1249",
+          "masterNumber": 1248,
+          "inventoryRecordId": "baker-targets:0417",
+          "sku": "BakerGlo Pads_Spiders",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_baker_targets_bakerglo_pads_spiders-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_46AFC5936681C203C879_EXACT_FACE_V1"
+      },
+      "digest": "819c5e1b9f1af575f3c206d7a0dfc066a0bbf73e22daf3027f7dcdca60706846"
+    },
+    "registration": {
+      "id": "evidence_baker_targets_bakerglo_pads_spiders-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_d498185ba3cb6e8217af.jpg",
+        "assetSha256": "1005b8ac4a5b7bae1117979f1d224f577a532f164b52df0673c348a98f73885a",
+        "assetAlt": "BakerGlo Pads_Spiders 11 x 17, SKU BakerGlo Pads_Spiders",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "204c5eabb63b0e4260b7f42c226a9692e285b8027fb551107dacbb10fed7b44d"
+    },
+    "scoring": {
+      "id": "evidence_baker_targets_bakerglo_pads_spiders-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:1567 + baker-targets:0417 + preserved publisher representation 1005b8ac4a5b7bae1117979f1d224f577a532f164b52df0673c348a98f73885a",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "00620b4a4764c3fc3e5836bd8ad1154f261272496d98be18f5364dc729bc50ad"
+    },
+    "mission": {
+      "id": "evidence_baker_targets_bakerglo_pads_spiders-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "601b47d8f09b5489c8324c464ac2cfe4c5bb1d2275b26a087d98085fa7e2ccce"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

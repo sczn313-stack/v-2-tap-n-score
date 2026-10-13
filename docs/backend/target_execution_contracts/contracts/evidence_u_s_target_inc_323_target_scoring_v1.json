@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_u_s_target_inc_323-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_u_s_target_inc_323",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_D7E841118C23F6163189_V1",
+    "authorityId": "P_OS_EVIDENCE_D7E841118C23F6163189_V1",
+    "publisher": {
+      "id": "u_s_target_inc",
+      "name": "U.S. Target Inc.",
+      "url": "https://ustargetinc.com/product/b-8cp/"
+    },
+    "product": {
+      "id": "p-os-us_target_323",
+      "name": "B-8(CP) Repair Center",
+      "sku": "323",
+      "productUrl": "https://ustargetinc.com/product/b-8cp/",
+      "dimensions": {
+        "width": 10.5,
+        "height": 10.5,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B-8(CP) Repair Center — U.S. Target Inc.. Provisional Shooter Experience: use this target as a pistol skills exercise, recording shooter observations on its actual printed surface. Do not assert specific printed objects, quantities, scoring zones, hit values, or a mandatory drill sequence until confirmed from the original artwork and governed publisher rules. SCZN3 should provide per-session observations and meaningful historical comparisons where supported.",
+        "visibleArtworkDescription": "Artwork listed as present in IMAGE MASTER for target #1116; individual physical objects and their counts have NOT been visually inventoried. Target-specific review required.",
+        "authorityLimitations": "Matched IMAGE MASTER #1116; publisher U.S. Target Inc.. Governed rule: NOT STORED in master. Registered objects: NOT STORED in master. Preserve Backend authority; do not infer scoring from artwork pixels or name.",
+        "supportedExperience": "Capture and reconcile observations, including misses when supported. Show numeric scoring only if governed region values and rules exist; otherwise use governed zone counting or Evidence Only as appropriate.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1117,
+          "sourceCells": "AC1117:AG1117",
+          "masterNumber": 1116,
+          "inventoryRecordId": "us-target:0066",
+          "sku": "323",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_u_s_target_inc_323-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_D7E841118C23F6163189_EXACT_FACE_V1"
+      },
+      "digest": "c1333761eeae0271c259b49d59a0e7c04a95a25db3a65eb49e60b35ba36d4980"
+    },
+    "registration": {
+      "id": "evidence_u_s_target_inc_323-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_1a4542b4f26e9c4f83b3.png",
+        "assetSha256": "3462bcc6ac3bb0fa70d159c2c13c22746322e7c19a41004cc6bbc47eae35f882",
+        "assetAlt": "B-8(CP) Repair Center, SKU 323",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "b7698cd5ec9be89e4d97da27bab082e561ecc1cdad02c8588ac9ce3796fe8b28"
+    },
+    "scoring": {
+      "id": "evidence_u_s_target_inc_323-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "us-target:323 + us-target:0066 + preserved publisher representation 3462bcc6ac3bb0fa70d159c2c13c22746322e7c19a41004cc6bbc47eae35f882",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "51a1dc47a275ebc6a6972f70bd96e590636e9557730acfb98fd1010847fdf7de"
+    },
+    "mission": {
+      "id": "evidence_u_s_target_inc_323-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "987736d7c4690d2f272e3305f971e0720da4c331fe68f661059aa050a87ce32b"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

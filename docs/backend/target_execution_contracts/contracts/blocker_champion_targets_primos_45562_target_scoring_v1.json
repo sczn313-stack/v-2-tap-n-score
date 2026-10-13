@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_champion_targets_primos_45562-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_champion_targets_primos_45562",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_67C02D6377BF1C50556C_V1",
+    "authorityId": "P_OS_BLOCKER_67C02D6377BF1C50556C_V1",
+    "publisher": {
+      "id": "champion_targets_primos",
+      "name": "Champion Targets / Primos",
+      "url": "https://www.primos.com/products/shotkeeper-targets"
+    },
+    "product": {
+      "id": "p-os-champion_45562",
+      "name": "Shotkeeper Targets — Small / 5-Bull / Yellow/Red",
+      "sku": "45562",
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Shotkeeper Targets - Small / 5-Bull / Yellow/Red: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1347; printer Champion Targets / Primos. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1348,
+          "sourceCells": "AC1348:AG1348",
+          "masterNumber": 1347,
+          "inventoryRecordId": "champion:0043",
+          "sku": "45562",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_champion_targets_primos_45562-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_67C02D6377BF1C50556C_EXACT_FACE_V1"
+      },
+      "digest": "d4d7cd0e126d5771ef561b2d42a31c67ff1888e77f593b1410ffea69c068f177"
+    },
+    "registration": {
+      "id": "blocker_champion_targets_primos_45562-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_806ea234acabafe808a5.png",
+        "assetSha256": "82eae19adc969726fd15032d7d99ea48af978805177a7e05f9cca0e5338b3840",
+        "assetAlt": "Shotkeeper Targets — Small / 5-Bull / Yellow/Red, SKU 45562",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "86c653620a37d1787492f1ef0b555d3cf54231d1c10e53b85c112a0c4e89b94c"
+    },
+    "scoring": {
+      "id": "blocker_champion_targets_primos_45562-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "champion:45562 + champion:0043 + publisher_primary_representation_position_1 + 82eae19adc969726fd15032d7d99ea48af978805177a7e05f9cca0e5338b3840",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "1e53e63d65e4e8db6cdaf2fa0cb65c14a567f12942bab8bdc215f04725f2308e"
+    },
+    "mission": {
+      "id": "blocker_champion_targets_primos_45562-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "c8721ce1dfaee9699898cdf7e580066eb76e7dc5e91c1eec6e3f1f0da3ca761c"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

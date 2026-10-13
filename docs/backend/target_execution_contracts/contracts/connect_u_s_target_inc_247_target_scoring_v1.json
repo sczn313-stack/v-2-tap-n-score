@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_u_s_target_inc_247-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_u_s_target_inc_247",
+    "version": "1",
+    "atpId": "ATP_CONNECT_819A42142195698D8CBE_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_819A42142195698D8CBE_AUTHORITY_V1",
+    "publisher": {
+      "id": "u_s_target_inc",
+      "name": "U.S. Target Inc.",
+      "url": "https://ustargetinc.com/product/ipsc-p/"
+    },
+    "product": {
+      "id": "p-os-us_target_247",
+      "name": "IPSC-P Style Target",
+      "sku": "247",
+      "productUrl": "https://ustargetinc.com/product/ipsc-p/",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "IPSC-P Style Target — U.S. Target Inc.. Provisional Shooter Experience: use this target as a competition exercise, recording shooter observations on its actual printed surface. Do not assert specific printed objects, quantities, scoring zones, hit values, or a mandatory drill sequence until confirmed from the original artwork and governed publisher rules. SCZN3 should provide per-session observations and meaningful historical comparisons where supported.",
+        "visibleArtworkDescription": "Artwork listed as present in IMAGE MASTER for target #1136; individual physical objects and their counts have NOT been visually inventoried. Target-specific review required.",
+        "authorityLimitations": "Matched IMAGE MASTER #1136; publisher U.S. Target Inc.. Governed rule: NOT STORED in master. Registered objects: NOT STORED in master. Preserve Backend authority; do not infer scoring from artwork pixels or name.",
+        "supportedExperience": "Capture and reconcile observations, including misses when supported. Show numeric scoring only if governed region values and rules exist; otherwise use governed zone counting or Evidence Only as appropriate.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1137,
+          "sourceCells": "AC1137:AG1137",
+          "masterNumber": 1136,
+          "inventoryRecordId": "us-target:0138",
+          "sku": "247",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_u_s_target_inc_247-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_819A42142195698D8CBE_EXACT_FACE_V1"
+      },
+      "digest": "6e503a61243a78ea284002ba521f7219e611a4b71243d9e29e78edb5fe85076b"
+    },
+    "registration": {
+      "id": "connect_u_s_target_inc_247-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_feb0bb4e8c00cb704380.png",
+        "assetSha256": "a90d183be8465549f9510bfc45991283ffb4046e3999143f6c024bc08b8555d5",
+        "assetAlt": "IPSC-P Style Target, SKU 247",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "1d772c1854b0bb4a9869c04c001df752d6826014e58c95350b7b6ad9c779fffc"
+    },
+    "scoring": {
+      "id": "connect_u_s_target_inc_247-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "us-target:247 + us-target:0138 + preserved publisher representation a90d183be8465549f9510bfc45991283ffb4046e3999143f6c024bc08b8555d5",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "50f02cf4256be40fcbe8edecd952ac529abde8712805ed432767727f6516e5f4"
+    },
+    "mission": {
+      "id": "connect_u_s_target_inc_247-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "6da6099d63af5d4fcbc6bf14d0bb0cd1cd1de5b133ad5409f4f76206fd017b9b"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

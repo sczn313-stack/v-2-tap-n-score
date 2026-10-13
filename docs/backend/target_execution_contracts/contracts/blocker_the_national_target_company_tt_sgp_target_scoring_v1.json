@@ -1,0 +1,181 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_the_national_target_company_tt_sgp-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_the_national_target_company_tt_sgp",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_6C57709BAB8D754CF00E_V1",
+    "authorityId": "P_OS_BLOCKER_6C57709BAB8D754CF00E_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/tt-sgp/"
+    },
+    "product": {
+      "id": "p-os-national_target_tt_sgp",
+      "name": "TT-SGP(25)",
+      "sku": "TT-SGP",
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "TT-SGP(25) — The National Target Company. PROVISIONAL Shooter Experience (target practice): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #1037. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #1037; publisher The National Target Company. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1038,
+          "sourceCells": "AC1038:AG1038",
+          "masterNumber": 1037,
+          "inventoryRecordId": "national-target:0266",
+          "sku": "TT-SGP",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_the_national_target_company_tt_sgp-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_6C57709BAB8D754CF00E_EXACT_FACE_V1"
+      },
+      "digest": "7bc450e30cca8c0c8c5f13fd3b1ba5ffee7155ded38101cb82f2c64d7b4074d8"
+    },
+    "registration": {
+      "id": "blocker_the_national_target_company_tt_sgp-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_2d4980dde1f3de751e5e.jpg",
+        "assetSha256": "48dbaa6eb536e09302c8c3996e46fcbc298c2f20cc52bed986b66591c520c6a9",
+        "assetAlt": "TT-SGP(25), SKU TT-SGP",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "b03f06176d2c9c81776bd72b93313dd8f6c0a026d83fc8800c5bd130a29a45f2"
+    },
+    "scoring": {
+      "id": "blocker_the_national_target_company_tt_sgp-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:TT-SGP + national-target:0266 + publisher_primary_representation_position_1 + 48dbaa6eb536e09302c8c3996e46fcbc298c2f20cc52bed986b66591c520c6a9",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "27622e21105007ed82def001c0e2d72af5bed5ebd72c64532169f866215a3301"
+    },
+    "mission": {
+      "id": "blocker_the_national_target_company_tt_sgp-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "505b31252a28ead3290108da72804ce744b03ffca1588a840c1b3c91c779d690"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

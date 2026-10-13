@@ -1,0 +1,1084 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_champion_targets_primos_45555-target-scoring-v1",
+  "contractVersion": "2",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER_EP64_RECONCILED_TEN_EXECUTION_GATE_2026_10_08",
+    "approvedAt": "2026-10-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-10-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_champion_targets_primos_45555",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_69CAA017B3C4691488C1_V1",
+    "authorityId": "P_OS_BLOCKER_69CAA017B3C4691488C1_V1",
+    "publisher": {
+      "id": "champion_targets_primos",
+      "name": "Champion Targets / Primos",
+      "url": "https://www.primos.com/products/shotkeeper-targets"
+    },
+    "product": {
+      "id": "p-os-champion_45555",
+      "name": "Shotkeeper Targets — Large / 5-Bull / Orange",
+      "sku": "45555",
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Shotkeeper Targets - Large / 5-Bull / Orange: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1344; printer Champion Targets / Primos. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1345,
+          "sourceCells": "AC1345:AG1345",
+          "masterNumber": 1344,
+          "inventoryRecordId": "champion:0044",
+          "sku": "45555",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_champion_targets_primos_45555-geometry",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "status": "ugo_governed_backend_authority",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "concentric_regions",
+        "regions": [
+          {
+            "regionId": "bull_1_7",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.225,
+            "radiusX": 0.145,
+            "radiusY": 0.11,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_1_8",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.225,
+            "radiusX": 0.10536666666666666,
+            "radiusY": 0.07993333333333334,
+            "priority": 20
+          },
+          {
+            "regionId": "bull_1_9",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.225,
+            "radiusX": 0.06573333333333334,
+            "radiusY": 0.04986666666666667,
+            "priority": 30
+          },
+          {
+            "regionId": "bull_1_x10",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.225,
+            "radiusX": 0.026100000000000005,
+            "radiusY": 0.019800000000000005,
+            "priority": 40
+          },
+          {
+            "regionId": "bull_2_7",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.225,
+            "radiusX": 0.145,
+            "radiusY": 0.11,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_2_8",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.225,
+            "radiusX": 0.10536666666666666,
+            "radiusY": 0.07993333333333334,
+            "priority": 20
+          },
+          {
+            "regionId": "bull_2_9",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.225,
+            "radiusX": 0.06573333333333334,
+            "radiusY": 0.04986666666666667,
+            "priority": 30
+          },
+          {
+            "regionId": "bull_2_x10",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.225,
+            "radiusX": 0.026100000000000005,
+            "radiusY": 0.019800000000000005,
+            "priority": 40
+          },
+          {
+            "regionId": "bull_3_7",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.475,
+            "radiusX": 0.145,
+            "radiusY": 0.11,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_3_8",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.475,
+            "radiusX": 0.10536666666666666,
+            "radiusY": 0.07993333333333334,
+            "priority": 20
+          },
+          {
+            "regionId": "bull_3_9",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.475,
+            "radiusX": 0.06573333333333334,
+            "radiusY": 0.04986666666666667,
+            "priority": 30
+          },
+          {
+            "regionId": "bull_3_x10",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.475,
+            "radiusX": 0.026100000000000005,
+            "radiusY": 0.019800000000000005,
+            "priority": 40
+          },
+          {
+            "regionId": "bull_4_7",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.705,
+            "radiusX": 0.145,
+            "radiusY": 0.11,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_4_8",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.705,
+            "radiusX": 0.10536666666666666,
+            "radiusY": 0.07993333333333334,
+            "priority": 20
+          },
+          {
+            "regionId": "bull_4_9",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.705,
+            "radiusX": 0.06573333333333334,
+            "radiusY": 0.04986666666666667,
+            "priority": 30
+          },
+          {
+            "regionId": "bull_4_x10",
+            "shape": "ellipse",
+            "cx": 0.215,
+            "cy": 0.705,
+            "radiusX": 0.026100000000000005,
+            "radiusY": 0.019800000000000005,
+            "priority": 40
+          },
+          {
+            "regionId": "bull_5_7",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.705,
+            "radiusX": 0.145,
+            "radiusY": 0.11,
+            "priority": 10
+          },
+          {
+            "regionId": "bull_5_8",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.705,
+            "radiusX": 0.10536666666666666,
+            "radiusY": 0.07993333333333334,
+            "priority": 20
+          },
+          {
+            "regionId": "bull_5_9",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.705,
+            "radiusX": 0.06573333333333334,
+            "radiusY": 0.04986666666666667,
+            "priority": 30
+          },
+          {
+            "regionId": "bull_5_x10",
+            "shape": "ellipse",
+            "cx": 0.765,
+            "cy": 0.705,
+            "radiusX": 0.026100000000000005,
+            "radiusY": 0.019800000000000005,
+            "priority": 40
+          }
+        ],
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "bull_1_7",
+            "bull_1_8",
+            "bull_1_9",
+            "bull_1_x10",
+            "bull_2_7",
+            "bull_2_8",
+            "bull_2_9",
+            "bull_2_x10",
+            "bull_3_7",
+            "bull_3_8",
+            "bull_3_9",
+            "bull_3_x10",
+            "bull_4_7",
+            "bull_4_8",
+            "bull_4_9",
+            "bull_4_x10",
+            "bull_5_7",
+            "bull_5_8",
+            "bull_5_9",
+            "bull_5_x10"
+          ],
+          "boundaries": [
+            {
+              "boundaryId": "bull_1_7_outer_boundary",
+              "regionId": "bull_1_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3401833333333333,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_7"
+                },
+                "edge": {
+                  "x": 0.3599999999,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_7"
+                },
+                "outside": {
+                  "x": 0.3601,
+                  "y": 0.225,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_1_8_outer_boundary",
+              "regionId": "bull_1_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.30055,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_8"
+                },
+                "edge": {
+                  "x": 0.3203666665666667,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_8"
+                },
+                "outside": {
+                  "x": 0.3204666666666667,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_1_9_outer_boundary",
+              "regionId": "bull_1_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2609166666666667,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_9"
+                },
+                "edge": {
+                  "x": 0.2807333332333333,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_9"
+                },
+                "outside": {
+                  "x": 0.2808333333333333,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_1_x10_outer_boundary",
+              "regionId": "bull_1_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22805,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_x10"
+                },
+                "edge": {
+                  "x": 0.2410999999,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_x10"
+                },
+                "outside": {
+                  "x": 0.2412,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_1_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_2_7_outer_boundary",
+              "regionId": "bull_2_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8901833333333333,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_7"
+                },
+                "edge": {
+                  "x": 0.9099999999,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_7"
+                },
+                "outside": {
+                  "x": 0.9101,
+                  "y": 0.225,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_2_8_outer_boundary",
+              "regionId": "bull_2_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.85055,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_8"
+                },
+                "edge": {
+                  "x": 0.8703666665666667,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_8"
+                },
+                "outside": {
+                  "x": 0.8704666666666667,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_2_9_outer_boundary",
+              "regionId": "bull_2_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8109166666666667,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_9"
+                },
+                "edge": {
+                  "x": 0.8307333332333333,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_9"
+                },
+                "outside": {
+                  "x": 0.8308333333333333,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_2_x10_outer_boundary",
+              "regionId": "bull_2_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.77805,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_x10"
+                },
+                "edge": {
+                  "x": 0.7910999999,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_x10"
+                },
+                "outside": {
+                  "x": 0.7912,
+                  "y": 0.225,
+                  "expectedEntityId": "bull_2_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_3_7_outer_boundary",
+              "regionId": "bull_3_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.6251833333333333,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_7"
+                },
+                "edge": {
+                  "x": 0.6449999999,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_7"
+                },
+                "outside": {
+                  "x": 0.6451,
+                  "y": 0.475,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_3_8_outer_boundary",
+              "regionId": "bull_3_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.58555,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_8"
+                },
+                "edge": {
+                  "x": 0.6053666665666667,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_8"
+                },
+                "outside": {
+                  "x": 0.6054666666666667,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_3_9_outer_boundary",
+              "regionId": "bull_3_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5459166666666667,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_9"
+                },
+                "edge": {
+                  "x": 0.5657333332333333,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_9"
+                },
+                "outside": {
+                  "x": 0.5658333333333333,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_3_x10_outer_boundary",
+              "regionId": "bull_3_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.51305,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_x10"
+                },
+                "edge": {
+                  "x": 0.5260999999,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_x10"
+                },
+                "outside": {
+                  "x": 0.5262,
+                  "y": 0.475,
+                  "expectedEntityId": "bull_3_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_4_7_outer_boundary",
+              "regionId": "bull_4_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.3401833333333333,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_7"
+                },
+                "edge": {
+                  "x": 0.3599999999,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_7"
+                },
+                "outside": {
+                  "x": 0.3601,
+                  "y": 0.705,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_4_8_outer_boundary",
+              "regionId": "bull_4_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.30055,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_8"
+                },
+                "edge": {
+                  "x": 0.3203666665666667,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_8"
+                },
+                "outside": {
+                  "x": 0.3204666666666667,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_4_9_outer_boundary",
+              "regionId": "bull_4_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.2609166666666667,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_9"
+                },
+                "edge": {
+                  "x": 0.2807333332333333,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_9"
+                },
+                "outside": {
+                  "x": 0.2808333333333333,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_4_x10_outer_boundary",
+              "regionId": "bull_4_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22805,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_x10"
+                },
+                "edge": {
+                  "x": 0.2410999999,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_x10"
+                },
+                "outside": {
+                  "x": 0.2412,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_4_9"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_5_7_outer_boundary",
+              "regionId": "bull_5_7",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8901833333333333,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_7"
+                },
+                "edge": {
+                  "x": 0.9099999999,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_7"
+                },
+                "outside": {
+                  "x": 0.9101,
+                  "y": 0.705,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_5_8_outer_boundary",
+              "regionId": "bull_5_8",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.85055,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_8"
+                },
+                "edge": {
+                  "x": 0.8703666665666667,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_8"
+                },
+                "outside": {
+                  "x": 0.8704666666666667,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_7"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_5_9_outer_boundary",
+              "regionId": "bull_5_9",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8109166666666667,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_9"
+                },
+                "edge": {
+                  "x": 0.8307333332333333,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_9"
+                },
+                "outside": {
+                  "x": 0.8308333333333333,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_8"
+                }
+              }
+            },
+            {
+              "boundaryId": "bull_5_x10_outer_boundary",
+              "regionId": "bull_5_x10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.77805,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_x10"
+                },
+                "edge": {
+                  "x": 0.7910999999,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_x10"
+                },
+                "outside": {
+                  "x": 0.7912,
+                  "y": 0.705,
+                  "expectedEntityId": "bull_5_9"
+                }
+              }
+            }
+          ]
+        },
+        "physicalAuthority": {
+          "authorityId": "EP64_RECONCILED_TEN_UGO_BLOCKER_CHAMPION_TARGETS_PRIMOS_45555_2026_10_08",
+          "semanticAuthority": "The exact Shotkeeper 5-Bull Orange face prints 7/8/9/10 on each bull; those values are summed.",
+          "physicalFaceAuthority": "Exact registered Shotkeeper Targets — Large / 5-Bull / Orange identity and stored commercial dimensions",
+          "ugoStandard": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+          "measurementMethod": "UGO physical-target-plane calibration against the exact registered face and stored commercial dimensions",
+          "sourceImageSha256": "2a1edb251c6ac904dc818ab7a33f85e7a9347d56cd9fb73f727d1156ab8a3a8d",
+          "representationRule": "Normalized coordinates represent governed physical regions on the exact target plane; rendered pixels do not create authority.",
+          "pixelIsAuthority": false
+        }
+      },
+      "digest": "7b7ca3b4fa9342bff46f0cc0081776c94391696c336400e69b31a81c1c383969"
+    },
+    "registration": {
+      "id": "blocker_champion_targets_primos_45555-target-scoring-registration",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_ab848ae483069d57f267.png",
+        "assetSha256": "2a1edb251c6ac904dc818ab7a33f85e7a9347d56cd9fb73f727d1156ab8a3a8d",
+        "assetAlt": "Shotkeeper Targets — Large / 5-Bull / Orange, SKU 45555",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "7a682dd61306ae73231462a1c37751d6e45744db6757501a8d839c0bf1b007e9"
+    },
+    "scoring": {
+      "id": "blocker_champion_targets_primos_45555-scoring",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "bull_1_7": {
+            "label": "Bull 1 — 7",
+            "value": 7,
+            "objectId": "bull_1",
+            "objectLabel": "Bull 1"
+          },
+          "bull_1_8": {
+            "label": "Bull 1 — 8",
+            "value": 8,
+            "objectId": "bull_1",
+            "objectLabel": "Bull 1"
+          },
+          "bull_1_9": {
+            "label": "Bull 1 — 9",
+            "value": 9,
+            "objectId": "bull_1",
+            "objectLabel": "Bull 1"
+          },
+          "bull_1_x10": {
+            "label": "Bull 1 — X / 10",
+            "value": 10,
+            "objectId": "bull_1",
+            "objectLabel": "Bull 1"
+          },
+          "bull_2_7": {
+            "label": "Bull 2 — 7",
+            "value": 7,
+            "objectId": "bull_2",
+            "objectLabel": "Bull 2"
+          },
+          "bull_2_8": {
+            "label": "Bull 2 — 8",
+            "value": 8,
+            "objectId": "bull_2",
+            "objectLabel": "Bull 2"
+          },
+          "bull_2_9": {
+            "label": "Bull 2 — 9",
+            "value": 9,
+            "objectId": "bull_2",
+            "objectLabel": "Bull 2"
+          },
+          "bull_2_x10": {
+            "label": "Bull 2 — X / 10",
+            "value": 10,
+            "objectId": "bull_2",
+            "objectLabel": "Bull 2"
+          },
+          "bull_3_7": {
+            "label": "Bull 3 — 7",
+            "value": 7,
+            "objectId": "bull_3",
+            "objectLabel": "Bull 3"
+          },
+          "bull_3_8": {
+            "label": "Bull 3 — 8",
+            "value": 8,
+            "objectId": "bull_3",
+            "objectLabel": "Bull 3"
+          },
+          "bull_3_9": {
+            "label": "Bull 3 — 9",
+            "value": 9,
+            "objectId": "bull_3",
+            "objectLabel": "Bull 3"
+          },
+          "bull_3_x10": {
+            "label": "Bull 3 — X / 10",
+            "value": 10,
+            "objectId": "bull_3",
+            "objectLabel": "Bull 3"
+          },
+          "bull_4_7": {
+            "label": "Bull 4 — 7",
+            "value": 7,
+            "objectId": "bull_4",
+            "objectLabel": "Bull 4"
+          },
+          "bull_4_8": {
+            "label": "Bull 4 — 8",
+            "value": 8,
+            "objectId": "bull_4",
+            "objectLabel": "Bull 4"
+          },
+          "bull_4_9": {
+            "label": "Bull 4 — 9",
+            "value": 9,
+            "objectId": "bull_4",
+            "objectLabel": "Bull 4"
+          },
+          "bull_4_x10": {
+            "label": "Bull 4 — X / 10",
+            "value": 10,
+            "objectId": "bull_4",
+            "objectLabel": "Bull 4"
+          },
+          "bull_5_7": {
+            "label": "Bull 5 — 7",
+            "value": 7,
+            "objectId": "bull_5",
+            "objectLabel": "Bull 5"
+          },
+          "bull_5_8": {
+            "label": "Bull 5 — 8",
+            "value": 8,
+            "objectId": "bull_5",
+            "objectLabel": "Bull 5"
+          },
+          "bull_5_9": {
+            "label": "Bull 5 — 9",
+            "value": 9,
+            "objectId": "bull_5",
+            "objectLabel": "Bull 5"
+          },
+          "bull_5_x10": {
+            "label": "Bull 5 — X / 10",
+            "value": 10,
+            "objectId": "bull_5",
+            "objectLabel": "Bull 5"
+          }
+        },
+        "aggregation": {
+          "mode": "sum"
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": 0
+        },
+        "publisherRuleAuthority": {
+          "source": "Locked exact registered face plus stored publisher evidence",
+          "rule": "The exact Shotkeeper 5-Bull Orange face prints 7/8/9/10 on each bull; those values are summed."
+        }
+      },
+      "digest": "bab33899ce4de17b5cb54d03d6386bba9a298559fadbb8f0e03e3e83498bf733"
+    },
+    "mission": {
+      "id": "blocker_champion_targets_primos_45555-mission",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "available"
+          },
+          "publisherMission": {
+            "status": "available"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Locked exact face plus UGO physical-target-plane calibration and stored publisher/printed-face evidence",
+        "semanticStatus": "GOVERNED_FOR_EP64_TEN_TARGET_PILOT",
+        "recognizedBehaviorFamily": "NUMERIC_REGIONS",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-reconciled-ten-v1",
+          "highestTruthfulCapability": "Scoring",
+          "targetStructure": {
+            "registeredGeometryStatus": "ugo_regions_available",
+            "registeredRegionCount": 20
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": true,
+            "pointsPerTap": true,
+            "regionObjectBreakdown": true,
+            "missesOutside": true
+          },
+          "historyProfile": {
+            "family": "numeric_score_history_v1",
+            "inheritedMachinery": "shared_session_drawer_3_history_v1",
+            "targetVocabulary": {
+              "objectSingular": "Bull",
+              "objectPlural": "Bulls",
+              "outside": "Miss"
+            },
+            "semanticInheritance": false
+          }
+        }
+      },
+      "digest": "ec35c27ea93dfaac1e25e11d29359040979cb2ced460af514816fdc3a3852ce6"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "available"
+      },
+      "publisherMission": {
+        "status": "available"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "unpublished_rules_or_values"
+  ]
+}

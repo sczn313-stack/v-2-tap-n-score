@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_baker_targets_bakerglo_pads_deer-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_baker_targets_bakerglo_pads_deer",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_6FC5BEC12B68920504CC_V1",
+    "authorityId": "P_OS_EVIDENCE_6FC5BEC12B68920504CC_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/bakerglo-pads_deer-11-x-17/"
+    },
+    "product": {
+      "id": "p-os-baker_2456",
+      "name": "BakerGlo Pads_Deer 11 x 17",
+      "sku": "BakerGlo Pads_Deer",
+      "productUrl": "https://bakertargets.com/product/bakerglo-pads_deer-11-x-17/",
+      "dimensions": {
+        "width": 8.0,
+        "height": 11.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "BakerGlo Pads_Deer 11 x 17 — Baker Targets. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1236; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1236; printer Baker Targets. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1237,
+          "sourceCells": "AC1237:AG1237",
+          "masterNumber": 1236,
+          "inventoryRecordId": "baker-targets:0295",
+          "sku": "BakerGlo Pads_Deer",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_baker_targets_bakerglo_pads_deer-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_6FC5BEC12B68920504CC_EXACT_FACE_V1"
+      },
+      "digest": "67040b2dc539a637bd6c83fd5349c781a42691f2d3737ac29ae536d14ba059a2"
+    },
+    "registration": {
+      "id": "evidence_baker_targets_bakerglo_pads_deer-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_a4442093bedc4c38d962.webp",
+        "assetSha256": "809951e8a658b61449db3bda54f11f10d192e0477a63620eca8448a93665fdbb",
+        "assetAlt": "BakerGlo Pads_Deer 11 x 17, SKU BakerGlo Pads_Deer",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "3442d6a996f66efe05cd503ab9ad8d0dc4333c689fbe8ff7e5bc527ef785fa60"
+    },
+    "scoring": {
+      "id": "evidence_baker_targets_bakerglo_pads_deer-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:2456 + baker-targets:0295 + preserved publisher representation 809951e8a658b61449db3bda54f11f10d192e0477a63620eca8448a93665fdbb",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "a6e0b77206fb815c283626938853634886a4508da38833f6fbf73919bed89eff"
+    },
+    "mission": {
+      "id": "evidence_baker_targets_bakerglo_pads_deer-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "097044d403bd190501eac131440e92bfabf74d8c6d8fa5158f5e7e31e39fb78a"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

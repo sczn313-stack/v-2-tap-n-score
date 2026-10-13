@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_gf_hostage-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_gf_hostage",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_C13CC15E4A0EC09E5A69_V1",
+    "authorityId": "P_OS_BLOCKER_C13CC15E4A0EC09E5A69_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/hostage-target/"
+    },
+    "product": {
+      "id": "p-os-baker_548",
+      "name": "Hostage Target",
+      "sku": "GF-Hostage",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Hostage Target (Baker Targets) — scenario and skill-building target. Shooter experience: present this specific printed target face, let the shooter register each observed impact, and return an intelligible account of where shots landed. Explain outcomes only against governed regions, objects and published rules that are actually stored. Where the face supports distinct aim areas, retain their separate identities rather than collapsing them into one generic hit count. Preserve misses and every registered observation in the session record. No invented object counts, distances, time limits, point values or course-of-fire requirements.",
+        "visibleArtworkDescription": "Artwork source: embedded IMAGE MASTER thumbnail for master #469. Named design: Hostage Target. Exact visual object inventory and physical boundaries are NOT independently established by this draft; consult the full artwork and governed geometry before assigning counts.",
+        "authorityLimitations": "SCORING REVIEW — no numeric scoring inferred. Use Evidence Only unless governed zones/values already exist.",
+        "supportedExperience": "Record target identity, observations, misses and supported per-zone/per-object counts; show numeric score only if backend-authorized; preserve RESULT → SEC → Vault data when implemented.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 470,
+          "sourceCells": "AC470:AG470",
+          "masterNumber": 469,
+          "inventoryRecordId": "baker-targets:0318, baker-targets:0471",
+          "sku": "GF-Hostage-Bulk, GF-Hostage",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_gf_hostage-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_C13CC15E4A0EC09E5A69_EXACT_FACE_V1"
+      },
+      "digest": "425567f9042740b14875caefae3e2afa084c9566c624232ba06cf87052c629a0"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_gf_hostage-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_9c247728df974b201b63.jpg",
+        "assetSha256": "b86a4dbbafd2593af1de3e0068f624b9c9a57b25d068752405250aeb3b7e37a0",
+        "assetAlt": "Hostage Target, SKU GF-Hostage",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "bbb127de0ff65d2bfd302bdeda65a6d0dd01b9107a316f2047a68a1b7191dbd0"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_gf_hostage-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:548 + baker-targets:0471 + publisher_primary_representation_position_1 + b86a4dbbafd2593af1de3e0068f624b9c9a57b25d068752405250aeb3b7e37a0",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "552cff36ba5155dcffee5c8200d3e90cc831f3ac5c850215716c68a4f8a9f079"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_gf_hostage-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "a0b5c05826c9beae8a4add46db182c8f6e263d5544efde1d6fa6a04318e51f36"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

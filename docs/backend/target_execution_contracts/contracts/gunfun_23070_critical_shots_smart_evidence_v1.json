@@ -32,15 +32,34 @@
         "width": 23,
         "height": 35,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Critical Shots (23070) — GunFun. Shooter Experience draft: present the original printed target-specific practice design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #597. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 598,
+          "sourceCells": "AC598:AG598",
+          "masterNumber": 597,
+          "inventoryRecordId": "gunfun:0153",
+          "sku": "23070",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
   "components": {
     "geometry": {
-    "id": "gunfun_23070_critical_shots-geometry",
-    "version": "1",
-    "status": "approved",
-    "digest": "9354f367d5c1a60083c0512074fab0d9a85da9f701165ebac6bd0a14ef527397",
+      "id": "gunfun_23070_critical_shots-geometry",
+      "version": "1",
+      "status": "approved",
+      "digest": "9354f367d5c1a60083c0512074fab0d9a85da9f701165ebac6bd0a14ef527397",
       "definition": {
         "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
@@ -50,10 +69,10 @@
       }
     },
     "registration": {
-    "id": "gunfun_23070_critical_shots-registration",
-    "version": "1",
-    "status": "approved",
-    "digest": "901bac9aedb8040f6fce36a009ae9747a399074debaa5bec6d98946bbb5358bd",
+      "id": "gunfun_23070_critical_shots-registration",
+      "version": "1",
+      "status": "approved",
+      "digest": "901bac9aedb8040f6fce36a009ae9747a399074debaa5bec6d98946bbb5358bd",
       "definition": {
         "role": "evidence_capture_asset",
         "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/23070.jpg",
@@ -63,20 +82,20 @@
       }
     },
     "scoring": {
-    "id": "gunfun_23070_critical_shots-scoring",
-    "version": "1",
-    "status": "approved",
-    "digest": "9630eee479aff17982bfe619c21ae9d9f23784d1ee59ed907686733785ceb3d3",
+      "id": "gunfun_23070_critical_shots-scoring",
+      "version": "1",
+      "status": "approved",
+      "digest": "9630eee479aff17982bfe619c21ae9d9f23784d1ee59ed907686733785ceb3d3",
       "definition": {
         "status": "not_applicable",
         "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
       }
     },
     "mission": {
-    "id": "gunfun_23070_critical_shots-mission",
-    "version": "1",
-    "status": "approved",
-    "digest": "fbf953401a8bd35ba14a0861edf41bf60e397a0ab2c029f0279b9a49d0a56fc1",
+      "id": "gunfun_23070_critical_shots-mission",
+      "version": "1",
+      "status": "approved",
+      "digest": "fbf953401a8bd35ba14a0861edf41bf60e397a0ab2c029f0279b9a49d0a56fc1",
       "definition": {
         "missionFamily": "smartEvidenceCapture",
         "resultPackageType": "smartEvidenceResult",

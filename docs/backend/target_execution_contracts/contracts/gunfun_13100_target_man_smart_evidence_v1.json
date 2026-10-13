@@ -32,15 +32,34 @@
         "width": 19,
         "height": 25,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Target Man (13100) — GunFun. Shooter Experience draft: Present this exact target identity and its original artwork to the shooter. Support shot-by-shot registration and a review of where recorded shots landed. Treat this as a practice target only to the extent supported by its published rules and governed target contract; do not invent target-specific objectives, scores, or object counts.",
+        "visibleArtworkDescription": "Original embedded artwork is present in IMAGE MASTER. Individual objects, their counts, and their physical boundaries have NOT been visually inventoried or verified in this batch.",
+        "authorityLimitations": "Target number matched. Existing governed rule: not established in this draft. Do not infer numeric scoring or physical geometry from artwork pixels; verify publisher/backend authority before enabling scoring.",
+        "supportedExperience": "Show registered observations and session history. Report hits, misses, zone counts, or scores ONLY where governed geometry and scoring semantics support those results; otherwise Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 655,
+          "sourceCells": "AC655:AG655",
+          "masterNumber": 654,
+          "inventoryRecordId": "gunfun:0030",
+          "sku": "13100",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
   "components": {
     "geometry": {
-    "id": "gunfun_13100_target_man-geometry",
-    "version": "1",
-    "status": "approved",
-    "digest": "f6b9b806fa2ba34369e6a04d4ab58b08a493b98eb618890cddff6d2ed7f65c83",
+      "id": "gunfun_13100_target_man-geometry",
+      "version": "1",
+      "status": "approved",
+      "digest": "f6b9b806fa2ba34369e6a04d4ab58b08a493b98eb618890cddff6d2ed7f65c83",
       "definition": {
         "status": "image_plane_evidence_only",
         "coordinateSystem": "normalized_source_image_top_left",
@@ -50,10 +69,10 @@
       }
     },
     "registration": {
-    "id": "gunfun_13100_target_man-registration",
-    "version": "1",
-    "status": "approved",
-    "digest": "3ea8b527c7887ff7f8c2ed47a1703bb3dec5654cacf5f2f33628e97984e777aa",
+      "id": "gunfun_13100_target_man-registration",
+      "version": "1",
+      "status": "approved",
+      "digest": "3ea8b527c7887ff7f8c2ed47a1703bb3dec5654cacf5f2f33628e97984e777aa",
       "definition": {
         "role": "evidence_capture_asset",
         "assetPath": "authority-evidence/gunfun/episode56/batch2/publisher-representations/13100.jpg",
@@ -63,20 +82,20 @@
       }
     },
     "scoring": {
-    "id": "gunfun_13100_target_man-scoring",
-    "version": "1",
-    "status": "approved",
-    "digest": "edf1db34cfa0ef6085375da559f6d6cc1e75497fd76f8432cae4baebe59ebe53",
+      "id": "gunfun_13100_target_man-scoring",
+      "version": "1",
+      "status": "approved",
+      "digest": "edf1db34cfa0ef6085375da559f6d6cc1e75497fd76f8432cae4baebe59ebe53",
       "definition": {
         "status": "not_applicable",
         "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
       }
     },
     "mission": {
-    "id": "gunfun_13100_target_man-mission",
-    "version": "1",
-    "status": "approved",
-    "digest": "eae5c0db977a1a7273f51244958957c93c861cf1d850a1e16eeb1ba2c7698110",
+      "id": "gunfun_13100_target_man-mission",
+      "version": "1",
+      "status": "approved",
+      "digest": "eae5c0db977a1a7273f51244958957c93c861cf1d850a1e16eeb1ba2c7698110",
       "definition": {
         "missionFamily": "smartEvidenceCapture",
         "resultPackageType": "smartEvidenceResult",

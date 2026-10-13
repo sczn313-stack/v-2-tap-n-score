@@ -1,6 +1,6 @@
 {
   "schemaVersion": "sczn3-target-execution-contract-v1",
-  "contractId": "tec-gunfun_22740_vital_dude-target-scoring-v1",
+  "contractId": "tec-gunfun_22740_vital_dude-smart-evidence-v1",
   "contractVersion": "1",
   "authorityContractVersion": "ADR-001-v1",
   "lifecycleStatus": "supported",
@@ -32,6 +32,25 @@
         "width": 23,
         "height": 35,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Vital Dude (22740) — GunFun. Shooter Experience draft: Present this exact target identity and its original artwork to the shooter. Support shot-by-shot registration and a review of where recorded shots landed. Treat this as a game/novelty target only to the extent supported by its published rules and governed target contract; do not invent target-specific objectives, scores, or object counts.",
+        "visibleArtworkDescription": "Original embedded artwork is present in IMAGE MASTER. Individual objects, their counts, and their physical boundaries have NOT been visually inventoried or verified in this batch.",
+        "authorityLimitations": "Target number matched. Existing governed rule: not established in this draft. Do not infer numeric scoring or physical geometry from artwork pixels; verify publisher/backend authority before enabling scoring.",
+        "supportedExperience": "Show registered observations and session history. Report hits, misses, zone counts, or scores ONLY where governed geometry and scoring semantics support those results; otherwise Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 663,
+          "sourceCells": "AC663:AG663",
+          "masterNumber": 662,
+          "inventoryRecordId": "gunfun:0129",
+          "sku": "22740",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
@@ -67,27 +86,21 @@
       "status": "approved",
       "definition": {
         "status": "not_applicable",
-        "model": "not_applicable",
-        "regionRules": {},
-        "reason": "printer_defines_no_score",
-        "schemaVersion": "sczn3-target-scoring-data-v1",
-        "aggregation": {
-          "mode": "none"
-        },
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
         "publisherRuleAuthority": {
           "source": "GunFun product 22740",
           "rule": "publisher defines anatomical artwork and no score"
         }
       },
-      "digest": "05a91654c26e3f41a0d4f0eec50e7dfa525fcc3884106537c8ee0ca1e8c740a2"
+      "digest": "c4d7e2c99c57d97edf8da28250b35a8764e1e065ffd89813db347c0836db9126"
     },
     "mission": {
       "id": "gunfun_22740_vital_dude-target-scoring-mission",
       "version": "1",
       "status": "approved",
       "definition": {
-        "missionFamily": "targetScoring",
-        "resultPackageType": "targetScoreResult",
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
         "interaction": {
@@ -113,26 +126,32 @@
           },
           "publisherMission": {
             "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
           }
-        }
+        },
+        "authorityResolution": "publisher defines anatomical artwork and no score",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
       },
-      "digest": "c614f2f41a16cf5de7722e5a9300c26ba21733e4ac93a9b8e253c51e70459f2e"
+      "digest": "7dcdb163dd6f899de6b7b00a95a6226f5d5d6125789b7997e3003792c5c402e4"
     }
   },
-  "missionFamily": "targetScoring",
-  "resultPackageType": "targetScoreResult",
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
   "resultPackageVersion": "1",
   "executor": {
-    "id": "declarative-target-score",
+    "id": "smart-evidence-capture",
     "version": "1"
   },
   "secAdapter": {
-    "id": "target-scoring-family",
+    "id": "smart-evidence-family",
     "version": "1",
-    "scoringPresentationFamily": "target-data"
+    "scoringPresentationFamily": "not_applicable"
   },
   "preservationValidator": {
-    "id": "target-scoring-preservation",
+    "id": "smart-evidence-preservation",
     "version": "1"
   },
   "session": {
@@ -150,6 +169,9 @@
         "status": "not_applicable"
       },
       "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
         "status": "not_applicable"
       }
     },

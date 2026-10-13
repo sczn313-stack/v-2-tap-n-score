@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_baker_targets_bg_robbin_8217_hoodie-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_baker_targets_bg_robbin_8217_hoodie",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_8E911E216F7E67A76E12_V1",
+    "authorityId": "P_OS_BLOCKER_8E911E216F7E67A76E12_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/robbinhoodie-target/"
+    },
+    "product": {
+      "id": "p-os-baker_1777",
+      "name": "Robbin’Hoodie Target",
+      "sku": "BG-Robbin&#8217;Hoodie",
+      "dimensions": {
+        "width": 8.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Robbin’Hoodie Target — Baker Targets. Shooter Experience draft: present the original printed target-specific practice design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #488. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 489,
+          "sourceCells": "AC489:AG489",
+          "masterNumber": 488,
+          "inventoryRecordId": "baker-targets:0363, baker-targets:0415",
+          "sku": "BG-Robbin&#8217;Hoodie-Bulk, BG-Robbin&#8217;Hoodie",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_baker_targets_bg_robbin_8217_hoodie-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_8E911E216F7E67A76E12_EXACT_FACE_V1"
+      },
+      "digest": "f0889b90e3356c391406a283075ed8de82f3c92f05bb9bf4706d9efe190e922b"
+    },
+    "registration": {
+      "id": "blocker_baker_targets_bg_robbin_8217_hoodie-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_e38082ae036b9f51f9fd.jpg",
+        "assetSha256": "0389e2edad236a69aee5af515f9815019bd376137de7f653e714ecbac9b1b742",
+        "assetAlt": "Robbin’Hoodie Target, SKU BG-Robbin&#8217;Hoodie",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "2d86fa18af85d0657b008d3ca89004d12e6daa67aae4d5456854d881fc97d320"
+    },
+    "scoring": {
+      "id": "blocker_baker_targets_bg_robbin_8217_hoodie-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "baker:1777 + baker-targets:0415 + publisher_primary_representation_position_1 + 0389e2edad236a69aee5af515f9815019bd376137de7f653e714ecbac9b1b742",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "7d65f688877842791424da45f5cdbd7cf965c79fa3862d13681dccd8fb698a86"
+    },
+    "mission": {
+      "id": "blocker_baker_targets_bg_robbin_8217_hoodie-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "60c1ad9e1701a9458a7fcbf94d261a069761eece7505b537996ef17d70143fa2"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

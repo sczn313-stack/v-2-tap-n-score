@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_b27q_red_silhouette_qualification_shooting_targets_25x38-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_b27q_red_silhouette_qualification_shooting_targets_25x38",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_BFA06294EB8BFD0F29EE_V1",
+    "authorityId": "P_OS_BLOCKER_BFA06294EB8BFD0F29EE_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/b27q-red-silhouette-qualification-shooting-targets-25x38/"
+    },
+    "product": {
+      "id": "p-os-thompson_b27q_red_silhouette_qualification_shooting_targets_25x38",
+      "name": "B27Q-Red Silhouette Qualification Shooting Targets - 25\"x38\"",
+      "sku": "thompson-b27q-red-silhouette-qualification-shooting-targets-25x38",
+      "dimensions": {
+        "width": 25.0,
+        "height": 38.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B27Q-Red Silhouette Qualification Shooting Targets - 25\"x38\" — Thompson Target Inc.. PROVISIONAL Shooter Experience (qualification / practical shooting): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #1049. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #1049; publisher Thompson Target Inc.. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1050,
+          "sourceCells": "AC1050:AG1050",
+          "masterNumber": 1049,
+          "inventoryRecordId": "thompson-target:0014",
+          "sku": "thompson-b27q-red-silhouette-qualification-shooting-targets-25x38",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_b27q_red_silhouette_qualification_shooting_targets_25x38-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_BFA06294EB8BFD0F29EE_EXACT_FACE_V1"
+      },
+      "digest": "cd85aa490f10b861423436442e698c87c9ff13e26763ed3f1066a5353bbff753"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_b27q_red_silhouette_qualification_shooting_targets_25x38-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_d38f98566a308e609bd4.webp",
+        "assetSha256": "a4804a53e1223aea626d64a35298889877794ddcc4840bf83b734f09eff6f38a",
+        "assetAlt": "B27Q-Red Silhouette Qualification Shooting Targets - 25\"x38\", SKU thompson-b27q-red-silhouette-qualification-shooting-targets-25x38",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "3adcd2d9dbaa2df89665557a54694a77d64ef7a74d76c0a4f14e001d527a273b"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_b27q_red_silhouette_qualification_shooting_targets_25x38-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "thompson-b27q-red-silhouette-qualification-shooting-targets-25x38 + thompson-target:0014 + publisher_primary_representation_position_1 + a4804a53e1223aea626d64a35298889877794ddcc4840bf83b734f09eff6f38a",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "4e772935571d248b5eb6da9b837be396deb01c33626acee1eaccea09ef95c8e3"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_b27q_red_silhouette_qualification_shooting_targets_25x38-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "cd56f4691515c623de5b6d680f2454f948cd736cb0e0de3e78ab45fb74b2386c"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

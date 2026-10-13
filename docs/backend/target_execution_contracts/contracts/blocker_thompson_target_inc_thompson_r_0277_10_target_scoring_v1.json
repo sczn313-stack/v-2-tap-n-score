@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_r_0277_10-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_r_0277_10",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_619FAF7AC05378941AA7_V1",
+    "authorityId": "P_OS_BLOCKER_619FAF7AC05378941AA7_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/b27q-blue-half-size-12-5x19-human-silhouette-targets/"
+    },
+    "product": {
+      "id": "p-os-thompson_r_0277_10",
+      "name": "B27Q Blue Half-Size 12.5\"x19\" Human Silhouette Targets",
+      "sku": "thompson-R-0277-10",
+      "dimensions": {
+        "width": 12.5,
+        "height": 19.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B27Q Blue Half-Size 12.5\"x19\" Human Silhouette Targets — Thompson Target Inc.. PROVISIONAL Shooter Experience (target practice): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #1046. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #1046; publisher Thompson Target Inc.. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1047,
+          "sourceCells": "AC1047:AG1047",
+          "masterNumber": 1046,
+          "inventoryRecordId": "thompson-target:0011",
+          "sku": "thompson-R-0277-10",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_r_0277_10-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_619FAF7AC05378941AA7_EXACT_FACE_V1"
+      },
+      "digest": "422f807cb5fb7e7335aa6f8a13edae18279c5a0db79a7a35b1fb499fc6b33489"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_r_0277_10-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_116600a1e42bc7daf026.webp",
+        "assetSha256": "afd9c68069c87617c3b47f3578838a88ca896276e1e0f133c4703d926f309fda",
+        "assetAlt": "B27Q Blue Half-Size 12.5\"x19\" Human Silhouette Targets, SKU thompson-R-0277-10",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "8c6f1d2ec49477c8a91fc6f0ec086c776a958c0994cd08ef5bbb833b4ddef84c"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_r_0277_10-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "thompson-R-0277-10 + thompson-target:0011 + publisher_primary_representation_position_1 + afd9c68069c87617c3b47f3578838a88ca896276e1e0f133c4703d926f309fda",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "22eece07751b9f1d48075d9a1e31c04a5fef6d3defbd37eef72ac6a7854af195"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_r_0277_10-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "be6ee37a15d2ed5ace08e485fe5345fb212fe33f6dec5c8e5a0f4df774fe1064"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

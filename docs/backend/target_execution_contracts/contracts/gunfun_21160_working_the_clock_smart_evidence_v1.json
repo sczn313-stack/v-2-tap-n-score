@@ -1,14 +1,14 @@
 {
   "schemaVersion": "sczn3-target-execution-contract-v1",
-  "contractId": "tec-gunfun_21160_working_the_clock-smart-evidence-v1",
-  "contractVersion": "1",
+  "contractId": "tec-gunfun_21160_working_the_clock-target-scoring-v1",
+  "contractVersion": "3",
   "authorityContractVersion": "ADR-001-v1",
   "lifecycleStatus": "supported",
   "supportStatus": "supported",
   "approval": {
     "status": "approved",
-    "authorityId": "FOUNDER-E56-GUNFUN-FULL-CATALOG-STRESS-AUTHORIZATION-2026-08-19",
-    "approvedAt": "2026-08-19T11:14:31-04:00"
+    "authorityId": "FOUNDER_EP64_UGO_21160_CONCENTRIC_NUMERIC_2026_10_07",
+    "approvedAt": "2026-10-07T00:00:00-04:00"
   },
   "effective": {
     "from": "2026-08-19T11:14:31-04:00",
@@ -32,94 +32,1136 @@
         "width": 23,
         "height": 35,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Five-position practice dashboard with shot distribution, optional user-selected sequence, grouping and repeat-session progression.",
+        "visibleArtworkDescription": "Five circular targets with a center and four surrounding positions.",
+        "authorityLimitations": "Do not imply a mandatory shot order, par time, or points absent publisher rules.",
+        "supportedExperience": "preserve every registered observation; show object/area distribution where governed, misses only where governed boundaries support classification; retain result, SEC, Vault, exact reopen. No invented numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 211,
+          "sourceCells": "AC211:AG211",
+          "masterNumber": 210,
+          "inventoryRecordId": "gunfun:0076",
+          "sku": "21160",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
   "components": {
     "geometry": {
       "id": "gunfun_21160_working_the_clock-geometry",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
-        "status": "image_plane_evidence_only",
+        "status": "founder_governed_ugo_backend_authority",
         "coordinateSystem": "normalized_source_image_top_left",
-        "canonicalRegionMapping": "unavailable",
-        "semanticClassification": "unavailable",
-        "physicalMeasurement": "unavailable"
+        "physicalTargetPlane": {
+          "width": 23,
+          "height": 35,
+          "unit": "inch"
+        },
+        "layoutModel": "regions",
+        "geometryTreatment": "nested_concentric_regions",
+        "regions": [
+          {
+            "regionId": "monday_clock_face",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.263428571429,
+            "radiusX": 0.208695652174,
+            "radiusY": 0.137142857143,
+            "priority": 20
+          },
+          {
+            "regionId": "monday_1_hour",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.263428571429,
+            "radiusX": 0.141304347826,
+            "radiusY": 0.092857142857,
+            "priority": 40
+          },
+          {
+            "regionId": "monday_2_hours",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.263428571429,
+            "radiusX": 0.091304347826,
+            "radiusY": 0.06,
+            "priority": 60
+          },
+          {
+            "regionId": "monday_3_hours",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.263428571429,
+            "radiusX": 0.045652173913,
+            "radiusY": 0.03,
+            "priority": 80
+          },
+          {
+            "regionId": "tuesday_clock_face",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.263428571429,
+            "radiusX": 0.208695652174,
+            "radiusY": 0.137142857143,
+            "priority": 20
+          },
+          {
+            "regionId": "tuesday_1_hour",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.263428571429,
+            "radiusX": 0.141304347826,
+            "radiusY": 0.092857142857,
+            "priority": 40
+          },
+          {
+            "regionId": "tuesday_2_hours",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.263428571429,
+            "radiusX": 0.091304347826,
+            "radiusY": 0.06,
+            "priority": 60
+          },
+          {
+            "regionId": "tuesday_3_hours",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.263428571429,
+            "radiusX": 0.045652173913,
+            "radiusY": 0.03,
+            "priority": 80
+          },
+          {
+            "regionId": "wednesday_clock_face",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.506571428571,
+            "radiusX": 0.208695652174,
+            "radiusY": 0.137142857143,
+            "priority": 20
+          },
+          {
+            "regionId": "wednesday_1_hour",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.506571428571,
+            "radiusX": 0.141304347826,
+            "radiusY": 0.092857142857,
+            "priority": 40
+          },
+          {
+            "regionId": "wednesday_2_hours",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.506571428571,
+            "radiusX": 0.091304347826,
+            "radiusY": 0.06,
+            "priority": 60
+          },
+          {
+            "regionId": "wednesday_3_hours",
+            "shape": "ellipse",
+            "cx": 0.5,
+            "cy": 0.506571428571,
+            "radiusX": 0.045652173913,
+            "radiusY": 0.03,
+            "priority": 80
+          },
+          {
+            "regionId": "thursday_clock_face",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.742857142857,
+            "radiusX": 0.208695652174,
+            "radiusY": 0.137142857143,
+            "priority": 20
+          },
+          {
+            "regionId": "thursday_1_hour",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.742857142857,
+            "radiusX": 0.141304347826,
+            "radiusY": 0.092857142857,
+            "priority": 40
+          },
+          {
+            "regionId": "thursday_2_hours",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.742857142857,
+            "radiusX": 0.091304347826,
+            "radiusY": 0.06,
+            "priority": 60
+          },
+          {
+            "regionId": "thursday_3_hours",
+            "shape": "ellipse",
+            "cx": 0.233913043478,
+            "cy": 0.742857142857,
+            "radiusX": 0.045652173913,
+            "radiusY": 0.03,
+            "priority": 80
+          },
+          {
+            "regionId": "friday_clock_face",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.742857142857,
+            "radiusX": 0.208695652174,
+            "radiusY": 0.137142857143,
+            "priority": 20
+          },
+          {
+            "regionId": "friday_1_hour",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.742857142857,
+            "radiusX": 0.141304347826,
+            "radiusY": 0.092857142857,
+            "priority": 40
+          },
+          {
+            "regionId": "friday_2_hours",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.742857142857,
+            "radiusX": 0.091304347826,
+            "radiusY": 0.06,
+            "priority": 60
+          },
+          {
+            "regionId": "friday_3_hours",
+            "shape": "ellipse",
+            "cx": 0.749130434783,
+            "cy": 0.742857142857,
+            "radiusX": 0.045652173913,
+            "radiusY": 0.03,
+            "priority": 80
+          }
+        ],
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "rule": "Every result-affecting physical boundary must pass inside -> edge -> outside.",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "monday_clock_face",
+            "monday_1_hour",
+            "monday_2_hours",
+            "monday_3_hours",
+            "tuesday_clock_face",
+            "tuesday_1_hour",
+            "tuesday_2_hours",
+            "tuesday_3_hours",
+            "wednesday_clock_face",
+            "wednesday_1_hour",
+            "wednesday_2_hours",
+            "wednesday_3_hours",
+            "thursday_clock_face",
+            "thursday_1_hour",
+            "thursday_2_hours",
+            "thursday_3_hours",
+            "friday_clock_face",
+            "friday_1_hour",
+            "friday_2_hours",
+            "friday_3_hours"
+          ],
+          "boundaries": [
+            {
+              "boundaryId": "monday_clock_face_outer_boundary",
+              "regionId": "monday_clock_face",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.441237267081,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_clock_face"
+                },
+                "edge": {
+                  "x": 0.442608695552,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_clock_face"
+                },
+                "outside": {
+                  "x": 0.443980124223,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "monday_1_hour_outer_boundary",
+              "regionId": "monday_1_hour",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.374288819875,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_1_hour"
+                },
+                "edge": {
+                  "x": 0.375217391204,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_1_hour"
+                },
+                "outside": {
+                  "x": 0.376145962733,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_clock_face"
+                }
+              }
+            },
+            {
+              "boundaryId": "monday_2_hours_outer_boundary",
+              "regionId": "monday_2_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.324617391304,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_2_hours"
+                },
+                "edge": {
+                  "x": 0.325217391204,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_2_hours"
+                },
+                "outside": {
+                  "x": 0.325817391304,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_1_hour"
+                }
+              }
+            },
+            {
+              "boundaryId": "monday_3_hours_outer_boundary",
+              "regionId": "monday_3_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.279265217391,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_3_hours"
+                },
+                "edge": {
+                  "x": 0.279565217291,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_3_hours"
+                },
+                "outside": {
+                  "x": 0.279865217391,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "monday_2_hours"
+                }
+              }
+            },
+            {
+              "boundaryId": "tuesday_clock_face_outer_boundary",
+              "regionId": "tuesday_clock_face",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.956454658386,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_clock_face"
+                },
+                "edge": {
+                  "x": 0.957826086857,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_clock_face"
+                },
+                "outside": {
+                  "x": 0.959197515528,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "tuesday_1_hour_outer_boundary",
+              "regionId": "tuesday_1_hour",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.88950621118,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_1_hour"
+                },
+                "edge": {
+                  "x": 0.890434782509,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_1_hour"
+                },
+                "outside": {
+                  "x": 0.891363354038,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_clock_face"
+                }
+              }
+            },
+            {
+              "boundaryId": "tuesday_2_hours_outer_boundary",
+              "regionId": "tuesday_2_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.839834782609,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_2_hours"
+                },
+                "edge": {
+                  "x": 0.840434782509,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_2_hours"
+                },
+                "outside": {
+                  "x": 0.841034782609,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_1_hour"
+                }
+              }
+            },
+            {
+              "boundaryId": "tuesday_3_hours_outer_boundary",
+              "regionId": "tuesday_3_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.794482608696,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_3_hours"
+                },
+                "edge": {
+                  "x": 0.794782608596,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_3_hours"
+                },
+                "outside": {
+                  "x": 0.795082608696,
+                  "y": 0.263428571429,
+                  "expectedEntityId": "tuesday_2_hours"
+                }
+              }
+            },
+            {
+              "boundaryId": "wednesday_clock_face_outer_boundary",
+              "regionId": "wednesday_clock_face",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.707324223603,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_clock_face"
+                },
+                "edge": {
+                  "x": 0.708695652074,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_clock_face"
+                },
+                "outside": {
+                  "x": 0.710067080745,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "wednesday_1_hour_outer_boundary",
+              "regionId": "wednesday_1_hour",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.640375776397,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_1_hour"
+                },
+                "edge": {
+                  "x": 0.641304347726,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_1_hour"
+                },
+                "outside": {
+                  "x": 0.642232919255,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_clock_face"
+                }
+              }
+            },
+            {
+              "boundaryId": "wednesday_2_hours_outer_boundary",
+              "regionId": "wednesday_2_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.590704347826,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_2_hours"
+                },
+                "edge": {
+                  "x": 0.591304347726,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_2_hours"
+                },
+                "outside": {
+                  "x": 0.591904347826,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_1_hour"
+                }
+              }
+            },
+            {
+              "boundaryId": "wednesday_3_hours_outer_boundary",
+              "regionId": "wednesday_3_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.545352173913,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_3_hours"
+                },
+                "edge": {
+                  "x": 0.545652173813,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_3_hours"
+                },
+                "outside": {
+                  "x": 0.545952173913,
+                  "y": 0.506571428571,
+                  "expectedEntityId": "wednesday_2_hours"
+                }
+              }
+            },
+            {
+              "boundaryId": "thursday_clock_face_outer_boundary",
+              "regionId": "thursday_clock_face",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.441237267081,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_clock_face"
+                },
+                "edge": {
+                  "x": 0.442608695552,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_clock_face"
+                },
+                "outside": {
+                  "x": 0.443980124223,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "thursday_1_hour_outer_boundary",
+              "regionId": "thursday_1_hour",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.374288819875,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_1_hour"
+                },
+                "edge": {
+                  "x": 0.375217391204,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_1_hour"
+                },
+                "outside": {
+                  "x": 0.376145962733,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_clock_face"
+                }
+              }
+            },
+            {
+              "boundaryId": "thursday_2_hours_outer_boundary",
+              "regionId": "thursday_2_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.324617391304,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_2_hours"
+                },
+                "edge": {
+                  "x": 0.325217391204,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_2_hours"
+                },
+                "outside": {
+                  "x": 0.325817391304,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_1_hour"
+                }
+              }
+            },
+            {
+              "boundaryId": "thursday_3_hours_outer_boundary",
+              "regionId": "thursday_3_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.279265217391,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_3_hours"
+                },
+                "edge": {
+                  "x": 0.279565217291,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_3_hours"
+                },
+                "outside": {
+                  "x": 0.279865217391,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "thursday_2_hours"
+                }
+              }
+            },
+            {
+              "boundaryId": "friday_clock_face_outer_boundary",
+              "regionId": "friday_clock_face",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.956454658386,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_clock_face"
+                },
+                "edge": {
+                  "x": 0.957826086857,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_clock_face"
+                },
+                "outside": {
+                  "x": 0.959197515528,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "friday_1_hour_outer_boundary",
+              "regionId": "friday_1_hour",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.88950621118,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_1_hour"
+                },
+                "edge": {
+                  "x": 0.890434782509,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_1_hour"
+                },
+                "outside": {
+                  "x": 0.891363354038,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_clock_face"
+                }
+              }
+            },
+            {
+              "boundaryId": "friday_2_hours_outer_boundary",
+              "regionId": "friday_2_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.839834782609,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_2_hours"
+                },
+                "edge": {
+                  "x": 0.840434782509,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_2_hours"
+                },
+                "outside": {
+                  "x": 0.841034782609,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_1_hour"
+                }
+              }
+            },
+            {
+              "boundaryId": "friday_3_hours_outer_boundary",
+              "regionId": "friday_3_hours",
+              "effects": [
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.794482608696,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_3_hours"
+                },
+                "edge": {
+                  "x": 0.794782608596,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_3_hours"
+                },
+                "outside": {
+                  "x": 0.795082608696,
+                  "y": 0.742857142857,
+                  "expectedEntityId": "friday_2_hours"
+                }
+              }
+            }
+          ],
+          "founderBoundarySemantics": {
+            "decision": "A tap that touches any governed printed target/scoring line is a HIT.",
+            "hitMissRule": "inside = HIT; touching governed line = HIT; completely outside = MISS",
+            "scope": "all five clock faces and every governed printed scoring line",
+            "scoreAssignment": "Preserve the existing tap-center internal ring value; line contact changes HIT/MISS only.",
+            "provenance": "Founder instruction, 2026-10-07"
+          }
+        },
+        "physicalAuthority": {
+          "authorityId": "FOUNDER_EP64_UGO_21160_CONCENTRIC_NUMERIC_2026_10_07",
+          "semanticAuthority": "Founder-audited numeric-face scoring disposition plus stored publisher rule",
+          "physicalFaceAuthority": "GunFun SKU 21160 registered canonical 23 x 35 inch face",
+          "ugoStandard": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+          "measurementMethod": "UGO physical-target-plane calibration against the exact registered face and stored commercial dimensions",
+          "sourceImageSha256": "d077a00d24ff840c8593e9095f760008705bd19ae05020b52e0f598174a12231",
+          "sourceImageWidthPx": 389,
+          "sourceImageHeightPx": 600,
+          "representationRule": "Normalized coordinates represent UGO-governed physical regions; rendered pixels are representation only.",
+          "pixelIsAuthority": false,
+          "completeBoundaryRuleVersion": "sczn3.ugo.complete-boundary.v1",
+          "founderBoundaryAuthority": {
+            "decision": "A tap that touches any governed printed target/scoring line is a HIT.",
+            "hitMissRule": "inside = HIT; touching governed line = HIT; completely outside = MISS",
+            "scope": "all five clock faces and every governed printed scoring line",
+            "scoreAssignment": "Preserve the existing tap-center internal ring value; line contact changes HIT/MISS only.",
+            "provenance": "Founder instruction, 2026-10-07"
+          }
+        }
       },
-      "digest": "0b3a29635529a6913598d39de496ac46628a60c631773476ebc84c2ed617e277"
+      "digest": "e4c344f99bdb0926c1e9ce8f74e062dcdde55586c4dce5fdacb8a74b0f7b769e"
     },
     "registration": {
       "id": "gunfun_21160_working_the_clock-registration",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
-        "role": "evidence_capture_asset",
+        "role": "scorable_canonical_asset",
         "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/21160.jpg",
         "assetSha256": "d077a00d24ff840c8593e9095f760008705bd19ae05020b52e0f598174a12231",
         "assetAlt": "GunFun Working the Clock, SKU 21160",
-        "coordinateConvention": "normalized_source_image_top_left"
+        "coordinateConvention": "normalized_source_image_top_left",
+        "sourceImageWidthPx": 389,
+        "sourceImageHeightPx": 600
       },
-      "digest": "0c822a8157102fb8e3e396009d69ab1f0497e4c65b0300d933af297d4dba7086"
+      "digest": "2a73d5e095dbf94b43d7b06ac8151468a1d798d2255ee3f026b2446e26a5e715"
     },
     "scoring": {
       "id": "gunfun_21160_working_the_clock-scoring",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
-        "status": "not_applicable",
-        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "monday_clock_face": {
+            "label": "Monday Clock — Clock Face",
+            "value": 0,
+            "objectId": "monday",
+            "objectLabel": "Monday Clock",
+            "countsForObjectCompletion": true
+          },
+          "monday_1_hour": {
+            "label": "Monday Clock — 1 Hour",
+            "value": 1,
+            "objectId": "monday",
+            "objectLabel": "Monday Clock",
+            "countsForObjectCompletion": true
+          },
+          "monday_2_hours": {
+            "label": "Monday Clock — 2 Hours",
+            "value": 2,
+            "objectId": "monday",
+            "objectLabel": "Monday Clock",
+            "countsForObjectCompletion": true
+          },
+          "monday_3_hours": {
+            "label": "Monday Clock — 3 Hours",
+            "value": 3,
+            "objectId": "monday",
+            "objectLabel": "Monday Clock",
+            "countsForObjectCompletion": true
+          },
+          "tuesday_clock_face": {
+            "label": "Tuesday Clock — Clock Face",
+            "value": 0,
+            "objectId": "tuesday",
+            "objectLabel": "Tuesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "tuesday_1_hour": {
+            "label": "Tuesday Clock — 1 Hour",
+            "value": 1,
+            "objectId": "tuesday",
+            "objectLabel": "Tuesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "tuesday_2_hours": {
+            "label": "Tuesday Clock — 2 Hours",
+            "value": 2,
+            "objectId": "tuesday",
+            "objectLabel": "Tuesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "tuesday_3_hours": {
+            "label": "Tuesday Clock — 3 Hours",
+            "value": 3,
+            "objectId": "tuesday",
+            "objectLabel": "Tuesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "wednesday_clock_face": {
+            "label": "Wednesday Clock — Clock Face",
+            "value": 0,
+            "objectId": "wednesday",
+            "objectLabel": "Wednesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "wednesday_1_hour": {
+            "label": "Wednesday Clock — 1 Hour",
+            "value": 1,
+            "objectId": "wednesday",
+            "objectLabel": "Wednesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "wednesday_2_hours": {
+            "label": "Wednesday Clock — 2 Hours",
+            "value": 2,
+            "objectId": "wednesday",
+            "objectLabel": "Wednesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "wednesday_3_hours": {
+            "label": "Wednesday Clock — 3 Hours",
+            "value": 3,
+            "objectId": "wednesday",
+            "objectLabel": "Wednesday Clock",
+            "countsForObjectCompletion": true
+          },
+          "thursday_clock_face": {
+            "label": "Thursday Clock — Clock Face",
+            "value": 0,
+            "objectId": "thursday",
+            "objectLabel": "Thursday Clock",
+            "countsForObjectCompletion": true
+          },
+          "thursday_1_hour": {
+            "label": "Thursday Clock — 1 Hour",
+            "value": 1,
+            "objectId": "thursday",
+            "objectLabel": "Thursday Clock",
+            "countsForObjectCompletion": true
+          },
+          "thursday_2_hours": {
+            "label": "Thursday Clock — 2 Hours",
+            "value": 2,
+            "objectId": "thursday",
+            "objectLabel": "Thursday Clock",
+            "countsForObjectCompletion": true
+          },
+          "thursday_3_hours": {
+            "label": "Thursday Clock — 3 Hours",
+            "value": 3,
+            "objectId": "thursday",
+            "objectLabel": "Thursday Clock",
+            "countsForObjectCompletion": true
+          },
+          "friday_clock_face": {
+            "label": "Friday Clock — Clock Face",
+            "value": 0,
+            "objectId": "friday",
+            "objectLabel": "Friday Clock",
+            "countsForObjectCompletion": true
+          },
+          "friday_1_hour": {
+            "label": "Friday Clock — 1 Hour",
+            "value": 1,
+            "objectId": "friday",
+            "objectLabel": "Friday Clock",
+            "countsForObjectCompletion": true
+          },
+          "friday_2_hours": {
+            "label": "Friday Clock — 2 Hours",
+            "value": 2,
+            "objectId": "friday",
+            "objectLabel": "Friday Clock",
+            "countsForObjectCompletion": true
+          },
+          "friday_3_hours": {
+            "label": "Friday Clock — 3 Hours",
+            "value": 3,
+            "objectId": "friday",
+            "objectLabel": "Friday Clock",
+            "countsForObjectCompletion": true
+          }
+        },
+        "aggregation": {
+          "mode": "sum",
+          "groupBy": "observation.groupId"
+        },
+        "publisherRuleAuthority": {
+          "source": "Stored publisher face/rule evidence and Founder-audited scoring governance",
+          "rule": "Each clock bullseye is 3 hours, its second ring is 2 hours, and its outer scoring ring is 1 hour. The remaining printed clock face is a 0-hour HIT; outside the physical clock face is Miss / 0."
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": 0
+        },
+        "classificationFootprintMode": "hit_on_touch",
+        "founderBoundaryAuthority": {
+          "decision": "A tap that touches any governed printed target/scoring line is a HIT.",
+          "hitMissRule": "inside = HIT; touching governed line = HIT; completely outside = MISS",
+          "scope": "all five clock faces and every governed printed scoring line",
+          "scoreAssignment": "Preserve the existing tap-center internal ring value; line contact changes HIT/MISS only.",
+          "provenance": "Founder instruction, 2026-10-07"
+        }
       },
-      "digest": "c6bd772477679f3b0a3aa42a359394f2a5e92a5bb5f02978edc82928abe8f12f"
+      "digest": "47eaa097a5b8c500a0f6e90ce012f60e733b942228fefe83ed08762c727780fc"
     },
     "mission": {
       "id": "gunfun_21160_working_the_clock-mission",
-      "version": "1",
+      "version": "2",
       "status": "approved",
       "definition": {
-        "missionFamily": "smartEvidenceCapture",
-        "resultPackageType": "smartEvidenceResult",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
           },
           "measurement": {
-            "status": "unavailable"
-          },
-          "correction": {
-            "status": "unavailable"
+            "status": "available"
           },
           "officialScore": {
-            "status": "unavailable"
+            "status": "available"
           },
           "qualification": {
             "status": "not_applicable"
           },
           "publisherMission": {
-            "status": "unavailable"
+            "status": "available"
+          },
+          "correction": {
+            "status": "not_applicable"
           }
+        },
+        "authorityResolution": "Founder-audited numeric semantics plus exact-face UGO Backend geometry",
+        "semanticStatus": "GOVERNED_ENOUGH_FOR_INHERITED_CAPABILITY",
+        "unresolvedReason": null,
+        "recognizedBehaviorFamily": "CONCENTRIC_NUMERIC_REGION_SUM",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-ugo-recovery-v1",
+          "intelligenceFamily": "CONCENTRIC_NUMERIC_REGION_SUM",
+          "highestTruthfulCapability": "Scoring",
+          "truthLayers": {
+            "publisherTruth": {
+              "rule": "Each clock bullseye is 3 hours, its second ring is 2 hours, and its outer scoring ring is 1 hour. The remaining printed clock face is a 0-hour HIT; outside the physical clock face is Miss / 0."
+            },
+            "targetStructure": {
+              "registeredGeometryStatus": "ugo_regions_available",
+              "registeredRegionCount": 20,
+              "registeredRegionIds": [
+                "monday_clock_face",
+                "monday_1_hour",
+                "monday_2_hours",
+                "monday_3_hours",
+                "tuesday_clock_face",
+                "tuesday_1_hour",
+                "tuesday_2_hours",
+                "tuesday_3_hours",
+                "wednesday_clock_face",
+                "wednesday_1_hour",
+                "wednesday_2_hours",
+                "wednesday_3_hours",
+                "thursday_clock_face",
+                "thursday_1_hour",
+                "thursday_2_hours",
+                "thursday_3_hours",
+                "friday_clock_face",
+                "friday_1_hour",
+                "friday_2_hours",
+                "friday_3_hours"
+              ]
+            },
+            "sczn3MeasuredIntelligence": {
+              "totalTapsFirst": true,
+              "sameTargetComparison": true,
+              "scoreHistory": true,
+              "publisherMeaningAttributed": false
+            }
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true,
+            "meaningfulBreakdown": "numeric_regions_and_objects"
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": true,
+            "pointsPerTap": true,
+            "regionObjectBreakdown": true,
+            "distributionMeta": true
+          },
+          "sec": {
+            "preserveAuthorityPackage": true,
+            "preserveExactTaps": true,
+            "preserveArtworkIdentity": true
+          },
+          "session": {
+            "sameTargetComparisonAfterSecondSession": true
+          },
+          "progress": {
+            "scoreHistoryWhenGoverned": true,
+            "sessionOverSessionComparison": true
+          },
+          "historyProfile": {
+            "family": "numeric_score_history_v1",
+            "inheritedMachinery": "shared_session_drawer_3_history_v1",
+            "targetLocalMetrics": [
+              "score",
+              "hit_rate",
+              "points_per_tap",
+              "scored_region_distribution",
+              "misses_outside",
+              "total_taps",
+              "session_over_session_change"
+            ],
+            "targetVocabulary": {
+              "objectSingular": "Clock",
+              "objectPlural": "Clocks",
+              "outside": "Miss"
+            },
+            "semanticInheritance": false
+          },
+          "unsupported": [
+            "unpublished_continuation",
+            "unpublished_pass_threshold",
+            "unpublished_penalties"
+          ]
         }
       },
-      "digest": "89bc08a1e718ac6f2c5821b156201f67597039af22d1bbee02c50bc8b03c66e1"
+      "digest": "340f5c7f5806447ab1fa4e0e22da73dabeb7042b1769578e7b5425e4b6906b1d"
     }
   },
-  "missionFamily": "smartEvidenceCapture",
-  "resultPackageType": "smartEvidenceResult",
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
   "resultPackageVersion": "1",
   "executor": {
-    "id": "smart-evidence-capture",
+    "id": "declarative-target-score",
     "version": "1"
   },
   "secAdapter": {
-    "id": "smart-evidence-family",
+    "id": "target-scoring-family",
     "version": "1",
-    "scoringPresentationFamily": "not_applicable"
+    "scoringPresentationFamily": "target-data"
   },
   "preservationValidator": {
-    "id": "smart-evidence-preservation",
+    "id": "target-scoring-preservation",
     "version": "1"
   },
   "session": {
@@ -128,29 +1170,27 @@
         "status": "available"
       },
       "measurement": {
-        "status": "unavailable"
-      },
-      "correction": {
-        "status": "unavailable"
+        "status": "available"
       },
       "officialScore": {
-        "status": "unavailable"
+        "status": "available"
       },
       "qualification": {
         "status": "not_applicable"
       },
       "publisherMission": {
-        "status": "unavailable"
+        "status": "available"
+      },
+      "correction": {
+        "status": "not_applicable"
       }
     },
     "officialMissionRequired": false
   },
   "unsupportedUses": [
-    "numeric_scoring",
-    "qualification_or_pass_fail",
-    "anatomical_medical_tactical_or_diagnostic_interpretation",
-    "physical_measurement",
-    "zeroing_correction",
-    "uncontracted_mission_completion"
+    "unpublished_continuation",
+    "unpublished_pass_threshold",
+    "unpublished_penalties",
+    "pixel_derived_physical_authority"
   ]
 }

@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-gunfun_140_rangemaster_rfts_q5-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "GUNFUN_EP56_FULL_CATALOG_PRINTER_AUTHORITY",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "gunfun_140_rangemaster_rfts_q5",
+    "version": "1",
+    "atpId": "ATP_GUNFUN_140_RANGEMASTER_RFTS_Q5_EVIDENCE_V1",
+    "authorityId": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-043",
+    "publisher": {
+      "id": "gunfun",
+      "name": "GunFun Shooting Targets, Inc.",
+      "url": "https://gunfun.com/"
+    },
+    "product": {
+      "id": "gunfun-product-140",
+      "name": "Rangemaster-RFTS-Q5",
+      "sku": "140",
+      "productUrl": "https://gunfun.com/shop/rangemaster-rfts-q5-140/",
+      "dimensions": {
+        "width": 23,
+        "height": 35,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Rangemaster-RFTS-Q5 (140) — GunFun. Shooter Experience draft: Present this exact target identity and its original artwork to the shooter. Support shot-by-shot registration and a review of where recorded shots landed. Treat this as a practice target only to the extent supported by its published rules and governed target contract; do not invent target-specific objectives, scores, or object counts.",
+        "visibleArtworkDescription": "Original embedded artwork is present in IMAGE MASTER. Individual objects, their counts, and their physical boundaries have NOT been visually inventoried or verified in this batch.",
+        "authorityLimitations": "Target number matched. Existing governed rule: not established in this draft. Do not infer numeric scoring or physical geometry from artwork pixels; verify publisher/backend authority before enabling scoring.",
+        "supportedExperience": "Show registered observations and session history. Report hits, misses, zone counts, or scores ONLY where governed geometry and scoring semantics support those results; otherwise Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 637,
+          "sourceCells": "AC637:AG637",
+          "masterNumber": 636,
+          "inventoryRecordId": "gunfun:0043",
+          "sku": "140",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "gunfun_140_rangemaster_rfts_q5-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "ATP_GUNFUN_140_RANGEMASTER_RFTS_Q5_EVIDENCE_V1"
+      },
+      "digest": "b39cc06d16b7f826f4e4fbd8074c12752d3f75237a65d6d118a511b471b314c4"
+    },
+    "registration": {
+      "id": "gunfun_140_rangemaster_rfts_q5-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/gunfun/episode56/full-catalog-stress-test/publisher-representations/140.jpg",
+        "assetSha256": "71136c7db099ca2a278f006a62950d4afc07706a7117e40740dad1c0e158c10d",
+        "assetAlt": "Rangemaster-RFTS-Q5, SKU 140",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "a3ebc677eef7b2996998cf75955d9d674f5dcef5a7158de3e73dc7d3cb2ca835"
+    },
+    "scoring": {
+      "id": "gunfun_140_rangemaster_rfts_q5-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "GUNFUN_E56_FULL_CATALOG_AUTHORITY_AUDIT_V1:E56-FC-043",
+          "rule": "publisher establishes the exact target identity and 23 x 35 inch target plane; no governed regions or score are asserted"
+        }
+      },
+      "digest": "a6e0ed70c1eb7d70661526650b2a6d435b44e64dc0510459e6a8113a1b44f69f"
+    },
+    "mission": {
+      "id": "gunfun_140_rangemaster_rfts_q5-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "publisher establishes the exact target identity and 23 x 35 inch target plane; no governed regions or score are asserted",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "4ca45e48406e6c9cc330a32930beb2ff3c228da1f75f08ea660042bcdd25d039"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

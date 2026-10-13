@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_speedwell_targets_ipsccbslot-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_speedwell_targets_ipsccbslot",
+    "version": "1",
+    "atpId": "ATP_CONNECT_9A143D56B122620FFF3E_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_9A143D56B122620FFF3E_AUTHORITY_V1",
+    "publisher": {
+      "id": "speedwell_targets",
+      "name": "Speedwell Targets",
+      "url": "https://www.speedwelltargets.com/searchresults.asp"
+    },
+    "product": {
+      "id": "p-os-speedwell_ipsccbslot",
+      "name": "Official IPSC Cardboard Target w/ Slots and Holes",
+      "sku": "IPSCCBSLOT",
+      "productUrl": "https://www.speedwelltargets.com/searchresults.asp",
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Official IPSC Cardboard Target w/ Slots and Holes — Speedwell Targets. Shooter registers individual shot observations against the original target face. The session must distinguish hits and misses only where governed object/region boundaries exist; show recorded shot distribution, repeat-session history, and measured progress without inventing a target-specific game or point system. Target-specific intended behavior and object inventory await full-artwork inspection.",
+        "visibleArtworkDescription": "Embedded artwork present for master #754; exact physical object counts, labels, and geometry have not been individually verified from the source image.",
+        "authorityLimitations": "Identity matched by master #754. Evidence Only until governed region geometry and scoring are available. Existing authority is not overwritten. Missing scoring is a review issue, not automatically OOS.",
+        "supportedExperience": "Preserve every registered observation; show total shots, governed hits/misses where supportable, and history. No unsupported numeric score or unverified object-hit totals.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 755,
+          "sourceCells": "AC755:AG755",
+          "masterNumber": 754,
+          "inventoryRecordId": "speedwell:0102",
+          "sku": "IPSCCBSLOT",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_speedwell_targets_ipsccbslot-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_9A143D56B122620FFF3E_EXACT_FACE_V1"
+      },
+      "digest": "d45a8ec76697e7c28bf72988407798833587104b047ced2ceed529ffaad79dd6"
+    },
+    "registration": {
+      "id": "connect_speedwell_targets_ipsccbslot-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_f3b354ac6728b3a1b5b5.jpg",
+        "assetSha256": "13279399f270cc2b554452bd27da0c319841a5a90ed04e2ad2e78718b04c5c5a",
+        "assetAlt": "Official IPSC Cardboard Target w/ Slots and Holes, SKU IPSCCBSLOT",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "affb5ee1f46f5a8f2aadc33eae1b19b465e6f1c744d7f03488d97ba43f8535b7"
+    },
+    "scoring": {
+      "id": "connect_speedwell_targets_ipsccbslot-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "richer_capability_authority_not_admitted",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "speedwell:IPSCCBSLOT + speedwell:0102 + preserved publisher representation 13279399f270cc2b554452bd27da0c319841a5a90ed04e2ad2e78718b04c5c5a",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "0187939000196c7e3df48e629513873556c037110e44db0a75a8fe1ac4e59dd6"
+    },
+    "mission": {
+      "id": "connect_speedwell_targets_ipsccbslot-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "c69122869eea323034b2e6b33526b2eb9786421f0cd2b25de8c07bb19d2b04cf"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

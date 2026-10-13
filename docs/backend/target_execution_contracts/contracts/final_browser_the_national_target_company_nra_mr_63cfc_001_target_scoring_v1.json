@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-final_browser_the_national_target_company_nra_mr_63cfc_001-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "EPISODE64_FINAL_WIDGET_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "final_browser_the_national_target_company_nra_mr_63cfc_001",
+    "version": "1",
+    "atpId": "ATP_EP64_FINAL_C6E0DDA40A5D8B54D5B0_V1",
+    "authorityId": "EP64_FINAL_C6E0DDA40A5D8B54D5B0_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/mr-63c-f-class/"
+    },
+    "product": {
+      "id": "episode64-final-c6e0dda40a5d8b54d5b0",
+      "name": "MR-63C F-Class(20×20)",
+      "sku": "NRA MR-63CFC",
+      "dimensions": {
+        "width": 20.0,
+        "height": 20.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "MR-63C F-Class(20×20) — The National Target Company. PROVISIONAL Shooter Experience (precision / competition): display this exact target identity and original artwork; allow individually recorded shot observations, preserve shot order and totals, and show a repeatable session record. Apply numeric scoring, line-touch, timing, qualification, or region hit/miss semantics only where a matching governed Backend rule exists. Do not substitute rules based on the target name.",
+        "visibleArtworkDescription": "Embedded artwork present for master #982. Visible object count, zone geometry and detailed publisher instructions have NOT been individually verified; image presence alone is not a geometry contract.",
+        "authorityLimitations": "Identity matched by master #982; publisher The National Target Company. Check existing Backend scoring/region authority before enabling scoring. Evidence Only is the safe fallback where no governing model is stored; missing scoring does not make a target OOS.",
+        "supportedExperience": "Reconcile all recorded observations and show session history. Display zone counts, scored totals, misses and progression only when authorized by target-specific Backend definitions.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 983,
+          "sourceCells": "AC983:AG983",
+          "masterNumber": 982,
+          "inventoryRecordId": "national-target:0154",
+          "sku": "NRA MR-63CFC",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "final_browser_the_national_target_company_nra_mr_63cfc_001-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EP64_FINAL_C6E0DDA40A5D8B54D5B0_EXACT_FACE_V1"
+      },
+      "digest": "b3db5d5ba5e454fb2cdac76dccb44af256f602ffc83a2722f5a1815f12387e01"
+    },
+    "registration": {
+      "id": "final_browser_the_national_target_company_nra_mr_63cfc_001-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/episode64-final-widget-run-2026-09-29/representations/FINAL_FACE_499ac26eb77e5e644428.png",
+        "assetSha256": "cb5b64316fa12b208f2088ee8a6360679559af03145e4bdfc15d59b086ae6acf",
+        "assetAlt": "MR-63C F-Class(20×20), SKU NRA MR-63CFC",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "08f0b90634a0998cd084e16e47b49718c52cebd7087dfbd789685f2d8504a0d7"
+    },
+    "scoring": {
+      "id": "final_browser_the_national_target_company_nra_mr_63cfc_001-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "national-target:NRA MR-63CFC + cb5b64316fa12b208f2088ee8a6360679559af03145e4bdfc15d59b086ae6acf",
+          "rule": "exact preserved publisher face binds to the existing Smart Evidence owner; no scoring, regions, or semantics inferred"
+        }
+      },
+      "digest": "b80f65f937d391c6850f693af4e39f874b97fa2e5827d9a35494ad160397018f"
+    },
+    "mission": {
+      "id": "final_browser_the_national_target_company_nra_mr_63cfc_001-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "exact preserved publisher face binds to the existing Smart Evidence owner; no scoring, regions, or semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "c99b7dcca6676cdef9b8466aaf82b9950ad4344ecc158825d2e584892a51d434"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

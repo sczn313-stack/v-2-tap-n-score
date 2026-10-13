@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_baker_targets_bakerglo_pads_martian-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_baker_targets_bakerglo_pads_martian",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_BD2B4757251CA3ED5C38_V1",
+    "authorityId": "P_OS_EVIDENCE_BD2B4757251CA3ED5C38_V1",
+    "publisher": {
+      "id": "baker_targets",
+      "name": "Baker Targets",
+      "url": "https://bakertargets.com/product/bakerglo-pads_martian-11-x-17/"
+    },
+    "product": {
+      "id": "p-os-baker_1563",
+      "name": "BakerGlo Pads_Martian 11 x 17",
+      "sku": "BakerGlo Pads_Martian",
+      "productUrl": "https://bakertargets.com/product/bakerglo-pads_martian-11-x-17/",
+      "dimensions": {
+        "width": 8.0,
+        "height": 11.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "BakerGlo Pads_Martian 11 x 17 — Baker Targets. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1245; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1245; printer Baker Targets. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1246,
+          "sourceCells": "AC1246:AG1246",
+          "masterNumber": 1245,
+          "inventoryRecordId": "baker-targets:0419",
+          "sku": "BakerGlo Pads_Martian",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_baker_targets_bakerglo_pads_martian-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_BD2B4757251CA3ED5C38_EXACT_FACE_V1"
+      },
+      "digest": "2a197aa272b4458c1d122f7e69c892d2307d6e73fa971e8c01b3ca40d32cedde"
+    },
+    "registration": {
+      "id": "evidence_baker_targets_bakerglo_pads_martian-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_3581c1ca1f24f60dc3e5.jpg",
+        "assetSha256": "6edb254a18f05c8e8a1e1d079f98bac54a13ec89c6602fa641515c93267ba8c1",
+        "assetAlt": "BakerGlo Pads_Martian 11 x 17, SKU BakerGlo Pads_Martian",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "35d24fa429586b906c46dfd5d525d6c4b67a80b58ca73b2dc269307543f758e1"
+    },
+    "scoring": {
+      "id": "evidence_baker_targets_bakerglo_pads_martian-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "baker:1563 + baker-targets:0419 + preserved publisher representation 6edb254a18f05c8e8a1e1d079f98bac54a13ec89c6602fa641515c93267ba8c1",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "f94152eec393fc9874acb7cbabbc7d87c899963c7ae5aa5f000192be2a1789d8"
+    },
+    "mission": {
+      "id": "evidence_baker_targets_bakerglo_pads_martian-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "0aa3d547fa10e2502acb0bd88becc5e652f69fe51df9a39063f4de5468f4800d"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

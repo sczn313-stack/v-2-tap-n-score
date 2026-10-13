@@ -32,6 +32,25 @@
         "width": 12,
         "height": 19,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Compare two pins independently, preserving splatter feedback as visual evidence and counting impacts within governed pin silhouettes.",
+        "visibleArtworkDescription": "Two splatter-style bowling pins with small colorful circular markings.",
+        "authorityLimitations": "Splatter coloration is a visibility effect, not a scoring authority.",
+        "supportedExperience": "preserve every registered observation; show object/area distribution where governed, misses only where governed boundaries support classification; retain result, SEC, Vault, exact reopen. No invented numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 204,
+          "sourceCells": "AC204:AG204",
+          "masterNumber": 203,
+          "inventoryRecordId": "gunfun:0218",
+          "sku": "79240",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
@@ -68,9 +87,17 @@
       "status": "approved",
       "definition": {
         "status": "not_applicable",
-        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+        "reason": "audited_capability_held_pending_backend_authority",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
+          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
+          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
+          "resultRequirement": "Meaningful object/game result + misses + total taps.",
+          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
+          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
+        }
       },
-      "digest": "81d412301e17fb732e0d7389b2d7645a76822e16299ba7f1bacc92b98e150442"
+      "digest": "15b5b789c10e6bb9ea476fcb3fcb65f4753773c49c11034d3500a7943567c936"
     },
     "mission": {
       "id": "gunfun_79240_splatter_bowling_pins-mission",
@@ -81,29 +108,49 @@
         "resultPackageType": "smartEvidenceResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
           },
           "measurement": {
-            "status": "unavailable"
+            "status": "not_applicable"
           },
           "correction": {
-            "status": "unavailable"
+            "status": "not_applicable"
           },
           "officialScore": {
-            "status": "unavailable"
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "publisherMission": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
           },
           "qualification": {
             "status": "not_applicable"
-          },
-          "publisherMission": {
-            "status": "unavailable"
           }
+        },
+        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "recognizedBehaviorFamily": "OBJECT_OR_GAME_DISTRIBUTION",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
+          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
+          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
+          "resultRequirement": "Meaningful object/game result + misses + total taps.",
+          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
+          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
         }
       },
-      "digest": "bacb9edc51d301313c7d9760f8e1a49dc7c5f6b610b1cc53e9c7484a962f569b"
+      "digest": "44ed739557d826360382548d0649658784c67b38da902c06a84e2fc3df015fed"
     }
   },
   "missionFamily": "smartEvidenceCapture",
@@ -128,29 +175,29 @@
         "status": "available"
       },
       "measurement": {
-        "status": "unavailable"
+        "status": "not_applicable"
       },
       "correction": {
-        "status": "unavailable"
+        "status": "not_applicable"
       },
       "officialScore": {
-        "status": "unavailable"
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "publisherMission": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
       },
       "qualification": {
         "status": "not_applicable"
-      },
-      "publisherMission": {
-        "status": "unavailable"
       }
     },
     "officialMissionRequired": false
   },
   "unsupportedUses": [
-    "numeric_scoring",
-    "qualification_or_pass_fail",
-    "anatomical_medical_tactical_or_diagnostic_interpretation",
-    "physical_measurement",
     "zeroing_correction",
-    "uncontracted_mission_completion"
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "audited_capability_without_governed_backend_geometry_or_value_binding"
   ]
 }

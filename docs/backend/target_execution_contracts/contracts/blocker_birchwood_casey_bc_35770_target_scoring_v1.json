@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_birchwood_casey_bc_35770-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_birchwood_casey_bc_35770",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_8B9EECB1BCF0C4393FF9_V1",
+    "authorityId": "P_OS_BLOCKER_8B9EECB1BCF0C4393FF9_V1",
+    "publisher": {
+      "id": "birchwood_casey",
+      "name": "Birchwood Casey",
+      "url": "https://www.birchwoodcasey.com/products/12-x-18-gunslinger-silhouette-dirty-bird-target.html"
+    },
+    "product": {
+      "id": "p-os-birchwood_casey_bc_35770",
+      "name": "12\" X 18\" Gunslinger Silhouette Dirty Bird Target",
+      "sku": "BC-35770",
+      "dimensions": {
+        "width": 12.0,
+        "height": 18.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "12\" X 18\" Gunslinger Silhouette Dirty Bird Target — Birchwood Casey. Shooter Experience draft: present the original printed target-specific practice design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #501. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 502,
+          "sourceCells": "AC502:AG502",
+          "masterNumber": 501,
+          "inventoryRecordId": "birchwood-casey:0001",
+          "sku": "BC-35770",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_birchwood_casey_bc_35770-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_8B9EECB1BCF0C4393FF9_EXACT_FACE_V1"
+      },
+      "digest": "42d86da7e2cdc149ce43a119289921a746fbd5dc61a537061e21e7302c653f5f"
+    },
+    "registration": {
+      "id": "blocker_birchwood_casey_bc_35770-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_9bcf2a27b08658c7a1bf.webp",
+        "assetSha256": "5c87e0a048d4106c9f4d20ab0ac557e767ea4c53906abd42acfa7b3634a7ec57",
+        "assetAlt": "12\" X 18\" Gunslinger Silhouette Dirty Bird Target, SKU BC-35770",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "8c3067a93adf9095ab00ff8ed947d305dd59f1ea41264f7a323f18c7d706a403"
+    },
+    "scoring": {
+      "id": "blocker_birchwood_casey_bc_35770-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "birchwood-casey:BC-35770 + birchwood-casey:0001 + publisher_primary_representation_position_1 + 5c87e0a048d4106c9f4d20ab0ac557e767ea4c53906abd42acfa7b3634a7ec57",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "4be109ef349e5b5fb7ab43def5b434d68e0fb12f5e90131fb94deae9c85ab87e"
+    },
+    "mission": {
+      "id": "blocker_birchwood_casey_bc_35770-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "85c7eca1ea41f3db2043e43f68f41b23fe1572f06faab602dec2dda87be7cfd2"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_birchwood_casey_bc_35771-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_birchwood_casey_bc_35771",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_654CD75FED36321F73AE_V1",
+    "authorityId": "P_OS_BLOCKER_654CD75FED36321F73AE_V1",
+    "publisher": {
+      "id": "birchwood_casey",
+      "name": "Birchwood Casey",
+      "url": "https://www.birchwoodcasey.com/products/12-x-18-gunslinger-skyline-dirty-bird-target.html"
+    },
+    "product": {
+      "id": "p-os-birchwood_casey_bc_35771",
+      "name": "12\" X 18\" Gunslinger Skyline Dirty Bird Target",
+      "sku": "BC-35771",
+      "dimensions": {
+        "width": 12.0,
+        "height": 18.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "12\" X 18\" Gunslinger Skyline Dirty Bird Target: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1317; printer Birchwood Casey. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1318,
+          "sourceCells": "AC1318:AG1318",
+          "masterNumber": 1317,
+          "inventoryRecordId": "birchwood-casey:0003",
+          "sku": "BC-35771",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_birchwood_casey_bc_35771-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_654CD75FED36321F73AE_EXACT_FACE_V1"
+      },
+      "digest": "17b496032620a73f9e186815212278ef1365b719e0a2084913abbd3c9ae26833"
+    },
+    "registration": {
+      "id": "blocker_birchwood_casey_bc_35771-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_32a6c8bbda5f1fd42810.webp",
+        "assetSha256": "c732f7e4d76fe31551a3e54146dae2161849cf4768c95bb261b5eff6608e41a8",
+        "assetAlt": "12\" X 18\" Gunslinger Skyline Dirty Bird Target, SKU BC-35771",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "900affa9f64593a4f3431315e124095cb806eecfa60df075261ddb5bf4038e98"
+    },
+    "scoring": {
+      "id": "blocker_birchwood_casey_bc_35771-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "blocker_resolved_to_evidence_floor",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "birchwood-casey:BC-35771 + birchwood-casey:0003 + publisher_primary_representation_position_1 + c732f7e4d76fe31551a3e54146dae2161849cf4768c95bb261b5eff6608e41a8",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      },
+      "digest": "0e2f4bb963fd03c6b7be4faa959ede923d90e68be7b3ae7ac999014596bc3f10"
+    },
+    "mission": {
+      "id": "blocker_birchwood_casey_bc_35771-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "370a19e40ca8808abd8e33cf71fab77cd17e612ec4a8045602fc0fff6910cf2a"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

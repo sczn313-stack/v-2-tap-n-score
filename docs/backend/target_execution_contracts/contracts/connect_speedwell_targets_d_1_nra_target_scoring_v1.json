@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_speedwell_targets_d_1_nra-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_speedwell_targets_d_1_nra",
+    "version": "1",
+    "atpId": "ATP_CONNECT_F24E8D6F017AA0464EE7_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_F24E8D6F017AA0464EE7_AUTHORITY_V1",
+    "publisher": {
+      "id": "speedwell_targets",
+      "name": "Speedwell Targets",
+      "url": "https://www.speedwelltargets.com/searchresults.asp"
+    },
+    "product": {
+      "id": "p-os-speedwell_d_1_nra",
+      "name": "Bianchi Type NRA Precision Target",
+      "sku": "D-1-NRA",
+      "productUrl": "https://www.speedwelltargets.com/searchresults.asp",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Bianchi Type NRA Precision Target — Speedwell Targets. Shooter Experience draft: Present this exact target identity and its original artwork to the shooter. Support shot-by-shot registration and a review of where recorded shots landed. Treat this as a practice target only to the extent supported by its published rules and governed target contract; do not invent target-specific objectives, scores, or object counts.",
+        "visibleArtworkDescription": "Original embedded artwork is present in IMAGE MASTER. Individual objects, their counts, and their physical boundaries have NOT been visually inventoried or verified in this batch.",
+        "authorityLimitations": "Target number matched. Existing governed rule: not established in this draft. Do not infer numeric scoring or physical geometry from artwork pixels; verify publisher/backend authority before enabling scoring.",
+        "supportedExperience": "Show registered observations and session history. Report hits, misses, zone counts, or scores ONLY where governed geometry and scoring semantics support those results; otherwise Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 704,
+          "sourceCells": "AC704:AG704",
+          "masterNumber": 703,
+          "inventoryRecordId": "speedwell:0025",
+          "sku": "D-1-NRA",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_speedwell_targets_d_1_nra-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_F24E8D6F017AA0464EE7_EXACT_FACE_V1"
+      },
+      "digest": "3fb7f653313b6ded7a1469d1623f16827cbfcd4b86a7f76296e3da4856df1b4b"
+    },
+    "registration": {
+      "id": "connect_speedwell_targets_d_1_nra-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_5b5e439f5abe75d0d7e8.jpg",
+        "assetSha256": "df657df997202c7c2a670ed4223637a8df1474ec3fc079d549443ea026ed2e70",
+        "assetAlt": "Bianchi Type NRA Precision Target, SKU D-1-NRA",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "d66bdc9078de6a7729a41a1e28263902c0ceedddfb6375fc26c0ef151dd62c67"
+    },
+    "scoring": {
+      "id": "connect_speedwell_targets_d_1_nra-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "speedwell:D-1-NRA + speedwell:0025 + preserved publisher representation df657df997202c7c2a670ed4223637a8df1474ec3fc079d549443ea026ed2e70",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "7cee8d7af77d8c79c44af2115fb29a918e69e24a5057786880e0959a656c5459"
+    },
+    "mission": {
+      "id": "connect_speedwell_targets_d_1_nra-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "22f287d32b10fdb5efa14d2554a4d9168292476a0e807376f5017df41c2d6e15"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

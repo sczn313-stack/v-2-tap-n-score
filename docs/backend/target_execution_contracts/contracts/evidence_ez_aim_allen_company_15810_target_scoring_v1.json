@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_ez_aim_allen_company_15810-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_ez_aim_allen_company_15810",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_88C8DA2CB9F463EF9783_V1",
+    "authorityId": "P_OS_EVIDENCE_88C8DA2CB9F463EF9783_V1",
+    "publisher": {
+      "id": "ez_aim_allen_company",
+      "name": "EZ Aim / Allen Company",
+      "url": "https://byallen.com/products/ez-aim-deer-vitals-corrugated-target-23-x-35-tan"
+    },
+    "product": {
+      "id": "p-os-ez_aim_allen_15810",
+      "name": "EZ Aim® Deer Vitals Corrugated Target, 23\" x 35,\" Tan",
+      "sku": "15810",
+      "productUrl": "https://byallen.com/products/ez-aim-deer-vitals-corrugated-target-23-x-35-tan",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "EZ Aim® Deer Vitals Corrugated Target, 23\" x 35,\" Tan: shooter uses the printed target surface to register shot observations and review placement. Target-specific objectives, printed object inventory, and any prescribed sequence must be verified against the original artwork and publisher instructions before claiming a governed experience.",
+        "visibleArtworkDescription": "Embedded artwork present in IMAGE MASTER; objects and counts have not been independently inventoried.",
+        "authorityLimitations": "Matched master #1362; printer EZ Aim / Allen Company. Stored governing rule: NOT STORED. Do not derive physical scoring authority from pixels.",
+        "supportedExperience": "Account for all observed impacts. Apply numeric scoring only where authoritative regions and rules exist; otherwise use governed Zone Counting if available, or Evidence Only.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1363,
+          "sourceCells": "AC1363:AG1363",
+          "masterNumber": 1362,
+          "inventoryRecordId": "ez-aim-allen:0006",
+          "sku": "15810",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_ez_aim_allen_company_15810-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_88C8DA2CB9F463EF9783_EXACT_FACE_V1"
+      },
+      "digest": "3385ca580229fdaaa63ecd195e3cbb01bd52fe0a88b61b4c208e2f6eb4370c68"
+    },
+    "registration": {
+      "id": "evidence_ez_aim_allen_company_15810-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_a6ec598325cae2951d01.jpg",
+        "assetSha256": "fd94fc2da3c3aa34cb404bed00c019b44c810feff4dd529a5766519dc66b0c04",
+        "assetAlt": "EZ Aim® Deer Vitals Corrugated Target, 23\" x 35,\" Tan, SKU 15810",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "1d5c3ad6113e1d224d2c8c7bb743604960fd7bc955f7e9c2f7ab3ff4fbc4f3ac"
+    },
+    "scoring": {
+      "id": "evidence_ez_aim_allen_company_15810-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "ez-aim-allen:15810 + ez-aim-allen:0006 + preserved publisher representation fd94fc2da3c3aa34cb404bed00c019b44c810feff4dd529a5766519dc66b0c04",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "b75f2fe1ba9b98092cd315eeb992799ecbc06d48fd921733926fe9935b93b575"
+    },
+    "mission": {
+      "id": "evidence_ez_aim_allen_company_15810-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "fc168238f0b8278fa0ee5b9bae7460b61dba864757bf886dcc1f4b7170254432"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

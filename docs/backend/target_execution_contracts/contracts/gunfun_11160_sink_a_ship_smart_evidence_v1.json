@@ -32,6 +32,25 @@
         "width": 19,
         "height": 25,
         "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Identify each distinct ship; report impacts by ship and optionally show vessel-by-vessel completion only when a completion criterion is defined.",
+        "visibleArtworkDescription": "Naval board with several differently sized ships, a central circular feature, and colored circles.",
+        "authorityLimitations": "Do not infer ship points or required hit count from color or size.",
+        "supportedExperience": "preserve every registered observation; show object/area distribution where governed, misses only where governed boundaries support classification; retain result, SEC, Vault, exact reopen. No invented numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 194,
+          "sourceCells": "AC194:AG194",
+          "masterNumber": 193,
+          "inventoryRecordId": "gunfun:0008",
+          "sku": "11160",
+          "connectedAt": "2026-10-12"
+        }
       }
     }
   },
@@ -68,9 +87,17 @@
       "status": "approved",
       "definition": {
         "status": "not_applicable",
-        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring"
+        "reason": "audited_capability_held_pending_backend_authority",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
+          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
+          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
+          "resultRequirement": "Meaningful object/game result + misses + total taps.",
+          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
+          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
+        }
       },
-      "digest": "a301a0ef33f054b71581ffec99ca860c580a5cc14a991ae0044085bb1b8e4dab"
+      "digest": "214a4f027f8e644eb4e915a78b5e1f8cf9b425f00f92cf4d375d8d7667cf8585"
     },
     "mission": {
       "id": "gunfun_11160_sink_a_ship-mission",
@@ -81,29 +108,49 @@
         "resultPackageType": "smartEvidenceResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
-        "allowShooterDeclaredAim": true,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
         "capabilityStates": {
           "evidence": {
             "status": "available"
           },
           "measurement": {
-            "status": "unavailable"
+            "status": "not_applicable"
           },
           "correction": {
-            "status": "unavailable"
+            "status": "not_applicable"
           },
           "officialScore": {
-            "status": "unavailable"
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "publisherMission": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
           },
           "qualification": {
             "status": "not_applicable"
-          },
-          "publisherMission": {
-            "status": "unavailable"
           }
+        },
+        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "recognizedBehaviorFamily": "OBJECT_OR_GAME_DISTRIBUTION",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
+          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
+          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
+          "resultRequirement": "Meaningful object/game result + misses + total taps.",
+          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
+          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
         }
       },
-      "digest": "375a9133366741a8be15aaa17036f66e6663362ef4d755308a2233bca4ba6e1a"
+      "digest": "cee5287cf7722d9feed2aea9d014552bc3937dda8a3e6c150e7a0859058ef789"
     }
   },
   "missionFamily": "smartEvidenceCapture",
@@ -128,29 +175,29 @@
         "status": "available"
       },
       "measurement": {
-        "status": "unavailable"
+        "status": "not_applicable"
       },
       "correction": {
-        "status": "unavailable"
+        "status": "not_applicable"
       },
       "officialScore": {
-        "status": "unavailable"
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "publisherMission": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
       },
       "qualification": {
         "status": "not_applicable"
-      },
-      "publisherMission": {
-        "status": "unavailable"
       }
     },
     "officialMissionRequired": false
   },
   "unsupportedUses": [
-    "numeric_scoring",
-    "qualification_or_pass_fail",
-    "anatomical_medical_tactical_or_diagnostic_interpretation",
-    "physical_measurement",
     "zeroing_correction",
-    "uncontracted_mission_completion"
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "audited_capability_without_governed_backend_geometry_or_value_binding"
   ]
 }

@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_ez_aim_allen_15668-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_ez_aim_allen_15668",
+    "version": "1",
+    "atpId": "ATP_CONNECT_8050754357476F8F562B_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_8050754357476F8F562B_AUTHORITY_V1",
+    "publisher": {
+      "id": "ez_aim_allen",
+      "name": "EZ Aim / Allen Company",
+      "url": "https://byallen.com/products/ez-aim-silhouette-shooting-target-b27-corrugated-1-target-23-x-35-tan"
+    },
+    "product": {
+      "id": "p-os-ez_aim_allen_15668",
+      "name": "EZ Aim® Silhouette Shooting Target B27, Corrugated, 1-Target, 23\" x 35,\" Tan",
+      "sku": "15668",
+      "productUrl": "https://byallen.com/products/ez-aim-silhouette-shooting-target-b27-corrugated-1-target-23-x-35-tan",
+      "dimensions": {
+        "width": 23.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "EZ Aim® Silhouette Shooting Target B27, Corrugated — EZ Aim / Allen Company. Shooter Experience draft: present the original printed printed aiming/scoring design without changing its identity or artwork. Record each observed shot and its position relative to any governed target objects or regions. Show hit/miss and object or zone totals only when corresponding boundaries exist in Backend Authority; otherwise preserve an evidence-only session. Give the shooter a clear recap of recorded observations and repeat-session comparison. The exact object inventory and any publisher-specific drill sequence are not established by this draft and must not be fabricated.",
+        "visibleArtworkDescription": "Original IMAGE MASTER embedded artwork recorded for master #537. Target-specific visual object counts, physical dimensions, and line boundaries are NOT verified by this text-only pass; inspect full-resolution art before enabling per-object behavior.",
+        "authorityLimitations": "Numeric scoring rules not confirmed in this draft. No pixel-to-physical authority. Preserve Evidence Only unless governed zones/values support more.",
+        "supportedExperience": "Record shot observations and misses; display governed zone/object counts when supported; show numeric score only when full governing scoring semantics are available. Preserve exact session history and reopen.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 538,
+          "sourceCells": "AC538:AG538",
+          "masterNumber": 537,
+          "inventoryRecordId": "ez-aim-allen:0070",
+          "sku": "15668",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_ez_aim_allen_15668-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_8050754357476F8F562B_EXACT_FACE_V1"
+      },
+      "digest": "e809e9dd93b57c6b07a337080732725db4c116fc969ac88f06990015f0a45818"
+    },
+    "registration": {
+      "id": "connect_ez_aim_allen_15668-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_731a7b194e6d99be4113.jpg",
+        "assetSha256": "fe47f8c74402430c0e584a5f3e23148dac198bdac1e0a98d5e12ffedaffeb8ca",
+        "assetAlt": "EZ Aim® Silhouette Shooting Target B27, Corrugated, 1-Target, 23\" x 35,\" Tan, SKU 15668",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "6d7fdd683157bd0a64421e8909ee855645a36e2dc4a0a2f99a9a80cdf8112d22"
+    },
+    "scoring": {
+      "id": "connect_ez_aim_allen_15668-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "ez-aim-allen:15668 + ez-aim-allen:0070 + preserved publisher representation fe47f8c74402430c0e584a5f3e23148dac198bdac1e0a98d5e12ffedaffeb8ca",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      },
+      "digest": "ffb948cd005c584b875a76688a5f19c0b8ed9ad6067f8f0220b05f8512a6055e"
+    },
+    "mission": {
+      "id": "connect_ez_aim_allen_15668-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "37fa0968aec41b6fc311f8b6fab719ca3fefd10cb7b4488a818eb30a07428026"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}

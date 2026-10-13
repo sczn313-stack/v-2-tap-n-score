@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_american_target_company_animal_silhouette_5_q25-target-scoring-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_american_target_company_animal_silhouette_5_q25",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_0DCEB8E348E7898382CD_V1",
+    "authorityId": "P_OS_EVIDENCE_0DCEB8E348E7898382CD_V1",
+    "publisher": {
+      "id": "american_target_company",
+      "name": "American Target Company",
+      "url": "https://www.americantargetcompany.com/animal-silhouette.html#Whitetail_Deer"
+    },
+    "product": {
+      "id": "p-os-american_target_animal_silhouette_5_q25",
+      "name": "Whitetail Deer",
+      "sku": "animal-silhouette:5-Q25",
+      "productUrl": "https://www.americantargetcompany.com/animal-silhouette.html#Whitetail_Deer",
+      "dimensions": {
+        "width": 35.0,
+        "height": 45.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Whitetail Deer — American Target Company. PROVISIONAL Shooter Experience: use the physical target as printed; register shooter observations against its actual target surface. Target-specific purpose, object counts, interaction, and printed scoring rules must be confirmed from original artwork and governing publisher evidence before finalizing this experience. SCZN3 should report recorded observations, misses where supported, and historical session comparisons without inventing publisher scoring.",
+        "visibleArtworkDescription": "IMAGE MASTER indicates embedded artwork for #1213; meaningful physical objects, their number, and printed labels have not been individually inventoried.",
+        "authorityLimitations": "Matched master #1213; printer American Target Company. Governing rule in master: NOT STORED. Registered regions: NOT STORED. Backend geometry and scoring authority must not be inferred from pixels.",
+        "supportedExperience": "Capture session observations. Numeric scoring only with governed region values and rules; otherwise governed Zone Counting or Evidence Only. Reconcile observations and misses as applicable.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 1214,
+          "sourceCells": "AC1214:AG1214",
+          "masterNumber": 1213,
+          "inventoryRecordId": "american-target:0024",
+          "sku": "animal-silhouette:5-Q25",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_american_target_company_animal_silhouette_5_q25-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_0DCEB8E348E7898382CD_EXACT_FACE_V1"
+      },
+      "digest": "cc19e8ac59553495c02364ff8a54749d35b8c846b0236a34552c235966bf4d4b"
+    },
+    "registration": {
+      "id": "evidence_american_target_company_animal_silhouette_5_q25-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_3a03421da6f52f2ae67e.jpg",
+        "assetSha256": "3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+        "assetAlt": "Whitetail Deer, SKU animal-silhouette:5-Q25",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "545cbe00d994e7615be968ce214d203daf7d079b8e93068c7b6773b219046f2b"
+    },
+    "scoring": {
+      "id": "evidence_american_target_company_animal_silhouette_5_q25-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "model": "not_applicable",
+        "regionRules": {},
+        "reason": "evidence_floor_only",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "aggregation": {
+          "mode": "none"
+        },
+        "publisherRuleAuthority": {
+          "source": "american-target:animal-silhouette:5-Q25 + american-target:0024 + preserved publisher representation 3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "dc66236d18158e4d647a9f736640f140f18d374b0b74b20619d5bebf66e82d97"
+    },
+    "mission": {
+      "id": "evidence_american_target_company_animal_silhouette_5_q25-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      },
+      "digest": "61c7252d2c1e4352fcfca20410949114d8b2a4beba7899fd89a069c653ddb5dd"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}
