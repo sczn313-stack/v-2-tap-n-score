@@ -89,6 +89,14 @@
     return target && clean(target.id) && clean(target.version) && target.publisher && clean(target.publisher.id) && clean(target.publisher.name) && target.product && clean(target.product.id) && clean(target.product.name) && clean(target.product.sku) ? target : null;
   }
 
+  function shooterExperienceMarkup(product = {}) {
+    const experience = product && product.shooterExperience;
+    if (!experience || clean(experience.status) !== "connected_with_authority_limitations" || !clean(experience.description)) return "";
+    const supported = clean(experience.supportedExperience);
+    const limitations = clean(experience.authorityLimitations);
+    return `<strong>What this target does in SCZN3</strong><p>${escapeHtml(experience.description)}</p>${supported ? `<small><b>Current governed experience:</b> ${escapeHtml(supported)}</small>` : ""}${limitations ? `<small><b>Authority limit:</b> ${escapeHtml(limitations)}</small>` : ""}`;
+  }
+
   function requestScoringCaliber(error) {
     const dialog = document.getElementById("contractScoringCaliberDialog");
     const choices = document.getElementById("contractScoringCaliberChoices");
@@ -1641,7 +1649,9 @@
     const progressionHost = isUsmEligible(result) && Number.isFinite(progressionTapCount) && progressionTapCount > 0
       ? `<section class="contract-progression-host contract-usm-section-host" data-contract-progression-host data-usm-section-content="true" data-progression-target-id="${escapeHtml(target.id)}" data-usm-current-session-id="${escapeHtml(clean(session.sessionId || result.authoritativeSessionId))}" hidden></section>`
       : "";
+    const shooterExperience = shooterExperienceMarkup(product);
     const targetContent = `<section class="contract-product-identity"><span>${escapeHtml(publisher.name)}</span><strong>${escapeHtml(product.name)} · SKU ${escapeHtml(product.sku)}</strong></section>
+      ${shooterExperience ? `<section class="contract-shooter-experience" aria-label="Shooter experience">${shooterExperience}</section>` : ""}
       <section class="contract-lifecycle-pair" aria-label="Preserved target evidence and approved result">
         ${before}
         <figure class="contract-lifecycle-pane contract-lifecycle-result"><figcaption>RESULT</figcaption>${approvedResultComponent(result, session)}</figure>
@@ -1898,6 +1908,13 @@
       if (!options.length) select.innerHTML = "";
       else select.innerHTML = `<option value="">Choose ${escapeHtml(modeLabel || "mode")}</option>${options.map(item => `<option value="${escapeHtml(item.modeId)}">${escapeHtml(item.label)}</option>`).join("")}`;
       renderSessionFacts();
+    }
+
+    function renderShooterExperience(product = {}) {
+      const host = byId("contractShooterExperience");
+      const markup = shooterExperienceMarkup(product);
+      host.innerHTML = markup;
+      host.hidden = !markup;
     }
 
     function renderElapsedTimeEntry() {
@@ -2158,6 +2175,7 @@
       const entry = (Array.isArray(catalog.targets) ? catalog.targets : []).find(item => clean(item.targetProfileId).toLowerCase() === targetId.toLowerCase() && clean(item.missionFamily) === missionFamily);
       const registration = entry && entry.registration;
       if (!hasExecutableRegisteredAsset(registration)) throw new Error("registered_target_image_unavailable");
+      renderShooterExperience(entry.product || {});
       const registeredAssetUrl = new URL(registration.assetPath, location.href);
       const response = await fetch(registeredAssetUrl);
       if (!response.ok) throw new Error(`registered_target_image_failed_${response.status}`);

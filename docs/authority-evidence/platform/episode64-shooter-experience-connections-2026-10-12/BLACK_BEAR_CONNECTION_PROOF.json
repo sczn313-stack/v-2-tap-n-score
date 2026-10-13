@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "sczn3.episode64.shooter-experience-connection-proof.v1",
+  "generatedAt": "2026-10-12",
+  "target": {
+    "masterNumber": 214,
+    "runtimeId": "evidence_the_national_target_company_nra_bear",
+    "publisher": "The National Target Company",
+    "productName": "Black Bear Lifesize Game Target",
+    "sku": "NRA-Bear",
+    "inventoryRecordId": "national-target:0297"
+  },
+  "source": {
+    "workbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+    "sheet": "1993 Illustrated Master",
+    "identityRange": "A215:L215",
+    "draftRange": "AA215:AE215",
+    "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority"
+  },
+  "alreadyConnected": {
+    "exactRuntimeIdentity": true,
+    "registeredArtworkPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_03e13799ce4a4a4cc4b5.jpg",
+    "registeredArtworkSha256": "ce93eb517dcd4e0e3da36d5da9cba6fe0179317e5218df24dff99e6f876aaedf",
+    "missionFamily": "smartEvidenceCapture",
+    "executor": "smart-evidence-capture",
+    "governedRegionCount": 0,
+    "scoringStatus": "not_applicable"
+  },
+  "newlyConnected": {
+    "contractMetadataPath": "targetProfile.product.shooterExperience",
+    "descriptionVisibleOnLiveTarget": true,
+    "descriptionVisibleOnResult": true,
+    "descriptionVisibleAfterExactReopen": true,
+    "sharedRenderer": true,
+    "contractFingerprint": "478c2f7d4ec1b5c4fb9e149dadc8204bc8d0709e21f59731bb6e207398259051"
+  },
+  "backendMachineProof": {
+    "sessionId": "sczn3-session-ff01656a-8b36-43cc-8ca4-ab22d45464f9",
+    "artifactSha256": "726ad3d901299a089c24b39b43a619661928c70210bbb6f0cf21d6dfab547e15",
+    "observations": 3,
+    "result": {
+      "impactCount": 3,
+      "hitMissAccounting": "NOT_APPLICABLE_TO_EVIDENCE_ONLY"
+    },
+    "stages": {
+      "LOAD": "PASS",
+      "TAP": "PASS",
+      "RESULT": "PASS",
+      "CONFIRM": "PASS",
+      "SEC": "PASS",
+      "VAULT": "PASS",
+      "EXACT_REOPEN": "PASS"
+    }
+  },
+  "browserProof": {
+    "sessionId": "sczn3-session-02d12af6-18d7-4b58-8588-671eeab00c7f",
+    "artifactSha256": "1629b6aae7cc0f77fc350d009d3c0e373861cb9e8305a55beafbe4e8e28bcb7c",
+    "registeredArtworkLoaded": true,
+    "resultTotalTaps": 3,
+    "vaultRecordPresent": true,
+    "exactReopenStatus": "Saved Session Opened"
+  },
+  "remainingBlocked": [
+    "Bear-body versus printed-marker classification requires governed semantic regions and boundaries.",
+    "Anatomical vital-zone interpretation is not governed.",
+    "Numeric scoring is not governed.",
+    "Hit/miss accounting is not applicable while the contract remains Evidence Only with zero governed regions."
+  ],
+  "governance": {
+    "backendIsAuthority": true,
+    "pixelIsAuthority": false,
+    "publisherSemanticsInvented": false,
+    "geometryChanged": false,
+    "scoringChanged": false,
+    "founderAcceptanceChanged": false
+  },
+  "batchPreparation": {
+    "script": "docs/backend/connect_episode64_shooter_experience_drafts.py",
+    "mode": "dry_run_first",
+    "reportedDraftsFound": 146,
+    "alreadyConnected": 1,
+    "readyToConnectAfterExactIdentityMatch": 33,
+    "blockedAmbiguousIdentity": 110,
+    "blockedNoMatch": 2
+  }
+}

@@ -12,7 +12,13 @@
   <link rel="stylesheet" href="platform_actions.css" />
   <link rel="stylesheet" href="smart_target_workspace.css?v=episode59-stay-on-screen-1" />
   <link rel="stylesheet" href="target-experience.css?v=usm-history-header-1" />
-  <style>.contract-evidence img{max-height:72vh}</style>
+  <style>
+    .contract-evidence img{max-height:72vh}
+    .contract-shooter-experience{max-width:72rem;margin:.75rem auto;padding:.8rem 1rem;border:1px solid rgba(255,255,255,.16);border-radius:.6rem;background:rgba(10,18,28,.72)}
+    .contract-shooter-experience strong,.contract-shooter-experience p,.contract-shooter-experience small{display:block}
+    .contract-shooter-experience p{margin:.35rem 0;line-height:1.45}
+    .contract-shooter-experience small{opacity:.78}
+  </style>
   <script src="navigation.js?v=episode57-rate-us-cleanup-1" defer></script>
   <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
   <script src="platform_actions.js"></script>
@@ -33,6 +39,7 @@
   <header class="m4-header app-header"><div class="brand-lockup"><a class="vendor-name" href="index.html">Tap-n-Score™</a></div><span>Registered Smart Target</span><details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary></details></header>
   <main class="contract-target-shell" id="contractCaptureView">
     <section class="contract-intro"><span id="contractExperienceLabel">Target experience</span><h1 id="contractProductName">Registered Smart Target</h1><p id="contractStatus" role="status" aria-live="polite">Start to open the registered target.</p></section>
+    <section class="contract-shooter-experience" id="contractShooterExperience" aria-label="Shooter experience" hidden></section>
     <button class="button primary" id="contractStart" type="button">Start</button>
     <section id="contractCapture" hidden><label class="button primary" for="contractFile">Load / Capture Target</label><input id="contractFile" type="file" accept="image/*" hidden /></section>
     <section class="contract-workspace" id="contractWorkspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
