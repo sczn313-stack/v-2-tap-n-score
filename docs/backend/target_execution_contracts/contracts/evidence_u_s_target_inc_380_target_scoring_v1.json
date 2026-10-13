@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_u_s_target_inc_380-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_u_s_target_inc_380",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_2DE9E95CA6F4919E37D8_V1",
+    "authorityId": "P_OS_EVIDENCE_2DE9E95CA6F4919E37D8_V1",
+    "publisher": {
+      "id": "u_s_target_inc",
+      "name": "U.S. Target Inc.",
+      "url": "https://ustargetinc.com/product/cr-cf/"
+    },
+    "product": {
+      "id": "p-os-us_target_380",
+      "name": "CR-CF Five Crows",
+      "sku": "380",
+      "productUrl": "https://ustargetinc.com/product/cr-cf/",
+      "dimensions": {
+        "width": 10.5,
+        "height": 12.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "CR-CF Five Crows: Treat the five printed crows as distinct candidate objects; show per-crow contact after governed boundaries are available. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Five crow silhouettes perched on a fence.",
+        "authorityLimitations": "Do not count fence impacts as crow hits. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 244,
+          "sourceCells": "AA244:AE244",
+          "masterNumber": 243,
+          "inventoryRecordId": "us-target:0009",
+          "sku": "380",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_u_s_target_inc_380-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_2DE9E95CA6F4919E37D8_EXACT_FACE_V1"
+      },
+      "digest": "b85b4c0a8ad5182dfb70b6924ed69b2b9393e16e435117110689974240c228f7"
+    },
+    "registration": {
+      "id": "evidence_u_s_target_inc_380-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_8184e8a7543b41452a4a.png",
+        "assetSha256": "861b09d3167c3a647a3a533938b5b09f602961ac0f5cc2dabe7f4935a3342ec3",
+        "assetAlt": "CR-CF Five Crows, SKU 380",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "52cdc6ef46e7777d4b6985ddc3a026f1280809571fea14ac6a9b57f7747e2e28"
+    },
+    "scoring": {
+      "id": "evidence_u_s_target_inc_380-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_capability_held_pending_backend_authority",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "OBJECT / ZONE — AUDIT CONFIRMED",
+          "scoringModel": "ZONE_OBJECT_COUNTING",
+          "valueRule": "Count governed repeated objects/zones; no points unless separately governed.",
+          "resultRequirement": "Object/zone distribution + useful objects hit + misses + total taps.",
+          "geometryAuthorityInstruction": "Exact Backend object/zone geometry required.",
+          "basis": "Publisher description/name establishes repeated meaningful objects/zones."
+        }
+      },
+      "digest": "256ca6e01b086a0e11ed429e049342de0236035be0166b3680774f0134de57cd"
+    },
+    "mission": {
+      "id": "evidence_u_s_target_inc_380-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "publisherMission": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "recognizedBehaviorFamily": "ZONE_OBJECT_COUNTING",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "OBJECT / ZONE — AUDIT CONFIRMED",
+          "scoringModel": "ZONE_OBJECT_COUNTING",
+          "valueRule": "Count governed repeated objects/zones; no points unless separately governed.",
+          "resultRequirement": "Object/zone distribution + useful objects hit + misses + total taps.",
+          "geometryAuthorityInstruction": "Exact Backend object/zone geometry required.",
+          "basis": "Publisher description/name establishes repeated meaningful objects/zones."
+        }
+      },
+      "digest": "f475d2a6680c2b0e758de9e64ba592e00e81a6997e77df203c5fd59633919477"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "publisherMission": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "audited_capability_without_governed_backend_geometry_or_value_binding"
+  ]
+}

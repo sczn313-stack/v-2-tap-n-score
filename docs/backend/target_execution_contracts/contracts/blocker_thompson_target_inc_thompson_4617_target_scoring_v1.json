@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_4617-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_4617",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_C264D0EFA6BA8A9E8067_V1",
+    "authorityId": "P_OS_BLOCKER_C264D0EFA6BA8A9E8067_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/halo-checkers-shooting-game-targets-reactive-splatter-8-5x11/"
+    },
+    "product": {
+      "id": "p-os-thompson_4617",
+      "name": "HALO Checkers Shooting Game Targets - Reactive Splatter 8.5\"x11\"",
+      "sku": "thompson-4617",
+      "dimensions": {
+        "width": 8.5,
+        "height": 11.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "HALO Checkers Shooting Game Targets - Reactive Splatter 8.5\"x11\": Show hits by separately governed checker cell and retain a board-level hit map. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "HALO Checkers grid of dark circular pieces on red squares.",
+        "authorityLimitations": "Do not infer checkers move rules or game victory conditions. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 236,
+          "sourceCells": "AA236:AE236",
+          "masterNumber": 235,
+          "inventoryRecordId": "thompson-target:0043",
+          "sku": "thompson-4617",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_4617-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_C264D0EFA6BA8A9E8067_EXACT_FACE_V1"
+      },
+      "digest": "d4fc85980a64ee59e11453b28ec86fc32ccc64a9ded620e3086dd41730a04e89"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_4617-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_791f30bb7ae307c7c744.jpg",
+        "assetSha256": "1268385178edd30a1e3d4bab0b559e87280cfcd4518059e98289119e1d97bf03",
+        "assetAlt": "HALO Checkers Shooting Game Targets - Reactive Splatter 8.5\"x11\", SKU thompson-4617",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "be72ed3c497150a29eee92716db4a12148464e92c91e8ba1d3f96fb21df10589"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_4617-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_capability_held_pending_backend_authority",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME — PUBLISHER RULE",
+          "scoringModel": "PUBLISHER_GAME",
+          "valueRule": "Use publisher-governed game mechanics. Numeric marks are points only when publisher/Founder scoring authority says they are points.",
+          "resultRequirement": "Game-specific progress/outcome + governed score where applicable + misses/outside + TOTAL TAPS.",
+          "geometryAuthorityInstruction": "Use exact registered canonical face/backend geometry only; no pixel-derived authority.",
+          "basis": "Stronger publisher game semantics already stored in master."
+        }
+      },
+      "digest": "2c932dcefca0dc5af19ab429efa0f9815048784d6a140b877660277be6d8c144"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_4617-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "publisherMission": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "recognizedBehaviorFamily": "PUBLISHER_GAME",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME — PUBLISHER RULE",
+          "scoringModel": "PUBLISHER_GAME",
+          "valueRule": "Use publisher-governed game mechanics. Numeric marks are points only when publisher/Founder scoring authority says they are points.",
+          "resultRequirement": "Game-specific progress/outcome + governed score where applicable + misses/outside + TOTAL TAPS.",
+          "geometryAuthorityInstruction": "Use exact registered canonical face/backend geometry only; no pixel-derived authority.",
+          "basis": "Stronger publisher game semantics already stored in master."
+        }
+      },
+      "digest": "84adf4520289fd113c69410b61a2d02cfad5931e6a2c80ec8824f7e321b9fd11"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "publisherMission": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "audited_capability_without_governed_backend_geometry_or_value_binding"
+  ]
+}

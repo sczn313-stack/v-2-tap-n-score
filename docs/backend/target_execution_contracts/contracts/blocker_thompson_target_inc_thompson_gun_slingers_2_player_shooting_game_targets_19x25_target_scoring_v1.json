@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_gun_slingers_2_player_shooting_game_targets_19x25-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_gun_slingers_2_player_shooting_game_targets_19x25",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_AC119BD7D5794844451A_V1",
+    "authorityId": "P_OS_BLOCKER_AC119BD7D5794844451A_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/gun-slingers-2-player-shooting-game-targets-19x25/"
+    },
+    "product": {
+      "id": "p-os-thompson_gun_slingers_2_player_shooting_game_targets_19x25",
+      "name": "Gun Slingers 2 Player Shooting Game Targets - 19\"x25\"",
+      "sku": "thompson-gun-slingers-2-player-shooting-game-targets-19x25",
+      "dimensions": {
+        "width": 19.0,
+        "height": 25.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Gun Slingers 2 Player Shooting Game Targets - 19\"x25\": Track blue-versus-red figure hits and distinct figures engaged when registered objects are available. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Two-color red and blue Gun Slingers game with repeated cowboy figures.",
+        "authorityLimitations": "Do not invent player turns, winner, or figure-elimination rules. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 235,
+          "sourceCells": "AA235:AE235",
+          "masterNumber": 234,
+          "inventoryRecordId": "thompson-target:0036",
+          "sku": "thompson-gun-slingers-2-player-shooting-game-targets-19x25",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_gun_slingers_2_player_shooting_game_targets_19x25-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_AC119BD7D5794844451A_EXACT_FACE_V1"
+      },
+      "digest": "94bb403ed112cbe3aa33c8a45dcd01d8c0c05f8499c9a9c57b3f7aeccdc4700d"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_gun_slingers_2_player_shooting_game_targets_19x25-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_ae73a85c714b32b39b4e.webp",
+        "assetSha256": "08361d579a892664a3f876a4c58df62d758c69cfea802e7147e916f2d07ada7c",
+        "assetAlt": "Gun Slingers 2 Player Shooting Game Targets - 19\"x25\", SKU thompson-gun-slingers-2-player-shooting-game-targets-19x25",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "7457d1d1dfa65e13d0d5a2a8fdf1ed94c819754280d8b18288cf75d7e48d1902"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_gun_slingers_2_player_shooting_game_targets_19x25-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No governed numeric scoring value established by this audit.",
+          "resultRequirement": "Preserve taps/evidence; do not invent score.",
+          "geometryAuthorityInstruction": "Retain exact-face registration. No pixel-derived geometry/value authority.",
+          "basis": "Publisher/source audit found no governed higher-order scoring rule in available authority."
+        }
+      },
+      "digest": "25028806c089d4c730b17408c90478e3c0f15005c827a211d8626830e398e91b"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_gun_slingers_2_player_shooting_game_targets_19x25-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No governed numeric scoring value established by this audit.",
+          "resultRequirement": "Preserve taps/evidence; do not invent score.",
+          "geometryAuthorityInstruction": "Retain exact-face registration. No pixel-derived geometry/value authority.",
+          "basis": "Publisher/source audit found no governed higher-order scoring rule in available authority."
+        }
+      },
+      "digest": "83621e2e90f0dd6d76484715f9648d76ea0cb03b0f8372800c77965ad84a5a4b"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

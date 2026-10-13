@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_nra_javelina-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_nra_javelina",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_E1C6DA634657441EE85F_V1",
+    "authorityId": "P_OS_EVIDENCE_E1C6DA634657441EE85F_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/javelina-lifesize-game-target/"
+    },
+    "product": {
+      "id": "p-os-national_target_nra_javelina",
+      "name": "Javelina Lifesize Game Target",
+      "sku": "NRA-Javelina",
+      "productUrl": "https://nationaltarget.com/shop/javelina-lifesize-game-target/",
+      "dimensions": {
+        "width": 24.0,
+        "height": 35.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Javelina Lifesize Game Target: Present registered shot distribution on the animal image; support comparison between sessions when governed geometry exists. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Side-view javelina illustration.",
+        "authorityLimitations": "Do not infer anatomical scoring. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 219,
+          "sourceCells": "AA219:AE219",
+          "masterNumber": 218,
+          "inventoryRecordId": "national-target:0294",
+          "sku": "NRA-Javelina",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_nra_javelina-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_E1C6DA634657441EE85F_EXACT_FACE_V1"
+      },
+      "digest": "739459ec50fda75d276c441b2e37fcb5745146b461aaf1b8e7cd16b1bcdfd170"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_nra_javelina-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_4b8f2623abde106328e4.jpg",
+        "assetSha256": "508f9665fafa2758596f4e47cf582a4b1c1dc050fccd6d143ece964a26e656ee",
+        "assetAlt": "Javelina Lifesize Game Target, SKU NRA-Javelina",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "c5dea41ef44ebb49cc7454db4dcdff2ee4500fa097d3cf0b928185469875a792"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_nra_javelina-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "4e763cfafe58c4fc16e239726e977e463cf06043bcba96b37c30d22399d9d8b1"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_nra_javelina-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "fbfbf58d66305ea9fe867213b45fe6b461a792ac83a2b3e54b99cb6b54c8c0a0"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

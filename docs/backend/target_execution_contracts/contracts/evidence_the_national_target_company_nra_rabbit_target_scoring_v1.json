@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_nra_rabbit-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_nra_rabbit",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_5E0DC4F85FF1E5C0DA20_V1",
+    "authorityId": "P_OS_EVIDENCE_5E0DC4F85FF1E5C0DA20_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/cottontail-rabbit-lifesize-game-target/"
+    },
+    "product": {
+      "id": "p-os-national_target_nra_rabbit",
+      "name": "Cottontail Rabbit Lifesize Game Target(50)",
+      "sku": "NRA-Rabbit",
+      "productUrl": "https://nationaltarget.com/shop/cottontail-rabbit-lifesize-game-target/",
+      "dimensions": {
+        "width": 14.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Cottontail Rabbit Lifesize Game Target(50): Display impacts on the rabbit silhouette and a repeatable shot-placement history. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Side-view running cottontail rabbit illustration.",
+        "authorityLimitations": "Do not infer scoring regions or anatomical zones from the illustration. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 216,
+          "sourceCells": "AA216:AE216",
+          "masterNumber": 215,
+          "inventoryRecordId": "national-target:0296",
+          "sku": "NRA-Rabbit",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_nra_rabbit-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_5E0DC4F85FF1E5C0DA20_EXACT_FACE_V1"
+      },
+      "digest": "ec4da8f08604f67996d1d4aa78415f8982bd530975009b409e09df0ea6a59929"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_nra_rabbit-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_77dab1c4b330d1f7ae8c.jpg",
+        "assetSha256": "891dce7271e17499ea89097d00548b736d38c04d36558b0ce371ca29e14a574e",
+        "assetAlt": "Cottontail Rabbit Lifesize Game Target(50), SKU NRA-Rabbit",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "e764793da34d4bd16b906c8b7245462e07b17d089114e58e50df57ce956c94de"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_nra_rabbit-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "9a11ca550912f20295f4fd7b6e04fd094626b44b237ad81b360df7262bea55db"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_nra_rabbit-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "1d070b2b277da461e203984d1815811ecd98b55f8c7faadc8555ac2ad1fffefb"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

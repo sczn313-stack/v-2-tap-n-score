@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-connect_the_national_target_poker-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "connect_the_national_target_poker",
+    "version": "1",
+    "atpId": "ATP_CONNECT_BD8A889CAD0962746886_EVIDENCE_V1",
+    "authorityId": "P_OS_CONNECT_BD8A889CAD0962746886_AUTHORITY_V1",
+    "publisher": {
+      "id": "the_national_target",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/poker-target/"
+    },
+    "product": {
+      "id": "p-os-national_target_poker",
+      "name": "Poker Target",
+      "sku": "Poker",
+      "productUrl": "https://nationaltarget.com/shop/poker-target/",
+      "dimensions": {
+        "width": 2.0,
+        "height": 12.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Poker Target: Give the shooter a card-grid experience: track observations by independently registered cell, and show which cells received hits. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Poker target containing a grid of small card/symbol cells.",
+        "authorityLimitations": "Poker-hand wins, card identity, and points require legible card semantics and governing rules. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 223,
+          "sourceCells": "AA223:AE223",
+          "masterNumber": 222,
+          "inventoryRecordId": "national-target:0167",
+          "sku": "Poker",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "connect_the_national_target_poker-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_CONNECT_BD8A889CAD0962746886_EXACT_FACE_V1"
+      },
+      "digest": "64078aa348bc9f6d27d761ea2ede8e75a1be5b7f25a88dec4fba578525721d10"
+    },
+    "registration": {
+      "id": "connect_the_national_target_poker-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-connect-bulk-2026-09-29/representations/CONNECT_FACE_8a0e6b0355d90255e027.gif",
+        "assetSha256": "9ee736c7dc888ef2cd33d894b41d1a421919df9b2dcc9215520c198e882f0c0b",
+        "assetAlt": "Poker Target, SKU Poker",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "565eb6d174cf9875bb80ff0b5cb50ebc3a7864513d7f06cc522f648620e4900a"
+    },
+    "scoring": {
+      "id": "connect_the_national_target_poker-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_capability_held_pending_backend_authority",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME — AUDIT CONFIRMED",
+          "scoringModel": "PUBLISHER_GAME",
+          "valueRule": "Use published game semantics; do not convert labels/counts into points unless publisher/Founder rule establishes points.",
+          "resultRequirement": "Purpose/game result + full tap reconciliation.",
+          "geometryAuthorityInstruction": "Bind exact Backend objects/regions required by the game before execution.",
+          "basis": "Publisher identity/description establishes game purpose; no unsupported point invention."
+        }
+      },
+      "digest": "ede47d34fe60a046eed4a201f05b1fb4b12b73a91d1d33d3235b066b1fd2d96f"
+    },
+    "mission": {
+      "id": "connect_the_national_target_poker-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "publisherMission": {
+            "status": "withheld",
+            "reason": "governed_backend_geometry_or_value_binding_missing"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "recognizedBehaviorFamily": "PUBLISHER_GAME",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "GAME — AUDIT CONFIRMED",
+          "scoringModel": "PUBLISHER_GAME",
+          "valueRule": "Use published game semantics; do not convert labels/counts into points unless publisher/Founder rule establishes points.",
+          "resultRequirement": "Purpose/game result + full tap reconciliation.",
+          "geometryAuthorityInstruction": "Bind exact Backend objects/regions required by the game before execution.",
+          "basis": "Publisher identity/description establishes game purpose; no unsupported point invention."
+        }
+      },
+      "digest": "c184569634547fc3286bceca65372fbb7cc352fc1bcf15ec984b457995a0fd6a"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "publisherMission": {
+        "status": "withheld",
+        "reason": "governed_backend_geometry_or_value_binding_missing"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "audited_capability_without_governed_backend_geometry_or_value_binding"
+  ]
+}

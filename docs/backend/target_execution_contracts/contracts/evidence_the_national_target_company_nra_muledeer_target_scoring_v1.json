@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_the_national_target_company_nra_muledeer-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_the_national_target_company_nra_muledeer",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_10B7F0C7B24C909C7BB8_V1",
+    "authorityId": "P_OS_EVIDENCE_10B7F0C7B24C909C7BB8_V1",
+    "publisher": {
+      "id": "the_national_target_company",
+      "name": "The National Target Company",
+      "url": "https://nationaltarget.com/shop/mule-deer-lifesize-game-target/"
+    },
+    "product": {
+      "id": "p-os-national_target_nra_muledeer",
+      "name": "Mule Deer Lifesize Game Target",
+      "sku": "NRA-MuleDeer",
+      "productUrl": "https://nationaltarget.com/shop/mule-deer-lifesize-game-target/",
+      "dimensions": {
+        "width": 42.0,
+        "height": 60.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Mule Deer Lifesize Game Target: Distinguish impacts on the deer figure and printed aiming marker when backed by governed regions. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Mule deer with antlers and a separate orange aiming marker.",
+        "authorityLimitations": "Do not infer anatomy or marker point values. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 221,
+          "sourceCells": "AA221:AE221",
+          "masterNumber": 220,
+          "inventoryRecordId": "national-target:0292",
+          "sku": "NRA-MuleDeer",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_the_national_target_company_nra_muledeer-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_10B7F0C7B24C909C7BB8_EXACT_FACE_V1"
+      },
+      "digest": "ef9be630fcba3640a15cb1ae8679e2ece1d8bf7c8109e4833da82119f854975a"
+    },
+    "registration": {
+      "id": "evidence_the_national_target_company_nra_muledeer-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_a21150866ff0132dee32.jpg",
+        "assetSha256": "8eac40cdd6f5e0893ce0faaf8fb1dbe0333329b8043290e2bb4b6b116d97950c",
+        "assetAlt": "Mule Deer Lifesize Game Target, SKU NRA-MuleDeer",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f5ece2243202637c9bf8ea5cf1ca717958889f26041f8a7092ae29b61fc29629"
+    },
+    "scoring": {
+      "id": "evidence_the_national_target_company_nra_muledeer-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "9ed79bbcc6e0c61b0bcf9ad1d3f70a2aabf69c67063b07aea0ce3fad740f5f43"
+    },
+    "mission": {
+      "id": "evidence_the_national_target_company_nra_muledeer-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "d9c2833a2b4168841825c6e9bbddcca42a66ad6b68f29f44744aa4eabd4001ee"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

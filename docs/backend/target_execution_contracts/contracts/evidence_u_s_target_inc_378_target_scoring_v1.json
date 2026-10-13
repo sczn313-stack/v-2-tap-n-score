@@ -1,0 +1,437 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_u_s_target_inc_378-target-scoring-v1",
+  "contractVersion": "2",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER_EP64_RECONCILED_TEN_EXECUTION_GATE_2026_10_08",
+    "approvedAt": "2026-10-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-10-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_u_s_target_inc_378",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_C3A38AC61104D7E40DF3_V1",
+    "authorityId": "P_OS_EVIDENCE_C3A38AC61104D7E40DF3_V1",
+    "publisher": {
+      "id": "u_s_target_inc",
+      "name": "U.S. Target Inc.",
+      "url": "https://ustargetinc.com/product/bowling-pins/"
+    },
+    "product": {
+      "id": "p-os-us_target_378",
+      "name": "Bowling Pins",
+      "sku": "378",
+      "productUrl": "https://ustargetinc.com/product/bowling-pins/",
+      "dimensions": {
+        "width": 21.0,
+        "height": 24.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Bowling Pins: Track left versus right bowling-pin impacts and show an object-by-object comparison. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Two outlined bowling-pin shapes on a plain rectangular field.",
+        "authorityLimitations": "Paper pin hits do not mean pins were physically knocked over. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 243,
+          "sourceCells": "AA243:AE243",
+          "masterNumber": 242,
+          "inventoryRecordId": "us-target:0011",
+          "sku": "378",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_u_s_target_inc_378-geometry",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "status": "ugo_governed_backend_authority",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "discrete_objects",
+        "regions": [
+          {
+            "regionId": "left_pin",
+            "shape": "polygon",
+            "points": [
+              [
+                0.268,
+                0.285
+              ],
+              [
+                0.301,
+                0.285
+              ],
+              [
+                0.314,
+                0.33
+              ],
+              [
+                0.305,
+                0.385
+              ],
+              [
+                0.334,
+                0.475
+              ],
+              [
+                0.35,
+                0.56
+              ],
+              [
+                0.333,
+                0.65
+              ],
+              [
+                0.315,
+                0.735
+              ],
+              [
+                0.245,
+                0.735
+              ],
+              [
+                0.222,
+                0.65
+              ],
+              [
+                0.22,
+                0.56
+              ],
+              [
+                0.247,
+                0.475
+              ],
+              [
+                0.265,
+                0.385
+              ],
+              [
+                0.255,
+                0.33
+              ]
+            ],
+            "priority": 10
+          },
+          {
+            "regionId": "right_pin",
+            "shape": "polygon",
+            "points": [
+              [
+                0.655,
+                0.285
+              ],
+              [
+                0.688,
+                0.285
+              ],
+              [
+                0.7,
+                0.33
+              ],
+              [
+                0.692,
+                0.385
+              ],
+              [
+                0.72,
+                0.475
+              ],
+              [
+                0.735,
+                0.56
+              ],
+              [
+                0.72,
+                0.65
+              ],
+              [
+                0.702,
+                0.735
+              ],
+              [
+                0.632,
+                0.735
+              ],
+              [
+                0.61,
+                0.65
+              ],
+              [
+                0.607,
+                0.56
+              ],
+              [
+                0.635,
+                0.475
+              ],
+              [
+                0.652,
+                0.385
+              ],
+              [
+                0.642,
+                0.33
+              ]
+            ],
+            "priority": 10
+          }
+        ],
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "left_pin",
+            "right_pin"
+          ],
+          "boundaries": [
+            {
+              "boundaryId": "left_pin_outer_boundary",
+              "regionId": "left_pin",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.28385714285714286,
+                  "y": 0.48857142857142855,
+                  "expectedEntityId": "left_pin"
+                },
+                "edge": {
+                  "x": 0.268,
+                  "y": 0.285,
+                  "expectedEntityId": "left_pin"
+                },
+                "outside": {
+                  "x": 0.2679524285714286,
+                  "y": 0.2843892857142857,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "right_pin_outer_boundary",
+              "regionId": "right_pin",
+              "effects": [
+                "hit_miss",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.6707142857142856,
+                  "y": 0.48857142857142855,
+                  "expectedEntityId": "right_pin"
+                },
+                "edge": {
+                  "x": 0.655,
+                  "y": 0.285,
+                  "expectedEntityId": "right_pin"
+                },
+                "outside": {
+                  "x": 0.6549528571428571,
+                  "y": 0.2843892857142857,
+                  "expectedEntityId": "outside"
+                }
+              }
+            }
+          ]
+        },
+        "physicalAuthority": {
+          "authorityId": "EP64_RECONCILED_TEN_UGO_EVIDENCE_U_S_TARGET_INC_378_2026_10_08",
+          "semanticAuthority": "Publisher identifies a bowling-pin practice face with two printed pins. SCZN3 reports pin hits/coverage and misses; no points are printed or invented.",
+          "physicalFaceAuthority": "Exact registered Bowling Pins identity and stored commercial dimensions",
+          "ugoStandard": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+          "measurementMethod": "UGO physical-target-plane calibration against the exact registered face and stored commercial dimensions",
+          "sourceImageSha256": "0a6ccf88f03d0714362813174b4f10a158e620b9e52fe7ddbba6c3728381dfdd",
+          "representationRule": "Normalized coordinates represent governed physical regions on the exact target plane; rendered pixels do not create authority.",
+          "pixelIsAuthority": false
+        }
+      },
+      "digest": "5fabb050f45fd86f6e5533d484a7a1faf00f20ab33eacc38031453201742e7ca"
+    },
+    "registration": {
+      "id": "evidence_u_s_target_inc_378-target-scoring-registration",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_b648b9c9d6671f8cc3ff.png",
+        "assetSha256": "0a6ccf88f03d0714362813174b4f10a158e620b9e52fe7ddbba6c3728381dfdd",
+        "assetAlt": "Bowling Pins, SKU 378",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "55a83d105749b9d34d695995e529117ff9b6396f7300af9eac00d168fc97b00e"
+    },
+    "scoring": {
+      "id": "evidence_u_s_target_inc_378-scoring",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "multiple_bulls",
+        "regionRules": {
+          "left_pin": {
+            "label": "Left bowling pin",
+            "objectId": "left_pin",
+            "objectLabel": "Left bowling pin"
+          },
+          "right_pin": {
+            "label": "Right bowling pin",
+            "objectId": "right_pin",
+            "objectLabel": "Right bowling pin"
+          }
+        },
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "outsideRule": {
+          "label": "Miss"
+        },
+        "publisherRuleAuthority": {
+          "source": "Locked exact registered face plus stored publisher evidence",
+          "rule": "Publisher identifies a bowling-pin practice face with two printed pins. SCZN3 reports pin hits/coverage and misses; no points are printed or invented."
+        }
+      },
+      "digest": "4fa0a1a5ce80372e066c03e8c9f6fd12b1f383aaf767dad4ae965bc73b026360"
+    },
+    "mission": {
+      "id": "evidence_u_s_target_inc_378-mission",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "available"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Locked exact face plus UGO physical-target-plane calibration and stored publisher/printed-face evidence",
+        "semanticStatus": "GOVERNED_FOR_EP64_TEN_TARGET_PILOT",
+        "recognizedBehaviorFamily": "MULTIPLE_BULLS",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-reconciled-ten-v1",
+          "highestTruthfulCapability": "Object / Zone Distribution",
+          "targetStructure": {
+            "registeredGeometryStatus": "ugo_regions_available",
+            "registeredRegionCount": 2
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": false,
+            "pointsPerTap": false,
+            "regionObjectBreakdown": true,
+            "missesOutside": true
+          },
+          "historyProfile": {
+            "family": "object_coverage_history_v1",
+            "inheritedMachinery": "shared_session_drawer_3_history_v1",
+            "targetVocabulary": {
+              "objectSingular": "Bowling pin",
+              "objectPlural": "Bowling pins",
+              "outside": "Miss"
+            },
+            "semanticInheritance": false
+          }
+        }
+      },
+      "digest": "318b18cf7bffb8eb8940587196f5089a1c823eaedd3bc12b0b4181c30d10bcd0"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "available"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "unpublished_rules_or_values"
+  ]
+}

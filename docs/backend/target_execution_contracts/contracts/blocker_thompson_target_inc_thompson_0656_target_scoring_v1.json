@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_0656-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_0656",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_9F6EB98E2E86F77C72BD_V1",
+    "authorityId": "P_OS_BLOCKER_9F6EB98E2E86F77C72BD_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/crazy-bones-knife-paper-shooting-targets-19x25/"
+    },
+    "product": {
+      "id": "p-os-thompson_0656",
+      "name": "Crazy-Bones Knife Paper Shooting Targets - 19\"x25\"",
+      "sku": "thompson-0656",
+      "dimensions": {
+        "width": 19.0,
+        "height": 25.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Crazy-Bones Knife Paper Shooting Targets - 19\"x25\": Show impacts relative to figure and distinct printed patches where governed. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Masked armed figure with printed colored target patches.",
+        "authorityLimitations": "No inferred tactical scoring or threat classification. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 233,
+          "sourceCells": "AA233:AE233",
+          "masterNumber": 232,
+          "inventoryRecordId": "thompson-target:0027",
+          "sku": "thompson-0656",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_0656-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_9F6EB98E2E86F77C72BD_EXACT_FACE_V1"
+      },
+      "digest": "bee6fccad609d9a8d88d3f291b2aa53b91d6f5d6d6b4e5d25e9348e9911b7d7f"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_0656-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_c1a2aa69828dec2e719b.webp",
+        "assetSha256": "46013b5d1f7ed868676eead8d6d40de2636804a9b345817d8e760c62ab4fbf6e",
+        "assetAlt": "Crazy-Bones Knife Paper Shooting Targets - 19\"x25\", SKU thompson-0656",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "2fde96f0e3b630d9ab18c1d722c3595fee315d302b366c0af2f483f230260d2c"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_0656-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No governed numeric scoring value established by this audit.",
+          "resultRequirement": "Preserve taps/evidence; do not invent score.",
+          "geometryAuthorityInstruction": "Retain exact-face registration. No pixel-derived geometry/value authority.",
+          "basis": "Publisher/source audit found no governed higher-order scoring rule in available authority."
+        }
+      },
+      "digest": "58fb56da4a4a289f31842d203071ab7ed91eb5da9ecfe2b19b4b0ddcf8e09ea7"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_0656-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No governed numeric scoring value established by this audit.",
+          "resultRequirement": "Preserve taps/evidence; do not invent score.",
+          "geometryAuthorityInstruction": "Retain exact-face registration. No pixel-derived geometry/value authority.",
+          "basis": "Publisher/source audit found no governed higher-order scoring rule in available authority."
+        }
+      },
+      "digest": "aff436cc0f72815a93bec164ef4810216f2f3e93fd55d49737693164220135c3"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

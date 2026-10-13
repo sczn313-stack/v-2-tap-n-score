@@ -1,0 +1,669 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_4003-target-scoring-v1",
+  "contractVersion": "2",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "FOUNDER_EP64_RECONCILED_TEN_EXECUTION_GATE_2026_10_08",
+    "approvedAt": "2026-10-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-10-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_4003",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_699F2A5202C25AEDC1C1_V1",
+    "authorityId": "P_OS_BLOCKER_699F2A5202C25AEDC1C1_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/alien-invasion-shooting-game-19x25-paper-targets/"
+    },
+    "product": {
+      "id": "p-os-thompson_4003",
+      "name": "Alien Invasion Shooting Game 19\"x25\" Paper Targets",
+      "sku": "thompson-4003",
+      "dimensions": {
+        "width": 19.0,
+        "height": 25.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Alien Invasion Shooting Game 19\"x25\" Paper Targets: Track each separately governed alien object and show how many distinct creatures have received hits. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Alien Invasion game board with several alien creatures in red and blue.",
+        "authorityLimitations": "No inferred alien hit threshold, elimination, or points. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 230,
+          "sourceCells": "AA230:AE230",
+          "masterNumber": 229,
+          "inventoryRecordId": "thompson-target:0005",
+          "sku": "thompson-4003",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_4003-geometry",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "status": "ugo_governed_backend_authority",
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "concentric_regions",
+        "regions": [
+          {
+            "regionId": "left_head",
+            "shape": "ellipse",
+            "cx": 0.257,
+            "cy": 0.276,
+            "radiusX": 0.055,
+            "radiusY": 0.055,
+            "priority": 10
+          },
+          {
+            "regionId": "center_head",
+            "shape": "ellipse",
+            "cx": 0.522,
+            "cy": 0.233,
+            "radiusX": 0.075,
+            "radiusY": 0.075,
+            "priority": 10
+          },
+          {
+            "regionId": "right_head",
+            "shape": "ellipse",
+            "cx": 0.716,
+            "cy": 0.272,
+            "radiusX": 0.055,
+            "radiusY": 0.055,
+            "priority": 10
+          },
+          {
+            "regionId": "left_torso",
+            "shape": "ellipse",
+            "cx": 0.236,
+            "cy": 0.413,
+            "radiusX": 0.09,
+            "radiusY": 0.09,
+            "priority": 10
+          },
+          {
+            "regionId": "center_torso",
+            "shape": "ellipse",
+            "cx": 0.502,
+            "cy": 0.418,
+            "radiusX": 0.105,
+            "radiusY": 0.105,
+            "priority": 10
+          },
+          {
+            "regionId": "right_torso",
+            "shape": "ellipse",
+            "cx": 0.767,
+            "cy": 0.393,
+            "radiusX": 0.095,
+            "radiusY": 0.095,
+            "priority": 10
+          },
+          {
+            "regionId": "lower_left",
+            "shape": "ellipse",
+            "cx": 0.374,
+            "cy": 0.668,
+            "radiusX": 0.115,
+            "radiusY": 0.115,
+            "priority": 10
+          },
+          {
+            "regionId": "lower_right",
+            "shape": "ellipse",
+            "cx": 0.672,
+            "cy": 0.601,
+            "radiusX": 0.1,
+            "radiusY": 0.1,
+            "priority": 10
+          },
+          {
+            "regionId": "bottom_left",
+            "shape": "ellipse",
+            "cx": 0.252,
+            "cy": 0.815,
+            "radiusX": 0.13,
+            "radiusY": 0.13,
+            "priority": 10
+          },
+          {
+            "regionId": "bottom_right",
+            "shape": "ellipse",
+            "cx": 0.75,
+            "cy": 0.786,
+            "radiusX": 0.13,
+            "radiusY": 0.13,
+            "priority": 10
+          }
+        ],
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "left_head",
+            "center_head",
+            "right_head",
+            "left_torso",
+            "center_torso",
+            "right_torso",
+            "lower_left",
+            "lower_right",
+            "bottom_left",
+            "bottom_right"
+          ],
+          "boundaries": [
+            {
+              "boundaryId": "left_head_outer_boundary",
+              "regionId": "left_head",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.28450000000000003,
+                  "y": 0.276,
+                  "expectedEntityId": "left_head"
+                },
+                "edge": {
+                  "x": 0.3119999999,
+                  "y": 0.276,
+                  "expectedEntityId": "left_head"
+                },
+                "outside": {
+                  "x": 0.3121,
+                  "y": 0.276,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "center_head_outer_boundary",
+              "regionId": "center_head",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5595,
+                  "y": 0.233,
+                  "expectedEntityId": "center_head"
+                },
+                "edge": {
+                  "x": 0.5969999999,
+                  "y": 0.233,
+                  "expectedEntityId": "center_head"
+                },
+                "outside": {
+                  "x": 0.5971,
+                  "y": 0.233,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "right_head_outer_boundary",
+              "regionId": "right_head",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7434999999999999,
+                  "y": 0.272,
+                  "expectedEntityId": "right_head"
+                },
+                "edge": {
+                  "x": 0.7709999999,
+                  "y": 0.272,
+                  "expectedEntityId": "right_head"
+                },
+                "outside": {
+                  "x": 0.7711,
+                  "y": 0.272,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "left_torso_outer_boundary",
+              "regionId": "left_torso",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.28099999999999997,
+                  "y": 0.413,
+                  "expectedEntityId": "left_torso"
+                },
+                "edge": {
+                  "x": 0.3259999999,
+                  "y": 0.413,
+                  "expectedEntityId": "left_torso"
+                },
+                "outside": {
+                  "x": 0.3261,
+                  "y": 0.413,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "center_torso_outer_boundary",
+              "regionId": "center_torso",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.5545,
+                  "y": 0.418,
+                  "expectedEntityId": "center_torso"
+                },
+                "edge": {
+                  "x": 0.6069999999,
+                  "y": 0.418,
+                  "expectedEntityId": "center_torso"
+                },
+                "outside": {
+                  "x": 0.6071,
+                  "y": 0.418,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "right_torso_outer_boundary",
+              "regionId": "right_torso",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.8145,
+                  "y": 0.393,
+                  "expectedEntityId": "right_torso"
+                },
+                "edge": {
+                  "x": 0.8619999999,
+                  "y": 0.393,
+                  "expectedEntityId": "right_torso"
+                },
+                "outside": {
+                  "x": 0.8621,
+                  "y": 0.393,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "lower_left_outer_boundary",
+              "regionId": "lower_left",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.4315,
+                  "y": 0.668,
+                  "expectedEntityId": "lower_left"
+                },
+                "edge": {
+                  "x": 0.4889999999,
+                  "y": 0.668,
+                  "expectedEntityId": "lower_left"
+                },
+                "outside": {
+                  "x": 0.4891,
+                  "y": 0.668,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "lower_right_outer_boundary",
+              "regionId": "lower_right",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7220000000000001,
+                  "y": 0.601,
+                  "expectedEntityId": "lower_right"
+                },
+                "edge": {
+                  "x": 0.7719999999,
+                  "y": 0.601,
+                  "expectedEntityId": "lower_right"
+                },
+                "outside": {
+                  "x": 0.7721,
+                  "y": 0.601,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottom_left_outer_boundary",
+              "regionId": "bottom_left",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.317,
+                  "y": 0.815,
+                  "expectedEntityId": "bottom_left"
+                },
+                "edge": {
+                  "x": 0.3819999999,
+                  "y": 0.815,
+                  "expectedEntityId": "bottom_left"
+                },
+                "outside": {
+                  "x": 0.3821,
+                  "y": 0.815,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "boundaryId": "bottom_right_outer_boundary",
+              "regionId": "bottom_right",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "score"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.815,
+                  "y": 0.786,
+                  "expectedEntityId": "bottom_right"
+                },
+                "edge": {
+                  "x": 0.8799999999,
+                  "y": 0.786,
+                  "expectedEntityId": "bottom_right"
+                },
+                "outside": {
+                  "x": 0.8801,
+                  "y": 0.786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            }
+          ]
+        },
+        "physicalAuthority": {
+          "authorityId": "EP64_RECONCILED_TEN_UGO_BLOCKER_THOMPSON_TARGET_INC_THOMPSON_4003_2026_10_08",
+          "semanticAuthority": "The exact publisher face prints ten circular values: 50, 30, 40, 30, four 20s, and two 10s. Those printed values are summed; no additional game rule is invented.",
+          "physicalFaceAuthority": "Exact registered Alien Invasion Shooting Game 19\"x25\" Paper Targets identity and stored commercial dimensions",
+          "ugoStandard": "SCZN3-UGO-LOCATION-AUTHORITY-V1",
+          "measurementMethod": "UGO physical-target-plane calibration against the exact registered face and stored commercial dimensions",
+          "sourceImageSha256": "6ae1aacfc3625af59c44e3f9c6ecd6a736371fff90fbe5dcc3d6b48e1f85d035",
+          "representationRule": "Normalized coordinates represent governed physical regions on the exact target plane; rendered pixels do not create authority.",
+          "pixelIsAuthority": false
+        }
+      },
+      "digest": "e715c622337db2f802da226f05940f78852bbaeec0738e42979a46629762322d"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_4003-target-scoring-registration",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_d9671e3acf49c6bb84a2.webp",
+        "assetSha256": "6ae1aacfc3625af59c44e3f9c6ecd6a736371fff90fbe5dcc3d6b48e1f85d035",
+        "assetAlt": "Alien Invasion Shooting Game 19\"x25\" Paper Targets, SKU thompson-4003",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "f1d75047d7c46c0dd19368ab3ede54c2c66236a55d5be38ecbf5e7765ae839ff"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_4003-scoring",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "status": "complete",
+        "model": "numeric_regions",
+        "regionRules": {
+          "left_head": {
+            "label": "Left Head",
+            "value": 50,
+            "objectId": "left_head",
+            "objectLabel": "Left Head"
+          },
+          "center_head": {
+            "label": "Center Head",
+            "value": 30,
+            "objectId": "center_head",
+            "objectLabel": "Center Head"
+          },
+          "right_head": {
+            "label": "Right Head",
+            "value": 40,
+            "objectId": "right_head",
+            "objectLabel": "Right Head"
+          },
+          "left_torso": {
+            "label": "Left Torso",
+            "value": 30,
+            "objectId": "left_torso",
+            "objectLabel": "Left Torso"
+          },
+          "center_torso": {
+            "label": "Center Torso",
+            "value": 20,
+            "objectId": "center_torso",
+            "objectLabel": "Center Torso"
+          },
+          "right_torso": {
+            "label": "Right Torso",
+            "value": 20,
+            "objectId": "right_torso",
+            "objectLabel": "Right Torso"
+          },
+          "lower_left": {
+            "label": "Lower Left",
+            "value": 20,
+            "objectId": "lower_left",
+            "objectLabel": "Lower Left"
+          },
+          "lower_right": {
+            "label": "Lower Right",
+            "value": 20,
+            "objectId": "lower_right",
+            "objectLabel": "Lower Right"
+          },
+          "bottom_left": {
+            "label": "Bottom Left",
+            "value": 10,
+            "objectId": "bottom_left",
+            "objectLabel": "Bottom Left"
+          },
+          "bottom_right": {
+            "label": "Bottom Right",
+            "value": 10,
+            "objectId": "bottom_right",
+            "objectLabel": "Bottom Right"
+          }
+        },
+        "aggregation": {
+          "mode": "sum"
+        },
+        "outsideRule": {
+          "label": "Miss",
+          "value": 0
+        },
+        "publisherRuleAuthority": {
+          "source": "Locked exact registered face plus stored publisher evidence",
+          "rule": "The exact publisher face prints ten circular values: 50, 30, 40, 30, four 20s, and two 10s. Those printed values are summed; no additional game rule is invented."
+        }
+      },
+      "digest": "e78d9275a77351470c773b98b40914ef98cf5275ebddd33d16ff687ba21cdc83"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_4003-mission",
+      "version": "2",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "available"
+          },
+          "officialScore": {
+            "status": "available"
+          },
+          "publisherMission": {
+            "status": "available"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Locked exact face plus UGO physical-target-plane calibration and stored publisher/printed-face evidence",
+        "semanticStatus": "GOVERNED_FOR_EP64_TEN_TARGET_PILOT",
+        "recognizedBehaviorFamily": "NUMERIC_REGIONS",
+        "smartTargetTreatment": {
+          "schemaVersion": "sczn3-episode64-reconciled-ten-v1",
+          "highestTruthfulCapability": "Scoring",
+          "targetStructure": {
+            "registeredGeometryStatus": "ugo_regions_available",
+            "registeredRegionCount": 10
+          },
+          "accounting": {
+            "everyTapReconcilesExactlyOnce": true,
+            "childRegionsAreSubsetsNotAdditionalTaps": true
+          },
+          "result": {
+            "totalTaps": true,
+            "publisherScore": true,
+            "pointsPerTap": true,
+            "regionObjectBreakdown": true,
+            "missesOutside": true
+          },
+          "historyProfile": {
+            "family": "numeric_score_history_v1",
+            "inheritedMachinery": "shared_session_drawer_3_history_v1",
+            "targetVocabulary": {
+              "objectSingular": "Alien scoring area",
+              "objectPlural": "Alien scoring areas",
+              "outside": "Miss"
+            },
+            "semanticInheritance": false
+          }
+        }
+      },
+      "digest": "4344b0eb8fd2eae3c82322fc01b38e8b66d34129bd246edb3fed6753259a0e44"
+    }
+  },
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "declarative-target-score",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "target-scoring-family",
+    "version": "1",
+    "scoringPresentationFamily": "target-data"
+  },
+  "preservationValidator": {
+    "id": "target-scoring-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "available"
+      },
+      "officialScore": {
+        "status": "available"
+      },
+      "publisherMission": {
+        "status": "available"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "unpublished_rules_or_values"
+  ]
+}

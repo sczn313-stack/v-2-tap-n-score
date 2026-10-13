@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_0543-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_0543",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_C0AB990C770527691C7D_V1",
+    "authorityId": "P_OS_BLOCKER_C0AB990C770527691C7D_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/bo-bo-clown-paper-zombie-shooting-targets-19x25/"
+    },
+    "product": {
+      "id": "p-os-thompson_0543",
+      "name": "Bo-Bo Clown - Paper Zombie Shooting Targets - 19\"x25\"",
+      "sku": "thompson-0543",
+      "dimensions": {
+        "width": 19.0,
+        "height": 25.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "Bo-Bo Clown - Paper Zombie Shooting Targets - 19\"x25\": Offer character-centered shot-placement feedback and a visual history of observations. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Large sinister clown character holding an object, with prominent face and torso.",
+        "authorityLimitations": "No invented character-part scoring or bonus. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 232,
+          "sourceCells": "AA232:AE232",
+          "masterNumber": 231,
+          "inventoryRecordId": "thompson-target:0019",
+          "sku": "thompson-0543",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_0543-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_C0AB990C770527691C7D_EXACT_FACE_V1"
+      },
+      "digest": "ff5855c7995e73875380235d396b5d461797bf3592f1a14447f71634590c8b25"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_0543-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_b7fd2317211f18d43ce8.webp",
+        "assetSha256": "000d8e45bd13a23fd2be5c7ae11222270226bc509eb93ba2350d7943d289c27f",
+        "assetAlt": "Bo-Bo Clown - Paper Zombie Shooting Targets - 19\"x25\", SKU thompson-0543",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "c05542330dad1d38dd7c00b65a8cd52b19b60faeb12d6adfd7310c094acfb9f7"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_0543-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "77a705fc4f0bb7d388b93d4eb02c7fb0725065e4732c9c5ca316a650c17c54f7"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_0543-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "a700ee96cb510b6e2162a577cd3eddf754126e8240eb8e5b976e2b4753df16db"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

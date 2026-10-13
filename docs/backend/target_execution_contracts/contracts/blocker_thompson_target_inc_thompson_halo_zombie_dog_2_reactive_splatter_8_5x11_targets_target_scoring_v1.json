@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-blocker_thompson_target_inc_thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "blocker_thompson_target_inc_thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets",
+    "version": "1",
+    "atpId": "ATP_BLOCKER_EDB1865CE8D8B9E85C9E_V1",
+    "authorityId": "P_OS_BLOCKER_EDB1865CE8D8B9E85C9E_V1",
+    "publisher": {
+      "id": "thompson_target_inc",
+      "name": "Thompson Target Inc.",
+      "url": "https://www.thompsontarget.com/halo-zombie-dog-2-reactive-splatter-8-5x11-targets/"
+    },
+    "product": {
+      "id": "p-os-thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets",
+      "name": "HALO Zombie Dog #2 Reactive Splatter 8.5\"x11\" Targets",
+      "sku": "thompson-halo-zombie-dog-2-reactive-splatter-8-5x11-targets",
+      "dimensions": {
+        "width": 8.5,
+        "height": 11.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "HALO Zombie Dog #2 Reactive Splatter 8.5\"x11\" Targets: Show impact placement on the dog artwork and on separately governed circles. Preserve every registered observation and its exact session history; use governed region boundaries for any hit/miss classification.",
+        "visibleArtworkDescription": "Stylized snarling red-and-black zombie dog with bright target circles.",
+        "authorityLimitations": "No inferred anatomy or kill-zone scoring. Physical geometry and authoritative scoring remain Backend-governed.",
+        "supportedExperience": "Evidence-only observation history until required objects, geometry, and rules are governed; then display per-object distribution and misses with full reconciliation. No unsupported numeric score.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 238,
+          "sourceCells": "AA238:AE238",
+          "masterNumber": 237,
+          "inventoryRecordId": "thompson-target:0055",
+          "sku": "thompson-halo-zombie-dog-2-reactive-splatter-8-5x11-targets",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "blocker_thompson_target_inc_thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_BLOCKER_EDB1865CE8D8B9E85C9E_EXACT_FACE_V1"
+      },
+      "digest": "cc9b2747accf51f7b745d2ab1143df80104952c365944b3657708bc7fc848e2f"
+    },
+    "registration": {
+      "id": "blocker_thompson_target_inc_thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-905-blocker-factory-2026-09-29/representations/BLOCKER_FACE_f1e209b1505291b8bd33.jpg",
+        "assetSha256": "7db9b8dd9a82b31b79e8ea46ceb2f667ae499bd07e5c8118b999de4017d5b61f",
+        "assetAlt": "HALO Zombie Dog #2 Reactive Splatter 8.5\"x11\" Targets, SKU thompson-halo-zombie-dog-2-reactive-splatter-8-5x11-targets",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "bc59bbbfe7f8212a0984be04ca61f7f6f69db4e9252485d70edbe90a9380991f"
+    },
+    "scoring": {
+      "id": "blocker_thompson_target_inc_thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "audited_evidence_only_ceiling",
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "f374acb745f21fc9ca94665a932d9d8b2f8755205733ac93440beb8e0ca5cd1e"
+    },
+    "mission": {
+      "id": "blocker_thompson_target_inc_thompson_halo_zombie_dog_2_reactive_splatter_8_5x11_targets-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "Founder audit confirmed the Smart Evidence ceiling under current authority.",
+        "recognizedBehaviorFamily": "SMART_EVIDENCE_FLOOR",
+        "allowShooterDeclaredAim": false,
+        "auditedScoringGovernance": {
+          "scoringDisposition": "EVIDENCE ONLY — AUDIT CONFIRMED",
+          "scoringModel": "SMART_EVIDENCE_FLOOR",
+          "valueRule": "No numeric score promoted from character/animal artwork alone.",
+          "resultRequirement": "Preserve taps/evidence unless separately governed regions exist.",
+          "geometryAuthorityInstruction": "Do not infer anatomy/scoring/geometry from pixels.",
+          "basis": "Exact face is meaningful artwork, but available source does not establish numeric values or executable zone semantics."
+        }
+      },
+      "digest": "5d4b68561886366a99adf865495c24d63af2c972b4a5a8129d134eca13bb222c"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "pixel_derived_physical_authority",
+    "scoring_or_object_semantics_beyond_audited_evidence_only_ceiling"
+  ]
+}

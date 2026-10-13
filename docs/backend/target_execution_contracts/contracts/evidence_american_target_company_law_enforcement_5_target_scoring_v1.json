@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "sczn3-target-execution-contract-v1",
+  "contractId": "tec-evidence_american_target_company_law_enforcement_5-smart-evidence-v1",
+  "contractVersion": "1",
+  "authorityContractVersion": "ADR-001-v1",
+  "lifecycleStatus": "supported",
+  "supportStatus": "supported",
+  "approval": {
+    "status": "approved",
+    "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+    "approvedAt": "2026-09-08T12:00:00-04:00"
+  },
+  "effective": {
+    "from": "2026-09-08T12:00:00-04:00",
+    "until": null
+  },
+  "targetProfile": {
+    "id": "evidence_american_target_company_law_enforcement_5",
+    "version": "1",
+    "atpId": "ATP_EVIDENCE_41C8AF991E1163930405_V1",
+    "authorityId": "P_OS_EVIDENCE_41C8AF991E1163930405_V1",
+    "publisher": {
+      "id": "american_target_company",
+      "name": "American Target Company",
+      "url": "https://www.americantargetcompany.com/law-enforcement.html#B_27_CR"
+    },
+    "product": {
+      "id": "p-os-american_target_law_enforcement_5",
+      "name": "B-27-CR",
+      "sku": "law-enforcement:5",
+      "productUrl": "https://www.americantargetcompany.com/law-enforcement.html#B_27_CR",
+      "dimensions": {
+        "width": 24.0,
+        "height": 45.0,
+        "unit": "inch"
+      },
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "B-27-CR — Silhouette / qualification-family target; variant, center patch and any printed regions must be respected separately. Shooter Experience: Display shot placement on the silhouette and on any independently governed scoring areas; preserve variant-specific history and distinguish hit distribution from a numeric score. Every observation must reconcile with session history. Target-specific behavior must not be invented.",
+        "visibleArtworkDescription": "IMAGE MASTER embedded artwork: present. Master #318; publisher American Target Company.",
+        "authorityLimitations": "Do not infer numerical ring scores, line-touch bullet model, region geometry, or qualification rules from the model code. Backend physical geometry remains authoritative; pixels are display evidence only.",
+        "supportedExperience": "Evidence Only until governed objects/zones exist; Zone Counting only with governed boundaries; Numeric Scoring only with governed values, line-touch model and applicable rule. Flag any actual discrepancy for correction.",
+        "provenance": {
+          "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
+          "sourceSheet": "1993 Illustrated Master",
+          "sourceRow": 319,
+          "sourceCells": "AA319:AE319",
+          "masterNumber": 318,
+          "inventoryRecordId": "american-target:0112",
+          "sku": "law-enforcement:5",
+          "connectedAt": "2026-10-12"
+        }
+      }
+    }
+  },
+  "components": {
+    "geometry": {
+      "id": "evidence_american_target_company_law_enforcement_5-target-scoring-geometry",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "coordinateSystem": "normalized_source_image_top_left",
+        "layoutModel": "unstructured_evidence",
+        "regions": [],
+        "ugoAuthority": "UGO_EVIDENCE_41C8AF991E1163930405_EXACT_FACE_V1"
+      },
+      "digest": "abec8d37661d9925a76384c325a2d39dbc60cc84c3d971a29b806c28c03f38d7"
+    },
+    "registration": {
+      "id": "evidence_american_target_company_law_enforcement_5-target-scoring-registration",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "role": "scorable_canonical_asset",
+        "assetPath": "authority-evidence/platform/the-2304-evidence-floor-bulk-2026-09-29/representations/EVIDENCE_FACE_f7e3e265868425e65a75.jpg",
+        "assetSha256": "ea38b9db22d0db797fbdad9292289fb2628879fe82dae1c4a11c08c7b2965635",
+        "assetAlt": "B-27-CR, SKU law-enforcement:5",
+        "coordinateConvention": "normalized_source_image_top_left"
+      },
+      "digest": "54cd11a4871f90ac69a5a17bd02e7a8f883d3d4dd79e1e5b6e7ad6b09254917b"
+    },
+    "scoring": {
+      "id": "evidence_american_target_company_law_enforcement_5-target-scoring-data",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "status": "not_applicable",
+        "reason": "approved_smart_evidence_boundary_does_not_authorize_numeric_scoring",
+        "publisherRuleAuthority": {
+          "source": "american-target:law-enforcement:5 + american-target:0112 + preserved publisher representation ea38b9db22d0db797fbdad9292289fb2628879fe82dae1c4a11c08c7b2965635",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      },
+      "digest": "6915b4b9a73e02e490ce7d8f0f8fac23d4a8069f7e554bd4c094e48ff9a0a9e2"
+    },
+    "mission": {
+      "id": "evidence_american_target_company_law_enforcement_5-target-scoring-mission",
+      "version": "1",
+      "status": "approved",
+      "definition": {
+        "missionFamily": "smartEvidenceCapture",
+        "resultPackageType": "smartEvidenceResult",
+        "resultPackageVersion": "1",
+        "maxObservations": 500,
+        "interaction": {
+          "aim": {
+            "mode": "not_required",
+            "points": []
+          },
+          "observationInput": "normalized_taps",
+          "resultAction": "show_result"
+        },
+        "capabilityStates": {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          },
+          "qualification": {
+            "status": "not_applicable"
+          }
+        },
+        "authorityResolution": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred",
+        "recognizedBehaviorFamily": "EVIDENCE_ONLY",
+        "allowShooterDeclaredAim": false
+      },
+      "digest": "6e991b9d55d166ff2d262f9acb91e3b0efcdf5597ab133bcf027a057598b670b"
+    }
+  },
+  "missionFamily": "smartEvidenceCapture",
+  "resultPackageType": "smartEvidenceResult",
+  "resultPackageVersion": "1",
+  "executor": {
+    "id": "smart-evidence-capture",
+    "version": "1"
+  },
+  "secAdapter": {
+    "id": "smart-evidence-family",
+    "version": "1",
+    "scoringPresentationFamily": "not_applicable"
+  },
+  "preservationValidator": {
+    "id": "smart-evidence-preservation",
+    "version": "1"
+  },
+  "session": {
+    "capabilityStates": {
+      "evidence": {
+        "status": "available"
+      },
+      "measurement": {
+        "status": "not_applicable"
+      },
+      "correction": {
+        "status": "not_applicable"
+      },
+      "officialScore": {
+        "status": "not_applicable"
+      },
+      "publisherMission": {
+        "status": "not_applicable"
+      },
+      "qualification": {
+        "status": "not_applicable"
+      }
+    },
+    "officialMissionRequired": false
+  },
+  "unsupportedUses": [
+    "zeroing_correction",
+    "qualification_or_certification",
+    "scoring_rules_not_present_in_publisher_authority",
+    "physical_hole_extent_or_line_touch_adjudication"
+  ]
+}
