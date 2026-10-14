@@ -336,6 +336,40 @@ def _cumulative_count_policy(scoring: Mapping[str, Any], region_ids: set[str]) -
         used_regions.update(group_regions)
 
 
+def _semantic_layers(scoring: Mapping[str, Any], region_ids: set[str]) -> None:
+    layers = scoring.get("semanticLayers")
+    primary = str(scoring.get("primaryObjectLayerId") or "").strip()
+    if layers is None:
+        if primary:
+            raise TargetScoringDataContractError("target_scoring_semantic_layers_required")
+        return
+    if not isinstance(layers, list) or len(layers) < 2 or not primary:
+        raise TargetScoringDataContractError("target_scoring_semantic_layers_invalid")
+    layer_ids: set[str] = set()
+    used_regions: set[str] = set()
+    for layer in layers:
+        layer_id = str(layer.get("layerId") or "").strip() if isinstance(layer, Mapping) else ""
+        label = str(layer.get("label") or "").strip() if isinstance(layer, Mapping) else ""
+        result_label = str(layer.get("resultLabel") or "").strip() if isinstance(layer, Mapping) else ""
+        members = layer.get("regionIds") if isinstance(layer, Mapping) else None
+        normalized = [str(item or "").strip() for item in members] if isinstance(members, list) else []
+        if (
+            not layer_id
+            or layer_id in layer_ids
+            or not label
+            or not result_label
+            or not normalized
+            or len(set(normalized)) != len(normalized)
+            or any(not item or item not in region_ids for item in normalized)
+            or used_regions.intersection(normalized)
+        ):
+            raise TargetScoringDataContractError("target_scoring_semantic_layer_invalid")
+        layer_ids.add(layer_id)
+        used_regions.update(normalized)
+    if primary not in layer_ids or used_regions != region_ids:
+        raise TargetScoringDataContractError("target_scoring_semantic_layer_coverage_invalid")
+
+
 def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
     if contract.get("missionFamily") != "targetScoring":
         return
@@ -396,5 +430,6 @@ def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
     _counted_hit_policy(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
     _scoring_mode_policy(scoring, region_id_set, mission.get("interaction") or {})
     _cumulative_count_policy(scoring, region_id_set)
+    _semantic_layers(scoring, region_id_set)
     _boundary_policy(scoring, regions)
     _aim(mission.get("interaction"), region_id_set)

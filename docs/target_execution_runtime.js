@@ -998,6 +998,27 @@
     return `<section class="contract-combined-score-rate" aria-label="Target score and SCZN3 Hit Rate"><div><span>${escapeHtml(resultSummary.label)}</span><strong>${escapeHtml(resultSummary.value)}</strong>${scoreComparison}</div><div><span>SCZN3 Hit Rate</span><strong>${escapeHtml(hitRate.percentage)}%</strong>${rateComparison}</div></section>${taps}`;
   }
 
+  function issue4SinkGameResultMarkup(result, session = {}) {
+    const targetId = clean(result && result.target && result.target.id);
+    if (!new Set(["gunfun_21110_sink_a_sub", "gunfun_11160_sink_a_ship"]).has(targetId)) return "";
+    const scoring = result && result.scoring || {};
+    const layers = Array.isArray(scoring.semanticLayerResults) ? scoring.semanticLayerResults : [];
+    if (layers.length < 2) return "";
+    const layerSummary = `<section class="contract-combined-score-rate contract-semantic-layer-results" aria-label="Governed target progress by semantic layer">${layers.map(layer => `<div data-semantic-layer="${escapeHtml(layer.layerId)}"><span>${escapeHtml(clean(layer.resultLabel || layer.label).toUpperCase())}:</span><strong>${escapeHtml(measuredNumber(layer.objectsHit))} OF ${escapeHtml(measuredNumber(layer.objectCount))}</strong><small>— ${escapeHtml(measuredNumber(layer.hitTapCount))} hit tap${Number(layer.hitTapCount) === 1 ? "" : "s"}</small></div>`).join("")}</section>`;
+    const classifications = Array.isArray(result && result.classifications) ? result.classifications : [];
+    const counts = scoring.regionCounts || {};
+    const circles = (Array.isArray(scoring.regionCatalog) ? scoring.regionCatalog : []).map(item => {
+      const regionId = clean(item && item.regionId);
+      const markers = classifications.reduce((values, classification, index) => {
+        if (clean(classification && classification.regionId) === regionId) values.push(index + 1);
+        return values;
+      }, []);
+      return `<tr><th scope="row">${escapeHtml(clean(item && item.label) || regionId)}</th><td>${escapeHtml(measuredNumber(counts[regionId] || 0))}</td><td>${markers.length ? markers.map(value => `#${escapeHtml(value)}`).join(", ") : "—"}</td></tr>`;
+    }).join("");
+    const circleDetails = circles ? `<details class="contract-numeric-region-results contract-aim-area-details" data-aim-area-details="true"><summary><span class="contract-distribution-title">Aiming-circle distribution</span><span class="contract-disclosure-instruction contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">›</b></span></summary><div><table><thead><tr><th scope="col">Governed aiming circle</th><th scope="col">Hits</th><th scope="col">Tap markers</th></tr></thead><tbody>${circles}</tbody></table></div></details>` : "";
+    return `${layerSummary}${countingTapSummaryMarkup(result)}${hitRateMarkup(result, session)}${objectGroupsMarkup(result)}${circleDetails}`;
+  }
+
   function shooterFacingResultMarkup(result, resultSummary, session = {}) {
     const selectedMode = result && result.scoring && result.scoring.scoringMode;
     const modeMarkup = selectedMode && clean(selectedMode.label)
@@ -1005,6 +1026,8 @@
       : "";
     const objectSummary = objectTapSummary(result);
     const publisherHasScore = result && result.scoring && ["numeric_regions", "penalty_regions", "mixed_regions"].includes(result.scoring.model);
+    const issue4SinkGame = issue4SinkGameResultMarkup(result, session);
+    if (issue4SinkGame) return `${modeMarkup}${issue4SinkGame}`;
     if (objectSummary && !publisherHasScore) {
       const objectDetail = isUsmcThreatResult(result) ? zoneDetailsMarkup(result) : objectGroupsMarkup(result);
       return `${modeMarkup}${objectTapSummaryMarkup(result)}${hitRateMarkup(result, session)}${cumulativeColorTotalsMarkup(result) || objectDetail}${subsetResultsMarkup(result)}`;

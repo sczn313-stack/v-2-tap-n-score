@@ -668,6 +668,74 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             })
         if subset_results:
             scoring["subsetResults"] = subset_results
+    semantic_layers = scoring_data.get("semanticLayers")
+    if isinstance(semantic_layers, list) and semantic_layers:
+        region_by_id = {str(region["regionId"]): region for region in regions}
+        semantic_layer_results = []
+        for layer in semantic_layers:
+            layer_regions = [region_by_id[str(region_id)] for region_id in layer["regionIds"]]
+            layer_rules = {str(region_id): rules[str(region_id)] for region_id in layer["regionIds"]}
+            layer_observations = []
+            for index, (x, y) in enumerate(observation_points, start=1):
+                classified = classify(
+                    layer_regions,
+                    x,
+                    y,
+                    id_key="regionId",
+                    shape_reason="geometry_shape_not_supported",
+                    error_type=DeclarativeTargetScoreError,
+                )
+                if classified["classificationStatus"] == "ambiguous":
+                    raise DeclarativeTargetScoreError("semantic_layer_geometry_classification_ambiguous", layerId=layer["layerId"])
+                region_id = classified.get("entityId")
+                rule = layer_rules.get(str(region_id)) if region_id else None
+                layer_observations.append({
+                    "observationId": f"observation-{index:03d}",
+                    "hit": region_id is not None and (rule or {}).get("countsAsHit") is not False,
+                    "regionId": str(region_id) if region_id else None,
+                    "objectId": str((rule or {}).get("objectId") or "") or None,
+                    "label": str((rule or {}).get("objectLabel") or (rule or {}).get("label") or "") or None,
+                    "classificationStatus": classified["classificationStatus"],
+                })
+            object_catalog = []
+            for region_id in layer["regionIds"]:
+                rule = layer_rules[str(region_id)]
+                object_id = str(rule.get("objectId") or region_id)
+                if any(item["objectId"] == object_id for item in object_catalog):
+                    continue
+                object_catalog.append({
+                    "objectId": object_id,
+                    "label": str(rule.get("objectLabel") or rule.get("label") or object_id),
+                })
+            object_results = []
+            for item in object_catalog:
+                assigned = [record for record in layer_observations if record.get("objectId") == item["objectId"]]
+                hit_count = sum(1 for record in assigned if record["hit"] is True)
+                object_results.append({
+                    **item,
+                    "observationCount": len(assigned),
+                    "observationPercentage": round(len(assigned) / len(classifications) * 100, 1) if classifications else 0.0,
+                    "hit": hit_count > 0,
+                    "hitCount": hit_count,
+                    "missCount": 0,
+                })
+            hit_taps = sum(1 for record in layer_observations if record["hit"] is True)
+            semantic_layer_results.append({
+                "layerId": str(layer["layerId"]),
+                "label": str(layer["label"]),
+                "resultLabel": str(layer.get("resultLabel") or layer["label"]),
+                "hitTapCount": hit_taps,
+                "objectsHit": sum(1 for item in object_results if item["hit"] is True),
+                "objectCount": len(object_results),
+                "objectResults": object_results,
+                "observationResults": layer_observations,
+                "accountingRole": "semantic_view_of_primary_observations",
+            })
+        scoring["semanticLayerResults"] = semantic_layer_results
+        primary_layer_id = str(scoring_data.get("primaryObjectLayerId") or "")
+        primary_layer = next((item for item in semantic_layer_results if item["layerId"] == primary_layer_id), None)
+        if primary_layer is not None:
+            scoring["objectResults"] = deepcopy(primary_layer["objectResults"])
     cumulative_policy = scoring_data.get("cumulativeCountPolicy")
     if isinstance(cumulative_policy, Mapping):
         cumulative_results = []

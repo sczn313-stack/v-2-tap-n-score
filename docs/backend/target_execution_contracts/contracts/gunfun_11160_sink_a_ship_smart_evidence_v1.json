@@ -36,10 +36,10 @@
       "shooterExperience": {
         "schemaVersion": "sczn3-shooter-experience-draft-v1",
         "status": "connected_with_authority_limitations",
-        "description": "Identify each distinct ship; report impacts by ship and optionally show vessel-by-vessel completion only when a completion criterion is defined.",
+        "description": "Engage the eight governed ships and the separate central circular object through 25 printed aiming circles. SCZN3 reports every circle hit, every object contacted, and every shot outside the governed play areas.",
         "visibleArtworkDescription": "Naval board with several differently sized ships, a central circular feature, and colored circles.",
-        "authorityLimitations": "Do not infer ship points or required hit count from color or size.",
-        "supportedExperience": "preserve every registered observation; show object/area distribution where governed, misses only where governed boundaries support classification; retain result, SEC, Vault, exact reopen. No invented numeric score.",
+        "authorityLimitations": "No numeric points, automatic sunk threshold, central-object bonus, turn sequence, or winner rule is asserted where exact publisher wording is not independently preserved.",
+        "supportedExperience": "Object and aiming-circle distribution, unique-object contact, outside misses, complete tap reconciliation, RESULT, SEC, Vault, and exact reopen. No invented numeric score.",
         "provenance": {
           "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
           "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
@@ -49,7 +49,8 @@
           "masterNumber": 193,
           "inventoryRecordId": "gunfun:0008",
           "sku": "11160",
-          "connectedAt": "2026-10-12"
+          "connectedAt": "2026-10-13",
+          "issue": "https://github.com/sczn313-stack/v-2-tap-n-score/issues/4"
         }
       }
     }
@@ -60,13 +61,926 @@
       "version": "1",
       "status": "approved",
       "definition": {
-        "status": "image_plane_evidence_only",
+        "status": "ugo_governed_complete_boundary",
         "coordinateSystem": "normalized_source_image_top_left",
-        "canonicalRegionMapping": "unavailable",
-        "semanticClassification": "unavailable",
-        "physicalMeasurement": "unavailable"
+        "layoutModel": "repeated_regions",
+        "canonicalRegionMapping": "available",
+        "semanticClassification": "available",
+        "physicalMeasurement": {
+          "width": 19.0,
+          "height": 25.0,
+          "unit": "inch"
+        },
+        "regions": [
+          {
+            "regionId": "aim_circle_01",
+            "shape": "ellipse",
+            "cx": 0.13047368,
+            "cy": 0.23248,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 999
+          },
+          {
+            "regionId": "aim_circle_02",
+            "shape": "ellipse",
+            "cx": 0.29031579,
+            "cy": 0.2326,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 998
+          },
+          {
+            "regionId": "aim_circle_03",
+            "shape": "ellipse",
+            "cx": 0.45036842,
+            "cy": 0.23252,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 997
+          },
+          {
+            "regionId": "aim_circle_04",
+            "shape": "ellipse",
+            "cx": 0.61,
+            "cy": 0.2326,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 996
+          },
+          {
+            "regionId": "aim_circle_05",
+            "shape": "ellipse",
+            "cx": 0.77,
+            "cy": 0.2326,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 995
+          },
+          {
+            "regionId": "aim_circle_06",
+            "shape": "ellipse",
+            "cx": 0.373,
+            "cy": 0.37856,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 994
+          },
+          {
+            "regionId": "aim_circle_07",
+            "shape": "ellipse",
+            "cx": 0.50905263,
+            "cy": 0.37852,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 993
+          },
+          {
+            "regionId": "aim_circle_08",
+            "shape": "ellipse",
+            "cx": 0.64405263,
+            "cy": 0.3786,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 992
+          },
+          {
+            "regionId": "aim_circle_09",
+            "shape": "ellipse",
+            "cx": 0.09115789,
+            "cy": 0.3686,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 991
+          },
+          {
+            "regionId": "aim_circle_10",
+            "shape": "ellipse",
+            "cx": 0.18594737,
+            "cy": 0.43824,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 990
+          },
+          {
+            "regionId": "aim_circle_11",
+            "shape": "ellipse",
+            "cx": 0.90631579,
+            "cy": 0.33016,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 989
+          },
+          {
+            "regionId": "aim_circle_12",
+            "shape": "ellipse",
+            "cx": 0.90757895,
+            "cy": 0.42992,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 988
+          },
+          {
+            "regionId": "aim_circle_13",
+            "shape": "ellipse",
+            "cx": 0.50252632,
+            "cy": 0.50648,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 987
+          },
+          {
+            "regionId": "aim_circle_14",
+            "shape": "ellipse",
+            "cx": 0.09578947,
+            "cy": 0.58116,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 986
+          },
+          {
+            "regionId": "aim_circle_15",
+            "shape": "ellipse",
+            "cx": 0.09663158,
+            "cy": 0.68092,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 985
+          },
+          {
+            "regionId": "aim_circle_16",
+            "shape": "ellipse",
+            "cx": 0.82089474,
+            "cy": 0.56736,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 984
+          },
+          {
+            "regionId": "aim_circle_17",
+            "shape": "ellipse",
+            "cx": 0.91510526,
+            "cy": 0.63744,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 983
+          },
+          {
+            "regionId": "aim_circle_18",
+            "shape": "ellipse",
+            "cx": 0.35968421,
+            "cy": 0.62428,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 982
+          },
+          {
+            "regionId": "aim_circle_19",
+            "shape": "ellipse",
+            "cx": 0.49484211,
+            "cy": 0.62428,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 981
+          },
+          {
+            "regionId": "aim_circle_20",
+            "shape": "ellipse",
+            "cx": 0.63094737,
+            "cy": 0.62424,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 980
+          },
+          {
+            "regionId": "aim_circle_21",
+            "shape": "ellipse",
+            "cx": 0.23,
+            "cy": 0.77836,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 979
+          },
+          {
+            "regionId": "aim_circle_22",
+            "shape": "ellipse",
+            "cx": 0.38857895,
+            "cy": 0.77832,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 978
+          },
+          {
+            "regionId": "aim_circle_23",
+            "shape": "ellipse",
+            "cx": 0.54715789,
+            "cy": 0.7784,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 977
+          },
+          {
+            "regionId": "aim_circle_24",
+            "shape": "ellipse",
+            "cx": 0.70589474,
+            "cy": 0.77844,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 976
+          },
+          {
+            "regionId": "aim_circle_25",
+            "shape": "ellipse",
+            "cx": 0.86410526,
+            "cy": 0.77844,
+            "radiusX": 0.04473684,
+            "radiusY": 0.034,
+            "priority": 975
+          }
+        ],
+        "ugoAuthority": "EP64-ISSUE4-UGO-11160-V1",
+        "physicalAuthority": {
+          "authorityId": "EP64-ISSUE4-PHYSICAL-11160-V1",
+          "source": "GunFun SKU 11160 exact physical target and preserved publisher product identity",
+          "targetPlane": {
+            "width": 19.0,
+            "height": 25.0,
+            "unit": "inch"
+          },
+          "pixelIsAuthority": false,
+          "ugoTranslatesPhysicalTruth": true
+        },
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "aim_circle_01",
+            "aim_circle_02",
+            "aim_circle_03",
+            "aim_circle_04",
+            "aim_circle_05",
+            "aim_circle_06",
+            "aim_circle_07",
+            "aim_circle_08",
+            "aim_circle_09",
+            "aim_circle_10",
+            "aim_circle_11",
+            "aim_circle_12",
+            "aim_circle_13",
+            "aim_circle_14",
+            "aim_circle_15",
+            "aim_circle_16",
+            "aim_circle_17",
+            "aim_circle_18",
+            "aim_circle_19",
+            "aim_circle_20",
+            "aim_circle_21",
+            "aim_circle_22",
+            "aim_circle_23",
+            "aim_circle_24",
+            "aim_circle_25"
+          ],
+          "boundaries": [
+            {
+              "regionId": "aim_circle_01",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.13047368,
+                  "y": 0.23248,
+                  "expectedEntityId": "aim_circle_01"
+                },
+                "edge": {
+                  "x": 0.17516578,
+                  "y": 0.23248,
+                  "expectedEntityId": "aim_circle_01"
+                },
+                "outside": {
+                  "x": 0.17878947,
+                  "y": 0.23248,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_02",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.29031579,
+                  "y": 0.2326,
+                  "expectedEntityId": "aim_circle_02"
+                },
+                "edge": {
+                  "x": 0.33500789,
+                  "y": 0.2326,
+                  "expectedEntityId": "aim_circle_02"
+                },
+                "outside": {
+                  "x": 0.33863158,
+                  "y": 0.2326,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_03",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.45036842,
+                  "y": 0.23252,
+                  "expectedEntityId": "aim_circle_03"
+                },
+                "edge": {
+                  "x": 0.49506052,
+                  "y": 0.23252,
+                  "expectedEntityId": "aim_circle_03"
+                },
+                "outside": {
+                  "x": 0.49868421,
+                  "y": 0.23252,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_04",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.61,
+                  "y": 0.2326,
+                  "expectedEntityId": "aim_circle_04"
+                },
+                "edge": {
+                  "x": 0.6546921,
+                  "y": 0.2326,
+                  "expectedEntityId": "aim_circle_04"
+                },
+                "outside": {
+                  "x": 0.65831579,
+                  "y": 0.2326,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_05",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.77,
+                  "y": 0.2326,
+                  "expectedEntityId": "aim_circle_05"
+                },
+                "edge": {
+                  "x": 0.8146921,
+                  "y": 0.2326,
+                  "expectedEntityId": "aim_circle_05"
+                },
+                "outside": {
+                  "x": 0.81831579,
+                  "y": 0.2326,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_06",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.373,
+                  "y": 0.37856,
+                  "expectedEntityId": "aim_circle_06"
+                },
+                "edge": {
+                  "x": 0.4176921,
+                  "y": 0.37856,
+                  "expectedEntityId": "aim_circle_06"
+                },
+                "outside": {
+                  "x": 0.42131579,
+                  "y": 0.37856,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_07",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.50905263,
+                  "y": 0.37852,
+                  "expectedEntityId": "aim_circle_07"
+                },
+                "edge": {
+                  "x": 0.55374473,
+                  "y": 0.37852,
+                  "expectedEntityId": "aim_circle_07"
+                },
+                "outside": {
+                  "x": 0.55736842,
+                  "y": 0.37852,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_08",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.64405263,
+                  "y": 0.3786,
+                  "expectedEntityId": "aim_circle_08"
+                },
+                "edge": {
+                  "x": 0.68874473,
+                  "y": 0.3786,
+                  "expectedEntityId": "aim_circle_08"
+                },
+                "outside": {
+                  "x": 0.69236842,
+                  "y": 0.3786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_09",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.09115789,
+                  "y": 0.3686,
+                  "expectedEntityId": "aim_circle_09"
+                },
+                "edge": {
+                  "x": 0.13584999,
+                  "y": 0.3686,
+                  "expectedEntityId": "aim_circle_09"
+                },
+                "outside": {
+                  "x": 0.13947368,
+                  "y": 0.3686,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.18594737,
+                  "y": 0.43824,
+                  "expectedEntityId": "aim_circle_10"
+                },
+                "edge": {
+                  "x": 0.23063947,
+                  "y": 0.43824,
+                  "expectedEntityId": "aim_circle_10"
+                },
+                "outside": {
+                  "x": 0.23426316,
+                  "y": 0.43824,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_11",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.90631579,
+                  "y": 0.33016,
+                  "expectedEntityId": "aim_circle_11"
+                },
+                "edge": {
+                  "x": 0.95100789,
+                  "y": 0.33016,
+                  "expectedEntityId": "aim_circle_11"
+                },
+                "outside": {
+                  "x": 0.95463158,
+                  "y": 0.33016,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_12",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.90757895,
+                  "y": 0.42992,
+                  "expectedEntityId": "aim_circle_12"
+                },
+                "edge": {
+                  "x": 0.95227105,
+                  "y": 0.42992,
+                  "expectedEntityId": "aim_circle_12"
+                },
+                "outside": {
+                  "x": 0.95589474,
+                  "y": 0.42992,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_13",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.50252632,
+                  "y": 0.50648,
+                  "expectedEntityId": "aim_circle_13"
+                },
+                "edge": {
+                  "x": 0.54721842,
+                  "y": 0.50648,
+                  "expectedEntityId": "aim_circle_13"
+                },
+                "outside": {
+                  "x": 0.55084211,
+                  "y": 0.50648,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_14",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.09578947,
+                  "y": 0.58116,
+                  "expectedEntityId": "aim_circle_14"
+                },
+                "edge": {
+                  "x": 0.14048157,
+                  "y": 0.58116,
+                  "expectedEntityId": "aim_circle_14"
+                },
+                "outside": {
+                  "x": 0.14410526,
+                  "y": 0.58116,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_15",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.09663158,
+                  "y": 0.68092,
+                  "expectedEntityId": "aim_circle_15"
+                },
+                "edge": {
+                  "x": 0.14132368,
+                  "y": 0.68092,
+                  "expectedEntityId": "aim_circle_15"
+                },
+                "outside": {
+                  "x": 0.14494737,
+                  "y": 0.68092,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_16",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.82089474,
+                  "y": 0.56736,
+                  "expectedEntityId": "aim_circle_16"
+                },
+                "edge": {
+                  "x": 0.86558684,
+                  "y": 0.56736,
+                  "expectedEntityId": "aim_circle_16"
+                },
+                "outside": {
+                  "x": 0.86921053,
+                  "y": 0.56736,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_17",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.91510526,
+                  "y": 0.63744,
+                  "expectedEntityId": "aim_circle_17"
+                },
+                "edge": {
+                  "x": 0.95979736,
+                  "y": 0.63744,
+                  "expectedEntityId": "aim_circle_17"
+                },
+                "outside": {
+                  "x": 0.96342105,
+                  "y": 0.63744,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_18",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.35968421,
+                  "y": 0.62428,
+                  "expectedEntityId": "aim_circle_18"
+                },
+                "edge": {
+                  "x": 0.40437631,
+                  "y": 0.62428,
+                  "expectedEntityId": "aim_circle_18"
+                },
+                "outside": {
+                  "x": 0.408,
+                  "y": 0.62428,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_19",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.49484211,
+                  "y": 0.62428,
+                  "expectedEntityId": "aim_circle_19"
+                },
+                "edge": {
+                  "x": 0.53953421,
+                  "y": 0.62428,
+                  "expectedEntityId": "aim_circle_19"
+                },
+                "outside": {
+                  "x": 0.5431579,
+                  "y": 0.62428,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_20",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.63094737,
+                  "y": 0.62424,
+                  "expectedEntityId": "aim_circle_20"
+                },
+                "edge": {
+                  "x": 0.67563947,
+                  "y": 0.62424,
+                  "expectedEntityId": "aim_circle_20"
+                },
+                "outside": {
+                  "x": 0.67926316,
+                  "y": 0.62424,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_21",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.23,
+                  "y": 0.77836,
+                  "expectedEntityId": "aim_circle_21"
+                },
+                "edge": {
+                  "x": 0.2746921,
+                  "y": 0.77836,
+                  "expectedEntityId": "aim_circle_21"
+                },
+                "outside": {
+                  "x": 0.27831579,
+                  "y": 0.77836,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_22",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.38857895,
+                  "y": 0.77832,
+                  "expectedEntityId": "aim_circle_22"
+                },
+                "edge": {
+                  "x": 0.43327105,
+                  "y": 0.77832,
+                  "expectedEntityId": "aim_circle_22"
+                },
+                "outside": {
+                  "x": 0.43689474,
+                  "y": 0.77832,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_23",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.54715789,
+                  "y": 0.7784,
+                  "expectedEntityId": "aim_circle_23"
+                },
+                "edge": {
+                  "x": 0.59184999,
+                  "y": 0.7784,
+                  "expectedEntityId": "aim_circle_23"
+                },
+                "outside": {
+                  "x": 0.59547368,
+                  "y": 0.7784,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_24",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.70589474,
+                  "y": 0.77844,
+                  "expectedEntityId": "aim_circle_24"
+                },
+                "edge": {
+                  "x": 0.75058684,
+                  "y": 0.77844,
+                  "expectedEntityId": "aim_circle_24"
+                },
+                "outside": {
+                  "x": 0.75421053,
+                  "y": 0.77844,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_25",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.86410526,
+                  "y": 0.77844,
+                  "expectedEntityId": "aim_circle_25"
+                },
+                "edge": {
+                  "x": 0.90879736,
+                  "y": 0.77844,
+                  "expectedEntityId": "aim_circle_25"
+                },
+                "outside": {
+                  "x": 0.91242105,
+                  "y": 0.77844,
+                  "expectedEntityId": "outside"
+                }
+              }
+            }
+          ]
+        },
+        "completeBoundaryLedger": {
+          "resultAffectingBoundaryCount": 25,
+          "insideEdgeOutsideRequired": true,
+          "lineTouchRule": "inside_or_touching_printed_line_is_hit",
+          "outsideDefinition": "outside_all_governed_aim_circles"
+        }
       },
-      "digest": "b23421b46e14b5b321e50c6b27edeb58c919a8cef46155cab0bb3f7ab5b2e34a"
+      "digest": "88be61d218514640302842a44d301a10778c116e608345fe729e7d45197c6b88"
     },
     "registration": {
       "id": "gunfun_11160_sink_a_ship-registration",
@@ -86,26 +1000,276 @@
       "version": "1",
       "status": "approved",
       "definition": {
-        "status": "not_applicable",
-        "reason": "audited_capability_held_pending_backend_authority",
-        "auditedScoringGovernance": {
-          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
-          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
-          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
-          "resultRequirement": "Meaningful object/game result + misses + total taps.",
-          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
-          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
-        }
+        "status": "complete",
+        "model": "multiple_bulls",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "regionRules": {
+          "aim_circle_01": {
+            "label": "Aim Circle 1 \u2014 Upper Fleet \u2014 Ship 1",
+            "objectId": "upper_ship_1",
+            "objectLabel": "Upper Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_02": {
+            "label": "Aim Circle 2 \u2014 Upper Fleet \u2014 Ship 1",
+            "objectId": "upper_ship_1",
+            "objectLabel": "Upper Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_03": {
+            "label": "Aim Circle 3 \u2014 Upper Fleet \u2014 Ship 1",
+            "objectId": "upper_ship_1",
+            "objectLabel": "Upper Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_04": {
+            "label": "Aim Circle 4 \u2014 Upper Fleet \u2014 Ship 1",
+            "objectId": "upper_ship_1",
+            "objectLabel": "Upper Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 4
+          },
+          "aim_circle_05": {
+            "label": "Aim Circle 5 \u2014 Upper Fleet \u2014 Ship 1",
+            "objectId": "upper_ship_1",
+            "objectLabel": "Upper Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 5
+          },
+          "aim_circle_06": {
+            "label": "Aim Circle 6 \u2014 Upper Fleet \u2014 Ship 2",
+            "objectId": "upper_ship_2",
+            "objectLabel": "Upper Fleet \u2014 Ship 2",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_07": {
+            "label": "Aim Circle 7 \u2014 Upper Fleet \u2014 Ship 2",
+            "objectId": "upper_ship_2",
+            "objectLabel": "Upper Fleet \u2014 Ship 2",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_08": {
+            "label": "Aim Circle 8 \u2014 Upper Fleet \u2014 Ship 2",
+            "objectId": "upper_ship_2",
+            "objectLabel": "Upper Fleet \u2014 Ship 2",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_09": {
+            "label": "Aim Circle 9 \u2014 Upper Fleet \u2014 Ship 3",
+            "objectId": "upper_ship_3",
+            "objectLabel": "Upper Fleet \u2014 Ship 3",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_10": {
+            "label": "Aim Circle 10 \u2014 Upper Fleet \u2014 Ship 3",
+            "objectId": "upper_ship_3",
+            "objectLabel": "Upper Fleet \u2014 Ship 3",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_11": {
+            "label": "Aim Circle 11 \u2014 Upper Fleet \u2014 Ship 4",
+            "objectId": "upper_ship_4",
+            "objectLabel": "Upper Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_12": {
+            "label": "Aim Circle 12 \u2014 Upper Fleet \u2014 Ship 4",
+            "objectId": "upper_ship_4",
+            "objectLabel": "Upper Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_13": {
+            "label": "Aim Circle 13 \u2014 Central Circular Object",
+            "objectId": "central_object",
+            "objectLabel": "Central Circular Object",
+            "countsAsHit": true,
+            "fleetPosition": "center",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_14": {
+            "label": "Aim Circle 14 \u2014 Lower Fleet \u2014 Ship 1",
+            "objectId": "lower_ship_1",
+            "objectLabel": "Lower Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_15": {
+            "label": "Aim Circle 15 \u2014 Lower Fleet \u2014 Ship 1",
+            "objectId": "lower_ship_1",
+            "objectLabel": "Lower Fleet \u2014 Ship 1",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_16": {
+            "label": "Aim Circle 16 \u2014 Lower Fleet \u2014 Ship 2",
+            "objectId": "lower_ship_2",
+            "objectLabel": "Lower Fleet \u2014 Ship 2",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_17": {
+            "label": "Aim Circle 17 \u2014 Lower Fleet \u2014 Ship 2",
+            "objectId": "lower_ship_2",
+            "objectLabel": "Lower Fleet \u2014 Ship 2",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_18": {
+            "label": "Aim Circle 18 \u2014 Lower Fleet \u2014 Ship 3",
+            "objectId": "lower_ship_3",
+            "objectLabel": "Lower Fleet \u2014 Ship 3",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_19": {
+            "label": "Aim Circle 19 \u2014 Lower Fleet \u2014 Ship 3",
+            "objectId": "lower_ship_3",
+            "objectLabel": "Lower Fleet \u2014 Ship 3",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_20": {
+            "label": "Aim Circle 20 \u2014 Lower Fleet \u2014 Ship 3",
+            "objectId": "lower_ship_3",
+            "objectLabel": "Lower Fleet \u2014 Ship 3",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_21": {
+            "label": "Aim Circle 21 \u2014 Lower Fleet \u2014 Ship 4",
+            "objectId": "lower_ship_4",
+            "objectLabel": "Lower Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_22": {
+            "label": "Aim Circle 22 \u2014 Lower Fleet \u2014 Ship 4",
+            "objectId": "lower_ship_4",
+            "objectLabel": "Lower Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_23": {
+            "label": "Aim Circle 23 \u2014 Lower Fleet \u2014 Ship 4",
+            "objectId": "lower_ship_4",
+            "objectLabel": "Lower Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_24": {
+            "label": "Aim Circle 24 \u2014 Lower Fleet \u2014 Ship 4",
+            "objectId": "lower_ship_4",
+            "objectLabel": "Lower Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 4
+          },
+          "aim_circle_25": {
+            "label": "Aim Circle 25 \u2014 Lower Fleet \u2014 Ship 4",
+            "objectId": "lower_ship_4",
+            "objectLabel": "Lower Fleet \u2014 Ship 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 5
+          }
+        },
+        "outsideRule": {
+          "label": "Outside Governed Play Areas",
+          "countsAsHit": false
+        },
+        "classificationFootprintMode": "hit_on_touch",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "GunFun SKU 11160 exact physical target and preserved publisher product identity",
+          "rule": "Printed magenta circles are the governed hit areas for the eight ships and the separate central circular object. A tap inside or touching a governed circle counts as a hit on that circle and its parent object.",
+          "limitations": "No numeric points, automatic sunk threshold, central-object bonus, turn sequence, or winner rule is asserted where exact publisher wording is not independently preserved."
+        },
+        "primaryObjectLayerId": "ships",
+        "semanticLayers": [
+          {
+            "layerId": "ships",
+            "label": "Ships",
+            "resultLabel": "Ships Contacted",
+            "regionIds": [
+              "aim_circle_01",
+              "aim_circle_02",
+              "aim_circle_03",
+              "aim_circle_04",
+              "aim_circle_05",
+              "aim_circle_06",
+              "aim_circle_07",
+              "aim_circle_08",
+              "aim_circle_09",
+              "aim_circle_10",
+              "aim_circle_11",
+              "aim_circle_12",
+              "aim_circle_14",
+              "aim_circle_15",
+              "aim_circle_16",
+              "aim_circle_17",
+              "aim_circle_18",
+              "aim_circle_19",
+              "aim_circle_20",
+              "aim_circle_21",
+              "aim_circle_22",
+              "aim_circle_23",
+              "aim_circle_24",
+              "aim_circle_25"
+            ]
+          },
+          {
+            "layerId": "central_object",
+            "label": "Central Object",
+            "resultLabel": "Central Object Contacted",
+            "regionIds": [
+              "aim_circle_13"
+            ]
+          }
+        ]
       },
-      "digest": "214a4f027f8e644eb4e915a78b5e1f8cf9b425f00f92cf4d375d8d7667cf8585"
+      "digest": "7d53d9e4557916656a921b3e2bfaf093c49f24f157fc2580c93616bc984d5f45"
     },
     "mission": {
       "id": "gunfun_11160_sink_a_ship-mission",
       "version": "1",
       "status": "approved",
       "definition": {
-        "missionFamily": "smartEvidenceCapture",
-        "resultPackageType": "smartEvidenceResult",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
         "interaction": {
@@ -121,52 +1285,71 @@
             "status": "available"
           },
           "measurement": {
-            "status": "not_applicable"
+            "status": "available"
           },
           "correction": {
             "status": "not_applicable"
           },
           "officialScore": {
-            "status": "withheld",
-            "reason": "governed_backend_geometry_or_value_binding_missing"
+            "status": "not_applicable",
+            "reason": "no_governed_numeric_score"
           },
           "publisherMission": {
-            "status": "withheld",
-            "reason": "governed_backend_geometry_or_value_binding_missing"
+            "status": "available"
           },
           "qualification": {
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "authorityResolution": "Issue #4 target-local fleet and printed-circle authority admitted through UGO; no numeric score or unsupported game state added.",
         "recognizedBehaviorFamily": "OBJECT_OR_GAME_DISTRIBUTION",
         "allowShooterDeclaredAim": false,
-        "auditedScoringGovernance": {
-          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
-          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
-          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
-          "resultRequirement": "Meaningful object/game result + misses + total taps.",
-          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
-          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
+        "smartTargetTreatment": {
+          "grammar": [
+            "governed_fleet_objects",
+            "governed_aim_circles",
+            "open_observation_count"
+          ],
+          "shooterFacingVocabulary": {
+            "singular": "ship",
+            "plural": "ships"
+          },
+          "objectCompletionVerbPast": "contacted",
+          "objectCompletionLabel": "Ships Contacted",
+          "outsideLabel": "Outside Governed Play Areas",
+          "hitAreaLabel": "governed aiming circles",
+          "intelligence": [
+            "hits_by_object",
+            "hits_by_aiming_circle",
+            "unique_objects_contacted",
+            "misses_outside_governed_play_areas",
+            "complete_observation_accounting"
+          ],
+          "authorityScope": "publisher_physical_target_plus_preserved_rules_plus_ugo_translation",
+          "publisherScoreStatus": "no_numeric_score_governed",
+          "limitations": "No numeric points, automatic sunk threshold, central-object bonus, turn sequence, or winner rule is asserted where exact publisher wording is not independently preserved.",
+          "resultPresentation": {
+            "showObjectTapIdentifiers": true
+          }
         }
       },
-      "digest": "cee5287cf7722d9feed2aea9d014552bc3937dda8a3e6c150e7a0859058ef789"
+      "digest": "5d4ab7a6ec3f106484e8a1c36fae4fbe0fc5fac91e97a611d47fa20893ff44ed"
     }
   },
-  "missionFamily": "smartEvidenceCapture",
-  "resultPackageType": "smartEvidenceResult",
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
   "resultPackageVersion": "1",
   "executor": {
-    "id": "smart-evidence-capture",
+    "id": "declarative-target-score",
     "version": "1"
   },
   "secAdapter": {
-    "id": "smart-evidence-family",
+    "id": "target-scoring-family",
     "version": "1",
-    "scoringPresentationFamily": "not_applicable"
+    "scoringPresentationFamily": "object_distribution"
   },
   "preservationValidator": {
-    "id": "smart-evidence-preservation",
+    "id": "target-scoring-preservation",
     "version": "1"
   },
   "session": {
@@ -175,18 +1358,17 @@
         "status": "available"
       },
       "measurement": {
-        "status": "not_applicable"
+        "status": "available"
       },
       "correction": {
         "status": "not_applicable"
       },
       "officialScore": {
-        "status": "withheld",
-        "reason": "governed_backend_geometry_or_value_binding_missing"
+        "status": "not_applicable",
+        "reason": "no_governed_numeric_score"
       },
       "publisherMission": {
-        "status": "withheld",
-        "reason": "governed_backend_geometry_or_value_binding_missing"
+        "status": "available"
       },
       "qualification": {
         "status": "not_applicable"
@@ -198,6 +1380,7 @@
     "zeroing_correction",
     "qualification_or_certification",
     "pixel_derived_physical_authority",
-    "audited_capability_without_governed_backend_geometry_or_value_binding"
+    "numeric_score_without_authority",
+    "automatic_sunk_or_winner_claim_without_governed_play_state"
   ]
 }

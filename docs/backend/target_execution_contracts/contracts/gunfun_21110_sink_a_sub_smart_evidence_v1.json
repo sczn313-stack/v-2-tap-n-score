@@ -36,10 +36,10 @@
       "shooterExperience": {
         "schemaVersion": "sczn3-shooter-experience-draft-v1",
         "status": "connected_with_authority_limitations",
-        "description": "Present each submarine as a separate vessel; show observed impacts on each vessel and which vessels have received hits. Track shots outside vessels separately.",
+        "description": "Engage the 8 governed submarines through their 16 printed aiming circles. SCZN3 reports every circle hit, every object contacted, and every shot outside the governed play areas.",
         "visibleArtworkDescription": "Naval board with multiple horizontal submarine shapes and colored circular zones.",
-        "authorityLimitations": "Do not assume a vessel is sunk after one impact; publisher-defined sinking/point thresholds require authority.",
-        "supportedExperience": "preserve every registered observation; show object/area distribution where governed, misses only where governed boundaries support classification; retain result, SEC, Vault, exact reopen. No invented numeric score.",
+        "authorityLimitations": "Fleet ownership and alternating turns are shooter-managed. SCZN3 reports governed ring and submarine contact; it does not declare a submarine sunk or a winner without a governed play-state record.",
+        "supportedExperience": "Object and aiming-circle distribution, unique-object contact, outside misses, complete tap reconciliation, RESULT, SEC, Vault, and exact reopen. No invented numeric score.",
         "provenance": {
           "authorityRole": "homie_shooter_experience_draft_not_geometry_or_scoring_authority",
           "sourceWorkbook": "IMAGE_MASTER_Batch13_98_Reviewed_With_Ledger.xlsx",
@@ -49,7 +49,8 @@
           "masterNumber": 192,
           "inventoryRecordId": "gunfun:0072",
           "sku": "21110",
-          "connectedAt": "2026-10-12"
+          "connectedAt": "2026-10-13",
+          "issue": "https://github.com/sczn313-stack/v-2-tap-n-score/issues/4"
         }
       }
     }
@@ -60,13 +61,611 @@
       "version": "1",
       "status": "approved",
       "definition": {
-        "status": "image_plane_evidence_only",
+        "status": "ugo_governed_complete_boundary",
         "coordinateSystem": "normalized_source_image_top_left",
-        "canonicalRegionMapping": "unavailable",
-        "semanticClassification": "unavailable",
-        "physicalMeasurement": "unavailable"
+        "layoutModel": "repeated_regions",
+        "canonicalRegionMapping": "available",
+        "semanticClassification": "available",
+        "physicalMeasurement": {
+          "width": 23.0,
+          "height": 35.0,
+          "unit": "inch"
+        },
+        "regions": [
+          {
+            "regionId": "aim_circle_01",
+            "shape": "ellipse",
+            "cx": 0.25669565,
+            "cy": 0.1458,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 999
+          },
+          {
+            "regionId": "aim_circle_02",
+            "shape": "ellipse",
+            "cx": 0.49452174,
+            "cy": 0.1452,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 998
+          },
+          {
+            "regionId": "aim_circle_03",
+            "shape": "ellipse",
+            "cx": 0.774,
+            "cy": 0.1458,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 997
+          },
+          {
+            "regionId": "aim_circle_04",
+            "shape": "ellipse",
+            "cx": 0.25869565,
+            "cy": 0.2786,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 996
+          },
+          {
+            "regionId": "aim_circle_05",
+            "shape": "ellipse",
+            "cx": 0.73930435,
+            "cy": 0.2786,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 995
+          },
+          {
+            "regionId": "aim_circle_06",
+            "shape": "ellipse",
+            "cx": 0.25769565,
+            "cy": 0.4108,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 994
+          },
+          {
+            "regionId": "aim_circle_07",
+            "shape": "ellipse",
+            "cx": 0.49552174,
+            "cy": 0.4102,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 993
+          },
+          {
+            "regionId": "aim_circle_08",
+            "shape": "ellipse",
+            "cx": 0.775,
+            "cy": 0.4108,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 992
+          },
+          {
+            "regionId": "aim_circle_09",
+            "shape": "ellipse",
+            "cx": 0.22,
+            "cy": 0.5508,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 991
+          },
+          {
+            "regionId": "aim_circle_10",
+            "shape": "ellipse",
+            "cx": 0.49852174,
+            "cy": 0.5508,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 990
+          },
+          {
+            "regionId": "aim_circle_11",
+            "shape": "ellipse",
+            "cx": 0.7373913,
+            "cy": 0.5508,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 989
+          },
+          {
+            "regionId": "aim_circle_12",
+            "shape": "ellipse",
+            "cx": 0.25469565,
+            "cy": 0.683,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 988
+          },
+          {
+            "regionId": "aim_circle_13",
+            "shape": "ellipse",
+            "cx": 0.7353913,
+            "cy": 0.683,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 987
+          },
+          {
+            "regionId": "aim_circle_14",
+            "shape": "ellipse",
+            "cx": 0.22,
+            "cy": 0.81511429,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 986
+          },
+          {
+            "regionId": "aim_circle_15",
+            "shape": "ellipse",
+            "cx": 0.49952174,
+            "cy": 0.8158,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 985
+          },
+          {
+            "regionId": "aim_circle_16",
+            "shape": "ellipse",
+            "cx": 0.7373913,
+            "cy": 0.81511429,
+            "radiusX": 0.08695652,
+            "radiusY": 0.05714286,
+            "priority": 984
+          }
+        ],
+        "ugoAuthority": "EP64-ISSUE4-UGO-21110-V1",
+        "physicalAuthority": {
+          "authorityId": "EP64-ISSUE4-PHYSICAL-21110-V1",
+          "source": "GunFun SKU 21110 exact physical target plus preserved publisher rules",
+          "targetPlane": {
+            "width": 23.0,
+            "height": 35.0,
+            "unit": "inch"
+          },
+          "pixelIsAuthority": false,
+          "ugoTranslatesPhysicalTruth": true
+        },
+        "completeBoundaryProof": {
+          "schemaVersion": "sczn3.ugo.complete-boundary.v1",
+          "status": "PASS",
+          "completenessAssertion": {
+            "allResultAffectingPhysicalBoundariesEnumerated": true,
+            "allOuterHitMissEnvelopesEnumerated": true,
+            "pixelIsAuthorityFalse": true
+          },
+          "resultAffectingBoundaryIds": [
+            "aim_circle_01",
+            "aim_circle_02",
+            "aim_circle_03",
+            "aim_circle_04",
+            "aim_circle_05",
+            "aim_circle_06",
+            "aim_circle_07",
+            "aim_circle_08",
+            "aim_circle_09",
+            "aim_circle_10",
+            "aim_circle_11",
+            "aim_circle_12",
+            "aim_circle_13",
+            "aim_circle_14",
+            "aim_circle_15",
+            "aim_circle_16"
+          ],
+          "boundaries": [
+            {
+              "regionId": "aim_circle_01",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.25669565,
+                  "y": 0.1458,
+                  "expectedEntityId": "aim_circle_01"
+                },
+                "edge": {
+                  "x": 0.34356521,
+                  "y": 0.1458,
+                  "expectedEntityId": "aim_circle_01"
+                },
+                "outside": {
+                  "x": 0.35060869,
+                  "y": 0.1458,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_02",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.49452174,
+                  "y": 0.1452,
+                  "expectedEntityId": "aim_circle_02"
+                },
+                "edge": {
+                  "x": 0.5813913,
+                  "y": 0.1452,
+                  "expectedEntityId": "aim_circle_02"
+                },
+                "outside": {
+                  "x": 0.58843478,
+                  "y": 0.1452,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_03",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.774,
+                  "y": 0.1458,
+                  "expectedEntityId": "aim_circle_03"
+                },
+                "edge": {
+                  "x": 0.86086956,
+                  "y": 0.1458,
+                  "expectedEntityId": "aim_circle_03"
+                },
+                "outside": {
+                  "x": 0.86791304,
+                  "y": 0.1458,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_04",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.25869565,
+                  "y": 0.2786,
+                  "expectedEntityId": "aim_circle_04"
+                },
+                "edge": {
+                  "x": 0.34556521,
+                  "y": 0.2786,
+                  "expectedEntityId": "aim_circle_04"
+                },
+                "outside": {
+                  "x": 0.35260869,
+                  "y": 0.2786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_05",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.73930435,
+                  "y": 0.2786,
+                  "expectedEntityId": "aim_circle_05"
+                },
+                "edge": {
+                  "x": 0.82617391,
+                  "y": 0.2786,
+                  "expectedEntityId": "aim_circle_05"
+                },
+                "outside": {
+                  "x": 0.83321739,
+                  "y": 0.2786,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_06",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.25769565,
+                  "y": 0.4108,
+                  "expectedEntityId": "aim_circle_06"
+                },
+                "edge": {
+                  "x": 0.34456521,
+                  "y": 0.4108,
+                  "expectedEntityId": "aim_circle_06"
+                },
+                "outside": {
+                  "x": 0.35160869,
+                  "y": 0.4108,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_07",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.49552174,
+                  "y": 0.4102,
+                  "expectedEntityId": "aim_circle_07"
+                },
+                "edge": {
+                  "x": 0.5823913,
+                  "y": 0.4102,
+                  "expectedEntityId": "aim_circle_07"
+                },
+                "outside": {
+                  "x": 0.58943478,
+                  "y": 0.4102,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_08",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.775,
+                  "y": 0.4108,
+                  "expectedEntityId": "aim_circle_08"
+                },
+                "edge": {
+                  "x": 0.86186956,
+                  "y": 0.4108,
+                  "expectedEntityId": "aim_circle_08"
+                },
+                "outside": {
+                  "x": 0.86891304,
+                  "y": 0.4108,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_09",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22,
+                  "y": 0.5508,
+                  "expectedEntityId": "aim_circle_09"
+                },
+                "edge": {
+                  "x": 0.30686956,
+                  "y": 0.5508,
+                  "expectedEntityId": "aim_circle_09"
+                },
+                "outside": {
+                  "x": 0.31391304,
+                  "y": 0.5508,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_10",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.49852174,
+                  "y": 0.5508,
+                  "expectedEntityId": "aim_circle_10"
+                },
+                "edge": {
+                  "x": 0.5853913,
+                  "y": 0.5508,
+                  "expectedEntityId": "aim_circle_10"
+                },
+                "outside": {
+                  "x": 0.59243478,
+                  "y": 0.5508,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_11",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7373913,
+                  "y": 0.5508,
+                  "expectedEntityId": "aim_circle_11"
+                },
+                "edge": {
+                  "x": 0.82426086,
+                  "y": 0.5508,
+                  "expectedEntityId": "aim_circle_11"
+                },
+                "outside": {
+                  "x": 0.83130434,
+                  "y": 0.5508,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_12",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.25469565,
+                  "y": 0.683,
+                  "expectedEntityId": "aim_circle_12"
+                },
+                "edge": {
+                  "x": 0.34156521,
+                  "y": 0.683,
+                  "expectedEntityId": "aim_circle_12"
+                },
+                "outside": {
+                  "x": 0.34860869,
+                  "y": 0.683,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_13",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7353913,
+                  "y": 0.683,
+                  "expectedEntityId": "aim_circle_13"
+                },
+                "edge": {
+                  "x": 0.82226086,
+                  "y": 0.683,
+                  "expectedEntityId": "aim_circle_13"
+                },
+                "outside": {
+                  "x": 0.82930434,
+                  "y": 0.683,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_14",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.22,
+                  "y": 0.81511429,
+                  "expectedEntityId": "aim_circle_14"
+                },
+                "edge": {
+                  "x": 0.30686956,
+                  "y": 0.81511429,
+                  "expectedEntityId": "aim_circle_14"
+                },
+                "outside": {
+                  "x": 0.31391304,
+                  "y": 0.81511429,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_15",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.49952174,
+                  "y": 0.8158,
+                  "expectedEntityId": "aim_circle_15"
+                },
+                "edge": {
+                  "x": 0.5863913,
+                  "y": 0.8158,
+                  "expectedEntityId": "aim_circle_15"
+                },
+                "outside": {
+                  "x": 0.59343478,
+                  "y": 0.8158,
+                  "expectedEntityId": "outside"
+                }
+              }
+            },
+            {
+              "regionId": "aim_circle_16",
+              "effects": [
+                "hit_miss",
+                "zone_identity",
+                "object_identity"
+              ],
+              "probes": {
+                "inside": {
+                  "x": 0.7373913,
+                  "y": 0.81511429,
+                  "expectedEntityId": "aim_circle_16"
+                },
+                "edge": {
+                  "x": 0.82426086,
+                  "y": 0.81511429,
+                  "expectedEntityId": "aim_circle_16"
+                },
+                "outside": {
+                  "x": 0.83130434,
+                  "y": 0.81511429,
+                  "expectedEntityId": "outside"
+                }
+              }
+            }
+          ]
+        },
+        "completeBoundaryLedger": {
+          "resultAffectingBoundaryCount": 16,
+          "insideEdgeOutsideRequired": true,
+          "lineTouchRule": "inside_or_touching_printed_line_is_hit",
+          "outsideDefinition": "outside_all_governed_aim_circles"
+        }
       },
-      "digest": "9908c5bcd6e7d32c9c5fbae2fd01c80a7335937fdbb06b4c4e28a9c0e26ff1d7"
+      "digest": "0a5928ac618f2f4af8be61507ebaeea7bedca8141c49670a5dc316898ea9d5a1"
     },
     "registration": {
       "id": "gunfun_21110_sink_a_sub-registration",
@@ -86,26 +685,162 @@
       "version": "1",
       "status": "approved",
       "definition": {
-        "status": "not_applicable",
-        "reason": "audited_capability_held_pending_backend_authority",
-        "auditedScoringGovernance": {
-          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
-          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
-          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
-          "resultRequirement": "Meaningful object/game result + misses + total taps.",
-          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
-          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
+        "status": "complete",
+        "model": "multiple_bulls",
+        "schemaVersion": "sczn3-target-scoring-data-v1",
+        "regionRules": {
+          "aim_circle_01": {
+            "label": "Aim Circle 1 \u2014 Upper Fleet \u2014 Submarine 1",
+            "objectId": "upper_submarine_1",
+            "objectLabel": "Upper Fleet \u2014 Submarine 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_02": {
+            "label": "Aim Circle 2 \u2014 Upper Fleet \u2014 Submarine 1",
+            "objectId": "upper_submarine_1",
+            "objectLabel": "Upper Fleet \u2014 Submarine 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_03": {
+            "label": "Aim Circle 3 \u2014 Upper Fleet \u2014 Submarine 1",
+            "objectId": "upper_submarine_1",
+            "objectLabel": "Upper Fleet \u2014 Submarine 1",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_04": {
+            "label": "Aim Circle 4 \u2014 Upper Fleet \u2014 Submarine 2",
+            "objectId": "upper_submarine_2",
+            "objectLabel": "Upper Fleet \u2014 Submarine 2",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_05": {
+            "label": "Aim Circle 5 \u2014 Upper Fleet \u2014 Submarine 3",
+            "objectId": "upper_submarine_3",
+            "objectLabel": "Upper Fleet \u2014 Submarine 3",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_06": {
+            "label": "Aim Circle 6 \u2014 Upper Fleet \u2014 Submarine 4",
+            "objectId": "upper_submarine_4",
+            "objectLabel": "Upper Fleet \u2014 Submarine 4",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_07": {
+            "label": "Aim Circle 7 \u2014 Upper Fleet \u2014 Submarine 4",
+            "objectId": "upper_submarine_4",
+            "objectLabel": "Upper Fleet \u2014 Submarine 4",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_08": {
+            "label": "Aim Circle 8 \u2014 Upper Fleet \u2014 Submarine 4",
+            "objectId": "upper_submarine_4",
+            "objectLabel": "Upper Fleet \u2014 Submarine 4",
+            "countsAsHit": true,
+            "fleetPosition": "upper",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_09": {
+            "label": "Aim Circle 9 \u2014 Lower Fleet \u2014 Submarine 1",
+            "objectId": "lower_submarine_1",
+            "objectLabel": "Lower Fleet \u2014 Submarine 1",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_10": {
+            "label": "Aim Circle 10 \u2014 Lower Fleet \u2014 Submarine 1",
+            "objectId": "lower_submarine_1",
+            "objectLabel": "Lower Fleet \u2014 Submarine 1",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_11": {
+            "label": "Aim Circle 11 \u2014 Lower Fleet \u2014 Submarine 1",
+            "objectId": "lower_submarine_1",
+            "objectLabel": "Lower Fleet \u2014 Submarine 1",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 3
+          },
+          "aim_circle_12": {
+            "label": "Aim Circle 12 \u2014 Lower Fleet \u2014 Submarine 2",
+            "objectId": "lower_submarine_2",
+            "objectLabel": "Lower Fleet \u2014 Submarine 2",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_13": {
+            "label": "Aim Circle 13 \u2014 Lower Fleet \u2014 Submarine 3",
+            "objectId": "lower_submarine_3",
+            "objectLabel": "Lower Fleet \u2014 Submarine 3",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_14": {
+            "label": "Aim Circle 14 \u2014 Lower Fleet \u2014 Submarine 4",
+            "objectId": "lower_submarine_4",
+            "objectLabel": "Lower Fleet \u2014 Submarine 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 1
+          },
+          "aim_circle_15": {
+            "label": "Aim Circle 15 \u2014 Lower Fleet \u2014 Submarine 4",
+            "objectId": "lower_submarine_4",
+            "objectLabel": "Lower Fleet \u2014 Submarine 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 2
+          },
+          "aim_circle_16": {
+            "label": "Aim Circle 16 \u2014 Lower Fleet \u2014 Submarine 4",
+            "objectId": "lower_submarine_4",
+            "objectLabel": "Lower Fleet \u2014 Submarine 4",
+            "countsAsHit": true,
+            "fleetPosition": "lower",
+            "aimAreaIndex": 3
+          }
+        },
+        "outsideRule": {
+          "label": "Outside Governed Play Areas",
+          "countsAsHit": false
+        },
+        "classificationFootprintMode": "hit_on_touch",
+        "aggregation": {
+          "mode": "per_object_counts"
+        },
+        "publisherRuleAuthority": {
+          "source": "GunFun SKU 21110 exact physical target plus preserved publisher rules",
+          "rule": "Choose a fleet and alternate shots. Hits inside a printed ring or touching its line count. The first player to sink all opponent submarines wins.",
+          "limitations": "Fleet ownership and alternating turns are shooter-managed. SCZN3 reports governed ring and submarine contact; it does not declare a submarine sunk or a winner without a governed play-state record."
         }
       },
-      "digest": "f4250afbbd1dd99815cce58ff81cd9a8abf1a395662f7bb1e6842a0c84bfa831"
+      "digest": "71290892d7f518708cdc6d09ae890babb9fa2b3cf37e26423cf6ad40a701e040"
     },
     "mission": {
       "id": "gunfun_21110_sink_a_sub-mission",
       "version": "1",
       "status": "approved",
       "definition": {
-        "missionFamily": "smartEvidenceCapture",
-        "resultPackageType": "smartEvidenceResult",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
         "resultPackageVersion": "1",
         "maxObservations": 500,
         "interaction": {
@@ -121,52 +856,71 @@
             "status": "available"
           },
           "measurement": {
-            "status": "not_applicable"
+            "status": "available"
           },
           "correction": {
             "status": "not_applicable"
           },
           "officialScore": {
-            "status": "withheld",
-            "reason": "governed_backend_geometry_or_value_binding_missing"
+            "status": "not_applicable",
+            "reason": "no_governed_numeric_score"
           },
           "publisherMission": {
-            "status": "withheld",
-            "reason": "governed_backend_geometry_or_value_binding_missing"
+            "status": "available"
           },
           "qualification": {
             "status": "not_applicable"
           }
         },
-        "authorityResolution": "Founder-audited semantic destination preserved; dependent execution withheld until governed Backend geometry/value authority exists.",
+        "authorityResolution": "Issue #4 target-local fleet and printed-circle authority admitted through UGO; no numeric score or unsupported game state added.",
         "recognizedBehaviorFamily": "OBJECT_OR_GAME_DISTRIBUTION",
         "allowShooterDeclaredAim": false,
-        "auditedScoringGovernance": {
-          "scoringDisposition": "GAME / OBJECT — AUDIT CONFIRMED",
-          "scoringModel": "OBJECT_OR_GAME_DISTRIBUTION",
-          "valueRule": "Do not invent point values; use governed object/game semantics where available.",
-          "resultRequirement": "Meaningful object/game result + misses + total taps.",
-          "geometryAuthorityInstruction": "Exact Backend object geometry required.",
-          "basis": "Publisher naming/category establishes a structured game/object face, but numeric point authority is not established here."
+        "smartTargetTreatment": {
+          "grammar": [
+            "governed_fleet_objects",
+            "governed_aim_circles",
+            "open_observation_count"
+          ],
+          "shooterFacingVocabulary": {
+            "singular": "submarine",
+            "plural": "submarines"
+          },
+          "objectCompletionVerbPast": "contacted",
+          "objectCompletionLabel": "Submarines Contacted",
+          "outsideLabel": "Outside Governed Play Areas",
+          "hitAreaLabel": "governed aiming circles",
+          "intelligence": [
+            "hits_by_object",
+            "hits_by_aiming_circle",
+            "unique_objects_contacted",
+            "misses_outside_governed_play_areas",
+            "complete_observation_accounting"
+          ],
+          "authorityScope": "publisher_physical_target_plus_preserved_rules_plus_ugo_translation",
+          "publisherScoreStatus": "no_numeric_score_governed",
+          "limitations": "Fleet ownership and alternating turns are shooter-managed. SCZN3 reports governed ring and submarine contact; it does not declare a submarine sunk or a winner without a governed play-state record.",
+          "resultPresentation": {
+            "showObjectTapIdentifiers": true
+          }
         }
       },
-      "digest": "9413ed1c68fa99cd5e0fb804c3c2aacf9e03dd72d3379f3b7b3d298431987f20"
+      "digest": "e14e8f7bde2c090f5f0dd1a47744b9ed20f34d10608630dd609aea6c7e9c7918"
     }
   },
-  "missionFamily": "smartEvidenceCapture",
-  "resultPackageType": "smartEvidenceResult",
+  "missionFamily": "targetScoring",
+  "resultPackageType": "targetScoreResult",
   "resultPackageVersion": "1",
   "executor": {
-    "id": "smart-evidence-capture",
+    "id": "declarative-target-score",
     "version": "1"
   },
   "secAdapter": {
-    "id": "smart-evidence-family",
+    "id": "target-scoring-family",
     "version": "1",
-    "scoringPresentationFamily": "not_applicable"
+    "scoringPresentationFamily": "object_distribution"
   },
   "preservationValidator": {
-    "id": "smart-evidence-preservation",
+    "id": "target-scoring-preservation",
     "version": "1"
   },
   "session": {
@@ -175,18 +929,17 @@
         "status": "available"
       },
       "measurement": {
-        "status": "not_applicable"
+        "status": "available"
       },
       "correction": {
         "status": "not_applicable"
       },
       "officialScore": {
-        "status": "withheld",
-        "reason": "governed_backend_geometry_or_value_binding_missing"
+        "status": "not_applicable",
+        "reason": "no_governed_numeric_score"
       },
       "publisherMission": {
-        "status": "withheld",
-        "reason": "governed_backend_geometry_or_value_binding_missing"
+        "status": "available"
       },
       "qualification": {
         "status": "not_applicable"
@@ -198,6 +951,7 @@
     "zeroing_correction",
     "qualification_or_certification",
     "pixel_derived_physical_authority",
-    "audited_capability_without_governed_backend_geometry_or_value_binding"
+    "numeric_score_without_authority",
+    "automatic_sunk_or_winner_claim_without_governed_play_state"
   ]
 }
