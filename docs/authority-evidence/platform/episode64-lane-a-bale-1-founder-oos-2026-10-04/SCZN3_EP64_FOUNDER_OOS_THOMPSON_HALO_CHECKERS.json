@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0235",
+    "masterNumber": 235,
+    "canonicalFaceId": "1268385178edd30a1e3d4bab0b559e87280cfcd4518059e98289119e1d97bf03",
+    "printer": "Thompson Target Inc.",
+    "targetName": "HALO Checkers Shooting Game Targets - Reactive Splatter 8.5\"x11\"",
+    "productIdsOrSkus": "thompson-4617",
+    "runtimeIds": [
+      "blocker_thompson_target_inc_thompson_4617"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Fun & Games",
+      "smartFamily": "1. Mona Lisa",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.thompsontarget.com/halo-checkers-shooting-game-targets-reactive-splatter-8-5x11/",
+      "publisherRuleAuthorities": [
+        {
+          "source": "thompson-4617 + thompson-target:0043 + publisher_primary_representation_position_1 + 1268385178edd30a1e3d4bab0b559e87280cfcd4518059e98289119e1d97bf03",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "blocker_thompson_target_inc_thompson_4617",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/blocker_thompson_target_inc_thompson_4617_target_scoring_v1.json",
+        "contractSha256": "8c7f27967ec74d03cd0986a847e4859b19e4ff4ee3ec86b7f99d9342378b1846",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 236,
+      "runtimeBindingReferences": [
+        "blocker_thompson_target_inc_thompson_4617"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "board-state, turn, capture, and win logic for one binding",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "blocker_thompson_target_inc_thompson_4617"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

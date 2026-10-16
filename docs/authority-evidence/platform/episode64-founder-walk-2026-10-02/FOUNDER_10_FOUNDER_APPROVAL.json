@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "sczn3-founder-approval-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 10,
+  "recordedAt": "2026-10-03T02:23:20Z",
+  "decision": "APPROVED",
+  "founderCharacterization": "that target is really nice",
+  "canonicalFaceId": "1900baa5c588ac263830addfbd2ccb833d8776333f1b71ad7f424e4af3a043b6",
+  "canonicalFaceAuthority": "components.registration.definition.assetSha256",
+  "canonicalFaceClosedForWalk": true,
+  "target": {
+    "printer": "Baker Targets",
+    "name": "BakerGlo Arcade High-Visibility Target",
+    "runtimeId": "blocker_baker_targets_bakerglo_arcade",
+    "skuOrProductId": "BakerGlo_Arcade"
+  },
+  "allApprovedFaceIdentities": [
+    {
+      "runtimeId": "blocker_baker_targets_bakerglo_arcade",
+      "productId": "p-os-baker_1813",
+      "sku": "BakerGlo_Arcade"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_bakerglo1_006",
+      "productId": "episode64-final-54bf111fa81065206709",
+      "sku": "PK-BakerGlo1"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_bakerglo3_002",
+      "productId": "episode64-final-cb8f8500bb7e9e887908",
+      "sku": "PK-BakerGlo3"
+    }
+  ],
+  "founderProof": {
+    "run1": {
+      "sessionId": "sczn3-session-f4c33de3-6a5e-41f4-b13e-c90d44e6136d",
+      "observations": 13,
+      "objectCompletion": "13/13",
+      "distribution": {"red100": 11, "outer50": 2, "animal25": 0, "missNegative25": 0},
+      "targetScore": 1200,
+      "secPreserved": true,
+      "exactReopen": true
+    },
+    "run2": {
+      "sessionId": "sczn3-session-19cc43f9-9e38-4436-af15-d67ab99377ed",
+      "observations": 13,
+      "objectCompletion": "12/13",
+      "distribution": {"red100": 11, "outer50": 1, "animal25": 0, "missNegative25": 1},
+      "targetScore": 1125
+    }
+  },
+  "approvedSharedInheritance": {
+    "name": "Arcade canonical scoring with exact governed observation admission",
+    "scope": "Founder #7 Arcade rules inherited on the exact BakerGlo canonical-face geometry across all three identities",
+    "behavior": "Exactly thirteen observations resolve once as red 100, outer-ring 50, animal 25, or miss -25; shot entry stops at 13/13 while the backend limit remains defensive.",
+    "implementationEvidence": "FOUNDER_10_IMPLEMENTATION_EVIDENCE_PACKAGE.json"
+  },
+  "approvedScoreReconciliation": {
+    "evidence": "FOUNDER_10_FINAL_SCORE_RECONCILIATION.json",
+    "distinction": "Object/bullseye completion reports whether governed objects were engaged; scoring-tier performance reports which 100/50/25/miss region each tap actually resolved to.",
+    "run1Arithmetic": "11 x 100 + 2 x 50 + 0 x 25 + 0 x -25 = 1200",
+    "run2Arithmetic": "11 x 100 + 1 x 50 + 0 x 25 + 1 x -25 = 1125",
+    "geometryDefectFound": false,
+    "scoringDefectFound": false
+  },
+  "closeout": "FOUNDER_10_CLOSED_ADVANCE_TO_CANONICAL_FACE_GATE_11"
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "sczn3-platform-population-registry-v2",
-  "generatedAt": "2026-10-12T01:00:05.221517+00:00",
+  "generatedAt": "2026-10-16T23:13:32.331224+00:00",
   "governance": {
     "baselineRecordsPreserved": 1993,
     "deleteMultipacks": false,
@@ -19,7 +19,7 @@
     },
     "founderAcceptanceRegistry": {
       "path": "docs/backend/registries/episode64_platform_founder_acceptance_registry.json",
-      "sha256": "abbb690ee09b91b41fbc6f7316668eedc4eae13f01dc5bfbaefceef4346d570c"
+      "sha256": "e7bc84f86778e8a7b97463a3262387bc737d442d18ea4f1fb6379d9662bc6602"
     },
     "masterSourceExtract": {
       "path": "docs/authority-evidence/platform/episode64-platform-multipack-reclassification-2026-10-11/SCZN3_EP64_MASTER_SOURCE_RECORDS_EXTRACT.json",
@@ -45,7 +45,7 @@
     "knownDuplicateCommercialRepresentations": 530,
     "recordsReclassifiedFromImplicitIndividualFace": 508,
     "recordsExcludedFromUniqueFaceMinimum": 62,
-    "recordsExcludedFromExecutableFaceSelection": 392,
+    "recordsExcludedFromExecutableFaceSelection": 395,
     "unresolvedAssortmentsWithoutCompleteRoster": 5,
     "sourceOnlyPreclassifiedAssortmentRecords": 13,
     "classificationConfidence": {
@@ -14132,13 +14132,18 @@
         "componentRosterComplete": true
       },
       "executableFaceSelection": {
-        "eligible": true,
-        "excludedBecause": null
+        "eligible": false,
+        "excludedBecause": "FOUNDER_APPROVED"
       },
       "founderAuthority": {
-        "status": "UNVERIFIED",
+        "status": "FOUNDER_APPROVED",
         "currentScope": "ACTIVE",
-        "evidence": [],
+        "evidence": [
+          {
+            "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/FOUNDER_ACCEPTANCE_192_193.json",
+            "detail": "Explicit Founder decision PASS for gunfun_21110_sink_a_sub on 2026-10-13"
+          }
+        ],
         "inheritance": null
       },
       "backend": {
@@ -14163,7 +14168,13 @@
         "sha256": "NOT_STORED",
         "registeredAssetShaConsistency": "NOT_APPLICABLE_NO_WORKBOOK_SHA"
       },
-      "secEvidence": []
+      "secEvidence": [
+        {
+          "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/MACHINE_PROOF.json",
+          "sessionId": "sczn3-session-04d87444-9256-470b-be02-d054f11a5a15",
+          "secArtifactSha256": "af28516d54f47644edbe69fba47642376890cb10de88f16f7bf2d77dffdb5172"
+        }
+      ]
     },
     {
       "censusFaceKey": "THE13-MASTER-0193",
@@ -14200,13 +14211,18 @@
         "componentRosterComplete": true
       },
       "executableFaceSelection": {
-        "eligible": true,
-        "excludedBecause": null
+        "eligible": false,
+        "excludedBecause": "FOUNDER_APPROVED"
       },
       "founderAuthority": {
-        "status": "UNVERIFIED",
+        "status": "FOUNDER_APPROVED",
         "currentScope": "ACTIVE",
-        "evidence": [],
+        "evidence": [
+          {
+            "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/FOUNDER_ACCEPTANCE_192_193.json",
+            "detail": "Explicit Founder decision PASS for gunfun_11160_sink_a_ship on 2026-10-13"
+          }
+        ],
         "inheritance": null
       },
       "backend": {
@@ -14231,7 +14247,13 @@
         "sha256": "NOT_STORED",
         "registeredAssetShaConsistency": "NOT_APPLICABLE_NO_WORKBOOK_SHA"
       },
-      "secEvidence": []
+      "secEvidence": [
+        {
+          "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/FOUNDER_193_BROWSER_REPLAY_PROOF.json",
+          "sessionId": "sczn3-session-4600f8c2-5f4a-4ffe-9654-880eaf5b1031",
+          "secArtifactSha256": "026c1dd78913593c915e86338f8a53b831e6c7fb202ad8dfd07a679ce4d8bfa7"
+        }
+      ]
     },
     {
       "censusFaceKey": "THE13-MASTER-0194",
@@ -33190,13 +33212,18 @@
         "componentRosterComplete": true
       },
       "executableFaceSelection": {
-        "eligible": true,
-        "excludedBecause": null
+        "eligible": false,
+        "excludedBecause": "FOUNDER_OOS"
       },
       "founderAuthority": {
-        "status": "UNVERIFIED",
-        "currentScope": "ACTIVE",
-        "evidence": [],
+        "status": "FOUNDER_OOS",
+        "currentScope": "OOS",
+        "evidence": [
+          {
+            "source": "docs/authority-evidence/platform/episode67-master407-founder-oos-2026-10-16/SCZN3_EP67_FOUNDER_OOS_MASTER407_ATC200.json",
+            "detail": "Founder OOS: UGO physical scoring-boundary authority remains unverified."
+          }
+        ],
         "inheritance": null
       },
       "backend": {

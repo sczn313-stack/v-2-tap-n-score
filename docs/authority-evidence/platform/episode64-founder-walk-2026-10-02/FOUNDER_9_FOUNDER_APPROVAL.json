@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "sczn3-founder-approval-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 9,
+  "recordedAt": "2026-10-03T01:27:03Z",
+  "decision": "APPROVED",
+  "founderCharacterization": "FLYING COLORS",
+  "canonicalFaceId": "b655ac2004d55845bb7ebccde9b786070d663432292bbd10f2cd12a9a7c947b7",
+  "canonicalFaceAuthority": "components.registration.definition.assetSha256",
+  "canonicalFaceClosedForWalk": true,
+  "target": {
+    "printer": "Baker Targets",
+    "name": "Bad \u201cHare\u201d Day Target",
+    "runtimeId": "blocker_baker_targets_gf_hare",
+    "skuOrProductId": "GF-Hare"
+  },
+  "allApprovedFaceIdentities": [
+    {
+      "runtimeId": "blocker_baker_targets_gf_hare",
+      "productId": "p-os-baker_419",
+      "sku": "GF-Hare"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_badanimals_005",
+      "productId": "episode64-final-735800b06dce3cd3eec9",
+      "sku": "PK-BadAnimals"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_badmugcombo_005",
+      "productId": "episode64-final-e336bdb9a0d55cecc8b9",
+      "sku": "PK-BadMugCombo"
+    }
+  ],
+  "founderProof": {
+    "observations": 18,
+    "numberedRegionHits": 8,
+    "outsideCountOnly": 10,
+    "targetScore": 42,
+    "secPreserved": true,
+    "vaultSession": "Session #001",
+    "road": "18 taps -> SHOW RESULT -> score 42 -> 8 numbered-region hits + 10 outside count-only -> SEC -> Vault Session #001"
+  },
+  "approvedSharedInheritance": {
+    "name": "numbered-region scoring with count-only non-valued observations",
+    "scope": "shared canonical-face scoring and preserved progression across RESULT, HISTORY, SEC, Vault, and exact reopen",
+    "behavior": "Each observation receives exactly one publisher-printed numbered-region value or remains truthfully accounted for as count only when no publisher value exists.",
+    "prohibitedSemantics": [
+      "do not invent a value for the unnumbered camera/firearm bullseye",
+      "do not invent a penalty for non-valued observations",
+      "do not invent a shot limit, required sequence, maximum score, or winner rule"
+    ],
+    "implementationEvidence": "FOUNDER_9_IMPLEMENTATION_EVIDENCE_PACKAGE.json"
+  },
+  "canonicalFaceTreatment": {
+    "numberedRegionCount": 8,
+    "printedValues": [8, 6, 6, 2, 8, 4, 4, 4],
+    "printedValueDistribution": { "8": 2, "6": 2, "4": 3, "2": 1 },
+    "identityInheritance": "one canonical-face treatment across GF-Hare, PK-BadAnimals, and PK-BadMugCombo",
+    "inventedRules": false
+  },
+  "closeout": "FOUNDER_9_CLOSED_ADVANCE_TO_CANONICAL_FACE_GATE_10"
+}

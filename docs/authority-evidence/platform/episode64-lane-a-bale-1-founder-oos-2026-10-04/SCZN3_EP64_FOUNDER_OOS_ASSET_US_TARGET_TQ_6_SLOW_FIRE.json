@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-1166",
+    "masterNumber": 1166,
+    "canonicalFaceId": "b927ff3bc86295eac29c590b39fa4df2a019962f1eb295a7663cc4ef79a80632",
+    "printer": "U.S. Target Inc.",
+    "targetName": "TQ-6 Slow Fire",
+    "productIdsOrSkus": "343",
+    "runtimeIds": [
+      "evidence_u_s_target_inc_343"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Competition",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://ustargetinc.com/product/tq-6/",
+      "publisherRuleAuthorities": [
+        {
+          "source": "us-target:343 + us-target:0046 + preserved publisher representation b927ff3bc86295eac29c590b39fa4df2a019962f1eb295a7663cc4ef79a80632",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "evidence_u_s_target_inc_343",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_u_s_target_inc_343_target_scoring_v1.json",
+        "contractSha256": "b022fadc464a3f6cd191c1a9830a17b9b85f70674e4ec427217f5eadbacb7708",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 1167,
+      "runtimeBindingReferences": [
+        "evidence_u_s_target_inc_343"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "unacceptable source-image quality; scoring target cannot truthfully reach Founder review under generic Smart Evidence",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "evidence_u_s_target_inc_343"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

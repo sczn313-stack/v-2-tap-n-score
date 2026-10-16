@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0117",
+    "masterNumber": 117,
+    "canonicalFaceId": "60a9b8cd5ea4662c6afd75c09fd713afd4a643ec23b1a65437afe7feb4b50378",
+    "printer": "Baker Targets",
+    "targetName": "Poker Wheel Target",
+    "productIdsOrSkus": "GF-PokerWheel-Bulk, GF-PokerWheel",
+    "runtimeIds": [
+      "blocker_baker_targets_gf_pokerwheel"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Fun & Games",
+      "smartFamily": "1. Mona Lisa",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://bakertargets.com/product/poker-wheel-target-250-pack/\nhttps://bakertargets.com/product/poker-wheel-target/",
+      "publisherRuleAuthorities": [
+        {
+          "source": "baker:21757 + baker-targets:0042 + publisher_primary_representation_position_1 + 60a9b8cd5ea4662c6afd75c09fd713afd4a643ec23b1a65437afe7feb4b50378",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "blocker_baker_targets_gf_pokerwheel",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gf_pokerwheel_target_scoring_v1.json",
+        "contractSha256": "2e55b2852e7c7690a63c53b8e4679e23ee2ed9082246466df1c18054b24afc26",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 118,
+      "runtimeBindingReferences": [
+        "blocker_baker_targets_gf_pokerwheel"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "card-hand interpretation and proprietary scoring for one binding",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "blocker_baker_targets_gf_pokerwheel"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0147",
+    "masterNumber": 147,
+    "canonicalFaceId": "361687bd0f9d18aa6bf94bc7d59bbbe514e25b65cd51ac76ade66b70ddb8fcf2",
+    "printer": "Birchwood Casey",
+    "targetName": "12\" X 18\" Lucky Shot Bowling Pins Dirty Bird Target",
+    "productIdsOrSkus": "BC-35773",
+    "runtimeIds": [
+      "blocker_birchwood_casey_bc_35773"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Fun & Games",
+      "smartFamily": "1. Mona Lisa",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.birchwoodcasey.com/products/12-x-18-lucky-shot-bowling-pins-dirty-bird-target.html",
+      "publisherRuleAuthorities": [
+        {
+          "source": "birchwood-casey:BC-35773 + birchwood-casey:0005 + publisher_primary_representation_position_1 + 361687bd0f9d18aa6bf94bc7d59bbbe514e25b65cd51ac76ade66b70ddb8fcf2",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "blocker_birchwood_casey_bc_35773",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/blocker_birchwood_casey_bc_35773_target_scoring_v1.json",
+        "contractSha256": "ff835e5b928ae967f71031c5b8327fba98f8470bdd9dd9585b35c5a38ecf7a7d",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 148,
+      "runtimeBindingReferences": [
+        "blocker_birchwood_casey_bc_35773"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "stored target representation is a loading-spinner asset",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "blocker_birchwood_casey_bc_35773"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

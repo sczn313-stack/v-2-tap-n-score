@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0383",
+    "masterNumber": 383,
+    "canonicalFaceId": "105abc5f5b71fb84851fa733ea0b5676b6c24a77e088cd98691c9a95632c9fe9",
+    "printer": "American Target Company",
+    "targetName": "TQ 1/1",
+    "productIdsOrSkus": "small-bore-rifle:1-Q500, small-bore-rifle:1-Q1000",
+    "runtimeIds": [
+      "connect_american_target_small_bore_rifle_1_q1000",
+      "connect_american_target_small_bore_rifle_1_q500"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Competition",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.americantargetcompany.com/small-bore-rifle.html#TQ_1_1\nhttps://www.americantargetcompany.com/small-bore-rifle.html#TQ_1_1",
+      "publisherRuleAuthorities": [
+        {
+          "source": "american-target:small-bore-rifle:1-Q1000 + american-target:0455 + preserved publisher representation 105abc5f5b71fb84851fa733ea0b5676b6c24a77e088cd98691c9a95632c9fe9",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        },
+        {
+          "source": "american-target:small-bore-rifle:1-Q500 + american-target:0454 + preserved publisher representation 105abc5f5b71fb84851fa733ea0b5676b6c24a77e088cd98691c9a95632c9fe9",
+          "rule": "current repository evidence establishes the exact commercial target identity and Smart Evidence floor; no richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "connect_american_target_small_bore_rifle_1_q1000",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/connect_american_target_small_bore_rifle_1_q1000_target_scoring_v1.json",
+        "contractSha256": "8efdc4a11cdb5785b234658fa43ac7327815781ac8070b5b3c84068e50a580f4",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      },
+      {
+        "runtimeId": "connect_american_target_small_bore_rifle_1_q500",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/connect_american_target_small_bore_rifle_1_q500_target_scoring_v1.json",
+        "contractSha256": "f19eed4741293ffc036c935b31d7059daab206b4b6adbd4c047285cf5576fe04",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_CURRENT_RECORD_LEVEL_CAPABILITY_MAP",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 384,
+      "runtimeBindingReferences": [
+        "connect_american_target_small_bore_rifle_1_q1000",
+        "connect_american_target_small_bore_rifle_1_q500"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "physical scoring target whose proper scoring capability is not presently supported by sufficient stored Backend Authority",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "connect_american_target_small_bore_rifle_1_q1000",
+      "connect_american_target_small_bore_rifle_1_q500"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

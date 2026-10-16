@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0504",
+    "masterNumber": 504,
+    "canonicalFaceId": "361687bd0f9d18aa6bf94bc7d59bbbe514e25b65cd51ac76ade66b70ddb8fcf2",
+    "printer": "Birchwood Casey",
+    "targetName": "Eze-Scorer 23X35 BC27 Red Core 100 Targets",
+    "productIdsOrSkus": "BC-37051",
+    "runtimeIds": [
+      "blocker_birchwood_casey_bc_37051"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Pistol Skills",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.birchwoodcasey.com/products/eze-scorer-23x35-bc27-red-core-100-targets.html",
+      "publisherRuleAuthorities": [
+        {
+          "source": "birchwood-casey:BC-37051 + birchwood-casey:0041 + publisher_primary_representation_position_1 + 361687bd0f9d18aa6bf94bc7d59bbbe514e25b65cd51ac76ade66b70ddb8fcf2",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "blocker_birchwood_casey_bc_37051",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/blocker_birchwood_casey_bc_37051_target_scoring_v1.json",
+        "contractSha256": "60d61999820148b125eb9bf361c13ace3fac83f503d2f3e1899175655c208e11",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 505,
+      "runtimeBindingReferences": [
+        "blocker_birchwood_casey_bc_37051"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "stored target representation is a loading-spinner asset",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "blocker_birchwood_casey_bc_37051"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

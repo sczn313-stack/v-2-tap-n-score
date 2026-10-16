@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0710",
+    "masterNumber": 710,
+    "canonicalFaceId": "9dd4cb82963bff6b530042d3cb2ec7f1dce835c5cdaca7e153ccdee9be2bace4",
+    "printer": "Speedwell Targets",
+    "targetName": "FBI Q R 25",
+    "productIdsOrSkus": "FBI-Q-R-25",
+    "runtimeIds": [
+      "evidence_speedwell_targets_fbi_q_r_25"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Qualification",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.speedwelltargets.com/searchresults.asp",
+      "publisherRuleAuthorities": [
+        {
+          "source": "speedwell:FBI-Q-R-25 + speedwell:0037 + preserved publisher representation 9dd4cb82963bff6b530042d3cb2ec7f1dce835c5cdaca7e153ccdee9be2bace4",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "evidence_speedwell_targets_fbi_q_r_25",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_speedwell_targets_fbi_q_r_25_target_scoring_v1.json",
+        "contractSha256": "29a2ca2d8be56ebe62bc23895fb907ef6d0d3f37b1bdf6dc917e73a3eb458208",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 711,
+      "runtimeBindingReferences": [
+        "evidence_speedwell_targets_fbi_q_r_25"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "stored target representation is a camera-placeholder image",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "evidence_speedwell_targets_fbi_q_r_25"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0343",
+    "masterNumber": 343,
+    "canonicalFaceId": "3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+    "printer": "American Target Company",
+    "targetName": "FBI-AT99CB",
+    "productIdsOrSkus": "law-enforcement:48",
+    "runtimeIds": [
+      "evidence_american_target_company_law_enforcement_48"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Qualification",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.americantargetcompany.com/law-enforcement.html#FBI_AT99CB",
+      "publisherRuleAuthorities": [
+        {
+          "source": "american-target:law-enforcement:48 + american-target:0227 + preserved publisher representation 3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "evidence_american_target_company_law_enforcement_48",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_law_enforcement_48_target_scoring_v1.json",
+        "contractSha256": "df30d2c2281e578bce5ba9d3ac46c7a90c2c2a2b2c015669afd29860444f87c8",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 344,
+      "runtimeBindingReferences": [
+        "evidence_american_target_company_law_enforcement_48"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "target image unavailable; the stored representation is an explicit placeholder",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "evidence_american_target_company_law_enforcement_48"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

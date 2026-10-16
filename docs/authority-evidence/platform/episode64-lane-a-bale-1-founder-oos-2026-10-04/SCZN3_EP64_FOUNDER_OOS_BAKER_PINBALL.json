@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0116",
+    "masterNumber": 116,
+    "canonicalFaceId": "e30ba6dc03878b0cbd691841745b030da33c4201c966e3df51df8f306aa87167",
+    "printer": "Baker Targets",
+    "targetName": "Pinball Target",
+    "productIdsOrSkus": "GF-Pinball-Bulk, GF-Pinball",
+    "runtimeIds": [
+      "blocker_baker_targets_gf_pinball"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Fun & Games",
+      "smartFamily": "1. Mona Lisa",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://bakertargets.com/product/pinball-target-250-pack/\nhttps://bakertargets.com/product/pinball-target/",
+      "publisherRuleAuthorities": [
+        {
+          "source": "baker:10271 + baker-targets:0221 + publisher_primary_representation_position_1 + e30ba6dc03878b0cbd691841745b030da33c4201c966e3df51df8f306aa87167",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "blocker_baker_targets_gf_pinball",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/blocker_baker_targets_gf_pinball_target_scoring_v1.json",
+        "contractSha256": "1c7b967cdda642599fc2c69e271ecb1fa2bf3d146714d3b975cc6c4897e65df7",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 117,
+      "runtimeBindingReferences": [
+        "blocker_baker_targets_gf_pinball"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "bespoke sequencing and game scoring for one binding",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "blocker_baker_targets_gf_pinball"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

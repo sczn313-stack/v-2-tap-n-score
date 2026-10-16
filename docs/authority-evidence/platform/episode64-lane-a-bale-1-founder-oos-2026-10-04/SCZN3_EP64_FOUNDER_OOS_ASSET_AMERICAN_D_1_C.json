@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0335",
+    "masterNumber": 335,
+    "canonicalFaceId": "3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+    "printer": "American Target Company",
+    "targetName": "D-1-C",
+    "productIdsOrSkus": "law-enforcement:31-Q500, law-enforcement:31-Q1000",
+    "runtimeIds": [
+      "evidence_american_target_company_law_enforcement_31_q1000",
+      "evidence_american_target_company_law_enforcement_31_q500"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Qualification",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.americantargetcompany.com/law-enforcement.html#D_1_C\nhttps://www.americantargetcompany.com/law-enforcement.html#D_1_C",
+      "publisherRuleAuthorities": [
+        {
+          "source": "american-target:law-enforcement:31-Q1000 + american-target:0181 + preserved publisher representation 3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        },
+        {
+          "source": "american-target:law-enforcement:31-Q500 + american-target:0180 + preserved publisher representation 3da10e48db3ecbbaf605fd77442c9c4bc8f9a203cfeb0d5351875ee9cbfe1f95",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "evidence_american_target_company_law_enforcement_31_q1000",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_law_enforcement_31_q1000_target_scoring_v1.json",
+        "contractSha256": "8a576fa75670084acb5d7310f8958ecb659749eb4a17983e43e459f9561531a3",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      },
+      {
+        "runtimeId": "evidence_american_target_company_law_enforcement_31_q500",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_law_enforcement_31_q500_target_scoring_v1.json",
+        "contractSha256": "378c75c2d12706432ec2baa6cd1f89bf859d588057a04ce43224998dc6b5a797",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 336,
+      "runtimeBindingReferences": [
+        "evidence_american_target_company_law_enforcement_31_q1000",
+        "evidence_american_target_company_law_enforcement_31_q500"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "target image unavailable; the stored representation is an explicit placeholder",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "evidence_american_target_company_law_enforcement_31_q1000",
+      "evidence_american_target_company_law_enforcement_31_q500"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

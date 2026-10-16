@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0228",
+    "masterNumber": 228,
+    "canonicalFaceId": "30bf746799e1d1f1516c4c9b4025f55b9c2c030b3a4fd149732502b68111556c",
+    "printer": "Thompson Target Inc.",
+    "targetName": "Air Strike 2 Player Shooting Game Targets - 19\"x25\"",
+    "productIdsOrSkus": "thompson-4001",
+    "runtimeIds": [
+      "blocker_thompson_target_inc_thompson_4001"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Fun & Games",
+      "smartFamily": "1. Mona Lisa",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.thompsontarget.com/air-strike-2-player-shooting-game-targets-19x25/",
+      "publisherRuleAuthorities": [
+        {
+          "source": "thompson-4001 + thompson-target:0004 + publisher_primary_representation_position_1 + 30bf746799e1d1f1516c4c9b4025f55b9c2c030b3a4fd149732502b68111556c",
+          "rule": "existing publisher identity and canonical representation bind to the existing Smart Evidence owner; no richer semantics inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "blocker_thompson_target_inc_thompson_4001",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/blocker_thompson_target_inc_thompson_4001_target_scoring_v1.json",
+        "contractSha256": "5576b9b8c9669d80c56d15dc49ec4322d64b44f06ac168a974bb26fba2f79982",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_BLOCKER_FACTORY_EXISTING_TRUTH",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 229,
+      "runtimeBindingReferences": [
+        "blocker_thompson_target_inc_thompson_4001"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "proprietary multiplayer sequence and victory logic for one binding",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "blocker_thompson_target_inc_thompson_4001"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

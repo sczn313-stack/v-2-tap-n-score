@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0359",
+    "masterNumber": 359,
+    "canonicalFaceId": "826fe4e9cb9b1ceedc487ed26e9227f28484d2540e10886f2d9970fcf43d115a",
+    "printer": "American Target Company",
+    "targetName": "MR 52 C",
+    "productIdsOrSkus": "high-power-rifle:13-Q250, high-power-rifle:13-Q1000",
+    "runtimeIds": [
+      "evidence_american_target_company_high_power_rifle_13_q1000",
+      "evidence_american_target_company_high_power_rifle_13_q250"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Competition",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.americantargetcompany.com/high-power-rifle.html#MR_52_C\nhttps://www.americantargetcompany.com/high-power-rifle.html#MR_52_C",
+      "publisherRuleAuthorities": [
+        {
+          "source": "american-target:high-power-rifle:13-Q1000 + american-target:0068 + preserved publisher representation 826fe4e9cb9b1ceedc487ed26e9227f28484d2540e10886f2d9970fcf43d115a",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        },
+        {
+          "source": "american-target:high-power-rifle:13-Q250 + american-target:0067 + preserved publisher representation 826fe4e9cb9b1ceedc487ed26e9227f28484d2540e10886f2d9970fcf43d115a",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "evidence_american_target_company_high_power_rifle_13_q1000",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_high_power_rifle_13_q1000_target_scoring_v1.json",
+        "contractSha256": "7e6f4d5eef7d0b71aceb8a237339a166661f6cbaa3c2d16e9f92443592f31a50",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      },
+      {
+        "runtimeId": "evidence_american_target_company_high_power_rifle_13_q250",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_high_power_rifle_13_q250_target_scoring_v1.json",
+        "contractSha256": "7ea925a662cfdfbd98c4a499eca05a2cfb06094bac84c01794bd5f27a0801600",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 360,
+      "runtimeBindingReferences": [
+        "evidence_american_target_company_high_power_rifle_13_q1000",
+        "evidence_american_target_company_high_power_rifle_13_q250"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "stored representation is explicitly marked Not Actual Target",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "evidence_american_target_company_high_power_rifle_13_q1000",
+      "evidence_american_target_company_high_power_rifle_13_q250"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}

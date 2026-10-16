@@ -26,7 +26,7 @@
     },
     "product": {
       "id": "american-target-law-enforcement-58-Q100",
-      "name": "USPA/IPSC",
+      "name": "USPSA/IPSC",
       "sku": "law-enforcement:58-Q100",
       "identifierType": "source_product_id",
       "dimensions": {
@@ -34,7 +34,36 @@
         "height": 32,
         "unit": "inch"
       },
-      "productUrl": "https://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC"
+      "productUrl": "https://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC",
+      "shooterExperience": {
+        "schemaVersion": "sczn3-shooter-experience-draft-v1",
+        "status": "connected_with_authority_limitations",
+        "description": "USPA/IPSC \u2014 Use the American Target Company USPA/IPSC paper target for competition practice, using its printed face as the aiming reference. Session instructions and applicable rules must be independently governed. Artwork-review evidence describes: Single light outlined geometric torso silhouette with a narrow rectangular head tab, angular shoulders and chamfered lower corners; no visible printed score numbers. Present the exact USPA/IPSC target identity and captured shot evidence. Explain the visible layout without treating illustrations, printed markings, or pixel positions as verified Backend scoring regions. Shooter feedback may describe observations, but must not claim an authoritative zone, point value, or qualification result absent governed boundaries and rules. EVIDENCE ONLY under the current contracts. Do not award points, certify qualification, issue numeric sight corrections, or assign authoritative hit/miss regions without separately verified publisher/session rules and physical Backend geometry. Do not double-count shots. Pixels are representation, never Backend authority.",
+        "visibleArtworkDescription": "Single light outlined geometric torso silhouette with a narrow rectangular head tab, angular shoulders and chamfered lower corners; no visible printed score numbers.",
+        "authorityLimitations": "EVIDENCE ONLY; no new scoring, hit/miss, or qualification authority.",
+        "supportedExperience": "Present exact target identity and captured shot evidence. No authoritative scoring absent governed rules and physical geometry.",
+        "provenance": {
+          "authorityRole": "founder_approved_episode66_shooter_experience_not_geometry_or_scoring_authority",
+          "sourceWorkbook": "SCZN3_EP66_145_FOUNDER_APPROVED_FINAL_GATE_2026-10-16.xlsx",
+          "sourceWorkbookSha256": "e50e16717dd623183263944d43b62ede0ad3031ad66f256137e09d75fc38a330",
+          "sourceSheet": "145 Authoring Queue",
+          "sourceRow": 126,
+          "sourceCells": "G126:Y126",
+          "masterNumber": 407,
+          "inventoryRecordId": "american-target:0252",
+          "sku": "law-enforcement:58-Q100",
+          "canonicalFaceId": "53202446b635012c7a4f509e7bbc0fb5cef10a42aa5d1c9a531f1f763d070a52",
+          "founderApproval": "FOUNDER APPROVED \u2014 2026-10-16",
+          "approvedAt": "2026-10-16",
+          "connectedAt": "2026-10-16",
+          "sourceReferences": {
+            "artworkReference": "https://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC",
+            "publisherOrSourceEvidence": "https://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC\nhttps://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC\nhttps://www.americantargetcompany.com/law-enforcement.html#USPA_IPSC",
+            "backendContractReference": "docs/backend/target_execution_contracts/contracts/american_target_58_q100_uspa_ipsc_target_scoring_v1.json"
+          },
+          "canonicalBinding": "Founder-approved canonical face shared by verified package/runtime identities; product identities remain separate."
+        }
+      }
     }
   },
   "components": {
@@ -189,37 +218,188 @@
       "status": "approved",
       "definition": {
         "status": "complete",
-        "model": "named_regions",
+        "model": "numeric_regions",
         "regionRules": {
           "a_head": {
-            "label": "A"
+            "label": "A Head",
+            "value": 5
           },
           "b_head": {
-            "label": "B"
+            "label": "Head B (scored C)",
+            "value": 3
           },
           "a_body": {
-            "label": "A"
+            "label": "A Body",
+            "value": 5
           },
           "c_body": {
-            "label": "C"
+            "label": "C Body",
+            "value": 3
           },
           "d_body": {
-            "label": "D"
+            "label": "D Body",
+            "value": 1
           }
         },
         "outsideRule": {
-          "label": "Miss"
+          "label": "Miss",
+          "value": 0
         },
         "schemaVersion": "sczn3-target-scoring-data-v1",
         "aggregation": {
-          "mode": "classification_counts"
+          "mode": "sum"
+        },
+        "scoringModePolicy": {
+          "mode": "shooter_selected_region_values",
+          "materialFact": "scoring_mode",
+          "selectionSource": "shooter_declared",
+          "required": true,
+          "authority": {
+            "source": "https://uspsa.org/documents/rules/current/USPSA-Competition-Rules.pdf",
+            "edition": "September 2026",
+            "section": "Appendix B1",
+            "rule": "A=5 for Major and Minor; C and legacy B=4 Major/3 Minor; D=2 Major/1 Minor"
+          },
+          "options": [
+            {
+              "modeId": "major",
+              "label": "Major",
+              "regionValues": {
+                "a_head": 5,
+                "b_head": 4,
+                "a_body": 5,
+                "c_body": 4,
+                "d_body": 2
+              },
+              "outsideValue": 0
+            },
+            {
+              "modeId": "minor",
+              "label": "Minor",
+              "regionValues": {
+                "a_head": 5,
+                "b_head": 3,
+                "a_body": 5,
+                "c_body": 3,
+                "d_body": 1
+              },
+              "outsideValue": 0
+            }
+          ]
         },
         "publisherRuleAuthority": {
-          "source": "P-OS american-target:law-enforcement:58-Q100 and publisher representation",
-          "rule": "printed A/B/C/D region names; no numeric value inferred"
+          "source": "https://uspsa.org/documents/rules/current/USPSA-Competition-Rules.pdf",
+          "edition": "September 2026",
+          "sections": [
+            "4.2.1",
+            "9.2",
+            "9.4",
+            "9.5.2",
+            "Appendix B1"
+          ],
+          "rule": "Official USPSA/IPSC cardboard target zone values by shooter-declared power factor; legacy B scores as C; outside observations remain SCZN3 target misses and are not promoted to official course penalties"
+        },
+        "boundaryPolicy": {
+          "mode": "authority_scoring_gauge",
+          "policyId": "founder-master-407-practice-higher-value-line-touch-v1",
+          "lineTouchRule": "higher_value",
+          "materialFact": "caliber",
+          "selectionRule": "request_only_if_score_material",
+          "authority": {
+            "source": "Founder directive, Episode 67",
+            "section": "Master #407 practice scoring",
+            "rule": "A bullet hole touching a scoring boundary receives the higher adjacent score."
+          },
+          "authorizedGaugeGroups": [
+            {
+              "caliberId": ".22",
+              "aliases": [
+                ".22",
+                "22",
+                "22lr"
+              ],
+              "diameterRangeInches": {
+                "min": 0.2225,
+                "max": 0.224
+              }
+            },
+            {
+              "caliberId": ".32",
+              "aliases": [
+                ".32",
+                "32"
+              ],
+              "diameterRangeInches": {
+                "min": 0.31,
+                "max": 0.314
+              }
+            },
+            {
+              "caliberId": "9mm/.38 Special",
+              "aliases": [
+                "9mm",
+                ".38 special",
+                "38 special",
+                ".38",
+                "38"
+              ],
+              "diameterRangeInches": {
+                "min": 0.355,
+                "max": 0.359
+              }
+            },
+            {
+              "caliberId": ".40",
+              "aliases": [
+                ".40",
+                "40"
+              ],
+              "diameterRangeInches": {
+                "min": 0.397,
+                "max": 0.401
+              }
+            },
+            {
+              "caliberId": ".44",
+              "aliases": [
+                ".44",
+                "44"
+              ],
+              "diameterRangeInches": {
+                "min": 0.426,
+                "max": 0.43
+              }
+            },
+            {
+              "caliberId": ".45",
+              "aliases": [
+                ".45",
+                "45",
+                "45acp"
+              ],
+              "diameterRangeInches": {
+                "min": 0.45,
+                "max": 0.454
+              }
+            }
+          ]
+        },
+        "practiceAuthority": {
+          "scope": "sczn3_practice_scoring",
+          "officialCompetitionCertification": false,
+          "physicalTargetPlane": {
+            "width": 20,
+            "height": 32,
+            "unit": "inch"
+          },
+          "regionGeometrySource": "existing_backend_reference_regions_for_exact_registered_atc_200_face",
+          "physicalBoundaryPrecisionStatus": "not_independently_verified",
+          "clearInteriorClassification": "supported_for_practice",
+          "lineTouchDecision": "backend_projectile_footprint_against_existing_reference_regions",
+          "limitation": "Practice feedback only; no claim of independently measured ATC-200 internal-boundary precision."
         }
       },
-      "digest": "34842234e6624e9d312613cbd9cd108a39a7c3c8e8912ff0f25ffa124da50c23"
+      "digest": "7b16573326424c035564cb82294761cf7781f568fff6699aba39c19f4a81e329"
     },
     "mission": {
       "id": "american_target_58_q100_uspa_ipsc-target-scoring-mission",
@@ -237,7 +417,29 @@
             "points": []
           },
           "observationInput": "normalized_taps",
-          "resultAction": "show_result"
+          "resultAction": "show_result",
+          "scoringMode": {
+            "materialFact": "scoring_mode",
+            "selectionMode": "shooter_required_before_result",
+            "label": "Power Factor",
+            "options": [
+              {
+                "modeId": "major",
+                "label": "Major"
+              },
+              {
+                "modeId": "minor",
+                "label": "Minor"
+              }
+            ]
+          },
+          "elapsedTime": {
+            "mode": "optional_manual_entry",
+            "unit": "seconds",
+            "source": "shooter_entered_external_timer",
+            "required": false,
+            "label": "Enter Time"
+          }
         },
         "capabilityStates": {
           "evidence": {
@@ -255,9 +457,129 @@
           "publisherMission": {
             "status": "not_applicable"
           }
+        },
+        "smartTargetTreatment": {
+          "productTargetName": "USPSA/IPSC",
+          "storedScoring": {
+            "status": "complete",
+            "model": "numeric_regions",
+            "regionRules": {
+              "a_head": {
+                "label": "A Head",
+                "value": 5
+              },
+              "b_head": {
+                "label": "Head B (scored C)",
+                "value": 3
+              },
+              "a_body": {
+                "label": "A Body",
+                "value": 5
+              },
+              "c_body": {
+                "label": "C Body",
+                "value": 3
+              },
+              "d_body": {
+                "label": "D Body",
+                "value": 1
+              }
+            },
+            "outsideRule": {
+              "label": "Miss",
+              "value": 0
+            },
+            "schemaVersion": "sczn3-target-scoring-data-v1",
+            "aggregation": {
+              "mode": "sum"
+            },
+            "scoringModePolicy": {
+              "mode": "shooter_selected_region_values",
+              "materialFact": "scoring_mode",
+              "selectionSource": "shooter_declared",
+              "required": true,
+              "authority": {
+                "source": "https://uspsa.org/documents/rules/current/USPSA-Competition-Rules.pdf",
+                "edition": "September 2026",
+                "section": "Appendix B1",
+                "rule": "A=5 for Major and Minor; C and legacy B=4 Major/3 Minor; D=2 Major/1 Minor"
+              },
+              "options": [
+                {
+                  "modeId": "major",
+                  "label": "Major",
+                  "regionValues": {
+                    "a_head": 5,
+                    "b_head": 4,
+                    "a_body": 5,
+                    "c_body": 4,
+                    "d_body": 2
+                  },
+                  "outsideValue": 0
+                },
+                {
+                  "modeId": "minor",
+                  "label": "Minor",
+                  "regionValues": {
+                    "a_head": 5,
+                    "b_head": 3,
+                    "a_body": 5,
+                    "c_body": 3,
+                    "d_body": 1
+                  },
+                  "outsideValue": 0
+                }
+              ]
+            },
+            "publisherRuleAuthority": {
+              "source": "https://uspsa.org/documents/rules/current/USPSA-Competition-Rules.pdf",
+              "edition": "September 2026",
+              "sections": [
+                "4.2.1",
+                "9.2",
+                "9.4",
+                "9.5.2",
+                "Appendix B1"
+              ],
+              "rule": "Official USPSA/IPSC cardboard target zone values by shooter-declared power factor; legacy B scores as C; outside observations remain SCZN3 target misses and are not promoted to official course penalties"
+            }
+          },
+          "competitionAuthority": {
+            "disciplineId": "uspsa-cardboard-target",
+            "source": "https://uspsa.org/documents/rules/current/USPSA-Competition-Rules.pdf",
+            "edition": "September 2026",
+            "zoneValues": "verified",
+            "officialHitFactor": "requires course scoring method, stipulated hits, elapsed time, and all applicable penalties",
+            "regionLabels": {
+              "a_head": "Head A",
+              "b_head": "Head B (scored C)",
+              "a_body": "Body A",
+              "c_body": "Body C",
+              "d_body": "Body D"
+            },
+            "authorityClassification": "governing_organization_rules",
+            "officialClaimStatus": "governing_rules_applied"
+          },
+          "smartShooterIntelligence": [
+            "governed Major or Minor target score",
+            "A Head and A Body preserved separately",
+            "legacy B scored with C values",
+            "hit rate, A-zone performance, misses, distribution, and USM History",
+            "optional external elapsed time and transparent gross points per second",
+            "official Hit Factor withheld without complete course context"
+          ],
+          "practiceAuthority": {
+            "status": "FOUNDER_AUTHORIZED",
+            "authorizedOn": "2026-10-16",
+            "scope": "practice_scoring_only",
+            "lineTouchRule": "higher_adjacent_score",
+            "physicalBoundaryPrecisionStatus": "not_independently_verified",
+            "officialCompetitionClaim": "withheld"
+          },
+          "shooterExplanation": "SCZN3 reports Major or Minor practice points from the five existing ATC-200 reference regions. Backend projectile-footprint evaluation applies the higher adjacent value on a recorded line touch. This is practice feedback, not an official stage score or certification, and exact physical boundary precision has not been independently verified."
         }
       },
-      "digest": "c80c5ab12cd5fa391483def4cf1266be9b41ea25507412674efcc7e557babc52"
+      "digest": "3913b4aab129f4b3b2d3ecfb76b2bbfd2efbb74acbb214e3a7a4e524bbfc4fa0"
     }
   },
   "missionFamily": "targetScoring",
@@ -299,7 +621,8 @@
   "unsupportedUses": [
     "zeroing_correction",
     "qualification_or_certification",
-    "scoring_rules_not_present_in_publisher_authority",
-    "physical_hole_extent_or_line_touch_adjudication"
+    "official_stage_hit_factor_without_written_stage_briefing_stipulated_hits_and_penalties",
+    "official_classifier_or_division_claim_without_classifier_stage_and_division_authority",
+    "independently_verified_physical_boundary_precision_claim"
   ]
 }

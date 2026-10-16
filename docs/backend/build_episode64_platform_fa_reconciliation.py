@@ -16,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PLATFORM = ROOT / "docs/authority-evidence/platform"
+GUNFUN = ROOT / "docs/authority-evidence/gunfun"
 CENSUS_PATH = PLATFORM / "episode64-inheritance-census-input-2026-10-04/SCZN3_EP64_THE13_1993_INHERITANCE_CENSUS.json"
 OUT_DIR = PLATFORM / "episode64-platform-founder-acceptance-reconciliation-2026-10-11"
 REGISTRY_PATH = ROOT / "docs/backend/registries/episode64_platform_founder_acceptance_registry.json"
@@ -163,6 +164,35 @@ def apply_standalone_approvals(records: list[dict]):
                 r["secEvidence"].append({"source": rel(path), "proof": proof})
 
 
+def apply_sink_game_approvals(records: list[dict]):
+    path = GUNFUN / "episode64-issue4-sink-games/FOUNDER_ACCEPTANCE_192_193.json"
+    data = load(path)
+    if data.get("decisionAuthority") != "Founder":
+        raise ValueError("Sink-game acceptance must be an explicit Founder decision")
+    for target in data.get("targets", []):
+        if str(target.get("founderDecision", "")).upper() != "PASS":
+            continue
+        matched = match(records, master=target["masterNumber"])
+        if len(matched) != 1:
+            raise ValueError(f"Sink-game Master #{target['masterNumber']} did not resolve exactly once")
+        record = matched[0]
+        if record["canonicalFaceId"] != target["canonicalFaceId"]:
+            raise ValueError(f"Sink-game Master #{target['masterNumber']} canonical face mismatch")
+        if target["targetProfileId"] not in record["runtimeIds"]:
+            raise ValueError(f"Sink-game Master #{target['masterNumber']} runtime identity mismatch")
+        apply(
+            record,
+            APPROVED,
+            path,
+            f"Explicit Founder decision PASS for {target['targetProfileId']} on {target['decisionDate']}",
+        )
+        record["secEvidence"].append({
+            "source": rel(path.parent / target["machineEvidence"]),
+            "sessionId": target["machineSessionId"],
+            "secArtifactSha256": target["secArtifactSha256"],
+        })
+
+
 def apply_qt_checkpoint(records: list[dict]):
     checkpoint = PLATFORM / "qt-printer13-founder-accepted-physical-authority-200-51-3-2026-09-29/QT_PRINTER13_FOUNDER_ACCEPTANCE_CHECKPOINT.json"
     manifest = PLATFORM / "qt-printer13-physical-authority-execution-2026-09-28/QT_PHYSICAL_AUTHORITY_BATCH_MANIFEST.json"
@@ -208,6 +238,13 @@ def apply_oos(records: list[dict]):
     data = load(alien); t = data["target"]
     for r in match(records, runtime_ids=[t["runtimeTargetId"]], master=t.get("masterNumber"), name=t.get("targetName")):
         apply(r, OOS, alien, data["decision"])
+    master407 = PLATFORM / "episode67-master407-founder-oos-2026-10-16/SCZN3_EP67_FOUNDER_OOS_MASTER407_ATC200.json"
+    data = load(master407); decision = data["decision"]
+    runtime_ids = [x["runtimeId"] for x in data["packageRuntimeIdentities"]]
+    for r in match(records, master=decision["masterNumber"]):
+        if r["canonicalFaceId"] != decision["canonicalFaceId"] or set(r["runtimeIds"]) != set(runtime_ids):
+            raise ValueError("Master #407 OOS identity mismatch")
+        apply(r, OOS, master407, f"Founder OOS: {decision['reason']}")
 
 
 def finalize(records: list[dict]):
@@ -265,6 +302,7 @@ def main():
     ]:
         apply_ledger(records, p)
     apply_standalone_approvals(records)
+    apply_sink_game_approvals(records)
     apply_bowling_inheritance(records)
     apply_oos(records)
     finalize(records)

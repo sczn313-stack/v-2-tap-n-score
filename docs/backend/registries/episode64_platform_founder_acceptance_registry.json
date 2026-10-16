@@ -1,6 +1,6 @@
 {
   "schemaVersion": "sczn3-platform-founder-acceptance-registry-v1",
-  "generatedAt": "2026-10-12T00:29:03.292866+00:00",
+  "generatedAt": "2026-10-16T23:13:31.764000+00:00",
   "governance": {
     "stagingWorkbookIsAuthority": false,
     "machinePassEqualsFounderApproval": false,
@@ -23,8 +23,8 @@
     "FOUNDER_APPROVED": 34,
     "FOUNDER_APPROVED_INHERITED": 253,
     "FOUNDER_HOLD": 3,
-    "FOUNDER_OOS": 46,
-    "UNVERIFIED": 1657
+    "FOUNDER_OOS": 47,
+    "UNVERIFIED": 1656
   },
   "records": [
     {
@@ -8756,7 +8756,13 @@
         "sha256": "NOT_STORED",
         "registeredAssetShaConsistency": "NOT_APPLICABLE_NO_WORKBOOK_SHA"
       },
-      "secEvidence": []
+      "secEvidence": [
+        {
+          "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/MACHINE_PROOF.json",
+          "sessionId": "sczn3-session-04d87444-9256-470b-be02-d054f11a5a15",
+          "secArtifactSha256": "af28516d54f47644edbe69fba47642376890cb10de88f16f7bf2d77dffdb5172"
+        }
+      ]
     },
     {
       "censusFaceKey": "THE13-MASTER-0193",
@@ -8775,7 +8781,7 @@
       "founderEvidence": [
         {
           "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/FOUNDER_ACCEPTANCE_192_193.json",
-          "detail": "Explicit Founder decision PASS for gunfun_11160_sink_a_ship on 2026-10-13 after complete-geometry correction and Founder retest"
+          "detail": "Explicit Founder decision PASS for gunfun_11160_sink_a_ship on 2026-10-13"
         }
       ],
       "approvalInheritance": null,
@@ -8806,7 +8812,13 @@
         "sha256": "NOT_STORED",
         "registeredAssetShaConsistency": "NOT_APPLICABLE_NO_WORKBOOK_SHA"
       },
-      "secEvidence": []
+      "secEvidence": [
+        {
+          "source": "docs/authority-evidence/gunfun/episode64-issue4-sink-games/FOUNDER_193_BROWSER_REPLAY_PROOF.json",
+          "sessionId": "sczn3-session-4600f8c2-5f4a-4ffe-9654-880eaf5b1031",
+          "secArtifactSha256": "026c1dd78913593c915e86338f8a53b831e6c7fb202ad8dfd07a679ce4d8bfa7"
+        }
+      ]
     },
     {
       "censusFaceKey": "THE13-MASTER-0194",
@@ -18842,14 +18854,19 @@
       "sourceIdentityIds": [
         "american-target:0252, american-target:0253, american-target:0254"
       ],
-      "founderStatus": "UNVERIFIED",
-      "currentScope": "ACTIVE",
-      "founderEvidence": [],
+      "founderStatus": "FOUNDER_OOS",
+      "currentScope": "OOS",
+      "founderEvidence": [
+        {
+          "source": "docs/authority-evidence/platform/episode67-master407-founder-oos-2026-10-16/SCZN3_EP67_FOUNDER_OOS_MASTER407_ATC200.json",
+          "detail": "Founder OOS: UGO physical scoring-boundary authority remains unverified."
+        }
+      ],
       "approvalInheritance": null,
       "librarySelection": {
-        "displayStatus": "FOUNDER STATUS UNVERIFIED",
-        "eligibleForFounderReview": true,
-        "excludeReason": null
+        "displayStatus": "OUT OF SCOPE",
+        "eligibleForFounderReview": false,
+        "excludeReason": "FOUNDER_OOS"
       },
       "backend": {
         "contractLifecycleStatuses": [

@@ -6,11 +6,11 @@ All **1993/1,993** census faces were reconciled exactly once. No Illustrated Mas
 
 | Governing state | Count |
 |---|---:|
-| FOUNDER_APPROVED | 32 |
+| FOUNDER_APPROVED | 34 |
 | FOUNDER_APPROVED_INHERITED | 253 |
-| FOUNDER_OOS | 46 |
+| FOUNDER_OOS | 47 |
 | FOUNDER_HOLD | 3 |
-| UNVERIFIED | 1659 |
+| UNVERIFIED | 1656 |
 
 ## Evidence policy
 

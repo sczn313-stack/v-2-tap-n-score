@@ -2,10 +2,32 @@
 
 ### Platform Brief for New Agents
 
-**Version:** 2.6 — Founder Approved / EPISODE 60 TRUE NORTH CLOSURE
-**Current through:** 2026-09-09
-**Status:** Episode 60 — M4: LET THE TARGET TALK is closed under the 2,570 Target True North / Existing-Capability Floor; the next episode is reserved but not opened
+**Version:** 2.8 — Episode 67 Truthful Authority Closure
+**Current through:** 2026-10-16
+**Status:** Episode 67 is closed. Masters #192 and #193 retain explicit Founder approval; Master #407 is preserved OOS because physical scoring-boundary authority remains unverified. Episode 68 is prepared but not opened.
 **Canonical invocation:** **“Load the SCZN3 Shortest Correct Mental Model.”**
+
+## Episode 64 Founder Approval Floor — 2026-10-10
+
+These decisions are durable Founder approvals. Do not return an approved target to Founder unless its governed treatment materially changes or evidence demonstrates a regression.
+
+| Target | Canonical identity | Decision | Durable approval record |
+|---|---|---|---|
+| Baker Duck Hunt | `blocker_baker_targets_gf_duck_hunt` | **FOUNDER PASS** | `docs/authority-evidence/platform/episode64-duck-hunt-founder-repair-2026-10-09/FOUNDER_1_DUCK_HUNT_FOUNDER_APPROVAL.json` |
+| Highwild 17×25 Sight-In | `highwild_bfz_1725_25lklsp_sight_in` | **FOUNDER PASS** | `docs/authority-evidence/platform/episode64-highwild-zeroing-inheritance-2026-10-09/FOUNDER_3_HIGHWILD_FOUNDER_APPROVAL.json` |
+| National Target A-17 | `evidence_the_national_target_company_nra_a_17` | **FOUNDER PASS** | `docs/authority-evidence/platform/episode64-national-a17-founder-approval-2026-10-10/FOUNDER_2_A17_FOUNDER_APPROVAL.json` |
+
+National Target A-17's accepted Founder session recorded a score of 43, 62.5% hit rate, 16 total observations, 10 hit observations, 6 misses, 2 of 11 bulls hit, and 2.7 points per tap. Six hits were on record bulls and four were on the sighting bull. Sighting-bull observations count toward overall hits, hit rate, and bull distribution, but contribute no points to the record score. SEC → Vault → exact reopen is preserved as **Cody-reported PASS**, not recast as independent Founder observation.
+
+## Episode 67 Closure Floor — 2026-10-16
+
+- Master #192, GunFun Sink-A-Sub, and Master #193, GunFun Sink-a-Ship, are `FOUNDER_APPROVED`, remain `ACTIVE`, and are excluded from further Founder review. Their durable authority is `FOUNDER_ACCEPTANCE_192_193.json`; registry regeneration must ingest that record.
+- Master #407, American Target Company ATC-200 USPA/IPSC, is `FOUNDER_OOS` across Q100, Q500, and Q1000. Its artwork, identities, metadata, scoring descriptions, and evidence remain preserved. The reason is exact: **UGO physical scoring-boundary authority remains unverified.**
+- The Founder-approved population accounting is **1,495 active metadata-connected faces + 32 protected OOS faces = 1,527 canonical faces**.
+- OOS means preserved outside active acceptance. It does not authorize deletion, manufactured geometry, weakened UGO gates, or silent restoration to scoring.
+- The closure suite passed **27/27** focused tests across Founder reconciliation, population propagation, exception closeout, Sink-game behavior, and Master #407 OOS preservation.
+
+See the [Episode 67 Closing Record](../history/episodes/EPISODE_67_CLOSING_RECORD.md) and [Episode 68 Opening Handoff](../history/episodes/NEXT_EPISODE_OPENING_HANDOFF_AFTER_EPISODE_67.md).
 
 > **SCZN3 FIRST.**
 >

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-representative-approval-v1",
+  "recordedAt": "2026-10-07",
+  "status": "FOUNDER_2_OF_2_APPROVED_LOCKED",
+  "founderDecision": {
+    "representativeReviewed": "Bowling Pins SKU 21050",
+    "representativeDisposition": "PASS",
+    "rule": "The unreviewed face may share Founder approval only when its governed scoring treatment and shooter-facing execution behavior are materially identical and its complete lifecycle remains independently N/N-proven."
+  },
+  "homogeneityCheck": {
+    "status": "PASS",
+    "sameReusableTreatment": true,
+    "shared": {
+      "capability": "numeric-region scoring",
+      "recognizedBehaviorFamily": "NUMERIC_REGION_SUM",
+      "printedValues": [1, 5, 8, 9, 10],
+      "outsideRule": "Miss / 0 points",
+      "aggregation": "sum",
+      "executor": "declarative-target-score@1",
+      "resultPackage": "targetScoreResult@1",
+      "resultMetrics": [
+        "score",
+        "hit rate",
+        "points per tap",
+        "scored-region distribution",
+        "misses / outside",
+        "total taps"
+      ],
+      "history": "numeric_score_history_v1 via shared_session_drawer_3_history_v1",
+      "secAdapter": "target-scoring-family@1",
+      "preservationValidator": "target-scoring-preservation@1"
+    },
+    "faceLocalDifferences": [
+      {
+        "field": "physical sheet size",
+        "sku21050": "23 x 35 inch",
+        "sku81010": "14 x 20 inch",
+        "materialToFounderTreatment": false
+      },
+      {
+        "field": "governed pin count",
+        "sku21050": 5,
+        "sku81010": 2,
+        "materialToFounderTreatment": false,
+        "reason": "The same per-pin scoring grammar and result behavior repeat over the face-local governed denominator."
+      },
+      {
+        "field": "governed scoring-region count",
+        "sku21050": 35,
+        "sku81010": 14,
+        "materialToFounderTreatment": false,
+        "reason": "Each pin independently contains the same seven-region governed scoring treatment."
+      },
+      {
+        "field": "exact-face Backend geometry",
+        "materialToFounderTreatment": false,
+        "reason": "Each face retains independent UGO Backend geometry and independent classification proof; geometry is not inherited from the representative."
+      }
+    ],
+    "materialDifferenceRequiringFounderJudgment": false
+  },
+  "locks": [
+    {
+      "runtimeId": "gunfun_21050_bowling_pins",
+      "targetName": "Bowling Pins",
+      "sku": "21050",
+      "founderStatus": "FOUNDER_APPROVED_LOCKED",
+      "contractFingerprint": "2a4c0a7b945a07b632aa5c392c6940bcab40e7bc0a22f7289cd2a155a16967e4",
+      "independentNn": "PASS",
+      "governedRegionsProven": 35
+    },
+    {
+      "runtimeId": "gunfun_81010_small_bowling_pins",
+      "targetName": "Small Bowling Pins",
+      "sku": "81010",
+      "founderStatus": "FOUNDER_APPROVED_LOCKED_BY_HOMOGENEOUS_TREATMENT",
+      "contractFingerprint": "84a8123481f135229e19fc461bbd93efac213182829382a0f504498cede66888",
+      "independentNn": "PASS",
+      "governedRegionsProven": 14,
+      "redundantFounderVisualReviewRequired": false
+    }
+  ],
+  "independentProof": {
+    "source": "SCZN3_EP64_UGO_NUMERIC_BOWLING_PINS_NN_PROOF.json",
+    "targets": "2/2 PASS",
+    "governedRegions": "49/49 PASS",
+    "lifecycle": "TARGET -> RESULT -> HISTORY -> SEC -> VAULT -> EXACT REOPEN",
+    "representativeApprovalDoesNotSubstituteForMachineProof": true
+  },
+  "changeControl": {
+    "lockScope": "Exact governed treatment at the recorded contract fingerprints",
+    "reopenFounderReviewWhen": "A material scoring-semantic, geometry-meaning, execution-behavior, or shooter-facing treatment change occurs.",
+    "commitCreated": false
+  }
+}

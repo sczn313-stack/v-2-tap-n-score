@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "sczn3-founder-approval-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 7,
+  "recordedAt": "2026-10-03T00:33:59Z",
+  "decision": "APPROVED",
+  "canonicalFaceId": "06f964bbb45cb70fc1b08a3fa389470eef0e139d7f4c76a751fe198dffc004e1",
+  "canonicalFaceAuthority": "components.registration.definition.assetSha256",
+  "canonicalFaceClosedForWalk": true,
+  "target": {
+    "printer": "Baker Targets",
+    "name": "Arcade Game Target",
+    "runtimeId": "blocker_baker_targets_gf_arc",
+    "skuOrProductId": "GF-Arc-Bulk, GF-Arc"
+  },
+  "allApprovedFaceIdentities": [
+    {
+      "runtimeId": "blocker_baker_targets_gf_arc",
+      "productId": "p-os-baker_364",
+      "sku": "GF-Arc"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_blastpack_003",
+      "productId": "episode64-final-5ae52dcd19f33b51963f",
+      "sku": "PK-BlastPack"
+    }
+  ],
+  "founderProof": {
+    "observations": 13,
+    "targetScore": 325,
+    "hitRatePercent": 53.8,
+    "secPreserved": true,
+    "vaultSessionDisplayId": "Session #002",
+    "exactReopenRetainedTargetScore": 325,
+    "road": "13 taps -> SHOW RESULTS -> score 325 -> 53.8% hit rate -> SEC -> Vault Session #002 -> exact reopen"
+  },
+  "approvedSharedRepair": {
+    "name": "governed observation limit enforced at shot entry",
+    "scope": "shared governed observation-limit machinery for targets declaring fixed observation counts",
+    "behavior": "At 13/13 the frontend accepts the thirteenth observation, displays 13/13, prevents a fourteenth observation from entering state, and makes SHOW RESULTS the next action.",
+    "backendBoundary": "observation_limit_exceeded remains a defensive integrity guard and is not normal shooter-facing behavior.",
+    "repairEvidence": "FOUNDER_7_LIVE_RESULT_REPAIR_PACKAGE.json"
+  },
+  "gateLesson": "Mechanical lifecycle proof must exercise the same live Founder URL and control transition used by Founder; direct backend success alone is insufficient.",
+  "closeout": "FOUNDER_7_CLOSED_ADVANCE_TO_CANONICAL_FACE_GATE_8"
+}

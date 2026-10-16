@@ -32,6 +32,24 @@ class ReconciliationTest(unittest.TestCase):
         self.assertEqual(by_runtime["evidence_speedwell_targets_ar_5_10"]["founderStatus"], "FOUNDER_APPROVED")
         self.assertEqual(by_runtime["evidence_the_national_target_company_nra_a_17"]["founderStatus"], "FOUNDER_APPROVED")
 
+    def test_sink_game_approvals_and_master407_oos_are_regeneration_safe(self):
+        by_master = {r["masterNumber"]: r for r in self.records}
+        for master, runtime_id in {
+            192: "gunfun_21110_sink_a_sub",
+            193: "gunfun_11160_sink_a_ship",
+        }.items():
+            record = by_master[master]
+            self.assertEqual(record["founderStatus"], "FOUNDER_APPROVED")
+            self.assertEqual(record["currentScope"], "ACTIVE")
+            self.assertFalse(record["librarySelection"]["eligibleForFounderReview"])
+            self.assertEqual(record["librarySelection"]["excludeReason"], "FOUNDER_APPROVED")
+            self.assertIn(runtime_id, record["runtimeIds"])
+            self.assertTrue(any("FOUNDER_ACCEPTANCE_192_193.json" in x["source"] for x in record["founderEvidence"]))
+        master407 = by_master[407]
+        self.assertEqual(master407["founderStatus"], "FOUNDER_OOS")
+        self.assertEqual(master407["currentScope"], "OOS")
+        self.assertFalse(master407["librarySelection"]["eligibleForFounderReview"])
+
     def test_qt_checkpoint_exact_census(self):
         qt = [r for r in self.records if r["printer"] == "Qualification Targets"]
         self.assertEqual(len(qt), 254)

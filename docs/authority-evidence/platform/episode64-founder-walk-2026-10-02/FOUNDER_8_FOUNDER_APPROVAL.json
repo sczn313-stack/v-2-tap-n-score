@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "sczn3-founder-approval-v1",
+  "walkId": "episode64-mona-lisa-founder-walk-20",
+  "founderNumber": 8,
+  "recordedAt": "2026-10-03T01:05:14Z",
+  "decision": "APPROVED",
+  "canonicalFaceId": "1d22477e50be4908e1f9c8b6c542c581c238f51ed661a0fa90a018e5c44c2ca2",
+  "canonicalFaceAuthority": "components.registration.definition.assetSha256",
+  "canonicalFaceClosedForWalk": true,
+  "target": {
+    "printer": "Baker Targets",
+    "name": "Bear Encounter Target",
+    "runtimeId": "final_collection_baker_targets_pk_badmugcombo_001",
+    "skuOrProductId": "PK-BadMugCombo"
+  },
+  "allApprovedFaceIdentities": [
+    {
+      "runtimeId": "blocker_baker_targets_gf_bear",
+      "productId": "p-os-baker_423",
+      "sku": "GF-Bear"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_badanimals_001",
+      "productId": "episode64-final-28374e4f659defab62c8",
+      "sku": "PK-BadAnimals"
+    },
+    {
+      "runtimeId": "final_collection_baker_targets_pk_badmugcombo_001",
+      "productId": "episode64-final-ce234bfe18c6d48be111",
+      "sku": "PK-BadMugCombo"
+    }
+  ],
+  "founderProof": {
+    "observations": 11,
+    "numberedRegionHits": 10,
+    "outsideCountOnly": 1,
+    "targetScore": 56,
+    "hitRatePercent": 90.9,
+    "secPreserved": true,
+    "exactReopenMarkerCount": 11,
+    "sessionId": "sczn3-session-a426269d-db56-4c57-9d0e-bd350fe5b1f9",
+    "road": "11 taps -> SHOW RESULT -> score 56 -> 10 numbered-region hits + 1 outside count-only -> HISTORY -> SEC -> Vault -> exact reopen"
+  },
+  "approvedSharedRepair": {
+    "name": "count-only outside semantics preserved through HISTORY",
+    "scope": "shared preserved progression and HISTORY presentation for governed count-only outside observations",
+    "behavior": "An outside observation whose authority classification has a null value remains Outside Scoring Area — count only in RESULT, HISTORY, Vault, and exact reopen.",
+    "prohibitedTranslation": "Do not translate a count-only outside observation into Missed or assign zero points when the authority did not define a penalty or value.",
+    "repairEvidence": "FOUNDER_8_IMPLEMENTATION_EVIDENCE_PACKAGE.json"
+  },
+  "canonicalFaceTreatment": {
+    "numberedRegionCount": 10,
+    "printedValues": [8, 6, 6, 4, 6, 8, 4, 6, 6, 2],
+    "identityInheritance": "one canonical-face treatment across GF-Bear, PK-BadAnimals, and PK-BadMugCombo",
+    "inventedRules": false
+  },
+  "closeout": "FOUNDER_8_CLOSED_ADVANCE_TO_CANONICAL_FACE_GATE_9"
+}

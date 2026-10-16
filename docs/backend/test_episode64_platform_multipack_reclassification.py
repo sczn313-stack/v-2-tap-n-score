@@ -41,6 +41,18 @@ class MultipackReclassificationTest(unittest.TestCase):
             self.assertEqual(r["founderAuthority"]["status"], p["founderStatus"])
             self.assertEqual(r["founderAuthority"]["currentScope"], p["currentScope"])
 
+    def test_sink_game_approvals_and_master407_oos_propagate(self):
+        for master in (192, 193):
+            record = self.by_master[master]
+            self.assertEqual(record["founderAuthority"]["status"], "FOUNDER_APPROVED")
+            self.assertEqual(record["founderAuthority"]["currentScope"], "ACTIVE")
+            self.assertFalse(record["executableFaceSelection"]["eligible"])
+            self.assertEqual(record["executableFaceSelection"]["excludedBecause"], "FOUNDER_APPROVED")
+        master407 = self.by_master[407]
+        self.assertEqual(master407["founderAuthority"]["status"], "FOUNDER_OOS")
+        self.assertEqual(master407["founderAuthority"]["currentScope"], "OOS")
+        self.assertFalse(master407["executableFaceSelection"]["eligible"])
+
     def test_packages_never_enter_executable_selection(self):
         for r in self.records:
             if r["populationClassification"] in {"ASSORTMENT_PACK", "COMMERCIAL_CONTAINER", "UNRESOLVED"}:

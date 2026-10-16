@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "sczn3-episode64-founder-oos-record-v1",
+  "generatedAt": "2026-10-04T23:58:50.623693+00:00",
+  "status": "FOUNDER_APPROVED_OOS",
+  "group": "Founder OOS targets pending later authority resolution",
+  "record": {
+    "censusFaceKey": "THE13-MASTER-0307",
+    "masterNumber": 307,
+    "canonicalFaceId": "676c13d7b78f44ac08da02d735010db9eaeae0384f7e6af00d20710ed91e4845",
+    "printer": "American Target Company",
+    "targetName": "B 8 (CP)",
+    "productIdsOrSkus": "pistol:14-Q500, pistol:14-Q1000",
+    "runtimeIds": [
+      "evidence_american_target_company_pistol_14_q1000",
+      "evidence_american_target_company_pistol_14_q500"
+    ],
+    "currentBackend": {
+      "sourceFamily": "Competition",
+      "smartFamily": "2. USM",
+      "missionFamilies": [
+        "targetScoring"
+      ],
+      "resultPackageTypes": [
+        "targetScoreResult"
+      ],
+      "scoringModels": [
+        "not_applicable"
+      ],
+      "capabilityStates": [
+        {
+          "evidence": {
+            "status": "available"
+          },
+          "measurement": {
+            "status": "not_applicable"
+          },
+          "correction": {
+            "status": "not_applicable"
+          },
+          "officialScore": {
+            "status": "not_applicable"
+          },
+          "publisherMission": {
+            "status": "not_applicable"
+          }
+        }
+      ]
+    },
+    "authority": {
+      "sourceUrlsOrPublisherEvidence": "https://www.americantargetcompany.com/pistol.html#B_8_CP_\nhttps://www.americantargetcompany.com/pistol.html#B_8_CP_",
+      "publisherRuleAuthorities": [
+        {
+          "source": "american-target:pistol:14-Q1000 + american-target:0395 + preserved publisher representation 676c13d7b78f44ac08da02d735010db9eaeae0384f7e6af00d20710ed91e4845",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        },
+        {
+          "source": "american-target:pistol:14-Q500 + american-target:0394 + preserved publisher representation 676c13d7b78f44ac08da02d735010db9eaeae0384f7e6af00d20710ed91e4845",
+          "rule": "the accepted scale map establishes this target's Smart Evidence foothold; no scoring, regions, or richer semantics are inferred"
+        }
+      ],
+      "storedGoverningRule": "NOT_STORED",
+      "authorityLimitOrUnresolved": "NOT_STORED"
+    },
+    "bindingReferences": [
+      {
+        "runtimeId": "evidence_american_target_company_pistol_14_q1000",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_pistol_14_q1000_target_scoring_v1.json",
+        "contractSha256": "ab70cc5386442927f00cfb7de3c967723ef3925896d475d512ee48aa86575934",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      },
+      {
+        "runtimeId": "evidence_american_target_company_pistol_14_q500",
+        "contractPath": "docs/backend/target_execution_contracts/contracts/evidence_american_target_company_pistol_14_q500_target_scoring_v1.json",
+        "contractSha256": "ffb22c1fa3e976de41179a265a15d91fe5d50e596cd5de323065ab909a8a8272",
+        "missionFamily": "targetScoring",
+        "resultPackageType": "targetScoreResult",
+        "scoringModel": "not_applicable",
+        "geometryStatus": "approved",
+        "approval": {
+          "status": "approved",
+          "authorityId": "P_OS_2570_CURRENT_SCALE_MAP_BUCKET_3",
+          "approvedAt": "2026-09-08T12:00:00-04:00"
+        }
+      }
+    ],
+    "provenance": {
+      "censusWorkbook": "docs/authority-evidence/platform/episode64-the13-authoritative-census-2026-10-02/SCZN3_EP64_THE13_1993_CONSOLIDATED_MASTER.xlsx",
+      "censusSheet": "THE 13 — 1993 Master",
+      "censusRow": 308,
+      "runtimeBindingReferences": [
+        "evidence_american_target_company_pistol_14_q1000",
+        "evidence_american_target_company_pistol_14_q500"
+      ],
+      "qtAuthorityReference": "NOT_STORED"
+    }
+  },
+  "reason": "stored representation is explicitly marked Not Actual Target",
+  "authorityBoundary": {
+    "storedGoverningRule": "NOT_STORED",
+    "authorityLimitOrUnresolved": "NOT_STORED",
+    "scoringInferenceAuthorized": false,
+    "smartEvidenceAdmissionAuthorized": false
+  },
+  "preservation": {
+    "identityPreserved": true,
+    "evidencePreserved": true,
+    "provenancePreserved": true,
+    "runtimeBindingsPreserved": [
+      "evidence_american_target_company_pistol_14_q1000",
+      "evidence_american_target_company_pistol_14_q500"
+    ],
+    "originalContractsRestored": true
+  },
+  "existingOosGroup": {
+    "approvedBale1Total": 44,
+    "note": "This record belongs to the exact Founder-approved Bale #1 OOS set."
+  },
+  "laterResolutionNeeded": "Store sufficient publisher/governing scoring authority and exact face geometry before selecting a scoring execution road."
+}
