@@ -25,7 +25,7 @@ import numpy as np
 # Target registration is the only OpenCV-heavy request path in the lightweight
 # Authority service.  Keep OpenCV's native worker pool inside the service's
 # memory envelope; request concurrency is bounded separately below.
-cv2.setNumThreads(1)
+cv2.setNumThreads(0)
 
 
 DOCS_ROOT = Path(__file__).resolve().parents[1]
@@ -636,8 +636,7 @@ def _unavailable_evidence(package: Mapping[str, Any], evidence: Mapping[str, Any
 
 
 def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observations: Any = None) -> Dict[str, Any]:
-    context = _package_context(package_id)
-    package = context["package"]
+    package = registration_package(package_id)
     representation = package["canonicalRepresentation"]
     normalized = normalize_observations(observations)
     canonical_width = int(representation["pixelWidth"])
@@ -645,6 +644,7 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
     base_uncertainty = float(package.get("baseGeometryUncertaintyPx") or 0)
     cache_key = (package_id, str(evidence["sha256"]), int(evidence["width"]), int(evidence["height"]))
     cached = _cached_transform(cache_key)
+    context = None
 
     if cached is not None:
         matrix = cached["matrix"]
@@ -663,6 +663,7 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
         residuals = np.empty((0,), dtype=np.float32)
         knowledge_state = "exact"
     else:
+        context = _package_context(package_id)
         gray = cv2.cvtColor(evidence["decoded"], cv2.COLOR_BGR2GRAY)
         sift = cv2.SIFT_create(nfeatures=12000, contrastThreshold=0.015, edgeThreshold=16)
         keypoints, descriptors = sift.detectAndCompute(gray, None)
@@ -741,12 +742,17 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
                 "registeredCoverageStatus": "supported" if inside else "outside_registered_target_plane",
             })
 
+    canonical_gray = (
+        cv2.cvtColor(evidence["decoded"], cv2.COLOR_BGR2GRAY)
+        if method == "exact_canonical_representation"
+        else (context or _package_context(package_id))["canonicalGray"]
+    )
     orientation = orientation_evidence(
         package,
         evidence,
         matrix,
         method,
-        context["canonicalGray"],
+        canonical_gray,
     )
     topology = geometry_topology_evidence(
         package,

@@ -5552,7 +5552,12 @@ function handleTargetImageSelection(event) {
     document.getElementById("precisionTapPhotoPicker").hidden = true;
     document.body.dataset.precisionTapPhotoPicker = "closed";
     if (registrationAuthority) {
-      const registration = await requestTargetImageRegistration(imageEvidence);
+      // Preserve an exact governed asset as exact at the Backend boundary.
+      // The working preview may remain browser-sized because observations use
+      // normalized source coordinates, but registration authority must receive
+      // the original bytes whose governed identity was verified above.
+      const registrationEvidence = exactRegistration ? imageEvidenceBundle.original : imageEvidence;
+      const registration = await requestTargetImageRegistration(registrationEvidence);
       pendingEvidence.registrationStatus = String(registration && registration.knowledgeState || "unavailable");
       pendingEvidence.registrationAuthoritySource = registration && registration.registrationMethod;
       pendingEvidence.registrationEvidenceId = registration && registration.registrationEvidenceId;
