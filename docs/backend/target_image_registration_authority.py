@@ -22,6 +22,12 @@ import cv2
 import numpy as np
 
 
+# Target registration is the only OpenCV-heavy request path in the lightweight
+# Authority service.  Keep OpenCV's native worker pool inside the service's
+# memory envelope; request concurrency is bounded separately below.
+cv2.setNumThreads(1)
+
+
 DOCS_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = Path(__file__).resolve().parent / "registries" / "target_image_registration_packages.json"
 DATA_URL_PATTERN = re.compile(r"^data:(image/[a-z0-9.+-]+);base64,([A-Za-z0-9+/=\r\n]+)$")
@@ -30,6 +36,7 @@ MAX_IMAGE_BYTES = 25 * 1024 * 1024
 TRANSFORM_CACHE_LIMIT = 16
 _TRANSFORM_CACHE: "OrderedDict[tuple[str, str, int, int], Dict[str, Any]]" = OrderedDict()
 _TRANSFORM_CACHE_LOCK = RLock()
+_REGISTRATION_EXECUTION_LOCK = RLock()
 
 
 class TargetImageRegistrationError(ValueError):
@@ -166,9 +173,7 @@ def _package_context(package_id: str) -> Dict[str, Any]:
         raise TargetImageRegistrationError("canonical_representation_features_unavailable", "configuration_error", http_status=503)
     return {
         "package": package,
-        "canonical": canonical_color,
         "canonicalGray": canonical_gray,
-        "sift": sift,
         "keypoints": keypoints,
         "descriptors": descriptors,
     }
@@ -659,7 +664,8 @@ def register_decoded_image(package_id: str, evidence: Mapping[str, Any], observa
         knowledge_state = "exact"
     else:
         gray = cv2.cvtColor(evidence["decoded"], cv2.COLOR_BGR2GRAY)
-        keypoints, descriptors = context["sift"].detectAndCompute(gray, None)
+        sift = cv2.SIFT_create(nfeatures=12000, contrastThreshold=0.015, edgeThreshold=16)
+        keypoints, descriptors = sift.detectAndCompute(gray, None)
         if descriptors is None:
             return _unavailable_evidence(package, evidence, "target_identity_unverified")
         gate = package["integrityGates"]
@@ -797,5 +803,9 @@ def register_target_image(payload: Any) -> Dict[str, Any]:
         raise TargetImageRegistrationError("target_profile_identity_mismatch", http_status=409)
     if str(payload.get("targetProfileVersion") or "") != str(package["targetProfileVersion"]):
         raise TargetImageRegistrationError("target_profile_version_mismatch", http_status=409)
-    evidence = decode_image_evidence(payload.get("imageEvidence") or {})
-    return register_decoded_image(package["registrationPackageId"], evidence, payload.get("observations"))
+    # ThreadingHTTPServer may admit overlapping uploads.  SIFT and perspective
+    # warping have a large native working set, so serialize this one resource-
+    # intensive authority operation without changing any governed output.
+    with _REGISTRATION_EXECUTION_LOCK:
+        evidence = decode_image_evidence(payload.get("imageEvidence") or {})
+        return register_decoded_image(package["registrationPackageId"], evidence, payload.get("observations"))
