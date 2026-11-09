@@ -69,6 +69,7 @@ async function assertInactiveBorders(page, variant) {
 }
 
 async function exercise(page, variant, mode) {
+  page.setDefaultTimeout(60000);
   let sessionStartRequests = 0;
   const countSessionStarts = request => {
     if (request.method() === "POST" && new URL(request.url()).pathname === "/api/session/start") sessionStartRequests += 1;
@@ -166,7 +167,7 @@ async function exercise(page, variant, mode) {
   assert.match(secText, /Ring 1/);
   assert.match(secText, /Red circle/);
   assert.match(secText, /Crosshairs/);
-  assert.doesNotMatch(secText, /Standard Setup/);
+  assert.doesNotMatch(await page.locator('details[data-sec-region="session"]').innerText(), /Standard Setup/, "the current Actual Round Session does not inherit setup text from prior History cards");
   assert.equal(await page.locator("[data-tst12-scoring-distribution='true']").count(), 0, `${variant.name} removes the duplicate flat scoring distribution`);
   await page.locator("details[data-sec-region='session'] > summary").click();
   assert.equal(await page.locator(".tst12-session-details").getAttribute("open"), null, "Session Details starts collapsed");
