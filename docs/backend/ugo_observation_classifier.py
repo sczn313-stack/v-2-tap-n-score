@@ -9,6 +9,9 @@ class UGOClassificationError(ValueError):
     pass
 
 
+BOUNDARY_EPSILON = 1e-12
+
+
 def coordinate(value: Any, reason: str, error_type: Type[ValueError] = UGOClassificationError) -> float:
     try:
         number = float(value)
@@ -22,7 +25,7 @@ def coordinate(value: Any, reason: str, error_type: Type[ValueError] = UGOClassi
 def contains(region: Mapping[str, Any], x: float, y: float, reason: str, error_type: Type[ValueError] = UGOClassificationError) -> bool:
     shape = region.get("shape")
     if shape == "circle":
-        return hypot(x - float(region["cx"]), y - float(region["cy"])) <= float(region["radius"])
+        return hypot(x - float(region["cx"]), y - float(region["cy"])) <= float(region["radius"]) + BOUNDARY_EPSILON
     if shape == "rectangle":
         return float(region["xMin"]) <= x <= float(region["xMax"]) and float(region["yMin"]) <= y <= float(region["yMax"])
     if shape == "rounded_rectangle":
@@ -38,15 +41,37 @@ def contains(region: Mapping[str, Any], x: float, y: float, reason: str, error_t
         return ((x - corner_x) / rx) ** 2 + ((y - corner_y) / ry) ** 2 <= 1
     if shape == "ellipse":
         rx, ry = float(region["radiusX"]), float(region["radiusY"])
-        return rx > 0 and ry > 0 and ((x - float(region["cx"])) / rx) ** 2 + ((y - float(region["cy"])) / ry) ** 2 <= 1
+        return rx > 0 and ry > 0 and ((x - float(region["cx"])) / rx) ** 2 + ((y - float(region["cy"])) / ry) ** 2 <= 1 + BOUNDARY_EPSILON
+    if shape == "annulus":
+        inner_rx, inner_ry = float(region["innerRadiusX"]), float(region["innerRadiusY"])
+        outer_rx, outer_ry = float(region["outerRadiusX"]), float(region["outerRadiusY"])
+        if min(inner_rx, inner_ry) < 0 or min(outer_rx, outer_ry) <= 0 or inner_rx >= outer_rx or inner_ry >= outer_ry:
+            raise error_type(reason)
+        dx, dy = x - float(region["cx"]), y - float(region["cy"])
+        inside_outer = (dx / outer_rx) ** 2 + (dy / outer_ry) ** 2 <= 1 + BOUNDARY_EPSILON
+        outside_inner = inner_rx == 0 or inner_ry == 0 or (dx / inner_rx) ** 2 + (dy / inner_ry) ** 2 >= 1 - BOUNDARY_EPSILON
+        return inside_outer and outside_inner
+    if shape == "orthogonal_cross":
+        dx, dy = abs(x - float(region["cx"])), abs(y - float(region["cy"]))
+        horizontal = dx <= float(region["horizontalHalfLengthX"]) + BOUNDARY_EPSILON and dy <= float(region["horizontalHalfWidthY"]) + BOUNDARY_EPSILON
+        vertical = dx <= float(region["verticalHalfWidthX"]) + BOUNDARY_EPSILON and dy <= float(region["verticalHalfLengthY"]) + BOUNDARY_EPSILON
+        return horizontal or vertical
     if shape == "polygon":
         points = region.get("points")
         if not isinstance(points, Sequence) or len(points) < 3:
             raise error_type(reason)
+        # A governed polygon includes its printed boundary.  Ray casting alone
+        # is not stable on an exact edge and could turn the same physical line
+        # into HIT or MISS depending on segment direction.
+        numeric_points = [(float(point[0]), float(point[1])) for point in points]
+        if any(
+            _point_to_segment_distance(x, y, ax, ay, *numeric_points[(index + 1) % len(numeric_points)]) <= 1e-12
+            for index, (ax, ay) in enumerate(numeric_points)
+        ):
+            return True
         inside = False
-        prior_x, prior_y = map(float, points[-1])
-        for raw in points:
-            current_x, current_y = map(float, raw)
+        prior_x, prior_y = numeric_points[-1]
+        for current_x, current_y in numeric_points:
             crosses = (current_y > y) != (prior_y > y)
             if crosses and x < (prior_x - current_x) * (y - current_y) / (prior_y - current_y) + current_x:
                 inside = not inside
@@ -76,6 +101,12 @@ def _polygon_touches_ellipse(points: Sequence[Any], x: float, y: float, radius_x
     return False
 
 
+def _rectangle_touches_ellipse(x0: float, x1: float, y0: float, y1: float, x: float, y: float, radius_x: float, radius_y: float) -> bool:
+    nearest_x = max(x0, min(x, x1))
+    nearest_y = max(y0, min(y, y1))
+    return ((nearest_x - x) / radius_x) ** 2 + ((nearest_y - y) / radius_y) ** 2 <= 1.0
+
+
 def footprint_touches(
     region: Mapping[str, Any],
     x: float,
@@ -92,9 +123,10 @@ def footprint_touches(
         return False
     shape = region.get("shape")
     if shape == "rectangle":
-        nearest_x = max(float(region["xMin"]), min(x, float(region["xMax"])))
-        nearest_y = max(float(region["yMin"]), min(y, float(region["yMax"])))
-        return ((nearest_x - x) / radius_x) ** 2 + ((nearest_y - y) / radius_y) ** 2 <= 1.0
+        return _rectangle_touches_ellipse(
+            float(region["xMin"]), float(region["xMax"]), float(region["yMin"]), float(region["yMax"]),
+            x, y, radius_x, radius_y,
+        )
     if shape == "polygon":
         points = region.get("points")
         if not isinstance(points, Sequence) or len(points) < 3:
@@ -113,10 +145,34 @@ def footprint_touches(
             for index in range(180)
         ]
         return _polygon_touches_ellipse(points, x, y, radius_x, radius_y)
+    if shape == "annulus":
+        outer_rx, outer_ry = float(region["outerRadiusX"]), float(region["outerRadiusY"])
+        inner_rx, inner_ry = float(region["innerRadiusX"]), float(region["innerRadiusY"])
+        if min(inner_rx, inner_ry) < 0 or min(outer_rx, outer_ry) <= 0 or inner_rx >= outer_rx or inner_ry >= outer_ry:
+            raise error_type(reason)
+        footprint_scale_x, footprint_scale_y = radius_x / outer_rx, radius_y / outer_ry
+        inner_scale_x, inner_scale_y = inner_rx / outer_rx, inner_ry / outer_ry
+        if abs(footprint_scale_x - footprint_scale_y) > 1e-9 or abs(inner_scale_x - inner_scale_y) > 1e-9:
+            raise error_type(reason)
+        distance = hypot((x - float(region["cx"])) / outer_rx, (y - float(region["cy"])) / outer_ry)
+        return distance + footprint_scale_x >= inner_scale_x and distance - footprint_scale_x <= 1.0
+    if shape == "orthogonal_cross":
+        cx, cy = float(region["cx"]), float(region["cy"])
+        horizontal_length = float(region["horizontalHalfLengthX"])
+        horizontal_width = float(region["horizontalHalfWidthY"])
+        vertical_width = float(region["verticalHalfWidthX"])
+        vertical_length = float(region["verticalHalfLengthY"])
+        return _rectangle_touches_ellipse(
+            cx - horizontal_length, cx + horizontal_length, cy - horizontal_width, cy + horizontal_width,
+            x, y, radius_x, radius_y,
+        ) or _rectangle_touches_ellipse(
+            cx - vertical_width, cx + vertical_width, cy - vertical_length, cy + vertical_length,
+            x, y, radius_x, radius_y,
+        )
     raise error_type(reason)
 
 
-def classify(regions: Sequence[Mapping[str, Any]], x: float, y: float, *, id_key: str = "zoneId", shape_reason: str = "geometry_shape_not_supported", error_type: Type[ValueError] = UGOClassificationError, footprint_radius_x: float = 0.0, footprint_radius_y: float = 0.0, touch_values: Mapping[str, float] | None = None) -> Dict[str, Any]:
+def classify(regions: Sequence[Mapping[str, Any]], x: float, y: float, *, id_key: str = "zoneId", shape_reason: str = "geometry_shape_not_supported", error_type: Type[ValueError] = UGOClassificationError, footprint_radius_x: float = 0.0, footprint_radius_y: float = 0.0, touch_values: Mapping[str, float] | None = None, resolve_equivalent_touch_values: bool = False) -> Dict[str, Any]:
     uses_footprint = footprint_radius_x > 0 and footprint_radius_y > 0
     matches = [
         region for region in regions
@@ -136,10 +192,15 @@ def classify(regions: Sequence[Mapping[str, Any]], x: float, y: float, *, id_key
         return value, int(region.get("priority", 0))
 
     matches.sort(key=precedence, reverse=True)
-    ambiguous = len(matches) > 1 and precedence(matches[0]) == precedence(matches[1])
-    return {
+    tied_leaders = len(matches) > 1 and precedence(matches[0]) == precedence(matches[1])
+    equivalent_outcome = bool(tied_leaders and resolve_equivalent_touch_values and use_value_precedence)
+    ambiguous = tied_leaders and not equivalent_outcome
+    result = {
         "classificationStatus": "ambiguous" if ambiguous else ("unmapped" if not matches else "matched"),
         "entityId": None if ambiguous or not matches else str(matches[0][id_key]),
         "matchingEntityIds": [str(region[id_key]) for region in matches],
         "classificationMethod": "physical_projectile_footprint" if uses_footprint else "tap_center_point",
     }
+    if equivalent_outcome:
+        result["classificationResolution"] = "equivalent_governed_outcome"
+    return result

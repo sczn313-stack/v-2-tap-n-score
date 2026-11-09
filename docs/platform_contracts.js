@@ -116,6 +116,15 @@
       productIdentity: Object.freeze({ productId: "ST-100YD-SMART", sku: "ST-100YD-SMART", productLabel: "Baker 100 Yard Smart Target", productUrl: "https://bakertargets.com/product/100-yard-bulls-eye-rifle-target-smart-target-version/" })
     }),
     Object.freeze({
+      targetProfileId: "highwild_bfz_1725_25lklsp_sight_in",
+      targetProfileVersion: "HIGHWILD_BFZ_1725_ZEROING_AUTHORITY_v1",
+      targetProfileLabel: "Highwild Sight In 17×25",
+      missionLabel: "Scope Zeroing",
+      aliases: Object.freeze(["HIGHWILD_BFZ_1725_ZEROING_AUTHORITY_v1", "BFZ-1725-25LKLSP"]),
+      publisherIdentity: Object.freeze({ publisherId: "highwild", publisherLabel: "Highwild", publisherUrl: "https://www.highwildoutdoors.com", publisherLinkLabel: "Highwild" }),
+      productIdentity: Object.freeze({ productId: "BFZ-1725-25LKLSP", sku: "BFZ-1725-25LKLSP", productLabel: "Sight In 17×25" })
+    }),
+    Object.freeze({
       targetProfileId: "gssf_ac_1",
       targetProfileVersion: "1",
       targetProfileLabel: "GSSF Practice",

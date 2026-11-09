@@ -4,14 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Registered Smart Target</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="platform-ui.css?v=universal-shot-marker-contrast-1" />
-  <link rel="stylesheet" href="m4-sec.css" />
-  <link rel="stylesheet" href="sec-framework.css?v=ep54-approved-result-recovery-1" />
+  <link rel="stylesheet" href="styles.css?v=walkthrough-corrections-20261029-1" />
+  <link rel="stylesheet" href="platform-ui.css?v=founder-walkthrough-followup-4" />
+  <link rel="stylesheet" href="m4-sec.css?v=uspsa-sec-polish-1" />
+  <link rel="stylesheet" href="sec-framework.css?v=tst12-vault-repair-20261030-3" />
   <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
-  <link rel="stylesheet" href="platform_actions.css" />
-  <link rel="stylesheet" href="smart_target_workspace.css?v=episode59-stay-on-screen-1" />
-  <link rel="stylesheet" href="target-experience.css?v=usm-history-header-1" />
+  <link rel="stylesheet" href="platform_actions.css?v=uspsa-sec-polish-1" />
+  <link rel="stylesheet" href="smart_target_workspace.css?v=tst12-coordinate-repair-20261102-1" />
+  <link rel="stylesheet" href="target-experience.css?v=sczn3-session-init-20261109-1" />
+  <link rel="stylesheet" href="tst12-universal-experience.css?v=sczn3-session-init-20261109-1" />
+  <link rel="stylesheet" href="tst12-station-results.css?v=sczn3-tst12-station-pip-cq-20261107-2" />
+  <link rel="stylesheet" href="founder_walk.css?v=3" />
   <style>
     .contract-evidence img{max-height:72vh}
     .contract-shooter-experience{max-width:72rem;margin:.75rem auto;padding:.8rem 1rem;border:1px solid rgba(255,255,255,.16);border-radius:.6rem;background:rgba(10,18,28,.72)}
@@ -22,24 +25,31 @@
   <script src="navigation.js?v=episode57-rate-us-cleanup-1" defer></script>
   <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
   <script src="platform_actions.js"></script>
-  <script src="smart_target_workspace.js?v=episode59-stay-on-screen-1"></script>
+  <script src="smart_target_workspace.js?v=founder-bullet-marker-9px-1"></script>
   <script src="sec_reopen_capability.js?v=portable-exact-reopen-1" defer></script>
-  <script src="sec_reopen_lifecycle.js?v=result-first-1" defer></script>
+  <script src="sec_reopen_lifecycle.js?v=tst12-disclosure-diagnostics-20261102-1" defer></script>
   <script src="platform_contracts.js" defer></script>
   <script src="sec_adapter_model.js" defer></script>
-  <script src="app_state.js" defer></script>
-  <script src="sec_dispatch.js?v=canonical-sec-road-1" defer></script>
-  <script src="usm_proof_registry.js?v=qt-printer13-corrected-packet-20260927" defer></script>
-  <script src="target_execution_runtime.js?v=usm-history-header-1" defer></script>
+  <script src="app_state.js?v=session-scoped-persistence-20261029-1" defer></script>
+  <script src="sec_dispatch.js?v=contract-identity-reopen-20261102-1" defer></script>
+  <script src="usm_proof_registry.js?v=sczn3-session-init-20261109-1" defer></script>
+  <script src="self_teaching_player.js?v=tst12-universal-shooter-1" defer></script>
+  <script src="tst12_station_results.js?v=sczn3-tst12-station-pip-cq-20261107-2" defer></script>
+  <script src="tst12_universal_experience.js?v=sczn3-session-init-20261109-1" defer></script>
+  <script src="target_execution_runtime.js?v=sczn3-session-init-20261109-1" defer></script>
   <script src="m4_runtime.js" defer></script>
-  <script src="sec_v1.js?v=universal-disclosure-affordance-1" defer></script>
-  <script src="sec_framework.js?v=ep54-approved-result-recovery-1" defer></script>
+  <script src="sec_v1.js?v=founder-printer-flow-20261030-2" defer></script>
+  <script src="sec_framework.js?v=b8-caliber-field-1" defer></script>
+  <script src="founder_walk_manifest.js?v=3" defer></script>
+  <script src="founder_walk.js?v=3" defer></script>
 </head>
 <body class="platform-page" data-contract-target-page>
-  <header class="m4-header app-header"><div class="brand-lockup"><a class="vendor-name" href="index.html">Tap-n-Score™</a></div><span>Registered Smart Target</span><details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary></details></header>
+  <header class="m4-header app-header"><div class="brand-lockup"><a class="vendor-name" href="index.html">Tap-n-Score™</a></div><span class="app-header-title">Registered Smart Target</span><details class="mobile-platform-menu app-header-menu"><summary aria-label="Open navigation"><span></span><span></span><span></span></summary></details></header>
   <main class="contract-target-shell" id="contractCaptureView">
     <section class="contract-intro"><span id="contractExperienceLabel">Target experience</span><h1 id="contractProductName">Registered Smart Target</h1><p id="contractStatus" role="status" aria-live="polite">Start to open the registered target.</p></section>
     <section class="contract-shooter-experience" id="contractShooterExperience" aria-label="Shooter experience" hidden></section>
+    <section class="tst12-experience-gate" id="tst12ExperienceGate" aria-label="Choose TST-12 experience" hidden></section>
+    <section class="tst12-instructions" id="tst12Instructions" aria-label="TST-12 instructions" hidden></section>
     <button class="button primary" id="contractStart" type="button">Start</button>
     <section id="contractCapture" hidden><label class="button primary" for="contractFile">Load / Capture Target</label><input id="contractFile" type="file" accept="image/*" hidden /></section>
     <section class="contract-workspace" id="contractWorkspace" data-sczn3-workspace="platform-v1" data-sczn3-workspace-layout="contained-rows" hidden>
@@ -57,18 +67,33 @@
         <div id="contractObjectChoices"></div>
         <p id="contractObjectProgress"></p>
       </section>
+      <section class="contract-station-selector" id="contractStationSelector" hidden aria-label="Assigned station">
+        <label for="contractStationChoice">Station</label>
+        <select id="contractStationChoice"></select>
+      </section>
       <div class="contract-image-frame precision-tap-viewport" id="contractPrecisionTapViewport" data-sczn3-workspace-evidence="true">
         <div class="contract-image-plane precision-tap-plane" id="contractPrecisionTapPlane">
           <img id="contractTargetImage" alt="Loaded registered target evidence" />
+          <div class="tst12-digital-target-face" id="contractDigitalTargetFace" aria-hidden="true" hidden></div>
           <div class="marker-layer" id="contractMarkers"></div>
           <button id="contractTapSurface" type="button" aria-label="Record visible shot tap"></button>
         </div>
       </div>
       <div class="contract-controls" data-sczn3-workspace-actions="true" data-sczn3-action-region="platform-v1" data-processing-host>
-        <section class="contract-scoring-mode" id="contractScoringModePanel" hidden aria-label="Governed scoring mode">
-          <label><span id="contractScoringModeLabel">Scoring mode</span><select id="contractScoringMode"></select></label>
+        <section class="contract-session-setup" id="contractScoringModePanel" aria-label="Session setup">
+          <strong id="contractScoringModeLabel">Distance</strong>
+          <div class="contract-session-setup-fields">
+            <label id="contractScoringModeControl" hidden><span id="contractModeFieldLabel">Mode</span><select id="contractScoringMode"></select></label>
+            <label><span>DISTANCE (YDS)</span><span class="contract-distance-entry"><input id="contractActualDistance" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="Distance" /><select id="contractDistanceUnit" aria-label="Distance unit"><option value="YDS">yards</option><option value="M">meters</option></select></span></label>
+            <div class="contract-shooter-caliber-fields">
+              <label><span>Shooter</span><input id="contractShooterName" type="text" autocomplete="name" placeholder="Optional Shooter" /></label>
+              <label><span>CALIBER</span><input id="contractScoringCaliber" type="text" autocomplete="off" placeholder="Optional Caliber" /></label>
+            </div>
+            <div class="contract-equipment-entry"><span>Equipment</span><strong id="contractEquipmentSummary">Not selected</strong><a id="contractEquipmentLibrary" href="matrix.html?view=library&amp;return_to=active-target">Equipment Library →</a></div>
+          </div>
+          <small id="contractExpectedDistance" hidden></small>
         </section>
-        <div class="contract-observation-actions"><button class="button" id="contractUndoObservation" type="button" hidden disabled>Undo</button><button class="button" id="contractClearObservations" type="button" hidden disabled>Clear</button><button class="button" id="contractMarkAim" type="button">Mark Aim</button><button class="button primary" id="contractShowResult" type="button" disabled>Tap Your Holes</button></div>
+        <div class="contract-observation-actions"><button class="button" id="contractUndoObservation" type="button" hidden disabled>Undo</button><button class="button" id="contractClearObservations" type="button" hidden disabled>Clear</button><button class="button" id="contractMarkAim" type="button">Mark Aim</button><button class="button primary" id="contractShowResult" type="button" disabled>Tap Bullet Holes</button></div>
         <span class="contract-observation-count"><strong id="contractObservationCount">0</strong> Taps</span>
       </div>
       <div class="contract-cue-controls" id="contractCueControls" hidden><button class="button" id="contractCueNoObservation" type="button">Record No Observation</button><label>Optional practice / external time (ms) <input id="contractCueElapsed" type="number" min="0" step="1" inputmode="numeric" /></label><button class="button primary" id="contractCueAdvance" type="button" disabled>Advance</button><button class="button" id="contractCueStop" type="button">Stop Run</button></div>
@@ -82,6 +107,13 @@
       <p>This shot is close enough to a scoring line that the authorized scoring gauge can change the score. Choose only this missing fact.</p>
       <div id="contractScoringCaliberChoices"></div>
       <button class="button" id="contractScoringCaliberCancel" type="button">Keep taps and cancel</button>
+    </section>
+  </dialog>
+  <dialog class="contract-material-fact-dialog" id="contractElapsedTimeDialog" aria-labelledby="contractElapsedTimeTitle">
+    <section>
+      <h2 id="contractElapsedTimeTitle">Enter Time If Available</h2>
+      <label class="contract-elapsed-time"><span id="contractElapsedTimeLabel">Elapsed time</span><input id="contractElapsedTime" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="Optional seconds" /></label>
+      <div><button class="button primary" id="contractElapsedTimeContinue" type="button" disabled>Continue to Timed Result</button><button class="button" id="contractElapsedTimeUntimed" type="button">Untimed Result</button></div>
     </section>
   </dialog>
 </body>

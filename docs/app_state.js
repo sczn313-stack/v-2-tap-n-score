@@ -36,7 +36,15 @@
   const MAX_SESSION_HISTORY = 10;
   const SESSION_REF_SCHEMA = "sczn3-session-ref-v1";
   const SESSION_RECORD_SCHEMA = "sczn3-canonical-session-v1";
+  const COMPRESSED_SESSION_RECORD_SCHEMA = "sczn3-compressed-session-v1";
+  const COMPRESSED_SESSION_RECORD_ENCODING = "lzw-utf16";
   const DEFERRED_LEGACY_MIGRATIONS = new Set();
+  const VERIFIED_STORAGE_BACKUPS = new Map();
+  // Large source evidence can exceed synchronous Web Storage capacity before
+  // the backend SEC artifact takes durable custody. This map is deliberately
+  // presentation-session custody only; exact reopen continues to come from the
+  // signed backend-preserved artifact, never from this volatile cache.
+  const VOLATILE_MEDIA = new Map();
 
   function rawWrite(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
@@ -101,6 +109,7 @@
 
   function rawRead(key, fallback = null) {
     try {
+      if (VOLATILE_MEDIA.has(key)) return VOLATILE_MEDIA.get(key);
       let raw = localStorage.getItem(key);
       if (raw === null) {
         const legacyKey = legacyKeyFor(key);
@@ -109,7 +118,7 @@
           else raw = localStorage.getItem(legacyKey);
         }
       }
-      return raw ? JSON.parse(raw) : fallback;
+      return raw ? decodeStoredValue(raw) : fallback;
     } catch (error) {
       console.warn("SCZN3 platform state read failed", key, error);
       return fallback;
@@ -121,6 +130,104 @@
       return new TextEncoder().encode(value).byteLength;
     }
     return value.length * 2;
+  }
+
+  // Canonical session records can contain a backend-calculated result with
+  // repeated station and evidence data. Web Storage is durable, but has a
+  // deliberately small per-origin quota. Compress only the stored envelope;
+  // hydration restores the exact JSON before any authority-facing code reads it.
+  function lzwCompress(value) {
+    const bytes = new TextEncoder().encode(String(value || ""));
+    if (!bytes.length) return "";
+    const dictionary = new Map();
+    const codes = [];
+    let nextCode = 256;
+    let phrase = String.fromCharCode(bytes[0]);
+    for (let index = 1; index < bytes.length; index += 1) {
+      const character = String.fromCharCode(bytes[index]);
+      const candidate = phrase + character;
+      if (dictionary.has(candidate)) {
+        phrase = candidate;
+        continue;
+      }
+      codes.push(phrase.length === 1 ? phrase.charCodeAt(0) : dictionary.get(phrase));
+      // TST-12 session JSON remains well below this ceiling. If a future
+      // record exceeds it, leave the rest uncompressed rather than corrupting it.
+      if (nextCode <= 65535) dictionary.set(candidate, nextCode++);
+      phrase = character;
+    }
+    codes.push(phrase.length === 1 ? phrase.charCodeAt(0) : dictionary.get(phrase));
+    let output = "";
+    for (let offset = 0; offset < codes.length; offset += 8192) {
+      output += String.fromCharCode(...codes.slice(offset, offset + 8192));
+    }
+    return output;
+  }
+
+  function lzwDecompress(value) {
+    const input = String(value || "");
+    if (!input) return "";
+    const dictionary = new Map();
+    let nextCode = 256;
+    let phrase = String.fromCharCode(input.charCodeAt(0));
+    let output = phrase;
+    for (let index = 1; index < input.length; index += 1) {
+      const code = input.charCodeAt(index);
+      let entry;
+      if (code < 256) entry = String.fromCharCode(code);
+      else if (dictionary.has(code)) entry = dictionary.get(code);
+      else if (code === nextCode) entry = phrase + phrase.charAt(0);
+      else throw new Error("compressed_session_record_invalid");
+      output += entry;
+      if (nextCode <= 65535) dictionary.set(nextCode++, phrase + entry.charAt(0));
+      phrase = entry;
+    }
+    const bytes = Uint8Array.from(output, character => character.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+
+  function decodedStoredSerialized(raw) {
+    const parsed = JSON.parse(raw);
+    if (!parsed || parsed.persistenceSchema !== COMPRESSED_SESSION_RECORD_SCHEMA) return String(raw);
+    if (parsed.encoding !== COMPRESSED_SESSION_RECORD_ENCODING || typeof parsed.payload !== "string") {
+      throw new Error("compressed_session_record_encoding_invalid");
+    }
+    return lzwDecompress(parsed.payload);
+  }
+
+  function decodeStoredValue(raw) {
+    return JSON.parse(decodedStoredSerialized(raw));
+  }
+
+  function compressedCanonicalSessionSerialized(uncompressed) {
+    const serialized = String(uncompressed || "");
+    const uncompressedBytes = serializedByteSize(serialized);
+    const wrapper = {
+      persistenceSchema: COMPRESSED_SESSION_RECORD_SCHEMA,
+      encoding: COMPRESSED_SESSION_RECORD_ENCODING,
+      uncompressedBytes,
+      payload: lzwCompress(serialized)
+    };
+    const compressed = JSON.stringify(wrapper);
+    return {
+      serialized: compressed,
+      compressed: serializedByteSize(compressed) < uncompressedBytes,
+      uncompressedBytes,
+      storedBytes: serializedByteSize(compressed)
+    };
+  }
+
+  function serializedCanonicalSessionRecord(record, forceCompression = false) {
+    const uncompressed = JSON.stringify(record);
+    const uncompressedBytes = serializedByteSize(uncompressed);
+    const compressedRecord = compressedCanonicalSessionSerialized(uncompressed);
+    const { serialized: compressed, storedBytes } = compressedRecord;
+    // Every canonical session gets the lossless envelope whenever it saves
+    // bytes. New sessions are commonly below 64 KiB, yet can still fail when
+    // the existing origin is near its Web Storage limit.
+    return storedBytes < uncompressedBytes
+      ? { serialized: compressed, compressed: true, uncompressedBytes, storedBytes }
+      : { serialized: uncompressed, compressed: false, uncompressedBytes, storedBytes: uncompressedBytes };
   }
 
   function storageEntryCharacters(key, serializedValue) {
@@ -242,51 +349,21 @@
     return [...byKey.values()];
   }
 
-  function preflightStorageWrites(entries, operation) {
-    const writes = normalizedWriteEntries(entries);
-    const additionalCharacters = writes.reduce((total, entry) => {
-      const current = localStorage.getItem(entry.key);
-      const currentCharacters = current === null ? 0 : storageEntryCharacters(entry.key, current);
-      const nextCharacters = storageEntryCharacters(entry.key, entry.serialized);
-      return total + Math.max(0, nextCharacters - currentCharacters);
-    }, 0);
-    if (!additionalCharacters) return { operation, additionalCharacters: 0, ok: true };
-    const probeKey = "SCZN3_STORAGE_CAPACITY_PREFLIGHT";
-    const previousProbe = localStorage.getItem(probeKey);
-    try {
-      localStorage.setItem(probeKey, "0".repeat(additionalCharacters + 2048));
-      if (previousProbe === null) localStorage.removeItem(probeKey);
-      else localStorage.setItem(probeKey, previousProbe);
-      return { operation, additionalCharacters, ok: true };
-    } catch (error) {
-      if (previousProbe === null) localStorage.removeItem(probeKey);
-      else {
-        try { localStorage.setItem(probeKey, previousProbe); } catch (restoreError) {}
-      }
-      const failure = {
-        operation,
-        key: probeKey,
-        ok: false,
-        exceptionName: error && error.name || "Error",
-        exceptionMessage: error && error.message || String(error),
-        attemptedPayloadBytes: additionalCharacters,
-        failedAt: nowStamp()
-      };
-      publishSaveDiagnostic(failure);
-      const unavailable = new Error("storage_capacity_unavailable");
-      unavailable.cause = error;
-      throw unavailable;
-    }
-  }
-
+  // No speculative capacity probe: real writes determine whether storage is available.
+  // Preserve transaction rollback and surface the actual storage exception.
   function writeStorageTransaction(entries, operation) {
     const writes = normalizedWriteEntries(entries);
-    preflightStorageWrites(writes, operation);
     const previousValues = new Map(writes.map(entry => [entry.key, localStorage.getItem(entry.key)]));
     const completed = [];
     try {
       writes.forEach(entry => {
-        writeSaveDiagnostic(entry.key, JSON.parse(entry.serialized), entry.operation || operation);
+        writeSaveDiagnostic(
+          entry.key,
+          entry.diagnosticValue === undefined ? JSON.parse(entry.serialized) : entry.diagnosticValue,
+          entry.operation || operation,
+          entry.serialized,
+          entry.storageDetails
+        );
         completed.push(entry.key);
       });
       return writes;
@@ -302,6 +379,39 @@
       });
       console.error("SCZN3 storage transaction rolled back", { operation, completedKeys: completed, error });
       throw error;
+    }
+  }
+
+  function quotaExceeded(error) {
+    return Boolean(error && (
+      error.name === "QuotaExceededError"
+      || /quota/i.test(String(error.message || ""))
+    ));
+  }
+
+  // A nearly full origin can still reject a compact new session. Retry only
+  // that record in the forced lossless envelope; existing browser records are
+  // never changed here.
+  function writeSessionPlanWithQuotaRetry(buildEntries, operation) {
+    try {
+      return buildEntries(false);
+    } catch (error) {
+      if (!quotaExceeded(error)) throw error;
+      try {
+        return buildEntries(true);
+      } catch (retryError) {
+        if (quotaExceeded(retryError)) {
+          publishSaveDiagnostic({
+            operation,
+            ok: false,
+            status: "quota_recovery_required",
+            exceptionName: retryError.name || "QuotaExceededError",
+            exceptionMessage: retryError.message || String(retryError),
+            failedAt: nowStamp()
+          });
+        }
+        throw retryError;
+      }
     }
   }
 
@@ -410,16 +520,29 @@
     return { compact, mediaRecords };
   }
 
-  function canonicalSessionStoragePlan(session, activeMatrix = null, operation = "persist-canonical-session") {
+  function canonicalSessionStoragePlan(session, activeMatrix = null, operation = "persist-canonical-session", options = {}) {
     const originalSerialized = JSON.stringify(session);
     const { compact, mediaRecords } = compactSessionRecord(session);
     const compactMatrix = activeMatrix ? compactMediaValue(activeMatrix, mediaRecords) : null;
+    const storedRecord = serializedCanonicalSessionRecord(compact, options.forceCompression === true);
     const entries = [...mediaRecords.entries()].map(([mediaId, media]) => ({
       key: mediaKey(mediaId),
       value: media,
       operation: `${operation}-media`
     }));
-    entries.push({ key: sessionRecordKey(session.sessionId), value: compact, operation });
+    entries.push({
+      key: sessionRecordKey(session.sessionId),
+      value: compact,
+      serialized: storedRecord.serialized,
+      diagnosticValue: compact,
+      storageDetails: {
+        encoding: storedRecord.compressed ? COMPRESSED_SESSION_RECORD_ENCODING : "json",
+        compressed: storedRecord.compressed,
+        uncompressedBytes: storedRecord.uncompressedBytes,
+        storedBytes: storedRecord.storedBytes
+      },
+      operation
+    });
     if (compactMatrix) entries.push({ key: KEYS.activeMatrix, value: compactMatrix, operation: `${operation}-active-matrix` });
     return {
       compact,
@@ -429,7 +552,9 @@
       report: {
         sessionId: session.sessionId,
         originalPayloadBytes: serializedByteSize(originalSerialized),
-        canonicalRecordBytes: serializedByteSize(JSON.stringify(compact)),
+        canonicalRecordBytes: storedRecord.storedBytes,
+        canonicalRecordUncompressedBytes: storedRecord.uncompressedBytes,
+        canonicalRecordCompressed: storedRecord.compressed,
         mediaAssetBytes: [...mediaRecords.values()].reduce((sum, media) => sum + serializedByteSize(JSON.stringify(media)), 0),
         mediaAssetCount: mediaRecords.size,
         completedAt: nowStamp()
@@ -578,7 +703,6 @@
   function persistCanonicalSession(session, operation = "persist-canonical-session") {
     if (!session || !session.sessionId) return null;
     const storedMatrix = rawRead(KEYS.activeMatrix, null);
-    garbageCollectOrphanedStorage(`${operation}-orphan-preflight`);
     const plan = canonicalSessionStoragePlan(session, storedMatrix, operation);
     writeStorageTransaction(plan.entries, operation);
     publishNormalizationReport(plan.report);
@@ -643,6 +767,217 @@
       bytes: characters * 2,
       readable: true
     };
+  }
+
+  // Read-only capacity evidence for support and recovery. This intentionally
+  // reports identifiers and byte counts only; it never exposes session content
+  // or mutates browser storage.
+  function storageInventory() {
+    const entries = [];
+    const totals = { sessionRecords: 0, mediaRecords: 0, otherSczn3: 0, nonSczn3: 0, bytes: 0 };
+    try {
+      for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index) || "";
+        const serialized = localStorage.getItem(key) || "";
+        const bytes = storageEntryCharacters(key, serialized) * 2;
+        let category = "nonSczn3";
+        if (key.startsWith(KEYS.sessionRecordPrefix) || key.startsWith(LEGACY_KEYS.sessionRecordPrefix)) category = "sessionRecords";
+        else if (key.startsWith(KEYS.mediaPrefix) || key.startsWith(LEGACY_KEYS.mediaPrefix)) category = "mediaRecords";
+        else if (key.startsWith("SCZN3_")) category = "otherSczn3";
+        totals[category] += bytes;
+        totals.bytes += bytes;
+        let encoding = "json";
+        let uncompressedBytes = null;
+        try {
+          const parsed = JSON.parse(serialized);
+          if (parsed && parsed.persistenceSchema === COMPRESSED_SESSION_RECORD_SCHEMA) {
+            encoding = parsed.encoding || "compressed";
+            uncompressedBytes = Number(parsed.uncompressedBytes) || null;
+          }
+        } catch (_) {
+          encoding = "unreadable";
+        }
+        entries.push({ key, category, bytes, encoding, uncompressedBytes });
+      }
+    } catch (error) {
+      return { readable: false, exceptionName: error && error.name || "Error", exceptionMessage: error && error.message || String(error), entries: [], totals };
+    }
+    return {
+      readable: true,
+      totals,
+      entries: entries.sort((left, right) => right.bytes - left.bytes),
+      observedAt: nowStamp()
+    };
+  }
+
+  // Support collection for a storage-full browser. It exposes no record
+  // contents: only inventory measurements and the last write diagnostic.
+  function storageRecoveryDiagnostics() {
+    const diagnostic = window.__SCZN3_SAVE_PERSISTENCE_DIAGNOSTIC__ || null;
+    const safeDiagnostic = diagnostic && {
+      operation: diagnostic.operation || "",
+      key: diagnostic.key || "",
+      ok: diagnostic.ok === true,
+      status: diagnostic.status || "",
+      attemptedPayloadBytes: Number.isFinite(Number(diagnostic.attemptedPayloadBytes))
+        ? Number(diagnostic.attemptedPayloadBytes)
+        : null,
+      encoding: diagnostic.encoding || "",
+      compressed: diagnostic.compressed === true,
+      uncompressedBytes: Number.isFinite(Number(diagnostic.uncompressedBytes))
+        ? Number(diagnostic.uncompressedBytes)
+        : null,
+      storedBytes: Number.isFinite(Number(diagnostic.storedBytes))
+        ? Number(diagnostic.storedBytes)
+        : null,
+      approximateLocalStorageUsageBytes: Number.isFinite(Number(diagnostic.approximateLocalStorageUsageBytes))
+        ? Number(diagnostic.approximateLocalStorageUsageBytes)
+        : null,
+      exceptionName: diagnostic.exceptionName || "",
+      exceptionMessage: diagnostic.exceptionMessage || "",
+      startedAt: diagnostic.startedAt || "",
+      failedAt: diagnostic.failedAt || "",
+      completedAt: diagnostic.completedAt || ""
+    };
+    return Object.freeze({
+      inventory: storageInventory(),
+      lastWrite: safeDiagnostic,
+      browserCapacityNote: "Web Storage does not expose a remaining-capacity API; usage and the real attempted write are reported instead."
+    });
+  }
+
+  function storedSczn3Entries() {
+    const entries = [];
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index) || "";
+      if (!key.startsWith("SCZN3_")) continue;
+      entries.push({ key, value: localStorage.getItem(key) || "" });
+    }
+    return entries.sort((left, right) => left.key.localeCompare(right.key));
+  }
+
+  async function sha256Hex(value) {
+    const cryptoApi = window.crypto && window.crypto.subtle;
+    if (!cryptoApi) throw new Error("verified_storage_backup_crypto_unavailable");
+    const digest = await cryptoApi.digest("SHA-256", new TextEncoder().encode(String(value || "")));
+    return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+  }
+
+  function activeSessionIdsForRecovery() {
+    const ids = new Set();
+    [KEYS.activeSession, KEYS.activeZeroSession].forEach(key => {
+      const value = rawRead(key, null);
+      if (value && value.sessionId) ids.add(String(value.sessionId));
+    });
+    return ids;
+  }
+
+  function recoveryCandidateFromEntry(entry, protectedSessionIds) {
+    if (!entry.key.startsWith(KEYS.sessionRecordPrefix)) return { skip: "not-canonical-session-record" };
+    let parsed;
+    try { parsed = JSON.parse(entry.value); } catch (_) { return { skip: "unreadable-session-record" }; }
+    if (!parsed || parsed.persistenceSchema !== SESSION_RECORD_SCHEMA) return { skip: "already-compressed-or-noncanonical" };
+    if (!parsed.sessionId) return { skip: "session-identity-missing" };
+    if (protectedSessionIds.has(String(parsed.sessionId))) return { skip: "active-session-protected" };
+    if (parsed.savedToSEC !== true) return { skip: "in-progress-session-protected" };
+    const compressed = compressedCanonicalSessionSerialized(entry.value);
+    if (!compressed.compressed) return { skip: "compression-not-smaller" };
+    if (decodedStoredSerialized(compressed.serialized) !== entry.value) {
+      throw new Error("storage_recovery_exact_decode_verification_failed");
+    }
+    return {
+      candidate: {
+        key: entry.key,
+        sessionId: String(parsed.sessionId),
+        originalValue: entry.value,
+        compressedValue: compressed.serialized,
+        originalBytes: serializedByteSize(entry.value),
+        compressedBytes: compressed.storedBytes,
+        bytesSaved: serializedByteSize(entry.value) - compressed.storedBytes
+      }
+    };
+  }
+
+  async function createVerifiedStorageBackup() {
+    if (typeof window.showSaveFilePicker !== "function") {
+      throw new Error("verified_storage_backup_file_access_required");
+    }
+    const capturedAt = nowStamp();
+    const entries = storedSczn3Entries();
+    const payload = JSON.stringify({
+      schemaVersion: "sczn3-browser-storage-backup-v1",
+      origin: window.location && window.location.origin || "",
+      capturedAt,
+      entries
+    });
+    const sha256 = await sha256Hex(payload);
+    const handle = await window.showSaveFilePicker({
+      suggestedName: `SCZN3-storage-backup-${capturedAt.replace(/[:.]/g, "-")}.json`,
+      types: [{ description: "SCZN3 storage backup", accept: { "application/json": [".json"] } }]
+    });
+    const writable = await handle.createWritable();
+    await writable.write(payload);
+    await writable.close();
+    const verifiedText = await (await handle.getFile()).text();
+    const verifiedSha256 = await sha256Hex(verifiedText);
+    if (verifiedText !== payload || verifiedSha256 !== sha256) {
+      throw new Error("verified_storage_backup_readback_failed");
+    }
+    const backupId = `sczn3-storage-backup-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    VERIFIED_STORAGE_BACKUPS.set(backupId, { capturedAt, entries, sha256, fileName: handle.name || "", payloadBytes: serializedByteSize(payload) });
+    return Object.freeze({ backupId, fileName: handle.name || "", sha256, entryCount: entries.length, payloadBytes: serializedByteSize(payload), verified: true });
+  }
+
+  function recoverVerifiedCanonicalSessions(backupId) {
+    const backup = VERIFIED_STORAGE_BACKUPS.get(String(backupId || ""));
+    if (!backup) throw new Error("verified_storage_backup_required");
+    const before = storageInventory();
+    const protectedSessionIds = activeSessionIdsForRecovery();
+    const candidates = [];
+    const skipped = [];
+    backup.entries.forEach(entry => {
+      const current = localStorage.getItem(entry.key);
+      if (current !== entry.value) throw new Error(`storage_recovery_source_changed:${entry.key}`);
+      const outcome = recoveryCandidateFromEntry(entry, protectedSessionIds);
+      if (outcome.candidate) candidates.push(outcome.candidate);
+      else skipped.push({ key: entry.key, reason: outcome.skip });
+    });
+
+    candidates.forEach(candidate => {
+      if (localStorage.getItem(candidate.key) !== candidate.originalValue) {
+        throw new Error(`storage_recovery_source_changed:${candidate.key}`);
+      }
+      if (decodedStoredSerialized(candidate.compressedValue) !== candidate.originalValue) {
+        throw new Error(`storage_recovery_exact_decode_verification_failed:${candidate.key}`);
+      }
+    });
+
+    const recovered = [];
+    candidates.forEach(candidate => {
+      localStorage.setItem(candidate.key, candidate.compressedValue);
+      const stored = localStorage.getItem(candidate.key);
+      if (stored !== candidate.compressedValue || decodedStoredSerialized(stored) !== candidate.originalValue) {
+        throw new Error(`storage_recovery_readback_verification_failed:${candidate.key}`);
+      }
+      recovered.push({
+        key: candidate.key,
+        sessionId: candidate.sessionId,
+        originalBytes: candidate.originalBytes,
+        compressedBytes: candidate.compressedBytes,
+        bytesSaved: candidate.bytesSaved
+      });
+    });
+    const after = storageInventory();
+    return Object.freeze({
+      backup: { backupId: String(backupId), fileName: backup.fileName, sha256: backup.sha256, verified: true },
+      before,
+      after,
+      recovered,
+      skipped,
+      protectedSessionIds: [...protectedSessionIds].sort(),
+      bytesSaved: recovered.reduce((sum, entry) => sum + entry.bytesSaved, 0),
+      completedAt: nowStamp()
+    });
   }
 
   function publishSaveDiagnostic(record) {
@@ -766,8 +1101,8 @@
     };
   }
 
-  function writeSaveDiagnostic(key, value, operation) {
-    const serialized = JSON.stringify(value);
+  function writeSaveDiagnostic(key, value, operation, serializedOverride = null, storageDetails = {}) {
+    const serialized = serializedOverride === null ? JSON.stringify(value) : serializedOverride;
     const attemptedPayloadBytes = serializedByteSize(serialized);
     const currentUsage = approximateLocalStorageUsage();
     const attempt = {
@@ -776,6 +1111,7 @@
       attemptedPayloadBytes,
       approximateLocalStorageUsageBytes: currentUsage.bytes,
       localStorageReadable: currentUsage.readable,
+      ...(storageDetails || {}),
       startedAt: nowStamp()
     };
     console.info("SCZN3 save persistence write", attempt);
@@ -1015,8 +1351,12 @@
       }
       : { ...TARGET_AUTHORITY };
     const activeCalculationContext = buildActiveCalculationContext(matrixSnapshot, null);
+    const governedTargetProfileId = String(targetIdentity.targetProfileId || targetIdentity.target_profile_id || "").trim().toLowerCase();
+    const sessionIdentityNamespace = governedTargetProfileId === "highwild_bfz_1725_25lklsp_sight_in"
+      ? "highwild"
+      : "baker";
     return {
-      sessionId: `baker-session-${String(sessionNumber).padStart(3, "0")}-${Date.now()}`,
+      sessionId: `${sessionIdentityNamespace}-session-${String(sessionNumber).padStart(3, "0")}-${Date.now()}`,
       sessionNumber,
       sessionLabel: formatSessionNumber(sessionNumber),
       sessionNumberAuthority: "device-local-temporary",
@@ -1122,7 +1462,6 @@
       targetDistanceLocked: distance.locked === true,
       sessionAuthorityOwner: "backend"
     };
-    garbageCollectOrphanedStorage("create-authoritative-session-orphan-preflight");
     const frozenMatrix = {
       ...TARGET_AUTHORITY,
       ...authoritySnapshot,
@@ -1143,6 +1482,14 @@
     session.authoritativeCapabilities = authorityPackage.capabilities || {};
     session.equipmentAssessment = authorityPackage.equipmentAssessment || {};
     session.restrictions = Array.isArray(authorityPackage.restrictions) ? authorityPackage.restrictions : [];
+    session.expectedDistance = distance.value !== null && distance.value !== undefined ? {
+      value: Number(distance.value),
+      unit: distance.unit || "YDS",
+      display: `${distance.value} ${distance.unit === "M" ? "m" : "yds"}`,
+      source: "backend-atp",
+      locked: distance.locked === true,
+      targetProfileId: target.targetId || ""
+    } : null;
     session.targetProfileVersion = target.targetProfileVersion || "";
     if (governedProfileIdentity) Object.assign(session, governedProfileIdentity);
     session.atpId = target.atpId || "";
@@ -1159,14 +1506,7 @@
       authorityStatus: "backend-session-authority"
     };
     if (distance.value !== null && distance.value !== undefined) {
-      session.sessionDistance = {
-        value: Number(distance.value),
-        unit: distance.unit || "YDS",
-        display: `${distance.value} ${distance.unit === "M" ? "m" : "yds"}`,
-        source: "backend-atp",
-        locked: distance.locked === true,
-        targetProfileId: target.targetId || ""
-      };
+      session.sessionDistance = { ...session.expectedDistance };
       session.activeCalculationContext = {
         ...session.activeCalculationContext,
         sessionDistance: session.sessionDistance,
@@ -1178,50 +1518,111 @@
     const history = [session, ...getSessionHistory()]
       .filter((item, index, source) => item && source.findIndex(candidate => candidate.sessionId === item.sessionId) === index)
       .slice(0, MAX_SESSION_HISTORY);
-    const plan = canonicalSessionStoragePlan(session, frozenMatrix, "create-authoritative-session");
-    const entries = [
-      ...plan.entries,
-      { key: KEYS.sessionCounter, value: nextSessionNumber, operation: "create-authoritative-session-counter" },
-      { key: KEYS.activeSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-active-reference" },
-      { key: KEYS.sessionHistory, value: history.map(historyReference), operation: "create-authoritative-session-history" }
-    ];
-    if (frozenMatrix.experienceMode !== "simulation") {
-      entries.push({ key: KEYS.activeZeroSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-zero-reference" });
-    }
-    writeStorageTransaction(entries, "create-authoritative-session-transaction");
+    let plan;
+    writeSessionPlanWithQuotaRetry(forceCompression => {
+      plan = canonicalSessionStoragePlan(session, frozenMatrix, "create-authoritative-session", { forceCompression });
+      const entries = [
+        ...plan.entries,
+        { key: KEYS.sessionCounter, value: nextSessionNumber, operation: "create-authoritative-session-counter" },
+        { key: KEYS.activeSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-active-reference" },
+        { key: KEYS.sessionHistory, value: history.map(historyReference), operation: "create-authoritative-session-history" }
+      ];
+      if (frozenMatrix.experienceMode !== "simulation") {
+        entries.push({ key: KEYS.activeZeroSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-zero-reference" });
+      }
+      writeStorageTransaction(entries, "create-authoritative-session-transaction");
+      return plan;
+    }, "create-authoritative-session-transaction");
     publishNormalizationReport(plan.report);
     return hydrateSessionRecord(plan.compact);
   }
 
   function replaceSession(updatedSession) {
     const history = getSessionHistory();
-    garbageCollectOrphanedStorage("replace-session-orphan-preflight");
     const storedMatrix = rawRead(KEYS.activeMatrix, null);
-    const plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-canonical-session");
+    let plan;
     const nextHistory = history.some(session => session.sessionId === updatedSession.sessionId)
       ? history.map(session => session.sessionId === updatedSession.sessionId ? updatedSession : session)
       : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
-    const entries = [
-      ...plan.entries,
-      { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-history-references" },
-      { key: KEYS.activeSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-session-reference" }
-    ];
-    if (updatedSession.experienceMode !== "simulation") {
-      entries.push({ key: KEYS.activeZeroSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-zero-session-reference" });
-    }
-    writeStorageTransaction(entries, "replace-session-transaction");
+    writeSessionPlanWithQuotaRetry(forceCompression => {
+      plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-canonical-session", { forceCompression });
+      const entries = [
+        ...plan.entries,
+        { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-history-references" },
+        { key: KEYS.activeSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-session-reference" }
+      ];
+      if (updatedSession.experienceMode !== "simulation") {
+        entries.push({ key: KEYS.activeZeroSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-zero-session-reference" });
+      }
+      writeStorageTransaction(entries, "replace-session-transaction");
+      return plan;
+    }, "replace-session-transaction");
     publishNormalizationReport(plan.report);
     return hydrateSessionRecord(plan.compact);
   }
 
   function updateActiveSession(patch) {
     const active = read(KEYS.activeSession, null);
-    if (!active) return null;
+    if (!active || !active.sessionId) {
+      const error = new Error("active_session_reference_missing");
+      publishSaveDiagnostic({
+        operation: "update-active-session",
+        key: KEYS.activeSession,
+        ok: false,
+        exceptionName: error.name,
+        exceptionMessage: error.message,
+        failedAt: nowStamp()
+      });
+      throw error;
+    }
     return replaceSession({
       ...active,
       ...patch,
       updatedAt: nowStamp()
     });
+  }
+
+  // Target workspaces can be open in more than one tab. Their backend-issued
+  // session ID, not the browser-wide active-session pointer, owns updates.
+  function updateSessionById(sessionId, patch) {
+    const requestedSessionId = String(sessionId || "").trim();
+    const current = requestedSessionId ? readCanonicalSession(requestedSessionId) : null;
+    if (!current || String(current.sessionId || "") !== requestedSessionId) {
+      const error = new Error("active_session_reference_missing");
+      publishSaveDiagnostic({
+        operation: "update-session-by-id",
+        key: requestedSessionId ? sessionRecordKey(requestedSessionId) : KEYS.activeSession,
+        ok: false,
+        exceptionName: error.name,
+        exceptionMessage: error.message,
+        failedAt: nowStamp()
+      });
+      throw error;
+    }
+
+    const updatedSession = {
+      ...current,
+      ...patch,
+      sessionId: requestedSessionId,
+      authoritativeSessionId: current.authoritativeSessionId || requestedSessionId,
+      updatedAt: nowStamp()
+    };
+    const history = getSessionHistory();
+    const storedMatrix = rawRead(KEYS.activeMatrix, null);
+    let plan;
+    const nextHistory = history.some(session => session.sessionId === requestedSessionId)
+      ? history.map(session => session.sessionId === requestedSessionId ? updatedSession : session)
+      : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
+    writeSessionPlanWithQuotaRetry(forceCompression => {
+      plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-session-by-id", { forceCompression });
+      writeStorageTransaction([
+        ...plan.entries,
+        { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-by-id-history" }
+      ], "persist-session-by-id-transaction");
+      return plan;
+    }, "persist-session-by-id-transaction");
+    publishNormalizationReport(plan.report);
+    return hydrateSessionRecord(plan.compact);
   }
 
   function attachCorrection(correctionData) {
@@ -1262,6 +1663,16 @@
         evidenceType: "uploaded-target-image"
       },
       updatedAt: nowStamp()
+    });
+  }
+
+  function saveTargetEvidenceImageForSession(sessionId, imageData) {
+    return updateSessionById(sessionId, {
+      targetEvidenceImage: {
+        ...imageData,
+        savedAt: nowStamp(),
+        evidenceType: "uploaded-target-image"
+      }
     });
   }
 
@@ -1814,9 +2225,11 @@
     buildActiveCalculationContext,
     replaceSession,
     updateActiveSession,
+    updateSessionById,
     attachCorrection,
     confirmActiveZero,
     saveTargetEvidenceImage,
+    saveTargetEvidenceImageForSession,
     clearTargetEvidenceImage,
     calculateTapCorrection,
     saveTargetMarks,
@@ -1827,6 +2240,10 @@
     usePreviousSetup,
     createSessionFromSession,
     sessionPills,
+    storageInventory,
+    storageRecoveryDiagnostics,
+    createVerifiedStorageBackup,
+    recoverVerifiedCanonicalSessions,
     storeMediaReferences,
     hydrateStoredMedia,
     startPlaceholderSession

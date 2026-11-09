@@ -23,6 +23,7 @@ from product_catalog import product_resolution_http_status, resolve_product_rout
 from preserved_sec_store import (
     PreservedSECError,
     preserve_sec,
+    prove_preserved_sec,
     read_preserved_sec,
     runtime_store as preserved_sec_runtime_store,
 )
@@ -88,6 +89,7 @@ class AuthorityHandler(BaseHTTPRequestHandler):
     SESSION_PREPARE_PATHS = {"/api/session/prepare", "/api/session/prepare/"}
     SESSION_START_PATHS = {"/api/session/start", "/api/session/start/"}
     PRESERVED_SEC_PATHS = {"/api/session/sec", "/api/session/sec/"}
+    PRESERVED_SEC_PROOF_PATHS = {"/api/session/sec/prove", "/api/session/sec/prove/"}
     BAKER_SL_ST1_ANALYZE_PATHS = {"/api/target/baker-sl-st1/analyze", "/api/target/baker-sl-st1/analyze/"}
     BAKER_SL_ST1_FIXTURE_PATHS = {"/api/target/baker-sl-st1/founder-fixture", "/api/target/baker-sl-st1/founder-fixture/"}
     BAKER_SL_ST2_ANALYZE_PATHS = {"/api/target/baker-sl-st2/analyze", "/api/target/baker-sl-st2/analyze/"}
@@ -201,6 +203,21 @@ class AuthorityHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self._request_path()
+        if path in self.PRESERVED_SEC_PROOF_PATHS:
+            try:
+                sec_reopen_signing_key()
+                package = prove_preserved_sec(self._read_json_body(), preserved_sec_runtime_store())
+                package["reopenCapability"] = issue_reopen_capability(
+                    package["session"]["sessionId"], package["artifactSha256"]
+                )
+                self._send_json(200, package)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json(400, {"ok": False, "status": "invalid_request", "reason": "invalid_json"})
+            except (PreservedSECError, SECReopenAuthorityError) as exc:
+                self._send_json(exc.http_status, exc.payload)
+            except Exception:
+                self._send_json(503, {"ok": False, "status": "storage_error", "reason": "preserved_sec_proof_failed"})
+            return
         if path in self.TARGET_IMAGE_REGISTRATION_PATHS:
             try:
                 self._send_json(200, register_target_image(self._read_json_body()))

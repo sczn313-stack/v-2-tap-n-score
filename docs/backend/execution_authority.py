@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import math
 import secrets
 from datetime import datetime
 from typing import Any, Dict, Mapping, Optional
@@ -22,6 +23,38 @@ class ExecutionAuthorityError(Exception):
         super().__init__(reason)
         self.http_status = http_status
         self.payload = {"ok": False, "status": status, "reason": reason, **details}
+
+
+def _validate_station_sequence_policy(contract: Mapping[str, Any], evidence: Any) -> None:
+    """Fail closed for governed sequential or shooter-selected station assignment."""
+    if not isinstance(evidence, Mapping):
+        return
+    policy = (contract.get("components", {}).get("mission", {}).get("definition", {}).get("interaction", {}) or {}).get("stationSequencePolicy")
+    if not isinstance(policy, Mapping):
+        return
+    region_ids = [str(region_id) for region_id in policy.get("stationRegionIds", [])]
+    observations = evidence.get("observations")
+    if not region_ids or not isinstance(observations, list):
+        return
+    assignment_authority = str(policy.get("assignmentAuthority") or "accepted_observation_sequence")
+    station_counts = {region_id: 0 for region_id in region_ids}
+    for index, observation in enumerate(observations, start=1):
+        if not isinstance(observation, Mapping):
+            return
+        declared_region_id = str(observation.get("assignedStationRegionId") or "")
+        if assignment_authority == "shooter_selected_station":
+            if declared_region_id not in station_counts:
+                raise ExecutionAuthorityError("station_selection_invalid", "invalid_evidence", 409, observationIndex=index, receivedStationRegionId=declared_region_id, allowedStationRegionIds=region_ids)
+            station_counts[declared_region_id] += 1
+            continue
+        per_station_limit = policy.get("observationsPerStation")
+        if not isinstance(per_station_limit, int) or per_station_limit < 1:
+            return
+        expected_region_id = region_ids[(index - 1) // per_station_limit] if index <= len(region_ids) * per_station_limit else None
+        if not expected_region_id:
+            raise ExecutionAuthorityError("station_sequence_observation_limit_exceeded", "invalid_evidence", 409, observationIndex=index, maximumAcceptedObservations=len(region_ids) * per_station_limit)
+        if declared_region_id != expected_region_id:
+            raise ExecutionAuthorityError("station_sequence_assignment_invalid", "invalid_evidence", 409, observationIndex=index, expectedStationRegionId=expected_region_id, receivedStationRegionId=declared_region_id)
 
 
 def execute_authoritative_session(
@@ -51,8 +84,21 @@ def execute_authoritative_session(
         raise ExecutionAuthorityError("authoritative_session_target_mismatch", "identity_mismatch", 409)
     if mission.get("missionFamily") != contract["missionFamily"] or mission.get("resultPackageType") != contract["resultPackageType"]:
         raise ExecutionAuthorityError("authoritative_session_mission_mismatch", "identity_mismatch", 409)
+    governed_evidence = deepcopy(payload.get("evidence"))
+    _validate_station_sequence_policy(contract, governed_evidence)
+    boundary_policy = contract.get("components", {}).get("scoring", {}).get("definition", {}).get("boundaryPolicy")
+    if isinstance(governed_evidence, Mapping) and isinstance(boundary_policy, Mapping) and boundary_policy.get("mode") == "authority_scoring_gauge":
+        governed_evidence = dict(governed_evidence)
+        caliber = governed_evidence.pop("scoringCaliber", None)
+        diameter = governed_evidence.pop("scoringGaugeDiameterInches", None)
+        if caliber not in (None, "") or diameter not in (None, ""):
+            governed_evidence["_backendScoringGaugeContext"] = {
+                "caliber": caliber,
+                "diameterInches": diameter,
+                "source": "shooter_declared_material_fact",
+            }
     try:
-        result = execute_capability(contract, payload.get("evidence"))
+        result = execute_capability(contract, governed_evidence)
     except (ValueError, CapabilityRegistryError) as exc:
         raise ExecutionAuthorityError(str(exc), "invalid_evidence") from exc
     result = deepcopy(result)

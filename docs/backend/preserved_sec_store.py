@@ -44,6 +44,31 @@ def _target_id(session: Mapping[str, Any]) -> str:
     )
 
 
+def _preservation_source(session: Mapping[str, Any]) -> Dict[str, Any]:
+    """Return the immutable shooting-session payload, excluding save-owned metadata."""
+    source = deepcopy(dict(session))
+    for key in ("savedToSEC", "savedAt", "preservedAt", "timestamp", "workflowStage", "updatedAt", "sczn3Progress"):
+        source.pop(key, None)
+    if _text(source.get("authoritativeSessionId")) == _text(source.get("sessionId")):
+        source.pop("authoritativeSessionId", None)
+    return source
+
+
+def _idempotent_preservation(existing: Any, session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    if not isinstance(existing, Mapping) or not isinstance(existing.get("artifact"), Mapping):
+        return None
+    if _digest(_preservation_source(existing["artifact"])) != _digest(_preservation_source(session)):
+        return None
+    return {
+        "ok": True,
+        "status": "preserved",
+        "session": deepcopy(existing["artifact"]),
+        "artifactSha256": existing["artifactSha256"],
+        "preservedAt": existing["preservedAt"],
+        "idempotentReplay": True,
+    }
+
+
 def _validate_contract_backed_artifact(
     session: Mapping[str, Any],
     governed_target_id: str,
@@ -71,15 +96,42 @@ def _validate_contract_backed_artifact(
         raise PreservedSECError("authority_unavailable", "result_package_validation_failed", 409)
 
 
-def _hit_rate(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+def _points_per_tap(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
     result = session.get("authorityPackage") or session.get("backendAuthorityPackage")
-    metric = result.get("sczn3Metrics", {}).get("hitRate") if isinstance(result, Mapping) else None
-    if not isinstance(metric, Mapping):
+    if not isinstance(result, Mapping):
         return None
-    valid, total, percentage = metric.get("validHitCount"), metric.get("governedShotCount"), metric.get("percentage")
-    if not isinstance(valid, int) or not isinstance(total, int) or total < 1 or not isinstance(percentage, (int, float)):
+    scoring = result.get("scoring") if isinstance(result.get("scoring"), Mapping) else {}
+    if (
+        scoring.get("model") not in {"numeric_regions", "penalty_regions", "mixed_regions"}
+        or isinstance(scoring.get("participantResults"), list)
+        or scoring.get("status") not in {"complete", "partial"}
+    ):
         return None
-    return {"validHitCount": valid, "governedShotCount": total, "percentage": float(percentage)}
+    total_points, total_taps = scoring.get("total"), scoring.get("observationCount")
+    if (
+        not isinstance(total_points, (int, float))
+        or isinstance(total_points, bool)
+        or not isinstance(total_taps, int)
+        or total_taps < 1
+    ):
+        return None
+    metrics = result.get("sczn3Metrics") if isinstance(result.get("sczn3Metrics"), Mapping) else {}
+    canonical = metrics.get("pointsPerTap")
+    exact = total_points / total_taps
+    if isinstance(canonical, (int, float)) and not isinstance(canonical, bool):
+        if abs(float(canonical) - exact) > 1e-12:
+            return None
+        value, source = float(canonical), "backend_authority"
+    else:
+        # Legacy compatibility is a read-only projection from preserved
+        # authoritative points and taps. It is never written into the artifact.
+        value, source = exact, "legacy_read_only_projection"
+    return {
+        "totalPoints": total_points,
+        "totalTaps": total_taps,
+        "pointsPerTap": value,
+        "pointsPerTapSource": source,
+    }
 
 
 def _numeric_score(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
@@ -118,22 +170,66 @@ def _shot_pattern(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
     }
 
 
+def _object_coverage_history(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    result = session.get("authorityPackage") or session.get("backendAuthorityPackage")
+    if not isinstance(result, Mapping):
+        return None
+    treatment = result.get("smartTargetTreatment") if isinstance(result.get("smartTargetTreatment"), Mapping) else {}
+    profile = treatment.get("historyProfile") if isinstance(treatment.get("historyProfile"), Mapping) else {}
+    if profile.get("family") != "object_coverage_history_v1":
+        return None
+    scoring = result.get("scoring") if isinstance(result.get("scoring"), Mapping) else {}
+    metrics = result.get("sczn3Metrics") if isinstance(result.get("sczn3Metrics"), Mapping) else {}
+    coverage = metrics.get("objectCoverage") if isinstance(metrics.get("objectCoverage"), Mapping) else {}
+    distribution = metrics.get("objectDistribution") if isinstance(metrics.get("objectDistribution"), Mapping) else {}
+    objects = scoring.get("objectResults") if isinstance(scoring.get("objectResults"), list) else []
+    total = scoring.get("observationCount")
+    misses = scoring.get("outsideCount")
+    objects_hit = coverage.get("objectsHit")
+    object_count = coverage.get("scorableObjectCount")
+    if not all(isinstance(value, int) and value >= 0 for value in (total, misses, objects_hit, object_count)) or object_count < 1:
+        return None
+    by_object = [{
+        "objectId": _text(item.get("objectId")),
+        "label": _text(item.get("label")) or "Aim point",
+        "hitCount": int(item.get("hitCount") or 0),
+        "hit": item.get("hit") is True,
+    } for item in objects if isinstance(item, Mapping)]
+    if len(by_object) != object_count:
+        return None
+    hit_taps = sum(item["hitCount"] for item in by_object)
+    return {
+        "governedObjectCount": object_count,
+        "distinctObjectsHit": objects_hit,
+        "coveragePercentage": round(objects_hit / object_count * 100, 1),
+        "hitCountByObject": by_object,
+        "missesOutside": misses,
+        "totalTaps": total,
+        "hitTaps": hit_taps,
+        "tapAccuracyPercentage": round(hit_taps / total * 100, 1) if total else 0.0,
+        "distributionConsistencyPercentage": float(distribution.get("evennessPercentage") or 0.0),
+    }
+
+
 def _same_target_progress(session: Mapping[str, Any], target_id: str, store: Any) -> Dict[str, Any]:
-    current = _hit_rate(session)
+    current = _points_per_tap(session)
     current_score = _numeric_score(session)
     current_pattern = _shot_pattern(session)
+    current_object_history = _object_coverage_history(session)
     continuity_id = _text(session.get("shooterContinuityId"))
     progress = {
-        "status": "current_only" if current or current_pattern else "not_applicable",
+        "status": "current_only" if current or current_pattern or current_object_history else "not_applicable",
         "scope": "same_shooter_same_permanent_target",
         "current": deepcopy(current) if current else {},
         "previous": None,
     }
     if current_pattern:
         progress["current"]["shotPattern"] = current_pattern
+    if current_object_history:
+        progress["current"]["objectHistory"] = current_object_history
     if current and current_score:
         progress["current"].update(current_score)
-    if not current and not current_pattern:
+    if not current and not current_pattern and not current_object_history:
         return progress
     if not continuity_id:
         progress["comparisonUnavailableReason"] = "shooter_continuity_not_present"
@@ -146,22 +242,25 @@ def _same_target_progress(session: Mapping[str, Any], target_id: str, store: Any
             continue
         if _text(prior.get("shooterContinuityId")) != continuity_id:
             continue
-        prior_rate = _hit_rate(prior)
+        prior_rate = _points_per_tap(prior)
         prior_pattern = _shot_pattern(prior)
-        if not prior_rate and not prior_pattern:
+        prior_object_history = _object_coverage_history(prior)
+        if not prior_rate and not prior_pattern and not prior_object_history:
             continue
         prior_score = _numeric_score(prior)
-        applicable.append((prior, prior_rate, prior_score, prior_pattern))
+        applicable.append((prior, prior_rate, prior_score, prior_pattern, prior_object_history))
     if applicable:
-        prior, prior_rate, prior_score, prior_pattern = applicable[0]
+        prior, prior_rate, prior_score, prior_pattern, prior_object_history = applicable[0]
         previous = {**(prior_rate or {}), "sessionId": _text(prior.get("sessionId")), "savedAt": _text(prior.get("savedAt"))}
         if prior_pattern:
             previous["shotPattern"] = prior_pattern
         if prior_score:
             previous.update(prior_score)
+        if prior_object_history:
+            previous["objectHistory"] = prior_object_history
         progress.update({"status": "comparison_available", "previous": previous})
         if current and prior_rate:
-            progress["percentagePointChange"] = round(current["percentage"] - prior_rate["percentage"], 1)
+            progress["pointsPerTapChange"] = current["pointsPerTap"] - prior_rate["pointsPerTap"]
         if current_pattern and prior_pattern:
             current_center, prior_center = current_pattern["center"], prior_pattern["center"]
             current_radius = current_pattern["dispersion"].get("rmsRadiusNorm")
@@ -181,17 +280,27 @@ def _same_target_progress(session: Mapping[str, Any], target_id: str, store: Any
                 "current": deepcopy(current_score["regionResults"]),
                 "previous": deepcopy(prior_score["regionResults"]),
             }
+        if current_object_history and prior_object_history:
+            progress["objectHistoryComparison"] = {
+                "status": "comparable",
+                "distinctObjectsHitChange": current_object_history["distinctObjectsHit"] - prior_object_history["distinctObjectsHit"],
+                "coveragePercentagePointChange": round(current_object_history["coveragePercentage"] - prior_object_history["coveragePercentage"], 1),
+                "tapAccuracyPercentagePointChange": round(current_object_history["tapAccuracyPercentage"] - prior_object_history["tapAccuracyPercentage"], 1),
+                "distributionConsistencyPointChange": round(current_object_history["distributionConsistencyPercentage"] - prior_object_history["distributionConsistencyPercentage"], 1),
+                "current": deepcopy(current_object_history),
+                "previous": deepcopy(prior_object_history),
+            }
         score_candidates = [
             (current_score, _text(session.get("sessionId"))),
-            *((score, _text(prior.get("sessionId"))) for prior, _, score, _ in applicable),
+            *((score, _text(prior.get("sessionId"))) for prior, _, score, _, _ in applicable),
         ]
         scores = [(score["targetScore"], session_id) for score, session_id in score_candidates if score]
-        rates = ([(current["percentage"], _text(session.get("sessionId")))] if current else []) + [(rate["percentage"], _text(prior.get("sessionId"))) for prior, rate, _, _ in applicable if rate]
-        patterns = [(current_pattern, _text(session.get("sessionId")))] + [(pattern, _text(prior.get("sessionId"))) for prior, _, _, pattern in applicable] if current_pattern else [(pattern, _text(prior.get("sessionId"))) for prior, _, _, pattern in applicable if pattern]
+        rates = ([(current["pointsPerTap"], _text(session.get("sessionId")))] if current else []) + [(rate["pointsPerTap"], _text(prior.get("sessionId"))) for prior, rate, _, _, _ in applicable if rate]
+        patterns = [(current_pattern, _text(session.get("sessionId")))] + [(pattern, _text(prior.get("sessionId"))) for prior, _, _, pattern, _ in applicable] if current_pattern else [(pattern, _text(prior.get("sessionId"))) for prior, _, _, pattern, _ in applicable if pattern]
         dispersion_candidates = [(pattern["dispersion"].get("rmsRadiusNorm"), session_id) for pattern, session_id in patterns if pattern and pattern["dispersion"].get("status") == "complete"]
         progress["best"] = {
             "targetScore": {"value": max(scores, key=lambda item: item[0])[0], "sessionId": max(scores, key=lambda item: item[0])[1]} if scores else None,
-            "hitRate": {"percentage": max(rates, key=lambda item: item[0])[0], "sessionId": max(rates, key=lambda item: item[0])[1]} if rates else None,
+            "pointsPerTap": {"value": max(rates, key=lambda item: item[0])[0], "sessionId": max(rates, key=lambda item: item[0])[1]} if rates else None,
             "tightestPattern": {"rmsRadiusNorm": min(dispersion_candidates, key=lambda item: item[0])[0], "sessionId": min(dispersion_candidates, key=lambda item: item[0])[1]} if dispersion_candidates else None,
         }
     else:
@@ -222,6 +331,12 @@ def preserve_sec(
             expectedTargetId=governed_target_id, receivedTargetId=submitted_target_id,
         )
     _validate_contract_backed_artifact(session, governed_target_id, execution_contract_resolver or runtime_resolver())
+    existing = store.get(session_id) if hasattr(store, "get") else None
+    replay = _idempotent_preservation(existing, session)
+    if replay:
+        return replay
+    if existing:
+        raise PreservedSECError("preservation_conflict", "preserved_sec_is_immutable", 409)
     preserved_at = (now or datetime.now(timezone.utc)).isoformat()
     session["sessionId"] = session_id
     session["authoritativeSessionId"] = session_id
@@ -235,7 +350,13 @@ def preserve_sec(
         "artifactSha256": _digest(session),
         "preservedAt": session["savedAt"],
     }
-    saved = store.save(record)
+    try:
+        saved = store.save(record)
+    except AssertionError as exc:
+        replay = _idempotent_preservation(store.get(session_id) if hasattr(store, "get") else None, session)
+        if replay:
+            return replay
+        raise PreservedSECError("preservation_conflict", "preserved_sec_is_immutable", 409) from exc
     return {
         "ok": True,
         "status": "preserved",
@@ -259,6 +380,24 @@ def read_preserved_sec(session_id: Any, store: Any) -> Dict[str, Any]:
         "artifactSha256": record["artifactSha256"],
         "preservedAt": record["preservedAt"],
     }
+
+
+def prove_preserved_sec(payload: Any, store: Any) -> Dict[str, Any]:
+    """Prove possession of an existing immutable artifact without saving it."""
+    if not isinstance(payload, Mapping) or not isinstance(payload.get("session"), Mapping):
+        raise PreservedSECError("invalid_request", "session_required")
+    session = payload["session"]
+    session_id = _text(session.get("sessionId") or session.get("authoritativeSessionId"))
+    if not session_id or session.get("sessionIdAuthority") != "backend":
+        raise PreservedSECError("invalid_request", "backend_session_identity_required")
+    existing = store.get(session_id) if hasattr(store, "get") else None
+    if not existing:
+        raise PreservedSECError("not_found", "preserved_sec_not_found", 404)
+    replay = _idempotent_preservation(existing, session)
+    if not replay:
+        raise PreservedSECError("identity_mismatch", "preserved_sec_possession_mismatch", 403)
+    replay["proofOnly"] = True
+    return replay
 
 
 def list_preserved_secs(store: Any) -> Dict[str, Any]:
@@ -365,7 +504,13 @@ class PostgresPreservedSECStore:
                       from preserved_secs
                      where lower(target_id) = lower(%s)
                        and artifact ->> 'shooterContinuityId' = %s
-                       and artifact #> '{authorityPackage,sczn3Metrics,hitRate}' is not null
+                       and (
+                         artifact #> '{authorityPackage,sczn3Metrics,pointsPerTap}' is not null
+                         or (
+                           artifact #> '{authorityPackage,scoring,total}' is not null
+                           and artifact #> '{authorityPackage,scoring,observationCount}' is not null
+                         )
+                       )
                      order by preserved_at desc
                     """,
                     (target_id, continuity_id),

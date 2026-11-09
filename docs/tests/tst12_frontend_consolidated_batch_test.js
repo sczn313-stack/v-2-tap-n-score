@@ -1,0 +1,61 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const read = file => fs.readFileSync(path.join(docs, file), "utf8");
+const workspace = read("smart_target_workspace.css");
+const css = read("tst12-universal-experience.css");
+const adapter = read("tst12_universal_experience.js");
+const stationResults = read("tst12_station_results.js");
+const runtime = read("target_execution_runtime.js");
+const records = read("records.html");
+const vault = read("ballistic-vault.css");
+const framework = read("sec-framework.css");
+const secV1 = read("sec_v1.js");
+
+assert.match(workspace, /background:rgba\(255,255,255,\.08\)/, "the universal observation center is transparent");
+assert.match(workspace, /left:calc\(100% \+ 3px\)/, "the universal count badge sits outside the recorded center");
+assert.match(workspace, /pointer-events:none/, "the display badge cannot change the recorded interaction point");
+assert.match(css, /is-hit::after\{background:#ffd84d/, "hit identity remains yellow");
+assert.match(css, /is-miss::after[^}]*background:#d62828/, "miss identity remains red");
+assert.match(vault, /vault-impact-count[^}]*left:calc\(100% \+ 3px\)/, "Vault uses the same outside count identifier");
+
+assert.match(adapter, /Tap a numbered target to select the station/, "the selected station is explicit before a tap is recorded");
+assert.match(adapter, /TAP WHERE YOUR SHOTS HIT/);
+assert.doesNotMatch(adapter, /sczn3:tst12-record-number-location/, "station selectors cannot record shots");
+assert.match(stationResults, /countsAsHit !== true && item\.countsAsHit !== false/, "unresolved observations stay distinct");
+assert.match(stationResults, /scoring\.regionResults/, "the station view reads backend-scored regions rather than reconstructing scoring precedence");
+assert.match(stationResults, /scoring\.stationBestFive/, "the station view reads the backend best-five ledger");
+assert.doesNotMatch(stationResults, /matchingRegionIds\.find/, "the station view never turns boundary evidence into a frontend winning-region choice");
+assert.match(stationResults, /TOTAL TAPS/, "the approved observation summary distinguishes all recorded taps from selected scoring taps");
+assert.match(stationResults, /tst12-station-total/, "the table total remains the Backend-selected scoring total");
+assert.match(adapter, /function displayedCaliber/, "caliber display is derived from the recorded session value");
+assert.match(adapter, /\["Caliber", displayedCaliber/, "the existing caliber field remains visible");
+
+assert.match(runtime, /status: partial \? "incomplete" : "complete"/, "partial backend results are not presented as complete");
+assert.match(records, /NO RESULT RECORDED/, "Vault distinguishes sessions without a saved result");
+assert.match(records, /INCOMPLETE RESULT/, "Vault distinguishes incomplete results");
+assert.match(records, /sczn3_tst12_clean_v1/, "the clean registration receives the TST-12 Vault presentation");
+assert.match(records, /tst12_station_results\.js/, "Vault loads the shared TST-12 station renderer");
+assert.match(stationResults, /canonicalRegionId/, "Vault station rows canonicalize backend-provided early-station aliases");
+assert.match(stationResults, /scoring\.regionResults/, "Vault renders the saved backend scored-region ledger");
+assert.match(stationResults, /scoring\.stationBestFive/, "Vault renders the saved backend station ledger");
+assert.doesNotMatch(stationResults, /matchingRegionIds\.find/, "Vault never resolves the winning region from boundary-match ordering");
+assert.match(runtime, /Calculating your result…/, "primary shooter status avoids governance jargon");
+assert.match(runtime, /Result calculation unavailable:[^`]+Your shots are still here/, "calculation failure preserves and explains the evidence state");
+assert.match(runtime, /Save failed:[^`]+has not been saved/, "persistence failure is distinguished from calculation failure");
+assert.match(runtime, /Saved to the Vault\./, "save success is claimed only after the persistence response");
+assert.match(runtime, /records\.html\?runtimeView=sec-readable-diagnostic-1&selected=/, "the Vault link identifies the exact saved session");
+assert.match(runtime, /portableUrl\(vaultBaseHref, session\.sessionId\)/, "the Vault carries the saved-session reopen capability");
+assert.match(records, /const selectedServerSessionId = REQUESTED_RECORD_SESSION_ID \|\| SELECTED_RECORD_SESSION_ID/, "Vault browse loads the selected saved session from the authority service");
+assert.match(records, /Saved record could not be opened/, "Vault reports a recoverable open failure instead of leaving a loading claim");
+assert.match(framework, /\.sec-vault-stage\{order:4\}/, "Vault follows Target, Session, and History in the SEC grid");
+assert.match(framework, /\.sec-v1-actions\{order:5\}/, "preservation actions follow the compact Vault row");
+assert.match(secV1, /const printerRow = printerCredit \? `<div class="sec-printer-row">\$\{printerCredit\}<\/div>` : ""/, "stage printer controls render in normal document flow");
+assert.match(secV1, /vaultPrinter \? `<div class="sec-printer-row">\$\{vaultPrinter\}<\/div>` : ""/, "Vault printer controls render in normal document flow");
+assert.match(framework, /\.sec-printer-row\{display:flex;align-items:center/, "printer rows have an explicit in-flow header lane");
+assert.doesNotMatch(framework, /sec-printer-credit--stage\{position:absolute/, "printer controls cannot be pinned over scrolling content");
+
+console.log("PASS Episode 64 TST-12 consolidated frontend batch contract");

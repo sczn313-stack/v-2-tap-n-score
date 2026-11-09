@@ -1,3 +1,4 @@
+:root{--sczn3-tst12-vault-identity:"sczn3-session-init-20261109-1"}
 .records-page{
   background:
     radial-gradient(circle at 50% -20%,rgba(210,149,15,.16),transparent 42%),
@@ -57,7 +58,7 @@
 .vault-evidence-pair{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(180px,.65fr);gap:10px;padding:10px}
 .vault-evidence-pair figure{display:grid;gap:5px;min-width:0;margin:0}
 .vault-evidence-pair figcaption{color:#111;font-size:10px;font-weight:950;letter-spacing:.05em;text-align:center}
-.vault-target-panel{position:relative;display:grid;place-items:center;aspect-ratio:4/3;overflow:hidden;border:1px solid #bdb7aa;background:#f5f0df}
+.vault-target-panel{position:relative;display:grid;place-items:center;aspect-ratio:4/3;overflow:hidden;border:1px solid #bdb7aa;background:#f5f0df;container-type:inline-size}
 .vault-target-panel img{display:block;width:100%;height:100%;object-fit:contain}
 .vault-target-panel .history-evidence-layer{position:absolute;inset:0}
 .vault-target-panel .vault-governed-correction-vector{z-index:4;filter:drop-shadow(0 1px 1px rgba(255,255,255,.95)) drop-shadow(0 2px 2px rgba(0,0,0,.5))}
@@ -78,13 +79,38 @@
 .vault-result-breakdown span{white-space:nowrap}
 .vault-result-breakdown b{color:#e7b642;margin-right:3px}
 .vault-result-breakdown i{color:#8d8068;font-style:normal}
+.vault-ppt-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0;overflow:hidden}
+.vault-ppt-card{display:grid;align-content:center;justify-items:center;min-width:0;padding:16px 10px;background:#090909;color:#fff;text-align:center}
+.vault-ppt-card+.vault-ppt-card{border-left:1px solid rgba(231,182,66,.55)}
+.vault-ppt-card span{font-size:11px;font-weight:950;letter-spacing:.08em}
+.vault-ppt-card strong{color:#e7b642;font-size:clamp(28px,5vw,48px);font-variant-numeric:tabular-nums;line-height:1}
+.vault-ppt-card small{margin-top:7px;font-size:9px;font-weight:900;line-height:1.25}
+@media(max-width:600px){.vault-ppt-summary{grid-template-columns:1fr}.vault-ppt-card+.vault-ppt-card{border-top:1px solid rgba(231,182,66,.55);border-left:0}}
 .vault-result-summary>p{margin:0;color:#ddd;font-size:10px;font-weight:800}
 .vault-result-summary--unavailable>strong{font-size:17px}
 .vault-result-summary--unavailable>small{color:#e7b642}
 .vault-result-summary--unavailable>span{color:#ddd;font-size:10px;font-weight:800}
 .vault-record-link{display:flex;justify-content:flex-end;color:#111;text-decoration:none}
-.vault-open-label{display:flex;justify-content:flex-end;padding:0 11px 10px;color:#277a35;font-size:10px;font-weight:950}
+.vault-open-label{display:flex;justify-content:flex-end;padding:0 11px 10px;color:#277a35;font-size:12px;font-weight:1000}
 .vault-record-link:focus-visible{outline:3px solid #ffd85a;outline-offset:-4px}
+.vault-record-summary--tst12 .contract-missed-tap-identifiers{border-color:#8b6500;background:#fff2b8;color:#17130a;font-weight:850}
+.vault-record-summary--tst12 .contract-missed-tap-identifiers strong{color:#5b4200}
+.vault-record-summary--tst12 .history-thumb-impact{overflow:visible;border-color:#080808;background:rgba(255,216,77,.08);color:#080808;box-shadow:0 0 0 1px #fff,0 0 0 2px #080808}
+.vault-record-summary--tst12 .history-thumb-impact.is-missed-tap{border-color:#d62828;background:rgba(214,40,40,.08);color:#fff;box-shadow:0 0 0 1px #080808,0 0 0 2px #fff}
+.vault-record-summary--tst12 .vault-impact-count{position:absolute;left:calc(100% + 3px);top:50%;display:grid;place-items:center;min-width:14px;height:14px;padding:0 3px;transform:translateY(-50%);border:1px solid #080808;border-radius:999px;background:#ffd84d;color:#080808;font-size:8px;font-weight:950;line-height:1;pointer-events:none}
+.vault-record-summary--tst12 .history-thumb-impact.is-missed-tap .vault-impact-count{border-color:#fff;background:#d62828;color:#fff}
+.vault-record-summary--tst12 .history-thumb-impact.is-right-edge .vault-impact-count{left:auto;right:calc(100% + 3px)}
+.vault-record-summary--tst12 .history-thumb-impact.is-top-edge .vault-impact-count{top:calc(100% + 3px);transform:translateY(0)}
+.vault-record-summary--tst12 .history-thumb-impact.is-bottom-edge .vault-impact-count{top:auto;bottom:calc(100% + 3px);transform:translateY(0)}
+.vault-record-summary--tst12 .history-thumb-impact.is-label-lane-b:not(.is-top-edge):not(.is-bottom-edge) .vault-impact-count{transform:translateY(calc(-50% + 9px))}
+
+.vault-tst12-misses-control{overflow:hidden;border:1px solid #8b6500;border-radius:7px;background:#111;color:#fff}
+.vault-tst12-misses-control>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-height:38px;padding:7px 10px;color:#ffd85a;cursor:pointer;list-style:none;font-size:10px;font-weight:950;letter-spacing:.055em}
+.vault-tst12-misses-control>summary::-webkit-details-marker{display:none}.vault-tst12-misses-control>summary::marker{content:""}
+.vault-tst12-misses-control>summary::after{content:"▶";color:#ffd85a;font-size:13px;line-height:1}.vault-tst12-misses-control[open]>summary::after{content:"▼"}
+.vault-tst12-misses-control>summary:focus-visible{outline:2px solid #ffd85a;outline-offset:-3px}
+.vault-tst12-misses-hide{display:none}.vault-tst12-misses-control[open] .vault-tst12-misses-show{display:none}.vault-tst12-misses-control[open] .vault-tst12-misses-hide{display:inline}
+.vault-tst12-misses-view{display:grid;gap:6px;padding:0 7px 7px}.vault-tst12-misses-view .vault-target-panel{aspect-ratio:auto}.vault-tst12-misses-view .history-thumb-impact{border-color:#fff;background:rgba(214,40,40,.08);color:#fff;box-shadow:0 0 0 2px #111,0 0 0 4px #ffd85a}.vault-tst12-misses-view>p{margin:0;padding:6px;border-radius:5px;background:#fff2b8;color:#17130a;font-size:10px;font-weight:850;text-align:center}
 .vault-approved-result-panel{display:block;aspect-ratio:auto;height:100%;min-height:0;overflow:auto;border:0;background:#fff}
 .vault-approved-result-panel>.sec-component-result{display:block;width:100%;min-width:0;margin:0}
 .vault-sec-thumbnail{
@@ -211,8 +237,8 @@ body[data-talking-target-demo-stage="true"][data-vault-view="browse"] .vault-rec
   .vault-approved-result-panel .contract-combined-score-rate strong{font-size:clamp(1.15rem,7vw,1.8rem)}
   .vault-approved-result-panel .contract-combined-score-rate span{font-size:.52rem}
   .vault-approved-result-panel .contract-combined-score-rate small{display:none}
-  .vault-approved-result-panel .contract-tap-summary{gap:.2rem;margin:.25rem 0;padding:.3rem .25rem}
-  .vault-approved-result-panel .contract-tap-summary strong{font-size:.58rem}.vault-approved-result-panel .contract-tap-summary i{font-size:.55rem}
+  .vault-approved-result-panel .contract-tap-summary{gap:.25rem;margin:.25rem 0;padding:.3rem .25rem}
+  .vault-approved-result-panel .contract-tap-summary strong{font-size:.58rem}.vault-approved-result-panel .contract-tap-summary i{min-width:.7em;color:#ffd84d;font-size:.78rem;font-weight:1000}
   .vault-approved-result-panel .contract-numeric-region-results{margin-top:.25rem}
   .vault-approved-result-panel .contract-numeric-region-results>summary{grid-template-columns:1fr;gap:.16rem;min-height:52px;padding:.34rem .36rem}
   .vault-approved-result-panel .contract-numeric-region-results>summary .contract-distribution-title{font-size:.68rem;letter-spacing:.035em}.vault-approved-result-panel .contract-disclosure-instruction{font-size:.48rem;letter-spacing:.015em}

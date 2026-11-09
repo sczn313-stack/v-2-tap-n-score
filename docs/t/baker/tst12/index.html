@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070a" />
+  <title>TST-12 · Tap-n-Score</title>
+  <link rel="stylesheet" href="../../../styles.css" />
+</head>
+<body class="platform-page">
+  <main class="contract-target-shell">
+    <section class="contract-intro">
+      <span>Baker Targets</span>
+      <h1>TST-12</h1>
+      <p>Opening the governed 60-shot course…</p>
+      <a class="button primary" id="continue" href="../../../target-experience.html?target=baker_tst12&amp;missionFamily=cueDrillOrchestration">Continue</a>
+    </section>
+  </main>
+  <script>
+    const destination = new URL("../../../target-experience.html", window.location.href);
+    destination.searchParams.set("target", "baker_tst12");
+    destination.searchParams.set("missionFamily", "cueDrillOrchestration");
+    const authorityPort = new URLSearchParams(window.location.search).get("authorityPort");
+    if (authorityPort) destination.searchParams.set("authorityPort", authorityPort);
+    document.getElementById("continue").href = destination.href;
+    window.location.replace(destination.href);
+  </script>
+</body>
+</html>

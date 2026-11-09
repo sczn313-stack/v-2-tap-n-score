@@ -64,13 +64,13 @@
     return { Accept: "application/json", ...(base || {}), ...(token ? { [HEADER]: token } : {}) };
   }
   async function provePossession(endpoint, session) {
-    const response = await global.fetch(endpoint, {
+    const response = await global.fetch(`${clean(endpoint).replace(/\/$/, "")}/prove`, {
       method: "POST",
       headers: { Accept: "application/json", "Content-Type": "application/json" },
       body: JSON.stringify({ session })
     });
     const payload = await response.json().catch(() => null);
-    if (!response.ok || !payload?.ok || !remember(payload)) throw new Error(payload?.reason || "sec_reopen_authority_unavailable");
+    if (!response.ok || !payload?.ok || payload?.proofOnly !== true || !remember(payload)) throw new Error(payload?.reason || "sec_reopen_authority_unavailable");
     return payload;
   }
   async function reopen(endpoint, sessionId, localArtifact) {

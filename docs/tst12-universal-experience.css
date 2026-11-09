@@ -1,0 +1,432 @@
+:root{--sczn3-tst12-universal-identity:"sczn3-session-init-20261109-1"}
+body[data-tst12-experience="true"] .tst12-experience-gate{display:flex;align-items:center;justify-content:space-between;gap:.75rem;max-width:72rem;margin:.55rem auto;padding:.65rem .8rem;border:1px solid rgba(255,212,59,.52);border-radius:.55rem;background:#111;color:#fff}
+body[data-tst12-experience="true"] .tst12-experience-gate>span,body[data-tst12-experience="true"] .tst12-mode-identity span,body[data-tst12-experience="true"] .tst12-fixed-distance span{color:#ffd43b;font-size:.68rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
+body[data-tst12-experience="true"] .tst12-experience-gate h2,body[data-tst12-experience="true"] .tst12-experience-gate p{margin:0}
+.tst12-mode-options,.tst12-mode-switch,.tst12-primary-actions{display:flex;align-items:center;gap:.5rem}
+.tst12-mode-options a,.tst12-mode-switch a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none}
+.tst12-mode-switch a{padding:.45rem .7rem;border:1px solid #6e6350;border-radius:.35rem;color:#fff;font-size:.72rem;font-weight:900}
+.tst12-mode-switch a[aria-current="page"]{border-color:#ffd43b;background:#ffd43b;color:#080808}
+.tst12-mode-identity{display:grid;gap:.2rem}.tst12-mode-identity strong{font-size:.88rem}
+.tst12-instructions{max-width:72rem;margin:.4rem auto}.tst12-course-rules{border:1px solid rgba(255,255,255,.18);border-radius:.5rem;background:#111;color:#fff}.tst12-course-rules summary{min-height:44px;padding:.72rem .85rem;color:#ffd43b;font-size:.8rem;font-weight:950;cursor:pointer}.tst12-course-rules ol{display:grid;gap:.55rem;margin:0;padding:0 .95rem .9rem 2.4rem}.tst12-course-rules li{padding:.2rem .35rem;color:#e7e7e7;font-size:.78rem;line-height:1.45}.tst12-course-rules li.is-speaking{border-left:3px solid #ffd43b;background:rgba(255,212,59,.09);color:#fff}.tst12-five-shot-clause{color:#00eaff;font-weight:1000}
+.tst12-primary-actions{justify-content:center;max-width:72rem;margin:.55rem auto}.tst12-primary-actions .button{min-height:48px}.tst12-hear{border-color:#ffd43b;color:#ffd43b}
+.tst12-authority-setup{display:grid;align-content:center;gap:.2rem;min-height:3rem;padding:.55rem .65rem;border:1px solid rgba(255,212,59,.78);border-left:4px solid #ffd43b;border-radius:.42rem;background:#15120a;color:#fff}.tst12-authority-setup span{color:#ffd43b;font-size:.6rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}.tst12-authority-setup strong{font-size:.8rem;line-height:1.2}.tst12-authority-setup small{color:#d9d3c0;font-size:.65rem;line-height:1.3}
+body[data-tst12-experience="true"] .contract-observation-count{display:none}
+body[data-tst12-experience="true"] .contract-controls{width:100%}
+body[data-tst12-experience="true"] .contract-session-setup{flex:1 1 100%;width:100%}
+body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+body[data-tst12-experience="true"] .tst12-setup-field{padding:.55rem;border:1px solid rgba(255,212,59,.52);border-radius:.45rem;background:#18150d}
+body[data-tst12-experience="true"] .tst12-setup-field.is-required>span:first-child::after{content:" REQUIRED";margin-left:.35rem;color:#fff;font-size:.54rem;letter-spacing:.06em}
+body[data-tst12-experience="true"] .tst12-setup-field.is-required input,body[data-tst12-experience="true"] .tst12-setup-field.is-required select{border-width:2px;border-color:#ffd43b}
+body[data-tst12-experience="true"] .tst12-optional-setup{opacity:.82}
+body[data-tst12-experience="true"] .tst12-optional-setup>span:first-child,body[data-tst12-experience="true"] .tst12-shooter-field>span:first-child{color:#bcae8d}
+.tst12-round-controls{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,.72fr) minmax(0,1.4fr);gap:.22rem;align-self:stretch;min-width:0}
+.tst12-round-controls .button{min-width:0!important;min-height:2.35rem;padding:.35rem .25rem;font-size:.61rem;line-height:1;white-space:nowrap}
+.tst12-round-progress{display:grid;align-content:center;gap:.16rem;min-width:0;min-height:2.75rem;padding:.45rem .6rem;border:2px solid #00dfff;border-radius:.42rem;background:#06161b;color:#fff;box-shadow:0 0 0 1px rgba(0,223,255,.24),0 0 14px rgba(0,223,255,.16)}
+.tst12-round-progress span{color:#00eaff;font-size:.58rem;font-weight:950;letter-spacing:.07em}.tst12-round-progress strong{font-size:.88rem;line-height:1}.tst12-round-progress small{overflow:hidden;color:#e5fbff;font-size:.64rem;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
+body[data-tst12-experience="true"] .contract-observation-marker{z-index:4}
+body[data-tst12-experience="true"] .contract-observation-marker:not(.is-miss),
+#contractSecRoot .contract-universal-sec[data-target-id*="tst12"] .contract-observation-marker.is-hit{border-color:#080808!important;background:#ffd84d!important;box-shadow:0 0 0 1.5px #fff,0 0 0 3px rgba(0,0,0,.92),0 1px 3px rgba(0,0,0,.73)!important}
+body[data-tst12-experience="true"] .contract-observation-marker:not(.is-miss)::before,
+#contractSecRoot .contract-universal-sec[data-target-id*="tst12"] .contract-observation-marker.is-hit::before{content:"";position:absolute;left:50%;top:50%;width:2.5px;height:2.5px;transform:translate(-50%,-50%);border-radius:50%;background:#080808;pointer-events:none}
+body[data-tst12-experience="true"] .contract-observation-marker.is-hit,
+#contractSecRoot .contract-universal-sec[data-target-id*="tst12"] .contract-observation-marker.is-hit{color:#080808!important}
+body[data-tst12-experience="true"] .contract-observation-marker.is-miss,
+#contractSecRoot .contract-universal-sec[data-target-id*="tst12"] .contract-observation-marker.is-miss{border-color:#d62828!important;background:rgba(214,40,40,.08)!important;color:#fff!important}
+body[data-tst12-experience="true"] .contract-observation-marker.is-hit::after,
+#contractSecRoot .contract-universal-sec[data-target-id*="tst12"] .contract-observation-marker.is-hit::after{background:#ffd84d;color:#080808}
+body[data-tst12-experience="true"] .contract-observation-marker.is-miss::after,
+#contractSecRoot .contract-universal-sec[data-target-id*="tst12"] .contract-observation-marker.is-miss::after{border-color:#fff;background:#d62828;color:#fff;text-shadow:0 0 1px #080808,0 0 2px #080808}
+.tst12-digital-target-face{position:absolute;inset:0;z-index:1;pointer-events:none}
+.tst12-digital-target-face svg{display:block;width:100%;height:100%}
+.tst12-digital-target-face [data-tst12-station-border].is-active{stroke:#00dfff!important;stroke-width:4px!important;opacity:1!important;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px #00dfff)!important}
+.tst12-digital-target-face[data-contract-station-selectors="true"]{pointer-events:none}
+.tst12-digital-target-face.contract-station-hit-test-owner[data-contract-station-selectors="true"]{z-index:5}
+.tst12-digital-target-face[data-contract-station-selectors="true"] .contract-station-selection-border{fill:none;stroke:transparent;stroke-width:.004;pointer-events:none;vector-effect:non-scaling-stroke}
+.tst12-digital-target-face[data-contract-station-selectors="true"] .contract-station-selection-border.is-active{stroke:transparent;filter:none}
+.tst12-digital-target-face[data-contract-station-selectors="true"] .contract-station-number-control{fill:transparent;stroke:transparent;pointer-events:all;cursor:pointer;vector-effect:non-scaling-stroke}
+.tst12-digital-target-face[data-contract-station-selectors="true"] .contract-station-number-control:hover,.tst12-digital-target-face[data-contract-station-selectors="true"] .contract-station-number-control:focus{fill:rgba(0,223,255,.16);stroke:#00dfff;stroke-width:2px;outline:none}
+.tst12-simulator-result-notice{display:inline-flex;align-items:center;margin:.35rem 0;padding:.34rem .52rem;border:1px solid rgba(0,223,255,.72);border-radius:.35rem;background:#07161b;color:#e9fbff}.tst12-simulator-result-notice strong{color:#00eaff;font-size:.68rem;letter-spacing:.08em}
+.tst12-result-session-group{display:grid;gap:.45rem;margin-top:.55rem}.tst12-result-session-group details,.tst12-result-session-group .tst12-session-details{margin:0;border:1px solid rgba(255,212,59,.55);border-radius:.45rem;background:#111;color:#fff}.tst12-result-session-group summary,.tst12-result-session-group .tst12-session-details>h3{min-height:44px;margin:0;padding:.65rem .75rem;color:#ffd43b;font-size:.82rem;font-weight:900}.tst12-result-session-group summary{cursor:pointer}.tst12-result-session-group .sec-session-record-fields{padding:0 .75rem .75rem}.tst12-session-data-unavailable{margin:0 .75rem .65rem;padding:.5rem;border:1px solid #ffbf47;border-radius:.3rem;background:#291d08;color:#fff3d2;font-size:.72rem;font-weight:800;line-height:1.35}.tst12-station-performance ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;margin:0;padding:0 .75rem .75rem;list-style:none}.tst12-station-performance li{display:grid;gap:.1rem;padding:.45rem;border:1px solid rgba(255,255,255,.12);border-radius:.3rem}.tst12-station-performance li strong{color:#ffd43b;font-size:.72rem}.tst12-station-performance li span{font-size:.68rem;line-height:1.25}
+body[data-tst12-experience="true"] input[aria-invalid="true"]{border-color:#ff6b6b!important;box-shadow:0 0 0 1px rgba(255,107,107,.45)}
+.tst12-scoring-distribution{margin:.5rem 0}.tst12-scoring-distribution>summary{cursor:default}.tst12-scoring-distribution>div{overflow-x:auto}.tst12-scoring-distribution th,.tst12-scoring-distribution td{font-variant-numeric:tabular-nums}.tst12-session-details{margin-top:.55rem}
+body[data-tst12-experience="true"] #contractShooterExperience details{margin-top:.45rem;border-top:1px solid rgba(255,255,255,.16);color:#bbb}
+body[data-tst12-experience="true"] #contractShooterExperience details>summary{min-height:40px;padding:.55rem 0;cursor:pointer;font-size:.7rem;font-weight:900}
+body[data-tst12-experience="true"] .tst12-technical-details{display:grid;gap:.35rem;padding-bottom:.45rem;font-size:.68rem}
+body[data-tst12-experience="true"] #contractShooterExperience{display:none!important}
+body[data-tst12-experience="true"] #tst12AuthoritySetup{grid-column:1/-1;grid-row:1}
+body[data-tst12-experience="true"] .tst12-distance-field{grid-column:1;grid-row:2}
+body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:2;grid-row:2}
+body[data-tst12-experience="true"] .contract-shooter-caliber-fields{grid-column:1;grid-row:3}
+body[data-tst12-experience="true"] .contract-equipment-entry{grid-column:2;grid-row:3}
+body[data-tst12-experience="true"] .contract-equipment-entry>strong{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.15}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1;grid-row:4}
+body[data-tst12-experience="true"] .tst12-round-progress{grid-column:2;grid-row:4}
+body[data-tst12-experience="true"] #contractShowResult.is-tst12-ready{border-color:#00eaff!important;background:#00dfff!important;color:#041014!important;box-shadow:0 0 0 2px rgba(0,223,255,.3),0 0 18px rgba(0,223,255,.4)!important}
+body[data-tst12-experience="true"].tst12-setup-incomplete .tst12-mode-link[aria-current="page"]{border-color:#6e6350;background:#161616;color:#fff;box-shadow:none}
+body[data-tst12-experience="true"].tst12-setup-incomplete .tst12-caliber-field input[aria-invalid="true"],body[data-tst12-experience="true"].tst12-setup-incomplete .tst12-distance-field input[aria-invalid="true"]{border-color:#00dfff!important;box-shadow:0 0 0 2px rgba(0,223,255,.28)}
+body[data-tst12-experience="true"] .tst12-round-progress{pointer-events:none}
+.tst12-round-controls[data-tst12-has-observations="false"]{grid-template-columns:minmax(0,1fr)}
+.tst12-round-controls .button{height:100%;overflow-wrap:anywhere;white-space:normal}
+@media(max-width:640px){
+  body[data-tst12-experience="true"] .contract-target-shell{padding-right:.65rem;padding-left:.65rem}
+  body[data-tst12-experience="true"] .tst12-experience-gate{align-items:stretch;flex-direction:column;margin:.35rem 0;padding:.65rem}
+  .tst12-mode-options,.tst12-mode-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .tst12-mode-options a,.tst12-mode-switch a{width:100%;padding:.45rem .3rem;text-align:center}
+  .tst12-instructions{margin:.35rem 0}.tst12-primary-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.4rem;margin:.4rem 0}.tst12-primary-actions .button{width:100%;min-width:0;padding:.55rem .4rem;font-size:.76rem}.tst12-primary-actions #tst12NarrationStop{grid-column:1/-1}
+  body[data-tst12-experience="true"] .contract-session-setup{padding:.55rem}
+  .tst12-round-controls .button{font-size:.54rem;padding:.3rem .12rem}
+  body[data-tst12-experience="true"] #tst12AuthoritySetup{grid-column:1/-1;grid-row:1}
+  body[data-tst12-experience="true"] .tst12-distance-field{grid-column:1/-1;grid-row:2}
+  body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1/-1;grid-row:3}
+  body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/-1;grid-row:4}
+  body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1/-1;grid-row:5;min-height:48px}
+  body[data-tst12-experience="true"] .contract-shooter-caliber-fields{grid-column:1;grid-row:6}
+  body[data-tst12-experience="true"] .contract-equipment-entry{grid-column:2;grid-row:6}
+  body[data-tst12-experience="true"] .contract-equipment-entry{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;align-items:start}
+  body[data-tst12-experience="true"] .contract-equipment-entry>span,body[data-tst12-experience="true"] .contract-equipment-entry>strong,body[data-tst12-experience="true"] .contract-equipment-entry>a{grid-column:1}
+  body[data-tst12-experience="true"] .contract-equipment-entry>span{grid-row:1}
+  body[data-tst12-experience="true"] .contract-equipment-entry>strong{grid-row:2}
+  body[data-tst12-experience="true"] .contract-equipment-entry>a{grid-row:3;margin-top:.15rem}
+  .tst12-round-controls .button{font-size:.68rem;line-height:1.05}
+  .tst12-station-performance ol{grid-template-columns:1fr}
+}
+
+/* Founder Results and Station Performance corrections. */
+body[data-tst12-experience="true"] .contract-workspace{margin-top:.12rem}
+body[data-tst12-experience="true"] #contractWorkspace{gap:1px}
+body[data-tst12-experience="true"] #contractPrecisionTapViewport{margin-block:0}
+body[data-tst12-experience="true"] .tst12-below-target-actions{margin:.08rem auto 0}
+body[data-tst12-experience="true"] .tst12-below-target-actions #contractShowResult{margin:0}
+
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details>summary{list-style:none}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details>summary::-webkit-details-marker{display:none}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details>summary::marker{content:""}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details>summary::after{content:"▶";align-self:center;justify-self:end;color:#ffd43b;font-size:.78rem;line-height:1}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details[open]>summary::after{content:"▼"}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details>summary>b,
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] details>summary .contract-disclosure-instruction b{display:none!important}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-evidence-toggle,
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-stage-pill{grid-template-columns:max-content minmax(0,1fr) auto!important}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-session-pill{grid-template-columns:max-content minmax(0,1fr) auto auto!important}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-numeric-region-results>summary{grid-template-columns:minmax(0,1fr) auto;cursor:pointer}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-numeric-region-results>summary .contract-distribution-title{grid-column:1}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-numeric-region-results>summary::after{color:#080808;font-size:1rem;font-weight:1000}
+
+.tst12-credit-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.25rem .4rem;margin:.3rem 0;padding:.45rem .5rem;border:1px solid rgba(0,223,255,.42);border-radius:.4rem;background:#07161b;color:#e9fbff;font-size:.7rem;overflow:visible}
+.tst12-credit-summary strong{min-width:0;color:#00eaff;font-size:.7rem!important;overflow-wrap:anywhere}.tst12-credit-summary i{font-style:normal}.tst12-credit-summary small{flex:1 0 100%;color:#d8f8fb;font-size:.6rem;line-height:1.35;text-align:center;overflow-wrap:anywhere}
+.tst12-result-session-group>details>summary{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.tst12-station-shot-disclosure{margin:0!important;border:0!important;border-top:1px solid rgba(255,216,77,.22)!important;border-radius:0!important;background:#090a0a!important}
+.tst12-station-shot-disclosure>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;min-height:34px!important;padding:.4rem .55rem!important;color:#00eaff!important;font-size:.6rem!important;letter-spacing:.045em;cursor:pointer}
+.tst12-station-shot-details{padding:0 .55rem .55rem}.tst12-station-shot-details>p{margin:0;padding:.35rem;color:#aaa;font-size:.62rem}.tst12-station-shot-details ol{display:grid;gap:.22rem;margin:0;padding:0;list-style:none}.tst12-station-shot-details li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:.35rem;padding:.34rem .4rem;border-top:1px solid rgba(255,255,255,.1);font-size:.62rem}.tst12-station-shot-details li strong{color:#fff;font-size:.62rem}.tst12-station-shot-details li em{font-style:normal;font-weight:900}.tst12-station-shot-details .is-credited{color:#00eaff}.tst12-station-shot-details .is-additional{color:#ffc766}
+
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-missed-tap-identifiers{border-color:#8b6500;background:#fff2b8;color:#17130a;font-weight:850}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-missed-tap-identifiers strong{color:#5b4200}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-missed-taps-control{overflow:hidden;margin:-.28rem 0 .72rem;padding:0;text-align:left}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-missed-taps-control>summary{display:grid;grid-template-columns:max-content minmax(0,1fr) auto;align-items:center;gap:.35rem;min-height:38px;padding:.45rem .65rem;cursor:pointer;list-style:none}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-missed-taps-control>summary span{min-width:0;overflow:hidden;color:#17130a;font-size:.74rem;font-weight:900;text-overflow:ellipsis;white-space:nowrap}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-missed-taps-control>summary::after{color:#17130a;font-size:.92rem;font-weight:1000}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-missed-taps-control>p{margin:0;padding:0 .65rem .5rem;color:#17130a;font-size:.65rem;font-weight:800;text-align:center}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-missed-taps-control>p.tst12-missed-taps-explanation{color:#b00020;font-size:.72rem;font-weight:1000}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-preservation-actions>[data-sczn3-action="save"],
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-preservation-actions>[data-sczn3-action="history"]:not(.contract-exact-reopen){grid-column:1/-1;grid-row:1;order:1}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-preservation-actions>[data-sczn3-action="share"]{grid-column:1;grid-row:2;order:2}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-preservation-actions>[data-sczn3-action="export"]{grid-column:2;grid-row:2;order:3}
+#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .sec-preservation-actions>.contract-exact-reopen{grid-column:1/-1;grid-row:3;order:4}
+@media(max-width:640px){
+  .tst12-credit-summary{grid-template-columns:repeat(3,minmax(0,auto))}
+}
+
+/* A completed TST-12 result is a reading surface, not a nested workspace.
+   On a phone, page scrolling owns the full target and result stack. */
+@media(max-width:700px){
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host,
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host>:has(>.sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"]),
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host .sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"],
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host .sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"]>.sec-v1-flow{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important}
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host .sec-v1-flow{grid-template-rows:auto!important}
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host .sec-v1-flow>details.sec-accordion-stage{display:block!important;overflow:visible!important}
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host .sec-v1-flow>details.sec-accordion-stage>.sec-stage-body,
+  body[data-tst12-experience="true"]:has(#contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"]) .sec-live-host .sec-v1-flow>details.sec-v1-target[open]>.sec-historical-target-body{position:static!important;height:auto!important;max-height:none!important;overflow:visible!important}
+  #contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-lifecycle-pair{grid-template-columns:minmax(0,1fr)!important;gap:8px}
+  #contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-lifecycle-before{order:-1}
+  #contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-lifecycle-before .contract-evidence{overflow:visible}
+  #contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-lifecycle-before .contract-evidence>div{width:100%;max-width:100%;margin:0}
+  #contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .contract-lifecycle-before .contract-evidence img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}
+  #contractSecRoot .contract-universal-sec[data-target-id^="baker_tst12_"] .tst12-credit-summary{justify-content:flex-start}
+}
+
+/* The Station Results ledger is a full reading surface. In a live desktop
+   SEC, keep that ledger in the Session stage's normal flow instead of the
+   fixed-height accordion viewport, which would otherwise paint it under
+   History. This only activates after the TST-12 result adapter has rendered. */
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host,
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host>:has(>.sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"]),
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host .sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"],
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host .sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"]>.sec-v1-flow{
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host .sec-v1-flow{grid-template-rows:auto!important}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host .sec-v1-flow>details.sec-accordion-stage{display:block!important;overflow:visible!important}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host .sec-v1-flow>details.sec-accordion-stage>.sec-stage-body,
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) .sec-live-host .sec-v1-flow>details.sec-v1-target[open]>.sec-historical-target-body{
+  position:static!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecView,
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot,
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot .sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"],
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot .sec-v1[data-sec-shell="universal-v1"][data-sec-mode="live"]>.sec-v1-flow{
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot .sec-v1-flow{grid-template-rows:auto!important}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot .sec-v1-flow>details.sec-accordion-stage{display:block!important;overflow:visible!important}
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot .sec-v1-flow>details.sec-accordion-stage>.sec-stage-body,
+body[data-tst12-experience="true"]:has(#contractSecRoot .tst12-result-session-group) #contractSecRoot .sec-v1-flow>details.sec-v1-target[open]>.sec-historical-target-body{
+  position:static!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* Version 6 Founder UI corrections. */
+body[data-tst12-experience="true"] .contract-intro{margin-bottom:.2rem}
+body[data-tst12-experience="true"] .contract-intro #contractStatus{height:auto;min-height:0;margin:.1rem 0;font-size:.72rem}
+body[data-tst12-experience="true"] .contract-intro #contractStatus:empty{display:none}
+body[data-tst12-experience="true"] .tst12-target-station-warning{position:absolute;z-index:14;top:1rem;left:50%;width:max-content;max-width:calc(100% - 2rem);margin:0;padding:.68rem .9rem;transform:translateX(-50%);border:2px solid #00eaff;border-radius:.45rem;background:rgba(0,0,0,.92);color:#fff;font-size:clamp(.72rem,2.8vw,.92rem);font-weight:950;line-height:1.25;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.55),0 0 0 2px rgba(0,234,255,.2);pointer-events:none}
+body[data-tst12-experience="true"] .tst12-target-station-warning[hidden]{display:none!important}
+body[data-tst12-experience="true"] .contract-controls{display:none!important}
+.tst12-mode-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.3rem;width:100%}
+.tst12-mode-controls .button,.tst12-instruction-bar .button{display:flex;align-items:center;justify-content:center;min-width:0;min-height:38px;padding:.35rem .45rem;border:1px solid #6e6350;border-radius:.35rem;background:#111;color:#fff;text-align:center;text-decoration:none;font-size:.68rem;font-weight:950;line-height:1}
+.tst12-mode-controls .button[aria-current="page"]{border-color:#ffd43b;background:#ffd43b;color:#080808}
+.tst12-instruction-bar{display:grid;grid-template-columns:5.5rem minmax(0,1fr) 5.5rem;align-items:center;gap:.25rem;margin-top:.3rem;padding:.25rem;border:1px solid rgba(255,212,59,.55);border-radius:.4rem;background:#0d0d0d;color:#fff}
+.tst12-instruction-bar>strong{text-align:center;color:#ffd43b;font-size:.82rem;font-weight:1000;letter-spacing:.055em;white-space:nowrap}
+.tst12-audio-controls{display:flex;gap:.2rem;min-width:0}.tst12-audio-controls .button{flex:1;padding:.3rem .22rem}
+.tst12-instruction-bar .tst12-hear,.tst12-instruction-bar #tst12ReadToggle{border-color:#ffd43b;background:#111;color:#ffd43b}
+body[data-tst12-experience="true"] .tst12-instructions{margin:.25rem auto 0}
+.tst12-read-instructions{padding:.5rem .65rem;border:1px solid rgba(255,212,59,.42);border-radius:.4rem;background:#111;color:#fff}
+.tst12-read-instructions ol{display:grid;gap:.35rem;margin:0;padding-left:1.25rem}
+.tst12-read-instructions li{font-size:.73rem;line-height:1.35}.tst12-read-instructions li.is-speaking{color:#ffd43b}
+body[data-tst12-experience="true"] #contractScoringModePanel{width:100%;margin:.3rem 0 0;padding:.35rem;border:1px solid rgba(255,212,59,.42);border-radius:.4rem;background:#0d0d0d;box-shadow:none}
+body[data-tst12-experience="true"] #contractScoringModePanel>strong{display:none!important}
+body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:160px minmax(0,1fr);align-items:end;gap:.3rem}
+body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;grid-row:1;width:160px;padding:.3rem}
+body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;grid-row:1;width:auto;padding:.3rem}
+body[data-tst12-experience="true"] .tst12-setup-field>span:first-child{font-size:.58rem}
+body[data-tst12-experience="true"] .tst12-setup-field.is-required>span:first-child::after{content:""}
+body[data-tst12-experience="true"] .tst12-caliber-field select{width:100%;max-width:160px;min-height:38px}
+body[data-tst12-experience="true"] #contractActualDistance{width:100px;min-width:90px;max-width:110px;min-height:38px}
+.tst12-distance-units button,.tst12-setup-summary button{min-height:38px}
+.tst12-optional-details{grid-column:1/-1;margin:0;border-top:1px solid rgba(255,255,255,.1)}
+.tst12-optional-details>summary{padding:.35rem .2rem;color:#bcae8d;font-size:.64rem;font-weight:850;cursor:pointer}
+.tst12-optional-details>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.35rem;padding:.2rem 0}
+.tst12-optional-details .contract-shooter-caliber-fields,.tst12-optional-details .contract-equipment-entry{grid-column:auto!important;grid-row:auto!important;margin:0}
+body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1;grid-row:auto;display:flex;align-items:center;min-height:40px;padding:.35rem .5rem}
+.tst12-round-progress strong{font-size:.76rem;white-space:nowrap}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:2;grid-row:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:40px}
+body[data-tst12-experience="true"] .tst12-round-controls[data-tst12-has-observations="false"]{grid-template-columns:minmax(0,1fr)}
+body[data-tst12-experience="true"] .tst12-round-controls .button{min-height:40px}
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete .tst12-optional-details{display:none!important}
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete .tst12-setup-summary{grid-column:1/-1;grid-row:1}
+body[data-tst12-experience="true"] #contractSecRoot .tst12-result-session-group{gap:.25rem;margin-top:.3rem}
+body[data-tst12-experience="true"] #contractSecRoot .contract-lifecycle-pair{gap:8px;padding:8px 12px 12px}
+body[data-tst12-experience="true"] #contractSecRoot .contract-lifecycle-actions{padding:0 12px 12px}
+
+@media(max-width:390px){
+  body[data-tst12-experience="true"] .contract-target-shell,body[data-tst12-experience="true"] .contract-sec-shell{width:calc(100% - .5rem);margin:.25rem auto;overflow-x:hidden}
+  body[data-tst12-experience="true"] #contractProductName{font-size:.98rem}
+  .tst12-mode-controls .button,.tst12-instruction-bar .button{font-size:.61rem;padding:.3rem .2rem}
+  .tst12-instruction-bar{grid-template-columns:4.8rem minmax(0,1fr) 4.8rem}
+  .tst12-instruction-bar>strong{font-size:.68rem;letter-spacing:.025em}
+  body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:145px minmax(0,1fr);gap:.2rem}
+  body[data-tst12-experience="true"] .tst12-caliber-field{width:145px}
+  body[data-tst12-experience="true"] #contractActualDistance{width:92px}
+  .tst12-distance-units{gap:.1rem}.tst12-distance-units button{padding:.25rem .32rem}
+  body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/-1}
+  body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1/-1}
+  .tst12-optional-details>div{grid-template-columns:1fr}
+}
+
+/* Batch 1: unlimited station recording with compact one-line setup. */
+body[data-tst12-experience="true"] .tst12-instruction-bar{margin-top:0;margin-bottom:.25rem}
+body[data-tst12-experience="true"] .tst12-mode-controls{max-width:22rem;margin:0 auto .25rem}
+body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:minmax(120px,160px) minmax(135px,190px) minmax(68px,82px);align-items:end;justify-content:center;gap:.25rem}
+body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;grid-row:1;width:auto;min-width:0;padding:.25rem}
+body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;grid-row:1;width:auto;min-width:0;padding:.25rem}
+body[data-tst12-experience="true"] .tst12-angular-field{grid-column:3;grid-row:1;display:grid;gap:.12rem;min-width:0;padding:.25rem;border:1px solid rgba(255,255,255,.14);border-radius:.35rem;background:#121212}
+body[data-tst12-experience="true"] .tst12-angular-field>span{font-size:.58rem;font-weight:900;text-transform:uppercase}
+body[data-tst12-experience="true"] .tst12-caliber-field select,body[data-tst12-experience="true"] #tst12AngularUnit{width:100%;max-width:none;min-height:36px}
+body[data-tst12-experience="true"] #contractActualDistance{width:min(92px,100%);min-width:0;min-height:36px}
+body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/3;grid-row:2;min-height:38px}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:3;grid-row:2;grid-template-columns:repeat(2,minmax(0,1fr));min-height:38px}
+body[data-tst12-experience="true"] .tst12-round-controls .button{min-width:0;padding:.3rem .2rem}
+body[data-tst12-experience="true"] .contract-shooter-caliber-fields[hidden]{display:none!important}
+
+/* Setup attention names the next required input without changing its value or
+   turning the instruction pill into a control. */
+body[data-tst12-experience="true"] #contractScoringCaliber.is-tst12-setup-attention,
+body[data-tst12-experience="true"] #contractActualDistance.is-tst12-setup-attention{border-color:#00dfff!important;box-shadow:0 0 0 2px rgba(0,223,255,.24),0 0 14px rgba(0,223,255,.22)!important}
+body[data-tst12-experience="true"] .tst12-mode-link.is-tst12-setup-muted[aria-current="page"]{border-color:rgba(255,255,255,.28)!important;background:#111!important;color:#f5f1e8!important;box-shadow:none!important}
+.tst12-below-target-actions{display:flex;justify-content:center;width:min(100%,1040px);margin:.28rem auto}
+.tst12-below-target-actions #contractShowResult{width:100%;min-height:42px;border-color:#00dfff;background:#06161b;color:#fff;font-weight:950;letter-spacing:.045em;box-shadow:0 0 0 1px rgba(0,223,255,.25),0 0 12px rgba(0,223,255,.14)}
+.tst12-below-target-actions #contractShowResult:disabled{opacity:.42;box-shadow:none}
+body[data-tst12-experience="true"] .tst12-station-performance li span{line-height:1.35}
+body[data-tst12-experience="true"] .tst12-station-performance li small{display:block;margin-top:.2rem;color:#bfeef5;font-size:.62rem;line-height:1.4;overflow-wrap:anywhere}
+.tst12-station-shot-disclosure{border-top:1px solid rgba(255,255,255,.12)}
+.tst12-station-shot-disclosure>summary{min-height:36px;padding:.45rem .55rem;color:#ffd84d;font-size:.65rem;font-weight:950;letter-spacing:.045em;cursor:pointer}
+
+@media(max-width:390px){
+  body[data-tst12-experience="true"] .contract-session-setup{padding:.35rem .25rem}
+  body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:minmax(112px,1.35fr) minmax(128px,1.45fr) 68px;gap:.16rem}
+  body[data-tst12-experience="true"] .tst12-caliber-field,body[data-tst12-experience="true"] .tst12-distance-field{grid-row:1;width:auto;min-width:0;padding:.2rem}
+  body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2}
+  body[data-tst12-experience="true"] .tst12-angular-field{grid-column:3;grid-row:1;padding:.2rem}
+  body[data-tst12-experience="true"] .tst12-distance-units button{padding:.2rem .26rem}
+  body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/3;grid-row:2}
+  body[data-tst12-experience="true"] .tst12-round-controls{grid-column:3;grid-row:2}
+}
+
+/* Founder final corrections: compact universal TST-12 controls. */
+body[data-tst12-experience="true"] #contractExperienceLabel{display:none}
+body[data-tst12-experience="true"] #contractProductName{margin:.25rem 0;white-space:nowrap;font-size:clamp(1rem,4.5vw,1.55rem)}
+body[data-tst12-experience="true"] .tst12-experience-gate{display:block;max-width:72rem;margin:.35rem auto;padding:0;border:0;background:transparent}
+.tst12-top-controls{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1fr) minmax(0,1.45fr);gap:.3rem;width:100%}
+.tst12-top-controls .button{display:flex;align-items:center;justify-content:center;min-width:0;min-height:40px;padding:.42rem .35rem;border:1px solid #6e6350;border-radius:.35rem;background:#111;color:#fff;text-align:center;text-decoration:none;font-size:.7rem;font-weight:900;line-height:1.05;white-space:normal}
+.tst12-top-controls .button[aria-current="page"]{border-color:#ffd43b;background:#ffd43b;color:#080808}
+.tst12-top-controls .tst12-hear{border-color:#ffd43b;color:#ffd43b}
+body[data-tst12-experience="true"] .tst12-instructions{margin:.2rem auto}
+body[data-tst12-experience="true"] .tst12-course-rules summary{min-height:36px;padding:.45rem .65rem;font-size:.7rem}
+body[data-tst12-experience="true"] .contract-session-setup{padding:.48rem .55rem}
+body[data-tst12-experience="true"] .contract-session-setup-fields{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:end;gap:.35rem}
+body[data-tst12-experience="true"] #tst12AuthoritySetup{grid-column:1/-1;grid-row:auto;min-height:0;padding:.4rem .5rem}
+body[data-tst12-experience="true"] #tst12AuthoritySetup strong{font-size:.74rem}
+body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;grid-row:auto;width:160px;padding:.4rem}
+body[data-tst12-experience="true"] .tst12-caliber-field select{width:100%;max-width:150px}
+body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;grid-row:auto;width:auto;padding:.4rem}
+body[data-tst12-experience="true"] .contract-distance-entry{display:flex;align-items:center;gap:.25rem}
+body[data-tst12-experience="true"] #contractActualDistance{width:100px;min-width:90px;max-width:110px}
+body[data-tst12-experience="true"] .tst12-distance-unit-source{display:none}
+.tst12-distance-units{display:inline-flex;gap:.15rem}
+.tst12-distance-units button,.tst12-setup-summary button{min-height:34px;padding:.3rem .45rem;border:1px solid #7b735f;border-radius:.3rem;background:#111;color:#fff;font:inherit;font-size:.68rem;font-weight:900}
+.tst12-distance-units button[aria-pressed="true"]{border-color:#ffd43b;background:#ffd43b;color:#080808}
+.tst12-setup-summary{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.42rem .5rem;border:1px solid rgba(255,212,59,.6);border-radius:.4rem;background:#15120a;color:#fff}
+.tst12-setup-summary[hidden]{display:none}
+.tst12-setup-summary strong{font-size:.78rem}
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete #tst12AuthoritySetup,
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete .tst12-caliber-field,
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete .tst12-distance-field,
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete .contract-shooter-caliber-fields,
+body[data-tst12-experience="true"] .contract-session-setup.is-tst12-setup-complete .contract-equipment-entry{display:none!important}
+body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/3;grid-row:auto;min-height:2.4rem;padding:.35rem .5rem}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:3;grid-row:auto;min-height:2.4rem}
+body[data-tst12-experience="true"] .tst12-round-controls .button{min-height:2.4rem}
+.tst12-digital-target-face [data-tst12-station-selector]{pointer-events:all;cursor:pointer}
+.tst12-digital-target-face [data-tst12-number-backdrops] rect:hover,.tst12-digital-target-face [data-tst12-number-backdrops] rect:focus{stroke:#00dfff!important;stroke-width:.08!important}
+.tst12-digital-target-face.is-actual-overlay svg>*:not(defs):not([aria-label="Stations"]):not([aria-label="Eye instruction by station column"]):not([aria-label="Hand instruction by station row"]):not([data-tst12-number-backdrops]):not([data-tst12-number-layer]){display:none}
+.tst12-digital-target-face.is-actual-overlay [aria-label="Eye instruction by station column"] text,.tst12-digital-target-face.is-actual-overlay [aria-label="Hand instruction by station row"] text{paint-order:stroke fill;stroke:#fffdf7;stroke-width:.04;stroke-linejoin:round}
+.tst12-digital-target-face.is-actual-overlay [data-tst12-station]>*:not([data-tst12-station-border]){display:none}
+.tst12-digital-target-face.is-actual-overlay [data-tst12-station-border]{opacity:.22}
+.tst12-digital-target-face.is-actual-overlay [data-tst12-station-border].is-active{opacity:1}
+.tst12-station-performance>p{margin:.1rem .75rem .65rem;color:#e7e7e7;font-size:.7rem;font-weight:800}
+body[data-tst12-experience="true"] .contract-lifecycle-before .contract-evidence img{max-height:52vh;object-fit:contain}
+
+@media(max-width:640px){
+  body[data-tst12-experience="true"] .tst12-experience-gate{margin:.25rem 0;padding:0}
+  .tst12-top-controls{grid-template-columns:minmax(0,.72fr) minmax(0,1fr) minmax(0,1.45fr);gap:.2rem}
+  .tst12-top-controls .button{width:auto;min-height:38px;padding:.35rem .2rem;font-size:.61rem}
+  body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:auto minmax(0,1fr)}
+  body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;width:145px}
+  body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;min-width:0}
+  body[data-tst12-experience="true"] #contractActualDistance{width:94px;min-width:0}
+  body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/-1}
+  body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1/-1;min-height:40px}
+  body[data-tst12-experience="true"] .contract-shooter-caliber-fields{grid-column:1;grid-row:auto}
+  body[data-tst12-experience="true"] .contract-equipment-entry{grid-column:2;grid-row:auto}
+  body[data-tst12-experience="true"] .tst12-station-performance ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Final cascade for the Version 6 Founder correction block above. */
+body[data-tst12-experience="true"] #contractScoringModePanel{width:100%;margin:.3rem 0 0;padding:.35rem;border:1px solid rgba(255,212,59,.42);border-radius:.4rem;background:#0d0d0d;box-shadow:none}
+body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:160px minmax(0,1fr);align-items:end;gap:.3rem}
+body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;grid-row:1;width:160px;padding:.3rem}
+body[data-tst12-experience="true"] .tst12-caliber-field select{max-width:160px;min-height:38px}
+body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;grid-row:1;width:auto;padding:.3rem}
+body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1;grid-row:auto;display:flex;align-items:center;min-height:40px}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:2;grid-row:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:40px}
+body[data-tst12-experience="true"] .tst12-optional-details{grid-column:1/-1;grid-row:auto}
+@media(max-width:390px){
+  body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:145px minmax(0,1fr);gap:.2rem}
+  body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;grid-row:1;width:145px}
+  body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;grid-row:1}
+  body[data-tst12-experience="true"] .tst12-round-progress,body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1/-1;grid-row:auto}
+}
+
+/* Batch 1 final cascade. */
+body[data-tst12-experience="true"] .tst12-instruction-bar{margin-top:0;margin-bottom:.25rem}
+body[data-tst12-experience="true"] .tst12-mode-controls{max-width:22rem;margin:0 auto .25rem}
+body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:minmax(120px,160px) minmax(135px,190px) minmax(68px,82px);align-items:end;justify-content:center;gap:.25rem}
+body[data-tst12-experience="true"] .tst12-caliber-field{grid-column:1;grid-row:1;width:auto;min-width:0;padding:.25rem}
+body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2;grid-row:1;width:auto;min-width:0;padding:.25rem}
+body[data-tst12-experience="true"] .tst12-angular-field{grid-column:3;grid-row:1;display:grid;gap:.12rem;min-width:0;padding:.25rem;border:1px solid rgba(255,255,255,.14);border-radius:.35rem;background:#121212}
+body[data-tst12-experience="true"] .tst12-angular-field>span{font-size:.58rem;font-weight:900;text-transform:uppercase}
+body[data-tst12-experience="true"] .tst12-caliber-field select,body[data-tst12-experience="true"] #tst12AngularUnit{width:100%;max-width:none;min-height:36px}
+body[data-tst12-experience="true"] #contractActualDistance{width:min(92px,100%);min-width:0;min-height:36px}
+body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/3;grid-row:2;min-height:38px}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:3;grid-row:2;grid-template-columns:repeat(2,minmax(0,1fr));min-height:38px}
+body[data-tst12-experience="true"] .tst12-round-controls .button{min-width:0;padding:.3rem .2rem}
+body[data-tst12-experience="true"] .contract-shooter-caliber-fields[hidden]{display:none!important}
+
+@media(max-width:390px){
+  body[data-tst12-experience="true"] .contract-session-setup{padding:.35rem .25rem}
+  body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:minmax(112px,1.35fr) minmax(128px,1.45fr) 68px;gap:.16rem}
+  body[data-tst12-experience="true"] .tst12-caliber-field,body[data-tst12-experience="true"] .tst12-distance-field{grid-row:1;width:auto;min-width:0;padding:.2rem}
+  body[data-tst12-experience="true"] .tst12-distance-field{grid-column:2}
+  body[data-tst12-experience="true"] .tst12-angular-field{grid-column:3;grid-row:1;padding:.2rem}
+  body[data-tst12-experience="true"] .tst12-round-progress{grid-column:1/3;grid-row:2}
+  body[data-tst12-experience="true"] .tst12-round-controls{grid-column:3;grid-row:2}
+}
+
+/* TST-12 Founder correction batch — final authority cascade. */
+body[data-tst12-experience="true"] #contractScoringModePanel{width:max-content;max-width:100%;margin:.3rem auto 0;padding:.3rem}
+body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:minmax(0,1fr);align-items:center;gap:.25rem;width:min(100%,460px);max-width:100%}
+body[data-tst12-experience="true"] .tst12-setup-row{grid-column:1;display:grid;grid-template-columns:minmax(138px,1.5fr) minmax(118px,1fr) minmax(62px,.55fr);align-items:end;gap:.25rem;width:100%}
+body[data-tst12-experience="true"] .tst12-setup-row>label{display:grid;gap:.18rem;min-width:0;color:#ffd43b;font-size:.62rem;font-weight:950;letter-spacing:.055em}
+body[data-tst12-experience="true"] .tst12-setup-row>label>span:first-child{display:block;min-height:.8rem}
+body[data-tst12-experience="true"] .tst12-setup-row select,body[data-tst12-experience="true"] .tst12-setup-row input{min-width:0;width:100%}
+body[data-tst12-experience="true"] .tst12-setup-row .contract-distance-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem;align-items:center}
+body[data-tst12-experience="true"] .tst12-simulator-firearm{justify-self:start;margin:0 .15rem .08rem;color:#ffd43b;font-size:.64rem;font-weight:950;letter-spacing:.05em}
+body[data-tst12-experience="true"] #contractScoringCaliber{grid-column:1}
+body[data-tst12-experience="true"] #contractActualDistance{grid-column:2;width:100%;min-width:0;max-width:none;appearance:textfield;-moz-appearance:textfield}
+body[data-tst12-experience="true"] #contractDistanceUnit{grid-column:3}
+body[data-tst12-experience="true"] #tst12AngularUnit{grid-column:4}
+body[data-tst12-experience="true"] #contractScoringCaliber,
+body[data-tst12-experience="true"] #contractActualDistance,
+body[data-tst12-experience="true"] #contractDistanceUnit,
+body[data-tst12-experience="true"] #tst12AngularUnit{box-sizing:border-box;width:100%;min-width:0;max-width:none;height:38px;min-height:38px;max-height:38px;margin:0;padding:.36rem .4rem;border:1px solid rgba(255,255,255,.26);border-radius:.34rem;background:#111;color:#fff;font-size:.72rem;font-weight:800;line-height:1.1;white-space:nowrap}
+body[data-tst12-experience="true"] #contractActualDistance::-webkit-inner-spin-button,
+body[data-tst12-experience="true"] #contractActualDistance::-webkit-outer-spin-button{margin:0;-webkit-appearance:none}
+body[data-tst12-experience="true"] .tst12-round-progress,
+body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1;grid-row:auto}
+body[data-tst12-experience="true"] .tst12-round-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tst12-round-progress strong{font-size:clamp(.66rem,2.75vw,.76rem);line-height:1.2;white-space:normal;overflow-wrap:normal}
+.tst12-digital-target-face [data-tst12-station-border].is-active{stroke:#00dfff!important;stroke-width:4px!important;opacity:1!important;vector-effect:non-scaling-stroke;filter:none!important}
+
+@media(max-width:640px){
+  body[data-tst12-experience="true"] #contractScoringModePanel{width:100%}
+  body[data-tst12-experience="true"] .contract-session-setup-fields{grid-template-columns:minmax(0,1fr);width:100%}
+  body[data-tst12-experience="true"] .tst12-setup-row{grid-template-columns:minmax(112px,1.45fr) minmax(104px,1fr) minmax(54px,.48fr);gap:.16rem}
+  body[data-tst12-experience="true"] .tst12-simulator-firearm{font-size:.6rem}
+  body[data-tst12-experience="true"] #contractScoringCaliber,
+  body[data-tst12-experience="true"] #contractActualDistance,
+  body[data-tst12-experience="true"] #contractDistanceUnit,
+  body[data-tst12-experience="true"] #tst12AngularUnit{height:38px;min-height:38px;max-height:38px;padding:.36rem .3rem;font-size:.66rem}
+  body[data-tst12-experience="true"] .tst12-round-progress,
+  body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1;grid-row:auto}
+}

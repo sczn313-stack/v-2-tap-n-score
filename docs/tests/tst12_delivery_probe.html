@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TST-12 delivery identity probe</title>
+  <link rel="stylesheet" href="../target-experience.css?v=sczn3-universal-ppt-20261105-1">
+  <link rel="stylesheet" href="../tst12-universal-experience.css?v=sczn3-universal-ppt-20261105-1">
+  <link rel="stylesheet" href="../ballistic-vault.css?v=sczn3-universal-ppt-20261105-1">
+  <link rel="stylesheet" href="../tst12-station-results.css?v=sczn3-tst12-station-pip-cq-20261107-2">
+</head>
+<body>
+  <main><h1>TST-12 delivery identity</h1><output id="result">CHECKING</output></main>
+  <script src="../target_execution_runtime.js?v=sczn3-universal-ppt-20261105-1"></script>
+  <script src="../tst12_station_results.js?v=sczn3-tst12-station-pip-cq-20261107-2"></script>
+  <script src="../tst12_universal_experience.js?v=sczn3-tst12-session-accordion-20261104-4"></script>
+  <script>
+    (() => {
+      const expected = "sczn3-universal-ppt-20261105-1";
+      const expectedStationResults = "sczn3-tst12-station-pip-cq-20261107-2";
+      const expectedDisclosureController = "sczn3-tst12-session-accordion-20261104-4";
+      const css = getComputedStyle(document.documentElement);
+      const clean = value => String(value || "").trim().replace(/^['"]|['"]$/g, "");
+      const observed = {
+        runtime: document.documentElement.dataset.tst12RuntimeIdentity || "",
+        universal: document.documentElement.dataset.tst12UniversalIdentity || "",
+        runtimeCss: clean(css.getPropertyValue("--sczn3-tst12-runtime-identity")),
+        universalCss: clean(css.getPropertyValue("--sczn3-tst12-universal-identity")),
+        vaultCss: clean(css.getPropertyValue("--sczn3-tst12-vault-identity")),
+        stationResults: window.SCZN3Tst12StationResults?.PRESENTATION_ID || "",
+        disclosureController: window.SCZN3Tst12StationResults?.DISCLOSURE_CONTROLLER_ID || ""
+      };
+      const pass = Object.entries(observed).every(([key, value]) => value === (key === "stationResults" ? expectedStationResults : key === "disclosureController" ? expectedDisclosureController : expected));
+      document.documentElement.dataset.deliveryStatus = pass ? "pass" : "fail";
+      document.getElementById("result").textContent = JSON.stringify({ pass, expected, expectedStationResults, expectedDisclosureController, observed });
+    })();
+  </script>
+</body>
+</html>

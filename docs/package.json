@@ -60,6 +60,7 @@
     "test:diagnostic-feedback-browser": "node production/diagnostic_feedback_family_browser_test.mjs",
     "test:decision-scenario": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_decision_scenario_evaluator.py",
     "test:decision-scenario-browser": "node production/decision_scenario_family_browser_test.mjs"
+    ,"test:ppt-authority": "node production/universal_ppt_authority_gate.mjs && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_single_object_numeric_miss_reconciliation.py && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_baker_tst12_universal_lifecycle.py && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_ppt_phase_a_contract_succession.py && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_preserved_sec.py && node production/ppt_phase_a_vault_lifecycle_test.mjs && node production/b27e_history_tap_independence_test.mjs && node tests/tst12_station_results_handoff_test.mjs && node tests/tst12_history_session_window_test.mjs"
     ,"test:sec-progression": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_sec_progression_evaluator.py"
     ,"test:sec-progression-browser": "node production/sec_progression_family_browser_test.mjs"
     ,"test:collection-hand": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python3 backend/test_collection_hand_evaluator.py"

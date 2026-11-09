@@ -277,7 +277,6 @@
       capabilities.validation ? '<button class="button" type="button" id="openValidation">Validation</button>' : "",
       capabilities.share ? '<button class="button" type="button" id="shareSEC" data-sczn3-action="share">Share</button>' : "",
       capabilities.print ? '<button class="button" type="button" id="exportSEC" data-sczn3-action="export">Export / Print PDF</button>' : "",
-      capabilities.note ? '<button class="button" type="button" id="addNote" data-sczn3-action="note">Add Note</button>' : "",
       capabilities.history ? '<a class="button" id="viewHistory" href="records.html?from=preserved-sec" data-sczn3-action="history">Ballistic Vault</a>' : ""
     ].join("");
   }
@@ -298,7 +297,7 @@
     "counts-only",
     "evidence-only"
   ]);
-  const ACTION_NAMES = Object.freeze(["save", "share", "export", "note", "note-save", "history", "session-details"]);
+  const ACTION_NAMES = Object.freeze(["save", "share", "export", "history", "session-details"]);
 
   function semanticPresentation(stage, model = {}) {
     if (!SEMANTIC_ORDER.includes(stage)) return "";
@@ -338,7 +337,8 @@
       const id = String(field && field.id || "").trim();
       const value = field && field.value !== undefined && field.value !== null ? String(field.value) : "";
       if (!value && model.includeEmpty !== true && !id) return "";
-      return `<div><span>${escapeHtml(label)}</span><strong${id ? ` id="${escapeHtml(id)}"` : ""}>${escapeHtml(value)}</strong></div>`;
+      const isUnrecorded = /^not recorded$/i.test(value.trim());
+      return `<div class="${isUnrecorded ? "is-unrecorded" : "is-recorded"}" data-session-field-state="${isUnrecorded ? "unrecorded" : "recorded"}"><span>${escapeHtml(label)}</span><strong${id ? ` id="${escapeHtml(id)}"` : ""}>${escapeHtml(value)}</strong></div>`;
     }).join("");
     const heading = String(model.heading || "Session Details").trim() || "Session Details";
     const headingId = String(model.headingId || "").trim();
@@ -346,8 +346,74 @@
     return `<section class="sec-session-section"${headingId ? ` aria-labelledby="${escapeHtml(headingId)}"` : ""}><h3${headingId ? ` id="${escapeHtml(headingId)}"` : ""}>${escapeHtml(heading)}</h3><div class="sec-session-record-fields">${rows}</div></section>${afterHtml}`;
   }
 
+  function sessionFoundationFields(session = {}) {
+    const snapshot = session.matrixSnapshot && typeof session.matrixSnapshot === "object"
+      ? session.matrixSnapshot
+      : {};
+    const profile = global.SCZN3M4 && typeof global.SCZN3M4.weaponProfileDisplay === "function"
+      ? global.SCZN3M4.weaponProfileDisplay(snapshot)
+      : {};
+    const clean = value => typeof value === "string" ? value.trim() : value;
+    const recorded = value => clean(value) || "Not recorded";
+    const firearm = clean(profile.short) && profile.short !== "Equipment Profile"
+      ? profile.short
+      : clean(snapshot.rifle);
+    const equipment = [snapshot.opticType, snapshot.opticBrand, snapshot.opticModel, snapshot.magnification]
+      .map(clean).filter(Boolean).join(" / ")
+      || clean(snapshot.adjustmentSystem)
+      || clean(snapshot.setupName);
+    const ammunition = [snapshot.ammoManufacturer, snapshot.ammoLoad, snapshot.bulletWeight]
+      .map(clean).filter(Boolean).join(" / ")
+      || clean(snapshot.ammoCaliber)
+      || clean(snapshot.caliber)
+      || (clean(profile.caliber) && profile.caliber !== "Caliber not set" ? profile.caliber : "");
+    const hasExpectedDistance = session.expectedDistance && clean(session.expectedDistance.value);
+    const hasShooterDistance = session.sessionDistance && clean(session.sessionDistance.source) === "shooter-entered-session-fact";
+    const distanceValue = clean(hasShooterDistance ? session.sessionDistance.value : (hasExpectedDistance ? "" : (session.sessionDistance?.value ?? session.targetDistanceValue ?? session.targetDistance ?? session.distance ?? snapshot.targetDistanceValue ?? snapshot.targetDistance ?? snapshot.distance)));
+    const distanceUnitRaw = clean(hasShooterDistance ? session.sessionDistance.unit : (session.targetDistanceUnit || snapshot.targetDistanceUnit || snapshot.distanceUnit));
+    const distanceUnit = String(distanceUnitRaw || "").toUpperCase() === "M" ? "m" : String(distanceUnitRaw || "").toUpperCase() === "YDS" ? "yds" : distanceUnitRaw;
+    const distance = distanceValue ? `${distanceValue}${distanceUnit ? ` ${distanceUnit}` : ""}` : "";
+    const rawTimestamp = clean(session.preservedAt || session.savedAt || session.timestamp || session.createdAt);
+    const timestamp = rawTimestamp && Number.isFinite(new Date(rawTimestamp).getTime()) ? new Date(rawTimestamp) : null;
+    const expectedValue = clean(session.expectedDistance?.value);
+    const expectedUnitRaw = clean(session.expectedDistance?.unit);
+    const expectedUnit = String(expectedUnitRaw || "").toUpperCase() === "M" ? "m" : String(expectedUnitRaw || "").toUpperCase() === "YDS" ? "yds" : expectedUnitRaw;
+    const expectedDistance = expectedValue ? `${expectedValue}${expectedUnit ? ` ${expectedUnit}` : ""}` : "";
+    const experienceMode = clean(snapshot.experienceMode || session.experienceMode);
+    const experienceLabel = experienceMode === "simulation" ? "Simulator Practice" : (experienceMode === "actual" ? "Actual Round" : "");
+    const displayedDistance = experienceMode === "simulation" && clean(snapshot.practiceDistanceLabel)
+      ? clean(snapshot.practiceDistanceLabel)
+      : distance;
+    return [
+      ...(experienceLabel ? [{ label: "Session", value: experienceLabel }] : []),
+      { label: "Firearm", value: recorded(firearm) },
+      { label: "Equipment", value: recorded(equipment) },
+      { label: "Ammunition", value: recorded(ammunition) },
+      { label: "Caliber", value: recorded(session.scoringCaliber) },
+      { label: "Distance", value: recorded(displayedDistance) },
+      ...(expectedDistance && expectedDistance !== distance ? [{ label: "Expected Distance", value: expectedDistance }] : []),
+      { label: "Date", value: timestamp ? new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(timestamp) : "Not recorded" },
+      { label: "Time", value: timestamp ? new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(timestamp) : "Not recorded" },
+      { label: "Shooter", value: recorded(session.shooterName || snapshot.shooterName) }
+    ];
+  }
+
+  function SessionFoundation(session = {}, model = {}) {
+    const analysisHtml = typeof model.analysisHtml === "string" && model.analysisHtml.trim()
+      ? `<details class="correction-context-drawer sec-correction-context sec-measurement-session-details"><summary>Analysis</summary><div class="correction-context-panel sec-session-record">${model.analysisHtml}</div></details>`
+      : "";
+    return SessionDetails({
+      heading: model.heading || "Session Details",
+      headingId: model.headingId || "",
+      includeEmpty: true,
+      fields: sessionFoundationFields(session),
+      afterHtml: `${analysisHtml}${typeof model.afterHtml === "string" ? model.afterHtml : ""}`
+    });
+  }
+
   function ActionBar(model = {}) {
-    const actions = Array.isArray(model.actions) ? model.actions : [];
+    const actions = (Array.isArray(model.actions) ? model.actions : [])
+      .filter(action => !["note", "note-save", "note-close"].includes(String(action?.action || "").trim().toLowerCase()));
     const controls = actions.map(action => {
       if (!action || !action.label) return "";
       const tag = action.href ? "a" : "button";
@@ -362,8 +428,9 @@
         ? ` data-sczn3-action="${escapeHtml(String(action.action).trim().toLowerCase())}"`
         : "";
       const classes = ["button", action.primary ? "primary" : "", action.className || ""].filter(Boolean).join(" ");
-      if (tag === "a") return `<a class="${escapeHtml(classes)}"${id} href="${escapeHtml(action.href)}"${governedAction}${attributes ? ` ${attributes}` : ""}>${escapeHtml(action.label)}</a>`;
-      return `<button class="${escapeHtml(classes)}"${id} type="button"${action.disabled ? " disabled" : ""}${governedAction}${attributes ? ` ${attributes}` : ""}>${escapeHtml(action.label)}</button>`;
+      const content = `<span class="sec-action-label">${escapeHtml(action.label)}</span>${action.disabled ? "" : `<span class="sec-attached-chevron" aria-hidden="true">›</span>`}`;
+      if (tag === "a") return `<a class="${escapeHtml(classes)}"${id} href="${escapeHtml(action.href)}"${governedAction}${attributes ? ` ${attributes}` : ""}>${content}</a>`;
+      return `<button class="${escapeHtml(classes)}"${id} type="button"${action.disabled ? " disabled" : ""}${governedAction}${attributes ? ` ${attributes}` : ""}>${content}</button>`;
     }).join("");
     const afterHtml = typeof model.afterHtml === "string" ? model.afterHtml : "";
     return `<div class="sec-preservation-actions" data-sczn3-action-region="platform-v1">${controls}</div>${afterHtml}`;
@@ -401,6 +468,8 @@
     Validation,
     Preservation,
     SessionDetails,
+    sessionFoundationFields,
+    SessionFoundation,
     ActionBar
   });
 })(window);

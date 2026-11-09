@@ -32,6 +32,37 @@ def _image(value: Any) -> Dict[str, Any]:
     return {"sha256": sha256, "widthPx": width, "heightPx": height, "mediaType": str(value.get("mediaType") or "image/unknown"), "backendHashVerified": True}
 
 
+def _registration_evidence(contract: Mapping[str, Any], evidence: Mapping[str, Any], image: Mapping[str, Any], observations: list[Any]) -> Dict[str, Any] | None:
+    registration = (contract.get("components", {}).get("registration", {}) or {}).get("definition") or {}
+    package_id = str(registration.get("registrationPackageId") or "")
+    supplied = evidence.get("targetImageRegistrationEvidence")
+    if not package_id:
+        if supplied is not None:
+            raise DeclarativeTargetScoreError("registration_evidence_not_authorized")
+        return None
+    if not isinstance(supplied, Mapping):
+        raise DeclarativeTargetScoreError("registration_evidence_required")
+    if (
+        supplied.get("knowledgeState") not in {"exact", "estimated"}
+        or str(supplied.get("registrationPackageId") or "") != package_id
+        or str(supplied.get("registrationPackageVersion") or "") != str(registration.get("registrationPackageVersion") or "1")
+        or str(supplied.get("targetProfileId") or "") != str(contract["targetProfile"]["id"])
+        or str((supplied.get("sourceImage") or {}).get("sha256") or "").lower() != image["sha256"]
+    ):
+        raise DeclarativeTargetScoreError("registration_evidence_identity_mismatch")
+    canonical = supplied.get("canonicalObservations")
+    if not isinstance(canonical, list) or len(canonical) != len(observations):
+        raise DeclarativeTargetScoreError("registration_observation_count_mismatch")
+    for index, (registered, observation) in enumerate(zip(canonical, observations), start=1):
+        if not isinstance(registered, Mapping) or registered.get("registeredCoverageStatus") != "supported":
+            raise DeclarativeTargetScoreError("registration_observation_unsupported", observationIndex=index)
+        point = registered.get("canonicalPoint") or {}
+        x, y = _point(observation)
+        if abs(float(point.get("xNorm", -1)) - x) > 1e-7 or abs(float(point.get("yNorm", -1)) - y) > 1e-7:
+            raise DeclarativeTargetScoreError("registration_canonical_observation_mismatch", observationIndex=index)
+    return deepcopy(dict(supplied))
+
+
 def _point(value: Any) -> tuple[float, float]:
     if not isinstance(value, Mapping):
         raise DeclarativeTargetScoreError("observation_invalid")
@@ -115,7 +146,7 @@ def _clean_caliber(value: Any) -> str:
     return "".join(character for character in str(value or "").casefold() if character.isalnum())
 
 
-def _classify_points(regions: list[Mapping[str, Any]], points: list[tuple[float, float]], physical: Mapping[str, Any], diameter_inches: float) -> list[Dict[str, Any]]:
+def _classify_points(regions: list[Mapping[str, Any]], points: list[tuple[float, float]], physical: Mapping[str, Any], diameter_inches: float, touch_values: Mapping[str, float]) -> list[Dict[str, Any]]:
     width, height = float(physical["width"]), float(physical["height"])
     radius_x, radius_y = diameter_inches / width / 2, diameter_inches / height / 2
     return [
@@ -128,6 +159,8 @@ def _classify_points(regions: list[Mapping[str, Any]], points: list[tuple[float,
             error_type=DeclarativeTargetScoreError,
             footprint_radius_x=radius_x,
             footprint_radius_y=radius_y,
+            touch_values=touch_values,
+            resolve_equivalent_touch_values=True,
         )
         for x, y in points
     ]
@@ -139,13 +172,17 @@ def _authority_scoring_gauge(
     regions: list[Mapping[str, Any]],
     points: list[tuple[float, float]],
     physical: Mapping[str, Any],
+    touch_values: Mapping[str, float],
 ) -> tuple[list[Dict[str, Any]], Dict[str, Any]]:
     dimensions_usable = str(physical.get("unit") or "").lower() in {"inch", "inches", "in"} and float(physical.get("width") or 0) > 0 and float(physical.get("height") or 0) > 0
     if not dimensions_usable:
         raise DeclarativeTargetScoreError("authority_scoring_gauge_physical_dimensions_required")
     groups = list(policy["authorizedGaugeGroups"])
     caliber = _clean_caliber(context.get("caliber"))
-    selected = next((group for group in groups if caliber and caliber in {_clean_caliber(alias) for alias in group["aliases"]}), None)
+    selected = next((group for group in groups if caliber and caliber in {
+        _clean_caliber(group["caliberId"]),
+        *(_clean_caliber(alias) for alias in group["aliases"]),
+    }), None)
     if caliber and not selected:
         raise DeclarativeTargetScoreError(
             "scoring_caliber_not_authorized",
@@ -157,21 +194,37 @@ def _authority_scoring_gauge(
     for group in candidates:
         diameter_range = group["diameterRangeInches"]
         for diameter in sorted({float(diameter_range["min"]), float(diameter_range["max"])}):
-            classifications = _classify_points(regions, points, physical, diameter)
-            evaluations.append((group, diameter, classifications, tuple(item["entityId"] for item in classifications)))
+            classifications = _classify_points(regions, points, physical, diameter, touch_values)
+            score_signature = tuple(touch_values.get(str(item.get("entityId") or "outside")) for item in classifications)
+            evaluations.append((group, diameter, classifications, score_signature))
     signatures = {item[3] for item in evaluations}
     if len(signatures) > 1 and selected is None:
-        raise DeclarativeTargetScoreError(
-            "scoring_caliber_required",
-            status="material_fact_required",
-            materialFact="caliber",
-            allowedCalibers=[group["caliberId"] for group in groups],
-            allowedCaliberChoices=[
-                {"label": group["caliberId"], "value": group["aliases"][0]}
-                for group in groups
-            ],
-            reasonWhyMaterial="authorized_scoring_gauges_produce_different_region_results",
-        )
+        governed = []
+        for index in range(len(points)):
+            candidates = [item[2][index] for item in evaluations]
+            entity_ids = sorted({str(item.get("entityId") or "outside") for item in candidates})
+            if len(entity_ids) == 1:
+                governed.append(deepcopy(candidates[0]))
+                continue
+            governed.append({
+                "classificationStatus": "unresolved",
+                "entityId": None,
+                "matchingEntityIds": entity_ids,
+                "classificationMethod": "authority_scoring_gauge_material_fact_unresolved",
+                "materialFact": "caliber",
+                "reason": "authorized_scoring_gauges_produce_different_region_results",
+            })
+        return governed, {
+            "status": "material_fact_missing",
+            "policyId": str(policy.get("policyId") or ""),
+            "materialFact": "caliber",
+            "allowedCalibers": [group["caliberId"] for group in groups],
+            "evaluatedCaliberIds": [group["caliberId"] for group in groups],
+            "scoreStableAcrossEvaluatedGauges": False,
+            "lineTouchRule": policy["lineTouchRule"],
+            "authority": deepcopy(policy["authority"]),
+            "source": "not_supplied",
+        }
     exact_diameter = context.get("diameterInches")
     if len(signatures) > 1 and exact_diameter in (None, ""):
         raise DeclarativeTargetScoreError(
@@ -192,7 +245,7 @@ def _authority_scoring_gauge(
         diameter_range = selected["diameterRangeInches"]
         if not float(diameter_range["min"]) <= diameter <= float(diameter_range["max"]):
             raise DeclarativeTargetScoreError("scoring_gauge_diameter_not_authorized", caliberId=selected["caliberId"], authorizedRange=deepcopy(diameter_range))
-        classifications = _classify_points(regions, points, physical, diameter)
+        classifications = _classify_points(regions, points, physical, diameter, touch_values)
         gauge = {
             "status": "applied",
             "policyId": str(policy.get("policyId") or ""),
@@ -228,8 +281,22 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     observations = evidence.get("observations")
     if not isinstance(observations, list) or not observations:
         raise DeclarativeTargetScoreError("observations_required")
+    observation_ids = []
+    seen_observation_ids = set()
+    for index, observation in enumerate(observations, start=1):
+        if not isinstance(observation, Mapping):
+            raise DeclarativeTargetScoreError("observation_object_required", observationIndex=index)
+        observation_id = str(observation.get("observationId") or f"observation-{index:03d}").strip()
+        if not observation_id:
+            raise DeclarativeTargetScoreError("observation_identity_required", observationIndex=index)
+        if observation_id in seen_observation_ids:
+            raise DeclarativeTargetScoreError("observation_identity_duplicate", observationIndex=index, observationId=observation_id)
+        observation_ids.append(observation_id)
+        seen_observation_ids.add(observation_id)
+    registration_evidence = _registration_evidence(contract, evidence, image_evidence, observations)
     mission = contract["components"]["mission"]["definition"]
-    if len(observations) > int(mission.get("maxObservations", 500)):
+    maximum_observations = mission.get("maxObservations")
+    if maximum_observations is not None and len(observations) > int(maximum_observations):
         raise DeclarativeTargetScoreError("observation_limit_exceeded")
     exact_observations = mission.get("exactObservations")
     if exact_observations is not None and len(observations) != int(exact_observations):
@@ -288,6 +355,9 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     group_totals: Dict[str, float] = defaultdict(float)
     counted_hits_by_object: Counter[str] = Counter()
     total = 0.0
+    score_range_min = 0.0
+    score_range_max = 0.0
+    unresolved_boundaries = []
     numeric = model in {"numeric_regions", "penalty_regions", "mixed_regions"}
     object_hit_classification = model in {"multiple_bulls", "ordered_objects"} or (
         bool(rules) and all(str(rule.get("objectId") or "").strip() for rule in rules.values())
@@ -309,13 +379,24 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     footprint_radius_y = diameter_inches / float(physical["height"]) / 2 if diameter_inches > 0 and dimensions_usable else 0.0
     observation_points = [_point(observation) for observation in observations]
     observation_footprints = [_observation_footprint(observation) for observation in observations]
-    score_on_touch = scoring_data.get("classificationFootprintMode") == "score_on_touch"
+    footprint_mode = scoring_data.get("classificationFootprintMode")
+    score_on_touch = footprint_mode == "score_on_touch"
+    hit_on_touch = footprint_mode == "hit_on_touch"
     touch_values = {
         str(region_id): float(governed_value(str(region_id), rule))
         for region_id, rule in rules.items()
         if isinstance(governed_value(str(region_id), rule), (int, float))
         and not isinstance(governed_value(str(region_id), rule), bool)
     } if score_on_touch else None
+    authority_touch_values = {
+        str(region_id): float(governed_value(str(region_id), rule))
+        for region_id, rule in rules.items()
+        if isinstance(governed_value(str(region_id), rule), (int, float))
+        and not isinstance(governed_value(str(region_id), rule), bool)
+    }
+    outside_value = governed_value("outside", scoring_data.get("outsideRule") or {})
+    if isinstance(outside_value, (int, float)) and not isinstance(outside_value, bool):
+        authority_touch_values["outside"] = float(outside_value)
     canonical_points = [
         _canonical_target_coordinate(observation, contract, image_evidence, observation_points[index][0], observation_points[index][1])
         for index, observation in enumerate(observations)
@@ -323,29 +404,75 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     authority_gauge = None
     governed_classifications = None
     if boundary_policy and boundary_policy.get("mode") == "authority_scoring_gauge":
-        governed_classifications, authority_gauge = _authority_scoring_gauge(boundary_policy, scoring_gauge_context, regions, observation_points, physical)
+        station_policy = mission.get("interaction", {}).get("stationSequencePolicy")
+        if isinstance(station_policy, Mapping):
+            governed_classifications = []
+            for observation, point in zip(observations, observation_points):
+                assigned_station_region_id = str(observation.get("assignedStationRegionId") or "").strip()
+                assigned_station_prefix = assigned_station_region_id.removesuffix("_square")
+                station_regions = [
+                    region for region in regions
+                    if assigned_station_prefix and str(region.get("regionId") or "").startswith(f"{assigned_station_prefix}_")
+                ]
+                if not station_regions:
+                    raise DeclarativeTargetScoreError("station_sequence_scoring_regions_unavailable")
+                gauge_classifications, authority_gauge = _authority_scoring_gauge(
+                    boundary_policy, scoring_gauge_context, station_regions, [point], physical, authority_touch_values
+                )
+                governed_classifications.append(gauge_classifications[0])
+        else:
+            governed_classifications, authority_gauge = _authority_scoring_gauge(boundary_policy, scoring_gauge_context, regions, observation_points, physical, authority_touch_values)
     for index, observation in enumerate(observations, start=1):
         x, y = observation_points[index - 1]
-        observation_footprint = observation_footprints[index - 1] if score_on_touch else None
+        observation_footprint = observation_footprints[index - 1] if score_on_touch or hit_on_touch else None
         observation_radius_x = observation_footprint["radiusXNorm"] if observation_footprint else footprint_radius_x
         observation_radius_y = observation_footprint["radiusYNorm"] if observation_footprint else footprint_radius_y
         classification_unavailable = model == "not_applicable"
+        assigned_station_region_id = str(observation.get("assignedStationRegionId") or "").strip() or None
+        assigned_station_prefix = assigned_station_region_id.removesuffix("_square") if assigned_station_region_id else None
+        scoring_regions = [
+            region for region in regions
+            if not assigned_station_prefix or str(region.get("regionId") or "").startswith(f"{assigned_station_prefix}_")
+        ]
         classified = (
             {"classificationStatus": "unavailable", "entityId": None, "matchingEntityIds": [], "classificationMethod": "not_applicable_no_governed_regions"}
             if classification_unavailable
             else governed_classifications[index - 1]
             if governed_classifications is not None
-            else classify(regions, x, y, id_key="regionId", shape_reason="geometry_shape_not_supported", error_type=DeclarativeTargetScoreError, footprint_radius_x=observation_radius_x, footprint_radius_y=observation_radius_y, touch_values=touch_values)
-            if regions
+            else classify(scoring_regions, x, y, id_key="regionId", shape_reason="geometry_shape_not_supported", error_type=DeclarativeTargetScoreError, footprint_radius_x=observation_radius_x, footprint_radius_y=observation_radius_y, touch_values=touch_values)
+            if scoring_regions
             else {"classificationStatus": "unmapped", "entityId": None, "matchingEntityIds": [], "classificationMethod": "tap_center_point"}
         )
+        # Founder-governed printed-line semantics may make a physical
+        # observation a HIT when its recorded footprint touches the governed
+        # outer envelope. Preserve the existing center-point region/value when
+        # it is already mapped; use the footprint only to resolve HIT vs MISS.
+        # This prevents a display marker from changing authority and prevents
+        # line contact from silently promoting an internal scoring value.
+        if (
+            hit_on_touch
+            and classified.get("classificationStatus") == "unmapped"
+            and observation_footprint
+            and scoring_regions
+        ):
+            classified = classify(
+                scoring_regions,
+                x,
+                y,
+                id_key="regionId",
+                shape_reason="geometry_shape_not_supported",
+                error_type=DeclarativeTargetScoreError,
+                footprint_radius_x=observation_radius_x,
+                footprint_radius_y=observation_radius_y,
+            )
         if classified["classificationStatus"] == "ambiguous":
             raise DeclarativeTargetScoreError("geometry_classification_ambiguous")
-        region_id = None if classification_unavailable else classified["entityId"] or "outside"
-        rule = None if classification_unavailable else rules.get(region_id, scoring_data.get("outsideRule"))
-        if model != "not_applicable" and not isinstance(rule, Mapping):
+        boundary_unresolved = classified.get("classificationStatus") == "unresolved" and classified.get("classificationMethod") == "authority_scoring_gauge_material_fact_unresolved"
+        region_id = None if classification_unavailable or boundary_unresolved else classified["entityId"] or "outside"
+        rule = None if classification_unavailable or boundary_unresolved else rules.get(region_id, scoring_data.get("outsideRule"))
+        if model != "not_applicable" and not boundary_unresolved and not isinstance(rule, Mapping):
             raise DeclarativeTargetScoreError("scoring_rule_unavailable")
-        label = "Classification unavailable" if classification_unavailable else str((rule or {}).get("label") or region_id)
+        label = "Classification unavailable" if classification_unavailable else ("Boundary — caliber needed" if boundary_unresolved else str((rule or {}).get("label") or region_id))
         value = governed_value(region_id, rule or {})
         declared_object_id = str(observation.get("declaredObjectId") or "").strip() or None
         classified_object_id = str((rule or {}).get("objectId") or "").strip() or None
@@ -365,9 +492,9 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             if not object_id:
                 raise DeclarativeTargetScoreError("participant_object_assignment_required", observationIndex=index)
             participant_id = participant_objects[object_id]["participantId"]
-        scored_observation = numeric and isinstance(value, (int, float)) and not isinstance(value, bool)
+        scored_observation = numeric and not boundary_unresolved and isinstance(value, (int, float)) and not isinstance(value, bool)
         if numeric:
-            if model != "mixed_regions" and not scored_observation:
+            if model != "mixed_regions" and not boundary_unresolved and not scored_observation:
                 raise DeclarativeTargetScoreError("numeric_scoring_value_required")
             value = float(value) if scored_observation else None
             counted_for_score = True
@@ -379,20 +506,52 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             counted_value = value if scored_observation and counted_for_score else (float(counted_hit_policy["overflowValue"]) if scored_observation and counted_hit_policy else 0.0)
             total += counted_value
             group_totals[str(participant_id or observation.get("groupId") or "all")] += counted_value
+            if boundary_unresolved:
+                possible_region_ids = [str(item) for item in classified.get("matchingEntityIds") or []]
+                possible_values = []
+                for possible_region_id in possible_region_ids:
+                    possible_rule = rules.get(possible_region_id, scoring_data.get("outsideRule"))
+                    possible_value = governed_value(possible_region_id, possible_rule or {})
+                    if isinstance(possible_value, (int, float)) and not isinstance(possible_value, bool):
+                        possible_values.append(float(possible_value))
+                if not possible_values:
+                    raise DeclarativeTargetScoreError("boundary_score_range_unavailable")
+                score_range_min += min(possible_values)
+                score_range_max += max(possible_values)
+                unresolved_boundaries.append({
+                    "observationId": observation_ids[index - 1],
+                    "materialFact": "caliber",
+                    "possibleRegionIds": possible_region_ids,
+                    "possibleValues": sorted(set(possible_values)),
+                })
+            else:
+                score_range_min += counted_value
+                score_range_max += counted_value
         if not classification_unavailable:
-            counts[region_id] += 1
-        counts_as_hit = None if classification_unavailable else region_id != "outside" and (rule or {}).get("countsAsHit") is not False
+            counts["unresolved_boundary" if boundary_unresolved else region_id] += 1
+        counts_as_hit = None if classification_unavailable or boundary_unresolved else region_id != "outside" and (rule or {}).get("countsAsHit") is not False
         record = {
-            "observationId": f"observation-{index:03d}", "xNorm": x, "yNorm": y,
+            "observationId": observation_ids[index - 1], "xNorm": x, "yNorm": y,
             "canonicalTargetCoordinate": canonical_points[index - 1],
             "regionId": region_id, "label": label, "value": value,
             "objectId": object_id, "participantId": participant_id, "declaredObjectId": declared_object_id,
+            "assignedStationRegionId": assigned_station_region_id,
             "groupId": str(participant_id or observation.get("groupId") or "all"),
             "classificationStatus": classified["classificationStatus"],
             "classificationMethod": classified["classificationMethod"],
             "observationFootprint": deepcopy(observation_footprint),
             "countsAsHit": counts_as_hit,
         }
+        if classified.get("matchingEntityIds"):
+            record["matchingRegionIds"] = [str(item) for item in classified["matchingEntityIds"]]
+        if classified.get("classificationResolution"):
+            record["classificationResolution"] = str(classified["classificationResolution"])
+        if boundary_unresolved:
+            record.update({
+                "materialFact": "caliber",
+                "resolutionStatus": "unresolved_without_material_fact",
+                "possibleRegionIds": [str(item) for item in classified.get("matchingEntityIds") or []],
+            })
         if numeric and counted_hit_policy and object_id and region_id != "outside":
             record.update({
                 "countedForScore": counted_for_score,
@@ -400,6 +559,64 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                 "scoreExclusionReason": None if counted_for_score else "per_object_counted_hit_cap_reached",
             })
         classifications.append(record)
+
+    station_policy = mission.get("interaction", {}).get("stationSequencePolicy")
+    station_credit_limit = (
+        int(station_policy.get("scoringCreditObservationsPerStation"))
+        if isinstance(station_policy, Mapping)
+        and str(station_policy.get("assignmentAuthority") or "") == "shooter_selected_station"
+        and isinstance(station_policy.get("scoringCreditObservationsPerStation"), int)
+        and not isinstance(station_policy.get("scoringCreditObservationsPerStation"), bool)
+        and int(station_policy.get("scoringCreditObservationsPerStation")) > 0
+        else None
+    )
+    station_best_five = []
+    if numeric and station_credit_limit:
+        credited_indexes = set()
+        station_region_ids = [str(item) for item in station_policy.get("stationRegionIds", [])]
+        for station_region_id in station_region_ids:
+            station_items = [
+                (index, item) for index, item in enumerate(classifications)
+                if str(item.get("assignedStationRegionId") or "") == station_region_id
+            ]
+            ranked = sorted(
+                (
+                    (index, item) for index, item in station_items
+                    if isinstance(item.get("value"), (int, float)) and not isinstance(item.get("value"), bool)
+                ),
+                key=lambda pair: (-float(pair[1]["value"]), pair[0]),
+            )
+            selected = ranked[:station_credit_limit]
+            credited_indexes.update(index for index, _ in selected)
+            actual_hits = sum(1 for _, item in station_items if item.get("countsAsHit") is True)
+            actual_misses = sum(1 for _, item in station_items if item.get("countsAsHit") is False)
+            station_best_five.append({
+                "stationRegionId": station_region_id,
+                "totalObservations": len(station_items),
+                "creditedObservations": len(selected),
+                "additionalObservations": max(0, len(station_items) - len(selected)),
+                "actualHits": actual_hits,
+                "actualMisses": actual_misses,
+                "bestFiveScore": sum(float(item["value"]) for _, item in selected),
+                "creditedObservationIds": [item["observationId"] for _, item in selected],
+            })
+        total = 0.0
+        group_totals = defaultdict(float)
+        score_range_min = 0.0
+        score_range_max = 0.0
+        for index, item in enumerate(classifications):
+            credited = index in credited_indexes
+            counted_value = float(item.get("value") or 0) if credited else 0.0
+            item.update({
+                "countedForScore": credited,
+                "countedValue": counted_value,
+                "creditedForScore": credited,
+                "scoreExclusionReason": None if credited else "station_best_five_not_credited",
+            })
+            total += counted_value
+            group_totals[str(item.get("groupId") or "all")] += counted_value
+            score_range_min += counted_value
+            score_range_max += counted_value
 
     if participant_policy:
         object_counts = Counter(str(item.get("objectId") or "") for item in classifications)
@@ -420,19 +637,57 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
             raise DeclarativeTargetScoreError("participant_course_shot_quota_incomplete", progress=progress)
 
     scoring: Dict[str, Any] = {
-        "status": "not_applicable" if model == "not_applicable" else "complete",
+        "status": "not_applicable" if model == "not_applicable" else ("partial" if unresolved_boundaries else "complete"),
         "model": model,
         "completion": "shooter_declared" if evidence.get("shooterDeclaredComplete") is True else "open",
         "observationCount": len(classifications),
         "regionCounts": dict(counts),
         "outsideCount": None if model == "not_applicable" else counts.get("outside", 0),
-        "classifiedObservationCount": 0 if model == "not_applicable" else len(classifications),
-        "unclassifiedObservationCount": len(classifications) if model == "not_applicable" else 0,
-        "classificationStatus": "unavailable" if model == "not_applicable" else "complete",
+        "classifiedObservationCount": 0 if model == "not_applicable" else len(classifications) - len(unresolved_boundaries),
+        "unclassifiedObservationCount": len(classifications) if model == "not_applicable" else len(unresolved_boundaries),
+        "classificationStatus": "unavailable" if model == "not_applicable" else ("partial_material_fact" if unresolved_boundaries else "complete"),
         "publisherRuleAuthority": deepcopy(scoring_data.get("publisherRuleAuthority")),
         "aggregation": deepcopy(scoring_data.get("aggregation")),
         "participantAggregation": deepcopy(participant_policy),
     }
+    if station_credit_limit:
+        credited_count = sum(1 for item in classifications if item.get("creditedForScore") is True)
+        station_distribution = []
+        station_values = sorted({
+            float(item["value"])
+            for item in classifications
+            if isinstance(item.get("value"), (int, float)) and not isinstance(item.get("value"), bool)
+        }, reverse=True)
+        for value in station_values:
+            recorded = [
+                item for item in classifications
+                if isinstance(item.get("value"), (int, float))
+                and not isinstance(item.get("value"), bool)
+                and float(item["value"]) == value
+            ]
+            credited = [item for item in recorded if item.get("creditedForScore") is True]
+            credited_points = value * len(credited)
+            station_distribution.append({
+                "label": str(int(value)) if value.is_integer() else str(value),
+                "value": int(value) if value.is_integer() else value,
+                "recordedObservationCount": len(recorded),
+                "creditedObservationCount": len(credited),
+                "creditedPoints": int(credited_points) if credited_points.is_integer() else credited_points,
+            })
+        scoring.update({
+            "stationCreditPolicy": {
+                "mode": "best_scoring_observations_per_station",
+                "selectionPresentation": str(station_policy.get("selectionPresentation") or ""),
+                "maximumCreditedObservationsPerStation": station_credit_limit,
+                "maximumCreditedObservations": station_credit_limit * len(station_best_five),
+            },
+            "creditedObservationCount": credited_count,
+            "additionalObservationCount": len(classifications) - credited_count,
+            "actualHitCount": sum(1 for item in classifications if item.get("countsAsHit") is True),
+            "actualMissCount": sum(1 for item in classifications if item.get("countsAsHit") is False),
+            "stationBestFive": station_best_five,
+            "stationScoreDistribution": station_distribution,
+        })
     if model != "not_applicable":
         scoring["regionCatalog"] = [
             {"regionId": str(region_id), "label": str(rule.get("label") or region_id)}
@@ -464,19 +719,31 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                 "hitCount": hit_count,
                 "points": int(points) if points.is_integer() else points,
             }
-            if counted_hit_policy:
+            if counted_hit_policy or station_credit_limit:
                 region_result.update({"countedHitCount": counted_hit_count, "uncountedHitCount": hit_count - counted_hit_count})
             region_results.append(region_result)
         x_count = sum(1 for item in classifications if rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is True and item.get("countedForScore") is not False)
-        scoring.update({"total": total, "xCount": x_count, "groupTotals": dict(group_totals), "regionResults": region_results})
+        scoring.update({"total": None if unresolved_boundaries else total, "xCount": x_count, "groupTotals": dict(group_totals), "regionResults": region_results})
+        if unresolved_boundaries:
+            scoring.update({
+                "resolvedPoints": total,
+                "unresolvedBoundaryObservationCount": len(unresolved_boundaries),
+                "unresolvedBoundaryObservations": deepcopy(unresolved_boundaries),
+                "scoreRange": {
+                    "minimum": int(score_range_min) if score_range_min.is_integer() else score_range_min,
+                    "maximum": int(score_range_max) if score_range_max.is_integer() else score_range_max,
+                    "exact": False,
+                    "missingMaterialFact": "caliber",
+                },
+            })
         if scoring_data.get("xScoring") is not None:
             scoring["xScoring"] = deepcopy(scoring_data["xScoring"])
-        if scoring_data.get("aggregateValueDistribution") is True:
+        if scoring_data.get("aggregateValueDistribution") is True or station_credit_limit:
             numeric_distribution: Counter[float] = Counter()
             x_numeric_count = 0
             x_numeric_points = 0.0
             for item in classifications:
-                if isinstance(item.get("value"), (int, float)) and not isinstance(item.get("value"), bool):
+                if item.get("countedForScore") is not False and isinstance(item.get("value"), (int, float)) and not isinstance(item.get("value"), bool):
                     rule = rules.get(str(item.get("regionId") or ""), {})
                     if rule.get("countsAsX") is True:
                         x_numeric_count += 1
@@ -535,6 +802,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                         not numeric
                         or float(item.get("value") or 0) > 0
                         or rules.get(str(item.get("regionId") or ""), {}).get("countsAsX") is True
+                        or rules.get(str(item.get("regionId") or ""), {}).get("countsForObjectCompletion") is True
                     )
                     for item in classifications
                 ),
@@ -690,7 +958,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                 region_id = classified.get("entityId")
                 rule = layer_rules.get(str(region_id)) if region_id else None
                 layer_observations.append({
-                    "observationId": f"observation-{index:03d}",
+                    "observationId": observation_ids[index - 1],
                     "hit": region_id is not None and (rule or {}).get("countsAsHit") is not False,
                     "regionId": str(region_id) if region_id else None,
                     "objectId": str((rule or {}).get("objectId") or "") or None,
@@ -790,8 +1058,23 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
     elif model == "not_applicable":
         scoring["reason"] = str(scoring_data.get("reason") or "printer_defines_no_score")
 
-    governed_shots = 0 if model == "not_applicable" else len(classifications)
-    governed_hits = 0 if model == "not_applicable" else sum(1 for item in classifications if item.get("countsAsHit") is True)
+    points_per_tap = None
+    points_based_model = model in {"numeric_regions", "penalty_regions", "mixed_regions"}
+    total_points = scoring.get("total")
+    total_taps = scoring.get("observationCount")
+    if (
+        points_based_model
+        and not unresolved_boundaries
+        and not isinstance(scoring.get("participantResults"), list)
+        and isinstance(total_points, (int, float))
+        and not isinstance(total_points, bool)
+        and isinstance(total_taps, int)
+        and total_taps > 0
+    ):
+        # Backend Authority owns PPT. The authoritative numerator and
+        # denominator remain present in scoring so consumers can preserve the
+        # exact relationship while formatting the quotient to two decimals.
+        points_per_tap = total_points / total_taps
     object_count = len(scoring.get("objectResults") or [])
     objects_hit = sum(1 for item in scoring.get("objectResults") or [] if item.get("hit") is True)
     object_counts = [int(item.get("observationCount") or 0) for item in scoring.get("objectResults") or []]
@@ -811,23 +1094,25 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         }
         object_distribution["evennessPercentage"] = max(0.0, object_distribution["evennessPercentage"])
     sczn3_metrics = {
-        "status": "complete" if model != "not_applicable" and regions else "not_applicable",
+        "status": "partial" if unresolved_boundaries else ("complete" if model != "not_applicable" and regions else "not_applicable"),
         "metricAuthority": "sczn3_measured_supplemental",
         "doesNotReplacePublisherResult": True,
-        "hitRate": None if model == "not_applicable" else {
-            "validHitCount": governed_hits,
-            "governedShotCount": governed_shots,
-            "percentage": round(governed_hits / governed_shots * 100, 1) if governed_shots else None,
-        },
+        "pointsPerTap": points_per_tap,
         "objectCoverage": {"objectsHit": objects_hit, "scorableObjectCount": object_count} if object_count else None,
         "objectDistribution": object_distribution,
         "shotPattern": derive_shot_pattern(classifications, _aim(evidence.get("shooterDeclaredAimPoint"), mission["interaction"]["aim"]["mode"])),
     }
+    history_profile = (mission.get("smartTargetTreatment") or {}).get("historyProfile") or {}
+    distribution_history_authorized = (
+        history_profile.get("family") == "object_coverage_history_v1"
+        and "distribution_consistency" in (history_profile.get("targetLocalMetrics") or [])
+    )
     if str(contract.get("targetProfile", {}).get("id") or "").startswith("qt_printer13_product_"):
         # Founder-locked QT RESULT is target truth only: counts, governed points,
-        # misses, and totals. Distribution and shot-pattern meta are intentionally
-        # absent rather than merely hidden by the frontend.
-        sczn3_metrics["objectDistribution"] = None
+        # misses, and totals. DOT-4's governed History profile explicitly permits
+        # distribution consistency, but it does not authorize shot-pattern truth.
+        if not distribution_history_authorized:
+            sczn3_metrics["objectDistribution"] = None
         sczn3_metrics["shotPattern"] = None
 
     diagnostic_overlay = None
@@ -859,6 +1144,17 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         smart_treatment.get("authorityScope") == "sczn3_derived_visible_structure"
         and smart_treatment.get("publisherScoreStatus") == "not_defined"
     )
+    founder_exact_face_classification = (
+        smart_treatment.get("authorityScope") == "founder_governed_exact_face_object_classification"
+        and smart_treatment.get("publisherScoreStatus") == "not_defined"
+    )
+    scoring_authority = (
+        "sczn3-derived-structural-classification-no-publisher-score"
+        if structural_classification_only else
+        "founder-governed-exact-face-classification-no-publisher-score"
+        if founder_exact_face_classification else
+        "printer-rules-through-target-data"
+    )
     result = {
         "ok": True, "status": "complete", "authoritySource": "backend-authoritative",
         "missionFamily": contract["missionFamily"], "resultPackageType": contract["resultPackageType"], "resultPackageVersion": contract["resultPackageVersion"],
@@ -866,6 +1162,8 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "smartTargetTreatment": deepcopy(mission.get("smartTargetTreatment")),
         "executionContract": {"contractId": contract["contractId"], "contractVersion": contract["contractVersion"], "contractFingerprint": contract["contractFingerprint"], "executorId": contract["executor"]["id"], "executorVersion": contract["executor"]["version"], "secAdapterFamilyId": contract["secAdapter"]["id"], "secAdapterFamilyVersion": contract["secAdapter"]["version"], "preservationValidatorId": contract["preservationValidator"]["id"], "preservationValidatorVersion": contract["preservationValidator"]["version"]},
         "imageEvidence": image_evidence,
+        "sourceObservations": deepcopy(evidence.get("sourceObservations") or observations),
+        "targetImageRegistrationEvidence": registration_evidence,
         "observations": deepcopy(classifications), "classifications": classifications,
         "aimStructure": deepcopy(mission["interaction"]["aim"]),
         "shooterDeclaredAimPoint": _aim(evidence.get("shooterDeclaredAimPoint"), mission["interaction"]["aim"]["mode"]),
@@ -883,7 +1181,7 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "ballisticGeometry": {
             "tapMeaning": "center_of_sczn3_standard_observation_footprint" if object_hit_classification else "shooter_declared_point",
             "boundaryRule": "observation_footprint_touch_counts_for_object_hit_classification" if object_hit_classification else "target_profile_rule",
-            "classificationMethod": "observation_footprint_touch" if score_on_touch and any(observation_footprints) else ("physical_projectile_footprint" if footprint_radius_x > 0 and footprint_radius_y > 0 else "tap_center_point"),
+            "classificationMethod": "observation_footprint_touch" if (score_on_touch or hit_on_touch) and any(observation_footprints) else ("physical_projectile_footprint" if footprint_radius_x > 0 and footprint_radius_y > 0 else "tap_center_point"),
             "scoreOnTouch": {
                 "enabled": score_on_touch,
                 "rule": "touch_or_cross_counts",
@@ -892,6 +1190,14 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
                 "targetBoundarySource": "backend_authority",
                 "observationFootprintSource": "observation_evidence",
             } if score_on_touch else None,
+            "hitOnTouch": {
+                "enabled": hit_on_touch,
+                "rule": "inside_or_governed_line_touch_is_hit_completely_outside_is_miss",
+                "scoreAssignment": "existing_tap_center_region_value_preserved",
+                "targetBoundarySource": "backend_authority",
+                "observationFootprintSource": "observation_evidence",
+                "displayMarkerParticipatesInScoring": False,
+            } if hit_on_touch else None,
             "projectileDiameter": deepcopy(ballistic),
             "normalizedRadius": {"x": footprint_radius_x, "y": footprint_radius_y} if footprint_radius_x > 0 and footprint_radius_y > 0 else None,
             "displayMarkerParticipatesInScoring": False,
@@ -900,15 +1206,15 @@ def execute(contract: Mapping[str, Any], evidence: Any) -> Dict[str, Any]:
         "reconciliation": {
             "status": "reconciled",
             "recordedObservationCount": len(classifications),
-            "classifiedObservationCount": 0 if model == "not_applicable" else len(classifications),
-            "unclassifiedObservationCount": len(classifications) if model == "not_applicable" else 0,
+            "classifiedObservationCount": 0 if model == "not_applicable" else len(classifications) - len(unresolved_boundaries),
+            "unclassifiedObservationCount": len(classifications) if model == "not_applicable" else len(unresolved_boundaries),
             "countsMatch": (
                 len(classifications) == len(observations)
                 if model == "not_applicable"
                 else sum(counts.values()) == len(classifications)
             ),
         },
-        "authorityTrace": {"targetExecutionContract": f"{contract['contractId']}@{contract['contractVersion']}", "classificationAuthority": "backend", "scoringAuthority": "sczn3-derived-structural-classification-no-publisher-score" if structural_classification_only else "printer-rules-through-target-data", "componentDigests": {name: component["digest"] for name, component in contract["components"].items()}},
+        "authorityTrace": {"targetExecutionContract": f"{contract['contractId']}@{contract['contractVersion']}", "classificationAuthority": "backend", "scoringAuthority": scoring_authority, "componentDigests": {name: component["digest"] for name, component in contract["components"].items()}},
     }
     result["resultHash"] = digest(canonical_json(result))
     return result
@@ -940,7 +1246,7 @@ def validate_result(contract: Mapping[str, Any], result: Any) -> bool:
         and result.get("resultPackageVersion") == contract["resultPackageVersion"]
         and result.get("executionContract", {}).get("contractFingerprint") == contract["contractFingerprint"]
         and isinstance(classifications, list) and len(classifications) >= 1
-        and isinstance(scoring, Mapping) and scoring.get("status") in {"complete", "not_applicable"}
+        and isinstance(scoring, Mapping) and scoring.get("status") in {"complete", "partial", "not_applicable"}
         and scoring.get("aggregation") == contract["components"]["scoring"]["definition"].get("aggregation")
         and result.get("aimStructure") == contract["components"]["mission"]["definition"]["interaction"]["aim"]
         and isinstance(reconciliation, Mapping) and reconciliation.get("status") == "reconciled" and reconciliation.get("countsMatch") is True

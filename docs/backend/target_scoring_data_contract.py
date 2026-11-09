@@ -27,6 +27,7 @@ OBJECT_SCOREBOARD_MODES = {"score_x"}
 COUNTED_HIT_POLICY_MODES = {"per_object_cap"}
 SCORING_MODE_POLICY_MODES = {"shooter_selected_region_values"}
 CUMULATIVE_COUNT_POLICY_MODES = {"nested_color_totals"}
+ELAPSED_TIME_MODES = {"optional_manual_entry"}
 
 
 class TargetScoringDataContractError(ValueError):
@@ -60,6 +61,24 @@ def _region(region: Any) -> str:
         _number(region.get("cy"), "scoring_region_coordinate_invalid")
         if _number(region.get("radiusX"), "scoring_region_radius_invalid") <= 0 or _number(region.get("radiusY"), "scoring_region_radius_invalid") <= 0:
             raise TargetScoringDataContractError("scoring_region_radius_invalid")
+    elif shape == "annulus":
+        _number(region.get("cx"), "scoring_region_coordinate_invalid")
+        _number(region.get("cy"), "scoring_region_coordinate_invalid")
+        inner_x = _number(region.get("innerRadiusX"), "scoring_region_radius_invalid")
+        inner_y = _number(region.get("innerRadiusY"), "scoring_region_radius_invalid")
+        outer_x = _number(region.get("outerRadiusX"), "scoring_region_radius_invalid")
+        outer_y = _number(region.get("outerRadiusY"), "scoring_region_radius_invalid")
+        if inner_x <= 0 or inner_y <= 0 or inner_x >= outer_x or inner_y >= outer_y:
+            raise TargetScoringDataContractError("scoring_region_radius_invalid")
+    elif shape == "orthogonal_cross":
+        _number(region.get("cx"), "scoring_region_coordinate_invalid")
+        _number(region.get("cy"), "scoring_region_coordinate_invalid")
+        horizontal_length = _number(region.get("horizontalHalfLengthX"), "scoring_region_bounds_invalid")
+        horizontal_width = _number(region.get("horizontalHalfWidthY"), "scoring_region_bounds_invalid")
+        vertical_width = _number(region.get("verticalHalfWidthX"), "scoring_region_bounds_invalid")
+        vertical_length = _number(region.get("verticalHalfLengthY"), "scoring_region_bounds_invalid")
+        if min(horizontal_length, horizontal_width, vertical_width, vertical_length) <= 0 or horizontal_width > vertical_length or vertical_width > horizontal_length:
+            raise TargetScoringDataContractError("scoring_region_bounds_invalid")
     elif shape == "rectangle":
         x0 = _number(region.get("xMin"), "scoring_region_coordinate_invalid")
         y0 = _number(region.get("yMin"), "scoring_region_coordinate_invalid")
@@ -120,6 +139,59 @@ def _aim(interaction: Any, region_ids: set[str]) -> None:
         region_id = str(point.get("regionId") or "").strip()
         if aim["mode"] == "region_centers" and region_id not in region_ids:
             raise TargetScoringDataContractError("target_scoring_aim_region_invalid")
+
+
+def _elapsed_time(interaction: Mapping[str, Any]) -> None:
+    policy = interaction.get("elapsedTime") if isinstance(interaction, Mapping) else None
+    if policy is None:
+        return
+    if (
+        not isinstance(policy, Mapping)
+        or policy.get("mode") not in ELAPSED_TIME_MODES
+        or policy.get("unit") != "seconds"
+        or policy.get("source") != "shooter_entered_external_timer"
+        or policy.get("required") is not False
+        or not str(policy.get("label") or "").strip()
+    ):
+        raise TargetScoringDataContractError("target_scoring_elapsed_time_policy_invalid")
+
+
+def _summary_dimensions(scoring: Mapping[str, Any], object_ids: set[str]) -> None:
+    """Validate optional, non-scoring views over governed target objects."""
+    dimensions = scoring.get("summaryDimensions")
+    if dimensions is None:
+        return
+    if not isinstance(dimensions, list) or not dimensions or not object_ids:
+        raise TargetScoringDataContractError("target_scoring_summary_dimensions_invalid")
+    dimension_ids: set[str] = set()
+    for dimension in dimensions:
+        if not isinstance(dimension, Mapping):
+            raise TargetScoringDataContractError("target_scoring_summary_dimension_invalid")
+        dimension_id = str(dimension.get("dimensionId") or "").strip()
+        label = str(dimension.get("label") or "").strip()
+        groups = dimension.get("groups")
+        if not dimension_id or dimension_id in dimension_ids or not label or not isinstance(groups, list) or len(groups) < 2:
+            raise TargetScoringDataContractError("target_scoring_summary_dimension_invalid")
+        dimension_ids.add(dimension_id)
+        group_ids: set[str] = set()
+        assigned_objects: set[str] = set()
+        for group in groups:
+            if not isinstance(group, Mapping):
+                raise TargetScoringDataContractError("target_scoring_summary_group_invalid")
+            group_id = str(group.get("groupId") or "").strip()
+            group_label = str(group.get("label") or "").strip()
+            members = group.get("objectIds")
+            if not group_id or group_id in group_ids or not group_label or not isinstance(members, list) or not members:
+                raise TargetScoringDataContractError("target_scoring_summary_group_invalid")
+            normalized = [str(item or "").strip() for item in members]
+            if any(not item or item not in object_ids for item in normalized) or len(set(normalized)) != len(normalized):
+                raise TargetScoringDataContractError("target_scoring_summary_group_object_invalid")
+            if assigned_objects.intersection(normalized):
+                raise TargetScoringDataContractError("target_scoring_summary_group_object_duplicate")
+            group_ids.add(group_id)
+            assigned_objects.update(normalized)
+        if assigned_objects != object_ids:
+            raise TargetScoringDataContractError("target_scoring_summary_dimension_objects_incomplete")
 
 
 def _boundary_policy(scoring: Mapping[str, Any], regions: Sequence[Mapping[str, Any]]) -> None:
@@ -428,8 +500,22 @@ def validate_target_scoring_data(contract: Mapping[str, Any]) -> None:
     _participant_aggregation(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()}, mission.get("interaction") or {})
     _object_scoreboard(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
     _counted_hit_policy(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
+    _summary_dimensions(scoring, {str(value) for value in object_ids if value is not None and str(value).strip()})
     _scoring_mode_policy(scoring, region_id_set, mission.get("interaction") or {})
     _cumulative_count_policy(scoring, region_id_set)
     _semantic_layers(scoring, region_id_set)
     _boundary_policy(scoring, regions)
-    _aim(mission.get("interaction"), region_id_set)
+    interaction = mission.get("interaction") or {}
+    maximum_observations = mission.get("maxObservations")
+    exact_observations = mission.get("exactObservations")
+    if maximum_observations is not None and (not isinstance(maximum_observations, int) or isinstance(maximum_observations, bool) or maximum_observations < 1):
+        raise TargetScoringDataContractError("target_scoring_max_observations_invalid")
+    if exact_observations is not None and (
+        not isinstance(exact_observations, int)
+        or isinstance(exact_observations, bool)
+        or exact_observations < 1
+        or (maximum_observations is not None and exact_observations > maximum_observations)
+    ):
+        raise TargetScoringDataContractError("target_scoring_exact_observations_invalid")
+    _aim(interaction, region_id_set)
+    _elapsed_time(interaction)

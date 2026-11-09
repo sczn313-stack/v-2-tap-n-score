@@ -3,7 +3,7 @@
 
   const VERSION = "1.2";
   const REQUIRED_REGIONS = ["target", "session", "actions"];
-  const OPTIONAL_REGIONS = ["sightCorrection"];
+  const OPTIONAL_REGIONS = ["sightCorrection", "history"];
   const ACHIEVEMENT_LEVELS = Object.freeze([
     Object.freeze(["needs-attention", "Needs Attention"]),
     Object.freeze(["developing", "Developing"]),
@@ -12,6 +12,7 @@
     Object.freeze(["advanced", "Advanced"]),
     Object.freeze(["mastery", "Mastery"])
   ]);
+  const TRAINING_INFORMATION_NOTICE = "SCZN3 performance analysis and derived scoring are for training and informational use and are not certified or endorsed by a governing shooting organization unless expressly identified as official.";
 
   function escapeAttribute(value) {
     return String(value ?? "")
@@ -41,9 +42,13 @@
     if (!validText(model.recordId) || !validText(model.missionFamily)) return null;
     if (!Array.isArray(model.regions)) return null;
     const keys = model.regions.map(region => region && region.key);
-    const expectedKeys = keys.includes("sightCorrection")
-      ? ["target", "session", "sightCorrection", "actions"]
-      : REQUIRED_REGIONS;
+    const expectedKeys = [
+      "target",
+      "session",
+      ...(keys.includes("sightCorrection") ? ["sightCorrection"] : []),
+      ...(keys.includes("history") ? ["history"] : []),
+      "actions"
+    ];
     if (keys.length !== expectedKeys.length || keys.some((key, index) => key !== expectedKeys[index])) return null;
     const regions = expectedKeys.map((key, index) => normalizeRegion(model.regions[index], key));
     if (regions.some(region => !region) || keys.some(key => !REQUIRED_REGIONS.includes(key) && !OPTIONAL_REGIONS.includes(key))) return null;
@@ -56,8 +61,12 @@
         ? Object.entries(model.articleAttributes).filter(([name, value]) => /^(?:data|aria)-[a-z0-9-]+$/.test(name) && value !== undefined && value !== null)
         : [],
       sessionLabel: validText(model.sessionLabel) ? model.sessionLabel.trim() : "Session",
+      targetTitle: validText(model.targetTitle) ? model.targetTitle.trim() : "",
       scoreDisplay: validText(model.scoreDisplay) ? model.scoreDisplay.trim() : "Score Unavailable",
       showSessionScore: model.showSessionScore !== false,
+      printerName: validText(model.printerName) ? model.printerName.trim() : "",
+      printerUrl: validText(model.printerUrl) ? model.printerUrl.trim() : "",
+      vaultHref: validText(model.vaultHref) ? model.vaultHref.trim() : "",
       regions,
       afterHtml: typeof model.afterHtml === "string" ? model.afterHtml : ""
     };
@@ -78,17 +87,36 @@
         return `<div class="${escapeAttribute(regionClasses)} sec-story-command-bar sec-shooter-action-bar" data-sec-region="actions" aria-label="Shooter Action Bar">${region.contentHtml}</div>`;
       }
       const position = region.key === "target" ? 1 : region.key === "session" ? 2 : 3;
-      const title = region.key === "target" ? "TARGET" : region.key === "session" ? "SESSION" : "SIGHT CORRECTION";
+      const title = region.key === "target" ? "TARGET" : region.key === "session" ? "SESSION" : region.key === "history" ? "HISTORY" : "SIGHT CORRECTION";
       const summaryClass = region.key === "target" ? "sec-framework-stage-heading sec-evidence-toggle" : `sec-framework-stage-heading sec-stage-pill${region.key === "session" ? " sec-session-pill" : ""}`;
+      const targetStageTitle = normalized.targetTitle
+        ? (/\btarget\s*$/i.test(normalized.targetTitle) ? normalized.targetTitle : `${normalized.targetTitle} TARGET`)
+        : "TARGET";
+      const printerCredit = normalized.printerName
+        ? (normalized.printerUrl
+          ? `<a class="sec-printer-credit" href="${escapeAttribute(normalized.printerUrl)}" target="_blank" rel="noopener noreferrer">${escapeAttribute(normalized.printerName)} <span aria-hidden="true">↗</span></a>`
+          : `<em class="sec-printer-credit sec-printer-credit--plain">${escapeAttribute(normalized.printerName)}</em>`)
+        : "";
+      const printerRow = printerCredit ? `<div class="sec-printer-row">${printerCredit}</div>` : "";
       const summary = region.key === "target"
-        ? `<summary class="${summaryClass}"><span>1 · TARGET</span><strong>${escapeAttribute(normalized.sessionLabel)}</strong></summary>`
+        ? `<summary class="${summaryClass}"><span>1 · ${escapeAttribute(targetStageTitle)}</span><strong>${escapeAttribute(normalized.sessionLabel)}</strong><b aria-hidden="true"></b></summary>`
         : `<summary class="${summaryClass}"><span>${position}</span><h2>${title}</h2>${region.key === "session" && normalized.showSessionScore ? `<strong class="sec-session-score">${escapeAttribute(normalized.scoreDisplay)}</strong>` : ""}<b aria-hidden="true"></b></summary>`;
-      return `<details class="${escapeAttribute(regionClasses)} sec-framework-stage sec-accordion-stage${region.key === "target" ? "" : " sec-collapsible-stage"}" data-sec-region="${escapeAttribute(region.key)}" data-sec-stage="${escapeAttribute(region.key === "sightCorrection" ? "sight-correction" : region.key)}" aria-label="${escapeAttribute(region.ariaLabel)}"${region.key === "target" ? " open" : ""}>${summary}<div class="${region.key === "target" ? "sec-historical-target-body" : "sec-stage-body"}">${region.contentHtml}</div></details>`;
+      const closeDrawer = region.key === "target" ? "" : '<button class="button sec-close-drawer" type="button" data-sec-close-drawer>Close Drawer</button>';
+      return `<details class="${escapeAttribute(regionClasses)} sec-framework-stage sec-accordion-stage${region.key === "target" ? "" : " sec-collapsible-stage"}" data-sec-region="${escapeAttribute(region.key)}" data-sec-stage="${escapeAttribute(region.key === "sightCorrection" ? "sight-correction" : region.key)}" aria-label="${escapeAttribute(region.ariaLabel)}"${region.key === "target" ? " open" : ""}>${summary}${printerRow}<div class="${region.key === "target" ? "sec-historical-target-body" : "sec-stage-body"}">${region.contentHtml}${closeDrawer}</div></details>`;
     }).join("");
 
+    const vaultPrinter = normalized.printerName
+      ? (normalized.printerUrl
+        ? `<a class="sec-printer-credit" href="${escapeAttribute(normalized.printerUrl)}" target="_blank" rel="noopener noreferrer">${escapeAttribute(normalized.printerName)} <span aria-hidden="true">↗</span></a>`
+        : `<em class="sec-printer-credit sec-printer-credit--plain">${escapeAttribute(normalized.printerName)}</em>`)
+      : "";
+    const vault = normalized.vaultHref
+      ? `<section class="sec-vault-stage"><a class="sec-vault-destination" href="${escapeAttribute(normalized.vaultHref)}" data-preserve-active-session><span>4 · BALLISTIC VAULT</span><b aria-hidden="true"></b></a>${vaultPrinter ? `<div class="sec-printer-row">${vaultPrinter}</div>` : ""}</section>`
+      : "";
     return `
       <article class="${escapeAttribute(classes)}" data-sec-shell="universal-v1" data-sec-version="${VERSION}" data-sec-record-id="${escapeAttribute(normalized.recordId)}" data-sec-mission-family="${escapeAttribute(normalized.missionFamily)}"${attributes ? ` ${attributes}` : ""}>
-        <div class="sec-target-story sec-v1-flow">${regions}</div>
+        <div class="sec-target-story sec-v1-flow">${regions.replace(/(<div class="[^\"]*sec-v1-actions[^\"]*"[^>]*>)/, `${vault}$1`)}</div>
+        <p class="sec-training-information-notice">${escapeAttribute(TRAINING_INFORMATION_NOTICE)}</p>
         ${normalized.afterHtml}
       </article>
     `;
@@ -128,6 +156,7 @@
     requiredRegions: Object.freeze(REQUIRED_REGIONS.slice()),
     optionalRegions: Object.freeze(OPTIONAL_REGIONS.slice()),
     achievementLevels: ACHIEVEMENT_LEVELS,
+    trainingInformationNotice: TRAINING_INFORMATION_NOTICE,
     render,
     renderUnavailable,
     renderAchievementScale

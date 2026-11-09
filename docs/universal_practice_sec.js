@@ -138,12 +138,7 @@
           key: "session",
           className: "sec-v1-measurement-content",
           ariaLabel: "Session",
-          contentHtml: `
-            <section class="sec-session-section"><h3>Session Details</h3>${sessionSummaryHtml(session)}</section>
-            <details class="correction-context-drawer sec-correction-context"><summary>Analysis</summary><div class="correction-context-panel">
-            <div class="sec-primary-result-grid"><div class="sec-primary-result-value"><span>Practice Analysis</span><strong class="sec-v1-result-value">Not available</strong></div><div class="sec-supporting-metric"><span>Measurements</span><strong>Not available</strong></div></div>
-            </div></details>
-          `
+          contentHtml: global.SCZN3SECComponents.Measurement({ contentHtml: global.SCZN3SECComponents.SessionFoundation(session) })
         },
         {
           key: "actions",

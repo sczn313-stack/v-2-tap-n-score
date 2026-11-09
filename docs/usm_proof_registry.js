@@ -10,7 +10,7 @@
     const score = Number((scoring && scoring.total) ?? (value && value.score));
     const totalTaps = Number((scoring && scoring.observationCount) ?? (value && value.totalTaps));
     return missionFamily === "targetScoring"
-      && model === "numeric_regions"
+      && ["numeric_regions", "penalty_regions", "mixed_regions"].includes(model)
       && status === "complete"
       && Number.isFinite(score)
       && Number.isInteger(totalTaps)
@@ -18,9 +18,10 @@
   }
 
   global.SCZN3USMProofRegistry = Object.freeze({
-    modelId: "sczn3-usm-score-hit-rate-points-per-tap-v1",
+    modelId: "sczn3-usm-total-points-total-taps-points-per-tap-v2",
     status: "founder-approved-capability-inheritance",
     eligibility: "governed-additive-numeric-region-scoring",
+    supportedScoringModels: Object.freeze(["numeric_regions", "penalty_regions", "mixed_regions"]),
     isEligible: governedAdditiveScoring
   });
 })(window);

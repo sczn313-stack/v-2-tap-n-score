@@ -557,6 +557,80 @@ TARGET_AUTHORITY_PROFILES: Dict[str, Dict[str, Any]] = {
             "clickValue": 0.25,
         },
     },
+    "highwild_bfz_1725_25lklsp_sight_in": {
+        "targetId": "highwild_bfz_1725_25lklsp_sight_in",
+        "targetAuthorityId": "HIGHWILD_BFZ_1725_ZEROING_AUTHORITY_v1",
+        "targetName": "Highwild Sight In 17×25",
+        "targetProfileVersion": "HIGHWILD_BFZ_1725_ZEROING_AUTHORITY_v1",
+        "atpId": "highwild-bfz-1725-zeroing-atp-v1",
+        "zeroingExperience": zeroing_experience(
+            "highwild_bfz_1725_25lklsp_sight_in",
+            "HIGHWILD_BFZ_1725_ZEROING_AUTHORITY_v1",
+            authority_family="universal",
+            entry_mode="registered-reference",
+            confirmation_mode="evidence",
+        ),
+        "registrationAuthority": {
+            "registrationPackageId": "highwild-bfz-1725-sight-in-registered-reference-v1",
+            "registrationPackageVersion": "1",
+            "canonicalCoordinateSystemId": "HIGHWILD_BFZ_1725_PHYSICAL_GRID_v1",
+            "status": "available",
+        },
+        "targetAuthorityGeometry": {
+            "authorityId": "HIGHWILD_BFZ_1725_17X25_PRINTED_ONE_INCH_GRID_v1",
+            "authoritySource": "Founder-governed physical target identity and printed one-inch grid translated by UGO",
+            "targetId": "HIGHWILD_BFZ_1725_ZEROING_AUTHORITY_v1",
+            "imageWidth": 1600,
+            "imageHeight": 1600,
+            "gridLeftPx": 307,
+            "gridTopPx": 122,
+            "gridRightPx": 1292,
+            "gridBottomPx": 1479,
+            "gridSquarePx": 61.6222,
+            "gridSquarePxX": 61.5625,
+            "gridSquarePxY": 61.6818181818,
+            "gridSquareInches": 1,
+            "physicalFace": {"width": 17, "height": 25, "unit": "inches"},
+            "physicalGrid": {"horizontalInches": 16, "verticalInches": 22},
+            "pixelIsAuthority": False,
+        },
+        "missionIdentity": {
+            "missionFamily": "zeroingCorrection",
+            "missionId": "HIGHWILD_BFZ_1725_SIGHT_IN_ZERO",
+            "resultPackageType": "zeroCorrectionResult",
+        },
+        "governedDistance": {"value": None, "unit": None, "locked": False},
+        "confirmationAuthority": {
+            "status": "authority_unavailable",
+            "reason": "authoritative_confirmation_standard_not_registered",
+            "requiredConfirmationShotCount": None,
+            "residualTolerance": None,
+            "units": None,
+            "applicableTargetProfileVersion": None,
+            "authorityProvenance": None,
+            "additionalConfirmationRules": None,
+            "unresolvedFields": [
+                "requiredConfirmationShotCount",
+                "residualTolerance",
+                "units",
+                "applicableTargetProfileVersion",
+                "authorityProvenance",
+                "additionalConfirmationRules",
+            ],
+        },
+        "equipmentRequirements": {
+            "weaponCategories": ["Rifle"],
+            "requiresAdjustmentSystem": True,
+            "allowedAdjustmentUnits": ["MOA", "MRAD"],
+        },
+        "standardSetupAuthority": {
+            "setupId": "highwild-zeroing-shooter-configured-scope",
+            "authorityId": "HIGHWILD_SHOOTER_CONFIRMED_OPTIC_CONFIGURATION",
+            "kind": "target_optional_equipment",
+        },
+        "officialMissionRequired": False,
+        "requiresShooterConfiguredEquipment": True,
+    },
     "gssf_ac_1": {
         "targetId": GSSF_AC_1_ATP["targetProfileId"],
         "targetAuthorityId": GSSF_AC_1_ATP["targetProfileId"],
@@ -787,15 +861,85 @@ def digest(value: Any) -> str:
 def _profile_from_execution_contract(contract: Mapping[str, Any]) -> Dict[str, Any]:
     target = contract["targetProfile"]
     session = contract.get("session") or {}
+    mission = contract["components"]["mission"]["definition"]
+    interaction_contract = deepcopy(mission.get("interaction") or {})
+    interaction_contract["observations"] = {
+        "max": int(mission["maxObservations"]) if mission.get("maxObservations") is not None else None,
+        "exact": int(mission["exactObservations"]) if mission.get("exactObservations") is not None else None,
+    }
+    station_policy = interaction_contract.get("stationSequencePolicy")
+    if isinstance(station_policy, Mapping):
+        regions_by_id = {
+            str(region.get("regionId")): region
+            for region in (contract.get("components", {}).get("geometry", {}).get("definition", {}).get("regions", []) or [])
+            if isinstance(region, Mapping) and str(region.get("shape") or "") == "rectangle"
+        }
+        region_ids = [str(region_id) for region_id in station_policy.get("stationRegionIds", [])]
+        if region_ids and all(region_id in regions_by_id for region_id in region_ids):
+            interaction_contract["stationSequencePolicy"] = {
+                **deepcopy(dict(station_policy)),
+                "stationRegions": [deepcopy(dict(regions_by_id[region_id])) for region_id in region_ids],
+            }
+    boundary_policy = contract.get("components", {}).get("scoring", {}).get("definition", {}).get("boundaryPolicy")
+    if isinstance(boundary_policy, Mapping) and boundary_policy.get("mode") == "authority_scoring_gauge":
+        gauge_groups = boundary_policy.get("authorizedGaugeGroups") or []
+        if gauge_groups:
+            groups_by_id = {str(group["caliberId"]): group for group in gauge_groups}
+            shooter_catalog = boundary_policy.get("shooterCaliberCatalog") or []
+            if shooter_catalog:
+                catalog_options = []
+                for catalog_entry in shooter_catalog:
+                    gauge = groups_by_id.get(str(catalog_entry.get("authorizedGaugeId") or ""))
+                    available = bool(gauge) and catalog_entry.get("availableForScoring", True) is not False
+                    option = {
+                        "caliberId": str(catalog_entry["caliberId"]),
+                        "value": str(catalog_entry["caliberId"]) if available else "",
+                        "category": str(catalog_entry.get("category") or ""),
+                        "availableForScoring": available,
+                    }
+                    if available:
+                        option.update({
+                            "aliases": [str(alias) for alias in gauge.get("aliases", [])],
+                            "diameterRangeInches": deepcopy(gauge["diameterRangeInches"]),
+                            "diameterInches": float(gauge["diameterRangeInches"]["min"]),
+                        })
+                    else:
+                        option["unavailableReason"] = str(catalog_entry.get("unavailableReason") or "Scoring diameter unavailable")
+                    catalog_options.append(option)
+            else:
+                catalog_options = [
+                    {
+                        "caliberId": str(group["caliberId"]),
+                        "value": str(group["caliberId"]),
+                        "aliases": [str(alias) for alias in group.get("aliases", [])],
+                        "diameterRangeInches": deepcopy(group["diameterRangeInches"]),
+                        "availableForScoring": True,
+                    }
+                    for group in gauge_groups
+                ]
+            interaction_contract["scoringGaugeCatalog"] = {
+                "source": "target_execution_contract_boundary_policy",
+                "policyId": str(boundary_policy.get("policyId") or ""),
+                "options": catalog_options,
+            }
     contract_identity = {
         "contractId": contract["contractId"],
         "contractVersion": contract["contractVersion"],
         "contractFingerprint": contract["contractFingerprint"],
     }
+    registration_definition = (contract.get("components", {}).get("registration", {}) or {}).get("definition") or {}
+    registration_authority = None
+    if registration_definition.get("registrationPackageId"):
+        registration_authority = {
+            "registrationPackageId": registration_definition["registrationPackageId"],
+            "registrationPackageVersion": registration_definition.get("registrationPackageVersion", "1"),
+            "canonicalCoordinateSystemId": registration_definition.get("canonicalCoordinateSystemId") or registration_definition.get("assetId"),
+            "status": "available",
+        }
     return {
         "targetId": target["id"],
         "targetAuthorityId": target["authorityId"],
-        "targetName": target["product"]["name"],
+        "targetName": target["product"].get("shooterFacingName") or target["product"]["name"],
         "targetProfileVersion": target["version"],
         "atpId": target["atpId"],
         "missionIdentity": {
@@ -806,7 +950,7 @@ def _profile_from_execution_contract(contract: Mapping[str, Any]) -> Dict[str, A
             "executionContract": contract_identity,
         },
         "executionContract": contract_identity,
-        "interactionContract": deepcopy(contract["components"]["mission"]["definition"].get("interaction")),
+        "interactionContract": interaction_contract,
         "executionCapabilityStates": deepcopy(session.get("capabilityStates") or {}),
         "governedDistance": deepcopy(session.get("governedDistance") or {"value": None, "unit": None, "locked": False}),
         "equipmentRequirements": deepcopy(session.get("equipmentRequirements") or {"weaponCategories": [], "requiresAdjustmentSystem": False, "allowedAdjustmentUnits": []}),
@@ -814,6 +958,7 @@ def _profile_from_execution_contract(contract: Mapping[str, Any]) -> Dict[str, A
         "officialMissionRequired": bool(session.get("officialMissionRequired", False)),
         "publisherIdentity": deepcopy(target["publisher"]),
         "productIdentity": deepcopy(target["product"]),
+        "registrationAuthority": registration_authority,
     }
 
 
@@ -1275,9 +1420,10 @@ def atp_fingerprint(profile: Mapping[str, Any]) -> str:
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "registrationAuthority": profile.get("registrationAuthority"),
+        "targetAuthorityGeometry": profile.get("targetAuthorityGeometry"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetupAuthority": profile["standardSetupAuthority"],
-        "standardSetup": standard_setup_for(profile),
+        "standardSetup": None if profile.get("requiresShooterConfiguredEquipment") else standard_setup_for(profile),
     }
     return digest(governed)
 
@@ -1305,7 +1451,9 @@ def prepare_session(
     use_standard_setup = candidates_raw is None or candidates_raw == []
     if candidates_raw is not None and not isinstance(candidates_raw, list):
         raise SessionAuthorityError("invalid_request", "equipment_candidates_must_be_an_array")
-    standard_setup = standard_setup_for(profile)
+    if use_standard_setup and profile.get("requiresShooterConfiguredEquipment"):
+        raise SessionAuthorityError("authority_unavailable", "explicit_equipment_configuration_required", 409)
+    standard_setup = standard_setup_for(profile) if use_standard_setup else None
     candidates = [standard_setup] if use_standard_setup else [
         normalize_equipment(candidate, index) for index, candidate in enumerate(candidates_raw, start=1)
     ]
@@ -1327,6 +1475,7 @@ def prepare_session(
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "registrationAuthority": profile.get("registrationAuthority"),
+        "targetAuthorityGeometry": profile.get("targetAuthorityGeometry"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetup": standard_setup,
         "equipmentCandidates": candidates,
@@ -1357,6 +1506,7 @@ def prepare_session(
         "governedDistance": profile["governedDistance"],
         "confirmationAuthority": profile.get("confirmationAuthority"),
         "registrationAuthority": profile.get("registrationAuthority"),
+        "targetAuthorityGeometry": profile.get("targetAuthorityGeometry"),
         "equipmentRequirements": profile["equipmentRequirements"],
         "standardSetup": standard_setup,
         "setupMode": "standard" if use_standard_setup else "shooter-selected",

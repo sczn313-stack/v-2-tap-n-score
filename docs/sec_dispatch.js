@@ -9,6 +9,7 @@
     QUALIFICATION_M16A2_ZEROING: "qualification-m16a2-zeroing",
     GUNFUN_32120_M16A2_ZEROING: "gunfun-32120-m16a2-zeroing",
     BAKER_100YD_ZEROING: "baker-100yd-zeroing",
+    HIGHWILD_SIGHT_IN_ZEROING: "highwild-sight-in-zeroing",
     BAKER_SL_ST1: "baker-sl-st1",
     GUNFUN_VITAL_DUDE: "gunfun-vital-dude-evidence",
     BAKER_SL_ST2_IDPA: "baker-sl-st2-idpa",
@@ -211,6 +212,9 @@
     if (target === "baker_st_100yd_smart_zero" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
       return ADAPTERS.BAKER_100YD_ZEROING;
     }
+    if (target === "highwild_bfz_1725_25lklsp_sight_in" && mission === "zeroingcorrection" && result === "zerocorrectionresult") {
+      return ADAPTERS.HIGHWILD_SIGHT_IN_ZEROING;
+    }
     if (target === "baker_sl_st1" && mission === "smartevidencecapture" && result === "smartevidenceresult") {
       return ADAPTERS.BAKER_SL_ST1;
     }
@@ -271,9 +275,24 @@
       return `sec.html?${params.toString()}`;
     }
     if (isContractAdapter(dispatch.adapter)) {
-      return `target-experience.html?session=${encodeURIComponent(sessionId)}&view=sec${localAuthoritySuffix()}`;
+      const snapshot = session && session.matrixSnapshot || {};
+      const pkg = dispatch.identity && dispatch.identity.package || {};
+      const params = new URLSearchParams({ session: sessionId, view: "sec" });
+      const targetId = text(dispatch.identity && dispatch.identity.targetProfileId);
+      const missionFamily = text(pkg.missionFamily || snapshot.missionFamily || dispatch.identity && dispatch.identity.missionFamily);
+      const experienceMode = text(snapshot.experienceMode);
+      // A preserved contract record must carry enough authoritative identity
+      // to reopen directly. Relying on a target-less recovery reload leaves the
+      // Vault link dependent on whichever target adapter happened to boot.
+      if (targetId) params.set("target", targetId);
+      if (missionFamily) params.set("missionFamily", missionFamily);
+      if (["simulation", "actual"].includes(experienceMode)) params.set("experienceMode", experienceMode);
+      return `target-experience.html?${params.toString()}${localAuthoritySuffix()}`;
     }
-    return `records.html?session=${encodeURIComponent(sessionId)}&view=sec`;
+    const simulationSuffix = new URLSearchParams(global.location && global.location.search || "").get("simulation") === "1"
+      ? "&simulation=1"
+      : "";
+    return `records.html?session=${encodeURIComponent(sessionId)}&view=sec${simulationSuffix}${localAuthoritySuffix()}`;
   }
 
   global.SCZN3SECDispatch = Object.freeze({

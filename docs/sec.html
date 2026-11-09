@@ -4,16 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>M4 Shooter Experience Card</title>
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=universal-target-relative-markers-2" />
 <link rel="stylesheet" href="m4-sec.css?v=item5-founder-refinements-2" />
 <link rel="stylesheet" href="workspace_correction_context.css?v=founder-session-context-overlay-0730" />
-<link rel="stylesheet" href="sec-framework.css?v=episode55-inheritance-audit-1" />
-<link rel="stylesheet" href="platform-ui.css?v=episode57-rate-us-cleanup-1" />
+<link rel="stylesheet" href="sec-framework.css?v=founder-six-1" />
+<link rel="stylesheet" href="platform-ui.css?v=mona-lisa-final-three-1" />
 <link rel="stylesheet" href="experience_frame_processing.css?v=universal-processing-visual-2" />
 <link rel="stylesheet" href="platform_actions.css?v=episode54-item7-1" />
+<link rel="stylesheet" href="founder_walk.css?v=3" />
+<link rel="stylesheet" href="m16a2_founder_walk_polish.css?v=4" />
 <script src="navigation.js?v=episode57-rate-us-cleanup-1" defer></script>
 <script src="experience_frame_processing.js?v=universal-processing-visual-2"></script>
 <script src="platform_actions.js?v=episode54-item7-1"></script>
+<script src="founder_walk_manifest.js?v=3" defer></script>
+<script src="founder_walk.js?v=3" defer></script>
 </head>
 <body>
 <main class="shell app-shell sec-shell">
@@ -59,15 +63,15 @@
 <script src="m4_sec_config.js?v=20260728-m4-sight-authority"></script>
 <script src="presentation_labels.js?v=universal-guidance-2"></script>
 <script src="platform_contracts.js?v=episode60-directional-authority-rivet-1"></script>
-<script src="sec_v1.js?v=episode54-item4d-1"></script>
+<script src="sec_v1.js?v=universal-result-drawer-1"></script>
 <script src="sec_adapter_model.js?v=episode54-item4a-1"></script>
-<script src="sec_framework.js?v=episode60-directional-authority-rivet-1"></script>
+<script src="sec_framework.js?v=library-sec-standard-1"></script>
 <script src="m4_zeroing_sec.js?v=episode54-item4d-1"></script>
 <script src="app_state.js?v=session-normalization-0727"></script>
 <script src="sec_dispatch.js?v=universal-sec-dispatch-1"></script>
 <script src="m4_runtime.js?v=shared-results-gate-0803"></script>
 <script src="sec_reopen_capability.js?v=universal-sec-reopen-authority-1"></script>
-<script src="sec_reopen_lifecycle.js?v=universal-sec-reopen-3"></script>
+<script src="sec_reopen_lifecycle.js?v=universal-result-drawer-1"></script>
 <script src="founder_review_session_003.js?v=founder-review-session-restored-0730-4"></script>
 <script>
 const SEC_QUERY = new URLSearchParams(window.location.search);
@@ -216,7 +220,6 @@ if (document.querySelector(".sec-preservation-actions")) document.querySelector(
   validation: false,
   share: true,
   print: true,
-  note: !historicalSnapshotMode,
   history: true
 });
 document.querySelector(".sec-preserved-history-row")?.append(document.getElementById("viewHistory"));
@@ -423,7 +426,6 @@ function renderSEC() {
   document.getElementById("secSessionTime").textContent = hasSessionTimestamp
     ? new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(sessionTimestamp)
     : "Not recorded";
-  document.getElementById("secNote").value = session.secNote || "";
   document.getElementById("beforeEvidenceMarkers").innerHTML =
     evidenceCard.overlay();
   renderConfirmation();
@@ -471,7 +473,7 @@ if (card) SCZN3Actions.bind(card, {
     message: "Preserving your Shooter Experience Card…",
     run: async () => {
       if (!SCZN3PlatformContracts.directionalAuthorityRelease(authority).releasable) return false;
-      const saved = SCZN3M4.preserveActiveSEC(document.getElementById("secNote").value.trim(), session);
+      const saved = SCZN3M4.preserveActiveSEC(session.secNote || "", session);
       document.getElementById("secActionStatus").textContent = saved ? "" : "SEC could not be preserved.";
       if (!saved) return false;
       await SCZN3SECReopenAuthority.provePossession(PRESERVED_SEC_ENDPOINT, saved);
@@ -488,16 +490,8 @@ if (card) SCZN3Actions.bind(card, {
       if (outcome === "copied") document.getElementById("secActionStatus").textContent = "SEC link copied.";
       return outcome !== "unavailable";
     }
-  },
-  "note-save": {
-    message: "Saving your note…",
-    run: () => {
-      const updated = SCZN3M4.updateActiveSession({ secNote: document.getElementById("secNote").value.trim() });
-      document.getElementById("secActionStatus").textContent = updated ? "Note saved to the active session." : "Note could not be saved.";
-      return Boolean(updated);
-    }
   }
-}, { noteEditorSelector: "[data-sczn3-note-editor]" });
+});
 
 window.SCZN3SECReopenLifecycle?.initialize(card);
 renderSEC();

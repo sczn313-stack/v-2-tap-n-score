@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from copy import deepcopy
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -30,6 +31,7 @@ TARGET_AUTHORITY_FAMILIES = {
     "targetScoring": "targetScoreResult",
 }
 EXECUTABLE_REGISTRATION_ROLES = {"scorable_canonical_asset", "evidence_capture_asset"}
+NEW_SESSION_SELECTION_FIELD = "newSessionSelection"
 
 
 class TargetExecutionContractError(Exception):
@@ -159,9 +161,14 @@ def validate_contract(package: Any, *, now: Optional[datetime] = None) -> Dict[s
         raise TargetExecutionContractError("mission_component_binding_mismatch")
     if mission_family == "targetScoring":
         from target_scoring_data_contract import TargetScoringDataContractError, validate_target_scoring_data
+        from ugo_complete_boundary_acceptance import UGOCompleteBoundaryError, validate_complete_boundary_acceptance
         try:
             validate_target_scoring_data(contract)
-        except TargetScoringDataContractError as exc:
+            # Embedded complete-boundary claims are always verified. Legacy
+            # contracts remain executable, but cannot earn a new N/N PASS
+            # until validate_contract_for_nn() proves this gate is present.
+            validate_complete_boundary_acceptance(contract, required=False)
+        except (TargetScoringDataContractError, UGOCompleteBoundaryError) as exc:
             raise TargetExecutionContractError(str(exc), "configuration_error") from exc
     for owner in ("executor", "secAdapter", "preservationValidator"):
         reference = contract.get(owner)
@@ -170,6 +177,18 @@ def validate_contract(package: Any, *, now: Optional[datetime] = None) -> Dict[s
     if not isinstance(contract.get("session"), Mapping) or not isinstance(contract.get("unsupportedUses"), list):
         raise TargetExecutionContractError("contract_session_or_unsupported_uses_invalid", "configuration_error")
     contract["contractFingerprint"] = digest(contract)
+    return contract
+
+
+def validate_contract_for_nn(package: Any, *, now: Optional[datetime] = None) -> Dict[str, Any]:
+    """Validate runtime authority plus the mandatory UGO complete-boundary gate."""
+    contract = validate_contract(package, now=now)
+    if contract.get("missionFamily") == "targetScoring":
+        from ugo_complete_boundary_acceptance import UGOCompleteBoundaryError, require_nn_complete_boundary
+        try:
+            contract["ugoCompleteBoundaryAcceptance"] = require_nn_complete_boundary(contract)
+        except UGOCompleteBoundaryError as exc:
+            raise TargetExecutionContractError(str(exc), "ugo_incomplete") from exc
     return contract
 
 
@@ -186,14 +205,74 @@ class TargetExecutionContractResolver:
                 resolve_owner(contract)
             except CapabilityRegistryError as exc:
                 raise TargetExecutionContractError(str(exc), "configuration_error", contractId=contract["contractId"]) from exc
+        self._validate_new_session_selections(validated)
         self._contracts = tuple(validated)
+
+    @staticmethod
+    def _validate_new_session_selections(contracts: Iterable[Mapping[str, Any]]) -> None:
+        """Validate explicit successor activation without changing legacy contracts.
+
+        Existing single-version contracts intentionally carry no selection metadata.
+        Once multiple versions coexist, exactly one approved successor must carry a
+        fingerprint-bound declaration naming every historical identity it supersedes.
+        """
+        values = list(contracts)
+        by_identity = {
+            (item["contractId"], item["contractVersion"], item["contractFingerprint"]): item
+            for item in values
+        }
+        for contract in values:
+            selection = contract.get(NEW_SESSION_SELECTION_FIELD)
+            if selection is None:
+                continue
+            if not isinstance(selection, Mapping) or selection.get("status") != "current":
+                raise TargetExecutionContractError(
+                    "contract_current_selection_invalid", "configuration_error",
+                    contractId=contract["contractId"],
+                )
+            supersedes = selection.get("supersedes")
+            if not isinstance(supersedes, list) or not supersedes:
+                raise TargetExecutionContractError(
+                    "contract_current_supersession_required", "configuration_error",
+                    contractId=contract["contractId"],
+                )
+            seen = set()
+            for identity in supersedes:
+                if not isinstance(identity, Mapping):
+                    raise TargetExecutionContractError("contract_superseded_identity_invalid", "configuration_error")
+                key = (
+                    _text(identity.get("contractId")),
+                    _text(identity.get("contractVersion")),
+                    _text(identity.get("contractFingerprint")),
+                )
+                if not all(key) or key in seen or key not in by_identity:
+                    raise TargetExecutionContractError(
+                        "contract_superseded_identity_invalid", "configuration_error",
+                        contractId=contract["contractId"],
+                    )
+                predecessor = by_identity[key]
+                if (
+                    predecessor["targetProfile"]["id"].lower() != contract["targetProfile"]["id"].lower()
+                    or predecessor["missionFamily"] != contract["missionFamily"]
+                    or predecessor is contract
+                ):
+                    raise TargetExecutionContractError(
+                        "contract_supersession_scope_mismatch", "configuration_error",
+                        contractId=contract["contractId"],
+                    )
+                seen.add(key)
 
     @staticmethod
     def _read_contracts(contract_dir: Path) -> list[Dict[str, Any]]:
         if not contract_dir.exists():
             return []
         packages = []
-        for path in sorted(contract_dir.glob("*.json")):
+        paths = sorted(contract_dir.glob("*.json"))
+        canonical_paths = set(paths)
+        for path in paths:
+            copied_name = re.fullmatch(r"(.+) (\d+)\.json", path.name)
+            if copied_name and path.with_name(f"{copied_name.group(1)}.json") in canonical_paths:
+                continue
             try:
                 packages.append(json.loads(path.read_text(encoding="utf-8")))
             except (OSError, json.JSONDecodeError) as exc:
@@ -205,11 +284,21 @@ class TargetExecutionContractResolver:
 
     def catalog(self) -> tuple[Dict[str, Any], ...]:
         """Return only the approved registration data needed by generic clients."""
+        from mona_lisa_scoring_governance import scoring_governance_for_target
+
         entries = []
+        grouped = {}
         for contract in self._contracts:
+            key = (contract["targetProfile"]["id"].lower(), contract["missionFamily"])
+            grouped.setdefault(key, []).append(contract)
+        current_contracts = [
+            self.resolve(group[0]["targetProfile"]["id"], group[0]["missionFamily"])
+            for group in grouped.values()
+        ]
+        for contract in current_contracts:
             target = contract["targetProfile"]
             registration = contract["components"]["registration"]["definition"]
-            entries.append({
+            entry = {
                 "targetProfileId": target["id"],
                 "targetProfileVersion": target["version"],
                 "publisher": deepcopy(target["publisher"]),
@@ -226,7 +315,11 @@ class TargetExecutionContractResolver:
                     "assetAlt": registration.get("assetAlt"),
                     "coordinateConvention": registration.get("coordinateConvention"),
                 },
-            })
+            }
+            governance = scoring_governance_for_target(target["id"])
+            if governance is not None:
+                entry["scoringGovernance"] = governance
+            entries.append(entry)
         return tuple(entries)
 
     def capabilities_for_target(self, target_profile_id: Any) -> tuple[Dict[str, Any], ...]:
@@ -241,9 +334,40 @@ class TargetExecutionContractResolver:
             matches = [item for item in matches if item["missionFamily"] == family]
         if not matches:
             raise TargetExecutionContractError("execution_contract_unavailable", targetProfileId=target_profile_id, missionFamily=family or None)
-        if len(matches) != 1:
-            raise TargetExecutionContractError("execution_contract_ambiguous", targetProfileId=target_profile_id, missionFamily=family or None)
-        return deepcopy(matches[0])
+        if len(matches) == 1:
+            return deepcopy(matches[0])
+        current = [
+            item for item in matches
+            if isinstance(item.get(NEW_SESSION_SELECTION_FIELD), Mapping)
+            and item[NEW_SESSION_SELECTION_FIELD].get("status") == "current"
+        ]
+        if len(current) != 1:
+            raise TargetExecutionContractError(
+                "execution_contract_ambiguous",
+                targetProfileId=target_profile_id,
+                missionFamily=family or None,
+                currentSelectionStatus="explicit_current_required" if not current else "multiple_explicit_current",
+            )
+        declared = {
+            (
+                _text(identity.get("contractId")),
+                _text(identity.get("contractVersion")),
+                _text(identity.get("contractFingerprint")),
+            )
+            for identity in current[0][NEW_SESSION_SELECTION_FIELD]["supersedes"]
+        }
+        historical = {
+            (item["contractId"], item["contractVersion"], item["contractFingerprint"])
+            for item in matches if item is not current[0]
+        }
+        if declared != historical:
+            raise TargetExecutionContractError(
+                "execution_contract_ambiguous",
+                targetProfileId=target_profile_id,
+                missionFamily=family or None,
+                currentSelectionStatus="supersession_set_mismatch",
+            )
+        return deepcopy(current[0])
 
     def resolve_identity(self, identity: Mapping[str, Any]) -> Dict[str, Any]:
         contract_id = _text(identity.get("contractId"))
