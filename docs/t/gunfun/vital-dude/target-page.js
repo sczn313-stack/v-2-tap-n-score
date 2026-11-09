@@ -7,7 +7,7 @@
   const MISSION_ID = "GUNFUN_22740_EVIDENCE_CAPTURE_V1";
   const local = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
   const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
-  const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority.onrender.com");
+  const authorityOrigin = local ? "http://127.0.0.1:8098" : (privateLan ? "" : "https://sczn3-authority-staging-ep64.onrender.com");
   const analyzeEndpoint = `${authorityOrigin}/api/target/gunfun/vital-dude/analyze`;
   const preservedSecEndpoint = `${authorityOrigin}/api/session/sec`;
 

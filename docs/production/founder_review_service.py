@@ -28,7 +28,7 @@ BACKEND_HOST = "127.0.0.1"
 BACKEND_PORT = int(os.environ.get("SCZN3_REVIEW_BACKEND_PORT", "8098"))
 PUBLIC_HOST = os.environ.get("HOST", "0.0.0.0")
 PUBLIC_PORT = int(os.environ.get("PORT", "8096"))
-PRODUCTION_AUTHORITY_ORIGIN = "https://sczn3-authority.onrender.com"
+PRODUCTION_AUTHORITY_ORIGIN = "https://sczn3-authority-staging-ep64.onrender.com"
 
 BLOCKED_STATIC_ROOTS = {
     ".git",

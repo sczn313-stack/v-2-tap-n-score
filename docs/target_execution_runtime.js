@@ -2116,7 +2116,7 @@
     const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(global.location && global.location.hostname || "") || /\.local$/i.test(global.location && global.location.hostname || "");
     const authorityPort = localAuthorityPort();
     const sameLocalAuthority = local && (!authorityPort || authorityPort === clean(global.location && global.location.port));
-    const origin = local ? (sameLocalAuthority ? "" : `http://127.0.0.1:${authorityPort || "8098"}`) : (privateLan ? "" : "https://sczn3-authority.onrender.com");
+    const origin = local ? (sameLocalAuthority ? "" : `http://127.0.0.1:${authorityPort || "8098"}`) : (privateLan ? "" : "https://sczn3-authority-staging-ep64.onrender.com");
     const endpoint = `${origin}/api/session/sec`;
     let localHistory = [];
     try {
@@ -2541,7 +2541,7 @@
     const privateLan = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) || /\.local$/i.test(location.hostname);
     const authorityPort = localAuthorityPort();
     const sameLocalAuthority = local && (!authorityPort || authorityPort === clean(location.port));
-    const authorityOrigin = local ? (sameLocalAuthority ? "" : `http://127.0.0.1:${authorityPort || "8098"}`) : (privateLan ? "" : "https://sczn3-authority.onrender.com");
+    const authorityOrigin = local ? (sameLocalAuthority ? "" : `http://127.0.0.1:${authorityPort || "8098"}`) : (privateLan ? "" : "https://sczn3-authority-staging-ep64.onrender.com");
     const equipmentDraftKey = "SCZN3_ACTIVE_TARGET_EQUIPMENT_RETURN_DRAFT";
     const equipmentFields = ["setupId", "setupName", "weaponCategory", "weaponManufacturer", "weaponModelType", "weaponModelCaliber", "weaponCatalogManufacturer", "weaponCatalogModel", "weaponCatalogCaliber", "opticType", "opticBrand", "opticModel", "opticAdjustmentUnit", "opticClickValue", "adjustmentSystem", "ammoCaliber", "ammoManufacturer", "ammoLoad", "bulletWeight"];
     // Missing interaction authority must fail closed.  MARK AIM is shown only

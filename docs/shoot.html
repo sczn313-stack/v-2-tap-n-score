@@ -369,7 +369,7 @@ if (SIMULATION_MODE && !session) matrix = simulationTargetMatrix();
 const AUTHORITY_ENDPOINT_META = document.querySelector('meta[name="sczn3-authority-endpoint"]');
 const PRODUCTION_AUTHORITY_ENDPOINT = AUTHORITY_ENDPOINT_META && AUTHORITY_ENDPOINT_META.content
   ? AUTHORITY_ENDPOINT_META.content.trim()
-  : "https://sczn3-authority.onrender.com/api/authority/ugeo";
+  : "https://sczn3-authority-staging-ep64.onrender.com/api/authority/ugeo";
 const LOCAL_AUTHORITY_ENDPOINT = "http://127.0.0.1:8098/api/authority/ugeo";
 const IS_LOCAL_FRONTEND = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
 const IS_FOUNDER_LAN_REVIEW = TARGET_QUERY.get("founder_review") === "1"

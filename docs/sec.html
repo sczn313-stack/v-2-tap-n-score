@@ -81,7 +81,7 @@ const historicalSnapshotMode = Boolean(requestedSessionId);
 const vaultThumbnailMode = SEC_QUERY.get("vaultThumbnail") === "1";
 const SEC_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
 const SEC_FOUNDER_REVIEW = SEC_QUERY.get("founder_review") === "1";
-const PRESERVED_SEC_ENDPOINT = `${SEC_FOUNDER_REVIEW ? window.location.origin : SEC_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/session/sec`;
+const PRESERVED_SEC_ENDPOINT = `${SEC_FOUNDER_REVIEW ? window.location.origin : SEC_LOCAL ? "http://127.0.0.1:8098" : "https://sczn3-authority-staging-ep64.onrender.com"}/api/session/sec`;
 const persistedSession = SCZN3M4.read(SCZN3M4.KEYS.activeSession, null);
 const requestedPersistedSession = requestedSessionId
   ? SCZN3M4.getSessionHistory().find(candidate => candidate && candidate.sessionId === requestedSessionId) || null

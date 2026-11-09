@@ -157,7 +157,7 @@
   function endpoint() {
     if (clean(global.__SCZN3_RATE_US_ENDPOINT__)) return clean(global.__SCZN3_RATE_US_ENDPOINT__);
     const local = ["127.0.0.1", "localhost"].includes(global.location.hostname);
-    return `${local ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com"}/api/feedback/rating`;
+    return `${local ? "http://127.0.0.1:8098" : "https://sczn3-authority-staging-ep64.onrender.com"}/api/feedback/rating`;
   }
 
   function dialog() {

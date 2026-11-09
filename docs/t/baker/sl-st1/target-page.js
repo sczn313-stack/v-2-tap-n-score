@@ -5,7 +5,7 @@
   const SESSION_TARGET_ID = "baker_sl_st1";
   const VARIANT_ID = "BAKER_SL_ST1_23X35_STANDARD_WHITE";
   const local = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
-  const authorityOrigin = local ? "http://127.0.0.1:8098" : "https://sczn3-authority.onrender.com";
+  const authorityOrigin = local ? "http://127.0.0.1:8098" : "https://sczn3-authority-staging-ep64.onrender.com";
   const analyzeEndpoint = `${authorityOrigin}/api/target/baker-sl-st1/analyze`;
   const fixtureCaptureEndpoint = `${authorityOrigin}/api/target/baker-sl-st1/founder-fixture`;
   const preservedSecEndpoint = `${authorityOrigin}/api/session/sec`;

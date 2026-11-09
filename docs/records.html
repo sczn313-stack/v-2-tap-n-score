@@ -102,7 +102,7 @@ function preserveRecordsAuthority(destination) {
   return url.href;
 }
 let vaultCorrectionVectorSequence = 0;
-const PRESERVED_SEC_ENDPOINT = `${RECORDS_AUTHORITY_ORIGIN || (PREPARED_DEMO_MODE || RECORDS_PRIVATE_LAN || RECORDS_LOCAL ? window.location.origin : "https://sczn3-authority.onrender.com")}/api/session/sec`;
+const PRESERVED_SEC_ENDPOINT = `${RECORDS_AUTHORITY_ORIGIN || (PREPARED_DEMO_MODE || RECORDS_PRIVATE_LAN || RECORDS_LOCAL ? window.location.origin : "https://sczn3-authority-staging-ep64.onrender.com")}/api/session/sec`;
 let serverSavedSessions = [];
 let serverTimelineRecords = [];
 let localVaultSessions = null;

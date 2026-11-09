@@ -32,6 +32,7 @@ const publicFiles = [
   "tst12-universal-experience.css",
   "tst12-station-results.css",
   "tst12_presentation_identity.json",
+  "staging_deployment_identity.json",
   "t/gssf/ac1/index.html",
   "t/baker/sl-st1/index.html",
   "t/baker/sl-st1/target-page.css",
