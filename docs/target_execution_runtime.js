@@ -2623,7 +2623,8 @@
       byId("contractScoringCaliber").value = clean(state.session.scoringCaliber);
       const angularUnit = byId("tst12AngularUnit");
       if (angularUnit) angularUnit.value = clean(snapshot.angularUnit || snapshot.opticAdjustmentUnit).toUpperCase() === "MRAD" ? "MRAD" : "MOA";
-      byId("contractEquipmentSummary").textContent = sessionEquipmentSummary(snapshot);
+      const equipmentSummary = byId("contractEquipmentSummary");
+      if (equipmentSummary) equipmentSummary.textContent = sessionEquipmentSummary(snapshot);
       const expectedNode = byId("contractExpectedDistance");
       expectedNode.hidden = !(expected && Number.isFinite(Number(expected.value)));
       expectedNode.textContent = expectedNode.hidden ? "" : `Expected distance: ${expected.display || `${expected.value} ${clean(expected.unit).toUpperCase() === "M" ? "m" : "yds"}`}`;

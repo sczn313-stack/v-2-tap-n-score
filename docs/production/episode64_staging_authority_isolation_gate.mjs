@@ -32,6 +32,8 @@ const identity = JSON.parse(await readFile(path.join(output, "staging_deployment
 assert.equal(identity.authorityOrigin, stagingOrigin);
 assert.equal(identity.productionFallback, false);
 assert.equal(identity.environment, "staging");
+const runtime = await readFile(path.join(output, "target_execution_runtime.js"), "utf8");
+assert.match(runtime, /const equipmentSummary = byId\("contractEquipmentSummary"\);\s*if \(equipmentSummary\)/, "Actual Round exact reopen tolerates its intentionally absent setup summary");
 
 console.log(JSON.stringify({
   ok: true,
