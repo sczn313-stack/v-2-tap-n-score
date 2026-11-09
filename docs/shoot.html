@@ -5548,7 +5548,7 @@ function handleTargetImageSelection(event) {
       registrationPackageVersion: registrationAuthority && registrationAuthority.registrationPackageVersion || exactRegistration && exactRegistration.authorityVersion,
       canonicalAssetSha256: exactRegistration && exactRegistration.sha256,
       canonicalCoordinateSystemVersion: exactRegistration && exactRegistration.coordinateSystemVersion,
-      sourceImageSha256: imageEvidence.sha256,
+      sourceImageSha256: governedImageEvidence.sha256,
       imageWidthPx: governedImageEvidence.width,
       imageHeightPx: governedImageEvidence.height,
       originalSourceImageSha256: imageEvidenceBundle.original.sha256,
