@@ -209,11 +209,15 @@ async function exercise(page, variant, mode) {
   const saved = await saveResponse.json();
   const authoritativeScore = Number(saved.session?.authorityPackage?.scoring?.total);
   assert.ok(Number.isFinite(authoritativeScore), "saved SEC retains the authoritative score");
+  assert.match(String(saved.reopenCapability || ""), /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/, "save returns the signed exact-reopen capability");
   const vaultLink = page.locator("#contractSecRoot").getByRole("link", { name: "Ballistic Vault", exact: true });
   await vaultLink.waitFor();
+  assert.match(String(await vaultLink.getAttribute("href") || ""), /#secReopenCapability=/, "Vault link carries the exact session capability in its non-request fragment");
   await vaultLink.click();
   await page.getByRole("heading", { name: "BALLISTIC VAULT", exact: true }).waitFor();
-  const record = page.locator("article.vault-record-summary").first();
+  assert.match(page.url(), /#secReopenCapability=/, "Vault navigation preserves the signed capability fragment");
+  assert.ok(await page.evaluate(sessionId => window.SCZN3SECReopenAuthority?.fragmentCapability(sessionId), saved.session.sessionId), "Vault activates the signed capability for the exact saved session");
+  const record = page.locator(`article.vault-record-summary[data-session-id="${saved.session.sessionId}"]`);
   await record.waitFor();
   assert.match(await record.innerText(), new RegExp(`TOTAL POINTS\\s*${authoritativeScore}`), "Vault displays the same authoritative score");
   await record.locator("a.vault-record-link").click();
@@ -242,7 +246,7 @@ async function assertAbandonedVisitCreatesNoSession(context, variant, mode) {
   const query = new URLSearchParams({ target: variant.id, missionFamily: "targetScoring", experienceMode: mode, authorityPort, v: "deferred-session-zero-tap-1" });
   if (mode === "simulation") query.set("source", "registered");
   await page.goto(`${origin}/target-experience.html?${query}`, { waitUntil: "domcontentloaded" });
-  await page.locator("#contractStatus").waitFor();
+  await page.locator("#contractStatus").waitFor({ state: "attached" });
   await page.locator("#tst12ReadToggle").click();
   await page.locator("#tst12HearInstructions").click();
   await page.locator("#tst12NarrationStop").click();

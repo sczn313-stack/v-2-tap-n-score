@@ -28,7 +28,7 @@ for (const file of textFiles) {
 }
 
 assert.ok(stagingReferences > 0, "built package contains the governed staging authority origin");
-const identity = JSON.parse(await readFile(path.join(output, "staging_deployment_identity.json"), "utf8"));
+const identity = JSON.parse(await readFile(path.join(output, "deployment_identity.json"), "utf8"));
 assert.equal(identity.authorityOrigin, stagingOrigin);
 assert.equal(identity.productionFallback, false);
 assert.equal(identity.environment, "staging");

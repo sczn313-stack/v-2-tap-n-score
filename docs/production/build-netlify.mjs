@@ -1,12 +1,33 @@
-import { cp, mkdir, rm } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { collectExecutionContractAssets } from "./collect_execution_contract_assets.mjs";
 
 const root = process.cwd();
 const output = path.join(root, "dist", "netlify");
+const environments = Object.freeze({
+  staging: Object.freeze({
+    authorityOrigin: "https://sczn3-authority-staging-ep64.onrender.com",
+    frontendOrigin: "https://tap-n-score-tst12-staging-ep64.netlify.app",
+    configurationIdentity: "sczn3-ep64-staging-routing-20261109-1",
+    candidateIdentity: "sczn3-ep64-tst12-staging-20261109-1"
+  }),
+  production: Object.freeze({
+    authorityOrigin: "https://sczn3-authority.onrender.com",
+    frontendOrigin: "https://tap-n-score.com",
+    configurationIdentity: "sczn3-ep64-production-routing-20261109-1",
+    candidateIdentity: "sczn3-ep64-tst12-production-candidate-20261109-1"
+  })
+});
+const environment = process.env.SCZN3_DEPLOYMENT_ENV || "staging";
+const deployment = environments[environment];
+if (!deployment) {
+  throw new Error(`Unsupported SCZN3_DEPLOYMENT_ENV: ${environment}`);
+}
+const sourceIdentity = JSON.parse(await readFile(path.join(root, "staging_deployment_identity.json"), "utf8"));
+const staging = environments.staging;
 
 const publicFiles = [
-  "_redirects",
   "favicon.ico",
   "index.html",
   "survey.html",
@@ -32,7 +53,6 @@ const publicFiles = [
   "tst12-universal-experience.css",
   "tst12-station-results.css",
   "tst12_presentation_identity.json",
-  "staging_deployment_identity.json",
   "t/gssf/ac1/index.html",
   "t/baker/sl-st1/index.html",
   "t/baker/sl-st1/target-page.css",
@@ -128,4 +148,49 @@ for (const relativePath of publicFiles) {
 await cp(path.join(root, "assets"), path.join(output, "assets"), { recursive: true });
 await rm(path.join(output, "assets", "M4_TARGET_AUTHORITY_v1_ORIGINAL_PLACEHOLDER.txt"), { force: true });
 
-console.log(`Built ${publicFiles.length} public files plus assets for Netlify.`);
+async function filesBelow(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const candidate = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await filesBelow(candidate));
+    if (entry.isFile()) files.push(candidate);
+  }
+  return files;
+}
+
+const textExtensions = new Set([".css", ".html", ".js", ".json", ".mjs", ".svg", ".txt"]);
+for (const file of await filesBelow(output)) {
+  if (!textExtensions.has(path.extname(file).toLowerCase())) continue;
+  const source = await readFile(file, "utf8");
+  const configured = source
+    .replaceAll(staging.authorityOrigin, deployment.authorityOrigin)
+    .replaceAll(staging.frontendOrigin, deployment.frontendOrigin)
+    .replaceAll(staging.configurationIdentity, deployment.configurationIdentity)
+    .replaceAll(staging.candidateIdentity, deployment.candidateIdentity);
+  if (configured !== source) await writeFile(file, configured);
+}
+
+const redirectSource = await readFile(path.join(root, "_redirects"), "utf8");
+await writeFile(
+  path.join(output, "_redirects"),
+  redirectSource.replaceAll(staging.authorityOrigin, deployment.authorityOrigin)
+);
+
+const deploymentIdentity = {
+  ...sourceIdentity,
+  schemaVersion: "sczn3.deployment-identity.v1",
+  configurationIdentity: deployment.configurationIdentity,
+  candidateIdentity: deployment.candidateIdentity,
+  candidateCommit: process.env.SCZN3_CANDIDATE_COMMIT || execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(),
+  authorityOrigin: deployment.authorityOrigin,
+  frontendOrigin: deployment.frontendOrigin,
+  environment,
+  productionFallback: false
+};
+await writeFile(
+  path.join(output, "deployment_identity.json"),
+  `${JSON.stringify(deploymentIdentity, null, 2)}\n`
+);
+
+console.log(`Built ${publicFiles.length} public files plus assets for Netlify (${environment}).`);

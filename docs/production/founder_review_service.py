@@ -53,7 +53,7 @@ TEXT_SUFFIXES = {".css", ".html", ".js", ".json", ".mjs", ".svg", ".txt", ".xml"
 FORWARDED_REQUEST_HEADERS = {
     "content-type",
     "idempotency-key",
-    "x-sczn3-sec-reopen",
+    "x-sczn3-sec-reopen-capability",
 }
 FORWARDED_RESPONSE_HEADERS = {
     "content-type",

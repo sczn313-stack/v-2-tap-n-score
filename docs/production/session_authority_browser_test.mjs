@@ -147,10 +147,12 @@ try {
             }
           : null;
         await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+          ok: true,
           target_profile_id: targetId,
           targetProfileId: targetId,
           mission_family: "zeroingCorrection",
           missionFamilyId: "zeroingCorrection",
+          resultPackageType: "zeroCorrectionResult",
           phase,
           inputs: { aimCoordinate: aim, impactCoordinates: impacts, confirmedAimPoint: aim },
           impacts,
@@ -231,7 +233,7 @@ try {
     }
 
     const page = await context.newPage();
-    await page.goto(`${baseUrl}/matrix.html?target_profile_id=${encodeURIComponent(targetId)}`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}/matrix.html?target_profile_id=${encodeURIComponent(targetId)}`, { waitUntil: "domcontentloaded" });
     await page.locator("#standardSetupPanel:not(.is-hidden)").waitFor();
     assert.match(await page.locator("#standardSetupPanel").textContent(), /This target will use the Standard Setup shown below\./);
     assert.equal(await page.locator("#standardSetupPanel button").count(), 2);
@@ -240,10 +242,8 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     await page.locator("#continueStandardSetup").click();
     await page.waitForURL(url => url.pathname.endsWith("/shoot.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
-    const stored = await page.evaluate(sessionId => {
-      const key = `SCZN3_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
-      return JSON.parse(localStorage.getItem(key));
-    }, `sczn3-session-browser-${targetId}`);
+    await page.waitForFunction(sessionId => window.SCZN3M4?.getSessionHistory?.().some(session => session.authoritativeSessionId === sessionId), `sczn3-session-browser-${targetId}`);
+    const stored = await page.evaluate(sessionId => window.SCZN3M4.getSessionHistory().find(session => session.authoritativeSessionId === sessionId), `sczn3-session-browser-${targetId}`);
     assert.equal(stored.authoritativeSessionId, `sczn3-session-browser-${targetId}`);
     assert.equal(stored.sessionIdAuthority, "backend");
     assert.equal(stored.sessionNumberAuthority, "device-local-temporary");
@@ -253,7 +253,12 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     if (targetId === "baker_st_100yd_smart_zero") {
       await page.locator("#targetImageInput").setInputFiles("assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png");
-      await page.locator("#markSurface").waitFor();
+      await page.locator("#precisionTapViewport").waitFor({ state: "visible" });
+      await page.waitForFunction(() => {
+        const surface = document.getElementById("markSurface");
+        const image = surface?.querySelector("img");
+        return Boolean(image?.complete && image.naturalWidth > 0 && surface.getBoundingClientRect().width > 0);
+      });
       const targetBox = await page.locator("#markSurface").boundingBox();
       assert(targetBox, "100 Yard target surface must be rendered");
       const tap = async (x, y) => page.mouse.click(targetBox.x + targetBox.width * x, targetBox.y + targetBox.height * y);
@@ -261,15 +266,19 @@ try {
       await tap(0.44, 0.45);
       await tap(0.46, 0.47);
       await tap(0.48, 0.46);
+      await page.waitForFunction(() => document.querySelectorAll("#markerLayer .aim-marker").length === 1 && document.querySelectorAll("#markerLayer .impact-marker").length === 3);
       await page.locator("#showResults").click();
       await page.locator('.sczn3-live-correction-card[data-axis="windage"]').waitFor();
       assert.equal(await page.locator("#missionWorkspaceGuidance").isVisible(), true);
-      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /Apply the correction, then begin confirmation\./);
-      assert.match(await page.locator("#saveMarks").textContent(), /Apply the Correction, Then Begin Confirmation/);
+      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /Apply your clicks, then shoot your confirmation shots\./);
+      assert.match(await page.locator("#saveMarks").textContent(), /Begin Confirmation/);
       await page.locator("#saveMarks").click();
       await page.waitForFunction(() => document.body.dataset.m4LivePhase === "confirmation");
       assert.equal(await page.locator("#missionWorkspaceGuidance").isVisible(), true);
-      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /On the confirmation target photo, tap only the new confirmation bullet holes\./);
+      assert.match(await page.locator("#missionWorkspaceGuidance").textContent(), /Shoot a confirmation group, take another photo, then tap only the new confirmation bullet holes\./);
+      await page.locator("#targetImageInput").setInputFiles("assets/BAKER_ST_100YD_SMART_AUTHORITY_v1_ORIGINAL.png");
+      await page.locator("#precisionTapViewport").waitFor({ state: "visible" });
+      await page.waitForFunction(() => document.querySelector("#markSurface img")?.naturalWidth > 0);
       await tap(0.495, 0.50);
       await tap(0.50, 0.495);
       await tap(0.505, 0.50);
@@ -278,10 +287,8 @@ try {
       assert.deepEqual(zeroingAuthorityPhases, ["initial", "confirmation"]);
       await page.locator("#saveMarks").click();
       await page.waitForURL(url => url.pathname.endsWith("/records.html") && url.searchParams.get("session") === `sczn3-session-browser-${targetId}`);
-      const completed = await page.evaluate(sessionId => {
-        const key = `SCZN3_SESSION_RECORD_${encodeURIComponent(sessionId)}`;
-        return JSON.parse(localStorage.getItem(key));
-      }, `sczn3-session-browser-${targetId}`);
+      await page.waitForFunction(sessionId => window.SCZN3M4?.getSessionHistory?.().some(session => session.authoritativeSessionId === sessionId && session.savedToSEC === true), `sczn3-session-browser-${targetId}`);
+      const completed = await page.evaluate(sessionId => window.SCZN3M4.getSessionHistory().find(session => session.authoritativeSessionId === sessionId), `sczn3-session-browser-${targetId}`);
       assert.equal(completed.savedToSEC, true);
       assert.equal(completed.confirmationStatus, "Recorded");
       assert.equal(completed.confirmationImpactPoints.length, 3);
@@ -346,7 +353,7 @@ try {
       }) });
     });
     const desktopPage = await desktopContext.newPage();
-    await desktopPage.goto(`${baseUrl}/matrix.html?target_profile_id=${encodeURIComponent(targetId)}`, { waitUntil: "networkidle" });
+    await desktopPage.goto(`${baseUrl}/matrix.html?target_profile_id=${encodeURIComponent(targetId)}`, { waitUntil: "domcontentloaded" });
     await desktopPage.locator("#standardSetupPanel:not(.is-hidden)").waitFor();
     assert.equal(await desktopPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
     await desktopContext.close();
@@ -377,7 +384,7 @@ try {
     }) });
   });
   const setupChoicePage = await setupChoiceContext.newPage();
-  await setupChoicePage.goto(`${baseUrl}/matrix.html?target_profile_id=gssf_ac_1`, { waitUntil: "networkidle" });
+  await setupChoicePage.goto(`${baseUrl}/matrix.html?target_profile_id=gssf_ac_1`, { waitUntil: "domcontentloaded" });
   await setupChoicePage.locator("#standardSetupPanel:not(.is-hidden)").waitFor();
   await setupChoicePage.locator("#chooseWeaponSetup").click();
   assert.equal(await setupChoicePage.locator("#standardSetupPanel").evaluate(node => node.classList.contains("is-hidden")), true);
@@ -438,7 +445,7 @@ try {
     await route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ ok: false, reason: "test_stop" }) });
   });
   const savedSetupPage = await savedSetupContext.newPage();
-  await savedSetupPage.goto(`${baseUrl}/matrix.html?target_profile_id=gssf_ac_1`, { waitUntil: "networkidle" });
+  await savedSetupPage.goto(`${baseUrl}/matrix.html?target_profile_id=gssf_ac_1`, { waitUntil: "domcontentloaded" });
   await savedSetupPage.waitForFunction(() => /You can use this Smart Target with Most Recent Compatible Pistol/.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
   assert.match(await savedSetupPage.locator("#sessionAuthorityStatus").textContent(), /calculate your Official GSSF Score/);
   assert.match(await savedSetupPage.locator("#sessionAuthorityStatus").textContent(), /Tap Go To Target to begin/);
@@ -503,7 +510,7 @@ try {
     }) });
   });
   const admittedPage = await admittedContext.newPage();
-  await admittedPage.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "networkidle" });
+  await admittedPage.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "domcontentloaded" });
   await admittedPage.waitForFunction(() => /Ready to shoot\. Tap Go To Target\./.test(document.getElementById("sessionAuthorityStatus")?.textContent || ""));
   assert.equal((await admittedPage.locator("#sessionAuthorityStatus").textContent()).trim(), "Ready to shoot. Tap Go To Target.");
   assert.doesNotMatch(await admittedPage.locator("#sessionAuthorityStatus").textContent(), /official mission|authority|verified for that mission/i);
@@ -523,7 +530,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   await context.route("**/api/session/prepare", route => route.abort("failed"));
   const page = await context.newPage();
-  await page.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "networkidle" });
+  await page.goto(`${baseUrl}/matrix.html?target_profile_id=m4_25m_zero`, { waitUntil: "domcontentloaded" });
   await page.evaluate(() => setForm({
     weaponCategory: "Rifle",
     weaponManufacturer: "Colt",

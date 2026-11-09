@@ -55,8 +55,9 @@ assert.equal(session.targetEvidenceImage.sha256, "100-yard-photo-hash-unchanged"
 assert.deepEqual(session.authorityPackage.renderCoordinates.impacts, pkg.renderCoordinates.impacts);
 
 assert.match(recordsSource, /const SCZN3Baker100YardSEC = \(\(\) => \{/);
-assert.match(recordsSource, /registry\.createViewModel\(SEC_ADAPTER_ID, \{ session \}\)/);
-assert.match(recordsSource, /SEC_ADAPTER_ID = "baker-100yd-zeroing"/);
+assert.match(recordsSource, /window\.SCZN3SECDispatch\.resolve\(session\)/);
+assert.match(recordsSource, /window\.SCZN3SECDispatch\.ADAPTERS\.BAKER_100YD_ZEROING/);
+assert.match(recordsSource, /registry\.createViewModel\(adapterId, \{ session \}\)/);
 assert.match(recordsSource, /return SCZN3SEC\.render\(\{/);
 assert.match(recordsSource, /data-sec-adapter-id/);
 assert.match(recordsSource, /data-scoring-presentation-family/);

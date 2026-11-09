@@ -1,4 +1,9 @@
 """Contract tests for the Baker SL-ST1 Phase 4 evidence endpoint."""
+import json
+import tempfile
+from pathlib import Path
+
+import baker_sl_st1_target_page as target_page
 from baker_sl_st1_target_page import BakerSLST1EvidenceError, analyze_baker_sl_st1_evidence
 
 
@@ -68,6 +73,18 @@ def run():
     bad_image = evidence_payload()
     bad_image["imageEvidence"]["sha256"] = "not-a-hash"
     expect_reason(bad_image, "image_sha256_required")
+
+    original_atp_path = target_page.ATP_PATH
+    atp = json.loads(original_atp_path.read_text(encoding="utf-8"))
+    atp["bindings"]["smartTargetIdentity"]["sha256"] = "0" * 64
+    with tempfile.TemporaryDirectory() as directory:
+        mismatched_atp_path = Path(directory) / "ATP_BAKER_SL_ST1_PRACTICE_V1.json"
+        mismatched_atp_path.write_text(json.dumps(atp), encoding="utf-8")
+        target_page.ATP_PATH = mismatched_atp_path
+        try:
+            expect_reason(evidence_payload(), "identity_binding_mismatch")
+        finally:
+            target_page.ATP_PATH = original_atp_path
 
     print("PASS Baker SL-ST1 Phase 4 backend evidence contract")
 
