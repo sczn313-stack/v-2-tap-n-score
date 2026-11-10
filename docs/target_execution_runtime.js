@@ -39,6 +39,62 @@
     return null;
   }
 
+  function createLatestOnlyPreviewScheduler({ execute, apply, onError = () => {} }) {
+    let activeSnapshot = null;
+    let pendingSnapshot = null;
+    let latestSnapshotKey = "";
+    let lastRequestedKey = "";
+    let cachedResult = null;
+
+    async function run(snapshot) {
+      activeSnapshot = snapshot;
+      lastRequestedKey = snapshot.key;
+      try {
+        const result = await execute(snapshot);
+        if (latestSnapshotKey === snapshot.key) {
+          cachedResult = { key: snapshot.key, result };
+          apply(snapshot, result);
+        }
+      } catch (error) {
+        onError(error, snapshot);
+      } finally {
+        activeSnapshot = null;
+        const next = pendingSnapshot;
+        pendingSnapshot = null;
+        if (next && next.key === latestSnapshotKey && next.key !== lastRequestedKey) void run(next);
+      }
+    }
+
+    return Object.freeze({
+      schedule(snapshot) {
+        if (!snapshot || !clean(snapshot.key)) {
+          latestSnapshotKey = "";
+          pendingSnapshot = null;
+          lastRequestedKey = "";
+          cachedResult = null;
+          return;
+        }
+        latestSnapshotKey = snapshot.key;
+        if (cachedResult && cachedResult.key === snapshot.key) {
+          apply(snapshot, cachedResult.result);
+          return;
+        }
+        if (activeSnapshot) {
+          pendingSnapshot = activeSnapshot.key === snapshot.key ? null : snapshot;
+          return;
+        }
+        // Repainting for station selection must not repeat an unchanged
+        // preview. A later observation/caliber snapshot receives a new key.
+        if (lastRequestedKey === snapshot.key) return;
+        void run(snapshot);
+      }
+    });
+  }
+
+  if (global.__SCZN3_TEST_HOOKS__ && typeof global.__SCZN3_TEST_HOOKS__ === "object") {
+    global.__SCZN3_TEST_HOOKS__.createLatestOnlyPreviewScheduler = createLatestOnlyPreviewScheduler;
+  }
+
   function runtimeId() {
     if (global.crypto && typeof global.crypto.randomUUID === "function") return global.crypto.randomUUID();
     const bytes = new Uint8Array(16);
@@ -2883,49 +2939,73 @@
       }, {});
     }
 
-    let tst12MarkerClassificationSequence = 0;
-    async function refreshTst12MarkerClassifications() {
-      const sequence = ++tst12MarkerClassificationSequence;
-      if (document.body.dataset.tst12Experience !== "true" || !state.observations.length) return;
+    function applyTst12MarkerClassifications(snapshot, result) {
+      const classifications = Array.isArray(result && result.classifications) ? result.classifications : [];
+      const classificationByIdentity = new Map(classifications
+        .map(classification => [observationIdentity(classification), classification])
+        .filter(([identity]) => identity));
+      byId("contractMarkers").querySelectorAll(".contract-observation-marker").forEach(marker => {
+        const index = Number(marker.dataset.shotIndex) - 1;
+        const observation = snapshot.sourceObservations[index];
+        const identity = observationIdentity(observation);
+        const classification = identity && classificationByIdentity.get(identity) || classifications[index];
+        if (!classification || typeof classification.countsAsHit !== "boolean") return;
+        const missed = classification.countsAsHit === false;
+        marker.classList.toggle("is-hit", !missed);
+        marker.classList.toggle("is-miss", missed);
+        marker.dataset.tst12ShotOutcome = missed ? "miss" : "hit";
+        marker.setAttribute("aria-label", `Shot ${index + 1} · ${missed ? "miss" : "hit"}`);
+      });
+    }
+
+    const tst12MarkerClassificationScheduler = createLatestOnlyPreviewScheduler({
+      execute: snapshot => request("/api/target-execution", {
+        method: "POST",
+        timeoutMs: 45000,
+        body: JSON.stringify(snapshot.requestBody)
+      }),
+      apply: applyTst12MarkerClassifications,
+      onError: () => {
+        // A failed preview never blocks shooting or changes the final Results request.
+      }
+    });
+
+    function refreshTst12MarkerClassifications() {
+      if (document.body.dataset.tst12Experience !== "true" || !state.observations.length) {
+        tst12MarkerClassificationScheduler.schedule(null);
+        return;
+      }
       const caliber = clean(byId("contractScoringCaliber").value);
       const option = byId("contractScoringCaliber").selectedOptions && byId("contractScoringCaliber").selectedOptions[0];
       const diameter = Number(option && option.dataset.diameterInches);
-      if (!caliber || state.registrationAuthority && clean(state.registrationAuthority.registrationPackageId)) return;
-      const sourceObservations = state.observations.map((item, index) => ({ ...item, observationId: observationIdentity(item) || `shot-${index + 1}` }));
-      try {
-        const result = await request("/api/target-execution", {
-          method: "POST",
-          timeoutMs: 45000,
-          body: JSON.stringify({
-            authoritativeSessionId: state.session.sessionId,
-            evidence: {
-              imageEvidence: state.image,
-              sourceObservations,
-              observations: sourceObservations,
-              scoringCaliber: caliber,
-              ...(Number.isFinite(diameter) && diameter > 0 ? { scoringGaugeDiameterInches: diameter } : {})
-            }
-          })
-        });
-        if (sequence !== tst12MarkerClassificationSequence || sourceObservations.length !== state.observations.length) return;
-        const classifications = Array.isArray(result && result.classifications) ? result.classifications : [];
-        const classificationByIdentity = new Map(classifications
-          .map(classification => [observationIdentity(classification), classification])
-          .filter(([identity]) => identity));
-        byId("contractMarkers").querySelectorAll(".contract-observation-marker").forEach((marker, index) => {
-          const observation = sourceObservations[index];
-          const identity = observationIdentity(observation);
-          const classification = identity && classificationByIdentity.get(identity) || classifications[index];
-          if (!classification || typeof classification.countsAsHit !== "boolean") return;
-          const missed = classification.countsAsHit === false;
-          marker.classList.toggle("is-hit", !missed);
-          marker.classList.toggle("is-miss", missed);
-          marker.dataset.tst12ShotOutcome = missed ? "miss" : "hit";
-          marker.setAttribute("aria-label", `Shot ${index + 1} · ${missed ? "miss" : "hit"}`);
-        });
-      } catch (_) {
-        // A failed preview never blocks shooting or changes the final Results request.
+      if (!caliber || state.registrationAuthority && clean(state.registrationAuthority.registrationPackageId)) {
+        tst12MarkerClassificationScheduler.schedule(null);
+        return;
       }
+      const sourceObservations = state.observations.map((item, index) => ({ ...item, observationId: observationIdentity(item) || `shot-${index + 1}` }));
+      const requestBody = {
+        authoritativeSessionId: state.session.sessionId,
+        evidence: {
+          imageEvidence: state.image,
+          sourceObservations,
+          observations: sourceObservations,
+          scoringCaliber: caliber,
+          ...(Number.isFinite(diameter) && diameter > 0 ? { scoringGaugeDiameterInches: diameter } : {})
+        }
+      };
+      const key = JSON.stringify({
+        authoritativeSessionId: requestBody.authoritativeSessionId,
+        imageSha256: clean(state.image && state.image.sha256),
+        scoringCaliber: caliber,
+        scoringGaugeDiameterInches: Number.isFinite(diameter) && diameter > 0 ? diameter : null,
+        observations: sourceObservations.map(observation => ({
+          observationId: observationIdentity(observation),
+          xNorm: Number(observation.xNorm),
+          yNorm: Number(observation.yNorm),
+          assignedStationRegionId: clean(observation.assignedStationRegionId)
+        }))
+      });
+      tst12MarkerClassificationScheduler.schedule({ key, sourceObservations, requestBody });
     }
 
     function renderObjectCourse() {
