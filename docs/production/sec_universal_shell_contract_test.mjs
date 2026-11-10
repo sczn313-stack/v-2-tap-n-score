@@ -31,7 +31,8 @@ for (const selector of [
 assert.match(universalCss, /sec-live-host/, "shared CSS must own the live SEC host");
 assert.match(universalCss, /sec-v1-target\{order:1\}/, "shared CSS must own Target order");
 assert.match(universalCss, /sec-v1-session\{order:2\}/, "shared CSS must own Session order");
-assert.match(universalCss, /sec-v1-actions\{order:4\}/, "shared CSS must own action order");
+assert.match(universalCss, /sec-vault-stage\{order:4\}/, "shared CSS must place the governed Ballistic Vault destination before actions");
+assert.match(universalCss, /sec-v1-actions\{order:5\}/, "shared CSS must own action order after the Ballistic Vault destination");
 assert.match(universalCss, /data-sec-open-region="target"/, "shared CSS must assign the Target-open flexible row");
 assert.match(universalCss, /data-sec-open-region="session"/, "shared CSS must assign the Session-open flexible row");
 assert.match(universalCss, /sec-live-host>:has\(>\.sec-v1\[data-sec-shell="universal-v1"\]\[data-sec-mode="live"\]\)/, "shared shell must constrain wrapped renderer mounts");
@@ -46,7 +47,9 @@ assert.match(universalCss, /sec-stage-pill>span:first-child::after\{content:"·"
 assert.match(universalCss, /--sczn3-sec-closed-bar-height:34px/, "shared SEC shell must own the compact closed-section height");
 assert.match(universalCss, /details\.sec-accordion-stage:not\(\[open\]\)\{align-self:start;height:auto!important;min-height:0!important;max-height:none!important;overflow:hidden\}/, "closed SEC containers must release all mission or historical height reservations");
 assert.match(universalCss, /details\.sec-accordion-stage:not\(\[open\]\)>summary\.sec-framework-stage-heading\{box-sizing:border-box;min-height:var\(--sczn3-sec-closed-bar-height\)!important;padding-block:0!important\}/, "every closed SEC section must inherit the same compact bar density");
-assert.match(universalCss, /sec-session-record-fields>div\{display:grid;grid-template-columns:max-content minmax\(0,1fr\);align-items:baseline;column-gap:10px/, "shared Session fields must visibly separate labels from values");
+assert.match(universalCss, /sec-session-record-fields>div\{display:grid;align-content:start;gap:2px;/, "shared Session fields must visibly stack and separate labels from values");
+assert.match(universalCss, /sec-session-record-fields>div>span\{[^}]*text-transform:uppercase;white-space:nowrap\}/, "shared Session labels must remain independently readable");
+assert.match(universalCss, /sec-session-record-fields>div>strong\{[^}]*overflow-wrap:anywhere\}/, "shared Session values must remain independently readable without overflow");
 
 assert.match(bakerRenderer, /key: "target"/, "Baker adapter must provide Target content");
 assert.match(bakerRenderer, /key: "session"/, "Baker adapter must provide Session content");

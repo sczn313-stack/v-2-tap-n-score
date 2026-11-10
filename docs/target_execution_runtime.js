@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  const TST12_PRESENTATION_ID = "sczn3-session-init-20261109-1";
+  const TST12_PRESENTATION_ID = "sczn3-three-path-release-20261109-1";
   document.documentElement.dataset.tst12RuntimeIdentity = TST12_PRESENTATION_ID;
   const clean = value => typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
@@ -2533,7 +2533,20 @@
     const targetId = clean(params.get("target"));
     const missionFamily = clean(params.get("missionFamily"));
     const requestedExperienceMode = clean(params.get("experienceMode"));
-    const experienceMode = requestedExperienceMode === "simulation" ? "simulation" : "actual";
+    const tst12Availability = global.SCZN3Tst12ReleaseAvailability;
+    const availability = tst12Availability && typeof tst12Availability.evaluate === "function"
+      ? tst12Availability.evaluate(targetId, requestedExperienceMode, { historicalReopen: Boolean(params.get("session")) })
+      : null;
+    if (availability && availability.allowed !== true) {
+      document.body.dataset.tst12Availability = "blocked";
+      byId("contractStart").hidden = true;
+      byId("contractCapture").hidden = true;
+      byId("contractStatus").textContent = availability.message;
+      return;
+    }
+    const experienceMode = availability && availability.mode
+      ? availability.mode
+      : requestedExperienceMode === "simulation" ? "simulation" : "actual";
     const autoLoadRegistered = clean(params.get("source")) === "registered";
     const reopenSessionId = clean(params.get("session"));
     const reopenProgressionId = clean(params.get("progression"));
@@ -3178,7 +3191,7 @@
         const started = await request("/api/session/start", {
           method: "POST",
           headers: { "Idempotency-Key": state.sessionIdempotencyKey },
-          body: JSON.stringify({ preparationToken: state.preparation.preparationToken, selectedEquipment: state.selectedEquipment })
+          body: JSON.stringify({ preparationToken: state.preparation.preparationToken, selectedEquipment: state.selectedEquipment, experienceMode })
         });
         state.session = global.SCZN3M4.createAuthoritativeSession(started, currentSessionContext(started.target));
         state.interaction = started.interactionContract || state.interaction;
@@ -3209,6 +3222,7 @@
         body: JSON.stringify({
           targetId,
           missionFamily: missionFamily || undefined,
+          experienceMode,
           ...(hasSelectedEquipment ? { equipmentCandidates: [{ ...activeSessionContext, source: activeSessionContext.setupId ? "weapon_library" : "one_time_setup" }] } : {})
         })
       });

@@ -65,7 +65,10 @@ try {
       assertCompactClosedBar(initiallyClosedBars.correction, `${family} Sight Correction at ${viewport.width}px`);
       assert.equal(initiallyClosedBars.correctionContainer, initiallyClosedBars.correction, `${family} closed Sight Correction must reserve no space beyond its bar at ${viewport.width}px`);
       await page.locator('[data-sec-region="session"] summary').click();
-      await page.waitForFunction(() => !document.querySelector('[data-sec-region="target"]').open);
+      await page.waitForFunction(() => {
+        const flow = document.querySelector(".sec-v1-flow");
+        return !document.querySelector('[data-sec-region="target"]').open && flow?.dataset.secOpenRegion === "session";
+      });
       assert.deepEqual(await state(), {
         openRegion: "session",
         target: false,
@@ -84,7 +87,8 @@ try {
       await page.waitForFunction(() => {
         const session = document.querySelector('[data-sec-region="session"]');
         const correction = document.querySelector('[data-sec-stage="sight-correction"]');
-        return session?.open === false && correction?.open === true;
+        const flow = document.querySelector(".sec-v1-flow");
+        return session?.open === false && correction?.open === true && flow?.dataset.secOpenRegion === "sightcorrection";
       });
       assert.deepEqual((await state()), {
         openRegion: "sightcorrection",
@@ -101,7 +105,8 @@ try {
         const target = document.querySelector('[data-sec-region="target"]');
         const session = document.querySelector('[data-sec-region="session"]');
         const correction = document.querySelector('[data-sec-stage="sight-correction"]');
-        return target?.open === true && session?.open === false && correction?.open === false;
+        const flow = document.querySelector(".sec-v1-flow");
+        return target?.open === true && session?.open === false && correction?.open === false && flow?.dataset.secOpenRegion === "target";
       });
       assert.deepEqual((await state()), {
         openRegion: "target",

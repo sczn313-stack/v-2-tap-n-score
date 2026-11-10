@@ -85,6 +85,16 @@ const artifacts = sessions.map((session, index) => ({
   artifactSha256: `${String(index + 1).repeat(64)}`,
   preservedAt: session.preservedAt
 }));
+const capabilityFor = sessionId => {
+  const artifact = artifacts.find(item => item.sessionId === sessionId);
+  const payload = Buffer.from(JSON.stringify({
+    artifactSha256: artifact.artifactSha256,
+    purpose: "sczn3-preserved-sec-reopen",
+    sessionId,
+    version: 1
+  })).toString("base64url");
+  return `${payload}.testsignature`;
+};
 
 async function assertOneOpenAccordion(page, label) {
   const shell = page.locator('[data-sec-shell="universal-v1"][data-sec-record-id]');
@@ -121,23 +131,63 @@ const browser = await chromium.launch({
 try {
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     const context = await browser.newContext({ viewport });
-    await context.route("**/api/session/sec*", route => {
+    await context.addInitScript(({ authorizedSessions }) => {
+      // The Vault starts from a browser-held authoritative candidate. It must
+      // prove possession before the backend grants exact-reopen authority.
+      authorizedSessions.forEach(session => {
+        localStorage.setItem(`SCZN3_SESSION_RECORD_${encodeURIComponent(session.sessionId)}`, JSON.stringify(session));
+      });
+      localStorage.setItem("SCZN3_SESSION_HISTORY", JSON.stringify(authorizedSessions.map(session => ({
+        persistenceSchema: "sczn3-session-ref-v1",
+        sessionId: session.sessionId,
+        sessionLabel: session.sessionLabel,
+        sessionNumberAuthority: "backend",
+        timestamp: session.timestamp,
+        savedAt: session.savedAt,
+        savedToSEC: true,
+        confirmationStatus: "Confirmed"
+      }))));
+    }, { authorizedSessions: sessions });
+    const authorizedReads = [];
+    const proofRequests = [];
+    let unauthorizedEnumerationAttempts = 0;
+    let crossSessionCapabilityAttempts = 0;
+    await context.route(/\/api\/session\/sec(?:\/prove)?(?:\?.*)?$/, route => {
       const url = new URL(route.request().url());
-      const requestedId = url.searchParams.get("session");
-      if (requestedId) {
-        const index = sessions.findIndex(session => session.sessionId === requestedId);
+      if (url.pathname.endsWith("/prove")) {
+        const body = route.request().postDataJSON();
+        const index = sessions.findIndex(session => session.sessionId === body?.session?.sessionId);
+        proofRequests.push(body?.session?.sessionId || "");
         return route.fulfill({
           status: index >= 0 ? 200 : 404,
           contentType: "application/json",
           body: JSON.stringify(index >= 0
-            ? { ok: true, session: sessions[index], ...artifacts[index] }
+            ? { ok: true, status: "preserved", proofOnly: true, session: sessions[index], ...artifacts[index], reopenCapability: capabilityFor(sessions[index].sessionId) }
+            : { ok: false, reason: "preserved_sec_not_found" })
+        });
+      }
+      const requestedId = url.searchParams.get("session");
+      if (requestedId) {
+        const index = sessions.findIndex(session => session.sessionId === requestedId);
+        const receivedCapability = route.request().headers()["x-sczn3-sec-reopen-capability"] || "";
+        if (index >= 0 && receivedCapability !== capabilityFor(requestedId)) {
+          crossSessionCapabilityAttempts += 1;
+          return route.fulfill({ status: 403, contentType: "application/json", body: JSON.stringify({ ok: false, reason: "preserved_sec_reopen_capability_invalid" }) });
+        }
+        authorizedReads.push({ sessionId: requestedId, artifactSha256: index >= 0 ? artifacts[index].artifactSha256 : "" });
+        return route.fulfill({
+          status: index >= 0 ? 200 : 404,
+          contentType: "application/json",
+          body: JSON.stringify(index >= 0
+            ? { ok: true, status: "preserved", session: sessions[index], ...artifacts[index] }
             : { ok: false, error: "not_found" })
         });
       }
+      unauthorizedEnumerationAttempts += 1;
       return route.fulfill({
-        status: 200,
+        status: 403,
         contentType: "application/json",
-        body: JSON.stringify({ ok: true, sessions, artifacts })
+        body: JSON.stringify({ ok: false, reason: "preserved_sec_enumeration_not_authorized" })
       });
     });
     const page = await context.newPage();
@@ -145,20 +195,36 @@ try {
     page.on("pageerror", error => pageErrors.push(error.message));
 
     await page.goto(`${baseUrl}/records.html?v=historical-lifecycle-regression`, { waitUntil: "networkidle" });
-    await page.locator('[data-session-id="historical-baker-current"] .vault-record-link').click();
+    const currentVaultLink = page.locator('[data-session-id="historical-baker-current"] .vault-record-link');
+    if ((await currentVaultLink.count()) !== 1) {
+      const diagnostic = await page.evaluate(() => ({
+        secState: document.body.dataset.secState,
+        renderedText: document.querySelector("#historyList")?.innerText || "",
+        history: window.SCZN3M4?.getSessionHistory?.() || [],
+        keys: Object.keys(localStorage).filter(key => key.startsWith("SCZN3_"))
+      }));
+      throw new Error(`historical_vault_candidate_not_rendered ${JSON.stringify({ ...diagnostic, proofRequests, authorizedReads, pageErrors })}`);
+    }
+    await currentVaultLink.click();
     await page.waitForURL(url => url.searchParams.get("session") === "historical-baker-current");
     await assertOneOpenAccordion(page, "Vault reopen");
 
     await page.goto(`${baseUrl}/records.html?session=historical-baker-current&view=sec&v=historical-direct`, { waitUntil: "networkidle" });
     await assertOneOpenAccordion(page, "Direct SEC link");
 
-    await page.locator('[data-sec-shell="universal-v1"] [data-sec-region="session"] > summary').click();
-    const priorTimelinePoint = page.locator('.sec-session-timeline-point[data-session-id="historical-baker-prior"]');
-    assert.equal(await priorTimelinePoint.count(), 1, `Session 2 must render the prior preserved SEC: ${await page.locator('[data-sec-region="session"]').innerHTML()}`);
-    await priorTimelinePoint.click();
+    // Reopen the separately possessed prior record from the Vault. Do not
+    // manufacture a cross-record timeline by granting an enumeration API.
+    await page.goto(`${baseUrl}/records.html?v=historical-prior-vault`, { waitUntil: "networkidle" });
+    await page.locator('[data-session-id="historical-baker-prior"] .vault-record-link').click();
     await page.waitForURL(url => url.searchParams.get("session") === "historical-baker-prior");
     assert.equal(await page.locator('[data-sec-shell="universal-v1"]').getAttribute("data-sec-record-id"), "historical-baker-prior", "Session 2 point opens the exact preserved SEC");
-    await assertOneOpenAccordion(page, "Session 2 timeline link");
+    await assertOneOpenAccordion(page, "Session 2 Vault link");
+
+    assert.ok(proofRequests.includes("historical-baker-current"), "Vault candidate proves possession before exact reopen");
+    assert.ok(authorizedReads.some(read => read.sessionId === "historical-baker-current" && read.artifactSha256 === artifacts[1].artifactSha256), "current session reopens with its immutable artifact identity");
+    assert.ok(authorizedReads.some(read => read.sessionId === "historical-baker-prior" && read.artifactSha256 === artifacts[0].artifactSha256), "Vault navigation reopens the exact prior artifact");
+    assert.equal(unauthorizedEnumerationAttempts, 0, "Vault never requests unrestricted backend SEC enumeration");
+    assert.equal(crossSessionCapabilityAttempts, 0, "no cross-session capability is accepted or attempted");
 
     assert.deepEqual(pageErrors, [], `${viewport.width}px historical route must have no page errors`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${viewport.width}px historical route must not overflow`);

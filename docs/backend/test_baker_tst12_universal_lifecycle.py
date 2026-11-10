@@ -149,13 +149,13 @@ def verify(target_id: str, experience_mode: str) -> None:
     resolver = TargetExecutionContractResolver((contract,))
     store = MemoryStore()
     prepared = prepare_session(
-        {"targetId": target_id, "missionFamily": "targetScoring"},
+        {"targetId": target_id, "missionFamily": "targetScoring", "experienceMode": experience_mode},
         store,
         now=NOW,
         execution_contract_resolver=resolver,
     )
     started = start_session(
-        {"preparationToken": prepared["preparationToken"], "selectedEquipment": prepared["standardSetup"]},
+        {"preparationToken": prepared["preparationToken"], "selectedEquipment": prepared["standardSetup"], "experienceMode": experience_mode},
         store,
         idempotency_key=f"tst12-{target_id}-{experience_mode}",
         now=NOW,
@@ -506,7 +506,10 @@ def verify(target_id: str, experience_mode: str) -> None:
 
 
 if __name__ == "__main__":
-    for target in TARGETS:
-        for mode in ("simulation", "actual"):
-            verify(target, mode)
-            print(f"PASS {target} {mode} RESULT -> SEC -> Vault -> exact reopen")
+    for target, mode in (
+        ("baker_tst12_17_5x23", "simulation"),
+        ("baker_tst12_17_5x23", "actual"),
+        ("baker_tst12_23x35", "simulation"),
+    ):
+        verify(target, mode)
+        print(f"PASS {target} {mode} RESULT -> SEC -> Vault -> exact reopen")

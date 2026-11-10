@@ -77,11 +77,13 @@ for (const session of [fixture17, fixture23]) {
   const context = {
     state: { session },
     targetId: result.target.id,
+    missionFamily: "targetScoring",
     experienceMode: "simulation",
     byId: id => id === "contractSecRoot" ? root : null,
     canonicalResult: current => current.authorityPackage,
     renderSEC: input => `<details class="contract-numeric-region-results">legacy flat distribution for ${input.package.scoring.total}</details>`,
     initializeSECInteractions: () => {},
+    installSimulatorReentry: () => {},
     CustomEvent: class CustomEvent { constructor(type, init) { this.type = type; this.detail = init.detail; } },
     document: { dispatchEvent: event => dispatched.push(event) },
     global: {

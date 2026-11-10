@@ -1,24 +1,37 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
-const registry = JSON.parse(await readFile(
-  "backend/registries/smart_target_identity_registry.json",
-  "utf8"
-));
+const IDENTITY_PATH = "backend/registries/smart_target_identity_registry.json";
+const ATP_PATH = "backend/target_profiles/ATP_BAKER_SL_ST1_PRACTICE_V1.json";
+const UGO_PATH = "authority-evidence/baker-sl-st1/BAKER_SL_ST1_UGO_REGISTRATION_V1.json";
+const SCORING_PATH = "authority-evidence/baker-sl-st1/BAKER_SL_ST1_SCORING_PROFILE_V1.json";
+const [identityBytes, registry, atp, ugo, scoring, targetPageSource, scoringSource] = await Promise.all([
+  readFile(IDENTITY_PATH),
+  readFile(IDENTITY_PATH, "utf8").then(JSON.parse),
+  readFile(ATP_PATH, "utf8").then(JSON.parse),
+  readFile(UGO_PATH, "utf8").then(JSON.parse),
+  readFile(SCORING_PATH, "utf8").then(JSON.parse),
+  readFile("backend/baker_sl_st1_target_page.py", "utf8"),
+  readFile("backend/baker_sl_st1_scoring.py", "utf8")
+]);
 const schema = JSON.parse(await readFile(
   "backend/registries/smart_target_identity_registry.schema.json",
   "utf8"
 ));
+const sha256 = bytes => createHash("sha256").update(bytes).digest("hex");
 
 assert.equal(schema.$schema, "https://json-schema.org/draft/2020-12/schema");
 assert.equal(schema.properties.registryId.const, "SCZN3-SMART-TARGET-IDENTITY-REGISTRY");
 assert.equal(registry.registryId, "SCZN3-SMART-TARGET-IDENTITY-REGISTRY");
 assert.equal(registry.schemaVersion, "1.0.0");
 assert.equal(registry.publicationStatus, "founder_review");
-assert.equal(registry.records.length, 1);
 assert.equal(new Set(registry.records.map(record => record.smartTargetId)).size, registry.records.length);
+assert.equal(new Set(registry.records.map(record => record.recordId)).size, registry.records.length);
 
-const identity = registry.records[0];
+const matchingBindings = registry.records.filter(record => record.smartTargetId === "BAKER_SL_ST1");
+assert.equal(matchingBindings.length, 1, "BAKER_SL_ST1 must have exactly one governed identity binding");
+const identity = matchingBindings[0];
 assert.equal(identity.recordId, "BAKER_SL_ST1_IDENTITY_V1");
 assert.equal(identity.recordType, "smart_target_identity");
 assert.equal(identity.recordStatus, "founder_review");
@@ -86,6 +99,28 @@ assert.deepEqual(identity.runtimeExecution, {
   status: "unavailable",
   blockingDependency: "ugo_observation"
 });
+
+// Governed Registry -> ATP -> UGO -> executable authority chain. These checks
+// select the exact SL-ST1 identity; unrelated registry records remain valid.
+assert.equal(atp.bindings.smartTargetIdentity.artifactId, identity.recordId);
+assert.equal(atp.bindings.smartTargetIdentity.relativePath, IDENTITY_PATH);
+assert.equal(atp.bindings.smartTargetIdentity.sha256, sha256(identityBytes));
+assert.equal(atp.bindings.launchVariant.variantId, identity.launchVariant.variantId);
+assert.equal(atp.bindings.launchVariant.identityVersion, identity.identityVersion);
+assert.equal(atp.bindings.ugoObservation.artifactId, ugo.registrationId);
+assert.equal(atp.bindings.ugoObservation.relativePath, UGO_PATH);
+assert.equal(ugo.smartTargetIdentity.recordId, identity.recordId);
+assert.equal(ugo.smartTargetIdentity.smartTargetId, identity.smartTargetId);
+assert.equal(ugo.smartTargetIdentity.variantId, identity.launchVariant.variantId);
+assert.equal(scoring.targetId, identity.smartTargetId);
+assert.equal(scoring.variantId, identity.launchVariant.variantId);
+assert.equal(scoring.geometryAuthorityId, ugo.registrationId);
+assert.match(targetPageSource, /from baker_sl_st1_scoring import BakerSLST1ScoringError, score_canonical_impacts/);
+assert.match(targetPageSource, /ATP_PATH = .*ATP_BAKER_SL_ST1_PRACTICE_V1\.json/);
+assert.match(targetPageSource, /UGO_PATH = .*BAKER_SL_ST1_UGO_REGISTRATION_V1\.json/);
+assert.match(targetPageSource, /IDENTITY_PATH = .*smart_target_identity_registry\.json/);
+assert.match(scoringSource, /UGO_PATH = .*BAKER_SL_ST1_UGO_REGISTRATION_V1\.json/);
+assert.match(scoringSource, /SCORING_PATH = .*BAKER_SL_ST1_SCORING_PROFILE_V1\.json/);
 
 const serialized = JSON.stringify(identity);
 for (const forbidden of [

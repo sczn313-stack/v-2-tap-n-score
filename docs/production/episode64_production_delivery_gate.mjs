@@ -41,7 +41,7 @@ assert.equal(identity.environment, "production");
 assert.equal(identity.authorityOrigin, productionAuthority);
 assert.equal(identity.frontendOrigin, productionFrontend);
 assert.equal(identity.configurationIdentity, "sczn3-ep64-production-routing-20261109-1");
-assert.equal(identity.presentationIdentity, "sczn3-session-init-20261109-1");
+assert.equal(identity.presentationIdentity, "sczn3-three-path-release-20261109-1");
 assert.match(identity.candidateCommit, /^[a-f0-9]{40}$/);
 assert.equal(identity.productionFallback, false);
 

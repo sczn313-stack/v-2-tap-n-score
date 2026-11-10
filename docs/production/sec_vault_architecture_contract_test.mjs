@@ -43,12 +43,13 @@ assert.match(m4Adapter, /label: "Ballistic Vault"[^\n]*href: "records\.html"/, "
 
 // Current SEC: TARGET first, every stage in one true accordion.
 assert.match(m4Adapter, /global\.SCZN3SEC\.render\(\{/);
-assert.match(sharedShell, /<span>1 · TARGET<\/span>/);
+assert.match(sharedShell, /const targetStageTitle = normalized\.targetTitle/);
+assert.match(sharedShell, /<span>1 · \$\{escapeAttribute\(targetStageTitle\)\}<\/span>/, "the first SEC stage renders the governed target identity instead of a generic fixed label");
 assert.match(sharedShell, /region\.key === "target" \? " open" : ""/);
 assert.match(sharedShell, /class="sec-session-score"/);
 assert.match(sharedShell, /aria-label="Shooter Action Bar"/);
 assert.match(sec, /SCZN3SECReopenLifecycle\?\.initialize/);
-assert.match(lifecycle, /if \(otherStage !== stage\) otherStage\.open = false/);
+assert.match(lifecycle, /if \(otherStage !== stage\) \{\s*otherStage\.open = false;\s*collapseResultDrawers\(otherStage\);\s*\}/, "opening one SEC stage closes its sibling and any nested result drawer");
 assert.doesNotMatch(sec, /Before and After/);
 
 // Historical zeroing SEC: a requested preserved snapshot is read-only and never replaces active work.
@@ -56,7 +57,7 @@ assert.match(sec, /const historicalSnapshotMode = Boolean\(requestedSessionId\)/
 assert.match(sec, /const requestedPersistedSession = requestedSessionId[\s\S]*?SCZN3M4\.getSessionHistory\(\)/);
 assert.doesNotMatch(sec, /SCZN3M4\.loadSession/);
 assert.match(sec, /save: !historicalSnapshotMode/);
-assert.match(sec, /note: !historicalSnapshotMode/);
+assert.match(sec, /save: !historicalSnapshotMode,[\s\S]*?validation: false,[\s\S]*?share: true,[\s\S]*?print: true,[\s\S]*?history: true/, "historical SECs disable preservation while retaining non-mutating review actions");
 assert.match(sec, /id="secVaultBack"[\s\S]*?data-preserve-active-session/);
 assert.match(sec, /records\.html\?selected=/);
 
@@ -74,9 +75,9 @@ assert.match(records, /<div class="vault-evidence-pair">/, "contract Vault recor
 assert.match(records, /<span class="vault-open-label">OPEN SEC →<\/span>/, "contract Vault records preserve the proven OPEN SEC action");
 assert.match(records, /vault-approved-result-panel/, "the approved universal RESULT occupies the checkpoint RESULT pane");
 assert.match(records, /function historicalSecUrl[\s\S]*?SCZN3SECDispatch\.destinationFor\(session\)[\s\S]*?SCZN3SECReopenAuthority\?\.portableUrl\(destination, session\.sessionId\)/, "OPEN SEC delegates exact reopen to the checkpoint dispatch road and preserves portable possession authority");
-assert.match(targetRuntime, /preserved \? \[\{ label: "Ballistic Vault", href: vaultHref/, "a preserved contract SEC carries its local authority route into the Vault");
-assert.match(targetRuntime, /records\.html\?runtimeView=sec-readable-diagnostic-1\$\{localAuthorityPort\(\) \? `&authorityPort=/, "the Vault handoff preserves the split local authority port");
-assert.match(secDispatch, /target-experience\.html\?session=\$\{encodeURIComponent\(sessionId\)\}&view=sec\$\{localAuthoritySuffix\(\)\}/, "OPEN SEC carries the Vault authority port into exact reopen");
+assert.match(targetRuntime, /includeVaultAction && \(preserved \|\| historical\) \? \[\{ label: "Ballistic Vault", href: vaultHref/, "a preserved or historical contract SEC carries its local authority route into the Vault");
+assert.match(targetRuntime, /records\.html\?runtimeView=sec-readable-diagnostic-1&selected=\$\{encodeURIComponent\(session\.sessionId \|\| result\.authoritativeSessionId \|\| ""\)\}\$\{localAuthorityPort\(\) \? `&authorityPort=/, "the Vault handoff preserves both the selected record and split local authority port");
+assert.match(secDispatch, /new URLSearchParams\(\{ session: sessionId, view: "sec" \}\)[\s\S]*?return `target-experience\.html\?\$\{params\.toString\(\)\}\$\{localAuthoritySuffix\(\)\}`;/, "OPEN SEC carries governed identity and the Vault authority port into exact reopen");
 assert.doesNotMatch(records, /renderCompactVaultRecord\(requestedSession, \{ historical: true \}\)/, "exact reopen is not replaced with a second Vault card");
 assert.match(records, /function prepareHistoricalSec/);
 const prepareHistoricalSecSource = records.match(/function prepareHistoricalSec\(session\) \{[\s\S]*?\n\}/)?.[0] || "";

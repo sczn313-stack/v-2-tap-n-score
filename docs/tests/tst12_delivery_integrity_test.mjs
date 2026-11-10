@@ -6,7 +6,7 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const identity = "sczn3-session-init-20261109-1";
+const identity = "sczn3-three-path-release-20261109-1";
 const stationIdentity = "sczn3-tst12-station-pip-cq-20261107-2";
 const read = relative => fs.readFileSync(path.join(docs, relative), "utf8");
 const runtimeSource = read("target_execution_runtime.js");

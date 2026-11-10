@@ -1,32 +1,48 @@
 {
-  "candidateIdentity": "sczn3-ep64-tst12-staging-20261109-1",
+  "candidateIdentity": "sczn3-ep64-tst12-three-path-release-20261109-1",
   "sourceCheckpoint": "SCZN3_RECOVERY_CHECKPOINT_2026-11-09",
   "sourceCheckpointManifestSha256": "2734cfc910a2cc7238a5c55d5eb8cf258fbb285bfb0d75b07b09ce6f99f94a81",
-  "baseCommit": "d63050b0f7378e04605076f6bd741d44f37b64c0",
-  "branch": "staging/episode64-tst12-20261109",
-  "presentationIdentity": "sczn3-session-init-20261109-1",
-  "declaredFileCount": 587,
-  "declaredFileListSha256": "6f233e455c2c8a715f71cffcac8f1081288969c6484f1b87301fc3f8c536e136",
-  "declaredFileHashManifestSha256": "673887949c89a53c4835a6befa024ce7dee8e1bf42a75fdba93b00e0fc863ce4",
+  "baseCommit": "4f1191f71ed64f5c4b70ee52776fd3c32e626957",
+  "presentationIdentity": "sczn3-three-path-release-20261109-1",
+  "availabilityPolicyIdentity": "sczn3-tst12-three-path-release-20261109-1",
   "scope": {
     "included": [
-      "TST-12 Simulator and Actual Round runtime for both sizes",
+      "Baker TST-12 17.5x23 Simulator",
+      "Baker TST-12 17.5x23 Actual Round",
+      "Baker TST-12 23x35 Simulator",
       "Backend session, scoring, SEC preservation, and exact-reopen owners required by the candidate",
       "TST-12 presentation, governed artwork, station results, and lifecycle gates",
       "Existing contract-referenced assets required for the unchanged Netlify build to complete"
+    ],
+    "withheld": [
+      "Baker TST-12 23x35 Actual Round"
     ],
     "excluded": [
       "Homepage feature implementation",
       "Public narrated demonstration runtime",
       "Unrelated Episode 64 target experiments and review servers",
       "Historical backup copies and generated browser screenshots",
-      "Production credentials, sessions, databases, and domains"
+      "Production credentials, sessions, databases, and domains",
+      "Generated browser evidence and local disposable database content",
+      "Unregistered 23x35 Actual Round photographic substitutes"
     ]
   },
+  "authorityBoundary": {
+    "modeValues": ["simulation", "actual"],
+    "missingOrMalformedMode": "REJECT",
+    "withheldPreparation": "REJECT_BEFORE_WRITE",
+    "historicalSignedExactReopen": "PRESERVED",
+    "databaseMigrationRequired": false
+  },
   "verification": {
-    "netlifyBuild": "PASS (1129 public files plus assets)",
+    "netlifyBuild": "PASS (1128 public files)",
     "tapOrderIndependence": "PASS both TST-12 sizes",
-    "fourModeLifecycle": "PASS",
-    "finalStabilizationBrowserGate": "PASS"
+    "approvedPathLifecycle": "PASS (three of three)",
+    "withheldDirectUrl": "PASS (refused before preparation)",
+    "withheldDirectApi": "PASS (refused before preparation)",
+    "missingAndMalformedMode": "PASS (fail closed before preparation)",
+    "historicalSignedExactReopen": "PASS",
+    "finalStabilizationBrowserGate": "PASS",
+    "isolatedOrigin": "http://127.0.0.1:8272"
   }
 }

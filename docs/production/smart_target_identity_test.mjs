@@ -39,7 +39,7 @@ const resolved = identityApi.resolve(new URL(canonicalUrl).search);
 
 assert.equal(resolved.vendor, "Baker");
 assert.equal(resolved.sku, "ST-M16A2/M4");
-assert.equal(resolved.product, "M4 Carbine • 25 Meter Zeroing Target");
+assert.equal(resolved.product, "M4/M16 Series Weapons • 25M Zero Target");
 assert.equal(resolved.authority, "M4 Zeroing");
 assert.equal(identityApi.resolve("?v=baker&sku=ST-M16A2-M4"), null);
 
@@ -60,7 +60,9 @@ const stateContext = {
   Object,
   Array,
   RegExp,
-  JSON
+  JSON,
+  TextEncoder,
+  TextDecoder
 };
 vm.createContext(stateContext);
 vm.runInContext(await readFile("app_state.js", "utf8"), stateContext);

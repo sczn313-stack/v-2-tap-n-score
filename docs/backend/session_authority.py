@@ -19,6 +19,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Optional
 
+from experience_availability import (
+    ExperienceAvailabilityError,
+    POLICY_ID as EXPERIENCE_AVAILABILITY_POLICY_ID,
+    governed_modes,
+    normalize_experience_mode,
+)
+
 from gssf_ac_1_authority import GSSF_AC_1_ATP, GSSF_AC_1_EXECUTION_CONTRACT
 from m4_authority.weapon_equipment_registry import (
     authority_model_from_adjustment_profile,
@@ -1445,6 +1452,16 @@ def prepare_session(
         execution_contract_resolver=execution_contract_resolver,
         mission_family=payload.get("missionFamily") or payload.get("mission_family"),
     )
+    try:
+        experience_mode = normalize_experience_mode(
+            profile["targetId"],
+            payload.get("experienceMode") or payload.get("experience_mode"),
+        )
+    except ExperienceAvailabilityError as exc:
+        raise SessionAuthorityError(
+            exc.payload["status"], exc.payload["reason"], exc.http_status,
+            **{key: value for key, value in exc.payload.items() if key not in {"ok", "status", "reason"}},
+        ) from exc
     if profile["missionIdentity"]["missionFamily"] == "secProgressionEvaluation":
         raise SessionAuthorityError("authority_unavailable", "cross_session_progression_route_required", 409)
     candidates_raw = payload.get("equipmentCandidates") or payload.get("equipment_candidates")
@@ -1461,6 +1478,12 @@ def prepare_session(
     issued_at = now or utc_now()
     expires_at = issued_at + timedelta(seconds=PREPARATION_TTL_SECONDS)
     token = secrets.token_urlsafe(32)
+    if governed_modes(profile["targetId"]) is not None:
+        # Binding the normalized mode into the opaque bearer token preserves
+        # the authority decision through PostgreSQL without a schema change.
+        # Any attempt to alter the mode changes the token and cannot resolve
+        # the stored token hash.
+        token = f"sczn3-preparation-v2.{experience_mode}.{token}"
     record = {
         "preparationId": str(uuid.uuid4()),
         "tokenHash": digest(token),
@@ -1483,6 +1506,8 @@ def prepare_session(
         "equipmentAssessments": assessments,
         "createdAt": iso(issued_at),
         "expiresAt": iso(expires_at),
+        "experienceMode": experience_mode,
+        "experienceAvailabilityPolicyId": EXPERIENCE_AVAILABILITY_POLICY_ID if governed_modes(profile["targetId"]) is not None else None,
     }
     store.save_preparation(record)
     return {
@@ -1512,6 +1537,10 @@ def prepare_session(
         "setupMode": "standard" if use_standard_setup else "shooter-selected",
         "equipmentAssessments": assessments,
         "restrictions": [],
+        **({
+            "experienceMode": experience_mode,
+            "experienceAvailabilityPolicyId": EXPERIENCE_AVAILABILITY_POLICY_ID,
+        } if governed_modes(profile["targetId"]) is not None else {}),
     }
 
 
@@ -1546,6 +1575,30 @@ def start_session(
     if not isinstance(selected, Mapping):
         raise SessionAuthorityError("invalid_request", "selected_equipment_required")
 
+    token_experience_mode = None
+    if token.startswith("sczn3-preparation-v2."):
+        token_parts = token.split(".", 2)
+        if len(token_parts) != 3 or token_parts[1] not in {"simulation", "actual"} or not token_parts[2]:
+            raise SessionAuthorityError("preparation_invalid", "preparation_token_invalid", 409)
+        token_experience_mode = token_parts[1]
+        supplied_mode = clean_text(payload.get("experienceMode") or payload.get("experience_mode")).lower()
+        if not supplied_mode:
+            raise SessionAuthorityError(
+                "invalid_request", "experience_mode_required", 400,
+                availabilityPolicyId=EXPERIENCE_AVAILABILITY_POLICY_ID,
+            )
+        if supplied_mode not in {"simulation", "actual"}:
+            raise SessionAuthorityError(
+                "invalid_request", "experience_mode_invalid", 400,
+                availabilityPolicyId=EXPERIENCE_AVAILABILITY_POLICY_ID,
+                experienceMode=supplied_mode,
+            )
+        if supplied_mode != token_experience_mode:
+            raise SessionAuthorityError(
+                "preparation_invalid", "experience_mode_preparation_mismatch", 409,
+                availabilityPolicyId=EXPERIENCE_AVAILABILITY_POLICY_ID,
+            )
+
     request_fingerprint = digest({
         "preparationTokenHash": digest(token),
         "selectedEquipment": normalize_equipment(selected, allow_backend_standard=True),
@@ -1565,6 +1618,17 @@ def start_session(
         raise SessionAuthorityError("preparation_expired", "preparation_expired", 409)
     if preparation.get("consumedAt"):
         raise SessionAuthorityError("preparation_invalid", "preparation_already_consumed", 409)
+
+    if governed_modes(preparation["targetId"]) is not None:
+        try:
+            normalized_mode = normalize_experience_mode(preparation["targetId"], token_experience_mode)
+        except ExperienceAvailabilityError as exc:
+            raise SessionAuthorityError(
+                exc.payload["status"], exc.payload["reason"], exc.http_status,
+                **{key: value for key, value in exc.payload.items() if key not in {"ok", "status", "reason"}},
+            ) from exc
+    else:
+        normalized_mode = clean_text(payload.get("experienceMode") or payload.get("experience_mode")).lower() or None
 
     current_profile = resolve_target_authority(
         preparation["targetId"],
@@ -1616,6 +1680,10 @@ def start_session(
         "registrationAuthority": current_profile.get("registrationAuthority"),
         "selectedEquipment": candidate,
         "setupMode": "standard" if candidate.get("source") == "backend_standard_setup" else "shooter-selected",
+        **({
+            "experienceMode": normalized_mode,
+            "experienceAvailabilityPolicyId": EXPERIENCE_AVAILABILITY_POLICY_ID,
+        } if governed_modes(current_profile["targetId"]) is not None else {}),
     }
     record = {
         "authoritativeSessionId": session_id,
@@ -1638,6 +1706,7 @@ def start_session(
         "selectedEquipment": candidate,
         "response": response,
         "createdAt": created_at,
+        "experienceMode": normalized_mode,
     }
     stored = store.create_session(record, preparation["preparationId"], created_at)
     return stored["response"]

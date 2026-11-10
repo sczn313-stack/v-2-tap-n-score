@@ -1,7 +1,7 @@
 (function initializeTst12UniversalExperience(global) {
   "use strict";
 
-  const TST12_PRESENTATION_ID = "sczn3-session-init-20261109-1";
+  const TST12_PRESENTATION_ID = "sczn3-three-path-release-20261109-1";
   document.documentElement.dataset.tst12UniversalIdentity = TST12_PRESENTATION_ID;
   const TARGETS = Object.freeze({
     baker_tst12_17_5x23: Object.freeze({
@@ -36,6 +36,44 @@
       shooterCrop: Object.freeze({ sourceWidth: 1206, sourceHeight: 1134, x: 42, y: 42, width: 690, height: 1050 }),
       stationGrid: Object.freeze({ x: 0.05434782608695652, y: 0.04285714285714286, width: 0.2826086956521739, height: 0.1857142857142857, columnStep: 0.30434782608695654, rowStep: 0.22142857142857142 })
     })
+  });
+
+  const RELEASE_AVAILABILITY_POLICY_ID = "sczn3-tst12-three-path-release-20261109-1";
+  const RELEASE_MODES = Object.freeze({
+    baker_tst12_17_5x23: Object.freeze(["simulation", "actual"]),
+    baker_tst12_23x35: Object.freeze(["simulation"]),
+    sczn3_tst12_clean_v1: Object.freeze(["simulation", "actual"]),
+    sczn3_tst12_clean_v1_23x35: Object.freeze(["simulation"])
+  });
+
+  function evaluateReleaseAvailability(targetId, rawMode, options = {}) {
+    const allowedModes = RELEASE_MODES[String(targetId || "").trim()];
+    if (!allowedModes) return { allowed: true, mode: String(rawMode || "").trim().toLowerCase() };
+    const mode = String(rawMode || "").trim().toLowerCase();
+    if (options.historicalReopen === true) {
+      return { allowed: true, mode: mode === "simulation" ? "simulation" : "actual", historicalReopen: true };
+    }
+    if (!mode) return {
+      allowed: false,
+      reason: "experience_mode_required",
+      message: "This TST-12 link does not identify an approved Simulator or Actual Round experience."
+    };
+    if (!["simulation", "actual"].includes(mode)) return {
+      allowed: false,
+      reason: "experience_mode_invalid",
+      message: "This TST-12 experience mode is unavailable."
+    };
+    if (!allowedModes.includes(mode)) return {
+      allowed: false,
+      reason: "experience_mode_not_available",
+      message: "TST-12 23 × 35 Actual Round is unavailable pending verified target-matched photographic evidence."
+    };
+    return { allowed: true, mode };
+  }
+
+  global.SCZN3Tst12ReleaseAvailability = Object.freeze({
+    policyId: RELEASE_AVAILABILITY_POLICY_ID,
+    evaluate: evaluateReleaseAvailability
   });
 
   const RULES = Object.freeze([
@@ -496,7 +534,8 @@
     }
 
     const requestedMode = String(params.get("experienceMode") || "").trim();
-    const mode = requestedMode === "simulation" || requestedMode === "actual" ? requestedMode : "";
+    const availability = evaluateReleaseAvailability(targetId, requestedMode, { historicalReopen: Boolean(params.get("session")) });
+    const mode = availability.allowed ? availability.mode : "";
     const gate = byId("tst12ExperienceGate");
     const instructions = byId("tst12Instructions");
     const start = byId("contractStart");
@@ -517,6 +556,14 @@
     experienceLabel.textContent = "TST-12";
 
     gate.hidden = false;
+    if (!availability.allowed) {
+      document.body.dataset.tst12Availability = "blocked";
+      gate.innerHTML = `<section class="tst12-experience-unavailable" role="alert" data-tst12-unavailable-reason="${escapeHtml(availability.reason)}"><strong>EXPERIENCE UNAVAILABLE</strong><p>${escapeHtml(availability.message)}</p></section>`;
+      start.hidden = true;
+      byId("contractCapture").hidden = true;
+      status.textContent = availability.message;
+      return;
+    }
     const actualRoundDevelopmentControl = mode === "actual"
       ? `<a class="button tst12-mode-link" data-allow-mission-exit href="${targetUrl("actual")}" aria-current="page">ACTUAL ROUND</a>`
       : "";

@@ -27,7 +27,8 @@ const context = {
   Array,
   RegExp,
   JSON,
-  TextEncoder
+  TextEncoder,
+  TextDecoder
 };
 vm.createContext(context);
 vm.runInContext(await readFile("app_state.js", "utf8"), context);
@@ -119,16 +120,18 @@ assert(!matrixHtml.includes("SCZN3M4.createSession(collectForm())"));
 assert(!indexHtml.includes("SCZN3M4.createSession"));
 assert(!targetExperiences.includes("mission_family="));
 assert(targetExperiences.includes('JSON.stringify({ targetId })'));
-assert(targetExperiences.includes('data-status="${escapeHtml(experience.status)}"'));
+assert(targetExperiences.includes('data-status="${availabilityForTarget(experience.targetId)}"'));
 assert(targetExperiences.includes('tag = available ? "a" : "article"'));
-assert(targetExperiences.includes("SCZN3_TARGET_CATALOG_VIEW_COUNT_V1"));
-assert(indexHtml.includes("<strong>TAP</strong><span>your target below</span>"));
+assert(targetExperiences.includes("applyPublicEntryAvailability"));
+assert(targetExperiences.includes("availabilityForTarget(experience.targetId)"));
+assert(indexHtml.includes("<strong>CHOOSE OUR TARGET</strong>"));
+assert(indexHtml.includes("Tap here to select a target below."));
 assert(shootHtml.includes("window.location.replace(`matrix.html"));
 assert(shootHtml.includes("unavailableResultCapabilityMessage"));
 assert(shootHtml.includes("SCZN3Presentation.capabilityGuidance"));
 assert(matrixHtml.includes("SCZN3Presentation.equipmentGuidance"));
-assert(netlifyConfig.includes('from = "/api/session/prepare"'));
-assert(netlifyConfig.includes('from = "/api/session/start"'));
+assert(netlifyConfig.includes('command = "npm run build:netlify"'));
+assert(netlifyConfig.includes('publish = "dist/netlify"'));
 assert(redirects.includes("/api/session/prepare"));
 assert(redirects.includes("/api/session/start"));
 assert(matrixHtml.includes("This target will use the Standard Setup shown below."));

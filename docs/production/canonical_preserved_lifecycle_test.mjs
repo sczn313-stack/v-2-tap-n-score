@@ -13,22 +13,23 @@ const [dispatch, runtime, records, targetPage, targetCss, vaultCss, usmRegistry]
 
 assert.match(dispatch, /const CONTRACT_ADAPTERS = Object\.freeze/);
 assert.match(dispatch, /function isContractAdapter\(adapter\)/);
-assert.match(dispatch, /if \(isContractAdapter\(dispatch\.adapter\)\) \{\s*return `target-experience\.html\?session=/);
+assert.match(dispatch, /if \(isContractAdapter\(dispatch\.adapter\)\) \{[\s\S]*?new URLSearchParams\(\{ session: sessionId, view: "sec" \}\)[\s\S]*?return `target-experience\.html\?\$\{params\.toString\(\)\}\$\{localAuthoritySuffix\(\)\}`;/, "contract exact reopen carries governed identity through the parameterized target-experience route");
 
 assert.match(runtime, /class="contract-lifecycle-pair" aria-label="Preserved target evidence and approved result"/);
-assert.match(runtime, /<figcaption>BEFORE<\/figcaption>/);
+assert.match(runtime, /<figcaption>\$\{tst12Target \? "YOUR TARGET" : "BEFORE"\}<\/figcaption>/, "the preserved evidence caption identifies TST-12 as the shooter's target while retaining BEFORE elsewhere");
 assert.match(runtime, /<figcaption>RESULT<\/figcaption>/);
 assert.match(runtime, /approvedResultComponent\(result, session\)/);
-assert.match(runtime, /<details class="contract-numeric-region-results" data-numeric-region-detail="true"><summary/, "scoring distribution is collapsed by default");
-assert.doesNotMatch(runtime, /data-numeric-region-detail="true" open/, "scoring distribution is not forced open");
-assert.match(runtime, /contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">▼<\/b>/, "collapsed scoring distribution names the tap action");
-assert.match(runtime, /contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">▲<\/b>/, "expanded scoring distribution names the close action");
+assert.match(runtime, /<details class="\$\{escapeHtml\(classes\)\}" data-result-distribution-drawer="true"/, "scoring distribution uses the governed result-drawer contract and is collapsed by default");
+assert.doesNotMatch(runtime, /data-result-distribution-drawer="true"[^>]* open/, "scoring distribution is not forced open");
+assert.match(runtime, /contract-disclosure-instruction--closed">Tap to view <b aria-hidden="true">›<\/b>/, "collapsed scoring distribution names the tap action");
+assert.match(runtime, /contract-disclosure-instruction--open">Tap to close <b aria-hidden="true">›<\/b>/, "expanded scoring distribution names the close action");
 const renderSECSource = runtime.match(/function renderSEC[\s\S]*?\n  function vaultResultSummary/)?.[0] || "";
 assert.match(renderSECSource, /return global\.SCZN3SEC\.render\(\{/, "generic contract SEC inherits the universal family chassis");
 assert.match(renderSECSource, /articleClassName: "contract-family-sec-card contract-universal-sec"/, "generic contract SEC identifies its family-chassis consumer without owning another shell");
 assert.match(renderSECSource, /key: "target"[\s\S]*?key: "session"[\s\S]*?key: "actions"/, "generic contract SEC uses the universal target, session, and actions regions");
-assert.match(runtime, /function secActions[\s\S]*?label: "Share"[\s\S]*?label: "Export \/ Print PDF"[\s\S]*?label: "Add Note"/, "generic contract SEC inherits the existing family action armament");
-assert.match(runtime, /SCZN3SECComponents\.SessionDetails/, "generic contract SEC inherits the universal session-details component");
+assert.match(runtime, /function secActions[\s\S]*?label: "Share"[\s\S]*?label: "Export \/ Print PDF"[\s\S]*?label: "Ballistic Vault"/, "generic contract SEC inherits the approved preservation and Vault action armament");
+assert.doesNotMatch(runtime.match(/function secActions[\s\S]*?\n  function renderSEC/)?.[0] || "", /label: "Add Note"/, "the retired generic note action is not reintroduced");
+assert.match(runtime, /SCZN3SECComponents\.SessionFoundation\(session\)/, "generic contract SEC inherits the universal authoritative session foundation component");
 assert.match(runtime, /\.\.\.\(preserved && !historical \? \[\{ label: "Exact Reopen"/);
 
 assert.match(records, /const RECORDS_AUTHORITY_PORT = String\(RECORD_QUERY\.get\("authorityPort"\)/);
@@ -39,7 +40,7 @@ assert.match(records, /class="vault-evidence-pair"/);
 assert.match(records, /OPEN SEC →/);
 assert.doesNotMatch(records, /<a class="vault-record-link"[^>]*>[\s\S]*?<div class="vault-evidence-pair">/, "the interactive distribution is not nested inside the OPEN SEC link");
 
-assert.match(targetPage, /usm-history-header-1/);
+assert.match(targetPage, /target_execution_runtime\.js\?v=sczn3-three-path-release-20261109-1/, "the target surface loads the approved current presentation identity");
 assert.match(targetCss, /@media\(hover:hover\) and \(pointer:fine\)\{\.contract-numeric-region-results>summary:hover/, "desktop disclosure row has a hover affordance");
 assert.match(targetCss, /background:#ffd84d;color:#080808/, "the complete disclosure header is SCZN3 gold with black text");
 assert.match(targetCss, /grid-template-columns:1fr;justify-items:center/, "the disclosure title and instruction stack as two centered lines");
@@ -48,10 +49,11 @@ assert.match(targetCss, /contract-distribution-title[^}]*font-size:\.86rem;font-
 assert.match(targetCss, /contract-disclosure-instruction[^}]*font-size:\.61rem;font-weight:800/, "tap instruction remains subordinate beneath the title");
 assert.match(runtime, /data-contract-progression-host/, "progression renders outside the approved RESULT component in Drawer 3");
 assert.match(runtime, /3 · HISTORY/, "History is the universal shooter-facing Drawer 3 name");
-assert.match(runtime, /SCORE <i>\|<\/i> HIT RATE <i>\|<\/i> POINTS PER TAP/, "B27E History uses the Founder-locked USM performance language");
+assert.match(runtime, /TOTAL POINTS <i>\|<\/i> TOTAL TAPS <i>\|<\/i> POINTS PER TAP/, "History uses the Founder-approved universal PPT performance language");
+assert.doesNotMatch(runtime, /SCORE <i>\|<\/i> HIT RATE/, "retired general Hit Rate is absent from active History presentation");
 assert.doesNotMatch(runtime, /YOUR RECENT/, "History does not imply shooter continuity that is not established");
 assert.doesNotMatch(runtime, /Chronological preserved target sessions · shooter continuity identity not established/i, "internal continuity state is not exposed to the shooter");
-assert.match(runtime, /point\.hitTaps\)\} hits ÷ \$\{escapeHtml\(point\.totalTaps\)\} taps/, "selected-session Hit Rate states its transparent arithmetic basis");
+assert.match(runtime, /usmMetricButton\("total-taps", "TOTAL TAPS", point\.totalTaps/, "selected-session accounting exposes authoritative total taps instead of retired general Hit Rate");
 assert.match(runtime, /point\.score\)\} points ÷ \$\{escapeHtml\(point\.totalTaps\)\} taps/, "selected-session Points per Tap uses shooter-facing arithmetic language");
 assert.doesNotMatch(runtime, /suffix: "Actual governed target score"|suffix: "Governed score ÷ total taps"/, "chart captions contain no machine-language governance terminology");
 assert.match(runtime, /function targetHistorySeries[\s\S]*?point\.targetId === clean\(targetId\)\)/, "Hit Rate history accepts valid same-target sessions across differing tap counts");
@@ -59,15 +61,16 @@ assert.match(usmRegistry, /governed-additive-numeric-region-scoring/, "USM enrol
 assert.doesNotMatch(usmRegistry, /gunfun_22200_b27e_black|qt_printer13_product_/, "USM enrollment contains no target-ID or printer-prefix gate");
 assert.match(runtime, /SCZN3USMProofRegistry\?\.isEligible/, "shared USM machinery consumes proof eligibility without target-specific runtime wiring");
 assert.doesNotMatch(runtime, /gunfun_22200_b27e_black/, "the shared execution road remains target-data-driven");
-assert.match(runtime, /pointsPerTap: Math\.round\(\(score \* 10\) \/ totalTaps\) \/ 10/, "Points per Tap is governed score divided by total taps with one-decimal presentation rounding");
+assert.match(runtime, /const backendPointsPerTap = canonicalPointsPerTap\(result\)/, "History consumes Backend-authoritative Points Per Tap");
+assert.match(runtime, /point\.pointsPerTap\.toFixed\(2\)/, "Points Per Tap presents with the approved two-decimal precision");
 assert.doesNotMatch(runtime, /data-history-score-tap-count/, "the current session tap count cannot govern History availability or score-cohort selection");
-assert.match(runtime, /if \(!series\.length \|\| !series\.every\(isUsmEligible\)\) return "";/, "History is withheld only when the preserved series is absent or fails capability eligibility");
+assert.match(runtime, /function usmHistorySeries[\s\S]*?targetHistorySeries\(sessions, targetId\)\.filter\(point => point\.historyKind === "objectCoverage" \|\| isUsmEligible\(point\)\)/, "History admits only capability-eligible PPT or governed object-coverage records");
 assert.match(runtime, /data-history-chart-scroll/, "History exposes a swipeable complete chart viewport");
-assert.match(targetCss, /\.contract-usm-drawer \.contract-progression-chart\{[^}]*grid-template-columns:minmax\(0,1fr\)/, "B27E History charts give the complete row width to the timeline");
+assert.match(targetCss, /\.contract-progression-chart\{[^}]*grid-template-columns:minmax\(0,1fr\)[^}]*width:100%/, "History charts give the complete row width to the timeline");
 assert.doesNotMatch(targetCss, /\.contract-usm-drawer \.contract-progression-chart\{[^}]*grid-template-columns:(?:112px|72px)/, "B27E History has no fixed left metric gutter");
-assert.match(targetCss, /\.contract-usm-drawer \.contract-progression-chart h3\{[^}]*right:0;left:0[^}]*text-align:center/, "metric titles are compact and centered inside each chart");
-assert.match(targetCss, /\.contract-usm-drawer>summary\{[^}]*grid-template-columns:minmax\(0,1fr\) auto 28px;grid-template-rows:1fr/, "desktop History identity, details label, and arrow remain one compact horizontal row");
-assert.match(targetCss, /@media\(max-width:760px\)[\s\S]*?\.contract-usm-drawer>summary\{grid-template-columns:minmax\(0,1fr\) auto 18px;grid-template-rows:1fr/, "mobile History identity, details label, and arrow remain one compact horizontal row");
+assert.match(targetCss, /\.contract-usm-history-surface \.contract-progression-chart h3\{[^}]*right:0;left:0[^}]*text-align:center/, "metric titles are compact and centered inside each History chart");
+assert.match(targetCss, /\.contract-usm-drawer>summary\{[^}]*grid-template-columns:minmax\(0,1fr\) auto 22px;grid-template-rows:1fr/, "desktop History identity, details label, and arrow remain one compact horizontal row");
+assert.match(targetCss, /@media\(max-width:760px\)[\s\S]*?\.contract-usm-drawer>summary\{grid-template-columns:minmax\(0,1fr\) auto 22px;grid-template-rows:1fr/, "mobile History identity, details label, and arrow remain one compact horizontal row");
 assert.doesNotMatch(runtime, /contract-usm-distribution-control/, "History contains no duplicate scoring-distribution control");
 assert.match(runtime, /target\.scrollLeft = source\.scrollLeft/, "all three USM charts synchronize their chronological scroll position");
 assert.match(runtime, /data-usm-session-id/, "all three charts expose the same selectable preserved-session identity");

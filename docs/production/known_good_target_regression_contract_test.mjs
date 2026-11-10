@@ -37,7 +37,7 @@ for (const targetId of ["idpa_silhouette_sl_st2", "baker_gf_bb_c", "gunfun_22740
 assert.match(vaultContract, /Same destination = same name|Ballistic Vault|must not rename the Ballistic Vault as History/);
 assert.match(vault, /CONTRACT_TARGET_SCORING[\s\S]*?SCZN3TargetExecutionRuntime\.approvedResultComponent/, "data-defined scores preserve the approved universal RESULT inside the functional checkpoint Vault road");
 assert.match(vault, /scoredEvidenceTarget =[^;]*Boolean\(approvedResult\)/, "a preserved approved result cannot fall through to zeroing confirmation UI");
-assert.match(dispatch, /CONTRACT_TARGET_SCORING[\s\S]*?target-experience\.html\?session=/, "target-scoring SECs exact-reopen through their shared production route");
+assert.match(dispatch, /CONTRACT_TARGET_SCORING[\s\S]*?if \(isContractAdapter\(dispatch\.adapter\)\) \{[\s\S]*?new URLSearchParams\(\{ session: sessionId, view: "sec" \}\)[\s\S]*?target-experience\.html\?\$\{params\.toString\(\)\}/, "target-scoring SECs exact-reopen through the parameterized shared production route");
 assert.equal(manifest.targets.filter(target => target.confirmationApplicable).length, 3, "only governed zeroing targets require confirmation");
 assert.equal(manifest.targets.filter(target => !target.confirmationApplicable).length, 9, "non-zeroing targets remain free of zeroing confirmation machinery");
 

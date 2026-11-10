@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const evidenceDir = path.join(docs, "test-evidence", "tst12-final-stabilization");
+const evidenceDir = path.resolve(process.env.SCZN3_TST12_EVIDENCE_DIR || path.join(docs, "test-evidence", "tst12-final-stabilization"));
 fs.mkdirSync(evidenceDir, { recursive: true });
 const read = relative => fs.readFileSync(path.join(docs, relative), "utf8");
 const sharedSource = read("tst12_station_results.js");
@@ -112,7 +112,7 @@ assert.match(records, /return renderer\.render\(result, \{ experienceMode \}\)/,
 assert.doesNotMatch(adapter, /data-tst12-retired-renderer="live-result"/, "retired live renderer is no longer executable");
 assert.doesNotMatch(records, /data-tst12-retired-renderer="vault"/, "retired Vault renderer is no longer executable");
 assert.match(targetHtml, /tst12_station_results\.js\?v=sczn3-tst12-station-pip-cq-20261107-2/, "live Result loads the current shared renderer before its adapter");
-assert.match(targetHtml, /tst12_universal_experience\.js\?v=sczn3-session-init-20261109-1/, "live Result loads the controller-aware adapter through the governed deferred-session asset identity");
+assert.match(targetHtml, /tst12_universal_experience\.js\?v=sczn3-three-path-release-20261109-1/, "live Result loads the controller-aware adapter through the governed three-path asset identity");
 assert.match(records, /tst12_station_results\.js\?v=sczn3-tst12-station-pip-cq-20261107-2/, "Vault loads the same current shared renderer");
 assert.match(sharedCss, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/, "five accounting metrics have independent desktop columns");
 assert.match(sharedCss, /@media\(max-width:640px\)/, "shared contract owns mobile stacking");
@@ -171,7 +171,9 @@ const server = http.createServer((request, response) => {
   response.statusCode = 404;
   response.end("not found");
 });
-await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+const authorizedPort = Number(process.env.SCZN3_TST12_TEST_PORT);
+assert.equal(authorizedPort, 8272, "the stabilization gate requires the Founder-authorized port 8272 and has no fallback listener");
+await new Promise(resolve => server.listen(authorizedPort, "127.0.0.1", resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
 const systemChromium = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const browser = await chromium.launch({ headless: true, ...(fs.existsSync(systemChromium) ? { executablePath: systemChromium } : {}) });

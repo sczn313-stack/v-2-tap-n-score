@@ -120,7 +120,7 @@ assert.ok(vaultStart >= 0 && vaultEnd > vaultStart, "records owns a bounded comp
 const genericResult = "<details>Scoring Distribution</details>";
 const compactSummary = { status: "complete", primaryValue: "128", primaryUnit: "POINTS", objectiveLabel: "TARGET SCORE", breakdown: [{ label: "Observations", value: "60" }], evidenceLabel: "60 observations preserved" };
 const renderCompactVaultRecord = new Function(
-  "window", "authorityPackage", "resolveVaultResultSummary", "resolvePreservedApprovedResult", "resolveLowestScoreWinsVaultModel", "resolveVaultEvidenceModel", "isBaker100YardZeroingSession", "vaultSessionNumber", "vaultDateTimeAttribute", "cleanVaultDate", "vaultTargetPanel", "authorityVisualForPackage", "historicalSecUrl", "escapeHtml",
+  "window", "authorityPackage", "resolveVaultResultSummary", "resolvePreservedApprovedResult", "resolveLowestScoreWinsVaultModel", "resolveVaultEvidenceModel", "isBaker100YardZeroingSession", "vaultSessionNumber", "vaultDateTimeAttribute", "cleanVaultDate", "vaultTargetPanel", "authorityVisualForPackage", "historicalSecUrl", "shootingSessionDisplayLabel", "escapeHtml",
   `const SCZN3SECDispatch = window.SCZN3SECDispatch; ${records.slice(vaultStart, vaultEnd)}; return renderCompactVaultRecord;`
 )(
   {
@@ -144,6 +144,7 @@ const renderCompactVaultRecord = new Function(
   () => "<div>target evidence</div>",
   () => "",
   () => "target-experience.html?session=preserved",
+  (session, fallback) => session.sessionLabel || fallback,
   escapeHtml
 );
 for (const session of fixtures) {

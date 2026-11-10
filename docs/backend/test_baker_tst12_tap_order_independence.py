@@ -20,13 +20,13 @@ TARGETS = ("baker_tst12_17_5x23", "baker_tst12_23x35")
 
 def start(store, resolver, target_id, key):
     prepared = prepare_session(
-        {"targetId": target_id, "missionFamily": "targetScoring"},
+        {"targetId": target_id, "missionFamily": "targetScoring", "experienceMode": "simulation"},
         store,
         now=NOW,
         execution_contract_resolver=resolver,
     )
     return start_session(
-        {"preparationToken": prepared["preparationToken"], "selectedEquipment": prepared["standardSetup"]},
+        {"preparationToken": prepared["preparationToken"], "selectedEquipment": prepared["standardSetup"], "experienceMode": "simulation"},
         store,
         idempotency_key=key,
         now=NOW,

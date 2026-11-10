@@ -9,10 +9,10 @@ const { chromium } = createRequire(import.meta.url)("playwright");
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const origin = process.env.SCZN3_TST12_ORIGIN || "http://127.0.0.1:8192";
 const authorityPort = process.env.SCZN3_TST12_AUTHORITY_PORT || new URL(origin).port;
-const evidenceDir = path.join(docs, "authority-evidence/baker-tst12/ugo-authority-admission-2026-10-21");
+const evidenceDir = path.resolve(process.env.SCZN3_TST12_EVIDENCE_DIR || path.join(docs, "authority-evidence/baker-tst12/ugo-authority-admission-2026-10-21"));
 const variants = [
-  { id: "baker_tst12_17_5x23", name: "TST-12-17.5", asset: "assets/TST12_PRINT_17.5X23_V1.svg", actualAsset: "assets/BAKER_TST12_SOURCE_ARTWORK.jpg", route: "t/baker/tst12-17-5x23/index.html", stationGrid: { x: 0.05, y: 0.05434782608695652, columnStep: 0.3142857142857143, rowStep: 0.22826086956521738 } },
-  { id: "baker_tst12_23x35", name: "TST-12-35", asset: "assets/TST12_PRINT_23X35_V1.svg", actualAsset: "assets/BAKER_TST12_SOURCE_ARTWORK.jpg", route: "t/baker/tst12-23x35/index.html", stationGrid: { x: 0.05434782608695652, y: 0.04285714285714286, columnStep: 0.30434782608695654, rowStep: 0.22142857142857142 } }
+  { id: "baker_tst12_17_5x23", name: "TST-12-17.5", asset: "assets/TST12_PRINT_17.5X23_V1.svg", actualAsset: "production/fixtures/BAKER_TST12_17_5X23_ACTUAL_TEST_EVIDENCE.jpg", route: "t/baker/tst12-17-5x23/index.html", stationGrid: { x: 0.05, y: 0.05434782608695652, columnStep: 0.3142857142857143, rowStep: 0.22826086956521738 } },
+  { id: "baker_tst12_23x35", name: "TST-12-35", asset: "assets/TST12_PRINT_23X35_V1.svg", actualAsset: null, route: "t/baker/tst12-23x35/index.html", stationGrid: { x: 0.05434782608695652, y: 0.04285714285714286, columnStep: 0.30434782608695654, rowStep: 0.22142857142857142 } }
 ];
 
 async function stationCenters(targetId) {
@@ -265,6 +265,7 @@ try {
   const desktopPage = await desktop.newPage();
   for (const variant of variants) {
     for (const mode of ["simulation", "actual"]) {
+      if (variant.id === "baker_tst12_23x35" && mode === "actual") continue;
       await assertAbandonedVisitCreatesNoSession(desktop, variant, mode);
       const sessionId = await exercise(desktopPage, variant, mode);
       console.log(sessionId
@@ -288,6 +289,7 @@ try {
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
   for (const variant of variants) {
     for (const mode of ["simulation", "actual"]) {
+      if (variant.id === "baker_tst12_23x35" && mode === "actual") continue;
       const page = await mobile.newPage();
       const query = new URLSearchParams({ target: variant.id, missionFamily: "targetScoring", experienceMode: mode, authorityPort, v: "tst12-shooter-magic-1" });
       if (mode === "simulation") query.set("source", "registered");
