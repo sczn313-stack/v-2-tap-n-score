@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Isolated saved-equipment handoff fixture</title>
+  <script src="../app_state.js" defer></script>
+</head>
+<body>
+  <button id="seedEquipment" type="button">Seed isolated saved equipment</button>
+  <p id="status" role="status">Not seeded.</p>
+  <script>
+    document.getElementById("seedEquipment").addEventListener("click", () => {
+      window.SCZN3M4.saveMatrixSnapshot({
+        setupId: "isolated-first-observation-equipment",
+        setupName: "Isolated first-observation equipment",
+        weaponCategory: "Rifle",
+        weaponManufacturer: "Isolated Test",
+        weaponModelType: "Test Rifle",
+        weaponModelCaliber: ".22 LR",
+        ammoCaliber: ".22 LR"
+      });
+      document.getElementById("status").textContent = "Isolated saved equipment ready.";
+    });
+  </script>
+</body>
+</html>

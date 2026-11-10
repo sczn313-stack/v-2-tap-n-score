@@ -20,6 +20,25 @@
     return port ? `&authorityPort=${encodeURIComponent(port)}` : "";
   }
 
+  function resolvePreparedEquipment(prepared, submittedCandidates = []) {
+    const setupMode = clean(prepared && prepared.setupMode);
+    if (setupMode === "standard") {
+      return prepared && prepared.standardSetup && typeof prepared.standardSetup === "object"
+        ? prepared.standardSetup
+        : null;
+    }
+    if (setupMode === "shooter-selected") {
+      // The preparation response proves that the submitted candidate was
+      // admitted, but intentionally does not echo the candidate's equipment
+      // data. Retain the exact candidate sent to Backend Authority so the
+      // deferred /start request can present that same governed selection.
+      return Array.isArray(submittedCandidates) && submittedCandidates[0] && typeof submittedCandidates[0] === "object"
+        ? submittedCandidates[0]
+        : null;
+    }
+    return null;
+  }
+
   function runtimeId() {
     if (global.crypto && typeof global.crypto.randomUUID === "function") return global.crypto.randomUUID();
     const bytes = new Uint8Array(16);
@@ -2524,7 +2543,7 @@
     return compact;
   }
 
-  global.SCZN3TargetExecutionRuntime = Object.freeze({ TST12_PRESENTATION_ID, bindRepeatedObjectAccordions, initializeSECInteractions, freshSimulatorEncounterHref, installSimulatorReentry, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, approvedResultComponent, approvedResultContent, approvedResultFamily, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, comparableProgressionSeries, targetHistorySeries, usmHistorySeries, usmDrawerMarkup, hydrateProgression, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, normalizedEvidencePoint, preservedObservations, missedTapNumbers, canonicalScoringObservations, sourceImagePoint, renderedImageContentBox, renderedObservationSurfaceBox, syncProjectionLayerToImage });
+  global.SCZN3TargetExecutionRuntime = Object.freeze({ TST12_PRESENTATION_ID, bindRepeatedObjectAccordions, initializeSECInteractions, freshSimulatorEncounterHref, installSimulatorReentry, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, approvedResultComponent, approvedResultContent, approvedResultFamily, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, comparableProgressionSeries, targetHistorySeries, usmHistorySeries, usmDrawerMarkup, hydrateProgression, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, normalizedEvidencePoint, preservedObservations, missedTapNumbers, canonicalScoringObservations, sourceImagePoint, renderedImageContentBox, renderedObservationSurfaceBox, syncProjectionLayerToImage, resolvePreparedEquipment });
 
   function initializePage() {
     const root = document.querySelector("[data-contract-target-page]");
@@ -3217,18 +3236,19 @@
         "weaponCatalogManufacturer", "weaponCatalogModel", "weaponCatalogCaliber",
         "ammoCaliber", "ammoManufacturer", "ammoLoad"
       ].some(key => clean(activeSessionContext[key]));
+      const submittedEquipmentCandidates = hasSelectedEquipment
+        ? [{ ...activeSessionContext, source: activeSessionContext.setupId ? "weapon_library" : "one_time_setup" }]
+        : [];
       const prepared = await request("/api/session/prepare", {
         method: "POST",
         body: JSON.stringify({
           targetId,
           missionFamily: missionFamily || undefined,
           experienceMode,
-          ...(hasSelectedEquipment ? { equipmentCandidates: [{ ...activeSessionContext, source: activeSessionContext.setupId ? "weapon_library" : "one_time_setup" }] } : {})
+          ...(submittedEquipmentCandidates.length ? { equipmentCandidates: submittedEquipmentCandidates } : {})
         })
       });
-      const selectedEquipment = prepared.setupMode === "shooter-selected" && Array.isArray(prepared.equipmentCandidates) && prepared.equipmentCandidates.length
-        ? prepared.equipmentCandidates[0]
-        : prepared.standardSetup;
+      const selectedEquipment = resolvePreparedEquipment(prepared, submittedEquipmentCandidates);
       state.preparation = prepared;
       state.selectedEquipment = selectedEquipment;
       state.sessionIdempotencyKey = `contract-${runtimeId()}`;

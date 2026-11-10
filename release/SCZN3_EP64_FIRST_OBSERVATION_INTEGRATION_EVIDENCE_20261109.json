@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "sczn3.release.integration-evidence.v1",
+  "candidate": "episode64-first-observation-correction",
+  "baseCommit": "d521cc77e5a26a1d3916adff7321a66942e78f54",
+  "presentationIdentity": "sczn3-three-path-release-20261109-1",
+  "approvedExperiences": [
+    "baker_tst12_17_5x23:simulation",
+    "baker_tst12_17_5x23:actual",
+    "baker_tst12_23x35:simulation"
+  ],
+  "withheldExperiences": [
+    "baker_tst12_23x35:actual"
+  ],
+  "sourceFiles": [
+    {
+      "path": "docs/target_execution_runtime.js",
+      "sha256": "362222bf66d32dcbfb1e0acb5b9c764033facce33503fbc29f4b70bb3c961303"
+    },
+    {
+      "path": "docs/tst12_presentation_identity.json",
+      "sha256": "4d4a8b073debdc49cb212d41118eebaf24a9781bc69e71192ca27e0fbe9682ec"
+    },
+    {
+      "path": "docs/production/first_observation_session_handoff_test.mjs",
+      "sha256": "ea3a75925fbd512675b49d4c01c4cfcc78ed187ade5135245171f0942b38cf1a"
+    },
+    {
+      "path": "docs/production/tst12_isolated_review_server.py",
+      "sha256": "e06dfb07eb264fc51a439961c42ca269ee5fb41367a8732055cc38dab55b343d"
+    },
+    {
+      "path": "docs/production/first_observation_saved_equipment_fixture.html",
+      "sha256": "d4dbf0555b920d2d3afab6f745c1588f83337c41b4f0d0148922b8bd9e45db78"
+    }
+  ],
+  "browserAcceptance": {
+    "authorizedOrigin": "http://127.0.0.1:8273",
+    "completed": true,
+    "desktop": "pass",
+    "mobile390": "pass",
+    "durableSessionCreation": "exactly_one_on_first_valid_observation",
+    "duplicateSessionProtection": "pass",
+    "fullLifecycle": "pass",
+    "environmentStoppedAfterVerification": true
+  },
+  "offlineRegression": {
+    "firstObservationHandoff": "pass",
+    "threePathAvailability": "pass",
+    "tapOrderIndependence": "pass",
+    "universalLifecycle": "pass",
+    "canonicalPreservedLifecycle": "pass",
+    "knownGoodTargetInventory": "pass",
+    "sessionAuthority": "pass",
+    "preservedSecCrossOrigin": "pass",
+    "secVaultArchitecture": "pass",
+    "smartTargetIdentity": "pass",
+    "universalPptAuthority": "pass",
+    "bakerSlSt1Identity": "pass"
+  },
+  "productionDelivery": {
+    "environment": "production",
+    "requiredDeployCommand": "netlify deploy --prod --no-build --dir=dist/netlify",
+    "deploymentAuthorized": false
+  }
+}

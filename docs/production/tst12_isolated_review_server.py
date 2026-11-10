@@ -28,8 +28,8 @@ PORT_TEXT = os.environ.get("SCZN3_TST12_TEST_PORT", "")
 if not PORT_TEXT:
     raise RuntimeError("SCZN3_TST12_TEST_PORT is required; no fallback port is permitted")
 PORT = int(PORT_TEXT)
-if PORT != 8272:
-    raise RuntimeError("Founder authorization permits isolated test port 8272 only")
+if PORT != 8273:
+    raise RuntimeError("Founder authorization permits isolated test port 8273 only")
 
 
 class IsolatedTST12Handler(AuthorityHandler):
