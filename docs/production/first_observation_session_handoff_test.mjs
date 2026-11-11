@@ -73,6 +73,8 @@ assert.match(runtimeSource, /const submittedEquipmentCandidates = hasSelectedEqu
 assert.match(runtimeSource, /resolvePreparedEquipment\(prepared, submittedEquipmentCandidates\)/, "prepared state uses the admitted handoff resolver");
 assert.match(runtimeSource, /if \(!state\.preparation \|\| !clean\(state\.preparation\.preparationToken\) \|\| !state\.selectedEquipment\) throw new Error\("session_preparation_unavailable"\)/, "the durable-session guard remains fail-closed");
 assert.match(runtimeSource, /if \(state\.sessionStartPromise\) return state\.sessionStartPromise/, "concurrent first observations share one durable-session start");
+assert.match(runtimeSource, /await ensureDurableSession\("first_valid_authoritative_observation"\)[\s\S]*backendAdmittedObservationTargetProfileId\(state\.session, targetId\)[\s\S]*canonicalSourceImagePoint\(normalizedPoint/, "the Backend session exists and its admitted identity is verified before canonical observation construction");
+assert.doesNotMatch(runtimeSource, /const admittedTargetProfileId = clean\(state\.session && state\.session\.matrixSnapshot/, "mutable session presentation state is not observation identity authority");
 
 console.log("PASS first-observation preparation token and shooter-selected equipment survive initialization");
 console.log("PASS standard setup remains Backend-owned and malformed handoffs fail closed");

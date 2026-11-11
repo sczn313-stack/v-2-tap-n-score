@@ -412,7 +412,7 @@
       .filter(([identity]) => identity));
   }
 
-  function sourceImagePoint(clientX, clientY, imageBox, identity = {}) {
+  function normalizedSourceImagePoint(clientX, clientY, imageBox) {
     const left = Number(imageBox && imageBox.left);
     const top = Number(imageBox && imageBox.top);
     const width = Number(imageBox && imageBox.width);
@@ -423,6 +423,21 @@
     const xNorm = (x - left) / width;
     const yNorm = (y - top) / height;
     if (xNorm < 0 || xNorm > 1 || yNorm < 0 || yNorm > 1) return null;
+    return Object.freeze({ xNorm, yNorm });
+  }
+
+  function backendAdmittedObservationTargetProfileId(session, requestedTargetProfileId) {
+    const requested = clean(requestedTargetProfileId);
+    const admitted = clean(session && session.backendSessionAuthority && session.backendSessionAuthority.target && session.backendSessionAuthority.target.targetId);
+    if (!admitted) throw new Error("backend_admitted_target_identity_unavailable");
+    if (!requested || admitted !== requested) throw new Error("backend_admitted_target_identity_mismatch");
+    return admitted;
+  }
+
+  function canonicalSourceImagePoint(position, identity = {}) {
+    const xNorm = Number(position && position.xNorm);
+    const yNorm = Number(position && position.yNorm);
+    if (![xNorm, yNorm].every(Number.isFinite) || xNorm < 0 || xNorm > 1 || yNorm < 0 || yNorm > 1) return null;
     const canonicalTargetCoordinate = Object.freeze({
       schemaVersion: "sczn3.ugo.normalized-source-image-point.v1",
       coordinateSystem: "normalized_source_image_top_left",
@@ -444,6 +459,10 @@
       source: "sczn3_precision_tap_standard_9_source_pixels"
     }) : undefined;
     return { xNorm, yNorm, canonicalTargetCoordinate, ...(observationFootprint ? { observationFootprint } : {}) };
+  }
+
+  function sourceImagePoint(clientX, clientY, imageBox, identity = {}) {
+    return canonicalSourceImagePoint(normalizedSourceImagePoint(clientX, clientY, imageBox), identity);
   }
 
   function renderedImageContentBox(image) {
@@ -2599,7 +2618,7 @@
     return compact;
   }
 
-  global.SCZN3TargetExecutionRuntime = Object.freeze({ TST12_PRESENTATION_ID, bindRepeatedObjectAccordions, initializeSECInteractions, freshSimulatorEncounterHref, installSimulatorReentry, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, approvedResultComponent, approvedResultContent, approvedResultFamily, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, comparableProgressionSeries, targetHistorySeries, usmHistorySeries, usmDrawerMarkup, hydrateProgression, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, normalizedEvidencePoint, preservedObservations, missedTapNumbers, canonicalScoringObservations, sourceImagePoint, renderedImageContentBox, renderedObservationSurfaceBox, syncProjectionLayerToImage, resolvePreparedEquipment });
+  global.SCZN3TargetExecutionRuntime = Object.freeze({ TST12_PRESENTATION_ID, bindRepeatedObjectAccordions, initializeSECInteractions, freshSimulatorEncounterHref, installSimulatorReentry, canPreserve, contractIdentity, targetIdentity, familyReconciles, renderSEC, approvedResultComponent, approvedResultContent, approvedResultFamily, vaultEvidenceModel, vaultResultSummary, objectResultGroups, objectTapSummary, shooterFacingResultMarkup, shotPatternMarkup, requestScoringCaliber, summary, comparableProgressionSeries, targetHistorySeries, usmHistorySeries, usmDrawerMarkup, hydrateProgression, runtimeId, sha256Hex, hasExecutableRegisteredAsset, shouldRenderGovernedAim, persistentEvidenceImage, normalizedEvidencePoint, preservedObservations, missedTapNumbers, canonicalScoringObservations, normalizedSourceImagePoint, canonicalSourceImagePoint, sourceImagePoint, backendAdmittedObservationTargetProfileId, renderedImageContentBox, renderedObservationSurfaceBox, syncProjectionLayerToImage, resolvePreparedEquipment });
 
   function initializePage() {
     const root = document.querySelector("[data-contract-target-page]");
@@ -3671,12 +3690,16 @@
           return;
         }
       }
-      const admittedTargetProfileId = clean(state.session && state.session.matrixSnapshot && state.session.matrixSnapshot.targetProfileId) || targetId;
       const targetImage = byId("contractTargetImage");
       const coordinateRoot = targetImage && targetImage.closest(".contract-image-plane") || document;
-      const point = sourceImagePoint(event.clientX, event.clientY, renderedObservationSurfaceBox(targetImage, coordinateRoot), { targetProfileId: admittedTargetProfileId, sourceImageSha256: state.image && state.image.sha256, sourceImageWidthPx: state.image && state.image.widthPx, sourceImageHeightPx: state.image && state.image.heightPx });
-      if (!point) { status("Tap inside the visible target image."); return; }
-      if (state.aimMode) { state.aim = point; state.aimMode = false; }
+      const normalizedPoint = normalizedSourceImagePoint(event.clientX, event.clientY, renderedObservationSurfaceBox(targetImage, coordinateRoot));
+      if (!normalizedPoint) { status("Tap inside the visible target image."); return; }
+      if (state.aimMode) {
+        await ensureDurableSession("governed_aim_observation");
+        const admittedTargetProfileId = backendAdmittedObservationTargetProfileId(state.session, targetId);
+        state.aim = canonicalSourceImagePoint(normalizedPoint, { targetProfileId: admittedTargetProfileId, sourceImageSha256: state.image && state.image.sha256, sourceImageWidthPx: state.image && state.image.widthPx, sourceImageHeightPx: state.image && state.image.heightPx });
+        state.aimMode = false;
+      }
       else {
         const observationRequirement = state.interaction && state.interaction.observations;
         const maximumObservationCount = Number(observationRequirement && observationRequirement.max);
@@ -3702,6 +3725,8 @@
         // visits never become shooting-session records, while the first valid
         // observation still receives a Backend-issued identity before entry.
         await ensureDurableSession("first_valid_authoritative_observation");
+        const admittedTargetProfileId = backendAdmittedObservationTargetProfileId(state.session, targetId);
+        const point = canonicalSourceImagePoint(normalizedPoint, { targetProfileId: admittedTargetProfileId, sourceImageSha256: state.image && state.image.sha256, sourceImageWidthPx: state.image && state.image.widthPx, sourceImageHeightPx: state.image && state.image.heightPx });
         const identifiedPoint = { ...point, observationId: `shot-${state.observations.length + 1}` };
         const creditedPoint = assignedStationRegion ? { ...identifiedPoint, assignedStationRegionId: assignedStationRegion.regionId } : identifiedPoint;
         state.observations.push(objects.length ? { ...creditedPoint, declaredObjectId: state.selectedObjectId } : creditedPoint);

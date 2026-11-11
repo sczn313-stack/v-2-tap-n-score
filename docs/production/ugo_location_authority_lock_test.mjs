@@ -24,7 +24,7 @@ const computedStyle = {
   objectFit: "contain", objectPosition: "50% 50%",
 };
 const window = { getComputedStyle: () => computedStyle };
-const document = { readyState: "loading", addEventListener() {} };
+const document = { documentElement: { dataset: {} }, readyState: "loading", addEventListener() {} };
 vm.runInNewContext(runtimeSource, { window, document, Uint8Array, Uint32Array, ArrayBuffer, DataView, Math, Date, Object, String, Number, Array, RegExp, URLSearchParams });
 const runtime = window.SCZN3TargetExecutionRuntime;
 
@@ -65,7 +65,8 @@ const projected = JSON.parse(JSON.stringify(runtime.normalizedEvidencePoint(conf
 assert.ok(Math.abs(projected.xNorm - .25) < 1e-12, "projection consumes canonical UGO x rather than presentation x");
 assert.ok(Math.abs(projected.yNorm - .75) < 1e-12, "projection consumes canonical UGO y rather than presentation y");
 
-assert.match(runtimeSource, /sourceImagePoint\(event\.clientX, event\.clientY, renderedImageContentBox\(byId\("contractTargetImage"\)\)/);
+assert.match(runtimeSource, /normalizedSourceImagePoint\(event\.clientX, event\.clientY, renderedObservationSurfaceBox\(targetImage, coordinateRoot\)\)/);
+assert.match(runtimeSource, /await ensureDurableSession\("first_valid_authoritative_observation"\)[\s\S]*backendAdmittedObservationTargetProfileId\(state\.session, targetId\)[\s\S]*canonicalSourceImagePoint\(normalizedPoint/);
 assert.match(runtimeSource, /syncProjectionLayerToImage\(layer, image, container\)/);
 assert.match(runtimeSource, /data-ugo-projection-plane="normalized-source-image"/);
 assert.match(runtimeSource, /container\.dataset\.ugoProjectionPlane === "normalized-source-image"/);
