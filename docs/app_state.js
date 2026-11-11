@@ -1455,12 +1455,19 @@
       throw new Error("A backend-issued session is required.");
     }
     const target = authorityPackage.target || {};
+    const sourceMatrix = matrixSnapshot && typeof matrixSnapshot === "object" ? matrixSnapshot : {};
+    const admittedTargetProfileId = String(target.targetId || "").trim();
+    if (!admittedTargetProfileId) throw new Error("backend_admitted_target_identity_unavailable");
     const mission = authorityPackage.missionIdentity || {};
     const distance = authorityPackage.governedDistance || {};
     const selectedEquipment = authorityPackage.selectedEquipment || {};
     const governedProfileIdentity = window.SCZN3TargetProfiles
-      ? window.SCZN3TargetProfiles.identityRecord(target, authorityPackage, matrixSnapshot)
+      ? window.SCZN3TargetProfiles.identityRecord(target, authorityPackage)
       : null;
+    if (governedProfileIdentity
+      && String(governedProfileIdentity.targetProfileId || "").trim().toLowerCase() !== admittedTargetProfileId.toLowerCase()) {
+      throw new Error("backend_admitted_target_identity_mismatch");
+    }
     const standardSetup = selectedEquipment.source === "backend_standard_setup" ? {
       setupId: "",
       setupName: "Standard Setup",
@@ -1482,14 +1489,20 @@
       setupMode: "standard"
     } : {};
     const authoritySnapshot = {
-      ...matrixSnapshot,
+      ...sourceMatrix,
       ...standardSetup,
-      target_profile_id: target.targetId || "",
-      targetProfileId: target.targetId || "",
-      targetId: target.targetAuthorityId || target.targetId || "",
-      targetName: target.targetName || matrixSnapshot.targetName || "",
-      targetProfileVersion: target.targetProfileVersion || "",
       ...(governedProfileIdentity || {}),
+      vendor: governedProfileIdentity && governedProfileIdentity.vendor || "",
+      sku: governedProfileIdentity && governedProfileIdentity.sku || "",
+      product: governedProfileIdentity && governedProfileIdentity.product || target.targetName || "",
+      authority: governedProfileIdentity && governedProfileIdentity.authority || target.targetAuthorityId || "",
+      target_profile_id: admittedTargetProfileId,
+      targetProfileId: admittedTargetProfileId,
+      targetId: target.targetAuthorityId || target.targetId || "",
+      targetName: target.targetName || sourceMatrix.targetName || "",
+      targetFamily: target.targetFamily || target.targetName || "",
+      targetVersion: target.targetProfileVersion || "",
+      targetProfileVersion: target.targetProfileVersion || "",
       atpId: target.atpId || "",
       mission_family: mission.missionFamily || "",
       missionFamily: mission.missionFamily || "",
@@ -1497,9 +1510,9 @@
       missionId: mission.missionId || "",
       resultPackageType: mission.resultPackageType || "",
       targetDistanceValue: distance.value === null || distance.value === undefined
-        ? matrixSnapshot.targetDistanceValue
+        ? sourceMatrix.targetDistanceValue
         : String(distance.value),
-      targetDistanceUnit: distance.unit || matrixSnapshot.targetDistanceUnit || "",
+      targetDistanceUnit: distance.unit || sourceMatrix.targetDistanceUnit || "",
       targetDistanceLocked: distance.locked === true,
       sessionAuthorityOwner: "backend"
     };
@@ -1510,6 +1523,10 @@
     };
     const nextSessionNumber = Number(read(KEYS.sessionCounter, 0)) + 1;
     const session = buildSession(frozenMatrix, nextSessionNumber);
+    const constructedTargetProfileId = String(session.matrixSnapshot && session.matrixSnapshot.targetProfileId || "").trim();
+    if (constructedTargetProfileId.toLowerCase() !== admittedTargetProfileId.toLowerCase()) {
+      throw new Error("backend_admitted_target_identity_mismatch");
+    }
     session.sessionId = authorityPackage.authoritativeSessionId;
     session.authoritativeSessionId = authorityPackage.authoritativeSessionId;
     session.sessionIdAuthority = "backend";
@@ -1533,14 +1550,16 @@
     } : null;
     session.targetProfileVersion = target.targetProfileVersion || "";
     if (governedProfileIdentity) Object.assign(session, governedProfileIdentity);
+    session.target_profile_id = admittedTargetProfileId;
+    session.targetProfileId = admittedTargetProfileId;
     session.atpId = target.atpId || "";
     session.targetAuthority = {
       ...session.targetAuthority,
-      targetId: target.targetAuthorityId || target.targetId || "",
-      target_profile_id: target.targetId || "",
-      targetProfileId: target.targetId || "",
-      targetProfileVersion: target.targetProfileVersion || "",
       ...(governedProfileIdentity || {}),
+      targetId: target.targetAuthorityId || target.targetId || "",
+      target_profile_id: admittedTargetProfileId,
+      targetProfileId: admittedTargetProfileId,
+      targetProfileVersion: target.targetProfileVersion || "",
       atpId: target.atpId || "",
       mission_family: mission.missionFamily || "",
       missionFamilyId: mission.missionFamily || "",
