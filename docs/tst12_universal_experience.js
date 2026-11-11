@@ -180,7 +180,29 @@
     const image = byId("contractTargetImage");
     const digitalFace = byId("contractDigitalTargetFace");
     const markers = byId("contractMarkers");
-    if (!image || !digitalFace || !markers) return;
+    const precisionTapPlane = byId("contractPrecisionTapPlane");
+    if (!image || !digitalFace || !markers || !precisionTapPlane) return;
+
+    function stationSelectorAtPoint(clientX, clientY) {
+      if (!Number.isFinite(clientX) || !Number.isFinite(clientY) || digitalFace.hidden) return null;
+      return [...digitalFace.querySelectorAll("[data-tst12-station-selector]")].find(node => {
+        const bounds = node.getBoundingClientRect();
+        return bounds.width > 0 && bounds.height > 0
+          && clientX >= bounds.left && clientX <= bounds.right
+          && clientY >= bounds.top && clientY <= bounds.bottom;
+      }) || null;
+    }
+
+    function selectStationFromPointer(event) {
+      const selector = stationSelectorAtPoint(event.clientX, event.clientY);
+      if (!selector) return false;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const stationRegionId = selector.getAttribute("data-tst12-station-selector");
+      markers.dataset.activeStationRegion = stationRegionId;
+      document.dispatchEvent(new CustomEvent("sczn3:tst12-station-selected", { detail: { stationRegionId } }));
+      return true;
+    }
 
     function syncActiveStationBorder() {
       const activeRegionId = String(markers.dataset.activeStationRegion || "");
@@ -234,25 +256,13 @@
     }
 
     new MutationObserver(syncActiveStationBorder).observe(markers, { attributes: true, attributeFilter: ["data-active-station-region"] });
-    ["pointerdown", "pointerup", "pointercancel"].forEach(type => digitalFace.addEventListener(type, event => {
-      if (!event.target.closest("[data-tst12-station-selector]")) return;
-      event.stopPropagation();
-    }));
-    digitalFace.addEventListener("click", event => {
-      const selector = event.target.closest("[data-tst12-station-selector]");
-      if (!selector) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const stationRegionId = selector.getAttribute("data-tst12-station-selector");
-      markers.dataset.activeStationRegion = stationRegionId;
-      document.dispatchEvent(new CustomEvent("sczn3:tst12-station-selected", { detail: { stationRegionId } }));
-    });
-    digitalFace.addEventListener("dblclick", event => {
-      const selector = event.target.closest("[data-tst12-station-selector]");
-      if (!selector) return;
-      event.preventDefault();
-      event.stopPropagation();
-    });
+    // WebKit can resolve an SVG number's pointer to the transparent recording
+    // surface beneath it. Arbitrate at their existing shared coordinate plane,
+    // using the rendered native number-box bounds, so a genuine pointer selects
+    // the governed station without turning the remaining target into a selector.
+    precisionTapPlane.addEventListener("pointerdown", selectStationFromPointer, true);
+    precisionTapPlane.addEventListener("click", selectStationFromPointer, true);
+    precisionTapPlane.addEventListener("dblclick", selectStationFromPointer, true);
     image.addEventListener("load", () => {
       if (image.dataset.tst12ShooterFace !== "loading") return;
       image.dataset.tst12ShooterFace = "ready";
@@ -331,7 +341,7 @@
     const progress = document.createElement("div");
     progress.className = "tst12-round-progress";
     progress.id = "tst12RoundProgress";
-    progress.innerHTML = "<strong>SELECT YOUR CALIBER AND ENTER YOUR SHOOTING DISTANCE.</strong>";
+    progress.innerHTML = '<strong class="tst12-round-instruction">SELECT YOUR CALIBER AND ENTER YOUR SHOOTING DISTANCE.</strong><span class="tst12-round-counts" hidden></span>';
     fields.append(progress);
   }
 
@@ -385,6 +395,37 @@
       return { distanceValid: Number.isFinite(distance) && distance > 0, caliberValid: governedCaliberValues().has(normalizedCaliber(caliber)) };
     }
 
+    function renderRoundProgress(message, activeStation = null, activeCount = 0, totalCount = 0) {
+      const progress = byId("tst12RoundProgress");
+      if (!progress) return;
+      const instruction = progress.querySelector(".tst12-round-instruction");
+      const counts = progress.querySelector(".tst12-round-counts");
+      if (instruction) instruction.textContent = message;
+      if (counts) {
+        counts.hidden = !activeStation;
+        counts.replaceChildren();
+        if (activeStation) {
+          [["STATION", activeStation], ["RECORDED", activeCount], ["TOTAL", totalCount]].forEach(([label, value], index) => {
+            if (index) {
+              const separator = document.createElement("i");
+              separator.className = "tst12-round-separator";
+              separator.setAttribute("aria-hidden", "true");
+              separator.textContent = "|";
+              counts.append(separator);
+            }
+            const metric = document.createElement("span");
+            metric.className = "tst12-round-metric";
+            metric.append(`${label} `);
+            const number = document.createElement("b");
+            number.className = "tst12-round-value";
+            number.textContent = String(value);
+            metric.append(number);
+            counts.append(metric);
+          });
+        }
+      }
+    }
+
     function announceMissingSetup() {
       const { distanceValid, caliberValid } = requiredSetup();
       [byId("contractActualDistance"), byId("contractScoringCaliber")].forEach((field, index) => {
@@ -393,10 +434,9 @@
         if (valid) field.removeAttribute("aria-invalid");
         else field.setAttribute("aria-invalid", "true");
       });
-      const progress = byId("tst12RoundProgress");
-      if (progress) progress.querySelector("strong").textContent = !caliberValid
+      renderRoundProgress(!caliberValid
         ? "SELECT YOUR CALIBER FIRST."
-        : "ENTER YOUR SHOOTING DISTANCE.";
+        : "ENTER YOUR SHOOTING DISTANCE.");
       document.body.classList.toggle("tst12-setup-incomplete", !distanceValid || !caliberValid);
       if (!distanceValid || !caliberValid) status.textContent = "";
       return false;
@@ -418,13 +458,12 @@
       const activeCount = Number(markerLayer.dataset.selectedStationObservationCount || markers.length);
       const progress = byId("tst12RoundProgress");
       if (progress) {
-        progress.querySelector("strong").textContent = setupReady()
-          ? activeStation
-            ? `TAP WHERE YOUR SHOTS HIT · STATION ${activeStation}: ${activeCount} RECORDED · ${count} TOTAL`
-            : "TAP YOUR FIRST STATION"
+        if (setupReady() && activeStation) renderRoundProgress("TAP WHERE YOUR SHOTS HIT", activeStation, activeCount, count);
+        else renderRoundProgress(setupReady()
+          ? "TAP YOUR FIRST STATION"
           : requiredSetup().caliberValid
             ? "ENTER YOUR SHOOTING DISTANCE."
-            : "SELECT YOUR CALIBER FIRST.";
+            : "SELECT YOUR CALIBER FIRST.");
         progress.dataset.activeStation = activeStation ? String(activeStation) : "";
         progress.dataset.stationShotCount = activeStation ? String(activeCount) : "0";
         progress.dataset.totalShotCount = String(count);

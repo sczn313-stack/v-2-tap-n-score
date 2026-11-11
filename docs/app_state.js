@@ -45,6 +45,10 @@
   // presentation-session custody only; exact reopen continues to come from the
   // signed backend-preserved artifact, never from this volatile cache.
   const VOLATILE_MEDIA = new Map();
+  // A Backend-issued session must remain usable when synchronous Web Storage
+  // is full. This page-lifetime mirror is representation only: Backend
+  // Authority still owns session identity, scoring, and preserved SEC data.
+  const VOLATILE_SESSIONS = new Map();
 
   function rawWrite(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
@@ -389,6 +393,40 @@
     ));
   }
 
+  function publishBrowserStorageUnavailable(operation, sessionId, error) {
+    publishSaveDiagnostic({
+      operation,
+      ok: false,
+      status: "browser_storage_unavailable_memory_only",
+      sessionId: String(sessionId || ""),
+      exceptionName: error && error.name || "QuotaExceededError",
+      exceptionMessage: error && error.message || String(error || "Browser storage quota exceeded."),
+      failedAt: nowStamp()
+    });
+    if (typeof window.dispatchEvent === "function" && typeof window.CustomEvent === "function") {
+      window.dispatchEvent(new window.CustomEvent("sczn3:browser-storage-unavailable", {
+        detail: Object.freeze({
+          operation,
+          sessionId: String(sessionId || ""),
+          reason: "quota_exceeded",
+          storageMode: "memory_only"
+        })
+      }));
+    }
+  }
+
+  function retainVolatileSession(session, operation, error) {
+    const retained = hydrateSessionRecord(session);
+    if (!retained || !retained.sessionId) throw error;
+    VOLATILE_SESSIONS.set(String(retained.sessionId), retained);
+    publishBrowserStorageUnavailable(operation, retained.sessionId, error);
+    return retained;
+  }
+
+  function clearVolatileSession(sessionId) {
+    if (sessionId) VOLATILE_SESSIONS.delete(String(sessionId));
+  }
+
   // A nearly full origin can still reject a compact new session. Retry only
   // that record in the forced lossless envelope; existing browser records are
   // never changed here.
@@ -697,6 +735,8 @@
   }
 
   function readCanonicalSession(sessionId) {
+    const volatile = VOLATILE_SESSIONS.get(String(sessionId || ""));
+    if (volatile) return hydrateSessionRecord(volatile);
     return hydrateSessionRecord(rawRead(sessionRecordKey(sessionId), null));
   }
 
@@ -706,6 +746,7 @@
     const plan = canonicalSessionStoragePlan(session, storedMatrix, operation);
     writeStorageTransaction(plan.entries, operation);
     publishNormalizationReport(plan.report);
+    clearVolatileSession(session.sessionId);
     return hydrateSessionRecord(plan.compact);
   }
 
@@ -1519,21 +1560,27 @@
       .filter((item, index, source) => item && source.findIndex(candidate => candidate.sessionId === item.sessionId) === index)
       .slice(0, MAX_SESSION_HISTORY);
     let plan;
-    writeSessionPlanWithQuotaRetry(forceCompression => {
-      plan = canonicalSessionStoragePlan(session, frozenMatrix, "create-authoritative-session", { forceCompression });
-      const entries = [
-        ...plan.entries,
-        { key: KEYS.sessionCounter, value: nextSessionNumber, operation: "create-authoritative-session-counter" },
-        { key: KEYS.activeSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-active-reference" },
-        { key: KEYS.sessionHistory, value: history.map(historyReference), operation: "create-authoritative-session-history" }
-      ];
-      if (frozenMatrix.experienceMode !== "simulation") {
-        entries.push({ key: KEYS.activeZeroSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-zero-reference" });
-      }
-      writeStorageTransaction(entries, "create-authoritative-session-transaction");
-      return plan;
-    }, "create-authoritative-session-transaction");
+    try {
+      writeSessionPlanWithQuotaRetry(forceCompression => {
+        plan = canonicalSessionStoragePlan(session, frozenMatrix, "create-authoritative-session", { forceCompression });
+        const entries = [
+          ...plan.entries,
+          { key: KEYS.sessionCounter, value: nextSessionNumber, operation: "create-authoritative-session-counter" },
+          { key: KEYS.activeSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-active-reference" },
+          { key: KEYS.sessionHistory, value: history.map(historyReference), operation: "create-authoritative-session-history" }
+        ];
+        if (frozenMatrix.experienceMode !== "simulation") {
+          entries.push({ key: KEYS.activeZeroSession, value: sessionReference(session.sessionId), operation: "create-authoritative-session-zero-reference" });
+        }
+        writeStorageTransaction(entries, "create-authoritative-session-transaction");
+        return plan;
+      }, "create-authoritative-session-transaction");
+    } catch (error) {
+      if (!quotaExceeded(error)) throw error;
+      return retainVolatileSession(session, "create-authoritative-session-transaction", error);
+    }
     publishNormalizationReport(plan.report);
+    clearVolatileSession(session.sessionId);
     return hydrateSessionRecord(plan.compact);
   }
 
@@ -1544,20 +1591,26 @@
     const nextHistory = history.some(session => session.sessionId === updatedSession.sessionId)
       ? history.map(session => session.sessionId === updatedSession.sessionId ? updatedSession : session)
       : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
-    writeSessionPlanWithQuotaRetry(forceCompression => {
-      plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-canonical-session", { forceCompression });
-      const entries = [
-        ...plan.entries,
-        { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-history-references" },
-        { key: KEYS.activeSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-session-reference" }
-      ];
-      if (updatedSession.experienceMode !== "simulation") {
-        entries.push({ key: KEYS.activeZeroSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-zero-session-reference" });
-      }
-      writeStorageTransaction(entries, "replace-session-transaction");
-      return plan;
-    }, "replace-session-transaction");
+    try {
+      writeSessionPlanWithQuotaRetry(forceCompression => {
+        plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-canonical-session", { forceCompression });
+        const entries = [
+          ...plan.entries,
+          { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-history-references" },
+          { key: KEYS.activeSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-session-reference" }
+        ];
+        if (updatedSession.experienceMode !== "simulation") {
+          entries.push({ key: KEYS.activeZeroSession, value: sessionReference(updatedSession.sessionId), operation: "persist-active-zero-session-reference" });
+        }
+        writeStorageTransaction(entries, "replace-session-transaction");
+        return plan;
+      }, "replace-session-transaction");
+    } catch (error) {
+      if (!quotaExceeded(error)) throw error;
+      return retainVolatileSession(updatedSession, "replace-session-transaction", error);
+    }
     publishNormalizationReport(plan.report);
+    clearVolatileSession(updatedSession.sessionId);
     return hydrateSessionRecord(plan.compact);
   }
 
@@ -1613,15 +1666,21 @@
     const nextHistory = history.some(session => session.sessionId === requestedSessionId)
       ? history.map(session => session.sessionId === requestedSessionId ? updatedSession : session)
       : [updatedSession, ...history].slice(0, MAX_SESSION_HISTORY);
-    writeSessionPlanWithQuotaRetry(forceCompression => {
-      plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-session-by-id", { forceCompression });
-      writeStorageTransaction([
-        ...plan.entries,
-        { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-by-id-history" }
-      ], "persist-session-by-id-transaction");
-      return plan;
-    }, "persist-session-by-id-transaction");
+    try {
+      writeSessionPlanWithQuotaRetry(forceCompression => {
+        plan = canonicalSessionStoragePlan(updatedSession, storedMatrix, "persist-session-by-id", { forceCompression });
+        writeStorageTransaction([
+          ...plan.entries,
+          { key: KEYS.sessionHistory, value: nextHistory.map(historyReference), operation: "persist-session-by-id-history" }
+        ], "persist-session-by-id-transaction");
+        return plan;
+      }, "persist-session-by-id-transaction");
+    } catch (error) {
+      if (!quotaExceeded(error)) throw error;
+      return retainVolatileSession(updatedSession, "persist-session-by-id-transaction", error);
+    }
     publishNormalizationReport(plan.report);
+    clearVolatileSession(updatedSession.sessionId);
     return hydrateSessionRecord(plan.compact);
   }
 

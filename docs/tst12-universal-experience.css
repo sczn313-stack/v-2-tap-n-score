@@ -430,3 +430,12 @@ body[data-tst12-experience="true"] .tst12-round-controls{grid-template-columns:r
   body[data-tst12-experience="true"] .tst12-round-progress,
   body[data-tst12-experience="true"] .tst12-round-controls{grid-column:1;grid-row:auto}
 }
+
+/* Founder-approved cyan status hierarchy: instruction first, counts second. */
+body[data-tst12-experience="true"] .tst12-round-progress{display:grid;grid-template-columns:minmax(0,1fr);align-content:center;align-items:center;gap:.22rem;min-width:0;padding:.42rem .6rem}
+body[data-tst12-experience="true"] .tst12-round-instruction{display:block;grid-column:1;grid-row:1;color:#fff;font-size:clamp(.72rem,2.8vw,.88rem);font-weight:950;letter-spacing:.025em;line-height:1.05;white-space:normal}
+body[data-tst12-experience="true"] .tst12-round-counts{display:flex;grid-column:1;grid-row:2;align-items:baseline;justify-content:flex-start;gap:.4rem;box-sizing:border-box;width:100%;min-width:0;color:#bdf8ff;font-size:clamp(.58rem,2.2vw,.7rem);font-weight:850;letter-spacing:.045em;line-height:1.05;white-space:nowrap}
+body[data-tst12-experience="true"] .tst12-round-counts[hidden]{display:none!important}
+body[data-tst12-experience="true"] .tst12-round-metric{color:#bdf8ff;font:inherit}
+body[data-tst12-experience="true"] .tst12-round-value{color:#fff;font-size:clamp(1rem,4.2vw,1.35rem);font-weight:1000;letter-spacing:0}
+body[data-tst12-experience="true"] .tst12-round-separator{color:#00dfff;font-style:normal;font-weight:950}

@@ -4,13 +4,15 @@
   const STORAGE_KEY = "SCZN3_SEC_REOPEN_CAPABILITIES_V1";
   const HEADER = "X-SCZN3-SEC-Reopen-Capability";
   const FRAGMENT_KEY = "secReopenCapability";
+  const VOLATILE_CAPABILITIES = new Map();
 
   function clean(value) { return String(value || "").trim(); }
   function readMap() {
     try {
       const value = JSON.parse(global.localStorage.getItem(STORAGE_KEY) || "{}");
-      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
-    } catch (_) { return {}; }
+      const stored = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+      return Object.fromEntries([...Object.entries(stored), ...VOLATILE_CAPABILITIES.entries()]);
+    } catch (_) { return Object.fromEntries(VOLATILE_CAPABILITIES.entries()); }
   }
   function capability(sessionId) { return clean(readMap()[clean(sessionId)]); }
   function validCapability(value) {
@@ -56,7 +58,24 @@
     if (!sessionId || !token) return false;
     const values = readMap();
     values[sessionId] = token;
-    global.localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+    try {
+      global.localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+      VOLATILE_CAPABILITIES.delete(sessionId);
+    } catch (error) {
+      const quota = error && (error.name === "QuotaExceededError" || /quota/i.test(String(error.message || "")));
+      if (!quota) throw error;
+      VOLATILE_CAPABILITIES.set(sessionId, token);
+      if (typeof global.dispatchEvent === "function" && typeof global.CustomEvent === "function") {
+        global.dispatchEvent(new global.CustomEvent("sczn3:browser-storage-unavailable", {
+          detail: Object.freeze({
+            operation: "remember-sec-reopen-capability",
+            sessionId,
+            reason: "quota_exceeded",
+            storageMode: "memory_only"
+          })
+        }));
+      }
+    }
     return true;
   }
   function authorizedHeaders(sessionId, base) {

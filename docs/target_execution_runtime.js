@@ -2895,6 +2895,14 @@
       const secStatus = byId("contractSecStatus");
       if (secStatus) secStatus.textContent = message;
     };
+    const browserStorageWarning = byId("contractBrowserStorageWarning");
+    const showBrowserStorageWarning = () => {
+      if (!browserStorageWarning) return;
+      browserStorageWarning.hidden = false;
+      browserStorageWarning.dataset.storageMode = "memory_only";
+      browserStorageWarning.textContent = "Browser storage is full. This session is active with Backend Authority, but this browser could not cache a local copy. Keep this page open and save to SEC before leaving.";
+    };
+    global.addEventListener("sczn3:browser-storage-unavailable", showBrowserStorageWarning);
 
     function syncTargetProjection() {
       const image = byId("contractTargetImage");
@@ -3562,6 +3570,10 @@
       renderResultSEC({ result: canonicalResult(state.session), preserved: true });
       const saveStatus = document.querySelector("[data-contract-save-status]");
       if (saveStatus) saveStatus.textContent = "Saved to the Vault.";
+      if (browserStorageWarning && browserStorageWarning.hidden === false) {
+        browserStorageWarning.dataset.storageMode = "sec_preserved";
+        browserStorageWarning.textContent = "Browser storage remains full. This session is preserved to SEC and can be reopened from the Ballistic Vault.";
+      }
       status("Saved to the Vault.");
       document.dispatchEvent(new CustomEvent("sczn3:target-session-preserved", { detail: { targetId, experienceMode, sessionId: state.session.sessionId } }));
     }
